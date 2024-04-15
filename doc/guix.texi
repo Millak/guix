@@ -848,8 +848,8 @@ goes through the daemon.  For instance, command-line tools such as
 daemon (@i{via} remote procedure calls) to instruct it what to do.
 
 The following sections explain how to prepare the build daemon's
-environment.  See also @ref{Substitutes}, for information on how to allow
-the daemon to download pre-built binaries.
+environment.  See @ref{Substitutes} for how to allow the daemon to
+download pre-built binaries.
 
 @menu
 * Build Environment Setup::     Preparing the isolated build environment.
@@ -2548,7 +2548,7 @@ This builds a new system @dfn{generation} with the latest packages and
 services.
 
 Now, @pxref{Getting Started with the System}, and
-join us on @code{#guix} on the Libera Chat IRC network or on
+join us on @code{#guix} on the Libera.Chat IRC network or on
 @email{guix-devel@@gnu.org} to share your experience!
 
 
@@ -26641,7 +26641,7 @@ Disable LOGIN command and all other plaintext authentications unless
 SSL/TLS is used (LOGINDISABLED capability).  Note that if the remote IP
 matches the local IP (i.e.@: you're connecting from the same computer),
 the connection is considered secure and plaintext authentication is
-allowed.  See also ssl=required setting.
+allowed.  See also the @samp{ssl=required} setting.
 Defaults to @samp{#t}.
 @end deftypevr
 
@@ -26781,7 +26781,7 @@ Defaults to @samp{#f}.
 List of wanted authentication mechanisms.  Supported mechanisms are:
 @samp{plain}, @samp{login}, @samp{digest-md5}, @samp{cram-md5},
 @samp{ntlm}, @samp{rpa}, @samp{apop}, @samp{anonymous}, @samp{gssapi},
-@samp{otp}, @samp{skey}, and @samp{gss-spnego}.  NOTE: See also
+@samp{otp}, @samp{skey}, and @samp{gss-spnego}.  See also the
 @samp{disable-plaintext-auth} setting.
 @end deftypevr
 
@@ -47865,7 +47865,12 @@ The graph below shows the resulting dependency graph for
 @code{gcc-core-mesboot0}, the bootstrap compiler used for the
 traditional bootstrap of the rest of the Guix System.
 
-@c ./pre-inst-env guix graph -e '(@@ (gnu packages commencement) gcc-core-mesboot0)' | sed -re 's,((bootstrap-seeds|guile-bootstrap).*shape =) box,\1 ellipse,' > doc/images/gcc-core-mesboot0-graph.dot
+@c ./pre-inst-env guix graph \
+@c   -e '(@@ (gnu packages commencement) gcc-core-mesboot0)' \
+@c   | sed -r \
+@c     -e 's,((bootstrap-seeds|guile-bootstrap).*shape =) box,\1 ellipse,' \
+@c     -e 's,fontname = sans,fontname = "dejavu sans",' \
+@c   > doc/images/gcc-core-mesboot0-graph.dot
 @image{images/gcc-core-mesboot0-graph,6in,,Dependency graph of gcc-core-mesboot0}
 
 Work is ongoing to bring these bootstraps to the @code{arm-linux} and

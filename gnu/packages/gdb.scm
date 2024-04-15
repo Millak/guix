@@ -148,14 +148,14 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
 (define-public gdb-14
   (package
     (inherit gdb/pinned)
-    (version "14.1")
+    (version "14.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gdb/gdb-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "106v7rj72km56mb2ssjsyjfix3yn4f3wqr7lpzy52d0lfq9gavfn"))))
+                "0wkprsjyyh204fdjlkaz20k847l88i9y8m9zqsv15vcd3l3dhk9d"))))
     (properties '())))
 
 (define-public gdb

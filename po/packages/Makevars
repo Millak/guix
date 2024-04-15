@@ -6,12 +6,18 @@ DOMAIN = guix-packages
 subdir = po/packages
 top_builddir = ../..
 
+# We use our xgettext.scm wrapper to produce .PO files reproducibly using a
+# timestamp from Git.  The `real' xgettext is passed as an option to
+# xgettext.scm
+XGETTEXT:=$(top_srcdir)/build-aux/xgettext.scm
+
 # These options get passed to xgettext.  We want to catch exclusively package
 # synopses and descriptions.
 XGETTEXT_OPTIONS =				\
   --language=Scheme --from-code=UTF-8		\
-  --keyword=synopsis --keyword=description      \
-  --keyword=output-synopsis:2
+  --keyword=synopsis --keyword=description	\
+  --keyword=output-synopsis:2			\
+  --xgettext=$(XGETTEXT_)
 
 COPYRIGHT_HOLDER = the authors of Guix (msgids)
 

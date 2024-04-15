@@ -1,6 +1,6 @@
-From 3c838e6a0c3214d95bf02048cddccfd1b69a679f Mon Sep 17 00:00:00 2001
+From b8428ad25b437acf4bd8210b14db207b71fe44c3 Mon Sep 17 00:00:00 2001
 From: Philip McGrath <philip@philipmcgrath.com>
-Date: Thu, 19 May 2022 13:41:56 -0400
+Date: Wed, 24 Aug 2022 19:55:14 -0400
 Subject: [PATCH] patch s_process for "/bin/sh" on Guix
 
 If:
@@ -14,22 +14,27 @@ then `s_process` will call `execl` with the file specified by
 `_PATH_BSHELL` instead of "/bin/sh".
 
 Checking that the path specified by `_PATH_BSHELL` exists safeguards
-against obscure errors if attempting to use stand-alone executables
-built by the patched Racket in non-Guix envoronments.
+against obscure errors if attempting to use the patched Chez Scheme
+or executables it builds in non-Guix envoronments.
 
 This patch does not change the behavior of `s_system`, which relies
 on `system` from the C library.
 ---
+
+Notes:
+    See also racket-chez-scheme-bin-sh.patch, racket-rktio-bin-sh.patch,
+    and zuo-bin-sh.patch.
+
  c/prim5.c | 21 ++++++++++++++++++++-
  1 file changed, 20 insertions(+), 1 deletion(-)
 
 diff --git a/c/prim5.c b/c/prim5.c
-index 5a07893..bc2736c 100644
+index 90b087f1..284f063f 100644
 --- a/c/prim5.c
 +++ b/c/prim5.c
-@@ -23,6 +23,12 @@
- #include <ctype.h>
- #include <math.h>
+@@ -27,6 +27,12 @@
+ #include <sys/resource.h>
+ #endif
  
 +/* BEGIN PATCH for Guix */
 +#ifndef WIN32
@@ -39,8 +44,8 @@ index 5a07893..bc2736c 100644
 +
  /* locally defined functions */
  static INT s_errno(void);
- static iptr s_addr_in_heap(uptr x);
-@@ -746,6 +752,17 @@ static ptr s_process(char *s, IBOOL stderrp) {
+ static IBOOL s_addr_in_heap(uptr x);
+@@ -875,6 +881,17 @@ static ptr s_process(char *s, IBOOL stderrp) {
  
      INT tofds[2], fromfds[2], errfds[2];
      struct sigaction act, oint_act;
@@ -58,10 +63,10 @@ index 5a07893..bc2736c 100644
  
      if (pipe(tofds)) S_error("process","cannot open pipes");
      if (pipe(fromfds)) {
-@@ -771,7 +788,9 @@ static ptr s_process(char *s, IBOOL stderrp) {
-         CLOSE(1); if (dup(fromfds[1]) != 1) _exit(1);
-         CLOSE(2); if (dup(stderrp ? errfds[1] : 1) != 2) _exit(1);
-         {INT i; for (i = 3; i < NOFILE; i++) (void)CLOSE(i);}
+@@ -911,7 +928,9 @@ static ptr s_process(char *s, IBOOL stderrp) {
+           }
+         }
+ #endif /* __GNU__ Hurd */
 -        execl("/bin/sh", "/bin/sh", "-c", s, NULL);
 +        /* BEGIN PATCH for Guix */
 +        execl(guix_sh, guix_sh, "-c", s, NULL);
@@ -70,7 +75,7 @@ index 5a07893..bc2736c 100644
          /*NOTREACHED*/
      } else {
 
-base-commit: 9df56e7b25bc523663eac3da24be33afc5f76c84
+base-commit: 253230f7dfbb4fe777277d6bbf93f39f9567f086
 -- 
-2.32.0
+2.41.0
 

@@ -37,6 +37,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
@@ -57,11 +58,13 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages uglifyjs)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
@@ -453,3 +456,125 @@ the Net to search for documents which are not on the local system.")
       (description "Zeal is a simple offline documentation browser
 inspired by Dash.")
       (license license:gpl3+))))
+
+(define-public markdeep
+  (package
+    (name "markdeep")
+    (version "1.16")
+    (home-page "https://casual-effects.com/markdeep/")
+    (source
+     (origin (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/morgan3d/markdeep")
+                   (commit (string-append "v0" version))))
+             (sha256
+              (base32 "05bvw3993xh1260ckclwk4jw38hvgiff0b2940ryhbhz0p1k41l8"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:modules '((guix build utils)
+                       (guix build copy-build-system)
+                       (ice-9 popen))
+           #:install-plan ''(("." "/share/markdeep/"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-urls
+                 (lambda _
+                   (for-each (lambda (filename)
+
+                               (substitute* filename
+                                 ;; Don't include a reference to the remote version.
+                                 (("<script src=\"https://casual-effects\\.com/\
+markdeep/latest/markdeep\\.min\\.js\\?\"></script>")
+                                  "")
+                                 (("MATHJAX_URL = .*$")
+                                  ;; Use our local copy of mathjax
+                                  (string-append "MATHJAX_URL = 'file://" #$js-mathjax
+                                                 "/share/javascript/es5/tex-mml-chtml.js'"))))
+                             (find-files "." (lambda (file stat)
+                                               (string-suffix? ".js" file))))))
+               (add-before 'install 'minify
+                 (lambda _
+                   (for-each (lambda (filename)
+                               (let ((minified-filename
+                                      (string-append
+                                       (string-drop-right filename 3)
+                                       ".min.js")))
+                                 (format #t "~a -> ~a~%" filename minified-filename)
+                                 (let ((minified (open-pipe* OPEN_READ
+                                                             "uglifyjs" filename)))
+                                   (call-with-output-file minified-filename
+                                     (lambda (port)
+                                       (dump-port minified port)))
+
+                                   (let ((exit (close-pipe minified)))
+                                     (unless (zero? exit)
+                                       (error "uglifyjs failed" exit))))))
+                             (find-files "latest"
+                                         (lambda (path stat)
+                                           (and (string-suffix? ".js" path)
+                                                (not (string-suffix? ".min.js"
+                                                                     path)))))))))))
+    (inputs (list js-mathjax))
+    (native-inputs (list uglifyjs))
+    (synopsis "Tool for displaying markdown documents in a web-browser")
+    (description "Markdeep is a technology for writing plain text documents that can
+be displayed in any web browser, whether local or remote.  It supports diagrams,
+calendars, equations, and other features as extensions of Markdown syntax.")
+    (license license:bsd-2)))
+
+(define-public stddoc
+  (let ((commit "6eef9deaf2e36bae812f50e448a8012b3e5efb14")
+        (revision "1"))
+    (package
+      (name "stddoc")
+      (version (git-version "1.0.2" revision commit))
+      (home-page "https://github.com/r-lyeh/stddoc.c")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "06phjp7wbf4x1sagxwfapgv6iyiixmijxxbg2clb48kyvjg5mlwn"))
+         (snippet #~(delete-file "stddoc.c.html"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ; no tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'configure
+                   (lambda _
+                     (substitute* "stddoc.c"
+                       ;; Note: For some reason quote characters are being
+                       ;; inserted into urls and tags, eg.
+                       ;; 'https://morgan3d.github.io/m""arkdeep/latest/markdeep.min.js?'
+                       (("https://casual-effects.com/m\"*arkdeep/latest/")
+                        (string-append #$markdeep "/share/markdeep/latest/"))
+                       (("https://morgan3d.github.io/m\"*arkdeep/latest/")
+                        (string-append #$markdeep "/share/markdeep/latest/")))))
+                 (replace 'build
+                   (lambda _
+                     (invoke #$(cc-for-target)
+                             "-O2" "-g" "-o" "stddoc" "stddoc.c")
+                     (with-input-from-file "stddoc.c"
+                       (lambda _
+                         (with-output-to-file "stddoc.c.html"
+                           (lambda _
+                             (invoke #$(if (%current-target-system)
+                                           "stddoc"
+                                           "./stddoc"))))))))
+                 (replace 'install
+                   (lambda _
+                     (install-file "stddoc"
+                                   (string-append #$output "/bin"))
+                     (install-file "stddoc.c.html"
+                                   (string-append #$output
+                                                  "/share/doc")))))))
+      (native-inputs (if (%current-target-system) (list this-package) '()))
+      (synopsis "Documentation generator for multiple programming languages")
+      (description "@code{stddoc.c} is a tiny documentation generator with many
+supported programming languages.  Markdeep code comments are extracted from stdin and
+printed into stdout as a HTML file.")
+      (license license:unlicense))))

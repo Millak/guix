@@ -1,4 +1,4 @@
-From f86370295c5bb14d4bb93d0ccfa37a2b79f19f25 Mon Sep 17 00:00:00 2001
+From 5398e6d3305def343a009aba7c5f8915851c4115 Mon Sep 17 00:00:00 2001
 From: Philip McGrath <philip@philipmcgrath.com>
 Date: Wed, 24 Aug 2022 19:55:14 -0400
 Subject: [PATCH] Chez Scheme: patch s_process for "/bin/sh" on Guix
@@ -14,17 +14,22 @@ then `s_process` will call `execl` with the file specified by
 `_PATH_BSHELL` instead of "/bin/sh".
 
 Checking that the path specified by `_PATH_BSHELL` exists safeguards
-against obscure errors if attempting to use stand-alone executables
-built by the patched Racket in non-Guix envoronments.
+against obscure errors if attempting to use the patched Chez Scheme
+or executables it builds in non-Guix envoronments.
 
 This patch does not change the behavior of `s_system`, which relies
 on `system` from the C library.
 ---
+
+Notes:
+    See also chez-scheme-bin-sh.patch, racket-rktio-bin-sh.patch,
+    and zuo-bin-sh.patch.
+
  racket/src/ChezScheme/c/prim5.c | 21 ++++++++++++++++++++-
  1 file changed, 20 insertions(+), 1 deletion(-)
 
 diff --git a/racket/src/ChezScheme/c/prim5.c b/racket/src/ChezScheme/c/prim5.c
-index 82bbf8d687..be8f603447 100644
+index 90b087f125..284f063f8b 100644
 --- a/racket/src/ChezScheme/c/prim5.c
 +++ b/racket/src/ChezScheme/c/prim5.c
 @@ -27,6 +27,12 @@
@@ -40,7 +45,7 @@ index 82bbf8d687..be8f603447 100644
  /* locally defined functions */
  static INT s_errno(void);
  static IBOOL s_addr_in_heap(uptr x);
-@@ -861,6 +867,17 @@ static ptr s_process(char *s, IBOOL stderrp) {
+@@ -875,6 +881,17 @@ static ptr s_process(char *s, IBOOL stderrp) {
  
      INT tofds[2], fromfds[2], errfds[2];
      struct sigaction act, oint_act;
@@ -58,7 +63,7 @@ index 82bbf8d687..be8f603447 100644
  
      if (pipe(tofds)) S_error("process","cannot open pipes");
      if (pipe(fromfds)) {
-@@ -897,7 +914,9 @@ static ptr s_process(char *s, IBOOL stderrp) {
+@@ -911,7 +928,9 @@ static ptr s_process(char *s, IBOOL stderrp) {
            }
          }
  #endif /* __GNU__ Hurd */
@@ -70,7 +75,7 @@ index 82bbf8d687..be8f603447 100644
          /*NOTREACHED*/
      } else {
 
-base-commit: 87eee6e2adb8c6bc11e60619c706fa6295096085
+base-commit: 78fef00d4d16a79fdf6ab31924b3a80cadf4b368
 -- 
-2.32.0
+2.41.0
 

@@ -1,0 +1,32 @@
+From 8b001f38cc713190642194b55e02a56346f51494 Mon Sep 17 00:00:00 2001
+From: Jean-Pierre De Jesus DIAZ <jean@foundation.xyz>
+Date: Fri, 12 Apr 2024 12:18:24 +0200
+Subject: [PATCH] Fix CROSS_SYSTEM_HEADER_DIR value for Guix.
+
+* gcc/Makefile.in (CROSS_SYSTEM_HEADER_DIR): Always use default value.
+---
+ gcc/Makefile.in | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/gcc/Makefile.in b/gcc/Makefile.in
+index 775aaa1b3c4..06d192fa9ed 100644
+--- a/gcc/Makefile.in
++++ b/gcc/Makefile.in
+@@ -532,11 +532,7 @@ LINKER_PLUGIN_API_H = $(srcdir)/../include/plugin-api.h
+ # Default native SYSTEM_HEADER_DIR, to be overridden by targets.
+ NATIVE_SYSTEM_HEADER_DIR = @NATIVE_SYSTEM_HEADER_DIR@
+ # Default cross SYSTEM_HEADER_DIR, to be overridden by targets.
+-ifeq (@includedir@,$(prefix)/include)
+-  CROSS_SYSTEM_HEADER_DIR = @CROSS_SYSTEM_HEADER_DIR@
+-else
+-  CROSS_SYSTEM_HEADER_DIR = @includedir@
+-endif
++CROSS_SYSTEM_HEADER_DIR = @CROSS_SYSTEM_HEADER_DIR@
+ 
+ # autoconf sets SYSTEM_HEADER_DIR to one of the above.
+ # Purge it of unnecessary internal relative paths
+
+base-commit: c891d8dc23e1a46ad9f3e757d09e57b500d40044
+-- 
+2.41.0
+

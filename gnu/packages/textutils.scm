@@ -69,6 +69,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages java)
@@ -84,7 +85,6 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages slang)
-  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xorg))
 
@@ -1432,23 +1432,50 @@ of a Unix terminal to HTML code.")
              (commit (string-append "v" version))))
        (sha256
         (base32 "0d07fwha2220m8j24h527xl0gnl3svvyaywflgk5292d6g49ach2"))
-       (file-name (git-file-name name version))))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       ;; Remove some available vendor modules.
+       ;; TODO: Pack all of them and remove vendor directory completely.
+       (snippet
+        '(for-each
+          delete-file-recursively
+          (list "vendor/github.com/fatih/color"
+                "vendor/github.com/mitchellh/mapstructure"
+                "vendor/github.com/gobwas/glob"
+                "vendor/github.com/mitchellh/go-homedir"
+                "vendor/github.com/olekukonko/tablewriter"
+                "vendor/github.com/spf13/afero"
+                "vendor/github.com/urfave/cli"
+                "vendor/github.com/yuin/goldmark"
+                "vendor/golang.org/x/net/html"
+                "vendor/gopkg.in/ini.v1"
+                "vendor/gopkg.in/yaml.v2")))))
     (build-system go-build-system)
-    (native-inputs
-     (list go-github-com-mitchellh-mapstructure
-           go-github-com-olekukonko-tablewriter
-           go-github-com-spf13-afero
-           go-github-com-urfave-cli))
     (arguments
-     `(#:import-path "github.com/errata-ai/vale"
-       #:install-source? #f))
+     (list #:install-source? #f
+           #:import-path "github.com/errata-ai/vale"))
+    (native-inputs
+     (list go-github-com-fatih-color
+           go-github-com-mitchellh-mapstructure
+           go-github-com-gobwas-glob
+           ;; go-github-com-jdkato-prose
+           ;; go-github-com-jdkato-regexp
+           go-github-com-mitchellh-go-homedir
+           go-github-com-olekukonko-tablewriter
+           ;; go-github-com-remeh-sizedwaitgroup
+           go-github-com-spf13-afero
+           go-github-com-urfave-cli
+           go-github-com-yuin-goldmark
+           go-golang-org-x-net-html
+           go-gopkg-in-ini-v1
+           go-gopkg-in-yaml-v2))
     (home-page "https://github.com/errata-ai/vale")
     (synopsis "Fully customizable syntax-aware linter that focuses on your style")
     (description
      "Vale is a fully extensible linter that focuses on your own writing style
 by making use of rules in individual YAML files.  It is syntax-aware on markup
-languages such as HTML, Markdown, Asciidoc, and reStructuredText.  The community
-around it also has a list of style guides implemented with Vale in
+languages such as HTML, Markdown, Asciidoc, and reStructuredText.  The
+community around it also has a list of style guides implemented with Vale in
 @url{https://github.com/errata-ai/styles, their styles repo}.")
     (license license:expat)))
 
@@ -1504,17 +1531,15 @@ files for valid UTF-8 use and to report which line endings they use.")
          "0cd1ikxsypjqisfnmr7zix3g7x8p892w77086465chyd39gpk97b"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/aswinkarthik/csvdiff"))
-    (propagated-inputs
-     (list go-golang-org-x-sys
-           go-github-com-stretchr-testify
-           go-github-com-spf13-cobra
-           go-github-com-spf13-afero
-           go-github-com-spaolacci-murmur3
-           go-github-com-mattn-go-colorable
+     (list
+      #:install-source? #f
+      #:import-path "github.com/aswinkarthik/csvdiff"))
+    (native-inputs
+     (list go-github-com-cespare-xxhash
            go-github-com-fatih-color
-           go-github-com-cespare-xxhash
-           go-github-com-oneofone-xxhash))
+           go-github-com-spf13-afero
+           go-github-com-spf13-cobra
+           go-github-com-stretchr-testify))
     (home-page "https://github.com/aswinkarthik/csvdiff")
     (synopsis "Fast diff tool for comparing CSV files")
     (description "@code{csvdiff} is a diff tool to compute changes between two
@@ -1534,6 +1559,60 @@ JSON for post-processing
 
 (define-public go-github-com-aswinkarthik-csvdiff
   (deprecated-package "go-github-com-aswinkarthik-csvdiff" csvdiff))
+
+(define-public miller
+  (package
+    (name "miller")
+    (version "6.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/johnkerl/miller")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "195lgayq5z7ndag3w495fs618pkrhz426kg0kp3s5sa68vr1madp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.19
+      #:install-source? #f
+      #:import-path "github.com/johnkerl/miller/cmd/mlr"
+      #:unpack-path "github.com/johnkerl/miller"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: Build all provided documentation.
+          (add-after 'install 'install-man-pages
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (invoke "make" (string-append "PREFIX=" #$output)
+                        "-C" "man" "install")))))))
+    (native-inputs
+     (list go-github-com-facette-natsort
+           go-github-com-johnkerl-lumin
+           go-github-com-kballard-go-shellquote
+           go-github-com-klauspost-compress
+           go-github-com-lestrrat-go-strftime
+           go-github-com-mattn-go-isatty
+           ;; Optional, not packed in Guix
+           ;; go-github-com-nine-lives-later-go-windows-terminal-sequences
+           go-github-com-pkg-profile
+           go-github-com-stretchr-testify
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text
+           python-wrapper
+           python-mkdocs-material
+           ruby))
+    (home-page "https://miller.readthedocs.io/")
+    (synopsis "Text-formatted data processing tool")
+    (description
+     "Miller (@command{mlr}) is like @command{awk}, @command{sed},
+@command{cut}, @command{join}, and @command{sort} for data formats such as
+CSV, TSV, JSON, JSON Lines, and positionally-indexed.  It supports format
+conversion and pretty-printing.")
+    (license license:bsd-2)))
 
 (define-public ack
   (package

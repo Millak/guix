@@ -74,7 +74,7 @@
               #t)))))
     (native-inputs
      (list akku
-           (chez-scheme-for-system)
+           chez-scheme
            guile-struct-pack
            guile-laesare
            guile-pfds

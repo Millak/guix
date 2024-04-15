@@ -51,3 +51,59 @@
 base-encoded (e.g., @code{base32}, @code{base36}, @code{base64}, @code{base58}, etc.)
 binary appearing in text.")
       (license (list license:expat license:cc-by-sa3.0)))))
+
+(define-public specification-multicodec
+  (let ((commit "36789e0856be22fa02f4dc55582ec670b2b4318b")
+        (revision "0"))
+    (package
+      (name "specification-multicodec")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/multiformats/multicodec")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0dyawicg8q4f8g6xj5bsj5l3c8rb8mrafjkrabc6a3p65845wp2r"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan '(("." "share/multicodec/"))
+         #:phases (modify-phases %standard-phases
+                    (delete 'strip))))
+      (home-page "https://github.com/multiformats/multicodec")
+      (synopsis "Compact self-describing codecs")
+      (description
+       "Multicodec is an agreed-upon codec table.  It is designed for use in binary
+representations, such as keys or identifiers (i.e @url{https://github.com/ipld/cid,
+CID}).")
+      (license (list license:expat license:cc-by-sa3.0)))))
+
+(define-public specification-multihash
+  (let ((commit "931febb97565395b1b6cd39ac677799df265a9e7")
+        (revision "0"))
+    (package
+      (name "specification-multihash")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/multiformats/multihash")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1axr35z3iz061fng0170bh873vy20rj2mspznycxm1qkrkrh7p5j"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan '(("." "share/multihash/"))
+         #:phases (modify-phases %standard-phases
+                    (delete 'strip))))
+      (home-page "https://github.com/multiformats/multihash")
+      (synopsis "Self-describing hashes")
+      (description
+       "Multihash is a protocol for differentiating outputs from various
+well-established cryptographic hash functions, addressing size + encoding
+considerations.")
+      (license (list license:expat license:cc-by-sa3.0)))))

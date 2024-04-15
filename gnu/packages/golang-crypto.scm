@@ -48,7 +48,9 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
-  #:use-module (gnu packages golang-web))
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages specifications))
 
 ;;; Commentary:
 ;;;
@@ -497,6 +499,39 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
       #:go go-1.18
       #:import-path "github.com/golang-jwt/jwt/v5"))))
 
+;; It's not public for purpose, as it contains a lot of golang modules which
+;; may be inherited from the single source, but the package itself does not
+;; have to be installed directly or linked to other packages..
+(define go-github-com-gxed-hashland
+  (package
+    (name "go-github-com-gxed-hashland")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gxed/hashland")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b921dh9i6zw7y8jfzwvrmdbhnwid12a5z1zjawslfq2vvsajwmm"))))
+    (build-system go-build-system)
+    ;; Source-only package.
+    (arguments
+     (list
+      #:tests? #f
+      #:import-path "github.com/gxed/hashland"
+      #:phases
+      #~(modify-phases %standard-phases (delete 'build))))
+    (home-page "https://github.com/gxed/hashland")
+    (synopsis "Collection of hash functions")
+    (description
+     "This package provides a source of Hashland - a collection of hash
+functions and functionality to test them.  It aggregates various Golang
+libraries.")
+    (license license:expat)))
+
+;; TODO: Inherit from the go-github-com-gxed-hashland
 (define-public go-github-com-gxed-hashland-keccakpg
   (let ((commit "d9f6b97f8db22dd1e090fd0bbbe98f09cc7dd0a8")
         (revision "0"))
@@ -521,6 +556,20 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
       (description "Package @command{keccak} implements the Keccak (SHA-3)
 hash algorithm.  See http://keccak.noekeon.org.")
       (license license:expat))))
+
+(define-public go-github-com-gxed-hashland-murmur3
+  (package
+    (inherit go-github-com-gxed-hashland)
+    (name "go-github-com-gxed-hashland-murmur3")
+    (arguments
+     (list
+      #:import-path "github.com/gxed/hashland/murmur3"
+      #:unpack-path "github.com/gxed/hashland"))
+    (synopsis "Golang implementation of MurmurHash3 algorithm")
+    (description
+     "This package provides a native Go implementation of
+@url{https://en.wikipedia.org/wiki/MurmurHash, Austin Appleby's third
+MurmurHash} revision (aka MurmurHash3).")))
 
 (define-public go-github-com-jcmturner-aescts-v2
   (package
@@ -789,34 +838,78 @@ Architecture Processors\" by J. Guilford et al.")
     (license license:asl2.0)))
 
 (define-public go-github-com-multiformats-go-multihash
-  (let ((commit "97cdb562a04c6ef66d8ed40cd62f8fbcddd396d6")
-        (revision "0"))
-    (package
-      (name "go-github-com-multiformats-go-multihash")
-      (version (git-version "1.0.8" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/multiformats/go-multihash")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "02wd9akrwy4y5m0nig9m24p14bjjgb4n1djydrq8cm4yhbvjrrk0"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/multiformats/go-multihash"))
-      (propagated-inputs
-       (list go-github-com-mr-tron-base58
-             go-github-com-gxed-hashland-keccakpg
-             go-github-com-minio-blake2b-simd
-             go-github-com-minio-sha256-simd
-             go-github-com-spaolacci-murmur3
-             go-golang-org-x-crypto))
-      (home-page "https://github.com/multiformats/go-multihash")
-      (synopsis "Multihash implementation in Go")
-      (description "Multihash implementation in Go.")
-      (license license:expat))))
+  (package
+    (name "go-github-com-multiformats-go-multihash")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-multihash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aw4ra22g3l98bk7c3h1n968vi5a3gk528g4byj3xig76r0r731n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/multiformats/go-multihash"))
+    (propagated-inputs
+     (list go-github-com-gxed-hashland-keccakpg
+           go-github-com-gxed-hashland-murmur3
+           go-github-com-minio-blake2b-simd
+           go-github-com-minio-sha256-simd
+           go-github-com-mr-tron-base58
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/multiformats/go-multihash")
+    (synopsis "Multihash implementation in Go")
+    (description "Multihash implementation in Go.")
+    (license license:expat)))
+
+;; XXX: Remove it when all dependent packages are ready to be updated.
+(define-public go-github-com-multiformats-go-multihash-0.2.3
+  (package
+    (inherit go-github-com-multiformats-go-multihash)
+    (name "go-github-com-multiformats-go-multihash")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-multihash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ydh94083888xl2r4d1grzgqf3c818mkmdpj008jkh6h7m56wc4w"))))
+    (arguments
+     (list #:go go-1.21
+           #:import-path "github.com/multiformats/go-multihash"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'copy-multibase-specs
+                 (lambda* (#:key import-path #:allow-other-keys)
+                   (copy-recursively
+                    (string-append #$(this-package-native-input
+                                      "specification-multihash")
+                                   "/share/multihash/")
+                    (string-append "src/" import-path "/spec/multihash/"))
+                   (copy-recursively
+                    (string-append #$(this-package-native-input
+                                      "specification-multicodec")
+                                   "/share/multicodec/")
+                    (string-append "src/" import-path "/spec/multicodec/")))))))
+    (native-inputs
+     (list specification-multihash
+           specification-multicodec))
+    (propagated-inputs
+     (list go-github-com-gxed-hashland-keccakpg
+           go-github-com-minio-blake2b-simd
+           go-github-com-minio-sha256-simd
+           go-github-com-mr-tron-base58
+           go-github-com-multiformats-go-varint
+           go-github-com-spaolacci-murmur3
+           go-golang-org-x-crypto
+           go-lukechampine-com-blake3))))
 
 (define-public go-github-com-operatorfoundation-ed25519
   (let ((commit "b22b4bd3ddef042eec45f3ee135cd40281fde2b4")

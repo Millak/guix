@@ -1,0 +1,423 @@
+From 82157f5b3fb9f71ad7fc978c428d423d06a4a0df Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Wed, 28 Feb 2024 19:41:22 -0500
+Subject: [PATCH 1/2] Chez Scheme: Repairs and improvements for building with
+ external dependencies
+
+* configure: support `ZUO=<zuo>`
+
+Supplying `ZUO=<zuo>` skips the submodule check in `configure`
+and configures the generated makefile not to build or remove Zuo.
+
+* configure: support `STEXLIB=<stex>`
+
+For compatibility with older scripts, when not explicitly configured,
+continue to honor the `STEXLIB` environment variable at build time.
+
+(cherry picked from commit 694fbd47a125c7fde10a328c6fda199dac19f802)
+---
+ racket/src/ChezScheme/BUILDING              |  5 ++--
+ racket/src/ChezScheme/build.zuo             | 13 +++++++---
+ racket/src/ChezScheme/configure             | 27 ++++++++++++++++++++-
+ racket/src/ChezScheme/makefiles/Makefile.in |  6 ++---
+ 4 files changed, 40 insertions(+), 11 deletions(-)
+
+diff --git a/racket/src/ChezScheme/BUILDING b/racket/src/ChezScheme/BUILDING
+index 50fde27771..2df29b5bd8 100644
+--- a/racket/src/ChezScheme/BUILDING
++++ b/racket/src/ChezScheme/BUILDING
+@@ -155,7 +155,8 @@ information on the supported options.
+ The generated makefile mostly just ensures that a `zuo` executable is
+ built in a `bin` directory, and then it defers the actual build work
+ to `zuo`, which uses the "main.zuo" file. If you have `zuo` installed,
+-you can use `zuo` directly instead of `make`. In general, instead of
++you can use `zuo` directly instead of `make`: in that case, you may
++wish to use `./configure ZUO=<zuo>`. In general, instead of
+ the command `make X` to build target `X` as described below, you can
+ use `zuo . X` (or `bin/zuo . X` after `bin/zuo` is built).
+ 
+@@ -339,7 +340,7 @@ The makefile supports several targets:
+  * `make clean`
+ 
+    Removes all built elements from the workarea, and then removes
+-   `bin/zuo`.
++   `bin/zuo` (unless configured with `ZUO=<zuo>`).
+ 
+ 
+ WINDOWS VIA COMMAND PROMPT
+diff --git a/racket/src/ChezScheme/build.zuo b/racket/src/ChezScheme/build.zuo
+index a211632a89..432cc6e5a1 100644
+--- a/racket/src/ChezScheme/build.zuo
++++ b/racket/src/ChezScheme/build.zuo
+@@ -218,10 +218,15 @@
+            token))
+ 
+   (define stexlib
+-    (let ((found (assoc "STEXLIB" (hash-ref (runtime-env) 'env))))
+-      (if found
+-          (cdr found)
+-          (at-source "stex"))))
++    (let ([configured (hash-ref config 'STEXLIB "")]
++          [env (assoc "STEXLIB" (hash-ref (runtime-env) 'env))])
++      (cond
++        [(not (equal? "" configured))
++         configured]
++        [env
++         (cdr env)]
++        [else
++         (at-source "stex")])))
+   (define stex-sources
+     (source-tree stexlib))
+ 
+diff --git a/racket/src/ChezScheme/configure b/racket/src/ChezScheme/configure
+index 721d1d1335..f88c6f7625 100755
+--- a/racket/src/ChezScheme/configure
++++ b/racket/src/ChezScheme/configure
+@@ -93,6 +93,7 @@ default_warning_flags="-Wpointer-arith -Wall -Wextra -Wno-implicit-fallthrough"
+ CFLAGS_ADD=
+ zlibLib=
+ LZ4Lib=
++STEXLIB=
+ Kernel=KernelLib
+ buildKernelOnly=no
+ enableFrompb=yes
+@@ -102,6 +103,7 @@ empetite=no
+ moreBootFiles=
+ preloadBootFiles=
+ alwaysUseBootFile=
++zuoExternal=
+ 
+ CONFIG_UNAME=`uname`
+ 
+@@ -442,6 +444,12 @@ while [ $# != 0 ] ; do
+     LZ4=*)
+       LZ4Lib=`echo $1 | sed -e 's/^LZ4=//'`
+       ;;
++    STEXLIB=*)
++      STEXLIB=`echo $1 | sed -e 's/^STEXLIB=//'`
++      ;;
++    ZUO=*)
++      zuoExternal=`echo $1 | sed -e 's/^ZUO=//'`
++      ;;
+     *)
+       echo "option '$1' unrecognized or missing an argument; try $0 --help"
+       exit 1
+@@ -667,6 +675,8 @@ if [ "$help" = "yes" ]; then
+   echo "  STRIP=<strip>                     executable stripper"
+   echo "  ZLIB=<lib>                        link to <lib> instead of own zlib"
+   echo "  LZ4=<lib>                         link to <lib> instead of own LZ4"
++  echo "  STEXLIB=<stex>                    build docs with <stex> instead of own stex"
++  echo "  ZUO=<zuo>                         build with <zuo> instead of own Zuo"
+   echo ""
+   echo "Available machine types: $machs"
+   echo ""
+@@ -869,6 +879,16 @@ if [ "$addflags" = "yes" ] ; then
+   fi
+ fi
+ 
++if [ "${zuoExternal}" = "" ] ; then
++    ZUO="bin/zuo"
++    RM_ZUO="rm -f bin/zuo"
++    ZUO_TARGET="bin/zuo"
++else
++    ZUO="${zuoExternal}"
++    RM_ZUO="@echo 'Not cleaning external ${zuoExternal}'"
++    ZUO_TARGET="DoNotBuildZuo"
++fi
++
+ # more compile and link flags for c/Mf-unix and mats/Mf-unix
+ mdinclude=
+ mdcppflags=
+@@ -1039,7 +1059,7 @@ cp "$srcdir"/makefiles/buildmain.zuo main.zuo
+ # Some idea, but in the workarea, so it refers to "workarea.zuo" here:
+ cp "$srcdir"/makefiles/workmain.zuo $w/main.zuo
+ 
+-# The content of "$w/Makefile" records configuration decisions,
++# The content of "$w/Mf-config" records configuration decisions,
+ # and the Zuo build script takes it from there
+ cat > $w/Mf-config << END
+ srcdir=$srcdir
+@@ -1075,6 +1095,7 @@ cursesLib=$cursesLib
+ ncursesLib=$ncursesLib
+ zlibLib=$zlibLib
+ LZ4Lib=$LZ4Lib
++STEXLIB=$STEXLIB
+ warningFlags=$warningFlags
+ Kernel=$Kernel
+ installscriptname=$installscriptname
+@@ -1086,6 +1107,10 @@ preloadBootFiles=$preloadBootFiles
+ alwaysUseBootFile=$alwaysUseBootFile
+ relativeBootFiles=$relativeBootFiles
+ 
++ZUO=$ZUO
++RM_ZUO=$RM_ZUO
++ZUO_TARGET=$ZUO_TARGET
++
+ InstallBin=$installbin
+ InstallLib=$installlib
+ InstallMan=$installman/man1
+diff --git a/racket/src/ChezScheme/makefiles/Makefile.in b/racket/src/ChezScheme/makefiles/Makefile.in
+index cfdd0230a3..4865bf2e2f 100644
+--- a/racket/src/ChezScheme/makefiles/Makefile.in
++++ b/racket/src/ChezScheme/makefiles/Makefile.in
+@@ -3,8 +3,6 @@ workarea=$(w)
+ 
+ include $(workarea)/Mf-config
+ 
+-ZUO=bin/zuo
+-
+ .PHONY: build
+ build: $(ZUO)
+ 	+ $(ZUO) $(workarea) MAKE="$(MAKE)"
+@@ -140,9 +138,9 @@ pkg: $(ZUO)
+ .PHONY: clean
+ clean: $(ZUO)
+ 	+ $(ZUO) $(workarea) clean MAKE="$(MAKE)"
+-	rm -f bin/zuo
++	$(RM_ZUO)
+ 
+ # Using `+` here means that $(ZUO) gets built even if `-n`/`--dry-run` is provided to `make`
+-$(ZUO): $(srcdir)/../zuo/zuo.c
++$(ZUO_TARGET): $(srcdir)/../zuo/zuo.c
+ 	+ mkdir -p bin
+ 	+ $(CC_FOR_BUILD) -DZUO_LIB_PATH='"'"$(upsrcdir)/../zuo/lib"'"' -o $(ZUO) $(srcdir)/../zuo/zuo.c
+
+base-commit: 78fef00d4d16a79fdf6ab31924b3a80cadf4b368
+-- 
+2.41.0
+
+
+From e2bc69c5ce7437dd9a1b30ac1b12b3a56872c491 Mon Sep 17 00:00:00 2001
+From: Matthew Flatt <mflatt@racket-lang.org>
+Date: Sun, 10 Mar 2024 09:13:40 -0600
+Subject: [PATCH 2/2] Chez Scheme: adjust `configure ZUO=<command>` support
+
+Continuing from 694fbd47a1, adjust the generated makefile so the
+supplied `<command>` is not a makefile dependency. That way, `ZUO=zuo`
+works if `zuo` is installed and the current build directory is not the
+source directory. (The `zuo` executable is a dependency in a real and
+relevant sense, but not in the sense of dependencies that we normally
+track in makefiles.)
+
+Also adapt the makefile for the case that `ZUO=...` is not supplied
+and the build directory is not the source directory, in which case
+`ZUO_LIB_PATH` needs to be relative to the source directory.
+
+Using `make ZUO=zuo` can also work, but in that case, `bin/zuo` is
+still built as a dependency. It's possible that some portable makefile
+magic could overcome that limitation, but it doesn't seem important.
+
+(cherry picked from commit 28157ba88d48fe645563f46f6c00d6626b3428fa)
+---
+ racket/src/ChezScheme/configure             |  3 +
+ racket/src/ChezScheme/makefiles/Makefile.in | 70 +++++++++++----------
+ 2 files changed, 40 insertions(+), 33 deletions(-)
+
+diff --git a/racket/src/ChezScheme/configure b/racket/src/ChezScheme/configure
+index f88c6f7625..201dbe580f 100755
+--- a/racket/src/ChezScheme/configure
++++ b/racket/src/ChezScheme/configure
+@@ -881,10 +881,12 @@ fi
+ 
+ if [ "${zuoExternal}" = "" ] ; then
+     ZUO="bin/zuo"
++    ZUO_DEP="${ZUO}"
+     RM_ZUO="rm -f bin/zuo"
+     ZUO_TARGET="bin/zuo"
+ else
+     ZUO="${zuoExternal}"
++    ZUO_DEP=""
+     RM_ZUO="@echo 'Not cleaning external ${zuoExternal}'"
+     ZUO_TARGET="DoNotBuildZuo"
+ fi
+@@ -1108,6 +1110,7 @@ alwaysUseBootFile=$alwaysUseBootFile
+ relativeBootFiles=$relativeBootFiles
+ 
+ ZUO=$ZUO
++ZUO_DEP=$ZUO_DEP
+ RM_ZUO=$RM_ZUO
+ ZUO_TARGET=$ZUO_TARGET
+ 
+diff --git a/racket/src/ChezScheme/makefiles/Makefile.in b/racket/src/ChezScheme/makefiles/Makefile.in
+index 4865bf2e2f..5ce237178e 100644
+--- a/racket/src/ChezScheme/makefiles/Makefile.in
++++ b/racket/src/ChezScheme/makefiles/Makefile.in
+@@ -4,51 +4,55 @@ workarea=$(w)
+ include $(workarea)/Mf-config
+ 
+ .PHONY: build
+-build: $(ZUO)
++build: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) MAKE="$(MAKE)"
+ 
+ .PHONY: run
+-run: $(ZUO)
++run: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) run
+ 
+ .PHONY: kernel
+-kernel: $(ZUO)
++kernel: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) kernel MAKE="$(MAKE)"
+ 
+ .PHONY: install
+-install: $(ZUO)
++install: $(ZUO_DEP)
+ 	$(ZUO) $(workarea) install MAKE="$(MAKE)"
+ 
+ .PHONY: uninstall
+-uninstall: $(ZUO)
++uninstall: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) uninstall MAKE="$(MAKE)"
+ 
+-.PHONY: test
+-test: $(ZUO)
+-	+ $(ZUO) $(workarea) test MAKE="$(MAKE)"
++.PHONY: test-one
++test-one: $(ZUO_DEP)
++	+ $(ZUO) $(workarea) test-one MAKE="$(MAKE)"
+ 
+ .PHONY: test-some-fast
+-test-some-fast: $(ZUO)
++test-some-fast: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) test-some-fast MAKE="$(MAKE)"
+ 
+ .PHONY: test-some
+-test-some: $(ZUO)
++test-some: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) test-some MAKE="$(MAKE)"
+ 
++.PHONY: test
++test: $(ZUO_DEP)
++	+ $(ZUO) $(workarea) test MAKE="$(MAKE)"
++
+ .PHONY: test-more
+-test-more: $(ZUO)
++test-more: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) test-more MAKE="$(MAKE)"
+ 
+ .PHONY: coverage
+-coverage: $(ZUO)
++coverage: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) coverage MAKE="$(MAKE)"
+ 
+ .PHONY: bootfiles
+-bootfiles: $(ZUO)
++bootfiles: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) bootfiles MAKE="$(MAKE)"
+ 
+ .PHONY: reset
+-reset: $(ZUO)
++reset: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) reset MAKE="$(MAKE)"
+ 
+ # Supply XM=<machine> to build boot files for <machine>
+@@ -57,86 +61,86 @@ boot:
+ 	+ $(ZUO) $(workarea) boot "$(XM)" MAKE="$(MAKE)"
+ 
+ # `<machine>.boot` as alias for `boot XM=<machine>`
+-%.boot: $(ZUO)
++%.boot: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) boot $* MAKE="$(MAKE)"
+ 
+ .PHONY: auto.boot
+-auto.boot: $(ZUO)
++auto.boot: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) boot MAKE="$(MAKE)"
+ 
+ SCHEME=scheme
+ 
+ .PHONY: cross.boot
+-cross.boot: $(ZUO)
++cross.boot: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) boot SCHEME="$(SCHEME)" MAKE="$(MAKE)"
+ 
+ .PHONY: re.boot
+-re.boot: $(ZUO)
++re.boot: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) reboot SCHEME="$(SCHEME)"
+ 
+ # Supply XM=<machine> to build boot files for <machine>
+ # with o=3 d=0 for the cross compiler, and only after
+ # building the kernel for the configured machine
+ .PHONY: bootquick
+-bootquick: $(ZUO)
++bootquick: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) bootquick "$(XM)" MAKE="$(MAKE)"
+ 
+ # `<machine>.bootquick` as alias for `boot XM=<machine>`
+-%.bootquick: $(ZUO)
++%.bootquick: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) bootquick $* MAKE="$(MAKE)"
+ 
+-auto.bootquick: $(ZUO)
++auto.bootquick: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) bootquick MAKE="$(MAKE)"
+ 
+ # Supply XM=<machine>-<tag>.bootpbchunk to repackage boot files for
+ # <machine> with pbchunk sources, including additional
+ # boot files
+ .PHONY: bootpbchunk
+-bootpbchunk: $(ZUO)
++bootpbchunk: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) bootpbchunk "$(XM)" $(ARGS) MAKE="$(MAKE)"
+ 
+ # `<machine>.bootpbchunk` as alias for `pbchunk XM=<machine>`
+-%.bootpbchunk: $(ZUO)
++%.bootpbchunk: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) bootpbchunk $* $(ARGS) MAKE="$(MAKE)"
+ 
+ .PHONY: docs
+-docs: build $(ZUO)
++docs: build $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) docs MAKE="$(MAKE)"
+ 
+ .PHONY: csug
+-csug: build $(ZUO)
++csug: build $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) csug MAKE="$(MAKE)"
+ 
+ .PHONY: release_notes
+-release_notes: build $(ZUO)
++release_notes: build $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) release_notes MAKE="$(MAKE)"
+ 
+ .PHONY: install-docs
+-install-docs: build $(ZUO)
++install-docs: build $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) install-docs MAKE="$(MAKE)"
+ 
+ .PHONY: install-csug
+-install-csug: build $(ZUO)
++install-csug: build $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) install-csug MAKE="$(MAKE)"
+ 
+ .PHONY: install-release_notes
+-install-release_notes: build $(ZUO)
++install-release_notes: build $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) install-release_notes MAKE="$(MAKE)"
+ 
+ .PHONY: bintar
+-bintar: $(ZUO)
++bintar: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) bintar MAKE="$(MAKE)"
+ 
+ .PHONY: rpm
+-rpm: $(ZUO)
++rpm: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) rpm MAKE="$(MAKE)"
+ 
+ .PHONY: pkg
+-pkg: $(ZUO)
++pkg: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) pkg MAKE="$(MAKE)"
+ 
+ .PHONY: clean
+-clean: $(ZUO)
++clean: $(ZUO_DEP)
+ 	+ $(ZUO) $(workarea) clean MAKE="$(MAKE)"
+ 	$(RM_ZUO)
+ 
+-- 
+2.41.0
+

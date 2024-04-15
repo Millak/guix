@@ -1,4 +1,4 @@
-From 6a553f24439fe64fd3a2f0b5902f00590ca4241f Mon Sep 17 00:00:00 2001
+From 5e546a30789e5c9b3c94674b94cb63e16ee2e951 Mon Sep 17 00:00:00 2001
 From: Philip McGrath <philip@philipmcgrath.com>
 Date: Thu, 4 Mar 2021 04:11:50 -0500
 Subject: [PATCH] rktio: patch rktio_process for "/bin/sh" on Guix
@@ -28,11 +28,16 @@ Checking that the path specified by `_PATH_BSHELL` exists safeguards
 against obscure errors if attempting to use stand-alone executables
 built by the patched Racket in non-Guix envoronments.
 ---
+
+Notes:
+    See also chez-scheme-bin-sh.patch, racket-chez-scheme-bin-sh.patch,
+    and zuo-bin-sh.patch.
+
  racket/src/rktio/rktio_process.c | 17 ++++++++++++++++-
  1 file changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/racket/src/rktio/rktio_process.c b/racket/src/rktio/rktio_process.c
-index fafaf728c1..796ebc59ce 100644
+index 862850d93a..87daafef76 100644
 --- a/racket/src/rktio/rktio_process.c
 +++ b/racket/src/rktio/rktio_process.c
 @@ -9,6 +9,7 @@
@@ -43,7 +48,7 @@ index fafaf728c1..796ebc59ce 100644
  # ifdef USE_ULIMIT
  #  include <ulimit.h>
  # endif
-@@ -1301,12 +1302,14 @@ int rktio_process_allowed_flags(rktio_t *rktio)
+@@ -1358,12 +1359,14 @@ int rktio_process_allowed_flags(rktio_t *rktio)
  /*========================================================================*/
  
  rktio_process_result_t *rktio_process(rktio_t *rktio,
@@ -59,7 +64,7 @@ index fafaf728c1..796ebc59ce 100644
    rktio_process_result_t *result;
    intptr_t to_subprocess[2], from_subprocess[2], err_subprocess[2];
    int pid;
-@@ -1333,6 +1336,18 @@ rktio_process_result_t *rktio_process(rktio_t *rktio,
+@@ -1390,6 +1393,18 @@ rktio_process_result_t *rktio_process(rktio_t *rktio,
    int i;
  #endif
  
@@ -79,7 +84,7 @@ index fafaf728c1..796ebc59ce 100644
    to_subprocess[0] = -1;
    to_subprocess[1] = -1;
 
-base-commit: 9d228d16fb99c274c964e5bef93e97333888769f
+base-commit: 78fef00d4d16a79fdf6ab31924b3a80cadf4b368
 -- 
-2.32.0
+2.41.0
 

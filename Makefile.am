@@ -7,7 +7,7 @@
 # Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 # Copyright © 2017 Leo Famulari <leo@famulari.name>
 # Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
-# Copyright © 2017, 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2017, 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 # Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 # Copyright © 2018 Nikita <nikita@n0.is>
 # Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
@@ -954,9 +954,31 @@ guix-binary.%.tar.xz:
 	cp "$$tarball" "$@.tmp" ; mv "$@.tmp" "$@"
 
 
-# The dependency on doc-pot-update is to generate the .pot files, which are
-# not checked in.
-dist: doc-pot-update
+# Assert that Autotools cache is up to date with Git, by checking
+# PACKAGE_VERSION against HEAD.  Indented to get past Automake.
+ ifeq ($(MAKECMDGOALS),dist)
+ git_version = $(shell build-aux/git-version-gen .tarball-version)
+ ifneq ($(PACKAGE_VERSION),$(git_version))
+ $(warning Autotools cache out of date.)
+ $(info Autotools cache version: $(PACKAGE_VERSION).)
+ $(info Git version: $(git_version).)
+ $(info Please run ./bootstrap && ./configure $(DIST_CONFIGURE_FLAGS))
+ ifneq ($(GUIX_ALLOW_IRREPRODUCIBLE_TARBALL),yes)
+ $(error Cannot create reproducible tarball)
+ else
+ $(warning Tarball will be irreproducible; distdir will not get removed!)
+ endif
+ endif
+ endif
+
+# The dependency on dist-doc-pot-update is to clean possibly stale doc and po
+# files and only then generate the .pot files, which are not checked in.
+dist: dist-doc-pot-update
+dist-doc-pot-update: auto-clean
+	$(MAKE) guile$(EXEEXT)
+	$(MAKE) -C po/guix all
+	$(MAKE) -C po/packages all
+	$(MAKE) doc-pot-update
 
 dist-hook: gen-ChangeLog gen-AUTHORS gen-tarball-version
 dist-hook: assert-no-store-file-names
@@ -970,9 +992,12 @@ $(top_srcdir)/.version: config.status
 
 gen-tarball-version:
 	echo $(VERSION) > "$(distdir)/.tarball-version"
+	git show HEAD --format=%ct --no-patch > $(distdir)/.tarball-timestamp
 
 gen-ChangeLog:
-	$(AM_V_GEN)if test -d .git; then		\
+	$(AM_V_GEN)if test -e .git; then		\
+	  export LC_ALL=en_US.UTF-8;			\
+	  export TZ=UTC0;				\
 	  $(top_srcdir)/build-aux/gitlog-to-changelog	\
 	    > $(distdir)/ChangeLog.tmp;			\
 	  rm -f $(distdir)/ChangeLog;			\
@@ -980,8 +1005,10 @@ gen-ChangeLog:
 	fi
 
 gen-AUTHORS:
-	$(AM_V_GEN)if test -d .git; then			\
+	$(AM_V_GEN)if test -e .git; then			\
 	  rm -f "$(distdir)/AUTHORS";				\
+	  export LC_ALL=en_US.UTF-8;				\
+	  export TZ=UTC0;					\
 	  $(top_builddir)/pre-inst-env "$(GUILE)"		\
 	    "$(top_srcdir)/build-aux/generate-authors.scm"	\
 	    "$(top_srcdir)" "$(distdir)/AUTHORS";		\
@@ -1001,6 +1028,17 @@ dist-with-updated-version:
 #
 # Release management.
 #
+
+# Reproducible tarball
+override GZIP_ENV = --best --no-name
+# Be friendly to Debian; avoid using EPOCH
+override am__tar = $${TAR-tar}			\
+ --sort=name					\
+ --mode=go=rX,u+rw,a-s				\
+ --mtime=@$$(cat "$$tardir"/.tarball-timestamp)	\
+ --owner=0 --group=0 --numeric-owner		\
+ -cf -						\
+ "$$tardir"
 
 releasedir = release-$(PACKAGE_VERSION)
 

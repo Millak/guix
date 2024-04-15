@@ -1,6 +1,7 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 # Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+# Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -44,12 +45,19 @@ POT_OPTIONS = \
 	--msgid-bugs-address "bug-guix@gnu.org"
 
 %D%/%.pot: $(srcdir)/doc/%.texi
-	$(AM_V_PO4A)$(PO4A_UPDATEPO) -M UTF-8 -f texinfo -m "$<" \
-	   -p "$@" $(POT_OPTIONS) && \
-	touch $@
+	$(AM_V_PO4A)$(PO4A_UPDATEPO) -M UTF-8 -f texinfo -m "$<"	\
+	   -p "$@-t" $(POT_OPTIONS)
+	date="$$(git log --pretty=format:%ci -n 1 -- $< 2>/dev/null	\
+		|| echo $(SOURCE_DATE_EPOCH))"				\
+	sed -ri -e "s,^(.POT-Creation-Date: )[^\]*,\1$$date," "$@-t"
+	mv "$@-t" "$@"
 
 %D%/guix-manual.pot: %D%/guix.pot %D%/contributing.pot
-	msgcat $^ > $@
+	msgcat $^ > "$@-t"
+	date="$$(git log --pretty=format:%ci -n 1 -- $< 2>/dev/null	\
+		|| echo $(SOURCE_DATE_EPOCH))"				\
+	sed -ri "s,^(.POT-Creation-Date: )[^\]*,\1$$date," "$@-t"
+	mv "$@-t" "$@"
 
 doc-pot-update: %D%/guix-manual.pot %D%/guix-cookbook.pot
 .PHONY: doc-pot-update

@@ -12,7 +12,7 @@
 ;;; Copyright © 2015 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018, 2020, 2021 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -4458,8 +4458,8 @@ void mc64ad_dist (int *a, int *b, int *c, int *d, int *e, double *f, int *g,
                                "-DTPL_LAPACK_LIBRARIES=-lopenblas"
                                (string-append "-DTPL_PARMETIS_LIBRARIES="
                                               (string-join
-                                               '("ptscotchparmetis" "ptscotch" "ptscotcherr"
-                                                 "scotchmetis" "scotch" "scotcherr")
+                                               '("ptscotchparmetisv3" "ptscotcherr"
+                                                 "scotchmetisv3" "scotcherr")
                                                ";"))
                                (string-append "-DTPL_PARMETIS_INCLUDE_DIRS="
                                               (assoc-ref %build-inputs "parmetis")
@@ -4502,7 +4502,14 @@ implemented in ANSI C, and MPI for communications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rbc51albpd2923dkirpkj8rfkic6rsvwqqnv1mmsk391zhk3amr"))))
+        (base32 "0rbc51albpd2923dkirpkj8rfkic6rsvwqqnv1mmsk391zhk3amr"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(substitute* "src/libscotchmetis/library_parmetis.h"
+            (("typedef DUMMYINT SCOTCH_Num" all)
+             ;; 'DUMMYINT' is typically replaced by 'int32_t'.  Include
+             ;; <stdint.h> to get that type definition.
+             (string-append "#include <stdint.h>\n" all "\n"))))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))

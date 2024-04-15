@@ -188,6 +188,22 @@ taken from the NSS package and thus ultimately from the Mozilla project.")
     (home-page "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS")
     (license license:mpl2.0)))
 
+(define-public nss-certs-3.98
+  (package
+    (inherit nss-certs)
+    (version "3.98")
+    (source (origin
+              (method url-fetch)
+              (uri (let ((version-with-underscores
+                          (string-join (string-split version #\.) "_")))
+                     (string-append
+                      "https://ftp.mozilla.org/pub/mozilla.org/security/nss/"
+                      "releases/NSS_" version-with-underscores "_RTM/src/"
+                      "nss-" version ".tar.gz")))
+              (sha256
+               (base32
+                "1kh98amfklrq6915n4mlbrcqghc3srm7rkzs9dkh21jwscrwqjgm"))))))
+
 (define-public le-certs
   (package
     (name "le-certs")

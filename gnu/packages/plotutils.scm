@@ -4,6 +4,7 @@
 ;;; Copyright © 2016-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -23,255 +24,45 @@
 
 (define-module (gnu packages plotutils)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix gexp)
   #:use-module ((guix utils) #:select (target-x86-32?))
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system ruby)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix packages)
+  #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
-  #:use-module (gnu packages bison)
   #:use-module (gnu packages bdw-gc)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
-  #:use-module (gnu packages xorg)
-  #:use-module (gnu packages image)
   #:use-module (gnu packages ghostscript)
-  #:use-module (gnu packages guile)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
-  #:use-module (gnu packages qt)
   #:use-module (gnu packages statistics)
-  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tex)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages compression)
-  #:use-module (gnu packages))
-
-(define-public plotutils
-  (package
-    (name "plotutils")
-    (version "2.6")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/plotutils/plotutils-"
-                                 version ".tar.gz"))
-             (sha256
-              (base32
-               "1arkyizn5wbgvbh53aziv3s6lmd3wm9lqzkhxb3hijlp1y124hjg"))
-             (modules '((guix build utils)))
-             (snippet
-              ;; Force the use of libXaw7 instead of libXaw.  When not doing
-              ;; that, libplot.la ends up containing just "-lXaw" (without
-              ;; "-L/path/to/Xaw"), due to the fact that there is no
-              ;; libXaw.la, which forces us to propagate libXaw.
-              '(begin
-                 (substitute* "configure"
-                   (("-lXaw")
-                    "-lXaw7"))
-                 ;; Use the `png_jmpbuf' accessor, as recommended since libpng
-                 ;; 1.4.0 (see:
-                 ;; http://www.libpng.org/pub/png/src/libpng-1.2.x-to-1.4.x-summary.txt).
-                 (substitute* "libplot/z_write.c"
-                   (("png_ptr->jmpbuf")
-                    "png_jmpbuf (png_ptr)"))
-                 #t))
-             (patches
-              ;; The test suite fails on some architectures such as i686 (see:
-              ;; https://lists.gnu.org/archive/html/bug-plotutils/2016-04/msg00002.html).
-              ;; The following Debian patch works around it.
-              (search-patches "plotutils-spline-test.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags
-           #~(list "--enable-libplotter"
-
-                   ;; On i686 some tests fail due to excess floating point
-                   ;; precision; work around it.  However, libplotter is C++
-                   ;; and thus unaffected by CFLAGS, but '-fexcess-precision'
-                   ;; is not implemented for C++ as of GCC 10.
-                   #$@(if (target-x86-32?)
-                          #~("CFLAGS=-g -O2 -fexcess-precision=standard")
-                          #~()))
-
-           #:phases
-           (if (target-x86-32?)
-               #~(modify-phases %standard-phases
-                   (add-before 'check 'skip-sloppy-test
-                     (lambda _
-                       ;; This test reveals a slight difference in the SVG
-                       ;; output due to floating point inequalities.  Skip it.
-                       (substitute* "test/plot2svg.test"
-                         (("^exit .*") "exit 77")))))
-               #~%standard-phases)))
-    (inputs (list libpng libx11 libxt libxaw))
-    (home-page "https://www.gnu.org/software/plotutils/")
-    (synopsis "Plotting utilities and library")
-    (description
-     "GNU Plotutils is a package for plotting and working with 2D graphics.
-It includes the C library @code{libplot} and the C++ @code{libplotter} library
-for exporting 2D vector graphics in many file formats.  It also has support
-for 2D vector graphics animations.  The package also contains command-line
-programs for plotting scientific data.")
-    (license license:gpl2+)))
-
-(define-public guile-plotutils
-  (package
-    (name "guile-plotutils")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (list (string-append "https://lonelycactus.com/tarball/"
-                                        "guile_plotutils-" version ".tar.gz")
-                         (string-append
-                          "https://github.com/spk121/guile-plotutils/releases/download/v"
-                          version "/guile_plotutils-" version
-                          ".tar.gz")))
-              (sha256
-               (base32
-                "0r245z75cdzgzi57fpz84mnyrjq44793zzaaxxrszyxm1d06hc6r"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:imported-modules ((guix build guile-build-system)
-                           ,@%gnu-build-system-modules)
-       #:modules (((guix build guile-build-system)
-                   #:select (target-guile-effective-version))
-                  (guix build gnu-build-system)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'set-library-file-name
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (version (target-guile-effective-version)))
-               ;; First install libguile-plotutils.so.
-               (invoke "make" "install-guileextensionLTLIBRARIES")
-
-               ;; Then change source files to refer to it.
-               (substitute* '("module/plotutils/graph.scm"
-                              "module/plotutils/plot.scm")
-                 (("\"libguile-plotutils\"")
-                  (string-append "\"" out "/lib/guile/" version
-                                 "/extensions/libguile-plotutils\"")))))))))
-    (native-inputs (list pkg-config texinfo))
-    (inputs (list plotutils guile-3.0 zlib))
-    (home-page "https://lonelycactus.com/guile-plotutils.html")
-    (synopsis "Guile bindings to the GNU Plotutils plotting libraries")
-    (description
-     "Guile-Plotutils is a Guile binding to the venerable GNU Plotutils
-plotting and graphing library.  If you want to make graphs that look like you
-went to university in the 1990s, this is the library for you.")
-    (license license:gpl3+)))
-
-(define-public guile-charting
-  ;; This commit fixes a few things, including Guile 3 support, not available
-  ;; in the latest release.
-  (let ((commit "75f755b691a9f712f3b956657d01805d6a8a1b98")
-        (revision "1"))
-    (package
-      (name "guile-charting")
-      (version (git-version "0.2.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.com/wingo/guile-charting")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "03049g7wnpyfi0r36ij4a46kc9l45jbanx02iklkjwav2n6jqnnk"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       (list autoconf automake texinfo pkg-config))
-      (inputs (list guile-3.0))
-      (propagated-inputs (list guile-cairo))
-      (home-page "https://wingolog.org/projects/guile-charting/")
-      (synopsis "Create charts and graphs in Guile")
-      (description
-       "Guile-Charting is a Guile Scheme library to create bar charts and graphs
-using the Cairo drawing library.")
-      (license license:lgpl2.1+))))
-
-(define-public guile2.2-charting
-  (package
-    (inherit guile-charting)
-    (name "guile2.2-charting")
-    (inputs (list guile-2.2))
-    (propagated-inputs (list guile2.2-cairo))))
-
-(define-public ploticus
-  (package
-    (name "ploticus")
-    (version "2.42")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/ploticus/ploticus/"
-                                  version "/ploticus242_src.tar.gz"))
-              (sha256
-               (base32
-                "1c70cvfvgjh83hj1x21130wb9qfr2rc0x47cxy9kl805yjwy8a9z"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Install binaries in the right place.
-               '(begin
-                  (substitute* "src/Makefile"
-                    (("INSTALLBIN =.*$")
-                     (string-append "INSTALLBIN = $(out)/bin")))
-                  #t))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure (lambda _ (chdir "src")))
-         (add-before 'install 'make-target-directories
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let ((out (assoc-ref outputs "out")))
-                         (mkdir-p (string-append out "/bin"))
-                         #t)))
-         (add-after 'install 'install-prefabs
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (dir (string-append out
-                                                 "/share/ploticus/prefabs"))
-                             (bin (string-append out "/bin")))
-                        (mkdir-p dir)
-
-                        ;; Install "prefabs".
-                        (for-each (lambda (file)
-                                    (let ((target
-                                           (string-append dir "/"
-                                                          (basename file))))
-                                      (copy-file file target)))
-                                  (find-files "../prefabs" "."))
-
-                        ;; Allow them to be found.
-                        (wrap-program (string-append bin "/pl")
-                          `("PLOTICUS_PREFABS" ":" = (,dir)))))))))
-    (inputs
-     (list libpng libx11 zlib))
-    (home-page "https://ploticus.sourceforge.net/")
-    (synopsis "Command-line tool for producing plots and charts")
-    (description
-     "Ploticus is a non-interactive software package for producing plots,
-charts, and graphics from data.  Ploticus is good for automated or
-just-in-time graph generation, handles date and time data nicely, and has
-basic statistical capabilities.  It allows significant user control over
-colors, styles, options and details.")
-    (license license:gpl2+)))
+  #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xorg))
 
 (define-public asymptote
   (package
@@ -424,6 +215,266 @@ LaTeX does for scientific text.")
     ;; Lesser General Public License"
     (license license:lgpl3+)))
 
+(define-public guile-charting
+  ;; This commit fixes a few things, including Guile 3 support, not available
+  ;; in the latest release.
+  (let ((commit "75f755b691a9f712f3b956657d01805d6a8a1b98")
+        (revision "1"))
+    (package
+      (name "guile-charting")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/wingo/guile-charting")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "03049g7wnpyfi0r36ij4a46kc9l45jbanx02iklkjwav2n6jqnnk"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf automake texinfo pkg-config))
+      (inputs (list guile-3.0))
+      (propagated-inputs (list guile-cairo))
+      (home-page "https://wingolog.org/projects/guile-charting/")
+      (synopsis "Create charts and graphs in Guile")
+      (description
+       "Guile-Charting is a Guile Scheme library to create bar charts and graphs
+using the Cairo drawing library.")
+      (license license:lgpl2.1+))))
+
+(define-public guile-plotutils
+  (package
+    (name "guile-plotutils")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (list (string-append "https://lonelycactus.com/tarball/"
+                                        "guile_plotutils-" version ".tar.gz")
+                         (string-append
+                          "https://github.com/spk121/guile-plotutils/releases/download/v"
+                          version "/guile_plotutils-" version
+                          ".tar.gz")))
+              (sha256
+               (base32
+                "0r245z75cdzgzi57fpz84mnyrjq44793zzaaxxrszyxm1d06hc6r"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:imported-modules ((guix build guile-build-system)
+                           ,@%gnu-build-system-modules)
+       #:modules (((guix build guile-build-system)
+                   #:select (target-guile-effective-version))
+                  (guix build gnu-build-system)
+                  (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'set-library-file-name
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (version (target-guile-effective-version)))
+               ;; First install libguile-plotutils.so.
+               (invoke "make" "install-guileextensionLTLIBRARIES")
+
+               ;; Then change source files to refer to it.
+               (substitute* '("module/plotutils/graph.scm"
+                              "module/plotutils/plot.scm")
+                 (("\"libguile-plotutils\"")
+                  (string-append "\"" out "/lib/guile/" version
+                                 "/extensions/libguile-plotutils\"")))))))))
+    (native-inputs (list pkg-config texinfo))
+    (inputs (list plotutils guile-3.0 zlib))
+    (home-page "https://lonelycactus.com/guile-plotutils.html")
+    (synopsis "Guile bindings to the GNU Plotutils plotting libraries")
+    (description
+     "Guile-Plotutils is a Guile binding to the venerable GNU Plotutils
+plotting and graphing library.  If you want to make graphs that look like you
+went to university in the 1990s, this is the library for you.")
+    (license license:gpl3+)))
+
+(define-public guile2.2-charting
+  (package
+    (inherit guile-charting)
+    (name "guile2.2-charting")
+    (inputs (list guile-2.2))
+    (propagated-inputs (list guile2.2-cairo))))
+
+(define-public ploticus
+  (package
+    (name "ploticus")
+    (version "2.42")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/ploticus/ploticus/"
+                                  version "/ploticus242_src.tar.gz"))
+              (sha256
+               (base32
+                "1c70cvfvgjh83hj1x21130wb9qfr2rc0x47cxy9kl805yjwy8a9z"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Install binaries in the right place.
+               #~(begin
+                   (substitute* "src/Makefile"
+                     (("INSTALLBIN =.*$")
+                      (string-append "INSTALLBIN = $(out)/bin")))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure (lambda _ (chdir "src")))
+          (add-before 'install 'make-target-directories
+            (lambda _
+              (mkdir-p (string-append #$output "/bin"))))
+          (add-after 'install 'install-prefabs
+            (lambda _
+              (let* ((out #$output)
+                     (dir (string-append out "/share/ploticus/prefabs"))
+                     (bin (string-append out "/bin")))
+                (mkdir-p dir)
+                ;; Install "prefabs".
+                (for-each
+                 (lambda (file)
+                   (let ((target (string-append dir "/" (basename file))))
+                     (copy-file file target)))
+                 (find-files "../prefabs" "."))
+                ;; Allow them to be found.
+                (wrap-program (string-append bin "/pl")
+                  `("PLOTICUS_PREFABS" ":" = (,dir)))))))))
+    (inputs
+     (list libpng libx11 zlib))
+    (home-page "https://ploticus.sourceforge.net/")
+    (synopsis "Command-line tool for producing plots and charts")
+    (description
+     "Ploticus is a non-interactive software package for producing plots,
+charts, and graphics from data.  Ploticus is good for automated or
+just-in-time graph generation, handles date and time data nicely, and has
+basic statistical capabilities.  It allows significant user control over
+colors, styles, options and details.")
+    (license license:gpl2+)))
+
+(define-public plotutils
+  (package
+    (name "plotutils")
+    (version "2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/plotutils/plotutils-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1arkyizn5wbgvbh53aziv3s6lmd3wm9lqzkhxb3hijlp1y124hjg"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Force the use of libXaw7 instead of libXaw.  When not doing
+               ;; that, libplot.la ends up containing just "-lXaw" (without
+               ;; "-L/path/to/Xaw"), due to the fact that there is no
+               ;; libXaw.la, which forces us to propagate libXaw.
+               '(begin
+                  (substitute* "configure"
+                    (("-lXaw")
+                     "-lXaw7"))
+                  ;; Use the `png_jmpbuf' accessor, as recommended since libpng
+                  ;; 1.4.0 (see:
+                  ;; http://www.libpng.org/pub/png/src/libpng-1.2.x-to-1.4.x-summary.txt).
+                  (substitute* "libplot/z_write.c"
+                    (("png_ptr->jmpbuf")
+                     "png_jmpbuf (png_ptr)"))
+                  #t))
+              (patches
+               ;; The test suite fails on some architectures such as i686 (see:
+               ;; https://lists.gnu.org/archive/html/bug-plotutils/2016-04/msg00002.html).
+               ;; The following Debian patch works around it.
+               (search-patches "plotutils-spline-test.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-libplotter"
+
+                   ;; On i686 some tests fail due to excess floating point
+                   ;; precision; work around it.  However, libplotter is C++
+                   ;; and thus unaffected by CFLAGS, but '-fexcess-precision'
+                   ;; is not implemented for C++ as of GCC 10.
+                   #$@(if (target-x86-32?)
+                          #~("CFLAGS=-g -O2 -fexcess-precision=standard")
+                          #~()))
+
+           #:phases
+           (if (target-x86-32?)
+               #~(modify-phases %standard-phases
+                   (add-before 'check 'skip-sloppy-test
+                     (lambda _
+                       ;; This test reveals a slight difference in the SVG
+                       ;; output due to floating point inequalities.  Skip it.
+                       (substitute* "test/plot2svg.test"
+                         (("^exit .*") "exit 77")))))
+               #~%standard-phases)))
+    (inputs (list libpng libx11 libxt libxaw))
+    (home-page "https://www.gnu.org/software/plotutils/")
+    (synopsis "Plotting utilities and library")
+    (description
+     "GNU Plotutils is a package for plotting and working with 2D graphics.
+It includes the C library @code{libplot} and the C++ @code{libplotter} library
+for exporting 2D vector graphics in many file formats.  It also has support
+for 2D vector graphics animations.  The package also contains command-line
+programs for plotting scientific data.")
+    (license license:gpl2+)))
+
+(define-public plplot
+  (package
+    (name "plplot")
+    (version "5.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/plplot/plplot/"
+                                  version "%20Source/plplot-" version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0ywccb6bs1389zjfmc9zwdvdsvlpm7vg957whh6b5a96yvcf8bdr"))
+              (modules '((guix build utils)))
+              (snippet #~(begin (delete-file-recursively "www")
+                                (substitute* "CMakeLists.txt"
+                                  (("add_subdirectory\\(www\\)") ""))))))
+    (build-system cmake-build-system)
+    ;; TODO: Review all available options and bindings to enable them or split
+    ;; in dedicated packages, see Debian's package for inspirations:
+    ;; <https://salsa.debian.org/science-team/plplot>.
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "-DLIB_DIR=" #$output "/lib")
+              "-DBUILD_TEST=TRUE"
+              "-DENABLE_wxwidgets=TRUE")))
+    (native-inputs (list pkg-config))
+    (inputs (list wxwidgets))
+    (home-page "http://plplot.org/") ;no HTTPS
+    (synopsis "Scientific plotting library with Unicode support")
+    (description
+     "PLplot is a software package for creating scientific plots which core
+library can be used to create standard x-y plots, semi-log plots, log-log
+plots, contour plots, 3D surface plots, mesh plots, bar charts and pie charts.
+Multiple graphs (of the same or different sizes) may be placed on a single
+page, and multiple pages are allowed for those device formats that support
+them.
+
+PLplot has support for plot symbols and text specified by the user in the
+UTF-8 encoding of Unicode.  This means for our many Unicode-aware devices that
+plot symbols and text are only limited by the collection of glyphs normally
+available via installed system fonts.  Furthermore, a large subset of our
+Unicode-aware devices also support complex text layout (CTL) languages such as
+Arabic, Hebrew, and Indic and Indic-derived CTL scripts such as Devanagari,
+Thai, Lao, and Tibetan.  Thus, for these PLplot devices essentially any
+language that is supported by Unicode and installed system fonts can be used
+to label plots.")
+    (license (list license:lgpl2.0
+                   license:gpl2+ ;octave bindings
+                   license:bsd-2 ;docbook docs
+                   license:ogl-psi1.0 ;files in data/ss
+                   license:cc-by-sa3.0 ;examples/Chloe.pgm
+                   license:expat)))) ;Cmake files
+
 (define-public ruby-unicode-plot
   (package
     (name "ruby-unicode-plot")
@@ -474,3 +525,8 @@ and @command{uplot} (shorthand) are provided, and supports chart types
 of barplot, histogram, lineplot, scatter, density, boxplot, and count.")
     (home-page "https://github.com/red-data-tools/YouPlot")
     (license license:expat)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above in alphabetic order.
+;;;

@@ -5786,65 +5786,62 @@ tactics.")
 (define-public widelands
   (package
     (name "widelands")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/widelands/widelands")
-              (commit (string-append "v" version))))
+             (url "https://github.com/widelands/widelands")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07wbalwdmml9vdh9nh50svnsw4sdj9nnp32azbss8vzq5mxmzvbx"))
+        (base32 "1m9hn1sh1siggribzsq79k7p0lggdw41ji7zdl6h648cjak9mdsp"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (delete-file-recursively "src/third_party/minizip")
-           #t))))
+        #~(delete-file-recursively "src/third_party/minizip"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (let* ((out (assoc-ref %outputs "out"))
-              (share (string-append out "/share")))
-         (list (string-append "-DCMAKE_INSTALL_PREFIX=" out "/bin")
-               (string-append "-DWL_INSTALL_BASEDIR=" share "/widelands")
-               (string-append "-DWL_INSTALL_DATADIR=" share "/widelands")
-               "-DOPTION_BUILD_WEBSITE_TOOLS=OFF"
-               ;; CMakeLists.txt does not handle properly RelWithDebInfo build
-               ;; type.  When used, no game data is installed!
-               "-DCMAKE_BUILD_TYPE=Release"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unbundle-fonts
-           ;; Unbundle fonts already packaged in Guix.  XXX: missing fonts are
-           ;; amiri, Culmus, mmrCensus, Nakula, and Sinhala.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "data/i18n/fonts"
-               (for-each (lambda (font)
-                           (delete-file-recursively font)
-                           (symlink (string-append (assoc-ref inputs font)
-                                                   "/share/fonts/truetype")
-                                    font))
-                         '("DejaVu" "MicroHei")))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(let ((share (string-append #$output "/share/widelands")))
+          (list (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+                (string-append "-DWL_INSTALL_BINDIR=" #$output "/bin")
+                (string-append "-DWL_INSTALL_BASEDIR=" share)
+                (string-append "-DWL_INSTALL_DATADIR=" share)
+                "-DOPTION_BUILD_WEBSITE_TOOLS=OFF"
+                ;; CMakeLists.txt does not handle properly RelWithDebInfo build
+                ;; type.  When used, no game data is installed!
+                "-DCMAKE_BUILD_TYPE=Release"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-fonts
+            ;; Unbundle fonts already packaged in Guix.  XXX: missing fonts are
+            ;; amiri, Culmus, mmrCensus, Nakula, and Sinhala.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each
+               (lambda (font)
+                 (let* ((path (string-append "share/fonts/truetype/" (basename font)))
+                        (target (false-if-exception (search-input-file inputs path))))
+                   (when target
+                     (delete-file font)
+                     (symlink target font))))
+               (find-files "data/i18n/fonts" "\\.tt[cf]$")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list gettext-minimal pkg-config python))
     (inputs
-     `(("asio" ,asio)
-       ("curl" ,curl)
-       ("boost" ,boost)
-       ("glew" ,glew)
-       ("icu4c" ,icu4c)
-       ("libpng" ,libpng)
-       ("minizip" ,minizip)
-       ("sdl" ,(sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf)))
-       ("zlib" ,zlib)
-       ;; Fonts for the ‘unbundle-fonts’ phase.  Case matters in name!
-       ("DejaVu" ,font-dejavu)
-       ("MicroHei" ,font-wqy-microhei)))
-    (home-page "https://www.widelands.org/")
+     (list asio
+           font-dejavu
+           font-wqy-microhei
+           glew
+           icu4c
+           libpng
+           minizip
+           sdl2
+           sdl2-image
+           sdl2-mixer
+           sdl2-ttf
+           zlib))
+    (home-page "https://www.widelands.org")
     (synopsis "Fantasy real-time strategy game")
     (description
      "In Widelands, you are the regent of a small clan.  You start out with
@@ -9837,6 +9834,34 @@ certainly not least as a fun, realistic, and challenging desktop flight
 simulator.")
     (license license:gpl2+)))
 
+(define-public jstest-gtk
+  ;; There is no recent tagged release; use the latest commit.
+  (let ((commit "60fe6ebdbc6719945be3f04988667dea569085be")
+        (revision "0"))
+    (package
+      (name "jstest-gtk")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Grumbel/jstest-gtk")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1x5m6xvd1r9dhgzh6hp4vrszczbbxr04v7lyh4wjxxzrj3ahbmcq"))))
+      (build-system cmake-build-system)
+      (arguments (list #:configure-flags #~(list "-DBUILD_TESTS=ON")))
+      (native-inputs (list pkg-config))
+      (inputs (list gtkmm-3 libsigc++-2))
+      (home-page "https://github.com/Grumbel/jstest-gtk/")
+      (synopsis "Simple joystick tester GUI")
+      (description "@command{jstest-gtk} is a simple joystick tester based on
+GTK.  It provides a list of attached joysticks, a way to display which buttons
+and axis are pressed, a way to remap axis and buttons and a way to calibrate
+joysticks.")
+      (license license:gpl3+))))
+
 (define-public jumpnbump
   (package
     (name "jumpnbump")
@@ -11720,6 +11745,48 @@ on the pitch of the voice and the rhythm of singing.")
        "This package provides a set of udev rules for game controllers and
 virtual reality devices.")
       (license license:expat))))
+
+(define-public zsnes
+  (package
+    (name "zsnes")
+    (version "2.0.12")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xyproto/zsnes")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0g9l1ij3p1adkp97wkp0dz44i2xpmsvfpkxvlfkpr7190dibsgsz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:system "i686-linux"        ;requires 32 bit libraries to build
+           #:tests? #f                  ;no test suite
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "CXX=" #$(cxx-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)))) ;no configure script
+    (native-inputs (list nasm pkg-config))
+    (inputs (list glib libpng mesa ncurses sdl zlib))
+    (home-page "https://www.zsnes.com")
+    (synopsis "Super Nintendo Entertainment System emulator")
+    (description "ZSNES is a @acronym{Super Nintendo Entertainment System,
+SNES} emulator that can play most games at full speed with sound and special
+graphic filters.  Some of its features include:
+@itemize
+@item Support for smooth and dynamic image scaling
+@item Support for rewinding and fast-forwarding in-game
+@item JMA compression format
+@item Change the appearance of the GUI
+@item Take screenshots of currently running games
+@item Saving the game at any point by recording the console’s state
+@item Record movies of gameplay which can be played back.
+@end itemize")
+    (license license:gpl2+)
+    (supported-systems (list "x86_64-linux"))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

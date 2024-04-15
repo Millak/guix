@@ -6140,31 +6140,6 @@ filters for Go.")
 @code{mbox} files.")
     (license license:expat)))
 
-(define-public go-github-com-fatih-color
-  (package
-    (name "go-github-com-fatih-color")
-    (version "1.16.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/fatih/color")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "15689x103gy9q7g7623rlvhwrw27p079ardapmrrag0sdwrx5bq2"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/fatih/color"))
-    (propagated-inputs
-     (list go-github-com-mattn-go-colorable
-           go-github-com-mattn-go-isatty))
-    (synopsis "Print colored text in Go")
-    (description "This package provides an ANSI color package to output
-colorized or SGR defined output to the standard output.")
-    (home-page "https://pkg.go.dev/github.com/fatih/color")
-    (license license:expat)))
-
 (define-public go-github-com-google-go-cmp-cmp
   (package
     (name "go-github-com-google-go-cmp-cmp")
@@ -6705,32 +6680,6 @@ through the life of the application.  Currently x86 / x64 (AMD64) is supported,
 and no external C (cgo) code is used, which should make the library very eas
 to use.")
     (license license:expat)))
-
-(define-public go-github-com-pbnjay-memory
-  (let ((commit "974d429e7ae40c89e7dcd41cfcc22a0bfbe42510")
-        (revision "1"))
-    (package
-      (name "go-github-com-pbnjay-memory")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/pbnjay/memory")
-                       (commit commit)))
-                (file-name (string-append "go-github-com-pbnjay-memory-"
-                                          version "-checkout"))
-                (sha256
-                 (base32
-                  "0kazg5psdn90pqadrzma5chdwh0l2by9z31sspr47gx93fhjmkkq"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/pbnjay/memory"))
-      (home-page "https://github.com/gedex/inflector")
-      (synopsis "Go library to report total system memory")
-      (description "@code{memory} provides a single method reporting total
-physical system memory accessible to the kernel.  It does not account for memory
-used by other processes.")
-      (license license:bsd-3))))
 
 (define-public go-github-com-surge-glog
   (let ((commit "2578deb2b95c665e6b1ebabf304ce2085c9e1985")
@@ -8504,89 +8453,6 @@ Gemini clients and servers.")
      "This package provides a POSIX-compatible implementation of
 @code{getopt} for Go.")
     (license license:bsd-3)))
-
-(define-public go-go-uber-org-goleak
-  (package
-    (name "go-go-uber-org-goleak")
-    (version "1.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/uber-go/goleak")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1lpqw7ygffak8qki9i4vw8b99l25l8jrw8iwcplqsclk6fzkl24p"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:tests? #f
-       #:import-path "go.uber.org/goleak"))
-    (propagated-inputs
-     (list go-github-com-davecgh-go-spew
-           go-github-com-kr-pretty
-           go-github-com-pmezard-go-difflib
-           go-github-com-stretchr-testify
-           go-golang-org-x-lint
-           go-golang-org-x-tools
-           go-gopkg-in-check-v1
-           go-gopkg-in-yaml-v3))
-    (home-page "https://go.uber.org/goleak")
-    (synopsis "Goroutine leak detector")
-    (description "Go package to verify that there are no unexpected goroutines
-running at the end of a test.")
-    (license license:expat)))
-
-(define-public go-go-uber-org-atomic
-  (package
-    (name "go-go-uber-org-atomic")
-    (version "1.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/uber-go/atomic")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0grswsk7nkf7zmmychf6aj6032shyag1kgs6zf7qwxyn55dym1v8"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "go.uber.org/atomic"))
-    (native-inputs
-     (list go-github-com-stretchr-testify go-github-com-davecgh-go-spew))
-    (home-page "https://go.uber.org/atomic")
-    (synopsis "Wrapper types for sync/atomic")
-    (description
-     "This package provides simple wrappers for primitive types to enforce
-atomic access.")
-    (license license:expat)))
-
-(define-public go-go-uber-org-multierr
-  (package
-    (name "go-go-uber-org-multierr")
-    (version "1.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/uber-go/multierr")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "162941s8f6a9x2w04qm4qa3zz0zylwag9149hywrj9ibp2nzcsqz"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "go.uber.org/multierr"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-go-uber-org-atomic))
-    (home-page "https://go.uber.org/multierr")
-    (synopsis "Error combination for Go")
-    (description
-     "@code{multierr} allows combining one or more Go errors together.")
-    (license license:expat)))
 
 (define-public gofumpt
   (package

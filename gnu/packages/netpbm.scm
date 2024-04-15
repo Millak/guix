@@ -2,6 +2,7 @@
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,7 +33,8 @@
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:select (gpl2))
   #:use-module (guix packages)
-  #:use-module (guix svn-download))
+  #:use-module (guix svn-download)
+  #:use-module (guix utils))
 
 (define-public netpbm
   (package
@@ -157,6 +159,12 @@
              (("pnmpsnr.test") "")
              (("pnmremap1.test") "")
              (("gif-roundtrip.test") "")
+
+             ;; These two tests fail on powerpc-linux.
+             ,@(if (target-ppc32?)
+                   `((("pbmtog3\\.test") "")
+                     (("g3-roundtrip\\.test") ""))
+                   '())
 
              ;; These two tests started failing in netpbm-10.78.3.
              (("jpeg-roundtrip.test") "")

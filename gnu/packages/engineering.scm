@@ -2816,7 +2816,7 @@ comments.")))
            swig))
     (inputs
      (list boost
-           coin3D
+           coin3d
            double-conversion
            eigen
            fmt

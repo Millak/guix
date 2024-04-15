@@ -5116,7 +5116,7 @@ configurable also via HTTP.")
     (native-inputs
       (list pkg-config cmake))
     (inputs
-      (list qtbase-5 coin3D))
+      (list qtbase-5 coin3d))
     (home-page "https://github.com/coin3d/soqt")
     (synopsis "Qt GUI component toolkit library for Coin")
     (description "SoQt is a Qt GUI component toolkit library for Coin.  It is
@@ -5360,7 +5360,6 @@ authentication on behalf of its clients.")
     (inputs (list signond))
     (arguments
      (list #:tests? #f                  ;no tests
-           #:make-flags #~(list (string-append "INSTALL_ROOT=" #$output))
            #:phases
            #~(modify-phases %standard-phases
                (replace 'configure
@@ -5370,7 +5369,9 @@ authentication on behalf of its clients.")
                       ""))
                    (invoke "qmake"
                            (string-append "PREFIX=" #$output)
-                           (string-append "LIBDIR=" #$output "/lib")))))))
+                           (string-append "LIBDIR=" #$output "/lib")
+                           (string-append "SIGNON_PLUGINS_DIR=" #$output
+                                          "/lib")))))))
     (synopsis "OAuth 2 plugin for signon")
     (description
      "This plugin for the Accounts-SSO SignOn daemon handles the OAuth

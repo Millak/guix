@@ -5,6 +5,8 @@
 # Copyright © 2016 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 # Copyright © 2016, 2018 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
+# Copyright © 2019 Timothy Sample <samplet@ngyro.com>
+# Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -142,20 +144,25 @@ DOT_OPTIONS =					\
   -Nfontsize=9 -Nheight=.1 -Nwidth=.1
 
 .dot.png:
-	$(AM_V_DOT)$(DOT) -Tpng $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"; \
-	mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
+	$(AM_V_DOT)$(DOT) -Tpng $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"
+	$(AM_V_at)mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
 
 .dot.pdf:
-	$(AM_V_DOT)$(DOT) -Tpdf $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"; \
-	mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
+	$(AM_V_DOT)set -e; export TZ=UTC0;				\
+	    $(DOT) -Tpdf $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"
+	$(AM_V_at)sed -ri					\
+	    -e 's,(/CreationDate \(D:).*\),\119700101000000),'	\
+	    "$(srcdir)/$@.tmp"
+	$(AM_V_at)mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
 
 .dot.eps:
-	$(AM_V_DOT)$(DOT) -Teps $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"; \
-	mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
+	$(AM_V_DOT)$(DOT) -Teps $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"
+	$(AM_v_at)! grep -q %%CreationDate "$(srcdir)/$@.tmp"
+	$(AM_V_at)mv "$(srcdir)/$@.tmp" "$@"
 
 .png.eps:
-	$(AM_V_GEN)convert "$<" "$@-tmp.eps"; \
-	mv "$@-tmp.eps" "$@"
+	$(AM_V_GEN)convert "$<" "$@-tmp.eps"
+	$(AM_V_at)mv "$@-tmp.eps" "$@"
 
 # We cannot add new dependencies to `%D%/guix.pdf' & co. (info "(automake)
 # Extending").  Using the `-local' rules is imperfect, because they may be
@@ -223,6 +230,9 @@ gen_man =						\
   $(HELP2MANFLAGS)
 
 HELP2MANFLAGS = --source=GNU --info-page=$(PACKAGE_TARNAME)
+# help2man reproducibility
+SOURCE_DATE_EPOCH = $(shell git show HEAD --format=%ct --no-patch 2>/dev/null || echo 1)
+export SOURCE_DATE_EPOCH
 
 $(srcdir)/%D%/guix.1: scripts/guix.in $(sub_commands_mans)
 	-$(AM_V_HELP2MAN)$(gen_man) --output="$@" `basename "$@" .1`
@@ -247,3 +257,72 @@ $(srcdir)/%D%/guix-daemon.1: guix-daemon$(EXEEXT)
 
 endif
 endif
+
+# Reproducible tarball
+
+# Define a rule to build `version[LANG].texi' reproducibly using metadata from
+# Git rather than using metadata from the filesystem.
+define version.texi-from-git
+$(srcdir)/doc/stamp-$(1): $(srcdir)/$(2) $(top_srcdir)/configure
+	$$(AM_V_GEN)set -e;						\
+	export LANG=C LANGUAGE=C LC_ALL=C LC_TIME=C;			\
+	export TZ=UTC0;							\
+	timestamp="$$$$(git log --pretty=format:%ct -n1 -- "$$<"	\
+		2>/dev/null						\
+		|| echo $$(SOURCE_DATE_EPOCH))"				\
+	dmy=$$$$(date --date="@$$$$timestamp" "+%-d %B %Y");		\
+	my=$$$$(date --date="@$$$$timestamp" "+%B %Y");			\
+	{ echo "@set UPDATED $$$$dmy";					\
+	  echo "@set UPDATED-MONTH $$$$my";				\
+	  echo "@set EDITION $$$(VERSION)";				\
+	  echo "@set VERSION $$$(VERSION)"; } > "$$@-t";		\
+	mv "$$@-t" "$$@";						\
+	cp -p "$$@" "$$(srcdir)/doc/version$(3).texi"
+endef
+
+# Generate rules for stamp-vti and stamp-N that create version.texi and
+# version-LANG.texi to override the Autotools versions that use timestamps
+# embedded in the file-system.  These are expected to generate warnings:
+#
+#   Makefile:7376: warning: overriding recipe for target 'doc/stamp-vti'
+#   Makefile:5098: warning: ignoring old recipe for target 'doc/stamp-vti'
+i:=0
+$(eval $(call version.texi-from-git,vti,doc/guix.texi,))
+$(foreach lang, $(MANUAL_LANGUAGES),							\
+  $(eval i=$(shell echo $$(($(i)+1))))							\
+  $(eval $(call version.texi-from-git,$(i),po/doc/guix-manual.$(lang).po,-$(lang))))
+
+DIST_CONFIGURE_FLAGS =				\
+  --localstatedir=/var				\
+  --sysconfdir=/etc
+
+# Delete all Autotools-generated files and rerun configure to ensure
+# a clean cache and distributing reproducible versions.
+auto-clean: maintainer-clean-vti doc-clean
+	rm -f ABOUT-NLS INSTALL
+	rm -f aclocal.m4 configure libtool Makefile.in
+	if test -e .git; then				\
+	    git clean -fdx -- '.am*' build-aux m4 po;	\
+	else						\
+	    rm -rf .am*;				\
+	    $(MAKE) -C po/guix maintainer-clean;	\
+	    $(MAKE) -C po/packages maintainer-clean;	\
+	fi
+	rm -f guile
+	rm -f guix-daemon nix/nix-daemon/guix_daemon-guix-daemon.o
+# Automake fails if guix-cookbook-LANG.texi stubs are missing; running
+# autoreconf -vif is not enough.
+	./bootstrap
+# The dependency chain for the guix-cookbook-LANG.texi was cut on purpose;
+# they must be deleted to ensure a rebuild.
+	rm -f $(filter-out %D%/guix.texi %D%/guix-cookbook.texi, $(info_TEXINFOS))
+	./configure $(DIST_CONFIGURE_FLAGS)
+
+# Delete all generated doc files to ensure a clean cache and distributing
+# reproducible versions.
+doc-clean:
+	rm -f $(srcdir)/doc/*.1
+	rm -f $(srcdir)/doc/stamp*
+	rm -f $(DOT_FILES:%.dot=%.png)
+	rm -f $(DOT_VECTOR_GRAPHICS)
+	rm -f doc/images/coreutils-size-map.eps

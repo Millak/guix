@@ -4529,13 +4529,13 @@ Various visual and textual types of output are available.")
 (define-public r-bambu
   (package
     (name "r-bambu")
-    (version "3.4.0")
+    (version "3.4.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "bambu" version))
               (sha256
                (base32
-                "02pcab8jfwlx4y00yky63anba61bb1h884m0f6ajvasfpgl30w6i"))))
+                "0j2ivn93dpn7xas0bzfxhwmqzxzscgc3sjkx85y5v2ra1i6jy5k7"))))
     (properties `((upstream-name . "bambu")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6646,14 +6646,14 @@ databases.  Packages produced are intended to be used with AnnotationDbi.")
 (define-public r-annotationhub
   (package
     (name "r-annotationhub")
-    (version "3.10.0")
+    (version "3.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationHub" version))
        (sha256
         (base32
-         "1mx3vip1rx5lq0vnkxpmkyksnq4vygmww85vxq3spr0fah1pwnkr"))))
+         "12vc573gmg8bwcfa268yq7npg7mivhngx4lx16nzan56rqb475yx"))))
     (properties `((upstream-name . "AnnotationHub")))
     (build-system r-build-system)
     (propagated-inputs
@@ -8221,13 +8221,13 @@ Enrichment Analysis} (GSEA).")
 (define-public r-gsva
   (package
     (name "r-gsva")
-    (version "1.50.1")
+    (version "1.50.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GSVA" version))
               (sha256
                (base32
-                "0ld0bbl6ar3yhi6ncg9d8q60hg4m4v5kphl044fw63l19ixln7cf"))))
+                "1xgp311wh7ykvnk7nh5xik1kp2b2r08vx595znmzn28fc8rz62b1"))))
     (properties `((upstream-name . "GSVA")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase
@@ -10952,13 +10952,13 @@ single-cell RNA-seq.")
 (define-public r-seqarray
   (package
     (name "r-seqarray")
-    (version "1.42.3")
+    (version "1.42.4")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SeqArray" version))
               (sha256
                (base32
-                "1500vwsgdxdaafp2fb0252c0hhpz3lhrniv21nb7xnky7mbr7lk6"))))
+                "0k7g4wkj1l35pjy6gb3bdlmz5g8q2d596glj09ggm73aaj3z4m9d"))))
     (properties `((upstream-name . "SeqArray")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings
@@ -12023,14 +12023,14 @@ of gene-level counts.")
 (define-public r-valr
   (package
     (name "r-valr")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "valr" version))
        (sha256
         (base32
-         "038s5n8cbffpb9132rpw7q82cxfzlsc86fcywhv63c8szm5g9nrk"))))
+         "0jf47yfi8dr8mgqv1gbl2kd7wgyiwsnipiwfdhf9l346yg9aj96l"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
@@ -13006,18 +13006,19 @@ signals directly in the Bruker format.")
 (define-public r-codedepends
   (package
     (name "r-codedepends")
-    (version "0.6.5")
+    (version "0.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "CodeDepends" version))
        (sha256
         (base32
-         "0l7kiv3awx50glf5cs841b4zzsff1ml90f0zr868ygvwsr4ps1hq"))))
+         "0msq5ksjqp2pjzl6f1vizw53gdf5lz520bpdr5dbjwz5mc1mp0bz"))))
     (properties `((upstream-name . "CodeDepends")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-codetools r-graph r-xml))
+    (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/CodeDepends")
     (synopsis "Analysis of R code for reproducible research and code comprehension")
     (description
@@ -14493,14 +14494,14 @@ single cell assay data.")
 (define-public r-monocle
   (package
     (name "r-monocle")
-    (version "2.30.0")
+    (version "2.30.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "monocle" version))
        (sha256
         (base32
-         "0i1qnmiaf3gf8955nlqzd81xzg4siliq154k699jmsz0fyyykia1"))))
+         "0hb2s58xx5cmrn3wlppay7275mln8r5y5dsnvpcps3s6xcab00rm"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
@@ -14523,7 +14524,6 @@ single cell assay data.")
            r-pheatmap
            r-plyr
            r-proxy
-           r-qlcmatrix
            r-rann
            r-rcpp
            r-reshape2
@@ -20752,14 +20752,14 @@ rownames.")
 (define-public r-bioconcotk
   (package
     (name "r-bioconcotk")
-    (version "1.22.0")
+    (version "1.22.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocOncoTK" version))
        (sha256
         (base32
-         "1xymgfiv9abyaq5s7m683ml8a1ls9mqvbh9qjiz3jqbbpvmsm502"))))
+         "0yx32yj9bw78nhbv1yvgs26sxdmnava1a89g9hs4ai26c1hy150s"))))
     (properties `((upstream-name . "BiocOncoTK")))
     (build-system r-build-system)
     (propagated-inputs

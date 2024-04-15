@@ -2,7 +2,7 @@
 ;;; Copyright © 2013-2016, 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2021, 2022, 2023 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2021-2024 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -72,6 +72,7 @@
 ;;             ├── bc/
 ;;             ├── cs/
 ;;             ├── ChezScheme/
+;;             ├── rktboot/
 ;;             ├── zuo/
 ;;             └── ...
 ;;
@@ -105,7 +106,9 @@
 ;; 'distro-build' package to assemble custom Racket distributions. (Again,
 ;; the makefile just delegates to Zuo.) It is not part of Racket source
 ;; distributions: the root of a source distribution is basically 'racket/src'
-;; with some extra package sources and configuration added.
+;; with some extra package sources and configuration added. In fact, the
+;; top-level 'Makefile' and the 'distro-build' package are what create Racket
+;; source distributions.
 ;;
 ;; A ''minimal Racket'' installation includes two packages: 'base', which is a
 ;; sort of bridge between the current ``built-in'' collections and the package
@@ -147,20 +150,26 @@
 ;;   - Racket BC [3M] needs an existing Racket to run "xform",
 ;;     which transforms its own C source code to add additional annotations
 ;;     for the precise garbage collector.
-;;   - Racket CS needs (bootfiles for) Racket's fork of Chez Scheme.
-;;     It also needs an existing Racket to compile Racket-implemented
+;;   - Racket CS needs (boot files for) the corresponding version of Chez
+;;     Scheme. It also needs an existing Racket to compile Racket-implemented
 ;;     parts of the runtime system to R6RS libraries.
-;;   - Chez Scheme also needs bootfiles for itself, but Racket can simulate
-;;     enough of Chez Scheme to load Racket's fork of the Chez Scheme compiler
-;;     purely from source into Racket and apply the compiler to itself,
-;;     producing the needed bootfiles (albeit very slowly).
-;;     Any variant of Racket since version 7.1 can run the simulation.
+;;   - Chez Scheme also needs boot files for itself, but Racket BC can
+;;     bootstrap these using the code in "racket/src/rktboot/".
+;;     See the commentary in "chez.scm" for further details
 ;;
 ;; So, we build CGC to build 3M to build bootfiles and CS.
 ;;
 ;; (Note: since the CGC variant is basically only for bootstrapping, we
 ;; often use "BC" to mean "3M", consistent with `(banner)` and the
 ;; suffixes used on executables when more than one variant co-exists.)
+;;
+;; Since the pre-releases for Chez Scheme 10.0.0, all of Racket's changes have
+;; been merged upstream, and development will be kept in sync going
+;; forward. However, there is no plan to align the Chez Scheme and Racket
+;; release cycles. For the near fulture, a given released version of Racket
+;; will continue to depend on a specific pre-release version of Chez Scheme as
+;; part of Racket CS's "ABI". See upstream discussion at
+;; <https://racket.discourse.group/t/2739/3>.
 ;;
 ;; One remaining bootstrapping limitation is that Racket's reader, module
 ;; system, and macro expander are implemented in Racket. For Racket CS,
@@ -187,12 +196,12 @@
 ;; Zuo is notably *not* a problem for bootstrapping. The implementation is a
 ;; single hand-written C file designed to build with just `cc -o zuo zuo.c`,
 ;; even with very old or limited compilers. (We use the Autoconf support for
-;; convienience.)
+;; convienience.) As of Zuo 1.8, Zuo has tagged releases in its own repository
+;; independent of the Racket release cycle.
 ;;
 ;; CODE:
 
-(define %racket-version "8.11.1") ; Remember to update chez-scheme-for-racket!
-(define %zuo-version "1.7") ; defined in racket/src/zuo/zuo.c
+(define %racket-version "8.12") ; Remember to update chez-scheme-for-racket!
 (define %racket-commit
   (string-append "v" %racket-version))
 (define %racket-origin
@@ -202,17 +211,16 @@
           (url "https://github.com/racket/racket")
           (commit %racket-commit)))
     (sha256
-     (base32 "1iny1mn1lw07lj6h704ch5g2q1nsf0h88dgwqrlxhf8pwj4i76gl"))
+     (base32 "1f52yadmrsd2ddry47s68kxig185a58n19j23458wkck19nawjz5"))
     (file-name (git-file-name "racket" %racket-version))
     (patches (search-patches "racket-chez-scheme-bin-sh.patch"
-                             "racket-backport-8.11-layered-docs.patch"
-                             "racket-rktio-bin-sh.patch"
-                             "racket-zuo-bin-sh.patch"))
+                             "racket-backport-8.12-chez-configure.patch"
+                             "racket-rktio-bin-sh.patch"))
     (modules '((guix build utils)))
     (snippet
      #~(begin
          (use-modules (guix build utils))
-         ;; Unbundle Chez submodules.
+         ;; Unbundle Chez submodules and boot files.
          (with-directory-excursion "racket/src/ChezScheme"
            ;; TODO: consider putting this in a (guix ...) or (guix build ...)
            ;; module so it can be shared with the upstream Chez Scheme origin
@@ -220,39 +228,41 @@
            (for-each (lambda (dir)
                        (when (directory-exists? dir)
                          (delete-file-recursively dir)))
-                     '("stex"
-                       "nanopass"
+                     '("boot"
                        "lz4"
-                       "zlib")))
+                       "nanopass"
+                       "stex"
+                       "zlib"
+                       "zuo")))
+         ;; Unbundle Zuo.
+         (delete-file-recursively "racket/src/zuo")
          ;; Unbundle libffi.
          (delete-file-recursively "racket/src/bc/foreign/libffi")))))
 
 
 (define-public zuo
-  (let ((revision #f))
-    (package
-      (name "zuo")
-      (version (string-append %zuo-version
-                              "-racket"
-                              %racket-version
-                              (if revision "-guix" "")
-                              (or revision "")))
-      (source %racket-origin)
-      (outputs '("out" "debug"))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:out-of-source? #t
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'chdir
-              (lambda args
-                (chdir "racket/src/zuo"))))))
-      (home-page "https://github.com/racket/zuo")
-      ;; ^ This is downstream of https://github.com/racket/racket,
-      ;; but it's designed to be a friendly landing place
-      (synopsis "Tiny Racket for build scripts")
-      (description "Zuo is a tiny Racket with primitives for dealing
+  (package
+    (name "zuo")
+    (version "1.9") ; defined in racket/src/zuo/zuo.c or the following
+    #;(displayln (~a (hash-ref (runtime-env) 'version) "."
+                     (hash-ref (runtime-env) 'minor-version)))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/racket/zuo")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32 "0zasir33nx1qi1ciz9dn6h8k39i443lr6apw5d1i6mjmhpzxmdhp"))
+              (file-name (git-file-name name version))
+              (patches (search-patches "zuo-bin-sh.patch"))))
+    (outputs '("out" "debug"))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:out-of-source? #t))
+    (home-page "https://github.com/racket/zuo")
+    (synopsis "Tiny Racket for build scripts")
+    (description "Zuo is a tiny Racket with primitives for dealing
 with files and running processes.  It comes with a @command{make}-like
 embedded DSL, which is used to build Racket itself.
 
@@ -261,7 +271,7 @@ Zuo is a Racket variant in the sense that program files start with
 and expansion of the file content.  That's how the @command{make}-like DSL is
 defined, and even the base Zuo language is defined by layers of @code{#lang}s.
 One of the early layers implements macros.")
-      (license (list license:asl2.0 license:expat)))))
+    (license (list license:asl2.0 license:expat))))
 
 
 (define racket-vm-common-configure-flags
@@ -431,7 +441,7 @@ collector, 3M (``Moving Memory Manager'').")
     (inputs
      (let ((inputs (modify-inputs (package-inputs racket-vm-cgc)
                      (prepend zlib lz4))))
-       (if (racket-cs-native-supported-system?)
+       (if (nix-system->native-chez-machine-type)
            (modify-inputs inputs
              (delete "libffi"))
            inputs)))
@@ -449,10 +459,8 @@ collector, 3M (``Moving Memory Manager'').")
      (substitute-keyword-arguments (package-arguments racket-vm-cgc)
        ((#:phases those-phases #~%standard-phases)
         #~(modify-phases #$those-phases
-            (add-after 'unpack 'unpack-nanopass+stex
-              (lambda args
-                (with-directory-excursion "racket/src/ChezScheme"
-                  #$unpack-nanopass+stex)))))
+            (add-after 'unpack 'unpack-nanopass
+              #$unpack-nanopass)))
        ((#:configure-flags _ '())
         #~(cons* "--enable-csonly"
                  "--enable-libz"
@@ -461,7 +469,7 @@ collector, 3M (``Moving Memory Manager'').")
                                 #+(this-package-native-input
                                    "chez-scheme-for-racket")
                                 "/bin/scheme")
-                 #$@(if (racket-cs-native-supported-system?)
+                 #$@(if (nix-system->native-chez-machine-type)
                         #~()
                         #~(#$(string-append "--enable-mach="
                                             (nix-system->pbarch-machine-type))
@@ -701,7 +709,7 @@ DrRacket IDE, are not included.")
        "contract-profile" (base32 "1xm2z8g0dpv5d9h2sg680vx1a8ix9gbsdpxxb8qv1w7akp73paj3")
        '(("contract-profile" ".")))
       (simple-racket-origin
-       "data" (base32 "1pml8g3zgvnaiqb659psh99m70v96m6nh9zash2vfgir46j4rjnh")
+       "data" (base32 "01sinnsnjiazvkj83k84izdnp38pd2aglbrs14mrdkwajgmpampk")
        '("data" "data-doc" "data-enumerate-lib" "data-lib"))
       (simple-racket-origin
        "datalog" (base32 "0nf6cy4djpyhfvgpa6yn72apbz9s83gp0qg95pzjd0az4v6qwq1s")
@@ -710,7 +718,7 @@ DrRacket IDE, are not included.")
        "db" (base32 "0xx0k8yw2vb9b4vk2dwjfbpixnmriqsv7kpv3fvfxbwyg42y0db5")
        '("db" "db-doc" "db-lib"))
       (simple-racket-origin
-       "deinprogramm" (base32 "0ijngjyg2i528a4xv20db4adirvx5rj4m86fd70l33lgwv53w3s0")
+       "deinprogramm" (base32 "0f41sh90i4mml95x2gcmfvl2rc7m77vjbagmgjx270ng7xvz16lj")
        '("deinprogramm" "deinprogramm-signature"))
       (simple-racket-origin
        "distributed-places" (base32 "1dajpkj9balqcpv6cdk9hwjz592h1vq8rrx5vncariiac4vbdpa0")
@@ -719,7 +727,7 @@ DrRacket IDE, are not included.")
        "draw" (base32 "1h7mckay8yjcgmj3r0jkf1csn430gn43n8jl1l956q9gcprlmncl")
        '("draw" "draw-doc" "draw-lib"))
       (simple-racket-origin
-       "drracket" (base32 "00ay3pwl648wq8nnaap665c38clr39k0g1wslh2wclar32wjpgdc")
+       "drracket" (base32 "17bdbvsf5l8z96bwzg1q75gg70c6svbhw0g1k239fsjd3mivmki4")
        '("drracket"
          "drracket-plugin-lib"
          "drracket-tool"
@@ -753,13 +761,13 @@ DrRacket IDE, are not included.")
        "games" (base32 "13z7fnbr48s98lmfxc0nbfhbqkd4hphymy2r63hqm783xzn6ylzi")
        '(("games" ".")))
       (simple-racket-origin
-       "gui" (base32 "10mlajn5xqgdwi7gf9lgszfv609pjp8m24lm97b8xh6fmjlkqi4b")
+       "gui" (base32 "08kzyscqc8hgc1f8q0bhibl44fkq8iiyz12f8bqdhqkcz8nx44sw")
        '("gui" "gui-doc" "gui-lib" "tex-table"))
       (simple-racket-origin
        "gui-pkg-manager" (base32 "1ji9448d723nklqvycwdswj0ni28sabrncag14f9mx47did5myb5")
        '("gui-pkg-manager-lib"))
       (simple-racket-origin
-       "htdp" (base32 "04p2xp4hnnsnmrmvw05fg4fv18k3g2rz5gmgs89sc6g8y886m6zz")
+       "htdp" (base32 "13d8xsvs60d7797w93g14dbdm98bixgy65akayij256pyiwnqwdc")
        '("htdp" "htdp-doc" "htdp-lib"))
       (simple-racket-origin
        "html" (base32 "18n1jnjgzfknc8nv8dppi85nb8q08gqdwkg6hfjk08x0p00anx2x")
@@ -801,7 +809,7 @@ DrRacket IDE, are not included.")
                              (url "https://github.com/RenaissanceBug/racket-cookies")
                              (commit %racket-commit)))
                        (sha256 (base32
-                                "05lnml9nszcq72k8bi4iwdyplp2iv23ywb2gmrs2hr8837fqi65y"))
+                                "1zr31y1gqa3kkrwlf9bnw08nzij00x1l70qhfbpz0239bksn4mmb"))
                        (file-name
                         (git-file-name "RenaissanceBug-racket-cookies" %racket-version)))
        '("net-cookies" "net-cookies-doc" "net-cookies-lib"))
@@ -827,7 +835,7 @@ DrRacket IDE, are not included.")
        "pconvert" (base32 "00czi0p399mmyrvxyrs5kniizpkqfxyz2ncxqi2jy79a7wk79pb1")
        '("pconvert-lib"))
       (simple-racket-origin
-       "pict" (base32 "1vsn91r167wssaflzz080nsrcf0jfhl2a48zcj9hvdb77arbj8kc")
+       "pict" (base32 "1ghds5by8i0k2djbig82xqp2ssy3nvdwm45l8ibsr99y0ay6z7gv")
        '("pict" "pict-doc" "pict-lib"))
       (simple-racket-origin
        "pict-snip" (base32 "081nwiy4a0n4f7xws16hqbhf0j3kz5alizndi3nnyr3chm4kng6x")
@@ -842,7 +850,7 @@ DrRacket IDE, are not included.")
        "planet" (base32 "0r2yqrzrmdjjyr14k6hhlzc5kzrcx3583m1s02mhrcmpfw0s85w9")
        '("planet" "planet-doc" "planet-lib"))
       (simple-racket-origin
-       "plot" (base32 "17fhsymy884xr4jqk585rm5kwdgkgz0635916gh5y0fsnp5pir70")
+       "plot" (base32 "0jq9a366g7b2c9vp6yvpqikvklgyd6p4xj6v224g99yj8cgip40b")
        '("plot" "plot-compat" "plot-doc" "plot-gui-lib" "plot-lib"))
       (simple-racket-origin
        "preprocessor" (base32 "1p5aid58ifnjy4xl0ysh85cq39k25661v975jrpk182z3k5621mg")
@@ -856,11 +864,8 @@ DrRacket IDE, are not included.")
                        (uri (git-reference
                              (url "https://github.com/Metaxal/quickscript")
                              (commit %racket-commit)))
-                       (snippet
-                        ;; See https://github.com/Metaxal/quickscript/issues/73
-                        #~(delete-file "register.rkt"))
                        (sha256 (base32
-                                "0v27qknghfi0058vk8xwwlwqgqwdsxxmprrmag64cyygdz95sxym"))
+                                "1ahznb9rhgaixd3fqn0pxighw4zbflwqc84r2yvn5nsfbp0mrq9b"))
                        (file-name (git-file-name "Metaxal-quickscript" %racket-version)))
        '(("quickscript" ".")))
       (simple-racket-origin
@@ -884,7 +889,7 @@ DrRacket IDE, are not included.")
        "racklog" (base32 "0fr8xij0sssfnmwn6dfdi4jj3l62f2yj3jrjljv13kaycrfls032")
        '(("racklog" ".")))
       (simple-racket-origin
-       "rackunit" (base32 "0axcy8283qqmcrhwwn0q0sfjznc8gkwbx06j41anayi5v9xp4698")
+       "rackunit" (base32 "06kpl51alm7akgmmh110ya28zgmx3as0szykfv2gwqmf7xcms1b7")
        '("rackunit"
          "rackunit-doc"
          "rackunit-gui"
@@ -900,7 +905,7 @@ DrRacket IDE, are not included.")
        "realm" (base32 "0rlvwyd6rpyl0zda4a5p8dp346fvqzc8555dgfnrhliymkxb6x4g")
        '(("realm" ".")))
       (simple-racket-origin
-       "redex" (base32 "016m2fvfxjnx7l0ai6jlcmz4s8xipbq9k58fq7109akj9mvczgp9")
+       "redex" (base32 "1mwnxbfk2vbalndlq0996rzdi3a2z48m5xnb1ywzlsvnydrnkrk2")
        '("redex"
          "redex-benchmark"
          "redex-doc"
@@ -915,7 +920,7 @@ DrRacket IDE, are not included.")
        "scheme-lib" (base32 "0pcf0y8rp4qyjhaz5ww5sr5diq0wpcdfrrnask7zapyklzx1jx8x")
        '(("scheme-lib" ".")))
       (simple-racket-origin
-       "scribble" (base32 "0igcjgmpzbzzn1jfpa4jq18lqyhr6dsdwnbv6zv87x8cib9rwqrh")
+       "scribble" (base32 "0rk5q9r9fw826ag0npk5cwkzkapj2p243wwm9gn2l7j7cr6z1rvb")
        '("scribble"
          "scribble-doc"
          "scribble-html-lib"
@@ -947,7 +952,7 @@ DrRacket IDE, are not included.")
        "snip" (base32 "1b90ccqilnyszbphms3svm3c7dbk7870ifybjjipss5srb32mj2d")
        '("snip" "snip-lib"))
       (simple-racket-origin
-       "typed-racket" (base32 "17mz7zqrialxfzkynj7h3kfhawdd6cgs24ns437gz087g2pmwi1x")
+       "typed-racket" (base32 "0vdsyr0qhpvac6h8mfdy6vqrsqsfa7kpg39n3h637hccxyfxv63f")
        '("source-syntax"
          "typed-racket"
          "typed-racket-compatibility"
@@ -958,7 +963,7 @@ DrRacket IDE, are not included.")
        "srfi" (base32 "1l3nr3a8mlp505aaxlyp4i8jfijmpyl9h1wwv8hzm4kzzjv4sl8p")
        '("srfi" "srfi-doc" "srfi-lib" "srfi-lite-lib"))
       (simple-racket-origin
-       "string-constants" (base32 "1djbjhsimikk18dkrajrlgjhlqfyvna4nz64ha4wjcaj5cfgcvdx")
+       "string-constants" (base32 "0225f1wmq1n9f2x1pg50fssdnd4bpc11q1jgsykwf4ik4fnaa520")
        '("string-constants" "string-constants-doc" "string-constants-lib"))
       (simple-racket-origin
        "swindle" (base32 "1q8vdxpzczzwdw2mys2caab45yvadmqkixsr29k8pl03n8dsg8j9")
@@ -973,7 +978,7 @@ DrRacket IDE, are not included.")
        "unix-socket" (base32 "02dfwas5ynbpyz74w9kwb4wgb37y5wys7svrlmir8k0n9ph9vq0y")
        '("unix-socket" "unix-socket-doc" "unix-socket-lib"))
       (simple-racket-origin
-       "web-server" (base32 "0vhw1hwdcv1ham086dy0nkl4r0a5qvsimw8048zjakvax7q4shsg")
+       "web-server" (base32 "1i4sxmcgj00ml7czsbyx1433hgf091n1p54xyal2f1fsskx5fg0y")
        '("web-server" "web-server-doc" "web-server-lib"))
       (simple-racket-origin
        "wxme" (base32 "1qp5gr9gqsakiq3alw6m4yyv5vw4i3hp4y4nhq8vl2nkjmirvn0b")

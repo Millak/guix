@@ -81,6 +81,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnunet)
+  #:use-module (gnu packages gnuzilla)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -1962,44 +1963,66 @@ or by subtracting one shape from the other.")
       (home-page "https://www.opencsg.org/")
       (license license:gpl2))))
 
-(define-public coin3D
+(define-public coin3d
   (package
-    (name "coin3D")
-    (version "4.0.0")
+    (name "coin3d")
+    (version "4.0.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/coin3d/coin")
-             (commit (string-append "Coin-" version))
+             (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ayg0hl8wanhadahm5xbghghxw1qjwqbrs3dl3ngnff027hsyf8p"))
+        (base32 "1p59q67zc45pwicknsccvmby09snhz35725wr3xsh2v6kxza76a4"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Delete binaries
-           (for-each delete-file
-                     '("cfg/csubst.exe"
-                       "cfg/wrapmsvc.exe"))
-           ;; Delete references to packaging tool cpack. Otherwise the build
-           ;; fails with "add_subdirectory given source "cpack.d" which is not
-           ;; an existing directory."
-           (substitute* "CMakeLists.txt"
-             ((".*cpack.d.*") ""))
-           #t))))
+        #~(begin
+            ;; Delete binaries
+            (for-each delete-file
+                      '("cfg/csubst.exe"
+                        "cfg/wrapmsvc.exe"))
+            ;; Unbundle expat.
+            (delete-file-recursively "src/xml/expat")
+            (substitute* "src/xml/document.cpp"
+              (("expat/expat\\.h") "expat.h"))
+            ;; Delete references to packaging tool cpack. Otherwise the build
+            ;; fails with "add_subdirectory given source "cpack.d" which is not
+            ;; an existing directory."
+            (substitute* "CMakeLists.txt"
+              ((".*cpack.d.*") ""))))))
     (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
+                   "-DUSE_EXTERNAL_EXPAT=ON"
+                   ;; Disable "runtime linking" of libraries, i.e. `dlopen`,
+                   ;; force to use libraries at build time.
+                   "-DFONTCONFIG_RUNTIME_LINKING=OFF"
+                   "-DFREETYPE_RUNTIME_LINKING=OFF"
+                   "-DLIBBZIP2_RUNTIME_LINKING=OFF"
+                   "-DOPENAL_RUNTIME_LINKING=OFF"
+                   ;"-DSIMAGE_RUNTIME_LINKING=OFF" -- Not packaged yet.
+                   "-DZLIB_RUNTIME_LINKING=OFF"
+                   "-DGLU_RUNTIME_LINKING=OFF"
+                   ;"-DSPIDERMONKEY_RUNTIME_LINKING=OFF" -- Can't find mozjs.
+                   (string-append "-DBOOST_ROOT="
+                                  #$(this-package-input "boost")))))
     (native-inputs
      (list doxygen graphviz))
     (inputs
-     (list boost freeglut glew))
-    (arguments
-     `(#:configure-flags
-       (list
-        "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
-        (string-append "-DBOOST_ROOT="
-                       (assoc-ref %build-inputs "boost")))))
+     (list boost
+           bzip2
+           expat
+           fontconfig
+           freeglut
+           freetype
+           glew
+           libx11
+           openal
+           zlib))
     (home-page "https://github.com/coin3d/coin")
     (synopsis
      "High-level 3D visualization library with Open Inventor 2.1 API")
@@ -2012,7 +2035,10 @@ library for 3D visualization and visual simulation software in the scientific
 and engineering community.")
     (license license:bsd-3)))
 
-(define-deprecated coin3D-4 coin3D)
+(define-deprecated coin3D coin3d)
+(export coin3D)
+
+(define-deprecated coin3D-4 coin3d)
 (export coin3D-4)
 
 (define-public skia

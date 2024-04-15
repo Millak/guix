@@ -675,13 +675,13 @@ detection, and lossless compression.")
 (define-public borg
   (package
     (name "borg")
-    (version "1.2.7")
+    (version "1.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgbackup" version))
        (sha256
-        (base32 "06j1v4bw9jkjh6m29ns5sigmp0cslcf0cyy8rrqij11w72ijhgzn"))
+        (base32 "1aplj54x6hcyg3mnzscnwi07npy7nrws2246ss25ax6bsaq257fk"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -723,18 +723,10 @@ detection, and lossless compression.")
                 (setenv "BORG_OPENSSL_PREFIX" openssl)
                 (setenv "BORG_LIBLZ4_PREFIX" lz4)
                 (setenv "BORG_LIBXXHASH_PREFIX" xxhash)
-                (setenv "BORG_LIBZSTD_PREFIX" zstd)
-                (setenv "PYTHON_EGG_CACHE" "/tmp")
-                ;; The test 'test_return_codes[python]' fails when
-                ;; HOME=/homeless-shelter.
-                (setenv "HOME" "/tmp"))))
-          ;; The tests need to be run after Borg is installed.
-          (delete 'check)
-          (add-after 'install 'check
+                (setenv "BORG_LIBZSTD_PREFIX" zstd))))
+          (replace 'check
             (lambda* (#:key inputs outputs tests? #:allow-other-keys)
               (when tests?
-                ;; Make the installed package available for the test suite.
-                (add-installed-pythonpath inputs outputs)
                 ;; The tests should be run in an empty directory.
                 (mkdir-p "tests")
                 (with-directory-excursion "tests"
@@ -749,7 +741,6 @@ detection, and lossless compression.")
                            "and not test_access_acl "
                            "and not test_default_acl "
                            "and not test_get_item_uid_gid "
-                           "and not test_non_ascii_acl "
                            "and not test_create_content_from_command "
                            "and not test_create_content_from_command_with_failed_command "
                            "and not test_create_stdin "
@@ -1076,30 +1067,29 @@ precious backup space.
                 "1nvmxc9x0mlks6yfn66fmwn50k5q83ip4g9vvb0kndzd7hwcyacy"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/restic/rest-server/cmd/rest-server"
-       #:unpack-path "github.com/restic/rest-server"
-       #:install-source? #f ;all we need is the binary
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys . args)
-                      (when tests?
-                        ;; Unit tests seems to break with Guix' non-standard TMPDIR.
-                        (setenv "TMPDIR" "/tmp")
-                        (apply (assoc-ref %standard-phases
-                                          'check) args))))
-                  (add-after 'install 'rename-binary
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (with-directory-excursion (assoc-ref outputs "out")
-                        ;; "rest-server" is a bit too generic.
-                        (rename-file "bin/rest-server"
-                                     "bin/restic-rest-server")))))))
-    (propagated-inputs (list go-golang-org-x-crypto
-                             go-github-com-spf13-cobra
-                             go-github-com-prometheus-client-golang
-                             go-github-com-miolini-datacounter
-                             go-github-com-minio-sha256-simd
-                             go-github-com-gorilla-handlers
-                             go-github-com-coreos-go-systemd-activation))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/restic/rest-server/cmd/rest-server"
+      #:unpack-path "github.com/restic/rest-server"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Unit tests seems to break with Guix' non-standard TMPDIR.
+          (add-before 'check 'set-tmpdir
+            (lambda _
+              (setenv "TMPDIR" "/tmp")))
+          (add-after 'install 'rename-binary
+            (lambda _
+              (with-directory-excursion #$output
+                ;; "rest-server" is a bit too generic.
+                (rename-file "bin/rest-server"
+                             "bin/restic-rest-server")))))))
+    (native-inputs (list go-github-com-coreos-go-systemd-activation
+                         go-github-com-gorilla-handlers
+                         go-github-com-minio-sha256-simd
+                         go-github-com-miolini-datacounter
+                         go-github-com-prometheus-client-golang
+                         go-github-com-spf13-cobra
+                         go-golang-org-x-crypto))
     (home-page "https://github.com/restic/rest-server")
     (synopsis "Restic REST server")
     (description

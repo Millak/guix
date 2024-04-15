@@ -52,6 +52,7 @@
   #:use-module (gnu packages pascal)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages pdf)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -74,7 +75,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "261")
+    (version "263")
     (source
      (origin
        (method git-fetch)
@@ -83,7 +84,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v56i2wyc4p843crl5b5w6j1awhp1a6xbfb92hm0pp8558f1h76i"))))
+        (base32 "1bq45gyn214hf9brnn5xlj9xvcg6p0yr8cc2p153f93pgzsyqlg4"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -138,6 +139,11 @@
             (lambda _
               ;; This requires /sbin to be in $PATH.
               (delete-file "tests/test_tools.py")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; Increase verbosity of tests and provide a summary
+               (invoke "pytest" "-vv" "-r" "sxX"))))
           (add-after 'install 'install-man-page
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
@@ -199,6 +205,7 @@
             openssh
             openssl
             p7zip
+            perl
             pgpdump
             poppler
             python-jsbeautifier

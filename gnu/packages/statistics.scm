@@ -1624,13 +1624,13 @@ emitter (http://pyyaml.org/wiki/LibYAML) for R.")
 (define-public r-knitr
   (package
     (name "r-knitr")
-    (version "1.45")
+    (version "1.46")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "knitr" version))
               (sha256
                (base32
-                "1yw4fnzm8lvh6kpcdlvr1fahz7421h5mmaris58zlgn57fjxwbpf"))))
+                "0ng8kw79csvcg46lsm3yf147jh6rf91jbj8qlryaihd8jcyc6lcg"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-evaluate r-highr r-xfun r-yaml))
@@ -3184,13 +3184,13 @@ well as additional utilities such as panel and axis annotation functions.")
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
-    (version "0.12.8.1.0")
+    (version "0.12.8.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppArmadillo" version))
               (sha256
                (base32
-                "0ax4812dm33c67ckd902qabis3dgqmpkchk4s30bshnfv4fxx1z2"))))
+                "0w1c0mpqqf6m2gk4221kjxx299bs4qpxn867fgnkpg69kj3mh8gd"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3834,13 +3834,13 @@ using the multicore functionality of the parallel package.")
              "datatables-extensions/Buttons"))))
     (package
       (name "r-dt")
-      (version "0.32")
+      (version "0.33")
       (source (origin
                 (method url-fetch)
                 (uri (cran-uri "DT" version))
                 (sha256
                  (base32
-                  "0nvj2bc441b9h13085fa7q281f86lgx4k0d8lr64xgdpbmbvkl21"))
+                  "1f17gdqjk1aj7vwjvv3363k8lnsvc6ssh4s3gy1prnz33kdxlig1"))
                 (modules '((guix build utils)
                            (ice-9 match)))
                 (snippet
@@ -6888,19 +6888,35 @@ Java package that provides routines for various statistical distributions.")
                              (((string-append "^\\(ert-deftest " test-name ".*")
                                all)
                               (string-append all "(skip-unless nil)\n"))
-                             ...)))))
+                             ...))))
+                       (disable-etests  ;different test syntax
+                        (syntax-rules ()
+                          ((_ file ())
+                           (syntax-error "test names list must not be empty"))
+                          ((_ file (test-name ...))
+                           (emacs-batch-edit-file file
+                             '(progn
+                               (mapc (lambda (test)
+                                       (goto-char (point-min))
+                                       (search-forward
+                                        (format "etest-deftest %s " test))
+                                       (beginning-of-line)
+                                       (kill-sexp))
+                                     (list test-name ...))
+                               (basic-save-buffer)))))))
                     (disable-tests (list "test/ess-test-inf.el"
                                          "test/ess-test-r.el")
                                    ("ess--derive-connection-path"
                                     "ess-eval-line-test"
                                     "ess-eval-region-test"
                                     "ess-mock-remote-process"
-                                    "ess-r-eval-sink-freeze-test"
-                                    "ess-r-eval-ns-env-roxy-tracebug-test"
                                     "ess-r-load-ESSR-github-fetch-no"
                                     "ess-r-load-ESSR-github-fetch-yes"
                                     "ess-set-working-directory-test"
-                                    "ess-test-r-startup-directory")))))
+                                    "ess-test-r-startup-directory"))
+                    (disable-etests "test/ess-test-r-eval.el"
+                                    ("ess-r-eval-ns-env-roxy-tracebug-test"
+                                     "ess-r-eval-sink-freeze-test")))))
               (replace 'check
                 (lambda* (#:key tests? #:allow-other-keys)
                   (when tests? (invoke "make" "test"))))))))

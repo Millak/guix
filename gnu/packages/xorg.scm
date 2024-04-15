@@ -6157,14 +6157,14 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "5.0.7")
+    (version "5.0.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0rkcsv0b55xbvkqi38nm01yxc09f7l9nj7xnp8v23rn6bp86m8mr"))
+        (base32 "0ml9nv6gwrqgyrn3hp5kkxsbdl5fpz5w8vjsvn0qfdsgbvq617wy"))
        (patches (search-patches "xpra-5.0-systemd-run.patch"
                                 "xpra-5.0-install_libs.patch"))))
     (build-system python-build-system)

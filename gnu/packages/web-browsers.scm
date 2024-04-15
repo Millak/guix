@@ -99,6 +99,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages suckless)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages tls)
@@ -594,7 +595,7 @@ driven and does not detract you from your daily work.")
 (define-public nyxt
   (package
     (name "nyxt")
-    (version "3.11.5")
+    (version "3.11.6")
     (source
      (origin
        (method git-fetch)
@@ -603,7 +604,7 @@ driven and does not detract you from your daily work.")
              (commit version)))
        (sha256
         (base32
-         "1f7pvh5bzkasbcfydd82pg7qn987ysbxk3j58dxzq2nzi05s0y4p"))
+         "0q7kf1a42gfvgv54hwhgiyvnsi6qhjdl1k88c3wxr1bj4ffhpvm3"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -951,21 +952,21 @@ with a terminal interface, for Gemini also a GUI is available.")
 (define-public telescope
   (package
     (name "telescope")
-    (version "0.8.1")
+    (version "0.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/omar-polo/telescope/releases/download/"
                            version "/telescope-" version ".tar.gz"))
        (sha256
-        (base32 "1fblm3mjddhjmcj1c065n9440n72ld037bdjdlyk1fpwd240m1pa"))))
+        (base32 "1xbwdm3xcahwl6sjqx6f8hhx7nyzyygkjsnxglwxazp8zlmchqy9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ;no tests
     (native-inputs
      (list gettext-minimal pkg-config))
     (inputs
-     (list libevent libressl ncurses))
+     (list libgrapheme libressl ncurses))
     (home-page "https://telescope.omarpolo.com/")
     (synopsis "Gemini client with a terminal interface")
     (description "Telescope is a w3m-like browser for Gemini.")

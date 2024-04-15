@@ -502,7 +502,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 ;; The current "mainline" kernel.
 
-(define-public linux-libre-6.8-version "6.8.4")
+(define-public linux-libre-6.8-version "6.8.5")
 (define-public linux-libre-6.8-gnu-revision "gnu")
 (define deblob-scripts-6.8
   (linux-libre-deblob-scripts
@@ -512,7 +512,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0j9pj370zismhzw18iyx3lwcby3l3160xgpmh5xa8i8cr38r2z5h")))
 (define-public linux-libre-6.8-pristine-source
   (let ((version linux-libre-6.8-version)
-        (hash (base32 "0qwywy89an1w0yvs5957kqyv74mwgxady521w2lmyq00zjaw9pnm")))
+        (hash (base32 "12gsxxiwkildj8i94fkm2v69zb6z6s7hnnlvpsyv8j1pszjj728k")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.8)))
@@ -541,7 +541,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
 
-(define-public linux-libre-6.6-version "6.6.25")
+(define-public linux-libre-6.6-version "6.6.26")
 (define-public linux-libre-6.6-gnu-revision "gnu")
 (define deblob-scripts-6.6
   (linux-libre-deblob-scripts
@@ -551,12 +551,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "17hq5pirvxaq1yscb204950xlakrd4r4mknjqayh1rzj4rzngzyq")))
 (define-public linux-libre-6.6-pristine-source
   (let ((version linux-libre-6.6-version)
-        (hash (base32 "0i0zvqlj02rm6wpbidji0rn9559vrpfc1b8gbfjk70lhhyz11llr")))
+        (hash (base32 "1nan0h95dkqpb55jr5mxfi8yks09fd518im3vblbi4zvyi4v8m5g")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.6)))
 
-(define-public linux-libre-6.1-version "6.1.84")
+(define-public linux-libre-6.1-version "6.1.85")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -566,12 +566,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1kp8zl97x1hsmvmdwaq8s8gndfmf8chvlhsw216f86ishi2prws3")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "0ykhl4i6yhryzgjkdbdz4pd3b1ghv84h6mpn7bdx0ra7w7mx55xg")))
+        (hash (base32 "0x32p1c04q5d0yd4qncrmc064m3g1x7cvfia5cd04q3wb769pzik")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-(define-public linux-libre-5.15-version "5.15.153")
+(define-public linux-libre-5.15-version "5.15.154")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -581,7 +581,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "121shkzgixmywa19xx5f2yxg1primarpg4bxin3jyw0214xbfh2n")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "1g44gjcwcdq5552vwinljqwiy90bxax72jjvdasp71x88khv3pfp")))
+        (hash (base32 "16067mhf173kgs4mvlzix9qscwq5wy8817dyfyjx5g7jkykmxy0p")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
@@ -2093,6 +2093,7 @@ GnuPG-based password manager like @code{pass}.")
            perl
            python
            python-sphinx
+           python-pyyaml
            texinfo
            which))
     (synopsis "Documentation for the kernel Linux-Libre")

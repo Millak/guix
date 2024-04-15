@@ -19,6 +19,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages toolkits)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages sdl)
@@ -27,6 +28,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system python)
   #:use-module (guix git-download))
 
 (define-public imgui
@@ -181,3 +183,50 @@ standard operating system features.")
     (inputs
      (modify-inputs (package-inputs imgui)
        (delete "freetype")))))
+
+(define-public nuklear
+  (package
+    (name "nuklear")
+    (version "4.12.0")
+    (home-page "https://github.com/Immediate-Mode-UI/Nuklear")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13cswwdys4hqdvbm4g4b9l269i16s7c4204j16v67ghj3b4mjifg"))
+              (snippet #~(begin (delete-file "nuklear.h")
+                                (delete-file "doc/index.html")))))
+    (build-system python-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (replace 'build
+                          (lambda _
+                            (with-directory-excursion "src"
+                              (invoke "./paq.sh"))
+                            (with-directory-excursion "doc"
+                              (with-input-from-file "../nuklear.h"
+                                (lambda _
+                                  (with-output-to-file "index.html"
+                                    (lambda _
+                                      (invoke "stddoc"))))))))
+                        (replace 'install
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (install-file "nuklear.h"
+                                          (string-append #$output "/include"))
+                            (install-file "doc/index.html"
+                                          (string-append #$output
+                                                         "/share/doc")))))))
+    (native-inputs (list stddoc))
+    (synopsis "Graphical user interface toolkit written in ANSI C")
+    (description "This package provides an immediate-mode graphical user
+interface toolkit.  It was designed as an embeddable user interface
+for applications and does not have any dependencies, a default render backend
+or OS window/input handling.  The library is self contained in one single header
+file and can be used either in header only mode or in implementation mode.")
+    (license (list license:unlicense license:expat))))

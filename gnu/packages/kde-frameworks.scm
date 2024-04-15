@@ -3670,7 +3670,16 @@ workspace.")
              (version-major+minor version) "/portingAids/"
              name "-" version ".tar.xz"))
        (sha256
-        (base32 "17473him2fjfcw5f88diarqac815wsakfyb9fka82a4qqh9l41mc"))))
+        (base32 "17473him2fjfcw5f88diarqac815wsakfyb9fka82a4qqh9l41mc"))
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* "autotests/kmimetypetest.cpp"
+           ;; Adjust the test for shared-mime-info changes:
+           ;; https://gitlab.freedesktop.org/xdg/shared-mime-info/-/issues/202
+           ;; https://gitlab.freedesktop.org/xdg/shared-mime-info/-/merge_requests/255
+           (("empty document") "Empty document")
+           (("Bzip archive") "Bzip2 archive")
+           (("<< \"application/x-bzip") "<< \"application/x-bzip2")))))
     (build-system cmake-build-system)
     (native-inputs
      (list dbus

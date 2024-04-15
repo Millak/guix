@@ -5,6 +5,10 @@ DOMAIN = guix
 subdir = po/guix
 top_builddir = ../..
 
+# We use our xgettext.scm wrapper to produce .PO files reproducibly using a
+# timestamp from Git.
+XGETTEXT:=$(top_srcdir)/build-aux/xgettext.scm
+
 # These options get passed to xgettext.  We want to catch standard
 # gettext uses, and SRFI-35 error condition messages.  In C++ code
 # we use 'n_' instead of the more usual 'N_' for no-ops.
@@ -14,7 +18,8 @@ XGETTEXT_OPTIONS =				\
   --keyword=message				\
   --keyword=description				\
   --keyword=synopsis				\
-  --keyword=n_
+  --keyword=n_					\
+  --xgettext=$(XGETTEXT_)
 
 COPYRIGHT_HOLDER = the authors of Guix (msgids)
 

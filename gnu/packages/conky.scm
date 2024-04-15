@@ -40,7 +40,7 @@
   (package
     (name "conky")
     (home-page "https://github.com/brndnmtthws/conky")
-    (version "1.19.6")
+    (version "1.19.8")
     (source
      (origin
        (method git-fetch)
@@ -49,7 +49,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02mdqsizc36v3zqhxnyv2mch9w0gqnl4a25yxishka9yv5ni5iig"))))
+        (base32 "1g712cw2nzd2qvgdmyvazyda0znyqzg6yckg98ss203fggwp93vj"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -80,6 +80,7 @@
            libxdamage
            libxext
            libxft
+           libxi
            libxinerama
            pulseaudio
            lua

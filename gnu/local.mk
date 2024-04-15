@@ -41,7 +41,7 @@
 # Copyright © 2020, 2023 Vinicius Monego <monego@posteo.net>
 # Copyright © 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 # Copyright © 2021 Greg Hogan <code@greghogan.com>
-# Copyright © 2021, 2022, 2023 Philip McGrath <philip@philipmcgrath.com>
+# Copyright © 2021-2024 Philip McGrath <philip@philipmcgrath.com>
 # Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 # Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 # Copyright © 2021 Dmitry Polyakov <polyakov@liltechdude.xyz>
@@ -221,6 +221,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/cybersecurity.scm		\
   %D%/packages/cyrus-sasl.scm			\
   %D%/packages/darwin.scm			\
+  %D%/packages/data-language.scm		\
   %D%/packages/databases.scm			\
   %D%/packages/datamash.scm			\
   %D%/packages/datastructures.scm		\
@@ -414,6 +415,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/libidn.scm			\
   %D%/packages/libphidget.scm			\
   %D%/packages/libreoffice.scm			\
+  %D%/packages/librewolf.scm			\
   %D%/packages/libsigsegv.scm			\
   %D%/packages/libunistring.scm			\
   %D%/packages/libusb.scm			\
@@ -1020,6 +1022,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ccextractor-add-missing-header.patch	\
   %D%/packages/patches/ccextractor-autoconf-tesseract.patch	\
   %D%/packages/patches/ccextractor-fix-ocr.patch		\
+  %D%/packages/patches/chez-scheme-backport-configure.patch	\
   %D%/packages/patches/chez-scheme-bin-sh.patch			\
   %D%/packages/patches/circos-remove-findbin.patch		\
   %D%/packages/patches/cdparanoia-fpic.patch			\
@@ -1118,6 +1121,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dune-common-skip-failing-tests.patch	\
   %D%/packages/patches/dune-grid-add-missing-include-cassert.patch	\
   %D%/packages/patches/dune-istl-fix-solver-playground.patch	\
+  %D%/packages/patches/durden-shadow-arcan.patch		\
   %D%/packages/patches/dvd+rw-tools-add-include.patch 		\
   %D%/packages/patches/dynaconf-unvendor-deps.patch		\
   %D%/packages/patches/dyninst-fix-glibc-compatibility.patch	\
@@ -1293,6 +1297,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gcc-12-cross-environment-variables.patch \
   %D%/packages/patches/gcc-10-tree-sra-union-handling.patch	\
   %D%/packages/patches/gcc-11-libstdc++-powerpc.patch           \
+  %D%/packages/patches/gcc-13-cross-system-header-dir.patch     \
   %D%/packages/patches/gcolor3-update-libportal-usage.patch	\
   %D%/packages/patches/gd-fix-tests-on-i686.patch		\
   %D%/packages/patches/gd-brect-bounds.patch			\
@@ -1995,9 +2000,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\
   %D%/packages/patches/rtags-separate-rct.patch			\
   %D%/packages/patches/racket-chez-scheme-bin-sh.patch		\
-  %D%/packages/patches/racket-backport-8.11-layered-docs.patch	\
+  %D%/packages/patches/racket-backport-8.12-chez-configure.patch	\
   %D%/packages/patches/racket-rktio-bin-sh.patch		\
-  %D%/packages/patches/racket-zuo-bin-sh.patch			\
   %D%/packages/patches/remake-impure-dirs.patch			\
   %D%/packages/patches/restartd-update-robust.patch             \
   %D%/packages/patches/restic-0.9.6-fix-tests-for-go1.15.patch	\
@@ -2240,7 +2244,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/zig-do-not-link-against-librt.patch	\
   %D%/packages/patches/zig-use-baseline-cpu-by-default.patch	\
   %D%/packages/patches/zig-use-system-paths.patch		\
-  %D%/packages/patches/zsh-egrep-failing-test.patch
+  %D%/packages/patches/zsh-egrep-failing-test.patch		\
+  %D%/packages/patches/zuo-bin-sh.patch
 
 MISC_DISTRO_FILES =				\
   %D%/packages/ld-wrapper.in
