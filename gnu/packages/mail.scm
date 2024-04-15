@@ -82,6 +82,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -1466,11 +1467,12 @@ invoking @command{notifymuch} from the post-new hook.")
            emacs-no-x           ; -minimal lacks libxml, needed for some tests
            which
            dtach
+           git-minimal/pinned
            gnupg
            man-db
            perl))
     (inputs
-     (list glib gmime talloc xapian zlib))
+     (list glib gmime sfsexp talloc xapian zlib))
     (home-page "https://notmuchmail.org/")
     (synopsis "Thread-based email index, search, and tagging")
     (description
