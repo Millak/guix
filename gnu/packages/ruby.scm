@@ -10114,7 +10114,7 @@ Profiling multiple threads simultaneously is supported.
                 (("%x\\(git ls-files -z)")
                  "`git ls-files -z`")))))))
     (native-inputs (list ruby-rake-compiler ruby-rspec))
-    (inputs (list valgrind/interactive))
+    (inputs (list valgrind))
     (propagated-inputs (list ruby-nokogiri))
     (synopsis "Valgrind memcheck tool for Ruby")
     (description "The @code{ruby_memcheck} gem provides a sane way to use
