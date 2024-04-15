@@ -641,6 +641,28 @@ be a separate step, and tokenization rules can be written in the same way as
 any other grammar rules.")
     (license license:expat)))
 
+(define-public sfsexp
+  (package
+    (name "sfsexp")
+    (version "1.4.1")
+    (home-page "https://github.com/mjsottile/sfsexp")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03srnpc7p1j7ygd0wx9gybcxhqm50kjzkybh1xs75nwz97q3y2dq"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool))
+    (synopsis "Symbolic expression library for C and C++")
+    (description
+     "sfsexp is a C/C++ library to read, parse, modify, and create symbolic
+expressions.")
+    (license license:lgpl2.1+)))
+
 (define-public sparse
   (package
     (name "sparse")
