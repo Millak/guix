@@ -12654,28 +12654,26 @@ be used with @code{cl-yacc}.")
   (sbcl-package->ecl-package sbcl-cl-lex))
 
 (define-public sbcl-cl-colors2
-  (let ((commit "7a1410765e5186625df19a875cebba685e9e51bd")
-        (revision "4"))
-    (package
-      (name "sbcl-cl-colors2")
-      (version (git-version "0.5.4" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://codeberg.org/cage/cl-colors2.git")
-               (commit commit)))
-         (file-name (git-file-name "cl-colors2" version))
-         (sha256
-          (base32 "1xk3wshp21v193wbj1gs0czxaci00wwm957vmqi2dvlv0wgb2hfr"))))
-      (build-system asdf-build-system/sbcl)
-      (native-inputs
-       (list sbcl-clunit2))
-      (inputs
-       (list sbcl-alexandria sbcl-cl-ppcre))
-      (synopsis "Color library for Common Lisp")
-      (description
-       "This is a very simple color library for Common Lisp, providing:
+  (package
+    (name "sbcl-cl-colors2")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/cage/cl-colors2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-colors2" version))
+       (sha256
+        (base32 "0vnvlq9xixs04768q7hapsi16cjp3ych6mypvs6chihd5dal4cnd"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-clunit2))
+    (inputs
+     (list sbcl-alexandria sbcl-cl-ppcre sbcl-parse-number))
+    (synopsis "Color library for Common Lisp")
+    (description
+     "This is a very simple color library for Common Lisp, providing:
 
 @itemize
 @item Types for representing colors in HSV, HSL, and RGB spaces.
@@ -12683,8 +12681,8 @@ be used with @code{cl-yacc}.")
 @item Function printing colors to HEX, RGB, RGBA, and HSL.
 @item Predefined colors from X11, SVG, and GDK.
 @end itemize\n")
-      (home-page "https://codeberg.org/cage/cl-colors2")
-      (license license:boost1.0))))
+    (home-page "https://codeberg.org/cage/cl-colors2")
+    (license license:boost1.0)))
 
 (define-public cl-colors2
   (sbcl-package->cl-source-package sbcl-cl-colors2))
