@@ -46,6 +46,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages check)
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
@@ -184,6 +185,56 @@ produces a much smaller C/C++ program that has the same property.  It is
 intended for use by people who discover and report bugs in compilers and other
 tools that process C/C++ code.")
     (license license:ncsa)))
+
+(define-public cppdap
+  (package
+    (name "cppdap")
+    (version "1.58.0-a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/google/cppdap")
+         (commit (string-append "dap-" version))))
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "third_party"))
+       (patches (search-patches
+                 "cppdap-add-CPPDAP_USE_EXTERNAL_GTEST_PACKAGE.patch"))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0fq2w35fw1lb5wya1nny45pk3a13b689k48calk1cmqmqpbcjn2b"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "-DCPPDAP_BUILD_TESTS=ON"
+         "-DCPPDAP_USE_EXTERNAL_GTEST_PACKAGE=ON"
+         ;; Only one of the following three can be enabled at the same time
+         ;; "-DCPPDAP_USE_EXTERNAL_RAPIDJSON_PACKAGE=ON"
+         ;; "-DCPPDAP_USE_EXTERNAL_JSONCPP_PACKAGE=ON"
+         "-DCPPDAP_USE_EXTERNAL_NLOHMANN_JSON_PACKAGE=ON")))
+    (native-inputs
+     (list googletest))
+    ;; see lib/cmake/cppdap/cppdapConfig.cmake
+    ;; cmake file require propagate this.
+    (propagated-inputs
+     (list
+      ;; Only one of the following three can be enabled at the same time
+      ;; rapidjson
+      ;; jsoncpp
+      nlohmann-json))
+    (home-page "https://github.com/google/cppdap")
+    (synopsis "C++ library for the Debug Adapter Protocol")
+    (description
+     "cppdap is a C++11 library (\"SDK\") implementation of the Debug Adapter
+Protocol, providing an API for implementing a DAP client or server.  cppdap
+provides C++ type-safe structures for the full DAP specification, and provides a
+simple way to add custom protocol messages.")
+    (license license:expat)))
 
 (define-public c-vise
   (package
