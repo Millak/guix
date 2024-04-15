@@ -618,7 +618,7 @@ powerful microcontroller board: Axoloti Core.")
 (define-public ksoloti-runtime
   (package
     (name "ksoloti-runtime")
-    (version "1.0.12-7")
+    (version "1.0.12-8")
     (source
      (origin
        (method git-fetch)
@@ -627,7 +627,7 @@ powerful microcontroller board: Axoloti Core.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "046jddrzlx1pdn53z0l8wf3rz7jsx7qn6l08ccw104gk996gr3gn"))
+        (base32 "00ghkz3fhmmza24qrmhhz8n90n5q465fk9bld3hrfijf8sf4532i"))
        (modules '((guix build utils)))
        ;; Remove pre-built Java binaries.
        (snippet
@@ -685,12 +685,6 @@ powerful microcontroller board: Axoloti Core.")
                   (string-append "TRGT = "
                                  (assoc-ref inputs "cross-toolchain")
                                  "/bin/arm-none-eabi-\n")))
-               ;; XXX: Add missing entry for -size tool.  This should be
-               ;; upstreamed.
-               (substitute* '("firmware_axoloti_legacy/flasher/Makefile"
-                              "firmware_axoloti_legacy/mounter/Makefile")
-                 (("^OD.*= \\$\\(TRGT\\)objdump" m)
-                  (string-append m "\nSZ = $(TRGT)size")))
 
                ;; Hardcode path to "make"
                (substitute* '("firmware/compile_firmware_linux.sh"
@@ -759,7 +753,7 @@ powerful microcontroller board: Axoloti Core.")
        ;; for compiling firmware
        ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-4.9))
        ;; for uploading compiled patches and firmware
-       ("dfu-util" ,dfu-util-for-axoloti)))
+       ("dfu-util" ,dfu-util)))
     (native-inputs (list unzip))
     (home-page "https://ksoloti.github.io/")
     (synopsis "Audio development environment for the Ksoloti board")
