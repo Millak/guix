@@ -403,7 +403,8 @@ numbers of user-defined menu items efficiently.")
 implements 256 colors, most VT10X escape sequences, utf8, X11 copy/paste,
 antialiased fonts (using fontconfig), fallback fonts, resizing, and line
 drawing.")
-    (license license:x11)))
+    (license (list license:x11
+                   license:expat))))
 
 (define-public xst
   (package
@@ -434,7 +435,8 @@ drawing.")
 @item @uref{https://st.suckless.org/patches/spoiler/, spoiler}
 @item @uref{https://st.suckless.org/patches/vertcenter/, vertcenter}
 @end itemize")
-    (license license:expat)))
+    (license (list license:x11
+                   license:expat))))
 
 (define-public lukesmithxyz-st
   (let ((commit "e053bd6036331cc7d14f155614aebc20f5371d3a")
@@ -532,7 +534,8 @@ Vim bindings and Xresource compatibility.")
 display websites and follow links.  It supports the XEmbed protocol which
 makes it possible to embed it in another application.  Furthermore, one can
 point surf to another URI by setting its XProperties.")
-    (license license:x11)))
+    (license (list license:expat
+                   license:x11))))
 
 (define-public sent
   (package
@@ -581,7 +584,7 @@ Especially for presentations using the Takahashi method this is very nice and
 allows you to write down the presentation for a quick lightning talk within a
 few minutes.")
     (home-page "https://tools.suckless.org/sent/")
-    (license license:x11)))
+    (license license:isc)))
 
 (define-public wmname
   (package
@@ -611,7 +614,8 @@ few minutes.")
 property of the root window similar to how @command{hostname} behaves.  It is
 useful for fixing problems with JDK versions and other broken programs
 assuming a reparenting window manager for instance.")
-    (license license:expat)))
+    (license (list license:x11
+                   license:expat))))
 
 (define-public xbattmon
   (package
