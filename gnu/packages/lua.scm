@@ -485,86 +485,87 @@ secure session between the peers.")
 (define (make-lua-cqueues name lua lua-ossl)
   (package
     (name name)
-    (version "20171014")
+    (version "20200726")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://25thandclement.com/~william/"
-                                  "projects/releases/cqueues-" version ".tgz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wahern/cqueues")
+                    (commit (string-append "rel-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dabhpn6r0hlln8vx9hxm34pfcm46qzgpb2apmziwg5z51fi4ksb"))))
+                "17gwqndlga6gnishgs6wk8cvgwzanddr42yikkg2xd4nanhcg8z9"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
+     (list
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (ice-9 string-fun))
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out"))
-             (lua-api-version ,(version-major+minor (package-version lua))))
-         (list ,(string-append "CC=" (cc-for-target))
-               (string-append "LUA_APIS=" lua-api-version)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'check)
-         (replace 'install
-           (lambda* (#:key make-flags outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (apply invoke "make" "install"
-                      (append make-flags
-                              (list (string-append "DESTDIR=" out)
-                                    "prefix="))))))
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs make-flags #:allow-other-keys)
-             (let*
-                 ((lua-version ,(version-major+minor (package-version lua)))
-                  (env-suffix (if (equal? lua-version "5.1")
-                                  ""
-                                  (string-append
-                                   "_"
-                                   (string-replace-substring lua-version "." "_"))))
+      #:make-flags
+      #~(let ((lua-api-version #$(version-major+minor (package-version lua))))
+          (list (string-append "CC=" #$(cc-for-target))
+                (string-append "LUA_APIS=" lua-api-version)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'check)
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "install"
+                     (append make-flags
+                             (list (string-append "DESTDIR=" #$output)
+                                   "prefix=")))))
+          (add-after 'install 'check
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (let*
+                  ((lua-version #$(version-major+minor (package-version lua)))
+                   (env-suffix (if (equal? lua-version "5.1")
+                                   ""
+                                   (string-append
+                                    "_"
+                                    (string-replace-substring lua-version "." "_"))))
 
-                  (lua-ossl (assoc-ref inputs "lua-ossl"))
-                  (out (assoc-ref outputs "out"))
+                   (lua-cpath (lambda (p)
+                                (string-append p "/lib/lua/" lua-version "/?.so")))
+                   (lua-path (lambda (p)
+                               (string-append p "/share/lua/" lua-version "/?.lua"))))
+                ;; The test suite sets Lua-version-specific search-path variables
+                ;; when available so we must do the same, as these take
+                ;; precedence over the generic "LUA_CPATH" and "LUA_PATH"
+                (setenv (string-append "LUA_CPATH" env-suffix)
+                        (string-append
+                         (string-join (map lua-cpath (list #$output #$lua-ossl)) ";")
+                         ";;"))
+                (setenv (string-append "LUA_PATH" env-suffix)
+                        (string-append
+                         (string-join (map lua-path (list #$output #$lua-ossl)) ";")
+                         ";;"))
 
-                  (lua-cpath (lambda (p)
-                               (string-append p "/lib/lua/" lua-version "/?.so")))
-                  (lua-path (lambda (p)
-                              (string-append p "/share/lua/" lua-version "/?.lua"))))
-               ;; The test suite sets Lua-version-specific search-path variables
-               ;; when available so we must do the same, as these take
-               ;; precedence over the generic "LUA_CPATH" and "LUA_PATH"
-               (setenv (string-append "LUA_CPATH" env-suffix)
-                       (string-append
-                        (string-join (map lua-cpath (list out lua-ossl)) ";")
-                        ";;"))
-               (setenv (string-append "LUA_PATH" env-suffix)
-                       (string-append
-                        (string-join (map lua-path (list out lua-ossl)) ";")
-                        ";;"))
+                ;; Skip regression tests we expect to fail
+                (with-directory-excursion "regress"
+                  (for-each (lambda (f)
+                              (rename-file f (string-append f ".skip")))
+                            (append
+                             ;; Regression tests that require network
+                             ;; connectivity
+                             '("22-client-dtls.lua"
+                               "30-starttls-completion.lua"
+                               "62-noname.lua"
+                               "153-dns-resolvers.lua")
 
-               ;; Skip regression tests we expect to fail
-               (with-directory-excursion "regress"
-                 (for-each (lambda (f)
-                             (rename-file f (string-append f ".skip")))
-                           (append
-                            ;; Regression tests that require network
-                            ;; connectivity
-                            '("22-client-dtls.lua"
-                              "30-starttls-completion.lua"
-                              "62-noname.lua"
-                              "153-dns-resolvers.lua")
+                             ;; Regression tests that require LuaJIT
+                             '("44-resolvers-gc.lua"
+                               "51-join-defunct-thread.lua"
+                               ;; These both need the ffi module.
+                               "73-starttls-buffering.lua"
+                               "87-alpn-disappears.lua")
 
-                            ;; Regression tests that require LuaJIT
-                            '("44-resolvers-gc.lua"
-                              "51-join-defunct-thread.lua")
+                             ;; Regression tests that require Lua 5.3
+                             (if (not (equal? lua-version "5.3"))
+                                 '("152-thread-integer-passing.lua")
+                                 '()))))
 
-                            ;; Regression tests that require Lua 5.3
-                            (if (not (equal? lua-version "5.3"))
-                                '("152-thread-integer-passing.lua")
-                                '()))))
-
-               (apply invoke "make" "check" make-flags)))))))
+                (apply invoke "make" "check" make-flags)))))))
     (native-inputs
      (list m4))
     (inputs
