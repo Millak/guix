@@ -4173,3 +4173,9 @@ comes as a command line app and also an Emacs interface.")
     (description "Compute various size metrics for a Git repository, flagging
 those that might cause problems or inconvenience.")
     (license license:expat)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;
