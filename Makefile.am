@@ -1033,6 +1033,7 @@ dist-with-updated-version:
 override GZIP_ENV = --best --no-name
 # Be friendly to Debian; avoid using EPOCH
 override am__tar = $${TAR-tar}			\
+ --format=ustar					\
  --sort=name					\
  --mode=go=rX,u+rw,a-s				\
  --mtime=@$$(cat "$$tardir"/.tarball-timestamp)	\
