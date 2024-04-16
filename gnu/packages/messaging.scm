@@ -1643,6 +1643,15 @@ Notifications.")))
     (description "This module implements XEP-0363: it allows clients to
 upload files over HTTP.")))
 
+(define-public prosody-muc-offline-delivery
+  (package
+    (inherit (prosody-module "mod_muc_offline_delivery"))
+    (synopsis "Deliver MUC messages to users who are not in the room")
+    (description "This module implements support for sending messages in a MUC
+to affiliated users who are not in the room.  This is a custom extension by
+Tigase to allow push notifications from MUCs to users who are not currently
+connected.")))
+
 (define-public prosody-smacks
   (package
     (inherit (prosody-module "mod_smacks"))
