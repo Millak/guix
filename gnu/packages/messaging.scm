@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2021, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2018-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
@@ -1581,8 +1581,8 @@ protocols.")
     (license license:x11)))
 
 (define (prosody-module module-name)
-  (let ((changeset "fba64b043c52")
-        (revision "2")
+  (let ((changeset "66e7d46b1d4b")
+        (revision "3")
         (package-name (string-append
                        "prosody-"
                        (string-replace-substring
@@ -1601,7 +1601,7 @@ protocols.")
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "1nvka8s3zqs97jqsknhp2q956rrdga1qaxa1y3i0h8zx3g9vgdch"))))
+                  "0wyxvbf335jaaz850m2q6jj6ix4hjlhlh28kzk7462qa9fcw5p7s"))))
       (build-system copy-build-system)
       (arguments
        `(#:install-plan '((,(string-append module-name "/") "."))))
