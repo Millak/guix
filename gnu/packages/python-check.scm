@@ -420,13 +420,17 @@ interactions, which will update them to correspond to the new API.")
 (define-public python-pytest-socket
   (package
     (name "python-pytest-socket")
-    (version "0.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-socket" version))
-              (sha256
-               (base32
-                "1dkr86nxkxc0ka3rdnpmk335m8gl1zh1sy8i7w4w1jsidbf82jvw"))))
+    (version "0.7.0")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/miketheman/pytest-socket")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m6s07gvljq82hiajzy1v123kpkciziiqdjqfnas169rmzg0bmnp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -440,7 +444,18 @@ interactions, which will update them to correspond to the new API.")
                     " and not test_httpx_fails"
                     " and not test_disabled_urllib_fails"
                     " and not test_urllib_succeeds_by_default"
-                    " and not test_enabled_urllib_succeeds"))))
+                    " and not test_enabled_urllib_succeeds"
+                    " and not test_single_cli_arg_connect_disabled_hostname_resolved"))
+     #:phases
+       #~(modify-phases %standard-phases
+           ;; See <https://github.com/miketheman/pytest-socket/issues/308>
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (substitute* (list "tests/test_async.py"
+                                "tests/test_socket.py"
+                                "tests/test_precedence.py")
+               (("from tests.common import assert_socket_blocked")
+                "from common import assert_socket_blocked")))))))
     (native-inputs (list python-httpx
                          python-poetry-core
                          python-pypa-build
