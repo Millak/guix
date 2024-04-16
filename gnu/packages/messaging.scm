@@ -1611,6 +1611,31 @@ protocols.")
       (description #f)
       (license (package-license prosody)))))
 
+(define-public prosody-cloud-notify
+  (package
+    (inherit (prosody-module "mod_cloud_notify"))
+    (synopsis "XEP-0357: Push Notifications")
+    (description "This module implements XEP-0357: Push Notifications.
+
+Some platforms, notably Apple’s iOS and many versions of Android, impose
+limits that prevent applications from running or accessing the network in the
+background.  This makes it difficult or impossible for an XMPP application to
+remain reliably connected to a server to receive messages.
+
+In order for messaging and other apps to receive notifications, the OS vendors
+run proprietary servers that their OS maintains a permanent connection to in
+the background.  Then they provide APIs to application developers that allow
+sending notifications to specific devices via those servers.
+
+When you connect to your server with a client that requires push
+notifications, it will use this module to set up a “push registration”.  When
+you receive a message but your device is not connected to the server, this
+module will generate a notification and send it to the push gateway operated
+by your application’s developers).  Their gateway will then connect to your
+device’s OS vendor and ask them to forward the notification to your device.
+When your device receives the notification, it will display it or wake up the
+app so it can connect to XMPP and receive any pending messages.")))
+
 (define-public prosody-cloud-notify-encrypted
   (package
     (inherit (prosody-module "mod_cloud_notify_encrypted"))
