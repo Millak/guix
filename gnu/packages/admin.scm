@@ -73,6 +73,7 @@
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
+;;; Copyright © 2024 nik gaffney <nik@fo.am>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5004,7 +5005,7 @@ Logitech Unifying Receiver.")
   (package
     (name "lynis")
     ;; Also update the ‘lynis-sdk’ input to the commit matching this release.
-    (version "3.0.9")
+    (version "3.1.1")
     (source
      (origin
        (method git-fetch)
@@ -5013,7 +5014,7 @@ Logitech Unifying Receiver.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rgiifbzlk9lfjhbgxy6pqza5kxpr5rsr8vj9fcqvqihzdb5izj1"))
+        (base32 "05bh16i916xz9w8p8fz8flzj9ayyzg7wpbi7q61ylrlahhc03nqd"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5029,10 +5030,10 @@ Logitech Unifying Receiver.")
            (method git-fetch)
            (uri (git-reference
                  (url "https://github.com/CISOfy/lynis-sdk")
-                 (commit "92522b3ec39ad4cdef4756dc303d99741ec7fe20")))
+                 (commit "f4f885f1f049f59940487a6ffc2d53806c729d12")))
            (file-name (git-file-name "lynis-sdk" version))
            (sha256
-            (base32 "1mwvimgmnzbk6kf8dzhgkidb2zigay9dpirihydc758fvjic4bdl"))))))
+            (base32 "09d98wmvan7nlchm056kls5xm939d1231pwsvlp4q2aznz8cmg42"))))))
     (arguments
      (list
       #:phases
