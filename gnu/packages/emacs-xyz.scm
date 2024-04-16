@@ -17436,7 +17436,7 @@ encryption.")
 (define-public emacs-nginx-mode
   (package
     (name "emacs-nginx-mode")
-    (version "1.1.9")
+    (version "1.1.10")
     (source
      (origin
        (method git-fetch)
@@ -17445,7 +17445,7 @@ encryption.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17dh5pr3gh6adrbqx588gimxbb2fr7iv2qrxv6r48w2727l344xs"))))
+        (base32 "1zal05l3lnb41pvfxwkzrcf39g7amqbaaffxn3wz7qa45gvvc6fw"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/ajc/nginx-mode")
     (synopsis "Emacs major mode for editing nginx config files")
