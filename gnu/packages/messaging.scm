@@ -1628,6 +1628,14 @@ notification extensions by the Tigase team that allow a client to specify
 filters to be applied to push notifications.  It is a custom extension to
 XEP-0357: Push Notifications.")))
 
+(define-public prosody-cloud-notify-priority-tag
+  (package
+    (inherit (prosody-module "mod_cloud_notify_priority_tag"))
+    (synopsis "Tigase priorities for XEP-0357: Push Notifications")
+    (description "This module implements support for a Tigase XMPP extension,
+Priority of notifications.  It is a custom extension to XEP-0357: Push
+Notifications.")))
+
 (define-public prosody-http-upload
   (package
     (inherit (prosody-module "mod_http_upload"))
