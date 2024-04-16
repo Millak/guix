@@ -99,6 +99,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -2022,14 +2023,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
     (name "flatpak")
-    (version "1.14.4")
+    (version "1.14.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                            version "/flatpak-" version ".tar.xz"))
        (sha256
-        (base32 "16b7f7n2mms6zgm0lj3fn86ny11xjn8cd3mrk1slwhvwnv8dnd4a"))
+        (base32 "0ij93vl9skcfdfgkmgd80q0q4c6q39dss4rds7phxizqqsr3d3sk"))
        (patches
         (search-patches "flatpak-fix-path.patch"
                         "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
@@ -2042,6 +2043,7 @@ the boot loader configuration.")
      (list
       #:configure-flags
       #~(list
+         "--with-curl"
          "--enable-documentation=no" ;; FIXME
          "--enable-system-helper=no"
          "--localstatedir=/var"
@@ -2105,19 +2107,22 @@ cp -r /tmp/locale/*/en_US.*")))
            bubblewrap
            curl
            dconf
-           fuse-2
+           fuse
            gdk-pixbuf
            gpgme
            json-glib
            libarchive
+           libcap
            libostree
            libseccomp
            libsoup-minimal-2
            libxau
            libxml2
            p11-kit
+           polkit
            util-linux
-           xdg-dbus-proxy))
+           xdg-dbus-proxy
+           zstd))
     (propagated-inputs (list glib-networking gnupg gsettings-desktop-schemas))
     (home-page "https://flatpak.org")
     (synopsis "System for building, distributing, and running sandboxed desktop
