@@ -4,7 +4,7 @@
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2020-2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2019, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 doncatnip <gnopap@gmail.com>
 ;;; Copyright © 2016, 2017, 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016 José Miguel Sánchez García <jmi2k@openmailbox.org>
@@ -375,49 +375,55 @@ directory structure and file attributes.")
 (define (make-lua-ossl name lua)
   (package
     (name name)
-    (version "20170903")
+    (version "20220711")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://25thandclement.com/~william/"
-                                  "projects/releases/luaossl-" version ".tgz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wahern/luaossl")
+                    (commit (string-append "rel-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "10392bvd0lzyibipblgiss09zlqh3a5zgqg1b9lgbybpqb9cv2k3"))))
+                "1a9pgmc6fbhgh1m9ksz9fq057yzz46npqgakcsy9vngg47xacfdb"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (let ((out (assoc-ref %outputs "out"))
-             (lua-api-version ,(version-major+minor (package-version lua))))
-         (list ,(string-append "CC=" (cc-for-target))
-               "CFLAGS='-D HAVE_SYS_SYSCTL_H=0'" ; sys/sysctl.h is deprecated
-               (string-append "prefix=" out)
-               (string-append "LUA_APIS=" lua-api-version)))
+     (list
+      #:make-flags
+      #~(let ((lua-api-version #$(version-major+minor (package-version lua))))
+          (list (string-append "CC=" #$(cc-for-target))
+                "CFLAGS='-D HAVE_SYS_SYSCTL_H=0'" ; sys/sysctl.h is deprecated
+                (string-append "prefix=" #$output)
+                (string-append "LUA_APIS=" lua-api-version)))
        #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (lua-version ,(version-major+minor (package-version lua))))
-               (setenv "LUA_CPATH"
-                       (string-append out "/lib/lua/" lua-version "/?.so;;"))
-               (setenv "LUA_PATH"
-                       (string-append out "/share/lua/" lua-version "/?.lua;;"))
-               (with-directory-excursion "regress"
-                 (for-each (lambda (f)
-                             (invoke "lua" f))
-                           (find-files "." "^[0-9].*\\.lua$"))))
-             #t)))))
+       #~(modify-phases %standard-phases
+           (delete 'configure)
+           (delete 'check)
+           (add-after 'install 'check
+             (lambda _
+               (let ((lua-version #$(version-major+minor (package-version lua))))
+                 (setenv "LUA_CPATH"
+                         (string-append #$output "/lib/lua/" lua-version "/?.so;;"))
+                 (setenv "LUA_PATH"
+                         (string-append #$output "/share/lua/" lua-version "/?.lua;;"))
+                 (with-directory-excursion "regress"
+                   (for-each (lambda (f)
+                               (unless (member f (list
+                                                  ;; This test is for luajit only
+                                                  "./104-interposition-discarded.lua"
+                                                  ;; needs cqueues, which needs ossl
+                                                  "./148-custom-extensions.lua"))
+                                 (invoke "lua" f)))
+                             (find-files "." "^[0-9].*\\.lua$")))))))))
     (inputs
      (list lua openssl))
     (home-page "https://25thandclement.com/~william/projects/luaossl.html")
     (synopsis "OpenSSL bindings for Lua")
     (description "The luaossl extension module for Lua provides comprehensive,
-low-level bindings to the OpenSSL library, including support for certificate and
-key management, key generation, signature verification, and deep bindings to the
-distinguished name, alternative name, and X.509v3 extension interfaces.  It also
-binds OpenSSL's bignum, message digest, HMAC, cipher, and CSPRNG interfaces.")
+low-level bindings to the OpenSSL library, including support for certificate
+and key management, key generation, signature verification, and deep bindings
+to the distinguished name, alternative name, and X.509v3 extension interfaces.
+It also binds OpenSSL's bignum, message digest, HMAC, cipher, and CSPRNG
+interfaces.")
     (license license:expat)))
 
 (define-public lua-ossl
