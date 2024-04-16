@@ -287,8 +287,11 @@ useful when FULL-BOOT?  is true."
       #~(format #f "/tmp/guix-image-~a" (basename #$base-image)))
 
     (define qemu-exec
-      #~(list #+(file-append qemu "/bin/"
-                             (qemu-command (or target system)))
+      #~(list #+(with-parameters ((%current-system %system)
+                                  (%current-target-system #f))
+                  ;; Override %CURRENT-SYSTEM to always use a native emulator.
+                  (file-append qemu "/bin/"
+                               (qemu-command (or target system))))
               ;; Tells qemu to use the terminal it was started in for IO.
               #$@(if graphic? '() #~("-nographic"))
               #$@(if full-boot?
