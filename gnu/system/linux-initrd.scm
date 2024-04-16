@@ -134,18 +134,23 @@ MODULES and taken from LINUX."
                          (guix build utils)
                          (rnrs io ports)
                          (srfi srfi-1)
-                         (srfi srfi-26))
+                         (srfi srfi-26)
+                         (ice-9 match))
 
             (define module-dir
               (string-append #$linux "/lib/modules"))
 
             (define builtin-modules
-              (call-with-input-file
-                  (first (find-files module-dir "modules.builtin$"))
-                (lambda (port)
-                  (map file-name->module-name
-                       (string-tokenize
-                        (get-string-all port))))))
+              (match (find-files module-dir (lambda (file stat)
+                                              (string=? (basename file)
+                                                        "modules.builtin")))
+                ((file . _)
+                 (call-with-input-file file
+                   (lambda (port)
+                     (map file-name->module-name
+                          (string-tokenize (get-string-all port))))))
+                (_
+                 '())))
 
             (define modules-to-lookup
               (lset-difference string=? '#$modules builtin-modules))
