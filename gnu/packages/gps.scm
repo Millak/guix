@@ -27,6 +27,7 @@
 (define-module (gnu packages gps)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system scons)
@@ -141,7 +142,7 @@ between two other data points.")
 (define-public gama
   (package
     (name "gama")
-    (version "2.29")
+    (version "2.30")
     (source
       (origin
         (method url-fetch)
@@ -149,14 +150,19 @@ between two other data points.")
                             version ".tar.gz"))
         (sha256
          (base32
-          "04dlh1pdaiq059ssrxa4yn24iqgjrzy2mq7s9n1pgrzlzz3a63y0"))
+          "0yph6q7a0dy2r2vsrkjg26q8v988pcvnaay5lk6q7k06plpr2x1m"))
         (modules '((guix build utils)))
         (snippet
          '(begin
             (delete-file-recursively "lib/expat")
             (for-each delete-file (find-files "doc/fig" "\\.pdf$"))))))
     (build-system gnu-build-system)
-    (arguments '(#:parallel-tests? #f)) ; race condition
+    (arguments
+     (list
+      #:configure-flags #~(list
+                           ;; force not to use of bundled copy of expat
+                           "--enable-expat_1_1=no")
+      #:parallel-tests? #f)) ; race condition
     (native-inputs
      (list libxml2 yaml-cpp))
     (inputs
