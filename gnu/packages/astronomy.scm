@@ -4418,13 +4418,13 @@ between image and reference catalogs. Currently only aligning images with
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "3.1.0")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "0fa6y3gmqc0y3nz0h68vq3a84pvx6gc5zp33wg8a4n9b4kipm464"))))
+        (base32 "1wj556g15gwp6ir5hg083l15sifdsf23giqkx0jbn4lgdwjffbgr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4432,12 +4432,15 @@ between image and reference catalogs. Currently only aligning images with
       #~(list "-n" "auto" "-p" "no:legacypath")
       #:phases
       #~(modify-phases %standard-phases
-          ;; ImportError: Error importing plugin " no:legacypath": No module
-          ;; named ' no:legacypath'
-          (add-before 'check 'fix-tests-setup
+          (add-after 'unpack 'patch-pypojrect-toml
             (lambda _
               (substitute* "pyproject.toml"
-                ((".*:legacypath.*") "")))))))
+                ;; ImportError: Error importing plugin " no:legacypath": No
+                ;; module named ' no:legacypath'
+                ((".*:legacypath.*") "")
+                ;; TypeError: Configuration.__init__() got an unexpected
+                ;; keyword argument 'version_file'
+                (("version_file = \"asdf/_version.py\"") "")))))))
     (native-inputs
      (list python-fsspec
            python-packaging
@@ -4451,7 +4454,6 @@ between image and reference catalogs. Currently only aligning images with
     (propagated-inputs
      (list python-asdf-standard
            python-asdf-transform-schemas
-           python-asdf-unit-schemas
            python-attrs ;; for vendorized jsonschema
            python-importlib-metadata
            python-jmespath
