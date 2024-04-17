@@ -39,6 +39,7 @@
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2024 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1875,7 +1876,7 @@ queues header library based on circular buffer with @code{std::atomic}.")
 (define-public magic-enum
   (package
     (name "magic-enum")
-    (version "0.7.3")
+    (version "0.9.5")
     (home-page "https://github.com/Neargye/magic_enum")
     (source (origin
               (method git-fetch)
@@ -1885,7 +1886,7 @@ queues header library based on circular buffer with @code{std::atomic}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x47radgsifgz3vn2561mlvf4cq46ii33cpyqf01znm56iirwq89"))))
+                "14ys5sn2v1mai8bclvi81cp65g6jblqpdsi94639hphca5v8gka3"))))
     (build-system cmake-build-system)
     (synopsis "C++17 header only library for compile time reflection of enums")
     (description "Magic Enum offers static reflection of enums, with

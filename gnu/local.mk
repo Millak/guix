@@ -1012,8 +1012,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/breezy-fix-gio.patch			\
   %D%/packages/patches/byobu-writable-status.patch		\
   %D%/packages/patches/bubblewrap-fix-locale-in-tests.patch	\
-  %D%/packages/patches/cairo-CVE-2018-19876.patch		\
-  %D%/packages/patches/cairo-CVE-2020-35492.patch		\
   %D%/packages/patches/calibre-no-updates-dialog.patch		\
   %D%/packages/patches/calibre-remove-test-sqlite.patch		\
   %D%/packages/patches/calibre-remove-test-unrar.patch		\
@@ -1369,7 +1367,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-2.29-git-updates.patch     	\
   %D%/packages/patches/glibc-2.29-supported-locales.patch     	\
   %D%/packages/patches/glibc-supported-locales.patch     	\
-  %D%/packages/patches/glslang-install-static-libs.patch     	\
   %D%/packages/patches/gmobile-make-it-installable.patch	\
   %D%/packages/patches/gmp-arm-asm-nothumb.patch		\
   %D%/packages/patches/gmp-faulty-test.patch			\

@@ -28,7 +28,7 @@
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
@@ -143,7 +143,8 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix deprecation)
-  #:use-module (guix utils))
+  #:use-module (guix utils)
+  #:use-module (ice-9 match))
 
 (define-public mmm
   (package
@@ -1192,7 +1193,7 @@ graphics.")
 (define-public openexr
   (package
     (name "openexr")
-    (version "3.1.3")
+    (version "3.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1202,16 +1203,23 @@ graphics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0c9vla0kbsbbhkk42jlbf94nzfb1anqh7dy9b0b3nna1qr6v4bh6"))))
+                "00s1a05kggk71vfbnsvykyjc2j7y6yyzgl63sy4yiddshz2k2mcr"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases
+     (list #:configure-flags
+           #~(list #$@(match (%current-system)
+                        ;; A test explicitly checks for SSE2 (would fail on
+                        ;; i686-linux), so make sure it is enabled for both C
+                        ;; and CPP.
+                        ((or "x86_64-linux" "i686-linux")
+                         '("-DCMAKE_CXX_FLAGS=-mfpmath=sse -msse2"
+                           "-DCMAKE_C_FLAGS=-mfpmath=sse -msse2"))
+                        (_ '())))
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-test-directory
                  (lambda _
                    (substitute* (list
-                                 "src/test/OpenEXRUtilTest/tmpDir.h"
-                                 "src/test/OpenEXRFuzzTest/tmpDir.h"
                                  "src/test/OpenEXRTest/tmpDir.h"
                                  "src/test/OpenEXRCoreTest/main.cpp")
                      (("/var/tmp")
@@ -1239,7 +1247,10 @@ graphics.")
                                 "")
                                (("TEST \\(testOptimizedInterleavePatterns, \"basic\"\\);")
                                 "")))))))))
-    (inputs (list imath zlib))
+    (inputs (list imath))
+    (propagated-inputs
+     ;; Marked as Requires.private in OpenEXR.pc.
+     (list libdeflate))
     (home-page "https://www.openexr.com/")
     (synopsis "High-dynamic-range file format library")
     (description

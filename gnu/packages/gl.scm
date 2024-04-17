@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017-2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2019, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -297,17 +297,17 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "23.3.2")
+    (version "24.0.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (list (string-append "https://archive.mesa3d.org/"
-                                  "mesa-" version ".tar.xz")
-                   (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
-                                  "mesa-" version ".tar.xz")))
-        (sha256
-         (base32
-          "1p4swrbmz3kb1805kdj973hf8virgmix4m9qprmcb2bgl4gviz1w"))))
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://archive.mesa3d.org/"
+                                 "mesa-" version ".tar.xz")
+                  (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
+                                 "mesa-" version ".tar.xz")))
+       (sha256
+        (base32
+         "1w25lwdrb0ffrx2fjk9izbvpcgf9ypfc7v32zybwvjwql0qbvzlh"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
@@ -327,6 +327,7 @@ also known as DXTn or DXTC) for Mesa.")
            libxrandr
            libxvmc
            llvm-for-mesa
+           vulkan-loader
            wayland
            wayland-protocols
            `(,zstd "lib")))
@@ -352,16 +353,11 @@ also known as DXTn or DXTC) for Mesa.")
       #:configure-flags
       #~(list
          #$@(cond
-             ((target-aarch64?)
-              ;; TODO: Fix svga driver for non-Intel architectures.
+             ((or (target-aarch64?) (target-arm32?))
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
-panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl,zink"))
-             ((target-arm32?)
-              ;; Freedreno FTBFS when built on a 64-bit machine.
-              '("-Dgallium-drivers=etnaviv,kmsro,lima,nouveau,panfrost,\
-r300,r600,swrast,tegra,v3d,vc4,virgl,zink"))
+panfrost,r300,r600,svga,swrast,tegra,v3d,vc4,virgl,zink"))
              ((or (target-ppc64le?) (target-ppc32?) (target-riscv64?))
-              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl,zink"))
+              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,svga,swrast,virgl,zink"))
              (else
               '("-Dgallium-drivers=crocus,iris,nouveau,r300,r600,radeonsi,\
 svga,swrast,virgl,zink")))
@@ -395,9 +391,9 @@ svga,swrast,virgl,zink")))
          ;; Enable the Vulkan overlay layer on all architectures.
          "-Dvulkan-layers=device-select,overlay"
 
-         ;; Enable the codecs that were built by default as part of the
+         ;; Enable all the codecs that were built by default as part of the
          ;; 21.3.x releases to avoid functionality regressions.
-         "-Dvideo-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc"
+         "-Dvideo-codecs=all"
 
          ;; Enable ZSTD compression for shader cache.
          "-Dzstd=enabled"
@@ -454,24 +450,17 @@ svga,swrast,virgl,zink")))
                   ;; There are some tests which fail specifically on powerpc.
                   `((substitute* '(;; LLVM ERROR: Relocation type not implemented yet!
                                    "src/gallium/drivers/llvmpipe/meson.build"
-                                   ;; This is probably a big-endian test failure.
                                    "src/gallium/targets/osmesa/meson.build")
                       (("if with_tests") "if not with_tests"))
-                    ;; This test times out and receives SIGTERM.
+                    ;; This is probably a big-endian test failure.
                     (substitute* "src/amd/common/meson.build"
-                      (("and not with_platform_windows") "and with_platform_windows"))
-                    (substitute* "src/compiler/nir/meson.build"
-                      ((".*loop_unroll_tests.*") ""))))
+                      (("and not with_platform_windows")
+                       "and with_platform_windows"))))
                  ("i686-linux"
                   ;; This test is known to fail on i686 (see:
                   ;; https://gitlab.freedesktop.org/mesa/mesa/-/issues/4091).
                   `((substitute* "src/util/meson.build"
                       ((".*'tests/u_debug_stack_test.cpp',.*") ""))))
-                 ("aarch64-linux"
-                  ;; The ir3_disasm test segfaults.
-                  ;; The simplest way to skip it is to run a different test instead.
-                  `((substitute* "src/freedreno/ir3/meson.build"
-                      (("disasm\\.c'") "delay.c',\n    link_args: ld_args_build_id"))))
                  ("armhf-linux"
                   ;; Disable some of the llvmpipe tests.
                   `((substitute* "src/gallium/drivers/llvmpipe/meson.build"
@@ -479,7 +468,7 @@ svga,swrast,virgl,zink")))
                  (_
                   '((display "No tests to disable on this architecture.\n"))))))
          (add-before 'configure 'fix-dlopen-libnames
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (let ((out #$output))
                ;; Remain agnostic to .so.X.Y.Z versions while doing
                ;; the substitutions so we're future-safe.
@@ -495,7 +484,12 @@ svga,swrast,virgl,zink")))
                  ;; it's never installed since Mesa removed its
                  ;; egl_gallium support.
                  (("\"gbm_dri\\.so")
-                  (string-append "\"" out "/lib/dri/gbm_dri.so"))))))
+                  (string-append "\"" out "/lib/dri/gbm_dri.so")))
+               (substitute* "src/gallium/drivers/zink/zink_screen.c"
+                 (("util_dl_open\\(VK_LIBNAME\\)")
+                  (format #f "util_dl_open(\"~a\")"
+                          (search-input-file inputs
+                                             "lib/libvulkan.so.1")))))))
          (add-after 'install 'split-outputs
            (lambda _
              (let ((out #$output)

@@ -2095,7 +2095,7 @@ scripted in a Python-like language.")
 (define-public godot
   (package
     (name "godot")
-    (version "4.1.3")
+    (version "4.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2104,7 +2104,7 @@ scripted in a Python-like language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mwwzf77ixkalciqakn6q42g9sl2570didfll406sfs42wz534ng"))
+                "0d5y678986lx4a4xjkxs5glh2dckp8wwl3r3mw72inq7gvaa18s3"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
@@ -2117,19 +2117,28 @@ scripted in a Python-like language.")
                     (let* ((preserved-files
                             '("README.md"
                               "amd-fsr"
+                              "amd-fsr2"
                               "assimp"
                               "astcenc"
                               "basis_universal"
                               ;; Godot needs ca-certificates.crt, but that is
                               ;; not available in build environment
                               "certs"
+                              "clipper2"
                               "cvtt"
                               "linuxbsd_headers"
                               "etc2comp"
                               "etcpak"
                               "fonts"
                               "glad"
+                              ;; TODO: Remove once Godot once again builds
+                              ;; with our glslang package, or with a
+                              ;; workaround.  Currently it looks for a Types.h
+                              ;; which is no longer in the glslang output
+                              ;; after the most recent update.
+                              "glslang"
                               "jpeg-compressor"
+                              "libktx"
                               "libsimplewebm"
                               "meshoptimizer"
                               "minimp3"
@@ -2170,7 +2179,9 @@ scripted in a Python-like language.")
                         "builtin_embree=no"
                         "builtin_enet=no"
                         "builtin_freetype=no"
-                        "builtin_glslang=no"
+                        ;; TODO: Uncomment this option when the todo for
+                        ;; glslang in the snippet is resolved.
+                        ;; "builtin_glslang=no"
                         "builtin_graphite=no"
                         "builtin_harfbuzz=no"
                         "builtin_icu4c=no"
