@@ -1241,7 +1241,12 @@ COMMIT_MSG_MAGIC = VGhpcyBpcyB0aGUgY29tbWl0LW1zZyBob29rIG9mIEd1aXg=
 	cp etc/git/commit-msg $@; \
 	fi
 
+# The etc/git/ config files are not distributed and have no use when building
+# from a tarball.  Do not add dependencies on these to *_DATA when building
+# from a tarball, as that breaks the build.
+if in_git_p
 nodist_noinst_DATA = .git/hooks/pre-push .git/config .git/hooks/commit-msg
+endif
 
 # Downloading up-to-date PO files.
 

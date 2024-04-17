@@ -265,6 +265,16 @@ dnl Documentation translation.
 AM_MISSING_PROG([PO4A_TRANSLATE], [po4a-translate])
 AM_MISSING_PROG([PO4A_UPDATEPO], [po4a-updatepo])
 
+AC_MSG_CHECKING([if building from git])
+if test -e .git; then
+   in_git_p=yes
+else
+   in_git_p=no
+fi
+AC_MSG_RESULT([$in_git_p])
+AM_CONDITIONAL([in_git_p],
+  [test "x$in_git_p" = "xyes"])
+
 case "$storedir" in
   /gnu/store)
     ;;
