@@ -727,6 +727,7 @@ EXTRA_DIST +=						\
   build-aux/test-driver.scm				\
   build-aux/update-NEWS.scm				\
   build-aux/update-guix-package.scm			\
+  build-aux/xgettext.scm				\
   doc/build.scm						\
   etc/disarchive-manifest.scm				\
   etc/guix-install.sh					\

@@ -2,6 +2,8 @@
 # -*-scheme-*-
 build_aux=$(dirname $0)
 srcdir=$build_aux/..
+export LC_ALL=en_US.UTF-8
+export TZ=UTC0
 exec guile --no-auto-compile -L $srcdir -C $srcdir -e main -s "$0" "$@"
 !#
 
@@ -59,9 +61,6 @@ exec guile --no-auto-compile -L $srcdir -C $srcdir -e main -s "$0" "$@"
 ;;; Entry point.
 ;;;
 (define (main args)
-  ;; Cater for being run in a container.
-  (setenv "LC_ALL" "en_US.UTF-8")
-  (setenv "TZ" "UTC0")
   (fluid-set! %default-port-encoding #f)
   (let* ((files-from (get-option args "--files-from="))
          (default-domain (get-option args "--default-domain="))
@@ -82,9 +81,10 @@ exec guile --no-auto-compile -L $srcdir -C $srcdir -e main -s "$0" "$@"
                (files (map (cute string-append directory "/" <>) files))
                (git-command `("git" "log" "--pretty=format:%ci" "-n1" ,@files))
                (timestamp (pipe-command git-command))
+               (source-date-epoch (or (getenv "SOURCE_DATE_EPOCH") "1"))
+               (timestamp (if (string-null? timestamp) source-date-epoch
+                              timestamp))
                (po-file (string-append default-domain ".po")))
-          (when (string-null? timestamp)
-            (exit 1))
           (substitute* po-file
             (("(\"POT-Creation-Date: )[^\\]*" all header)
              (string-append header timestamp)))))))
