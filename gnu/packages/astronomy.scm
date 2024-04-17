@@ -1973,7 +1973,7 @@ Herschel.")
 (define-public python-casa-formats-io
   (package
     (name "python-casa-formats-io")
-    (version "0.2.2")
+    (version "0.3.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "casa-formats-io" version))
