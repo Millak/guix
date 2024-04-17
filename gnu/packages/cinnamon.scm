@@ -169,7 +169,7 @@ as well as some desktop-wide documents.")
 (define-public nemo
   (package
     (name "nemo")
-    (version "5.6.5")
+    (version "6.0.2")
     (source
      (origin
        (method git-fetch)
@@ -179,7 +179,7 @@ as well as some desktop-wide documents.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15032jzi1x3dr292wbx6sdydybrs5n3lim2sq2i0lb9xa7cxxl0x"))))
+        (base32 "1416rcd0ii92r761lwz62rq0fzaliz6vzpf5nlcnpa109fkwa8mx"))))
     (build-system meson-build-system)
     (arguments
      (list
