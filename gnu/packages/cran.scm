@@ -36508,14 +36508,14 @@ vignettes in all common formats.")
 (define-public r-tidytext
   (package
     (name "r-tidytext")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidytext" version))
        (sha256
         (base32
-         "05f8209qx1rvddnkl0h05yig09xahs8lqgq9w5dvdiwarji50rsj"))))
+         "0m1dxlrmkany4pjbr2p2m9hzn59gldmznyvs6dcb3zdr5861ix0c"))))
     (properties `((upstream-name . "tidytext")))
     (build-system r-build-system)
     (propagated-inputs
