@@ -189,8 +189,6 @@ authentication and support for SSL3 and TLS.")
    (license license:lgpl2.1+)
    (home-page "https://www.gnu.org/software/libmicrohttpd/")))
 
-(define-deprecated/public-alias gnurl curl)
-
 (define-public gnunet
   (package
     (name "gnunet")

@@ -175,6 +175,8 @@ tunneling, and so on.")
                                    "See COPYING in the distribution."))
     (home-page "https://curl.haxx.se/")))
 
+(define-public gnurl (deprecated-package "gnurl" curl))
+
 (define-public curl-ssh
   (package/inherit curl
     (arguments
