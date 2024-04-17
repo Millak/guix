@@ -6979,6 +6979,24 @@ text styles of documentation.")
      "Pygments is a syntax highlighting package written in Python.")
     (license license:bsd-2)))
 
+(define-public python-vdf
+  (package
+    (name "python-vdf")
+    (version "3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vdf" version))
+       (sha256
+        (base32
+         "1bz2gn04pl6rj2mawlzlirz1ygg4rdypq0pxbyg018873vs1jm7x"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/ValvePython/vdf")
+    (synopsis "Work with Valve's VDF text format")
+    (description "This package provides @code{python-vdf}, a library for
+working with Valve's VDF text format.")
+    (license license:expat)))
+
 (define-public python-pygments-github-lexers
   (package
     (name "python-pygments-github-lexers")
