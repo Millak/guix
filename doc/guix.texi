@@ -39351,26 +39351,33 @@ Extra command line options for @code{guix-data-service-process-jobs}.
 @end table
 @end deftp
 
+@anchor{guix-home-service-type}
 @subsubheading Guix Home Service
-The Guix Home Service allows for associating Guix @ref{Declaring the
-Home Environment, home-environment} declarations with a Guix
-@ref{operating-system Reference, operating-system}.
+
+The Guix Home service is a way to let Guix System deploy the home
+environment of one or more users (@pxref{Home Configuration}, for more
+on Guix Home).  That way, the system configuration embeds declarations
+of the home environment of those users and can be used to deploy
+everything consistently at once, saving users the need to run
+@command{guix home reconfigure} independently.
 
 @defvar guix-home-service-type
-Service type for the Guix Home Service.  Its value must be a list of
+Service type for the Guix Home service.  Its value must be a list of
 lists containing user and home environment pairs.  The key of each pair
 is a string representing the user to deploy the configuration under and
 the value is a home-environment configuration.
 
 @lisp
+(use-modules (gnu home))
+
 (define my-home
   (home-environment
-   ...))
+    @dots{}))
 
 (operating-system
-  (services (list
-             (service guix-home-service-type
-                      `(("alice" ,my-home))))))
+  (services (append (list (service guix-home-service-type
+                                   `(("alice" ,my-home))))
+                    %base-services)))
 @end lisp
 
 This service can be extended by other services to add additional home
@@ -44255,6 +44262,12 @@ mechanism to create the XDG run-time directory and has the
 like user Shepherd and its descendants will not start.
 @end quotation
 
+If you're using Guix System, you can embed your home configuration in
+your system configuration such that @command{guix system reconfigure}
+will deploy both the system @emph{and} your home at once!
+@xref{guix-home-service-type, @code{guix-home-service-type}}, for how to
+do that.
+
 @node Configuring the Shell
 @section Configuring the Shell
 This section is safe to skip if your shell or shells are managed by
@@ -46499,12 +46512,13 @@ guix time-machine \
 
 You can think of it as some sort of built-in version control!  Your
 home is not just a binary artifact: @emph{it carries its own source}.
-@c @xref{Service Reference, @code{provenance-service-type}}, for more
-@c information on provenance tracking.
 
-@c @footnote{This action (and the related actions
-@c @code{switch-generation} and @code{roll-back}) are usable after the
-@c home environment is initialized.}.
+@quotation Note
+If you're using Guix System, @ref{guix-home-service-type,
+@code{guix-home-service-type}}, on how to embed your home configuration
+in your system configuration such that @command{guix system reconfigure}
+deploys both your system and your home.
+@end quotation
 
 @item switch-generation
 @cindex home generations
