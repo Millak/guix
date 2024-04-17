@@ -2426,13 +2426,15 @@ can be described by @acronym{WCS, World Coordinate System} translations.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "1.10.0")
+    ;; PyPI version for source archive is missing minor 0, See
+    ;; <https://github.com/astropy/photutils/issues/1727>
+    (version "1.12")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "148zhdxhlcgj6dxyzaz78bzxw1q44qa9q9sfdqbfbla0s0w2jaay"))))
+        (base32 "0y4kcj6qjnzwjswc0c2iimh11b0jz6b9ianbh58w4gnb4y71lr6r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2440,6 +2442,16 @@ can be described by @acronym{WCS, World Coordinate System} translations.")
       #~(list "-n" "auto")
       #:phases
       #~(modify-phases %standard-phases
+          ;; setup.py was removed in 36c3231ce5b80ad470fa78be2e96df859d2daf41
+          ;; for some unknown reason, which caused the package to fail to
+          ;; build. It is being recreated based on that commit.
+          (add-after 'unpack 'create-setup.py
+            (lambda _
+              (call-with-output-file "setup.py"
+                (lambda (port)
+                  (format port "from setuptools import setup
+from extension_helpers import get_extensions
+setup(ext_modules=get_extensions())")))))
           ;; This file is opened in both install and check phases.
           (add-before 'install 'writable-compiler
             (lambda _ (make-file-writable "photutils/_compiler.c")))
