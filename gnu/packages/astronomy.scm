@@ -2667,13 +2667,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-regions
   (package
     (name "python-regions")
-    (version "0.8")
+    (version "0.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "regions" version))
        (sha256
-        (base32 "09401pz7926zlci7cznd78hmv9947f6jxyy2afqdqc1xaccpzcq2"))))
+        (base32 "0kvfdzqry3vcvphd7ldmppbgn3ab97hbfzwxfrlxls92yi41h3i6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2681,14 +2681,21 @@ Virtual observatory (VO) using Python.")
       #~(list "-n" "auto")
       #:phases
       #~(modify-phases %standard-phases
+          ;; setup.py was removed in 84c80a280431adda00641cda5264c7de18b43b2f
+          ;; for some unknown reason, which caused the package to fail to
+          ;; build. It is being recreated based on that commit.
+          (add-after 'unpack 'create-setup.py
+            (lambda _
+              (call-with-output-file "setup.py"
+                (lambda (port)
+                  (format port "from setuptools import setup
+from extension_helpers import get_extensions
+setup(ext_modules=get_extensions())")))))
           ;; This file is opened in both install and check phases.
-          ;; XXX: Check if it is still required.
           (add-before 'install 'writable-compiler
             (lambda _ (make-file-writable "regions/_compiler.c")))
-          (add-before 'check 'prepare-test-environment
+          (add-before 'check 'build-extensions
             (lambda _
-              (setenv "HOME" "/tmp")
-              (make-file-writable "regions/_compiler.c")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
      (list python-astropy
@@ -2698,7 +2705,7 @@ Virtual observatory (VO) using Python.")
            python-scipy
            python-shapely))
     (native-inputs
-     (list python-cython
+     (list python-cython-3
            python-extension-helpers
            python-pytest-arraydiff
            python-pytest-astropy
