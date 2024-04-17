@@ -24242,14 +24242,14 @@ global options, defining default values and more.")
 (define-public r-optparse
   (package
     (name "r-optparse")
-    (version "1.7.4")
+    (version "1.7.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "optparse" version))
        (sha256
         (base32
-         "122x490161f836l7mmd021dpylz50qrqdhjcgvkd8wpsjijxd8lk"))))
+         "04jp85jik1zkbb08w44m2h0hqyzd80w4pjnfp1lnwy40ax81gj8c"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-getopt))
