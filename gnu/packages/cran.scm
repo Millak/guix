@@ -6279,14 +6279,14 @@ component analysis (with robust methods, and parallelized functions).")
 (define-public r-ape
   (package
     (name "r-ape")
-    (version "5.7-1")
+    (version "5.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ape" version))
        (sha256
         (base32
-         "0yh5wl7nydhwwc82h6yr8wcacc2f791pp05w8fg65anq309cf2cb"))))
+         "092dx0x763r6ch6pp4c4fkmnq5alrq0527p72w1wdg71g6cp5ki4"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-digest r-lattice r-nlme r-rcpp))
