@@ -26623,14 +26623,14 @@ versions.  A Shiny application implementing the functions is also included.")
 (define-public r-ggfortify
   (package
     (name "r-ggfortify")
-    (version "0.4.16")
+    (version "0.4.17")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggfortify" version))
        (sha256
         (base32
-         "05h3a4ycain0y621anjpjphsjlhpayb2nnd6n70rlymrbilfw6xv"))))
+         "1ygbvk3b99mabwqc9hh5lz3adj1i05ym7i8b6kbgid8cgrbaaxag"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
