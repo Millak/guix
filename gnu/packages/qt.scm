@@ -5371,7 +5371,7 @@ authentication on behalf of its clients.")
                            (string-append "PREFIX=" #$output)
                            (string-append "LIBDIR=" #$output "/lib")
                            (string-append "SIGNON_PLUGINS_DIR=" #$output
-                                          "/lib")))))))
+                                          "/lib/signon")))))))
     (synopsis "OAuth 2 plugin for signon")
     (description
      "This plugin for the Accounts-SSO SignOn daemon handles the OAuth
