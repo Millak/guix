@@ -3298,7 +3298,7 @@ latitude and longitude.")
 (define-public gplates
   (package
     (name "gplates")
-    (version "2.4")
+    (version "2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3306,7 +3306,7 @@ latitude and longitude.")
                     (commit (string-append "GPlates-" version))))
               (sha256
                (base32
-                "1awb4igchgpmrvj6blxd1w81c617bs66w6cfrwvf30n6rjlyn6q5"))
+                "1qrislbgrsn6l1ikd3mffsqxvy61w3l53wmr8mfd8aqaj6dk1wfx"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
