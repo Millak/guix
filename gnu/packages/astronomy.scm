@@ -3070,13 +3070,13 @@ of axis order, spatial projections, and spectral units that exist in the wild.
 (define-public python-specutils
   (package
     (name "python-specutils")
-    (version "1.13.0")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "specutils" version))
        (sha256
-        (base32 "0cfsigvsa0i7z2nq9ci9gxccp074kqsgr01xi2npk8xf7cjisrfq"))))
+        (base32 "06l0k8hi4hbfs825cnw948nnkl627g3w48n2pf9rspbvd3vbs2qf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
