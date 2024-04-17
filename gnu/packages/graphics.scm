@@ -544,9 +544,18 @@ typically encountered in feature film production.")
                 (string-append "-DPYTHON_NUMPY_PATH="
                                (assoc-ref %build-inputs "python-numpy")
                                "/lib/python" #$python-version
-                               "/site-packages/")))))
+                               "/site-packages/")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-bin
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (python-path (getenv "GUIX_PYTHONPATH")))
+                (wrap-program (string-append out "/bin/blender")
+                  `("GUIX_PYTHONPATH" ":" prefix (,python-path)))))))))
     (inputs
-     (list boost
+     (list bash-minimal
+           boost
            bullet
            eigen
            embree
