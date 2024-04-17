@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
@@ -169,6 +169,13 @@ SYSTEM."
       (drop-right %core-packages 6)
       %core-packages))
 
+(define %bare-platform-triplets
+  ;; Cross-compilation triplets of platforms that lack a proper user-space and
+  ;; for which there's no point in trying to build regular packages.
+  '("avr"
+    "or1k-elf"
+    "xtensa-ath9k-elf"))
+
 (define (cross-jobs store system)
   "Return a list of cross-compilation jobs for SYSTEM."
   (define (from-32-to-64? target)
@@ -190,8 +197,7 @@ SYSTEM."
 
   (define (pointless? target)
     ;; Return #t if it makes no sense to cross-build to TARGET from SYSTEM.
-    (or (string=? target "avr") ; Nothing for AVR at this time.
-        (string=? target "or1k-elf") ;; Nothing for or1k-elf at this time.
+    (or (member target %bare-platform-triplets)
         (match system
           ((or "x86_64-linux" "i686-linux")
            (if (string-contains target "mingw")
