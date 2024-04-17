@@ -879,17 +879,17 @@ attacks on the privacy of Tor users.")
 
 ;; We copy the official build id, which can be found there:
 ;; https://cdn.mullvad.net/browser/update_responses/update_1/release.
-(define %mullvadbrowser-build-date "20240322132912")
+(define %mullvadbrowser-build-date "20240408204645")
 
 ;; To find the last version, look at
 ;; https://mullvad.net/en/download/browser/linux.
-(define %mullvadbrowser-version "13.0.13")
+(define %mullvadbrowser-version "13.0.14")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/mullvadbrowser/<%mullvadbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-mullvad-browser-".
-(define %mullvadbrowser-firefox-version "115.9.1esr-13.0-1-build1")
+(define %mullvadbrowser-firefox-version "115.10.0esr-13.0-1-build1")
 
 ;; See tor-browser-build/projects/translation/config.
 (define mullvadbrowser-translation-base
@@ -897,11 +897,11 @@ attacks on the privacy of Tor users.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "8e04ca3c5f440ed8f16b2069ae9565e4b044ec29")))
+          (commit "d31e6b16c372e2eb235c4f2b0eae0b573a5515ba")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "0as4xjmj17jiyqaqfmqhplwscg39df109pgilkjv560xdpgld10q"))))
+      "0pyd49v0ivxbw2lbzi5vz9kl78i972p2kcaaahympaf6x5i0q1xd"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define mullvadbrowser-translation-specific
@@ -929,7 +929,7 @@ attacks on the privacy of Tor users.")
          version "/mullvad-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "1w2spwpxsvizn3xsj2pykisvi4b12y669cpqwhjkpxqlbsrlj0h8"))))
+         "1qq1bmknnq9ycfqgslwpwdflpzdl8sl3a4bgx0i817m3myvdkdyg"))))
     (arguments
      (list
       #:install-plan
@@ -972,7 +972,7 @@ Mullvad Browser.")
          %mullvadbrowser-firefox-version ".tar.xz"))
        (sha256
         (base32
-         "05s87838b6smd82jhkpw7czbg3ch8fvqiqa174g7zkqi6p7bwcy3"))))
+         "07lwjl8569ck0fm3fq0hsh1zd65zph06vpfm4r8mjzqpn7bcny75"))))
     (arguments
      (substitute-keyword-arguments (package-arguments mullvadbrowser-base)
        ((#:phases phases)
