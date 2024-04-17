@@ -4973,13 +4973,13 @@ solar physics.")
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
-    (version "0.19.0")
+    (version "0.19.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "roman_datamodels" version))
               (sha256
                (base32
-                "1ym06rj637fq9gxncdrn3phplk5djrzdwqghszis0di1dvsrif4j"))))
+                "1fp9rwzm5kzm0hjwwmlx7kym7yriyhxbfg2zr3y625pyvwpnl0a8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4992,7 +4992,6 @@ solar physics.")
               (setenv "HOME" "/tmp"))))))
     (propagated-inputs (list python-asdf
                              python-asdf-astropy
-                             python-asdf-standard
                              python-astropy
                              python-gwcs
                              python-numpy
