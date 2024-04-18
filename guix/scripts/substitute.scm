@@ -408,7 +408,8 @@ way to download the nar."
                               #:fast-decompression?
                               fast-decompression?
                               #:open-connection-for-uri
-                              open-connection-for-uri/cached))
+                              open-connection-for-uri/cached
+                              #:keep-alive? #t))
               (loop rest)))
          (()
           (loop rest)))))))
@@ -461,7 +462,8 @@ PORT."
                          #:print-build-trace? print-build-trace?
                          #:fast-decompression? fast-decompression?
                          #:open-connection-for-uri
-                         open-connection-for-uri/cached))))
+                         open-connection-for-uri/cached
+                         #:keep-alive? #t))))
     (values narinfo
             expected-hash
             actual-hash)))

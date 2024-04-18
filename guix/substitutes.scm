@@ -467,7 +467,8 @@ again.  If DURATION is #f, run BODY with no timeout."
                        #:key deduplicate? print-build-trace?
                        (fetch-timeout %fetch-timeout)
                        fast-decompression?
-                       (open-connection-for-uri guix:open-connection-for-uri))
+                       (open-connection-for-uri guix:open-connection-for-uri)
+                       (keep-alive? #f))
   "Download the nar prescribed in NARINFO, which is assumed to be authentic
 and authorized, and write it to DESTINATION.  When DEDUPLICATE? is true, and
 if DESTINATION is in the store, deduplicate its files.  Use
@@ -513,7 +514,7 @@ OPEN-CONNECTION-FOR-URI to open connections."
                     response
                     (http-fetch uri #:text? #f
                                 #:port port
-                                #:keep-alive? #t
+                                #:keep-alive? keep-alive?
                                 #:buffered? #f)))
                (values port
                        (response-content-length response)))))))
@@ -595,6 +596,12 @@ OPEN-CONNECTION-FOR-URI to open connections."
 
       ;; Wait for the reporter to finish.
       (every (compose zero? cdr waitpid) pids)
+
+      ;; TODO The port should also be closed if the relevant HTTP response
+      ;; header is set, but http-fetch doesn't currently share that
+      ;; information
+      (unless keep-alive?
+        (close-port raw))
 
       (values expected
               (get-hash)))))
