@@ -7,7 +7,7 @@
 
 (use-modules (gnu) (guix) (srfi srfi-1))
 (use-service-modules desktop mcron networking spice ssh xorg sddm)
-(use-package-modules bootloaders certs fonts
+(use-package-modules bootloaders fonts
                      package-management xdisorg xorg)
 
 (define vm-image-motd (plain-file "motd" "
@@ -66,7 +66,7 @@ root ALL=(ALL) ALL
 %wheel ALL=NOPASSWD: ALL\n"))
 
   (packages
-   (append (list font-bitstream-vera nss-certs
+   (append (list font-bitstream-vera
                  ;; Auto-started script providing SPICE dynamic resizing for
                  ;; Xfce (see:
                  ;; https://gitlab.xfce.org/xfce/xfce4-settings/-/issues/142).

@@ -21,7 +21,6 @@
   #:use-module (gnu bootloader u-boot)
   #:use-module (gnu image)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages certs)
   #:use-module (guix platforms arm)
   #:use-module (gnu services)
   #:use-module (gnu services base)
@@ -55,8 +54,7 @@
                                            (term "vt100")
                                            (tty "ttyS2")))
             (service dhcp-client-service-type)
-            (service ntp-service-type) %base-services))
-    (packages (cons nss-certs %base-packages))))
+            (service ntp-service-type) %base-services))))
 
 (define orangepi-r1-plus-lts-rk3328-image-type
   (image-type (name 'orangepi-r1-plus-lts-rk3328-raw)

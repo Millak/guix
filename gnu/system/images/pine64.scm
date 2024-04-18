@@ -59,8 +59,7 @@
                          (tty "ttyS0")))
                (service dhcp-client-service-type)
                (service ntp-service-type)
-               %base-services))
-    (packages (cons nss-certs %base-packages))))
+               %base-services))))
 
 (define pine64-image-type
   (image-type

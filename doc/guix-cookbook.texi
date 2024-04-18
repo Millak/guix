@@ -2548,7 +2548,6 @@ is below. Save the resulting file as @file{guix-config.scm}.
 (use-service-modules networking
                      ssh)
 (use-package-modules admin
-                     certs
                      package-management
                      ssh
                      tls)
@@ -2586,8 +2585,7 @@ is below. Save the resulting file as @file{guix-config.scm}.
                 (home-directory "/home/janedoe"))
                %base-user-accounts))
 
-  (packages (cons* nss-certs            ;for HTTPS access
-                   openssh-sans-x
+  (packages (cons* openssh-sans-x
                    %base-packages))
 
   (services (cons*
@@ -2796,7 +2794,7 @@ here is a sample:
 @lisp
 (use-modules (gnu) (guix))
 (use-service-modules networking ssh vpn virtualization sysctl admin mcron)
-(use-package-modules ssh certs tls tmux vpn virtualization)
+(use-package-modules ssh tls tmux vpn virtualization)
 
 (operating-system
   (host-name "kimsufi")
@@ -2848,7 +2846,7 @@ root ALL=(ALL) ALL
 guix ALL=(ALL) NOPASSWD:ALL\n"))
 
   ;; Globally-installed packages.
-  (packages (cons* tmux nss-certs gnutls wireguard-tools %base-packages))
+  (packages (cons* tmux gnutls wireguard-tools %base-packages))
   (services
    (cons*
     (service static-networking-service-type

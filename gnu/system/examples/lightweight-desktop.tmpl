@@ -5,7 +5,7 @@
 
 (use-modules (gnu) (gnu system nss))
 (use-service-modules desktop)
-(use-package-modules bootloaders certs emacs emacs-xyz ratpoison suckless wm
+(use-package-modules bootloaders emacs emacs-xyz ratpoison suckless wm
                      xorg)
 
 (operating-system
@@ -47,9 +47,7 @@
                      ratpoison i3-wm i3status dmenu
                      emacs emacs-exwm emacs-desktop-environment
                      ;; terminal emulator
-                     xterm
-                     ;; for HTTPS access
-                     nss-certs)
+                     xterm)
                     %base-packages))
 
   ;; Use the "desktop" services, which include the X11

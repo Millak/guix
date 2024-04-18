@@ -5,7 +5,7 @@
 
 (use-modules (gnu) (gnu system nss) (guix utils))
 (use-service-modules desktop sddm xorg)
-(use-package-modules certs gnome)
+(use-package-modules gnome)
 
 (operating-system
   (host-name "antelope")
@@ -65,8 +65,6 @@
 
   ;; This is where we specify system-wide packages.
   (packages (append (list
-                     ;; for HTTPS access
-                     nss-certs
                      ;; for user mounts
                      gvfs)
                     %base-packages))

@@ -16,8 +16,7 @@
                      avahi
                      networking
                      ssh)
-(use-package-modules certs
-                     linux
+(use-package-modules linux
                      raspberry-pi
                      ssh)
 
@@ -60,8 +59,7 @@
                    (supplementary-groups '("wheel" "netdev" "audio" "video"))
                    (home-directory "/home/pi"))
                   %base-user-accounts))
-    (packages (cons* nss-certs
-                     openssh
+    (packages (cons* openssh
                      %base-packages))
     (services (cons* (service avahi-service-type)
                      (service dhcp-client-service-type)

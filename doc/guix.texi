@@ -17152,7 +17152,7 @@ the @code{(gnu packages)} module.  For example:
 (operating-system
   ;; ...
   (packages (append (map specification->package+output
-                         '("nss-certs" "git" "git:send-email"))
+                         '("git" "git:send-email"))
                     %base-packages)))
 
 @end lisp
@@ -41006,7 +41006,7 @@ Reference}).  Guix includes one such package, @code{nss-certs}, which
 is a set of CA certificates provided as part of Mozilla's Network
 Security Services.
 
-Note that it is @emph{not} part of @code{%base-packages}, so you need to
+This package is part of @code{%base-packages}, so there is no need to
 explicitly add it.  The @file{/etc/ssl/certs} directory, which is where
 most applications and libraries look for certificates by default, points
 to the certificates installed globally.

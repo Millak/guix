@@ -3,7 +3,7 @@
 
 (use-modules (gnu) (gnu system nss) (srfi srfi-1))
 (use-service-modules desktop sddm xorg ssh)
-(use-package-modules certs gnome ssh admin fonts)
+(use-package-modules gnome ssh admin fonts)
 (use-package-modules qt xorg tmux linux)
 
 (operating-system
@@ -32,8 +32,7 @@
                %base-user-accounts))
 
   ;; This is where we specify system-wide packages.
-  (packages (cons* nss-certs         ;for HTTPS access
-                   neofetch
+  (packages (cons* neofetch
                    htop
                    tmux
                    xprop

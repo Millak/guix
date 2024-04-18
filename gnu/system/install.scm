@@ -548,11 +548,10 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
      (base-pam-services #:allow-empty-passwords? #t))
 
     (packages (append
-                (list glibc         ; for 'tzselect' & co.
+                (list glibc             ; for 'tzselect' & co.
                       fontconfig
                       font-dejavu font-gnu-unifont
-                      grub          ; mostly so xrefs to its manual work
-                      nss-certs)    ; To access HTTPS, use git, etc.
+                      grub)             ; mostly so xrefs to its manual work
                 %installer-disk-utilities
                 %base-packages))))
 
