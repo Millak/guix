@@ -147,7 +147,7 @@
   ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
   (package
     (name "bitcoin-core")
-    (version "26.1")
+    (version "27.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -155,7 +155,7 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "1vimkcm5bd6dyncy6kw16ibkcbykv526ajgh175j0jkvf5fywr4i"))))
+                "0sqldg540q5d4lvr8fs9sbycxgzkij5y52rqqg6blmxisd8yc7lw"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
