@@ -73,7 +73,7 @@ dictionaries.")
 (define-public enchant
   (package
     (name "enchant")
-    (version "2.6.8")
+    (version "2.6.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/AbiWord/enchant/releases"
@@ -81,7 +81,7 @@ dictionaries.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1bn7z8155czgzlnq2n4c915cl1vd3v95h1bghic3szy7c8q94rgm"))))
+                "0szzxx0bvkdgahlzdbrmnngf1dzbsrpcf8psl2rl72mkr46s39fr"))))
     (build-system gnu-build-system)
     (arguments
      (list
