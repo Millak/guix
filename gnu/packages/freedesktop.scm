@@ -27,7 +27,7 @@
 ;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2021, 2022, 2023 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2022, 2024 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2021-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
@@ -875,7 +875,7 @@ the freedesktop.org XDG Base Directory specification.")
 (define-public elogind
   (package
     (name "elogind")
-    (version "252.9")
+    (version "255.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -884,8 +884,7 @@ the freedesktop.org XDG Base Directory specification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "049cfv97975x700s7lx4p9i22nv6v7j046iwkspxba7kr5qq7akw"))
-              (patches (search-patches "elogind-fix-rpath.patch"))))
+                "0cb6p559281dzh24is91v6d4v4kz45yhyizibi4sfql9nign865h"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -894,11 +893,8 @@ the freedesktop.org XDG Base Directory specification.")
                  (libexec (string-append out "/libexec/elogind"))
                  (dbus-data (string-append out "/share/dbus-1"))
                  (dbuspolicy (string-append dbus-data "/system.d"))
-                 (dbussessionservice (string-append dbus-data "/services"))
                  (dbussystemservice (string-append dbus-data
                                                    "/system-services"))
-                 (dbusinterfaces (string-append dbus-data "/interfaces"))
-
                  #$@(if (not (target-riscv64?))
                         #~((kexec-tools #$(this-package-input "kexec-tools")))
                         #~())
@@ -912,13 +908,11 @@ the freedesktop.org XDG Base Directory specification.")
                  (poweroff-path (string-append shepherd "/sbin/shutdown"))
                  (reboot-path (string-append shepherd "/sbin/reboot")))
             (list
-             (string-append "-Drootprefix=" out)
+             "-Dmode=release"
+             (string-append "-Dlibexecdir=" libexec)
              (string-append "-Dsysconfdir=" sysconf)
-             (string-append "-Drootlibexecdir=" libexec)
              (string-append "-Ddbuspolicydir=" dbuspolicy)
-             (string-append "-Ddbussessionservicedir=" dbussessionservice)
              (string-append "-Ddbussystemservicedir=" dbussystemservice)
-             (string-append "-Ddbus-interfaces-dir=" dbusinterfaces)
              (string-append "-Dc_link_args=-Wl,-rpath=" libexec)
              (string-append "-Dcpp_link_args=-Wl,-rpath=" libexec)
              (string-append "-Dhalt-path=" halt-path)
@@ -929,7 +923,7 @@ the freedesktop.org XDG Base Directory specification.")
              (string-append "-Dreboot-path=" reboot-path)
              (string-append "-Dnologin-path=" nologin-path)
              "-Dcgroup-controller=elogind"
-             "-Dman=true"
+             "-Dman=enabled"
              ;; Disable some tests.
              "-Dslow-tests=false"
              ;; Adjust the default user shell to /bin/sh (otherwise it is set
@@ -937,6 +931,18 @@ the freedesktop.org XDG Base Directory specification.")
              "-Ddefault-user-shell=/bin/sh"))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-tzdata
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (substitute* "src/basic/time-util.c"
+               (("/usr/share/zoneinfo")
+                (search-input-directory (or native-inputs inputs)
+                                        "share/zoneinfo")))))
+         (add-after 'unpack 'do-not-install-empty-/var/log/elogind-dir
+           (lambda _
+             ;; This is the elogind state directory, which is not writable in
+             ;; the build environment.
+             (substitute* "meson.build"
+               (("install_emptydir\\(elogindstatedir)") ""))))
          (add-after 'unpack 'fix-pkttyagent-path
            (lambda _
              (substitute* "meson.build"
@@ -953,18 +959,46 @@ the freedesktop.org XDG Base Directory specification.")
                (("PKGSYSCONFDIR") "\"/etc/elogind\""))))
          (add-after 'unpack 'adjust-tests
            (lambda _
+             ;; A few tests expect /var/tmp to exists, but it doesn't in the
+             ;; container.
+             (substitute* '("src/test/test-xattr-util.c"
+                            "src/test/test-copy.c"
+                            "src/test/test-fs-util.c")
+               (("/var/tmp/")
+                "/tmp/"))
+             (substitute* "src/test/test-xattr-util.c"
+               ;; The xattr-util test depends on /usr; patch it to use /tmp
+               ;; instead.
+               (("fd, \"usr\", \"user.idontexist\"")
+                "fd, \"/tmp\", \"user.idontexist\""))
+             (substitute* '("src/test/test-chase.c"
+                            "src/test/test-fd-util.c")
+               ;; Many checks use /usr, which doesn't exist in our
+               ;; environment.
+               (("/usr")
+                "/tmp")
+               (("\"usr\"")
+                "\"tmp\""))
              (substitute* "src/test/meson.build"
-               ((".*'test-cgroup.c'.*") "")) ;no cgroup in container
+               ;; Requires cgroup support.
+               ((".*'test-cgroup-util\\.c'.*") "")
+               ;; Requires privilege to create mount namespaces.
+               ((".*'test-mountpoint-util\\.c'.*") ""))
+             (substitute* "src/libelogind/meson.build"
+               ;; The bus-creds test fails due to requiring cgroups.
+               ((".*'sd-bus/test-bus-creds.c'.*") "")
+               ;; The login test fails due to 'sd_pid_get_slice' returning
+               ;; NULL.
+               ((".*'sd-login/test-login.c'.*") "")
+               ;; The sd-device test fails due to 'devname_from_devnum'
+               ;; returning NULL.
+               ((".*'sd-device/test-sd-device.c'.*") ""))
              ;; This test tries to copy some bytes from /usr/lib/os-release,
              ;; which does not exist in the build container.  Choose something
              ;; more likely to be available.
              (substitute* "src/test/test-copy.c"
                (("/usr/lib/os-release")
-                "/etc/passwd")
-               ;; Skip the copy_holes test, which fails for unknown reasons
-               ;; (see: https://github.com/elogind/elogind/issues/261).
-               (("TEST_RET\\(copy_holes).*" all)
-                (string-append all "        return 77;\n")))
+                "/etc/passwd"))
              ;; Use a shebang that works in the build container.
              (substitute* "src/test/test-exec-util.c"
                (("#!/bin/sh")
@@ -1000,11 +1034,11 @@ the freedesktop.org XDG Base Directory specification.")
            docbook-xsl
            gettext-minimal
            gperf
-           m4
            pkg-config
            python
            python-jinja2
-           libxslt))
+           libxslt
+           tzdata))
     (inputs
      (append
       (if (not (target-riscv64?))
