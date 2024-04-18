@@ -3057,8 +3057,7 @@ Radios.")
         (base32 "0kxn98vmrsd2a157cf3hsmivi6p4k4a3907j5w8hmcs0nn92786i"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("gfortran" ,gfortran)
-       ("googletest-source" ,(package-source googletest))
+     `(("googletest-source" ,(package-source googletest))
        ("orc" ,orc)
        ("pkg-config" ,pkg-config)
        ("python" ,python)
@@ -3072,7 +3071,6 @@ Radios.")
            gmp
            gnuradio
            gr-osmosdr
-           lapack
            libpcap
            log4cpp
            matio
@@ -3086,6 +3084,7 @@ Radios.")
      `(#:configure-flags
        (list "-DENABLE_GENERIC_ARCH=ON"
              "-DENABLE_OSMOSDR=ON"
+             "-DBLA_VENDOR=OpenBLAS"
              (string-append "-DGFLAGS_ROOT="
                             (assoc-ref %build-inputs "gflags"))
              (string-append "-DGLOG_ROOT="
