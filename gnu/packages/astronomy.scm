@@ -2732,13 +2732,13 @@ setup(ext_modules=get_extensions())")))))
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.13.0")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reproject" version))
        (sha256
-        (base32 "1qkjbx8xsawhi1gjzqimais3crvkwgbzy1pr51x6anjjln88rgll"))))
+        (base32 "1xk809h2j3zj37l5lx4l87zanf9zxbxajcrff2b2f2i0jpnmxqv3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2754,6 +2754,17 @@ setup(ext_modules=get_extensions())")))))
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
+          ;; setup.py was removed in a659a260bdd7635cddc8f33c4ea04a3b6d8c1f84
+          ;; for some unknown reason, which caused the package to fail to
+          ;; build. It is being recreated based on that commit.
+          ;; TODO: Check how to implement it in python-build-system.
+          (add-after 'unpack 'create-setup.py
+            (lambda _
+              (call-with-output-file "setup.py"
+                (lambda (port)
+                  (format port "from setuptools import setup
+from extension_helpers import get_extensions
+setup(ext_modules=get_extensions())")))))
           (add-before 'install 'writable-compiler
             (lambda _
               (make-file-writable "reproject/_compiler.c")))
@@ -2778,7 +2789,7 @@ setup(ext_modules=get_extensions())")))))
            python-shapely
            python-zarr))
     (native-inputs
-     (list python-cython
+     (list python-cython-3
            python-extension-helpers
            python-pytest-astropy
            python-semantic-version
