@@ -4579,6 +4579,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
               (sha256
                (base32
                 "0z6w6bknhwh1n3qfkb5ij6x57q3wjf28lq3l8kh7rkhsplinjnjc"))
+              (patches (search-patches "lvm2-no-systemd.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin

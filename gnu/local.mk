@@ -1705,6 +1705,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mcrypt-CVE-2012-4527.patch			\
   %D%/packages/patches/libmemcached-build-with-gcc7.patch	\
   %D%/packages/patches/libmhash-hmac-fix-uaf.patch		\
+  %D%/packages/patches/lvm2-no-systemd.patch    		\
   %D%/packages/patches/maturin-no-cross-compile.patch		\
   %D%/packages/patches/mecab-variable-param.patch		\
   %D%/packages/patches/memtest86+-build-reproducibly.patch	\
