@@ -380,9 +380,10 @@ LENGTH characters."
                                                       (abbrevs '("Dr" "Mr" "Mrs"
                                                                  "Ms" "Prof" "vs"
                                                                  "e.g")))
-                                                  (if (or (any (cut string-suffix? <> pre) abbrevs)
-                                                          (char-upper-case?
-                                                           (string-ref pre (1- (string-length pre)))))
+                                                  (if (and (> (string-length pre) 0)
+                                                           (or (any (cut string-suffix? <> pre) abbrevs)
+                                                               (char-upper-case?
+                                                                (string-ref pre (1- (string-length pre))))))
                                                       ". "
                                                       ".  ")))
                                               'post)
