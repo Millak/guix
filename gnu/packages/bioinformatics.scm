@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022, 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2024 Alexis Simon <alexis.simon@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1914,6 +1915,58 @@ from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
     (description
      "CMSeq is a set of commands to provide an interface to .bam files for coverage
 and sequence consensus.")
+    (license license:expat)))
+
+(define-public python-cyvcf2
+  (package
+    (name "python-cyvcf2")
+    (version "0.30.28")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/brentp/cyvcf2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16yhfax509zyip8kkq2b0lflx5bdq5why7d785ayrqyzzq2rxqkk"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete bundled library
+        '(delete-file-recursively "htslib"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace")))
+          (add-after 'unpack 'fix-setup
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "setup.py"
+                (("^htslib_include_dirs =.*")
+                 (string-append "htslib_include_dirs = [\""
+                                #$(this-package-input "htslib") "/include\"]\n"))
+                (("lib_name = \"libhts.so\"")
+                 (string-append "lib_name = \""
+                                (search-input-file inputs "lib/libhts.so.3")
+                                "\"\n")))))
+          (add-before 'build 'use-system-htslib-package
+            (lambda _
+              (setenv "CYTHONIZE" "1")
+              (setenv "CYVCF2_HTSLIB_MODE" "EXTERNAL"))))))
+    (inputs (list curl htslib libdeflate openssl zlib))
+    (native-inputs (list python-cython python-pytest))
+    (propagated-inputs
+     (list python-click
+           python-coloredlogs
+           python-numpy))
+    (home-page "https://github.com/brentp/cyvcf2/")
+    (synopsis "Fast vcf file parsing with Cython and htslib")
+    (description "Cyvcf2 is a Cython wrapper around htslib built for fast
+parsing of Variant Call Format (VCF) files.")
     (license license:expat)))
 
 (define-public python-decoupler-py
