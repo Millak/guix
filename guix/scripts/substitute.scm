@@ -104,35 +104,37 @@ disabled!~%"))
 
 (define-syntax-rule (with-timeout duration handler body ...)
   "Run BODY; when DURATION seconds have expired, call HANDLER, and run BODY
-again."
-  (begin
-    (sigaction SIGALRM
-      (lambda (signum)
-        (sigaction SIGALRM SIG_DFL)
-        handler))
-    (alarm duration)
-    (call-with-values
-        (lambda ()
-          (let try ()
-            (catch 'system-error
+again.  If DURATION is #f, run BODY with no timeout."
+  (let ((thunk (lambda () body ...)))
+    (if duration
+        (begin
+          (sigaction SIGALRM
+            (lambda (signum)
+              (sigaction SIGALRM SIG_DFL)
+              handler))
+          (alarm duration)
+          (call-with-values
               (lambda ()
-                body ...)
-              (lambda args
-                ;; Before Guile v2.0.9-39-gfe51c7b, the SIGALRM triggers EINTR
-                ;; because of the bug at
-                ;; <http://lists.gnu.org/archive/html/guile-devel/2013-06/msg00050.html>.
-                ;; When that happens, try again.  Note: SA_RESTART cannot be
-                ;; used because of <http://bugs.gnu.org/14640>.
-                (if (= EINTR (system-error-errno args))
-                    (begin
-                      ;; Wait a little to avoid bursts.
-                      (usleep (random 3000000 %random-state))
-                      (try))
-                    (apply throw args))))))
-      (lambda result
-        (alarm 0)
-        (sigaction SIGALRM SIG_DFL)
-        (apply values result)))))
+                (let try ()
+                  (catch 'system-error
+                    thunk
+                    (lambda args
+                      ;; Before Guile v2.0.9-39-gfe51c7b, the SIGALRM triggers EINTR
+                      ;; because of the bug at
+                      ;; <http://lists.gnu.org/archive/html/guile-devel/2013-06/msg00050.html>.
+                      ;; When that happens, try again.  Note: SA_RESTART cannot be
+                      ;; used because of <http://bugs.gnu.org/14640>.
+                      (if (= EINTR (system-error-errno args))
+                          (begin
+                            ;; Wait a little to avoid bursts.
+                            (usleep (random 3000000 %random-state))
+                            (try))
+                          (apply throw args))))))
+            (lambda result
+              (alarm 0)
+              (sigaction SIGALRM SIG_DFL)
+              (apply values result))))
+        (thunk))))
 
 (define (at-most max-length lst)
   "If LST is shorter than MAX-LENGTH, return it and the empty list; otherwise
@@ -484,26 +486,20 @@ STATUS-PORT."
        (let ((port (open-file (uri-path uri) "r0b")))
          (values port (stat:size (stat port)))))
       ((http https)
-       (if fetch-timeout
-           ;; Test this with:
-           ;;   sudo tc qdisc add dev eth0 root netem delay 1500ms
-           ;; and then cancel with:
-           ;;   sudo tc qdisc del dev eth0 root
-           (with-timeout %fetch-timeout
-             (begin
-               (warning (G_ "while fetching ~a: server is somewhat slow~%")
-                        (uri->string uri))
-               (warning (G_ "try `--no-substitutes' if the problem persists~%")))
-             (with-cached-connection uri port
-               (http-fetch uri #:text? #f
-                           #:port port
-                           #:keep-alive? #t
-                           #:buffered? #f)))
-           (with-cached-connection uri port
-             (http-fetch uri #:text? #f
-                         #:port port
-                         #:keep-alive? #t
-                         #:buffered? #f))))
+       ;; Test this with:
+       ;;   sudo tc qdisc add dev eth0 root netem delay 1500ms
+       ;; and then cancel with:
+       ;;   sudo tc qdisc del dev eth0 root
+       (with-timeout fetch-timeout
+         (begin
+           (warning (G_ "while fetching ~a: server is somewhat slow~%")
+                    (uri->string uri))
+           (warning (G_ "try `--no-substitutes' if the problem persists~%")))
+         (with-cached-connection uri port
+           (http-fetch uri #:text? #f
+                       #:port port
+                       #:keep-alive? #t
+                       #:buffered? #f))))
       (else
        (raise
         (formatted-message
