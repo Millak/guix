@@ -48,7 +48,7 @@
 ;;; Copyright © 2021, 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
-;;; Copyright © 2021, 2023 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2023, 2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Pierre-Antoine Bouttier <pierre-antoine.bouttier@univ-grenoble-alpes.fr>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -4993,7 +4993,9 @@ full text searching.")
                (base32
                 "15zkvjbdxiiazhvh0g6y0ig9pgc4rvwnzplmnkx9dffz4xfn69w1"))))
     (build-system cmake-build-system)
-    (arguments `(#:tests? #f))          ; no test target
+    (arguments
+     `(#:tests? #f  ; no test target
+       #:configure-flags '("-DOPENBLAS_PROVIDES_LAPACK=ON")))
     (inputs
      (list openblas arpack-ng))
     (home-page "https://arma.sourceforge.net/")
