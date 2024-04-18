@@ -2742,16 +2742,11 @@ setup(ext_modules=get_extensions())")))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; FIXME: Failing tests
-      ;;
-      ;; reproject/adaptive/core.py:7: in <module>
-      ;; from .deforest import map_coordinates
-      ;; E   ModuleNotFoundError: No module named 'reproject.adaptive.deforest'
-      ;;
-      ;; Project removed setup.py and there is no alternative to `python
-      ;; setup.py build_ext'
-      ;; See: https://github.com/pypa/setuptools/discussions/3388
-      #:tests? #f
+      #:test-flags
+      #~(list "--arraydiff"
+              "--arraydiff-default-format=fits"
+              "--numprocesses" "auto"
+              "--pyargs" "reproject")
       #:phases
       #~(modify-phases %standard-phases
           ;; setup.py was removed in a659a260bdd7635cddc8f33c4ea04a3b6d8c1f84
@@ -2771,9 +2766,11 @@ setup(ext_modules=get_extensions())")))))
           (add-before 'check 'writable-compiler
             (lambda _
               (make-file-writable "reproject/_compiler.c")))
-          (add-before 'check 'writable-home
+          (add-before 'check 'prepare-test-environment
             (lambda _
-              (setenv "HOME" (getcwd)))))))
+              (setenv "HOME" "/tmp")
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
      (list python-asdf
            python-astropy
@@ -2791,9 +2788,11 @@ setup(ext_modules=get_extensions())")))))
     (native-inputs
      (list python-cython-3
            python-extension-helpers
-           python-pytest-astropy
-           python-semantic-version
            python-pytest
+           python-pytest-astropy
+           python-pytest-xdist
+           ;; python-sunpy ; circular dependencies, test optional
+           python-semantic-version
            python-setuptools-scm))
     (home-page "https://reproject.readthedocs.io")
     (synopsis "Astronomical image reprojection in Python")
