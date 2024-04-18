@@ -33,7 +33,7 @@
 (define-public moreutils
   (package
     (name "moreutils")
-    (version "0.68")
+    (version "0.69")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -42,7 +42,7 @@
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1rxn01hgm5nypcpnl4s9v5zr4fxzf8vxinzbg0s781qlpk3lpcay"))))
+                "1l859qnzccslvxlh5ghn863bkq2vgmqgnik6jr21b9kc6ljmsy8g"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
