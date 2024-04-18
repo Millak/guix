@@ -93,7 +93,7 @@
                (let ((errno (system-error-errno
                              (cons 'system-error (exception-args exception)))))
                  (memv errno (list ECONNRESET ECONNABORTED ETIMEDOUT
-                                   ECONNREFUSED EHOSTUNREACH
+                                   ECONNREFUSED EHOSTUNREACH EPIPE
                                    ENOENT))))     ;for "file://"
           (and (kind-and-args? exception)
                (memq (exception-kind exception)
