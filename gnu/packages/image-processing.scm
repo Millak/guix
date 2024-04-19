@@ -1704,6 +1704,46 @@ purposes.")
 segmentation.")
     (license license:expat)))
 
+(define-public python-pims
+  (package
+    (name "python-pims")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PIMS" version))
+       (sha256
+        (base32 "0fsg353mbbj1ad06nwrp8p9xcrzy6rca6b52nvlbraaf3m309dz2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; We don't have all the (sometimes very large) data files, so we skip
+      ;; these tests.
+      '(list "--ignore=pims/tests/test_imseq.py"
+             "--ignore=pims/tests/test_norpix.py"
+             "-k"
+             (string-append " not TestImageReaderTIFF"
+                            " and not TestOpenFiles"
+                            " and not TestSpeStack"
+                            " and not TestTiffStack_pil"
+                            " and not TestTiffStack_tifffile"
+                            " and not TestVideo_ImageIO"))))
+    (propagated-inputs
+     (list python-imageio python-numpy python-slicerator))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/soft-matter/pims")
+    (synopsis "Python Image Sequence")
+    (description "Scientific video can be packaged in various ways: familiar
+video formats like @file{.AVI} and @file{.MOV}, folders full of numbered
+images, or \"stacks\" of TIFF images.  Each of these requires a separate
+Python module.  And, once loaded, they have different methods for accessing
+individual images, looping through the images in bulk, accessing a specific
+range, or dealing with multidimensional files.  PIMS can do all of these using
+a consistent interface, handling the differences between different inputs
+invisibly.")
+    (license license:bsd-3)))
+
 (define-public python-spatial-image
   (package
     (name "python-spatial-image")
