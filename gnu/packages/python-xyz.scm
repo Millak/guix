@@ -8626,6 +8626,34 @@ tracebacks and better introspection than Python's standard @command{pdb}
 debugger, with which it shares the same interface.")
     (license license:bsd-3)))
 
+(define-public python-ipfsspec
+  (package
+    (name "python-ipfsspec")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ipfsspec" version))
+       (sha256
+        (base32 "1y4ad9schc76j2lynm7vpwi4q4jzi9vv843zfpisbp8zqgm0rr7l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-m not local_gw"
+             ;; Require local gateway
+             "--ignore=test/test_gateway.py"
+             ;; Require internet
+             "--ignore=test/test_async.py"
+             "--ignore=test/test_ipfs.py")))
+    (propagated-inputs (list python-aiohttp python-fsspec python-requests))
+    (native-inputs (list python-pytest python-pytest-asyncio))
+    (home-page "https://github.com/fsspec/ipfsspec")
+    (synopsis "Read-only implementation of fsspec for IPFS")
+    (description "This package provides a read-only implementation of
+@code{fsspec} for IPFS.")
+    (license license:expat)))
+
 (define-public python-pdbpp
   ;; The latest release lacks support for Python 3.10; use the latest commit
   ;; of the master branch (see: https://github.com/pdbpp/pdbpp/issues/503).
