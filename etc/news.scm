@@ -9,7 +9,7 @@
 ;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;; Copyright © 2021–2023 Leo Famulari <leo@famulari.name>
 ;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
 ;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
@@ -30,6 +30,18 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "fdfd7667c66cf9ce746330f39bcd366e124460e1")
+        (title
+         (en "@code{nss-certs} is now included in @code{%base-packages}")
+         (fr "@code{nss-certs} est maintenant inclus dans @code{%base-packages}"))
+        (body
+         (en "The @code{nss-certs} package is now included in the
+@code{%base-packages}, the default value for the @code{packages} field of the
+@code{operating-system} record.")
+         (fr "Le paquet @code{nss-certs} est maintenant inclus dans
+@code{%base-packages}, la valeur par défaut du champ @code{packages} de
+l'enregistrement @code{operating-system}.")))
 
  (entry (commit "b4aed68e960116b2b60f68ea1468d7a526149823")
         (title
