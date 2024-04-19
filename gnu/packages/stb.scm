@@ -97,6 +97,12 @@ the C programming language.")
    "stb-image is a small and self-contained library for image loading or
 decoding from file or memory.  A variety of formats are supported."))
 
+(define-public stb-image-resize
+  (make-stb-header-package
+   "stb-image-resize" "0.96"
+   "stb-image-resize is a library that supports scaling and translation of
+images."))
+
 (define-public stb-image-write
   (make-stb-header-package
    "stb-image-write" "1.15"
