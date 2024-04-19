@@ -494,21 +494,19 @@ Mathjax, the JavaScript display engine for mathematics.")
 (define-public python-nbclient
   (package
     (name "python-nbclient")
-    (version "0.6.0")
+    (version "0.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nbclient" version))
        (sha256
         (base32
-         "0cbhs8l8ma5nzm1i4484gsrb7189m1lmniashp929pxsqq1s929z"))))
-    (build-system python-build-system)
+         "09whkb8ll1nfdn4h3k0shncgkfak4lglmiwn8wdni6nrc5wnmxqd"))))
+    (build-system pyproject-build-system)
     ;; Tests require tools from nbconvert, which would introduces a cycle.
     (arguments '(#:tests? #false))
     (propagated-inputs
-     (list python-jupyter-client
-           python-nbformat
-           python-nest-asyncio
+     (list python-jupyter-client python-jupyter-core python-nbformat
            python-traitlets))
     (home-page "https://jupyter.org")
     (synopsis "Client library for executing notebooks")
