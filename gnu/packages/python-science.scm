@@ -1248,6 +1248,28 @@ are \"typed\" (i.e. fixed dimensions, data type, coordinates, attributes, and
 name) using the Python's @code{dataclass}.")
     (license license:expat)))
 
+;; Note that this package will be folded into xarray eventually.  See
+;; https://github.com/pydata/xarray/issues/8572 for details.
+(define-public python-xarray-datatree
+  (package
+    (name "python-xarray-datatree")
+    (version "0.0.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xarray-datatree" version))
+       (sha256
+        (base32 "1x1s25s6dp1f2hck9qw8vl8hgkyy23rcwag2a9vd3w0dbgrrl5i6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-packaging python-xarray))
+    (native-inputs (list python-pytest python-zarr))
+    (home-page "https://github.com/xarray-contrib/datatree")
+    (synopsis "Hierarchical tree-like data structures for xarray")
+    (description "Datatree is a prototype implementation of a tree-like
+hierarchical data structure for @code{xarray}.  Datatree is in the process of
+being merged upstream into @code{xarray}.")
+    (license license:asl2.0)))
+
 (define-public python-xarray-einstats
   (package
     (name "python-xarray-einstats")
