@@ -770,7 +770,9 @@ doing practical, real world data analysis in Python.")
             (lambda _
               (system "Xvfb &")
               (setenv "DISPLAY" ":0")
-              (setenv "HOME" ".")))
+              (setenv "HOME" ".")
+              ;; Skip tests that require lots of resources.
+              (setenv "PANDAS_CI" "1")))
           (add-after 'unpack 'patch-which
             (lambda _
               (substitute* "pandas/io/clipboard/__init__.py"
