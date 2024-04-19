@@ -1836,6 +1836,24 @@ class.")
 library.")
     (license license:expat)))
 
+(define-public python-slicerator
+  (package
+    (name "python-slicerator")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "slicerator" version))
+       (sha256
+        (base32 "0ik0bmh18zgffd9kx53254jp3yyih6zcmd8kfb080xnqbizhl0a4"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/soft-matter/slicerator")
+    (synopsis "Lazy-loading, fancy-sliceable iterable")
+    (description
+     "This package provides a lazy-loading, fancy-sliceable iterable.  Think
+of it like a generator that is \"reusable\" and has a length.")
+    (license license:bsd-3)))
+
 (define-public python-slixmpp
   (package
     (name "python-slixmpp")
