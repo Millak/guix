@@ -1355,7 +1355,7 @@ or USB connection.")
 (define-public flmsg
   (package
     (name "flmsg")
-    (version "4.0.19")
+    (version "4.0.23")
     (source
      (origin
        (method git-fetch)
@@ -1364,10 +1364,10 @@ or USB connection.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "157s6mvky9h094hkncm47964qh0bnwg0m2rw3wx0qj1mh5isxv4j"))))
+        (base32 "0nn2ai97a2izckg6lcnxa36ipmrz0pa4d8gdvk47fhwxlcr7pdrl"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake pkg-config))
+     (list autoconf-2.71 automake pkg-config))
     (inputs
      (list fltk libx11 libxext libxfixes libxft))
     (synopsis "NBEMS messaging system")
