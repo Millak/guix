@@ -1491,15 +1491,16 @@ E.g.: @code{(udev-rules-service 'bladerf bladerf)}.")
 (define-public hamlib
   (package
     (name "hamlib")
-    (version "4.4")
+    (version "4.5.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/Hamlib/Hamlib/releases/download/"
-             version "/hamlib-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hamlib/Hamlib")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "11r4i8gmxnb6ixpk4ns38c9xwj3qibp2v3pkhy2z0lhz0xxi1w4b"))))
+        (base32 "1z774z0g7ryamzvdm5f9b3py0lacrvmp2581jn3d581lw35hvfjw"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1523,14 +1524,7 @@ E.g.: @code{(udev-rules-service 'bladerf bladerf)}.")
          "--with-lua-binding"
          "--with-python-binding"
          "--with-tcl-binding"
-         "--with-xml-support")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'force-bootstrap
-           ;; The included configure script is misbuilt.  It will never find
-           ;; pkg-config, and hence any libraries that rely on it.  Rebuild it.
-           (lambda _
-             (delete-file "configure"))))))
+         "--with-xml-support")))
     (synopsis "Tools and API to control radios")
     (description
      "The Ham Radio Control Library (Hamlib) is a project to provide programs
