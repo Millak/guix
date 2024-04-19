@@ -3467,6 +3467,36 @@ from IPAmj Mincho, modified to adapt to the standard glyph shape used in
 Mainland China.")
     (license license:ipa)))
 
+(define-public font-lxgw-heartserif
+  (package
+    (name "font-lxgw-heartserif")
+    (version "0.920.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/lxgw/LxgwNeoZhiSong/releases/download/v"
+             version "/LXGWHeartSerif.ttf"))
+       (sha256
+        (base32 "1nbhvy0b9vb0w5pfpp5f0jdkb6fs422avkdxzqydmv74g5v8gz07"))))
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(let ((out #$output)
+              (dest (string-append #$output "/share/fonts/truetype")))
+          (use-modules (guix build utils))
+          (mkdir-p dest)
+          (copy-file #$(package-source this-package)
+                     (string-append dest "/LXGHeartSerif.ttf")))))
+    (home-page "https://github.com/lxgw/LxgwNeoZhiSong")
+    (synopsis "Simplified Chinese Song typeface derived from Kokoro Mincho")
+    (description "LXGW HeartSerif is a Simplified Chinese Song typeface derived
+from Kokoro Mincho, modified to adapt to the standard glyph shape used in
+Mainland China.")
+    (license license:ipa)))
+
 (define-public font-chiron-sung-hk
   (package
     (name "font-chiron-sung-hk")
