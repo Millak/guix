@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,10 +24,27 @@
   #:use-module (guix build utils)
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 binary-ports)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-64))
 
+(define (cartesian-product . lst)
+  "Return the Cartesian product of all the given lists."
+  (match lst
+    ((head)
+     (map list head))
+    ((head . rest)
+     (let ((others (apply cartesian-product rest)))
+       (append-map (lambda (init)
+                     (map (lambda (lst)
+                            (cons init lst))
+                          others))
+                   head)))
+    (()
+     '())))
+
+
 (test-begin "store-deduplication")
 
 (test-equal "deduplicate, below %deduplication-minimum-size"
@@ -165,5 +182,44 @@
             (apply = (map (compose stat:ino stat
                                    (cut string-append store <>))
                           '("/a" "/b" "/c"))))))))
+
+(for-each (match-lambda
+            ((initial-gap middle-gap final-gap)
+             (test-assert
+                 (format #f "copy-file/deduplicate, sparse files (holes: ~a/~a/~a)"
+                         initial-gap middle-gap final-gap)
+               (call-with-temporary-directory
+                (lambda (store)
+                  (let ((source (string-append store "/source")))
+                    (call-with-output-file source
+                      (lambda (port)
+                        (seek port initial-gap SEEK_CUR)
+                        (display "hi!" port)
+                        (seek port middle-gap SEEK_CUR)
+                        (display "bye." port)
+                        (when (> final-gap 0)
+                          (seek port (- final-gap 1) SEEK_CUR)
+                          (put-u8 port 0))))
+
+                    (for-each (lambda (target)
+                                (copy-file/deduplicate source
+                                                       (string-append store target)
+                                                       #:store store))
+                              '("/a" "/b" "/c"))
+                    (system* "du" "-h" source)
+                    (system* "du" "-h" "--apparent-size" source)
+                    (system* "du" "-h" (string-append store "/a"))
+                    (system* "du" "-h" "--apparent-size" (string-append store "/a"))
+                    (and (directory-exists? (string-append store "/.links"))
+                         (file=? source (string-append store "/a"))
+                         (apply = (map (compose stat:ino stat
+                                                (cut string-append store <>))
+                                       '("/a" "/b" "/c")))
+                         (let ((st (pk 'S (stat (string-append store "/a")))))
+                           (<= (* 512 (stat:blocks st))
+                               (stat:size st))))))))))
+          (cartesian-product '(0 3333 8192)
+                             '(8192 9999 16384 22222)
+                             '(0 8192)))
 
 (test-end "store-deduplication")

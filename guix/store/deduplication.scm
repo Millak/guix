@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Caleb Ristvedt <caleb.ristvedt@cune.org>
-;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +28,7 @@
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (rnrs bytevectors)
   #:use-module (rnrs io ports)
   #:use-module (ice-9 match)
   #:use-module (guix serialization)
@@ -206,6 +207,48 @@ under STORE."
                            #f)
                           (else (apply throw args)))))))))))
 
+(define (hole-size bv start size)
+  "Return a lower bound of the number of leading zeros in the first SIZE bytes
+of BV, starting at offset START."
+  (let ((end (+ start size)))
+    (let loop ((offset start))
+      (if (> offset (- end 4))
+          (- offset start)
+          (if (zero? (bytevector-u32-native-ref bv offset))
+              (loop (+ offset 4))
+              (- offset start))))))
+
+(define (find-holes bv start size)
+  "Return the list of offset/size pairs representing \"holes\" (sequences of
+zeros) in the SIZE bytes starting at START in BV."
+  (define granularity
+    ;; Disk block size is traditionally 512 bytes; focus on larger holes to
+    ;; reduce the computational effort.
+    1024)
+
+  (define (align offset)
+    (match (modulo offset granularity)
+      (0 offset)
+      (mod (+ offset (- granularity mod)))))
+
+  (define end
+    (+ start size))
+
+  (let loop ((offset start)
+             (size   size)
+             (holes  '()))
+    (if (>= offset end)
+        (reverse! holes)
+        (let ((hole (hole-size bv offset size)))
+          (if (and hole (>= hole granularity))
+              (let ((next (align (+ offset hole))))
+                (loop next
+                      (- size (- next offset))
+                      (cons (cons offset hole) holes)))
+              (loop (+ offset granularity)
+                    (- size granularity)
+                    holes))))))
+
 (define (tee input len output)
   "Return a port that reads up to LEN bytes from INPUT and writes them to
 OUTPUT as it goes."
@@ -216,6 +259,10 @@ OUTPUT as it goes."
     (raise (condition
             (&nar-error (port input)
                         (file (port-filename output))))))
+
+  (define seekable?
+    ;; Whether OUTPUT can be a sparse file.
+    (file-port? output))
 
   (define (read! bv start count)
     ;; Read at most LEN bytes in total.
@@ -229,7 +276,35 @@ OUTPUT as it goes."
                ;; Do not return zero since zero means EOF, so try again.
                (loop (get-bytevector-n! input bv start count)))
               (else
-               (put-bytevector output bv start ret)
+               (if seekable?
+                   ;; Render long-enough sequences of zeros as "holes".
+                   (match (find-holes bv start ret)
+                     (()
+                      (put-bytevector output bv start ret))
+                     (holes
+                      (let loop ((offset start)
+                                 (size ret)
+                                 (holes holes))
+                        (match holes
+                          (()
+                           (if (> size 0)
+                               (put-bytevector output bv offset size)
+                               (when (= len (+ bytes-read ret))
+                                 ;; We created a hole in OUTPUT by seeking
+                                 ;; forward but that hole only comes into
+                                 ;; existence if we write something after it.
+                                 ;; Make the hole one byte smaller and write a
+                                 ;; final zero.
+                                 (seek output -1 SEEK_CUR)
+                                 (put-u8 output 0))))
+                          (((hole-start . hole-size) . rest)
+                           (let ((prefix-len (- hole-start offset)))
+                             (put-bytevector output bv offset prefix-len)
+                             (seek output hole-size SEEK_CUR)
+                             (loop (+ hole-start hole-size)
+                                   (- size prefix-len hole-size)
+                                   rest)))))))
+                   (put-bytevector output bv start ret))
                (set! bytes-read (+ bytes-read ret))
                ret)))))
 
