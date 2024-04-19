@@ -90,6 +90,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -116,6 +117,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt))
 
@@ -2005,7 +2007,7 @@ modes:
 (define-public nanovna-saver
   (package
     (name "nanovna-saver")
-    (version "0.5.3")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)
@@ -2014,14 +2016,19 @@ modes:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h0wzva8j7fqnpf0qy42bw9rdclgq3jdq902ajvd9v5iqcqs78n0"))))
-    (build-system python-build-system)
+        (base32 "192lg3hmhr4r9b6an1k61d89fvar4kvqp3qjmpkb489c2zgaggll"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-cython))
+     (list python-cython python-setuptools-scm))
     (inputs
-     (list python-numpy python-pyqt python-pyserial python-scipy))
+     (list python-numpy python-pyqt-6 python-pyserial python-scipy))
     (arguments
-     '(#:tests? #f))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-version
+                 (lambda _
+                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (home-page "https://github.com/NanoVNA-Saver/nanovna-saver")
     (synopsis "GUI for NanoVNA devices")
     (description
