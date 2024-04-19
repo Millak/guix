@@ -396,6 +396,13 @@ resembles Python.")
     (description "Meson-python is a PEP 517 build backend for Meson projects.")
     (license license:expat)))
 
+(define-public meson-python/newer
+  (package
+    (inherit meson-python)
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs meson-python)
+       (replace "meson" meson/newer)))))
+
 (define-public premake4
   (package
     (name "premake")
