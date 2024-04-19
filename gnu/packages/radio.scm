@@ -1265,7 +1265,7 @@ radio receiver.")
 (define-public fldigi
   (package
     (name "fldigi")
-    (version "4.1.22")
+    (version "4.2.04")
     (source
      (origin
        (method git-fetch)
@@ -1274,10 +1274,10 @@ radio receiver.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n1ljqsqar9s8yh8hn9yc1clabkhv4jidym3ibg25yb5svckscli"))))
+        (base32 "1s1dr1bpfa70sq5f0bi4vaszyzsa7ykpswc3znhmg7156mr027kj"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake gettext-minimal pkg-config))
+     (list autoconf-2.71 automake gettext-minimal pkg-config))
     (inputs
      (list alsa-lib
            fltk
