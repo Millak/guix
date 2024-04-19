@@ -1304,7 +1304,7 @@ hardware.")
 (define-public flrig
   (package
     (name "flrig")
-    (version "1.4.05")
+    (version "2.0.04")
     (source
      (origin
        (method git-fetch)
@@ -1313,7 +1313,7 @@ hardware.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pgkfzxqr2ybpbnf1y9nsr25k0zimdwr98mpvd7nazrv5l0y8kci"))))
+        (base32 "0q8zwg5l9x62qls71sqqw31c79y9df7cmin91w1v5pbigxac4v9v"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
