@@ -75,7 +75,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "263")
+    (version "264")
     (source
      (origin
        (method git-fetch)
@@ -84,7 +84,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bq45gyn214hf9brnn5xlj9xvcg6p0yr8cc2p153f93pgzsyqlg4"))))
+        (base32 "1m2jrg0y283m07gml7nd6fy4x827i93bj23varjn3add4kixxr57"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -233,9 +233,9 @@
         ;; openjdk and dependent packages are only
         ;; available on x86_64 currently.
         ((or "x86_64-linux")
-         (list enjarify)
          ;; No unversioned openjdk available.
-         (list `(,openjdk12 "jdk")))
+         (list `(,openjdk12 "jdk")
+               enjarify))
         (_ '()))))
     (home-page "https://diffoscope.org/")
     (synopsis "Compare files, archives, and directories in depth")
