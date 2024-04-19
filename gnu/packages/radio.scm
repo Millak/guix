@@ -1330,7 +1330,7 @@ or USB connection.")
 (define-public flamp
   (package
     (name "flamp")
-    (version "2.2.07")
+    (version "2.2.12")
     (source
      (origin
        (method git-fetch)
@@ -1339,7 +1339,7 @@ or USB connection.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rygd5w04nspxdj8qj81gpb3mgijvlmii74s1f4mihqs5kb8nwh6"))))
+        (base32 "0739x3b8a2f74s91mzpb43r5h71h81v0i12qjz0h0gg07ndzj3j7"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
