@@ -1242,7 +1242,7 @@ using GNU Radio and the Qt GUI toolkit.")
 (define-public gqrx-scanner
   (package
     (name "gqrx-scanner")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method git-fetch)
@@ -1251,7 +1251,7 @@ using GNU Radio and the Qt GUI toolkit.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ar8kqfrd768l6y4kqgq3467xckrrpaq8zlwzz5l7lp8r41w5plr"))))
+        (base32 "0swciyqx5fnqmbb6d55cnjrc2bysr9vamyp0lzsvwgh2g2r29i7w"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f)) ; No test suite
