@@ -67,6 +67,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system scons)
   #:use-module (guix modules)
   #:use-module (guix gexp)
@@ -1156,12 +1157,13 @@ library.")
        (sha256
         (base32 "13l86aq0h1jga949k79k9x3hw2xqchjc162sclg2f99vz98zcz15"))
        (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
     (arguments
      (list #:modules `((srfi srfi-1)
                        (srfi srfi-26)
-                       ,@%python-build-system-modules)
+                       ,@%pyproject-build-system-modules)
            #:phases
-           #~(modify-phases (@ (guix build python-build-system) %standard-phases)
+           #~(modify-phases (@ (guix build pyproject-build-system) %standard-phases)
                (add-before 'wrap 'reduce-GUIX_PYTHONPATH
                  (lambda _
                    ;; Hide the transitive native inputs from GUIX_PYTHONPATH
@@ -1185,12 +1187,7 @@ library.")
                (add-after 'wrap 'reset-GUIX_PYTHONPATH
                  (lambda _
                    (setenv "GUIX_PYTHONPATH"
-                           (getenv "TMP_PYTHONPATH"))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv")))))))
-    (build-system python-build-system)
+                           (getenv "TMP_PYTHONPATH")))))))
     (native-inputs
      (list python-coverage
            python-pytest
