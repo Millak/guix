@@ -3437,6 +3437,36 @@ within GB 2312, standard glyphs for Mainland China is used.")
 Song typeface covering commonly used characters as well as written form of
 dialects in Hong Kong and Taiwan.")))
 
+(define-public font-lxgw-neozhisong
+  (package
+    (name "font-lxgw-neozhisong")
+    (version "0.920.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/lxgw/LxgwNeoZhiSong/releases/download/v"
+             version "/LXGWNeoZhiSong.ttf"))
+       (sha256
+        (base32 "02jv5ysd450i47m3qmdwm3w23bp4wlqrjdwk6iirhgpv169p901j"))))
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(let ((out #$output)
+              (dest (string-append #$output "/share/fonts/truetype")))
+          (use-modules (guix build utils))
+          (mkdir-p dest)
+          (copy-file #$(package-source this-package)
+                     (string-append dest "/LXGWNeoZhiSong.ttf")))))
+    (home-page "https://github.com/lxgw/LxgwNeoZhiSong")
+    (synopsis "Simplified Chinese Song typeface derived from IPAmj Mincho")
+    (description "LXGW NeoZhiSong is a Simplified Chinese Song typeface derived
+from IPAmj Mincho, modified to adapt to the standard glyph shape used in
+Mainland China.")
+    (license license:ipa)))
+
 (define-public font-chiron-sung-hk
   (package
     (name "font-chiron-sung-hk")
