@@ -1314,3 +1314,48 @@ as well as light.  The implementation is based on an ad-hoc Virtual
 Machine.  STklos can also be compiled as a library and embedded in an
 application.")
     (license gpl2+)))
+
+(define-public r7rs-small-texinfo
+  (let ((commit "38a703976ea6353e32b52a5187dbdaf77fb2f050")
+        (revision "3"))
+    (package
+      (name "r7rs-small-texinfo")
+      (version (git-version "0.1.0" revision commit))
+      (home-page "https://codeberg.org/Zipheir/r7rs-small-texinfo/")
+      (source
+       (origin
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (method git-fetch)
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1fr02fyhiwd364jkfy1n5w31pq3kx1rl5w634421g05702yb47x3"))))
+      (native-inputs (list bash texinfo))
+      (inputs '())
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan #~'(("r7rs-small.info" "share/info/"))
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'compile-the-files
+                       (lambda _
+                         (let* ((source-directory-path (string-append (getcwd)
+                                                        "/doc/r7rs-small"))
+                                (build-script-path (string-append
+                                                    source-directory-path
+                                                    "/build.sh"))
+                                (info-directory-path (string-append #$output
+                                                      "/share/info")))
+                           (chdir source-directory-path)
+                           (system* "bash" build-script-path "info")
+                           (mkdir-p info-directory-path)
+                           (copy-file (string-append source-directory-path
+                                                     "/r7rs-small.info")
+                                      (string-append info-directory-path
+                                                     "/r7rs-small.info"))))))))
+      (synopsis
+       "R7RS Small standard of the Scheme programming language in Info format")
+      (description
+       "Revised^7 Report of the Algorithmic Language Scheme adapted to Texinfo format.")
+      (license (non-copyleft "file://COPYING")))))
