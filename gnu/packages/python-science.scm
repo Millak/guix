@@ -1350,7 +1350,7 @@ and visualization with these data structures.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy python-typing-extensions
                              python-xarray))
-    (native-inputs (list python-poetry-core))
+    (native-inputs (list python-pytest python-poetry-core))
     (home-page "https://github.com/astropenguin/xarray-dataclasses/")
     (synopsis "xarray data creation made easy by dataclass")
     (description "@code{xarray-dataclasses} is a Python package that makes it
