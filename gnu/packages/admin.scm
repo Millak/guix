@@ -122,6 +122,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages debian)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
@@ -1563,7 +1564,8 @@ connection alive.")
                       (coreutils (assoc-ref inputs "coreutils*"))
                       (inetutils (assoc-ref inputs "inetutils"))
                       (grep      (assoc-ref inputs "grep*"))
-                      (sed       (assoc-ref inputs "sed*")))
+                      (sed       (assoc-ref inputs "sed*"))
+                      (debianutils (assoc-ref inputs "debianutils")))
                  (substitute* "client/scripts/linux"
                    (("/sbin/ip")
                     (search-input-file inputs "/sbin/ip")))
@@ -1578,7 +1580,7 @@ connection alive.")
                      ,(map (lambda (dir)
                              (string-append dir "/bin:"
                                             dir "/sbin"))
-                           (list inetutils coreutils grep sed))))))))))
+                           (list inetutils coreutils grep sed debianutils))))))))))
 
       (native-inputs
        (list config perl file))
@@ -1588,6 +1590,10 @@ connection alive.")
                 ,@(if (target-hurd?)
                       '()
                       `(("iproute" ,iproute)))
+
+                ;; dhclient-script provides hooks to users and uses run-parts in
+                ;; order to list users defined hooks.
+                ("debianutils" ,debianutils)
 
                 ;; isc-dhcp bundles a copy of BIND, which has proved vulnerable
                 ;; in the past.  Use a BIND-VERSION of our choosing instead.
