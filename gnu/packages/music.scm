@@ -6223,9 +6223,7 @@ and reverb.")
     (arguments
      (list
       #:make-flags
-      #~(list
-         (string-append "CC=" #$(cc-for-target))
-         "VST_UI=0")
+      #~(list (string-append "CC=" #$(cc-for-target)))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
@@ -6233,7 +6231,7 @@ and reverb.")
               (invoke "make" "config"
                       "STRICT=1"
                       "TEST=1"
-                      "FEATURES=lv2 ladspa jack"
+                      "FEATURES=clap doc jack ladspa lv2 vst2 xdg"
                       (string-append "PREFIX=" #$output)
                       (string-append "ETCDIR=" #$output "/etc"))))
           (replace 'check
