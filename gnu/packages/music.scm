@@ -55,6 +55,7 @@
 ;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Parnikkapore <poomklao@yahoo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6209,15 +6210,15 @@ and reverb.")
 (define-public lsp-plugins
   (package
     (name "lsp-plugins")
-    (version "1.2.3")
+    (version "1.2.15")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append "https://github.com/sadko4u/lsp-plugins"
+        (uri (string-append "https://github.com/lsp-plugins/lsp-plugins"
                             "/releases/download/" version
                             "/lsp-plugins-src-" version ".tar.gz"))
         (sha256
-         (base32 "0asgwrkyncxz5h7kjkbwm78z8l2jndxvsrgd634m5x9n37gjsgvs"))))
+         (base32 "1bpkbmy8djz304rlsf9zp7bkyc874gnpfihkigqg4fj667x2xfcj"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -6235,21 +6236,18 @@ and reverb.")
                        (string-append "PREFIX=" out)
                        (string-append "ETCDIR=" out "/etc")))))
          (replace 'check
-           (lambda _
-             (invoke ".build/host/lsp-plugin-fw/lsp-plugins-test" "utest"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke ".build/host/lsp-plugin-fw/lsp-plugins-test" "utest"))))))
     (inputs
      (list cairo
            freetype
-           hicolor-icon-theme
-           jack-1
-           ladspa
+           jack-2
            libsndfile
            libx11
            libxrandr
-           lv2
            mesa))
-    (native-inputs
-     (list pkg-config php))
+    (native-inputs (list pkg-config php))
     (synopsis "Audio plugin collection")
     (description "LSP (Linux Studio Plugins) is a collection of audio
 plugins available as LADSPA/LV2 plugins and as standalone JACK
