@@ -8,6 +8,7 @@
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Abhishek Cherath <abhi@quic.us>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -191,7 +192,12 @@ engine that uses Wayland for graphics output.")
               (let ((store-directory (%store-directory)))
                 (substitute*
                     "Source/WebKit/UIProcess/Launcher/glib/BubblewrapLauncher.cpp"
-                  (("@storedir@") store-directory)))))
+                  (("@storedir@") store-directory)
+                  ;; This silences GTK locale errors.
+                  ;; Unfortunately, simply bind mounting /run/current-system
+                  ;; does not work since it leads to weird issues
+                  ;; with symlinks that confuse bubblewrap.
+                  (("@localedir@") "/run/current-system/locale")))))
           (add-after 'unpack 'do-not-disable-new-dtags
             ;; Ensure the linker uses new dynamic tags as this is what Guix
             ;; uses and validates in the validate-runpath phase.

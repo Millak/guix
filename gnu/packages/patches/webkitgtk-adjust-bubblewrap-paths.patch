@@ -1,11 +1,13 @@
 Share /gnu/store in the BubbleWrap container and remove FHS mounts.
+Also share system locale directory and paths in LOCPATH, GUIX_LOCPATH,
+and LIBVA_DRIVERS_PATH.
 
 This is a Guix-specific patch not meant to be upstreamed.
 diff --git a/Source/WebKit/UIProcess/Launcher/glib/BubblewrapLauncher.cpp b/Source/WebKit/UIProcess/Launcher/glib/BubblewrapLauncher.cpp
 index f0a5e4b05dff..88b11f806968 100644
 --- a/Source/WebKit/UIProcess/Launcher/glib/BubblewrapLauncher.cpp
 +++ b/Source/WebKit/UIProcess/Launcher/glib/BubblewrapLauncher.cpp
-@@ -854,27 +854,12 @@ GRefPtr<GSubprocess> bubblewrapSpawn(GSubprocessLauncher* launcher, const Proces
+@@ -854,27 +854,21 @@ GRefPtr<GSubprocess> bubblewrapSpawn(GSubprocessLauncher* launcher, const Proces
          "--ro-bind", "/sys/dev", "/sys/dev",
          "--ro-bind", "/sys/devices", "/sys/devices",
  
@@ -33,6 +35,15 @@ index f0a5e4b05dff..88b11f806968 100644
 +
 +        // Bind mount the store inside the WebKitGTK sandbox.
 +        "--ro-bind", "@storedir@", "@storedir@",
++
++        // This is needed for system locales.
++        "--ro-bind-try", "@localedir@", "@localedir@",
      };
++    // User specified locale directory.
++    bindPathVar(sandboxArgs, "LOCPATH");
++    // Locales in case of foreign system.
++    bindPathVar(sandboxArgs, "GUIX_LOCPATH");
++    // Drivers for video hardware acceleration (va-api).
++    bindPathVar(sandboxArgs, "LIBVA_DRIVERS_PATH");
  
      if (launchOptions.processType == ProcessLauncher::ProcessType::DBusProxy) {
