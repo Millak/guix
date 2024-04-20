@@ -615,7 +615,15 @@ you create custom user interfaces for your MIDI hardware.")
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
-           #:tests? #f)) ; there are no tests
+           #:tests? #f ; there are no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/plugins/Ui/skinned/skinreader.cpp"
+                     (("\"(tar|unzip)\"" _ name)
+                      (let ((file (string-append "/bin/" name)))
+                        (string-append "\"" (search-input-file inputs file) "\"")))))))))
     (inputs
      ;; Missing optional inputs:
      ;; libsidplay2 ; input plugin
@@ -645,6 +653,8 @@ you create custom user interfaces for your MIDI hardware.")
            qttools
            soxr
            taglib
+           tar ; for loading skins
+           unzip ; for loading skins
            wavpack
            wildmidi))
     (native-inputs
