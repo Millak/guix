@@ -27312,19 +27312,23 @@ codecs for use in data storage and communication applications.")
 (define-public python-zarr
   (package
     (name "python-zarr")
-    (version "2.17.1")
+    (version "2.17.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zarr" version))
        (sha256
         (base32
-         "0qb2wj60i7v1c95k6m0pskx20ss6dxrj3ym0d7z4c98jfah3ljsn"))))
+         "1kjj0pk0s6306ljrig77m39zqdy32ch4nyja5lalab9l9v5sdfic"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto")
+      #~(list "-n" "auto"
+              ;; This tests are flaky.  The pass several times on my laptop
+              ;; but occasionally fail.  They fail pretty reliably on the
+              ;; build farm.
+              "-k not test_lazy_loader and not open_array")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-service-tests
