@@ -603,15 +603,15 @@ you create custom user interfaces for your MIDI hardware.")
 (define-public qmmp
   (package
     (name "qmmp")
-    (version "2.1.6")
+    (version "2.1.7")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://qmmp.ylsoftware.com/files/"
+       (uri (string-append "https://qmmp.ylsoftware.com/files/qmmp/"
                            (version-major+minor version) "/"
                            "qmmp-" version ".tar.bz2"))
        (sha256
-        (base32 "1jpflf17198ascaqmxla6ajb69bnj8zzngk32vdyyw5443kshylj"))))
+        (base32 "0wqy4dh5cci67d822zn2535l0vsvd9c9sqsbscz4j530c6y6g9z6"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -650,6 +650,8 @@ you create custom user interfaces for your MIDI hardware.")
     (native-inputs
      (list pkg-config))
     (home-page "https://qmmp.ylsoftware.com")
+    (properties
+     `((release-monitoring-url . "https://qmmp.ylsoftware.com/downloads.php")))
     (synopsis "Qt-based music player")
     (description "Music player with support for most common audio formats, and
 plugins for various additional features such as visualization, effects and
