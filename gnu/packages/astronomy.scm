@@ -1131,6 +1131,51 @@ programs for the manipulation and analysis of astronomical data.")
 from Stark Labs.")
     (license license:bsd-3)))
 
+(define-public psfex
+  (package
+    (name "psfex")
+    (version "3.24.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/psfex")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ykgzyxnxjxqk6b8jng006wjilg4fqaxclpfn8plg6brk1qf39sn"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CPPFLAGS=-fcommon"
+              "--enable-openblas"
+              "--enable-plplot"
+              (string-append "--with-fftw-libdir="
+                             #$(this-package-input "fftw") "/lib")
+              (string-append "--with-fftw-incdir="
+                             #$(this-package-input "fftw") "/include")
+              (string-append "--with-openblas-libdir="
+                             #$(this-package-input "openblas") "/lib")
+              (string-append "--with-openblas-incdir="
+                             #$(this-package-input "openblas") "/include")
+              (string-append "--with-plplot-libdir="
+                             #$(this-package-input "plplot") "/lib")
+              (string-append "--with-plplot-incdir="
+                             #$(this-package-input "plplot") "/include"))))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (inputs
+     (list openblas fftw fftwf plplot))
+    (home-page "https://www.astromatic.net/software/psfex/")
+    (synopsis "Astronomical PSF modelling and quality assessment")
+    (description
+     "@acronym{PSFEx, PSF Extractor} extracts models of the @acronym{PSF,
+Point Spread Function} from FITS images processed with SExtractor, and
+measures the quality of images.  The generated PSF models can be used for
+model-fitting photometry or morphological analyses.")
+    (license license:gpl3+)))
+
 (define-public sextractor
   (package
     (name "sextractor")
