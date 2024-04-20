@@ -6225,14 +6225,15 @@ and reverb.")
       #:make-flags
       #~(list
          (string-append "CC=" #$(cc-for-target))
-         "BUILD_MODULES=\"lv2 ladspa jack\"" "VST_UI=0"
-         (string-append "PREFIX=" #$output)
-         (string-append "ETC_PATH=" #$output "/etc"))
+         "VST_UI=0")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
             (lambda _
-              (invoke "make" "config" "TEST=1"
+              (invoke "make" "config"
+                      "STRICT=1"
+                      "TEST=1"
+                      "FEATURES=lv2 ladspa jack"
                       (string-append "PREFIX=" #$output)
                       (string-append "ETCDIR=" #$output "/etc"))))
           (replace 'check
