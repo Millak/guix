@@ -522,8 +522,7 @@ in FITS files.")
            python-shapely))
     (native-inputs
      (list python-pytest-astropy
-           python-pytest-mpl
-           python-semantic-version))
+           python-pytest-mpl))
     (home-page "http://aplpy.github.io")
     (synopsis "Astronomical Plotting Library in Python")
     (description
@@ -753,7 +752,6 @@ Python.")
            python-docutils
            python-pytest-astropy
            python-pytest-astropy-header
-           python-semantic-version
            python-tornado))
     (home-page "https://ejeschke.github.io/ginga/")
     (synopsis "Scientific image viewer and toolkit for FITS files")
@@ -2014,8 +2012,7 @@ is independent of and does not use @code{casacore}.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-memory-profiler
-           python-pytest-astropy
-           python-semantic-version))
+           python-pytest-astropy))
     (propagated-inputs
      (list python-astropy
            python-astroscrappy
@@ -2138,7 +2135,6 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
                          python-nose
                          python-pylint
                          python-pytest
-                         python-semantic-version
                          python-setuptools-scm))
     (home-page "https://hst-crds.stsci.edu")
     (synopsis "Calibration Reference Data System for HST and JWST")
@@ -2481,7 +2477,6 @@ setup(ext_modules=get_extensions())")))))
            python-extension-helpers
            python-pytest-astropy
            python-pytest-xdist
-           python-semantic-version
            python-setuptools-scm))
     (home-page "https://github.com/astropy/photutils")
     (synopsis "Source detection and photometry")
@@ -2792,7 +2787,6 @@ setup(ext_modules=get_extensions())")))))
            python-pytest-astropy
            python-pytest-xdist
            ;; python-sunpy ; circular dependencies, test optional
-           python-semantic-version
            python-setuptools-scm))
     (home-page "https://reproject.readthedocs.io")
     (synopsis "Astronomical image reprojection in Python")
@@ -2909,7 +2903,6 @@ python_files = test_*.py"))))))))
            python-reproject
            python-scikit-image
            python-scipy
-           python-semantic-version
            ;; python-spiceypy ; Not packed yet in Guix, long jorney.
            python-sqlalchemy
            python-tqdm
@@ -3069,7 +3062,6 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
            python-pytest-astropy
            python-pytest-xdist
            python-regions
-           python-semantic-version
            python-setuptools-scm))
     (home-page "https://spectral-cube.readthedocs.io/en/latest/")
     (synopsis "Library for reading and analyzing astrophysical spectral data cubes")
@@ -3124,7 +3116,6 @@ of axis order, spatial projections, and spectral units that exist in the wild.
     (native-inputs
      (list python-matplotlib
            python-pytest-astropy
-           python-semantic-version
            python-setuptools-scm
            python-spectral-cube))
     (home-page "https://specutils.readthedocs.io/")
@@ -3322,7 +3313,6 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
            python-pytest
            python-pytest-cov
            python-pytest-doctestplus
-           python-semantic-version
            python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stcal")
     (synopsis "STScI tools and algorithms used in calibration pipelines")
@@ -3364,7 +3354,6 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
            python-pytest-doctestplus
            python-pytest-xdist
            python-scipy
-           python-semantic-version
            python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stdatamodels")
     (synopsis
@@ -3390,8 +3379,8 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
       ;; See https://github.com/spacetelescope/stpipe/issues/114
       #:test-flags #~(list "-k" "not test_roman_datamodel")))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-asdf python-astropy python-crds
-                             python-semantic-version python-stdatamodels))
+    (propagated-inputs
+     (list python-asdf python-astropy python-crds python-stdatamodels))
     (native-inputs (list python-pytest python-pytest-doctestplus
                          python-pytest-openfiles python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stpipe")
@@ -3429,7 +3418,6 @@ implementing calibration pipeline software.")
     (native-inputs (list python-pytest
                          python-pytest-astropy
                          python-pytest-astropy-header
-                         python-semantic-version
                          python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stsynphot_refactor")
     (synopsis "Synthetic photometry using Astropy for HST and JWST")
@@ -4423,7 +4411,6 @@ object.")
     (native-inputs
      (list python-pytest
            python-pytest-astropy
-           python-semantic-version
            python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/synphot_refactor")
     (synopsis "Synthetic photometry using Astropy")
@@ -4457,7 +4444,6 @@ of the old packages.")
            python-pytest
            python-pytest-cov
            python-scipy
-           python-semantic-version
            python-setuptools-scm))
     (home-page "https://tweakwcs.readthedocs.io/en/latest/")
     (synopsis
@@ -4503,7 +4489,6 @@ between image and reference catalogs. Currently only aligning images with
            python-pytest-doctestplus
            python-pytest-remotedata
            python-pytest-xdist
-           python-semantic-version
            python-setuptools-scm))
     (propagated-inputs
      (list python-asdf-standard
@@ -4513,7 +4498,8 @@ between image and reference catalogs. Currently only aligning images with
            python-jmespath
            python-lz4
            python-numpy
-           python-pyyaml))
+           python-pyyaml
+           python-semantic-version))
     (home-page "https://github.com/asdf-format/asdf")
     (synopsis "Python tools to handle ASDF files")
     (description
@@ -4549,7 +4535,6 @@ implementation of the ASDF Standard.")
       (native-inputs
        (list python-numpy
              python-pytest
-             python-semantic-version
              python-setuptools-scm))
       (propagated-inputs
        (list python-asdf
@@ -4648,7 +4633,6 @@ package such as asdf-astropy.")
     (native-inputs
      (list python-pytest
            python-pytest-xdist
-           python-semantic-version
            python-setuptools-scm))
     (propagated-inputs
      (list python-asdf))
@@ -4767,7 +4751,7 @@ install an implementation package such as asdf-astropy.")
     (propagated-inputs
      (list python-asdf python-fsspec python-zarr))
     (native-inputs
-     (list python-pytest python-semantic-version python-setuptools-scm))
+     (list python-pytest python-setuptools-scm))
     (home-page "https://github.com/asdf-format/asdf-zarr")
     (synopsis "Asdf extension to support Zarr arrays")
     (description
@@ -4804,7 +4788,6 @@ specification.")
            python-pytest-astropy
            python-pytest-xdist
            python-scipy
-           python-semantic-version
            python-setuptools-scm))
     (propagated-inputs
      (list python-asdf
@@ -4838,7 +4821,6 @@ Astropy objects.")
      (list python-asdf
            python-pytest
            python-pytest-openfiles
-           python-semantic-version
            python-setuptools-scm))
     (propagated-inputs
      (list python-asdf-coordinates-schemas
@@ -4869,7 +4851,6 @@ install an implementation package such as gwcs.")
            python-pytest
            python-pytest-doctestplus
            python-pyyaml
-           python-semantic-version
            python-setuptools-scm))
     (propagated-inputs
      (list python-asdf
@@ -4907,9 +4888,7 @@ default) to world coordinates.")
       ;; python-rad -> python-roman-datamodels -> python-crds -> python-rad
       #:test-flags #~(list "--ignore=tests/test_schemas.py")))
     (native-inputs
-     (list python-pytest
-           python-semantic-version
-           python-setuptools-scm))
+     (list python-pytest python-setuptools-scm))
     (propagated-inputs (list python-asdf python-asdf-astropy))
     (home-page "https://github.com/spacetelescope/rad")
     (synopsis "Roman Attribute Dictionary")
@@ -5023,7 +5002,6 @@ solar physics.")
                          python-pytest-doctestplus
                          python-pytest-env
                          python-pytest-xdist
-                         python-semantic-version
                          python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/roman_datamodels")
     (synopsis "Roman Datamodels Support")
@@ -5057,8 +5035,7 @@ pipelines.")
      (list python-astropy
            python-ccdproc
            python-pillow
-           python-pytest
-           python-semantic-version))
+           python-pytest))
     (propagated-inputs
      (list python-bottleneck
            python-numpy
