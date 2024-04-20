@@ -6237,7 +6237,19 @@ and reverb.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (invoke ".build/host/lsp-plugin-fw/lsp-plugins-test" "utest")))))))
+                (invoke ".build/host/lsp-plugin-fw/lsp-plugins-test" "utest"))))
+          (add-after 'install 'move-large-subdirs
+            (lambda _
+              (define (move-to-output output path)
+                (let ((source (string-append #$output path))
+                      (target (string-append output path)))
+                  (mkdir-p (dirname target))
+                  (rename-file source target)))
+              (move-to-output #$output:doc "/share/doc") ; 29MB
+              (move-to-output #$output:lv2 "/lib/lv2") ; 32MB
+              (move-to-output #$output:bin "/bin") ; Avoid cluttering xdg menu
+              (move-to-output #$output:bin "/share")
+              (move-to-output #$output:bin "/etc"))))))
     (inputs
      (list cairo
            freetype
@@ -6247,6 +6259,7 @@ and reverb.")
            libxrandr
            mesa))
     (native-inputs (list pkg-config php))
+    (outputs '("out" "doc" "lv2" "debug"))
     (synopsis "Audio plugin collection")
     (description "LSP (Linux Studio Plugins) is a collection of audio
 plugins available as LADSPA/LV2 plugins and as standalone JACK
