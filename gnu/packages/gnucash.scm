@@ -66,14 +66,14 @@
   ;; directory.
   (package
     (name "gnucash")
-    (version "5.5")
+    (version "5.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
                            version "/gnucash-" version ".tar.bz2"))
        (sha256
-        (base32 "0fzds1yq298c3rvi07if1bfxff904jbzmsb27wr0ddwjp1xzdnml"))))
+        (base32 "1l8vy8dj48hz385ldwnx3bpdsqyc8lsigwm1gjgygwshcdi2rd5l"))))
     (outputs '("out" "doc" "debug" "python"))
     (build-system cmake-build-system)
     (arguments
@@ -218,7 +218,7 @@ installed as well as Yelp, the Gnome help browser.")
                "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
                version "/gnucash-docs-" version revision ".tar.gz"))
          (sha256
-          (base32 "1ay8jzxrsb9qmbx0v12kqdjk6l3j7cafgxswa92yynihv5ahymlk"))))
+          (base32 "00izzaswwp78ix0zdr8618lk2c21had4im04yrggqx4h34ldmnca"))))
       (build-system cmake-build-system)
       ;; These are native-inputs because they are only required for building the
       ;; documentation.
