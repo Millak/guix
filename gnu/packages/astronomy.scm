@@ -3242,6 +3242,8 @@ task}.")
 (define-public python-stsci-stimage
   (package
     (name "python-stsci-stimage")
+    ;; PyPI version was 0.2.8 but the latest version tag on GiHub was 0.2.7,
+    ;; see <https://github.com/spacetelescope/stsci.stimage/issues/38>
     (version "0.2.8")
     (source (origin
               (method url-fetch)
@@ -3252,27 +3254,26 @@ task}.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags #~(list "test_c")
       #:phases
       #~(modify-phases %standard-phases
-          ;; Test steps are taken from GitHub Actions.
-          ;; See https://github.com/spacetelescope/stsci.stimage/issues/27
-          (replace 'check
+          ;; Test steps are taken from GitHub Actions, see
+          ;; <https://github.com/spacetelescope/stsci.stimage/issues/27>
+          (add-before 'check 'waf-configure-build
             (lambda _
               (copy-file (string-append
-                #$(this-package-native-input "python-waf") "/bin/waf")
-               "waf")
-              (invoke "python" "waf" "configure" "build" "do_tests"))))))
-    (propagated-inputs (list python-numpy))
+                          #$(this-package-native-input "python-waf") "/bin/waf")
+                         "waf")
+              (invoke "python" "waf" "configure" "build"))))))
+    (propagated-inputs
+     (list python-numpy))
     (native-inputs
-     (list python-codecov
-           python-pytest
-           python-pytest-cov
-           python-setuptools-scm
-           python-waf))
+     (list python-pytest python-setuptools-scm python-waf))
     (home-page "https://stscistimage.readthedocs.io/en/latest/")
     (synopsis "STScI image processing")
-    (description "This package provides an astronomical Python package with
-image processing functions: @code{xyxymatch}, @code{geomap}.")
+    (description
+     "This package provides an astronomical Python package with image
+processing functions: @code{xyxymatch}, @code{geomap}.")
     (license license:bsd-3)))
 
 (define-public python-stcal
