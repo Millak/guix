@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -423,6 +424,46 @@ from ALSA, ESD, and COMEDI sources.  This package currently does not include
 support for ESD sources.")
     (home-page "https://xoscope.sourceforge.net/")
     (license license:gpl2+)))
+
+(define-public m8c
+  (package
+    (name "m8c")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/laamaa/m8c")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wsknqgya2vkalbjq6rvmknsdk4lrqkn0z5rpjf4pd5vxgr8qryb"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))
+      #:tests? #f)) ;no tests
+    (native-inputs (list pkg-config))
+    (inputs (list libserialport
+                  sdl2))
+    (home-page "https://github.com/laamaa/m8c")
+    (synopsis "Cross-platform M8 tracker headless client")
+    (description
+     "The @url{https://dirtywave.com/products/m8-tracker,Dirtywave M8 Tracker}
+is a portable sequencer and synthesizer, featuring 8 tracks of assignable
+instruments such as FM, waveform synthesis, virtual analog, sample playback, and
+MIDI output.  It is powered by a @url{https://www.pjrc.com/teensy/,Teensy}
+micro-controller and inspired by the Gameboy tracker
+@url{https://www.littlesounddj.com/lsd/index.php,Little Sound DJ}.  m8c is a
+client for @url{https://github.com/Dirtywave/M8HeadlessFirmware,M8 Headless}
+which allows one to install the M8 firmware on any Teensy.")
+    (license (list license:cc-by-sa3.0
+                   license:expat
+                   license:public-domain
+                   license:zlib))))
 
 (define-public minipro
   ;; Information needed to fix Makefile
