@@ -69,6 +69,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages plotutils)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -3770,6 +3771,85 @@ backward), and manual time control
 @item Antenna rotator control via Hamlib rotctld
 @end itemize")
     (license license:gpl2+)))
+
+(define-public scamp
+  (package
+    (name "scamp")
+    (version "2.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/scamp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qic52mzw9avf1a1fsr85mlh63b7hq6d4wj2d00zgdllmclj5l9q"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CPPFLAGS=-fcommon"
+              "--enable-openblas"
+              "--enable-plplot"
+              (string-append "--with-curl-incdir="
+                             #$(this-package-input "curl") "/include")
+              (string-append "--with-curl-libdir="
+                             #$(this-package-input "curl") "/lib")
+              (string-append "--with-fftw-incdir="
+                             #$(this-package-input "fftwf") "/include")
+              (string-append "--with-fftw-libdir="
+                             #$(this-package-input "fftwf") "/lib")
+              (string-append "--with-openblas-incdir="
+                             #$(this-package-input "openblas") "/include")
+              (string-append "--with-openblas-libdir="
+                             #$(this-package-input "openblas") "/lib")
+              (string-append "--with-plplot-incdir="
+                             #$(this-package-input "plplot") "/include")
+              (string-append "--with-plplot-libdir="
+                             #$(this-package-input "plplot") "/lib"))))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           pkg-config
+           python-astropy
+           python-numpy
+           python-wrapper))
+    (inputs
+     (list curl fftwf openblas plplot))
+    (home-page "https://www.astromatic.net/software/scamp/")
+    (synopsis "Compute astrometric solutions")
+    (description
+     "@acronym{Software for Calibrating AstroMetry and Photometry,SCAMP} is a
+software that computes astrometric projection parameters from source catalogues
+derived from @url{http://fits.gsfc.nasa.gov/,FITS} images.  The computed solution
+is expressed according to the
+@url{http://www.atnf.csiro.au/people/mcalabre/WCS/index.html,WCS} standard.  The
+main features of SCAMP are:
+
+@itemize
+@item compatibility with @code{SExtractor} FITS or Multi-Extension FITS
+catalogue format in input
+@item generation of WCS-compliant and @code{SWarp}-compatible FITS image headers
+in output
+@item automatic grouping of catalogues on the sky
+@item selectable on-line astrometric reference catalogue
+@item automatic determination of scale, position angle, flipping and coordinate
+shift using fast pattern-matching
+@item various astrometric calibration modes for single detectors and detector
+arrays
+@item combined astrometric solutions for multi-channel/instrument surveys
+@item highly configurable astrometric distortion polynomials
+@item correction for differential chromatic refraction
+@item proper motion measurements
+@item multi-threaded code that takes advantage of multiple processors
+@item @url{http://www.ivoa.net/documents/VOTable,VOTable}-compliant XML output
+of meta-data
+@item @url{http://en.wikipedia.org/wiki/XSLT,XSLT} filter sheet provided for
+convenient access to metadata from a regular web browser
+@end itemize")
+    (license license:gpl3+)))
 
 (define-public sgp4
   ;; Version tag v1.0 is dated to <2021-01-11>, use the lates commit instead.
