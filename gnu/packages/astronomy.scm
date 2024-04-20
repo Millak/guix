@@ -3242,13 +3242,13 @@ task}.")
 (define-public python-stsci-stimage
   (package
     (name "python-stsci-stimage")
-    (version "0.2.6")
+    (version "0.2.8")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "stsci.stimage" version))
+              (uri (pypi-uri "stsci_stimage" version))
               (sha256
                (base32
-                "0i7xby1gaiplvbqqv8a4f4cw1is8fwj89mix1z3bqrykqi3n24g0"))))
+                "0p188my6djy65a8j6qsc3v0dpr2svqqv90n0pxxzy52vdjiz3w0w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
