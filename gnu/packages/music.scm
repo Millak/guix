@@ -6221,24 +6221,24 @@ and reverb.")
          (base32 "1bpkbmy8djz304rlsf9zp7bkyc874gnpfihkigqg4fj667x2xfcj"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list
-         (string-append "CC=" ,(cc-for-target))
+     (list
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target))
          "BUILD_MODULES=\"lv2 ladspa jack\"" "VST_UI=0"
-         (string-append "PREFIX=" (assoc-ref %outputs "out"))
-         (string-append "ETC_PATH=" (assoc-ref %outputs "out") "/etc"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "make" "config" "TEST=1"
-                       (string-append "PREFIX=" out)
-                       (string-append "ETCDIR=" out "/etc")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke ".build/host/lsp-plugin-fw/lsp-plugins-test" "utest"))))))
+         (string-append "PREFIX=" #$output)
+         (string-append "ETC_PATH=" #$output "/etc"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "make" "config" "TEST=1"
+                      (string-append "PREFIX=" #$output)
+                      (string-append "ETCDIR=" #$output "/etc"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke ".build/host/lsp-plugin-fw/lsp-plugins-test" "utest")))))))
     (inputs
      (list cairo
            freetype
