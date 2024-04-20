@@ -1368,6 +1368,34 @@ following:
                              go-github-com-multiformats-go-multihash-0.2.3
                              go-golang-org-x-exp-2023))))
 
+(define-public go-github-com-multiformats-go-multiaddr-dns
+  (package
+    (name "go-github-com-multiformats-go-multiaddr-dns")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-multiaddr-dns")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17qpcgxlmji6wdnjabl5ihc4zn69w2g0karad46zj70y5zg4y24r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/multiformats/go-multiaddr-dns"
+      #:unpack-path "github.com/multiformats/go-multiaddr-dns"))
+    (propagated-inputs
+     (list go-github-com-miekg-dns
+           go-github-com-multiformats-go-multiaddr-0.12))
+    (home-page "https://multiformats.io/multiaddr/")
+    (synopsis "Library and CLI tool for DNS multiaddr resolution")
+    (description
+     "Go library for /dns4, /dns6, /dnsaddr multiaddr resolution.")
+    (license license:expat)))
+
 (define-public go-github-com-multiformats-go-multiaddr-net
   ;; This commit is from <2018-10-01> and associated with GX package manager,
   ;; since that time the project has changed versing stile and GX is dropped.
