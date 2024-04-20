@@ -7603,6 +7603,9 @@ errors when data is invalid.")
     (arguments
      (list
        #:test-flags #~(list "--ignore=tests/test_docs.py"   ; no pytest_examples
+                            ;; These tests include hashes that keep changing depending on
+                            ;; package versions.
+                            "--ignore=tests/benchmarks/test_north_star.py"
                             ;; need python-email-validator >= 2.0.0
                             "-k not test_fastapi_startup_perf")
        #:phases
