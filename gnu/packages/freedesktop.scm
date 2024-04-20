@@ -35,6 +35,8 @@
 ;;; Copyright © 2023 Alex Devaure <ajadevaure@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022 Samuel Culpepper <sculpepper@newstore.com>
+;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3233,4 +3235,35 @@ notifies the user using any notification daemon implementing
     (description
      "Waypipe is a proxy for Wayland clients, with the aim of
 supporting behavior like @samp{ssh -X}.")
+    (license license:expat)))
+
+(define-public libdecor
+  (package
+    (name "libdecor")
+    (version "0.2.2")
+    (source
+     (origin (method git-fetch)
+             (uri (git-reference
+                   (url "https://gitlab.freedesktop.org/libdecor/libdecor")
+                   (commit version)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "05rxchwzhnkm91kcr30mavizkp25wgjlhb6lcraa456pw7vgb04q"))))
+    (build-system meson-build-system)
+    (native-inputs (list cmake pkg-config))
+    (inputs (list cairo
+                  dbus
+                  egl-wayland
+                  gtk+
+                  libglvnd
+                  libxkbcommon
+                  pango
+                  wayland
+                  wayland-protocols))
+    (home-page "https://gitlab.freedesktop.org/libdecor/libdecor")
+    (synopsis "Client-side decorations library for Wayland clients")
+    (description "libdecor is a library that can help Wayland clients draw
+window decorations for them.  It aims to provide multiple backends that
+implements the decoration drawing.")
     (license license:expat)))
