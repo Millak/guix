@@ -133,6 +133,22 @@ for the Go language.")
 @code{old} directory) packages.")
     (license license:bsd-3)))
 
+;; It's for the Kubo update; remove it when it is no longer needed.
+(define-public go-golang-org-x-exp-2023
+  (package
+    (inherit go-golang-org-x-exp)
+    (name "go-golang-org-x-exp")
+    (version "0.0.0-20230725012225-302865e7556b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/exp")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fkmi0zjwv70n9d9q9bmzch2zvf7xm3d65qh63zll6dljq2lh4b8"))))))
+
 (define-public go-golang-org-x-image
   (let ((commit "58c23975cae11f062d4b3b0c143fe248faac195d")
         (revision "1"))
