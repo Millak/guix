@@ -175,6 +175,8 @@ builder.build_wheel(sys.argv[3], config_settings=config_settings)"
                   (if (null? test-flags)
                       '("test" "-v")
                       test-flags)))
+          ('python
+           (apply invoke "python" test-flags))
           ;; The developer should explicitly disable tests in this case.
           (else (raise (condition (&test-system-not-found))))))
       (format #t "test suite not run~%")))
