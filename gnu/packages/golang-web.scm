@@ -56,6 +56,7 @@
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages ipfs)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web))
 
@@ -1340,6 +1341,32 @@ following:
 @item Encapsulate well.
 @end itemize")
     (license license:expat)))
+
+;; It's for the Kubo update; remove it when it is no longer needed.
+(define-public go-github-com-multiformats-go-multiaddr-0.12
+  (package
+    (inherit go-github-com-multiformats-go-multiaddr)
+    (name "go-github-com-multiformats-go-multiaddr")
+    (version "0.12.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-multiaddr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rn02yn7494r7ayn585bbsddprbn8wdccxs4n2k5dmll4dyd39mp"))))
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/multiformats/go-multiaddr"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs (list go-github-com-ipfs-go-cid
+                             go-github-com-multiformats-go-multibase
+                             go-github-com-multiformats-go-varint
+                             go-github-com-multiformats-go-multihash-0.2.3
+                             go-golang-org-x-exp-2023))))
 
 (define-public go-github-com-multiformats-go-multiaddr-net
   ;; This commit is from <2018-10-01> and associated with GX package manager,
