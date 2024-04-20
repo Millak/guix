@@ -5,7 +5,7 @@
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;; Copyright © 2019, 2020, 2021, 2023 Julien Lepiller <julien@lepiller.eu>
-;; Copyright © 2019–2023 Florian Pelz <pelzflorian@pelzflorian.de>
+;; Copyright © 2019–2024 Florian Pelz <pelzflorian@pelzflorian.de>
 ;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -34,11 +34,15 @@
  (entry (commit "fdfd7667c66cf9ce746330f39bcd366e124460e1")
         (title
          (en "@code{nss-certs} is now included in @code{%base-packages}")
+         (de "@code{nss-certs} ist jetzt Teil von @code{%base-packages}")
          (fr "@code{nss-certs} est maintenant inclus dans @code{%base-packages}"))
         (body
          (en "The @code{nss-certs} package is now included in the
 @code{%base-packages}, the default value for the @code{packages} field of the
 @code{operating-system} record.")
+         (de "Das Paket @code{nss-certs} ist jetzt in @code{%base-packages}
+enthalten, dem Vorgabewert des @code{packages}-Felds im
+@code{operating-system}-Verbundstyp.")
          (fr "Le paquet @code{nss-certs} est maintenant inclus dans
 @code{%base-packages}, la valeur par défaut du champ @code{packages} de
 l'enregistrement @code{operating-system}.")))
