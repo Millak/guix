@@ -4705,7 +4705,9 @@ specification.")
      (list python-coverage
            python-h5py
            python-pandas
+           python-pytest
            python-pytest-astropy
+           python-pytest-xdist
            python-scipy
            python-semantic-version
            python-setuptools-scm))
