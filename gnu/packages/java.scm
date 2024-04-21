@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2017, 2019, 2021 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -5356,7 +5356,7 @@ mock objects in unit testing.")
      (list #:jar-name "easymock-class-extensions.jar"
            #:source-dir "easymock-classextension/src/main/java"
            #:test-dir "easymock-classextension/src/test"))
-    (inputs (list java-asm
+    (inputs (list java-asm-8
                   java-easymock-3.2
                   java-cglib
                   java-objenesis))
