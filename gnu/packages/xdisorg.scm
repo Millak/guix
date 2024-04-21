@@ -3335,7 +3335,7 @@ using @command{dmenu}.")
 (define-public fuzzel
   (package
     (name "fuzzel")
-    (version "1.9.2")
+    (version "1.10.2")
     (home-page "https://codeberg.org/dnkl/fuzzel")
     (source (origin
               (method git-fetch)
@@ -3343,7 +3343,7 @@ using @command{dmenu}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pmxqdr00x9qbg0h23q3kywhd06qna0f6r5kfa8a1v7x2n1gylsz"))))
+                "024gnddvabf5dwkdffr6qnnia810w1jqn4ll9fvbcaimybgpvs13"))))
     (build-system meson-build-system)
     (arguments
      (list #:build-type "release"
