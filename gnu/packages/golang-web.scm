@@ -1308,23 +1308,18 @@ router.")
     (license license:bsd-3)))
 
 (define-public go-github-com-multiformats-go-multiaddr
-  ;; This commit is from <2018-10-01> and associated with GX package manager,
-  ;; since that time the project has changed versing stile and GX is dropped.
-  ;; Current versioned tag is v0.12.2 <2024-01-26>.
-  (let ((commit "fe1c46f8be5af4aff4db286e08839295bd922efb")
-        (revision "0"))
     (package
       (name "go-github-com-multiformats-go-multiaddr")
-      (version (git-version "1.3.0" revision commit))
+      (version "0.1.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/multiformats/go-multiaddr")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0p5f8h098a4yjjmzsgqs7vhx1iqifb8izwg3559cr4h7clkpzznh"))))
+          (base32 "0cdzlzh7cb1pj9mhq45va3r6gs6pcdfa9j7vdrqlv3zd6k3bxg39"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -1344,7 +1339,7 @@ following:
 @item Have a nice string representation.
 @item Encapsulate well.
 @end itemize\n")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-multiformats-go-multiaddr-net
   ;; This commit is from <2018-10-01> and associated with GX package manager,
