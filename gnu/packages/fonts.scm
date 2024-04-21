@@ -191,6 +191,7 @@ glyphset has also been extended, supporting now a wider number of languages.")
                (base32
                 "00zbwwcwmq8bv9lvsy5r2an8jf4x0cqzw03i7fgjcmbh0h8a48kl"))))
     (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
     (home-page "https://github.com/IBM/plex")
     (synopsis "IBM Plex typeface")
     (description "This package provides the Plex font family.  It comes in a
