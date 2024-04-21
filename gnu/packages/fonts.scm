@@ -3815,6 +3815,17 @@ characters to form contiguous lines.  It contains several fonts:
                (base32
                 "00ns6zwizp0wyxyrf7fxqmxm4gl7ygarxq1mj952h78q1rxdzjyb"))))
     (build-system font-build-system)
+    ;; Default to ttf, which has "Rec Mono" for code and variable font.
+    (outputs '("out" "otf" "woff"))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'remove-separate-statics
+            (lambda _
+              ;; Prefer otc/ttc collection over those seperate files.
+              (delete-file-recursively
+               "Recursive_Desktop/separate_statics/"))))))
     (home-page "https://www.recursive.design/")
     (synopsis "Variable font family for code & UI")
     (description "Recursive Sans & Mono is a variable type family built for
