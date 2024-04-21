@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
+;;; Copyright © 2024 宋文武 <iyzsong@envs.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,13 +50,34 @@ archive, or a font file."
   "Install the package contents."
   (let* ((out (assoc-ref outputs "out"))
          (source (getcwd))
-         (fonts (string-append out "/share/fonts")))
-    (for-each (cut install-file <> (string-append fonts "/truetype"))
+         (truetype-dir (string-append (or (assoc-ref outputs "ttf") out)
+                                      "/share/fonts/truetype"))
+         (opentype-dir (string-append (or (assoc-ref outputs "otf") out)
+                                      "/share/fonts/opentype"))
+         (web-dir (string-append (or (assoc-ref outputs "woff") out)
+                                 "/share/fonts/web"))
+         (otb-dir (string-append (or (assoc-ref outputs "otb") out)
+                                 "/share/fonts/misc"))
+         (bdf-dir (string-append (or (assoc-ref outputs "bdf") out)
+                                 "/share/fonts/misc"))
+         (pcf-dir (string-append (or (assoc-ref outputs "pcf") out)
+                                 "/share/fonts/misc"))
+         (psf-dir (string-append (or (assoc-ref outputs "psf") out)
+                                 "/share/consolefonts")))
+    (for-each (cut install-file <> truetype-dir)
               (find-files source "\\.(ttf|ttc)$"))
-    (for-each (cut install-file <> (string-append fonts "/opentype"))
+    (for-each (cut install-file <> opentype-dir)
               (find-files source "\\.(otf|otc)$"))
-    (for-each (cut install-file <> (string-append fonts "/web"))
-              (find-files source "\\.(woff|woff2)$"))))
+    (for-each (cut install-file <> web-dir)
+              (find-files source "\\.(woff|woff2)$"))
+    (for-each (cut install-file <> otb-dir)
+              (find-files source "\\.otb$"))
+    (for-each (cut install-file <> bdf-dir)
+              (find-files source "\\.bdf$"))
+    (for-each (cut install-file <> pcf-dir)
+              (find-files source "\\.pcf$"))
+    (for-each (cut install-file <> psf-dir)
+              (find-files source "\\.psfu$"))))
 
 (define %license-file-regexp
   ;; Regexp matching license files commonly found in font packages.
