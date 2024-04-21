@@ -626,6 +626,7 @@ Biolinum is available in both Regular and Bold weights.")
        (sha256
         (base32 "1xkj993hwkr49q63dd2dnkvdkm9sckxm3zjwhdxsxn21fi80ikic"))))
     (build-system font-build-system)
+    (outputs '("out" "woff"))
     (home-page "https://github.com/alerque/libertinus")
     (synopsis "Font family based on Linux Libertine")
     (description
