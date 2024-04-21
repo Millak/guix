@@ -17246,8 +17246,7 @@ This example refers to the @file{/boot/efi} file system by its UUID,
 as returned by the @command{blkid} command.
 
 @xref{Desktop Services}, for the exact list of services provided by
-@code{%desktop-services}.  @xref{X.509 Certificates}, for background
-information about the @code{nss-certs} package that is used here.
+@code{%desktop-services}.
 
 Again, @code{%desktop-services} is just a list of service objects.  If
 you want to remove services from there, you can do so using the
@@ -32495,9 +32494,9 @@ pulling channels from Git.  To that end, it needs to access X.509 certificates
 so that it can authenticate Git servers when communicating over HTTPS, and it
 assumes that @file{/etc/ssl/certs} contains those certificates.
 
-Thus, make sure to add @code{nss-certs} or another certificate package to the
-@code{packages} field of your configuration.  @ref{X.509 Certificates}, for
-more information on X.509 certificates.
+A certificate package, @code{nss-certs}, is provided by default as
+part of @code{%base-packages}.  @ref{X.509 Certificates}, for more
+information on X.509 certificates.
 @end quotation
 
 @subsubheading gmnisrv
