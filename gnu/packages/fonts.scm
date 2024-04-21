@@ -3257,6 +3257,7 @@ Overpass includes proportional and monospace variants.")
        (sha256
         (base32 "0fjp2xk4bjx8i6jamkyjq2fdr7324fh41pbn634iwnhdvvawvbav"))))
     (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
     (home-page "https://github.com/CatharsisFonts/Cormorant")
     (synopsis
      "Extravagant display serif typeface in the spirit of Garamond")
