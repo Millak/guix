@@ -488,6 +488,7 @@ interface.")
            python-pyyaml
            python-pyqt-6
            python-pyqtwebengine-6
+           python-tldextract
            ;; While qtwebengine is provided by python-pyqtwebengine-6, it's
            ;; included here so we can wrap QTWEBENGINEPROCESS_PATH.
            qtwebengine))
