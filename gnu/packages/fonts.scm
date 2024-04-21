@@ -253,23 +253,6 @@ in print.  With attention to detail for high resolution rendering.")
                 "0w9isn8az1k3a3q4m2llwnryy79i5v30dx1hfaf90x0zkj98ky5h"))))
     (outputs '("out" "ttf" "woff"))
     (build-system font-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'split-outputs
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let ((out-fonts (string-append (assoc-ref outputs "out")
-                                                   "/share/fonts"))
-                         (ttf-fonts (string-append (assoc-ref outputs "ttf")
-                                                   "/share/fonts"))
-                         (woff-fonts (string-append (assoc-ref outputs "woff")
-                                                    "/share/fonts")))
-                     (mkdir-p ttf-fonts)
-                     (mkdir-p woff-fonts)
-                     (rename-file (string-append out-fonts "/truetype")
-                                  (string-append ttf-fonts "/truetype"))
-                     (rename-file (string-append out-fonts "/web")
-                                  (string-append woff-fonts "/web"))))))))
     (home-page "https://github.com/intel/intel-one-mono")
     (synopsis "Expressive monospaced font family")
     (description
