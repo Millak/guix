@@ -1308,28 +1308,28 @@ router.")
     (license license:bsd-3)))
 
 (define-public go-github-com-multiformats-go-multiaddr
-    (package
-      (name "go-github-com-multiformats-go-multiaddr")
-      (version "0.1.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/multiformats/go-multiaddr")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0cdzlzh7cb1pj9mhq45va3r6gs6pcdfa9j7vdrqlv3zd6k3bxg39"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "github.com/multiformats/go-multiaddr"))
-      (propagated-inputs
-       (list go-github-com-multiformats-go-multihash))
-      (home-page "https://github.com/multiformats/go-multiaddr")
-      (synopsis "Composable and future-proof network addresses")
-      (description
-       "Multiaddr is a standard way to represent addresses that does the
+  (package
+    (name "go-github-com-multiformats-go-multiaddr")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-multiaddr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cdzlzh7cb1pj9mhq45va3r6gs6pcdfa9j7vdrqlv3zd6k3bxg39"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/multiformats/go-multiaddr"))
+    (propagated-inputs
+     (list go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/multiformats/go-multiaddr")
+    (synopsis "Composable and future-proof network addresses")
+    (description
+     "Multiaddr is a standard way to represent addresses that does the
 following:
 
 @itemize
@@ -1338,8 +1338,8 @@ following:
 @item Have a binary packed format.
 @item Have a nice string representation.
 @item Encapsulate well.
-@end itemize\n")
-      (license license:expat)))
+@end itemize")
+    (license license:expat)))
 
 (define-public go-github-com-multiformats-go-multiaddr-net
   ;; This commit is from <2018-10-01> and associated with GX package manager,
