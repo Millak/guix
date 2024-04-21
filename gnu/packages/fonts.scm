@@ -3874,6 +3874,7 @@ that it can be a reference implementation.")
           (base32
            "1c6jb7ayr07j1pbnzf3jxng9x9bbqp3zydf8mqdw9ifln1b4ycyf"))))
       (build-system font-build-system)
+      (outputs '("out" "ttf" "woff"))
       (home-page "https://github.com/theleagueof/orbitron")
       (synopsis "Futuristic geometric sans-serif")
       (description "Orbitron is a geometric sans-serif typeface intended
