@@ -165,6 +165,7 @@ and space characters.")
          (sha256
           (base32 "0gdsnflnzwy8ajrk93dxwjashxisln58qcqa6dh4smnk7k0a34qs"))))
       (build-system font-build-system)
+      (outputs '("out" "ttf" "woff"))
       (home-page "https://fonts.google.com/specimen/Chivo")
       (synopsis "The Chivo family of fonts")
       (description "Google Chivo Fonts is a grotesque family of fonts, ideal for
