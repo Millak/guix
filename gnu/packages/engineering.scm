@@ -149,6 +149,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages sagemath)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
@@ -4369,3 +4370,52 @@ more.")
 server for Python and pypy3.")
     (home-page "https://freeopcua.github.io/")
     (license license:lgpl3+)))
+
+(define-public cadabra2
+  (package
+    (name "cadabra2")
+    (version "2.4.5.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kpeeters/cadabra2")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1c0832q156kl83dz1wpjw4wf2f68fg7421wxwzahnr2r7xxvgrvl"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         (string-append "-DPYTHON_SITE_PATH=" #$output
+                        "/lib/python"
+                        #$(version-major+minor
+                           (package-version (this-package-input "python")))
+                        "/site-packages")
+         (string-append "-DCMAKE_INSTALL_PREFIX="
+                        (assoc-ref %outputs "out")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-dependencies
+            (lambda _
+              (substitute* "cmake/modules/FindGLIBMM.cmake"
+                (("glibmm-2[.]4") "glibmm-2.68"))
+              (substitute* "client_server/ComputeThread.cc"
+                (("sigc::slot<void>[(][)]") "{}")
+                (("Glib::SPAWN_") "Glib::SpawnFlags::"))))
+          (add-before 'check 'prepare-checks
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glibmm gmp python boost gtkmm-3 sqlite python-gmpy2 python-sympy
+           python-mpmath python-matplotlib texlive-dvipng
+           `(,util-linux "lib")))
+    (synopsis "Computer algebra system geared towards field theory")
+    (description "This package provides a computer algebra system geared
+towards field theory.")
+    (home-page "https://cadabra.science/")
+    (license license:gpl3+)))
