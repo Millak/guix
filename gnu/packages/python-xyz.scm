@@ -17579,8 +17579,11 @@ config files.")
                (add-after 'unpack 'loosen-requirements
                  (lambda _
                    (substitute* "requirements/base.txt"
-                     (("antlr4-python3-runtime==")
-                      "antlr4-python3-runtime>=")))))))
+                     (("antlr4-python3-runtime==.*")
+                      "antlr4-python3-runtime >=4.9\n"))
+                   ;; Ignore deprecation warnings.
+                   (substitute* "pyproject.toml"
+                     (("-Werror") "")))))))
     (propagated-inputs (list java-antlr4-runtime-python
                              python-pydevd
                              python-pyyaml))
