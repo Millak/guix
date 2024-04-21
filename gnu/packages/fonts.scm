@@ -177,7 +177,7 @@ glyphset has also been extended, supporting now a wider number of languages.")
 (define-public font-ibm-plex
   (package
     (name "font-ibm-plex")
-    (version "6.1.1")
+    (version "6.4.0")
     ;; We prefer git-fetch since it lets us get the opentype, truetype and web
     ;; fonts all in one download. The zip archive releases separate the
     ;; opentype, truetype and web fonts into three separate archives.
@@ -189,7 +189,7 @@ glyphset has also been extended, supporting now a wider number of languages.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jxyd0zl7jssn7mwz8x5xvjmw59x4mn82s2kywf9583k1pg949k1"))))
+                "00zbwwcwmq8bv9lvsy5r2an8jf4x0cqzw03i7fgjcmbh0h8a48kl"))))
     (build-system font-build-system)
     (home-page "https://github.com/IBM/plex")
     (synopsis "IBM Plex typeface")
