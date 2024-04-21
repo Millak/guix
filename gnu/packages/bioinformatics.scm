@@ -4696,7 +4696,7 @@ interval trees with associated meta-data.  It is primarily used by the
                 (("version='plotCoverage")
                  "version='%(prog)s")))))))
     (native-inputs
-     (list python-mock python-nose))
+     (list python-mock python-pytest))
     (propagated-inputs
      (list python-matplotlib
            python-numpy
