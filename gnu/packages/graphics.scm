@@ -590,7 +590,7 @@ typically encountered in feature film production.")
            tbb
            zlib
            `(,zstd "lib")))
-    (home-page "https://blender.org/")
+    (home-page "https://www.blender.org/")
     (synopsis "3D graphics creation suite")
     (description
      "Blender is a 3D graphics creation suite.  It supports the entirety of
