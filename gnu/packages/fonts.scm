@@ -331,6 +331,7 @@ itself."))))
     (build-system font-build-system)
     (arguments
      '(#:license-file-regexp "^license.pdf$"))
+    (outputs '("out" "ttf"))
     (home-page "https://typodermicfonts.com/canada1500/")
     (synopsis "Canadian typeface that supports English, French and Aboriginal languages")
     (description "Canada1500 is a display typeface originally created for the
