@@ -1674,6 +1674,33 @@ descrypt.")
     (home-page "https://github.com/besser82/libxcrypt")
     (license license:lgpl2.1)))
 
+(define-public ssh-to-pgp
+  (package
+    (name "ssh-to-pgp")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Mic92/ssh-to-pgp")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mph8mm80qzrsd07v7drfrhdah9n9ibsqfcf9kbffi1pw83cm0aa"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/Mic92/ssh-to-pgp"))
+    (native-inputs
+     (list gnupg))
+    (propagated-inputs
+     (list go-golang-org-x-sys
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/Mic92/ssh-to-pgp")
+    (synopsis "Convert SSH RSA keys to GPG keys")
+    (description "This package provides @code{ssh-to-pgp}: a Go command line
++utility to convert SSH RSA keys to GPG keys.")
+    (license license:expat)))
+
 (define-public keychain
   (package
     (name "keychain")
