@@ -119,6 +119,7 @@
                (base32
                 "0nwjm44nys1qz3wyg0mm15gdjpz641xpmsz00n6m8065xrw86q7i"))))
     (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
     (home-page "https://github.com/cyrealtype/Artifika")
     (synopsis "Upright italic font")
     (description "Artifika is an upright italic font for fashionable display
