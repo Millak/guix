@@ -2519,7 +2519,7 @@ font that is a composite of IBM Plex Mono and IBM Plex Sans JP.")
 (define-public font-public-sans
   (package
     (name "font-public-sans")
-    (version "1.008")
+    (version "2.001")
     (source
      (origin
        (method git-fetch)
@@ -2528,7 +2528,7 @@ font that is a composite of IBM Plex Mono and IBM Plex Sans JP.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qhyxbjv1rnydfpqzd18fbiyz75p4sabphy8yj07hyq0hidp5xsf"))))
+        (base32 "0p3rl4w8m381jxb7in6z9iwjbk1chd7s0gk6jz96c8ci1bddbxk0"))))
     (build-system font-build-system)
     (home-page "https://public-sans.digital.gov/")
     (synopsis "Neutral typeface for interfaces, text, and headings")
