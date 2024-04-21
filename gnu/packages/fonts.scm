@@ -2473,7 +2473,7 @@ files (TTF).")
 (define-public font-mononoki
   (package
     (name "font-mononoki")
-    (version "1.3")
+    (version "1.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2481,7 +2481,7 @@ files (TTF).")
                     (commit version)))
               (sha256
                (base32
-                "07gh84iw84g8fha3gx4yjyl1rsksqhy2kk38f01m048sgjp6ww5j"))
+                "1mqinvb3hyimga8qjgpwgfv30yddzyicd79shhjbsns91v5z4x33"))
               (file-name (git-file-name name version))))
     (build-system font-build-system)
     (arguments
