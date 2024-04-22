@@ -71,7 +71,10 @@
       #~(list "--disable-static"
               "--enable-64bit"
               (string-append "LDFLAGS=-Wl,-rpath="
-                             (assoc-ref %outputs "out") "/lib"))
+                             (assoc-ref %outputs "out") "/lib")
+              #$@(if (%current-target-system)
+                     #~("HOST_CC=gcc")
+                     #~()))
       ;; Use fixed timestamps for reproducibility.
       #:make-flags #~'("SH_DATE='1970-01-01 00:00:01'"
                        ;; This is epoch 1 in microseconds.
