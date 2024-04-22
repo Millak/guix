@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2017, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
 ;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
@@ -490,6 +490,36 @@ The output of this version is fully compatible with bzip2 v1.0.2 (i.e. anything
 compressed with pbzip2 can be decompressed with bzip2).")
     (license (license:non-copyleft "file://COPYING"
                                    "See COPYING in the distribution."))))
+
+;; We call this streambuf-shrinkwrap because a Python package with the name
+;; "shrinkwrap" already exists.
+(define-public streambuf-shrinkwrap
+  (package
+    (name "streambuf-shrinkwrap")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jonathonl/shrinkwrap")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1819va068kp68ks52f7h0dq74xq059a4m86zls2k7dj5zxhs8qs2"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      '(list "-DSHRINKWRAP_PREFER_STATIC=OFF"
+             "-DBUILD_TESTS=ON")))
+    (propagated-inputs (list bzip2 xz zlib `(,zstd "lib")))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/jonathonl/shrinkwrap")
+    (synopsis "Wrapper around std::streambuf for zstd, xz, gzip, and bgzf files")
+    (description
+     "Shrinkwrap provides a @code{std::streambuf} wrapper for various compression
+formats, including zstd, xz, gzip, and bgzf.")
+    (license license:expat)))
 
 (define-public xz
   (package
