@@ -2930,6 +2930,28 @@ provides methods for automatically determining breaks and labels for axes and
 legends.")
     (license license:expat)))
 
+(define-public r-skat
+  (package
+    (name "r-skat")
+    (version "2.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "SKAT" version))
+       (sha256
+        (base32 "1x2iyvzc66lmzwjdr8hy5gf3nxc7ik5vhbs40w00d2m7nr3glh8l"))))
+    (properties `((upstream-name . "SKAT")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-rspectra r-spatest))
+    (home-page "https://cran.r-project.org/package=SKAT")
+    (synopsis "SNP-Set (Sequence) kernel association test")
+    (description
+     "This package provides functions for kernel-regression-based association
+tests including Burden test, SKAT and SKAT-O.  These methods aggregate
+individual SNP score statistics in a SNP set and efficiently compute SNP-set
+level p-values.")
+    (license license:gpl2+)))
+
 (define-public r-swagger
   (package
     (name "r-swagger")
