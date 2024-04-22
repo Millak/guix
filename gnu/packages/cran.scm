@@ -39263,14 +39263,14 @@ join the effort of providing interesting text visualisations.")
 (define-public r-gsa
   (package
     (name "r-gsa")
-    (version "1.03.2")
+    (version "1.03.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GSA" version))
        (sha256
         (base32
-         "1f1mrxxdbdlnibgav6nsvbpniz2x3km2svc0hf43spb4zicn0z8p"))))
+         "0b18b8n6dh3yx9vp5b7ym25590x9qrcbprs5vjnkj0zlj1hphnal"))))
     (properties `((upstream-name . "GSA")))
     (build-system r-build-system)
     (home-page "https://statweb.stanford.edu/~tibs/GSA/")
