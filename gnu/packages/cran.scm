@@ -25073,14 +25073,14 @@ proteomics applications).")
 (define-public r-pamr
   (package
     (name "r-pamr")
-    (version "1.56.1")
+    (version "1.56.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pamr" version))
        (sha256
         (base32
-         "0ycpgkk23y3zzkb42n2skcyl35ps1n7jmyzfj7pbxr3f6gr2grfh"))))
+         "0n7wpgzdadngj44ddsg3171wap4qhiaap75ndr6g768r3mv6q119"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cluster r-survival))
