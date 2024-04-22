@@ -4,6 +4,7 @@
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
+;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1313,6 +1314,8 @@ track models to multi-body models.")
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-setup.py
                  (lambda _
+                   (substitute* "setup.py"
+                     (("protobuf==3.20.1") "protobuf >= 3.20.1"))
                    #$%commonroad-dont-install-license-at-root)))))
     (propagated-inputs (list python-commonroad-vehicle-models
                              python-iso3166
