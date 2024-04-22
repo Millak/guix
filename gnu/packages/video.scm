@@ -2365,7 +2365,7 @@ input files is possible, including video files.")
 (define-public vlc
   (package
     (name "vlc")
-    (version "3.0.18")
+    (version "3.0.20")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2374,7 +2374,7 @@ input files is possible, including video files.")
                     "/vlc-" version ".tar.xz"))
               (sha256
                (base32
-                "1v7db9icrb12yz7banq2wvpjpvqfrj031yj1kf5smn35qcwl82ap"))))
+                "1d99p93k8d86bbanym6b6jii1aiavb570lpb83gws8979mdjiixd"))))
     (build-system gnu-build-system)
     (native-inputs
      (list flex bison gettext-minimal pkg-config))
