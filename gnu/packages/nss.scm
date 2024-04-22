@@ -5,7 +5,7 @@
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -253,7 +253,7 @@ security standards.")
     (inherit nss)
     (version "3.98")
     (source (origin
-              (method url-fetch)
+              (inherit (package-source nss))
               (uri (let ((version-with-underscores
                           (string-join (string-split version #\.) "_")))
                      (string-append
@@ -262,17 +262,7 @@ security standards.")
                       "nss-" version ".tar.gz")))
               (sha256
                (base32
-                "1kh98amfklrq6915n4mlbrcqghc3srm7rkzs9dkh21jwscrwqjgm"))
-              ;; Create nss.pc and nss-config.
-              (patches (search-patches "nss-3.56-pkgconfig.patch"
-                                       "nss-getcwd-nonnull.patch"
-                                       "nss-increase-test-timeout.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Delete the bundled copy of these libraries.
-                  (delete-file-recursively "nss/lib/zlib")
-                  (delete-file-recursively "nss/lib/sqlite")))))
+                "1kh98amfklrq6915n4mlbrcqghc3srm7rkzs9dkh21jwscrwqjgm"))))
     (arguments
      (substitute-keyword-arguments (package-arguments nss)
        ((#:phases phases)
