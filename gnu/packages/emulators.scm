@@ -1520,6 +1520,10 @@ as RetroArch.")
                  (("/usr/local/share/wayland-protocols")
                  (string-append wayland-protocols "/share/wayland-protocols")))
 
+               ;; Without HLSL, we can still enable GLSLANG and Vulkan support.
+               (substitute* "qb/config.libs.sh"
+                 (("[$]HAVE_GLSLANG_HLSL") "notcare"))
+
                ;; The configure script does not yet accept the extra arguments
                ;; (like ‘CONFIG_SHELL=’) passed by the default configure phase.
                (invoke
