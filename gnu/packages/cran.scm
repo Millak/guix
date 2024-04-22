@@ -26773,14 +26773,14 @@ in R, including a translation of the original algorithm into R.")
 (define-public r-uwot
   (package
     (name "r-uwot")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "uwot" version))
        (sha256
         (base32
-         "1gg21kxm4qq0i0gc6jg5k37nnyxj8652zf4jp95ffb9xsn22gpvc"))))
+         "1lbckamb2hk24qxcvchdfid982cvcz64j9hvdnrx8c4ms91qr4yr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dqrng
@@ -26789,7 +26789,8 @@ in R, including a translation of the original algorithm into R.")
            r-matrix
            r-rcpp
            r-rcppannoy
-           r-rcppprogress))
+           r-rcppprogress
+           r-rspectra))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/jlmelville/uwot")
     (synopsis "Uniform manifold approximation and projection")
