@@ -2583,7 +2583,7 @@ The resulting file will be much smaller than 50 GB (typically less than
 1 MB), but it will grow as the virtualized storage device is filled up.
 
 @item
-Boot the USB installation image in an VM:
+Boot the USB installation image in a VM:
 
 @example
 qemu-system-x86_64 -m 1024 -smp 1 -enable-kvm \
