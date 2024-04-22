@@ -9386,6 +9386,43 @@ viewer.")
                (delete 'patch-tests)
                (delete 'configure))))))))
 
+(define-public savvy
+  (package
+    (name "savvy")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/statgen/savvy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "03jh89gl67adnpkwx8yrdn62pd9sg69k21gxh15my2vvpfl1pxlx"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      '(list "-DBUILD_TESTS=ON"
+             "-DBUILD_EVAL=ON")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'use-shared-libraries
+           (lambda _
+             ;; Do not prefer static libraries.
+             (substitute* "CMakeLists.txt"
+               (("set\\(CMAKE_FIND_LIBRARY_SUFFIXES \".a;.*") "")))))))
+    (native-inputs (list pkg-config))
+    (inputs (list htslib))
+    (propagated-inputs (list streambuf-shrinkwrap))
+    (home-page "https://github.com/statgen/savvy/")
+    (synopsis "Interface to various variant calling formats")
+    (description
+     "Savvy is the official C++ interface for the SAV file format and offers
+seamless support for BCF and VCF files.")
+    (license license:mpl2.0)))
+
 (define-public morpheus
   (package
     (name "morpheus")
