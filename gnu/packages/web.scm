@@ -1014,7 +1014,7 @@ similar to live activity monitoring provided with NGINX plus.")
 (define-public lighttpd
   (package
     (name "lighttpd")
-    (version "1.4.73")
+    (version "1.4.76")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.lighttpd.net/lighttpd/"
@@ -1022,7 +1022,7 @@ similar to live activity monitoring provided with NGINX plus.")
                                   "lighttpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1a2cx3di07wf8qii7dpk4yr5wvaz8c9na1x7523smc0lng81d241"))))
+                "04ahiyn622mgpkib8j20vj7wa1av1dv7ing9vz7d1kvkwfb45gwc"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -1068,7 +1068,10 @@ similar to live activity monitoring provided with NGINX plus.")
            pcre2
            zlib))
     (native-inputs
-     (list perl ; for tests
+     (list autoconf
+           automake
+           libtool
+           perl ; for tests
            pkg-config which))
     (home-page "https://www.lighttpd.net/")
     (synopsis "Lightweight HTTP and reverse proxy server")
