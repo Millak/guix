@@ -24941,6 +24941,25 @@ Package object for UDisks.
 @end table
 @end deftp
 
+@defvar gvfs-service-type
+Type for the service that provides virtual file systems for GIO
+applicaitons, which enables support for @code{trash:///}, @code{ftp://},
+@code{sftp://} and many other location schemas in file managers like
+Nautilus (GNOME Files) and Thunar.
+
+The value for this service is a @code{<gvfs-configuration>} object.
+@end defvar
+
+@deftp {Data Type} gvfs-configuration
+Data type representing the configuration for @code{gvfs-service-type}.
+
+@table @asis
+@item @code{gvfs} (default: @code{gvfs}) (type: file-like)
+Package object for GVfs.
+
+@end table
+@end deftp
+
 @defvar colord-service-type
 This is the type of the service that runs @command{colord}, a system
 service with a D-Bus

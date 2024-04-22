@@ -109,6 +109,10 @@
             udisks-service  ; deprecated
             udisks-service-type
 
+            gvfs-configuration
+            gvfs-configuration?
+            gvfs-service-type
+
             colord-service-type
 
             geoclue-application
@@ -988,6 +992,30 @@ notifications and ways to mount/unmount disks.  Programs that talk to UDisks
 include the @command{udisksctl} command, part of UDisks, and GNOME Disks."
   (service udisks-service-type
            (udisks-configuration (udisks udisks))))
+
+
+
+;;;
+;;; GVfs virtual file system.
+;;;
+
+(define-record-type* <gvfs-configuration>
+  gvfs-configuration make-gvfs-configuration
+  gvfs-configuration?
+  (gvfs gvfs-package (default gvfs)))
+
+(define gvfs-service-type
+  (service-type (name 'gvfs)
+                (extensions
+                 (list
+                  (service-extension profile-service-type
+                                     (compose list gvfs-package))
+                  ;; Required for gvfs-udisks2-volume-monitor.
+                  (service-extension udisks-service-type (const #t))))
+                (description
+                 "Make GVfs virtual file systems (Trash, SFTP, SMB, HTTP,
+and many other) available for GIO applications.")
+                (default-value (gvfs-configuration))))
 
 
 ;;;
