@@ -736,7 +736,7 @@ like appearance, display, keyboard and mouse settings.")
               (sha256
                (base32
                 "020xrwzdnk5b7cli8vmv3yn7sfq6pg7bz57m4p0xh0ln2cgqlc78"))))
-    (build-system gnu-build-system)
+    (build-system glib-or-gtk-build-system)
     (arguments
      '(#:configure-flags '("--with-custom-thunarx-dirs-enabled")))
     (native-inputs
