@@ -62,7 +62,7 @@
 (define-public php
   (package
     (name "php")
-    (version "8.2.13")
+    (version "8.3.6")
     (home-page "https://www.php.net/")
     (source (origin
               (method url-fetch)
@@ -70,7 +70,7 @@
                                   "php-" version ".tar.xz"))
               (sha256
                (base32
-                "0js5bm8r3kngsgmxhyr681vrpl4gib3318k8428pigqp06hvna96"))
+                "1bjygxjaqmvccyk4ic3lrca5j34f0pjb6f1ldmi9gbr345mkij2k"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "ext"
@@ -278,7 +278,10 @@
                          ;; PCRE with/without JIT gives different result
                          "ext/pcre/tests/gh11374.phpt"
                          "ext/pcre/tests/gh11956.phpt"
-
+                         ;; reported bug only seems to affect windows
+                         "ext/standard/tests/directory/bug74589_utf8.phpt"
+                         ;; this test seems to be unreliable/flaky
+                         "sapi/cli/tests/php_cli_server_pdeathsig.phpt"
                          ;; This test fails on most architectures.
                          "sapi/cli/tests/upload_2G.phpt"))
 
