@@ -28701,6 +28701,28 @@ Components.  The Lasso solution paths can be computed by the same function.")
 and mixture of Gaussian models.")
     (license license:gpl2+)))
 
+(define-public r-spatest
+  (package
+    (name "r-spatest")
+    (version "3.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "SPAtest" version))
+       (sha256
+        (base32 "1x5r4a6jnizhhazxywb2cf2jj2rx6rfynl6xcscmlix6n394xmxk"))))
+    (properties `((upstream-name . "SPAtest")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=SPAtest")
+    (synopsis
+     "Score test and meta-analysis based on Saddlepoint approximation")
+    (description
+     "This package performs score test using saddlepoint approximation to
+estimate the null distribution.  It also prepares summary statistics for
+meta-analysis and performs meta-analysis to combine multiple association
+results.")
+    (license license:gpl2+)))
+
 (define-public r-accsda
   (package
     (name "r-accsda")
