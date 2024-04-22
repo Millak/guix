@@ -27911,6 +27911,55 @@ larger-than-memory or distributed environments.  These parallel collections
 run on top of the dynamic task schedulers.")
     (license license:bsd-3)))
 
+(define-public python-dask-image
+  (package
+    (name "python-dask-image")
+    (version "2023.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dask-image" version))
+       (sha256
+        (base32 "1dh49lvirf5fbgq5hw1c4972czg5w12fg9y689cinyjjn22qk6jy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Flake8 attribute errors.
+      '(list "--ignore=dask_image/ndfilters/_threshold.py"
+             "--ignore=dask_image/ndfourier/_utils.py"
+             "--ignore=dask_image/ndinterp/__init__.py"
+             "--ignore=dask_image/ndmeasure/__init__.py"
+             "--ignore=dask_image/ndmeasure/_utils/_find_objects.py"
+             "--ignore=dask_image/ndmeasure/_utils/_label.py"
+             "--ignore=tests/test_dask_image/test_ndfilters/test__conv.py"
+             "--ignore=tests/test_dask_image/test_ndfourier/test_core.py"
+             "--ignore=tests/test_dask_image/test_ndinterp/test_spline_filter.py"
+             "--ignore=tests/test_dask_image/test_ndmeasure/test_core.py"
+             "--ignore=tests/test_dask_image/test_ndmeasure/test_find_objects.py")))
+    (propagated-inputs (list python-dask
+                             python-numpy
+                             python-pandas-2
+                             python-pims
+                             python-scipy
+                             python-tifffile))
+    (native-inputs
+     (list python-pytest-flake8 python-pytest))
+    (home-page "https://github.com/dask/dask-image")
+    (synopsis "Distributed image processing")
+    (description "This is a package for image processing with Dask arrays.
+Features:
+
+@itemize
+@item Provides support for loading image files.
+@item Implements commonly used N-D filters.
+@item Includes a few N-D Fourier filters.
+@item Provides some functions for working with N-D label images.
+@item Supports a few N-D morphological operators.
+@end itemize
+")
+    (license license:bsd-3)))
+
 (define-public python-ilinkedlist
   (package
     (name "python-ilinkedlist")
