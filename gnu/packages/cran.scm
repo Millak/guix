@@ -36870,6 +36870,28 @@ meta-analyses accounting for known correlation structures (e.g. due to
 phylogenetic relatedness) can also be conducted.")
     (license license:gpl2+)))
 
+(define-public r-metaskat
+  (package
+    (name "r-metaskat")
+    (version "0.82")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "MetaSKAT" version))
+       (sha256
+        (base32 "0cbj3xfsnwn4ibqqs12sqyhhaj24ydjpyl1p1gy1dl5405j58ncl"))))
+    (properties `((upstream-name . "MetaSKAT")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-skat))
+    (home-page "https://cran.r-project.org/package=MetaSKAT")
+    (synopsis "Meta analysis for SNP-Set (Sequence) kernel association test")
+    (description
+     "This package provides functions for Meta-analysis Burden Test, Sequence
+Kernel Association Test (SKAT) and Optimal SKAT (SKAT-O) by Lee et al. (2013)
+<doi:10.1016/j.ajhg.2013.05.010>.  These methods use summary-level score
+statistics to carry out gene-based meta-analysis for rare variants.")
+    (license license:gpl2+)))
+
 (define-public r-altmeta
   (package
     (name "r-altmeta")
