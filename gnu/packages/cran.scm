@@ -30516,18 +30516,18 @@ used in outliers detection.")
 (define-public r-tolerance
   (package
     (name "r-tolerance")
-    (version "2.0.0")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tolerance" version))
        (sha256
         (base32
-         "001snzr2ipag3zprynydlbi9prkjzrllc054qh7m0qwkb3r19jjd"))))
+         "0pk75i0qmfrpm02jm4c0vvryq3f2drmj9dzj1q0zr3sbmp9w6mpf"))))
     (properties `((upstream-name . "tolerance")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-mass r-rgl))
+     (list r-mass r-plotly))
     (home-page "https://cran.r-project.org/web/packages/tolerance/")
     (synopsis "Statistical tolerance intervals and regions")
     (description
