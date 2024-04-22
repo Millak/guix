@@ -51,6 +51,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
@@ -454,6 +455,48 @@ software.  GNU Mailutils provides the following commands:
        "Mairix is a program for indexing and searching email messages stored in
 Maildir, MH, MMDF or mbox folders.")
       (license license:gpl2))))
+
+(define-public nmail
+  (package
+    (name "nmail")
+    (version "4.54")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/d99kris/nmail/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bk2kq0pk1r4w5xv94yh37vrwxs8lczjg11gfraxh9cxyjigwsrp"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "ctest" "--output-on-failure")))))))
+    (inputs
+     (list curl
+           cyrus-sasl
+           expat
+           file
+           libetpan
+           ncurses
+           openssl
+           sqlite
+           (list util-linux "lib")
+           xapian
+           zlib))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/d99kris/nmail")
+    (synopsis "Terminal-based email client")
+    (description
+     "@command{nmail} is an easily configurable terminal-based email client
+with a @code{ncurses} user interface similar to @code{alpine} and
+@code{pine}.")
+    (license license:expat)))
 
 (define-public go-gitlab.com-shackra-goimapnotify
   (package
