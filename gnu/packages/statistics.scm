@@ -6290,18 +6290,18 @@ multivariate case.")
 (define-public r-tclust
   (package
     (name "r-tclust")
-    (version "1.5-6")
+    (version "2.0-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tclust" version))
        (sha256
         (base32
-         "1p7y58mklcwq76msh1q8pm2v6v19ja6fy07xg1j07d2zw2wa0phy"))))
+         "0l0m77a4r7izzw8akx7cz1qcxpvbjgg364yjapazji290741rfs6"))))
     (build-system r-build-system)
     ;; These are all suggested packages, not build dependencies.
     (propagated-inputs
-     (list r-cluster r-mclust r-mvtnorm r-sn))
+     (list r-doparallel r-foreach r-mass r-rcpp r-rcpparmadillo))
     (home-page "https://cran.r-project.org/web/packages/tclust")
     (synopsis "Robust trimmed clustering")
     (description
