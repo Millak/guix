@@ -157,6 +157,9 @@ in the Mozilla clients.")
                                             (#$(target-linux?) "linux")
                                             (else ""))))
                        #~())
+                #$@(if (%current-target-system)
+                       #~("CROSS_COMPILE=1")
+                       #~())
                 (string-append "NSPR_INCLUDE_DIR="
                                (search-input-directory %build-inputs
                                                        "include/nspr"))
@@ -179,7 +182,8 @@ in the Mozilla clients.")
               (setenv "CC" #$(cc-for-target))
               ;; TODO: Set this unconditionally
               #$@(if (%current-target-system)
-                     #~((setenv "CCC" #$(cxx-for-target)))
+                     #~((setenv "CCC" #$(cxx-for-target))
+                        (setenv "NATIVE_CC" "gcc"))
                      #~())
               ;; No VSX on powerpc-linux.
               #$@(if (target-ppc32?)
