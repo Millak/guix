@@ -3122,8 +3122,8 @@ configuring CUPS.")
       #~(modify-phases %standard-phases
           (add-after 'install 'move-doc
             (lambda _
-              (let* ((old (string-append #$output "/share/gtk-doc"))
-                     (new (string-append #$output:doc "/share/gtk-doc")))
+              (let* ((old (string-append #$output "/share/doc"))
+                     (new (string-append #$output:doc "/share/doc")))
                 (mkdir-p (dirname new))
                 (rename-file old new)))))))
     (propagated-inputs (list gdk-pixbuf glib)) ;in Requires of libnotify.pc.
