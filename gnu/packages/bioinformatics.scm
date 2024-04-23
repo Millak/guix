@@ -11890,6 +11890,47 @@ analysis of cell types, subtypes, transcriptional gradients,cell-cycle
 variation, gene modules and their regulatory models and more.")
       (license license:expat))))
 
+(define-public r-metadeconfoundr
+  ;; There are some relevant updates after the release of version 0.3.0.
+  (let ((commit "90aec0226c5128bfcbbc08903452eff460d21424")
+        (revision "1"))
+    (package
+      (name "r-metadeconfoundr")
+      (version (git-version "0.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/TillBirkner/metadeconfoundR")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0zkqar27p5qwq46xbxsw5x1pl50xbkgqiizw5bydlyhwb0ga2f3h"))))
+      (properties `((upstream-name . "metadeconfoundR")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-bigmemory
+                               r-detectseparation
+                               r-doparallel
+                               r-dosnow
+                               r-foreach
+                               r-futile-logger
+                               r-ggplot2
+                               r-lme4
+                               r-lmtest
+                               r-reshape2
+                               r-snow))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/TillBirkner/metadeconfoundR")
+      (synopsis "Check multiple covariates for potenial confounding effects")
+      (description
+       "This package detects naive associations between omics features and
+metadata in cross-sectional data-sets using non-parametric tests.  In a second
+step, confounding effects between metadata associated to the same omics
+feature are detected and labeled using nested post-hoc model comparison tests.
+The generated output can be graphically summarized using the built-in plotting
+function.")
+      (license license:gpl2))))
+
 (define-public r-sleuth
   (package
     (name "r-sleuth")
