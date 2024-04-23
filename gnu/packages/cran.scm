@@ -1680,6 +1680,26 @@ ROCit package provides flexibility to easily evaluate threshold-bound
 metrics.")
     (license license:gpl3)))
 
+(define-public r-roi-plugin-lpsolve
+  (package
+    (name "r-roi-plugin-lpsolve")
+    (version "1.0-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ROI.plugin.lpsolve" version))
+       (sha256
+        (base32 "0xgg1fzq5sba3yvvrci3iw97p31walpnhv4zwnd39gw8v5z6f9dj"))))
+    (properties `((upstream-name . "ROI.plugin.lpsolve")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lpsolveapi r-roi))
+    (home-page "https://roigrp.gitlab.io")
+    (synopsis "Plugin of lp_solve for the R optimization infrastructure")
+    (description
+     "This package enhances the @acronym{ROI, R Optimization Infrastructure} with
+the lp_solve solver.")
+    (license license:gpl3)))
+
 (define-public r-rorcid
   (package
     (name "r-rorcid")
