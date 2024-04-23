@@ -70,6 +70,7 @@
 ;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;; Copyright © 2024 Erik Eduardo Alonso Hernández <erik@erikeduardo.xyz>
+;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3812,6 +3813,30 @@ notable features include:
       (description "velox is a simple window manager for Wayland based on swc.
 It is inspired by dwm and xmonad.")
       (license license:expat))))
+
+(define-public wsbg
+  (let ((commit "15b0d0f6910ea97b9bcc471695fac07270955dd2")
+        (revision "0")
+        ;; Upstream has no version tags, but meson.build contains the correct
+        ;; version number.
+        (version "0.1.0"))
+    (package
+      (inherit swaybg)
+      (name "wsbg")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/saibier/wsbg")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "15xrnwp54kghigx06y4qmmn1q9f26fx4cawyl4kcbqrrzfbbj1g6"))))
+      (home-page "https://github.com/saibier/wsbg")
+      (synopsis "Workspace wallpaper tool for Sway")
+      (description "Wallpaper utility for Sway with support for per-workspace
+configuration."))))
 
 (define-public yambar-wayland
   (package
