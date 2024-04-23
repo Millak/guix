@@ -4311,6 +4311,35 @@ the embedded @code{RapidXML} C++ library.")
     ;; 'rapidxml' which is Boost.
     (license (list license:gpl3 license:bsd-2 license:boost1.0))))
 
+(define-public r-rearrr
+  (package
+    (name "r-rearrr")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rearrr" version))
+       (sha256
+        (base32 "1inx1gikiqxaf6a8g10b02l1qs2y0zxs2yrxn6dyx9n6xlra3rnr"))))
+    (properties `((upstream-name . "rearrr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate
+                             r-dplyr
+                             r-lifecycle
+                             r-plyr
+                             r-purrr
+                             r-r6
+                             r-rlang
+                             r-tibble))
+    (home-page "https://github.com/ludvigolsen/rearrr")
+    (synopsis "Rearranging data by a set of methods")
+    (description
+     "This package arranges data by a set of methods.  It uses rearrangers to
+reorder data points and mutators to change their values.  From basic utilities,
+to centering the greatest value, to swirling in 3-dimensional space, rearrr
+enables creativity when plotting and experimenting with data.")
+    (license license:expat)))
+
 (define-public r-model4you
   (package
     (name "r-model4you")
