@@ -12211,6 +12211,26 @@ facilitate data exploration.")
 experimental designs and random samples for common sampling designs.")
     (license license:expat)))
 
+(define-public r-roi
+  (package
+    (name "r-roi")
+    (version "1.0-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ROI" version))
+       (sha256
+        (base32 "05hnj9fskfm2klz7zv97lb0r60akjq4a1cay8p62whpi0hri9zyl"))))
+    (properties `((upstream-name . "ROI")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate r-registry r-slam))
+    (home-page "https://roi.r-forge.r-project.org/")
+    (synopsis "R optimization infrastructure")
+    (description
+     "The @acronym{ROI, R Optimization Infrastructure} is a framework for handling
+optimization problems in R.")
+    (license license:gpl3)))
+
 (define-public r-roptim
   (package
     (name "r-roptim")
