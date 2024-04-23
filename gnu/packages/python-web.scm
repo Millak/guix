@@ -64,6 +64,7 @@
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 normally_js <normally_js@posteo.net>
+;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7175,6 +7176,32 @@ for Python.  It is mainly used by the ZODB.")
 Agent is a web crawler.  It uses the list of registered robots from
 @url{http://www.robotstxt.org}.")
     (license license:gpl3+)))
+
+(define-public python-robotframework-requests
+  (package
+    (name "python-robotframework-requests")
+    (version "0.9.7")
+    (source
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/MarketSquare/robotframework-requests")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "077j8p5k41v53slyv8h32fcmqfi7m6z3r4gmyqqaawm5szfmy61m"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-requests python-robotframework))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/MarketSquare/robotframework-requests")
+    (synopsis "Robot Framework keyword library wrapper around requests")
+    (description
+     "@code{RequestsLibrary} is a @url{https://robotframework.org/, Robot
+Framework} library aimed to provide HTTP API testing functionalities by
+wrapping the @code{requests} Python library.")
+    (license license:expat)))
 
 (define-public python-pysolr
   (package
