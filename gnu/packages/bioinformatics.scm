@@ -13330,6 +13330,45 @@ bound and non bound genomic regions to accurately identify transcription
 factors bound at the specific regions.")
     (license license:gpl2+)))
 
+(define-public r-seraster
+  ;; There are no tags or releases.
+  (let ((commit "4fdc1ffe5d3feb65de9880329d221cf276b393a1")
+        (revision "1"))
+    (package
+      (name "r-seraster")
+      (version (git-version "0.99.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/JEFworks-Lab/SEraster")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0y33lk8q0h9nfzmf7slxxvw3l0djassp4l63nsjpm3p6z4pah5s4"))))
+      (properties `((upstream-name . "SEraster")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-biocparallel
+                               r-ggplot2
+                               r-matrix
+                               r-rearrr
+                               r-sf
+                               r-spatialexperiment
+                               r-summarizedexperiment))
+      (home-page "https://github.com/JEFworks-Lab/SEraster")
+      (synopsis
+       "Rasterization framework for scalable spatial omics data analysis")
+      (description
+       "This package is a rasterization preprocessing framework that aggregates
+cellular information into spatial pixels to reduce resource requirements for
+spatial omics data analysis.  SEraster reduces the number of points in spatial
+omics datasets for downstream analysis through a process of rasterization where
+single cells gene expression or cell-type labels are aggregated into equally
+sized pixels based on a user-defined resolution.  SEraster can be incorporated
+with other packages to conduct downstream analyses for spatial omics datasets,
+such as detecting spatially variable genes.")
+      (license license:gpl3))))
+
 (define-public emboss
   (package
     (name "emboss")
