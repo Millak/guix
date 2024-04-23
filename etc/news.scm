@@ -31,7 +31,7 @@
 (channel-news
  (version 0)
 
- (entry (commit "fdfd7667c66cf9ce746330f39bcd366e124460e1")
+ (entry (commit "67a3a83170c038d2eb084d3f53a7ea7b033aea74")
         (title
          (en "@code{nss-certs} is now included in @code{%base-packages}")
          (de "@code{nss-certs} ist jetzt Teil von @code{%base-packages}")
@@ -39,13 +39,25 @@
         (body
          (en "The @code{nss-certs} package is now included in the
 @code{%base-packages}, the default value for the @code{packages} field of the
-@code{operating-system} record.")
+@code{operating-system} record.
+
+If you are a Guix System user, in your operating system configuration file,
+please no longer add @code{(specification->package \"nss-certs\")} to
+@code{%base-packages}.")
          (de "Das Paket @code{nss-certs} ist jetzt in @code{%base-packages}
 enthalten, dem Vorgabewert des @code{packages}-Felds im
-@code{operating-system}-Verbundstyp.")
+@code{operating-system}-Verbundstyp.
+
+Wenn Sie ein Nutzer von Guix System sind, fügen Sie bitte in Ihrer
+Betriebssystemkonfigurationsdatei nicht mehr
+@code{(specification->package \"nss-certs\")} zu @code{%base-packages} hinzu.")
          (fr "Le paquet @code{nss-certs} est maintenant inclus dans
 @code{%base-packages}, la valeur par défaut du champ @code{packages} de
-l'enregistrement @code{operating-system}.")))
+l'enregistrement @code{operating-system}.
+
+Si vous êtes une utilisatrice ou un utilisateur du système Guix, dans le
+fichier de configuration du système d'exploitation, veuillez ne plus ajouter
+@code{(specification->package \"nss-certs\")} à @code{%base-packages}.")))
 
  (entry (commit "b4aed68e960116b2b60f68ea1468d7a526149823")
         (title
