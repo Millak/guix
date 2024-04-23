@@ -8191,6 +8191,26 @@ functions that solve general linear/integer problems, assignment problems, and
 transportation problems.")
     (license license:lgpl2.0)))
 
+(define-public r-lpsolveapi
+  (package
+    (name "r-lpsolveapi")
+    (version "5.5.2.0-17.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lpSolveAPI" version))
+       (sha256
+        (base32 "191zjgyap3kcsvh8fygqqyr9p0agbzm160fzynnpaxf19yp6r3dh"))))
+    (properties `((upstream-name . "lpSolveAPI")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=lpSolveAPI")
+    (synopsis "Interface to lp_solve")
+    (description
+     "The lpSolveAPI package provides an R interface to lp_solve, a @acronym{MILP,
+Mixed Integer Linear Programming}, solver with support for pure linear, (mixed)
+integer/binary, semi-continuous and @acronym{SOS, special ordered sets} models.")
+    (license license:lgpl2.0)))
+
 (define-public r-limsolve
   (package
     (name "r-limsolve")
