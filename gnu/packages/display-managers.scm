@@ -483,14 +483,14 @@ GTK+, lets you select a desktop session and log in to it.")
 (define-public slim
   (package
     (name "slim")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/slim-fork/slim-" version
                            ".tar.gz"))
        (sha256
-        (base32 "011jfmksy0kgw4z0y70mc80bm5kmz5i1sgm6krrfj0h00zak22rm"))
+        (base32 "06r47ypf9lsy76jikrvihw8ka9j2wbrnn8g3sbxp819hcbqxg22z"))
        (patches (search-patches "slim-config.patch"
                                 "slim-login.patch"
                                 "slim-display.patch"))))
@@ -516,7 +516,11 @@ GTK+, lets you select a desktop session and log in to it.")
             (lambda _
               (substitute* "CMakeLists.txt"
                 (("/etc")
-                 (string-append #$output "/etc"))))))
+                 (string-append #$output "/etc"))
+                (("install.*SYSTEMDDIR.*")
+                 ;; The build system's logic here is: if "Linux", then
+                 ;; "systemd".  Strip that.
+                 "")))))
       #:configure-flags
       #~(list "-DUSE_PAM=yes" "-DUSE_CONSOLEKIT=no")
       #:tests? #f))
