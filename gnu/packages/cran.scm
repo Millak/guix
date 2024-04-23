@@ -4253,6 +4253,38 @@ categorical and continuous (time series) data, otherwise known as dependent
 mixture models.")
     (license license:gpl2+)))
 
+(define-public r-detectseparation
+  (package
+    (name "r-detectseparation")
+    (version "0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "detectseparation" version))
+       (sha256
+        (base32 "05z3p1z5mhmdj5qdknz1b8f6fwbghzckl88pv79v59cfwpbvgmz8"))))
+    (properties `((upstream-name . "detectseparation")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lpsolveapi r-pkgload r-roi r-roi-plugin-lpsolve))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/ikosmidis/detectseparation")
+    (synopsis
+     "Detect and check for separation and infinite maximum likelihood estimates")
+    (description
+     "This package provides pre-fit and post-fit methods for detecting separation
+and infinite maximum likelihood estimates in generalized linear models with
+categorical responses.  The pre-fit methods apply on binomial-response generalized
+liner models such as logit, probit and cloglog regression, and can be directly
+supplied as fitting methods to the @code{glm()} function.  The post-fit methods
+apply to models with categorical responses, including binomial-response
+generalized linear models and multinomial-response models, such as baseline
+category logits and adjacent category logits models; for example, the models
+implemented in the brglm2 package.  The post-fit methods successively refit the
+model with increasing number of iteratively reweighted least squares iterations,
+and monitor the ratio of the estimated standard error for each parameter to what
+it has been in the first iteration.")
+    (license license:gpl3)))
+
 (define-public r-readxl
   (package
     (name "r-readxl")
