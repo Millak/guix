@@ -57,17 +57,10 @@
      (list
       #:go go-1.21
       #:import-path "github.com/ipfs/go-cid"))
-    (propagated-inputs (list go-github-com-gxed-hashland-keccakpg
-                             go-github-com-minio-blake2b-simd
-                             go-github-com-minio-sha256-simd
-                             go-github-com-mr-tron-base58
-                             go-github-com-multiformats-go-base32
-                             go-github-com-multiformats-go-base36
-                             go-github-com-multiformats-go-multihash-0.2.3
-                             go-github-com-multiformats-go-multibase
-                             go-github-com-multiformats-go-varint
-                             go-github-com-spaolacci-murmur3
-                             go-golang-org-x-crypto))
+    (propagated-inputs
+     (list go-github-com-multiformats-go-multihash-0.2.3
+           go-github-com-multiformats-go-multibase
+           go-github-com-multiformats-go-varint))
     (home-page "https://github.com/ipfs/go-cid")
     (synopsis "Content ID v1 implemented in Go")
     (description
