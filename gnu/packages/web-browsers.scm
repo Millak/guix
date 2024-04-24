@@ -282,7 +282,7 @@ and the GTK+ toolkit.")
 (define-public lynx
   (package
     (name "lynx")
-    (version "2.9.0dev.12")
+    (version "2.9.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -290,7 +290,7 @@ and the GTK+ toolkit.")
                     "/lynx" version ".tar.bz2"))
               (sha256
                (base32
-                "1rg8dqafq8ray37s0w855mahq7ywfb4qa4h5q676sxq0klamnid6"))))
+                "1i9r2g2aa6np6pll4iqk9m8rmkiiam85m4jp6zgkbx0dq8i9pnx6"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config perl))
     (inputs (list ncurses
@@ -337,8 +337,6 @@ ftp, wais, nntp, finger, or cso/ph/qi servers.
 Lynx can be used to access information on the WWW, or to build information
 systems intended primarily for local access.")
     (home-page "https://lynx.invisible-island.net/")
-    ;; This was fixed in 2.8.9dev.10.
-    (properties `((lint-hidden-cve . ("CVE-2016-9179"))))
     (license license:gpl2)))
 
 (define-public kristall
