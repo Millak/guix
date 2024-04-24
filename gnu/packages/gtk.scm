@@ -34,7 +34,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;;
@@ -182,7 +182,19 @@ such as mate-panel and xfce4-panel.")
      `(#:tests? #f ; see http://lists.gnu.org/archive/html/bug-guix/2013-06/msg00085.html
        #:glib-or-gtk? #t
        #:configure-flags
-       (list "-Dtests=disabled")))
+       (list "-Dtests=disabled")
+       ,@(if (%current-target-system)
+             `(#:phases
+               (modify-phases %standard-phases
+                 (add-after 'unpack 'fix-cross-compilation
+                   (lambda _
+                     ;; XXX: Let meson-build-system customize the property
+                     (substitute* "meson.build"
+                       (("'ipc_rmid_deferred_release', 'auto'")
+                        ;; see https://github.com/NixOS/nixpkgs/blob/df51f2293e935e85f6a2e69bcf89a40cb31bbc3d/pkgs/development/libraries/cairo/default.nix#L65
+                        ;; XXX: check it on hurd.
+                        "'ipc_rmid_deferred_release', 'true'"))))))
+             '())))
     (native-inputs
      `(,@(if (target-hurd?)
              '()
