@@ -7427,14 +7427,14 @@ challenges.")
 (define-public python-imap-tools
   (package
     (name "python-imap-tools")
-    (version "0.29.0")
+    (version "1.6.0")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "imap_tools" version))
+        (uri (pypi-uri "imap-tools" version))
         (sha256
           (base32
-            "0x122jwpc74wwyw2rsv2fvh6p12y31019ndfr9717jzjkj2d3lhb"))))
+            "168nf1xbqbgqqrpqpvj6zbhdlllg34c0pm3mwz8ac62ylc37mj8z"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ; tests require internet access
     (home-page "https://github.com/ikvk/imap_tools")
