@@ -110,6 +110,7 @@ in the Mozilla clients.")
     ;; version and source to avoid a top-level variable reference & module
     ;; cycle.
     (version "3.88.1")
+    (replacement nss/fixed)
     (source (origin
               (method url-fetch)
               (uri (let ((version-with-underscores
@@ -248,38 +249,40 @@ PKCS #5, PKCS #7, PKCS #11, PKCS #12, S/MIME, X.509 v3 certificates, and other
 security standards.")
     (license license:mpl2.0)))
 
-(define-public nss-3.98
-  (package
-    (inherit nss)
-    (version "3.98")
-    (source (origin
-              (inherit (package-source nss))
-              (uri (let ((version-with-underscores
-                          (string-join (string-split version #\.) "_")))
-                     (string-append
-                      "https://ftp.mozilla.org/pub/mozilla.org/security/nss/"
-                      "releases/NSS_" version-with-underscores "_RTM/src/"
-                      "nss-" version ".tar.gz")))
-              (sha256
-               (base32
-                "1kh98amfklrq6915n4mlbrcqghc3srm7rkzs9dkh21jwscrwqjgm"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments nss)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (if tests?
-                    (begin
-                      ;; Use 127.0.0.1 instead of $HOST.$DOMSUF as HOSTADDR for
-                      ;; testing.  The latter requires a working DNS or /etc/hosts.
-                      (setenv "DOMSUF" "localdomain")
-                      (setenv "USE_IP" "TRUE")
-                      (setenv "IP_ADDRESS" "127.0.0.1")
+(define-public nss/fixed
+  (let ((actual-version "3.98"))
+    (hidden-package
+     (package
+       (inherit nss)
+       (version (string-append actual-version ".0")) ;for grafts requirements
+       (source (origin
+                 (inherit (package-source nss))
+                 (uri (let ((version-with-underscores
+                             (string-join (string-split actual-version #\.) "_")))
+                        (string-append
+                         "https://ftp.mozilla.org/pub/mozilla.org/security/nss/"
+                         "releases/NSS_" version-with-underscores "_RTM/src/"
+                         "nss-" actual-version ".tar.gz")))
+                 (sha256
+                  (base32
+                   "1kh98amfklrq6915n4mlbrcqghc3srm7rkzs9dkh21jwscrwqjgm"))))
+       (arguments
+        (substitute-keyword-arguments (package-arguments nss)
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (if tests?
+                       (begin
+                         ;; Use 127.0.0.1 instead of $HOST.$DOMSUF as HOSTADDR for
+                         ;; testing.  The latter requires a working DNS or /etc/hosts.
+                         (setenv "DOMSUF" "localdomain")
+                         (setenv "USE_IP" "TRUE")
+                         (setenv "IP_ADDRESS" "127.0.0.1")
 
-                      ;; The "PayPalEE.cert" certificate expires every six months,
-                      ;; leading to test failures:
-                      ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
-                      ;; work around that, set the time to roughly the release date.
-                      (invoke "faketime" "2024-01-23" "./nss/tests/all.sh"))
-                    (format #t "test suite not run~%"))))))))))
+                         ;; The "PayPalEE.cert" certificate expires every six months,
+                         ;; leading to test failures:
+                         ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
+                         ;; work around that, set the time to roughly the release date.
+                         (invoke "faketime" "2024-01-23" "./nss/tests/all.sh"))
+                       (format #t "test suite not run~%"))))))))))))
