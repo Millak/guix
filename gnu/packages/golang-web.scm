@@ -1988,6 +1988,20 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
 ;;; Executables:
 ;;;
 
+(define-public go-madns
+  (package
+    (inherit go-github-com-multiformats-go-multiaddr-dns)
+    (name "go-madns")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-multiformats-go-multiaddr-dns)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _ "github.com/multiformats/go-multiaddr-dns")
+        "github.com/multiformats/go-multiaddr-dns/madns")))
+    (description
+     "This package provides a CLI binary executible built from
+go-github-com-multiformats-go-multiaddr-dns.")))
+
 (define-public go-minify
   (package
     (inherit go-github-com-tdewolff-minify-v2)
