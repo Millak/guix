@@ -732,26 +732,20 @@ other software.")
 (define-public tslib
   (package
     (name "tslib")
-    (version "1.22")
+    (version "1.23")
     (source
      (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/libts/tslib")
-         (commit version)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://github.com/libts/tslib/releases/download/"
+                           version "/tslib-" version ".tar.xz"))
        (sha256
-        (base32 "197p6vy539wvfrv23agbvmay4rjya1jnisi46llm0nx4cvqh48by"))))
+        (base32 "1b0xk746dcf72rd8xkxnjfn3axc57y6ahmg95wgj01l0sia9lj4v"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "tests"
-       #:configure-flags
-       (list "--with-sdl2")))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (inputs
-     `(("sdl2" ,sdl2)))
+       #:configure-flags (list "--with-sdl2")))
+    (native-inputs (list pkg-config))
+    (inputs (list sdl2))
     (synopsis "Touchscreen access library")
     (description "TSLib is a cross-platform library that provides access to
 touchscreen devices and the ability to apply filters to their input events.")
