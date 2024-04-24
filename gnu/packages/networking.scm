@@ -64,6 +64,7 @@
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2024 Alexey Abramov <levenson@mmer.org>
+;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,6 +100,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages adns)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autogen)
@@ -144,6 +146,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
@@ -4151,6 +4154,30 @@ Supplicant.  It optimizes resource utilization by not depending on any external
 libraries and instead utilizing features provided by the Linux kernel to the
 maximum extent possible.")
     (license license:lgpl2.1+)))
+
+(define-public iwgtk
+  (package
+    (name "iwgtk")
+    (version "0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url "https://github.com/J-Lentz/iwgtk")
+                           (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fvxq4ydhzisfn93pcqbspqqi8fwj45v8q104bkm4qfzhf5nvp7w"))))
+    (build-system meson-build-system)
+    (inputs (list gtk qrencode))
+    (native-inputs (list gettext-minimal pkg-config scdoc))
+    (home-page "https://github.com/J-Lentz/iwgtk")
+    (synopsis "Lightweight front-end for iwd")
+    (description "Wireless networking GUI front-end for iwd, with supported
+functionality similar to that of iwctl.  Features include viewing and connecting
+to available networks, managing known networks, provisioning new networks via
+WPS or Wi-Fi Easy Connect, and an indicator icon displaying connection status
+and signal strength.")
+    (license license:gpl3+)))
 
 (define-public libyang
   (package
