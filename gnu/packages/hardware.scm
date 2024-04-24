@@ -626,7 +626,7 @@ through the Display Data Channel Command Interface (@dfn{DDC/CI}) protocol.")
     (license (list license:gpl2+))))
 
 (define-public edid-decode
-  (let ((commit "74b64180d67bb009d8d9ea1b6f18ad41aaa16396") ; 2020-04-22
+  (let ((commit "3d635499e4aca3319f0796ba787213c981c5a770") ; 2024-04-02
         (revision "1"))
     (package
       (name "edid-decode")
@@ -639,7 +639,7 @@ through the Display Data Channel Command Interface (@dfn{DDC/CI}) protocol.")
                (url "git://linuxtv.org/edid-decode.git")
                (commit commit)))
          (sha256
-          (base32 "0nirp5bza08zj5d8bjgcm0p869hdg3qg3mwa7999pjdrzmn7s2ah"))))
+          (base32 "18s2pwm45mzgm0rfw3wf0m349p6381i6iwbylxypizqcsvgwxb3f"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f                     ; No test suite
