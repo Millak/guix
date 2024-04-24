@@ -336,10 +336,13 @@ URL.  The current system is taken into account.
 
 If no commit with available substitutes were found, the commit field is set to
 false and a warning message is printed."
-  (let ((commit (find-latest-commit-with-substitutes url)))
-    (unless commit
-      (warning (G_ "could not find available substitutes at ~a~%")
-               url))
+  (let ((commit (catch #t
+                  (lambda ()
+                    (find-latest-commit-with-substitutes url))
+                  (lambda _
+                    (warning (G_ "could not find available substitutes at ~a~%")
+                             url)
+                    #false))))
     (channel
      (inherit chan)
      (commit commit))))
