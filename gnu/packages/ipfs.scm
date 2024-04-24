@@ -256,7 +256,7 @@ written in Go.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.22.0")
+    (version "0.28.0")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -264,7 +264,7 @@ written in Go.")
              "https://dist.ipfs.io/kubo/v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "0p8iaa56lnac1lxnbzp4fbjqzps50z5yqs34szcp53xjq8rmjzjd"))
+        (base32 "01lk6dd2j660rykchc3ggi9cln92cngz5ijlldsaj5mxnajlvbwy"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
@@ -321,7 +321,7 @@ written in Go.")
      (list
       #:unpack-path "github.com/ipfs/kubo"
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
-      #:go go-1.20
+      #:go go-1.21
       #:phases
       #~(modify-phases %standard-phases
           ;; https://github.com/ipfs/kubo/blob/master/docs/command-completion.md
@@ -355,6 +355,9 @@ written in Go.")
                   go-github-com-hashicorp-golang-lru
                   go-github-com-hashicorp-golang-lru-v2
                   go-github-com-jackpal-go-nat-pmp
+                  go-github-com-jbenet-go-random
+                  go-github-com-jbenet-goprocess
+                  go-github-com-julienschmidt-httprouter
                   go-github-com-klauspost-compress
                   go-github-com-klauspost-cpuid
                   go-github-com-lucas-clemente-quic-go
@@ -367,6 +370,9 @@ written in Go.")
                   go-github-com-mitchellh-go-homedir
                   go-github-com-mr-tron-base58
                   go-github-com-multiformats-go-multihash-0.2.3
+                  go-github-com-multiformats-go-multiaddr
+                  go-github-com-multiformats-go-multibase
+                  go-github-com-multiformats-go-multiaddr-dns
                   go-github-com-opentracing-opentracing-go
                   go-github-com-pbnjay-memory
                   go-github-com-pkg-errors
@@ -384,7 +390,7 @@ written in Go.")
                   go-go-uber-org-multierr
                   go-go-uber-org-zap
                   go-golang-org-x-crypto
-                  go-golang-org-x-exp
+                  go-golang-org-x-exp-2023
                   go-golang-org-x-lint
                   go-golang-org-x-mod
                   go-golang-org-x-net
