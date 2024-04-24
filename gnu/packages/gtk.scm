@@ -831,38 +831,35 @@ ever use this library.")
      (arguments
       (list
        #:glib-or-gtk? #t              ;to wrap binaries and/or compile schemas
+       #:tests? (not (or (target-ppc32?)
+                         (%current-target-system)))
        #:phases
        #~(modify-phases %standard-phases
            (delete 'check)
-           ;; The CI test suite fails completely on powerpc-linux.
-           ;; The name org.gnome.SessionManager was not provided by any .service
-           ;; TODO: Wrap 'check phase with 'tests?'.
-           #$@(if (not (or (target-ppc32?)
-                           (%current-target-system)))
-                #~((add-after 'install 'check
-                     (lambda _
-                       ;; xfconfd requires a writable HOME
-                       (setenv "HOME" (getenv "TMPDIR"))
-                       ;; dbus-run-session may crash if XDG_DATA_DIRS has too
-                       ;; many entries, maybe related to
-                       ;; https://gitlab.freedesktop.org/dbus/dbus/-/issues/481.
-                       (setenv "XDG_DATA_DIRS"
-                               (string-append
-                                #$output "/share:"
-                                #$(this-package-native-input
-                                   "gsettings-desktop-schemas")
-                                "/share"))
-                       ;; Don't fail on missing  '/etc/machine-id'.
-                       (setenv "DBUS_FATAL_WARNINGS" "0")
-                       (with-directory-excursion (string-append "../at-spi2-core-"
-                                                                #$version "")
-                         (invoke "dbus-run-session" "--" "ci/run-registryd-tests.sh")
-                         (substitute* "ci/run-tests.sh"
-                           (("ps auxwww") "")   ;avoid a dependency on procps
-                           (("meson test -C _build")
-                            "meson test -C ../build")) ;adjust build directory
-                         (invoke "dbus-run-session" "--" "ci/run-tests.sh")))))
-                #~()))))
+           (add-after 'install 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 ;; xfconfd requires a writable HOME
+                 (setenv "HOME" (getenv "TMPDIR"))
+                 ;; dbus-run-session may crash if XDG_DATA_DIRS has too
+                 ;; many entries, maybe related to
+                 ;; https://gitlab.freedesktop.org/dbus/dbus/-/issues/481.
+                 (setenv "XDG_DATA_DIRS"
+                         (string-append
+                          #$output "/share:"
+                          #$(this-package-native-input
+                             "gsettings-desktop-schemas")
+                          "/share"))
+                 ;; Don't fail on missing  '/etc/machine-id'.
+                 (setenv "DBUS_FATAL_WARNINGS" "0")
+                 (with-directory-excursion (string-append "../at-spi2-core-"
+                                                          #$version "")
+                   (invoke "dbus-run-session" "--" "ci/run-registryd-tests.sh")
+                   (substitute* "ci/run-tests.sh"
+                     (("ps auxwww") "")   ;avoid a dependency on procps
+                     (("meson test -C _build")
+                      "meson test -C ../build")) ;adjust build directory
+                   (invoke "dbus-run-session" "--" "ci/run-tests.sh"))))))))
      (inputs
       (list bash-minimal libxml2))
      (propagated-inputs
