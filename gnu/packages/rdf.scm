@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Pjotr Prins <pjotr.guix@thebird.nl>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -49,8 +49,10 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages kerberos)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages nettle)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -203,9 +205,7 @@ Lucene library, a high-performance, full-featured text search engine.")
          (replace 'bootstrap
            (lambda _ (invoke "autoreconf" "-vif") #t)))))
     (inputs
-     `(("raptor" ,raptor2)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("zlib" ,zlib)))
+     (list cyrus-sasl mit-krb5 nettle raptor2 zlib))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://github.com/swh/LRDF")
