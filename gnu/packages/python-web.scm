@@ -7429,14 +7429,27 @@ challenges.")
     (name "python-imap-tools")
     (version "1.6.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "imap-tools" version))
-        (sha256
-          (base32
-            "168nf1xbqbgqqrpqpvj6zbhdlllg34c0pm3mwz8ac62ylc37mj8z"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ; tests require internet access
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/ikvk/imap_tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w4x5l5w7rz1mrmbbjbfqbf3f5p89wi2fw245yvg8k98zgy012sg"))))
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests require a network connection
+      #~(list "-k" (string-append "not test_action"
+                                  " and not test_attributes"
+                                  " and not test_connection"
+                                  " and not test_folders"
+                                  " and not test_idle"
+                                  " and not test_live"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest))
     (home-page "https://github.com/ikvk/imap_tools")
     (synopsis "Work with email and mailbox by IMAP")
     (description
