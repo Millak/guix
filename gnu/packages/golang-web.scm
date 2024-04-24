@@ -1,7 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2019, 2021 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2017, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
+;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -1094,6 +1095,30 @@ with other clients.")
 used like a user interface for humans, to read and edit before passing the
 JSON data to the machine.")
     (license license:expat)))
+
+(define-public go-github-com-jackpal-go-nat-pmp
+  (package
+    (name "go-github-com-jackpal-go-nat-pmp")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackpal/go-nat-pmp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p2yrzfbkazc9nisr2iqjwzhb6q16zj6finyxxn2ikk7iiighl1g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jackpal/go-nat-pmp"))
+    (home-page "https://github.com/jackpal/go-nat-pmp")
+    (synopsis "Port mapping and discovery of external IP address")
+    (description
+     "This package provides a Go client for the NAT-PMP internet protocol for
+port mapping and discovering the external IP address of a firewall.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-jcmturner-dnsutils-v2
   (package
