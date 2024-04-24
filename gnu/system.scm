@@ -43,7 +43,8 @@
   #:use-module (guix deprecation)
   #:use-module (guix derivations)
   #:use-module (guix profiles)
-  #:use-module ((guix utils) #:select (substitute-keyword-arguments))
+  #:use-module ((guix utils) #:select (substitute-keyword-arguments
+                                       version>?))
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
   #:use-module (guix ui)
@@ -275,7 +276,7 @@ VERSION is the target version of the boot-parameters record."
   (issue operating-system-issue                   ; string
          (default %default-issue))
 
-  (packages operating-system-packages             ; list of (PACKAGE OUTPUT...)
+  (packages %operating-system-packages            ; list of (PACKAGE OUTPUT...)
             (default %base-packages))             ; or just PACKAGE
 
   (timezone operating-system-timezone
@@ -315,6 +316,29 @@ VERSION is the target version of the boot-parameters record."
 (define-deprecated (operating-system-hosts-file os)
   hosts-service-type
   (%operating-system-hosts-file os))
+
+;;; XXX: Remove after a new release of Guix no longer suggests to install
+;;; nss-certs.
+(define (operating-system-packages os)
+  "Return the packages of the OS <operating-system> record object."
+  ;; This wrapper is used to warn users that their operating system packages
+  ;; field contains a duplicated nss-certs packages.
+  (let* ((packages (%operating-system-packages os))
+         (nss-certs-packages (sort (filter (lambda (p)
+                                             (string=? "nss-certs" (package-name p)))
+                                           packages)
+                                   (lambda (x y)
+                                     ;; Sort from newer to older versions.
+                                     (version>? (package-version x)
+                                                (package-version y))))))
+    (if (> (length nss-certs-packages) 1)
+        (begin
+          (warning #f
+                   (G_ "multiple 'nss-certs' packages found; 'nss-certs' \
+is now included by default in '%base-packages'; ensure it is not explicitly \
+listed in the operating system 'packages' field~%"))
+          (fold delete packages (drop nss-certs-packages 1)))
+        packages)))
 
 (define* (operating-system-kernel-arguments
           os root-device #:key (version %boot-parameters-version))
