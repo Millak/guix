@@ -4585,7 +4585,7 @@ QUIC protocol.")
            ;; TODO: figure out how tests are run
            #:tests? #f
            #:install-source? #f
-           #:go go-1.20
+           #:go go-1.21
            #:phases
            #~(modify-phases %standard-phases
                (replace 'build
