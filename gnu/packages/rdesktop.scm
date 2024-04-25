@@ -96,7 +96,7 @@ to remotely control a user's Windows desktop.")
 (define-public freerdp
   (package
     (name "freerdp")
-    (version "2.11.2")
+    (version "2.11.7")
     (source
      (origin
        (method git-fetch)
@@ -105,7 +105,7 @@ to remotely control a user's Windows desktop.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c17skq16ic036829bndqsr5g0yrp0ya5lmn2w28x9gkz2qjgqkf"))))
+        (base32 "0h7yxjnl4zgl07ilh7dzbig8r7phll0wid72hm92jav6s4q75v63"))))
     (build-system cmake-build-system)
     (native-inputs
      (list docbook-xml
