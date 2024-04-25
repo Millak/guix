@@ -355,7 +355,7 @@ website for more information about Yubico and the YubiKey.")
 (define-public opensc
   (package
     (name "opensc")
-    (version "0.22.0")
+    (version "0.25.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -363,7 +363,7 @@ website for more information about Yubico and the YubiKey.")
                     version "/opensc-" version ".tar.gz"))
               (sha256
                (base32
-                "11ki9j2b07w5gi2b1r39d71320s7rhfzcpaqpqra7gjy353m6kld"))))
+                "0bv2sq3k8bl712yi1gi7f8km8g2x09is8ynnr5x3g2jh59pbdmz6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
