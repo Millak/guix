@@ -113,6 +113,35 @@
 a human-readable byte format.")
     (license license:asl2.0)))
 
+(define-public go-git-sr-ht-sircmpwn-go-bare
+  (package
+    (name "go-git-sr-ht-sircmpwn-go-bare")
+    (version "0.0.0-20210406120253-ab86bc2846d9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~sircmpwn/go-bare")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zh36qppk8lscd8mysy0anm2vw5c74c10f4qvhd541wxm06di928"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~sircmpwn/go-bare"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-git-sr-ht-sircmpwn-getopt))
+    (home-page "https://git.sr.ht/~sircmpwn/go-bare")
+    (synopsis "Implementation of the BARE message format")
+    (description
+     "This package provides an implementation of the @acronym{BARE, Binary
+Application Record Encoding} https://baremessages.org/ message format for
+Golang.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-a8m-envsubst
   (package
     (name "go-github-com-a8m-envsubst")
