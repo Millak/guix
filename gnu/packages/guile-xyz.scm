@@ -2026,8 +2026,8 @@ for MySQL.")
     (license license:gpl2+)))
 
 (define-public guile-lmdb
-  (let ((commit "ea9aa1d4b13e03f9fd23ec73d8884f4fae79666b")
-        (revision "1"))
+  (let ((commit "56a986f5db5b70b6bec3ba3e6c161267dd8fda29")
+        (revision "2"))
     (package
       (name "guile-lmdb")
       (version (git-version "0.0.1" revision commit))
@@ -2039,7 +2039,7 @@ for MySQL.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1li92ldyjvbqkhqnkndgw0jk1avkzq9jkbmk8dqiby4na72sxi8k"))))
+                  "1pzqgdm0dlz3v7nac1akpxrmxgbi2ycyxs7fnn3kba65424vigm7"))))
       (build-system guile-build-system)
       (arguments
        (list
@@ -2064,6 +2064,8 @@ Several conveniences are added on top:
 @code{call-with-wrapped-cursor} helpers and respective @code{with-} macros.
 @item @code{for-cursor} procedure for cursor iteration.
 @item @code{val} and @code{stat} types.
+@item @code{set-compare!} and @code{set-dupsort!} to configure entry
+sorting.
 @item Error signaling instead of integer return values.
 @end itemize")
       (license license:gpl3+))))
