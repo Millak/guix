@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
+;;; Copyright © 2017, 2024 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Timo Eisenmann <eisenmann@fn.de>
@@ -1029,7 +1029,7 @@ Features include
 (define-public edbrowse
   (package
     (name "edbrowse")
-    (version "3.8.9")
+    (version "3.8.10")
     (source
      (origin
        (method git-fetch)
@@ -1038,10 +1038,9 @@ Features include
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hxvdvplmbnn0jzw4ls8a03k2s7qdylghln74910yljzjf392mld"))))
+        (base32 "1rkz3xrx96071xbd9cd6iiqvaiinsf9lfj7s7ahnkp7hywr9whm5"))))
     (build-system gnu-build-system)
-    (inputs (list curl-ssh pcre2 quickjs openssl readline-7 tidy-html
-                  unixodbc))
+    (inputs (list curl-ssh pcre2 quickjs openssl readline-7 unixodbc))
     (native-inputs (list perl pkg-config))
     (arguments
      (list
