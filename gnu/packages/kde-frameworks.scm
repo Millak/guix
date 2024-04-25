@@ -1645,9 +1645,9 @@ with other frameworks.")
                 (("@KAUTH_POLICY_FILES_INSTALL_DIR@")
                  "${KDE_INSTALL_DATADIR}/polkit-1/actions")
                 (("@KAUTH_HELPER_INSTALL_DIR@")
-                 "${KDE_INSTALL_LIBEXECDIR}")
+                 "${KDE_INSTALL_LIBEXECDIR}/kauth")
                 (("@KAUTH_HELPER_INSTALL_ABSOLUTE_DIR@")
-                 "${KDE_INSTALL_LIBEXECDIR}"))))
+                 "${KDE_INSTALL_FULL_LIBEXECDIR}/kauth"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
