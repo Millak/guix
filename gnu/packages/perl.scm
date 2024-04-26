@@ -9663,6 +9663,26 @@ other OO languages like Python, Ruby, Java and Perl 6.")
 Excel95, 97 and 2000 format files.")
     (license license:perl-license)))
 
+(define-public perl-spreadsheet-xlsx
+  (package
+    (name "perl-spreadsheet-xlsx")
+    (version "0.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/A/AS/ASB/Spreadsheet-XLSX-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0xp9rqm0j1a6pr2zxk9c1mk720vbd72bhkmpcn8305pzgj97idrk"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-test-nowarnings perl-test-warnings))
+    (propagated-inputs (list perl-archive-zip perl-spreadsheet-parseexcel))
+    (home-page "https://metacpan.org/release/Spreadsheet-XLSX")
+    (synopsis "Perl extension for reading MS Excel 2007 files")
+    (description "This module implements @code{Spreadsheet::XLSX} parsing
+Microsoft Excel 2007 xlsx files.")
+    (license license:perl-license)))
+
 (define-public perl-want
   (package
     (name "perl-want")
