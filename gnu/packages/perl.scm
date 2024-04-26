@@ -9967,6 +9967,26 @@ that they won't be changed.")
 a functional interface.")
     (license (package-license perl))))
 
+(define-public perl-string-util
+  (package
+    (name "perl-string-util")
+    (version "1.34")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/B/BA/BAKERSCOT/String-Util-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "0sf44mky5kawj9jnf0zpv688wchr5ab5s5gs45jyahakcv6yi71i"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build-tiny))
+    (home-page "https://metacpan.org/release/String-Util")
+    (synopsis "String processing utility functions")
+    (description "A @code{String::Util} module of small, handy functions for
+processing strings in various ways.")
+    (license license:perl-license)))
+
 (define-public perl-sub-exporter
   (package
     (name "perl-sub-exporter")
