@@ -4998,6 +4998,31 @@ environment set through Direnv.")
 that the binary uses instead of the actual binary contents.")
     (license license:gpl3+)))
 
+(define-public emacs-ellama
+  (package
+    (name "emacs-ellama")
+    (version "0.9.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/s-kostyaev/ellama")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256 (base32
+                       "1nwwqvl91c65r45yxa2dcl4a41r3ahw6294h79riya48nrp8kn54"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-dash emacs-llm emacs-spinner))
+    (home-page "https://github.com/s-kostyaev/ellama")
+    (synopsis "Tool for interacting with LLMs")
+    (description
+     "Ellama is a tool for interacting with large language models from Emacs.
+It allows you to ask questions and receive responses from the LLMs.  Ellama
+can perform various tasks such as translation, code review, summarization,
+enhancing grammar/spelling or wording and more through the Emacs interface.
+Ellama natively supports streaming output, making it effortless to use with
+your preferred text editor.")
+    (license license:gpl3+)))
+
 (define-public emacs-org-fc
   (package
     (name "emacs-org-fc")
