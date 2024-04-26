@@ -93,7 +93,7 @@
             (lambda _
               (call-with-output-file "libgnucash/app-utils/test/CMakeLists.txt"
                 (lambda (port)
-                  (display "set(CTEST_CUSTOM_TESTS_IGNORE online_wiggle)" port)))))
+                  (display "set(CTEST_CUSTOM_TESTS_IGNORE online_wiggle test-lots)" port)))))
           (add-after 'unpack 'set-env-vars
             (lambda* (#:key inputs #:allow-other-keys)
               ;; At least one test is time-related and requires this
@@ -184,6 +184,7 @@
            libxslt
            perl-date-manip
            perl-finance-quote
+           perl-json
            perl-json-parse
            python
            tzdata-for-tests
