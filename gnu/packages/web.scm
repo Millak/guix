@@ -3535,6 +3535,27 @@ composed of HTML::Element style components.")
 syntactic legitmacy.")
     (license license:artistic2.0)))
 
+(define-public perl-html-selector-xpath
+  (package
+    (name "perl-html-selector-xpath")
+    (version "0.28")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/C/CO/CORION/HTML-Selector-XPath-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "03wdwnrf0bvr2dw01njnz3a9mw2kl7ad7krh25j3vkyj7vq1f9s3"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-test-base
+                         perl-test-pod))
+    (home-page "https://metacpan.org/release/HTML-Selector-XPath")
+    (synopsis "CSS Selector to XPath compiler")
+    (description "@code{HTML::Selector::XPath} is a Perl module for parsing
+and scraping XML/HTML documents using XPath expressions.")
+    (license license:perl-license)))
+
 (define-public perl-html-tableextract
   (package
     (name "perl-html-tableextract")
