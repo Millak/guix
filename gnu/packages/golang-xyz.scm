@@ -34,6 +34,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +61,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
@@ -2453,6 +2455,40 @@ command line flags, config files, and default struct values.")
      "Implementation of @url{https://github.com/multiformats/multibase,
 multibase} (self identifying base encodings) in Go.")
     (license license:expat)))
+
+(define-public go-github-com-msteinert-pam
+  (package
+    (name "go-github-com-msteinert-pam")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/msteinert/pam")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qnr0zxyxny85andq3cbj90clmz2609j8z9mp0zvdyxiwryfhyhj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; To run the full suite, the tests must be run as the root user.
+      #:tests? #f
+      #:go go-1.20
+      #:import-path "github.com/msteinert/pam"))
+    (propagated-inputs
+     (list go-golang-org-x-term
+           ;; For header files, otherwise it needs to be added as an input in
+           ;; final package to prevent build failure:
+           ;; ../../../github.com/msteinert/pam/transaction.go:7:10: fatal
+           ;; error: security/pam_appl.h: No such file or directory
+           linux-pam))
+    (home-page "https://github.com/msteinert/pam")
+    (synopsis "Golang wrapper module for the PAM API")
+    (description
+     "This package provides a wrapper for the @acronym{Pluggable
+Authentication Modules, PAM} application API.")
+    (license license:bsd-2)))
 
 (define-public go-github-com-multiformats-go-multicodec
   (package
