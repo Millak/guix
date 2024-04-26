@@ -325,7 +325,9 @@ VERSION is the target version of the boot-parameters record."
   ;; field contains a duplicated nss-certs packages.
   (let* ((packages (%operating-system-packages os))
          (nss-certs-packages (sort (filter (lambda (p)
-                                             (string=? "nss-certs" (package-name p)))
+                                             (and (package? p)
+                                                  (string=? "nss-certs"
+                                                            (package-name p))))
                                            packages)
                                    (lambda (x y)
                                      ;; Sort from newer to older versions.
