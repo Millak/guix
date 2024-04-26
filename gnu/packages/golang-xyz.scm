@@ -113,6 +113,48 @@
 a human-readable byte format.")
     (license license:asl2.0)))
 
+(define-public go-git-sr-ht-emersion-go-sqlite3-fts5
+  (package
+    (name "go-git-sr-ht-emersion-go-sqlite3-fts5")
+    (version "0.0.0-20240124102820-f3a72e8b79b1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~emersion/go-sqlite3-fts5")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1plbfb1z0y3gprddwvp4n61r0cacpp7cjn3abq00xhac5vdvig0v"))))
+    (build-system go-build-system)
+    ;; XXX: fts5.c, fts5.h, generate.sh, sqlite3.h and sqlite3ext.h are
+    ;; obtained from
+    ;; <https://www.sqlite.org/2023/sqlite-preprocessed-3440000.zip>, check if
+    ;; they may be sourced from sqlite package.
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "git.sr.ht/~emersion/go-sqlite3-fts5"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-flags
+            (lambda _
+              ;; FIXME: Find out why it's failing without these flags:
+              ;; src/git.sr.ht/~emersion/go-sqlite3-fts5/internal/internal.go:13:
+              ;; undefined reference to `sqlite3_auto_extension'collect2:
+              ;; error: ld returned 1 exit status
+              (setenv "CGO_LDFLAGS"
+                      "-Wl,--unresolved-symbols=ignore-in-object-files"))))))
+    (propagated-inputs
+     (list go-github-com-mattn-go-sqlite3))
+    (home-page "https://git.sr.ht/~emersion/go-sqlite3-fts5")
+    (synopsis "FTS5 extension for go-sqlite3")
+    (description
+     "Standalone FTS5 extension for
+@@url{https://github.com/mattn/go-sqlite3,go-sqlite3}, that provides full-text
+search functionality to database applications.")
+    (license license:expat)))
+
 (define-public go-git-sr-ht-sircmpwn-go-bare
   (package
     (name "go-git-sr-ht-sircmpwn-go-bare")
