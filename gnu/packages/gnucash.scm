@@ -242,38 +242,38 @@ to be read using the GNOME Yelp program.")
       (license (list license:fdl1.1+ license:gpl3+)))))
 
 (define-public gwenhywfar
-  (package
-    (name "gwenhywfar")
-    (version "5.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.aquamaniac.de/rdm/attachments/"
-                           "download/364/gwenhywfar-" version ".tar.gz"))
-       (sha256
-        (base32 "1isbj4a7vdgagp3kkvx2pjcjy8lba6kzjr11fmr06aci1694dbsp"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       (list "--disable-network-checks"
-             ;; GTK+3, GTK+2 and QT4 are supported.
-             "--with-guis=gtk3"
-             (string-append "--with-openssl-includes="
-                            (assoc-ref %build-inputs "openssl") "/include")
-             (string-append "--with-openssl-libs="
-                            (assoc-ref %build-inputs "openssl") "/lib"))))
-    (inputs
-     (list libgcrypt gnutls openssl gtk+))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://www.aquamaniac.de")
-    (synopsis "Utility library for networking and security applications")
-    (description
-     "This package provides a helper library for networking and security
+  (let ((attachid "501")) ;; file attachid changes for each version
+    (package
+      (name "gwenhywfar")
+      (version "5.10.2")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append "https://www.aquamaniac.de/rdm/attachments/"
+                             "download/" attachid "/gwenhywfar-" version ".tar.gz"))
+         (sha256
+          (base32 "1qd950kilf9bcb51b1daykipanml6bg1h3pj10950r98ah1xm9v0"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:configure-flags
+         (list "--disable-network-checks"
+               ;; GTK+3, GTK+2 and QT4 are supported.
+               "--with-guis=gtk3"
+               "--enable-system-certs"
+               "--with-libxml2-code=yes"
+               "--disable-binreloc")))
+      (inputs
+       (list libgcrypt gnutls openssl gtk+ libxml2))
+      (native-inputs
+       (list pkg-config))
+      (home-page "https://www.aquamaniac.de")
+      (synopsis "Utility library for networking and security applications")
+      (description
+       "This package provides a helper library for networking and security
 applications and libraries.  It is used by AqBanking.")
-    ;; The license includes an explicit additional permission to compile and
-    ;; distribute this library with the OpenSSL Toolkit.
-    (license license:lgpl2.1+)))
+      ;; The license includes an explicit additional permission to compile and
+      ;; distribute this library with the OpenSSL Toolkit.
+      (license license:lgpl2.1+))))
 
 (define-public aqbanking
   (package
