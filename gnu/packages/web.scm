@@ -3578,6 +3578,29 @@ and scraping XML/HTML documents using XPath expressions.")
 in tables within an HTML document, either as text or encoded element trees.")
     (license license:perl-license)))
 
+(define-public perl-html-tokeparser-simple
+  (package
+    (name "perl-html-tokeparser-simple")
+    (version "3.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/O/OV/OVID/HTML-TokeParser-Simple-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "17aa1v62sp8ycxcicwhankmj4brs6nnfclk9z7mf1rird1f164gd"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-html-parser
+                             perl-html-tagset
+                             perl-sub-override))
+    (home-page "https://metacpan.org/release/HTML-TokeParser-Simple")
+    (synopsis "Easy to use parsing interface")
+    (description "Provides @code{HTML::TokeParser::Simple}, a simpler interface
+to @code{HTML::TokeParser} for parsing HTML.")
+    (license license:perl-license)))
+
 (define-public perl-html-tree
   (package
     (name "perl-html-tree")
