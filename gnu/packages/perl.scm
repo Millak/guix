@@ -4094,6 +4094,26 @@ input a message of arbitrary length and produces as output a
 128-bit \"fingerprint\" or \"message digest\" of the input.")
     (license (package-license perl))))
 
+(define-public perl-digest-perl-md5
+  (package
+    (name "perl-digest-perl-md5")
+    (version "1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/D/DE/DELTA/Digest-Perl-MD5-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "1cfrxkzazxdg4prdfcfd9b33bvyav1xim2vxj07gni8gf6hwn03i"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Digest-Perl-MD5")
+    (synopsis "Perl Implementation of Rivest's MD5 algorithm")
+    (description "This @code{Digest::Perl::MD5} has the same interface as the
+much faster @code{Digest::MD5}, but it's a pure Perl implementation of MD5.
+Because of this it is slow but it works without C code.")
+    (license license:perl-license)))
+
 (define-public perl-digest-sha
   (package
     (name "perl-digest-sha")
