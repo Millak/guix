@@ -560,34 +560,34 @@ notification library in Go.")
       (license expat))))
 
 (define-public go-github-com-matttproud-golang-protobuf-extensions-pbutil
-  (let ((commit "c12348ce28de40eed0136aa2b644d0ee0650e56c")
-        (revision "0"))
-    (package
-      (name "go-github-com-matttproud-golang-protobuf-extensions-pbutil")
-      (version (git-version "1.0.0" revision commit))
-      (source
-        (origin
-          (method git-fetch)
-          (uri
-            (git-reference
-              (url "https://github.com/matttproud/golang_protobuf_extensions")
-              (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32
-            "1d0c1isd2lk9pnfq2nk0aih356j30k3h1gi2w0ixsivi5csl7jya"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/matttproud/golang_protobuf_extensions/pbutil"
-         #:unpack-path "github.com/matttproud/golang_protobuf_extensions"))
-      (propagated-inputs
-       (list go-github-com-golang-protobuf-proto))
-      (synopsis "Streaming Protocol Buffers in Go")
-      (description "This package provides various Protocol Buffer
+  (package
+    (name "go-github-com-matttproud-golang-protobuf-extensions-pbutil")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/matttproud/golang_protobuf_extensions")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0jw4vjycwx0a82yvixmp25805krdyqd960y8lnyggllb6br0vh41"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/matttproud/golang_protobuf_extensions/v2/pbutil"
+      #:unpack-path "github.com/matttproud/golang_protobuf_extensions/v2"))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf-proto
+           go-google-golang-org-protobuf))
+    (synopsis "Streaming Protocol Buffers in Go")
+    (description "This package provides various Protocol Buffer
 extensions for the Go language, namely support for record length-delimited
 message streaming.")
-      (home-page "https://github.com/matttproud/golang_protobuf_extensions")
-      (license asl2.0))))
+    (home-page "https://github.com/matttproud/golang_protobuf_extensions")
+    (license asl2.0)))
 
 (define-public go-github-com-go-asn1-ber-asn1-ber
   (package
