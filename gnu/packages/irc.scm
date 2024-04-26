@@ -70,6 +70,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -1084,3 +1085,75 @@ server written in C++ for Unix-like operating systems.")
 now).  It has some basic functionality only, such as seen, tell, and
 what.")
     (license license:gpl3+)))
+
+(define-public soju
+  (package
+    (name "soju")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~emersion/soju")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a0mp8f5i1ajh67y6fasmzgca3w1ccaiz19sx87rflbyi1mrhdlz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.19
+      #:install-source? #f
+      #:import-path "git.sr.ht/~emersion/soju"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-makefile
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "Makefile"
+                  ;; Do not set dfault config path.
+                  ((".*config_path.*:.*") "")
+                  (("-X.*=.*config_path.*' ") "")
+                  ((".*cp -f.*config_path.*") "")
+                  ;; Prevent creating /var/lib/soju.
+                  ((".*sharedstatedir.*") "")))))
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; To use an alternative SQLite library that does not require
+                ;; CGO and build with PAM.
+                (setenv "GOFLAGS" "-v -x -trimpath -tags=moderncsqlite -tags=pam")
+                (setenv "SYSCONFDIR" (string-append #$output "/etc"))
+                (invoke "make"))))
+          (replace 'install
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (setenv "PREFIX" #$output)
+                (invoke "make" "install")))))))
+    (native-inputs
+     (list go-git-sr-ht-emersion-go-scfg
+           go-git-sr-ht-emersion-go-sqlite3-fts5
+           go-git-sr-ht-sircmpwn-go-bare
+           go-github-com-emersion-go-sasl
+           go-github-com-lib-pq
+           go-github-com-mattn-go-sqlite3
+           go-github-com-msteinert-pam
+           go-github-com-pires-go-proxyproto
+           go-github-com-prometheus-client-golang
+           go-github-com-sherclockholmes-webpush-go
+           go-golang-org-x-crypto
+           go-golang-org-x-time
+           go-google-golang-org-protobuf
+           go-gopkg-in-irc-v4
+           go-nhooyr-io-websocket
+           scdoc))
+    (home-page "https://git.sr.ht/~emersion/soju")
+    (synopsis "User-friendly IRC bouncer")
+    (description
+     "Connects to upstream IRC servers on behalf of the user to provide
+extra functionality. soju supports many features
+such as multiple users, numerous @@url{https://ircv3.net/,IRCv3} extensions,
+chat history playback and detached channels.  It is well-suited for both small
+and large deployments.")
+    (license license:agpl3)))
+
