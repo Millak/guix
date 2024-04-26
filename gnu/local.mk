@@ -1118,7 +1118,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/dante-non-darwin.patch			\
   %D%/packages/patches/date-ignore-zonenow.patch	\
   %D%/packages/patches/date-output-pkg-config-files.patch	\
-  %D%/packages/patches/datefudge-gettimeofday.patch		\
   %D%/packages/patches/dbacl-include-locale.h.patch		\
   %D%/packages/patches/dbacl-icheck-multiple-definitions.patch	\
   %D%/packages/patches/dblatex-inkscape-1.0.patch		\
