@@ -6490,6 +6490,29 @@ Illumina paired-end data (for CASAVA 1.8+).")
 average nucleotide identity.")
     (license license:expat)))
 
+(define-public python-pyahocorasick
+  (package
+    (name "python-pyahocorasick")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/WojciechMula/pyahocorasick")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fsnivwcw56q7lwz41c5kbfvxv0v17mmkx43i2a293l49fxj08j8"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-twine python-wheel))
+    (home-page "https://github.com/WojciechMula/pyahocorasick")
+    (synopsis "Library for finding multiple key strings in text")
+    (description
+     "Pyahocorasick is a fast, memory-efficient library for multi-pattern string search.
+This means that you can find multiple key strings occurrences
+at once in some input text.")
+    (license license:bsd-3)))
+
 (define-public exonerate
   (package
     (name "exonerate")
