@@ -1406,6 +1406,25 @@ being merged upstream into @code{xarray}.")
 functions and around einops with an API and features adapted to xarray.")
     (license license:asl2.0)))
 
+(define-public python-xarray-schema
+  (package
+    (name "python-xarray-schema")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xarray-schema" version))
+       (sha256
+        (base32 "08194629696z98dkc74i6c9zmy1jicvd2ajb75q0lsf0i427cv4w"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-xarray))
+    (native-inputs (list python-pytest python-setuptools-scm))
+    (home-page "https://github.com/carbonplan/xarray-schema")
+    (synopsis "Schema validation for Xarray objects")
+    (description "This package implements schema validation for Xarray
+objects.")
+    (license license:expat)))
+
 (define-public python-pytensor
   (package
     (name "python-pytensor")
