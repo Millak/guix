@@ -2093,6 +2093,33 @@ Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
 
+(define-public go-nhooyr-io-websocket
+  (package
+    (name "go-nhooyr-io-websocket")
+    (version "1.8.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nhooyr/websocket")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "019pm2bkzwyvzl61127nqzihchk35q5xh57wy50aa2syn9214fxm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests require additional dependencies like `wasmbrowsertest`.
+      #:tests? #f
+      #:import-path "nhooyr.io/websocket"))
+    (home-page "https://nhooyr.io/websocket")
+    (synopsis "Minimal and idiomatic WebSocket library for Go")
+    (description
+     "Package websocket implements the
+@@url{https://rfc-editor.org/rfc/rfc6455.html,RFC 6455} @code{WebSocket}
+protocol.")
+    (license license:isc)))
+
 ;;;
 ;;; Executables:
 ;;;
