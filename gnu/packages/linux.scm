@@ -7143,7 +7143,7 @@ not as a replacement for it.")
 (define-public hotspot
   (package
     (name "hotspot")
-    (version "1.4.1")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7155,7 +7155,7 @@ not as a replacement for it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wz4qr3dwjji79x7kj44g7xp11qsscp3b95h6627k8p7xbpi2vhd"))))
+                "17m96h0iahfjhbsa9flmsmbczvliy34vqvayzyh8bhldd8yh768l"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -7232,7 +7232,7 @@ not as a replacement for it.")
             karchive
             kconfig
             kcoreaddons
-            kddockwidgets-1    ;see https://github.com/KDAB/hotspot/issues/610
+            kddockwidgets
             kgraphviewer
             kio
             kiconthemes
