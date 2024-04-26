@@ -763,6 +763,10 @@ IcedTea build harness.")
                  (delete 'patch-patches)
                  (delete 'patch-bitrot)
                  (delete 'use-classpath)
+                 ;; Prevent passing -j (parallel-job-count) to make
+                 (replace 'build
+                   (lambda* (#:key (make-flags '()) #:allow-other-keys)
+                     (apply invoke "make" make-flags)))
                  ;; Prevent the keytool from recording the current time when
                  ;; adding certificates at build time.
                  (add-after 'unpack 'patch-keystore
