@@ -3671,6 +3671,26 @@ for the variables, loops and branches declared in the template.  This allows
 you to separate design from the data.")
     (license license:perl-license)))
 
+(define-public perl-html-treebuilder-xpath
+  (package
+    (name "perl-html-treebuilder-xpath")
+    (version "0.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/M/MI/MIROD/HTML-TreeBuilder-XPath-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1wx4i1scng20n405fp3a4vrwvvq9bvbmg977wnd5j2ja8jrbvsr5"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-html-tree perl-xml-xpathengine))
+    (home-page "https://metacpan.org/release/HTML-TreeBuilder-XPath")
+    (synopsis "XPath support for @code{HTML::TreeBuilder}")
+    (description "This module implements @code{HTML::TreeBuilder::XPath} for
+@code{HTML::TreeBuilder}, making it easy to parse documents using XPath.")
+    (license license:perl-license)))
+
 (define-public perl-http-body
   (package
     (name "perl-http-body")
