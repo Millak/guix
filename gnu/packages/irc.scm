@@ -825,6 +825,40 @@ parsers")
 building block for other projects.")
     (license license:expat)))
 
+(define-public go-gopkg-in-irc-v4
+  (package
+    (inherit go-gopkg-in-irc-v3)
+    (name "go-gopkg-in-irc-v4")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gopkg.in/irc.v4")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yr7m1vz7fj0jbmk8njg54nyc9hx4kv24k13sjc4zj5fyqljj0p2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/irc.v4"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; testcases is renamed to _testcases in v4 for some reason.
+          (add-before 'check 'adjust-testcases-data
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (mkdir-p "./_testcases/tests")
+                (for-each
+                 (lambda (file)
+                   (install-file file "./_testcases/tests"))
+                 (find-files
+                  #$(this-package-native-input "python-irc-parser-tests") "\\.yaml$"))))))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs go-gopkg-in-irc-v3)
+       (append go-golang-org-x-time)))))
+
 (define-public chathistorysync
   (package
     (name "chathistorysync")
