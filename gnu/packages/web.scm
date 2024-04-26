@@ -4778,6 +4778,38 @@ URI::Find::Schemeless.  For a command-line interface, urifind is provided.")
 methods for WebSocket URIs as it does for HTTP URIs.")
     (license license:perl-license)))
 
+(define-public perl-web-scraper
+  (package
+    (name "perl-web-scraper")
+    (version "0.38")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/M/MI/MIYAGAWA/Web-Scraper-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1gs3fmbc83j34c0sig1hkpnm26ngnyi5kgq5dl8vxvkzimgnwnzr"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build-tiny
+                         perl-test-base
+                         perl-test-requires))
+    (propagated-inputs (list perl-html-parser
+                             perl-html-selector-xpath
+                             perl-html-tagset
+                             perl-html-tree
+                             perl-html-treebuilder-xpath
+                             perl-libwww
+                             perl-universal-require
+                             perl-uri
+                             perl-xml-xpathengine
+                             perl-yaml))
+    (home-page "https://metacpan.org/release/Web-Scraper")
+    (synopsis
+     "Web Scraping toolkit using HTML and CSS Selectors or XPath expressions")
+    (description "Perl module @code{Web::Scraper} is a toolkit for
+traversing and scraping sites, inspired by Ruby's Scapi.")
+    (license license:perl-license)))
+
 (define-public perl-uri-template
   (package
     (name "perl-uri-template")
