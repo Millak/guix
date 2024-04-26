@@ -1564,6 +1564,36 @@ which produce colorized output using github.com/fatih/color.")
     (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-pires-go-proxyproto
+  (package
+    (name "go-github-com-pires-go-proxyproto")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pires/go-proxyproto")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p18w555xp187fl807h1yd092cvs8jarp98pa76zl84rxlk4k2h4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/pires/go-proxyproto"))
+    (home-page "https://github.com/pires/go-proxyproto")
+    (synopsis "Implementation of the PROXY protocol")
+    (description
+     "Package proxyproto implements Proxy Protocol (v1 and v2) parser and
+writer, as per specification:
+@@url{https://www.haproxy.org/download/2.3/doc/proxy-protocol.txt}.  It is to
+be used in one of or both proxy clients and proxy servers that need to support
+said protocol.  Both protocol versions, 1 (text-based) and 2 (binary-based)
+are supported. @acronym{TLV, tag-length-value} parsers extensions comming with
+this library support AWS, Azure and GCP.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-pkg-sftp
   (package
     (name "go-github-com-pkg-sftp")
