@@ -9639,6 +9639,30 @@ straightforward and (perhaps someday) standard way.  Spiffy borrows ideas from
 other OO languages like Python, Ruby, Java and Perl 6.")
     (license (package-license perl))))
 
+(define-public perl-spreadsheet-parseexcel
+  (package
+    (name "perl-spreadsheet-parseexcel")
+    (version "0.66")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/J/JM/JMCNAMARA/Spreadsheet-ParseExcel-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0nzn8n928720lyv61nbd02d87xi5pfs77nhv0pf031lqpb7nmmxz"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-crypt-rc4
+                             perl-digest-perl-md5
+                             perl-io-stringy
+                             perl-ole-storage-lite
+                             perl-scalar-list-utils))
+    (home-page "https://metacpan.org/release/Spreadsheet-ParseExcel")
+    (synopsis "Read information from an Excel file")
+    (description "This @code{Spreadsheet::ParseExcel} module parses Microsoft
+Excel95, 97 and 2000 format files.")
+    (license license:perl-license)))
+
 (define-public perl-want
   (package
     (name "perl-want")
