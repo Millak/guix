@@ -2877,34 +2877,32 @@ on top of the standard library @code{flag} package.")
     (license license:bsd-3)))
 
 (define-public go-github-com-prometheus-client-model
-  (let ((commit "14fe0d1b01d4d5fc031dd4bec1823bd3ebbe8016")
-        (revision "2"))
-    (package
-      (name "go-github-com-prometheus-client-model")
-      (version (git-version "0.0.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/prometheus/client_model")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0zdmk6rbbx39cvfz0r59v2jg5sg9yd02b4pds5n5llgvivi99550"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/prometheus/client_model"
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           ;; Source-only package
-           (delete 'build))))
-      (propagated-inputs
-       (list go-github-com-golang-protobuf-proto))
-      (synopsis "Data model artifacts for Prometheus")
-      (description "This package provides data model artifacts for Prometheus.")
-      (home-page "https://github.com/prometheus/client_model")
-      (license license:asl2.0))))
+  (package
+    (name "go-github-com-prometheus-client-model")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus/client_model")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pl9i969jx5vkhm8vd5vb8yrifv37aw6h8mjg04820pw0ygfbigy"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/prometheus/client_model"
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         ;; Source-only package
+         (delete 'build))))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf-proto))
+    (synopsis "Data model artifacts for Prometheus")
+    (description "This package provides data model artifacts for Prometheus.")
+    (home-page "https://github.com/prometheus/client_model")
+    (license license:asl2.0)))
 
 (define-public go-github-com-rcrowley-go-metrics
   (let ((commit "cac0b30c2563378d434b5af411844adff8e32960")
