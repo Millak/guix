@@ -1373,7 +1373,8 @@ name) using the Python's @code{dataclass}.")
         (base32 "1x1s25s6dp1f2hck9qw8vl8hgkyy23rcwag2a9vd3w0dbgrrl5i6"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-packaging python-xarray))
-    (native-inputs (list python-pytest python-zarr))
+    ;; We need setuptools-scm to correctly record the version string.
+    (native-inputs (list python-pytest python-setuptools-scm python-zarr))
     (home-page "https://github.com/xarray-contrib/datatree")
     (synopsis "Hierarchical tree-like data structures for xarray")
     (description "Datatree is a prototype implementation of a tree-like
