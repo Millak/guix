@@ -2562,6 +2562,26 @@ multibase} (self identifying base encodings) in Go.")
 Authentication Modules, PAM} application API.")
     (license license:bsd-2)))
 
+(define-public go-github-com-msteinert-pam-v2
+  (package
+    (inherit go-github-com-msteinert-pam)
+    (name "go-github-com-msteinert-pam-v2")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/msteinert/pam")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h02dcx00vgcsxgl5sly82dbixk8cimjb10q5p405bf4fz8z7q6k"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-msteinert-pam)
+       ((#:import-path _ "github.com/msteinert/pam")
+        "github.com/msteinert/pam/v2")))))
+
 (define-public go-github-com-multiformats-go-multicodec
   (package
     (name "go-github-com-multiformats-go-multicodec")
