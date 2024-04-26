@@ -7865,7 +7865,7 @@ formatting information, rather than the current locale name.")
 (define-public go-github-com-prometheus-common
   (package
     (name "go-github-com-prometheus-common")
-    (version "0.4.1")
+    (version "0.45.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7874,7 +7874,7 @@ formatting information, rather than the current locale name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sf4sjdckblz1hqdfvripk3zyp8xq89w7q75kbsyg4c078af896s"))))
+                "006y6mlxglr2xzmdqxl5bwh899whfx1prcgjai7qhhs5ys5dspy5"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/prometheus/common"
