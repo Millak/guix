@@ -27,6 +27,7 @@
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1714,6 +1715,33 @@ protocol.")
 
 (define-public go-github-com-lucas-clemente-quic-go
   (deprecated-package "go-github-com-lucas-clemente-quic-go" go-github-com-quic-go-quic-go))
+
+(define-public go-github-com-sherclockholmes-webpush-go
+  (package
+    (name "go-github-com-sherclockholmes-webpush-go")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SherClockHolmes/webpush-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qv16zvkd1c7q81v2ai8pfz590fxdrk4lfbgyymln0q7jn5wlvki"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/SherClockHolmes/webpush-go"))
+    (propagated-inputs
+     (list go-github-com-golang-jwt-jwt go-golang-org-x-crypto))
+    (home-page "https://github.com/SherClockHolmes/webpush-go")
+    (synopsis "Web Push API Encryption with VAPID support")
+    (description
+     "Web Push API Encryption with
+@url{https://datatracker.ietf.org/doc/html/draft-ietf-webpush-vapid-01, VAPID}
+support.")
+    (license license:expat)))
 
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
