@@ -38,6 +38,7 @@
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2020, 2023 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10116,6 +10117,26 @@ can see them.")
     (description "Assigns a new name to referenced sub.  If package
 specification is omitted in the name, then the current package is used.  The
 return value is the sub.")
+    (license (package-license perl))))
+
+(define-public perl-sub-override
+  (package
+    (name "perl-sub-override")
+    (version "0.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://cpan.metacpan.org/authors/id/O/OV/OVID/Sub-Override-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0ixbaxhnicx90483rqhcz5dzqzxfwjxf2crghw3lgmasairwr3bd"))))
+    (native-inputs `(("perl-test-fatal" ,perl-test-fatal)))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Sub-Override")
+    (synopsis "Perl extension to override a subroutine")
+    (description "A @code{Sub::Override}} module that makes it easy to override
++subroutines.  Particularly useful for mocking in tests.")
     (license (package-license perl))))
 
 (define-public perl-sub-quote
