@@ -3253,6 +3253,31 @@ programming language used in an Emacs buffer.")
     (home-page "https://github.com/lassik/emacs-language-id")
     (license license:isc)))
 
+(define-public emacs-format-all-the-code
+  (package
+    (name "emacs-format-all-the-code")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lassik/emacs-format-all-the-code.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1p8bh96yksbpajx2pqxjc4vf7nfncwc3mvh1fcj8afw53g72is8m"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-inheritenv emacs-language-id))
+    (synopsis "Auto-format any source code")
+    (description "This package lets you auto-format source code in many
+languages using the same command for all languages, instead of learning
+a different Emacs package and formatting command for each language.
+Over 70 languages are supported, including Emacs Lisp, Kotlin, Go and
+Rust.")
+    (home-page "https://github.com/lassik/emacs-format-all-the-code")
+    (license license:expat)))
+
 (define-public emacs-relative-buffers
   (let ((release "0.0.1")
         (revision "0")
