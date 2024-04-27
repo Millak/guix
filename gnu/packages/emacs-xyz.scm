@@ -3233,6 +3233,26 @@ reformat the current buffer using a command-line program, together with an
 optional minor mode which can apply this command automatically on save.")
     (license license:gpl3+)))
 
+(define-public emacs-language-id
+  (package
+    (name "emacs-language-id")
+    (version "0.20")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lassik/emacs-language-id.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "153810jq4rbgpzvbhz2i1dyrj8bmdf4zxsrhfg0b70iq4bh78bz6"))))
+    (build-system emacs-build-system)
+    (synopsis "Identify programming language used in Emacs buffers")
+    (description "This package provides a way for Emacs to identify the
+programming language used in an Emacs buffer.")
+    (home-page "https://github.com/lassik/emacs-language-id")
+    (license license:isc)))
+
 (define-public emacs-relative-buffers
   (let ((release "0.0.1")
         (revision "0")
