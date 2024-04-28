@@ -81,6 +81,7 @@
 ;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Vagrant Cascadian <vagrant@debian.org>
+;;; Copyright © 2024 Sébastien Lerique <sl@eauchat.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -240,6 +241,34 @@
   #:use-module (guix build-system trivial)
   #:use-module ((srfi srfi-1) #:hide (zip))
   #:use-module (srfi srfi-26))
+
+(define-public hexahop
+  (package
+    (name "hexahop")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/hexahop/" version "/"
+                           "hex-a-hop-" version ".tar.gz"))
+
+       (sha256
+        (base32 "1mm069wpwc8nrrzfn2f64vh550634xlfws64bfmhqhx86vcikgw0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-sdl-prefix="
+                                  #$(this-package-input "sdl-union")))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list (sdl-union (list sdl sdl-mixer sdl-ttf))))
+    (home-page "https://sourceforge.net/projects/hexahop/")
+    (synopsis "Puzzle game navigating paths over hexagons")
+    (description
+     "Hex-a-hop is a puzzle game in which a girl has to destroy green hexagons
+by stepping on them.")
+    (license license:gpl2+)))
 
 (define-public abe
   (package
