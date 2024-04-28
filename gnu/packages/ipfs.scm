@@ -67,6 +67,36 @@
 used in @code{go-ipfs} and related packages to refer to a typed hunk of data.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-cidutil
+  (package
+    (name "go-github-com-ipfs-go-cidutil")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-cidutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j18wf42rfxrrh2fjdbjsjvjqxwgvg46b9wl6y5ig22fx5hvpm1n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/ipfs/go-cidutil"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-cid
+           go-github-com-multiformats-go-multibase
+           go-github-com-multiformats-go-multicodec
+           go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/ipfs/go-cidutil")
+    (synopsis "Utility functions and types for working with CIDs")
+    (description
+     "@code{go-cidutil} implements various utilities and helper functions for working
+with @url{https://github.com/ipld/cid, CIDs}.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-cmdkit-files
   (let ((commit
           "386fcf8f18a185ec121676665fe2d9574496048d")
