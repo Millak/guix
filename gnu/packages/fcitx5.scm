@@ -440,28 +440,28 @@ including input methods previous bundled inside Fcitx 4:
         (base32 "1pnwrj6kgha91djfvd2439nbhrmjargpw8ashhb91y5h3cdz7vhz"))))
     (build-system cmake-build-system)
     (inputs
-     `(("fcitx5" ,fcitx5)
-       ("fcitx5-qt" ,fcitx5-qt)
-       ("qtbase" ,qtbase-5)
-       ("qtx11extras" ,qtx11extras)
-       ("qtdeclarative" ,qtdeclarative-5)
-       ("qtquickcontrols2" ,qtquickcontrols2-5)
-       ("ki18n" ,ki18n)
-       ("kpackage" ,kpackage)
-       ("kdeclarative" ,kdeclarative)
-       ("kiconthemes" ,kiconthemes)
-       ("kcoreaddons" ,kcoreaddons)
-       ("plasma-framework" ,plasma-framework)
-       ("kitemviews" ,kitemviews)
-       ("kwidgetsaddons" ,kwidgetsaddons)
-       ("kwindowsystem" ,kwindowsystem)
-       ("kirigami" ,kirigami)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libx11" ,libx11)
-       ("xkeyboard-config" ,xkeyboard-config)
-       ("libxkbfile" ,libxkbfile)
-       ("gettext" ,gettext-minimal)
-       ("iso-codes" ,iso-codes)))
+     (list fcitx5
+           fcitx5-qt
+           qtbase-5
+           qtx11extras
+           qtdeclarative-5
+           qtquickcontrols2-5
+           ki18n
+           kpackage
+           kdeclarative
+           kiconthemes
+           kcoreaddons
+           plasma-framework
+           kitemviews
+           kwidgetsaddons
+           kwindowsystem
+           kirigami
+           libxkbcommon
+           libx11
+           xkeyboard-config
+           libxkbfile
+           gettext-minimal
+           iso-codes))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (home-page "https://github.com/fcitx/fcitx5-configtool")
