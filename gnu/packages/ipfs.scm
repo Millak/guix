@@ -419,6 +419,9 @@ written in Go.")
                              "vendor/github.com/gorilla"
                              "vendor/github.com/hashicorp"
                              "vendor/github.com/ipfs/go-cid"
+                             "vendor/github.com/ipfs/go-cidutil"
+                             "vendor/github.com/ipfs/go-log"
+                             "vendor/github.com/ipfs/go-ipfs-util"
                              "vendor/github.com/jackpal"
                              "vendor/github.com/jbenet"
                              "vendor/github.com/julienschmidt"
@@ -488,7 +491,7 @@ written in Go.")
                   ;;go-github-com-ipfs-boxo
                   ;;go-github-com-ipfs-go-block-format
                   go-github-com-ipfs-go-cid
-                  ;;go-github-com-ipfs-go-cidutil
+                  go-github-com-ipfs-go-cidutil
                   ;;go-github-com-ipfs-go-datastore
                   ;;go-github-com-ipfs-go-detect-race
                   ;;go-github-com-ipfs-go-ds-badger
@@ -501,8 +504,8 @@ written in Go.")
                   ;;go-github-com-ipfs-go-ipld-format
                   ;;go-github-com-ipfs-go-ipld-git
                   ;;go-github-com-ipfs-go-ipld-legacy
-                  ;;go-github-com-ipfs-go-log
-                  ;;go-github-com-ipfs-go-log-v2
+                  go-github-com-ipfs-go-log
+                  go-github-com-ipfs-go-log-v2
                   ;;go-github-com-ipfs-go-metrics-interface
                   ;;go-github-com-ipfs-go-metrics-prometheus
                   ;;go-github-com-ipfs-go-unixfsnode
@@ -527,6 +530,7 @@ written in Go.")
                   ;;go-github-com-libp2p-go-libp2p-routing-helpers
                   ;;go-github-com-libp2p-go-libp2p-testing
                   ;;go-github-com-libp2p-go-socket-activation
+                  go-github-com-ipfs-go-ipfs-util
                   go-github-com-mitchellh-go-homedir
                   go-github-com-multiformats-go-multiaddr-0.12
                   go-github-com-multiformats-go-multiaddr-dns
