@@ -2454,6 +2454,41 @@ command line flags, config files, and default struct values.")
 multibase} (self identifying base encodings) in Go.")
     (license license:expat)))
 
+(define-public go-github-com-multiformats-go-multicodec
+  (package
+    (name "go-github-com-multiformats-go-multicodec")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-multicodec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vyc85aa9k644l9m3safiz7kk8mm84jclridsp0qnxfj2kcqgipd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.19
+      #:import-path "github.com/multiformats/go-multicodec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-multibase-specs
+            (lambda* (#:key import-path #:allow-other-keys)
+              (copy-recursively
+               (string-append #$(this-package-native-input
+                                 "specification-multicodec")
+                              "/share/multicodec/")
+               (string-append "src/" import-path "/spec/multicodec/")))))))
+    (native-inputs
+     (list specification-multicodec))
+    (home-page "https://github.com/multiformats/go-multicodec")
+    (synopsis "Golang constants for the multicodec table")
+    (description
+     "Package multicodec exposes the multicodec table as Go constants.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public go-github-com-multiformats-go-varint
   (package
     (name "go-github-com-multiformats-go-varint")
