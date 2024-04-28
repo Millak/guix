@@ -439,17 +439,24 @@ including input methods previous bundled inside Fcitx 4:
        (sha256
         (base32 "1pnwrj6kgha91djfvd2439nbhrmjargpw8ashhb91y5h3cdz7vhz"))))
     (build-system cmake-build-system)
-    (arguments
-     `(#:configure-flags
-       ;; KDE is currently not working on Guix, KCM supports doesn't make sense.
-       '("-DENABLE_KCM=Off")))
     (inputs
      `(("fcitx5" ,fcitx5)
        ("fcitx5-qt" ,fcitx5-qt)
        ("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)
+       ("qtdeclarative" ,qtdeclarative-5)
+       ("qtquickcontrols2" ,qtquickcontrols2-5)
+       ("ki18n" ,ki18n)
+       ("kpackage" ,kpackage)
+       ("kdeclarative" ,kdeclarative)
+       ("kiconthemes" ,kiconthemes)
+       ("kcoreaddons" ,kcoreaddons)
+       ("plasma-framework" ,plasma-framework)
        ("kitemviews" ,kitemviews)
        ("kwidgetsaddons" ,kwidgetsaddons)
+       ("kwindowsystem" ,kwindowsystem)
+       ("kirigami" ,kirigami)
+       ("libxkbcommon" ,libxkbcommon)
        ("libx11" ,libx11)
        ("xkeyboard-config" ,xkeyboard-config)
        ("libxkbfile" ,libxkbfile)
