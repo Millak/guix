@@ -126,8 +126,9 @@ C/C++ part.")
                (base32
                 "0iccpdvc0kvpww5a31k9gjkqigyz016i7v80r9zamd34w4fl6mx4"))
               (patches
-               (cons
-                (search-patch
+               (append
+                (search-patches
+                 "icu4c-icu-22132-fix-vtimezone.patch"
                  "icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch")
                 (origin-patches (package-source icu4c))))))))
 
