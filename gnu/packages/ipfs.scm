@@ -96,6 +96,29 @@ that are shared between @command{go-ipfs/commands} and its rewrite
 @command{go-ipfs-cmds}.")
       (license license:expat))))
 
+(define-public go-github-com-ipfs-go-detect-race
+  (package
+    (name "go-github-com-ipfs-go-detect-race")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-detect-race")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rqb0q66d7z852j5mhlr025dz698c44w014g4mx587amr1rvwqna"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/ipfs/go-log/v2"))
+    (home-page "https://github.com/ipfs/go-detect-race")
+    (synopsis "Detect if compiled with race")
+    (description "Check if the race detector is running.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-util
   (package
     (name "go-github-com-ipfs-go-ipfs-util")
