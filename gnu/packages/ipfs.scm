@@ -223,6 +223,30 @@ provide a logging facade.  @code{go-log} manages logging instances and allows fo
 their levels to be controlled individually.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-log
+  (package
+    (inherit go-github-com-ipfs-go-log-v2)
+    (name "go-github-com-ipfs-go-log")
+    (version "1.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-log")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gj2yqrv6wgpkv6f9c1anmw5kwg59plv0jrcxb3zmjrnk8fsn1jr"))))
+    (propagated-inputs
+     (list go-github-com-gogo-protobuf
+           go-github-com-ipfs-go-log-v2
+           go-github-com-opentracing-opentracing-go
+           go-go-uber-org-zap))
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/ipfs/go-log"))))
+
 (define-public gx
   (package
     (name "gx")
