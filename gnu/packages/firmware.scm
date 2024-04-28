@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -828,7 +828,7 @@ after an operating system boots.")
 (define-public edk2-tools
   (package
     (name "edk2-tools")
-    (version "202308")
+    (version "202402")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -837,7 +837,7 @@ after an operating system boots.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19g3g94hayvcwmn6sjs6mghq0qf5nsd785k5j8szcrj2p0vjh54f"))))
+                "1x0h89cz3ihihcp4n93bw708q9r3icprb8cjsrrfcgq10clavdzx"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
