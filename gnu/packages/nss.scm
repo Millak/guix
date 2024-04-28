@@ -250,7 +250,7 @@ security standards.")
     (license license:mpl2.0)))
 
 (define-public nss/fixed
-  (let ((actual-version "3.98"))
+  (let ((actual-version "3.99"))
     (hidden-package
      (package
        (inherit nss)
@@ -265,7 +265,7 @@ security standards.")
                          "nss-" actual-version ".tar.gz")))
                  (sha256
                   (base32
-                   "1kh98amfklrq6915n4mlbrcqghc3srm7rkzs9dkh21jwscrwqjgm"))))
+                   "1g89ig40gfi1sp02gybvl2z818lawcnrqjzsws36cdva834c5maw"))))
        (arguments
         (substitute-keyword-arguments (package-arguments nss)
           ((#:phases phases)
