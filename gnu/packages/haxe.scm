@@ -115,17 +115,17 @@ interactive languages.")
     (uri (git-reference
           (url "https://github.com/HaxeFoundation/haxelib")
           ;; This should match the haxelib submodule in haxe.
-          (commit "4b27f91d8a4ff279d9903091680fee2c93a0d574")
+          (commit "f17fffa97554b1bdba37750e3418051f017a5bc2")
           ;; This repo includes some Haxe libs as well.
           (recursive? #t)))
     (sha256
      (base32
-      "0mwrm6gxgclwziiprfiswmjbz6z3dnvdwl8gq3gaym18pvx4p3ny"))))
+      "13ql042mxkybhw7di8c8cfq47p8snvadg9yglyif6b5k9ij85r6z"))))
 
 (define-public haxe
   (package
     (name "haxe")
-    (version "4.2.5")
+    (version "4.3.4")
     (source
      (origin
        (method git-fetch)
@@ -134,7 +134,7 @@ interactive languages.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pl8vpyb7gl2yqjg85yc4zxq9c3ipvw4yrrpliaxs25ynrj3l51n"))))
+        (base32 "1svbxf5g6j7vvqhyjlv1ha9yjh42c94jxvn7xhqbb0smyk64vibm"))))
     (build-system dune-build-system)
     (arguments
      (list #:phases
@@ -173,13 +173,14 @@ interactive languages.")
     (inputs (list libuv
                   mbedtls-lts
                   neko
+                  ocaml-camlp-streams
                   ocaml-extlib
                   ocaml-luv
                   ocaml-ptmap
                   ocaml-sedlex
                   ocaml-sha
                   ocaml-xml-light
-                  pcre
+                  pcre2
                   zlib))
     (native-inputs (list ocaml-findlib camlp5))
     (home-page "https://haxe.org/")
