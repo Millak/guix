@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2020 by Amar M. Singh <nly@disroot.org>
-;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021, 2022 Mathieu Othacehe <othacehe@gnu.org>
@@ -869,12 +869,23 @@ example: \"/foo/bar\" yields '(\"foo\" \"bar\")."
           (values)
           (apply throw args)))))
 
-(define-syntax-rule (swallow-zlib-error exp ...)
-  "Swallow 'zlib-error' exceptions raised by EXP..."
-  (catch 'zlib-error
+(define exception-with-kind-and-args?
+  (exception-predicate &exception-with-kind-and-args))
+
+(define-syntax-rule (swallow-compression-error exp ...)
+  "Swallow 'zlib-error', 'zstd-error', and 'lzlib-error' exceptions raised by
+EXP..."
+  (with-exception-handler (lambda (exception)
+                            (if (and (exception-with-kind-and-args? exception)
+                                     (memq (exception-kind exception)
+                                           '(zlib-error
+                                             zstd-error
+                                             lzlib-error)))
+                                #f
+                                (raise-exception exception)))
     (lambda ()
       exp ...)
-    (const #f)))
+    #:unwind? #t))
 
 (define (nar-compressed-port port compression)
   "Return a port on which to write the body of the response of a /nar request,
@@ -972,10 +983,10 @@ blocking."
             ;; the only way to avoid building the whole nar in memory, which
             ;; could quickly become a real problem.  As a bonus, we even do
             ;; sendfile(2) directly from the store files to the socket.
-            (swallow-zlib-error
+            (swallow-compression-error
              (swallow-EPIPE
               (write-file (utf8->string body) port)))
-            (swallow-zlib-error
+            (swallow-compression-error
              (close-port port)
              (unless keep-alive?
                (close-port client)))
