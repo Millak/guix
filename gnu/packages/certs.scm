@@ -188,10 +188,10 @@ taken from the NSS package and thus ultimately from the Mozilla project.")
     (home-page "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS")
     (license license:mpl2.0)))
 
-(define-public nss-certs-3.98
+(define-public nss-certs-3.99
   (package
     (inherit nss-certs)
-    (version "3.98")
+    (version "3.99")
     (source (origin
               (method url-fetch)
               (uri (let ((version-with-underscores
@@ -202,7 +202,7 @@ taken from the NSS package and thus ultimately from the Mozilla project.")
                       "nss-" version ".tar.gz")))
               (sha256
                (base32
-                "1kh98amfklrq6915n4mlbrcqghc3srm7rkzs9dkh21jwscrwqjgm"))))))
+                "1g89ig40gfi1sp02gybvl2z818lawcnrqjzsws36cdva834c5maw"))))))
 
 (define-public le-certs
   (package
