@@ -2212,6 +2212,34 @@ the @code{cpan} module @code{Parse::CommandLine}.")
 other directories.  It is optimized for filewalking.")
     (license license:expat)))
 
+(define-public go-github-com-mgutz-ansi
+  (let ((commit "9520e82c474b0a04dd04f8a40959027271bab992")
+        (revision "0"))
+    (package
+      (name "go-github-com-mgutz-ansi")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url
+                "https://github.com/mgutz/ansi")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "00bz22314j26736w1f0q4jy9d9dfaml17vn890n5zqy3cmvmww1j"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/mgutz/ansi"))
+      (native-inputs
+       (list go-github-com-mattn-go-isatty go-github-com-mattn-go-colorable))
+      (home-page "https://github.com/mgutz/ansi")
+      (synopsis "Small, fast library to create ANSI colored strings and codes")
+      (description
+       "This package provides @code{ansi}, a Go module that can generate ANSI
+colored strings.")
+      (license license:expat))))
+
 (define-public go-github-com-miekg-dns
   (package
     (name "go-github-com-miekg-dns")
