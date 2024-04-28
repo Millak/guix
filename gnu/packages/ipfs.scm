@@ -274,9 +274,6 @@ written in Go.")
                              "vendor/github.com/beorn7/perks"
                              "vendor/github.com/blang"
                              "vendor/github.com/cespare"
-                             ;; TODO: kubo depends on v1.0.29 which is way too
-                             ;; hard to back port.
-                             ; "vendor/github.com/cheggaaa/pb"
                              "vendor/github.com/davecgh"
                              "vendor/github.com/dustin"
                              "vendor/github.com/flynn"
@@ -288,18 +285,17 @@ written in Go.")
                              "vendor/github.com/google/uuid"
                              "vendor/github.com/gorilla"
                              "vendor/github.com/hashicorp"
-                             ;; These should be fine, they are part of
-                             ;; the IPFS project
-                             ;; "vendor/github.com/ipfs"
-                             ;; "vendor/github.com/ipld"
+                             "vendor/github.com/ipfs/go-cid"
                              "vendor/github.com/jackpal"
+                             "vendor/github.com/jbenet"
+                             "vendor/github.com/julienschmidt"
                              "vendor/github.com/klauspost"
                              "vendor/github.com/mattn"
                              "vendor/github.com/mgutz"
                              "vendor/github.com/minio"
                              "vendor/github.com/mitchellh"
                              "vendor/github.com/mr-tron"
-                             "vendor/github.com/multiformats/go-multihash"
+                             "vendor/github.com/multiformats"
                              "vendor/github.com/opentracing"
                              "vendor/github.com/pbnjay"
                              "vendor/github.com/pkg"
@@ -336,75 +332,126 @@ written in Go.")
                                   "ipfs"
                                   #~(string-append #$output "/bin/ipfs"))
                             "commands" "completion" "bash")))))))))
-    (inputs (list go-github-com-alecthomas-units
+    (inputs (list ;; Direct requirements as seen in kubo's go.mod file.
+                  ;;
+                  ;; XXX: Uncomment out when package is available in Guix,
+                  ;; otherwise it will be sourced from provided vendor
+                  ;; directory.
+                  ;;
+                  ;;go-bazil-org-fuse
+                  ;;go-contrib-go-opencensus-io-exporter-prometheus
+                  go-github-com-benbjohnson-clock
                   go-github-com-blang-semver-v4
-                  go-github-com-cespare-xxhash
-                  go-github-com-cheekybits-genny
-                  go-github-com-davecgh-go-spew
+                  ;;go-github-com-cenkalti-backoff-v4
+                  ;;go-github-com-ceramicnetwork-go-dag-jose
+                  ;;go-github-com-cheggaaa-pb
+                  ;;go-github-com-coreos-go-systemd-v22
                   go-github-com-dustin-go-humanize
-                  go-github-com-flynn-noise
-                  go-github-com-francoispqt-gojay
+                  ;;go-github-com-elgris-jsondiff
+                  ;;go-github-com-facebookgo-atomicfile
                   go-github-com-fsnotify-fsnotify
-                  go-github-com-gogo-protobuf
-                  go-github-com-golang-groupcache
-                  go-github-com-golang-snappy
                   go-github-com-google-uuid
-                  go-github-com-gorilla-mux
-                  go-github-com-gorilla-websocket
                   go-github-com-hashicorp-go-multierror
-                  go-github-com-hashicorp-golang-lru
-                  go-github-com-hashicorp-golang-lru-v2
-                  go-github-com-jackpal-go-nat-pmp
+                  ;;go-github-com-ipfs-boxo
+                  ;;go-github-com-ipfs-go-block-format
+                  go-github-com-ipfs-go-cid
+                  ;;go-github-com-ipfs-go-cidutil
+                  ;;go-github-com-ipfs-go-datastore
+                  ;;go-github-com-ipfs-go-detect-race
+                  ;;go-github-com-ipfs-go-ds-badger
+                  ;;go-github-com-ipfs-go-ds-flatfs
+                  ;;go-github-com-ipfs-go-ds-leveldb
+                  ;;go-github-com-ipfs-go-ds-measure
+                  ;;go-github-com-ipfs-go-fs-lock
+                  ;;go-github-com-ipfs-go-ipfs-cmds
+                  ;;go-github-com-ipfs-go-ipld-cbor
+                  ;;go-github-com-ipfs-go-ipld-format
+                  ;;go-github-com-ipfs-go-ipld-git
+                  ;;go-github-com-ipfs-go-ipld-legacy
+                  ;;go-github-com-ipfs-go-log
+                  ;;go-github-com-ipfs-go-log-v2
+                  ;;go-github-com-ipfs-go-metrics-interface
+                  ;;go-github-com-ipfs-go-metrics-prometheus
+                  ;;go-github-com-ipfs-go-unixfsnode
+                  ;;go-github-com-ipfs-shipyard-nopfs
+                  ;;go-github-com-ipfs-shipyard-nopfs-ipfs
+                  ;;go-github-com-ipld-go-car
+                  ;;go-github-com-ipld-go-car-v2
+                  ;;go-github-com-ipld-go-codec-dagpb
+                  ;;go-github-com-ipld-go-ipld-prime
                   go-github-com-jbenet-go-random
+                  go-github-com-jbenet-go-temp-err-catcher
                   go-github-com-jbenet-goprocess
                   go-github-com-julienschmidt-httprouter
-                  go-github-com-klauspost-compress
-                  go-github-com-klauspost-cpuid
-                  go-github-com-lucas-clemente-quic-go
-                  go-github-com-mattn-go-colorable
-                  go-github-com-mattn-go-isatty
-                  go-github-com-mattn-go-runewidth
-                  go-github-com-mgutz-ansi
-                  go-github-com-minio-blake2b-simd
-                  go-github-com-minio-sha256-simd
+                  ;;go-github-com-libp2p-go-doh-resolver
+                  ;;go-github-com-libp2p-go-libp2p
+                  ;;go-github-com-libp2p-go-libp2p-http
+                  ;;go-github-com-libp2p-go-libp2p-kad-dht
+                  ;;go-github-com-libp2p-go-libp2p-kbucket
+                  ;;go-github-com-libp2p-go-libp2p-pubsub
+                  ;;go-github-com-libp2p-go-libp2p-pubsub-router
+                  ;;go-github-com-libp2p-go-libp2p-record
+                  ;;go-github-com-libp2p-go-libp2p-routing-helpers
+                  ;;go-github-com-libp2p-go-libp2p-testing
+                  ;;go-github-com-libp2p-go-socket-activation
                   go-github-com-mitchellh-go-homedir
-                  go-github-com-mr-tron-base58
-                  go-github-com-multiformats-go-multihash
-                  go-github-com-multiformats-go-multiaddr
-                  go-github-com-multiformats-go-multibase
+                  go-github-com-multiformats-go-multiaddr-0.12
                   go-github-com-multiformats-go-multiaddr-dns
+                  go-github-com-multiformats-go-multibase
+                  go-github-com-multiformats-go-multicodec
+                  go-github-com-multiformats-go-multihash
                   go-github-com-opentracing-opentracing-go
                   go-github-com-pbnjay-memory
                   go-github-com-pkg-errors
-                  go-github-com-pmezard-go-difflib
                   go-github-com-prometheus-client-golang
-                  go-github-com-prometheus-client-model
-                  go-github-com-prometheus-common
-                  go-github-com-prometheus-procfs
-                  go-github-com-spaolacci-murmur3
                   go-github-com-stretchr-testify
                   go-github-com-syndtr-goleveldb
+                  ;;go-github-com-tidwall-gjson
+                  ;;go-github-com-tidwall-sjson
                   go-github-com-whyrusleeping-go-sysinfo
+                  ;;go-github-com-whyrusleeping-multiaddr-filter
+                  ;;go-go-opencensus-io
+                  ;;go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+                  ;;go-go-opentelemetry-io-contrib-propagators-autoprop
+                  ;;go-go-opentelemetry-io-otel
+                  ;;go-go-opentelemetry-io-otel-sdk
+                  ;;go-go-opentelemetry-io-otel-trace
                   go-go-uber-org-dig
                   go-go-uber-org-fx
                   go-go-uber-org-multierr
                   go-go-uber-org-zap
                   go-golang-org-x-crypto
                   go-golang-org-x-exp-2023
-                  go-golang-org-x-lint
                   go-golang-org-x-mod
-                  go-golang-org-x-net
-                  go-golang-org-x-oauth2
                   go-golang-org-x-sync
                   go-golang-org-x-sys
+                  go-google-golang-org-protobuf
+                  go-gopkg-in-yaml-v3
+
+                  ;;
+                  ;; A list of indirect dependencies requiring for the vendored models.
+                  ;; XXX: Remove them when all of the vendored packages are available.
+                  ;;
+                  go-github-com-alecthomas-units
+                  go-github-com-flynn-noise
+                  go-github-com-francoispqt-gojay
+                  go-github-com-gogo-protobuf
+                  go-github-com-golang-groupcache
+                  go-github-com-gorilla-mux
+                  go-github-com-gorilla-websocket
+                  go-github-com-hashicorp-golang-lru
+                  go-github-com-hashicorp-golang-lru-v2
+                  go-github-com-jackpal-go-nat-pmp
+                  go-github-com-klauspost-compress
+                  go-github-com-mattn-go-runewidth
+                  go-github-com-mgutz-ansi
+                  go-github-com-multiformats-go-multiaddr-fmt
+                  go-github-com-multiformats-go-multistream
+                  go-golang-org-x-oauth2
                   go-golang-org-x-term
                   go-golang-org-x-text
-                  go-golang-org-x-tools
                   go-golang-org-x-xerrors
-                  go-gopkg-in-square-go-jose-v2
-                  go-gopkg-in-yaml-v2
-                  go-gopkg-in-yaml-v3
-                  go-lukechampine-com-blake3))
+                  go-gopkg-in-square-go-jose-v2))
     (native-inputs
      (append (if (%current-target-system)
                  (list this-package)
