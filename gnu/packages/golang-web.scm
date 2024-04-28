@@ -1457,6 +1457,34 @@ symbols like @command{net.Dial} and @command{net.Listen}, as well as
 conversion to and from @command{net.Addr}.")
       (license license:expat))))
 
+(define-public go-github-com-multiformats-go-multistream
+  (package
+    (name "go-github-com-multiformats-go-multistream")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-multistream")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mlcz16ii090vq6brm02dmmkj8akkafa55kyvkrrwpq6zvj1hy23"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "github.com/multiformats/go-multistream"))
+    (propagated-inputs
+     (list go-github-com-multiformats-go-varint))
+    (home-page "https://github.com/multiformats/go-multistream")
+    (synopsis "Implementation of the multistream protocol in Golang")
+    (description
+     "Package multistream implements a simple stream router for the
+multistream-select protocol.  The protocol is defined at
+@url{https://github.com/multiformats/multistream-select}")
+    (license license:expat)))
+
 (define-public go-github-com-nwidger-jsoncolor
   (package
     (name "go-github-com-nwidger-jsoncolor")
