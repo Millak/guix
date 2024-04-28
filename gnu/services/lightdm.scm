@@ -620,24 +620,23 @@ port=" (number->string vnc-server-port) "\n"
     (provision '(lightdm display-manager xorg-server))
     (respawn? #f)
     (start
-     #~(lambda ()
-         ;; Note: sadly, environment variables defined for 'lightdm' are
-         ;; cleared and/or overridden by /etc/profile by its spawned greeters,
-         ;; so an out-of-band means such as /etc is required.
-         (fork+exec-command #$lightdm-command
-                            ;; Lightdm needs itself in its PATH.
-                            #:environment-variables
-                            (list
-                             ;; It knows to look for greeter configurations in
-                             ;; XDG_CONFIG_DIRS...
-                             (string-append "XDG_CONFIG_DIRS="
-                                            #$greeters-config-dir)
-                             ;; ... and for greeter .desktop files as well as
-                             ;; lightdm accountsservice interface in
-                             ;; XDG_DATA_DIRS.
-                             (string-append "XDG_DATA_DIRS="
-                                            #$data-dirs)
-                             (string-append "PATH=" #$lightdm-paths)))))
+     ;; Note: sadly, environment variables defined for 'lightdm' are
+     ;; cleared and/or overridden by /etc/profile by its spawned greeters,
+     ;; so an out-of-band means such as /etc is required.
+     #~(make-forkexec-constructor #$lightdm-command
+                                  ;; Lightdm needs itself in its PATH.
+                                  #:environment-variables
+                                  (list
+                                   ;; It knows to look for greeter
+                                   ;; configurations in XDG_CONFIG_DIRS...
+                                   (string-append "XDG_CONFIG_DIRS="
+                                                  #$greeters-config-dir)
+                                   ;; ... and for greeter .desktop files as
+                                   ;; well as lightdm accountsservice
+                                   ;; interface in XDG_DATA_DIRS.
+                                   (string-append "XDG_DATA_DIRS="
+                                                  #$data-dirs)
+                                   (string-append "PATH=" #$lightdm-paths))))
     (stop #~(make-kill-destructor)))))
 
 (define lightdm-service-type
