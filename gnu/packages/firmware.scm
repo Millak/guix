@@ -833,11 +833,13 @@ after an operating system boots.")
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/tianocore/edk2")
-                    (commit (string-append "edk2-stable" version))))
+                    (commit (string-append "edk2-stable" version))
+                    ;; EDK2 makes extensive use of submodules.
+                    (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x0h89cz3ihihcp4n93bw708q9r3icprb8cjsrrfcgq10clavdzx"))))
+                "0y7jfpijgi099znhzjklnsczn0k0vm1d1qznq9x2a2sa0glydsin"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -849,15 +851,6 @@ after an operating system boots.")
                (add-after 'unpack 'change-directory
                  (lambda _
                    (chdir "BaseTools")))
-               (add-after 'change-directory 'disable-some-tools
-                 (lambda _
-                   ;; Disable building brotli and xz, since we package them
-                   ;; separately, and it would require fetching submodules.
-                   (substitute* "Source/C/GNUmakefile"
-                     (("^[[:blank:]]+BrotliCompress[[:blank:]]+\\\\")
-                      "\\")
-                     (("^[[:blank:]]+LzmaCompress[[:blank:]]+\\\\")
-                      "\\"))))
                (replace 'build
                  (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
                    ;; The default build target also runs tests.
