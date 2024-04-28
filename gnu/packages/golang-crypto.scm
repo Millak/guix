@@ -872,9 +872,7 @@ Architecture Processors\" by J. Guilford et al.")
      (list specification-multihash
            specification-multicodec))
     (propagated-inputs
-     (list go-github-com-gxed-hashland-keccakpg
-           go-github-com-minio-blake2b-simd
-           go-github-com-minio-sha256-simd
+     (list go-github-com-minio-sha256-simd
            go-github-com-mr-tron-base58
            go-github-com-multiformats-go-varint
            go-github-com-spaolacci-murmur3
