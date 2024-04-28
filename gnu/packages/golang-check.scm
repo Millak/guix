@@ -1003,6 +1003,34 @@ custom assertions to be used alongside native Go testing.")
     (arguments
      (list #:import-path "github.com/go-playground/assert/v2"))))
 
+(define-public go-github-com-warpfork-go-wish
+  (package
+    (name "go-github-com-warpfork-go-wish")
+    (version "0.0.0-20220906213052-39a1cc7a02d0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/warpfork/go-wish")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rqbxmqwzy1q2zwy3mszp0li0pg8zzh3j9l8wlzr6p1pq2idallq"))
+       (patches (search-patches
+                 "go-github-com-warpfork-go-wish-fix-tests.patch"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/warpfork/go-wish"))
+    (home-page "https://github.com/warpfork/go-wish")
+    (synopsis "Test assertions for Golang")
+    (description
+     "@code{wish} is a test assertion library for Golang, designed to
+gracefully enhance standard library testing package and behaviors of the
+@command{go test} command.")
+    (license license:expat)))
+
 (define-public go-go-uber-org-goleak
   (package
     (name "go-go-uber-org-goleak")
