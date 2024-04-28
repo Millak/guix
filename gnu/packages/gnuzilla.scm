@@ -1787,7 +1787,7 @@ associated with their name."))
 
 (define-public icedove/wayland
   (package
-    (inherit icedove)
+    (inherit icedove-minimal)
     (name "icedove-wayland")
     (build-system trivial-build-system)
     (arguments
@@ -1803,14 +1803,14 @@ associated with their name."))
                 (format port "#!~a
  MOZ_ENABLE_WAYLAND=1 exec ~a \"$@\""
                         #$(file-append bash-minimal "/bin/bash")
-                        #$(file-append icedove "/bin/icedove"))))
+                        #$(file-append icedove-minimal "/bin/icedove"))))
             (chmod exe #o555)
             ;; Provide the manual and .desktop file.
-            (copy-recursively (string-append #$icedove "/share")
+            (copy-recursively (string-append #$icedove-minimal "/share")
                               (string-append #$output "/share"))
             (substitute* (string-append #$output
                                         "/share/applications/icedove.desktop")
-              ((#$icedove) #$output))))))
+              ((#$icedove-minimal) #$output))))))
     (native-inputs '())
     (inputs '())))
 
