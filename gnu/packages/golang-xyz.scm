@@ -2231,7 +2231,7 @@ other directories.  It is optimized for filewalking.")
       (build-system go-build-system)
       (arguments
        (list #:import-path "github.com/mgutz/ansi"))
-      (native-inputs
+      (propagated-inputs
        (list go-github-com-mattn-go-isatty go-github-com-mattn-go-colorable))
       (home-page "https://github.com/mgutz/ansi")
       (synopsis "Small, fast library to create ANSI colored strings and codes")

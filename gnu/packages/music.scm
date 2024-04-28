@@ -5971,8 +5971,6 @@ console music players.")
       (build-system go-build-system)
       (native-inputs
        (list lua
-             go-github-com-mattn-go-isatty
-             go-github-com-mattn-go-colorable
              go-github-com-aarzilli-golua
              go-gitlab-com-ambrevar-damerau
              go-gitlab-com-ambrevar-golua-unicode
