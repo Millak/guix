@@ -1390,7 +1390,7 @@ following:
     (propagated-inputs (list go-github-com-ipfs-go-cid
                              go-github-com-multiformats-go-multibase
                              go-github-com-multiformats-go-varint
-                             go-github-com-multiformats-go-multihash-0.2.3
+                             go-github-com-multiformats-go-multihash
                              go-golang-org-x-exp-2023))))
 
 (define-public go-github-com-multiformats-go-multiaddr-dns

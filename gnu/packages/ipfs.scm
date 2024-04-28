@@ -58,7 +58,7 @@
       #:go go-1.21
       #:import-path "github.com/ipfs/go-cid"))
     (propagated-inputs
-     (list go-github-com-multiformats-go-multihash-0.2.3
+     (list go-github-com-multiformats-go-multihash
            go-github-com-multiformats-go-multibase
            go-github-com-multiformats-go-varint))
     (home-page "https://github.com/ipfs/go-cid")
@@ -369,7 +369,7 @@ written in Go.")
                   go-github-com-minio-sha256-simd
                   go-github-com-mitchellh-go-homedir
                   go-github-com-mr-tron-base58
-                  go-github-com-multiformats-go-multihash-0.2.3
+                  go-github-com-multiformats-go-multihash
                   go-github-com-multiformats-go-multiaddr
                   go-github-com-multiformats-go-multibase
                   go-github-com-multiformats-go-multiaddr-dns
