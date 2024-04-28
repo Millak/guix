@@ -193,6 +193,36 @@ that are shared between @command{go-ipfs/commands} and its rewrite
       (description "An unofficial Go interface to IPFS's HTTP API")
       (license license:expat))))
 
+(define-public go-github-com-ipfs-go-log-v2
+  (package
+    (name "go-github-com-ipfs-go-log-v2")
+    (version "2.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-log")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yh3sw8knpy364h8h8rqw193whnjd6fbc13cxh6zs29z3x2a7aqa"))))
+    (build-system go-build-system)
+    (propagated-inputs
+     (list go-github-com-mattn-go-isatty
+           go-go-uber-org-multierr
+           go-go-uber-org-zap))
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/ipfs/go-log/v2"))
+    (home-page "https://github.com/ipfs/go-log")
+    (synopsis "Logging library used by @code{go-ipfs}")
+    (description
+     "@code{go-log} wraps @url{https://github.com/uber-go/zap, zap} to
+provide a logging facade.  @code{go-log} manages logging instances and allows for
+their levels to be controlled individually.")
+    (license license:expat)))
+
 (define-public gx
   (package
     (name "gx")
