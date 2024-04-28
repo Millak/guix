@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
-;;; Copyright © 2013-2017, 2019-2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2019-2020, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2018, 2019 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -1146,45 +1146,43 @@ argument.")))
          (documentation "Xorg display server (GDM)")
          (provision '(xorg-server))
          (requirement '(dbus-system pam user-processes host-name udev elogind))
-         (start #~(lambda ()
-                    (fork+exec-command
-                     (list #$(file-append (gdm-configuration-gdm config)
-                                          "/bin/gdm"))
-                     #:environment-variables
-                     (list #$@(if (gdm-configuration-auto-suspend? config)
-                                  #~()
-                                  #~("DCONF_PROFILE=/etc/dconf/profile/gdm"))
-                           (string-append "GDM_CUSTOM_CONF=" #$config-file)
-                           (string-append
-                            "GDM_DBUS_DAEMON="
-                            #$(gdm-configuration-dbus-daemon config))
-                           (string-append
-                            "GDM_X_SERVER="
-                            #$(xorg-wrapper
-                               (gdm-configuration-xorg config)))
-                           (string-append
-                            "GDM_X_SESSION="
-                            #$(gdm-configuration-x-session config))
-                           (string-append
-                            "XDG_DATA_DIRS="
-                            ((lambda (ls) (string-join ls ":"))
-                             (map (lambda (path)
-                                    (string-append path "/share"))
-                                  ;; XXX: Remove gnome-shell below when GDM
-                                  ;; can depend on GNOME Shell directly.
-                                  (cons #$gnome-shell
-                                        '#$(gdm-configuration-gnome-shell-assets
-                                            config)))))
-                           ;; Add XCURSOR_PATH so that mutter can find its
-                           ;; cursors.  gdm doesn't login so doesn't source
-                           ;; the corresponding line in /etc/profile.
-                           "XCURSOR_PATH=/run/current-system/profile/share/icons"
-                           (string-append
-                            "GDK_PIXBUF_MODULE_FILE="
-                            #$gnome-shell "/" #$%gdk-pixbuf-loaders-cache-file)
-                           (string-append
-                            "GDM_WAYLAND_SESSION="
-                            #$(gdm-configuration-wayland-session config))))))
+         (start #~(make-forkexec-constructor
+                   '(#$(file-append (gdm-configuration-gdm config) "/bin/gdm"))
+                   #:environment-variables
+                   (list #$@(if (gdm-configuration-auto-suspend? config)
+                                #~()
+                                #~("DCONF_PROFILE=/etc/dconf/profile/gdm"))
+                         (string-append "GDM_CUSTOM_CONF=" #$config-file)
+                         (string-append
+                          "GDM_DBUS_DAEMON="
+                          #$(gdm-configuration-dbus-daemon config))
+                         (string-append
+                          "GDM_X_SERVER="
+                          #$(xorg-wrapper
+                             (gdm-configuration-xorg config)))
+                         (string-append
+                          "GDM_X_SESSION="
+                          #$(gdm-configuration-x-session config))
+                         (string-append
+                          "XDG_DATA_DIRS="
+                          ((lambda (ls) (string-join ls ":"))
+                           (map (lambda (path)
+                                  (string-append path "/share"))
+                                ;; XXX: Remove gnome-shell below when GDM
+                                ;; can depend on GNOME Shell directly.
+                                (cons #$gnome-shell
+                                      '#$(gdm-configuration-gnome-shell-assets
+                                          config)))))
+                         ;; Add XCURSOR_PATH so that mutter can find its
+                         ;; cursors.  gdm doesn't login so doesn't source
+                         ;; the corresponding line in /etc/profile.
+                         "XCURSOR_PATH=/run/current-system/profile/share/icons"
+                         (string-append
+                          "GDK_PIXBUF_MODULE_FILE="
+                          #$gnome-shell "/" #$%gdk-pixbuf-loaders-cache-file)
+                         (string-append
+                          "GDM_WAYLAND_SESSION="
+                          #$(gdm-configuration-wayland-session config)))))
          (stop #~(make-kill-destructor))
          (actions (list (shepherd-configuration-action config-file)))
          (respawn? #t))))
