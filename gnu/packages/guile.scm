@@ -922,17 +922,16 @@ Guile's foreign function interface.")
 (define-public guile-lzlib
   (package
     (name "guile-lzlib")
-    (version "0.0.2")
+    (version "0.3.0")
+    (home-page "https://notabug.org/guile-lzlib/guile-lzlib")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://notabug.org/guile-lzlib/guile-lzlib/archive/"
-                       version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference (url home-page) (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "11sggvncyx08ssp1s5xii4d6nskh1qwqihnbpzzvkrs7sivxn8w6"))))
+         "19870njb3q5h6zy239gvra92ji077c6s8xm0hgcn42z74q5wqnk6"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags
@@ -944,7 +943,6 @@ Guile's foreign function interface.")
      "This package provides Guile bindings for lzlib, a C library for
 in-memory LZMA compression and decompression.  The bindings are written in
 pure Scheme by using Guile's foreign function interface.")
-    (home-page "https://notabug.org/guile-lzlib/guile-lzlib")
     (license license:gpl3+)))
 
 (define-public guile2.2-lzlib
