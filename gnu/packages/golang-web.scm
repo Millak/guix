@@ -1421,6 +1421,34 @@ following:
      "Go library for /dns4, /dns6, /dnsaddr multiaddr resolution.")
     (license license:expat)))
 
+(define-public go-github-com-multiformats-go-multiaddr-fmt
+  (package
+    (name "go-github-com-multiformats-go-multiaddr-fmt")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-multiaddr-fmt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "119qqrnhzcb9im428alssv2dz9rrj74hy0asd10bnfv2d5fd09nm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/multiformats/go-multiaddr-fmt"))
+    (propagated-inputs
+     (list go-github-com-multiformats-go-multiaddr-0.12))
+    (home-page "https://github.com/multiformats/go-multiaddr-fmt")
+    (synopsis "Declarative validator for multiaddrs")
+    (description
+     "This package provides a validation checker for multiaddrs.  Some basic
+validators for common address types are provided, but creating your own
+combinations is easy.")
+    (license license:expat)))
+
 (define-public go-github-com-multiformats-go-multiaddr-net
   ;; This commit is from <2018-10-01> and associated with GX package manager,
   ;; since that time the project has changed versing stile and GX is dropped.
