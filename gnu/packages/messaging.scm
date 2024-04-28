@@ -41,6 +41,7 @@
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
+;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -162,6 +163,49 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public biboumi
+  (package
+   (name "biboumi")
+   (version "9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://git.louiz.org/biboumi/snapshot/biboumi-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32 "1jvygri165aknmvlinx3jb8cclny6cxdykjf8dp0a3l3228rmzqy"))
+              ;; see https://sources.debian.org/patches/biboumi/9.0-5/2001_cmake_ignore_git.patch/
+              (patches (search-patches "biboumi-cmake-ignore-git.patch"))))
+   (arguments
+    ;; Tests seem to partially depend on networking as well as
+    ;; louiz/Catch which we remove as a dependency via the patch above as
+    ;; the repository seems dead. Deactivating those for now, possibly fix
+    ;; some of them later.
+    `(#:tests? #f
+      #:configure-flags '("-DWITHOUT_SYSTEMD=1")
+      #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-cmake-substitutions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "CMakeLists.txt"
+               (("/etc") (string-append (assoc-ref outputs "out") "/etc"))))))))
+   (build-system cmake-build-system)
+   (inputs (list botan
+                 expat
+                 libiconv
+                 libidn
+                 openssl
+                 postgresql ;; libpq
+                 sqlite
+                 ;; TODO: package optional dependency: udns
+                 (list util-linux "lib") ;; libuuid
+                 pkg-config))
+   (home-page "https://biboumi.louiz.org")
+   (synopsis "Biboumi is a XMPP gateway that connects to IRC")
+   (description "Biboumi is a Free, Libre and Open Source XMPP gateway that connects to IRC
+servers and translates between the two protocols. Its goal is to let XMPP
+users take part in IRC discussions, using their favourite XMPP client.")
+   (license license:zlib)))
 
 (define-public omemo-wget
   (package
