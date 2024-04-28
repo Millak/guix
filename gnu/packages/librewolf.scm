@@ -93,17 +93,17 @@
 ;; upstream.  See the file taskcluster/ci/toolchain/rust.yml at
 ;; https://searchfox.org under the particular firefox release, like
 ;; mozilla-esr102.
-(define rust-librewolf rust) ; 1.60 is the default in Guix, 1.65 is the minimum.
+(define rust-librewolf rust) ; 1.75 is the default in Guix, 1.65 is the minimum.
 
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20240326080003")
+(define %librewolf-build-id "20240427150329")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "124.0.1-1")
+    (version "125.0.2-1")
     (source
      (origin
        (method url-fetch)
@@ -115,7 +115,7 @@
                            version
                            ".source.tar.gz"))
        (sha256
-        (base32 "1sks49nywzhvq5mik4ipm3vyyxv49s9hq6bfyk5d9r6f0nlydllf"))))
+        (base32 "09qzdaq9l01in9h4q14vyinjvvffycha2iyjqj5p4dd5jh6q5zma"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -227,7 +227,8 @@
                                                        "\""))))
                                    (find-files "." "Cargo\\.lock$"))
                          (for-each generate-all-checksums
-                                   '("build" "dom/media"
+                                   '("build"
+                                     "dom/media"
                                      "dom/webauthn"
                                      "gfx"
                                      "intl"
@@ -597,8 +598,8 @@ StartupWMClass=Navigator"))
     (native-inputs (list alsa-lib
                          autoconf-2.13
                          `(,rust-librewolf "cargo")
-                         clang
-                         llvm
+                         clang-18
+                         llvm-18
                          m4
                          nasm
                          node-lts
