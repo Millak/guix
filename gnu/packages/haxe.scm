@@ -196,7 +196,7 @@ includes the compiler and library manager.")
 (define-public hashlink
   (package
     (name "hashlink")
-    (version "1.12")
+    (version "1.14")
     (source
      (origin
        (method git-fetch)
@@ -205,7 +205,7 @@ includes the compiler and library manager.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i5f1mxpgjcdirx60kxrw0r0y15qh3j16a6fj8mzkq3k7j2hc982"))
+        (base32 "163kj2fww8a1hp93aklla181sp84hrsl8dy5rwrv79057bmkjz5d"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -233,7 +233,7 @@ includes the compiler and library manager.")
                  (lambda _
                    (substitute* "Makefile"
                      (("\\$\\{PCRE\\}") "")
-                     (("-lpthread") "-lpthread -lpcre16")
+                     (("-lpthread") "-lpthread -lpcre2-16")
                      (("include/minimp3")
                       (string-append #$(this-package-input "minimp3") "/include"))
                      (("include/mikktspace ")
@@ -260,7 +260,7 @@ includes the compiler and library manager.")
                   mikktspace
                   minimp3
                   openal
-                  pcre
+                  pcre2
                   sdl2
                   sqlite
                   zlib))
