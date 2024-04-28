@@ -96,6 +96,32 @@ that are shared between @command{go-ipfs/commands} and its rewrite
 @command{go-ipfs-cmds}.")
       (license license:expat))))
 
+(define-public go-github-com-ipfs-go-ipfs-util
+  (package
+    (name "go-github-com-ipfs-go-ipfs-util")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-util")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x80c6a50zcv473xx0b39sz2xkwpiw3nmmjf51k5x7a4rx0rgvx4"))))
+    (build-system go-build-system)
+    (propagated-inputs (list go-github-com-mr-tron-base58
+                             go-github-com-multiformats-go-multihash))
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/ipfs/go-ipfs-util"))
+    (home-page "https://github.com/ipfs/go-ipfs-util")
+    (synopsis "Common utilities used by @code{go-ipfs} and related packages")
+    (description
+     "Common utilities used by @code{go-ipfs} and other related Go packages.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-api
   (let ((commit
           "dafc2a13a4389ac1a6c2786e34ab70a4f26d3a3f")
