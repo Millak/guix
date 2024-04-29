@@ -31966,6 +31966,48 @@ heterogeneous and multi-platform clusters (including clusters running other
 applications with variable CPU loads).")
     (license license:bsd-3)))
 
+(define-public python-param
+  (package
+    (name "python-param")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "param" version))
+       (sha256
+        (base32 "07z7az7xg8pzjrmaf928is7n6siw9v9nxfmf0a5vgqj7nl40pcx7"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cloudpickle
+           python-coverage
+           python-hatchling
+           python-hatch-vcs
+           python-ipython
+           python-jsonschema
+           python-nbval
+           python-nest-asyncio
+           python-numpy
+           python-odfpy
+           python-openpyxl
+           python-pandas
+           python-pyarrow
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-xdist
+           python-tables
+           python-xlrd))
+    (home-page "https://param.holoviz.org/")
+    (synopsis
+     "Make your Python code clearer and more reliable by declaring Parameters")
+    (description
+     "Param is a library for handling all the user-modifiable parameters,
+arguments, and attributes that control your code.  It provides automatic,
+robust error-checking while dramatically reducing boilerplate code, letting
+you focus on what you want your code to do rather than on checking for all the
+possible ways users could supply inappropriate values to a function or
+class.")
+    (license license:bsd-3)))
+
 (define-public python-djitellopy
   (package
     (name "python-djitellopy")
