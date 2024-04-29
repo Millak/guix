@@ -336,7 +336,7 @@ required structures.")
     ;; This package supersedes the Guile bindings that came with GnuTLS until
     ;; version 3.7.8 included.
     (name "guile-gnutls")
-    (version "3.7.14")
+    (version "4.0.0")
     (home-page "https://gitlab.com/gnutls/guile/")
     (source (origin
               ;; url-fetch is used here to avoid a circular dependency with
@@ -344,11 +344,11 @@ required structures.")
               (method url-fetch)
               (uri (string-append
                     "https://gitlab.com/gnutls/guile/uploads/"
-                    "1fdc941351d54cd7affda1bb912b9ca5"
+                    "9060bc55069cedb40ab46cea49b439c0"
                     "/guile-gnutls-" version ".tar.gz"))
               (sha256
                (base32
-                "0ldnxq5qxzy92jd8w5c717bgx4038x9qmi43bzl6kmlkzpagqayy"))))
+                "0fdjmy9vfjwk2v616nan1zz6iy9i086vrh5mdcsfqxi00ckbjk2v"))))
     (build-system gnu-build-system)
     (arguments
      (list
