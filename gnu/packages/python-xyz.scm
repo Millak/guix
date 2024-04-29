@@ -1033,6 +1033,29 @@ It uses a plain-text database, a location-independent library, and features
 git integration, command-line support, and a curses-based TUI.")
     (license license:expat)))
 
+(define-public python-colorcet
+  (package
+    (name "python-colorcet")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "colorcet" version))
+       (sha256
+        (base32 "1sx4m5xbz1k8bm8cr2f3x21dip167k7c1nv35npqla52h76v6899"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-nbval
+                         python-packaging
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-mpl))
+    (home-page "https://colorcet.holoviz.org/")
+    (synopsis "Collection of perceptually uniform colormaps")
+    (description "Colorcet is a collection of perceptually accurate 256-color
+colormaps for use with Python plotting programs like Bokeh, Matplotlib,
+HoloViews, and Datashader.")
+    (license license:cc-by4.0)))
+
 (define-public python-colored
   (package
     (name "python-colored")
