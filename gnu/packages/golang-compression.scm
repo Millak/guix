@@ -168,9 +168,9 @@ library.  This is beneficial for large amounts of data, say more than 1MB at a
 time, as otherwise the internal gzip library will likely be faster.")
     (license (list license:bsd-3 license:expat))))
 
-(define-public go-github-com-nwaples-rardecode-v2
+(define-public go-github-com-nwaples-rardecode
   (package
-    (name "go-github-com-nwaples-rardecode-v2")
+    (name "go-github-com-nwaples-rardecode")
     (version "2.0.0-beta.2")
     (source
      (origin
