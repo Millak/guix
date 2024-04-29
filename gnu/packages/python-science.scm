@@ -50,6 +50,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages chemistry)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crypto)
@@ -87,6 +88,25 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject))
+
+(define-public python-qdldl
+  (package
+    (name "python-qdldl")
+    (version "0.1.7.post2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "qdldl" version))
+       (sha256
+        (base32 "1lspam0k8gnw1yglqxvdv350fq00nkgdfmkizmx7bk0hxjjkj5ab"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list cmake-minimal pybind11))
+    (propagated-inputs (list python-numpy python-scipy))
+    (home-page "https://github.com/oxfordcontrol/qdldl-python/")
+    (synopsis "QDLDL LDL factorization routine")
+    (description "This package provides a Python interface to the QDLDL LDL
+factorization routine for quasi-definite linear system.")
+    (license license:asl2.0)))
 
 (define-public python-scipy
   (package
