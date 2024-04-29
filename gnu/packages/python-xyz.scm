@@ -8465,6 +8465,47 @@ easily generalized like @dfn{compressed sparse row/column}(CSR/CSC) and
 depends on @code{scipy.sparse} for some computations.")
     (license license:bsd-3)))
 
+(define-public python-multiscale-spatial-image
+  (package
+    (name "python-multiscale-spatial-image")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "multiscale_spatial_image" version))
+       (sha256
+        (base32 "01kcagjy797hbz5an9cp8wcl5krgp21yb7ibfimvpidb3jp5lfhb"))))
+    (build-system pyproject-build-system)
+    ;; All interesting tests require file downloads over IPFS.
+    (arguments (list #:tests? #false))
+    (propagated-inputs
+     (list `(,insight-toolkit "python")
+           python-dask
+           python-dask-image
+           python-numpy
+           python-spatial-image
+           python-xarray
+           python-xarray-datatree))
+    (native-inputs
+     (list python-fsspec
+           python-hatchling
+           python-ipfsspec
+           python-jsonschema
+           python-nbmake
+           python-pooch
+           python-pytest
+           python-pytest-mypy
+           python-urllib3
+           python-zarr))
+    (home-page "https://github.com/spatial-image/multiscale-spatial-image")
+    (synopsis "Multi-dimensional spatial image data structure")
+    (description
+     "This package lets you generate a multiscale, chunked, multi-dimensional
+spatial image data structure that can serialized to OME-NGFF.  Each scale is a
+scientific Python Xarray spatial-image Dataset, organized into nodes of an
+Xarray Datatree.")
+    (license license:asl2.0)))
+
 (define-public python-spectra
   (package
     (name "python-spectra")
