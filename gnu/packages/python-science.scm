@@ -89,6 +89,30 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject))
 
+(define-public python-ecos
+  (package
+    (name "python-ecos")
+    (version "2.0.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/embotech/ecos-python")
+             (commit (string-append "v" version))
+             (recursive? #true)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16ljq8maflfkgbw16rldg6cy14vgz2pb3b2iga60i7yzkq2ikmyw"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-scipy))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/embotech/ecos")
+    (synopsis "Embedded Cone Solver")
+    (description
+     "This is the Python package for ECOS: Embedded Cone Solver.  ECOS is
+numerical software for solving convex second-order cone programs (SOCPs).")
+    (license license:gpl3)))
+
 (define-public python-osqp
   (package
     (name "python-osqp")
