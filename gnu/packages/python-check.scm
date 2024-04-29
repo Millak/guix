@@ -43,6 +43,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages django)
   #:use-module (gnu packages docker)
+  #:use-module (gnu packages jupyter)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python-build)
@@ -1513,6 +1514,39 @@ new fixtures, new methods and new comparison objects.")
     (home-page "https://github.com/aio-libs/pytest-aiohttp/")
     (synopsis "Pytest plugin for aiohttp support")
     (description "This package provides a pytest plugin for aiohttp support.")
+    (license license:asl2.0)))
+
+(define-public python-nbmake
+  (package
+    (name "python-nbmake")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/treebeardtech/nbmake")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06syl819kwqhmjwp34lri31f0pypwnxs9j03s5lbk12w42mihzdi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-ipykernel python-nbclient python-nbformat python-pygments))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-xdist
+           python-pyyaml))
+    (home-page "https://github.com/treebeardtech/nbmake")
+    (synopsis "Pytest plugin for testing notebooks")
+    (description "This package provides a Pytest plugin for testing Jupyter
+notebooks.")
     (license license:asl2.0)))
 
 (define-public python-nbval
