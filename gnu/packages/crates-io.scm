@@ -20,7 +20,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Jacob Hrbek <kreyren@rixotstudio.cz>
 ;;; Copyright © 2021, 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
@@ -7286,6 +7286,25 @@ streams in big-endian and little-endian formats.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-test" ,rust-serde-test-1)
         ("rust-static-assertions" ,rust-static-assertions-1))))))
+
+(define-public rust-blas-sys-0.7
+  (package
+    (name "rust-blas-sys")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "blas-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h14zjycwc76v15h8qll9z1xiryvmpvsb5gam97pqpdjrrwv5c8k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/blas-lapack-rs/blas-sys")
+    (synopsis "Rust bindings to BLAS (Fortran)")
+    (description "The package provides bindings to BLAS (Fortran).")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-blobby-0.3
   (package
