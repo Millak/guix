@@ -23088,6 +23088,10 @@ system to use for the upgrade.  If no value is provided the
     #~(@@ (guix system install) installation-os)))
 @end lisp
 
+@item @code{reboot?} (default: @code{#f})
+This field specifies whether the system should reboot after completing
+an unattended upgrade.
+
 @item @code{services-to-restart} (default: @code{'(mcron)})
 This field specifies the Shepherd services to restart when the upgrade
 completes.

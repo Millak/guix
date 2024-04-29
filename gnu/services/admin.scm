@@ -420,6 +420,8 @@ which lets you search for packages that provide a given file.")
                         (default "30 01 * * 0"))
   (channels             unattended-upgrade-configuration-channels
                         (default #~%default-channels))
+  (reboot?              unattended-upgrade-configuration-reboot?
+                        (default #f))
   (services-to-restart  unattended-upgrade-configuration-services-to-restart
                         (default '(mcron)))
   (system-expiration    unattended-upgrade-system-expiration
@@ -442,6 +444,9 @@ which lets you search for packages that provide a given file.")
 
   (define services
     (unattended-upgrade-configuration-services-to-restart config))
+
+  (define reboot?
+    (unattended-upgrade-configuration-reboot? config))
 
   (define expiration
     (unattended-upgrade-system-expiration config))
@@ -512,7 +517,13 @@ which lets you search for packages that provide a given file.")
 
             ;; XXX: If 'mcron' has been restarted, perhaps this isn't
             ;; reached.
-            (format #t "~a upgrade complete~%" (timestamp))))))
+            (format #t "~a upgrade complete~%" (timestamp))
+
+            ;; Stopping the root shepherd service triggers a reboot.
+            (when #$reboot?
+              (format #t "~a rebooting system~%" (timestamp))
+              (force-output) ;ensure the entire log is written.
+              (stop-service 'root))))))
 
   (define upgrade
     (program-file "unattended-upgrade" code))
