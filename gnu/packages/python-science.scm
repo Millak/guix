@@ -50,6 +50,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages chemistry)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages digest)
@@ -69,6 +70,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages simulation)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages statistics)
@@ -81,6 +83,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject))
 
@@ -2377,6 +2380,62 @@ build applications with traitlets in combination with the scipy stack.")
     (description "This package is an implementation of the Promises/A+
 specification and test suite in Python.")
     (license license:expat)))
+
+(define-public python-clarabel
+  (package
+    (name "python-clarabel")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "clarabel" version))
+       (sha256
+        (base32 "15k32ynvh45n9q905bxwamh5w5cia9bxzmwz69wbribmyhsv22m3"))
+       (patches
+        (search-patches "python-clarabel-blas.patch"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'prepare-python-module 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install)))
+      #:cargo-inputs
+      `(("rust-amd" ,rust-amd-0.2)
+        ("rust-blas" ,rust-blas-0.22)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-derive-builder" ,rust-derive-builder-0.11)
+        ("rust-enum-dispatch" ,rust-enum-dispatch-0.3) ;0.3.8
+        ("rust-itertools" ,rust-itertools-0.11)
+        ("rust-lapack" ,rust-lapack-0.19)
+        ("rust-lazy-static" ,rust-lazy-static-1) ;1.4
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-num-derive" ,rust-num-derive-0.2)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-pyo3" ,rust-pyo3-0.20)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+      #:features '(list "python")
+      #:install-source? #false))
+    (inputs
+     (list maturin))
+    (native-inputs
+     (list python-wrapper))
+    (propagated-inputs (list python-numpy python-scipy))
+    (home-page "https://github.com/oxfordcontrol/Clarabel.rs")
+    (synopsis "Interior-point solver for convex conic optimisation problems")
+    (description "Clarabel.rs is a Rust implementation of an interior point
+numerical solver for convex optimization problems using a novel homogeneous
+embedding.")
+    (license license:asl2.0)))
 
 (define-public python-climin
   (package

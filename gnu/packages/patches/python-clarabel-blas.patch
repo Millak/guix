@@ -1,0 +1,38 @@
+Ensure that no feature set refers to blas-src or lapack-src, because we want
+to just use the existing openblas library.
+
+--- a/Cargo.toml	2024-04-24 14:13:23.519997967 +0200
++++ b/Cargo.toml	2024-04-24 14:13:09.983966101 +0200
+@@ -34,11 +34,11 @@
+ sdp = ["blas","lapack"]
+ 
+ # explicit configuration options for different blas flavours
+-sdp-accelerate = ["sdp", "blas-src/accelerate", "lapack-src/accelerate"]
+-sdp-netlib     = ["sdp", "blas-src/netlib", "lapack-src/netlib"]
+-sdp-openblas   = ["sdp", "blas-src/openblas", "lapack-src/openblas"]
+-sdp-mkl        = ["sdp", "blas-src/intel-mkl", "lapack-src/intel-mkl"]
+-sdp-r          = ["sdp", "blas-src/r", "lapack-src/r"]
++sdp-accelerate = ["sdp"]
++sdp-netlib     = ["sdp"]
++sdp-openblas   = ["sdp"]
++sdp-mkl        = ["sdp"]
++sdp-r          = ["sdp"]
+ 
+ # build as the julia interface 
+ julia = ["sdp", "dep:libc", "dep:num-derive", "dep:serde", "dep:serde_json"] 
+@@ -62,15 +62,6 @@
+ version = "0.19.0"
+ optional = true
+ 
+-[dependencies.blas-src]
+-version = "0.9"
+-optional = true 
+-
+-[dependencies.lapack-src]
+-version = "0.9"
+-optional = true 
+-
+-
+ # -------------------------------
+ # examples
+ # -------------------------------
