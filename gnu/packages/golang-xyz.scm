@@ -316,6 +316,46 @@ substitution.")
 similarity as well as other string utility functions.")
     (license license:expat)))
 
+(define-public go-github-com-adrg-xdg
+  (package
+    (name "go-github-com-adrg-xdg")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/adrg/xdg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xbkb8wmr6phj2ppr75akc58jdzrv20gc3mkxa1mmb968isy8s6c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/adrg/xdg"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests need HOME to be set: could not create any of the following
+          ;; paths: /homeless-shelter/.local/data,
+          ;; /homeless-shelter/.local/data, /usr/share
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/adrg/xdg")
+    (synopsis "XDG specification implementation for Golang")
+    (description
+     "Package xdg provides an implementation of the @acronym{XDG, X Desktop
+Group} Base Directory Specification.  The specification defines a set of
+standard paths for storing application files including data and configuration
+files.  For portability and flexibility reasons, applications should use the
+XDG defined locations instead of hardcoding paths.  The package also includes
+the locations of well known user directories.")
+    (license license:expat)))
+
 (define-public go-github-com-alecthomas-chroma
   (package
     (name "go-github-com-alecthomas-chroma")
