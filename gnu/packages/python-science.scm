@@ -89,6 +89,35 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject))
 
+(define-public python-cvxpy
+  (package
+    (name "python-cvxpy")
+    (version "1.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cvxpy" version))
+       (sha256
+        (base32 "0lyri9j5gyg6m1bvfy1a4q2sqdy3w45lp0bxiq9as8srq347ic5i"))))
+    (build-system pyproject-build-system)
+    ;; It's odd but cvxpy appears to need pybind11 at runtime according to its
+    ;; specification.  Moving pybind11 to native-inputs would break downstream
+    ;; packages using cvxpy.
+    (propagated-inputs (list pybind11
+                             python-clarabel
+			     python-ecos
+                             python-numpy
+                             python-osqp
+                             python-scipy
+                             python-scs))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/cvxpy/cvxpy")
+    (synopsis "DSL for modeling convex optimization problems")
+    (description
+     "This package provides a domain-specific language for modeling convex
+optimization problems in Python.")
+    (license license:asl2.0)))
+
 (define-public python-ecos
   (package
     (name "python-ecos")
