@@ -63,6 +63,56 @@ the @code{c2go} tool at
 @url{https://github.com/andybalholm/c2go,https://github.com/andybalholm/c2go}.")
     (license license:expat)))
 
+(define-public go-github-com-dsnet-compress
+  (package
+    (name "go-github-com-dsnet-compress")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dsnet/compress")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wwjaymzb1xxq3ybch3nwn72xhi2s40cvz0cl986yad3w1xwzj91"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dsnet/compress"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Testdata directories contains some compressed files requiring
+          ;; for running tests but not required on run time.
+          (add-after 'check 'remove-testdata
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/bzip2/testdata"))
+              (delete-file-recursively
+               (string-append "src/" import-path "/brotli/testdata"))
+              (delete-file-recursively
+               (string-append "src/" import-path "/testdata")))))))
+    (propagated-inputs
+     (list go-github-com-dsnet-golib
+           go-github-com-klauspost-compress
+           go-github-com-ulikunitz-xz))
+    (home-page "https://github.com/dsnet/compress")
+    (synopsis "Collection of compression libraries for Golang")
+    (description
+     "Package compress is a collection of compression libraries implementing
+Golang moduels:
+@table @code
+@item brotli
+Implements the Brotli format, described in RFC 7932.
+@item bzip2
+Implements the BZip2 compressed data format.
+@item flate
+Implements the DEFLATE format, described in RFC 1951.
+@item xflate
+Implements the XFLATE format, an random-access extension to DEFLATE.
+@end table")
+    (license license:bsd-3)))
+
 (define-public go-github-com-golang-snappy
   (package
     (name "go-github-com-golang-snappy")
