@@ -805,7 +805,11 @@ Browser.")
                             "https://gnuzilla.gnu.org/mozzarella")
                     (format #t "pref(~s, ~s);~%"
                             "lightweightThemes.getMoreURL"
-                            "https://gnuzilla.gnu.org/mozzarella"))))))
+                            "https://gnuzilla.gnu.org/mozzarella")
+                    ;; FIXME: https://github.com/NixOS/nixpkgs/issues/307095
+                    (format #t "pref(~s, ~a);~%"
+                            "widget.use-xdg-desktop-portal.file-picker"
+                            "1"))))))
           (add-after 'autoconfig 'autoconfig-tor
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((lib (in-vicinity #$output "lib/torbrowser"))
