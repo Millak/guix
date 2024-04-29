@@ -24,6 +24,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Marco Baggio <marco.baggio@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1229,6 +1230,26 @@ higher scores than the second, the probability that differences are within the
 region of practical equivalence (rope), or that the second classifier has
 higher scores.")
     (license license:expat)))
+
+(define-public python-fastcluster
+  (package
+    (name "python-fastcluster")
+    (version "1.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fastcluster" version))
+       (sha256
+        (base32 "19labbgnq85p4r4jbli2p045lgh57larhi2g2anagfxnlzpqdf5a"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-scipy))
+    (home-page "https://danifold.net/fastcluster.html")
+    (synopsis "Fast hierarchical clustering routines for R and Python")
+    (description "The fastcluster package implements seven common hierarchical
+clustering schemes efficiently.  The package is made with two interfaces to
+standard software: R and Python.")
+    (license license:bsd-2)))
 
 (define-public python-fbpca
   (package
