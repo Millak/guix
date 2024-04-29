@@ -1442,7 +1442,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.1.14")
+    (version "2.2.3")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -1451,7 +1451,7 @@ with the included @command{xfstests-check} helper.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "0gzansmin40llxxh2zkgpdyp41ikd8s5hv5mpwhpcivk1q8fv7sh"))))
+           (base32 "1hqsv2skymrhzg9n94bcna8r7m1zl30wjb5knaw43j659vri599h"))))
     (build-system linux-module-build-system)
     (arguments
      (list
@@ -1500,12 +1500,6 @@ with the included @command{xfstests-check} helper.")
                              "man/man7/zpool-features.7")
                 (("/usr/share/zfs/compatibility.d")
                  (string-append #$output "/share/zfs/compatibility.d")))
-              (substitute* "etc/Makefile.in"
-                ;; This just contains an example configuration file for
-                ;; configuring ZFS on traditional init systems, skip it
-                ;; since we cannot use it anyway; the install target becomes
-                ;; misdirected.
-                (("= default ") "= "))
               (substitute* "lib/libzfs/os/linux/libzfs_util_os.c"
                 ;; Use path to /gnu/store/*-kmod in actual path that is
                 ;; exec'ed.
@@ -1516,9 +1510,17 @@ with the included @command{xfstests-check} helper.")
                 ;; Just use 'modprobe' in message to user, since Guix
                 ;; does not have a traditional /sbin/
                 (("'/sbin/modprobe ") "'modprobe "))
-              (substitute* "contrib/Makefile.in"
-                ;; This is not configurable nor is its hard-coded /usr prefix.
-                ((" initramfs") ""))
+              (substitute* "configure"
+                (("/etc/default")
+                 (string-append #$output "/etc/default"))
+                (("/etc/bash_completion.d")
+                 (string-append #$output "/etc/bash_completion.d")))
+              (substitute* "Makefile.in"
+                (("/usr/share/initramfs-tools")
+                 (string-append #$output "/usr/share/initramfs-tools")))
+              (substitute* "contrib/initramfs/Makefile.am"
+                (("/usr/share/initramfs-tools")
+                 (string-append #$output "/usr/share/initramfs-tools")))
               (substitute* "module/os/linux/zfs/zfs_ctldir.c"
                 (("/usr/bin/env\", \"umount")
                  (string-append (search-input-file inputs "/bin/umount")
@@ -1535,18 +1537,15 @@ with the included @command{xfstests-check} helper.")
               (substitute* "config/zfs-build.m4"
                 (("\\$sysconfdir/init.d")
                  (string-append #$output "/etc/init.d")))
-              (substitute* '("etc/zfs/Makefile.am"
-                             "cmd/zed/Makefile.am")
+              (substitute* '("cmd/zed/Makefile.am")
                 (("\\$\\(sysconfdir)") (string-append #$output "/etc")))
-              (substitute* "cmd/vdev_id/vdev_id"
+              (substitute* "udev/vdev_id"
                 (("PATH=/bin:/sbin:/usr/bin:/usr/sbin")
                  (string-append "PATH="
                                 (dirname (which "chmod")) ":"
                                 (dirname (which "grep")) ":"
                                 (dirname (which "sed")) ":"
                                 (dirname (which "gawk")))))
-              (substitute* "contrib/pyzfs/Makefile.in"
-                ((".*install-lib.*") ""))
               (substitute* '("Makefile.am" "Makefile.in")
                 (("\\$\\(prefix)/src") (string-append #$output:src "/src")))
               (substitute* (find-files "udev/rules.d/" ".rules.in$")
