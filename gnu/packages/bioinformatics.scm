@@ -2333,6 +2333,75 @@ provides data pre-processing functionality such as dimensionality reduction
 and gene expression visualization.")
     (license license:gpl2+)))
 
+(define-public python-metacells
+  (package
+    (name "python-metacells")
+    (version "0.9.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "metacells" version))
+       (sha256
+        (base32 "02f63nxz6b60vl6s4n9vapaysnq1w5f3x7c179rh2rr7j2k5cf1y"))))
+    #;
+    (properties '((tunable? . #t)))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The package "python-igraph" has been deprecated in favor of
+          ;; just "igraph".
+          (add-after 'unpack 'rename-igraph
+            (lambda _
+              (substitute* "requirements.txt"
+                (("python-igraph") "igraph"))))
+          (add-after 'unpack 'do-not-tune
+            (lambda _
+              ;; Without this they pass -march=native to the compiler.
+              (setenv "WHEEL" "1")))
+          ;; Numba needs a writable dir to cache functions.
+          (add-before 'check 'set-numba-cache-dir
+            (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp")))
+          (add-before 'build 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-anndata
+                             python-cvxpy
+                             python-fastcluster
+                             python-importlib-metadata
+                             python-numpy
+                             python-pandas
+                             python-psutil
+                             python-igraph
+                             python-pyyaml
+                             python-scanpy
+                             python-scipy
+                             python-threadpoolctl
+                             python-umap-learn))
+    (native-inputs (list python-black
+                         python-bumpversion
+                         python-flake8
+                         python-isort
+                         python-mypy
+                         python-mypy-extensions
+                         python-pylint
+                         python-pytest
+                         python-pytest-cov
+                         python-sphinx
+                         python-sphinx-rtd-theme
+                         python-tox
+                         python-twine))
+    (home-page "https://github.com/tanaylab/metacells.git")
+    (synopsis "Single-cell RNA Sequencing Analysis")
+    (description "The metacells package implements the improved metacell
+algorithm for single-cell RNA sequencing (scRNA-seq) data analysis within the
+scipy framework, and projection algorithm based on it.  The original metacell
+algorithm was implemented in R.  The Python package contains various
+algorithmic improvements and is scalable for larger data sets (millions of
+cells).")
+    (license license:expat)))
+
 (define-public python-parabam
   (package
     (name "python-parabam")
