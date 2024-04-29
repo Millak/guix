@@ -77,6 +77,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages emacs)
@@ -145,14 +146,14 @@
 (define-public artanis
   (package
     (name "artanis")
-    (version "0.5.1")
+    (version "0.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/artanis/artanis-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1zfg49s7wp37px7k22qcr06rxfwyn3gv1c3jmma346xw0m8jr63w"))
+                "1y4mf8vv2fwjg4z8c4d7an5rxi96sh7krk0djnafm2l66i97cj3m"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -191,7 +192,7 @@
     ;; projects.
     ;; TODO: Add guile-dbi and guile-dbd optional dependencies.
     (propagated-inputs
-     (list guile-json-3 guile-readline guile-redis))
+     (list guile-json-3 guile-curl guile-readline guile-redis))
     (native-inputs
      (list bash-minimal                           ;for the `source' builtin
            pkg-config
