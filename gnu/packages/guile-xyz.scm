@@ -2771,6 +2771,7 @@ library.")
      '(#:make-flags '("GUILE_AUTO_COMPILE=0") ;placate guild warnings
        #:phases
        (modify-phases %standard-phases
+         (delete 'strip)
          (add-before 'configure 'patch-module-dir
            (lambda _
              (substitute* "src/Makefile.in"
