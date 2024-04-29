@@ -6802,6 +6802,24 @@ matching and globbing with support for \"doublestar\" patterns.")
       #:unpack-path "github.com/bmatcuk/doublestar/v2"
       #:import-path "github.com/bmatcuk/doublestar/v2"))))
 
+(define-public go-github-com-bmatcuk-doublestar-v4
+  (package
+    (inherit go-github-com-bmatcuk-doublestar)
+    (name "go-github-com-bmatcuk-doublestar-v4")
+    (version "4.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bmatcuk/doublestar")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12rf4a9isgg2nh927gikgbmyaynaqp4kjahgscb4qnr04m3vpr41"))))
+    (arguments
+     (list
+      #:import-path "github.com/bmatcuk/doublestar/v4"))))
+
 (define-public go-github-com-dlclark-regexp2
   (package
     (name "go-github-com-dlclark-regexp2")
