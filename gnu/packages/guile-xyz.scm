@@ -2765,7 +2765,8 @@ library.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1nb7swbliw9vx1ivhgd2m0r0p7nlkszw6s41zcgfwb5v1kp05sb4"))))
+                "1nb7swbliw9vx1ivhgd2m0r0p7nlkszw6s41zcgfwb5v1kp05sb4"))
+              (patches (search-patches "guile-lib-fix-tests-for-guile2.2.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0") ;placate guild warnings

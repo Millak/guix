@@ -1,0 +1,52 @@
+From b1916e9a8ac8fa1bdd045d6e1d89e0f16ef7e441 Mon Sep 17 00:00:00 2001
+From: "Artyom V. Poptsov" <poptsov.artyom@gmail.com>
+Date: Mon, 29 Apr 2024 11:27:02 +0300
+Subject: [PATCH] unit-tests/logging.logger: Fix tests with Guile 2
+
+When tests are run with Guile 2 "logging.logger.scm" would always fail
+due to undefined reference to "mkstemp" that was introduced only in
+Guile 3.  In Guile 2 the procedure is called "mkstemp!".  Also
+"call-with-port" procedure is available only from (rnrs io ports) in
+Guile 2, while in Guile 3 this procedure is available out of box.
+This patch fixes these issues by adding an additional runtime check.
+
+* unit-tests/logging.logger.scm (call-with-temporary-file): Bugfix:
+  Check Guile major version and use "mkstemp!" when Guile 2 is used;
+  use "mkstemp" otherwise.  Also for Guile 2 load "call-with-port"
+  from (rnrs io ports).
+---
+ unit-tests/logging.logger.scm | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/unit-tests/logging.logger.scm b/unit-tests/logging.logger.scm
+index c69a86d..fbf4ce7 100644
+--- a/unit-tests/logging.logger.scm
++++ b/unit-tests/logging.logger.scm
+@@ -3,6 +3,7 @@
+ ;;;    Copyright (C) 2003 Richard Todd
+ ;;;    Copyright (C) 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+ ;;;    Copyright (C) 2024 David Pirotte <david@altosw.be>
++;;;    Copyright (C) 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+ 
+ ;;;    This program is free software; you can redistribute it and/or modify
+ ;;;    it under the terms of the GNU General Public License as published by
+@@ -28,8 +29,12 @@
+ (define* (call-with-temporary-file proc #:key (mode "w+"))
+   "Open a temporary file name and pass it to PROC, a procedure of one
+ argument.  The port is automatically closed."
+-  (let ((port (mkstemp "/tmp/file-XXXXXX" mode)))
+-    (call-with-port port proc)))
++  (let ((file-name "/tmp/file-XXXXXX"))
++    (if (< (string->number (major-version)) 3)
++        (let ((port (mkstemp! (string-copy file-name) mode)))
++          ((@ (rnrs io ports) call-with-port) port proc))
++        (let ((port (mkstemp file-name mode)))
++          (call-with-port port proc)))))
+ 
+ (define-class <test-logging> (<test-case>))
+ 
+
+base-commit: 0e2b6b0ae5cc43c98075386bb4c69defb705f3b3
+-- 
+2.41.0
+
