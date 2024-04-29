@@ -290,6 +290,32 @@ Golang.")
 substitution.")
     (license license:expat)))
 
+(define-public go-github-com-adrg-strutil
+  (package
+    (name "go-github-com-adrg-strutil")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/adrg/strutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xkjzjllv8b2m3lgn66cb09b0f5xqy2bk8ny3lkn4z0ywlchawj9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/adrg/strutil"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/adrg/strutil")
+    (synopsis "Golang string utility functions")
+    (description
+     "Package strutil provides string metrics for calculating string
+similarity as well as other string utility functions.")
+    (license license:expat)))
+
 (define-public go-github-com-alecthomas-chroma
   (package
     (name "go-github-com-alecthomas-chroma")
