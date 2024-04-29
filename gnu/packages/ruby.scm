@@ -7817,7 +7817,7 @@ documentation for Ruby code.")
           (lambda _
             (invoke "gem" "build" "gem_hadar.gemspec"))))))
     (propagated-inputs
-     (list git ruby-tins ruby-yard))
+     (list git-minimal/pinned ruby-tins ruby-yard))
     (synopsis "Library for the development of Ruby gems")
     (description
      "This library contains some useful functionality to support the
