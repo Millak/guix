@@ -9512,6 +9512,35 @@ Python code against some of the style conventions in
 @url{http://www.python.org/dev/peps/pep-0008/,PEP 8}.")
     (license license:expat)))
 
+(define-public python-pyct
+  (package
+    (name "python-pyct")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyct" version))
+       (sha256
+        (base32 "1856dbrcpc0nxxhlfh3dqzz7xxn5sdi600q45hsprqyqrg2lm7yx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests want to download example data from the internet.
+      '(list "-k" (string-append
+                   "not test_examples_with_use_test_data"
+                   " and not test_examples_using_test_data_and_force_with_prexisting_content_in_target"
+                   " and not test_fetch_data_using_test_data_with_no_file_in_data_copies_from_stubs"
+                   " and not test_fetch_data_using_test_data_and_force_with_file_in_data_over_writes"))))
+    (propagated-inputs (list python-param python-pyyaml))
+    (native-inputs (list python-flake8 python-pytest))
+    (home-page "https://github.com/holoviz-dev/pyct")
+    (synopsis "Common packaging tasks")
+    (description
+     "This Python package provides utilities to run common packaging tasks,
+e.g. copy examples, fetch data, etc.")
+    (license license:bsd-3)))
+
 (define-public python-multidict
   (package
     (name "python-multidict")
