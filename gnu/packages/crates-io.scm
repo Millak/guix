@@ -1248,6 +1248,26 @@ the code to interact with the underlying operating system ALSA interface.")
      "Rust bindings for OpenAL 1.1 and extensions (including EFX).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-amd-0.2
+  (package
+    (name "rust-amd")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "amd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15ib7hhzdifb2m099561ip0fq627gaszw4sq36ys75snaw0y0yd6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-num-traits" ,rust-num-traits-0.2))))
+    (home-page "https://github.com/rwl/amd_order/")
+    (synopsis "Approximate Minimum Degree ordering")
+    (description "This package provides a set of routines for ordering a
+sparse matrix prior to Cholesky factorization.")
+    (license license:bsd-3)))
+
 (define-public rust-android-activity-0.5
   (package
     (name "rust-android-activity")
