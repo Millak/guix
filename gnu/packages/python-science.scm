@@ -1584,6 +1584,33 @@ Python's native complex data types is also supported.")
 automated with the minimum of fuss and the least effort.")
     (license license:expat)))
 
+(define-public python-scs
+  (package
+    (name "python-scs")
+    (version "3.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bodono/scs-python")
+             (commit "3.2.4")
+             (recursive? #true)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06wd8m3ri0gaddl7qq6243g25zjlnh3da915b73jnrfh7sg1nqsj"))))
+    (build-system pyproject-build-system)
+    (inputs (list meson-python openblas))
+    (propagated-inputs (list python-numpy python-scipy))
+    (native-inputs
+     (list pkg-config
+           python-meson-python
+           python-pytest))
+    (home-page "https://github.com/bodono/scs-python")
+    (synopsis "Splitting conic solver")
+    (description "This package provides a Python interface for the
+SCS (Splitting conic solver) library.")
+    (license license:expat)))
+
 (define-public python-statannot
   (package
     (name "python-statannot")
