@@ -1356,6 +1356,46 @@ help message which may simplify crating CLI applications, it's Golang
 implementation of http://docopt.org/.")
       (license license:expat))))
 
+(define-public go-github-com-dsnet-golib
+  (package
+    (name "go-github-com-dsnet-golib")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dsnet/golib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f314wzr16w6ix3bs7ginjkizgyl3b1r3j2gvvqzr8dv53r4s5cq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dsnet/golib"))
+    (home-page "https://github.com/dsnet/golib")
+    (synopsis "Collection of helper libraries for Golang")
+    (description
+     "@code{golib} is a collection of unrelated libraries.
+This package provides a following list of Golang models:
+@table @code
+@item bufpipe
+Implements a buffered pipe.
+@item cron
+Parses and runs cron schedules.
+@item hashmerge
+Merges hash checksums.
+@item jsoncs
+Implements JSON Canonicalization Scheme (JCS) as specified in RFC 8785.
+@item jsonfmt
+Implements a JSON formatter.
+@item memfile
+Implements an in-memory emulation of @code{os.File}.
+@item unitconv
+Implements string conversion functionality for unit prefixes.
+@end table")
+    (license license:bsd-3)))
+
 (define-public go-github-com-dustin-gojson
   (package
     (name "go-github-com-dustin-gojson")
