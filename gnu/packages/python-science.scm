@@ -89,6 +89,58 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject))
 
+(define-public python-osqp
+  (package
+    (name "python-osqp")
+    (version "0.6.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/osqp/osqp-python")
+             (commit (string-append "v" version))
+             (recursive? #true)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s1nbzkfsi2h4ji3v0k14pfcrvinakrwy4xdbz320lbaq3yb0b65"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Some of these test failures are explained by
+      ;; https://github.com/osqp/osqp-python/issues/121.
+      ;; These tests require the module "vec_emosqp", which we don't have.
+      '(list "--ignore=src/osqp/tests/codegen_vectors_test.py"
+             ;; These tests need "mat_emosqp".
+             "--ignore=src/osqp/tests/codegen_matrices_test.py"
+             ;; These fail with accuracy differences
+             "--ignore=src/osqp/tests/update_matrices_test.py"
+             "--ignore=src/osqp/tests/feasibility_test.py"
+             "--ignore=src/osqp/tests/polishing_test.py"
+             ;; This requires the nonfree MKL.
+             "--ignore=src/osqp/tests/mkl_pardiso_test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; It looks like the upgrade to scipy 1.12.0 only broke the test
+          ;; suite, not the features of this library.  See
+          ;; https://github.com/osqp/osqp-python/issues/121.
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "requirements.txt"
+                (("scipy.*1.12.0") "scipy <= 1.12.0"))))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (propagated-inputs (list python-numpy python-qdldl python-scipy))
+    ;; We need setuptools-scm only for the version number.  Without it the
+    ;; version number will be "0.0.0" and downstream packages will complain.
+    (native-inputs (list cmake-minimal python-pytest python-setuptools-scm))
+    (home-page "https://osqp.org/")
+    (synopsis "OSQP: operator splitting QP solver")
+    (description "The OSQP (Operator Splitting Quadratic Program) solver is a
+numerical optimization package.")
+    (license license:asl2.0)))
+
 (define-public python-qdldl
   (package
     (name "python-qdldl")
