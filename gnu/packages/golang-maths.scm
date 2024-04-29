@@ -57,6 +57,37 @@
      "This package provides a statistical library for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-shopspring-decimal
+  (package
+    (name "go-github-com-shopspring-decimal")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shopspring/decimal")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p1iz0ybsjvc8k3w6lf92drs51fgrcbz0ib1p4ihp3gmdq5rnzjk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shopspring/decimal"))
+    (home-page "https://github.com/shopspring/decimal")
+    (synopsis "Arbitrary-precision fixed-point decimal numbers in Golang")
+    (description
+     "Package decimal implements an arbitrary precision fixed-point decimal.
+Features:
+@itemize
+@item the zero-value is 0, and is safe to use without initialization
+@item addition, subtraction, multiplication with no loss of precision
+@item division with specified precision
+@item database/sql serialization/deserialization
+@item JSON and XML serialization/deserialization
+@end itemize")
+    (license license:expat)))
+
 ;;;
 ;;; Executables:
 ;;;
