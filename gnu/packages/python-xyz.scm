@@ -5696,7 +5696,7 @@ code introspection, and logging.")
     (arguments
      `(#:tests? #f)) ;; Most tests seem to use the Internet.
     (propagated-inputs
-      (list git)) ;; pbr actually uses the "git" binary.
+      (list git-minimal/pinned)) ;; pbr actually uses the "git" binary.
     (native-inputs
       `(("python-fixtures" ,python-fixtures-bootstrap)
         ;; discover, coverage, hacking, subunit
