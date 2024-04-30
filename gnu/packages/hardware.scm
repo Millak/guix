@@ -315,9 +315,8 @@ Notable features include:
               ;; 'NeedProgs' core utilities are specially checked for
               ;; availability.  It's easier to wrap them in PATH than patching
               ;; their references.
-              ;; TODO: package edid-decode and add "bin/edid-decode" below:
               (define need-progs (list "sbin/dmidecode" "sbin/smartctl"
-                                       "bin/lspci" "bin/lsusb"))
+                                       "bin/lspci" "bin/lsusb" "bin/edid-decode"))
               (wrap-script hw-probe
                 (list "PERL5LIB" 'prefix (list (getenv "PERL5LIB")))
                 (list "PATH" 'prefix
