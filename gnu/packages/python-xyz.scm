@@ -343,6 +343,57 @@ range of notification services, such as Telegram, Discord, Slack, Amazon SNS,
 Gotify, etc.")
     (license license:bsd-2)))
 
+(define-public python-archspec
+  (package
+    (name "python-archspec")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/archspec/archspec")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03yfn4b9xg41pd7vls2cils77wkkb9si1h2qqvnkds661fdankqj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'build 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs (list python-boltons
+                             python-cooler
+                             python-ctxcore
+                             python-interlap
+                             python-intervaltree
+                             python-jsonschema
+                             python-networkx
+                             python-numba
+                             python-poetry-core
+                             pyscenic
+                             python-scikit-learn
+                             python-tables
+                             python-typing-extensions))
+    (native-inputs (list python-black
+                         python-flake8
+                         python-isort
+                         python-poetry-core
+                         python-pylint
+                         python-pytest
+                         python-pytest-cov))
+    (home-page "https://github.com/archspec/archspec")
+    (synopsis "Library to query system architecture")
+    (description
+     "Archspec offers human-readable labels for system architecture aspects.
+These aspects include CPU, network fabrics, etc.  In addition, it offers
+APIs to detect, query, and compare them.")
+    (license license:expat)))
+
 (define-public python-awkward-cpp
   (package
     (name "python-awkward-cpp")
