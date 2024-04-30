@@ -29124,28 +29124,26 @@ type.")
     (license license:gpl3+)))
 
 (define-public emacs-wttrin
-  (let ((commit "df5427ce2a5ad4dab652dbb1c4a1834d7ddc2abc")
-        (revision "1"))
-    (package
-      (name "emacs-wttrin")
-      (version (git-version "0.2.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/bcbcarl/emacs-wttrin")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1ai655f10iayb4vw0ass2j3x83f4vsv90326mnywkzfl3sxd432z"))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-xterm-color))
-      (home-page "https://github.com/bcbcarl/emacs-wttrin")
-      (synopsis "Frontend for weather web service @url{wttr.in}")
-      (description "This package provides local weather information from
+  (package
+    (name "emacs-wttrin")
+    (version "0.2.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cjennings/emacs-wttrin")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "180amp1n0qdn6m6vlzg0ddfxfqf37fjaswfxdxn03298j0jgzw14"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-xterm-color))
+    (home-page "https://github.com/bcbcarl/emacs-wttrin")
+    (synopsis "Frontend for weather web service @url{wttr.in}")
+    (description "This package provides local weather information from
 @url{wttr.in}.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public emacs-browse-kill-ring
   (let ((commit "1ef72cc6accd94cd7032c02b1b2c78ae7f1d1965")
