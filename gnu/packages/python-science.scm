@@ -1467,8 +1467,14 @@ multiple deep learning frameworks.")
                 "0cyldwchcrmbm1y7l1ry70kk8zdh7frxci3c6iwf4iyyj34dnra5"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; This needs a more recent version of python-hypothesis
-     (list #:test-flags '(list "--ignore=xarray/tests/test_strategies.py")))
+     (list
+      #:test-flags
+      ;; This needs a more recent version of python-hypothesis
+      '(list "--ignore=xarray/tests/test_strategies.py"
+             ;; These are known to fail with Pandas 2
+             "-k"
+             (string-append "not test_datetime_conversion_warning"
+                            " and not test_timedelta_conversion_warning"))))
     (native-inputs
      (list python-setuptools-scm python-pytest))
     (propagated-inputs
