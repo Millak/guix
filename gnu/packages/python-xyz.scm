@@ -1037,6 +1037,27 @@ transformation of the plane.")
 from a docstring rather than the other way around.")
    (license license:mpl2.0)))
 
+(define-public python-array-api-compat
+  (package
+    (name "python-array-api-compat")
+    (version "1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "array_api_compat" version))
+       (sha256
+        (base32 "1bvn92v52h8p2zpinwv5bl1314kdjw3msalj91nczfdbrmay78bl"))))
+    (build-system pyproject-build-system)
+    ;; Tests would require all supported array libraries, including pytorch
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://data-apis.org/array-api-compat/")
+    (synopsis "Array API compatibility wrapper for NumPy et al")
+    (description
+     "This package provides a wrapper around @code{NumPy} and other array
+libraries to make them compatible with the Array API standard")
+    (license license:expat)))
+
 (define-public python-cachetools
   (package
     (name "python-cachetools")
