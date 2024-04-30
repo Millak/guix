@@ -289,6 +289,12 @@ such as for RAID systems."
             (define marionette
               (make-marionette
                `(,(which #$(qemu-command system))
+                 ;; Neither of these architectures have a default machine.
+                 ,@(if (or (string=? "aarch64-linux" #$system)
+                           (string=? "armhf-linux" #$system))
+                       '("-machine" "virt"
+                         "-cpu" "host")
+                       '())
                  "-no-reboot"
                  "-m" "1200"
                  ,@(if #$uefi-firmware
@@ -363,6 +369,12 @@ MiB of RAM."
                 (use-modules (srfi srfi-1))
                 `(,(string-append #$qemu-minimal "/bin/"
                                   #$(qemu-command system))
+                  ;; Neither of these architectures have a default machine.
+                  ,@(if (or (string=? "aarch64-linux" #$system)
+                            (string=? "armhf-linux" #$system))
+                        '("-machine" "virt"
+                          "-cpu" "host")
+                        '())
                   "-snapshot"           ;for the volatile, writable overlay
                   ,@(if (file-exists? "/dev/kvm")
                         '("-enable-kvm")
