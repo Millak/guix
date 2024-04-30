@@ -963,9 +963,8 @@ doing practical, real world data analysis in Python.")
   (package
     (name "python-pandas-stubs")
     ;; The versioning follows that of Pandas and uses the date of the
-    ;; python-pandas-stubs release. This is the latest version of
-    ;; python-pandas-stubs for python-pandas 1.5.3.
-    (version "1.5.3.230321")
+    ;; python-pandas-stubs release.
+    (version "2.1.1.230928")
     (source
      (origin
        ;; No tests in the PyPI tarball.
@@ -975,7 +974,7 @@ doing practical, real world data analysis in Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1blwlq5053pxnmx721zdd6v8njiybz4azribx2ygq33jcpmknda6"))))
+        (base32 "13b6wcwf9ybxf492w1l8qqf2bcgch21xds5r88pfkmrvqhxwfpyr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -995,8 +994,7 @@ doing practical, real world data analysis in Python.")
                       (system "Xvfb &")
                       (setenv "DISPLAY" ":0")
                       ;; xsel needs to write a log file.
-                      (setenv "HOME"
-                              (getcwd)))))))
+                      (setenv "HOME" (getcwd)))))))
     (propagated-inputs (list python-types-pytz))
     ;; Add python-fastparquet to native inputs once it has been packaged. Its
     ;; tests will be skipped for now.
