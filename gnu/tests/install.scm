@@ -213,6 +213,8 @@ reboot\n")
     (file-append ovmf-x86-64 "/share/firmware/ovmf_x64.bin"))
    ((string-prefix? "i686" system)
     (file-append ovmf-i686 "/share/firmware/ovmf_ia32.bin"))
+   ((string-prefix? "aarch64" system)
+    (file-append ovmf-aarch64 "/share/firmware/ovmf_aarch64.bin"))
    (else #f)))
 
 (define* (run-install target-os target-os-source
