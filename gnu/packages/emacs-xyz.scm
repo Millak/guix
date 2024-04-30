@@ -30886,6 +30886,30 @@ and implementation of treeview controls using treemacs as a tree renderer.")
                    license:cc-by4.0  ; microsoft/vscode-icons
                    license:expat)))) ; vscode-icons/vscode-icons
 
+(define-public emacs-lsp-docker
+  (let ((commit "16a0cfbe06813a1191b19e412445f9d34cd7493f")
+        (revision "1"))
+    (package
+      (name "emacs-lsp-docker")
+      (version "1.0.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/emacs-lsp/lsp-docker")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ry8yxrb0172n1lnqi4av4wmqvhaqyh55ih2xs0hnd8b6ziywafq"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-lsp-mode emacs-yaml))
+      (home-page "https://github.com/emacs-lsp/lsp-docker")
+      (synopsis "Leverage LSP mode in Docker environment")
+      (description
+       "This package provides scripts and configurations to leverage LSP mode
+in Docker environment.")
+      (license license:gpl3+))))
+
 (define-public emacs-dap-mode
   (package
     (name "emacs-dap-mode")
