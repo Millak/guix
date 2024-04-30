@@ -313,16 +313,16 @@
 (define-public emacs-ac-php
   (package
     (name "emacs-ac-php")
-    (version "2.6.0")
+    (version "2.7.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/xcwen/ac-php")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xz86cjsjm72b0rm50fr2z82rcllhczsd4jr5rnp2clbind5w697"))))
+        (base32 "1yn5cc6cmj3hwqgmjj44dz847xn5k99kirj36qwc04q7vhl8z8k7"))))
     (build-system emacs-build-system)
     (arguments
      (list
