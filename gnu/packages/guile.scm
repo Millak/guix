@@ -926,12 +926,17 @@ Guile's foreign function interface.")
     (home-page "https://notabug.org/guile-lzlib/guile-lzlib")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference (url home-page) (commit version)))
-       (file-name (git-file-name name version))
+       ;; Note: Until "builtin:git-download" can be taken for granted, this
+       ;; must be 'url-fetch', not 'git-fetch', to avoid a circular dependency
+       ;; with the 'git-fetch' derivation on systems that lack
+       ;; "builtin:git-download".
+       (method url-fetch)
+       (uri (string-append home-page "/archive/" version ".tar.gz"))
+       ;; content nar-sha256: 19870njb3q5h6zy239gvra92ji077c6s8xm0hgcn42z74q5wqnk6
+       (file-name (string-append "guile-lzlib-" version ".tar.gz"))
        (sha256
         (base32
-         "19870njb3q5h6zy239gvra92ji077c6s8xm0hgcn42z74q5wqnk6"))))
+         "1whgmwkr1v8m63p4aaqn8blwl9vcrswwhbfv4bm0aghl5a6rryd7"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags
