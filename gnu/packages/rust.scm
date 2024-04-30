@@ -1404,7 +1404,19 @@ exec -a \"$0\" \"~a\" \"$@\""
                       ;; Add test inputs.
                       `("gdb" ,gdb/pinned)
                       `("procps" ,procps)
-                      (package-native-inputs base-rust))))))
+                      (package-native-inputs base-rust)))
+      (native-search-paths
+       (cons
+         ;; For HTTPS access, Cargo reads from a single-file certificate
+         ;; specified with $CARGO_HTTP_CAINFO. See
+         ;; https://doc.rust-lang.org/cargo/reference/environment-variables.html
+         (search-path-specification
+          (variable "CARGO_HTTP_CAINFO")
+          (file-type 'regular)
+          (separator #f)              ;single entry
+          (files '("etc/ssl/certs/ca-certificates.crt")))
+         ;; rustc invokes gcc, so we need to set its search paths accordingly.
+         %gcc-search-paths)))))
 
 (define*-public (make-rust-sysroot target)
   (make-rust-sysroot/implementation target rust))
