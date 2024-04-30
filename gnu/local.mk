@@ -1746,6 +1746,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/network-manager-plugin-path.patch	\
   %D%/packages/patches/network-manager-meson.patch		\
   %D%/packages/patches/nginx-socket-cloexec.patch		\
+  %D%/packages/patches/nickle-man-release-date.patch		\
   %D%/packages/patches/nnpack-system-libraries.patch		\
   %D%/packages/patches/nsis-env-passthru.patch			\
   %D%/packages/patches/nss-getcwd-nonnull.patch			\

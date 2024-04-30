@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2024 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,17 +29,26 @@
 (define-public nickle
   (package
     (name "nickle")
-    (version "2.90")
+    (version "2.97")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nickle.org/release/nickle-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "197532b7ghkfnzx9qvxd2qjpnqba7bfl79iff3hk2jxcl0d83czv"))))
+                "0gqashcs3r0d1yp6rq6q2ayjdwsjxnd8z0ij55ayrbhn296l7mp2"))
+              (patches (search-patches "nickle-man-release-date.patch"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list readline))
+    (inputs (list readline))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-date
+           (lambda _
+             ;; Our patch touches Makefile.am, but rather than rebootstrap,
+             ;; make the substitution directly in Makefile.in.
+             (substitute* "Makefile.in"
+               (("BUILD_DATE") "RELEASE_DATE")))))))
     (synopsis "Numeric oriented programming language")
     (description
      "Nickle is a programming language based prototyping environment with

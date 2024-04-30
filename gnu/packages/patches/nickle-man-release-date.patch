@@ -1,0 +1,41 @@
+Submitted close to upstream at
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1070162
+
+From 95ff7e9de4ed815e060b1df59b5b2b105307e0d7 Mon Sep 17 00:00:00 2001
+From: Eric Bavier <bavier@posteo.net>
+Date: Mon, 29 Apr 2024 23:34:15 -0500
+Subject: [PATCH] Fixes substitution of REALEASE_DATE in nickle.1
+
+* Makefile.am (nickle.1): 'BUILD_DATE' -> 'RELEASE_DATE'.
+* nickle.1.in: Include version in footer.
+---
+ Makefile.am | 2 +-
+ nickle.1.in | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index ba28ec9..5ed56a3 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -96,7 +96,7 @@ RELEASE_FILES = $(TARFILE) $(SIGFILE) $(SRPMFILE) $(RPMFILE)
+ 
+ nickle.1: nickle.1.in nickle-config.h
+ 	sed -e 's,@''VERSION@,$(VERSION),' \
+-	    -e 's,@''BUILD_DATE@,$(BUILD_DATE),' \
++	    -e 's,@''RELEASE_DATE@,$(RELEASE_DATE),' \
+ 	    -e 's,@''pkgdatadir@,$(pkgdatadir),' $(top_srcdir)/nickle.1.in > $@
+ 	    
+ nickle.spec: nickle.spec.in nickle-config.h
+diff --git a/nickle.1.in b/nickle.1.in
+index 4871ac2..1ab9e08 100644
+--- a/nickle.1.in
++++ b/nickle.1.in
+@@ -1,4 +1,4 @@
+-.TH NICKLE 1 "@RELEASE_DATE@"
++.TH NICKLE 1 "@RELEASE_DATE@" "nickle @VERSION@"
+ .SH NAME
+ nickle \- a desk calculator language
+ .SH SYNOPSIS
+-- 
+2.41.0
+
