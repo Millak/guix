@@ -1147,7 +1147,7 @@ production-critical data pipelines or reproducible research settings.  With
 (define-public python-pyjanitor
   (package
     (name "python-pyjanitor")
-    (version "0.26.0")
+    (version "0.27.0")
     (source
      (origin
        ;; The build requires the mkdocs directory for the description in
@@ -1158,7 +1158,7 @@ production-critical data pipelines or reproducible research settings.  With
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f8xbl1k9l2z56bapp7v6bd3016zrk48igcaz6hb553r6yfl7vfx"))))
+        (base32 "04vsg189msv8frx4zhpcg61djl7wsfvibmz0zmiih4rvkgly2cdr"))))
     (build-system pyproject-build-system)
     ;; Pyjanitor has an extensive test suite. For quick debugging, the tests
     ;; marked turtle can be skipped using "-m" "not turtle".
@@ -1167,16 +1167,29 @@ production-critical data pipelines or reproducible research settings.  With
       #:test-flags '(list
                      "-n" (number->string (parallel-job-count))
                      ;; Tries to connect to the internet.
-                     "-k" "not test_is_connected"
+                     "-k" (string-append "not test_is_connected"
+                                         ;; Test files are not included
+                                         " and not test_read_commandline_bad_cmd"
+                                         ;; This fails due to differences in accuracy
+                                         " and not test_jitter_results")
+                     ;; Test files are not included
+                     "--ignore=tests/io/test_read_csvs.py"
                      ;; PySpark has not been packaged yet.
                      "--ignore=tests/spark/functions/test_clean_names_spark.py"
                      "--ignore=tests/spark/functions/test_update_where_spark.py")
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'check 'set-env-ci
-                     (lambda _
-                       ;; Some tests are skipped if the JANITOR_CI_MACHINE
-                       ;; variable is not set.
-                       (setenv "JANITOR_CI_MACHINE" "1"))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Pandas 2.1.1 does not offer the BME frequency.
+          (add-after 'unpack 'pandas-compat
+            (lambda _
+              (substitute* '("tests/functions/test_select_rows.py"
+                             "tests/functions/test_select_columns.py")
+                (("freq=\"BME\"") "freq=\"BM\""))))
+          (add-before 'check 'set-env-ci
+            (lambda _
+              ;; Some tests are skipped if the JANITOR_CI_MACHINE
+              ;; variable is not set.
+              (setenv "JANITOR_CI_MACHINE" "1"))))))
     (propagated-inputs (list python-multipledispatch
                              python-natsort
                              python-pandas-flavor
