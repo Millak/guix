@@ -22628,7 +22628,7 @@ functionality is inherited from @code{hcl-mode}.")
 (define-public emacs-exec-path-from-shell
   (package
     (name "emacs-exec-path-from-shell")
-    (version "2.1")
+    (version "2.2")
     (source
      (origin
        (method git-fetch)
@@ -22638,7 +22638,7 @@ functionality is inherited from @code{hcl-mode}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1wmr1z603wmcv8hxzxn84qxzdwmzmdm8x6f3n0x7klviq4jw6v2x"))))
+         "15cjwvfv5xdhbym4ms71zdkng4381d3hsdk3kvvx2kycxff52rih"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/purcell/exec-path-from-shell")
     (synopsis "Get environment variables such as @env{PATH} from the shell")
