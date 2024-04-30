@@ -1680,7 +1680,7 @@ computing environments.")
 (define-public python-scikit-learn
   (package
     (name "python-scikit-learn")
-    (version "1.3.2")
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch)
@@ -1690,7 +1690,7 @@ computing environments.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1hr024vcilbjwlwn32ppadri0ypnzjmkfxhkkw8gih0qjvcvjbs7"))))
+         "0pdd508c9540x9qimq83b8kspb6mb98w7w7i7lnb1jqj7rijal6f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1700,7 +1700,8 @@ computing environments.")
                    ;; This test tries to access the internet.
                    "not test_load_boston_alternative"
                    ;; DID NOT RAISE <class 'ValueError'>
-                   " and not test_singular_matrix"))
+                   " and not test_check_pandas_sparse_invalid"
+                   ))
       #:phases
       '(modify-phases %standard-phases
          (add-before 'build 'configure
@@ -1726,7 +1727,7 @@ computing environments.")
                         test-flags))))))))
     (inputs (list openblas))
     (native-inputs
-     (list python-cython-0.29.35
+     (list python-cython-3
            python-pandas
            python-pytest
            python-pytest-xdist))
