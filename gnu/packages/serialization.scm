@@ -15,7 +15,7 @@
 ;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
@@ -936,3 +936,27 @@ format for Python.")
     (description "This package provides a Python wrapper library to the
 Apache Arrow-based Feather binary columnar serialization data frame format.")
     (license license:asl2.0)))
+
+(define-public valijson
+  (package
+    (name "valijson")
+    (version "1.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tristanpenman/valijson")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ai6bj6mxd12mpvf1xwlad2vic5lsqy44adilp17wa7dq275vwf2"))))
+    (build-system cmake-build-system)
+    ;; The test suite is disabled as it requires Boost, Qt 5, Poco as well as
+    ;; other bundled libraries.
+    (arguments (list #:tests? #f))
+    (home-page "https://github.com/tristanpenman/valijson")
+    (synopsis "JSON schema validation C++ header-only library")
+    (description "Valijson is a header-only JSON Schema validation library for
+C++11.  It provides a simple validation API that allows loading JSON Schemas,
+and validate documents loaded by one of several supported parser libraries.")
+    (license license:bsd-2)))
