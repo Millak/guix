@@ -27884,22 +27884,17 @@ they use the same path.")
 (define-public python-partd
   (package
     (name "python-partd")
-    (version "1.2.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "partd" version))
        (sha256
         (base32
-         "1sy3vdfyyx3bc5590zb7gwpsmimqz8m992x9hsydq8nmhixqjrxa"))))
+         "0rvz2si6lbyhk7hj804gilq2y2bfdi33q81iwwkmgskgkva5vhjn"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-blosc
-           python-locket
-           python-numpy
-           python-pandas
-           python-pyzmq
-           python-toolz))
+     (list python-locket python-numpy python-pandas python-pyzmq python-toolz))
     (home-page "https://github.com/dask/partd/")
     (synopsis "Appendable key-value storage")
     (description "Partd stores key-value pairs.  Values are raw bytes.  We
