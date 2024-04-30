@@ -1,0 +1,14 @@
+Install the pman library and its header.
+Upstream status: https://github.com/falcosecurity/libs/pull/1842
+
+diff --git a/userspace/libpman/CMakeLists.txt b/userspace/libpman/CMakeLists.txt
+index da92e9f27..4b57365fe 100644
+--- a/userspace/libpman/CMakeLists.txt
++++ b/userspace/libpman/CMakeLists.txt
+@@ -58,3 +58,6 @@ endif()
+ if(USE_BUNDLED_LIBBPF)
+     add_dependencies(pman libbpf)
+ endif()
++
++install(TARGETS pman LIBRARY ARCHIVE FRAMEWORK)
++install(FILES include/libpman.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

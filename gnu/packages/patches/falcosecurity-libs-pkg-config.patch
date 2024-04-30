@@ -1,0 +1,23 @@
+userspace: Extend CFLAGS of libscap.pc and libsinsp.pc.
+Upstream status: https://github.com/falcosecurity/libs/pull/1842
+
+diff --git a/userspace/libscap/libscap.pc.in b/userspace/libscap/libscap.pc.in
+index 40b6e96ed..c5948489f 100644
+--- a/userspace/libscap/libscap.pc.in
++++ b/userspace/libscap/libscap.pc.in
+@@ -7,4 +7,4 @@ Description: lib for System CAPture
+ Version: @FALCOSECURITY_LIBS_VERSION@
+ 
+ Libs: -L${libdir} @LIBSCAP_LINK_LIBDIRS_FLAGS@ @LIBSCAP_LINK_LIBRARIES_FLAGS@
+-Cflags: -I${includedir}/@LIBS_PACKAGE_NAME@/libscap
++Cflags: -I${includedir}/@LIBS_PACKAGE_NAME@/libscap -I${includedir}/@LIBS_PACKAGE_NAME@/driver -I${includedir}/@LIBS_PACKAGE_NAME@ -I@UTHASH_INCLUDE@
+diff --git a/userspace/libsinsp/libsinsp.pc.in b/userspace/libsinsp/libsinsp.pc.in
+index c1cc4a1e2..9292e73ce 100644
+--- a/userspace/libsinsp/libsinsp.pc.in
++++ b/userspace/libsinsp/libsinsp.pc.in
+@@ -8,4 +8,4 @@ Version: @FALCOSECURITY_LIBS_VERSION@
+ 
+ Requires: libscap
+ Libs: -L${libdir} -lsinsp @SINSP_PKG_CONFIG_LIBDIRS@ @SINSP_PKG_CONFIG_LIBS@
+-Cflags: -I${includedir}/@LIBS_PACKAGE_NAME@/libsinsp @SINSP_PKG_CONFIG_INCLUDES@
++Cflags: -I${includedir}/@LIBS_PACKAGE_NAME@/libsinsp -I${includedir}/@LIBS_PACKAGE_NAME@/driver -I${includedir}/@LIBS_PACKAGE_NAME@ @SINSP_PKG_CONFIG_INCLUDES@

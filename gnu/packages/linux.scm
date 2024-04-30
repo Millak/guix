@@ -100,6 +100,7 @@
 (define-module (gnu packages linux)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
+  #:use-module (gnu packages adns)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages apparmor)
@@ -114,10 +115,12 @@
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpio)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages dbm)
@@ -166,11 +169,14 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages popt)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages regex)
+  #:use-module (gnu packages rpc)
   #:use-module (gnu packages rrdtool)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages samba)
@@ -178,6 +184,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages slang)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tbb)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -9576,6 +9583,91 @@ It works by providing @file{libfakechroot.so}, a shared library meant to be
 set as @code{LD_PRELOAD} to override the C library file system functions.")
       (home-page "https://github.com/dex4er/fakechroot/")
       (license license:lgpl2.1+))))
+
+(define-public falcosecurity-libs
+  (package
+    (name "falcosecurity-libs")
+    (version "0.16.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/falcosecurity/libs/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vzymzkfipb3bnjjd9m8ykzj0l94fm8mnpcxfm8mpxz3jbd8xnv9"))
+              (patches
+               (search-patches
+                "falcosecurity-libs-pkg-config.patch"
+                "falcosecurity-libs-install-pman.patch"
+                "falcosecurity-libs-libscap-pc.patch"
+                "falcosecurity-libs-shared-library-fix.patch"
+                "falcosecurity-libs-libsinsp-pkg-config.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DUSE_BUNDLED_DEPS=OFF"
+              "-DBUILD_DRIVER=OFF"
+              "-DENABLE_DKMS=OFF"
+              "-DBUILD_LIBSCAP_MODERN_BPF=ON"
+              "-DSCAP_FILES_SUITE_ENABLE=OFF" ;attempts to download scap files
+              "-DBUILD_SHARED_LIBS=ON"
+              #$(string-append "-DFALCOSECURITY_LIBS_VERSION=" version))
+      ;; Only the libsinsp test suite is run, as the one for libscap requires
+      ;; elevated privileges.
+      #:test-target "run-unit-test-libsinsp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* "userspace/libsinsp/test/user.ut.cpp"
+                ;; The 'system_lookup' test assumes a root user
+                ;; exists in the build environment.
+                (("TEST_F\\(usergroup_manager_test, system_lookup)")
+                 "TEST_F(usergroup_manager_test, DISABLED_system_lookup)"))))
+          (add-after 'install 'delete-src
+            (lambda _
+              (delete-file-recursively
+               (string-append #$output "/src")))))))
+    (native-inputs (list bpftool
+                         clang
+                         googletest
+                         pkg-config
+                         valijson))     ;header-only library
+    (inputs
+     (list elfutils
+           libbpf
+           libelf))
+    (propagated-inputs
+     ;; The following inputs are in the 'Requires' field of libscap.pc and
+     ;; libsinp.pc.
+     (list c-ares
+           grpc
+           jsoncpp
+           openssl
+           protobuf
+           uthash                       ;included in libscap headers
+           zlib
+           ;; These are in the 'Requires.private' field of libscap.pc and
+           ;; libsinp.pc.  They are required because the headers are installed
+           ;; to a non-standard directory, and thus need to be found via the
+           ;; 'Cflags' field, which in turn mandates that both the pkg-config
+           ;; modules listed in the 'Requires' and 'Requires.private' be
+           ;; available.
+           curl
+           re2
+           tbb))
+    (home-page "https://github.com/falcosecurity/libs/")
+    (synopsis "libscap and lisbinsp Falco security libraries")
+    (description "The Falco security libraries include @code{libsinsp} and
+@code{libscap}.  @code{libscap} manages the data capture process, while
+@code{libsinsp} is a system inspection library that enriches events from
+@code{libscap} with machine state.  @code{libsinsp} also performs events
+filtering with rule evaluation through its internal rule engine.  These
+libraries are used by the @command{sysdig} command-line utility.")
+    (license license:asl2.0)))
 
 (define-public inputattach
   (package
