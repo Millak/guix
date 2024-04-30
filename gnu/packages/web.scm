@@ -148,6 +148,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
@@ -338,7 +339,7 @@ and its related documentation.")
 (define-public miniflux
   (package
     (name "miniflux")
-    (version "2.0.46")
+    (version "2.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -347,20 +348,18 @@ and its related documentation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qv95kipjlg374kiq6gssh5jsb5arahq4jsb7vkg3njnx0ldwvkb"))))
+                "1m1rcxcjswni3adgjkn3hvb59cbfdh9cl22d5qqwn0lxs8mgqhfl"))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.19
+     (list #:go go-1.22
            #:install-source? #f
-           #:import-path "miniflux.app"
+           #:import-path "miniflux.app/v2"
            #:build-flags
            #~(list (string-append
-                    "-ldflags= -X miniflux.app/version.Version=" #$version))
+                    "-ldflags= -X miniflux.app/v2/internal/version.Version="
+                    #$version))
            #:phases
            #~(modify-phases %standard-phases
-               (add-before 'build 'disable-cgo
-                 (lambda _
-                   (setenv "CGO_ENABLED" "0")))
                (add-after 'install 'install-manpage
                  (lambda* (#:key import-path #:allow-other-keys)
                    (let ((man1 (string-append #$output "/share/man/man1/"))
@@ -369,20 +368,24 @@ and its related documentation.")
                (add-after 'install-manpage 'rename-binary
                  (lambda _
                    (let ((bindir (string-append #$output "/bin/")))
-                     (rename-file (string-append bindir "miniflux.app")
+                     (rename-file (string-append bindir "v2")
                                   (string-append bindir "miniflux"))))))))
     (inputs
-     (list go-github-com-coreos-go-oidc-v3
-           go-github-com-go-telegram-bot-api-telegram-bot-api
+     (list go-github-com-abadojack-whatlanggo
+           go-github-com-andybalholm-brotli
+           go-github-com-coreos-go-oidc-v3
+           go-github-com-go-webauthn-webauthn
            go-github-com-gorilla-mux
            go-github-com-lib-pq
-           go-github-com-matrix-org-gomatrix
            go-github-com-prometheus-client-golang
            go-github-com-puerkitobio-goquery
-           go-github-com-rylans-getlang
            go-github-com-tdewolff-minify-v2
            go-github-com-yuin-goldmark
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
            go-golang-org-x-term
+           go-golang-org-x-text
            go-mvdan-cc-xurls))
     (home-page "https://miniflux.app/")
     (synopsis "Minimalist and opinionated feed reader")
