@@ -362,6 +362,39 @@ Gotify, etc.")
 package.  It is not useful on its own, only as a dependency for awkward.")
     (license license:bsd-3)))
 
+(define-public python-awkward
+  (package
+    (name "python-awkward")
+    (version "2.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "awkward" version))
+       (sha256
+        (base32 "1s280ndr4r2q9qn9c0slan5zw37p41cx8q5z6k6p988afr01c6j8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; CUDA is and requires proprietary software.
+      '(list "--ignore-glob=tests-cuda**")))
+    (propagated-inputs (list python-awkward-cpp
+                             python-fsspec
+                             python-importlib-metadata
+                             python-numpy
+                             python-packaging
+                             python-typing-extensions))
+    (native-inputs
+     (list python-hatch-fancy-pypi-readme
+           python-hatchling
+           python-pytest))
+    (home-page "https://github.com/scikit-hep/awkward-1.0")
+    (synopsis "Manipulate JSON-like data with NumPy-like idioms")
+    (description "Awkward Array is a library for nested, variable-sized data,
+including arbitrary-length lists, records, mixed types, and missing data,
+using NumPy-like idioms.")
+    (license license:bsd-3)))
+
 (define-public python-xmldiff
   (package
     (name "python-xmldiff")
