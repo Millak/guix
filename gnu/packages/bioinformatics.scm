@@ -4432,7 +4432,7 @@ UCSC genome browser.")
      (list openssl))
     (native-inputs
      `(("python-cython" ,python-cython)
-       ("python-nose" ,python-nose)
+       ("python-pytest" ,python-pytest)
        ("test-data"
         ,(origin
            (method url-fetch)
