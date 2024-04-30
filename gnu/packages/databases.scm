@@ -4626,68 +4626,69 @@ with integrated support for finding required rows quickly.")
               (setenv "BROTLI_HOME" #$(this-package-input "brotli"))
               (setenv "FLATBUFFERS_HOME" #$(this-package-input "flatbuffers"))
               (setenv "RAPIDJSON_HOME" #$(this-package-input "rapidjson")))))
-       #:build-type "Release"
-       #:configure-flags
-       #~(list "-DARROW_PYTHON=ON"
-               "-DARROW_GLOG=ON"
-               ;; Parquet options
-               "-DARROW_PARQUET=ON"
-               "-DPARQUET_BUILD_EXECUTABLES=ON"
-               ;; The maintainers disallow using system versions of
-               ;; jemalloc:
-               ;; https://issues.apache.org/jira/browse/ARROW-3507. This
-               ;; is unfortunate because jemalloc increases performance:
-               ;; https://arrow.apache.org/blog/2018/07/20/jemalloc/.
-               "-DARROW_JEMALLOC=OFF"
+      #:build-type "Release"
+      #:configure-flags
+      #~(list "-DARROW_PYTHON=ON"
+              ;; Parquet options
+              "-DARROW_PARQUET=ON"
+              "-DPARQUET_BUILD_EXECUTABLES=ON"
+              ;; The maintainers disallow using system versions of
+              ;; jemalloc:
+              ;; https://issues.apache.org/jira/browse/ARROW-3507. This
+              ;; is unfortunate because jemalloc increases performance:
+              ;; https://arrow.apache.org/blog/2018/07/20/jemalloc/.
+              "-DARROW_JEMALLOC=OFF"
 
-               ;; The CMake option ARROW_DEPENDENCY_SOURCE is a global
-               ;; option that instructs the build system how to resolve
-               ;; each dependency. SYSTEM = Finding the dependency in
-               ;; system paths using CMake's built-in find_package
-               ;; function, or using pkg-config for packages that do not
-               ;; have this feature
-               "-DARROW_DEPENDENCY_SOURCE=SYSTEM"
-               "-Dxsimd_SOURCE=SYSTEM"
+              ;; The CMake option ARROW_DEPENDENCY_SOURCE is a global
+              ;; option that instructs the build system how to resolve
+              ;; each dependency. SYSTEM = Finding the dependency in
+              ;; system paths using CMake's built-in find_package
+              ;; function, or using pkg-config for packages that do not
+              ;; have this feature
+              "-DARROW_DEPENDENCY_SOURCE=SYSTEM"
+              "-Dxsimd_SOURCE=SYSTEM"
 
-               "-DARROW_RUNTIME_SIMD_LEVEL=NONE"
-               "-DARROW_SIMD_LEVEL=NONE"
-               "-DARROW_PACKAGE_KIND=Guix"
+              "-DARROW_RUNTIME_SIMD_LEVEL=NONE"
+              "-DARROW_SIMD_LEVEL=NONE"
+              "-DARROW_PACKAGE_KIND=Guix"
 
-               ;; Split output into its component packages.
-               (string-append "-DCMAKE_INSTALL_PREFIX=" #$output:lib)
-               (string-append "-DCMAKE_INSTALL_RPATH=" #$output:lib "/lib")
-               (string-append "-DCMAKE_INSTALL_BINDIR=" #$output "/bin")
-               (string-append "-DCMAKE_INSTALL_INCLUDEDIR=" #$output:include
-                              "/share/include")
+              ;; Split output into its component packages.
+              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output:lib)
+              (string-append "-DCMAKE_INSTALL_RPATH=" #$output:lib "/lib")
+              (string-append "-DCMAKE_INSTALL_BINDIR=" #$output "/bin")
+              (string-append "-DCMAKE_INSTALL_INCLUDEDIR=" #$output:include
+                             "/share/include")
 
-               "-DARROW_WITH_SNAPPY=ON"
-               "-DARROW_WITH_ZLIB=ON"
-               "-DARROW_WITH_ZSTD=ON"
-               "-DARROW_WITH_LZ4=ON"
-               "-DARROW_COMPUTE=ON"
-               "-DARROW_CSV=ON"
-               "-DARROW_DATASET=ON"
-               "-DARROW_FILESYSTEM=ON"
-               "-DARROW_HDFS=ON"
-               "-DARROW_JSON=ON"
-               ;; Arrow Python C++ integration library (required for
-               ;; building pyarrow). This library must be built against
-               ;; the same Python version for which you are building
-               ;; pyarrow. NumPy must also be installed. Enabling this
-               ;; option also enables ARROW_COMPUTE, ARROW_CSV,
-               ;; ARROW_DATASET, ARROW_FILESYSTEM, ARROW_HDFS, and
-               ;; ARROW_JSON.
-               "-DARROW_PYTHON=ON"
+              "-DARROW_WITH_SNAPPY=ON"
+              "-DARROW_WITH_ZLIB=ON"
+              "-DARROW_WITH_ZSTD=ON"
+              "-DARROW_WITH_LZ4=ON"
+              "-DARROW_COMPUTE=ON"
+              "-DARROW_CSV=ON"
+              "-DARROW_DATASET=ON"
+              "-DARROW_FILESYSTEM=ON"
+              "-DARROW_HDFS=ON"
+              "-DARROW_JSON=ON"
+              ;; Arrow Python C++ integration library (required for
+              ;; building pyarrow). This library must be built against
+              ;; the same Python version for which you are building
+              ;; pyarrow. NumPy must also be installed. Enabling this
+              ;; option also enables ARROW_COMPUTE, ARROW_CSV,
+              ;; ARROW_DATASET, ARROW_FILESYSTEM, ARROW_HDFS, and
+              ;; ARROW_JSON.
+              "-DARROW_PYTHON=ON"
+              "-DARROW_ORC=ON"
+              "-DORC_SOURCE=SYSTEM"
 
-               ;; Building the tests forces on all the
-               ;; optional features and the use of static
-               ;; libraries.
-               "-DARROW_BUILD_TESTS=OFF"
-               "-DBENCHMARK_ENABLE_GTEST_TESTS=OFF"
-               ;;"-DBENCHMARK_ENABLE_TESTING=OFF"
-               "-DARROW_BUILD_STATIC=OFF")))
+              ;; Building the tests forces on all the
+              ;; optional features and the use of static
+              ;; libraries.
+              "-DARROW_BUILD_TESTS=OFF"
+              ;;"-DBENCHMARK_ENABLE_TESTING=OFF"
+              "-DARROW_BUILD_STATIC=OFF")))
     (inputs
-     (list boost
+     (list apache-orc
+           boost
            brotli
            bzip2
            double-conversion
