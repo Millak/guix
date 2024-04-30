@@ -4056,14 +4056,14 @@ protocol daemons for BGP, IS-IS, LDP, OSPF, PIM, and RIP.")
 (define-public bird
   (package
     (name "bird")
-    (version "2.0.11")
+    (version "2.15.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://bird.network.cz/pub/bird/bird-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1mjm7w5zkbc5q2v4bdn7mcqzcq94s7fiz8a5lz98kl5rcwxvi9v0"))))
+                "0pf7fp78jrblhbcd1zrp07ywjp59m38pm9rf2dn7ar715mi5rs28"))))
     (inputs
      (list libssh readline))
     (native-inputs
