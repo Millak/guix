@@ -480,7 +480,7 @@ logic, also known as grey logic.")
        (sha256
         (base32 "0ycqizgsj7q57asc1bphzhf1fx9zqn0vx5rli7q541bas64hfqiy"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy python-scipy))
+    (propagated-inputs (list python-numpy python-pytorch python-scipy))
     (home-page "https://github.com/guofei9987/scikit-opt")
     (synopsis "Swarm intelligence algorithms in Python")
     (description
