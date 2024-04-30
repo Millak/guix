@@ -1038,6 +1038,22 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
                              "OVMF_CODE"
                              "OVMF_VARS"))))))))))))
 
+(define-public ovmf-aarch64
+  (let ((base (make-ovmf-firmware "aarch64")))
+    (package
+      (inherit base)
+      (arguments
+        (substitute-keyword-arguments (package-arguments base)
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (replace 'install
+                 (lambda _
+                   (let ((fmw (string-append #$output "/share/firmware")))
+                    (mkdir-p fmw)
+                    (copy-file (string-append "Build/ArmVirtQemu-AARCH64/"
+                                              "RELEASE_GCC/FV/QEMU_EFI.fd")
+                               (string-append fmw "/ovmf_aarch64.bin"))))))))))))
+
 (define-public ovmf
   (let ((toolchain-ver "GCC5"))
     (package
@@ -1137,41 +1153,6 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
 Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
       (license (list license:expat
                      license:bsd-2 license:bsd-3 license:bsd-4)))))
-
-(define-public ovmf-aarch64
-  (let ((toolchain-ver "GCC5"))
-    (package
-      (inherit ovmf)
-      (name "ovmf-aarch64")
-      (native-inputs
-       (append (package-native-inputs ovmf)
-               (if (not (string-prefix? "aarch64" (%current-system)))
-                   `(("cross-gcc" ,(cross-gcc "aarch64-linux-gnu"))
-                     ("cross-binutils" ,(cross-binutils "aarch64-linux-gnu")))
-                   '())))
-      (arguments
-       (substitute-keyword-arguments (package-arguments ovmf)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              #$@(if (string-prefix? "aarch64" (%current-system))
-                     '()
-                     #~((add-before 'configure 'set-env
-                          (lambda _
-                            (setenv (string-append #$toolchain-ver "_AARCH64_PREFIX")
-                                    "aarch64-linux-gnu-")))))
-              (replace 'build
-                (lambda _
-                  (invoke "build" "-a" "AARCH64" "-t" #$toolchain-ver
-                          "-p" "ArmVirtPkg/ArmVirtQemu.dsc")))
-              (delete 'build-x64)
-              (replace 'install
-                (lambda _
-                  (let ((fmw (string-append #$output "/share/firmware")))
-                    (mkdir-p fmw)
-                    (copy-file (string-append "Build/ArmVirtQemu-AARCH64/RELEASE_"
-                                              #$toolchain-ver "/FV/QEMU_EFI.fd")
-                               (string-append fmw "/ovmf_aarch64.bin")))))))))
-      (supported-systems %supported-systems))))
 
 (define-public ovmf-arm
   (let ((toolchain-ver "GCC5"))
