@@ -360,6 +360,52 @@ routines such as routines for numerical integration and optimization.")
 genetic variation data.")
     (license license:expat)))
 
+(define-public python-scikit-build-core
+  (package
+    (name "python-scikit-build-core")
+    (version "0.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scikit_build_core" version))
+       (sha256
+        (base32 "146k3w3kcamyyqassmsmp6h4f5lb3cdqnbjjcbf0jm1s8wz1279l"))))
+    (build-system pyproject-build-system)
+    ;; Tests are aborted with the admonition: "setup.py install is
+    ;; deprecated. Use build and pip and other standards-based tools."
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list python-exceptiongroup
+                             python-importlib-metadata
+                             python-importlib-resources
+                             python-packaging
+                             python-pathspec
+                             python-tomli
+                             python-typing-extensions))
+    (native-inputs (list pybind11
+                         python-pypa-build
+                         python-cattrs
+                         python-fastjsonschema
+                         python-hatch-fancy-pypi-readme
+                         python-hatch-vcs
+                         python-hatchling
+                         python-numpy
+                         python-pip
+                         python-pytest
+                         python-rich
+                         python-setuptools
+                         python-setuptools-scm
+                         python-virtualenv
+                         python-wheel))
+    (home-page "https://github.com/scikit-build/scikit-build-core")
+    (synopsis "Build backend for CMake based projects")
+    (description "Scikit-build-core is a build backend for Python that uses
+CMake to build extension modules.  It has a simple yet powerful static
+configuration system in pyproject.toml, and supports almost unlimited
+flexibility via CMake.  It was initially developed to support the demanding
+needs of scientific users, but can build any sort of package that uses
+CMake.")
+    (license license:asl2.0)))
+
 (define-public python-scikit-fem
   (package
     (name "python-scikit-fem")
