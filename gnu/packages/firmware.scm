@@ -883,6 +883,139 @@ Executables included are:
 @end itemize")
     (license license:bsd-2)))
 
+(define* (make-ovmf-firmware arch)
+  (let ((toolchain "GCC")
+        (arch-string (match arch
+                           ("x86_64" "X64")
+                           ("i686" "IA32")
+                           ("aarch64" "AARCH64")
+                           ("armhf" "ARM")
+                           ("riscv64" "RISCV64")
+                           ("loongarch64" "LOONGARCH64")
+                           (_ "NONE"))))
+    (package
+      (inherit edk2-tools)
+      (name (string-append "ovmf-" arch))
+      (arguments
+       (list
+        #:tests? #f                     ; No check target.
+        #:target #f                     ; Package produces firmware.
+        #:modules '((guix build gnu-build-system)
+                    (guix build utils)
+                    (ice-9 match))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-source
+              (lambda _
+                (substitute* "edksetup.sh"
+                  (("^return \\$\\?")
+                   "exit $?"))))
+            (add-before 'configure 'set-env
+              (lambda _
+                (unless (string-prefix? #$arch #$(%current-system))
+                  (setenv (string-append #$toolchain "_X64_PREFIX")
+                          "x86_64-linux-gnu-")
+                  (setenv (string-append #$toolchain "_IA32_PREFIX")
+                          "i686-linux-gnu-")
+                  (setenv (string-append #$toolchain "_AARCH64_PREFIX")
+                          "aarch64-linux-gnu-")
+                  (setenv (string-append #$toolchain "_ARM_PREFIX")
+                          "arm-linux-gnueabihf-")
+                  (setenv (string-append #$toolchain "_RISCV64_PREFIX")
+                          "riscv64-linux-gnu-")
+                  (setenv (string-append #$toolchain "_LOONGARCH64_PREFIX")
+                          "loongarch64-linux-gnu-"))))
+            (replace 'configure
+              (lambda _
+                (let* ((cwd (getcwd))
+                       (tools (string-append cwd "/BaseTools"))
+                       (bin (string-append tools "/BinWrappers/PosixLike")))
+                  (setenv "WORKSPACE" cwd)
+                  (setenv "EDK_TOOLS_PATH" tools)
+                  (setenv "PYTHON3_ENABLE" "TRUE")
+                  (setenv "PYTHON_COMMAND" "python3")
+                  (setenv "PATH" (string-append (getenv "PATH") ":" bin))
+                  (invoke "bash" "edksetup.sh")
+                  (substitute* "Conf/target.txt"
+                    (("^TARGET[ ]*=.*$") "TARGET = RELEASE\n")
+                    (("^TOOL_CHAIN_TAG[ ]*=.*$")
+                     (string-append "TOOL_CHAIN_TAG = " #$toolchain "\n"))
+                    (("^TARGET_ARCH[ ]*=.*$")
+                     (string-append "TARGET_ARCH = " #$arch-string
+                                    "\n"))
+                    (("^MAX_CONCURRENT_THREAD_NUMBER[ ]*=.*$")
+                     (format #f "MAX_CONCURRENT_THREAD_NUMBER = ~a~%"
+                             (number->string (parallel-job-count)))))
+                  ;; Build build support.
+                  (setenv "CC" "gcc")
+                  (invoke "make" "-C" tools))))
+            (replace 'build
+              (lambda _
+                (invoke "build" "-a" #$arch-string "-t" #$toolchain "-p"
+                        (match #$arch
+                               ("x86_64"
+                                "OvmfPkg/OvmfPkgX64.dsc")
+                               ("i686"
+                                "OvmfPkg/OvmfPkgIa32.dsc")
+                               ((or "aarch64" "armhf")
+                                "ArmVirtPkg/ArmVirtQemu.dsc")
+                               ("riscv64"
+                                "OvmfPkg/RiscVVirt/RiscVVirtQemu.dsc")
+                               (_ #t)))))
+            (add-before 'install 'install-efi-shell
+              (lambda _
+                (let ((fmw (string-append #$output "/share/firmware")))
+                  (mkdir-p fmw)
+                  (for-each
+                    (lambda (file)
+                      (copy-file file
+                                 (string-append fmw "/Shell_"
+                                                (string-downcase #$arch-string)
+                                                ".efi")))
+                    (find-files "Build" "Shell\\.efi"))))))))
+      (native-inputs
+       (append
+         (list acpica
+               nasm
+               perl
+               python-3
+               (list util-linux "lib"))
+         (if (not (string-prefix? arch (%current-system)))
+             (if (string=? arch "armhf")
+                 (list (cross-gcc "arm-linux-gnueabihf")
+                       (cross-binutils "arm-linux-gnueabihf"))
+                 (list (cross-gcc (string-append arch "-linux-gnu"))
+                       (cross-binutils (string-append arch "-linux-gnu"))))
+             '())))
+      (synopsis "UEFI firmware for QEMU")
+      (description "OVMF is an EDK II based project to enable UEFI support for
+Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
+      (license (list license:expat
+                     license:bsd-2 license:bsd-3 license:bsd-4)))))
+
+(define-public ovmf-x86-64
+  (let ((base (make-ovmf-firmware "x86_64")))
+    (package
+      (inherit base)
+      (name "ovmf-x86-64")
+      (arguments
+        (substitute-keyword-arguments (package-arguments base)
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (replace 'install
+                 (lambda _
+                   (let ((fmw (string-append #$output "/share/firmware")))
+                     (mkdir-p fmw)
+                     (for-each
+                       (lambda (file)
+                         (copy-file
+                           (string-append "Build/OvmfX64/RELEASE_GCC"
+                                          "/FV/" file ".fd")
+                           (string-append fmw "/" (string-downcase file) "_x64.bin")))
+                       (list "OVMF"
+                             "OVMF_CODE"
+                             "OVMF_VARS"))))))))))))
+
 (define-public ovmf
   (let ((toolchain-ver "GCC5"))
     (package
