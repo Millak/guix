@@ -748,7 +748,7 @@ spheres, cubes, etc.")
 tissue-specificity metrics for gene expression.")
     (license license:gpl3+)))
 
-(define-public python-pandas
+(define-public python-pandas-1
   (package
     (name "python-pandas")
     (version "1.5.3")
@@ -956,6 +956,8 @@ multidimensional, potentially heterogeneous) and time series data both easy
 and intuitive.  It aims to be the fundamental high-level building block for
 doing practical, real world data analysis in Python.")
     (license license:bsd-3)))
+
+(define-public python-pandas python-pandas-2)
 
 (define-public python-pandas-stubs
   (package
