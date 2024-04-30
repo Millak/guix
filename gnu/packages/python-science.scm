@@ -2027,6 +2027,54 @@ and more
 Mathematics (GLM) library to Python.")
     (license license:zlib)))
 
+(define-public python-dask-expr
+  (package
+    (name "python-dask-expr")
+    (version "1.0.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dask/dask-expr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c2q8w8wl5d2hycbjp9vavkl5f36kaz390wxlis2d8d43jnqhf0d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;need python-distributed, which needs dask-expr.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'versioneer
+            (lambda _
+              ;; Our version of versioneer needs setup.cfg.  This is adapted
+              ;; from pyproject.toml.
+              (with-output-to-file "setup.cfg"
+                (lambda ()
+                  (display "\
+[versioneer]
+VCS = git
+style = pep440
+versionfile_source = dask_expr/_version.py
+versionfile_build = dask_expr/_version.py
+tag_prefix =
+parentdir_prefix = dask_expr-
+")))
+              (invoke "versioneer" "install")
+              (substitute* "setup.py"
+                (("versioneer.get_version\\(\\)")
+                 (string-append "\"" #$version "\""))))))))
+    (propagated-inputs (list python-dask python-pandas python-pyarrow))
+    (native-inputs
+     (list python-pytest
+           python-versioneer))
+    (home-page "https://github.com/dask/dask-expr")
+    (synopsis "Dask DataFrames with query optimization")
+    (description "This is a rewrite of Dask DataFrame that includes query
+optimization and generally improved organization.")
+    (license license:bsd-3)))
+
 (define-public python-distributed
   (package
     (name "python-distributed")
