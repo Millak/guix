@@ -180,6 +180,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
+  #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -27567,7 +27568,7 @@ N-dimensional arrays for Python.")
 (define-public python-anndata
   (package
     (name "python-anndata")
-    (version "0.8.0")
+    (version "0.10.7")
     (source
      (origin
        ;; The tarball from PyPi doesn't include tests.
@@ -27578,29 +27579,39 @@ N-dimensional arrays for Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0v7npqrg1rdm8jzw22a45c0mqrmsv05r3k88i3lhzi0pzzxca1i1"))))
+         "1i08rm1xnsnq12rjv4virgdx61bra1gsfagjdq0kcpz8npxqa0as"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "-k" "not concatenation.rst")
+      '(list "-k" (string-append "not concatenation.rst"
+                                 ;; fixture 'mocker' not found
+                                 " and not test_consecutive_bool"))
       #:phases
       #~(modify-phases %standard-phases
           ;; Doctests require scanpy from (gnu packages bioinformatics)
           (add-after 'unpack 'disable-doctests
             (lambda _
+              (substitute* "conftest.py"
+                (("import pytest")
+                 (string-append "import pytest\nimport _pytest\n"))
+                (("pytest.DoctestItem")
+                 "_pytest.doctest.DoctestItem"))
               (substitute* "pyproject.toml"
                 (("--doctest-modules") ""))))
           (add-before 'build 'set-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
-              (substitute* "anndata/_metadata.py"
-                (("__version__ =.*")
-                 (string-append "__version__ = \"" #$version "\"\n")))
               ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800"))))))
+              (setenv "SOURCE_DATE_EPOCH" "315532800")))
+          ;; Numba needs a writable dir to cache functions.
+          (add-before 'check 'set-numba-cache-dir
+            (lambda _
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs
-     (list python-h5py
+     (list python-array-api-compat
+           python-exceptiongroup ;only for Python <3.11
+           python-h5py
            python-importlib-metadata
            python-natsort
            python-numcodecs
@@ -27610,9 +27621,18 @@ N-dimensional arrays for Python.")
            python-scikit-learn
            python-zarr))
     (native-inputs
-     (list python-boltons
+     (list python-awkward
+           python-boltons
+           python-dask
+           python-distributed
+           python-hatchling
+           python-hatch-vcs
            python-joblib
+           python-loompy
+           python-matplotlib
            python-pytest
+           python-pytest-doctestplus
+           python-pytest-xdist
            python-toml
            python-flit
            python-setuptools-scm))
