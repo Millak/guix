@@ -210,9 +210,9 @@ reboot\n")
   "Return the appropriate QEMU OVMF UEFI firmware for the given SYSTEM."
   (cond
    ((string-prefix? "x86_64" system)
-    (file-append ovmf "/share/firmware/ovmf_x64.bin"))
+    (file-append ovmf-x86-64 "/share/firmware/ovmf_x64.bin"))
    ((string-prefix? "i686" system)
-    (file-append ovmf "/share/firmware/ovmf_ia32.bin"))
+    (file-append ovmf-i686 "/share/firmware/ovmf_ia32.bin"))
    (else #f)))
 
 (define* (run-install target-os target-os-source

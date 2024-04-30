@@ -2670,7 +2670,7 @@ DOS or Microsoft Windows.")
            yajl
            ncurses
            openssl
-           ovmf
+           ovmf-i686
            pixman
            qemu-minimal
            seabios

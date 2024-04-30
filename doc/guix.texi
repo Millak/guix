@@ -42580,7 +42580,7 @@ image=$(guix system image --image-type=qcow2 \
 cp $image /tmp/my-image.qcow2
 chmod +w /tmp/my-image.qcow2
 qemu-system-x86_64 -enable-kvm -hda /tmp/my-image.qcow2 -m 1000 \
-                   -bios $(guix build ovmf)/share/firmware/ovmf_x64.bin
+                   -bios $(guix build ovmf-x86-64)/share/firmware/ovmf_x64.bin
 @end example
 
 When using the @code{mbr-hybrid-raw} image type, a raw disk image is
