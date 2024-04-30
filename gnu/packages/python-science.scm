@@ -889,7 +889,7 @@ doing practical, real world data analysis in Python.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'version-set-by-guix
             (lambda _
-              (with-output-to-file "_version_meson.py"
+              (with-output-to-file "_version.py"
                 (lambda _
                   (display
                    (string-append "__version__ = \""
