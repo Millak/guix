@@ -1671,6 +1671,16 @@ outputs of those builds.")
   (package
     (inherit guix-build-coordinator)
     (name "guix-build-coordinator-agent-only")
+    (arguments
+     (substitute-keyword-arguments (package-arguments guix-build-coordinator)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'strip-non-agent-files
+              (lambda _
+                (delete-file-recursively
+                 (string-append #$output "/share/guix-build-coordinator"))
+                (delete-file
+                 (string-append #$output "/bin/guix-build-coordinator"))))))))
     (native-inputs
      (list pkg-config
            autoconf
@@ -1686,17 +1696,16 @@ outputs of those builds.")
            guile-next))
     (inputs
      (list guile-next
-           bash-minimal
-           (libc-utf8-locales-for-target)))
-    (propagated-inputs
-     (list guile-prometheus
+           guix
+           guile-prometheus
            guile-gcrypt
            guile-json-4
            guile-lib
            guile-lzlib
            guile-zlib
-           guix
-           guile-gnutls))
+           guile-gnutls
+           bash-minimal
+           (libc-utf8-locales-for-target)))
     (description
      "The Guix Build Coordinator helps with performing lots of builds across
 potentially many machines, and with doing something with the results and
