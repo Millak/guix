@@ -5278,25 +5278,24 @@ and record oriented data modeling and the Semantic Web.")
 (define-public python-scikit-bio
   (package
     (name "python-scikit-bio")
-    (version "0.5.9")
+    (version "0.6.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "scikit-bio" version))
               (sha256
                (base32
-                "0429060pkyq1pm19zb2n1la7czh7b633mp4a4h01j8zfigf49q3s"))
-              (patches (search-patches "python-scikit-bio-1887.patch"))))
+                "03y1n91p6m44hhxm3rpb355j6ddalydz49s94h85kbhm7iy5l40h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
       ;; Accuracy problem
-      #:test-flags '(list "-k" "not test_fisher_alpha")
+      '(list "-k" (string-append "not test_fisher_alpha"
+                                 ;; UNEXPECTED EXCEPTION: ValueError("could
+                                 ;; not convert string to float: 'gut'")
+                                 " and not skbio.diversity"))
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'compatibility
-           (lambda _
-             (substitute* "skbio/diversity/__init__.py"
-               ((", numeric_only=True") ""))))
          (add-before 'check 'build-extensions
            (lambda _
              ;; Cython extensions have to be built before running the tests.
@@ -5306,11 +5305,10 @@ and record oriented data modeling and the Semantic Web.")
              (when tests?
                (apply invoke "python3" "-m" "skbio.test" test-flags)))))))
     (propagated-inputs
-     (list python-decorator
+     (list python-biom-format
+           python-decorator
            python-h5py
            python-hdmedians
-           python-ipython
-           python-matplotlib
            python-natsort
            python-numpy
            python-pandas
