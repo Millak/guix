@@ -12,7 +12,7 @@
 ;;; Copyright © 2018 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2018, 2019, 2020, 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
+;;; Copyright © 2018, 2019, 2020, 2023, 2024 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
@@ -972,7 +972,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                 ;; to perl input in sourcecode generators and test scripts
                 (substitute* (find-files "src" "\\.pl$")
                   (("^#!.*")
-                   "#!/usr/bin/env perl\n"))))))))
+                   "#!/usr/bin/env perl\n"))))
+            (add-after 'unpack 'remove-flakey-thread-sanitizer-tests
+              (lambda _
+                ;; These tests have been identified as flakey:
+                ;; https://github.com/golang/go/issues/66427
+                (substitute* "src/cmd/cgo/internal/testsanitizers/tsan_test.go"
+                  ((".*tsan1[34].*") ""))))))))
     (native-inputs
      ;; Go 1.22 and later requires Go 1.20 (min. 1.20.6, which we don't have)
      ;; as the bootstrap toolchain.
