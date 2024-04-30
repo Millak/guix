@@ -40,7 +40,7 @@
 (define-public go-github-com-andybalholm-brotli
   (package
     (name "go-github-com-andybalholm-brotli")
-    (version "1.0.4")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -49,7 +49,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zvmj7gbnkq9xwv1bvcxk9acxl06y902148qwbd2kqwgs52wy2c0"))))
+        (base32 "1zdvcwfzxnkljyh4p7izy0bfxrwidwwmp1p5h1fydyrgbs4xacly"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/andybalholm/brotli"))
