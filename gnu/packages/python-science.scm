@@ -2078,7 +2078,7 @@ optimization and generally improved organization.")
 (define-public python-distributed
   (package
     (name "python-distributed")
-    (version "2023.7.0")
+    (version "2024.4.2")
     (source
      (origin
        ;; The test files are not included in the archive on pypi
@@ -2089,12 +2089,12 @@ optimization and generally improved organization.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0b93fpwz7kw31pkzfyihpkw8mzbqshzd6rw5vcwld7n3z2aaaxxb"))))
+         "0sy9mqa8qlxsagbz8xn304csrlxhxj4b6k84yrjxdcmkp9pkx166"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "-x" "-m"
+      '(list "-m"
              (string-append "not slow"
                             " and not flaky"
                             " and not gpu"
@@ -2149,6 +2149,8 @@ optimization and generally improved organization.")
                 "test_locked_comm_drop_in_replacement"
                 "test_locked_comm_intercept_read"
                 "test_locked_comm_intercept_write"
+                "test_messages_are_ordered_bsend"
+                "test_messages_are_ordered_raw"
                 "test_mixing_clients_different_scheduler"
                 "test_multiple_listeners"
                 "test_no_dangling_asyncio_tasks"
@@ -2157,6 +2159,7 @@ optimization and generally improved organization.")
                 "test_plugin_multiple_exceptions"
                 "test_ports"
                 "test_preload_import_time"
+                "test_preload_manager_sequence"
                 "test_queue_in_task"
                 "test_quiet_client_close"
                 "test_rebalance_sync"
@@ -2196,8 +2199,11 @@ optimization and generally improved organization.")
                 "test_variable_in_task"
                 "test_worker_preload_text"
                 "test_worker_uses_same_host_as_nanny"
-                "test_nanny_timeout") ; access to 127.0.0.1
+                "test_nanny_timeout")   ; access to 127.0.0.1
                " and not ")
+
+              ;; This seems to want to use 64GB of memory.
+              " and not test_computation_object_code_dask_compute"
 
               ;; These fail because it doesn't find dask[distributed]
               " and not test_quiet_close_process"
@@ -2267,6 +2273,10 @@ parentdir_prefix = distributed-
           (add-before 'check 'pre-check
             (lambda _
               (setenv "DISABLE_IPV6" "1")
+              ;; Disable job queueing
+              (setenv "DASK_DISTRIBUTED__SCHEDULER__WORKER_SATURATION" "inf")
+              ;; Do not use dask-expr
+              (setenv "DASK_DATAFRAME__QUERY_PLANNING" "False")
               ;; The integration tests are all problematic to some
               ;; degree.  They either require network access or some
               ;; other setup.  We only run the tests in
@@ -2287,6 +2297,7 @@ parentdir_prefix = distributed-
            python-cloudpickle
            python-cryptography
            python-dask
+           python-dask-expr
            python-msgpack
            python-psutil
            python-pyyaml
