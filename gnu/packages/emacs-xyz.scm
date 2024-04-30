@@ -38719,7 +38719,7 @@ project.el and xref.el.")
 (define-public emacs-citre
   (package
     (name "emacs-citre")
-    (version "0.3.1")
+    (version "0.4")
     (source
      (origin
        (method git-fetch)
@@ -38727,7 +38727,7 @@ project.el and xref.el.")
              (url "https://github.com/universal-ctags/citre/")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "168z6yidh2nxkmdlx9cqdzzb7achxdipnbk5pj9787m9bp1sdpkd"))
+        (base32 "0fq1f03v706gj6p2fjz51kvmj1pwc9p64chqap2ajr0a9cxpwln6"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
