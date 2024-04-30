@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -985,6 +986,30 @@ high-level interface to multiple geometries to Shapely.  GeoPandas
 enables you to easily do operations in Python that would otherwise
 require a spatial database such as PostGIS.")
     (license license:bsd-3)))
+
+(define-public python-overpass
+  (package
+    (name "python-overpass")
+    (version "0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "overpass" version))
+       (sha256
+        (base32 "0l2n01j0vslag8cf3sp7jif0d4ql6i99fvfv2mgc3ajws69aqzr6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; tests disabled, as they require network
+     (list #:tests? #f))
+    (propagated-inputs (list python-geojson
+                             python-requests
+                             python-shapely))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/mvexel/overpass-api-python-wrapper")
+    (synopsis "Python wrapper for the OpenStreetMap Overpass API")
+    (description "This package provides python-overpass, a Python wrapper
+for the @code{OpenStreetMap} Overpass API.")
+    (license license:asl2.0)))
 
 (define-public python-ogr2osm
   (package
