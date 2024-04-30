@@ -1071,6 +1071,22 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
                                               "RELEASE_GCC/FV/QEMU_EFI.fd")
                                (string-append fmw "/ovmf_arm.bin"))))))))))))
 
+(define-public ovmf-riscv64
+  (let ((base (make-ovmf-firmware "riscv64")))
+    (package
+      (inherit base)
+      (arguments
+        (substitute-keyword-arguments (package-arguments base)
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (replace 'install
+                 (lambda _
+                   (let ((fmw (string-append #$output "/share/firmware")))
+                    (mkdir-p fmw)
+                    (with-directory-excursion "Build/RiscVVirtQemu/RELEASE_GCC/FV"
+                      (install-file "RISCV_VIRT_CODE.fd" fmw)
+                      (install-file "RISCV_VIRT_VARS.fd" fmw))))))))))))
+
 (define-public ovmf
   (let ((toolchain-ver "GCC5"))
     (package
@@ -1170,44 +1186,6 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
 Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
       (license (list license:expat
                      license:bsd-2 license:bsd-3 license:bsd-4)))))
-
-(define-public ovmf-riscv64
-  (let ((toolchain-ver "GCC5"))
-    (package
-      (inherit ovmf)
-      (name "ovmf-riscv64")
-      (native-inputs
-       (append (package-native-inputs ovmf)
-               (if (not (string-prefix? "riscv64" (%current-system)))
-                   `(("cross-gcc" ,(cross-gcc "riscv64-linux-gnu"))
-                     ("cross-binutils" ,(cross-binutils "riscv64-linux-gnu")))
-                   '())))
-      (arguments
-       (substitute-keyword-arguments (package-arguments ovmf)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              #$@(if (string-prefix? "riscv64" (%current-system))
-                     '()
-                     #~((add-before 'configure 'set-env
-                          (lambda _
-                            (setenv (string-append #$toolchain-ver "_RISCV64_PREFIX")
-                                    "riscv64-linux-gnu-")))))
-              (replace 'build
-                (lambda _
-                  (invoke "build" "-a" "RISCV64" "-t" #$toolchain-ver
-                          "-p" "OvmfPkg/RiscVVirt/RiscVVirtQemu.dsc")))
-              (delete 'build-x64)
-              (replace 'install
-                (lambda _
-                  (let ((fmw (string-append #$output "/share/firmware")))
-                    (mkdir-p fmw)
-                    (copy-file (string-append "Build/RiscVVirtQemu/RELEASE_"
-                                              #$toolchain-ver "/FV/RISCV_VIRT_CODE.fd")
-                               (string-append fmw "/RISCV_VIRT_CODE.fd"))
-                    (copy-file (string-append "Build/RiscVVirtQemu/RELEASE_"
-                                              #$toolchain-ver "/FV/RISCV_VIRT_VARS.fd")
-                               (string-append fmw "/RISCV_VIRT_VARS.fd")))))))))
-      (supported-systems %supported-systems))))
 
 (define* (make-arm-trusted-firmware platform
                                     #:key (triplet "aarch64-linux-gnu"))
