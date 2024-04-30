@@ -30813,7 +30813,7 @@ and Projectile.")
 (define-public emacs-lsp-treemacs
   (package
     (name "emacs-lsp-treemacs")
-    (version "0.4")
+    (version "0.5")
     (source
      (origin
        (method (@@ (guix packages) computed-origin-method))
@@ -30842,7 +30842,7 @@ and Projectile.")
                       #:commit version #:version version
                       #:hash
                       (content-hash
-                       "05ivqa5900139jzjhwc3nggwznhm8564dz4ydcxym2ddd63571k0"))
+                       "0clifff6xhi1irmx08wjdl13vlh05a7c108hmzzqmmklg76zyr04"))
                    dir)
 
                   (with-directory-excursion dir
