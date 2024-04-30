@@ -14113,29 +14113,28 @@ applications for tackling some common problems in a user-friendly way.")
                   "17nwlvjgqpa7x6jgh56m3di61ynaz34kl1jamyv7r2a5rhfcbkla"))))
       (build-system python-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-problems-with-setup.py
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "src/test/Makefile"
-                 (("^CFLAGS=") "CFLAGS= -fcommon"))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-problems-with-setup.py
+              (lambda _
+                (substitute* "src/test/Makefile"
+                  (("^CFLAGS=") "CFLAGS= -fcommon"))
 
-               ;; Don't attempt to install the bash completions to
-               ;; the home directory.
-               (rename-file "extras/.bash_completion"
-                            "extras/tadbit")
-               (substitute* "setup.py"
-                 (("\\(path.expanduser\\('~'\\)")
-                  (string-append "(\""
-                                 (assoc-ref outputs "out")
-                                 "/etc/bash_completion.d\""))
-                 (("extras/\\.bash_completion")
-                  "extras/tadbit"))))
-           (replace 'check
-             (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-               (when tests?
-                 (add-installed-pythonpath inputs outputs)
-                 (invoke "python3" "test/test_all.py")))))))
+                ;; Don't attempt to install the bash completions to
+                ;; the home directory.
+                (rename-file "extras/.bash_completion"
+                             "extras/tadbit")
+                (substitute* "setup.py"
+                  (("\\(path.expanduser\\('~'\\)")
+                   (string-append "(\"" #$output
+                                  "/etc/bash_completion.d\""))
+                  (("extras/\\.bash_completion")
+                   "extras/tadbit"))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "python3" "test/test_all.py")))))))
       (native-inputs
        (list `(,glib "bin") ;for gtester
              glib
