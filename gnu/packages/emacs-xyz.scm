@@ -38874,27 +38874,25 @@ audio volume via amixer.")
     (license license:gpl3+)))
 
 (define-public emacs-fennel-mode
-  ;; XXX: Commit below refers to the un-tagged latest release.
-  (let ((commit "b3c52964eda7c0267f6e3f0ad6c690c3a1e89da1"))
-    (package
-      (name "emacs-fennel-mode")
-      (version "0.5.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.sr.ht/~technomancy/fennel-mode")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1yib626wi7xiairzqkk96s99p1q7mmr2y5v78bv01h5d7h12sdgq"))))
-      (build-system emacs-build-system)
-      (home-page "https://git.sr.ht/~technomancy/fennel-mode")
-      (synopsis "Emacs major-mode for editing Fennel code")
-      (description
-       "Fennel mode provides font-lock, indentation, navigation, and REPL for
+  (package
+    (name "emacs-fennel-mode")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~technomancy/fennel-mode")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dh50nkfxfiqyf19lfqnbfdpd8xf23q38axfli60d0vcix9nhxpv"))))
+    (build-system emacs-build-system)
+    (home-page "https://git.sr.ht/~technomancy/fennel-mode")
+    (synopsis "Emacs major-mode for editing Fennel code")
+    (description
+     "Fennel mode provides font-lock, indentation, navigation, and REPL for
 Fennel code within Emacs.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-org-modern
   (package
