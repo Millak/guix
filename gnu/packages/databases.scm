@@ -4991,11 +4991,13 @@ algorithm implementations.")
          (add-before 'install 'set-pyarrow-build-options
            (lambda _
              (setenv "PYARROW_BUNDLE_ARROW_CPP_HEADERS" "0")
+             (setenv "PYARROW_WITH_ORC" "1")
              (setenv "PYARROW_WITH_PARQUET" "1")
              (setenv "PYARROW_WITH_DATASET" "1"))))))
     (propagated-inputs
      (list (list apache-arrow "lib")
            (list apache-arrow "include")
+           apache-orc
            python-numpy
            python-pandas
            python-six))
