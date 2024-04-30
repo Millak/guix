@@ -30913,7 +30913,7 @@ in Docker environment.")
 (define-public emacs-dap-mode
   (package
     (name "emacs-dap-mode")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method git-fetch)
@@ -30922,12 +30922,16 @@ in Docker environment.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zczmcv8562lachkvcwy6njn7zkgny08iznpmrx821wr8mh52wnn"))))
+        (base32 "177ira42l1p7zjb24c0vp4biip9sczlvbgzfahp4mhgfd9h8a6bx"))))
     (build-system emacs-build-system)
     (arguments
      (list #:include #~(cons* "\\.png$" %default-include)))
     (propagated-inputs
-     (list emacs-bui emacs-lsp-mode emacs-posframe emacs-lsp-treemacs))
+     (list emacs-bui
+           emacs-lsp-docker
+           emacs-lsp-mode
+           emacs-posframe
+           emacs-lsp-treemacs))
     (home-page "https://emacs-lsp.github.io/dap-mode")
     (synopsis "Emacs client/library for Debug Adapter Protocol")
     (description
