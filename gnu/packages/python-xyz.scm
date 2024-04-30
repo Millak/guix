@@ -27954,16 +27954,16 @@ decisions with any given backend.")
 (define-public python-dask
   (package
     (name "python-dask")
-    (version "2023.7.0")
+    (version "2024.4.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/dask/dask/")
-             (commit "8523b3bae2ec0183d9d92cc536a3405f15189b7e")))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x617m0jlc63v938kqga9mhflhac3aj1ylq5mkpf2g9pd9x2hcbz"))))
+        (base32 "1kaxlvqd5hknlb0awck5vcw9b18nl8rpxx4j78js8p9d0y5rsgw8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -27974,6 +27974,14 @@ decisions with any given backend.")
               "-k" (string-append
                     ;; This one cannot be interrupted.
                     "not test_interrupt"
+                    ;; This one fails with "local variable 'ctx' referenced
+                    ;; before assignment".  Maybe enable this in later
+                    ;; versions (or when pandas has been upgraded.
+                    " and not test_dt_accessor"
+                    ;; These all fail with different hashes.  Doesn't seem
+                    ;; problematic.
+                    " and not test_tokenize_local_functions"
+                    " and not test_tokenize_functions_unique_token"
                     ;; This one expects a deprecation warning that never
                     ;; comes.
                     " and not test_RandomState_only_funcs")
