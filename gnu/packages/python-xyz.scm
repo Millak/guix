@@ -20579,14 +20579,14 @@ It uses LR parsing and does extensive error checking.")
 (define-public python-tabulate
   (package
     (name "python-tabulate")
-    (version "0.8.9")
+    (version "0.9.0")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "tabulate" version))
              (sha256
               (base32
-               "19qkdz8xwk5jxa5xn53mnk76qnh4ysm81vzj664jw1b0azr167gb"))))
-    (build-system python-build-system)
+               "0g4b0qnbw55igbpxfxzciqvb6w8ncw4gmcgyq0lyavcnylmv3580"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; FIXME: The pypi release tarball is missing a 'test/common.py'
      ;; and the latest release is not tagged in the upstream repository.
