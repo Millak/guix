@@ -15595,14 +15595,14 @@ tasks, sockets, files, locks, and queues.")
 (define-public python-tables
   (package
     (name "python-tables")
-    (version "3.6.1")
+    (version "3.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tables" version))
        (sha256
         (base32
-         "0j8vnxh2m5n0cyk9z3ndcj5n1zj5rdxgc1gb78bqlyn2lyw75aa9"))
+         "1zp1qmas4pgcag9sn0gwd40c6ibn9bg056d6ckjq7agjsrx8hap9"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -15659,7 +15659,8 @@ tasks, sockets, files, locks, and queues.")
                       (string-append "--hdf5="
                                      (assoc-ref inputs "hdf5"))))))))
     (propagated-inputs
-     (list python-numexpr python-numpy))
+     (list python-numexpr python-numpy python-packaging
+           python-py-cpuinfo))
     (native-inputs
      (list python-cython pkg-config))
     (inputs
