@@ -1640,7 +1640,9 @@ mail.*                                 -/var/log/maillog
   (syslogd              syslog-configuration-syslogd
                         (default (file-append inetutils "/libexec/syslogd")))
   (config-file          syslog-configuration-config-file
-                        (default %default-syslog.conf)))
+                        (default %default-syslog.conf))
+  (extra-options        syslog-configuration-extra-options
+                        (default '())))
 
 ;;; Note: a static file name is used for syslog.conf so that the reload action
 ;;; work as intended.
@@ -1676,7 +1678,8 @@ reload its settings file.")))
    ;; action work as intended.
    (start #~(make-forkexec-constructor
              (list #$(syslog-configuration-syslogd config)
-                   #$(string-append "--rcfile=" syslog.conf))
+                   #$(string-append "--rcfile=" syslog.conf)
+                   #$@(syslog-configuration-extra-options config))
              #:file-creation-mask #o137
              #:pid-file "/var/run/syslog.pid"))
    (stop #~(make-kill-destructor))))
