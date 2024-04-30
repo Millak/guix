@@ -8150,13 +8150,13 @@ writing C extensions for Python as easy as Python itself.")
     ;; Cython 3 is not officially released yet, so distinguish the name
     ;; for now.
     (name "python-cython-next")
-    (version "3.0.0b2")
+    (version "3.0.8")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Cython" version))
               (sha256
                (base32
-                "0mb7gpavs87am29sbk6yqznsybxj9dk4fwj4370j9sbrcmjq0hkc"))))
+                "1rlxscrn4bgdlbhjjikknbz5s2hyvn2rjfparry5wxnmiwyl4cw3"))))
     (properties '())))
 
 ;; NOTE: when upgrading numpy please make sure that python-numba,
