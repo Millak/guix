@@ -23846,7 +23846,7 @@ files to be expanded upon opening them.")
 (define-public emacs-ebib
   (package
     (name "emacs-ebib")
-    (version "2.40.5")
+    (version "2.41.1")
     (source
      (origin
        (method git-fetch)
@@ -23855,7 +23855,7 @@ files to be expanded upon opening them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ga8zzzqs6vrjzm6jily37jyzpq4vsgh49vxy8a68399bdl90s77"))))
+        (base32 "1ylq4l044rals7xbf8rcx97gz84kypksl2fs5xwin2rc6rvpli8d"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-biblio emacs-compat emacs-ivy emacs-parsebib))
