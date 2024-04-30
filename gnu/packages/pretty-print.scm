@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Zhu Zihao  <all_but_last@163.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer  <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -352,93 +353,93 @@ seen in a terminal.")
 (define-public highlight
   (package
     (name "highlight")
-    (version "4.8")
+    (version "4.11")
     (outputs (list "out" "gui"))
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.andre-simon.de/zip/highlight-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "1iggdw4c8pfz1z1c51fyd6x79y1mnc82b6lfkg3vbb44739m5cjs"))
-              (patches (search-patches "highlight-gui-data-dir.patch"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/saalen/highlight")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xb9jm7249qnbain4l94nakgxsmia4w4x246dagr669fkmffcdmg"))
+       (patches (search-patches "highlight-gui-data-dir.patch"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:tests? #f ;no tests
-           #:make-flags #~(let ((confdir (string-append %output
-                                          "/share/highlight/config/")))
-                            (list (string-append "PREFIX=" %output)
-                                  (string-append "HL_CONFIG_DIR=" confdir)
-                                  (string-append "conf_dir=" confdir)))
-           #:phases #~(modify-phases %standard-phases
-                        (delete 'configure) ;no configure script
-                        (add-after 'unpack 'fix-search-for-lua
-                          (lambda _
-                            (let ((ver #$(version-major+minor (package-version
-                                                               lua))))
-                              (substitute* "src/makefile"
-                                (("(LUA_PKG_NAME=).*" _ assignment)
-                                 (string-append assignment "lua-" ver "\n")))
-                              (substitute* "src/gui-qt/highlight.pro"
-                                (("(PKGCONFIG \\+= lua)" _ assignment)
-                                 (string-append assignment "-" ver)))
-                              (substitute* "extras/swig/makefile"
-                                (("lua")
-                                 (string-append "lua-" ver))))))
-                        (add-after 'build 'build-gui
-                          (lambda* (#:key inputs outputs #:allow-other-keys)
-                            (let* ((out (assoc-ref outputs "out"))
-                                   (data (string-append out
-                                                        "/share/highlight/"))
-                                   (conf (string-append out "/etc/highlight/"))
-                                   (doc (string-append out
-                                         "/share/doc/highlight/"))
-                                   (gui (assoc-ref outputs "gui"))
-                                   (gui-data (string-append gui
-                                              "/share/highlight/")))
-                              ;; modified version of gui task in makefile
-                              (invoke "make"
-                                      "-C"
-                                      "./src"
-                                      "-f"
-                                      "./makefile"
-                                      (string-append "HL_DATA_DIR=" data)
-                                      (string-append "HL_CONFIG_DIR=" conf)
-                                      (string-append "HL_DOC_DIR=" doc)
-                                      (string-append "GUI_DATA_DIR=" gui-data)
-                                      "gui-qt"))))
-                        (replace 'install
-                          (lambda* (#:key outputs #:allow-other-keys)
-                            (let ((out (assoc-ref outputs "out")))
-                              (invoke "make" "install"
-                                      (string-append "PREFIX=" out)))))
-                        (add-after 'install 'install-perl-bindings
-                          (lambda* (#:key outputs #:allow-other-keys)
-                            (let* ((out (assoc-ref outputs "out"))
-                                   (data (string-append out
-                                                        "/share/highlight/"))
-                                   (conf (string-append out "/etc/highlight/"))
-                                   (perldir (string-append out
-                                             "/lib/perl5/site_perl/"
-                                             #$(package-version perl)))
-                                   (autodir (string-append perldir
-                                                           "/auto/highlight")))
-                              (with-directory-excursion "extras/swig"
-                                (invoke "make" "perl"
-                                        (string-append "hl_data_dir=" data)
-                                        (string-append "hl_conf_dir=" conf))
-                                (invoke "perl" "-I" "." "testmod.pl")
-                                (install-file "highlight.pm" perldir)
-                                (install-file "highlight.so" autodir)))))
-                        (add-after 'install 'install-gui
-                          (lambda* (#:key outputs #:allow-other-keys)
-                            (let ((gui (assoc-ref outputs "gui")))
-                              (mkdir-p (string-append gui "/bin"))
-                              (invoke "make" "install-gui"
-                                      (string-append "PREFIX=" gui))))))))
+     (list
+      #:tests? #f ;no tests
+      #:make-flags #~(let ((confdir (string-append #$output
+                                                   "/share/highlight/config/")))
+                       (list (string-append "PREFIX=" #$output)
+                             (string-append "HL_CONFIG_DIR=" confdir)
+                             (string-append "conf_dir=" confdir)))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure) ;no configure script
+                   (add-after 'unpack 'fix-search-for-lua
+                     (lambda _
+                       (let ((ver #$(version-major+minor
+                                     (package-version (this-package-input "lua")))))
+                         (substitute* "src/makefile"
+                           (("(LUA_PKG_NAME=).*" _ assignment)
+                            (string-append assignment "lua-" ver "\n")))
+                         (substitute* "src/gui-qt/highlight.pro"
+                           (("(PKGCONFIG \\+= lua)" _ assignment)
+                            (string-append assignment "-" ver)))
+                         (substitute* "extras/swig/makefile"
+                           (("lua")
+                            (string-append "lua-" ver))))))
+                   (add-after 'build 'build-gui
+                     (lambda* (#:key inputs outputs #:allow-other-keys)
+                       (let* ((out (assoc-ref outputs "out"))
+                              (data (string-append out "/share/highlight/"))
+                              (conf (string-append out "/etc/highlight/"))
+                              (doc (string-append out "/share/doc/highlight/"))
+                              (gui (assoc-ref outputs "gui"))
+                              (gui-data (string-append gui "/share/highlight/")))
+                         ;; modified version of gui task in makefile
+                         (invoke "make"
+                                 "-C"
+                                 "./src"
+                                 "-f"
+                                 "./makefile"
+                                 (string-append "HL_DATA_DIR=" data)
+                                 (string-append "HL_CONFIG_DIR=" conf)
+                                 (string-append "HL_DOC_DIR=" doc)
+                                 (string-append "GUI_DATA_DIR=" gui-data)
+                                 "gui-qt"))))
+                   (replace 'install
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((out (assoc-ref outputs "out")))
+                         (invoke "make" "install"
+                                 (string-append "PREFIX=" out)))))
+                   (add-after 'install 'install-perl-bindings
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let* ((out (assoc-ref outputs "out"))
+                              (data (string-append out "/share/highlight/"))
+                              (conf (string-append out "/etc/highlight/"))
+                              (perldir (string-append out
+                                                      "/lib/perl5/site_perl/"
+                                                      #$(package-version
+                                                         (this-package-input "perl"))))
+                              (autodir (string-append perldir
+                                                      "/auto/highlight")))
+                         (with-directory-excursion "extras/swig"
+                           (invoke "make" "perl"
+                                   (string-append "hl_data_dir=" data)
+                                   (string-append "hl_conf_dir=" conf))
+                           (invoke "perl" "-I" "." "testmod.pl")
+                           (install-file "highlight.pm" perldir)
+                           (install-file "highlight.so" autodir)))))
+                   (add-after 'install 'install-gui
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((gui (assoc-ref outputs "gui")))
+                         (mkdir-p (string-append gui "/bin"))
+                         (invoke "make" "install-gui"
+                                 (string-append "PREFIX=" gui))))))))
     (inputs (list lua boost perl qtbase-5))
     (native-inputs (list pkg-config swig))
-    (home-page "http://www.andre-simon.de/doku/highlight/en/highlight.php")
+    (home-page "http://www.andre-simon.de/doku/highlight/en/highlight.html")
     (synopsis "Convert code to documents with syntax highlighting")
     (description
      "Highlight converts source code to HTML, XHTML, RTF, LaTeX,
