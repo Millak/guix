@@ -30,6 +30,7 @@
 (define-module (gnu packages firmware)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix memoization)
+  #:use-module (guix deprecation)
   #:use-module (guix packages)
   #:use-module (guix platform)
   #:use-module (guix download)
@@ -1088,104 +1089,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
                       (install-file "RISCV_VIRT_VARS.fd" fmw))))))))))))
 
 (define-public ovmf
-  (let ((toolchain-ver "GCC5"))
-    (package
-      (name "ovmf")
-      (version "202311")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      ;; OVMF is part of the edk2 source tree.
-                      (url "https://github.com/tianocore/edk2")
-                      (recursive? #t) ;edk2 now uses a lot of submodules
-                      (commit (string-append "edk2-stable" version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "136dl5cxpjpg37whzlqq7jrrjsgybmwrgkbbmks8xaixqmzwhbw0"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:tests? #f                     ; No check target.
-        #:target #f                     ; Package produces firmware.
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'patch-source
-              (lambda _
-                (substitute* "edksetup.sh"
-                  (("^return \\$\\?")
-                   "exit $?"))))
-            (replace 'configure
-              (lambda _
-                (let* ((cwd (getcwd))
-                       (tools (string-append cwd "/BaseTools"))
-                       (bin (string-append tools "/BinWrappers/PosixLike")))
-                  (setenv "WORKSPACE" cwd)
-                  (setenv "EDK_TOOLS_PATH" tools)
-                  (setenv "PYTHON3_ENABLE" "TRUE")
-                  (setenv "PYTHON_COMMAND" "python3")
-                  (setenv "PATH" (string-append (getenv "PATH") ":" bin))
-                  (invoke "bash" "edksetup.sh")
-                  (substitute* "Conf/tools_def.txt"
-                    ;; Guix gcc is compiled without pie
-                    ;; The -no-pie flag causes the Ia32 build to fail
-                    (("-no-pie") ""))
-                  (substitute* "Conf/target.txt"
-                    (("^TARGET[ ]*=.*$") "TARGET = RELEASE\n")
-                    (("^TOOL_CHAIN_TAG[ ]*=.*$")
-                     (string-append "TOOL_CHAIN_TAG = " #$toolchain-ver "\n"))
-                    (("^TARGET_ARCH[ ]*=.*$")
-                     (string-append "TARGET_ARCH = IA32"
-                                    #$@(if (string=? "x86_64-linux" (%current-system))
-                                         '(", X64")
-                                         '())
-                                    "\n"))
-                    (("^MAX_CONCURRENT_THREAD_NUMBER[ ]*=.*$")
-                     (format #f "MAX_CONCURRENT_THREAD_NUMBER = ~a~%"
-                             (number->string (parallel-job-count)))))
-                  ;; Build build support.
-                  (setenv "CC" "gcc")
-                  (invoke "make" "-C" tools))))
-            (replace 'build
-              (lambda _
-                (invoke "build" "-a" "IA32" "-t" #$toolchain-ver
-                        "-p" "OvmfPkg/OvmfPkgIa32.dsc")))
-            #$@(if (string=? "x86_64-linux" (%current-system))
-                   #~((add-after 'build 'build-x64
-                        (lambda _
-                          (invoke "build" "-a" "X64" "-t" #$toolchain-ver
-                                  "-p" "OvmfPkg/OvmfPkgX64.dsc"))))
-                   #~())
-            (replace 'install
-              (lambda _
-                (let ((fmw (string-append #$output "/share/firmware")))
-                  (mkdir-p fmw)
-                  (for-each
-                    (lambda (file)
-                      (copy-file (string-append "Build/OvmfIa32/RELEASE_"
-                                                #$toolchain-ver "/FV/" file ".fd")
-                                 (string-append fmw "/" (string-downcase file) "_ia32.bin"))
-                      #$@(if (string=? "x86_64-linux" (%current-system))
-                           #~((copy-file (string-append "Build/OvmfX64/RELEASE_"
-                                                        #$toolchain-ver "/FV/" file ".fd")
-                                         (string-append fmw "/" (string-downcase file) "_x64.bin")))
-                           #~()))
-                    (list "OVMF"
-                          "OVMF_CODE"
-                          "OVMF_VARS"))))))))
-      (native-inputs
-       `(("acpica" ,acpica)
-         ("nasm" ,nasm)
-         ("perl" ,perl)
-         ("python-3" ,python-3)
-         ("util-linux" ,util-linux "lib")))
-      (supported-systems '("x86_64-linux" "i686-linux"))
-      (home-page "https://www.tianocore.org")
-      (synopsis "UEFI firmware for QEMU")
-      (description "OVMF is an EDK II based project to enable UEFI support for
-Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
-      (license (list license:expat
-                     license:bsd-2 license:bsd-3 license:bsd-4)))))
+  (deprecated-package "ovmf" ovmf-x86-64))
 
 (define* (make-arm-trusted-firmware platform
                                     #:key (triplet "aarch64-linux-gnu"))
