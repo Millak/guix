@@ -31193,7 +31193,7 @@ to Metals.")
 (define-public emacs-lsp-ui
   (package
     (name "emacs-lsp-ui")
-    (version "8.0.1")
+    (version "9.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -31202,7 +31202,7 @@ to Metals.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pd5lvjlmd6zq64py21yi5zxhcza9g5q48ngfivv7fi7pf3vsv00"))))
+                "162bxyhiqz4saxvh6n3sdb9hx7px5wpy45wbfg5aiqzlqwgqyg42"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-lsp-mode emacs-markdown-mode emacs-flycheck))
