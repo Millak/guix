@@ -578,6 +578,48 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
       #:go go-1.18
       #:import-path "github.com/golang-jwt/jwt/v5"))))
 
+(define-public go-github-com-google-go-tpm
+  (package
+    (name "go-github-com-google-go-tpm")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/go-tpm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c5j5cvwl45ka93nknmv454ivd7kp9n8yql19gr6z01z0s1ph7sg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:import-path "github.com/google/go-tpm"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Break cycle:
+          ;; github.com/google/go-tpm/tpm2/transport/simulator/simulator.go ->
+          ;; github.com/google/go-tpm-tools -> github.com/google/go-tpm.
+          ;; Consider to add required inputs on dependent package.
+          (delete 'build)
+          (delete 'check))))
+    (home-page "https://github.com/google/go-tpm")
+    (synopsis "Go-TPM Legacy TPM 2.0 library")
+    (description
+     "This package provides a functionality to communicate directly with a
+@acronym{Trusted Platform Module, TPM} device.  The libraries don't implement
+the entire spec for neither 1.2 nor 2.0.
+
+Included submodules:
+@itemize
+@item @code{tpm} - TPM 1.2 client library
+@item @code{tpm2} - TPM 2.0 client library.
+@item @code{direct} - the prototype \"TPMDirect\" TPM 2.0 API, which is
+intended to (eventually) be 1:1 with the TPM 2.0 spec
+@end itemize")
+    (license license:asl2.0)))
+
 ;; It's not public for purpose, as it contains a lot of golang modules which
 ;; may be inherited from the single source, but the package itself does not
 ;; have to be installed directly or linked to other packages..
