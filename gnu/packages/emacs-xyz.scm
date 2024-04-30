@@ -11613,6 +11613,36 @@ a RPG style habit tracker and todo list.")
      (description "An Emacs port of the Atom One Dark theme from Atom.io.")
      (license license:gpl3+))))
 
+(define-public emacs-atomic-chrome
+  (let ((commit "072a137a19d7e6a300ca3e87c0e142a7f4ccb5fb")
+        (revision "1"))
+    (package
+      (name "emacs-atomic-chrome")
+      (version (git-version "2.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/alpha22jp/atomic-chrome")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0lfvqzndip8jxlc0j7pc4kxi9vi84qsqmkhaq14rj3krx79djqnq"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-websocket))
+      (home-page "https://github.com/alpha22jp/atomic-chrome")
+      (synopsis
+       "Edit browser text area with Emacs using Atomic Chrome or Ghost Text")
+      (description
+       "This is an Emacs version of Atomic Chrome and Ghost Text,
+which are extensions that allows you to edit text areas of the browser in
+Emacs.
+
+The input on Emacs is reflected to the browser instantly and continuously.
+You can use both the browser and Emacs at the same time.  They are updated to
+the same content bi-directionally.")
+      (license license:gpl2+))))
+
 (define-public emacs-zenburn-theme
   (package
     (name "emacs-zenburn-theme")
