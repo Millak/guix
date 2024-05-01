@@ -183,6 +183,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages scsi)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
@@ -430,6 +431,58 @@ more.")
 and play MIDI files with a few clicks in a user-friendly interface offering
 score, keyboard, guitar, drum and controller views.")
     (license license:gpl3+)))
+
+(define-public libgpod
+  (package
+    (name "libgpod")
+    (version "0.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.code.sf.net/p/gtkpod/libgpod")
+             (commit "8dc5015ae036b219c4c9579a156886aa3a722aa5")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yzngb7h1mibz4x56w9fh02vx8xi4wyq4fjc3ad0jayv3hxjjkqv"))))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "--without-hal"
+         "--enable-udev"
+         (string-append "--with-udev-dir=" #$output "/lib/udev")
+         (string-append "--prefix=" #$output))
+
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-autotools-version-requirement
+            (lambda _
+              (setenv "ACLOCAL_FLAGS"
+                      (string-join
+                       (map (lambda (s) (string-append "-I " s))
+                            (string-split (getenv "ACLOCAL_PATH") #\:))
+                       " "))
+              (substitute* "configure.ac"
+                (("libplist >= 1\\.0") "libplist-2.0 >= 2.2")
+                (("-Werror") ""))
+              ;; patch for plist-2.0
+              (substitute* "tools/ipod-lockdown.c"
+                (("plist_dict_insert_item") "plist_dict_set_item"))
+              ;; it expects version-suffixed binary
+              (substitute* "gnome-autogen.sh"
+                (("automake-1\\.13") "automake")))))))
+
+    (build-system gnu-build-system)
+    (native-inputs
+     (list automake libtool autoconf intltool pkg-config `(,glib "bin") gtk-doc))
+    (propagated-inputs (list libimobiledevice gdk-pixbuf))
+    (inputs (list libxml2 sg3-utils sqlite taglib libplist))
+    (home-page "https://sourceforge.net/projects/gtkpod")
+    (synopsis "Library to access iPod contents")
+    (description "This package provides a library to access iPod contents.  It
+enables iPod support in music players such as Clementine.")
+    (license license:lgpl2.1+)))
 
 (define-public clementine
   (package
