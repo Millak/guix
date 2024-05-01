@@ -30784,7 +30784,7 @@ constant expressions.")
 (define-public emacs-dockerfile-mode
   (package
     (name "emacs-dockerfile-mode")
-    (version "1.8")
+    (version "1.9")
     (source
      (origin
        (method git-fetch)
@@ -30794,7 +30794,7 @@ constant expressions.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0bv19mii4h47jllps72h69nwrlbfvwxgca1cl4cdxvpx0zkr6qx7"))))
+         "0lz6lfyab2f9nw0fwkvvn7zx361c3wm0aar9v2vhb437c0mxzndh"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-s))
