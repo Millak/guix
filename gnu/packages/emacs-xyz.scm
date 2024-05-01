@@ -22012,6 +22012,27 @@ lines of code.  Polymode also provides extensible facilities for external
 literate programming tools for exporting, weaving and tangling.")
     (license license:gpl3+)))
 
+(define-public emacs-ansible
+  (package
+    (name "emacs-ansible")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/k1LoW/emacs-ansible")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12k8mwlyiipsdjq5h1v04g3aa7ymjyhmy14j6vzjil4w9l6xyvdh"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-f emacs-s))
+    (home-page "https://github.com/k1LoW/emacs-ansible")
+    (synopsis "Emacs minor mode for Ansible files")
+    (description
+     "This is an Emacs minor mode for editing Ansible files.")
+    (license license:gpl2+)))
+
 (define-public emacs-polymode-ansible
   (package
     (name "emacs-polymode-ansible")
