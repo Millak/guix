@@ -7,6 +7,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -368,7 +369,7 @@ capturing.")
 (define-public bats
   (package
     (name "bats")
-    (version "1.2.0")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -377,7 +378,7 @@ capturing.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f59zh4d4pa1a7ybs5zl6h0csbqqv11lbnq0jl1dgwm1s6p49bsq"))))
+                "1dmgxcqq87vs1l23hb7ghx319w2nvn0w8z2kdxggs2b8n22wi0c2"))))
     (inputs
      (list bash coreutils guile-3.0 ;for wrap-script
            grep))
@@ -393,7 +394,12 @@ capturing.")
                                 ":" (assoc-ref %build-inputs "grep") "/bin"
                                 ":" (assoc-ref %build-inputs "guile") "/bin"
                                 ":" (getenv "PATH")))
-         (for-each (lambda (file) (patch-shebang file)) (find-files "."))
+         (for-each patch-shebang
+                   (find-files "."
+                               (lambda (file stat)
+                                 ;; Filter out symlinks.
+                                 (eq? 'regular (stat:type stat)))
+                               #:stat lstat))
          (substitute* "bin/bats"
            (("export BATS_ROOT" line)
             (string-append "BATS_ROOT=\"${BATS_ROOT:-" %output "/libexec/bats-core}\"\n"
