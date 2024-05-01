@@ -591,7 +591,8 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Ludovic Courtès"
                        "ludo@gnu.org")
-  core home bootstrap core-packages installer mentors)
+  core home bootstrap core-packages installer
+  documentation mentors)
 
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr")
