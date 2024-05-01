@@ -39249,14 +39249,14 @@ projects.")
 (define-public emacs-vundo
   (package
     (name "emacs-vundo")
-    (version "2.2.0")
+    (version "2.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/vundo-"
                                   version ".tar"))
               (sha256
                (base32
-                "1vb5mq51krpcaw741dai3b9s12yicn73l1bqql41gylpanca83py"))))
+                "165y277fi0vp9301hy3pqgfnf160k29n8vri0zyq8a3vz3f8lqrl"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/casouri/vundo")
     (synopsis "Visualize the undo tree")
