@@ -90,6 +90,12 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define guile-gnutls
     (module-ref (resolve-interface '(gnu packages tls)) 'guile-gnutls))
 
+  (define tar+gzip                                ;for (guix swh)
+    (list (module-ref (resolve-interface '(gnu packages compression))
+                      'gzip)
+          (module-ref (resolve-interface '(gnu packages base))
+                      'tar)))
+
   (define build
     (with-imported-modules
         (source-module-closure '((guix build svn)
@@ -104,8 +110,13 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                          ((guix build download)
                           #:select (download-method-enabled?))
                          (guix build download-nar)
+                         (guix build utils)
                          (guix swh)
                          (ice-9 match))
+
+            ;; Add tar and gzip to $PATH so
+            ;; 'swh-download-directory-by-nar-hash' can invoke them.
+            (set-path-environment-variable "PATH" '("bin") '(#+@tar+gzip))
 
             (or (and (download-method-enabled? 'upstream)
                      (svn-fetch (getenv "svn url")
@@ -185,6 +196,12 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define guile-gnutls
     (module-ref (resolve-interface '(gnu packages tls)) 'guile-gnutls))
 
+  (define tar+gzip                                ;for (guix swh)
+    (list (module-ref (resolve-interface '(gnu packages compression))
+                      'gzip)
+          (module-ref (resolve-interface '(gnu packages base))
+                      'tar)))
+
   (define build
     (with-imported-modules
         (source-module-closure '((guix build svn)
@@ -203,6 +220,10 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                          (guix swh)
                          (srfi srfi-1)
                          (ice-9 match))
+
+            ;; Add tar and gzip to $PATH so
+            ;; 'swh-download-directory-by-nar-hash' can invoke them.
+            (set-path-environment-variable "PATH" '("bin") '(#+@tar+gzip))
 
             (or (every
                  (lambda (location)
