@@ -41090,6 +41090,122 @@ Mode for filter.
 
 @c End of auto-generated fail2ban documentation.
 
+@cindex Backup
+@subsubheading Backup Services
+
+The @code{(gnu services backup)} module offers services for backing up
+file system trees.  For now, it provides the @code{restic-backup-service-type}.
+
+With @code{restic-backup-service-type}, you can periodically back up
+directories and files with @uref{https://restic.net/, Restic}, which
+supports end-to-end encryption and deduplication.  Consider the
+following configuration:
+
+@lisp
+(use-service-modules backup @dots{}) ;for 'restic-backup-service-type'
+(use-package-modules sync @dots{})   ;for 'rclone'
+
+(operating-system
+  ;; @dots{}
+  (packages (append (list rclone)    ;for use by restic
+                    %base-packages))
+  (services
+    (list
+      (service restic-backup-service-type
+               (restic-backup-configuration
+                 (jobs
+                   (list (restic-backup-job
+                           (name "remote-ftp")
+                           (repository "rclone:remote-ftp:backup/restic")
+                           (password-file "/root/.restic")
+                           ;; Every day at 23.
+                           (schedule "0 23 * * *")
+                           (files '("/root/.restic"
+                                    "/root/.config/rclone"
+                                    "/etc/ssh/ssh_host_rsa_key"
+                                    "/etc/ssh/ssh_host_rsa_key.pub"
+                                    "/etc/guix/signing-key.pub"
+                                    "/etc/guix/signing-key.sec"))))))))))
+@end lisp
+
+Each @code{restic-backup-job} translates to an mcron job which sets the
+@env{RESTIC_PASSWORD} environment variable by reading the first line of
+@code{password-file} and runs @command{restic backup}, creating backups
+using rclone of all the files listed in the @code{files} field.
+
+The @code{restic-backup-service-type} installs as well @code{restic-guix}
+to the system profile, a @code{restic} utility wrapper that allows for easier
+interaction with the Guix configured backup jobs.  For example the following
+could be used to instantaneusly trigger a backup for the above shown
+configuration, without waiting for the scheduled job:
+
+@example
+restic-guix backup remote-ftp
+@end example
+
+@c %start of fragment
+
+@deftp {Data Type} restic-backup-configuration
+Available @code{restic-backup-configuration} fields are:
+
+@table @asis
+@item @code{jobs} (default: @code{'()}) (type: list-of-restic-backup-jobs)
+The list of backup jobs for the current system.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} restic-backup-job
+Available @code{restic-backup-job} fields are:
+
+@table @asis
+@item @code{restic} (default: @code{restic}) (type: package)
+The restic package to be used for the current job.
+
+@item @code{user} (default: @code{"root"}) (type: string)
+The user used for running the current job.
+
+@item @code{repository} (type: string)
+The restic repository target of this job.
+
+@item @code{name} (type: string)
+A string denoting a name for this job.
+
+@item @code{password-file} (type: string)
+Name of the password file, readable by the configured @code{user},
+that will be used to set the @env{RESTIC_PASSWORD} environment variable
+for the current job.
+
+@item @code{schedule} (type: gexp-or-string)
+A string or a gexp that will be passed as time specification in the
+mcron job specification (@pxref{Syntax, mcron job specifications,,
+mcron,GNU@tie{}mcron}).
+
+@item @code{files} (default: @code{'()}) (type: list-of-lowerables)
+The list of files or directories to be backed up.  It must be a list of
+values that can be lowered to strings.
+
+@item @code{verbose?} (default: @code{#f}) (type: boolean)
+Whether to enable verbose output for the current backup job.
+
+@item @code{extra-flags} (default: @code{'()}) (type: list-of-lowerables)
+A list of values that are lowered to strings.  These will be passed as
+command-line arguments to the current job @command{restic backup}
+invokation.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 @node Setuid Programs
 @section Setuid Programs
 

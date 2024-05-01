@@ -699,6 +699,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/auditd.scm			\
   %D%/services/avahi.scm			\
   %D%/services/base.scm				\
+  %D%/services/backup.scm			\
   %D%/services/certbot.scm			\
   %D%/services/cgit.scm			\
   %D%/services/ci.scm				\
