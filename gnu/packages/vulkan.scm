@@ -155,7 +155,7 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
 (define-public spirv-llvm-translator
   (package
     (name "spirv-llvm-translator")
-    (version "15.0.0")
+    (version "18.1.0")
     (source
      (origin
        (method git-fetch)
@@ -164,7 +164,7 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lix3bpli7i9csz26bq0d9g1v7c0gim498m5bm2gp8kifj2yih1s"))))
+        (base32 "0yfz02mlnf4ffn67g2ms0w8f7jgdsn438w2dbxd5mvcf5dk2x27b"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -175,8 +175,8 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
                             (assoc-ref %build-inputs "python-lit")
                             "/bin/lit")
              "-DLLVM_SPIRV_INCLUDE_TESTS=ON")))
-    (inputs (list llvm-15))
-    (native-inputs (list clang-15 llvm-15 python-lit spirv-headers))
+    (inputs (list llvm-18))
+    (native-inputs (list clang-18 llvm-18 python-lit spirv-headers))
     (home-page "https://github.com/KhronosGroup/SPIRV-LLVM-Translator")
     (synopsis "Bi-directional translation between SPIR-V and LLVM IR")
     (description
