@@ -565,7 +565,7 @@ enables iPod support in music players such as Clementine.")
            gst-libav
            libcdio
            libmygpo-qt
-           ;; TODO: Package libgpod.
+           libgpod
            libmtp
            libxml2
            protobuf
