@@ -10,14 +10,15 @@
 # Giacomo Leidi <goodoldpaul@autistici.org>, 2023.
 # mm mmmm <rimarko@libero.it>, 2023.
 # Marco Rimoldi <marco.rimoldi@pm.me>, 2024.
+# Alessandro Bugliazzini <yattatux@posteo.net>, 2024.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-03-20 21:11+0000\n"
-"Last-Translator: Marco Rimoldi <marco.rimoldi@pm.me>\n"
+"PO-Revision-Date: 2024-04-21 07:35+0000\n"
+"Last-Translator: Alessandro Bugliazzini <yattatux@posteo.net>\n"
 "Language-Team: Italian <https://translate.fedoraproject.org/projects/guix/guix/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -1152,12 +1153,17 @@ msgid ""
 "Xorg graphical display server, automatically hides the cursor after a\n"
 "user-defined timeout has expired."
 msgstr ""
+"Esegue il @code{unclutter} demone che, sui sistemi che utilizzano il\n"
+"server di visualizzazione grafica Xorg, nasconde automaticamente il\n"
+"cursore dopo un timeout definito dall'utente."
 
 #: gnu/home/services/desktop.scm:430
 msgid ""
 "Run the @code{xmodmap} utility to modify keymaps and pointer\n"
 "buttons under the Xorg display server via user-defined expressions."
 msgstr ""
+"Esegue la @code{xmodmap} utility per modificare la mappatura tasti e il pulsante del\n"
+"puntatore sotto il server di visualizzazione Xorg tramite espressioni definite dall'utente."
 
 #: gnu/home/services/dotfiles.scm:116
 msgid ""
@@ -1172,6 +1178,8 @@ msgid ""
 "Provides configuration file for fontconfig and make\n"
 "fc-* utilities aware of font packages installed in Guix Home's profile."
 msgstr ""
+"Fornisce il file di configurazione per fontconfig e crea\n"
+"utilità fc-* che riconoscono i pacchetti di caratteri installati nel profilo Home di Guix."
 
 #: gnu/home/services/gnupg.scm:157
 msgid ""
@@ -1180,6 +1188,10 @@ msgid ""
 "enabled, @command{gpg-agent} acts as a drop-in replacement for OpenSSH's\n"
 "@command{ssh-agent}."
 msgstr ""
+"Configura l'agente GnuPG, @command{gpg-agent}, che è responsabile della\n"
+"gestione delle chiavi private OpenPGP e, opzionalmente, SSH.  Quando il supporto SSH è\n"
+"abilitato, @command{gpg-agent} agisce come sostituto immediato di OpenSSH\n"
+"@command{ssh-agent}."
 
 #: gnu/home/services/gnupg.scm:225
 msgid "Incrementally refresh GnuPG keyrings over Tor."
@@ -1194,16 +1206,20 @@ msgid ""
 "Install and configure the Kodi media center so that it runs as a Shepherd\n"
 "service."
 msgstr ""
+"Installa e configura Kodi media center in modo che funzioni come servizio\n"
+"Shepherd."
 
 #: gnu/home/services/messaging.scm:65
 msgid ""
 "Install and configure @command{znc}, an @acronym{IRC, Internet Relay\n"
 "Chat} bouncer, as a Shepherd service."
 msgstr ""
+"Installa e configura @command{znc}, un @acronym{IRC, Internet Relay\n"
+"Chat} bouncer, come servizio Shepherd."
 
 #: gnu/home/services/pm.scm:145
 msgid "Run batsignal, a battery watching and notification daemon."
-msgstr ""
+msgstr "Esegue batsignal, un demone di notifica e monitoraggio della batteria."
 
 #: gnu/home/services/shells.scm:114
 #, scheme-format
@@ -1245,12 +1261,16 @@ msgid ""
 "Define a PulseAudio sink to broadcast audio output over RTP, which can\n"
 "then by played by another PulseAudio instance."
 msgstr ""
+"Definire un sink (output) PulseAudio per trasmettere l'uscita audio su RTP, che può\n"
+"quindi essere riprodotto da un'altra istanza PulseAudio."
 
 #: gnu/home/services/sound.scm:249
 msgid ""
 "Define a PulseAudio source to receive audio broadcasted over RTP by\n"
 "another PulseAudio instance."
 msgstr ""
+"Definire una sorgente PulseAudio per ricevere l'audio trasmesso su RTP da\n"
+"un'altra istanza di PulseAudio."
 
 #: gnu/home/services/ssh.scm:111
 #, scheme-format
@@ -5492,6 +5512,8 @@ msgid ""
 "After setting @code{PATH}, run\n"
 "@command{hash guix} to make sure your shell refers to @file{~a}."
 msgstr ""
+"Dopo aver impostato @code{PATH}, esegui\n"
+"@command{hash guix} per assicurarti che la tua shell si riferisca a @file{~a}."
 
 #: guix/scripts/pull.scm:511
 #, scheme-format
