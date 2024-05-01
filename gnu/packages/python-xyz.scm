@@ -20663,10 +20663,7 @@ It uses LR parsing and does extensive error checking.")
               (base32
                "0g4b0qnbw55igbpxfxzciqvb6w8ncw4gmcgyq0lyavcnylmv3580"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; FIXME: The pypi release tarball is missing a 'test/common.py'
-     ;; and the latest release is not tagged in the upstream repository.
-     '(#:tests? #f))
+    (native-inputs (list python-pytest python-setuptools-scm))
     (home-page "https://bitbucket.org/astanin/python-tabulate")
     (synopsis "Pretty-print tabular data")
     (description
