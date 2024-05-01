@@ -924,7 +924,7 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "3.3.3")            ;for ffmpeg 6 support
+    (version "3.5.1")            ;for ffmpeg 6 support
     (source
      (origin
        (method git-fetch)
@@ -933,8 +933,7 @@ engineers, musicians, soundtrack editors and composers.")
              (commit (string-append "Audacity-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07jbql4jl2198z0rsa1nsf4p045iv4gz6ym75a60yyznvg0h0zwv"))
-       (patches (search-patches "audacity-ffmpeg-fallback.patch"))
+        (base32 "11sjyz6hxsr5dnndkkkiq7arjxvjl1sycl151xq3a3ggakgql3y1"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -969,6 +968,8 @@ engineers, musicians, soundtrack editors and composers.")
            ;;("libsbsms" ,libsbsms)         ;bundled version is modified
            libsndfile
            mpg123
+           opusfile
+           rapidjson
            soundtouch
            soxr                         ;replaces libsamplerate
            sqlite
