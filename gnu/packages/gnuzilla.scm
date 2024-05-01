@@ -10,7 +10,7 @@
 ;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
-;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2019, 2020 Adrian Malacoda <malacoda@monarch-pass.net>
 ;;; Copyright © 2020-2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
@@ -2084,7 +2084,7 @@ associated with their name."))
 (define-public firefox-decrypt
   (package
     (name "firefox-decrypt")
-    (version "0.7.0")
+    (version "1.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2093,7 +2093,7 @@ associated with their name."))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17yyyxp47z4m8hnflcq34rc1y871515kr3f1y42j1l0yx3g0il07"))))
+                "0dnyl5z7kcgmgdgbz7vg8ha21pk9jiympvq0qc97lgdcdd8wxy0w"))))
     (build-system trivial-build-system)
     (inputs
      (list nss python))
@@ -2109,7 +2109,7 @@ associated with their name."))
                                    "/firefox_decrypt.py")
                     "firefox_decrypt.py")
          (substitute* "firefox_decrypt.py"
-           (("/usr/bin/env python") (which "python3"))
+           (("/usr/bin/env python3") (which "python3"))
            (("libnss3.so") (string-append (assoc-ref %build-inputs "nss")
                                           "/lib/nss/libnss3.so")))
          (install-file "firefox_decrypt.py" (string-append %output "/bin"))
