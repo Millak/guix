@@ -9099,6 +9099,32 @@ minibuffer to enable editing the minibuffer input in another buffer with
 source code using IPython.")
     (license license:gpl3+)))
 
+(define-public emacs-ob-asymptote
+  (package
+    (name "emacs-ob-asymptote")
+    (version "1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/ob-asymptote-"
+                           version ".tar"))
+       (sha256
+        (base32 "1hmqbkrqg18w454xg37rg5cg0q3vd0b0fm14n5chihqrwwnwrf4l"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/hurrja/ob-asymptote")
+    (synopsis "Babel functions for Asymptote")
+    (description
+     "This package provides Org Babel support for evaluating Asymptote source
+code.  This differs from most standard languages in that:
+@itemize
+@item there is no such thing as a ``session'' in Asymptote,
+@item we are generally only going to return results of type @code{file},
+@item we are adding the @code{file} and @code{cmdline} header arguments, if
+file is omitted then the @samp{-V} option is passed to the @command{asy}
+command for interactive viewing.
+@end itemize")
+    (license license:gpl3+)))
+
 (define-public emacs-ob-async
   (package
     (name "emacs-ob-async")
