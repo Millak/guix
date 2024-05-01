@@ -739,6 +739,8 @@ cache.size = 100 * MB
                     (default #t))       ;boolean
   (listen-addresses dnsmasq-configuration-listen-address
                     (default '()))      ;list of string
+  (extra-options    dnsmasq-configuration-extra-options
+                    (default '()))      ;list of string
   (resolv-file      dnsmasq-configuration-resolv-file
                     (default "/etc/resolv.conf")) ;string
   (no-resolv?       dnsmasq-configuration-no-resolv?
@@ -798,7 +800,7 @@ cache.size = 100 * MB
      tftp-single-port? tftp-secure?
      tftp-max tftp-mtu tftp-no-blocksize?
      tftp-lowercase? tftp-port-range
-     tftp-root tftp-unique-root)
+     tftp-root tftp-unique-root extra-options)
     (shepherd-service
      (provision '(dnsmasq))
      (requirement '(networking))
@@ -877,7 +879,8 @@ cache.size = 100 * MB
                         (if (> (length tftp-unique-root) 0)
                             (format #f "--tftp-unique-root=~a" tftp-unique-root)
                             (format #f "--tftp-unique-root")))
-                       '()))
+                       '())
+                #$@extra-options)
                #:pid-file "/run/dnsmasq.pid"))
      (stop #~(make-kill-destructor)))))
 

@@ -33635,6 +33635,10 @@ separated by dashes, e.g.: @samp{01-02-03-04-aa-bb}.  Note that
 resolving MAC addresses is only possible if the client is in the local
 network or obtained a DHCP lease from dnsmasq.
 
+@item @code{extra-options} (default: @code{'()})
+This option provides an ``escape hatch'' for the user to provide arbitrary
+command-line arguments to @command{dnsmasq} as a list of strings.
+
 @end table
 @end deftp
 
