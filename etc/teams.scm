@@ -434,6 +434,16 @@ asdf-build-system."
               (make-regexp* "^guix/scripts/")
               (make-regexp* "^guix/store/"))))
 
+(define-team documentation
+  (team 'documentation
+        #:name "Documentation"
+        #:description "Documentation: the manual and cookbook."
+        #:scope (list (make-regexp* "\\.texi$")
+                      "doc/build.scm"
+                      "gnu/system/examples/bare-bones.tmpl"
+                      "gnu/system/examples/lightweight-desktop.tmpl"
+                      "gnu/system/examples/desktop.tmpl")))
+
 (define-team core-packages
   (team 'core-packages
         #:name "Core packages"
