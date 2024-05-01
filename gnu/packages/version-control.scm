@@ -17,7 +17,7 @@
 ;;; Copyright © 2017, 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2017, 2018, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2017, 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2017, 2020, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Timothy Sample <samplet@ngyro.com>
@@ -3158,7 +3158,7 @@ be served with a HTTP file server of your choice.")
 (define-public gource
   (package
     (name "gource")
-    (version "0.51")
+    (version "0.54")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3166,15 +3166,26 @@ be served with a HTTP file server of your choice.")
                     "/gource-" version "/gource-" version ".tar.gz"))
               (sha256
                (base32
-                "16p7b1x4r0915w883lp374jcdqqja37fnb7m8vnsfnl2n64gi8qr"))))
+                "1rgsssff5ygafc5svg19p046r4h2q9a3wqqbzrllvkyjcpgwxjqx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        (list (string-append "--with-boost-libdir="
                             (assoc-ref %build-inputs "boost")
-                            "/lib"))))
+                            "/lib")
+             "--with-tinyxml")
+       #:disallowed-references (,tzdata-for-tests)
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'unbundle
+                    (lambda _
+                      (delete-file-recursively "src/tinyxml")))
+                  (add-before 'check 'check-setup
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (setenv "TZDIR"   ; for src/test/datetime_tests.cpp
+                              (search-input-directory inputs
+                                                      "share/zoneinfo")))))))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config tzdata-for-tests))
     (inputs
      (list boost
            ftgl
@@ -3183,8 +3194,9 @@ be served with a HTTP file server of your choice.")
            glu
            libpng
            mesa
-           pcre
-           (sdl-union (list sdl2 sdl2-image))))
+           pcre2
+           (sdl-union (list sdl2 sdl2-image))
+           tinyxml))
     (home-page "https://gource.io/")
     (synopsis "3D visualisation tool for source control repositories")
     (description "@code{gource} provides a software version control
