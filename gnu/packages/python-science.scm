@@ -1026,14 +1026,24 @@ doing practical, real world data analysis in Python.")
      (list
       #:test-flags #~(list "-k"
                            (string-append
-                            ;; The python-pyarrow package in Guix is not built
-                            ;; with ORC integration, causing these tests to
-                            ;; fail.
+                            ;; The python-pyarrow package in Guix is built
+                            ;; with ORC integration, but these tests fail with
+                            ;; an abort in ORC because a timezone file is not
+                            ;; in the expected location:
+                            ;; https://github.com/apache/arrow/issues/40633
                             "not test_orc"
                             " and not test_orc_path"
                             " and not test_orc_buffer"
                             " and not test_orc_columns"
-                            " and not test_orc_bytes"))
+                            " and not test_orc_bytes"
+                            " and not test_all_read_without_lxml_dtype_backend"
+
+                            ;; Apparently "numpy.bool_" is not the same as the
+                            ;; expected "bool".
+                            " and not test_timedelta_cmp"
+                            " and not test_timedelta_cmp_rhs"
+                            " and not test_timestamp_cmp"
+                            " and not test_timestamp_eq_ne_rhs"))
       #:phases '(modify-phases %standard-phases
                   (add-before 'check 'prepare-x
                     (lambda _
