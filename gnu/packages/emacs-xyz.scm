@@ -4980,7 +4980,7 @@ that the binary uses instead of the actual binary contents.")
 (define-public emacs-org-fc
   (package
     (name "emacs-org-fc")
-    (version "0.5.1")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -4989,7 +4989,7 @@ that the binary uses instead of the actual binary contents.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0911lr5qlk7p1fg8ady5x39ai08yws70z6yg2w1qgc8zadyqp0w4"))))
+        (base32 "12azynnz3hzbb2643chwbwzxg0q1m555k77jkxfikrmh9wzb2k35"))))
     (build-system emacs-build-system)
     (arguments
      (list
