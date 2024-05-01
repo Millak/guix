@@ -40,6 +40,7 @@
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Christian Miller <christian.miller@dadoes.de>
+;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -906,35 +907,64 @@ encryption.")
     (license license:gpl3+)))
 
 (define-public rofi-pass
-  (package
-    (name "rofi-pass")
-    (version "2.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://raw.githubusercontent.com/carnager/rofi-pass/"
-                       version "/rofi-pass"))
-       (sha256
-        (base32 "0msldkndqp40nx1s5s7ggcr97ir4nshpmnyzvj5hqw1l7m3gvw6j"))
-       (file-name name)))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((source (string-append (assoc-ref %build-inputs "source")))
-               (script "rofi-pass")
-               (out (assoc-ref %outputs "out")))
-           (copy-file source script)
-           (chmod script #o555)
-           (install-file script (string-append out "/bin"))))))
-    (propagated-inputs
-     (list password-store rofi xdotool))
-    (home-page "https://github.com/carnager/rofi-pass")
-    (synopsis "Rofi frontend for password-store")
-    (description "Rofi-pass provides a way to manipulate information stored
+  ;; No release in over 5 years with recent commits adding features like
+  ;; Wayland support.
+  (let ((commit "8aa6b9293a8f0af267425326fa966966ca42085e")
+        (revision "0"))
+    (package
+      (name "rofi-pass")
+      (version (git-version "2.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/carnager/rofi-pass")
+               (commit commit)))
+         (sha256
+          (base32
+           "0axz4ijp6fay6f2yn1cg6223l89jkg8wnxslbk1g5jpli0njxw43"))
+         (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ; no tests
+             #:make-flags #~(list (string-append "PREFIX=" #$output))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-etc-path
+                   (lambda _
+                     (substitute* "Makefile"
+                       (("\\$\\(DESTDIR\\)/etc")
+                        (string-append #$output "/etc")))
+                     (substitute* "rofi-pass"
+                       (("/etc")
+                        (string-append #$output "/etc")))))
+                 (delete 'configure) ; no configure
+                 (delete 'build)     ; no build
+                 (add-after 'install 'wrap-path
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((bin (string-append #$output "/bin")))
+                       (for-each
+                        (lambda (script)
+                          (wrap-program (string-append bin "/" script)
+                            (list "PATH" 'prefix
+                                  (map
+                                   (lambda (binary)
+                                     (dirname (search-input-file
+                                               inputs
+                                               (string-append "bin/" binary))))
+                                   '("pass" "pwgen" "rofi"
+                                     "xclip" "xdotool" "xset")))))
+                        (list "addpass" "rofi-pass"))))))))
+      (inputs (list bash-minimal ;for wrap-program
+                    password-store
+                    pwgen
+                    rofi
+                    xclip
+                    xdotool
+                    xset))
+      (home-page "https://github.com/carnager/rofi-pass")
+      (synopsis "Rofi frontend for password-store")
+      (description "Rofi-pass provides a way to manipulate information stored
 using password-store through rofi interface:
 @enumerate
 @item open URLs of entries with hotkey;
@@ -944,7 +974,7 @@ using password-store through rofi interface:
 @item auto-typing of more than one field, using the autotype entry;
 @item bookmarks mode (open stored URLs in browser, default: Alt+x).
 @end enumerate")
-    (license license:gpl3)))
+      (license license:gpl3))))
 
 (define-public tessen
   (package
