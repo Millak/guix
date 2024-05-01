@@ -1048,7 +1048,7 @@ tools.")
 (define-public tenacity
   (package
     (name "tenacity")
-    (version "1.3-beta2")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -1057,7 +1057,7 @@ tools.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pd2vxzqzq7ikz7l2a1h9qwq08276xicvphrpn47gvmwaslah1gn"))))
+        (base32 "0qpcih96c97s4b7lmcvqac9ds09j7a7llvm41p926hll5xmjgsy1"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1077,7 +1077,11 @@ tools.")
               'i-spy-with-my-little-eye-something-in-the-wrong-folder
             (lambda _
               (symlink (string-append (getcwd) "/images")
-                       "src/images")))
+                       "src/images")
+
+              (symlink (string-append (getcwd) "/images")
+                       "src/tracks/images"))
+          )
           (add-after 'unpack 'fix-cmake-rpath
             (lambda* (#:key outputs #:allow-other-keys)
               (substitute* "CMakeLists.txt"
