@@ -976,6 +976,53 @@ using password-store through rofi interface:
 @end enumerate")
       (license license:gpl3))))
 
+(define-public rofi-pass-wayland
+  (package
+    (inherit rofi-pass)
+    (name "rofi-pass-wayland")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rofi-pass)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; Set the clipboard and backend tools to ones for Wayland in the
+            ;; default configuration file.
+            (add-after 'fix-etc-path 'set-wayland-defaults
+                   (lambda _
+                     (substitute* "config.example"
+                       ;; Note the typo in current configuration.
+                       (("#clibpoard_backend=xclip")
+                        "clipboard_backend=wl-clipboard")
+                       (("#backend=xdotool")
+                        "backend=wtype"))
+                     (substitute* "rofi-pass"
+                       (("/etc")
+                        (string-append #$output "/etc")))))
+            ;; Use Wayland related tools instead.
+            (replace 'wrap-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((bin (string-append #$output "/bin")))
+                  (for-each
+                   (lambda (script)
+                     (wrap-program (string-append bin "/" script)
+                       (list "PATH" 'prefix
+                             (map
+                              (lambda (binary)
+                                (dirname (search-input-file
+                                          inputs
+                                          (string-append "bin/" binary))))
+                              ;; wl-copy for wl-clipboard.
+                              '("pass" "pwgen" "rofi" "wl-copy" "wtype")))))
+                   (list "addpass" "rofi-pass")))))))))
+    (inputs
+     (modify-inputs (package-inputs rofi-pass)
+       (replace "rofi" rofi-wayland)
+       (replace "xclip" wl-clipboard)
+       (replace "xdotool" wtype)
+       (delete "xset")))
+    (description (string-append
+                  (package-description rofi-pass)
+                  "\nThis package provides Wayland support by default."))))
+
 (define-public tessen
   (package
     (name "tessen")
