@@ -127,6 +127,9 @@
                                                #$output)
                                 (string-append "VERSION="
                                                #$version))
+           #:tests? (not
+                     ;; The test suite consumes all disk space
+                     (target-riscv64?))
            #:phases #~(modify-phases %standard-phases
                         (delete 'configure)
                         (delete 'check)
