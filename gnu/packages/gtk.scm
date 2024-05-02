@@ -2424,6 +2424,11 @@ Parcellite and adds bugfixes and features.")
        #:configure-flags
        (list
         "-Dinstalled_tests=false"
+        ;; Armhf with neon in graphene segfaulting is a known issue.
+        ;; https://github.com/ebassi/graphene/issues/215
+        ,@(if (target-arm32?)
+              '("-Darm_neon=false")
+              '())
         ,@(if (%current-target-system)
               ;; Introspection requires running binaries for 'host' on 'build'.
               '("-Dintrospection=disabled")
