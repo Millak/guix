@@ -285,6 +285,7 @@ applications that want audio visualisation and audio visualisation plugins.")
      `(#:configure-flags
        (list
         "--disable-gstreamer-plugin"
+        "--disable-oinksie"
         "--disable-corona"
         "--disable-gforce"
         (string-append "--with-plugins-base-dir=" (assoc-ref %outputs "out")
