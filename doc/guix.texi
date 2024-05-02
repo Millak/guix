@@ -34456,6 +34456,12 @@ Owner's group of the @code{cuirass} process.
 Number of seconds between the poll of the repositories followed by the
 Cuirass jobs.
 
+@item @code{ttl} (default: @code{2592000})
+Duration to keep build results' GC roots alive, in seconds.
+
+@item @code{threads} (default: @code{#f})
+Number of kernel threads to use for Cuirass. The default value should be appropriate for most cases.
+
 @item @code{parameters} (default: @code{#f})
 Read parameters from the given @var{parameters} file.  The supported
 parameters are described here (@pxref{Parameters,,, cuirass, Cuirass}).

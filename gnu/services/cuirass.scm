@@ -101,6 +101,10 @@
                     (default "cuirass"))
   (interval         cuirass-configuration-interval ;integer (seconds)
                     (default 60))
+  (ttl              cuirass-configuration-ttl ;integer
+                    (default 2592000))
+  (threads          cuirass-configuration-threads ;integer
+                    (default #f))
   (parameters       cuirass-configuration-parameters ;string
                     (default #f))
   (remote-server    cuirass-configuration-remote-server
@@ -133,6 +137,8 @@
         (user             (cuirass-configuration-user config))
         (group            (cuirass-configuration-group config))
         (interval         (cuirass-configuration-interval config))
+        (ttl              (cuirass-configuration-ttl config))
+        (threads          (cuirass-configuration-threads config))
         (parameters       (cuirass-configuration-parameters config))
         (remote-server    (cuirass-configuration-remote-server config))
         (database         (cuirass-configuration-database config))
@@ -159,6 +165,17 @@
                         "--specifications" #$config-file
                         "--database" #$database
                         "--interval" #$(number->string interval)
+                        #$@(if ttl
+                               (list (string-append
+                                      "--ttl="
+                                      (number->string ttl)
+                                                 "s"))
+                               '())
+                        #$@(if threads
+                               (list (string-append
+                                      "--threads="
+                                      (number->string threads)))
+                               '())
                         #$@(if parameters
                                (list (string-append
                                       "--parameters="
