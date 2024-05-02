@@ -307,7 +307,7 @@ applications that want audio visualisation and audio visualisation plugins.")
     (inputs
      (list alsa-lib
            esound
-           librsvg
+           (librsvg-for-system)
            gtk+-2
            jack-2
            libx11
