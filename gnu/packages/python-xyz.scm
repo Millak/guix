@@ -13370,6 +13370,12 @@ Python style, together with a fast and comfortable execution environment.")
                  (string-append
                   "tibanna_args.command = command.replace('"
                   #$output "/bin/snakemake', 'python3 -m snakemake')")))))
+          ;; No longer needed with 7.15.2+
+          (add-after 'unpack 'tabulate-compatibility
+            (lambda _
+              (substitute* "snakemake/dag.py"
+                (("\"job\": rule,")
+                 "\"job\": rule.name,"))))
           (add-after 'unpack 'patch-version
             (lambda _
               (substitute* "setup.py"
