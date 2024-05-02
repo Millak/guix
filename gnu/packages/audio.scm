@@ -4,7 +4,7 @@
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
@@ -5447,7 +5447,9 @@ other Gnaural instances, allowing synchronous sessions between many users.")
     (arguments
      `(#:configure-flags
        (list (string-append "--with-lame-prefix="
-                            (assoc-ref %build-inputs "lame")))))
+                            (assoc-ref %build-inputs "lame")))
+       #:make-flags
+       (list "CXXFLAGS += -std=gnu++14")))
     (home-page "http://www.darkice.org/")
     (synopsis "Live audio streamer")
     (description "DarkIce is a live audio streamer.  It takes audio input from
