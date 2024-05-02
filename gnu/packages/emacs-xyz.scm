@@ -31247,26 +31247,28 @@ files in Elisp.")
     (license license:gpl3+)))
 
 (define-public emacs-lsp-metals
-  (package
-    (name "emacs-lsp-metals")
-    (version "1.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/emacs-lsp/lsp-metals")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ca5xq1l3lscx36pcdnpy2axgyikjrl18naqr140kr1y500sy37s"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-dap-mode emacs-lsp-treemacs emacs-scala-mode))
-    (home-page "https://github.com/emacs-lsp/lsp-metals")
-    (synopsis "Scala support for LSP mode")
-    (description "This package is an Emacs Scala IDE using LSP mode to connect
+  (let ((commit "01060e9df33bb077ba6bb56ccfebc140aef8f8f3")
+        (revision "1"))
+    (package
+      (name "emacs-lsp-metals")
+      (version (git-version "1.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/emacs-lsp/lsp-metals")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0whjz5vh9xf35nvr5an52d7qsf2ayr2pfwvr37qhz1rjg0rv2kzd"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-dap-mode emacs-lsp-treemacs emacs-scala-mode))
+      (home-page "https://github.com/emacs-lsp/lsp-metals")
+      (synopsis "Scala support for LSP mode")
+      (description "This package is an Emacs Scala IDE using LSP mode to connect
 to Metals.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-lsp-ui
   (package
