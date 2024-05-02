@@ -10,7 +10,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
-;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016, 2023 Clément Lassieur <clement@lassieur.org>
@@ -6571,14 +6571,14 @@ configuration language.")
   (package
     (name "varnish-modules")
     (home-page "https://github.com/varnish/varnish-modules")
-    (version "0.19.0")
+    (version "0.22.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qq5g6bbd1a1ml1wk8jj9z39a899jzqbf7aizr3pvyz0f4kz8mis"))))
+                "1dxnla1k6kra0nkvm20iszgmq0czr5bgx002qlljwf9fl25vm1ks"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config
