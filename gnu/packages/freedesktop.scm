@@ -1169,9 +1169,11 @@ manager for the current system.")
         (base32
          "0dn3ygv49q7mzs52ch3yphxf4hbry698r1ajj52f6jgw7mpwr5p4"))))
     (build-system meson-build-system)
+    (outputs '("out" "doc"))
     (arguments
      (list #:configure-flags #~(list "-Dsystemdsystemunitdir="
                                      "-Dpylint=disabled"
+                                     "-Dgtk_doc=true"
                                      (string-append "-Dzshcomp=" #$output
                                                     "/share/zsh/site-functions/"))
            #:phases
@@ -1189,9 +1191,17 @@ manager for the current system.")
                                               "/lib/python"
                                               #$(version-major+minor
                                                  (package-version (this-package-input "python")))
-                                              "/site-packages")))))))))
+                                              "/site-packages"))))))
+               (add-after 'install 'move-docs
+                 (lambda _
+                   (mkdir-p (string-append #$output:doc "/share"))
+                   (rename-file
+                    (string-append #$output "/share/gtk-doc")
+                    (string-append #$output:doc "/share/gtk-doc")))))))
     (native-inputs
      (list `(,glib "bin")
+           gtk-doc/stable
+           libxslt
            pkg-config
            python
            python-argparse-manpage
