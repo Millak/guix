@@ -13222,6 +13222,11 @@ approach.")
         "--ignore=tests/test_google_lifesciences.py")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'tabulate-compatibility
+            (lambda _
+              (substitute* "snakemake/dag.py"
+                (("\"job\": rule,")
+                 "\"job\": rule.name,"))))
           ;; For cluster execution Snakemake will call Python.  Since there is
           ;; no suitable PYTHONPATH set, cluster execution will fail.  We fix
           ;; this by calling the snakemake wrapper instead.
