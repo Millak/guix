@@ -64,12 +64,11 @@
              (let ((out (assoc-ref outputs "out"))
                    (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
                    (webkitgtk-path (string-append
-                                    (assoc-ref inputs "webkitgtk")
+                                    (assoc-ref inputs "webkitgtk-for-gtk3")
                                     "/lib")))
                (wrap-program (string-append out "/bin/rednotebook")
                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-                 `("LD_LIBRARY_PATH" ":" prefix (,webkitgtk-path)))
-               #t))))))
+                 `("LD_LIBRARY_PATH" ":" prefix (,webkitgtk-path)))))))))
     (inputs
      (list gtk+ gtksourceview-3 python-pyyaml python-pygobject
            webkitgtk-for-gtk3))
