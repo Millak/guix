@@ -8240,7 +8240,7 @@ writing C extensions for Python as easy as Python itself.")
 (define-public python-numpy
   (package
     (name "python-numpy")
-    (version "1.23.2")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
@@ -8249,15 +8249,52 @@ writing C extensions for Python as easy as Python itself.")
              version "/numpy-" version ".tar.gz"))
        (sha256
         (base32
-         "00bx3idjwhmzkdawg2dx1bp0316ig37jfx0dm82bvyv1hbj013dp"))))
-    (build-system python-build-system)
+         "1pvz1qcz7pvc13fsisfiz9lk35bk3jglkdnnp3iay5dzx27wfgzr"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; These tests may fail on 32-bit systems (see:
+                    ;; https://github.com/numpy/numpy/issues/18387).
+                    "not test_float_remainder_overflow "
+                    "and not test_pareto "
+                    ;; The 'test_rint_big_int' test fails on older
+                    ;; x86_64 CPUs such as the Core 2 Duo (see:
+                    ;; https://github.com/numpy/numpy/issues/22170).
+                    "and not test_rint_big_int "
+                    ;; The huge_array test is too large for 32-bit (see:
+                    ;; https://bugs.gentoo.org/843599 and
+                    ;; https://bugs.gentoo.org/846548).
+                    ;; TestKind.test_all is a Fortran type failure
+                    ;; that may be toolchain or environment related.
+                    #$@(if (or (target-x86?) (target-arm32?))
+                           `(" and not test_identityless_reduction_huge_array"
+                             " and not (TestKind and test_all)")
+                           '())
+                    ;; This test fails when building from aarch64-linux.
+                    #$@(if (target-arm32?)
+                           `(" and not test_features")
+                           '())
+                    ;; These tests seem to fail on machines without
+                    ;; an FPU is still under investigation upstream.
+                    ;; https://github.com/numpy/numpy/issues/20635
+                    #$@(if (target-riscv64?)
+                           `(" and not test_float"
+                             " and not test_fpclass")
+                           '())))
       #:modules '((guix build utils)
                   (guix build python-build-system)
+                  (guix build pyproject-build-system)
                   (ice-9 format))
       #:phases
       #~(modify-phases %standard-phases
+          ;; The meson build backend requires a bundled modified version of
+          ;; meson.
+          (add-after 'unpack 'use-setuptools-backend
+            (lambda _
+              (delete-file "pyproject.toml")
+              (rename-file "pyproject.toml.setuppy" "pyproject.toml")))
           (add-before 'build 'parallelize-build
             (lambda _
               (setenv "NPY_NUM_BUILD_JOBS"
@@ -8286,50 +8323,24 @@ include_dirs = ~:*~a/include~%"
               (substitute* "numpy/core/tests/test_cpu_features.py"
                 (("/bin/true") (search-input-file inputs "bin/true")))))
           (replace 'check
-            (lambda* (#:key tests? outputs inputs #:allow-other-keys)
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
-                (invoke "./runtests.py" "-vv" "--no-build" "--mode=fast"
-                        "-j" (number->string (parallel-job-count))
-                        ;; Contrary to scipy, the runtests.py script of numpy
-                        ;; does *not* automatically provide -n when -j is used
-                        ;; (see: https://github.com/numpy/numpy/issues/21359).
-                        "--" "-n" (number->string (parallel-job-count))
-                        "-k" (string-append
-                              ;; These tests may fail on 32-bit systems (see:
-                              ;; https://github.com/numpy/numpy/issues/18387).
-                              "not test_float_remainder_overflow "
-                              "and not test_pareto "
-                              ;; The 'test_rint_big_int' test fails on older
-                              ;; x86_64 CPUs such as the Core 2 Duo (see:
-                              ;; https://github.com/numpy/numpy/issues/22170).
-                              "and not test_rint_big_int "
-                              ;; The huge_array test is too large for 32-bit (see:
-                              ;; https://bugs.gentoo.org/843599 and
-                              ;; https://bugs.gentoo.org/846548).
-                              ;; TestKind.test_all is a Fortran type failure
-                              ;; that may be toolchain or environment related.
-                              #$@(if (or (target-x86?) (target-arm32?))
-                                     `(" and not test_identityless_reduction_huge_array"
-                                       " and not (TestKind and test_all)")
-                                   '())
-                              ;; This test fails when building from aarch64-linux.
-                              #$@(if (target-arm32?)
-                                   `(" and not test_features")
-                                   '())
-                              ;; These tests seem to fail on machines without
-                              ;; an FPU is still under investigation upstream.
-                              ;; https://github.com/numpy/numpy/issues/20635
-                              #$@(if (target-riscv64?)
-                                   `(" and not test_float"
-                                     " and not test_fpclass")
-                                   '())))))))))
+                (apply invoke "./runtests.py" "-vv" "--no-build" "--mode=fast"
+                       "-j" (number->string (parallel-job-count))
+                       ;; Contrary to scipy, the runtests.py script of numpy
+                       ;; does *not* automatically provide -n when -j is used
+                       ;; (see: https://github.com/numpy/numpy/issues/21359).
+                       "--" "-n" (number->string (parallel-job-count))
+                       test-flags)))))))
     (native-inputs
-     (list python-cython
+     (list ;; The presence of the optional gfortran causes the build to fail.
+           ;;gfortran
+           meson/newer ninja
+           python-cython-3
            python-hypothesis
            python-pytest
            python-pytest-xdist
-           python-typing-extensions
-           gfortran))
+           python-typing-extensions))
     (inputs (list bash openblas))
     (home-page "https://numpy.org")
     (synopsis "Fundamental package for scientific computing with Python")
