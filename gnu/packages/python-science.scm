@@ -2129,9 +2129,12 @@ parentdir_prefix = dask_expr-
               (substitute* "setup.py"
                 (("versioneer.get_version\\(\\)")
                  (string-append "\"" #$version "\""))))))))
-    (propagated-inputs (list python-dask python-pandas python-pyarrow))
+    (propagated-inputs (list python-pandas python-pyarrow))
     (native-inputs
-     (list python-pytest
+     ;; We use python-dask/bootstrap so that python-dask can propagate this
+     ;; package without creating a mutually recursive dependency.
+     (list python-dask/bootstrap
+           python-pytest
            python-versioneer))
     (home-page "https://github.com/dask/dask-expr")
     (synopsis "Dask DataFrames with query optimization")

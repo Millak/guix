@@ -28106,6 +28106,7 @@ parentdir_prefix = dask-
     (propagated-inputs
      (list python-click ;needed at runtime
            python-cloudpickle
+           python-dask-expr
            python-fsspec
            python-importlib-metadata ;needed at runtime for dask/_compatibility.py
            python-numpy
@@ -28131,6 +28132,17 @@ extend common interfaces like NumPy, Pandas, or Python iterators to
 larger-than-memory or distributed environments.  These parallel collections
 run on top of the dynamic task schedulers.")
     (license license:bsd-3)))
+
+(define-public python-dask/bootstrap
+  (package
+    (inherit python-dask)
+    (properties '((hidden? . #true)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-dask)
+       ((#:tests? _ #t) #f)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-dask)
+       (delete "python-dask-expr")))))
 
 (define-public python-dask-image
   (package
