@@ -6509,6 +6509,10 @@ deployments.")
                                               (search-input-file %build-inputs
                                                                  "/bin/gcc"))
                                "--localstatedir=/var")
+       ,@(if (target-x86-32?)
+             '(#:make-flags
+               (list "CFLAGS+=-fexcess-precision=standard"))
+             '())
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'use-absolute-file-names
