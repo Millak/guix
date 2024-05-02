@@ -17838,14 +17838,14 @@ fasta subsequences.")
 (define-public python-cooler
   (package
     (name "python-cooler")
-    (version "0.9.1")
+    (version "0.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cooler" version))
        (sha256
         (base32
-         "0capn4jj3mkxfwcc65cg644zvrv4sqr2wxr0ylx5w767jx3yb7p2"))))
+         "0qqb0i5449r6w871klsbjzxsjhdkpsaas3hvs9f1hc7ssrkf1vi1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
