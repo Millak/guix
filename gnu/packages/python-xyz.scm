@@ -28109,6 +28109,11 @@ parentdir_prefix = dask-
               ;; This option is not supported by our version of pytest.
               (substitute* "pyproject.toml"
                 (("--cov-config=pyproject.toml") ""))))
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              ;; We use pyarrow > 14
+              (substitute* "pyproject.toml"
+                (("\"pyarrow_hotfix\",") ""))))
           (add-before 'check 'pre-check
             (lambda _ (chdir "/tmp"))))))
     (propagated-inputs
