@@ -1367,7 +1367,7 @@ conjunction with the KDE Plasma Desktop.")
 (define-public kwrited
   (package
     (name "kwrited")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1375,10 +1375,11 @@ conjunction with the KDE Plasma Desktop.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1a4g05ynblbz0j0lqclxf6628x6wcd3b52l0smic3rdvbis43v0n"))))
+                "1h8njjh277jk66r4bm913m953irgdy3126gsamnjzjkrd13qlr45"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcoreaddons ki18n kpty knotifications))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/plasma/kwrited")
     (synopsis "System notification daemon")
     (description
