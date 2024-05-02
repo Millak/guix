@@ -1524,30 +1524,44 @@ CSS3 that adds programming capabilities and some other syntactic sugar.")
 (define-public python-jsonpickle
   (package
     (name "python-jsonpickle")
-    (version "1.5.2")
+    (version "3.0.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jsonpickle" version))
               (sha256
                (base32
-                "0n93h9b9ad58lxdfbvgsh4b25mkg146qikzcgghyc75vjk7rp2cy"))))
-    (build-system python-build-system)
+                "0ay6r1bhcw7qy8k5n4xxgy9dqzhxx8syg5ra9wwqzk91ca6lrcd1"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"
-                              ;; Prevent running the flake8 and black
-                              ;; pytest plugins, which only tests style
-                              ;; and frequently causes harmless failures.
-                              "-o" "addopts=''"))))))
+     (list
+      #:test-flags
+      ;; Prevent running the flake8 and black pytest plugins, which only tests
+      ;; style and frequently causes harmless failures.
+      '(list "-o" "addopts=''" "tests")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC")
+             (setenv "TZDIR"
+                     (search-input-directory inputs "share/zoneinfo")))))))
+    (propagated-inputs
+     (list python-importlib-metadata))
     (native-inputs
-     (list python-setuptools-scm
-           python-toml ;XXX: for setuptools_scm[toml]
-           ;; For tests.
-           python-numpy
-           python-pandas
-           python-pytest))
+     (list python-bson
+           python-ecdsa
+           python-feedparser
+           python-pymongo
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-enabler
+           python-setuptools
+           python-setuptools-scm
+           python-simplejson
+           python-sqlalchemy
+           python-ujson
+           tzdata-for-tests))
     (home-page "https://jsonpickle.github.io/")
     (synopsis "Serialize object graphs into JSON")
     (description
