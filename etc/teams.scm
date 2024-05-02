@@ -636,7 +636,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Florian Pelz"
                        "pelzflorian@pelzflorian.de")
-  translations)
+  documentation translations)
 
 (define-member (person "Liliana Marie Prikler"
                        "liliana.prikler@gmail.com")
