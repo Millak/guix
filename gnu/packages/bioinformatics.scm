@@ -17981,7 +17981,7 @@ the HiCExplorer and pyGenomeTracks packages.")
 (define-public python-hicexplorer
   (package
     (name "python-hicexplorer")
-    (version "3.7.2")
+    (version "3.7.4")
     (source
      (origin
        ;; The latest version is not available on Pypi.
@@ -17992,16 +17992,7 @@ the HiCExplorer and pyGenomeTracks packages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1yavgxry38g326z10bclvdf8glmma05fxj5m73h15m1r2l9xmw3v"))
-       (modules '((guix build utils)))
-       ;; setup.py is malformed. The requirements are defined using a catchall
-       ;; pattern for the patch version number. This has been fixed in version
-       ;; 3.7.3, but we cannot upgrade to this version yet, since some Guix
-       ;; packages are not new enough. (See upstream commit
-       ;; 4845c715ec7b105e938d0c2426e27d0181690bfe for the fix).
-       (snippet '(substitute* "setup.py"
-                   (("\\.\\*")
-                    "")))))
+         "1cjr9l0vcngd0f4dmar388ri1ah1bqybnn53jc85xwh07wfacq7l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -18079,21 +18070,10 @@ the HiCExplorer and pyGenomeTracks packages.")
                                "general/test_hicHyperoptDetectLoopsHiCCUPS.py"
                                "general/test_hicAggregateContacts.py"
                                "general/test_hicInterIntraTAD.py")
-                  (("^memory =.*") "memory = 1\n")))))
-          ;; This is fixed in version 3.7.3, but we cannot upgrade yet as we
-          ;; don't have Pandas 2.
-          (add-after 'unpack 'scipy-compatibility
-            (lambda _
-              (substitute* "hicexplorer/hicAverageRegions.py"
-                (("from scipy.sparse import csr_matrix, save_npz, lil_matrix")
-                 "from scipy.sparse import csr_matrix, save_npz, lil_matrix, coo_matrix")
-                (("summed_matrix = np.array\\(summed_matrix\\)")
-                 "summed_matrix = coo_matrix(summed_matrix)")
-                (("data = summed_matrix\\[np.nonzero\\(summed_matrix\\)\\]")
-                 "data = summed_matrix.toarray()[np.nonzero(summed_matrix)]")))))))
+                  (("^memory =.*") "memory = 1\n"))))))))
     (propagated-inputs
      (list python-biopython
-           python-cleanlab-1
+           python-cleanlab
            python-cooler
            python-fit-nbinom
            python-future
