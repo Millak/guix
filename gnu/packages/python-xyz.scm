@@ -16493,18 +16493,29 @@ a hash value.")
 (define-public python-termcolor
   (package
     (name "python-termcolor")
-    (version "1.1.0")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "termcolor" version))
        (sha256
         (base32
-         "0fv1vq14rpqwgazxg4981904lfyp84mnammw7y046491cv76jv8x"))))
-    (build-system python-build-system)
+         "0ykvmjrsjr5w4h63x7qmx6rsdb1p5a4nv8wgg7nl3b688xhfbfda"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; There are no tests.
-     `(#:tests? #f))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-pyproject
+           (lambda _
+             ;; The build system doesn't like to hear of Python 3.13.
+             (substitute* "pyproject.toml"
+               (("  \"Programming Language .*") "")))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-pytest-cov))
     (home-page "https://pypi.org/project/termcolor/")
     (synopsis "ANSII Color formatting for terminal output")
     (description
