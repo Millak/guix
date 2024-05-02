@@ -2054,7 +2054,7 @@ standard feature selection algorithms.")
 (define-public python-cleanlab
   (package
     (name "python-cleanlab")
-    (version "2.2.0")
+    (version "2.6.3")
     ;; The version on pypi does not come with tests.
     (source (origin
               (method git-fetch)
@@ -2064,7 +2064,7 @@ standard feature selection algorithms.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00dqhxpwg781skknw943ynll2s44g4j125dx8aapk1d5d71sbzqy"))))
+                "1f5iq4f8rzvn8scrwgfvc9qaqs9h159wiiy7wp6526frr67xk918"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2074,8 +2074,16 @@ standard feature selection algorithms.")
       '(list "-k" "not test_aux_inputs"
              ;; Requires Tensorflow
              "--ignore=tests/test_frameworks.py"
+             ;; These need datasets, which needs jax, so it could only live in
+             ;; the guix-science channel.
+             "--ignore-glob=tests/datalab/**"
              ;; Tries to download datasets from the internet at runtime.
-             "--ignore=tests/test_dataset.py")))
+             "--ignore=tests/test_dataset.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'remove-datasets
+           (lambda _
+             (delete-file "tests/datalab/conftest.py"))))))
     (propagated-inputs
      (list python-numpy
            python-pandas
