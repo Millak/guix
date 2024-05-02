@@ -37,6 +37,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Samuel Culpepper <sculpepper@newstore.com>
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
+;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1156,48 +1157,57 @@ manager for the current system.")
 (define-public power-profiles-daemon
   (package
     (name "power-profiles-daemon")
-    (version "0.12")
+    (version "0.21")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.freedesktop.org/hadess/power-profiles-daemon")
+             (url "https://gitlab.freedesktop.org/upower/power-profiles-daemon")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1wqcajbj358zpyj6y4h1v34y2yncq76wqxd0jm431habcly0bqyr"))))
+         "0dn3ygv49q7mzs52ch3yphxf4hbry698r1ajj52f6jgw7mpwr5p4"))))
     (build-system meson-build-system)
     (arguments
-     (list #:configure-flags #~(list "-Dsystemdsystemunitdir=false")
-           #:glib-or-gtk? #t
+     (list #:configure-flags #~(list "-Dsystemdsystemunitdir="
+                                     "-Dpylint=disabled"
+                                     (string-append "-Dzshcomp=" #$output
+                                                    "/share/zsh/site-functions/"))
            #:phases
            #~(modify-phases %standard-phases
-               (add-before 'install 'fake-pkexec
-                 (lambda _ (setenv "PKEXEC_UID" "-1")))
                (add-before 'configure 'correct-polkit-dir
                  (lambda _
-                   (substitute* "meson.build"
-                     (("polkit_gobject_dep\\..*")
-                      (string-append "'" #$output "/share/polkit-1/actions'")))))
+                   (setenv "PKG_CONFIG_POLKIT_GOBJECT_1_POLICYDIR"
+                           (string-append #$output "/share/polkit-1/actions"))))
                (add-after 'install 'wrap-program
                  (lambda _
                    (wrap-program
                        (string-append #$output "/bin/powerprofilesctl")
-                     `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-                     `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+                     `("GUIX_PYTHONPATH" = (,(string-append
+                                              #$(this-package-input "python-pygobject")
+                                              "/lib/python"
+                                              #$(version-major+minor
+                                                 (package-version (this-package-input "python")))
+                                              "/site-packages")))))))))
     (native-inputs
-     (list `(,glib "bin") gobject-introspection pkg-config python vala))
+     (list `(,glib "bin")
+           pkg-config
+           python
+           python-argparse-manpage
+           python-dbusmock
+           python-shtab
+           umockdev))
     (inputs
-     (list bash-minimal                           ;for 'wrap-program'
-           dbus
-           dbus-glib
+     (list bash-minimal                 ;for 'wrap-program'
+           bash-completion
            libgudev
-           glib polkit
+           glib
+           polkit
            python
            python-pygobject
            upower))
-    (home-page "https://gitlab.freedesktop.org/hadess/power-profiles-daemon")
+    (home-page "https://gitlab.freedesktop.org/upower/power-profiles-daemon")
     (synopsis "Power profile handling over D-Bus")
     (description
      "power-profiles-daemon offers to modify system behaviour based upon
