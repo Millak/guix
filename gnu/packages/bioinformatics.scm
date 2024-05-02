@@ -14137,6 +14137,18 @@ applications for tackling some common problems in a user-friendly way.")
        (list
         #:phases
         #~(modify-phases %standard-phases
+            ;; Scipy 1.12 no longer has binom_test or polyfit
+            (add-after 'unpack 'scipy-compatibility
+              (lambda _
+                (substitute* '("_pytadbit/modelling/imp_modelling.py"
+                               "_pytadbit/modelling/restraints.py")
+                  (("from scipy .*import polyfit")
+                   "from numpy import polyfit"))
+                (substitute* "_pytadbit/mapping/restriction_enzymes.py"
+                  (("from scipy.stats import binom_test")
+                   "from scipy.stats import binomtest")
+                  (("binom_test\\(pats[k]['count'], nreads, 0.25\\*\\*len\\(k\\), alternative='greater'\\)")
+                   "binomtest(pats[k]['count'], nreads, 0.25**len(k), alternative='greater').pval"))))
             (add-after 'unpack 'fix-problems-with-setup.py
               (lambda _
                 (substitute* "src/test/Makefile"
