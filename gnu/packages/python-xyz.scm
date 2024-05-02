@@ -13274,6 +13274,11 @@ Python style, together with a fast and comfortable execution environment.")
               (substitute* "snakemake/executors/__init__.py"
                 (("\\{sys.executable\\} -m snakemake")
                  (string-append #$output "/bin/snakemake")))))
+          (add-after 'unpack 'tabulate-compatibility
+            (lambda _
+              (substitute* "snakemake/dag.py"
+                (("\"job\": rule,")
+                 "\"job\": rule.name,"))))
           (add-after 'unpack 'patch-version
             (lambda _
               (substitute* "setup.py"
