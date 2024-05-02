@@ -1884,13 +1884,13 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
 (define-public python-imbalanced-learn
   (package
     (name "python-imbalanced-learn")
-    (version "0.11.0")
+    (version "0.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "imbalanced-learn" version))
        (sha256
-        (base32 "1p4gdgc8nsq0vjmw4y4d2bp9g0m1c23d0zgrzs90pnz6b24ax0km"))))
+        (base32 "1hgncab4g4xry7yl6wwsj1wmfnxbsajx6qmycvr28wdhvk75c358"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1911,7 +1911,6 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
                          python-flake8
                          python-keras
                          python-mypy
-                         python-numpydoc
                          python-pandas
                          python-pytest
                          python-pytest-cov
