@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
@@ -144,14 +144,14 @@ This package is part of the KDE multimedia module.")
 (define-public elisa
   (package
     (name "elisa")
-    (version "23.04.3")
+    (version "23.08.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/elisa-" version ".tar.xz"))
        (sha256
-        (base32 "1ry4mhj7wc31xq9fip3amv8fj631m213zz0qg44h68q77sik4422"))))
+        (base32 "1hml0bmp1cfqc9x9q2a1lz2f6ab7ygblf6xz0qlwjxripvqw8b47"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config dbus kdoctools
@@ -196,14 +196,12 @@ This package is part of the KDE multimedia module.")
              ;; The test suite requires a running X server, setting
              ;; QT_QPA_PLATFORM=offscreen does not suffice.
              (system "Xvfb :1 -screen 0 640x480x24 &")
-             (setenv "DISPLAY" ":1")
-             #t))
+             (setenv "DISPLAY" ":1")))
          (replace 'check
            (lambda* (#:key tests? test-target #:allow-other-keys)
              (when tests?
                (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
-               (invoke "dbus-launch" "make" test-target))
-             #t)))))
+               (invoke "dbus-launch" "make" test-target)))))))
     (home-page "https://apps.kde.org/elisa/")
     (synopsis "Powerful music player for Plasma 5")
     (description "Elisa is a simple music player aiming to provide a nice
