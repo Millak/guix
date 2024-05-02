@@ -13227,6 +13227,14 @@ approach.")
               (substitute* "snakemake/dag.py"
                 (("\"job\": rule,")
                  "\"job\": rule.name,"))))
+          (add-after 'unpack 'patch-version
+            (lambda _
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(\\)")
+                 (format #f "version=~s" #$version)))
+              (substitute* '("snakemake/_version.py"
+                             "versioneer.py")
+                (("0\\+unknown") #$version))))
           ;; For cluster execution Snakemake will call Python.  Since there is
           ;; no suitable PYTHONPATH set, cluster execution will fail.  We fix
           ;; this by calling the snakemake wrapper instead.
