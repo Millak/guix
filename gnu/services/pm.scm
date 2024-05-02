@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,17 +22,74 @@
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages linux)
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu services configuration)
+  #:use-module (gnu services dbus)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system shadow)
-  #:export (tlp-service-type
+  #:export (power-profiles-daemon-service-type
+            power-profiles-daemon-configuration
+
+            tlp-service-type
             tlp-configuration
 
             thermald-configuration
             thermald-service-type))
+
+;;;
+;;; power-profiles-daemon
+;;;
+
+(define-configuration/no-serialization power-profiles-daemon-configuration
+  (power-profiles-daemon
+   (file-like power-profiles-daemon)
+   "The power-profiles-daemon package."))
+
+(define (power-profiles-daemon-shepherd-service config)
+  (match-record
+      config <power-profiles-daemon-configuration>
+      (power-profiles-daemon)
+    (list (shepherd-service
+           (provision '(power-profiles-daemon))
+           (requirement '(dbus-system))
+           (documentation "Run the power-profiles-daemon.")
+           (start #~(make-forkexec-constructor
+                     (list #$(file-append power-profiles-daemon
+                                          "/libexec/power-profiles-daemon"))))
+           (stop #~(make-kill-destructor))))))
+
+(define %power-profiles-daemon-activation
+  #~(begin
+      (use-modules (guix build utils))
+      (mkdir-p "/var/lib/power-profiles-daemon")))
+
+(define power-profiles-daemon-service-type
+  (let ((config->package
+         (compose list power-profiles-daemon-configuration-power-profiles-daemon)))
+    (service-type
+     (name 'power-profiles-daemon)
+     (extensions (list
+                  (service-extension shepherd-root-service-type
+                                     power-profiles-daemon-shepherd-service)
+                  (service-extension dbus-root-service-type
+                                     config->package)
+                  (service-extension polkit-service-type
+                                     config->package)
+                  (service-extension profile-service-type
+                                     config->package)
+                  (service-extension activation-service-type
+                                     (const %power-profiles-daemon-activation))))
+     (default-value (power-profiles-daemon-configuration))
+     (description "Run the power-profiles-daemon"))))
+
+
+
+;;;
+;;; tlp
+;;;
 
 (define (uglify-field-name field-name)
   (let ((str (symbol->string field-name)))

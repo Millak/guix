@@ -127,6 +127,7 @@ Copyright @copyright{} 2023 Tomas Volf@*
 Copyright @copyright{} 2024 Herman Rimm@*
 Copyright @copyright{} 2024 Matthew Trzcinski@*
 Copyright @copyright{} 2024 Richard Sent@*
+Copyright @copyright{} 2024 Dariqq@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -34710,6 +34711,45 @@ Base URL to use for links to laminar itself.
 
 @node Power Management Services
 @subsection Power Management Services
+
+@cindex power-profiles-daemon
+@subsubheading Power Profiles Daemon
+
+The @code{(gnu services pm)} module provides a Guix service definition for
+the Linux Power Profiles Daemon, which makes power profiles handling
+available over D-Bus.
+
+The available profiles consist of the default @samp{balanced} mode, a @samp{power-saver} mode
+and on supported systems a @samp{performance} mode.
+
+@quotation Important
+The @code{power-profiles-daemon} conflicts with other power management tools
+like @code{tlp}. Using both together is not recommended.
+@end quotation
+
+@defvar power-profiles-daemon-service-type
+This is the service type for the
+@uref{https://gitlab.freedesktop.org/upower/power-profiles-daemon/, Power Profiles Daemon}.
+The value for this service is a @code{power-profiles-daemon-configuration}.
+
+To enable the Power Profiles Daemon with default configuration
+add this line to your services:
+
+@lisp
+(service power-profiles-daemon-service-type)
+@end lisp
+@end defvar
+
+@deftp {Data Type} power-profiles-daemon-configuration
+Data type representing the configuration of @code{power-profiles-daemon-service-type}.
+
+@table @asis
+@item @code{power-profiles-daemon} (default: @code{power-profiles-daemon}) (type: file-like)
+Package object of power-profiles-daemon.
+
+@end table
+@end deftp
+
 
 @cindex tlp
 @cindex power management with TLP
