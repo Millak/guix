@@ -13200,15 +13200,26 @@ approach.")
     (version "5.32.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "snakemake" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/snakemake/snakemake")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "13013gdavwvyj1qr9xfi9fpwhb3km8c3z53bja5b7ic3sb2z6dgz"))))
-    (build-system python-build-system)
+        (base32 "0nxp4z81vykv07kv2b6zrwk7ns8s10zqsb7vcignp8695yq3nlcm"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; TODO: Package missing test dependencies.
      (list
-      #:tests? #f
+      #:test-flags
+      '(list
+        ;; We have no TES support.
+        "--ignore=tests/test_tes.py"
+        ;; This test attempts to change S3 buckets on AWS and fails
+        ;; because there are no AWS credentials.
+        "--ignore=tests/test_tibanna.py"
+        ;; It's a similar story with this test, which requires access
+        ;; to the Google Storage service.
+        "--ignore=tests/test_google_lifesciences.py")
       #:phases
       #~(modify-phases %standard-phases
           ;; For cluster execution Snakemake will call Python.  Since there is
@@ -13218,7 +13229,9 @@ approach.")
             (lambda _
               (substitute* "snakemake/executors/__init__.py"
                 (("\\{sys.executable\\} -m snakemake")
-                 (string-append #$output "/bin/snakemake"))))))))
+                 (string-append #$output "/bin/snakemake")))))
+          (add-before 'check 'pre-check
+            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-appdirs
            python-configargparse
@@ -13236,6 +13249,12 @@ approach.")
            python-requests
            python-toposort
            python-wrapt))
+    (native-inputs
+     (list git-minimal
+           python-wrapper
+           python-pytest
+           python-pandas
+           python-requests-mock))
     (home-page "https://snakemake.readthedocs.io")
     (synopsis "Python-based execution environment for make-like workflows")
     (description
