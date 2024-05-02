@@ -273,30 +273,26 @@ applications that want audio visualisation and audio visualisation plugins.")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/Libvisual/libvisual")
-         (commit (string-append name "-" version))))
+       (uri (git-reference
+             (url "https://github.com/Libvisual/libvisual")
+             (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "02xwakwkqjsznc03pjlb6hcv1li1gw3r8xvyswqsm4msix5xq18a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list
-        "--disable-gstreamer-plugin"
-        "--disable-oinksie"
-        "--disable-corona"
-        "--disable-gforce"
-        (string-append "--with-plugins-base-dir=" (assoc-ref %outputs "out")
-                       "/lib/libvisual-0.4"))
-       #:phases
-       (modify-phases %standard-phases
-         ;; The package is in a sub-dir of this repo.
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "libvisual-plugins")
-             #t)))))
+     `(#:configure-flags (list "--disable-gstreamer-plugin"
+                               "--disable-oinksie"
+                               "--disable-corona"
+                               "--disable-gforce"
+                               (string-append "--with-plugins-base-dir="
+                                              (assoc-ref %outputs "out")
+                                              "/lib/libvisual-0.4"))
+       #:phases (modify-phases %standard-phases
+                  ;; The package is in a sub-dir of this repo.
+                  (add-after 'unpack 'chdir
+                    (lambda _
+                      (chdir "libvisual-plugins"))))))
     (native-inputs
      (list bison
            flex
@@ -312,8 +308,7 @@ applications that want audio visualisation and audio visualisation plugins.")
            jack-2
            libx11
            libxext))
-    (propagated-inputs
-     (list libvisual))
+    (propagated-inputs (list libvisual))
     (synopsis "Audio visualisation library")
     (description "Libvisual is a library that acts as a middle layer between
 applications that want audio visualisation and audio visualisation plugins.")
