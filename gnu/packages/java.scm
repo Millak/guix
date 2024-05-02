@@ -20,6 +20,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -14451,7 +14452,7 @@ can be interpreted by IDEs and static analysis tools to improve code analysis.")
                                (display
                                 (string-append
                                  "#!/bin/sh\n"
-                                 java " -cp " java-cp " " class " \"$@\""))))
+                                 java " -XX:+UseParallelGC " " -cp " java-cp " " class " \"$@\""))))
                            (chmod file #o755)))))
                     ;; bin/wrapper . java-class
                     '(("pcal" . "pcal.trans")
