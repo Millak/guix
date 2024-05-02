@@ -28060,6 +28060,10 @@ decisions with any given backend.")
               ;; These all fail with different hashes.  Doesn't seem
               ;; problematic.
               "--ignore-glob=**/test_tokenize.py"
+              ;; ORC tests crash Python with a failure to find the global
+              ;; localtime file.  See also
+              ;; https://github.com/apache/arrow/issues/40633.
+              "--ignore-glob=**/test_orc.py"
               "-k" (string-append
                     ;; This one cannot be interrupted.
                     "not test_interrupt"
@@ -28067,6 +28071,10 @@ decisions with any given backend.")
                     ;; before assignment".  Maybe enable this in later
                     ;; versions (or when pandas has been upgraded.
                     " and not test_dt_accessor"
+                    ;; This fails when dask-expr is among the inputs.
+                    " and not test_groupby_internal_repr"
+                    ;; This fails with different job ids.
+                    " and not test_to_delayed_optimize_graph"
                     ;; This one expects a deprecation warning that never
                     ;; comes.
                     " and not test_RandomState_only_funcs")
