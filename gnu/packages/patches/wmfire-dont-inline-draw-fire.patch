@@ -1,0 +1,33 @@
+https://sources.debian.org/data/main/w/wmfire/1.2.4-7/debian/patches/08_removed-inline-from-function-with-extern-linkage.patch
+
+Description: remove inline from function with extern linkage
+  Fixes FTBFS with gcc 9.
+Author: Jeremy Sowden <jeremy@azazel.net>
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=925858
+Last-Update: 2019-06-22
+Forwarded: not-needed
+
+---
+ src/wmfire.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/src/wmfire.c
++++ b/src/wmfire.c
+@@ -111,7 +111,7 @@
+ void change_flame(int);
+ GdkCursor *setup_cursor();
+ void burn_spot(int, int, int);
+-inline void draw_fire(unsigned int);
++void draw_fire(unsigned int);
+ static void make_wmfire_dockapp();
+ void read_config(int, char **);
+ void do_help(void);
+@@ -504,7 +504,7 @@
+ /* Draw fire                              */
+ /******************************************/
+ 
+-inline void
++void
+ draw_fire(unsigned int load)
+ {
+ 	int x, y, i, j;

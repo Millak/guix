@@ -320,7 +320,8 @@ display, and can run a user-specified program on mouse click.")
                (base32
                 "101grahd80n97y2dczb629clmcgiavdpbbwy78kk5wgs362m12z3"))
               (patches
-               (search-patches "wmfire-update-for-new-gdk-versions.patch"))))
+               (search-patches "wmfire-dont-inline-draw-fire.patch"
+                               "wmfire-update-for-new-gdk-versions.patch"))))
     (build-system gnu-build-system)
     (inputs
      (list gtk+-2 libgtop))
