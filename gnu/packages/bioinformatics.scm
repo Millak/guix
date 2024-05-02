@@ -14118,8 +14118,8 @@ applications for tackling some common problems in a user-friendly way.")
 ;; We use this seemingly arbitrary commit because of
 ;; https://github.com/3DGenomes/TADbit/issues/371
 (define-public tadbit
-  (let ((commit "5c4c1ddaadfbaf7e6edc58173e46d801093bdc9b")
-        (revision "1"))
+  (let ((commit "283812901a00078c725bd9f0ee33366af6783969")
+        (revision "2"))
     (package
       (name "tadbit")
       (version (git-version "1.0.1" revision commit))
@@ -14131,7 +14131,7 @@ applications for tackling some common problems in a user-friendly way.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "17nwlvjgqpa7x6jgh56m3di61ynaz34kl1jamyv7r2a5rhfcbkla"))))
+                  "07q0alxah6xl1hibaj1kj7pdzq3pg6csyapsihbwlbmqyfmllbgz"))))
       (build-system python-build-system)
       (arguments
        (list
