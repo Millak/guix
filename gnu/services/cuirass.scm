@@ -117,8 +117,6 @@
                     (default "localhost"))
   (specifications   cuirass-configuration-specifications)
                                   ;gexp that evaluates to specification-alist
-  (use-substitutes? cuirass-configuration-use-substitutes? ;boolean
-                    (default #f))
   (one-shot?        cuirass-configuration-one-shot? ;boolean
                     (default #f))
   (fallback?        cuirass-configuration-fallback? ;boolean
@@ -147,7 +145,6 @@
         (config-file      (scheme-file
                            "cuirass-specs.scm"
                            (cuirass-configuration-specifications config)))
-        (use-substitutes? (cuirass-configuration-use-substitutes? config))
         (one-shot?        (cuirass-configuration-one-shot? config))
         (fallback?        (cuirass-configuration-fallback? config))
         (extra-options    (cuirass-configuration-extra-options config))
@@ -182,7 +179,6 @@
                                       parameters))
                                '())
                         #$@(if remote-server '("--build-remote") '())
-                        #$@(if use-substitutes? '("--use-substitutes") '())
                         #$@(if one-shot? '("--one-shot") '())
                         #$@(if fallback? '("--fallback") '())
                         #$@extra-options)

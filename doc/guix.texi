@@ -34488,10 +34488,6 @@ A gexp (@pxref{G-Expressions}) that evaluates to a list of
 specifications records.  The specification record is described in the
 Cuirass manual (@pxref{Specifications,,, cuirass, Cuirass}).
 
-@item @code{use-substitutes?} (default: @code{#f})
-This allows using substitutes to avoid building every dependencies of a job
-from source.
-
 @item @code{one-shot?} (default: @code{#f})
 Only evaluate specifications and build derivations once.
 
