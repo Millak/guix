@@ -1044,13 +1044,21 @@ doing practical, real world data analysis in Python.")
                             " and not test_timedelta_cmp_rhs"
                             " and not test_timestamp_cmp"
                             " and not test_timestamp_eq_ne_rhs"))
-      #:phases '(modify-phases %standard-phases
-                  (add-before 'check 'prepare-x
-                    (lambda _
-                      (system "Xvfb &")
-                      (setenv "DISPLAY" ":0")
-                      ;; xsel needs to write a log file.
-                      (setenv "HOME" (getcwd)))))))
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We cannot yet upgrade numpy to 1.26 because numba needs numpy
+         ;; >1.24.
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("numpy = \\{ version = \">=1.26.0\", python = \"<3.13\" \\}")
+                "numpy = { version = \">=1.23.0\", python = \"<3.13\" }"))))
+         (add-before 'check 'prepare-x
+           (lambda _
+             (system "Xvfb &")
+             (setenv "DISPLAY" ":0")
+             ;; xsel needs to write a log file.
+             (setenv "HOME" (getcwd)))))))
     (propagated-inputs (list python-types-pytz))
     ;; Add python-fastparquet to native inputs once it has been packaged. Its
     ;; tests will be skipped for now.
