@@ -14181,7 +14181,8 @@ applications for tackling some common problems in a user-friendly way.")
              python-scipy
              python-numpy
              python-matplotlib
-             python-pysam))
+             python-pysam
+             r-minimal))
       (home-page "https://3dgenomes.github.io/TADbit/")
       (synopsis "Analyze, model, and explore 3C-based data")
       (description
