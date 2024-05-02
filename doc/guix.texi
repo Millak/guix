@@ -34494,7 +34494,10 @@ When substituting a pre-built binary fails, fall back to building
 packages locally.
 
 @item @code{extra-options} (default: @code{'()})
-Extra options to pass when running the Cuirass processes.
+Extra options to pass when running the @code{cuirass register} process.
+
+@item @code{web-extra-options} (default: @code{'()})
+Extra options to pass when running the @code{cuirass web} process.
 
 @end table
 @end deftp

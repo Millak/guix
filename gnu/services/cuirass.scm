@@ -120,6 +120,8 @@
   (fallback?        cuirass-configuration-fallback? ;boolean
                     (default #f))
   (extra-options    cuirass-configuration-extra-options
+                    (default '()))
+  (web-extra-options cuirass-configuration-web-extra-options
                     (default '())))
 
 (define (cuirass-shepherd-service config)
@@ -142,7 +144,8 @@
         (use-substitutes? (cuirass-configuration-use-substitutes? config))
         (one-shot?        (cuirass-configuration-one-shot? config))
         (fallback?        (cuirass-configuration-fallback? config))
-        (extra-options    (cuirass-configuration-extra-options config)))
+        (extra-options    (cuirass-configuration-extra-options config))
+        (web-extra-options (cuirass-configuration-web-extra-options config)))
     `(,(shepherd-service
         (documentation "Run Cuirass.")
         (provision '(cuirass))
@@ -192,7 +195,7 @@
                                       "--parameters="
                                       parameters))
                                '())
-                        #$@extra-options)
+                        #$@web-extra-options)
 
                   #:user #$user
                   #:group #$group
