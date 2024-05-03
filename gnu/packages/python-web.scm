@@ -2084,16 +2084,19 @@ is Python’s.")
 (define-public python-omnipath
   (package
     (name "python-omnipath")
-    (version "1.0.6")
+    (version "1.0.8")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "omnipath" version))
               (sha256
                (base32
-                "01hmcp1202g5drs8dkxnyyb5v14g503dj4zfiqypghmigi9ipw86"))))
+                "0krr4wzfwa6fs550cs0lcqwjj90p1inyncj9kvzi4x4m26xbj89q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; These require internet access
+      '(list "-k" "not test_download_homologene and not test_complex_genes")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'relax
@@ -2120,6 +2123,7 @@ is Python’s.")
            python-pre-commit
            python-pytest
            python-pytest-mock
+           python-pytest-socket
            python-requests-mock
            python-setuptools-scm
            python-tox))
