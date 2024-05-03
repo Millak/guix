@@ -2573,6 +2573,7 @@ aggregated sum and more.")
                          python-pandas
                          python-pytest
                          python-pytest-cov
+                         python-setuptools-scm
                          tzdata-for-tests))
     (home-page "https://github.com/has2k1/plotnine")
     (synopsis "Grammar of Graphics for Python")
