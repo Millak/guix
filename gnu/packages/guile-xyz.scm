@@ -6148,7 +6148,7 @@ in two different guises.")
 (define-public guile-tap
   (package
     (name "guile-tap")
-    (version "0.4.6")
+    (version "0.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6157,7 +6157,7 @@ in two different guises.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04ip5cbvsjjcicsri813f4711yh7db6fvc2px4788rl8p1iqvi6x"))))
+                "0yimi9ci5h6wh7bs3ir7p181pwbd2hxlhx7pqq53gr54mnad8qv4"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
@@ -6166,7 +6166,9 @@ in two different guises.")
                  (lambda _
                    (substitute* "Makefile"
                      (("PREFIX = /usr/local") (string-append "PREFIX="
-                                                             #$output)))))
+                                                             #$output)))
+                   (substitute* "bin/tap-harness"
+                     ((" guile ") (string-append " " (which "guile") " ")))))
                (replace 'build
                  (lambda _
                    (invoke "make")
