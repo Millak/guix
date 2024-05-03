@@ -1266,16 +1266,19 @@ isort.")
        (sha256
         (base32
          "0q8j0ayzmnvlraml6i977ybdq4xi096djhf30n2m1rvnvrhm45nq"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      ;; This test is sensitive to generated terminal escape codes.
+      '(list "-k" "not test_pretty_formatter")
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'use-path-instead-of-path.py
            ;; path.py is obsolete.
            (lambda _
              (substitute* "setup.py"
-               (("'path.py'")
-                "'path'"))))
+               (("'path.py'") "'path'"))))
          (add-after 'unpack 'patch-tests
            (lambda _
              (mkdir "/tmp/bin")
