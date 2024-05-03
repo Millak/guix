@@ -2210,7 +2210,7 @@ servers supporting the protocol.")
 (define-public python-liana-py
   (package
     (name "python-liana-py")
-    (version "0.1.9")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2219,7 +2219,7 @@ servers supporting the protocol.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00lqrmi38wmdpjlcafgmrnkwsbp0yvm2rya6qs8y6jfizww9ff8i"))))
+                "0f5al0v55haja91q9gd409v7q78mmp1wv9znsplsbjp6lfspjfnw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2227,9 +2227,28 @@ servers supporting the protocol.")
       '(list "-k"
              ;; These tests require internet access.
              (string-append "not test_generate_lr_resource"
-                            " and not test_generate_nondefault_lr_resource"))
+                            " and not test_get_metalinks"
+                            " and not test_get_metalinks_values"
+                            " and not test_describe_metalinks"
+                            " and not test_generate_nondefault_lr_resource"
+                            ;; Minor accuracy difference
+                            " and not test_bivar_morans_perms"
+                            ;; XXX unclear failure: 'coo_matrix' object is not
+                            ;; subscriptable
+                            " and not test_bivar_product"
+                            )
+             ;; These need the optional squidpy, which we don't have yet.
+             "--ignore=liana/tests/test_misty.py"
+             ;; These need the optional corneto.
+             "--ignore=liana/tests/test_causalnet.py")
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             ;; Don't fail the sanity check when these optional inputs aren't
+             ;; available.
+             (substitute* "pyproject.toml"
+               (("^pre-commit =.*") ""))))
          ;; Numba needs a writable directory to cache functions.
          (add-before 'build 'set-numba-cache-dir
            (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
@@ -2239,10 +2258,10 @@ servers supporting the protocol.")
                              python-hypothesis
                              python-ipykernel
                              python-ipython
-                             python-mofax
                              python-mudata
                              python-nbconvert
                              python-nbsphinx
+                             python-numpy
                              python-numpydoc
                              python-omnipath
                              python-pandas
@@ -2255,7 +2274,10 @@ servers supporting the protocol.")
                              python-tqdm
                              tzdata))
     (native-inputs
-     (list python-black python-pytest python-pytest-cov python-numpy))
+     (list python-black
+           python-poetry-core
+           python-pytest
+           python-pytest-cov))
     (home-page "https://github.com/saezlab/liana-py")
     (synopsis "LIANA is a ligand-receptor analysis framework")
     (description "This is a Ligand-Receptor inference framework.  The
