@@ -42,6 +42,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
@@ -873,7 +874,7 @@ compressed massif files can also be opened transparently.")
 (define-public libqaccessibilityclient
   (package
     (name "libqaccessibilityclient")
-    (version "0.4.1")
+    (version "0.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/" name
@@ -881,24 +882,28 @@ compressed massif files can also be opened transparently.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "0a9lv2jb5gyqxvrkl5xl09gjnlp05b5yfzfb0wmaxz0l8d7qnxhw"))))
+                "0csxbwy4479196l32j4xnk672kiyggcaf3fi3q2cbj9dc94c8l2c"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ;TODO: Failing tests
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                         ;
-                        ;; make Qt render "offscreen", required for tests
-                        (setenv "QT_QPA_PLATFORM" "offscreen")
-                        ;; For missing '/etc/machine-id'
-                        (setenv "DBUS_FATAL_WARNINGS" "0")
-                        (setenv "HOME"
-                                (getcwd))
-                        (invoke "dbus-launch" "ctest")))))))
+     (list #:tests? #f ;TODO: Failing tests
+           #:configure-flags
+           #~(list (string-append
+                    "-DQT_MAJOR_VERSION="
+                    #$(version-major
+                       (package-version (this-package-input "qtbase")))))
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              ;; make Qt render "offscreen", required for tests
+                              (setenv "QT_QPA_PLATFORM" "offscreen")
+                              ;; For missing '/etc/machine-id'
+                              (setenv "DBUS_FATAL_WARNINGS" "0")
+                              (setenv "HOME"
+                                      (getcwd))
+                              (invoke "dbus-launch" "ctest")))))))
     (native-inputs (list dbus extra-cmake-modules))
-    (inputs (list qtbase-5))
+    (inputs (list qtbase))
     (home-page "https://invent.kde.org/libraries/libqaccessibilityclient")
     (synopsis "Helper library to make writing accessibility tools easier")
     (description "This package provides library that is used when writing
