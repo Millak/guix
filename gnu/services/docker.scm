@@ -320,6 +320,9 @@ found!")
 but ~a was found") el))))
    value))
 
+(define list-of-symbols?
+  (list-of symbol?))
+
 (define-maybe/no-serialization string)
 
 (define-configuration/no-serialization oci-container-configuration
@@ -376,6 +379,10 @@ Engine, and follow the usual format
   (provision
    (maybe-string)
    "Set the name of the provisioned Shepherd service.")
+  (requirement
+   (list-of-symbols '())
+   "Set additional Shepherd services dependencies to the provisioned Shepherd
+service.")
   (network
    (maybe-string)
    "Set a Docker network for the spawned container.")
@@ -477,6 +484,7 @@ to the @command{docker run} invokation."
           (oci-container-configuration-host-environment config))
          (command (oci-container-configuration-command config))
          (provision (oci-container-configuration-provision config))
+         (requirement (oci-container-configuration-requirement config))
          (image (oci-container-configuration-image config))
          (options (oci-container-configuration->options config))
          (name (guess-name provision image))
@@ -484,7 +492,7 @@ to the @command{docker run} invokation."
           (oci-container-configuration-extra-arguments config)))
 
     (shepherd-service (provision `(,(string->symbol name)))
-                      (requirement '(dockerd user-processes))
+                      (requirement `(dockerd user-processes ,@requirement))
                       (respawn? #f)
                       (documentation
                        (string-append

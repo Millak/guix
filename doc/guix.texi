@@ -40618,6 +40618,10 @@ Docker Engine, and follow the usual format
 @item @code{provision} (default: @code{""}) (type: string)
 Set the name of the provisioned Shepherd service.
 
+@item @code{requirement} (default: @code{'()}) (type: list-of-symbols)
+Set additional Shepherd services dependencies to the provisioned
+Shepherd service.
+
 @item @code{network} (default: @code{""}) (type: string)
 Set a Docker network for the spawned container.
 
