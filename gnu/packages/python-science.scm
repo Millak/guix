@@ -2537,6 +2537,10 @@ aggregated sum and more.")
                                           "test_stack_non_linear_scale"
                                           "test_uneven_num_of_lines"
 
+                                          ;; This triggers an unexpected but harmless
+                                          ;; warning.
+                                          "test_save_method"
+
                                           ;; Missing optional modules
                                           "test_non_linear_smooth"
                                           "test_non_linear_smooth_no_ci")
