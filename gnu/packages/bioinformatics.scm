@@ -17852,6 +17852,47 @@ bound.")
 bgzipped text file that contains a pair of genomic coordinates per line.")
     (license license:expat)))
 
+(define-public python-pyrodigal
+  (package
+    (name "python-pyrodigal")
+    (version "3.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/althonos/pyrodigal")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10vxbm9i33wari0ifsr78xnfn7d0yqwzqpc5pchirjflf1mmnr6w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:modules '((ice-9 ftw)
+                  (srfi srfi-1)
+                  (srfi srfi-26)
+                  (guix build utils)
+                  (guix build pyproject-build-system))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (let ((cwd (getcwd))
+                      (libdir (find (cut string-prefix? "lib." <>)
+                                    (scandir "build"))))
+                  (with-directory-excursion (string-append cwd "/build/" libdir)
+                    (invoke "python3" "-m" "unittest" "pyrodigal.tests" "-vv")))))))))
+    (propagated-inputs (list python-archspec python-importlib-resources))
+    (native-inputs (list python-cython-3 python-mock python-unittest2))
+    (home-page "https://github.com/althonos/pyrodigal")
+    (synopsis "Cython bindings and Python interface for Prodigal")
+    (description
+     "This package offers Cython bindings and a Python interface for Prodigal.
+ Prodigal is an ORF finder designed for both genomes and metagenomes.")
+    (license license:gpl3)))
+
 (define-public python-pyfaidx
   (package
     (name "python-pyfaidx")
