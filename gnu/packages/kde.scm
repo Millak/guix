@@ -1760,18 +1760,18 @@ or Bonjour by other projects).")
   ;; FIXME: Check https://www.reddit.com/r/kde/comments/f7ojg9 for insights
   (package
     (name "kuserfeedback")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/kuserfeedback/"
                            "/kuserfeedback-" version ".tar.xz"))
        (sha256
-        (base32 "0r7jcc88n5b4rc0asjzh7m7g33i35k3z99l08qkrn92kn4ickakn"))))
+        (base32 "04zx5wfzqyargbvkbd66iabi4mfsn34qh5mbhpm90inx4aw0h8r5"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules
-           qttools-5
+           qttools
            ;; For optional component "Survey target expression parser"
            bison
            flex
@@ -1780,9 +1780,12 @@ or Bonjour by other projects).")
            ;;("phpunit" ,phpunit)
            ))
     (inputs
-     (list qtbase-5 qtcharts qtdeclarative-5 qtsvg-5))
+     (list qtdeclarative qtsvg))
     (arguments
-     `(#:tests? #f))  ;; 4/17 fail
+     (list
+      #:qtbase qtbase
+      #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
+      #:tests? #f))  ;; 4/17 fail
     (home-page "https://api.kde.org/frameworks/kuserfeedback/html/")
     (synopsis "Collect application feedback via telemetry and targeted
 surveys")
