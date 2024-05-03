@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
   #:use-module (gnu services networking)
   #:use-module (gnu services docker)
   #:use-module (gnu services desktop)
+  #:use-module (gnu packages)
   #:use-module ((gnu packages base) #:select (glibc))
   #:use-module (gnu packages guile)
   #:use-module (gnu packages docker)
@@ -43,7 +45,8 @@
   #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:)
   #:export (%test-docker
-            %test-docker-system))
+            %test-docker-system
+            %test-oci-container))
 
 (define %docker-os
   (simple-operating-system
@@ -316,3 +319,129 @@ docker-image} inside Docker.")
                                    (locale-libcs (list glibc)))
                                  #:type docker-image-type)))
                  run-docker-system-test)))))
+
+
+(define %oci-os
+  (simple-operating-system
+   (service dhcp-client-service-type)
+   (service dbus-root-service-type)
+   (service polkit-service-type)
+   (service elogind-service-type)
+   (service docker-service-type)
+   (extra-special-file "/shared.txt"
+                       (plain-file "shared.txt" "hello"))
+   (service oci-container-service-type
+            (list
+             (oci-container-configuration
+              (image
+               (oci-image
+                (repository "guile")
+                (value
+                 (specifications->manifest '("guile")))
+                (pack-options
+                 '(#:symlinks (("/bin" -> "bin"))))))
+              (entrypoint
+               "/bin/guile")
+              (command
+               '("-c" "(let l ((c 300))(display c)(sleep 1)(when(positive? c)(l (- c 1))))"))
+              (host-environment
+               '(("VARIABLE" . "value")))
+              (volumes
+               '(("/shared.txt" . "/shared.txt:ro")))
+              (extra-arguments
+               '("--env" "VARIABLE")))))))
+
+(define (run-oci-container-test)
+  "Run IMAGE as an OCI backed Shepherd service, inside OS."
+
+  (define os
+    (marionette-operating-system
+     (operating-system-with-gc-roots
+      %oci-os
+      (list))
+     #:imported-modules '((gnu services herd)
+                          (guix combinators))))
+
+  (define vm
+    (virtual-machine
+     (operating-system os)
+     (volatile? #f)
+     (memory-size 1024)
+     (disk-image-size (* 3000 (expt 2 20)))
+     (port-forwardings '())))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-11) (srfi srfi-64)
+                       (gnu build marionette))
+
+          (define marionette
+            ;; Relax timeout to accommodate older systems and
+            ;; allow for pulling the image.
+            (make-marionette (list #$vm) #:timeout 60))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "oci-container")
+
+          (test-assert "dockerd running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (match (start-service 'dockerd)
+                  (#f #f)
+                  (('service response-parts ...)
+                   (match (assq-ref response-parts 'running)
+                     ((pid) (number? pid))))))
+             marionette))
+
+          (sleep 10) ; let service start
+
+          (test-assert "docker-guile running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (match (start-service 'docker-guile)
+                  (#f #f)
+                  (('service response-parts ...)
+                   (match (assq-ref response-parts 'running)
+                     ((pid) (number? pid))))))
+             marionette))
+
+          (test-equal "passing host environment variables and volumes"
+            '("value" "hello")
+            (marionette-eval
+             `(begin
+                (use-modules (ice-9 popen)
+                             (ice-9 rdelim))
+
+                (define slurp
+                  (lambda args
+                    (let* ((port (apply open-pipe* OPEN_READ args))
+                           (output (let ((line (read-line port)))
+                                     (if (eof-object? line)
+                                         ""
+                                         line)))
+                           (status (close-pipe port)))
+                      output)))
+                (let* ((response1 (slurp
+                                   ,(string-append #$docker-cli "/bin/docker")
+                                   "exec" "docker-guile"
+                                   "/bin/guile" "-c" "(display (getenv \"VARIABLE\"))"))
+                       (response2 (slurp
+                                   ,(string-append #$docker-cli "/bin/docker")
+                                   "exec" "docker-guile"
+                                   "/bin/guile" "-c" "(begin (use-modules (ice-9 popen) (ice-9 rdelim))
+(display (call-with-input-file \"/shared.txt\" read-line)))")))
+                  (list response1 response2)))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "oci-container-test" test))
+
+(define %test-oci-container
+  (system-test
+   (name "oci-container")
+   (description "Test OCI backed Shepherd service.")
+   (value (run-oci-container-test))))
