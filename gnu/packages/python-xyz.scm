@@ -16522,6 +16522,20 @@ a hash value.")
      "This package provides ANSII Color formatting for output in terminals.")
     (license license:expat)))
 
+(define-public python-termcolor-1
+  (package
+    (inherit python-termcolor)
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "termcolor" version))
+       (sha256
+        (base32
+         "0fv1vq14rpqwgazxg4981904lfyp84mnammw7y046491cv76jv8x"))))
+    ;; There are no tests
+    (arguments (list #:tests? #false))))
+
 (define-public python-terminaltables
   (package
     (name "python-terminaltables")
