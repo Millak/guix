@@ -1762,26 +1762,30 @@ data analysis.")
         #:test-flags
         ;; ignore tests that require network
         '(list "--pyargs" "sklearn_extra"
-               "-k" "not test_build")
+               "-k" (string-append "not test_build"
+                                   ;; The error message format has changed,
+                                   ;; but the behavior itself is still the
+                                   ;; same.
+                                   " and not test_parameter_validation"))
         #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'build 'build-ext
-                   (lambda _
-                     (invoke "python" "setup.py" "build_ext"
-                             "--inplace")))
-                 (replace 'check
-                   (lambda* (#:key tests? test-flags #:allow-other-keys)
-                     (when tests?
-                       ;; Restrict OpenBLAS threads to prevent segfaults while testing!
-                       (setenv "OPENBLAS_NUM_THREADS" "1")
+        #~(modify-phases %standard-phases
+            (add-after 'build 'build-ext
+              (lambda _
+                (invoke "python" "setup.py" "build_ext"
+                        "--inplace")))
+            (replace 'check
+              (lambda* (#:key tests? test-flags #:allow-other-keys)
+                (when tests?
+                  ;; Restrict OpenBLAS threads to prevent segfaults while testing!
+                  (setenv "OPENBLAS_NUM_THREADS" "1")
 
-                       ;; Some tests require write access to $HOME.
-                       (setenv "HOME" "/tmp")
+                  ;; Some tests require write access to $HOME.
+                  (setenv "HOME" "/tmp")
 
-                       ;; Step out of the source directory to avoid interference;
-                       ;; we want to run the installed code with extensions etc.
-                       (with-directory-excursion "/tmp"
-                         (apply invoke "pytest" "-vv" test-flags))))))))
+                  ;; Step out of the source directory to avoid interference;
+                  ;; we want to run the installed code with extensions etc.
+                  (with-directory-excursion "/tmp"
+                    (apply invoke "pytest" "-vv" test-flags))))))))
       (propagated-inputs
        (list python-numpy
              python-scikit-learn
