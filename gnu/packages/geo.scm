@@ -1409,7 +1409,7 @@ utilities for data translation and processing.")
                                       " and not test_fetch_baja_bathymetry"
                                       " and not test_fetch_rio_magnetic"
                                       " and not test_fetch_california_gps"))))
-    (native-inputs (list python-cartopy python-distributed))
+    (native-inputs (list python-cartopy python-distributed python-pytest))
     (propagated-inputs (list python-dask
                              python-numpy
                              python-pandas
