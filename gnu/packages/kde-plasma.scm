@@ -1654,6 +1654,48 @@ on top of Baloo.")
      "KDE Plasma is an advanced graphical desktop system.")
     (license license:gpl2+)))
 
+(define-public plasma5support
+  (package
+    (name "plasma5support")
+    (version "6.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version
+                                  "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "17cwd0iyrzggb56xc37mvw7n7r0ddiasmxgfhzgh67sdxwpp7kzj"))))
+    (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase
+
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (replace 'check
+                           (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+                             (invoke "ctest"
+                                     "-E"
+                                     ;; also fail in upstream.
+                                     "(pluginloadertest)"
+                                     "-j"
+                                     (if parallel-tests?
+                                         (number->string (parallel-job-count))
+                                         "1")))))))
+    (native-inputs (list extra-cmake-modules))
+    (propagated-inputs (list kcoreaddons))
+    (inputs (list
+             kconfig
+             ki18n
+             qtdeclarative
+             kguiaddons
+             knotifications
+             solid
+             libksysguard))
+    (home-page "https://invent.kde.org/plasma/plasma5support")
+    (synopsis "Support components for porting from KF5/Qt5 to KF6/Qt6")
+    (description "This package provids support components for porting from
+KF5/Qt5 to KF6/Qt6")
+    (license (list license:lgpl2.0+))))
+
 (define-public plasma-bigscreen
   (package
     (name "plasma-bigscreen")
