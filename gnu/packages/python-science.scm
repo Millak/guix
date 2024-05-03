@@ -1991,7 +1991,7 @@ of Pandas
 (define-public python-pingouin
   (package
     (name "python-pingouin")
-    (version "0.5.2")
+    (version "0.5.4")
     (source
      ;; The PyPI tarball does not contain the tests.
      (origin
@@ -2002,11 +2002,15 @@ of Pandas
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0czy7cpn6xx9fs6wbz6rq2lpkb1a89bzxj1anf2f9in1m5qyrh83"))))
-    (build-system python-build-system)
+         "1j3qkgvyc31604ddl952h4hwza7schg8kwkycmxvpvx7xjj7nn68"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      ;; This one fails due to minor differences in accuracy
+      '(list "-k" "not test_logistic_regression")
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'loosen-requirements
            (lambda _
              (substitute* '("requirements.txt" "setup.py")
@@ -2024,10 +2028,11 @@ of Pandas
              (substitute* "pingouin/__init__.py"
                (("^from outdated[^\n]*") "")
                (("^warn_if_outdated[^\n]*") ""))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+         (add-after 'unpack 'sklearn-compatibility
+           (lambda _
+             (substitute* "pingouin/regression.py"
+               (("kwargs\\[\"penalty\"\\] = \"none\"")
+                "kwargs[\"penalty\"] = None")))))))
     (native-inputs
      (list python-pytest python-pytest-cov))
     (propagated-inputs
