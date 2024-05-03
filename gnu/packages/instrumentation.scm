@@ -190,7 +190,7 @@ bindings, and the command-line tool @command{babeltrace2}.")
     (native-inputs
      (list python-poetry-core python-pytest))
     (propagated-inputs
-     (list python-jinja2 python-jsonschema python-pyyaml python-termcolor))
+     (list python-jinja2 python-jsonschema python-pyyaml python-termcolor-1))
     (home-page "https://barectf.org")
     (synopsis "CTF tracer generator")
     (description
