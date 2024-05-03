@@ -18345,7 +18345,7 @@ with a new public API, and RPython support.")
 (define-public python-hy
   (package
     (name "python-hy")
-    (version "0.26.0")
+    (version "0.28.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -18354,7 +18354,7 @@ with a new public API, and RPython support.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1czhh7s81sg0nrnf4zv0ydqi4f7s6sywf4ks4fd59vpx441ca39v"))))
+        (base32 "0fs9ydqlbhmp4l3lf8ap8bksbpmlscm6gz7zf9bv2kmcldkjlzsw"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -18381,7 +18381,7 @@ with a new public API, and RPython support.")
                          " and not test_macro_require"
                          " and not test_requires_pollutes_core"))))))))
     (native-inputs
-     (list python-pytest python-wheel))
+     (list python-pytest-next python-wheel))
     (propagated-inputs
      (list python-funcparserlib))
     (home-page "https://docs.hylang.org/en/stable/")
