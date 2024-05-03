@@ -910,6 +910,13 @@ compressed massif files can also be opened transparently.")
 accessibility clients such as screen readers.")
     (license license:lgpl2.1+)))
 
+(define-public libqaccessibilityclient-qt5
+  (package
+    (inherit libqaccessibilityclient)
+    (name "libqaccessibilityclient-qt5")
+    (inputs (modify-inputs (package-inputs libqaccessibilityclient)
+              (replace "qtbase" qtbase-5)))))
+
 (define-public libkomparediff2
   (package
     (name "libkomparediff2")
