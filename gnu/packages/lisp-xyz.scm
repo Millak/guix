@@ -11258,7 +11258,7 @@ selectors.  It makes use of the Plump-DOM and is used by lQuery.")
       (arguments
        `(#:phases
          (modify-phases %standard-phases
-           (add-after 'install 'unpatch-shebangs
+           (add-after 'strip 'unpatch-shebangs
              (lambda* (#:key outputs #:allow-other-keys)
                ;; The documentation Makefile rely on shell scripts.
                ;; TODO: Build it!
