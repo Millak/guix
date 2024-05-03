@@ -19398,13 +19398,13 @@ applications.")
 (define-public python-kombu
   (package
     (name "python-kombu")
-    (version "5.3.6")
+    (version "5.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "kombu" version))
        (sha256
-        (base32 "1n9i4hj1h3aivgy82l7accyjh1rqn20am00152l5syhl19bmpnpk"))))
+        (base32 "1gwp3b7w7jhsas40655pa9nlblm12irjapfkx0flmhamlgclq701"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
