@@ -579,6 +579,51 @@ KDE Frameworks 5 to better interact with the system.")
     (home-page "https://invent.kde.org/plasma/kgamma5")
     (license license:gpl2+)))
 
+(define-public kglobalacceld
+  (package
+    (name "kglobalacceld")
+    (version "6.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1p38lqiw9r1w6grp5847pm9lh27d765in62fnc2vlrkb99krxcr7"))))
+    (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (add-before 'check 'setenv
+                           (lambda _
+                             (setenv "HOME" (getcwd))))
+                         (replace 'check
+                           (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+                             (invoke "dbus-launch" "ctest" "-j"
+                                     (if parallel-tests?
+                                         (number->string (parallel-job-count))
+                                         "1")))))))
+    (native-inputs (list extra-cmake-modules dbus))
+    (inputs (list kconfig
+                  kcoreaddons
+                  kcrash
+                  kdbusaddons
+                  kwindowsystem
+                  kglobalaccel
+                  kservice
+                  kio
+                  kjobwidgets
+                  xcb-util-keysyms
+                  libxkbcommon))
+    (synopsis "Daemon providing Global Keyboard Shortcut (Accelerator)
+functionality")
+    (description
+     "This package provides a Daemon providing Global Keyboard Shortcut
+(Accelerator) functionality.")
+    (home-page "https://invent.kde.org/plasma/kglobalacceld")
+    (license license:gpl2+)))
+
 (define-public khotkeys
   (package
     (name "khotkeys")
