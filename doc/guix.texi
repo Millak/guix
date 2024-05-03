@@ -40535,6 +40535,17 @@ processes as Shepherd Services.
 (service oci-container-service-type
          (list
           (oci-container-configuration
+           (image
+            (oci-image
+             (repository "guile")
+             (tag "3")
+             (value (specifications->manifest '("guile")))
+             (pack-options '(#:symlinks (("/bin/guile" -> "bin/guile"))
+                             #:max-layers 2))))
+           (entrypoint "/bin/guile")
+           (command
+            '("-c" "(display \"hello!\n\")")))
+          (oci-container-configuration
            (image "prom/prometheus")
            (network "host")
            (ports
@@ -40610,9 +40621,10 @@ Strings are passed directly to the Docker CLI.  You can refer to the
 @uref{https://docs.docker.com/engine/reference/commandline/run/#env,upstream}
 documentation for semantics.
 
-@item @code{image} (type: string)
-The image used to build the container.  Images are resolved by the
-Docker Engine, and follow the usual format
+@item @code{image} (type: string-or-oci-image)
+The image used to build the container.  It can be a string or an
+@code{oci-image} record.  Strings are resolved by the Docker Engine, and
+follow the usual format
 @code{myregistry.local:5000/testing/test-image:tag}.
 
 @item @code{provision} (default: @code{""}) (type: string)
@@ -40667,6 +40679,58 @@ documentation for semantics.
 @item @code{extra-arguments} (default: @code{'()}) (type: list)
 A list of strings, gexps or file-like objects that will be directly
 passed to the @command{docker run} invokation.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} oci-image
+Available @code{oci-image} fields are:
+
+@table @asis
+@item @code{repository} (type: string)
+A string like @code{myregistry.local:5000/testing/test-image} that names
+the OCI image.
+
+@item @code{tag} (default: @code{"latest"}) (type: string)
+A string representing the OCI image tag.  Defaults to @code{latest}.
+
+@item @code{value} (type: oci-lowerable-image)
+A @code{manifest} or @code{operating-system} record that will be lowered
+into an OCI compatible tarball.  Otherwise this field's value can be a
+gexp or a file-like object that evaluates to an OCI compatible tarball.
+
+@item @code{pack-options} (default: @code{'()}) (type: list)
+An optional set of keyword arguments that will be passed to the
+@code{docker-image} procedure from @code{guix scripts pack}.  They can
+be used to replicate @command{guix pack} behavior:
+
+@lisp
+(oci-image
+  (repository "guile")
+  (tag "3")
+  (value
+    (specifications->manifest '("guile")))
+  (pack-options '(#:symlinks (("/bin/guile" -> "bin/guile"))
+                  #:max-layers 2)))
+@end lisp
+
+If the @code{value} field is an @code{operating-system} record, this field's
+value will be ignored.
+
+@item @code{system} (default: @code{""}) (type: string)
+Attempt to build for a given system, e.g. "i686-linux"
+
+@item @code{target} (default: @code{""}) (type: string)
+Attempt to cross-build for a given triple, e.g. "aarch64-linux-gnu"
+
+@item @code{grafts?} (default: @code{#f}) (type: boolean)
+Whether to allow grafting or not in the pack build.
 
 @end table
 
