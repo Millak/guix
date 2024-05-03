@@ -2857,7 +2857,7 @@ telomerecat can produce an estimate in ~1 hour.")
 (define-public python-bioframe
   (package
     (name "python-bioframe")
-    (version "0.3.3")
+    (version "0.6.4")
     (source
      (origin
        (method git-fetch)
@@ -2868,18 +2868,21 @@ telomerecat can produce an estimate in ~1 hour.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "14lvb18d4npapyi6j2zqh9q94l658dzmka5riiizw1h0zb0kp9xb"))))
-    (build-system python-build-system)
+         "1m99hgxw4cb2x4qszb2lhp1isz57sdkqbmcgisnbqxqxkv4gba7v"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (setenv "MPLCONFIGDIR" "/tmp")
-             (when tests?
-               (invoke "pytest" "-v")))))))
+     (list
+      #:test-flags
+      '(list "-k" (string-append "not test_fetch_chromsizes"
+                                 " and not test_fetch_chromsizes_local_vs_ucsc"
+                                 " and not test_fetch_centromeres"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _ (setenv "MPLCONFIGDIR" "/tmp"))))))
     (native-inputs
      (list python-biopython
+           python-hatchling
            python-pysam
            python-pytest
            python-wheel))
@@ -2887,6 +2890,7 @@ telomerecat can produce an estimate in ~1 hour.")
      (list python-matplotlib
            python-numpy
            python-pandas
+           python-pyyaml
            python-requests))
     (home-page "https://github.com/open2c/bioframe")
     (synopsis "Pandas utilities for tab-delimited and other genomic files")
