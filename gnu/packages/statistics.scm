@@ -2359,6 +2359,12 @@ building design matrices.")
                (base32
                 "13kgyqk1hp603n9zym835kp1pqs83k0j7ymayw4fk0zx4z1nmvdx"))))
     (build-system pyproject-build-system)
+    ;; See https://github.com/scikit-learn-contrib/MAPIE/issues/432
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k" (string-append "not test_correct_results"
+                                 " and not test_correct_results_binary"))))
     (native-inputs (list python-pandas python-pytest))
     (propagated-inputs (list python-numpy python-scikit-learn))
     (home-page "https://github.com/scikit-learn-contrib/MAPIE")
