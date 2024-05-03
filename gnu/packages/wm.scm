@@ -2465,7 +2465,7 @@ wlr-output-management-unstable-v1 protocol.")
                         Icon=~@
                         Type=Application~%"
                        out))))))
-          (add-after 'install 'install-manual
+          (add-after 'create-desktop-file 'install-manual
             (lambda* (#:key (make-flags '()) outputs #:allow-other-keys)
               (let* ((out  #$output)
                      (info (string-append out "/share/info")))
