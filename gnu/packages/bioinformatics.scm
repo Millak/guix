@@ -17900,22 +17900,14 @@ such as Hi-C contact matrices.")
 (define-public python-cooltools
   (package
     (name "python-cooltools")
-    (version "0.5.1")
+    (version "0.7.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cooltools" version))
               (sha256
                (base32
-                "08hyzd3kazr87nvv6rwp5i1g9rwj7jmrly925lqnvippz4wp7k4g"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-v")))))))
+                "076fgqzf6453cx5zs32vz0f5yvfg53w8ayq9s79jssy7gj2x89lb"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-cython
            python-pytest))
