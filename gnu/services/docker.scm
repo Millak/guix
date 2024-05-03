@@ -5,7 +5,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2023, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -285,6 +285,11 @@ found!")
               name el)))))
    value))
 
+(define (oci-sanitize-host-environment value)
+  ;; Expected spec format:
+  ;; '(("HOME" . "/home/nobody") "JAVA_HOME=/java")
+  (oci-sanitize-mixed-list "host-environment" value "="))
+
 (define (oci-sanitize-environment value)
   ;; Expected spec format:
   ;; '(("HOME" . "/home/nobody") "JAVA_HOME=/java")
@@ -330,6 +335,24 @@ but ~a was found") el))))
   (entrypoint
    (maybe-string)
    "Overwrite the default entrypoint (@code{ENTRYPOINT}) of the image.")
+  (host-environment
+   (list '())
+   "Set environment variables in the host environment where @command{docker run}
+is invoked.  This is especially useful to pass secrets from the host to the
+container without having them on the @command{docker run}'s command line: by
+setting the @code{MYSQL_PASSWORD} on the host and by passing
+@code{--env MYSQL_PASSWORD} through the @code{extra-arguments} field, it is
+possible to securely set values in the container environment.  This field's
+value can be a list of pairs or strings, even mixed:
+
+@lisp
+(list '(\"LANGUAGE\" . \"eo:ca:eu\")
+      \"JAVA_HOME=/opt/java\")
+@end lisp
+
+Pair members can be strings, gexps or file-like objects. Strings are passed
+directly to @code{make-forkexec-constructor}."
+   (sanitizer oci-sanitize-host-environment))
   (environment
    (list '())
    "Set environment variables inside the container.  This can be a list of pairs
@@ -450,6 +473,8 @@ to the @command{docker run} invokation."
   (let* ((docker-command (file-append docker-cli "/bin/docker"))
          (user (oci-container-configuration-user config))
          (group (oci-container-configuration-group config))
+         (host-environment
+          (oci-container-configuration-host-environment config))
          (command (oci-container-configuration-command config))
          (provision (oci-container-configuration-provision config))
          (image (oci-container-configuration-image config))
@@ -471,7 +496,9 @@ to the @command{docker run} invokation."
                                 "--name" #$name
                                 #$@options #$@extra-arguments #$image #$@command)
                           #:user #$user
-                          #:group #$group))
+                          #:group #$group
+                          #:environment-variables
+                          (list #$@host-environment)))
                       (stop
                        #~(lambda _
                            (invoke #$docker-command "rm" "-f" #$name)))

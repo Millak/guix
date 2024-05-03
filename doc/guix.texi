@@ -40580,6 +40580,23 @@ Overwrite the default command (@code{CMD}) of the image.
 @item @code{entrypoint} (default: @code{""}) (type: string)
 Overwrite the default entrypoint (@code{ENTRYPOINT}) of the image.
 
+@item @code{host-environment} (default: @code{'()}) (type: list)
+Set environment variables in the host environment where @command{docker
+run} is invoked.  This is especially useful to pass secrets from the
+host to the container without having them on the @command{docker run}'s
+command line: by setting the @code{MYSQL_PASSWORD} on the host and by passing
+@code{--env MYSQL_PASSWORD} through the @code{extra-arguments} field, it is
+possible to securely set values in the container environment.  This field's
+value can be a list of pairs or strings, even mixed:
+
+@lisp
+(list '(\"LANGUAGE\" . \"eo:ca:eu\")
+      \"JAVA_HOME=/opt/java\")
+@end lisp
+
+Pair members can be strings, gexps or file-like objects. Strings are passed
+directly to @code{make-forkexec-constructor}.
+
 @item @code{environment} (default: @code{'()}) (type: list)
 Set environment variables. This can be a list of pairs or strings, even mixed:
 
