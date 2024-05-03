@@ -58,6 +58,9 @@
             oci-container-configuration-network
             oci-container-configuration-ports
             oci-container-configuration-volumes
+            oci-container-configuration-container-user
+            oci-container-configuration-workdir
+            oci-container-configuration-extra-arguments
             oci-container-service-type
             oci-container-shepherd-service))
 
@@ -297,6 +300,21 @@ found!")
   ;; '(("/mnt/dir" . "/dir") "/run/current-system/profile:/java")
   (oci-sanitize-mixed-list "volumes" value ":"))
 
+(define (oci-sanitize-extra-arguments value)
+  (define (valid? member)
+    (or (string? member)
+        (gexp? member)
+        (file-like? member)))
+  (map
+   (lambda (el)
+     (if (valid? el)
+         el
+         (raise
+          (formatted-message
+           (G_ "extra arguments may only be strings, gexps or file-like objects
+but ~a was found") el))))
+   value))
+
 (define-maybe/no-serialization string)
 
 (define-configuration/no-serialization oci-container-configuration
@@ -314,15 +332,16 @@ found!")
    "Overwrite the default entrypoint (@code{ENTRYPOINT}) of the image.")
   (environment
    (list '())
-   "Set environment variables.  This can be a list of pairs or strings, even
-mixed:
+   "Set environment variables inside the container.  This can be a list of pairs
+or strings, even mixed:
 
 @lisp
 (list '(\"LANGUAGE\" . \"eo:ca:eu\")
       \"JAVA_HOME=/opt/java\")
 @end lisp
 
-String are passed directly to the Docker CLI.  You can refer to the
+Pair members can be strings, gexps or file-like objects. Strings are passed
+directly to the Docker CLI.  You can refer to the
 @url{https://docs.docker.com/engine/reference/commandline/run/#env,upstream}
 documentation for semantics."
    (sanitizer oci-sanitize-environment))
@@ -347,7 +366,8 @@ be a list of pairs or strings, even mixed:
       \"10443:443\")
 @end lisp
 
-String are passed directly to the Docker CLI.  You can refer to the
+Pair members can be strings, gexps or file-like objects. Strings are passed
+directly to the Docker CLI.  You can refer to the
 @url{https://docs.docker.com/engine/reference/commandline/run/#publish,upstream}
 documentation for semantics."
    (sanitizer oci-sanitize-ports))
@@ -361,7 +381,8 @@ list of pairs or strings, even mixed:
       \"/gnu/store:/gnu/store\")
 @end lisp
 
-String are passed directly to the Docker CLI.  You can refer to the
+Pair members can be strings, gexps or file-like objects. Strings are passed
+directly to the Docker CLI.  You can refer to the
 @url{https://docs.docker.com/engine/reference/commandline/run/#volume,upstream}
 documentation for semantics."
    (sanitizer oci-sanitize-volumes))
@@ -375,7 +396,12 @@ documentation for semantics.")
    "Set the current working for the spawned Shepherd service.
 You can refer to the
 @url{https://docs.docker.com/engine/reference/run/#workdir,upstream}
-documentation for semantics."))
+documentation for semantics.")
+  (extra-arguments
+   (list '())
+   "A list of strings, gexps or file-like objects that will be directly passed
+to the @command{docker run} invokation."
+   (sanitizer oci-sanitize-extra-arguments)))
 
 (define oci-container-configuration->options
   (lambda (config)
@@ -428,7 +454,9 @@ documentation for semantics."))
          (provision (oci-container-configuration-provision config))
          (image (oci-container-configuration-image config))
          (options (oci-container-configuration->options config))
-         (name (guess-name provision image)))
+         (name (guess-name provision image))
+         (extra-arguments
+          (oci-container-configuration-extra-arguments config)))
 
     (shepherd-service (provision `(,(string->symbol name)))
                       (requirement '(dockerd user-processes))
@@ -441,7 +469,7 @@ documentation for semantics."))
                           ;; docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
                           (list #$docker-command "run" "--rm"
                                 "--name" #$name
-                                #$@options #$image #$@command)
+                                #$@options #$@extra-arguments #$image #$@command)
                           #:user #$user
                           #:group #$group))
                       (stop
@@ -482,5 +510,5 @@ documentation for semantics."))
                 (extend append)
                 (compose concatenate)
                 (description
-                 "This service allows the management of Docker and OCI
+                 "This service allows the management of OCI
 containers as Shepherd services.")))

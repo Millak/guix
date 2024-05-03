@@ -40574,13 +40574,13 @@ The user under whose authority docker commands will be run.
 @item @code{group} (default: @code{"docker"}) (type: string)
 The group under whose authority docker commands will be run.
 
-@item @code{command} (default: @code{()}) (type: list-of-strings)
+@item @code{command} (default: @code{'()}) (type: list-of-strings)
 Overwrite the default command (@code{CMD}) of the image.
 
 @item @code{entrypoint} (default: @code{""}) (type: string)
 Overwrite the default entrypoint (@code{ENTRYPOINT}) of the image.
 
-@item @code{environment} (default: @code{()}) (type: list)
+@item @code{environment} (default: @code{'()}) (type: list)
 Set environment variables. This can be a list of pairs or strings, even mixed:
 
 @lisp
@@ -40588,7 +40588,8 @@ Set environment variables. This can be a list of pairs or strings, even mixed:
       "JAVA_HOME=/opt/java")
 @end lisp
 
-String are passed directly to the Docker CLI. You can refer to the
+Pair members can be strings, gexps or file-like objects.
+Strings are passed directly to the Docker CLI.  You can refer to the
 @uref{https://docs.docker.com/engine/reference/commandline/run/#env,upstream}
 documentation for semantics.
 
@@ -40603,7 +40604,7 @@ Set the name of the provisioned Shepherd service.
 @item @code{network} (default: @code{""}) (type: string)
 Set a Docker network for the spawned container.
 
-@item @code{ports} (default: @code{()}) (type: list)
+@item @code{ports} (default: @code{'()}) (type: list)
 Set the port or port ranges to expose from the spawned container.  This can be a
 list of pairs or strings, even mixed:
 
@@ -40612,11 +40613,12 @@ list of pairs or strings, even mixed:
       "10443:443")
 @end lisp
 
-String are passed directly to the Docker CLI.  You can refer to the
+Pair members can be strings, gexps or file-like objects.
+Strings are passed directly to the Docker CLI.  You can refer to the
 @uref{https://docs.docker.com/engine/reference/commandline/run/#publish,upstream}
 documentation for semantics.
 
-@item @code{volumes} (default: @code{()}) (type: list)
+@item @code{volumes} (default: @code{'()}) (type: list)
 Set volume mappings for the spawned container.  This can be a
 list of pairs or strings, even mixed:
 
@@ -40625,7 +40627,8 @@ list of pairs or strings, even mixed:
       "/gnu/store:/gnu/store")
 @end lisp
 
-String are passed directly to the Docker CLI.  You can refer to the
+Pair members can be strings, gexps or file-like objects.
+Strings are passed directly to the Docker CLI.  You can refer to the
 @uref{https://docs.docker.com/engine/reference/commandline/run/#volume,upstream}
 documentation for semantics.
 
@@ -40639,6 +40642,10 @@ Set the current working for the spawned Shepherd service.
 You can refer to the
 @url{https://docs.docker.com/engine/reference/run/#workdir,upstream}
 documentation for semantics.
+
+@item @code{extra-arguments} (default: @code{'()}) (type: list)
+A list of strings, gexps or file-like objects that will be directly
+passed to the @command{docker run} invokation.
 
 @end table
 
