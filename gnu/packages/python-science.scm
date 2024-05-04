@@ -2789,16 +2789,20 @@ heavily biased to machine learning scenarios.  It works on top of
 (define-public python-paramz
   (package
     (name "python-paramz")
-    (version "0.9.5")
+    (version "0.9.6")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "paramz" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sods/paramz")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "16hbh97kj6b1c2gw22rqnr3w3nqkszh9gj8vgx738gq81wf225q9"))))
-    (build-system python-build-system)
+                "1ywc2jzj40m6wmq227j3snxvp4434s0m1xk1abg6v6mr87pv2sa9"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-decorator python-numpy python-scipy
                              python-six))
+    (native-inputs (list python-nose))
     (home-page "https://github.com/sods/paramz")
     (synopsis "The Parameterization Framework")
     (description
