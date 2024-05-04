@@ -305,6 +305,33 @@ integers3 = [
   2, # this is ok
 ]"))
 
+(test-equal "parse-toml: Arrays of empty strings"
+ '(("empty1" "")
+   ("empty2" "" "")
+   ("empty3" "" "" "")
+   ("emptyraw1" "")
+   ("emptyraw2" "" "")
+   ("emptyraw3" "" "" "")
+   ("emptyml1" "")
+   ("emptyml2" "" "")
+   ("emptyml3" "" "" "")
+   ("emptyrawml1" "")
+   ("emptyrawml2" "" "")
+   ("emptyrawml3" "" "" ""))
+ (parse-toml "empty1 = [ \"\" ]
+empty2 = [ \"\", \"\" ]
+empty3 = [ \"\", \"\", \"\" ]
+emptyraw1 = [ '' ]
+emptyraw2 = [ '', '' ]
+emptyraw3 = [ '', '', '' ]
+emptyml1 = [ \"\"\"\"\"\" ]
+emptyml2 = [ \"\"\"\"\"\", \"\"\"\"\"\" ]
+emptyml3 = [ \"\"\"\"\"\", \"\"\"\"\"\", \"\"\"\"\"\" ]
+emptyrawml1 = [ '''''' ]
+emptyrawml2 = [ '''''', '''''' ]
+emptyrawml3 = [ '''''', '''''', '''''' ]
+"))
+
 (test-equal "parse-toml: Tables"
  '(("table-1" ("key1" . "some string")
               ("key2" . 123))

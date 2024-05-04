@@ -97,7 +97,7 @@
 
 ;; Basic String
 (define-peg-pattern basic-string body (and (ignore "\"")
-                                           (* basic-char)
+                                           (or (+ basic-char) "")
                                            (ignore "\"")))
 (define-peg-pattern basic-char body (or basic-unescaped escaped))
 (define-peg-pattern basic-unescaped body (or wschar
@@ -116,9 +116,11 @@
 
 ;; Multiline Basic String
 (define-peg-pattern ml-basic-string body (and
-                                           ml-basic-string-delim
+                                          ml-basic-string-delim
                                           (? ignore-newline)
-                                          ml-basic-body
+                                          ;; Force the result of the empty string
+                                          ;; to be a string, not no token.
+                                          (and ml-basic-body "")
                                           ml-basic-string-delim))
 (define-peg-pattern ml-basic-string-delim none "\"\"\"")
 (define-peg-pattern ml-basic-body body (and
@@ -145,7 +147,7 @@
 
 ;; Literal String
 (define-peg-pattern literal-string body (and (ignore "'")
-                                             (* literal-char)
+                                             (or (+ literal-char) "")
                                              (ignore "'")))
 (define-peg-pattern literal-char body (or "\x09"
                                           (range #\x20 #\x26)
@@ -156,7 +158,9 @@
 (define-peg-pattern ml-literal-string body (and
                                             ml-literal-string-delim
                                             (? ignore-newline)
-                                            ml-literal-body
+                                            ;; Force the result of the empty string
+                                            ;; to be a string, not no token.
+                                            (and ml-literal-body "")
                                             ml-literal-string-delim))
 (define-peg-pattern ml-literal-string-delim none "'''")
 (define-peg-pattern ml-literal-body body (and
@@ -475,4 +479,3 @@ the list KEY. For instance a KEY (a b) would retrieve alist[a][b]."
   "Parse and evaluate toml document from file FILE."
 
   (parse-toml (call-with-input-file file get-string-all)))
-
