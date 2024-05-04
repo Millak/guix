@@ -44,6 +44,7 @@
   #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
@@ -752,6 +753,33 @@ interface for those who are accustomed to the ircII way of doing things.")
                    ;; "Redistribution is permitted" clause of the license if you
                    ;; distribute binaries.
                    (license:non-copyleft "http://epicsol.org/copyright")))))
+
+(define-public python-irc-parser-tests
+  (package
+    (name "python-irc-parser-tests")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch) ; PyPI has a broken tests and data locations
+       (uri (git-reference
+             (url "https://github.com/ircdocs/parser-tests")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x0psq31f43d88b8jhaqwd9f1ykiqm4j13i8nxgcgkgp992cw002"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Tests require python-girc which fails to build on Python 3.10.
+      #:tests? #f))
+    (propagated-inputs (list python-pyyaml))
+    (home-page "https://github.com/ircdocs/parser-tests")
+    (synopsis "Tests for various IRC protocol parsers")
+    (description
+     "This package provides a library of tests for various IRC protocol
+parsers")
+    (license (list license:cc0
+                   license:public-domain))))
 
 (define-public go-gopkg-in-irc-v3
   (package
