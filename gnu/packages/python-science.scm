@@ -2827,27 +2827,35 @@ for parameterized model creation and handling.  Its features include:
 (define-public python-gpy
   (package
     (name "python-gpy")
-    (version "1.10.0")
+    (version "1.13.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "GPy" version))
               (sha256
                (base32
-                "1yx65ajrmqp02ykclhlb0n8s3bx5r0xj075swwwigiqaippr7dx2"))
-             (snippet
-              #~(begin (use-modules (guix build utils))
-                       (substitute* "GPy/models/state_space_main.py"
-                         (("collections\\.Iterable") "collections.abc.Iterable"))))))
-    (build-system python-build-system)
+                "05d1ry4jpp0srsrmp3qd6s0p2bjc4c0z99450pzdr79vagbfvlk4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'remove-plotting-tests
-                    ;; These fail
-                    (lambda _
-                      (delete-file "GPy/testing/plotting_tests.py"))))))
-    (native-inputs (list python-cython python-nose python-climin))
-    (propagated-inputs (list python-numpy python-paramz python-scipy
-                             python-six))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             ;; This file uses Python 2 statements
+             (delete-file "GPy/testing/mpi_test__.py")
+             (substitute* "setup.py"
+               (("scipy>=1.3.0,<1.12.0")
+                "scipy>=1.3.0,<=1.13.0"))
+             ;; Use numpy.exp because scipy.ext no longer exists
+             (substitute* "GPy/kern/src/sde_standard_periodic.py"
+               (("sp\\.exp") "np.exp"))
+             (substitute* "GPy/kern/src/sde_stationary.py"
+               (("sp\\.poly1d") "np.poly1d")
+               (("sp\\.roots") "np.roots")))))))
+    (native-inputs
+     (list python-cython python-matplotlib python-pods python-pytest))
+    (propagated-inputs
+     (list python-numpy python-paramz python-scipy python-six))
     (home-page "https://sheffieldml.github.io/GPy/")
     (synopsis "The Gaussian Process Toolbox")
     (description
