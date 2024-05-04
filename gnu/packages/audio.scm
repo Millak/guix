@@ -9,7 +9,7 @@
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2016–2023 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2018, 2020, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018, 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
@@ -5189,7 +5189,7 @@ representations.")
 (define-public cava
   (package
     (name "cava")
-    (version "0.8.3")
+    (version "0.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5198,10 +5198,10 @@ representations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0v0l6al3ygj6lq224ddffb1f10yv4218k7l82hbba8d7dj2rc67b"))))
+                "0r13pf8z02pf4wlapa9nyp1h114nnk1s47bdpq3wl8wvw896axw6"))))
     (build-system gnu-build-system)
-    (native-inputs (list autoconf automake libtool))
-    (inputs (list fftw ncurses pulseaudio iniparser))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list alsa-lib fftw ncurses pipewire pulseaudio iniparser))
     (arguments
      (list #:configure-flags
            #~(list (string-append "PREFIX="
