@@ -101,7 +101,7 @@ restrictions that stem from limitations of the standard RCX firmware.")
 (define-public leocad
   (package
     (name "leocad")
-    (version "21.06")
+    (version "23.03")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -110,7 +110,7 @@ restrictions that stem from limitations of the standard RCX firmware.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ifbxngkbmg6d8vv08amxbnfvlyjdwzykrjp98lbwvgb0b843ygq"))))
+                "0sihx2g06mxaahqdh361xfqf7fkzzyhlr58qlzyr4c8jd2pnd3r1"))))
     (build-system gnu-build-system)
     (native-inputs
      (list qttools-5))           ; for lrelease
