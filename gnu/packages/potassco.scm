@@ -612,3 +612,36 @@ as logic programs.")
    (description "Clinguin is a graphical user interface toolkit for clingo,
 which allows user interfaces to be specified entirely as a logic program.")
    (license license:expat)))
+
+(define-public python-clintest
+  (package
+    (name "python-clintest")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/clintest")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xzbby9ram55h87ykm652kgm45b8rlhbjc8gjkz308h1jnjllmmy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'delete-failing-tests
+                 (lambda _
+                   ;; XXX: Clingo statistics are broken in dependencies already.
+                   (for-each delete-file '("tests/test_solver.py"
+                                           "tests/test_test.py")))))))
+    (inputs (list python-clingo))
+    (native-inputs (list python-pytest))
+    (home-page "https://potassco.org/clintest/")
+    (synopsis "Test framework for clingo programs")
+    (description "Clintest is a framework for unit testing clingo programs.
+It provides various components to assemble the most commonly used tests quickly,
+but also works fine along custom-built test.  Clintest monitors the test
+outcome while solving to abort the search for solutions once the outcome is
+certain.")
+    (license license:expat)))
