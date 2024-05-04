@@ -5442,6 +5442,8 @@ compatible with SQLite using a graphical user interface.")
 (define-public sqls
   (package
     (name "sqls")
+    ;; TODO: The latest version requires a way more packages to be available
+    ;; in Guix.
     (version "0.2.18")
     (source (origin
               (method git-fetch)
@@ -5455,20 +5457,22 @@ compatible with SQLite using a graphical user interface.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.21
       #:install-source? #f
       #:import-path "github.com/lighttiger2505/sqls"))
-    (inputs (list go-github-com-go-sql-driver-mysql
-                  go-github-com-lib-pq
-                  go-github-com-mattn-go-runewidth
-                  go-github-com-mattn-go-sqlite3
-                  go-github-com-olekukonko-tablewriter
-                  go-github-com-pkg-errors
-                  go-github-com-sourcegraph-jsonrpc2
-                  go-golang-org-x-crypto
-                  go-golang-org-x-xerrors
-                  go-gopkg-in-yaml-v2))
-    (native-inputs (list go-github-com-google-go-cmp-cmp
-                         go-github-com-k0kubun-pp))
+    (native-inputs
+     (list go-github-com-google-go-cmp-cmp
+           go-github-com-go-sql-driver-mysql
+           go-github-com-k0kubun-pp
+           go-github-com-lib-pq
+           go-github-com-mattn-go-runewidth
+           go-github-com-mattn-go-sqlite3
+           go-github-com-olekukonko-tablewriter
+           go-github-com-pkg-errors
+           go-github-com-sourcegraph-jsonrpc2
+           go-golang-org-x-crypto
+           go-golang-org-x-xerrors
+           go-gopkg-in-yaml-v2))
     (home-page "https://github.com/sqls-server/sqls")
     (synopsis "SQL language server written in Go")
     (description
