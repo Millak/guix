@@ -552,7 +552,9 @@ algorithm for a number of different methods.")
                (("suites.append\\(test_docstrings.*")
                 "")))))))
     (propagated-inputs (list python-numpy python-scikit-image python-scipy))
-    (native-inputs (list python-coverage python-coveralls python-flake8))
+    (native-inputs
+     (list python-coverage python-coveralls python-flake8
+           python-pytest))
     (home-page "https://github.com/epfl-lts2/pygsp")
     (synopsis "Graph Signal Processing in Python")
     (description "The PyGSP is a Python package to ease signal processing on
