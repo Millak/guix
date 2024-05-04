@@ -796,13 +796,29 @@ parsers")
         (base32 "0f2vv947yf9ygy8ylwqkd9yshybfdsbsp9pffjyvm7l7rnq5da60"))))
     (build-system go-build-system)
     (arguments
-     '(;; TODO 3 tests fail because of missing files
-       ;; https://paste.sr.ht/~whereiseveryone/784d068887a65c1b869caa7d7c2077d28a2b2187
-       #:tests? #f
-       #:import-path "gopkg.in/irc.v3" #:unpack-path "gopkg.in/irc.v3"))
+     (list
+      #:import-path "gopkg.in/irc.v3"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Testscases is a git submodule to
+          ;; <https://github.com/go-irc/irc-parser-tests> which is an
+          ;; unmaintained clone of <https://github.com/ircdocs/parser-tests>
+          ;; which is packed in Guix as python-irc-parser-tests.  Tests data
+          ;; (YAML files) are distributed as Python package and located in
+          ;; <lib/python3.10/site-packages/parser_tests/data/>.
+          (add-before 'check 'install-testcases-data
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (mkdir-p "./testcases/tests")
+                (for-each
+                 (lambda (file)
+                   (install-file file "./testcases/tests"))
+                 (find-files
+                  #$(this-package-native-input "python-irc-parser-tests") "\\.yaml$"))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify python-irc-parser-tests))
     (propagated-inputs
-     `(("go-gopkg-in-yaml-v2" ,go-gopkg-in-yaml-v2)
-       ("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+     (list go-gopkg-in-yaml-v2))
     (home-page "https://gopkg.in/irc.v3")
     (synopsis "Low-level IRC library for Go")
     (description "Package irc provides a simple IRC library meant as a
