@@ -6572,6 +6572,35 @@ for @code{libxkbcommon}.")
      "Dynamically loaded xkbcommon and xkbcommon-x11 Rust bindings.")
     (license license:expat)))
 
+(define-public rust-xkbcommon-sys-1
+  (package
+    (name "rust-xkbcommon-sys")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xkbcommon-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "142ww452qq0q47fmc4khzsd0fbwmb71fjl7pci573zf83fvdpxsn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.63)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'add-absolute-library-references
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "XKBCOMMON_LIB_DIR"
+                     (assoc-ref inputs "libxkbcommon")))))))
+    (native-inputs (list pkg-config))
+    (inputs (list clang libxkbcommon-1.5))
+    (home-page "https://github.com/meh/rust-xkbcommon-sys")
+    (synopsis "Bindings to libxkbcommon")
+    (description "This package provides bindings to libxkbcommon.")
+    (license license:wtfpl2)))
+
 (define-public rust-xkb-0.3
   (package
     (name "rust-xkb")
