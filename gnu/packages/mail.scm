@@ -810,7 +810,7 @@ It adds a large amount of new and improved features to mutt.")
 (define-public gmime
   (package
     (name "gmime")
-    (version "3.2.7")
+    (version "3.2.14")
     (source
      (origin
        (method git-fetch)
@@ -819,7 +819,7 @@ It adds a large amount of new and improved features to mutt.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yiylbw9iy49hgj29czinv246hh5c18qv6qkvbdrmq9z5m00sp01"))))
+        (base32 "0kvhyd1rn6wi9wrqi2a4f26yp0l6shsg9sd45hckzf04p9687hb7"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -842,7 +842,7 @@ It adds a large amount of new and improved features to mutt.")
                                          (or prog (error "not found: "
                                                          base))))))))))))
     (native-inputs
-     (list autoconf
+     (list autoconf-2.71
            automake
            pkg-config
            gnupg                        ; for tests only
