@@ -1380,7 +1380,7 @@ and multimedia programs in the Python language.")
 
 (define-public python-pygame-sdl2
   (let ((real-version "2.1.0")
-        (renpy-version "8.2.0"))
+        (renpy-version "8.3.0"))
     (package
       (inherit python-pygame)
       (name "python-pygame-sdl2")
@@ -1390,7 +1390,7 @@ and multimedia programs in the Python language.")
          (method url-fetch)
          (uri (string-append "https://www.renpy.org/dl/" renpy-version
                              "/pygame_sdl2-" version ".tar.gz"))
-         (sha256 (base32 "17mc39c7ha83kzv2wmq61a15mn6p8wh2y33ixhf5sb4bvyr48mhy"))
+         (sha256 (base32 "1p8a4v3r5vjxhiwxdmqqhkl38zav6c4a6w6v2nixzdhzyfkgk16n"))
          (modules '((guix build utils)))
          (snippet
           '(begin
