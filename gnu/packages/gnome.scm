@@ -3748,47 +3748,47 @@ diagrams.")
                 "1fljkag2gr7c4k5mn798lgf9903xslz8h51bgvl89nnay42qjqpp"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--disable-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'pre-configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "gdk-pixbuf-loader/Makefile.in"
-               ;; By default the gdk-pixbuf loader is installed under
-               ;; gdk-pixbuf's prefix.  Work around that.
-               (("gdk_pixbuf_moduledir = .*$")
-                (string-append "gdk_pixbuf_moduledir = "
-                               "$(prefix)/lib/gdk-pixbuf-2.0/2.10.0/"
+     (list
+      #:configure-flags '(list "--disable-static")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'pre-configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "gdk-pixbuf-loader/Makefile.in"
+                ;; By default the gdk-pixbuf loader is installed under
+                ;; gdk-pixbuf's prefix.  Work around that.
+                (("gdk_pixbuf_moduledir = .*$")
+                 (string-append "gdk_pixbuf_moduledir = "
+                                "$(prefix)/lib/gdk-pixbuf-2.0/2.10.0/"
                                 "loaders\n"))
-               ;; Drop the 'loaders.cache' file, it's in gdk-pixbuf+svg.
-               (("gdk_pixbuf_cache_file = .*$")
-                "gdk_pixbuf_cache_file = $(TMPDIR)/loaders.cache\n"))
-             #t))
-         (add-before 'check 'fix-test-with-pango-1.50
-           (lambda _
-	     ;; Changes between pango 1.48 and 1.50 caused the text to be one
-	     ;; pixel lower in the output image compared to the reference.
-             (substitute* "tests/fixtures/reftests/bugs/587721-text-transform.svg"
-	       (("660\\.9") "659.9"))))
-         (add-before 'check 'remove-failing-tests
-           (lambda _
-             (with-directory-excursion "tests/fixtures/reftests"
-               (for-each delete-file
-                         '(;; This test fails on i686:
-                           "svg1.1/masking-path-04-b.svg"
-                           ;; This test fails on armhf:
-                           "svg1.1/masking-mask-01-b.svg"
-                           ;; This test fails on aarch64:
-                           "bugs/777834-empty-text-children.svg"
-                           ;; These two tests fail due to slightly different
-                           ;; text rendering (different kerning or similar),
-                           ;; nothing alarming.
-                           "bugs/340047.svg"
-                           "bugs/749415.svg"
-                           ;; These two tests fail with the update to cairo
-                           ;; version 1.18.0.
-                           "bugs/587721-text-transform.svg"
-                           "svg1.1/masking-path-03-b.svg"))))))))
+                ;; Drop the 'loaders.cache' file, it's in gdk-pixbuf+svg.
+                (("gdk_pixbuf_cache_file = .*$")
+                 "gdk_pixbuf_cache_file = $(TMPDIR)/loaders.cache\n"))))
+          (add-before 'check 'fix-test-with-pango-1.50
+            (lambda _
+	      ;; Changes between pango 1.48 and 1.50 caused the text to be one
+	      ;; pixel lower in the output image compared to the reference.
+              (substitute* "tests/fixtures/reftests/bugs/587721-text-transform.svg"
+	        (("660\\.9") "659.9"))))
+          (add-before 'check 'remove-failing-tests
+            (lambda _
+              (with-directory-excursion "tests/fixtures/reftests"
+                (for-each delete-file
+                          '( ;; This test fails on i686:
+                            "svg1.1/masking-path-04-b.svg"
+                            ;; This test fails on armhf:
+                            "svg1.1/masking-mask-01-b.svg"
+                            ;; This test fails on aarch64:
+                            "bugs/777834-empty-text-children.svg"
+                            ;; These two tests fail due to slightly different
+                            ;; text rendering (different kerning or similar),
+                            ;; nothing alarming.
+                            "bugs/340047.svg"
+                            "bugs/749415.svg"
+                            ;; These two tests fail with the update to cairo
+                            ;; version 1.18.0.
+                            "bugs/587721-text-transform.svg"
+                            "svg1.1/masking-path-03-b.svg"))))))))
     (native-inputs
      (list pkg-config
            `(,glib "bin") ; glib-mkenums, etc.
