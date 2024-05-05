@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2021 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2021, 2024 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
@@ -1102,7 +1102,7 @@ Arachnoid video plugin.")
 (define-public mupen64plus-video-glide64
   (package
     (name "mupen64plus-video-glide64")
-    (version "2.0.0")
+    (version "2.5.9")
     (source
      (origin
        (method git-fetch)
@@ -1111,7 +1111,7 @@ Arachnoid video plugin.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qn5za7g7796kh2ag3xpmhbqg0yf71g9liz6ks0rha8pz73lgs01"))))
+        (base32 "0jscvr2imm9wj9jsgsp5815pv27f97w8g19ix0n39y9yy851qvrg"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config which))
@@ -1123,17 +1123,9 @@ Arachnoid video plugin.")
          ;; The mupen64plus build system has no configure phase.
          (delete 'configure)
          ;; Makefile is in a subdirectory.
-         (add-before
-          'build 'cd-to-project-dir
+         (add-before 'build 'cd-to-project-dir
           (lambda _
-            (chdir "projects/unix")))
-         ;; XXX Should be unnecessary with the next release.
-         (add-before
-          'build 'use-sdl2
-          (lambda _
-            (substitute* "Makefile"
-              (("SDL_CONFIG = (.*)sdl-config" all prefix)
-               (string-append "SDL_CONFIG = " prefix "sdl2-config"))))))
+            (chdir "projects/unix"))))
        #:make-flags
        (let ((out (assoc-ref %outputs "out"))
              (m64p (assoc-ref %build-inputs "mupen64plus-core")))
