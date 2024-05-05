@@ -1877,7 +1877,8 @@ proxy of 'guix-daemon' to ~s...~%"
                           (format #t "clearing HTTP/HTTPS \
 proxy of 'guix-daemon'...~%")
                           (unsetenv "http_proxy")))
-                    (action 'guix-daemon 'restart)
+                    (perform-service-action (lookup-service 'guix-daemon)
+                                            'restart)
                     (environ environment)
                     #t)))))
 
@@ -1898,7 +1899,8 @@ proxy of 'guix-daemon'...~%")
                         (begin
                           (format #t "disable substitute servers discovery~%")
                           (unsetenv "discover")))
-                    (action 'guix-daemon 'restart)
+                    (perform-service-action (lookup-service 'guix-daemon)
+                                            'restart)
                     (environ environment)
                     #t)))))
 
