@@ -1318,29 +1318,27 @@ Z64 video plugin.")
            mupen64plus-audio-sdl
            mupen64plus-input-sdl
            mupen64plus-rsp-hle
-           mupen64plus-video-glide64
            mupen64plus-video-glide64mk2
            mupen64plus-video-rice))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; The mupen64plus build system has no configure phase.
-         (delete 'configure)
-         ;; Makefile is in a subdirectory.
-         (add-before
-          'build 'cd-to-project-dir
-          (lambda _
-            (chdir "projects/unix"))))
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out"))
-             (m64p (assoc-ref %build-inputs "mupen64plus-core")))
-         (list "all"
-               (string-append "PREFIX=" out)
-               (string-append "APIDIR=" m64p "/include/mupen64plus")
-               ;; Trailing slash matters here.
-               (string-append "COREDIR=" m64p "/lib/")))
-       ;; There are no tests.
-       #:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The mupen64plus build system has no configure phase.
+          (delete 'configure)
+          ;; Makefile is in a subdirectory.
+          (add-before 'build 'cd-to-project-dir
+            (lambda _
+              (chdir "projects/unix"))))
+      #:make-flags
+      #~(let ((m64p #$(this-package-input "mupen64plus-core")))
+          (list "all"
+                (string-append "PREFIX=" #$output)
+                (string-append "APIDIR=" m64p "/include/mupen64plus")
+                ;; Trailing slash matters here.
+                (string-append "COREDIR=" m64p "/lib/")))
+      ;; There are no tests.
+      #:tests? #f))
     (home-page "https://www.mupen64plus.org/")
     (synopsis "Mupen64Plus command line user interface")
     (description
