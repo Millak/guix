@@ -459,10 +459,26 @@ and other formats.")
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
-       (list
-        "--disable-static")))
+       (list "--disable-static")
+       #:phases
+       (modify-phases %standard-phases
+         ,@(if (or (target-riscv64?)
+                   (target-aarch64?))
+               `((add-after 'unpack 'update-config-scripts
+                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                     (for-each (lambda (file)
+                                 (install-file
+                                   (search-input-file
+                                     (or native-inputs inputs)
+                                     (string-append "/bin/" file)) "."))
+                               '("config.guess" "config.sub")))))
+               '()))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
+     `(,@(if (or (target-riscv64?)
+                 (target-aarch64?))
+             `(("config" ,config))
+             `())
+       ("gettext" ,gettext-minimal)
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)))
     (synopsis "Common JS Modules")
