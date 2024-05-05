@@ -5764,10 +5764,10 @@ to convenience of translating and batch processing of multiple documents.")
     (license license:gpl3+)))
 
 (define-public theorafile
-  (let ((commit "404b14d7602b5918d117eaa64e8aa6601ede8593"))
+  (let ((commit "ea5fd6d34053ff72b0abe83fa4f2cd0771d92663"))
     (package
       (name "theorafile")
-      (version (git-version "0.0.0" "1" commit))
+      (version (git-version "0.0.0" "2" commit))
       (source
        (origin
          (method git-fetch)
@@ -5776,7 +5776,7 @@ to convenience of translating and batch processing of multiple documents.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "128c3pjzqbgrj020glm5jd6ss18vl19471lj615w2brjwb7c1f0z"))))
+          (base32 "0affdbs7vhi7apj5sc5mg815vqy1913zgymx3m1rsz8fhrcg3bvn"))))
       (build-system gnu-build-system)
       (arguments
        '(#:make-flags '("CC=gcc")
@@ -5791,8 +5791,7 @@ to convenience of translating and batch processing of multiple documents.")
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((out (assoc-ref outputs "out")))
                  (install-file "libtheorafile.so" (string-append out "/lib"))
-                 (install-file "theorafile.h" (string-append out "/include")))
-               #t)))))
+                 (install-file "theorafile.h" (string-append out "/include"))))))))
       (native-inputs
        ;; For tests.
        (list sdl2))
