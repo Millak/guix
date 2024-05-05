@@ -59,12 +59,14 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gl)
@@ -399,7 +401,23 @@ networks bypassing intermediate firewalls.")
        (uri (string-append "https://download.strongswan.org/strongswan-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "063mi0kdlpd7r7s3py35yf80hvrv3nrdfvxpyn7ns25gqajg3za5"))))
+        (base32 "063mi0kdlpd7r7s3py35yf80hvrv3nrdfvxpyn7ns25gqajg3za5"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (with-directory-excursion "src"
+              (for-each delete-file
+                      '("starter/parser/lexer.c"
+                        "libstrongswan/settings/settings_lexer.c"
+                        "starter/parser/parser.c"
+                        "starter/parser/parser.h"
+                        "libstrongswan/settings/settings_parser.c"
+                        "libstrongswan/settings/settings_parser.h"
+                        "libstrongswan/plugins/bliss/bliss_huffman_code_1.c"
+                        "libstrongswan/plugins/bliss/bliss_huffman_code_3.c"
+                        "libstrongswan/plugins/bliss/bliss_huffman_code_4.c"
+                        "libstrongswan/asn1/oid.c"
+                        "libstrongswan/asn1/oid.h")))))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -489,7 +507,7 @@ networks bypassing intermediate firewalls.")
            linux-pam
            openssl))
     (native-inputs
-     (list coreutils pkg-config tzdata-for-tests))
+     (list bison coreutils flex perl pkg-config tzdata-for-tests))
     (synopsis "IKEv1/v2 keying daemon")
     (description "StrongSwan is an IPsec implementation originally based upon
 the FreeS/WAN project.  It contains support for IKEv1, IKEv2, MOBIKE, IPv6,
