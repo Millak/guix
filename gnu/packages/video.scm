@@ -5779,7 +5779,7 @@ to convenience of translating and batch processing of multiple documents.")
           (base32 "0affdbs7vhi7apj5sc5mg815vqy1913zgymx3m1rsz8fhrcg3bvn"))))
       (build-system gnu-build-system)
       (arguments
-       '(#:make-flags '("CC=gcc")
+       `(#:make-flags '(,(string-append "CC=" (cc-for-target)))
          #:test-target "test"
          #:phases
          (modify-phases %standard-phases
