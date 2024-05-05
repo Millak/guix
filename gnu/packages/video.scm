@@ -5780,13 +5780,10 @@ to convenience of translating and batch processing of multiple documents.")
       (build-system gnu-build-system)
       (arguments
        '(#:make-flags '("CC=gcc")
+         #:test-target "test"
          #:phases
          (modify-phases %standard-phases
            (delete 'configure)
-           (replace 'check
-             (lambda _
-               (setenv "CC" "gcc")
-               (invoke "make" "test")))
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((out (assoc-ref outputs "out")))
