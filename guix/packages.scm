@@ -439,8 +439,9 @@ from forcing GEXP-PROMISE."
         (else (map add-input-label inputs))))
 
 (define (add-input-labels . inputs)
-  "Add labels to all of INPUTS."
-  (map add-input-label inputs))
+  "Add labels to all of INPUTS if needed (this is the rest-argument version of
+'maybe-add-input-labels')."
+  (maybe-add-input-labels inputs))
 
 (define-syntax sanitize-inputs
   ;; This is written as a macro rather than as a 'define-inlinable' procedure
