@@ -886,7 +886,7 @@ core library.")
 (define-public mupen64plus-audio-sdl
   (package
     (name "mupen64plus-audio-sdl")
-    (version "2.5")
+    (version "2.5.9")
     (source
      (origin
        (method git-fetch)
@@ -895,7 +895,7 @@ core library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z19amfg9vr2pqjjri1ipc7hs681fzjcnb0f9y7bjhp5n8d7p6bb"))))
+        (base32 "0j78xk78fj7lhi6jk6npr7wm9ix7qyr5cbaaqsmk6pqw6gfx81kz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config which))
