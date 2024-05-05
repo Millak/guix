@@ -2183,6 +2183,48 @@ from various forks of Gens, and improved platform portability.")
 performance, features, and ease of use.")
     (license license:gpl3)))
 
+(define-public zsnes
+  (package
+    (name "zsnes")
+    (version "2.0.12")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xyproto/zsnes")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0g9l1ij3p1adkp97wkp0dz44i2xpmsvfpkxvlfkpr7190dibsgsz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:system "i686-linux"        ;requires 32 bit libraries to build
+           #:tests? #f                  ;no test suite
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "CXX=" #$(cxx-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)))) ;no configure script
+    (native-inputs (list nasm pkg-config))
+    (inputs (list glib libpng mesa ncurses sdl zlib))
+    (home-page "https://www.zsnes.com")
+    (synopsis "Super Nintendo Entertainment System emulator")
+    (description "ZSNES is a @acronym{Super Nintendo Entertainment System,
+SNES} emulator that can play most games at full speed with sound and special
+graphic filters.  Some of its features include:
+@itemize
+@item Support for smooth and dynamic image scaling
+@item Support for rewinding and fast-forwarding in-game
+@item JMA compression format
+@item Change the appearance of the GUI
+@item Take screenshots of currently running games
+@item Saving the game at any point by recording the console’s state
+@item Record movies of gameplay which can be played back.
+@end itemize")
+    (license license:gpl2+)
+    (supported-systems (list "x86_64-linux"))))
+
 ;; python-pwntools requires a -rc release of unicorn
 (define-public unicorn
   (let ((unless-x86
