@@ -974,7 +974,7 @@ SDL input plugin.")
 (define-public mupen64plus-rsp-hle
   (package
     (name "mupen64plus-rsp-hle")
-    (version "2.5")
+    (version "2.5.9")
     (source
      (origin
        (method git-fetch)
@@ -983,7 +983,7 @@ SDL input plugin.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pi31qzjjp7aypdvvnz6ms18g09c4gqzxi6328zj8sji94b75gf0"))))
+        (base32 "0sblabl3dp1jy9izbwyhx90690xdj96yfmwi47kpka8axzj93naq"))))
     (build-system gnu-build-system)
     (inputs
      (list mupen64plus-core))
