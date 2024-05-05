@@ -10,7 +10,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -1235,7 +1235,7 @@ developed in C/C++ to MariaDB and MySQL databases.")
 (define-public galera
   (package
     (name "galera")
-    (version "26.4.13")
+    (version "26.4.18")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1244,10 +1244,12 @@ developed in C/C++ to MariaDB and MySQL databases.")
                     (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "06kf6w0bjkgcmddjd3k1q4cjpg8i78l0c7hcf368h09i1hqd23i6"))))
+               (base32 "1agw763qx9778krcpmgvwcps73ipyjwl0niwsykcxldvzzs314r5"))))
     (build-system cmake-build-system)
     (inputs
-     (list check boost openssl))
+     (list boost openssl))
+    (native-inputs
+     (list check))
     (home-page "https://github.com/codership/galera/")
     (synopsis "Extension to the MariaDB database server")
     (description
