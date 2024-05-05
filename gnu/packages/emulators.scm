@@ -837,7 +837,7 @@ from an emulator---from save states to scaling filters.")
 (define-public mupen64plus-core
   (package
     (name "mupen64plus-core")
-    (version "2.5")
+    (version "2.5.9")
     (source
      (origin
        (method git-fetch)
@@ -846,10 +846,10 @@ from an emulator---from save states to scaling filters.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "116fndl6652zrp1r6ag4xv3dzp1x52mlvadj8xwflq07fd5rhri1"))))
+        (base32 "1iav8r3f0r44sq9pz4zjqrdzyspk412c117ywxz02qpjkhkf91a3"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config which))
+     (list pkg-config nasm which))
     (inputs
      (list freetype
            glu
