@@ -447,6 +447,15 @@ large networks.")
      (list
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             ;; The warning message has changed in numpy.
+             (substitute* "test/test_data.py"
+               (("\"A sparse matrix was passed, but.*array.\",")
+                "\"Sparse data was passed, but dense data is required. Use '.toarray()' to convert to a dense numpy array.\",")
+               ;; anndata prints a warning that causes the test to fail.
+               (("import warnings" m)
+                (string-append m "\nwarnings.filterwarnings(\"ignore\")")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
