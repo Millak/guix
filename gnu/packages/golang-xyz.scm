@@ -3251,7 +3251,7 @@ similar string with weeks or days too.")
 (define-public go-go-uber-org-atomic
   (package
     (name "go-go-uber-org-atomic")
-    (version "1.8.0")
+    (version "1.11.0")
     (source
      (origin
        (method git-fetch)
@@ -3260,18 +3260,10 @@ similar string with weeks or days too.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0grswsk7nkf7zmmychf6aj6032shyag1kgs6zf7qwxyn55dym1v8"))))
+        (base32 "1jdp4gfv9jx7dd066wzj7cj6wsk7fb5q04is42xn2wyp80sw5k3p"))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; XXX: Disable failing tests on non-x86-64 architecture, see
-      ;; <https://github.com/uber-go/atomic/issues/164>.
-      ;;
-      ;; go.uber.org/atomic/uintptr_test.go:72:30: cannot convert
-      ;; math.MaxUint64 (untyped int constant 18446744073709551615) to type
-      ;; uintptr
-      #:tests? (and (not (%current-target-system))
-                    (target-x86-64?))
       #:import-path "go.uber.org/atomic"))
     (native-inputs
      (list go-github-com-stretchr-testify go-github-com-davecgh-go-spew))
