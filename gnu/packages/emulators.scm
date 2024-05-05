@@ -1238,7 +1238,7 @@ Rice Video plugin.")
 (define-public mupen64plus-video-z64
   (package
     (name "mupen64plus-video-z64")
-    (version "2.0.0")
+    (version "2.5.9")
     (source
      (origin
        (method git-fetch)
@@ -1247,8 +1247,7 @@ Rice Video plugin.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04qa2fdd6dakpk2v0d4l80xh9b4h8gm71g80c0wyyxdhmhwk1r9c"))
-       (patches (search-patches "mupen64plus-video-z64-glew-correct-path.patch"))))
+        (base32 "1i8dxa0lhcsm5ss1bf74dqnzaa2bw5naj6f56ixw2qjvybrnsmk2"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config which))
