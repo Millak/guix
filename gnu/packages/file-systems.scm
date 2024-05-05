@@ -1955,17 +1955,44 @@ memory-efficient.")
          "0834hah7p6ad81w60ifnxyh9zn09ddfgrll04kwjxwp7ypbv38wq"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/oniony/TMSU"
-       #:unpack-path ".."
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; The go build system produces /bin/TMSU -> install as /bin/tmsu
-               (rename-file (string-append out "/bin/TMSU")
-                            (string-append out "/bin/tmsu"))))))))
+     (list
+      #:go go-1.21
+      #:import-path "github.com/oniony/TMSU"
+      #:unpack-path "github.com/oniony/TMSU"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-makefile
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "Makefile"
+                  (("SHELL=.*") (string-append "SHELL=" (which "sh") "\n"))
+                  ;; Make sure we do not compile 2 more times during the check
+                  ;; phase.
+                  (("unit-test: compile") "unit-test:")
+                  (("integration-test: compile") "integration-test:")
+                  ;; Simplify install path.
+                  (("usr/") "")))))
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "make" "compile"))))
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  ;; Remove shaky test file, see
+                  ;; <https://github.com/oniony/TMSU/issues/281>.
+                  (for-each
+                   (lambda (test-file)
+                     (delete-file test-file))
+                   (find-files "." "^fingerprinter_test.go$"))
+                  (invoke "make" "test")))))
+          (replace 'install
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (setenv "DESTDIR" #$output)
+                (invoke "make" "install")))))))
     (inputs
      (list go-github-com-mattn-go-sqlite3 go-github-com-hanwen-fuse))
     (home-page "https://github.com/oniony/TMSU")
