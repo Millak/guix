@@ -11,6 +11,7 @@
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2024, 2026 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,8 +29,10 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix scripts lint)
+  #:use-module (guix diagnostics)
   #:use-module (guix packages)
   #:use-module (guix lint)
+  #:use-module (guix modules)
   #:use-module (guix ui)
   #:use-module (guix store)
   #:use-module (guix scripts)
@@ -87,6 +90,28 @@
             checkers)
   (exit 0))
 
+(define* (process-whole-file file checkers #:key store)
+  "Run the given CHECKERS on packages in FILE and check that the
+packages are sorted alphabetically."
+  (load* file '())
+  (let* ((module (resolve-interface (file-name->module-name file)))
+         (packages (sort (fold-packages cons '() (list module))
+                         package-location<?)))
+    (fold (lambda (package previous)
+            (let ((line (location-line (package-location package)))
+                  (name (package-name package)))
+              (run-checkers package checkers #:store store)
+              (and (string<? name previous)
+                   (emit-warnings
+                     (list (lint-warning
+                             (package package)
+                             (location (location file line 0))
+                             (message-text
+                              (G_ "breaks from alphabetical order"))
+                             (message-data '())))))
+              name))
+          "" packages)))
+
 
 ;;;
 ;;; Command-line options.
@@ -113,6 +138,9 @@ run the checkers on all packages.\n"))
 
   (display (G_ "
   -L, --load-path=DIR    prepend DIR to the package module search path"))
+  (newline)
+  (display (G_ "
+  -f, --whole-file       check the packages defined in the given file(s)"))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
@@ -161,6 +189,9 @@ run the checkers on all packages.\n"))
                 (lambda args
                   (leave-on-EPIPE (show-help))
                   (exit 0)))
+        (option '(#\f "whole-file") #f #f
+                (lambda (opt name arg result)
+                  (alist-cons 'whole-file? #t result)))
         (option '(#\l "list-checkers") #f #f
                 (lambda (opt name arg result)
                   (alist-cons 'list? #t result)))
@@ -187,12 +218,17 @@ run the checkers on all packages.\n"))
                         #:build-options? #f))
 
   (let* ((opts (parse-options))
-         (args (filter-map (match-lambda
-                             (('argument . spec)
-                              (specification->package spec))
-                             (('expression . exp)
-                              (read/eval-package-expression exp))
-                             (_ #f))
+         (whole-file? (assoc-ref opts 'whole-file?))
+         (args (filter-map (if whole-file?
+                               (match-lambda
+                                 (('argument . file) file)
+                                 (_ #f))
+                               (match-lambda
+                                 (('argument . spec)
+                                  (specification->package spec))
+                                 (('expression . exp)
+                                  (read/eval-package-expression exp))
+                                 (_ #f)))
                            (reverse opts)))
          (no-checkers (or (assoc-ref opts 'exclude) '()))
          (the-checkers (filter (lambda (checker)
@@ -221,6 +257,13 @@ run the checkers on all packages.\n"))
         (call-maybe-with-store
          (lambda (store)
            (cond
+            (whole-file?
+             (when (null? args)
+               (warning (G_ "no files specified, nothing to do~%")))
+             (for-each
+               (lambda (file)
+                 (process-whole-file file checkers #:store store))
+               args))
             ((null? args)
              (fold-packages (lambda (p r) (run-checkers p checkers
                                                         #:store store)) '()))

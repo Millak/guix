@@ -124,7 +124,7 @@ Copyright @copyright{} 2023 Thomas Ieong@*
 Copyright @copyright{} 2023 Saku Laesvuori@*
 Copyright @copyright{} 2023 Graham James Addis@*
 Copyright @copyright{} 2023-2025 Tomas Volf@*
-Copyright @copyright{} 2024, 2025 Herman Rimm@*
+Copyright @copyright{} 2024-2026 Herman Rimm@*
 Copyright @copyright{} 2024 Matthew Trzcinski@*
 Copyright @copyright{} 2024 Richard Sent@*
 Copyright @copyright{} 2024 Dariqq@*
@@ -16710,6 +16710,12 @@ guix lint @var{options} @var{package}@dots{}
 @end example
 
 If no package is given on the command line, then all packages are checked.
+To check packages in particular source files, the syntax is:
+
+@example
+guix lint @var{options} --whole-file @var{file}@dots{}
+@end example
+
 The @var{options} may be zero or more of the following:
 
 @table @code
@@ -16747,9 +16753,23 @@ Only enable the checkers that do not depend on Internet access.
 Add @var{directory} to the front of the package module search path
 (@pxref{Package Modules}).
 
-This allows users to define their own packages and make them visible to
-the command-line tools.
+@item --whole-file
+@itemx -f
+Check the top-level package definitions in the given files; subsequent
+arguments are treated as file names rather than package names.  This
+option also enables a special checker which checks if a package
+alphabetically succeeds the one above it.
 
+For example, to check if the packages in @file{gnu/packages/matrix.scm}
+are sorted alphabetically, and if the package names therein follow
+established conventions, run:
+
+@example
+guix lint -c name -f gnu/packages/matrix.scm
+@end example
+
+The previous two options allow users to define their own packages and
+make them visible to the command-line tools.
 @end table
 
 @node Invoking guix size

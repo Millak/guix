@@ -1,5 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
+# Copyright © 2026 Herman Rimm <herman@rimm.ee>
 #
 # This file is part of GNU Guix.
 #
@@ -35,12 +36,20 @@ cat > "$module_dir/foo.scm"<<EOF
   #:use-module (guix packages)
   #:use-module (gnu packages base))
 
+;; This definition uses (the line number of) the hello package location
+;; instead of generating a new one.
+(define-public hi hello)
+
 (define-public dummy
   (package (inherit hello)
     (name "dummy")
     (version "42")
     (synopsis "dummy package")
     (description "dummy package. Only used for testing purposes.")))
+
+(define-public bar
+  (package (inherit dummy)
+    (name "bar")))
 EOF
 
 GUIX_PACKAGE_PATH="$module_dir"
@@ -52,10 +61,11 @@ grep_warning ()
     echo $res
 }
 
-# Three issues with the dummy package:
+# Issues with the dummy package:
 # 1) the synopsis starts with the package name;
 # 2) the synopsis starts with a lower-case letter;
-# 3) the description has a single space following the end-of-sentence period.
+# 3) the description has a single space following the end-of-sentence period;
+# 4) the alphabetically lesser bar package succeeds it.
 
 out=`guix lint -c synopsis,description dummy 2>&1`
 test `grep_warning "$out"` -eq 3
@@ -68,6 +78,12 @@ test `grep_warning "$out"` -eq 1
 
 out=`guix lint -c description,synopsis dummy 2>&1`
 test `grep_warning "$out"` -eq 3
+
+working_dir="$(pwd)"
+cd "$module_dir"
+out=`guix lint -c name -f foo.scm 2>&1`
+cd "$working_dir"
+test `echo "$out" | grep -E -c "breaks from alphabetical order"` -eq 1
 
 guix lint -c synopsis,invalid-checker dummy 2>&1 | \
    grep -q 'invalid-checker: invalid checker'
