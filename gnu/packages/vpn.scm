@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2016, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
-;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2020 Pierre Langlois <pierre.langlois@gmx.com>
@@ -421,7 +421,11 @@ networks bypassing intermediate firewalls.")
          (add-before 'check 'set-up-test-environment
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "TZDIR"
-                     (search-input-directory inputs "share/zoneinfo")))))
+                     (search-input-directory inputs "share/zoneinfo"))
+             ;; Speed-up the test suite on some of the architectures.
+             ,@(if (not (target-x86?))
+                   `((setenv "TESTS_SUITES_EXCLUDE" "rsa"))
+                   '()))))
        #:configure-flags
        (list
         "--disable-ldap"
@@ -435,7 +439,10 @@ networks bypassing intermediate firewalls.")
         ;; Make it usable.  The default configuration is far too minimal to be
         ;; used with most common VPN set-ups.
         ;; See <https://wiki.strongswan.org/projects/strongswan/wiki/Autoconf>.
-        "--enable-aesni"
+        ;; AESNI expects on hardware support from x86 systems.
+        ,@(if (target-x86?)
+              `("--enable-aesni")
+              `("--disable-aesni"))
         "--enable-attr-sql"
         "--enable-chapoly"
         "--enable-curl"
