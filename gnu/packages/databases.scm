@@ -2606,6 +2606,11 @@ similar to BerkeleyDB, LevelDB, etc.")
                 ;; "background AOF rewrite to finish", perhaps because dead
                 ;; processes persist as zombies in the build environment.
                 (("unit/aofrw") "")
+                ;; The OOM score tests try to raise the current OOM score, but
+                ;; our build environment already sets it for all children to
+                ;; the highest possible one (1000).  We can't lower it because
+                ;; we don't have CAP_SYS_RESOURCE.
+                (("unit/oom-score-adj") "")
                 (("integration/aof(-multi-part)?") "")
                 (("integration/failover") "")
                 (("integration/replication-4") "")
