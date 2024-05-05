@@ -603,15 +603,6 @@ bailing out~%"))
                         #:format-comment canonicalize-comment
                         #:format-vertical-space canonicalize-vertical-space)))))
 
-(define (package-location<? p1 p2)
-  "Return true if P1's location is \"before\" P2's."
-  (let ((loc1 (package-location p1))
-        (loc2 (package-location p2)))
-    (and loc1 loc2
-         (if (string=? (location-file loc1) (location-file loc2))
-             (< (location-line loc1) (location-line loc2))
-             (string<? (location-file loc1) (location-file loc2))))))
-
 
 ;;;
 ;;; Whole-file formatting.
