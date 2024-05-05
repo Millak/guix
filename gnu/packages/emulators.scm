@@ -1058,7 +1058,7 @@ Z64 RSP processor plugin.")
 (define-public mupen64plus-video-arachnoid
   (package
     (name "mupen64plus-video-arachnoid")
-    (version "2.0.0")
+    (version "2.5.9")
     (source
      (origin
        (method git-fetch)
@@ -1067,7 +1067,7 @@ Z64 RSP processor plugin.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v9fqwpb6pawr8z5cm2ki7bqkks4iyr5c4jy4v5khj6h8zcv55gc"))))
+        (base32 "1bkzbmg53qiwvza9h45d76rbyn0isbb31cfp5qqza0fzmgjxhv1d"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config which))
