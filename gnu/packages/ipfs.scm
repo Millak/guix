@@ -36,8 +36,7 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages shells)
-  #:use-module (gnu packages syncthing))
+  #:use-module (gnu packages shells))
 
 (define-public go-github-com-ipfs-go-cid
   (package
@@ -405,7 +404,7 @@ written in Go.")
                   go-github-com-pkg-errors
                   go-github-com-prometheus-client-golang
                   go-github-com-stretchr-testify
-                  go-github-com-syndtr-goleveldb
+                  go-github-com-syndtr-goleveldb-leveldb
                   ;;go-github-com-tidwall-gjson
                   ;;go-github-com-tidwall-sjson
                   go-github-com-whyrusleeping-go-sysinfo

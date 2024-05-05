@@ -427,34 +427,6 @@ run-time in Go.")
     (home-page "https://github.com/sasha-s/go-deadlock")
     (license asl2.0)))
 
-(define-public go-github-com-syndtr-goleveldb
-  (let ((commit "758128399b1df3a87e92df6c26c1d2063da8fabe")
-        (revision "4"))
-    (package
-      (name "go-github-com-syndtr-goleveldb")
-      (version (git-version "1.0.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/syndtr/goleveldb")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0mnkzrz4di13g6ggd54my7bkb9nwk8f5k672dyasn467wsg7bf8f"))))
-      (build-system go-build-system)
-      (propagated-inputs
-       (list go-github-com-golang-snappy))
-      (arguments
-       `(#:import-path "github.com/syndtr/goleveldb/leveldb"
-         #:unpack-path "github.com/syndtr/goleveldb"
-         #:tests? #f)) ; XXX needs 'github.com/onsi/gomega' package
-      (synopsis "LevelDB key/value database")
-      (description "This is an implementation of the LevelDB key / value
-database in Go.")
-      (home-page "https://github.com/syndtr/goleveldb")
-      (license bsd-2))))
-
 (define-public go-github-com-thejerf-suture
   (package
     (name "go-github-com-thejerf-suture")
