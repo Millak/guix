@@ -1289,7 +1289,7 @@ Z64 video plugin.")
 (define-public mupen64plus-ui-console
   (package
     (name "mupen64plus-ui-console")
-    (version "2.5")
+    (version "2.5.9")
     (source
      (origin
        (method git-fetch)
@@ -1298,7 +1298,7 @@ Z64 video plugin.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vrf98qa6a0y3647kslsv644fag233dxh5dcr1yncjiiwickcr5a"))
+        (base32 "1dyrqdfs2jkalfd86bqidgd9y1hy03qgrgwk46d3xf3kyfmaa1cq"))
        (patches (search-patches "mupen64plus-ui-console-notice.patch"))))
     (build-system gnu-build-system)
     (native-inputs
