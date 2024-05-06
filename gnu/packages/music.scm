@@ -7332,6 +7332,7 @@ plugin and a standalone JACK application.")
     (description "Wolf Shaper is a waveshaper plugin with a graph editor.
 It is provided as an LV2 plugin and as a standalone Jack application.")
     (home-page "https://pdesaulniers.github.io/wolf-shaper/")
+    (properties `((tunable? . #t)))
     (license license:gpl3)))
 
 (define-public wolf-spectrum
