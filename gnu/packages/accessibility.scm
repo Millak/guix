@@ -359,32 +359,34 @@ CONFIG_SPEAKUP_SOFT=m
         (method url-fetch)
         (uri (string-append "mirror://sourceforge/" name "/" name "/v" version
                             "/" name "-v" version ".tar.gz"))
-        (sha256 (base32 "0cvdkfakw7cix07j0c4iy10fkbqn6n8l1gr5dd3iy4f2d9bkza43"))
+        (sha256
+         (base32 "0cvdkfakw7cix07j0c4iy10fkbqn6n8l1gr5dd3iy4f2d9bkza43"))
         (snippet
          #~(begin (use-modules (guix build utils))
                   (substitute* "Makefile"
                     (("-D__i386__") ""))))))
     (build-system gnu-build-system)
     (arguments
-      `(#:tests? #f ; there are no tests
-        #:phases
-        (modify-phases %standard-phases
-          (delete 'configure)
-          (add-before 'build 'strtof
-            (lambda _
-              (substitute* "mouseloupe.c"
-                (("\\bstrtof\\b") "mouseloupe_strtof"))))
-          (replace 'install
-            (lambda _
-              (define out (assoc-ref %outputs "out"))
-              (install-file "mouseloupe" (string-append out "/bin"))
-              (install-file "mouseloupe.1.gz" (string-append out "/share/man/man1")))))))
+     (list
+       #:tests? #f  ; there are no tests
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'configure)
+           (add-before 'build 'strtof
+             (lambda _
+               (substitute* "mouseloupe.c"
+                 (("\\bstrtof\\b") "mouseloupe_strtof"))))
+           (replace 'install
+             (lambda _
+               (install-file "mouseloupe" (string-append #$output "/bin"))
+               (install-file "mouseloupe.1.gz"
+                             (string-append #$output "/share/man/man1")))))))
     (native-inputs
-      (list pkg-config))
+     (list pkg-config))
     (inputs
-      (list libx11 libxext libxcomposite libxdamage libxrender))
+     (list libx11 libxext libxcomposite libxdamage libxrender))
     (synopsis "Screen magnifier tool for people with low vision")
-    (description "MouseLoupe is a kind of magnifying glass combined with the mouse pointer
-which allows an easy and pleasant web navigation.")
+    (description "MouseLoupe is a kind of magnifying glass combined with the
+mouse pointer which allows an easy and pleasant web navigation.")
     (home-page "https://sourceforge.net/projects/mouseloupe/")
     (license license:gpl2+)))
