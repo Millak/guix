@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
@@ -8843,6 +8843,14 @@ possible, supporting most common functionality.")
                            (use-modules (guix build utils))
                            (delete-file "tests/profile.py")))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-tests
+                 (lambda _
+                   ;; The test expects the copyright to be updated each year.
+                   (substitute* "tests/test_daterange.py"
+                     (("time\\.strftime\\(\"%Y\"\\)") "2022")))))))
     (synopsis "HTTP REST client for Python")
     (description
      "This package provides access to any RESTful or RESTful-like API.")
