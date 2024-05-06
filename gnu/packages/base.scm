@@ -818,17 +818,6 @@ the store.")
     (home-page "https://www.gnu.org/software/guix//")
     (license gpl3+)))
 
-(define-public %glibc/hurd-configure-flags
-  ;; 'configure' in glibc 2.35 omits to pass '-ffreestanding' when detecting
-  ;; Mach headers.  This is fixed in glibc commits
-  ;; 8b8c768e3c701ed1993789bb46acb8a12c7a93df and
-  ;; 7685630b98ca2a3f5de86eadf130993e6cf998a0; as a workaround, bypass those
-  ;; tests.
-  '("ac_cv_header_mach_mach_types_defs=yes"
-    "ac_cv_header_mach_mach_types_h=yes"
-    "ac_cv_header_mach_machine_ndr_def_h=no"
-    "libc_cv_mach_task_creation_time=yes"))
-
 (define-public glibc
   ;; This is the GNU C Library, used on GNU/Linux and GNU/Hurd.  Prior to
   ;; version 2.28, GNU/Hurd used a different glibc branch.
@@ -927,8 +916,7 @@ the store.")
             ;; On GNU/Hurd we get discarded-qualifiers warnings for
             ;; 'device_write_inband' among other things.  Ignore them.
             ,@(if (target-hurd?)
-                  `("--disable-werror"
-                    ,@%glibc/hurd-configure-flags)
+                  `("--disable-werror")
                   '()))
 
       #:tests? #f                                 ; XXX
