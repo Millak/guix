@@ -13984,7 +13984,9 @@ Python style, together with a fast and comfortable execution environment.")
            python-wrapper
            python-pytest
            python-pandas
-           python-requests-mock))))
+           python-requests-mock
+           python-setuptools
+           python-wheel))))
 
 (define-public snakemake-7
   (package
