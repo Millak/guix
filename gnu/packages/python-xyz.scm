@@ -17837,30 +17837,36 @@ drafts 04, 06 and 07.")
 (define-public python-nbformat
   (package
     (name "python-nbformat")
-    (version "5.3.0")
+    (version "5.10.4")
     ;; The PyPi release tarball lacks some test cases and test data.
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/jupyter/nbformat")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (sha256
                (base32
-                "114c5c6cvpxhxj8zrw74351gcfzyzjh1jq3py4xf8wk9rahfay9z"))
+                "0abd1d8iq21dwh17m72na2f3kr6a5p6ji1gnykf06jshikalj2x3"))
               (file-name (git-file-name name version))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; We don't want to use hatch-nodejs just to get a version string.
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((", \"hatch-nodejs-version\"") "")
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\""))))))))
     (propagated-inputs
      (list python-fastjsonschema python-jsonschema python-jupyter-core
            python-traitlets))
     (native-inputs
-     (list python-pytest
+     (list python-hatchling
+           python-pep440
+           python-pytest
            python-testpath))
     (home-page "https://jupyter.org")
     (synopsis "Jupyter Notebook format")
