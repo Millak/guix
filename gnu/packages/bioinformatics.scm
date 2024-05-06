@@ -9043,6 +9043,7 @@ predicts the locations of structural units in the sequences.")
 species.  For doing so, it compares similarities of given gene sequences and
 clusters them to find significant groups.  The algorithm was designed to handle
 large-scale data and can be applied to hundreds of species at once.")
+    (properties `((tunable? . #t)))
     (license license:gpl3+)))
 
 (define-public prodigal
