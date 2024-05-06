@@ -7976,7 +7976,8 @@ to display dialog boxes from the commandline and shell scripts.")
          (string-append "-Dgles2_libname="
                         (search-input-file %build-inputs "lib/libGLESv2.so"))
          "-Degl_device=true"            ;false by default
-         "-Dwayland_eglstream=true")    ;false by default
+         "-Dwayland_eglstream=true"     ;false by default
+         (string-append "-Dudev_dir=" #$output "/lib/udev"))
       #:test-options '(list "--verbose")
       #:phases
       #~(modify-phases %standard-phases
