@@ -5274,6 +5274,8 @@ includes LV2 plugins and a JACK standalone client.")
            qtsvg-5
            qtx11extras
            qtxmlpatterns))
+    (propagated-inputs
+     (list `(,alsa-plugins "pulseaudio"))) ;for libasound_module_conf_pulse.so
     (synopsis "Music composition and notation software")
     (description
      "MuseScore is a music score typesetter.  Its main purpose is the creation
