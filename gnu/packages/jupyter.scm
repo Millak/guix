@@ -535,6 +535,8 @@ and a default CommManager that can be used.")
     (propagated-inputs
      (list python-jupyter-client python-jupyter-core python-nbformat
            python-traitlets))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://jupyter.org")
     (synopsis "Client library for executing notebooks")
     (description
