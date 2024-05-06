@@ -1572,6 +1572,8 @@ parsers according to a Parsing Expression Grammar (PEG).")
 external-memory suffix array construction algorithm called pSAscan.  The
 algorithm is based on the sequential external-memory suffix array construction
 algorithm called SAscan.")
+    ;; Code exhibits integer size mismatches when compiled on 32-bit systems.
+    (supported-systems %64bit-supported-systems)
     (license license:expat)))
 
 (define-public cxxopts
