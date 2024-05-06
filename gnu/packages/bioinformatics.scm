@@ -16622,7 +16622,7 @@ version does count multisplits.")
 (define-public minimap2
   (package
     (name "minimap2")
-    (version "2.24")
+    (version "2.28")
     (source
      (origin
        (method url-fetch)
@@ -16631,7 +16631,7 @@ version does count multisplits.")
                            "minimap2-" version ".tar.bz2"))
        (sha256
         (base32
-         "05d6h2c1h95s5vblf1fijn9g0r4g69nsvkabji42j642y0gw7m4x"))))
+         "1d50j9fdmmaj7sdf4f49xddc235f7032lwh5ijgi2afj6lkp39gz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; there are none
@@ -16668,8 +16668,6 @@ version does count multisplits.")
                (install-file "minimap2.1" man)
                (map (cut install-file <> inc)
                     (find-files "." "\\.h$"))
-               ;; Not this file.
-               (delete-file (string-append inc "/emmintrin.h"))
                (mkdir-p (string-append lib "/pkgconfig"))
                (with-output-to-file (string-append lib "/pkgconfig/minimap2.pc")
                 (lambda _
@@ -16683,8 +16681,7 @@ version does count multisplits.")
                           Description: A versatile pairwise aligner for genomic and spliced nucleotide sequence~@
                           Libs: -L${libdir} -lminimap2~@
                           Cflags: -I${includedir}~%"
-                          out ,version))))
-             #t)))))
+                          out ,version)))))))))
     (inputs
      (list zlib))
     (home-page "https://lh3.github.io/minimap2/")
