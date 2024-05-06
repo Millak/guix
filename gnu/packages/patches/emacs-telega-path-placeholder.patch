@@ -1,31 +1,32 @@
-From bfcd616f2870c8c3ffc9a526fcd574eb5e726a96 Mon Sep 17 00:00:00 2001
+From 52b9a0f91094888b9dd55d3d5a50cb44887ff3d3 Mon Sep 17 00:00:00 2001
 From: Andrew Tropin <andrew@trop.in>
-Date: Sat, 14 Jan 2023 09:33:34 +0400
+Date: Mon, 6 May 2024 10:41:53 +0200
 Subject: [PATCH] Add path placeholder for telega-server-command and etc-file.
 
 ---
- telega-core.el      | 2 +-
+ telega-core.el      | 3 +--
  telega-customize.el | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/telega-core.el b/telega-core.el
-index 36f121e..f9f7976 100644
+index f798b40..2db0d64 100644
 --- a/telega-core.el
 +++ b/telega-core.el
-@@ -41,7 +41,7 @@
- 
+@@ -45,8 +45,7 @@
  (defun telega-etc-file (filename)
-   "Return absolute path to FILENAME from etc/ directory in telega."
--  (expand-file-name (concat "etc/" filename) telega--lib-directory))
-+  (concat "@TELEGA_SHARE@" "/" filename))
- 
- (defconst telega-spoiler-translation-table
-   (let ((table (make-char-table 'translation-table)))
+   "Return absolute path to FILENAME from etc/ directory in telega.
+ Use FILENAME as is if resulting file does not exist."
+-  (let ((abspath (expand-file-name (concat "etc/" filename)
+-                                   telega--lib-directory)))
++  (let ((abspath (concat "@TELEGA_SHARE@" "/" filename)))
+     (if (file-exists-p abspath)
+         abspath
+       filename)))
 diff --git a/telega-customize.el b/telega-customize.el
-index 0efb001..77cec5f 100644
+index 8393f0f..cb21465 100644
 --- a/telega-customize.el
 +++ b/telega-customize.el
-@@ -633,7 +633,7 @@ In range [1..3].  Use 1."
+@@ -678,7 +678,7 @@ In range [1..3].  Use 1."
    :prefix "telega-server-"
    :group 'telega)
  
@@ -35,4 +36,4 @@ index 0efb001..77cec5f 100644
  It should be absolute path or binary file searchable in `exec-path'."
    :type 'string
 -- 
-2.38.1
+2.41.0
