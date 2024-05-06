@@ -29874,10 +29874,42 @@ project.")
        (uri (pypi-uri "trio" version))
        (sha256
         (base32 "04qwzy4295ajxpns0hrmn3asma80sjpimzpb3i877vwynsvkjgsj"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; This test times out.
+              "not test_ki_protection_works"
+              ;; This fails with: signal only works in main thread of the main interpreter
+              " and not test_catch_signals_race_condition_on_exit"
+              ;; Assertion errors.
+              " and not test_guest_mode_ki"
+              " and not test_run_in_trio_thread_ki"
+              " and not test_simple_cancel_scope_usage_doesnt_create\
+_cyclic_garbage"
+              " and not test_nursery_cancel_doesnt_create_cyclic_garbage"
+              " and not test_cancel_scope_exit_doesnt_create_cyclic_garbage"
+              " and not test_locals_destroyed_promptly_on_cancel"
+              " and not test_ipython_exc_handler"
+              " and not test_for_leaking_fds"
+              ;; Signals don’t work in the build sandbox.
+              " and not test_open_signal_receiver"
+              ;; These try to raise KeyboardInterrupt which does not work
+              ;; in the build environment.
+              " and not test_ki_self"
+              " and not test_ki_wakes_us_up"
+              ;; Failure in name resolution.
+              " and not test_getnameinfo"
+              " and not test_SocketType_resolve"
+              ;; OSError: protocol not found.
+              " and not test_getprotobyname"
+              ;; EOFError: Ran out of input.
+              " and not test_static_tool_sees_all_symbols")
+             "trio/tests")
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'patch-sleep
            (lambda _
              (substitute* "trio/tests/test_subprocess.py"
@@ -29886,40 +29918,7 @@ project.")
          (add-before 'check 'change-home
            (lambda _
              ;; Tests require a writable home.
-             (setenv "HOME" "/tmp")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv"
-                       "-n" (number->string (parallel-job-count))
-                       "-k"
-                       (string-append
-                         ;; This test times out.
-                         "not test_ki_protection_works"
-                         ;; Assertion errors.
-                         " and not test_guest_mode_ki"
-                         " and not test_run_in_trio_thread_ki"
-                         " and not test_simple_cancel_scope_usage_doesnt_create\
-_cyclic_garbage"
-                         " and not test_nursery_cancel_doesnt_create_cyclic_garbage"
-                         " and not test_cancel_scope_exit_doesnt_create_cyclic_garbage"
-                         " and not test_locals_destroyed_promptly_on_cancel"
-                         " and not test_ipython_exc_handler"
-                         " and not test_for_leaking_fds"
-                         ;; Signals don’t work in the build sandbox.
-                         " and not test_open_signal_receiver"
-                         ;; These try to raise KeyboardInterrupt which does not work
-                         ;; in the build environment.
-                         " and not test_ki_self"
-                         " and not test_ki_wakes_us_up"
-                         ;; Failure in name resolution.
-                         " and not test_getnameinfo"
-                         " and not test_SocketType_resolve"
-                         ;; OSError: protocol not found.
-                         " and not test_getprotobyname"
-                         ;; EOFError: Ran out of input.
-                         " and not test_static_tool_sees_all_symbols")
-                        "trio/tests")))))))
+             (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-astor
            python-ipython
@@ -29929,7 +29928,9 @@ _cyclic_garbage"
            python-pytest
            python-pytest-xdist
            python-pytest-cov
-           python-trustme))
+           python-trustme
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-async-generator
            python-attrs
