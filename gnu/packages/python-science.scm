@@ -567,29 +567,16 @@ swarm algorithm.")
 (define-public python-scikit-optimize
   (package
     (name "python-scikit-optimize")
-    (version "0.9.0")
+    (version "0.10.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/scikit-optimize/scikit-optimize")
+                    (url "https://github.com/holgern/scikit-optimize")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hsq6pmryimxc275yrcy4bv217bx7ma6rz0q6m4138bv4zgq18d1"))
-              (patches
-               ;; These are for compatibility with more recent versions of
-               ;; numpy and scikit-learn.
-               (search-patches "python-scikit-optimize-1148.patch"
-                               "python-scikit-optimize-1150.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Since scikit-learn 1.3 max_features no longer supports
-               ;; 'auto', which is identical to 'sqrt'
-               '(substitute* '("skopt/learning/forest.py"
-                               "skopt/learning/tests/test_forest.py")
-                  (("max_features=['\"]auto['\"]")
-                   "max_features='sqrt'")))))
+                "0pc6avzxz8l32km5jvv3maih0a5x2akxybvxl2hdg04qz2l0kz8b"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-joblib
