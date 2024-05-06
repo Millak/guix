@@ -12710,39 +12710,38 @@ container data structures in Python).")
 (define-public python-jupyter-core
   (package
     (name "python-jupyter-core")
-    (version "4.10.0")
+    (version "5.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append (pypi-uri "jupyter_core" version)))
        (sha256
         (base32
-         "1v0s31rmwppdmww135hif03hy164j9kimirh24kxfcbvdfql9pm6"))))
-    (build-system python-build-system)
+         "1n9nyp1skljbbkqp4j7mnihnyp83j9rxm5h4hfn33d7npcr8spxa"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;;  Some tests write to $HOME.
-               (setenv "HOME" "/tmp")
-               (invoke "pytest" "-vv"
-                       "-k"
-                       (string-append
-                        ;; XXX: These tests fail with "ModuleNotFoundError: No
-                        ;; module named 'jupyter_core'".
-                        "not test_argv0 and not test_path_priority "
-                        "and not test_not_on_path")))))
-         (add-after 'unpack 'patch-testsuite
-           (lambda _
-             ;; test_not_on_path() and test_path_priority() try to run a test
-             ;; that loads jupyter_core, so we need GUIX_PYTHONPATH
-             (substitute* "jupyter_core/tests/test_command.py"
-               (("env = \\{'PATH': ''\\}")
-                "env = {'PATH': '', 'PYTHONPATH': os.environ['GUIX_PYTHONPATH']}")
-               (("env = \\{'PATH':  str\\(b\\)\\}")
-                "env = {'PATH': str(b), 'PYTHONPATH': os.environ['GUIX_PYTHONPATH']}"))))
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; XXX: These tests fail with "ModuleNotFoundError: No
+              ;; module named 'jupyter_core'".
+              "not test_argv0"
+              " and not test_path_priority "
+              " and not test_not_on_path"
+
+              ;; These fail with: An incompatible sibling of 'AsyncTornadoApp'
+              ;; is already instantiated as singleton: SyncTornadoApp
+              " and not test_async_app"
+              " and not test_async_tornado_app"
+
+              ;; Fails with a deprecation warning
+              " and not test_sync_tornado_run"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           ;;  Some tests write to $HOME.
+           (lambda _ (setenv "HOME" "/tmp")))
          ;; Migration is running whenever etc/jupyter exists, but the
          ;; Guix-managed directory will never contain any migratable IPython
          ;; config files and cannot be written to anyway, so just pretend we
@@ -12751,11 +12750,15 @@ container data structures in Python).")
            (lambda* (#:key outputs #:allow-other-keys)
              (mkdir-p (string-append (assoc-ref outputs "out") "/etc/jupyter"))
              (invoke "touch"
-               (string-append
-                 (assoc-ref outputs "out")
-                 "/etc/jupyter/migrated")))))))
-    (propagated-inputs (list python-traitlets))
-    (native-inputs (list python-pytest))
+                     (string-append
+                      (assoc-ref outputs "out")
+                      "/etc/jupyter/migrated")))))))
+    (propagated-inputs (list python-platformdirs python-traitlets))
+    (native-inputs (list python-hatchling
+                         python-pre-commit
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-timeout))
     ;; This package provides the `jupyter` binary and thus also exports the
     ;; search paths.
     (native-search-paths
