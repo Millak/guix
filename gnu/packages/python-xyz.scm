@@ -17965,20 +17965,24 @@ time.")
            python-tornado-6
            ;; Required at runtime for `jupyter nbconvert --to=pdf`.
            texlive-adjustbox
+           texlive-amsmath
            texlive-booktabs
            texlive-caption
            texlive-collection-basic
            texlive-enumitem
            texlive-environ
            texlive-eurosym
+           texlive-etoolbox
            texlive-fancyvrb
            texlive-float
            texlive-fontspec
            texlive-geometry
            texlive-grffile
            texlive-hyperref
+           texlive-infwarerr
            texlive-jknapltx
            texlive-jknapltx
+           texlive-kvoptions
            texlive-lm
            texlive-lm-math
            texlive-mathpazo
