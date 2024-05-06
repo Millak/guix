@@ -53,6 +53,31 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages version-control))
 
+(define-public python-notebook-shim
+  (package
+    (name "python-notebook-shim")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "notebook_shim" version))
+       (sha256
+        (base32 "1jrqqrm5xjwsx13plyyh7wybb1g71yrzaqa3l9y3162xnshwzcml"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-jupyter-server))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-console-scripts
+           python-pytest-jupyter
+           python-pytest-tornasync))
+    (home-page "https://pypi.org/project/notebook-shim/")
+    (synopsis "Shim layer for notebook traits and config")
+    (description
+     "This project provides a way for JupyterLab and other frontends to switch
+to Jupyter Server for their Python Web application backend.")
+    (license license:bsd-3)))
+
 (define-public python-jupyter-protocol
   (package
     (name "python-jupyter-protocol")
