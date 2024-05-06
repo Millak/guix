@@ -626,17 +626,18 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 # _GUIX_PROFILE: `guix pull` profile
 _GUIX_PROFILE="$HOME/.config/guix/current"
 export PATH="$_GUIX_PROFILE/bin${PATH:+:}$PATH"
-# Export INFOPATH so that the updated info pages can be found
-# and read by both /usr/bin/info and/or $GUIX_PROFILE/bin/info
-# When INFOPATH is unset, add a trailing colon so that Emacs
-# searches 'Info-default-directory-list'.
-export INFOPATH="$_GUIX_PROFILE/share/info:$INFOPATH"
 
 # GUIX_PROFILE: User's default profile and home profile
 GUIX_PROFILE="$HOME/.guix-profile"
 [ -f "$GUIX_PROFILE/etc/profile" ] && . "$GUIX_PROFILE/etc/profile"
 [ -L "$GUIX_PROFILE" ] && \
 GUIX_LOCPATH="$GUIX_PROFILE/lib/locale${GUIX_LOCPATH:+:}$GUIX_LOCPATH"
+
+# Export INFOPATH so that the updated info pages can be found
+# and read by both /usr/bin/info and/or $GUIX_PROFILE/bin/info
+# When INFOPATH is unset, add a trailing colon so that Emacs
+# searches 'Info-default-directory-list'.
+export INFOPATH="$_GUIX_PROFILE/share/info:$GUIX_PROFILE/share/info:$INFOPATH"
 
 GUIX_PROFILE="$HOME/.guix-home/profile"
 [ -f "$GUIX_PROFILE/etc/profile" ] && . "$GUIX_PROFILE/etc/profile"
