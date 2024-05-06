@@ -6551,7 +6551,7 @@ for Python.")
        (sha256
         (base32 "0lp86yadzf8dph67f6g3yxmvnhrzzi863z58jmsrx2j059q1ld9i"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-markupsafe))
     (home-page "https://jinja.palletsprojects.com/")
     (synopsis "Python template engine")
