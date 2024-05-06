@@ -2117,7 +2117,11 @@ same arguments.")
       ;; Fails with OSError: cannot send to <Channel id=1 closed>
       ;; on foreign distribution.
       '(list "-k" "not test_internal_errors_propagate_to_controller")))
-    (native-inputs (list python-setuptools-scm python-filelock python-pytest))
+    (native-inputs (list python-filelock
+                         python-pytest
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
     (propagated-inputs (list python-execnet python-pytest-forked))
     (home-page "https://github.com/pytest-dev/pytest-xdist")
     (synopsis
