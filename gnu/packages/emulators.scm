@@ -1348,6 +1348,75 @@ command line user interface.  Installing this package is the easiest way
 towards a working Mupen64Plus for casual users.")
     (license license:gpl2+)))
 
+(define-public mupen64plus-video-gliden64
+  ;; The latest release is 5 years old, doesn't build with GCC 11.
+  (let ((commit "b021d8ee437266cfdd7251daf8c23203578b02b6")
+        (revision "0"))
+    (package
+      (name "mupen64plus-video-gliden64")
+      (version (git-version "4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gonetz/GLideN64")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0kcx5m8fjgrdi2dby8qbmkl78picip3jx7hg0ah1cazk192v2x98"))
+         (modules '((guix build utils)))
+         (snippet '(begin
+                     ;; Delete 20 MiB of Windows-related files.
+                     (delete-file-recursively "projects/msvc")
+                     ;; Delete bundled library headers.
+                     (delete-file-recursively "src/GLideNHQ/inc") ;zlib, libpng
+                     (delete-file-recursively "src/inc/freetype")
+                     ;; Unbundle xxhash.
+                     (delete-file-recursively "src/xxHash")
+                     (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                       (substitute* (find-files "." "\\.cpp$")
+                         (("#include \"xxHash/xxhash.h\"")
+                          "#include <xxhash.h>")))))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:configure-flags
+        #~(list "-DMUPENPLUSAPI=ON"
+                "-DUSE_SYSTEM_LIBS=ON"
+                ;; Enable some optimizations.
+                "-DVEC4_OPT=ON"
+                #$(if (target-x86?)
+                      ;; FIXME: Disabled for now as it causes a segmentation
+                      ;; fault (see:
+                      ;; https://github.com/gonetz/GLideN64/issues/2836).
+                      "-DX86_OPT=OFF"    ;extra X86 ASM optimizations
+                      "-DX86_OPT=OFF")
+                #$(if (target-arm?)
+                      "-DNEON_OPT=ON"
+                      "-DNEON_OPT=OFF")
+                #$(if (target-aarch64?)
+                      "-DCRC_ARMV8=ON"  ;use ARMv8 hardware to compute CRCs
+                      "-DCRC_OPT=ON"))  ;use xxHash to compute CRCs)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              ;; The src/ subdirectory contains the root CMakeLists.txt file.
+              (lambda _
+                (chdir "src")))
+            (add-after 'chdir 'generate-Revision.h
+              (lambda _
+                (invoke "sh" "getRevision.sh" "--nogit"))))))
+      (inputs (list freetype libpng mesa xxhash zlib))
+      (home-page "https://github.com/gonetz/GLideN64")
+      (synopsis "Mupen64Plus GlideN64 video plugin")
+      (description "GLideN64 is a new generation graphics plugin for Nintendo
+64 emulators, which offers better performance and compatibility compared to
+the original Glide64 plugin.  This version is built for use with the
+Mupen64Plus emulator.")
+      (license license:gpl2+))))
+
 (define-public nestopia-ue
   (package
     (name "nestopia-ue")
