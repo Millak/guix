@@ -53,6 +53,56 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages version-control))
 
+(define-public python-nbclassic
+  (package
+    (name "python-nbclassic")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nbclassic" version))
+       (sha256
+        (base32 "1qrhzazq10dz64y9mawr3ns595fsdhrj1wvbb42xhmcl66r1xq8a"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-argon2-cffi
+                             python-ipykernel
+                             python-ipython-genutils
+                             python-jinja2
+                             python-jupyter-client
+                             python-jupyter-core
+                             python-jupyter-server
+                             python-nbconvert
+                             python-nbformat
+                             python-nest-asyncio
+                             python-notebook-shim
+                             python-prometheus-client
+                             python-pyzmq
+                             python-send2trash
+                             python-terminado
+                             python-tornado-6
+                             python-traitlets))
+    (native-inputs (list python-coverage
+                         python-nbval
+                         python-jupyter-packaging
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-jupyter
+                         python-pytest-tornasync
+                         python-requests
+                         python-requests-unixsocket
+                         python-testpath))
+    (home-page "https://github.com/jupyter/nbclassic")
+    (synopsis "Jupyter Notebook as a Jupyter Server extension")
+    (description "NbClassic provides a backwards compatible Jupyter Notebook
+interface that you can install side-by-side with the latest versions: That
+way, you can fearlessly upgrade without worrying about your classic extensions
+and customizations breaking.  Because NbClassic provides the classic interface
+on top of the new Jupyter Server backend, it can coexist with other frontends
+like JupyterLab and Notebook 7 in the same installation.  NbClassic preserves
+the custom classic notebook experience under a new set of URL endpoints, under
+the namespace @code{/nbclassic/}.")
+    (license license:bsd-3)))
+
 (define-public python-notebook-shim
   (package
     (name "python-notebook-shim")
