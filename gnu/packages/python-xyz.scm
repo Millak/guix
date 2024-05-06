@@ -14847,6 +14847,31 @@ PEP 8.")
 plugin for flake8 to check PEP-8 naming conventions.")
     (license license:expat)))
 
+(define-public python-pep440
+  (package
+    (name "python-pep440")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pep440" version))
+       (sha256
+        (base32 "0kfhysbyci4f2sxvv991yvn22kbhncn0jg1arbhzw4rbri375csq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This checks for "pep440" in the output, but we actually print
+     ;; ".pep440-real" due to wrapping.
+     (list #:test-flags '(list "-k" "not test_cli_help")))
+    (propagated-inputs (list python-check-manifest python-mypy python-pytest
+                             python-pytest-console-scripts python-pytest-cov))
+    (native-inputs (list python-flit-core))
+    (home-page "https://pypi.org/project/pep440/")
+    (synopsis "Utils to check whether versions number match PEP 440")
+    (description
+     "This package provides a simple package with utils to check whether
+versions number match PEP 440.")
+    (license license:expat)))
+
 (define-public python-pep517
   (package
     (inherit python-pep517-bootstrap)
