@@ -8984,7 +8984,7 @@ predicts the locations of structural units in the sequences.")
 (define-public proteinortho
   (package
     (name "proteinortho")
-    (version "6.0.14")
+    (version "6.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8993,45 +8993,40 @@ predicts the locations of structural units in the sequences.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pmy617zy2z2w6hjqxjhf3rzikf5n3mpia80ysq8233vfr7wrzff"))
+                "0p8iaxq193fh67hw3cydvdah1vz1c3f18227gj1mhkww0ms7g6xa"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  ;; remove pre-built scripts
+                  ;; Remove pre-built scripts and source tarballs.
                   (delete-file-recursively "src/BUILD/")
-                  #t))))
+                  (delete-file "src/lapack-3.8.0.tar.gz")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:make-flags '("CC=gcc")
+     (list
+       #:test-target "test"
+       #:parallel-tests? #f
+       #:make-flags
+       #~(list (string-append "CC=" #$(cc-for-target))
+               (string-append "CXX=" #$(cxx-for-target))
+               (string-append "PREFIX=" #$output)
+               (string-append "INSTALLDIR=" #$output "/bin"))
        #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           ;; There is no configure script, so we modify the Makefile directly.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("INSTALLDIR=.*")
-                (string-append
-                 "INSTALLDIR=" (assoc-ref outputs "out") "/bin\n"))
-               (("-llapack -lblas")
-                "-lopenblas"))
-             #t))
-         (add-before 'install 'make-install-directory
-           ;; The install directory is not created during 'make install'.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/bin"))
-             #t))
-         (add-after 'install 'wrap-programs
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((path (getenv "PATH"))
-                   (out (assoc-ref outputs "out"))
-                   (guile (search-input-file inputs "bin/guile")))
-               (for-each (lambda (script)
-                           (wrap-script script #:guile guile
-                                        `("PATH" ":" prefix (,path))))
-                         (cons (string-append out "/bin/proteinortho")
-                               (find-files out "\\.(pl|py)$"))))
-             #t)))))
+       #~(modify-phases %standard-phases
+           (delete 'configure)
+           (add-before 'install 'make-install-directory
+             ;; The install directory is not created during 'make install'.
+             (lambda* (#:key outputs #:allow-other-keys)
+               (mkdir-p (string-append (assoc-ref outputs "out") "/bin"))))
+           (add-after 'install 'wrap-programs
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((path (getenv "PATH"))
+                     (out (assoc-ref outputs "out"))
+                     (guile (search-input-file inputs "bin/guile")))
+                 (for-each (lambda (script)
+                             (wrap-script script #:guile guile
+                                          `("PATH" ":" prefix (,path))))
+                           (cons (string-append out "/bin/proteinortho")
+                                 (find-files out "\\.(pl|py)$")))))))))
     (inputs
      `(("guile" ,guile-3.0) ; for wrap-script
        ("diamond" ,diamond)
