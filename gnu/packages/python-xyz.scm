@@ -12894,6 +12894,8 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
               (when tests?
                 (match (primitive-fork)
                   (0                    ;child process
+                   ;; jupyter-core demands this be set.
+                   (setenv "JUPYTER_PLATFORM_DIRS" "1")
                    (setenv "HOME" "/tmp")
                    (execlp "pytest" "pytest" "-vv"))
                   (pytest-pid
