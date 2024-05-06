@@ -18045,9 +18045,25 @@ time.")
        (sha256
         (base32
          "17g9xq4za7vvzml6l6d8zrzknhxsvgx02hymmsw9d1dygbi4cgi2"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      '(list "--pyargs" "nbconvert"
+             "-k"
+             (string-append
+              ;; These tests require pyppeteer, not yet
+              ;; available in Guix.
+              "not test_webpdf_with_chromium"
+              " and not test_webpdf.py"
+              ;; These tests require ipywidgets, which would
+              ;; introduce a dependency cycle.
+              " and not test_execute_widgets_from_nbconvert"
+              " and not test_execute_multiple_notebooks"
+
+              ;; This test calls nbconvert itself via "sys.executable -m
+              ;; nbconvert".  It's probably harmless.
+              " and not test_default_config"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-paths
@@ -18067,29 +18083,22 @@ time.")
                 (("inkscape_path = which\\(\"inkscape\")")
                  (format #f "inkscape_path = ~s"
                          (search-input-file inputs "bin/inkscape"))))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Tests depend on templates installed to output.
-                (setenv "JUPYTER_PATH"
-                        (string-append #$output "/share/jupyter:"
-                                       (getenv "JUPYTER_PATH")))
-                ;; Step outside of the source directory to avoid having both
-                ;; the installed package *and* the package from the source on
-                ;; Python's path.
-                (with-directory-excursion "/tmp"
-                  (invoke "pytest" "--pyargs" "nbconvert"
-                          "-vv" "-n" (number->string (parallel-job-count))
-                          "-k"
-                          (string-append
-                           ;; These tests require pyppeteer, not yet
-                           ;; available in Guix.
-                           "not test_webpdf_with_chromium "
-                           "and not test_webpdf.py "
-                           ;; These tests require ipywidgets, which would
-                           ;; introduce a dependency cycle.
-                           "and not test_execute_widgets_from_nbconvert "
-                           "and not test_execute_multiple_notebooks ")))))))))
+          (add-after 'unpack 'ignore-deprecation-warnings
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"ignore:nbconvert.utils" m)
+                 (string-append "\"ignore:zmq.eventloop.ioloop is deprecated:DeprecationWarning\",\n"
+                                m)))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests depend on templates installed to output.
+              (setenv "JUPYTER_PATH"
+                      (string-append #$output "/share/jupyter:"
+                                     (getenv "JUPYTER_PATH")))
+              ;; jupyter-core demands this
+              (setenv "JUPYTER_PLATFORM_DIRS" "1")
+              ;; Tests need a writable HOME.
+              (setenv "HOME" "/tmp"))))))
     (inputs
      (list inkscape/stable pandoc))
     (native-inputs
@@ -18099,7 +18108,9 @@ time.")
            ;; XXX: Disabled, not in guix.
            ;;python-pyppeteer
            python-pytest
-           python-pytest-xdist))
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-beautifulsoup4
            python-bleach
