@@ -3,7 +3,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Peter Lo <peterloleungyau@gmail.com>
@@ -34,6 +34,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system r)
   #:use-module (gnu packages)
@@ -14320,17 +14321,37 @@ coordinates.")
     (arguments
      (list
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'make-build-order-reproducible
-           (lambda _
-             (substitute* '("src/SYMPHONY/Cgl/configure.ac"
-                            "src/SYMPHONY/Cgl/configure")
-               (("for file in `ls \\*/Makefile.in`")
-                "for file in `ls */Makefile.in | sort`")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-build-order-reproducible
+            (lambda _
+              (substitute* '("src/SYMPHONY/Cgl/configure.ac"
+                             "src/SYMPHONY/Cgl/configure")
+                (("for file in `ls \\*/Makefile.in`")
+                 "for file in `ls */Makefile.in | sort`"))))
+          #$@(if (or (target-aarch64?)
+                     (target-riscv64?))
+                 #~((add-after 'unpack 'update-config-files
+                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                        (for-each
+                          (lambda (location)
+                            (for-each (lambda (file)
+                                        (install-file
+                                          (search-input-file
+                                            (or native-inputs inputs)
+                                            (string-append "/bin/" file))
+                                          (dirname location)))
+                                      '("config.guess" "config.sub")))
+                          (find-files "." "config\\.guess")))))
+                 #~()))))
     (inputs
      (list zlib))
     (native-inputs
-     (list pkg-config r-knitr))
+     (append
+       (list pkg-config r-knitr)
+       (if (or (target-aarch64?)
+               (target-riscv64?))
+           (list config)
+           '())))
     (home-page "https://r-forge.r-project.org/projects/rsymphony")
     (synopsis "Symphony integer linear programming solver in R")
     (description
