@@ -5412,7 +5412,7 @@ Scheme.")
 (define-public guile-jwt
   (package
     (name "guile-jwt")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -5422,12 +5422,12 @@ Scheme.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1p8sapiv5im18rjnzc8xnw6y7dr661rycf9g10z5ww0dl4rfz3z1"))))
+         "04c5aibcfb83bl194j27cw5x8bfbqvq5939brckaaapbrff6il6k"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
     (propagated-inputs
-     (list guile-json-4))
+     (list guile-gcrypt guile-json-4))
     (inputs
      (list guile-3.0))
     (home-page "https://github.com/aconchillo/guile-jwt")
