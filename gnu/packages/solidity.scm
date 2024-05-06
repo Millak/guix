@@ -1,5 +1,6 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2022 Zhu Zihao  <all_but_last@163.com>
+;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,7 +35,7 @@
 (define-public solidity
   (package
     (name "solidity")
-    (version "0.8.15")
+    (version "0.8.25")
     (source
      (origin
        (method url-fetch)
@@ -42,10 +43,12 @@
         (string-append "https://github.com/ethereum/solidity/releases/download/v"
                        version "/solidity_" version ".tar.gz"))
        (sha256
-        (base32 "0j9a8y5fizarl9yhbnwvd0x1nm6qsbskqb7j1fwsyqx47w5sa82p"))))
+        (base32 "0gr7mcrng7lkqx968n48js77kwz7fk8230yj0bhp1vw5hdglpxfy"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:configure-flags
+      #~(list "-DSTRICT_Z3_VERSION=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'unbundle-3rd-party-dependencies
@@ -62,7 +65,7 @@
               (substitute* "libsolutil/JSON.cpp"
                 (("JSONCPP_VERSION_PATCH ==") "JSONCPP_VERSION_PATCH >=")))))))
     (inputs
-     (list boost-static fmt-8.0 jsoncpp range-v3 z3))
+     (list boost-static fmt jsoncpp range-v3 z3))
     (native-inputs
      (list python ncurses findutils))
     (home-page "https://solidity.readthedocs.io")
