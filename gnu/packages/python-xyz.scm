@@ -4386,7 +4386,11 @@ server.")
        (sha256
         (base32 "0f8ym32vdn8wyziiy5bz8iiwvgj7dlccy86wkfcn5syqgivgqnv9"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-lxml python-pillow python-pytest))
+    (native-inputs (list python-lxml
+                         python-pillow
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
     (propagated-inputs (list python-et-xmlfile python-jdcal))
     (home-page "https://openpyxl.readthedocs.io")
     (synopsis "Python library to read/write Excel 2010 XLSX/XLSM files")
