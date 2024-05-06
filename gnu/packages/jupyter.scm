@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -168,6 +168,52 @@ tests kernels for successful code execution and conformance with the
 @uref{https://jupyter-client.readthedocs.io/en/latest/messaging.html, Jupyter
 Messaging Protocol}.")
     (license license:bsd-3)))
+
+(define-public python-pytest-jupyter
+  (package
+    (name "python-pytest-jupyter")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_jupyter" version))
+       (sha256
+        (base32 "114y9py29j6p2iymhc3vj55x65gg1ncbhwal5mads0g2z7p59pq0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This requires python-jupyter-server, which itself requires this
+      ;; package.
+      '(list "--ignore=tests/test_jupyter_server.py")
+      #:phases
+      '(modify-phases %standard-phases
+         ;; The jupyter_server tests requires python-jupyter-server, which
+         ;; itself requires this package.
+         (add-after 'unpack 'disable-tests
+           (lambda _
+             (substitute* "tests/conftest.py"
+               (("\"pytest_jupyter.jupyter_server\",") ""))))
+         ;; Some tests require a writable HOME
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'ignore-deprecation-warnings
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("  \"module:datetime.*" m)
+                (string-append m "\n\"ignore:zmq.eventloop.ioloop is deprecated:DeprecationWarning\","))))))))
+    (propagated-inputs (list python-jupyter-core python-nbformat))
+    (native-inputs (list python-hatchling
+                         python-ipykernel
+                         python-pytest
+                         python-pytest-timeout
+                         python-tornado-6))
+    (home-page "https://jupyter.org")
+    (synopsis "Pytest plugin for testing Jupyter libraries and extensions.")
+    (description
+     "This package provides a pytest plugin for testing Jupyter libraries and
+extensions.")
+    (license license:bsd-4)))
 
 (define-public xeus
   (package
