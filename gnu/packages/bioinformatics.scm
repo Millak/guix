@@ -16643,8 +16643,6 @@ version does count multisplits.")
              (let ((system ,(or (%current-target-system)
                                 (%current-system))))
                (cond
-                 ((string-prefix? "x86_64" system)
-                  "all")
                  ((or (string-prefix? "i586" system)
                       (string-prefix? "i686" system))
                   "sse2only=1")
@@ -16652,7 +16650,7 @@ version does count multisplits.")
                   "arm_neon=1")
                  ((string-prefix? "aarch64" system)
                   "aarch64=1")
-                 (else ""))))
+                 (else "all"))))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
