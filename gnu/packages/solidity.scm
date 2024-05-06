@@ -56,7 +56,11 @@
                 (("include\\(range-v3\\)")
                  "find_package(range-v3)")
                 (("include\\(jsoncpp\\)")
-                 "find_package(jsoncpp)")))))))
+                 "find_package(jsoncpp)"))))
+          (add-after 'unpack 'allow-newer-version-of-jsoncpp
+            (lambda _
+              (substitute* "libsolutil/JSON.cpp"
+                (("JSONCPP_VERSION_PATCH ==") "JSONCPP_VERSION_PATCH >=")))))))
     (inputs
      (list boost-static fmt-8.0 jsoncpp range-v3 z3))
     (native-inputs
