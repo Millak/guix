@@ -577,6 +577,7 @@ BED, GFF/GTF, VCF.")
     (description
      "BitMapperBS is memory-efficient aligner that is designed for
 whole-genome bisulfite sequencing (WGBS) reads from directional protocol.")
+    (supported-systems '("x86_64-linux"))
     (license license:asl2.0)))
 
 (define-public bustools
