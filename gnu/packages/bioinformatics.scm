@@ -5933,7 +5933,7 @@ bases are detected.")
 (define-public trust4
   (package
     (name "trust4")
-    (version "1.0.13")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -5942,7 +5942,7 @@ bases are detected.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "058wd5bklgcsb0r8l7n1ffakbj4c3ac5hjyvmaqhr3p233fl44z7"))
+        (base32 "170k4rrchg7f2jyn3v4y4fxxq1d49n1vnvhx5xcnnr6jql8q3h08"))
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Remove bundled samtools
