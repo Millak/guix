@@ -83,7 +83,6 @@
   #:use-module (gnu packages tex)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages polkit)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
@@ -241,33 +240,24 @@ with a PKCS #11 Cryptographic Token Interface.")
 (define-public pcsc-lite
   (package
     (name "pcsc-lite")
-    (version "2.1.0")
+    (version "1.9.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://pcsclite.apdu.fr/files/"
                                   "pcsc-lite-" version ".tar.bz2"))
               (sha256
                (base32
-                "1aimbddk6jx828xrw1vg2g82i11v55inhr9jqhmixj24qwfbdjl5"))))
+                "12923c6l5qzga1xlcxvm0vzbqrxnxq1qgzlrxf2y5gpcaz2q0bah"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-usbdropdir=/var/lib/pcsc/drivers"
-                           "--disable-libsystemd")
-       #:phases ,#~(modify-phases %standard-phases
-                     (add-after 'unpack 'set-policy-dir
-                       (lambda _
-                         (substitute* "configure"
-                           (("polkit_policy_dir=.*")
-                            (string-append "polkit_policy_dir=\""
-                                           #$output "/share/polkit-1/actions\""))))))))
+                           "--disable-libsystemd")))
     (native-inputs
      (list flex
            perl                         ;for pod2man
            pkg-config))
     (inputs
-     (list python
-           eudev
-           polkit))
+     (list python eudev))
     (home-page "https://pcsclite.apdu.fr/")
     (synopsis "Middleware to access a smart card using PC/SC")
     (description
