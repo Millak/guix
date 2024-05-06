@@ -2,7 +2,7 @@
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2022, 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
-;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2022, 2024 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023, 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
@@ -386,6 +386,14 @@ which will be used as a snippet in origin."
    "1z49jdachwxwbzrrapskpi2kxq3ydihfj45ab9892gbamfij2zp5"
    "0.4.1"
    #:repository-url "https://github.com/uyha/tree-sitter-cmake"))
+
+(define-public tree-sitter-devicetree
+  (tree-sitter-grammar
+   "devicetree" "Devicetree"
+   "0igkwrlgbwphn8dwj91fy2film2mxz4kjdjnc141kmwi4czglwbq"
+   "0.8.0"
+   #:repository-url "https://github.com/joelspadin/tree-sitter-devicetree"
+   #:license license:expat))
 
 (define-public tree-sitter-elixir
   ;; No tags at all, version in the source code is 0.19.0
