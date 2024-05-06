@@ -12843,6 +12843,8 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
                   (when tests?
                     ;; Some tests try to write to $HOME.
                     (setenv "HOME" "/tmp")
+                    ;; jupyter-core demands this be set.
+                    (setenv "JUPYTER_PLATFORM_DIRS" "1")
                     (invoke "pytest" "-vv"
                             "-k"
                             ;; XXX "RuntimeError: Kernel died before replying
