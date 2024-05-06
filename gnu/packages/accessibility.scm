@@ -3,7 +3,7 @@
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2018, 2021, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Andrew Miloradovsky <andrew@interpretmath.pw>
-;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Hunter Jozwiak <hunter.t.joz@gmail.com>
 ;;; Copyright © 2023 Ivan Gankevich <igankevich@capybaramail.xyz>
 ;;;
@@ -359,7 +359,11 @@ CONFIG_SPEAKUP_SOFT=m
         (method url-fetch)
         (uri (string-append "mirror://sourceforge/" name "/" name "/v" version
                             "/" name "-v" version ".tar.gz"))
-        (sha256 (base32 "0cvdkfakw7cix07j0c4iy10fkbqn6n8l1gr5dd3iy4f2d9bkza43"))))
+        (sha256 (base32 "0cvdkfakw7cix07j0c4iy10fkbqn6n8l1gr5dd3iy4f2d9bkza43"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "Makefile"
+                    (("-D__i386__") ""))))))
     (build-system gnu-build-system)
     (arguments
       `(#:tests? #f ; there are no tests
