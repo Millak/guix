@@ -185,7 +185,7 @@ protocol} to be used by both clients and kernels.")
            python-jupyter-core
            python-jupyter-protocol
            python-pyzmq
-           python-tornado
+           python-tornado-6
            python-traitlets))
     (native-inputs
      (list python-async-generator
