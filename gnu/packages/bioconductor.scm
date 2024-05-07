@@ -12298,6 +12298,47 @@ dependencies between GO terms can be implemented and applied.")
     ;; Any version of the LGPL applies.
     (license license:lgpl2.1+)))
 
+(define-public r-txdbmaker
+  (package
+    (name "r-txdbmaker")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "txdbmaker" version))
+       (sha256
+        (base32 "099x6v4crp953jcgqipj0001kxg7gv5h0r4mmvh1cg7j69w0zd5m"))))
+    (properties `((upstream-name . "txdbmaker")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-biobase
+                             r-biocgenerics
+                             r-biocio
+                             r-biomart
+                             r-dbi
+                             r-genomeinfodb
+                             r-genomicfeatures
+                             r-genomicranges
+                             r-httr
+                             r-iranges
+                             r-rjson
+                             r-rsqlite
+                             r-rtracklayer
+                             r-s4vectors
+                             r-ucsc-utils))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/txdbmaker")
+    (synopsis "Tools for making TxDb objects from genomic annotations")
+    (description
+     "This package provides a set of tools for making @code{TxDb} objects from
+genomic annotations from various sources (e.g. UCSC, Ensembl, and GFF files).
+These tools allow the user to download the genomic locations of transcripts,
+exons, and CDS, for a given assembly, and to import them in a @code{TxDb}
+object.  @code{TxDb} objects are implemented in the @code{GenomicFeatures}
+package, together with flexible methods for extracting the desired features in
+convenient formats.")
+    (license license:artistic2.0)))
+
 (define-public r-tximport
   (package
     (name "r-tximport")
