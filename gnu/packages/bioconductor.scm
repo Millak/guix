@@ -15903,13 +15903,13 @@ published results; and a routine for graphical display.")
 (define-public r-tradeseq
   (package
    (name "r-tradeseq")
-   (version "1.16.0")
+   (version "1.18.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "tradeSeq" version))
             (sha256
              (base32
-              "06k0jib20nq7zqc5vbgag8v1lbadjlg0idh5jwn5bcjc74dx15vj"))))
+              "1kgvvvwvj3dgb2wik3y8j44ynda94bi05vvmiwlayrypqprwi1c1"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-biobase
