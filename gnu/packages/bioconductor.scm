@@ -14192,14 +14192,14 @@ multiplication.")
 (define-public r-treeio
   (package
     (name "r-treeio")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "treeio" version))
        (sha256
         (base32
-         "1kvzdryw74r74gwxddsrng81ww49p3s7hgxn8ggl0p8fvz3sfgir"))))
+         "0xfjq13yirfz7dzzlf2m60lk8xb3qh6k5hr66ygvjnm716x3vyh1"))))
     (properties `((upstream-name . "treeio")))
     (build-system r-build-system)
     (propagated-inputs
@@ -14209,7 +14209,8 @@ multiplication.")
            r-magrittr
            r-rlang
            r-tibble
-           r-tidytree))
+           r-tidytree
+           r-yulab-utils))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/YuLab-SMU/treeio")
     (synopsis "Base classes and functions for Phylogenetic tree input and output")
