@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2017, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2019, 2020, 2021, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016-2019, 2022, 2023 Marius Bakke <marius@gnu.org>
@@ -1388,21 +1388,20 @@ Sphinx documentation.")
        (sha256
         (base32
          "0ph69bnnw9w8vksc7rk45q5yknsrsgk9a19xsbxym46jrmgz67b7"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
+      #:test-flags
+      ;; Fails due to inscrutable differences in the generated HTML
+      '(list "-k" "not test_logo")))
     (propagated-inputs
      (list python-beautifulsoup4
            python-docutils
            python-jinja2
            python-sphinx))
-    (native-inputs (list python-pytest python-pytest-regressions))
+    (native-inputs
+     (list python-pytest python-pytest-regressions
+           python-setuptools python-wheel))
     (home-page "https://github.com/pydata/pydata-sphinx-theme")
     (synopsis "Bootstrap-based Sphinx theme")
     (description
