@@ -15478,13 +15478,13 @@ experiments.")
 (define-public r-milor
   (package
     (name "r-milor")
-    (version "1.10.0")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "miloR" version))
               (sha256
                (base32
-                "1hnvw9x0xwjb0br4yvzkzn73nvm8p3j3wmcw8jrid105j0fz6vcj"))))
+                "1cb5iw90h6raflgmypd2wc8y4mbsv9g8alshh30k1kjm8vlsw92y"))))
     (properties `((upstream-name . "miloR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -15504,9 +15504,13 @@ experiments.")
            r-irlba
            r-limma
            r-matrix
+           r-matrixgenerics
            r-matrixstats
+           r-numderiv
            r-patchwork
            r-rcolorbrewer
+           r-rcpp
+           r-rcpparmadillo
            r-s4vectors
            r-singlecellexperiment
            r-stringr
