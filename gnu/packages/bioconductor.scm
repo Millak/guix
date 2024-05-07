@@ -14994,16 +14994,16 @@ several functions from the R igraph package.")
 (define-public r-sangerseqr
   (package
     (name "r-sangerseqr")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "sangerseqR" version))
               (sha256
                (base32
-                "1vggjvxfmmm2gcyfay22wahkib15i164ic148jdps36pxapl6hi3"))))
+                "01z2b7950yxhv8p73rfmq84bscrlpl956ihfyarnzdq9v9ljzzd9"))))
     (properties `((upstream-name . "sangerseqR")))
     (build-system r-build-system)
-    (propagated-inputs (list r-biostrings r-shiny r-stringr))
+    (propagated-inputs (list r-biostrings r-pwalign r-shiny r-stringr))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/sangerseqR")
     (synopsis "Tools for Sanger Sequencing data in R")
