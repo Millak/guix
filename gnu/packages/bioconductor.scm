@@ -20194,13 +20194,13 @@ printing and plotting @code{aCGH} objects.")
 (define-public r-acme
   (package
     (name "r-acme")
-    (version "2.58.0")
+    (version "2.60.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ACME" version))
               (sha256
                (base32
-                "0cy1f4ki4j7yxc9cws5s17ljd4ac0yxhijms0pm31im81qz2djax"))))
+                "0jak83dlavhczaa2nqk5g2l0h4grnc9v24bg6v9mjfn6bqhl1s7j"))))
     (properties `((upstream-name . "ACME")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-biocgenerics))
