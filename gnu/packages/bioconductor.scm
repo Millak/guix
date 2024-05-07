@@ -1932,13 +1932,13 @@ https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110554.")
 (define-public r-genelendatabase
   (package
     (name "r-genelendatabase")
-    (version "1.38.0")
+    (version "1.39.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "geneLenDataBase" version 'experiment))
        (sha256
-        (base32 "0skycixz0qbm8cs10kgrkl1ab1qh0mz8641mf5194y839m81d060"))))
+        (base32 "0rdd5nq34xd85r4i4b84ibih31mq99ljvgkm7zdv4gfggrdvi6gb"))))
     (properties
      `((upstream-name . "geneLenDataBase")))
     (build-system r-build-system)
