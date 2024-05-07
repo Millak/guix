@@ -10637,16 +10637,16 @@ browser.")
 (define-public r-rhdf5
   (package
     (name "r-rhdf5")
-    (version "2.46.1")
+    (version "2.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "rhdf5" version))
               (sha256
                (base32
-                "0yfy0y9ywzbbdmvvraxmizv3w2x1iznhfys6hhwyi644pxh4k3xn"))))
+                "086bnwzmlwq3z9a4kb1rnzb2wnchhi4gvzpijhladgd83nqyb0wn"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-rhdf5filters r-rhdf5lib r-s4vectors))
+     (list r-rhdf5filters r-rhdf5lib))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/rhdf5")
