@@ -18178,14 +18178,14 @@ index.")
 (define-public r-quasr
   (package
     (name "r-quasr")
-    (version "1.42.1")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "QuasR" version))
        (sha256
         (base32
-         "0695pjvp742qn629kxly4a9crbg6vakdx1ygnyshprjsz6xz2vnn"))))
+         "116qnp7d7z4a56fv6n55yzrdlmma9gwrw234nmy8iapkn5ms3xky"))))
     (properties `((upstream-name . "QuasR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -18205,7 +18205,8 @@ index.")
            r-rsamtools
            r-rtracklayer
            r-s4vectors
-           r-shortread))
+           r-shortread
+           r-txdbmaker))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/QuasR/")
