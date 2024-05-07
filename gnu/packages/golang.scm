@@ -9226,29 +9226,6 @@ kubernetes-sigs/yaml is a permanent fork of
      "Colorstring provides functions for colorizing strings for terminal output.")
     (license license:expat)))
 
-(define-public go-git-sr-ht-emersion-go-scfg
-  (package
-    (name "go-git-sr-ht-emersion-go-scfg")
-    (version "0.0.0-20211215104734-c2c7a15d6c99")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.sr.ht/~emersion/go-scfg")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "02gn8hz8zfv8y0krysx2wv951gw8hmhdfqf1ysidwm7i293365w4"))))
-    (build-system go-build-system)
-    (arguments (list #:import-path "git.sr.ht/~emersion/go-scfg"))
-    (propagated-inputs
-     (list go-github-com-google-shlex
-           go-github-com-davecgh-go-spew))
-    (home-page "https://git.sr.ht/~emersion/go-scfg")
-    (synopsis "Go library for simple configuration file format")
-    (description "Package go-scfg parses scfg files.")
-    (license license:expat)))
-
 (define-public go-github-com-google-go-jsonnet
   (package
     (name "go-github-com-google-go-jsonnet")
