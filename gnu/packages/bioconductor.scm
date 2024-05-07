@@ -10806,13 +10806,13 @@ transforms TCGA data to tidy form which is convenient to use.")
 (define-public r-rtcgatoolbox
   (package
     (name "r-rtcgatoolbox")
-    (version "2.32.1")
+    (version "2.34.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "RTCGAToolbox" version))
               (sha256
                (base32
-                "1a38b30nsg2bnlnijf4aa4rn4db2y4v86awfbf6a6qzqwlzknrcq"))))
+                "0l4idk6gsrnm7laj1xkm6jwmyy5l90kphm21zk7y33cpnp2ryjwr"))))
     (properties `((upstream-name . "RTCGAToolbox")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
