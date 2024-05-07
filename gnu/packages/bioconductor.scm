@@ -10267,6 +10267,38 @@ data and detection of regions with abnormal copy number within each parental
 chromosome.  Both tumor-normal paired and tumor-only analyses are supported.")
     (license license:gpl2+)))
 
+(define-public r-psmatch
+  (package
+    (name "r-psmatch")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "PSMatch" version))
+       (sha256
+        (base32 "13w145is3d95392qqdq6qh3mrlcixbj0jzz4r590xas1qjp5d03h"))))
+    (properties `((upstream-name . "PSMatch")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-biocparallel
+                             r-igraph
+                             r-matrix
+                             r-mscoreutils
+                             r-protgenerics
+                             r-qfeatures
+                             r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/RforMassSpectrometry/PSM")
+    (synopsis "Handling and managing peptide spectrum matches")
+    (description
+     "The PSMatch package helps proteomics practitioners to load, handle and
+manage peptide spectrum matches.  It provides functions to model
+peptide-protein relations as adjacency matrices and connected components,
+visualise these as graphs and make informed decision about shared peptide
+filtering.  The package also provides functions to calculate and visualise MS2
+fragment ions.")
+    (license license:artistic2.0)))
+
 (define-public r-protgear
   (package
     (name "r-protgear")
