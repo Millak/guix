@@ -18137,14 +18137,14 @@ the code was copied over from @code{devtools}.")
 (define-public r-xopen
   (package
     (name "r-xopen")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xopen" version))
        (sha256
         (base32
-         "1vrvgdika1d63dwygynbv2wmd87ll8dji5dy89hj576n8hw601z2"))))
+         "1v4sna4md4cpqwi7802m4mfflgi506fxh78la0kam894qfw7icp3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-processx))
