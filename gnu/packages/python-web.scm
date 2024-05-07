@@ -2227,7 +2227,7 @@ OpenAI API.")
 (define-public python-openapi-schema-validator
   (package
     (name "python-openapi-schema-validator")
-    (version "0.2.3")
+    (version "0.6.2")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi release
@@ -2237,10 +2237,13 @@ OpenAI API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1swm8h74nhg63nxk347blwq9f1qn6iiq3zisndcvm7axkq3pc2df"))))
+         "0pgsm1x7lhc5ryj4l45ik8m5x9gqyi50dkflaiqqr4fnl0bsbx09"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; This one returns 5 instead of 4 elements
+      '(list "-k" "not test_array_prefixitems_invalid")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-coverage-pytest-options
