@@ -6007,6 +6007,39 @@ and convert DDL to BigQuery JSON schema.")
               (lambda _
                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))))
 
+(define-public python-jsonschema-specifications
+  (package
+    (name "python-jsonschema-specifications")
+    (version "2023.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jsonschema_specifications" version))
+       (sha256
+        (base32 "1k348xkq45jx13kmv32ls6k4qvjq3ywd4q0i7zamw3z7nf3ng9s8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              ;; The build system does not like this.
+              (substitute* "pyproject.toml"
+                (("  \"Topic :: File Formats.*") "")))))))
+    (propagated-inputs (list python-importlib-resources
+                             python-referencing-bootstrap))
+    (native-inputs
+     (list python-hatchling python-hatch-vcs python-pytest))
+    (home-page "https://github.com/python-jsonschema/jsonschema-specifications")
+    (synopsis
+     "JSON Schema meta-schemas and vocabularies, exposed as a Registry")
+    (description
+     "This package provides JSON support files from the JSON Schema
+Specifications (metaschemas, vocabularies, etc.), packaged for runtime access
+from Python as a referencing-based Schema Registry.")
+    (license license:expat)))
+
 (define-public python-schema
   (package
     (name "python-schema")
