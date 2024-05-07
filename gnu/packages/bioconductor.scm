@@ -11477,13 +11477,13 @@ ungapped alignment formats.")
 (define-public r-sictools
   (package
     (name "r-sictools")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SICtools" version))
        (sha256
-        (base32 "0bcajjvkaxmr8bdij8xln7a3nmxbm7jkjvg2v6p8kd0xr3q9a70q"))))
+        (base32 "0ymk18aj4r0526xqqkrvd75p4jrgrq2wshx7mqh2wj7nizjfn8fv"))))
     (properties `((upstream-name . "SICtools")))
     (build-system r-build-system)
     (arguments
