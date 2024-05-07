@@ -25540,6 +25540,30 @@ manipulation, or @code{stdout}.")
      which adds support for zone identifiers to IPv6 addresses.")
     (license license:asl2.0)))
 
+(define-public python-rfc3986-validator
+  (package
+    (name "python-rfc3986-validator")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rfc3986_validator" version))
+       (sha256
+        (base32 "0mfh82r37ma5n54n8ibnqvmwr3j3f2ixqfjfmv1rwfqvjbkvsi1x"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pip
+           python-pytest
+           python-pytest-runner
+           python-rfc3987
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/naimetti/rfc3986-validator")
+    (synopsis "Pure python rfc3986 validator")
+    (description "This package implements a URI validator according to RFC3986
+in pure Python.")
+    (license license:expat)))
+
 (define-public python-rfc3987
   (package
     (name "python-rfc3987")
