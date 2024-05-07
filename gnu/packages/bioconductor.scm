@@ -17976,14 +17976,14 @@ expression\".")
 (define-public r-arrmnormalization
   (package
     (name "r-arrmnormalization")
-    (version "1.42.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ARRmNormalization" version))
        (sha256
         (base32
-         "1fd1pfw2ggqb0k2npvibfy8liix57m01cxfxp10shvfbzjjy4wjm"))))
+         "0wg799c5pzw9g0dbkaa5j4jyccvixqbc8x3xnwk3cgi1dsbhpk34"))))
     (properties
      `((upstream-name . "ARRmNormalization")))
     (build-system r-build-system)
