@@ -5991,38 +5991,44 @@ and convert DDL to BigQuery JSON schema.")
 (define-public python-jsonschema
   (package
     (name "python-jsonschema")
-    ;; XXX: Update to the latest version requires new build system - Hatch
-    ;; https://hatch.pypa.io/
-    (version "4.5.1")
+    (version "4.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jsonschema" version))
        (sha256
-        (base32 "1z0x22691jva7lwfcfh377jdmlz68zhiawxzl53k631l34k8hvbw"))))
+        (base32 "1dx2c7vgsqas61mj00b6ix75cvax5s32qmchz6d12darlhsd88jv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; The version string is usually derived via setuptools-scm, but
-            ;; without the git metadata available, the version string is set to
-            ;; '0.0.0'.
+          (add-after 'unpack 'patch-pyproject
             (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "JSON_SCHEMA_TEST_SUITE" "json")
-                (invoke "trial" "jsonschema")))))))
-    (native-inputs (list python-setuptools-scm python-twisted
-                         python-setuptools python-wheel))
+              ;; The build system does not like this.
+              (substitute* "pyproject.toml"
+                (("  \"Topic :: File Formats.*") ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "JSON_SCHEMA_TEST_SUITE" "json"))))))
+    (native-inputs (list python-hatchling
+                         python-hatch-fancy-pypi-readme
+                         python-hatch-vcs
+                         python-pytest))
     (propagated-inputs
      (list python-attrs
-           python-importlib-metadata
-           python-pyrsistent
-           python-typing-extensions))
+           python-fqdn
+           python-idna
+           python-importlib-resources
+           python-isoduration
+           python-jsonpointer
+           python-jsonschema-specifications
+           python-rfc3339-validator
+           python-rfc3986-validator
+           python-referencing-bootstrap
+           python-rpds-py
+           python-uri-template
+           python-webcolors))
     (home-page "https://github.com/Julian/jsonschema")
     (synopsis "Implementation of JSON Schema for Python")
     (description
@@ -6045,7 +6051,15 @@ and convert DDL to BigQuery JSON schema.")
         #~(modify-phases #$phases
             (replace 'pretend-version
               (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))))
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))
+    (propagated-inputs
+     (list python-attrs
+           python-importlib-metadata
+           python-pyrsistent
+           python-typing-extensions))
+    (native-inputs
+     (list python-setuptools-scm python-twisted
+           python-setuptools python-wheel))))
 
 (define-public python-jsonschema-specifications
   (package
