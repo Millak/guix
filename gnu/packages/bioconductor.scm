@@ -4495,13 +4495,13 @@ transcripts in an integrated manner.")
 (define-public r-atsnp
   (package
     (name "r-atsnp")
-    (version "1.18.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "atSNP" version))
               (sha256
                (base32
-                "1nksx6al1cr6apknvrabi3gdbr7m61ms81nmkq4qykx5aysmp8mv"))))
+                "08pcbys8iy8wzqzzvlnwc3qw7m7cswkqa3x2x2x8m4ni1s4isd6z"))))
     (properties `((upstream-name . "atSNP")))
     (build-system r-build-system)
     (propagated-inputs
