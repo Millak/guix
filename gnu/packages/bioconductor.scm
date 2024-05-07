@@ -202,14 +202,14 @@ utilize the TFBSTools package (version 1.23.1 or higher).")
 (define-public r-mafh5-gnomad-v3-1-2-grch38
   (package
     (name "r-mafh5-gnomad-v3-1-2-grch38")
-    (version "3.15.0")
+    (version "3.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MafH5.gnomAD.v3.1.2.GRCh38" version
                               'annotation))
        (sha256
-        (base32 "18hzw7f41ii16qpm3ch516b773900l1m1id5z6a763m01fg0mhiq"))))
+        (base32 "1q9hlva814sjfz8vm9bzw7xzppbcfy5qq7nnz9w742yr59cjb6mp"))))
     (properties `((upstream-name . "MafH5.gnomAD.v3.1.2.GRCh38")))
     (build-system r-build-system)
     (propagated-inputs (list r-bsgenome
