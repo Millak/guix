@@ -3588,13 +3588,13 @@ these biases and construct statistically consistent estimators.")
 (define-public r-animalcules
   (package
     (name "r-animalcules")
-    (version "1.18.3")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "animalcules" version))
               (sha256
                (base32
-                "0j8fa5cr6s20bgw7v62by61q7nk8iw64v4wshwbd2cc36gr7s3c8"))))
+                "1g073n8nmckd388hy9gfiddil53wv692k69ywjc85jyp5jy2n265"))))
     (properties `((upstream-name . "animalcules")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3606,6 +3606,7 @@ these biases and construct statistically consistent estimators.")
            r-dplyr
            r-dt
            r-forcats
+           r-ggforce
            r-ggplot2
            r-gunifrac
            r-lattice
@@ -3623,6 +3624,7 @@ these biases and construct statistically consistent estimators.")
            r-shinyjs
            r-summarizedexperiment
            r-tibble
+           r-tidyr
            r-tsne
            r-umap
            r-vegan
