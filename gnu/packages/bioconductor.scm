@@ -3741,13 +3741,13 @@ to transform JSON responses to formats more amenable to manipulation in R.")
 (define-public r-aldex2
   (package
     (name "r-aldex2")
-    (version "1.34.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ALDEx2" version))
               (sha256
                (base32
-                "0wchlw9dprw7vkw26h26ypx06xv2j0cxbidw61pcqaxmrrh14dhz"))))
+                "1bqpk93bbyajw2dm54d68f3dkc0jgcny109asfm6kcz7dg7szi3y"))))
     (properties `((upstream-name . "ALDEx2")))
     (build-system r-build-system)
     (propagated-inputs
