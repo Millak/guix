@@ -23503,14 +23503,14 @@ whole-genome and whole-exome variant data.")
 (define-public r-snpstats
   (package
     (name "r-snpstats")
-    (version "1.52.0")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "snpStats" version))
        (sha256
         (base32
-         "0a4kyv93ljv7n62ghx66l81q6sw24llr0998nsalidyws1wldbyr"))))
+         "160pl3dy7v89i90x262hxqgipas4pyim600l6m50g3c03vm5in03"))))
     (properties `((upstream-name . "snpStats")))
     (build-system r-build-system)
     (inputs (list zlib))
