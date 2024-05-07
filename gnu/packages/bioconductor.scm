@@ -6078,13 +6078,13 @@ dynamic documents and vignettes.")
 (define-public r-bluster
   (package
    (name "r-bluster")
-   (version "1.12.0")
+   (version "1.14.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "bluster" version))
             (sha256
              (base32
-              "16zkv567d39258syhfb215y04sq3pnfjh9pgbp5z85hcfpz4qmhc"))))
+              "1bj7wx2dnwbrv2gxcmqmq815vawfiqj2xy3624fjli11r8c1hywa"))))
    (properties `((upstream-name . "bluster")))
    (build-system r-build-system)
    (propagated-inputs
