@@ -10181,13 +10181,13 @@ set analyses.")
 (define-public r-polyester
   (package
     (name "r-polyester")
-    (version "1.38.0")
+    (version "1.39.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "polyester" version))
        (sha256
-        (base32 "1iycdxj0jhh2faclfzflp2cjc2zmxmhy03avv75h0qg3j5kf35l4"))))
+        (base32 "0fw0qhmbygjq4ryspyqikb8rxfn33ks000j7sshgfg8hf2rmqg3x"))))
     (properties `((upstream-name . "polyester")))
     (build-system r-build-system)
     (propagated-inputs
