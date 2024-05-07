@@ -16,18 +16,20 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Adam Kandur <kefironpremise@gmail.com>
+;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2022 jgart via Guix-patches via <guix-patches@gnu.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 Filip Lajszczak <filip@lajszczak.dev>
 ;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,6 +104,28 @@
      "This package provides access to Google Compute Engine (GCE) metadata and
 API service accounts for Go.")
     (license license:asl2.0)))
+
+(define-public go-git-sr-ht-emersion-gqlclient
+  (package
+    (name "go-git-sr-ht-emersion-gqlclient")
+    (version "0.0.0-20230820050442-8873fe0204b9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~emersion/gqlclient")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x64kcryawdr0daq1w6fada60zqrddw75yi397835b9ij7wb5gmh"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "git.sr.ht/~emersion/gqlclient"))
+    (home-page "https://git.sr.ht/~emersion/gqlclient")
+    (synopsis "GraphQL client and code generator")
+    (description
+     "This package provides a GraphQL client and code generator for Go.")
+    (license license:expat)))
 
 (define-public go-github-com-alexliesenfeld-health
   (package
