@@ -2257,16 +2257,18 @@ files for various search engines.")
 (define-public r-msexperiment
   (package
     (name "r-msexperiment")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsExperiment" version))
        (sha256
-        (base32 "06m0i60zh3xjqmsz6dpp0il833xzdfj0fm6xbhl7kmicvfrcnyfg"))))
+        (base32 "0dxv3jw5aj1i73vqrp3c031pj26i7rp0q2zs4nq3x1vni349506d"))))
     (properties `((upstream-name . "MsExperiment")))
     (build-system r-build-system)
-    (propagated-inputs (list r-iranges
+    (propagated-inputs (list r-biocgenerics
+                             r-dbi
+                             r-iranges
                              r-protgenerics
                              r-qfeatures
                              r-s4vectors
