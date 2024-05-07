@@ -3200,6 +3200,27 @@ quality control functions for examining single cell allelic imbalance
 datasets.")
     (license license:gpl2)))
 
+(define-public r-alabaster-schemas
+  (package
+    (name "r-alabaster-schemas")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "alabaster.schemas" version))
+       (sha256
+        (base32 "1cizlslxw0nhrfjsz3x90waa9w4n2v72a0cycbzvxqbbvkh3cp1l"))))
+    (properties `((upstream-name . "alabaster.schemas")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/alabaster.schemas")
+    (synopsis "Schemas for the Alabaster framework")
+    (description
+     "This package stores all schemas required by various @code{alabaster.*}
+packages.  No computation should be performed by this package, as that is
+handled by @code{alabaster.base}.")
+    (license license:expat)))
+
 (define-public r-amountain
   (package
     (name "r-amountain")
