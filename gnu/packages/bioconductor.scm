@@ -20561,14 +20561,14 @@ manipulating hypergraphs.")
 (define-public r-biggr
   (package
     (name "r-biggr")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiGGR" version))
        (sha256
         (base32
-         "1pdsxkh9fkgn80f7p21902pb6xp2qafq10p29ifb55qwz8gma2ff"))))
+         "1ja5j9753rgx61jwkax0mzkxh7ybh3m4ampkr5ikw3afda23wg1z"))))
     (properties `((upstream-name . "BiGGR")))
     (build-system r-build-system)
     (propagated-inputs
