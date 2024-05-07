@@ -1596,12 +1596,12 @@ albumin} (HSA).")
 (define-public r-aneufinderdata
   (package
    (name "r-aneufinderdata")
-   (version "1.30.0")
+   (version "1.32.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "AneuFinderData" version 'experiment))
             (sha256
-             (base32 "03kp8qkqy2wph7lbzawgnh83qjm31ih1jp986qwphfhkfk125wg0"))))
+             (base32 "1qysi874hsa4a7xz0na0cxv0sx02d3b74h77s30mfww1wsg8jy69"))))
    (build-system r-build-system)
    (home-page "https://bioconductor.org/packages/AneuFinderData/")
    (synopsis "Data package for @code{AneuFinder}")
