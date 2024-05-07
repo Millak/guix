@@ -19932,14 +19932,14 @@ populations, splice site strength, conservation, etc.")
 (define-public r-variancepartition
   (package
     (name "r-variancepartition")
-    (version "1.32.5")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "variancePartition" version))
        (sha256
         (base32
-         "1yrss51gwg73rlva0xhk34md0cx43h2j4vfk0z2hzchr2r1amzmc"))))
+         "00hrizpx05jfh7yrab6na10zkahm8ibrbxy4pa4dcldw65klqmn9"))))
     (properties
      `((upstream-name . "variancePartition")))
     (build-system r-build-system)
