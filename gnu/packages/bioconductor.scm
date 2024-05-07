@@ -8453,13 +8453,13 @@ Enrichment Analysis} (GSEA).")
 (define-public r-gsva
   (package
     (name "r-gsva")
-    (version "1.50.5")
+    (version "1.52.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GSVA" version))
               (sha256
                (base32
-                "0n1g376jfpmnlsjdbv23hb3jny03i84jmvhrcpz2rb5bbpfbm0al"))))
+                "10qv2m3gq5vzrqhcw1p4sx8szwl7a0kxf5n8xxhpplkxxq0yd3cn"))))
     (properties `((upstream-name . "GSVA")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase
@@ -8474,6 +8474,7 @@ Enrichment Analysis} (GSEA).")
                              r-s4vectors
                              r-singlecellexperiment
                              r-sparsematrixstats
+                             r-spatialexperiment
                              r-summarizedexperiment))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/rcastelo/GSVA")
