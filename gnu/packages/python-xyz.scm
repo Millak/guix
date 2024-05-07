@@ -919,6 +919,27 @@ documentation of programming languages.")
 @code{docspec} data from Python source code.")
     (license license:expat)))
 
+(define-public python-fqdn
+  (package
+    (name "python-fqdn")
+    (version "1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fqdn" version))
+       (sha256
+        (base32 "17yqckhymnamszhg06751c83rg3fnr5iy33a135bazvngrkx6phh"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
+    (propagated-inputs (list python-cached-property))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/ypcrts/fqdn")
+    (synopsis "Validate domain names against RFC 1123")
+    (description
+     "This package validates fully-qualified domain names against RFC 1123, so
+that they are acceptable to modern bowsers")
+    (license license:mpl2.0)))
+
 (define-public python-fire
   (package
     (name "python-fire")
