@@ -19247,14 +19247,14 @@ data, to only emphasize the data that actually matters.")
 (define-public r-rcistarget
   (package
     (name "r-rcistarget")
-    (version "1.20.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RcisTarget" version))
        (sha256
         (base32
-         "0dp2y85mfn995rvg698xnxlkz1kd8g0byjypxx62cpfldnkrinxl"))))
+         "1856jnvqacr12j5hnnl4w2abjjd7qvkz7cs8yhbnqpy1896wki0v"))))
     (properties `((upstream-name . "RcisTarget")))
     (build-system r-build-system)
     (propagated-inputs
@@ -19269,7 +19269,8 @@ data, to only emphasize the data that actually matters.")
            r-r-utils
            r-s4vectors
            r-summarizedexperiment
-           r-tibble))
+           r-tibble
+           r-zoo))
     (native-inputs
      (list r-knitr))
     (home-page "https://aertslab.org/#scenic")
