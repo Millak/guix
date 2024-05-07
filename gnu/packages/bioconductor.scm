@@ -4087,13 +4087,13 @@ Functions to plot gene architecture and BAM file data are also provided.")
 (define-public r-antiprofiles
   (package
     (name "r-antiprofiles")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "antiProfiles" version))
               (sha256
                (base32
-                "14lzyq08gnm9r99xwaqh50sz0dwzhmiyyylkg239dlbw80zmv404"))))
+                "0p2fhxzgn877mic2yv1sgcidgm74z8hxa3hdaawgvhhvi2j6v8wa"))))
     (properties `((upstream-name . "antiProfiles")))
     (build-system r-build-system)
     (propagated-inputs
