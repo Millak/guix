@@ -27250,14 +27250,14 @@ OpenMP.")
 (define-public r-lda
   (package
     (name "r-lda")
-    (version "1.4.2")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lda" version))
        (sha256
         (base32
-         "03r4h5kgr8mfy44p66mfj5bp4k00g8zh4a1mhn46jw14pkhs21jn"))))
+         "1m0g2mz7rhjsp6pm784qjngzrb6kp69zjb85fflm48q0drw59lwm"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/lda/")
     (synopsis "Collapsed Gibbs sampling methods for topic models")
