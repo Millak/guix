@@ -6925,14 +6925,14 @@ by the user, helping with quick and reproducible access.")
 (define-public r-aroma-light
   (package
     (name "r-aroma-light")
-    (version "3.32.0")
+    (version "3.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "aroma.light" version))
        (sha256
         (base32
-         "1i6rml0slfsf01a3sphyzrxp2z759psq5bv9cfy5dxx44fnav8b8"))))
+         "1v24b43knsjpw44zkrzv8pvxjiw12rcz9wqp4ahd88dg23j7pvwz"))))
     (properties `((upstream-name . "aroma.light")))
     (build-system r-build-system)
     (propagated-inputs
