@@ -33,6 +33,8 @@
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (guix deprecation)
+  #:use-module (guix utils)
+  #:use-module (guix packages)
   #:export (sddm-configuration
             sddm-configuration?
             sddm-service-type
@@ -165,8 +167,13 @@ Relogin="              (if (sddm-configuration-relogin? config)
 (define (sddm-shepherd-service config)
   "Return a <shepherd-service> for sddm with CONFIG."
 
+  (define sddm (sddm-configuration-sddm config))
+  (define qt6? (version-prefix?
+                "6"
+                (package-version (lookup-package-input sddm "qtbase"))))
+
   (define sddm-command
-    #~(list (string-append #$(sddm-configuration-sddm config) "/bin/sddm")))
+    #~(list (string-append #$sddm "/bin/sddm")))
 
   (list (shepherd-service
          (documentation "SDDM display manager.")
@@ -179,8 +186,12 @@ Relogin="              (if (sddm-configuration-relogin? config)
                    (cons*
                     "XDG_DATA_DIRS=/run/current-system/profile/share"
                     "XDG_CONFIG_DIRS=/run/current-system/profile/etc/xdg"
-                    "QT_PLUGIN_PATH=/run/current-system/profile/lib/qt5/plugins"
-                    "QML2_IMPORT_PATH=/run/current-system/profile/lib/qt5/qml"
+                    #$(string-append "QT_PLUGIN_PATH=/run/current-system/profile/lib/qt"
+                                     (if qt6? "6" "5")
+                                     "/plugins")
+                    #$(string-append "QML" (if qt6? "" "2")
+                                     "_IMPORT_PATH=/run/current-system/profile/lib/qt"
+                                     (if qt6? "6" "5") "/qml")
                     (default-environment-variables))))
          (stop #~(make-kill-destructor)))))
 
