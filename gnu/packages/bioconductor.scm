@@ -10530,14 +10530,14 @@ with a single RCy3 function.")
 (define-public r-regioner
   (package
     (name "r-regioner")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "regioneR" version))
        (sha256
         (base32
-         "1qcgbj7d2fngs3p9a9apnj14x35kc651fy3m0651dnqrxz8j5yij"))))
+         "1ygdlqvhf165mqd247783pi1yzidqap8b913444vrs881n62xvrb"))))
     (properties `((upstream-name . "regioneR")))
     (build-system r-build-system)
     (propagated-inputs
