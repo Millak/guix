@@ -326,6 +326,33 @@ Jupyter Python packages that require a pre-build step that may include
 JavaScript build steps.")
     (license license:bsd-3)))
 
+(define-public python-hatch-jupyter-builder
+  (package
+    (name "python-hatch-jupyter-builder")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hatch_jupyter_builder" version))
+       (sha256
+        (base32 "1baqk80c5ddhksh73l48mb59vvaaa2ldrs65k6vldii4s6c829vr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Don't attempt to build anything, because we don't have network access
+     ;; anyway.
+     (list #:test-flags '(list "-k" "not test_hatch_build")))
+    (propagated-inputs (list python-hatchling))
+    (native-inputs (list python-pytest
+                         python-pytest-cov
+                         python-pytest-mock
+                         python-tomli
+                         python-twine))
+    (home-page "https://github.com/jupyterlab/hatch-jupyter-builder")
+    (synopsis "Hatch plugin to help build Jupyter packages")
+    (description
+     "This package provides a hatch plugin to help build Jupyter packages.")
+    (license license:bsd-3)))
+
 (define-public python-jupyter-server
   (package
     (name "python-jupyter-server")
