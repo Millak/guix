@@ -4395,13 +4395,13 @@ that might arise in splicing patterns.")
 (define-public r-assessorf
   (package
     (name "r-assessorf")
-    (version "1.20.0")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AssessORF" version))
               (sha256
                (base32
-                "0v64d3nmvcj6bz8zplyqzslm7kz6j3y0nl316h76g094hify64lk"))))
+                "1gzaafsfqzy2x35i251gvkd1syif80qb08kkvgnf1i6c8d2czmps"))))
     (properties `((upstream-name . "AssessORF")))
     (build-system r-build-system)
     (propagated-inputs
