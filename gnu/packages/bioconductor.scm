@@ -21109,13 +21109,13 @@ access.")
 (define-public r-experimenthubdata
   (package
     (name "r-experimenthubdata")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ExperimentHubData" version))
        (sha256
-        (base32 "0msg3wpz1ppvwc4dsm9bz9h4y4hz67xr1xwp4vv4100sg0i5v9jn"))))
+        (base32 "1adm3b0nacbdi4x5z71iiif9d876m3ip6crhbbr2hw4mbk6is7qn"))))
     (properties `((upstream-name . "ExperimentHubData")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationhubdata
