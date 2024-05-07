@@ -24050,13 +24050,13 @@ Python environments in a single R session.")
 (define-public r-bayesknockdown
   (package
     (name "r-bayesknockdown")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BayesKnockdown" version))
        (sha256
-        (base32 "1argd4gfld2yb0vvpgb5k7m6agmi58712f6g5dj4gnb7kg4rp1l8"))))
+        (base32 "05plmh36s00jh4ckcgvi2s9ypa8mxlsy23mzysazbfsr022x3vqa"))))
     (properties `((upstream-name . "BayesKnockdown")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase))
