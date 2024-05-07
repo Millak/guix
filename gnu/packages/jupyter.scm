@@ -679,30 +679,23 @@ for authoring custom addons.")
 (define-public python-jupyter-server-mathjax
   (package
     (name "python-jupyter-server-mathjax")
-    (version "0.2.5")
+    (version "0.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyter_server_mathjax" version))
        (sha256
-        (base32 "1cz7grhj9jih9mgw4xk7a4bqy1fwlb1jsawh6ykxnvpydn76rnb4"))))
-    (build-system python-build-system)
+        (base32 "0hrrl969r7ir6q683hlr7a4lid9x2s35hax2hviiyv38q1nnn7mv"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion "/tmp"
-                  (invoke "pytest" "-vv"
-                          "--pyargs" "jupyter_server_mathjax"))))))))
+      #:test-flags
+      '(list "--pyargs" "jupyter_server_mathjax")))
     (propagated-inputs (list python-jupyter-server))
     (native-inputs
-     (list python-jupyter-server
-           python-jupyter-packaging
-           python-pytest
-           python-pytest-tornasync))
+     (list python-jupyter-packaging
+           python-pytest python-pytest-jupyter
+           python-setuptools python-wheel))
     (home-page "https://jupyter.org")
     (synopsis "Jupyter Server extension for serving Mathjax")
     (description "This package provides a Jupyter Server extension for serving
