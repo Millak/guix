@@ -34838,14 +34838,14 @@ simple interface for all functions.")
 (define-public r-iml
   (package
     (name "r-iml")
-    (version "0.11.2")
+    (version "0.11.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "iml" version))
        (sha256
         (base32
-         "1sjv0cj50iivjlb2hri401z78rmidxxh6q5akscd42k98jyw2r30"))))
+         "1d0p41byqpw7niyyyqcj00y43dmhqrm2csmbarcy8mz7n0i1842b"))))
     (properties `((upstream-name . "iml")))
     (build-system r-build-system)
     (propagated-inputs
