@@ -3984,13 +3984,13 @@ create an alternative mapping from sequences.")
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
-    (version "1.30.0")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AneuFinder" version))
               (sha256
                (base32
-                "0x7v60j1c1g12qlqxgshpmbnwzjbmlnkrfh60wl43inr0wyllq1l"))))
+                "0dgmg0slyrh025wgz299dzzmpirlmdhmabxspci1qfarakw5yicf"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
