@@ -576,6 +576,29 @@ JavaScript build steps.")
 endpoints—to Jupyter web applications.")
     (license license:expat)))
 
+(define-public python-jupyter-server-terminals
+  (package
+    (name "python-jupyter-server-terminals")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyter_server_terminals" version))
+       (sha256
+        (base32 "0sajiadhwncrr0inzzkrs7l1xc6jmw9b5zfw1v79l3i2cx8jkq2s"))))
+    (build-system pyproject-build-system)
+    ;; The tests require python-jupyter-server, but python-jupyter-server
+    ;; needs this package.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list python-terminado))
+    (native-inputs
+     (list python-hatchling))
+    (home-page "https://pypi.org/project/jupyter-server-terminals/")
+    (synopsis "Jupyter Server extension providing terminals")
+    (description
+     "This package provides a Jupyter Server extension providing terminals.")
+    (license license:bsd-3)))
+
 (define-public python-jupyterlab-widgets
   (package
     (name "python-jupyterlab-widgets")
