@@ -18031,14 +18031,14 @@ and data files used across sessions.")
 (define-public r-iclusterplus
   (package
     (name "r-iclusterplus")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "iClusterPlus" version))
        (sha256
         (base32
-         "0p56w6431jg921416dkyiykccvr7alq6x6r1gcx5d9hkcpyncks1"))))
+         "01rf4w2p1qw4hk9shsdaffyz9g91vffcn4qi1dllsrn3m8pyd1gm"))))
     (properties `((upstream-name . "iClusterPlus")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
