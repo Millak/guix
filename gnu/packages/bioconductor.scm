@@ -16647,14 +16647,14 @@ Affymetrix arrays.")
 (define-public r-abseqr
   (package
     (name "r-abseqr")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "abseqR" version))
        (sha256
         (base32
-         "0s865nahgm0by2nvjydkjlhkj2sxmrvcrhw7rmm46ld4g10xsrc8"))))
+         "0aj3kh4c8zk60n6yyh2jblbrvv77071r96m0mrcslqm71dwg9402"))))
     (properties `((upstream-name . "abseqR")))
     (build-system r-build-system)
     (inputs
