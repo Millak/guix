@@ -17859,14 +17859,14 @@ Currently only Affymetrix oligonucleotide analysis is supported.")
 (define-public r-zinbwave
   (package
     (name "r-zinbwave")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "zinbwave" version))
        (sha256
         (base32
-         "1lp8x9grc07kaz9iy7yc45mk708g9dplsl86fq0ip8rs51c8f31i"))))
+         "07zlvzfs1c4gcj9hwgqbjhgbrffi301620chrf5lvzly4v7hafwi"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocparallel
