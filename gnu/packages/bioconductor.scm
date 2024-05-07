@@ -10314,13 +10314,13 @@ fragment ions.")
 (define-public r-protgear
   (package
     (name "r-protgear")
-    (version "1.6.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "protGear" version))
        (sha256
-        (base32 "0r8md32vxjzarjldr9vsh3k0ms4zgqm9c7pp2flanbyinnqlfnxv"))))
+        (base32 "1wbdp7f55lbn0gcxgnp9xk0y5npn7jmk9vp7yq9v76j7f396vj2f"))))
     (properties `((upstream-name . "protGear")))
     (build-system r-build-system)
     (arguments
