@@ -514,45 +514,53 @@ JavaScript build steps.")
 (define-public python-jupyter-server
   (package
     (name "python-jupyter-server")
-    (version "1.16.0")
+    (version "2.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyter_server" version))
        (sha256
         (base32
-         "0fj6l34m6vk3yic87isz9bzgg4qsbr285x1faamf512bsrxghmn7"))))
-    (build-system python-build-system)
+         "0xz69anflhib514lgpdrs0ppmbwp13zbg4vwzls3820jlp7594b5"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (let ((home (string-append (getcwd) "/guix-home")))
-                 (setenv "HOME" home))
-               ;; Add jupyter-server executable to PATH.
-               (setenv "PATH"
-                       (string-append (assoc-ref outputs "out") "/bin:"
-                                      (getenv "PATH")))
-               (with-directory-excursion "jupyter_server"
-                 ;; The pytest fixtures are only loaded when the file is
-                 ;; called conftest.py.
-                 (rename-file "pytest_plugin.py" "conftest.py")
-                 (invoke "pytest" "-vv"
-                         ;; Fails with internal server error
-                         "-k" "not test_list_formats"
-                         ;; Integration tests require a server.
-                         "-m" "not integration_test"))))))))
+     (list
+      #:test-flags
+      ;; Integration tests require a server.
+      '(list "-m" "not integration_test"
+             ;; This test fails just like the shutil test in
+             ;; python-jupyter-events fails.  Odd, that.
+             "-k" "not test_server_extension_list")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'ignore-deprecation-warnings
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("  \"ignore:datetime.*" m)
+                 (string-append m "\n\"ignore:zmq.eventloop.ioloop is deprecated:DeprecationWarning\","
+                                "\n\"ignore:There is no current event loop:DeprecationWarning\","
+                                "\n\"ignore:unclosed event loop:ResourceWarning\","
+                                ;; From tornado
+                                "\n\"ignore:unclosed <socket.socket:ResourceWarning\",")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (let ((home (string-append (getcwd) "/guix-home")))
+                (setenv "HOME" home))
+              ;; Add jupyter-server executable to PATH.
+              (setenv "PATH"
+                      (string-append #$output "/bin:" (getenv "PATH"))))))))
     (propagated-inputs
      (list python-anyio
            python-argon2-cffi
            python-jinja2
            python-jupyter-client
            python-jupyter-core
+           python-jupyter-events
+           python-jupyter-server-terminals
            python-nbconvert
            python-nbformat
+           python-overrides
+           python-packaging
            python-prometheus-client
            python-pyzmq
            python-send2trash
@@ -561,13 +569,14 @@ JavaScript build steps.")
            python-traitlets
            python-websocket-client))
     (native-inputs
-     (list python-coverage
+     (list python-flaky
+           python-hatchling
+           python-hatch-jupyter-builder
            python-ipykernel
            python-pytest
            python-pytest-console-scripts
-           python-pytest-cov
-           python-pytest-mock
-           python-pytest-tornasync
+           python-pytest-jupyter
+           python-pytest-timeout
            python-requests))
     (home-page "https://jupyter.org")
     (synopsis "Core services, APIs, and REST endpoints for Jupyter web applications")
