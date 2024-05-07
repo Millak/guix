@@ -10075,7 +10075,18 @@ training models for classification or ranking.")
        (uri (cran-uri "xts" version))
        (sha256
         (base32
-         "1yqx1x395hvdav1fvmpwrfm8sir398ky1bi0x5zsm7acbkv91maa"))))
+         "1yqx1x395hvdav1fvmpwrfm8sir398ky1bi0x5zsm7acbkv91maa"))
+       (modules '((guix build utils)))
+       (snippet
+        '(with-directory-excursion "inst/doc"
+           ;; These files are generated from Rnw files.
+           (for-each delete-file
+                     (list "xts-faq.R"
+                           "xts-faq.Rnw"
+                           "xts-faq.pdf"
+                           "xts.R"
+                           "xts.Rnw"
+                           "xts.pdf"))))))
     (build-system r-build-system)
     (propagated-inputs (list r-zoo))
     (home-page "https://github.com/joshuaulrich/xts")
