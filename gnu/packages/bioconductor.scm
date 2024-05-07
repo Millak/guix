@@ -10381,6 +10381,30 @@ batch correction and normalization.")
 proteomics packages.")
     (license license:artistic2.0)))
 
+(define-public r-pwalign
+  (package
+    (name "r-pwalign")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "pwalign" version))
+       (sha256
+        (base32 "1m0j1m5jif5spd9fkpzz3z3c9s8vwiy8xvpx8rz8igxj89rwrwb7"))))
+    (properties `((upstream-name . "pwalign")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics r-biostrings r-iranges r-s4vectors
+                             r-xvector))
+    (home-page "https://bioconductor.org/packages/pwalign")
+    (synopsis "Perform pairwise sequence alignments")
+    (description
+     "The two main functions in the package are @code{pairwiseAlignment} and
+@code{stringDist}.  The former solves (Needleman-Wunsch) global alignment,
+(Smith-Waterman) local alignment, and (ends-free) overlap alignment problems.
+The latter computes the Levenshtein edit distance or pairwise alignment score
+matrix for a set of strings.")
+    (license license:artistic2.0)))
+
 (define-public r-rbgl
   (package
     (name "r-rbgl")
