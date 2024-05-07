@@ -10278,16 +10278,16 @@ of Eigenmatrices} (JADE).")
 (define-public r-ips
   (package
     (name "r-ips")
-    (version "0.0.11")
+    (version "0.0.12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ips" version))
               (sha256
                (base32
-                "02jxanfhsjrabj33nwjv71vdc87hiyzikyqrfdj9ix6dky6lm199"))))
+                "0vnsalm94vzagksqv4ph6x7vdwhd1lq278sak30pr4m9bc9xxchw"))))
     (properties `((upstream-name . "ips")))
     (build-system r-build-system)
-    (propagated-inputs (list r-ape r-phangorn r-plyr r-seqinr r-xml))
+    (propagated-inputs (list r-ape r-data-table r-phangorn r-plyr r-xml))
     (home-page "https://cran.r-project.org/package=ips")
     (synopsis "Interfaces to phylogenetic software in R")
     (description
