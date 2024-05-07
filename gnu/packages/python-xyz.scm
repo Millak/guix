@@ -14699,7 +14699,7 @@ applications.")
            python-cython
            python-pytest
            python-pytest-asyncio
-           python-tornado))
+           python-tornado-6))
     (home-page "https://github.com/zeromq/pyzmq")
     (synopsis "Python bindings for 0MQ")
     (description
