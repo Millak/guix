@@ -24320,14 +24320,14 @@ separate published packages.")
 (define-public r-biomformat
   (package
     (name "r-biomformat")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biomformat" version))
        (sha256
         (base32
-         "1ccnrz8rkg533kil3sc8wnjqsmiyrpqqmk7av7ls01avglcjdjq1"))))
+         "0jys0nmp833ax96vfdh1adikpyapr5gkmldx5kvv5bqiqc8aipzb"))))
     (properties `((upstream-name . "biomformat")))
     (build-system r-build-system)
     (propagated-inputs
