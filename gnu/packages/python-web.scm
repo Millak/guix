@@ -3564,28 +3564,25 @@ sanitizer Rust crate.")
 (define-public python-websocket-client
   (package
     (name "python-websocket-client")
-    (version "1.2.3")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "websocket-client" version))
+       (uri (pypi-uri "websocket_client" version))
        (sha256
-        (base32 "1xba9z6b211pandrlk2l5p8wj6gn7yfkpq1sxfbqjl6c19n8258k"))))
-    (build-system python-build-system)
+        (base32 "1nn3qi5g59j55wfy2z02j6lq2cm281fq0wi406b2yqys8jgxyf9j"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-network-test
-           (lambda _
-             ;; This test requires networking.
-             (substitute* "websocket/tests/test_http.py"
-               (("def testConnect") "def _testConnect"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "websocket/tests")))))))
+     (list
+      #:test-flags
+      ;; This test requires networking.
+      '(list "-k" "not testConnect")))
     (native-inputs
-     (list python-pysocks python-pytest python-websockets))
+     (list python-pysocks
+           python-pytest
+           python-setuptools
+           python-websockets
+           python-wheel))
     (home-page "https://github.com/websocket-client/websocket-client")
     (synopsis "WebSocket client for Python")
     (description "The Websocket-client module provides the low level APIs for
