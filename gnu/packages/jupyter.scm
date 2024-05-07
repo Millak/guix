@@ -408,6 +408,43 @@ JupyterLab.  It is a separate project in order to accommodate creating
 JupyterLab-like applications from a more limited scope.")
     (license license:bsd-3)))
 
+(define-public python-jupyter-events
+  (package
+    (name "python-jupyter-events")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyter_events" version))
+       (sha256
+        (base32 "08jyhj16drl3hg594gr677bc5q991lpd4khlhb3jx26csclq42v7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This passes the whole command line to shutil.which, instead of just
+     ;; the executable.
+     (list #:test-flags '(list "--ignore=tests/test_cli.py")))
+    (propagated-inputs (list python-jsonschema
+                             python-json-logger
+                             python-pyyaml
+                             python-referencing
+                             python-rich
+                             python-rfc3339-validator
+                             python-rfc3986-validator
+                             python-traitlets))
+    (native-inputs (list python-click
+                         python-hatchling
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-console-scripts))
+    (home-page "https://pypi.org/project/jupyter-events/")
+    (synopsis "Jupyter Event System library")
+    (description "Jupyter Events enables Jupyter Python
+Applications (e.g. Jupyter Server, JupyterLab Server, JupyterHub, etc.) to
+emit events—structured data describing things happening inside the
+application.  Other software (e.g. client applications like JupyterLab) can
+listen and respond to these events.")
+    (license license:bsd-3)))
+
 (define-public python-jupyter-packaging
   (package
     (name "python-jupyter-packaging")
