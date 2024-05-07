@@ -7973,14 +7973,14 @@ their directionality of change in Epigenome-Wide Association Studies.")
 (define-public r-fastseg
   (package
     (name "r-fastseg")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "fastseg" version))
        (sha256
         (base32
-         "10g9mdh7nzdz2b1k5gg5hk35lpapcnbs3p3z17k15aq040lpm236"))))
+         "03gl7z7q90jy47q57gfbj5fkv5n8hi43jbbrl53bdyp71f26ry2d"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase r-biocgenerics r-genomicranges r-iranges
