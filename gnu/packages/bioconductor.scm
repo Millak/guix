@@ -20752,13 +20752,13 @@ structures.")
 (define-public r-fmcsr
   (package
     (name "r-fmcsr")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
       (origin
         (method url-fetch)
         (uri (bioconductor-uri "fmcsR" version))
         (sha256
-          (base32 "17il9mi1iagl474ia1lz0ajx1wq67jw5famkr1fmjlis8ymw8hnd"))))
+          (base32 "080src34jwkvbk98pa4ri530l9gi4ibr5mwxib1681np0cfal54g"))))
     (properties `((upstream-name . "fmcsR")))
     (build-system r-build-system)
     (propagated-inputs
