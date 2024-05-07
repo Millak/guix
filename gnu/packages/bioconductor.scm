@@ -2375,13 +2375,13 @@ resulting in a complete gene expression profile for each cell.")
 (define-public r-all
   (package
     (name "r-all")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ALL" version 'experiment))
        (sha256
-        (base32 "1ny5xv338a91gc88a1y5rrd27iawrrlmxhkidvc7xdsbrwd4flkc"))))
+        (base32 "1yl8b8q8i19kx4viwinhyq9xn9d4axlfgjvm7cpf7pys4krhnrha"))))
     (properties `((upstream-name . "ALL")))
     (build-system r-build-system)
     (propagated-inputs
