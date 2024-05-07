@@ -19153,14 +19153,14 @@ self-organizing map clustering and minimal spanning trees.")
 (define-public r-mixomics
   (package
     (name "r-mixomics")
-    (version "6.26.0")
+    (version "6.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "mixOmics" version))
        (sha256
         (base32
-         "0ifi89s611kblncnpvsrbl6sq2zi36binz63njrhya9wkyaxj6pc"))))
+         "03pdg2hz4wnyigqakb9098ak9ww8fhwypzn006hfad0s042p9wvj"))))
     (properties `((upstream-name . "mixOmics")))
     (build-system r-build-system)
     (propagated-inputs
