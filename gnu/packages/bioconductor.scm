@@ -24621,14 +24621,14 @@ help unravel disease regulatory trajectory.")
 (define-public r-biotmle
   (package
     (name "r-biotmle")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biotmle" version))
        (sha256
         (base32
-         "0h796sxv7fvwx9m8ikamf3bvaac7rimp33lv1j3ngsjifigdkvfy"))))
+         "06kixhzkrzxyic44kdmqrv19v2c4a7sri8cbhbvww8km4n5l39sf"))))
     (properties `((upstream-name . "biotmle")))
     (build-system r-build-system)
     (propagated-inputs
