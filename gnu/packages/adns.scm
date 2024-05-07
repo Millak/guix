@@ -34,7 +34,7 @@
 (define-public adns
   (package
     (name "adns")
-    (version "1.6.0")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "mirror://gnu/adns/adns-"
@@ -44,7 +44,7 @@
                            version ".tar.gz")))
               (sha256
                (base32
-                "1pi0xl07pav4zm2jrbrfpv43s1r1q1y12awgak8k7q41m5jp4hpv"))))
+                "1k81sjf0yzv6xj35vcxp0ccajxrhhmyly7a57xlbs1kmkdwb6f3i"))))
     (build-system gnu-build-system)
     (arguments
      ;; Make sure the programs under bin/ fine libadns.so.
