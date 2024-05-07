@@ -1172,29 +1172,29 @@ Ensembl.")
 (define-public r-escape
   (package
     (name "r-escape")
-    (version "1.12.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "escape" version))
        (sha256
-        (base32 "0bmin69ax7l5x3a0k9mv183277a0hl4znx02y79v2ilkgqkdm7fn"))))
+        (base32 "03wbrxd7kjyl3d4s418ql5fv7bmwdfyfp10jd8knr0xis7vxmz2x"))))
     (properties `((upstream-name . "escape")))
     (build-system r-build-system)
-    (propagated-inputs (list r-biocparallel
-                             r-broom
-                             r-data-table
+    (propagated-inputs (list r-aucell
+                             r-biocparallel
                              r-dplyr
+                             r-ggdist
                              r-ggplot2
+                             r-ggpointdensity
                              r-ggridges
                              r-gseabase
                              r-gsva
-                             r-matrix
                              r-matrixgenerics
                              r-msigdbr
                              r-patchwork
                              r-reshape2
-                             r-rlang
+                             r-seuratobject
                              r-singlecellexperiment
                              r-stringr
                              r-summarizedexperiment
