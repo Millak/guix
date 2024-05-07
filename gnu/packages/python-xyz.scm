@@ -24741,29 +24741,32 @@ both as keys and as attributes.")
 (define-public python-attrs
   (package
     (name "python-attrs")
-    (version "21.2.0")
+    (version "23.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "attrs" version))
               (sha256
                (base32
-                "1yzmwi5d197p0qhl7rl4xi9q1w8mk9i3zn6hrl22knbcrb1slspg"))))
-    (build-system python-build-system)
+                "0c0zjwcqzbmpl93izm2g37gc3lsbbb9pf275fv7zcqn256sw6pck"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'remove-test-hypothesis-deadlines
-                    (lambda _
-                      (substitute* "tests/test_make.py"
-                        (("assume, given") "assume, given, settings")
-                        (("( +)@given" all spaces)
-                         (string-append spaces "@settings(deadline=None)\n" all)))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest")))))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'remove-test-hypothesis-deadlines
+           (lambda _
+             (substitute* "tests/test_make.py"
+               (("assume, given") "assume, given, settings")
+               (("( +)@given" all spaces)
+                (string-append spaces "@settings(deadline=None)\n" all))))))))
     (native-inputs
-     (list python-coverage python-hypothesis python-pympler python-pytest
-           python-six))
+     (list python-hatchling
+           python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-pympler
+           python-pytest
+           python-pytest-xdist
+           python-zope-interface))
     (home-page "https://github.com/python-attrs/attrs/")
     (synopsis "Attributes without boilerplate")
     (description "@code{attrs} is a Python package with class decorators that
@@ -24775,7 +24778,9 @@ both as keys and as attributes.")
   (package
     (inherit python-attrs)
     (name "python-attrs-bootstrap")
-    (native-inputs `())
+    (native-inputs (list python-hatchling
+                         python-hatch-fancy-pypi-readme
+                         python-hatch-vcs))
     (arguments `(#:tests? #f))))
 
 (define-public python-cliapp
