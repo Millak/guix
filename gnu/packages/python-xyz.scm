@@ -22460,18 +22460,21 @@ times.
 (define-public python-lazy-object-proxy
   (package
     (name "python-lazy-object-proxy")
-    (version "1.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "lazy-object-proxy" version))
-              (sha256
-               (base32
-                "0hwh29m9wa582ramj30p4pysckdrmki1z1b8iaaxk6mpfx2kc8wp"))))
+    (version "1.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lazy-object-proxy" version))
+       (sha256
+        (base32 "0sdc92bbzy6slcl432j04mr131cy8n0many26ppm4fpl8mnpn93q"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-scm))
-    (build-system python-build-system)
+     (list python-pip
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/ionelmc/python-lazy-object-proxy")
-    (synopsis "Lazy object proxy for python")
+    (synopsis "Lazy object proxy for Python")
     (description
      "Lazy object proxy is an object that wraps a callable but defers the call
 until the object is actually required, and caches the result of said call.")
