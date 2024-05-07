@@ -3111,13 +3111,13 @@ mass spectrometry} (MS1) data.")
 (define-public r-agimicrorna
   (package
     (name "r-agimicrorna")
-    (version "2.52.0")
+    (version "2.54.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AgiMicroRna" version))
               (sha256
                (base32
-                "0cimi60asz5mmrq2qmnyqq9x5yg14cc67j8135x9zlklblsfyf35"))))
+                "1bm8rxfdgd0fx48fi70by08qr855jv6r4xcr7al2v9akv6vphws2"))))
     (properties `((upstream-name . "AgiMicroRna")))
     (build-system r-build-system)
     (propagated-inputs
