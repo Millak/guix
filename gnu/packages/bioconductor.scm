@@ -5264,13 +5264,13 @@ set analyses, and can deal with repeated or longitudinal data.")
 (define-public r-debcam
   (package
     (name "r-debcam")
-    (version "1.20.0")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "debCAM" version))
               (sha256
                (base32
-                "1swqqrlwin2i2qq46qyfziblbfsfyd5hf6w39hygp7fdkpic14b7"))
+                "1lbgwv7009fpwqw6kl94gmm44xypn60r8kcm3fjzgbjbwijriwgq"))
               (snippet
                '(for-each delete-file
                           '("inst/java/CornerDetect.jar"
@@ -5321,7 +5321,7 @@ set analyses, and can deal with repeated or longitudinal data.")
            r-rjava
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr zip))
+     (list r-knitr zip)) ;zip is needed for repacking the jar
     (home-page "https://bioconductor.org/packages/debCAM")
     (synopsis "Deconvolution by convex analysis of mixtures")
     (description
