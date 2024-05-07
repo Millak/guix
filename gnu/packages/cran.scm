@@ -4614,13 +4614,13 @@ in Miettinen, Nordhausen and Taskinen (2017) <doi:10.18637/jss.v076.i02>.")
 (define-public r-job
   (package
     (name "r-job")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "job" version))
        (sha256
-        (base32 "0d7pw3q5lqlgmav1vx63y8l6gdav96656bg378wj001rx5gx052h"))))
+        (base32 "14i0ljq2wp9k8112fr27sz0bc0zi2a68kls8vw5h3qa5n40v27cc"))))
     (properties `((upstream-name . "job")))
     (build-system r-build-system)
     (propagated-inputs (list r-digest r-rstudioapi))
