@@ -24210,14 +24210,14 @@ transcription factor binding consensus by heuristic search.")
 (define-public r-biocthis
   (package
     (name "r-biocthis")
-    (version "1.12.0")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biocthis" version))
        (sha256
         (base32
-         "0lxcsw70ib8wvkp3ii1l8vd4g2ddhj6g0x22dwcmwacr2myk3bg8"))))
+         "1f09vw5qjxyirz5xbvnnjlwxg7z0i0y8yry49d1gyx0spyhzl7sp"))))
     (properties `((upstream-name . "biocthis")))
     (build-system r-build-system)
     (arguments
