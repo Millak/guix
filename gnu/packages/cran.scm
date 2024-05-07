@@ -4039,13 +4039,13 @@ scraping tasks, inspired by libraries like @code{BeautifulSoup}.")
 (define-public r-secretbase
   (package
     (name "r-secretbase")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "secretbase" version))
        (sha256
-        (base32 "0b05js4vh6pkkiqms2qmipy5pq96q1i5grb951skk0h953cmwf11"))))
+        (base32 "04xxjz4b9lpixgpa547rb9y2d370rs6jy1vyr6z24zkia1fmybg4"))))
     (properties `((upstream-name . "secretbase")))
     (build-system r-build-system)
     (home-page "https://shikokuchuo.net/secretbase/")
