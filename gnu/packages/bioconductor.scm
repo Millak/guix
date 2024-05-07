@@ -1043,13 +1043,13 @@ on mapping using Entrez Gene identifiers.")
 (define-public r-org-mm-eg-db
   (package
     (name "r-org-mm-eg-db")
-    (version "3.18.0")
+    (version "3.19.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Mm.eg.db" version 'annotation))
               (sha256
                (base32
-                "0i35dfllh8wf7b61ajf33gvclzg3znyx3cgp30vs3hm8ys3nras1"))))
+                "12d8lrf6bxvqzfxzdbxqmjcywy2myhwhi99kxdwpijsczxxfikj7"))))
     (properties
      `((upstream-name . "org.Mm.eg.db")))
     (build-system r-build-system)
