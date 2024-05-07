@@ -3341,6 +3341,38 @@ packages.  No computation should be performed by this package, as that is
 handled by @code{alabaster.base}.")
     (license license:expat)))
 
+(define-public r-alabaster-se
+  (package
+    (name "r-alabaster-se")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "alabaster.se" version))
+       (sha256
+        (base32 "15jggzbkl2v1jlng3bsqyf8sfvihn9amsbfgdygv04zh0kbx4i46"))))
+    (properties `((upstream-name . "alabaster.se")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-alabaster-base
+                             r-alabaster-matrix
+                             r-alabaster-ranges
+                             r-biocgenerics
+                             r-genomicranges
+                             r-iranges
+                             r-jsonlite
+                             r-s4vectors
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/alabaster.se")
+    (synopsis "Load and save SummarizedExperiments from file")
+    (description
+     "This is a package for saving @code{SummarizedExperiments} into file
+artifacts, and loading them back into memory.  This is a more portable
+alternative to serialization of such objects into RDS files.  Each artifact is
+associated with metadata for further interpretation; downstream applications
+can enrich this metadata with context-specific properties.")
+    (license license:expat)))
+
 (define-public r-amountain
   (package
     (name "r-amountain")
