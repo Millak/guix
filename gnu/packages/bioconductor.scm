@@ -955,13 +955,13 @@ data.")
 (define-public r-org-ce-eg-db
   (package
     (name "r-org-ce-eg-db")
-    (version "3.18.0")
+    (version "3.19.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Ce.eg.db" version 'annotation))
               (sha256
                (base32
-                "1fsbrbby6ka2xdsbp8b10nid99w6lkvb7pyn8gv3dsn8p9p6mc5q"))))
+                "0vg6nw4qzj8janmkv6k2z471m3l4xnd1h232h0w5i53b20c7p6ys"))))
     (properties
      `((upstream-name . "org.Ce.eg.db")))
     (build-system r-build-system)
