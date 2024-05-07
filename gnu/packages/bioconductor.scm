@@ -3295,6 +3295,31 @@ interpretation; downstream applications can enrich this metadata with
 context-specific properties.")
     (license license:expat)))
 
+(define-public r-alabaster-sce
+  (package
+    (name "r-alabaster-sce")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "alabaster.sce" version))
+       (sha256
+        (base32 "1i9nmivsfrd7fbb8njmwihfx4xpj4p3h5bnlj9fvk5308bbj3qcg"))))
+    (properties `((upstream-name . "alabaster.sce")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-alabaster-base r-alabaster-se r-jsonlite
+                             r-singlecellexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/alabaster.sce")
+    (synopsis "Load and save SingleCellExperiment from file")
+    (description
+     "This is a package for saving @code{SingleCellExperiment} into file
+artifacts, and loading them back into memory.  This is a more portable
+alternative to serialization of such objects into RDS files.  Each artifact is
+associated with metadata for further interpretation; downstream applications
+can enrich this metadata with context-specific properties.")
+    (license license:expat)))
+
 (define-public r-alabaster-schemas
   (package
     (name "r-alabaster-schemas")
