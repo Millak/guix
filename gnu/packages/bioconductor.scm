@@ -12933,13 +12933,13 @@ spectrometry} data.")
 (define-public r-apeglm
   (package
     (name "r-apeglm")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "apeglm" version))
               (sha256
                (base32
-                "0cj9yzmh9w3fk3rxmk2k5j55r42mmz9znszmr4l160mr23alkzx4"))))
+                "0l84sf4ikx0q031wf0k26n9ikwmgs4nm7v7bky47q3ik29mh7wgs"))))
     (properties `((upstream-name . "apeglm")))
     (build-system r-build-system)
     (propagated-inputs
