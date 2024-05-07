@@ -12127,13 +12127,13 @@ large extend by the @code{ViennaRNA} package.")
 (define-public r-structuralvariantannotation
   (package
     (name "r-structuralvariantannotation")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "StructuralVariantAnnotation" version))
        (sha256
-        (base32 "1h3l3xbxwf2w2dl0qz72v68h5g77zhd2rr0g86l2dhn67mhy8ml2"))))
+        (base32 "0hnpa6ykfasp2hshqdny29dyw6y9dib4rsm379fm7n8iami1rjp1"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
@@ -12144,6 +12144,7 @@ large extend by the @code{ViennaRNA} package.")
            r-genomicfeatures
            r-genomicranges
            r-iranges
+           r-pwalign
            r-rlang
            r-rtracklayer
            r-s4vectors
