@@ -26921,7 +26921,7 @@ systems policies.")
 (define-public python-send2trash
   (package
     (name "python-send2trash")
-    (version "1.8.0")
+    (version "1.8.2")
     (source
      (origin (method git-fetch)
              ;; Source tarball on PyPI doesn't include tests.
@@ -26931,19 +26931,15 @@ systems policies.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1k7dfypaaq4f36fbciaasv72j6wgjihw8d88axmz9c329bz8v5qx"))))
-    (build-system python-build-system)
+               "0dl9nv3h3kkcavwiswzg76pksqczq448gbdvlbz88bm71zvdshx7"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'check 'pre-check
-           (lambda _
-             (setenv "HOME" "/tmp")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest))
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/arsenetar/send2trash")
     (synopsis "Send files to the user's @file{~/Trash} directory")
     (description "This package provides a Python library to send files to the
