@@ -1,0 +1,3 @@
+#!/bin/sh
+# Authenticate the repo upon 'git pull' and similar.
+exec guix git authenticate

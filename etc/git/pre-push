@@ -32,7 +32,9 @@ do
 		# Only use the hook when pushing to Savannah.
 		case "$2" in
 		    *.gnu.org*)
-			exec make authenticate check-channel-news
+			set -e
+			make check-channel-news
+			exec guix git authenticate
 			exit 127
 			;;
 		    *)

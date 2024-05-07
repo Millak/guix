@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013 Andreas Enge <andreas@enge.fr>
 # Copyright © 2015, 2017 Alex Kost <alezost@gmail.com>
 # Copyright © 2016, 2018 Mathieu Lirzin <mthl@gnu.org>
@@ -899,22 +899,6 @@ $(guix_install_go_files): install-nobase_dist_guilemoduleDATA
 install-data-hook:
 	touch "$(DESTDIR)$(guileobjectdir)/guix/config.go"
 
-# Commit corresponding to the 'v1.0.0' tag.
-commit_v1_0_0 = 6298c3ffd9654d3231a6f25390b056483e8f407c
-
-# Introduction of the 'guix' channel.  Keep in sync with (guix channels)!
-channel_intro_commit = 9edb3f66fd807b096b48283debdcddccfea34bad
-channel_intro_signer = BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA
-
-# Authenticate the current Git checkout by checking signatures on every commit.
-GUIX_GIT_KEYRING = origin/keyring
-authenticate:
-	$(AM_V_at)echo "Authenticating Git checkout..." ;	\
-	guix git authenticate					\
-	    --keyring=$(GUIX_GIT_KEYRING)			\
-	    --cache-key=channels/guix --stats			\
-	    "$(channel_intro_commit)" "$(channel_intro_signer)"
-
 # Assuming Guix is already installed and the daemon is up and running, this
 # rule builds from $(srcdir), creating and building derivations.
 as-derivation:
@@ -1231,13 +1215,13 @@ cuirass-jobs: $(GOBJECTS)
 .PHONY: gen-ChangeLog gen-AUTHORS gen-tarball-version
 .PHONY: assert-no-store-file-names assert-binaries-available
 .PHONY: assert-final-inputs-self-contained check-channel-news
-.PHONY: clean-go make-go as-derivation authenticate
+.PHONY: clean-go make-go as-derivation
 .PHONY: update-guix-package update-NEWS cuirass-jobs release
 
 # Git auto-configuration.
-.git/hooks/pre-push: etc/git/pre-push
+.git/hooks/%: etc/git/%
 	$(AM_V_at)if test -d .git; then \
-	cp etc/git/pre-push .git/hooks/pre-push; \
+	cp "$<" "$@"; \
 	fi
 
 .git/config: etc/git/gitconfig
@@ -1260,7 +1244,11 @@ COMMIT_MSG_MAGIC = VGhpcyBpcyB0aGUgY29tbWl0LW1zZyBob29rIG9mIEd1aXg=
 # from a tarball.  Do not add dependencies on these to *_DATA when building
 # from a tarball, as that breaks the build.
 if in_git_p
-nodist_noinst_DATA = .git/hooks/pre-push .git/config .git/hooks/commit-msg
+nodist_noinst_DATA =				\
+  .git/hooks/pre-push				\
+  .git/hooks/post-merge				\
+  .git/config					\
+  .git/hooks/commit-msg
 endif
 
 # Downloading up-to-date PO files.
