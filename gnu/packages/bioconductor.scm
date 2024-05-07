@@ -24709,13 +24709,13 @@ visualizing bisulfite sequencing data.")
 (define-public r-dada2
   (package
     (name "r-dada2")
-    (version "1.30.0")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "dada2" version))
               (sha256
                (base32
-                "0rvnwbknvwksm50f4rw9965gnhy13rjgdfvv428xsqixgkkkyrf6"))))
+                "1ac0nb5bcmzmqpi3vjdmns6xqq3ar61dks6qb3c0k48c78w88b7b"))))
     (properties `((upstream-name . "dada2")))
     (build-system r-build-system)
     (propagated-inputs
