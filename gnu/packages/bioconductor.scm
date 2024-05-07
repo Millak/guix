@@ -24000,14 +24000,14 @@ input.")
 (define-public r-basilisk-utils
   (package
     (name "r-basilisk-utils")
-    (version "1.14.1")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "basilisk.utils" version))
        (sha256
         (base32
-         "19m4h90rkk6mizllkih2xmxag8nb45qss3vydkkyj62s5zjhfh27"))))
+         "04amc13h4ghy1zr9wkdl42wgicxz5s2iwsspxvvi18acm06nzgfh"))))
     (properties
      `((upstream-name . "basilisk.utils")))
     (build-system r-build-system)
