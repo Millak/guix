@@ -19199,18 +19199,19 @@ delete entire rows with missing data.")
 (define-public r-depecher
   (package                              ;Source/Weave error
     (name "r-depecher")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DepecheR" version))
        (sha256
         (base32
-         "1b3c1wg5xnhh4bdcjls26j6nsp0vx1g5y3grqv7x4ds01vmh3q2w"))))
+         "15lpn1p2p28lhmzi7svszr0p1zkyaivi69q8pxcrv4lvips38hk4"))))
     (properties `((upstream-name . "DepecheR")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-beanplot
+           r-clusterr
            r-collapse
            r-dosnow
            r-dplyr
