@@ -498,19 +498,17 @@ demand.")
 (define-public python-prometheus-client
   (package
     (name "python-prometheus-client")
-    (version "0.7.1")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "prometheus_client" version))
        (sha256
-        (base32 "1ni2yv4ixwz32nz39ckia76lvggi7m19y5f702w5qczbnfi29kbi"))))
+        (base32 "12dvlh4k6in87q47f0zqh8nrnnfs0pwrs2xynbf34yhl1g82jxi8"))))
     (build-system python-build-system)
     (arguments
      '(;; No included tests.
        #:tests? #f))
-    (propagated-inputs
-     (list python-twisted))
     (home-page
      "https://github.com/prometheus/client_python")
     (synopsis "Python client for the Prometheus monitoring system")
