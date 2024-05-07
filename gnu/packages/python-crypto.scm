@@ -1592,36 +1592,39 @@ I/O-free core, and integration modules for different event loops.")
 (define-public python-argon2-cffi
   (package
     (name "python-argon2-cffi")
-    (version "20.1.0")
+    (version "21.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "argon2-cffi" version))
         (sha256
          (base32
-          "0zgr4mnnm0p4i99023safb0qb8cgvl202nly1rvylk2b7qnrn0nq"))
+          "0w5q5cdwmzpjgw3bl9f6b9a5xai87qvx3jryra9gd8fi0c8vc47p"))
         (modules '((guix build utils)))
-        (snippet '(begin (delete-file-recursively "extras") #t))))
+        (snippet '(delete-file-recursively "extras"))))
+    ;; TODO: with pyproject-build-system the install phase fails.
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'build
            (lambda _
              (setenv "ARGON2_CFFI_USE_SYSTEM" "1")
              (invoke "python" "setup.py" "build")))
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest")
-             (invoke "python" "-m" "argon2" "--help")
-             ;; see tox.ini
-             (invoke "python" "-m" "argon2" "-n" "1" "-t" "1" "-m" "8" "-p" "1"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")
+               (invoke "python" "-m" "argon2" "--help")
+               ;; see tox.ini
+               (invoke "python" "-m" "argon2" "-n" "1" "-t" "1" "-m" "8" "-p" "1")))))))
     (propagated-inputs
-     (list python-cffi python-six))
+     (list python-cffi python-typing-extensions))
     (inputs (list argon2))
     (native-inputs
-     (list python-hypothesis python-pytest))
+     (list python-hypothesis
+           python-pytest))
     (home-page "https://argon2-cffi.readthedocs.io/")
     (synopsis "Secure Password Hashes for Python")
     (description
