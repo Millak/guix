@@ -23813,14 +23813,14 @@ mappings functionalities.")
 (define-public r-minet
   (package
     (name "r-minet")
-    (version "3.60.0")
+    (version "3.62.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "minet" version))
        (sha256
         (base32
-         "17v2x7cyw74h0zfsz33pyl1kqk976pdzw7mrgprz9l7w5120niw5"))))
+         "1627gqqk8v3sx5kgm7z3wkimbz7dpf37ljrmvwbd4z6ag2yiirbj"))))
     (properties `((upstream-name . "minet")))
     (build-system r-build-system)
     (propagated-inputs
