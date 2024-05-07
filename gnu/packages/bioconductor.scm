@@ -7333,13 +7333,13 @@ regions and to highlight copy number alterations.")
 (define-public r-chipseeker
   (package
     (name "r-chipseeker")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ChIPseeker" version))
               (sha256
                (base32
-                "0bx85y5888w85miif73y0yd9j4kdmjn1cfck1xshnqnsrh7p3m50"))))
+                "00iknjk7vgj48vj1pp7l98g7nvc3x495z3jcq5nbvdiff02faj1f"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
