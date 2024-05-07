@@ -28,7 +28,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2023 Csepp <raingloom@riseup.net>
-;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023, 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2023 Arnaud DABY-SEESARAM <ds-ac@nanein.fr>
 ;;; Copyright © 2024 Sören Tempel <soeren@soeren-tempel.net>
 ;;;
@@ -8570,8 +8570,7 @@ generate OCaml code from .glade files), libpanel, librsvg and quartz.")
   (package
     (inherit lablgtk3)
     (name "ocaml-lablgtk3-sourceview3")
-    (propagated-inputs (list lablgtk3))
-    (native-inputs (list gtksourceview-3 pkg-config))
+    (propagated-inputs (list gtksourceview-3 lablgtk3))
     (arguments
      `(#:package "lablgtk3-sourceview3"))
     (synopsis "OCaml interface to GTK+ gtksourceview library")
