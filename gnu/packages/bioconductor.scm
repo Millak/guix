@@ -8424,14 +8424,14 @@ testing and other simple calculations.")
 (define-public r-gseabase
   (package
     (name "r-gseabase")
-    (version "1.64.0")
+    (version "1.66.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GSEABase" version))
        (sha256
         (base32
-         "1y7z3627shskwss8bzjz1xm02rv4s7cdi91v1xqdsbdayjkrh1nb"))))
+         "1pnd8rmpk7gm89cvrqa8qwk40dszkfkhyydxp3gl13zng9c5bq40"))))
     (properties `((upstream-name . "GSEABase")))
     (build-system r-build-system)
     (propagated-inputs
