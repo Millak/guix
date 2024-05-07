@@ -12781,14 +12781,14 @@ container data structures in Python).")
   (hidden-package
    (package
      (name "python-jupyter-client-bootstrap")
-     (version "7.2.2")
+     (version "7.4.4")
      (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "jupyter_client" version))
         (sha256
          (base32
-          "12pbp177bfb3710y1a5598mwn8ffhyzmpll67m0nmalb98savnwg"))))
+          "0ck8fb0d582r8izkcn7087zmbmmqf9jkv2abd8p44867k9hdn5jn"))))
      (build-system pyproject-build-system)
      (arguments
       (list
@@ -12817,7 +12817,8 @@ container data structures in Python).")
             python-pyzmq
             python-tornado-6
             python-traitlets))
-     (native-inputs (list python-setuptools python-wheel))
+     (native-inputs
+      (list python-hatchling))
      (home-page "https://jupyter.org/")
      (synopsis "Jupyter protocol implementation and client libraries")
      (description
@@ -12852,14 +12853,13 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
                             ;; information.
                             "not test_start_parallel_process_kernels"))))))))
       (native-inputs
-       (list python-pytest
+       (list python-hatchling
+             python-pytest
              python-pytest-asyncio
              python-pytest-timeout
              python-async-generator
              python-ipython
-             python-ipykernel-bootstrap
-             python-setuptools
-             python-wheel))
+             python-ipykernel-bootstrap))
       (properties (alist-delete 'hidden? (package-properties base))))))
 
 (define-public python-ipykernel
