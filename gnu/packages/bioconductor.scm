@@ -12826,13 +12826,13 @@ proteins) in a coherent and tractable format.")
 (define-public r-quantsmooth
   (package
     (name "r-quantsmooth")
-    (version "1.68.0")
+    (version "1.70.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "quantsmooth" version))
        (sha256
-        (base32 "050nnwhxk3ld615f6ij4cc3d6wzrrxykvv02fr20fg5gzdj0z08a"))))
+        (base32 "1mgdrhq0j4b29l3y49h00ccwkz6vhs6hjb1236blmlzdf590q7gc"))))
     (properties `((upstream-name . "quantsmooth")))
     (build-system r-build-system)
     (propagated-inputs (list r-quantreg))
