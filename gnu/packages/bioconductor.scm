@@ -19680,14 +19680,14 @@ with multiple R processes supported by the package @code{parallel}.")
 (define-public r-bigmelon
   (package
     (name "r-bigmelon")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bigmelon" version))
        (sha256
         (base32
-         "1j80f7k39p23s6fym3nia73g8d1v44hdiv73igcq6fnsllxg40hr"))))
+         "0fa1dwbk6hdiwg6dmbks7hy4cg3ydyd2sv94cyl0003awhf00nn9"))))
     (properties `((upstream-name . "bigmelon")))
     (build-system r-build-system)
     (propagated-inputs
@@ -19699,7 +19699,6 @@ with multiple R processes supported by the package @code{parallel}.")
            r-methylumi
            r-minfi
            r-watermelon))
-    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/bigmelon/")
     (synopsis "Illumina methylation array analysis for large experiments")
     (description
