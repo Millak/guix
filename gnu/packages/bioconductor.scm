@@ -2152,14 +2152,14 @@ structures are amenable to both base R and tidyverse workflows.")
 (define-public r-methylclockdata
   (package
     (name "r-methylclockdata")
-    (version "1.10.0")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "methylclockData" version
                               'experiment))
        (sha256
-        (base32 "0q4hiclws0fg03kwvbdwka024gghl1hbmmfficxfghslll78mc3y"))))
+        (base32 "1bwrgib7k71i4i6iq4l71n0z9adq3bg9k8j10bpi79ygn9169np5"))))
     (properties `((upstream-name . "methylclockData")))
     (build-system r-build-system)
     (propagated-inputs (list r-experimenthub r-experimenthubdata))
