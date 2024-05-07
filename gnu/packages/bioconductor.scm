@@ -17748,14 +17748,14 @@ scores and a path search algorithm.")
 (define-public r-wrench
   (package
     (name "r-wrench")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Wrench" version))
        (sha256
         (base32
-         "11g6a2315hllf197ssccybhv6i7p48n7bv2amzpgxs7bs7qg3k9d"))))
+         "1nwbqagpcs38c66r1arbby76if6pafa4snd6zbp18y71jj8rgvl7"))))
     (properties `((upstream-name . "Wrench")))
     (build-system r-build-system)
     (propagated-inputs
