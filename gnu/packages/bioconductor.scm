@@ -10664,14 +10664,14 @@ the available RAM.")
 (define-public r-rhdf5filters
   (package
     (name "r-rhdf5filters")
-    (version "1.14.1")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "rhdf5filters" version))
        (sha256
         (base32
-         "0cqf7k19k4m4swd2c1wd9cyzw9k90s3d3jq0hijjwvza50nn2dk6"))))
+         "0fsfp34pfb5k030j7nfx9b9vsil02y85sv1dd1y0bfdxchi4bw8x"))))
     (properties `((upstream-name . "rhdf5filters")))
     (build-system r-build-system)
     (arguments
