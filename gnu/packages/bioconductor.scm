@@ -3409,13 +3409,13 @@ in multi-layer WGCN using a continuous optimization approach.")
 (define-public r-amplican
   (package
     (name "r-amplican")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "amplican" version))
               (sha256
                (base32
-                "0xsw6226yyyl5zgmcyfim6dxj04zrpzbd1288l0hysq1s3b1yslw"))))
+                "1nbyivd5020kqkmk5ngpaixhdxgmqpifaxnfgq6yc2njqizgbhxy"))))
     (properties `((upstream-name . "amplican")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3435,6 +3435,7 @@ in multi-layer WGCN using a continuous optimization approach.")
            r-knitr
            r-matrix
            r-matrixstats
+           r-pwalign
            r-rcpp
            r-rmarkdown
            r-s4vectors
