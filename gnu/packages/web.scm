@@ -200,7 +200,6 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages skribilo)
   #:use-module (gnu packages sphinx)
-  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
