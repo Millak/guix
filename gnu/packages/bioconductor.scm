@@ -4346,13 +4346,13 @@ the spectra of the library with a sparse penalty.")
 (define-public r-aspli
   (package
     (name "r-aspli")
-    (version "2.12.0")
+    (version "2.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ASpli" version))
               (sha256
                (base32
-                "0rj103vvff2c20r018491i71393x0idq22ri4zg3qibx2accd7jy"))))
+                "1br4apbc3zn06ilg8fjb8xcxaimz4h7rnx9i60ak4wnpvgzgbyh2"))))
     (properties `((upstream-name . "ASpli")))
     (build-system r-build-system)
     (propagated-inputs
@@ -4375,6 +4375,7 @@ the spectra of the library with a sparse penalty.")
            r-rsamtools
            r-s4vectors
            r-tidyr
+           r-txdbmaker
            r-upsetr))
     (home-page "https://bioconductor.org/packages/ASpli")
     (synopsis "Analysis of alternative splicing using RNA-Seq")
