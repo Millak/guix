@@ -11876,6 +11876,25 @@ child application and control it as if a human were typing commands.")
 functions like pickle, json or PyYAML module.")
     (license license:bsd-3)))
 
+(define-public python-pathable
+  (package
+    (name "python-pathable")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pathable" version))
+       (sha256
+        (base32 "1ayw9jzlw0qrz51rcfbba00xqq0c7vs3lgwrib67c1z5bcqrv1jw"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
+    (native-inputs (list python-poetry-core))
+    (home-page "https://github.com/p1c2u/pathable")
+    (synopsis "Object-oriented paths")
+    (description "With this package you can traverse resources like paths and
+access resources on demand with separate accessor layer.")
+    (license license:asl2.0)))
+
 (define-public python-pathlib2
   (package
     (name "python-pathlib2")
