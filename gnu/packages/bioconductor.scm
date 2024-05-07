@@ -16232,13 +16232,13 @@ data.")
 (define-public r-enrichedheatmap
   (package
     (name "r-enrichedheatmap")
-    (version "1.32.0")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "EnrichedHeatmap" version))
               (sha256
                (base32
-                "0j87x26qimsx4gi311bm1g9bldwq9r4z3aflxf8p91zlavjbv8zp"))))
+                "0fmqz9xqs1108a5xxpsc63pplcc0i742r4zdk46p68my28ba2xfq"))))
     (properties `((upstream-name . "EnrichedHeatmap")))
     (build-system r-build-system)
     (propagated-inputs (list r-circlize
