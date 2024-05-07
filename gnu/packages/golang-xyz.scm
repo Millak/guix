@@ -68,6 +68,7 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages specifications))
 
@@ -82,6 +83,36 @@
 ;;;
 ;;; Libraries:
 ;;;
+
+(define-public go-bazil-org-fuse
+  (package
+    (name "go-bazil-org-fuse")
+    (version "0.0.0-20200117225306-7b5117fecadc")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bazil/fuse")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bw2lp1nijpqp729k808xkhwmb8nn7igsv51hvv9jw74q805qg2f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests require root access to mount file system.
+      #:tests? #f
+      #:go go-1.19
+      #:import-path "bazil.org/fuse"))
+    (propagated-inputs
+     (list go-github-com-tv42-httpunix go-golang-org-x-sys))
+    (home-page "https://bazil.org/fuse")
+    (synopsis "FUSE filesystems in Golang")
+    (description
+     "Package fuse enables writing FUSE file systems.  It is a from-scratch
+implementation of the kernel-userspace communication protocol, and does not
+use the C library from the project called FUSE.")
+    (license (list license:bsd-2 license:bsd-3 license:hpnd))))
 
 (define-public go-code-cloudfoundry-org-bytefmt
   (package
