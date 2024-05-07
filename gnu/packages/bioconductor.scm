@@ -3231,6 +3231,39 @@ artifact is associated with metadata for further interpretation; downstream
 applications can enrich this metadata with context-specific properties.")
     (license license:expat)))
 
+(define-public r-alabaster-matrix
+  (package
+    (name "r-alabaster-matrix")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "alabaster.matrix" version))
+       (sha256
+        (base32 "00k0lylyhz6glqhd463bbmmldqhv5i7an9nw95md7x2m43c9gzyk"))))
+    (properties `((upstream-name . "alabaster.matrix")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-alabaster-base
+                             r-biocgenerics
+                             r-delayedarray
+                             r-hdf5array
+                             r-matrix
+                             r-rcpp
+                             r-rhdf5
+                             r-s4arrays
+                             r-s4vectors
+                             r-sparsearray))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/alabaster.matrix")
+    (synopsis "Load and save artifacts from file")
+    (description
+     "This is a package for saving matrices, arrays and similar objects into
+file artifacts, and loading them back into memory.  This is a more portable
+alternative to serialization of such objects into RDS files.  Each artifact is
+associated with metadata for further interpretation; downstream applications
+can enrich this metadata with context-specific properties.")
+    (license license:expat)))
+
 (define-public r-alabaster-schemas
   (package
     (name "r-alabaster-schemas")
