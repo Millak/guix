@@ -6142,7 +6142,7 @@ arbitrary genomic intervals along chromosomal ideogram.")
          "1fi89fqzzb9n2c9jchkkgy3yq2fvisjcdavh9r455vmy0xqsyyyd"))))
     (properties `((upstream-name . "infercnv")))
     (build-system r-build-system)
-    (inputs (list))
+    (inputs (list python))
     (propagated-inputs
      (list r-ape
            r-argparse
