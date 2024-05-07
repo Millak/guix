@@ -19584,14 +19584,14 @@ Characteristic} (ROC) curves, with a focus on micro arrays.")
 (define-public r-watermelon
   (package
     (name "r-watermelon")
-    (version "2.8.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "wateRmelon" version))
        (sha256
         (base32
-         "1ra21qzni9cny52ag9zxi46vb9grabyqjyk01dqqp3r9i0b4999l"))))
+         "19zlv9aglllsjq3jcnlw994bkanjdq0ib46k7wjsig04cx4apz1v"))))
     (properties `((upstream-name . "wateRmelon")))
     (build-system r-build-system)
     (propagated-inputs
