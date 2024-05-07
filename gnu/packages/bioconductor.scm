@@ -10209,13 +10209,13 @@ comparisons of methods for differential expression.")
 (define-public r-powertcr
   (package
     (name "r-powertcr")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "powerTCR" version))
        (sha256
-        (base32 "06fmphdq95pjbbvm8m8h1wajbp3vhl0zj7ddbzks9fy7ankp1n3i"))))
+        (base32 "04w6jhpc1vkqrm3dr5igp1iwkammmi53mqafjz694n379hamxrhg"))))
     (properties `((upstream-name . "powerTCR")))
     (build-system r-build-system)
     (propagated-inputs
