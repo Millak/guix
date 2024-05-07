@@ -974,6 +974,7 @@ Docker registry.")
           (add-after 'unpack 'no-custom-css
             (lambda _
               (substitute* "sparqlkernel/install.py"
+                (("notebook.DEFAULT_STATIC_FILES_PATH") "\"/does-not-matter\"")
                 (("install_custom_css\\( destd, PKGNAME \\)") ""))))
           (add-after 'add-install-to-pythonpath 'install-kernelspec
             (lambda _
