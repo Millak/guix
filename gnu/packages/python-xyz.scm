@@ -25594,15 +25594,16 @@ manipulation, or @code{stdout}.")
 (define-public python-jsonpointer
   (package
     (name "python-jsonpointer")
-    (version "1.10")
+    (version "1.14")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jsonpointer" version))
        (sha256
         (base32
-         "1cg0gvgqjysydv6p45v4jywg1jb3v48c7m3cbpi57zgf6nndr9cz"))))
-  (build-system python-build-system)
+         "0kdckqca8i2ly87mxwn0ggwfzig4xvadbvcanfvk3is56n1az0f6"))))
+  (build-system pyproject-build-system)
+  (native-inputs (list python-setuptools python-wheel))
   (home-page "https://github.com/stefankoegl/python-json-pointer")
   (synopsis "Identify specific nodes in a JSON document")
   (description "@code{jsonpointer} allows you to access specific nodes
