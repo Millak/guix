@@ -9227,16 +9227,16 @@ high distances can be flagged as potentially low-quality.")
 (define-public r-metabocoreutils
   (package
     (name "r-metabocoreutils")
-    (version "1.10.0")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MetaboCoreUtils" version))
        (sha256
-        (base32 "0bs24dwqlm8isp231jds51l7v16q0gjli1qmhjxyva3qmi5yb4dl"))))
+        (base32 "1y5lq1x60pcvxsl8dim5plzd3y4bqjkcam5hv9614xw0sr4h0r04"))))
     (properties `((upstream-name . "MetaboCoreUtils")))
     (build-system r-build-system)
-    (propagated-inputs (list r-mscoreutils))
+    (propagated-inputs (list r-biocparallel r-mscoreutils))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/RforMassSpectrometry/MetaboCoreUtils")
     (synopsis "Core utils for Metabolomics data")
