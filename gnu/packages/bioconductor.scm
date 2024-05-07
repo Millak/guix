@@ -12789,13 +12789,13 @@ Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
 (define-public r-qfeatures
   (package
     (name "r-qfeatures")
-    (version "1.12.0")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "QFeatures" version))
               (sha256
                (base32
-                "1g744fpb6g690bjbjs4v2899wwv6qc7n5cyq977pm8f3wln0m7mx"))))
+                "0qkbbpgkrlk8k4mj3463pdcimdvpx201gk55wil6v6z56yaifsc5"))))
     (properties `((upstream-name . "QFeatures")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationfilter
@@ -12809,7 +12809,9 @@ Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
                              r-plotly
                              r-protgenerics
                              r-s4vectors
-                             r-summarizedexperiment))
+                             r-summarizedexperiment
+                             r-tidyr
+                             r-tidyselect))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/RforMassSpectrometry/QFeatures")
     (synopsis "Quantitative features for mass spectrometry data")
