@@ -4940,13 +4940,13 @@ of Bioconductor.")
 (define-public r-biocgenerics
   (package
     (name "r-biocgenerics")
-    (version "0.48.1")
+    (version "0.50.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocGenerics" version))
               (sha256
                (base32
-                "0av525j9l0y3kjdy5wl6s35sh4nsabmdclq3687l5258kmq2dq8k"))))
+                "0500ya3df53xx1dfdmk50bh30ja28y6qkdwds1c1m4c7q0h2xmqi"))))
     (properties
      `((upstream-name . "BiocGenerics")))
     (build-system r-build-system)
