@@ -3899,13 +3899,13 @@ data.")
 (define-public r-alpsnmr
   (package
     (name "r-alpsnmr")
-    (version "4.4.0")
+    (version "4.6.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AlpsNMR" version))
               (sha256
                (base32
-                "0141kayx20mm8skqr2210bpl76ra560ik7gf71iar03r3izcfczq"))))
+                "1c8ynw9424ygc4wj4drbm9gdkdqwgb5z7p72zk3x5zh3zqai0d1d"))))
     (properties `((upstream-name . "AlpsNMR")))
     (build-system r-build-system)
     (propagated-inputs
