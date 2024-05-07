@@ -8480,6 +8480,31 @@ CNV-pathway analysis or cross-tissue pathway analysis, in a pathway-centric
 manner.")
     (license license:gpl2+)))
 
+(define-public r-gypsum
+  (package
+    (name "r-gypsum")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "gypsum" version))
+       (sha256
+        (base32 "0y5qpl19zpf5w3a1jhr4wgklp73izs3jrgbfi0axz1vgzkdsjss4"))))
+    (properties `((upstream-name . "gypsum")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-filelock r-httr2 r-jsonlite r-paws-storage))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/ArtifactDB/gypsum-R")
+    (synopsis "Interface to the gypsum REST API")
+    (description
+     "This package provides a client for the gypsum REST
+API (https://gypsum.artifactdb.com), a cloud-based file store in the
+@code{ArtifactDB} ecosystem.  This package provides functions for uploads,
+downloads, and various adminstrative and management tasks.  Check out the
+documentation at @url{https://github.com/ArtifactDB/gypsum-worker} for more
+details.")
+    (license license:expat)))
+
 (define-public r-harshlight
   (package
     (name "r-harshlight")
