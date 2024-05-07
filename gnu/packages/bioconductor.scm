@@ -15358,13 +15358,13 @@ data in a format that is compatible with two-dimensional containers like the
 (define-public r-mia
   (package
     (name "r-mia")
-    (version "1.10.0")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "mia" version))
               (sha256
                (base32
-                "044spfxsf7xijnbh0933cwdkycmg05zsfqhbx5pkfajysh6w5cxp"))))
+                "1wn2lb7hn4zqqcs2jwavpsbk5kw8d78kxg2yv4jjpikpdz7haa2i"))))
     (properties `((upstream-name . "mia")))
     (build-system r-build-system)
     (propagated-inputs
