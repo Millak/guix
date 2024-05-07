@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
@@ -32,9 +33,9 @@
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -154,6 +155,31 @@ a human-readable byte format.")
 @@url{https://github.com/mattn/go-sqlite3,go-sqlite3}, that provides full-text
 search functionality to database applications.")
     (license license:expat)))
+
+(define-public go-git-sr-ht-sircmpwn-getopt
+  (package
+    (name "go-git-sr-ht-sircmpwn-getopt")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~sircmpwn/getopt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f9rammnmhaz21qkmz7qf76r8jlzi323g05ps3j7gwrxlw7442a6"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "git.sr.ht/~sircmpwn/getopt"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://git.sr.ht/~sircmpwn/getopt")
+    (synopsis "POSIX getopt for Go")
+    (description
+     "This package provides a POSIX-compatible implementation of
+@code{getopt} for Go.")
+    (license license:bsd-3)))
 
 (define-public go-git-sr-ht-sircmpwn-go-bare
   (package
