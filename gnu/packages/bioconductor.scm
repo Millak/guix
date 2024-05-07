@@ -19979,6 +19979,32 @@ UCell can be applied to any single-cell data matrix, and includes functions to
 directly interact with SingleCellExperiment and Seurat objects.")
     (license license:gpl3)))
 
+(define-public r-ucsc-utils
+  (package
+    (name "r-ucsc-utils")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "UCSC.utils" version))
+       (sha256
+        (base32 "0w9f5xd6ryniapbpcrpczn8wimph2154w45cvdgqfa3dv5qy379l"))))
+    (properties `((upstream-name . "UCSC.utils")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-httr r-jsonlite r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/UCSC.utils")
+    (synopsis
+     "Low-level utilities to retrieve data from the UCSC Genome Browser")
+    (description
+     "This package provides a set of low-level utilities to retrieve data from the
+UCSC Genome Browser.  Most functions in the package access the data via the UCSC
+REST API but some of them query the UCSC @code{MySQL} server directly.  Note
+that the primary purpose of the package is to support higher-level
+functionalities implemented in downstream packages like @code{GenomeInfoDb} or
+txdbmaker.")
+    (license license:artistic2.0)))
+
 (define-public r-unifiedwmwqpcr
   (package
     (name "r-unifiedwmwqpcr")
