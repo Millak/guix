@@ -20781,14 +20781,14 @@ searching and clustering.")
 (define-public r-bioassayr
   (package
     (name "r-bioassayr")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bioassayR" version))
        (sha256
         (base32
-         "1mm1nzdz9cl8mf33yiyaspqkx4sbqhhs6m9jfgl42fhscrhaxfsi"))))
+         "0rckhgg73cgz0ppqaywc7nvbnp1is6cyjfa7dn2l32xxrcl57pq6"))))
     (properties `((upstream-name . "bioassayR")))
     (build-system r-build-system)
     (propagated-inputs
