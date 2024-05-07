@@ -21076,14 +21076,14 @@ also known as views, in a controlled vocabulary.")
 (define-public r-experimenthub
   (package
     (name "r-experimenthub")
-    (version "2.10.0")
+    (version "2.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ExperimentHub" version))
        (sha256
         (base32
-         "1prl24sg5l142155z3iaxrvig2wv2xqajq02nj30jjjih4p4936w"))))
+         "0mj1aqxyp84mn5m0fwk9lijysy594hhga3kv4mddv45vqxdsr08h"))))
     (properties `((upstream-name . "ExperimentHub")))
     (build-system r-build-system)
     (propagated-inputs
