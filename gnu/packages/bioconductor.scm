@@ -18498,13 +18498,13 @@ and to both short and long sequence reads.")
 (define-public r-flames
   (package
     (name "r-flames")
-    (version "1.8.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "FLAMES" version))
        (sha256
-        (base32 "0937zag0h4bvpapld267s5gz36h8zgjrgvbng9m7czdd8w6064ns"))))
+        (base32 "1fcz0v1vy0q5zmdpawlk4a7fbqd01954p0jby9nbzgbk85hl16mi"))))
     (properties `((upstream-name . "FLAMES")))
     (build-system r-build-system)
     (arguments
@@ -18536,6 +18536,7 @@ and to both short and long sequence reads.")
            r-ggplot2
            r-gridextra
            r-igraph
+           r-iranges
            r-jsonlite
            r-magrittr
            r-matrix
@@ -18553,7 +18554,11 @@ and to both short and long sequence reads.")
            r-singlecellexperiment
            r-stringr
            r-summarizedexperiment
+           r-testthat
+           r-tibble
            r-tidyr
+           r-tidyselect
+           r-txdbmaker
            r-withr
            r-zlibbioc))
     (native-inputs (list r-knitr))
