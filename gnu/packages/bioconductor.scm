@@ -6132,17 +6132,17 @@ arbitrary genomic intervals along chromosomal ideogram.")
 (define-public r-infercnv
   (package
     (name "r-infercnv")
-    (version "1.18.1")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "infercnv" version))
        (sha256
         (base32
-         "1d9in3hs2n91pv498715d3qi82c7xsnm42vnzgfyz096zjghgp7a"))))
+         "1fi89fqzzb9n2c9jchkkgy3yq2fvisjcdavh9r455vmy0xqsyyyd"))))
     (properties `((upstream-name . "infercnv")))
     (build-system r-build-system)
-    (inputs (list python))
+    (inputs (list))
     (propagated-inputs
      (list r-ape
            r-argparse
