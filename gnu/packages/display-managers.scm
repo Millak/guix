@@ -81,55 +81,70 @@
                 "0mxrh0z9x4r4bli25g746n66adwnf3r42lzq0yssc50v9y7fc1a1"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules pkg-config qttools-5))
+     (list extra-cmake-modules pkg-config qttools))
     (inputs
      (list elogind
            glib
            libxcb
            libxkbcommon
            linux-pam
-           qtbase-5
-           qtdeclarative-5
-           ;; Some user-defined themes use QtQuick components internally.  Adding
-           ;; QtQuick & co. here; they end up in QML2_IMPORT_PATH thanks to
-           ;; 'wrap-qt-program'.
-           qtgraphicaleffects
-           qtquickcontrols-5
-           qtquickcontrols2-5
-           qtsvg-5
+           qtdeclarative
+           qtsvg
            shadow
-           wayland))
+           wayland
+           qtwayland
+           qtbase
+           xsetroot))
     (arguments
-     (list
-      #:configure-flags
-      #~(list
-         "-DENABLE_WAYLAND=ON"
-         "-DENABLE_PAM=ON"
-         ;; PAM is configured by pam service.
-         "-DINSTALL_PAM_CONFIGURATION=OFF"
-         ;; Both flags are required for elogind support.
-         "-DNO_SYSTEMD=ON"
-         "-DUSE_ELOGIND=ON"
-         "-DCONFIG_FILE=/etc/sddm.conf"
-         ;; Set path to /etc/login.defs.
-         ;; An alternative would be to use -DUID_MIN and -DUID_MAX.
-         (string-append "-DLOGIN_DEFS_PATH="
-                        #$(this-package-input "shadow")
-                        "/etc/login.defs")
-         (string-append "-DCMAKE_CXX_FLAGS=-I"
-                        #$(this-package-input
-                           "qtdeclarative") "/include/qt5")
-         (string-append "-DQT_IMPORTS_DIR="
-                        #$output "/lib/qt5/qml")
-         (string-append "-DCMAKE_INSTALL_SYSCONFDIR="
-                        #$output "/etc"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'embed-loginctl-reference
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("/usr/bin/loginctl")
-                 (which "loginctl"))))))))
+     (let* ((qtbase (this-package-input "qtbase"))
+            (qt6? (string= "6" (version-major (package-version qtbase)))))
+       (list
+        #:qtbase qtbase
+        #:configure-flags
+        #~(list
+           #$@(if qt6?
+                  #~("-DBUILD_WITH_QT6=ON")
+                  #~())
+           "-DENABLE_WAYLAND=ON"
+           "-DENABLE_PAM=ON"
+           ;; PAM is configured by pam service.
+           "-DINSTALL_PAM_CONFIGURATION=OFF"
+           ;; Both flags are required for elogind support.
+           "-DNO_SYSTEMD=ON"
+           "-DUSE_ELOGIND=ON"
+           "-DCONFIG_FILE=/etc/sddm.conf"
+           ;; Set path to /etc/login.defs.
+           ;; An alternative would be to use -DUID_MIN and -DUID_MAX.
+           (string-append "-DLOGIN_DEFS_PATH="
+                          #$(this-package-input "shadow")
+                          "/etc/login.defs")
+           (string-append
+            "-DCMAKE_CXX_FLAGS=-I"
+            #$(this-package-input "qtdeclarative") "/include/qt" #$(if qt6? "6" "5"))
+           (string-append "-DQT_IMPORTS_DIR="
+                          #$output "/lib/qt" #$(if qt6? "6" "5") "/qml")
+           (string-append "-DCMAKE_INSTALL_SYSCONFDIR="
+                          #$output "/etc"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'embed-loginctl-reference
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("/usr/bin/loginctl")
+                   (which "loginctl")))))
+            (add-after 'unpack 'embed-xsetroot-reference
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* '("src/daemon/XorgDisplayServer.cpp"
+                               "src/helper/xorguserhelper.cpp")
+                  (("xsetroot")
+                   (search-input-file inputs "/bin/xsetroot")))))
+            #$@(if qt6?
+                   #~((add-after 'unpack 'fix-QML_IMPORT_PATH
+                        (lambda _
+                          (substitute* "src/daemon/Greeter.cpp"
+                            (("QML2_IMPORT_PATH")
+                             "QML_IMPORT_PATH")))))
+                   #~())))))
     (synopsis "QML based X11 and Wayland display manager")
     (description "SDDM is a display manager for X11 and Wayland aiming to be
 fast, simple and beautiful.  SDDM is themeable and puts no restrictions on the
