@@ -24824,6 +24824,28 @@ builds partial trees by inspecting living objects.")
      version, is suitable to be include as a dependency in other projects.")
     (license license:lgpl3+)))
 
+(define-public python-isoduration
+  (package
+    (name "python-isoduration")
+    (version "20.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "isoduration" version))
+       (sha256
+        (base32 "1n8vpa9fckhc5934kp7m83wq81dhkvw987v7mjg2fdbr2car0bxc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-arrow))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/bolsote/isoduration")
+    (synopsis "Operations with ISO 8601 durations")
+    (description "ISO 8601 is most commonly known as a way to exchange
+datetimes in textual format.  A lesser known aspect of the standard is the
+representation of durations.  The state of the art of ISO 8601 duration
+handling in Python is more or less limited to what's offered by isodate. This
+package attempts to address the shortcomings of @code{isodate}.")
+    (license license:isc)))
+
 (define-public python-isort
   (package
     (name "python-isort")
