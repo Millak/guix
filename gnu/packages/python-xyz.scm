@@ -13254,6 +13254,35 @@ computing.")
                   texlive-xetex
                   texlive-xindy))))))
 
+(define-public python-uri-template
+  (package
+    (name "python-uri-template")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "uri-template" version))
+       (sha256
+        (base32 "1ixczlgnsjv2850r6w0cb2npwcwzdqri8njr1pi7v371cpmzh00f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python3" "test.py")))))))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://gitlab.linss.com/open-source/python/uri-template")
+    (synopsis "RFC 6570 URI Template Processor")
+    (description "This packages implements URI Template expansion in strict
+adherence to RFC 6570, but adds a few extensions.")
+    (license license:expat)))
+
 (define-public python-urwid
   (package
     (name "python-urwid")
