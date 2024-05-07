@@ -3681,23 +3681,35 @@ APIs.")
 (define-public python-requests
   (package
     (name "python-requests")
-    (version "2.28.1")
+    (version "2.31.0")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "requests" version))
              (sha256
               (base32
-               "10vrr7bijzrypvms3g2sgz8vya7f9ymmcv423ikampgy0aqrjmbw"))))
-    (build-system python-build-system)
+               "1qfidaynsrci4wymrw3srz8v1zy7xxpcna8sxpm91mwqixsmlb4l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           ;; These require internet access
+           '(list "--ignore=tests/test_requests.py"
+                  "-k" (string-append "not test_use_proxy_from_environment"
+                                      " and not requests.sessions.Session"
+                                      " and not requests.models.PreparedRequest"
+                                      " and not requests.api.request")
+                  "tests/")))
     (propagated-inputs
      (list python-certifi
            python-charset-normalizer
            python-idna
            python-urllib3))
-    (arguments
-     ;; FIXME: Some tests require network access.
-     '(#:tests? #f))
-    (home-page "http://python-requests.org/")
+    (native-inputs
+     (list python-pip
+           python-pytest
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
+    (home-page "https://requests.readthedocs.io/")
     (synopsis "Python HTTP library")
     (description
      "Requests is a Python HTTP client library.  It aims to be easier to use
