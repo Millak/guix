@@ -21671,7 +21671,11 @@ It uses LR parsing and does extensive error checking.")
               (base32
                "0g4b0qnbw55igbpxfxzciqvb6w8ncw4gmcgyq0lyavcnylmv3580"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools-scm))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-scm
+           python-setuptools
+           python-wheel))
     (home-page "https://bitbucket.org/astanin/python-tabulate")
     (synopsis "Pretty-print tabular data")
     (description
