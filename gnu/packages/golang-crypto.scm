@@ -14,7 +14,7 @@
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
@@ -934,6 +934,29 @@ Architecture Processors\" by J. Guilford et al.")
       (description "Package ed25519 implements the Ed25519 signature
 algorithm.")
       (license license:bsd-3))))
+
+(define-public go-github-com-pion-randutil
+  (package
+    (name "go-github-com-pion-randutil")
+    (version "v0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/randutil")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "098isjyvyb8jhrrr57xi45g5m35vb1l92dm5wcy7g2q9x55lvxg5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pion/randutil"))
+    (home-page "https://github.com/pion/randutil")
+    (synopsis "Helper library for cryptographic and mathmatical randoms")
+    (description
+     "This package provides primitives for generating random values.")
+    (license license:expat)))
 
 (define-public go-github-com-protonmail-go-crypto
   (package
