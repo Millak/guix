@@ -11875,13 +11875,13 @@ additional column data sets.")
 (define-public r-trnadbimport
   (package
     (name "r-trnadbimport")
-    (version "1.20.1")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "tRNAdbImport" version))
        (sha256
-        (base32 "1i2mismx914ijys13wwz50gkk682rklp36aci270nc7vx78hynni"))))
+        (base32 "0yvgxxf5d5mh91cmbba66krj6jz5gl1qkgjck9310k4mk7pjfww3"))))
     (properties `((upstream-name . "tRNAdbImport")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings
