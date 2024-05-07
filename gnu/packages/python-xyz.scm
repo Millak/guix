@@ -31834,17 +31834,17 @@ for embedding context in JSON objects.")
 (define-public python-json-logger
   (package
     (name "python-json-logger")
-    (version "0.1.11")
+    (version "2.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-json-logger" version))
        (sha256
         (base32
-         "10g2ya6nsvn5vxzvq2wb8q4d43i3d7756i5rxyjna6d0y9i138xp"))))
-    (build-system python-build-system)
-    (home-page
-     "https://github.com/madzak/python-json-logger")
+         "071f9d62ds1xdp88yzsfpf1pba2f78cp18193smcads2sc1frrr3"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/madzak/python-json-logger")
     (synopsis "JSON log formatter in Python")
     (description "This library allows standard Python logging to output log data
 as JSON objects.  With JSON we can make our logs more readable by machines and
