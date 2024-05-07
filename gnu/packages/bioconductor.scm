@@ -16852,14 +16852,14 @@ Bioconductor.")
 (define-public r-motifstack
   (package
     (name "r-motifstack")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "motifStack" version))
        (sha256
         (base32
-         "10hmqwkysifd59as9zx00p3gj595lwj30ywn9pqb1920q6f5mx2i"))
+         "15v4z1a0kg4ic411aprzc9b7i2l6c456sfj3jaxy95anw3j3iskj"))
        (snippet
         '(delete-file "inst/htmlwidgets/lib/d3/d3.v4.min.js"))))
     (properties `((upstream-name . "motifStack")))
