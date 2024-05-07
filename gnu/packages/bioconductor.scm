@@ -11692,17 +11692,16 @@ tissues.  Current functionalities include
 @end enumerate")
     (license license:gpl2)))
 
-;; TODO: check javascript
 (define-public r-trackviewer
   (package
     (name "r-trackviewer")
-    (version "1.38.2")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "trackViewer" version))
               (sha256
                (base32
-                "1zgxp76ykgn4wk6nnpafjpswcky23jpghzzs68z0hhlzv4cc40s6"))
+                "01m0jwig3l6dfhd3w5aq4sx2krsipjg5jjxa78kalfrzrm6k05s4"))
               (snippet
                '(delete-file "inst/htmlwidgets/lib/d3/d3.v4.min.js"))))
     (properties `((upstream-name . "trackViewer")))
@@ -11726,20 +11725,20 @@ tissues.  Current functionalities include
                              r-genomicalignments
                              r-genomicfeatures
                              r-genomicranges
-                             r-graph
                              r-grimport
                              r-gviz
                              r-htmlwidgets
+                             r-igraph
                              r-interactionset
                              r-iranges
                              r-plotrix
-                             r-rgraphviz
                              r-rhdf5
                              r-rsamtools
                              r-rtracklayer
                              r-s4vectors
                              r-scales
-                             r-strawr))
+                             r-strawr
+                             r-txdbmaker))
     (native-inputs
      (list esbuild
            r-knitr
