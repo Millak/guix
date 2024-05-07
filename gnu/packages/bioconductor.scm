@@ -3141,13 +3141,13 @@ objects are used so that other packages could be used as well.")
 (define-public r-aims
   (package
     (name "r-aims")
-    (version "1.34.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AIMS" version))
               (sha256
                (base32
-                "0fmzyd8vypcfadqfa8w11mxr12h4a9shgiqpi2n2y150fvhlqf6c"))))
+                "0ljdv1gww01yi0h9j9br8kp67k5wizr1dy0091kngjcbn0dxzmla"))))
     (properties `((upstream-name . "AIMS")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-e1071))
