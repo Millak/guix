@@ -18188,17 +18188,24 @@ convert an @code{.ipynb} notebook file into various static formats including:
 (define-public python-notebook
   (package
     (name "python-notebook")
-    (version "6.4.10")
+    (version "6.5.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "notebook" version))
               (sha256
                (base32
-                "03p976xq1l9xf4djwk0snmywd0zck3i6gjngxsl874i8qrmsf214"))))
-    (build-system python-build-system)
+                "1r38fwr0r4xgkz8y27w3xyz2dk97ih5azba28jylyqxcvw8r1sq4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      ;; TODO: This tests fails because nbconvert does not
+      ;; list "python" as a format.
+      '(list "-k" "not test_list_formats"
+             ;; These tests require a browser.
+             "--ignore=notebook/tests/selenium")
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'use-our-home-for-tests
            (lambda _
              ;; The 'get_patch_env' function in this file reads:
@@ -18211,20 +18218,13 @@ convert an @code{.ipynb} notebook file into various static formats including:
                (("'HOME': .*," all)
                 (string-append "# " all "\n")))
              (setenv "HOME" (getcwd))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             ;; These tests require a browser.
-             (delete-file-recursively "notebook/tests/selenium")
-             (when tests?
-               ;; Interferes with test expectations.
-               (unsetenv "JUPYTER_CONFIG_PATH")
-               ;; Some tests do not expect all files to be installed in the
-               ;; same directory, but JUPYTER_PATH contains multiple entries.
-               (unsetenv "JUPYTER_PATH")
-               (invoke "pytest" "-vv"
-                       ;; TODO: This tests fails because nbconvert does not
-                       ;; list "python" as a format.
-                       "-k" "not test_list_formats")))))))
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Interferes with test expectations.
+             (unsetenv "JUPYTER_CONFIG_PATH")
+             ;; Some tests do not expect all files to be installed in the
+             ;; same directory, but JUPYTER_PATH contains multiple entries.
+             (unsetenv "JUPYTER_PATH"))))))
     (propagated-inputs
      (list python-argon2-cffi
            python-ipykernel
@@ -18233,6 +18233,7 @@ convert an @code{.ipynb} notebook file into various static formats including:
            python-jupyter-client
            python-jupyter-core
            python-nest-asyncio
+           python-nbclassic
            python-nbconvert
            python-nbformat
            python-prometheus-client
@@ -18247,7 +18248,9 @@ convert an @code{.ipynb} notebook file into various static formats including:
            python-pytest
            python-pytest-cov
            python-requests
-           python-requests-unixsocket))
+           python-requests-unixsocket
+           python-setuptools
+           python-wheel))
     (home-page "https://jupyter.org/")
     (synopsis "Web-based notebook environment for interactive computing")
     (description
