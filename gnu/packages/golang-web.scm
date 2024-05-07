@@ -1588,6 +1588,33 @@ which produce colorized output using github.com/fatih/color.")
     (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-pion-rtp
+  (package
+    (name "go-github-com-pion-rtp")
+    (version "1.8.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/rtp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vrdvswvvbqq83kbjlyblarbsn5v0sjcwrcv03nncd605cggnbkx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/pion/rtp"))
+    (propagated-inputs
+     (list go-github-com-pion-randutil))
+    (home-page "https://github.com/pion/rtp")
+    (synopsis "Go implementation of RTP")
+    (description
+     "This package provides a @acronym{Real-time Transport Protocol, RTP}
+packetizer and depacketizer.")
+    (license license:expat)))
+
 (define-public go-github-com-pires-go-proxyproto
   (package
     (name "go-github-com-pires-go-proxyproto")
