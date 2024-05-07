@@ -12060,13 +12060,13 @@ Biology at
 (define-public r-stringdb
   (package
     (name "r-stringdb")
-    (version "2.14.3")
+    (version "2.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "STRINGdb" version))
        (sha256
-        (base32 "06bckzczg2rspazcbpp3v265c1dkr9l1vpdhkc7gdn2dk960jlkh"))))
+        (base32 "1bn21hqvcl1a4knj7iygwqx79s49ggjaw30fj6478h7khha6556b"))))
     (properties `((upstream-name . "STRINGdb")))
     (build-system r-build-system)
     (propagated-inputs
