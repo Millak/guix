@@ -25014,14 +25014,14 @@ embeddings and functions to build new reference.")
 (define-public r-tximeta
   (package
     (name "r-tximeta")
-    (version "1.20.3")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "tximeta" version))
        (sha256
         (base32
-         "0hlx5kvhspc62p68gz53n0scwji3zvfv915fm8rzw3l8h2hjh3y7"))))
+         "11fxd0ybp3d8l12k1f06qhnmq9s52d5g1fzc4rj20gafyy9fz496"))))
     (properties `((upstream-name . "tximeta")))
     (build-system r-build-system)
     (propagated-inputs
@@ -25039,6 +25039,7 @@ embeddings and functions to build new reference.")
            r-s4vectors
            r-summarizedexperiment
            r-tibble
+           r-txdbmaker
            r-tximport))
     (native-inputs
      (list r-knitr))
