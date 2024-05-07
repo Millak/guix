@@ -24121,13 +24121,13 @@ features such as gene expression or cell type composition can be imputed.")
 (define-public r-baynorm
   (package
     (name "r-baynorm")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bayNorm" version))
        (sha256
-        (base32 "01lv4w1x43x3f9sdrqikhsr1gdvkgqzrgcd9wnjj76qsljn57ifq"))))
+        (base32 "0b05446vcqxr7smxyhmvl6rxlckzzgqhf5v1059657kihhscqr7s"))))
     (properties `((upstream-name . "bayNorm")))
     (build-system r-build-system)
     (propagated-inputs
