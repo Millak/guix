@@ -20668,13 +20668,13 @@ visualizing RNA-sequencing datasets and differentially expressed genes.")
 (define-public r-chemmineob
   (package
     (name "r-chemmineob")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ChemmineOB" version))
        (sha256
-        (base32 "0mfajzwzldmra6g5kni5yw7m2n719456p1vd3hxx2r7l1phdjixi"))))
+        (base32 "17yvmdg16pb1dmx160n6vcgw3sa1yf40f8yzivdyic3sckn4z4bw"))))
     (properties `((upstream-name . "ChemmineOB")))
     (build-system r-build-system)
     (arguments
