@@ -3264,6 +3264,37 @@ associated with metadata for further interpretation; downstream applications
 can enrich this metadata with context-specific properties.")
     (license license:expat)))
 
+(define-public r-alabaster-ranges
+  (package
+    (name "r-alabaster-ranges")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "alabaster.ranges" version))
+       (sha256
+        (base32 "0kjafvd4pc3bxnpjz0nvs07sdy65ad0hyzwq0nv7cifbzw9qajay"))))
+    (properties `((upstream-name . "alabaster.ranges")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-alabaster-base
+                             r-biocgenerics
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-iranges
+                             r-rhdf5
+                             r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/alabaster.ranges")
+    (synopsis "Load and save Ranges-related artifacts from file")
+    (description
+     "This is a package for saving @code{GenomicRanges}, @code{IRanges} and
+related data structures into file artifacts, and loading them back into
+memory.  This is a more portable alternative to serialization of such objects
+into RDS files.  Each artifact is associated with metadata for further
+interpretation; downstream applications can enrich this metadata with
+context-specific properties.")
+    (license license:expat)))
+
 (define-public r-alabaster-schemas
   (package
     (name "r-alabaster-schemas")
