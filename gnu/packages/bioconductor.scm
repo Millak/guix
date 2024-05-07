@@ -5493,13 +5493,13 @@ of the signatures to the mutation load of the tumor.")
 (define-public r-deconrnaseq
   (package
     (name "r-deconrnaseq")
-    (version "1.44.0")
+    (version "1.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DeconRNASeq" version))
               (sha256
                (base32
-                "1k5xrx97w9g0jfvjzawyfsqyz2fj9r463nj849djxgmcw8vp53vg"))))
+                "0hwvfsc48dakh3nvz60i92yciz2m5my9w57kzpyj4jyk92cs181g"))))
     (properties `((upstream-name . "DeconRNASeq")))
     (build-system r-build-system)
     (propagated-inputs
