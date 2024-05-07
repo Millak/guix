@@ -10845,13 +10845,13 @@ pre-processed data.")
 (define-public r-rtracklayer
   (package
     (name "r-rtracklayer")
-    (version "1.62.0")
+    (version "1.64.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "rtracklayer" version))
               (sha256
                (base32
-                "1jxhv2fq62lz0j6kbwq43c8ggk14ccsjg0xgfqjqy941dj9ig0n2"))))
+                "0h2cqr1jqqqxvkmqpngfl8ppm1p65vvlb1wgfwl9r4f99b8vz33g"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -10865,16 +10865,17 @@ pre-processed data.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list openssl zlib))
+     (list curl openssl zlib))
     (propagated-inputs
      (list r-biocgenerics
            r-biocio
            r-biostrings
+           r-curl
            r-genomeinfodb
            r-genomicalignments
            r-genomicranges
+           r-httr
            r-iranges
-           r-rcurl
            r-restfulr
            r-rsamtools
            r-s4vectors
