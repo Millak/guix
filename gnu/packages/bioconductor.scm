@@ -2538,13 +2538,13 @@ the @code{HorvathMethylChip40} (Mammal40) array.")
 (define-public r-tcgabiolinksgui-data
   (package
     (name "r-tcgabiolinksgui-data")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TCGAbiolinksGUI.data" version 'experiment))
        (sha256
-        (base32 "04fmnqa95rb2lgflcg3d7kbz9jj990r9hlxwlhhzb79dv9wd1mfa"))))
+        (base32 "1r36f7nvvjjgkgmhha81n2iyr9k4nzy0qkkblm483rgzxav4gqa6"))))
     (properties `((upstream-name . "TCGAbiolinksGUI.data")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
