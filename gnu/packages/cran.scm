@@ -258,14 +258,14 @@ projects via a flexible, declarative dependency loading syntax.")
 (define-public r-brio
   (package
     (name "r-brio")
-    (version "1.1.4")
+    (version "1.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "brio" version))
        (sha256
         (base32
-         "1s0q1qk3w3fwf7gn4xfwhf8i8yqqb6z096x6xqsj8av8924z7fqc"))))
+         "1f6hh7mck4bb1caivcvr6ms2pyqzzzawqyxjbgi9s0rrx8sj7wm9"))))
     (properties `((upstream-name . "brio")))
     (build-system r-build-system)
     (home-page "https://github.com/r-lib/brio")
