@@ -13688,14 +13688,14 @@ assessment, principal component analysis on codon coverage.")
 (define-public r-riboseqr
   (package
     (name "r-riboseqr")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "riboSeqR" version))
        (sha256
         (base32
-         "1cigbp3pc70ipja9mmprkrs91723r1zwgxbzyp87n5mb0i4q8xqh"))))
+         "0p0q28n8hlai80pxxns9pzzg552pbwlxlph8zjf78bwbjagrfbz5"))))
     (properties `((upstream-name . "riboSeqR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -13705,6 +13705,7 @@ assessment, principal component analysis on codon coverage.")
            r-genomicranges
            r-iranges
            r-rsamtools
+           r-s4vectors
            r-seqlogo))
     (home-page "https://bioconductor.org/packages/riboSeqR/")
     (synopsis "Analysis of sequencing data from ribosome profiling experiments")
