@@ -9428,13 +9428,13 @@ time-series data (including a graphical user interface).")
 (define-public r-mmuphin
   (package
     (name "r-mmuphin")
-    (version "1.16.0")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MMUPHin" version))
        (sha256
-        (base32 "0lhvsx5yjvqh5d3h860sv8cf3h73nrzvljpkqrd9ks0irc4gcm6d"))
+        (base32 "0wvsngvxik4j1bz4w32482ffczh6qj3kzghqhh8l02cbd2908z55"))
        ;; Delete generated files.
        (snippet
         '(for-each delete-file
