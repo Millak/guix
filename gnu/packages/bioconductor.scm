@@ -9610,14 +9610,14 @@ platform that mimics both single and multi-sample scRNA-seq data.")
 (define-public r-mutationalpatterns
   (package
     (name "r-mutationalpatterns")
-    (version "3.12.0")
+    (version "3.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MutationalPatterns" version))
        (sha256
         (base32
-         "19ya4ax6pa727hdn0118l9pwa9dxgh89dz54mm66dawxga3jhar4"))))
+         "0smf4l023ckwsm5ckrqqw7kjyi1awp378mzhab7v8nk9n5smsj61"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
