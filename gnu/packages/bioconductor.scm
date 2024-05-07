@@ -3200,6 +3200,37 @@ quality control functions for examining single cell allelic imbalance
 datasets.")
     (license license:gpl2)))
 
+(define-public r-alabaster-base
+  (package
+    (name "r-alabaster-base")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "alabaster.base" version))
+       (sha256
+        (base32 "1id8cs3m1kpcfmk9aa957vy7svf7aam4kzyzic36rxcqmarr130h"))))
+    (properties `((upstream-name . "alabaster.base")))
+    (build-system r-build-system)
+    (inputs (list zlib))
+    (propagated-inputs (list r-alabaster-schemas
+                             r-jsonlite
+                             r-jsonvalidate
+                             r-rcpp
+                             r-rhdf5
+                             r-rhdf5lib
+                             r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/alabaster.base")
+    (synopsis "Save Bioconductor objects to file")
+    (description
+     "This is a package for saving Bioconductor data structures into file
+artifacts, and loading them back into memory.  This is a more robust and
+portable alternative to serialization of such objects into RDS files.  Each
+artifact is associated with metadata for further interpretation; downstream
+applications can enrich this metadata with context-specific properties.")
+    (license license:expat)))
+
 (define-public r-alabaster-schemas
   (package
     (name "r-alabaster-schemas")
