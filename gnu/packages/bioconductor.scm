@@ -11317,14 +11317,14 @@ data access using the R programming language.")
 (define-public r-seqlogo
   (package
     (name "r-seqlogo")
-    (version "1.68.0")
+    (version "1.70.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "seqLogo" version))
        (sha256
         (base32
-         "106359wn4v0m53b33x4zjsyjsj4j8h7bnvd1whamsig982h6szp2"))))
+         "154c3g4i6snsi8vkwjw4d8lyr3372d6vyw237nslw1y5n837yzir"))))
     (properties `((upstream-name . "seqLogo")))
     (build-system r-build-system)
     (native-inputs
