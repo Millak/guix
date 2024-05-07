@@ -11214,25 +11214,35 @@ powerTCR R packages.")
 (define-public r-scrnaseq
   (package
     (name "r-scrnaseq")
-    (version "2.16.0")
+    (version "2.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scRNAseq" version
                               'experiment))
        (sha256
-        (base32 "0dbh3sqq7lkkdf7vls5qg7fbn6y74c7hsigb4d69pvk934ll88aw"))))
+        (base32 "0jsq037ba4xsb3bwwf021jw2hqv30vb5nrjag97xadx75z5fzqlr"))))
     (properties `((upstream-name . "scRNAseq")))
     (build-system r-build-system)
-    (propagated-inputs (list r-annotationdbi
+    (propagated-inputs (list r-alabaster-base
+                             r-alabaster-matrix
+                             r-alabaster-sce
+                             r-annotationdbi
                              r-annotationhub
                              r-biocgenerics
+                             r-dbi
+                             r-delayedarray
                              r-ensembldb
                              r-experimenthub
                              r-genomicfeatures
                              r-genomicranges
+                             r-gypsum
+                             r-jsonlite
+                             r-matrix
+                             r-rsqlite
                              r-s4vectors
                              r-singlecellexperiment
+                             r-sparsearray
                              r-summarizedexperiment))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/scRNAseq")
