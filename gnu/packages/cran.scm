@@ -10518,14 +10518,14 @@ functions and used in the data analysis.")
 (define-public r-debugme
   (package
     (name "r-debugme")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "debugme" version))
        (sha256
         (base32
-         "1c9sg55zvf10h8198jdnpamm6f66lzw3c3jnmdp9ls6na0j0xbjd"))))
+         "16ghf60rj0l8ypm0hxjp23zxdi2ndq8ii74cilq61m107fnha9mj"))))
     (build-system r-build-system)
     (propagated-inputs (list r-crayon))
     (home-page "https://github.com/r-lib/debugme#readme")
