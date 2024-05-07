@@ -30516,14 +30516,14 @@ number embedded in the file rather than the file extension.")
 (define-public r-imager
   (package
     (name "r-imager")
-    (version "0.45.8")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "imager" version))
        (sha256
         (base32
-         "0vrv7m9b9w8xjqa9w17xvrmpl403476zr0l9wqdp9ir6ssvnaf2f"))))
+         "0i8rkz38y4xybh28jrwijrrmzfnj4pwifpwpgl345jgf4cxg0hxm"))))
     (properties `((upstream-name . "imager")))
     (build-system r-build-system)
     (inputs
