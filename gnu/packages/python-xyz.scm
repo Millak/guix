@@ -34087,6 +34087,57 @@ YAML.  It takes care of defaults, overrides, type checking, command-line
 integration, human-readable errors, and standard OS-specific locations.")
     (license license:expat)))
 
+(define-public python-referencing
+  (package
+    (name "python-referencing")
+    (version "0.35.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "referencing" version))
+       (sha256
+        (base32 "0g3hvzz6ci6dcf701q7ilr4b7vw3fw428kqp4nj35dn8lqj23d15"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "--pyargs" "referencing/tests")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-pyproject
+           (lambda _
+             ;; The build system does not like this.
+             (substitute* "pyproject.toml"
+               (("  \"Topic :: File Formats.*") "")))))))
+    (propagated-inputs (list python-attrs python-rpds-py))
+    (native-inputs
+     (list python-hatchling
+           python-hatch-vcs
+           python-jsonschema
+           python-pytest
+           python-pytest-subtests))
+    (home-page "https://github.com/python-jsonschema/referencing")
+    (synopsis "JSON Referencing + Python")
+    (description "This package provides an implementation-agnostic
+implementation of JSON reference resolution.")
+    (license license:expat)))
+
+(define-public python-referencing-bootstrap
+  (package
+    (inherit python-referencing)
+    (name "python-referencing-bootstrap")
+    (arguments
+     (list
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-pyproject
+           (lambda _
+             ;; The build system does not like this.
+             (substitute* "pyproject.toml"
+               (("  \"Topic :: File Formats.*") "")))))))
+    (native-inputs (list python-hatchling python-hatch-vcs))))
+
 (define-public python-reflink
   (package
     (name "python-reflink")
