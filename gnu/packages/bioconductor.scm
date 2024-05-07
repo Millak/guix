@@ -16372,13 +16372,13 @@ profiles (GO and KEGG) of gene and gene clusters.")
 (define-public r-clusterexperiment
   (package
     (name "r-clusterexperiment")
-    (version "2.22.0")
+    (version "2.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "clusterExperiment" version))
               (sha256
                (base32
-                "1qnxrdpp75m342q4chwaig413l52giz1h7nd4p9y4b472dqx9hh4"))))
+                "0pi6qnchh89fhfr50fk4hrrkz1r8gfwjcd7254pgiaxcazv2380a"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -16390,7 +16390,6 @@ profiles (GO and KEGG) of gene and gene clusters.")
            r-delayedarray
            r-edger
            r-hdf5array
-           r-howmany
            r-kernlab
            r-limma
            r-locfdr
