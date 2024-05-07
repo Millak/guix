@@ -8802,13 +8802,13 @@ methylation data at the genome scale.")
 (define-public r-impute
   (package
     (name "r-impute")
-    (version "1.76.0")
+    (version "1.78.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "impute" version))
               (sha256
                (base32
-                "0q7mnx99ndna1r2r0v7jc3w8ly8qw33flwbgkcvrfhk6dzvbn4pl"))))
+                "1g0m9298srkhjnq3mc5rd7krr9y3cy74yvg9k0j7ypc9nmgcqabr"))))
     (native-inputs
      (list gfortran))
     (build-system r-build-system)
