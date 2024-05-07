@@ -9001,13 +9001,13 @@ scale with the dimensions of large data sets.")
 (define-public r-lfa
   (package
     (name "r-lfa")
-    (version "2.2.0")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "lfa" version))
        (sha256
-        (base32 "1xrwvw7227znd1h7426k8l86197yc24b4v608issh5fqglmhljns"))))
+        (base32 "1sbgr6h2kpfpzw3fkqd1075wrmbblb97pdywmvl8xv52vg0wqxz3"))))
     (properties `((upstream-name . "lfa")))
     (build-system r-build-system)
     (propagated-inputs (list r-corpcor r-rspectra))
