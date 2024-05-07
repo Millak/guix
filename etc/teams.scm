@@ -734,6 +734,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "adam.faiz@disroot.org")
   games)
 
+(define-member (person "Matthew Trzcinski"
+                       "matt@excalamus.com")
+  documentation)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
