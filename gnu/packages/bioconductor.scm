@@ -20011,13 +20011,13 @@ features (e.g.  genes, microRNAs).")
 (define-public r-ucell
   (package
     (name "r-ucell")
-    (version "2.6.2")
+    (version "2.8.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "UCell" version))
               (sha256
                (base32
-                "00v4b91f7y3zyndbl4wlfay8wljnqypfc05vrw15yr62d9smd35d"))))
+                "09r64rrydwgvvvq8f5vzvn7dsh24l9sa1if21wcimrl28ci1g1mv"))))
     (properties `((upstream-name . "UCell")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocneighbors
