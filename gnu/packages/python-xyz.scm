@@ -22731,7 +22731,7 @@ scans through a file and detects issues.")
 (define-public python-jedi
   (package
     (name "python-jedi")
-    (version "0.18.2")
+    (version "0.19.1")
     (source
      (origin
        (method git-fetch)
@@ -22742,19 +22742,20 @@ scans through a file and detects issues.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1nhsajmkn3qj32k5z3ymrd3r6dz2aliv2pqb824m5kaib986dm44"))
-       (modules '((guix build utils)))))
-    (build-system python-build-system)
+         "1lpvxa16zyhg95s8ji3sm19qz3bawal172xwlzcl5h80mhhfagih"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp")
-               (invoke "python" "-m" "pytest" "-vv")))))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-colorama python-docopt python-pytest))
+     (list python-colorama
+           python-docopt
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-parso))
     (home-page "https://github.com/davidhalter/jedi")
