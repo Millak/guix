@@ -9542,14 +9542,14 @@ of C, Java, or Ada programs.")
 (define-public frama-c
   (package
     (name "frama-c")
-    (version "27.1")
+    (version "28.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://frama-c.com/download/frama-c-"
-                                  version "-Cobalt.tar.gz"))
+              (uri (string-append "https://frama-c.com/download/frama-c-"
+                                  version "-Nickel.tar.gz"))
               (sha256
                (base32
-                "1lirkvhf5m53d33l0aw5jzc1fyzkwx5fkgh9g71732d52r55f4sv"))))
+                "14zmwghwhcryvri7k91vc1yampvxvhg36vwjxf64d8kx7dsbq802"))))
     (build-system dune-build-system)
     (arguments
       `(#:phases
@@ -9572,6 +9572,7 @@ of C, Java, or Ada programs.")
                          ocaml-ppx-deriving-yojson
                          ocaml-ppx-deriving-yaml
                          ocaml-ppx-import
+                         ocaml-unionfind
                          why3))
     (native-inputs (list dune-site time ocaml-menhir ocaml-graph))
     (native-search-paths
