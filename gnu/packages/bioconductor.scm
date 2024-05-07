@@ -11163,33 +11163,41 @@ different experiment.")
 (define-public r-screpertoire
   (package
     (name "r-screpertoire")
-    (version "1.12.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scRepertoire" version))
        (sha256
-        (base32 "1wgs8dv5zl82iciy86w5ws1gq8v2piklcifbw7gmbw60kijyr2l1"))))
+        (base32 "1ifnyfzswisacvxxf041l1snfv1b8x30pjg2pwampg804c56f1wj"))))
     (properties `((upstream-name . "scRepertoire")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-doparallel
+     (list r-cubature
            r-dplyr
+           r-evmix
            r-ggalluvial
+           r-ggdendro
            r-ggplot2
            r-ggraph
+           r-hash
            r-igraph
+           r-inext
            r-plyr
-           r-powertcr
+           r-quantreg
+           r-rcpp
            r-reshape2
+           r-rjson
            r-rlang
+           r-s4vectors
            r-seuratobject
            r-singlecellexperiment
            r-stringdist
            r-stringr
            r-summarizedexperiment
            r-tidygraph
-           r-vegan))
+           r-truncdist
+           r-vgam))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/scRepertoire")
     (synopsis "Toolkit for single-cell immune receptor profiling")
