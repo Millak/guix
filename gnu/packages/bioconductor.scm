@@ -1833,13 +1833,13 @@ and blood controls for CNA analysis.")
 (define-public r-chromstardata
   (package
     (name "r-chromstardata")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "chromstaRData" version 'experiment))
        (sha256
-        (base32 "13xrdr9xrfysh714q4p00pgvwr6ryhvd3jinfqr1gb27s7bdvsi6"))))
+        (base32 "0v28zg8z5b72hci7rqbvjvcgp979zxnq6xgck4baypmkj9ac5wn3"))))
     (properties `((upstream-name . "chromstaRData")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/chromstaRData/")
