@@ -7940,13 +7940,13 @@ which should be seen for details.")
 (define-public r-evd
   (package
     (name "r-evd")
-    (version "2.3-6.1")
+    (version "2.3-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "evd" version))
        (sha256
-        (base32 "0wc95hfj0gwkyghipdrhwd3s6q2agh9x2wy6y7dr6mjw7wnmjb36"))))
+        (base32 "0j2nnprzww1akin6mnj619wp6ihbd7jgbr2daj6lmgirbpqrv2aa"))))
     (properties `((upstream-name . "evd")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=evd")
