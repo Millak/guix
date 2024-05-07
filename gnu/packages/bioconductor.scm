@@ -4451,24 +4451,27 @@ variant.")
 (define-public r-atena
   (package
     (name "r-atena")
-    (version "1.8.0")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "atena" version))
               (sha256
                (base32
-                "1qfgy76d65hbx32fw1yf20n1vavylcafb9fgqqp02r455vk3xzng"))))
+                "1y2v8mi9awgfbcawpcir01qglxn0bdgj6v2dsdqp6if25cizl3sr"))))
     (properties `((upstream-name . "atena")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationhub
            r-biocgenerics
            r-biocparallel
+           r-cli
            r-genomeinfodb
            r-genomicalignments
+           r-genomicfeatures
            r-genomicranges
            r-iranges
            r-matrix
+           r-matrixgenerics
            r-matrixstats
            r-rsamtools
            r-s4vectors
