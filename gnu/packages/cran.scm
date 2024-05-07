@@ -4681,6 +4681,28 @@ all edge cases are encoded and decoded consistently for use with dynamic data
 in systems and applications.")
     (license license:expat)))
 
+(define-public r-jsonvalidate
+  (package
+    (name "r-jsonvalidate")
+    (version "1.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "jsonvalidate" version))
+       (sha256
+        (base32 "0myvm93azl6mj60l8fp91qa3ln3nnwj4p48xli8k215sm6zhhv1b"))))
+    (properties `((upstream-name . "jsonvalidate")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-v8))
+    (native-inputs (list r-knitr))
+    (home-page "https://docs.ropensci.org/jsonvalidate/")
+    (synopsis "Validate JSON schema")
+    (description
+     "This package uses the node library @code{is-my-json-valid} or @code{ajv}
+to validate JSON against a JSON schema.  Drafts 04, 06 and 07 of JSON schema
+are supported.")
+    (license license:expat)))
+
 (define-public r-servr
   (package
     (name "r-servr")
