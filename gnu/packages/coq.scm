@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
+;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -217,7 +218,7 @@ provers.")
 (define-public coq-flocq
   (package
     (name "coq-flocq")
-    (version "4.1.1")
+    (version "4.1.4")
     (source
      (origin
        (method git-fetch)
@@ -227,7 +228,7 @@ provers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01x38w58j95ba9679vpb5wv4bvfnrapd5dzjqlyz8k7i8a9sfqn0"))))
+         "08vrh0h909vmam1b4gfrvcmamnhmr5g0x79zx98hn7cx0vdwysh7"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake ocaml which coq))
