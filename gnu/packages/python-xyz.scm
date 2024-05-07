@@ -3999,6 +3999,25 @@ dataclass, datetime, numpy, and UUID instances natively.")
     ;; Either of these licenses
     (license (list license:asl2.0 license:expat))))
 
+(define-public python-overrides
+  (package
+    (name "python-overrides")
+    (version "7.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "overrides" version))
+       (sha256
+        (base32 "02l2j5pnsxn0q5i63is5g6i3q06ri83nf7lv55swr61vv6iqy5am"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/mkorpela/overrides")
+    (synopsis "Decorator to detect mismatch when overriding a method")
+    (description
+     "This package provides a decorator to automatically detect mismatch when
+overriding a method.")
+    (license license:asl2.0)))
+
 (define-public python-argparse-addons
   (package
     (name "python-argparse-addons")
