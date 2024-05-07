@@ -10959,13 +10959,13 @@ transcripts in groups of interest.")
 (define-public r-scannotatr
   (package
     (name "r-scannotatr")
-    (version "1.8.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scAnnotatR" version))
        (sha256
-        (base32 "13wrxxdwphngi0f9vxakykk54bqngw8g38w6wkk96999lzb3p57p"))))
+        (base32 "1gzssp7im1d9pp2mbar27k854fcc3rqyza5d77flmhshq88xrskv"))))
     (properties `((upstream-name . "scAnnotatR")))
     (build-system r-build-system)
     (propagated-inputs
