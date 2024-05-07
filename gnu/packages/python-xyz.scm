@@ -6061,6 +6061,37 @@ and convert DDL to BigQuery JSON schema.")
      (list python-setuptools-scm python-twisted
            python-setuptools python-wheel))))
 
+(define-public python-jsonschema-path
+  (package
+    (name "python-jsonschema-path")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jsonschema_path" version))
+       (sha256
+        (base32 "129rb8y2bj2wwps8vs3z1qav006k7wz2myx5j6dnxqs1yfmsn3ad"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false  ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("referencing = \">=0.28.0,<0.32.0\"")
+                "referencing = \">=0.28.0\"")))))))
+    (propagated-inputs (list python-pathable python-pyyaml python-referencing
+                             python-requests))
+    (native-inputs (list python-poetry-core))
+    (home-page "https://github.com/p1c2u/jsonschema-path")
+    (synopsis "JSONSchema Spec with object-oriented paths")
+    (description "This package implements object-oriented JSONSchema.  It lets
+you traverse a schema like paths and access a schema on demand with separate
+dereferencing accessor layer.")
+    (license license:asl2.0)))
+
 (define-public python-jsonschema-specifications
   (package
     (name "python-jsonschema-specifications")
