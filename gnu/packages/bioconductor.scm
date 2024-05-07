@@ -24024,14 +24024,14 @@ package, primarily for creation of the underlying Conda instance.")
 (define-public r-basilisk
   (package
     (name "r-basilisk")
-    (version "1.14.3")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "basilisk" version))
        (sha256
         (base32
-         "0hmx2jpfmjv87mp99mzbbzg00m6arpkpc5prkfav065iwjqbqnpd"))))
+         "1jhaar524z4ly8d4c7nyjn094m4sgz4vhh8qljd2yvs30xxs0jin"))))
     (properties `((upstream-name . "basilisk")))
     (build-system r-build-system)
     (propagated-inputs
