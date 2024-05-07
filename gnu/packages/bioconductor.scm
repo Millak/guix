@@ -12227,14 +12227,14 @@ of risk prediction (survival) models.")
 (define-public r-sva
   (package
     (name "r-sva")
-    (version "3.50.0")
+    (version "3.52.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "sva" version))
        (sha256
         (base32
-         "0p4zgw1pi5vnaqxn6jmvhpy0h5hnnqp41n0k2v0chhqgqxgn67x1"))))
+         "07iq894mf5d66cxjl283pcvj1frj56pb15z984d4svk6f5cacg3z"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocparallel
