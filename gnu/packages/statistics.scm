@@ -5070,14 +5070,14 @@ existing packages provide.")
 (define-public r-sfsmisc
   (package
     (name "r-sfsmisc")
-    (version "1.1-17")
+    (version "1.1-18")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sfsmisc" version))
        (sha256
         (base32
-         "06ih8zljs57scy7jfnv32yxijgv1i60vggmlyyblwnff6mr2fm60"))))
+         "1bc3qjnh3k4ia7w2sdbawr4rp8w9pmcbzbdjg7qbiwmpx6h2w19k"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/sfsmisc")
     (synopsis "Utilities from \"Seminar fuer Statistik\" ETH Zurich")
