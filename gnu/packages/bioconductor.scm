@@ -18140,14 +18140,14 @@ interpretation.")
 (define-public r-rhisat2
   (package
     (name "r-rhisat2")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rhisat2" version))
        (sha256
         (base32
-         "1pxlpwqzbdii0b1swy9vcq905934yfmyqwfx2j3f7n5n4dgglc2q"))))
+         "0a7k9p08gq537275r7dfzh34ycxx8h4fmac74jimwhsa420793r5"))))
     (properties `((upstream-name . "Rhisat2")))
     (build-system r-build-system)
     (arguments
@@ -18163,7 +18163,7 @@ interpretation.")
                (("^CPP =.*") (which "g++")))
              #t)))))
     (propagated-inputs
-     (list r-genomicfeatures r-genomicranges r-sgseq))
+     (list r-genomicranges r-sgseq r-txdbmaker))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/fmicompbio/Rhisat2")
