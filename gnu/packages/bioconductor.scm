@@ -23385,13 +23385,13 @@ other functional sequencing data.")
 (define-public r-parody
   (package
     (name "r-parody")
-    (version "1.60.0")
+    (version "1.62.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "parody" version))
        (sha256
-        (base32 "05mhbkhyh92bwmx37fpviprr9i4z0i6g24l71zk17gq0f8hwb4jj"))))
+        (base32 "0k2gc8p9dk7j21n6hxdqjna09m6cggx47spkmxkqvwqm97mwqzrp"))))
     (properties `((upstream-name . "parody")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
