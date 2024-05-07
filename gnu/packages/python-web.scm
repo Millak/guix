@@ -2271,7 +2271,7 @@ JSON Schema Specification Draft 2020-12.
 (define-public python-openapi-spec-validator
   (package
     (name "python-openapi-spec-validator")
-    (version "0.4.0")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi release
@@ -2281,22 +2281,26 @@ JSON Schema Specification Draft 2020-12.
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1q09sjh4hsc0c8yqbd97h5mp6rwh427y6zyn8kv8wljk6sa0fs4q"))))
+         "0s5yd4dbr6knwd2g1g4v2931k14n1lm80l11n2ija18yfis8yisz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; The example tests attempt to fetch resources from the Internet
-      ;; (see: https://github.com/p1c2u/openapi-spec-validator/issues/151).
-      #:test-flags #~'("-k" "not Example and not Exampe")
+      ;; These tests attempt to fetch resources from the Internet
+      #:test-flags '(list "--ignore-glob=tests/integration/validation/**"
+                          "-k" "not example")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-coverage-pytest-options
             (lambda _
               (substitute* "pyproject.toml"
                 (("^--cov.*") "")))))))
-    (native-inputs (list python-poetry-core python-pytest))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
     (propagated-inputs
      (list python-jsonschema
+           python-jsonschema-path
+           python-lazy-object-proxy
            python-openapi-schema-validator
            python-pyyaml
            python-requests
