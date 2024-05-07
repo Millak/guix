@@ -8715,13 +8715,13 @@ rectangular dataset.")
 (define-public r-rdisop
   (package
     (name "r-rdisop")
-    (version "1.62.0")
+    (version "1.64.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Rdisop" version))
               (sha256
                (base32
-                "1jz063hsrrbrqqx8p5yknagw19hsw51arck591h95dckncxd0006"))))
+                "1gcg441mp6bdnzjkh4gg6zgjn4hnw5i8mdcvb1hfim4hsc7sdsxv"))))
     (properties `((upstream-name . "Rdisop")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
