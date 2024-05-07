@@ -2081,14 +2081,14 @@ please use the package TFBSTools.")
 (define-public r-macrophage
   (package
     (name "r-macrophage")
-    (version "1.18.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "macrophage" version
                                      'experiment))
               (sha256
                (base32
-                "10d69v34fhxfy4nhw8h50j4q5kblm032cmjnparxm5gm7ksiqwxy"))))
+                "11ydl4srfxbcqnb42kwk783xd74231g6vgp1f0qs3hl8slc1hk1w"))))
     (properties `((upstream-name . "macrophage")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
