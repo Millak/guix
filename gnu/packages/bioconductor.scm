@@ -21893,13 +21893,13 @@ objects from the @code{graph} package.")
 (define-public r-fishpond
   (package
     (name "r-fishpond")
-    (version "2.8.0")
+    (version "2.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "fishpond" version))
               (sha256
                (base32
-                "04vl4cp0izghm7h4xk7x48lqkq0dpl47dkd068lva33jygwwpvcz"))))
+                "02lzx8whxd3z4k0saf0vaq4np8lag00nkp3hd6da1w91vczs1kjl"))))
     (properties `((upstream-name . "fishpond")))
     (build-system r-build-system)
     (propagated-inputs
