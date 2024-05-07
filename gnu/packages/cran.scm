@@ -15292,27 +15292,31 @@ the work.")
 (define-public r-doby
   (package
     (name "r-doby")
-    (version "4.6.20")
+    (version "4.6.21")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "doBy" version))
        (sha256
         (base32
-         "08nsl9xzyi2k7xkwa9mn91fn77ji0z9z5lm388pfdmydbfmpy2ks"))))
+         "01s9kls9j1nvygh0cc2bfd6n5sjccaalvfw3zx8sv7r2p4clgsij"))))
     (properties `((upstream-name . "doBy")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-broom
+     (list r-boot
+           r-broom
+           r-cowplot
            r-deriv
            r-dplyr
            r-ggplot2
-           r-magrittr
            r-mass
            r-matrix
            r-microbenchmark
+           r-modelr
            r-pbkrtest
-           r-tibble))
+           r-rlang
+           r-tibble
+           r-tidyr))
     (native-inputs
      (list r-knitr))
     (home-page "https://people.math.aau.dk/~sorenh/software/doBy/")
