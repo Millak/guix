@@ -7509,20 +7509,26 @@ Calculates confidence intervals for the difference in proportion.")
           (base32 "16qbm1l1281yj1cg6fp8xgd8xdshpz9a09f0b9cyimsjbm01c2j7"))))
     (properties `((upstream-name . "DescTools")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-      (list r-boot
-            r-cli
-            r-data-table
-            r-exact
-            r-expm
-            r-gld
-            r-httr
-            r-mass
-            r-mvtnorm
-            r-rcpp
-            r-readxl
-            r-rstudioapi
-            r-withr))
+     (list r-boot
+           r-cli
+           r-data-table
+           r-exact
+           r-expm
+           r-gld
+           r-httr
+           r-mass
+           r-mvtnorm
+           r-rcpp
+           r-readxl
+           r-rstudioapi
+           r-withr))
     (native-inputs (list gfortran r-r-rsp))
     (home-page "https://andrisignorell.github.io/DescTools/")
     (synopsis "Tools for Descriptive Statistics")
