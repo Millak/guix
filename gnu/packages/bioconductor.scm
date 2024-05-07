@@ -5450,13 +5450,13 @@ mechanism based on the shared signatures.")
 (define-public r-decomptumor2sig
   (package
     (name "r-decomptumor2sig")
-    (version "2.18.0")
+    (version "2.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "decompTumor2Sig" version))
               (sha256
                (base32
-                "13vwrg82zprb9h72azdqd0rkm5k2xm4mw7viawbzwkkqvg6azsdj"))))
+                "1pnxnxz9zsxqs7cbxgkjapr57k2m1d57w5hak0dwcy5zcxjzmai8"))))
     (properties `((upstream-name . "decompTumor2Sig")))
     (build-system r-build-system)
     (inputs (list perl))                ;script/extractSpecColumns.pl
