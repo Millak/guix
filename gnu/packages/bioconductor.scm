@@ -14426,14 +14426,14 @@ Viewer (SAV) files, access data, and generate QC plots.")
 (define-public r-chipexoqual
   (package
     (name "r-chipexoqual")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ChIPexoQual" version))
        (sha256
         (base32
-         "04dhkm8cq87x3c9f114z6q1pcw77xgs33rmhgzk4ajzxywhklq4j"))))
+         "0y39fpbnykqf5ycpi9q3rw73dkn2ksll7n6nafimxvxsh463d8ky"))))
     (properties `((upstream-name . "ChIPexoQual")))
     (build-system r-build-system)
     (propagated-inputs
