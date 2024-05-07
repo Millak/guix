@@ -268,7 +268,8 @@ written in Go.")
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
                            ;; TODO: unbundle the rest as well
-                           '("vendor/github.com/alecthomas"
+                           '("vendor/bazil.org"
+                             "vendor/github.com/alecthomas"
                              "vendor/github.com/benbjohnson"
                              "vendor/github.com/beorn7/perks"
                              "vendor/github.com/blang"
@@ -337,7 +338,7 @@ written in Go.")
                   ;; otherwise it will be sourced from provided vendor
                   ;; directory.
                   ;;
-                  ;;go-bazil-org-fuse
+                  go-bazil-org-fuse
                   ;;go-contrib-go-opencensus-io-exporter-prometheus
                   go-github-com-benbjohnson-clock
                   go-github-com-blang-semver-v4
