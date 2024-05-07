@@ -9656,13 +9656,13 @@ in SNV base substitution data.")
 (define-public r-msa
   (package
     (name "r-msa")
-    (version "1.34.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "msa" version))
               (sha256
                (base32
-                "1csa8j64xrfr6kdnndr3876bplclca9wf6ydy9kg97xsjq7gz8q5"))))
+                "05i6pp10nn4icl51rx3b48s861hnd1yx72d933fphm6a5082zxms"))))
     (properties `((upstream-name . "msa")))
     (build-system r-build-system)
     (propagated-inputs
