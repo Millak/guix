@@ -6979,13 +6979,13 @@ paired-end data.")
 (define-public r-biobase
   (package
     (name "r-biobase")
-    (version "2.62.0")
+    (version "2.64.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Biobase" version))
               (sha256
                (base32
-                "0znkawzr3hgbp2dkdk30ziqa6ylbq2nf0xmz4vi089cw9763lxgg"))))
+                "09xnl0qq4qsd981i9srw07228lgashcvcavi8k0izdzfyk6ka7m2"))))
     (properties
      `((upstream-name . "Biobase")))
     (build-system r-build-system)
