@@ -8766,13 +8766,13 @@ of other R packages who wish to make use of HTSlib.")
 (define-public r-rnbeads
   (package
     (name "r-rnbeads")
-    (version "2.20.0")
+    (version "2.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RnBeads" version))
        (sha256
-        (base32 "15z7l4nmpy01xm19717l27nwf3rfsn6wjv211fn2y4ls40mz75qp"))))
+        (base32 "0v7dzmbyskq0vmja09dncg1g50dl3iycg883swb7lfvi4xzr42vj"))))
     (properties `((upstream-name . "RnBeads")))
     (build-system r-build-system)
     (propagated-inputs
