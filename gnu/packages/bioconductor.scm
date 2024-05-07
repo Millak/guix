@@ -12542,13 +12542,13 @@ inference.")
 (define-public r-xina
   (package
     (name "r-xina")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "XINA" version))
        (sha256
-        (base32 "1cnw2zbjfs8qcgqrx557g00m59h5pldcx788v9r4gn2f70rx7vx3"))))
+        (base32 "177yzqmkf3f2xgfrz1zpcw554yzm4njd2chhmvxi2vvijvnrgdf3"))))
     (properties `((upstream-name . "XINA")))
     (build-system r-build-system)
     (propagated-inputs
