@@ -8822,13 +8822,13 @@ microarray data, using nearest neighbor averaging.")
 (define-public r-interactivedisplay
   (package
     (name "r-interactivedisplay")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "interactiveDisplay" version))
               (sha256
                (base32
-                "0w81c5kc48gjavln50ysgr3vaf8s4fb6632ckzb1q225j9ik2gia"))
+                "14k1j8bmpbrldx61fbvn20f7l2lc50bj9iy01a5jf0ddcbi27x5g"))
               (snippet
                '(for-each delete-file
                           '("inst/www/js/d3.v2.js"
