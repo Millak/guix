@@ -23915,13 +23915,13 @@ approach and a multi-scale contact profile.")
 (define-public r-basics
   (package
     (name "r-basics")
-    (version "2.14.0")
+    (version "2.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BASiCS" version))
        (sha256
-        (base32 "0kf215n151sxphc5w9h4i2xsk7lmysi4abwcpyz4slbwhpki3ac8"))))
+        (base32 "0rcc8na0nravf2687bcvbaklwa0z8b43lvdy0nf9xvfrfpr1zjnw"))))
     (properties `((upstream-name . "BASiCS")))
     (build-system r-build-system)
     (propagated-inputs
