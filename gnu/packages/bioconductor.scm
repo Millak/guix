@@ -15110,14 +15110,14 @@ user-defined and/or data-driven sets of hypotheses.")
 (define-public r-noiseq
   (package
     (name "r-noiseq")
-    (version "2.46.0")
+    (version "2.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "NOISeq" version))
        (sha256
         (base32
-         "0qs0sc47n3p9wmf5cmc39cb30i8pbsyizhr29b3ld197pi1ba5wb"))))
+         "1aph4phg58f4kpgavrxnn6dzh3lgms8sbjvip4f3gn8xs0p01mbz"))))
     (properties `((upstream-name . "NOISeq")))
     (build-system r-build-system)
     (propagated-inputs
