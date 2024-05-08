@@ -1071,6 +1071,37 @@ translate and to apply translation to Sphinx generated document.")
      "This package provides a Sphinx Extension to generate OG metadata.")
     (license license:bsd-3)))
 
+(define-public python-sphinxext-rediraffe
+  (package
+    (name "python-sphinxext-rediraffe")
+    (version "0.2.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinxext-rediraffe" version))
+       (sha256
+        (base32 "0pbjkwmqc8q08bsk66panvpya831ycjq1ysdagyrznpzwpxcn7b5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-version
+            (lambda _
+              (substitute* "setup.py"
+                (("version = \"main\"")
+                 (string-append "version = \"" #$version "\""))))))))
+    (propagated-inputs (list python-sphinx))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/wpilibsuite/sphinxext-rediraffe")
+    (synopsis
+     "Sphinx Extension that redirects non-existent pages to working pages")
+    (description
+     "This sphinx extension redirects non-existent pages to working
+pages. Rediraffe can also check that deleted/renamed files in your git repo
+are redirected.")
+    (license license:expat)))
+
 (define-public python-sphinx-autobuild
   (package
     (name "python-sphinx-autobuild")
