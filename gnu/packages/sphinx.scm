@@ -1164,13 +1164,13 @@ documenting acceptable argument types and return value types of functions.")
 (define-public python-sphinx-pytest
   (package
     (name "python-sphinx-pytest")
-    (version "0.0.5")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "sphinx_pytest" version))
               (sha256
                (base32
-                "13d3psm5vyb8rdj0mhnpn5m09k8xdaszcxdpng52fpz9sw8pngk7"))))
+                "0w16w7zjhb6pxv7py7q13882r58ly4s71l2lyns0wq6qkv1za9iw"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-flit-core))
     (propagated-inputs (list python-pytest python-sphinx))
