@@ -19070,6 +19070,10 @@ symlink:
 (extra-special-file "/usr/bin/env"
                     (file-append coreutils "/bin/env"))
 @end lisp
+
+This procedure is meant for @code{/bin/sh}, @code{/usr/bin/env} and
+similar targets.  In particular, use for targets under @code{/etc} might
+not work as expected if the target is managed by Guix in other ways.
 @end deffn
 
 @defvar host-name-service-type
