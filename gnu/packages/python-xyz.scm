@@ -32052,7 +32052,7 @@ HTML-containing files.")
 (define-public python-json5
   (package
     (name "python-json5")
-    (version "0.8.5")
+    (version "0.9.25")
     (source
      (origin
        ;; sample.json5 is missing from PyPi source tarball
@@ -32062,11 +32062,11 @@ HTML-containing files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nyngj18jlkgvm1177lc3cj47wm4yh3dqigygvcvw7xkyryafsqn"))))
-    (build-system python-build-system)
+        (base32 "1c96dqc8hn8c82q89rr7ix8d4da07ls3iac64f8jvjlgmhfik46q"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/dpranke/pyjson5")
-    (synopsis
-     "Python implementation of the JSON5 data format")
+    (synopsis "Python implementation of the JSON5 data format")
     (description
      "JSON5 extends the JSON data interchange format to make it slightly more
 usable as a configuration language.  This Python package implements parsing and
