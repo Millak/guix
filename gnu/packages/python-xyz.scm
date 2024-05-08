@@ -22152,7 +22152,7 @@ strings require only one extra byte in addition to the strings themselves.")
 (define-public python-cattrs
   (package
     (name "python-cattrs")
-    (version "22.1.0")
+    (version "23.2.3")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -22161,43 +22161,40 @@ strings require only one extra byte in addition to the strings themselves.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1n0h25gj6zd02kqyl040xpdvg4hpy1j92716sz0rg019xjqqijqb"))))
+                "0lrrz4n6ygfyrzn40mxm82kkvgqclfi760zydy4lin3bcv73jqyd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'adjust-for-older-attrs
-            ;; Our older attrs package is using the 'attr' rather than 'attrs'
-            ;; namespace.
-            ;; TODO: Remove after python-attrs is updated to >= 21.4.0.
+          (add-after 'unpack 'patch-pyproject
             (lambda _
-              (substitute* (find-files "." "\\.py$")
-                (("from attrs\\b")
-                 "from attr"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Do not use the 'pytest' binary as it hard-codes an older
-                ;; python-hypothesis version near the beginning of its
-                ;; GUIX_PYTHONPATH.
-                (invoke "python" "-m" "pytest" "-vv" "-c" "/dev/null" "tests"
-                        "-n" (number->string (parallel-job-count))
-                        ;; This test requires orjson, which needs the maturin
-                        ;; build system and new Rust dependencies.
-                        "--ignore" "tests/test_preconf.py")))))))
+              (substitute* "pyproject.toml"
+                ;; Fix version string
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\""))
+                ;; Just run pytest with no frills
+                (("addopts = \"-l.*") "")))))))
     (native-inputs
-     (list python-hypothesis
+     (list python-hatchling
+           python-hatch-vcs
+           python-hypothesis
            python-immutables
            python-msgpack
            python-poetry-core
            python-pymongo               ;for the bson module
            python-pytest
+           python-pytest-benchmark
            python-pytest-xdist))
     (propagated-inputs
      (list python-attrs
+           python-cbor2
            python-exceptiongroup
-           python-typing-extensions))
+           python-orjson
+           python-pyyaml
+           python-tomlkit
+           python-typing-extensions
+           python-ujson))
     (home-page "https://github.com/python-attrs/cattrs")
     (synopsis "Python library for structuring and unstructuring data")
     (description "@code{cattrs} is an Python library for structuring and
