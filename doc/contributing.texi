@@ -2298,9 +2298,9 @@ indication of its build status on various platforms.
 
 @cindex feature branches, coordination
 To help coordinate the merging of branches, you must create a new
-guix-patches issue each time you wish to merge a branch (@pxref{The
-Issue Tracker}).  The title of the issue requesting to merge a branch
-should have the following format:
+guix-patches issue each time you create a branch (@pxref{The Issue
+Tracker}).  The title of the issue requesting to merge a branch should
+have the following format:
 
 @cindex merge requests, template
 @example
@@ -2308,26 +2308,60 @@ Request for merging "@var{name}" branch
 @end example
 
 The @url{https://qa.guix.gnu.org/, QA infrastructure} recognizes such
-issues and lists the merge requests on its main page.  Normally branches
-will be merged in a ``first come, first merged'' manner, tracked through
-the guix-patches issues.
+issues and lists the merge requests on its main page.  The following
+points apply to managing these branches:
 
-If you agree on a different order with those involved, you can track
-this by updating which issues block@footnote{You can mark an issue as
-blocked by another by emailing @email{control@@debbugs.gnu.org} with the
-following line in the body of the email: @code{block XXXXX by YYYYY}.
-Where @code{XXXXX} is the number for the blocked issue, and @code{YYYYY}
-is the number for the issue blocking it.} which other issues.
-Therefore, to know which branch is at the front of the queue, look for
-the oldest issue, or the issue that isn't @dfn{blocked} by any other
-branch merges.  An ordered list of branches with the open issues is
-available at @url{https://qa.guix.gnu.org}.
+@enumerate
+@item
+The commits on the branch should be a combination of the patches
+relevant to the branch.  Patches not related to the topic of the branch
+should go elsewhere.
+
+@item
+Any changes that can be made on the master branch, should be made on the
+master branch.  If a commit can be split to apply part of the changes on
+master, this is good to do.
+
+@item
+It should be possible to re-create the branch by starting from master
+and applying the relevant patches.
+
+@item
+Avoid merging master in to the branch.  Prefer rebasing or re-creating
+the branch on top of an updated master revision.
+
+@item
+Minimise the changes on master that are missing on the branch prior to
+merging the branch in to master.  This means that the state of the
+branch better reflects the state of master should the branch be merged.
+
+@item
+If you don't have commit access, create the ``Request for merging''
+issue and request that someone creates the branch.  Include a list of
+issues/patches to include on the branch.
+@end enumerate
+
+Normally branches will be merged in a ``first come, first merged''
+manner, tracked through the guix-patches issues.  If you agree on a
+different order with those involved, you can track this by updating
+which issues block@footnote{You can mark an issue as blocked by another
+by emailing @email{control@@debbugs.gnu.org} with the following line in
+the body of the email: @code{block XXXXX by YYYYY}.  Where @code{XXXXX}
+is the number for the blocked issue, and @code{YYYYY} is the number for
+the issue blocking it.} which other issues.  Therefore, to know which
+branch is at the front of the queue, look for the oldest issue, or the
+issue that isn't @dfn{blocked} by any other branch merges.  An ordered
+list of branches with the open issues is available at
+@url{https://qa.guix.gnu.org}.
 
 Once a branch is at the front of the queue, wait until sufficient time
 has passed for the build farms to have processed the changes, and for
 the necessary testing to have happened.  For example, you can check
 @indicateurl{https://qa.guix.gnu.org/branch/@var{branch}} to see
 information on some builds and substitute availability.
+
+Once the branch has been merged, the issue should be closed and the
+branch deleted.
 
 @node Debbugs User Interfaces
 @subsection Debbugs User Interfaces
