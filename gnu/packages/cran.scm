@@ -37986,6 +37986,36 @@ standalone filter methods built-in methods of any machine-learning algorithm are
 supported.  Partial scoring of multivariate filter methods is supported.")
     (license license:lgpl3)))
 
+(define-public r-mlr3fselect
+  (package
+    (name "r-mlr3fselect")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mlr3fselect" version))
+       (sha256
+        (base32 "1f18y4ahnjzlwk9pfs87i80kb6z84hgyc5cdlj3mafawq790hg1h"))))
+    (properties `((upstream-name . "mlr3fselect")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bbotk
+                             r-checkmate
+                             r-data-table
+                             r-lgr
+                             r-mlr3
+                             r-mlr3misc
+                             r-paradox
+                             r-r6))
+    (home-page "https://mlr3fselect.mlr-org.com")
+    (synopsis "Feature selection for mlr3")
+    (description
+     "This package is a feature selection package of the mlr3 ecosystem.  It
+selects the optimal feature set for any mlr3 learner.  The package works with
+several optimization algorithms e.g. random search, Recursive feature elimination,
+and genetic search.  Moreover, it can automatically optimize learners and estimate
+the performance of optimized feature sets with nested resampling.")
+    (license license:lgpl3)))
+
 (define-public r-mlr3measures
   (package
     (name "r-mlr3measures")
