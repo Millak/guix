@@ -23,6 +23,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -84,6 +85,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -473,7 +475,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "44.5")
+    (version "46.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -481,7 +483,7 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "026488yb6azwb2sm0yy0iaipk914l3agvb7d8azks4kyjqlslyb8"))))
+                "1br1ak0cwvvv8rszj9ffyvir7qcbxys940ygy22dzzn2l2byw9az"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -497,6 +499,12 @@ topology functions.")
                                     "update_desktop_database"))
                    (string-append option ": false"))
                   (else all))))))
+          (add-before 'check 'check-setup
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              ;; for timeTest
+              (setenv "TZDIR"
+                      (search-input-directory (or native-inputs inputs)
+                                              "share/zoneinfo"))))
           (add-after 'install 'wrap
             (lambda _
               (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
@@ -511,7 +519,9 @@ topology functions.")
      (list gettext-minimal
            `(,glib "bin")
            gobject-introspection
-           pkg-config))
+           libportal
+           pkg-config
+           tzdata-for-tests))
     (inputs
      (list folks
            evolution-data-server
