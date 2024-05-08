@@ -361,28 +361,35 @@ the JupyterLab CSS variables.")
 (define-public python-jupyterlab-server
   (package
     (name "python-jupyterlab-server")
-    (version "2.12.0")
+    (version "2.27.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyterlab_server" version))
        (sha256
-        (base32 "1gxbfa5s0v4z0v8kagkm2bz8hlli5pwhr89y68w5kxcrqfsg9q00"))))
-    (build-system python-build-system)
+        (base32 "07b3m34akrf79xpaim9cymhsac0ry5ry7if998lcfxmn173mlyq9"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; XXX: These tests appear to fail due to the lack of
+      ;; locales.
+      '(list "-k" "not locale and not language")
       #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "-c" "/dev/null" "tests"
-                        ;; XXX: These tests appear to fail due to the lack of
-                        ;; locales.
-                        "-k" "not locale and not language")))))))
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'ignore-deprecation-warnings
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("  \"module:datetime.*" m)
+                (string-append
+                 m
+                 "\n\"ignore:zmq.eventloop.ioloop is deprecated:DeprecationWarning\","
+                 "\n\"ignore:There is no current event loop:DeprecationWarning\","
+                 "\n\"ignore:Spec is deprecated. Use SchemaPath from jsonschema-path package.:DeprecationWarning\"," )))))
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-babel
-           python-entrypoints
            python-importlib-metadata    ;TODO: remove after Python >= 3.10
            python-jinja2
            python-json5
@@ -391,15 +398,19 @@ the JupyterLab CSS variables.")
            python-packaging
            python-requests))
     (native-inputs
-     (list python-ipykernel
-           python-jupyter-server
+     (list python-hatchling
+           python-ipykernel
            python-openapi-core
            python-openapi-spec-validator
            python-pytest
            python-pytest-console-scripts
-           python-pytest-tornasync
+           python-pytest-cov
+           python-pytest-jupyter
+           python-pytest-timeout
+           python-requests-mock
            python-ruamel.yaml
-           python-strict-rfc3339))
+           python-strict-rfc3339
+           python-werkzeug))
     (home-page "https://jupyter.org")
     (synopsis "Server components for JupyterLab applications")
     (description "JupyterLab Server sits between JupyterLab and Jupyter
