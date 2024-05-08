@@ -350,6 +350,8 @@ deploy."
                 (extensions
                  (list (service-extension nginx-service-type
                                           certbot-nginx-server-configurations)
+                       (service-extension profile-service-type
+                                          (compose list certbot-configuration-package))
                        (service-extension activation-service-type
                                           certbot-activation)
                        (service-extension mcron-service-type
