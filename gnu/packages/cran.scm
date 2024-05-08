@@ -37907,6 +37907,34 @@ visualization, and logging.  Its modular implementation allows easy
 customization by the user.")
     (license license:bsd-2)))
 
+(define-public r-mlr3cluster
+  (package
+    (name "r-mlr3cluster")
+    (version "0.1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mlr3cluster" version))
+       (sha256
+        (base32 "09fsw2b43f9m7clv1qwylimyz622snhn9ykq3xwbiric7zr4ca91"))))
+    (properties `((upstream-name . "mlr3cluster")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-backports
+                             r-checkmate
+                             r-clue
+                             r-cluster
+                             r-data-table
+                             r-fpc
+                             r-mlr3
+                             r-mlr3misc
+                             r-paradox
+                             r-r6))
+    (home-page "https://mlr3cluster.mlr-org.com")
+    (synopsis "Cluster extension for mlr3")
+    (description
+     "This package extends the mlr3 package with cluster analysis.")
+    (license license:lgpl3)))
+
 (define-public r-mlr3measures
   (package
     (name "r-mlr3measures")
