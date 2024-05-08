@@ -9833,31 +9833,27 @@ persistent over reboots.")
         (base32
          "1zzpkk4x3f20483dzw43b3ml03d63vvkmqf4j8y3b61b67wm59bm"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (propagated-inputs
-     ;; In Requires.private of libbpf.pc.
-     (list elfutils zlib))
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags
-       (list
-        (string-append "PREFIX=" (assoc-ref %outputs "out"))
-        (string-append "LIBDIR=$(PREFIX)/lib")
-        (string-append "CC=" ,(cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'pre-build
-           (lambda _
-             (chdir "src"))))))
+     (list
+      #:tests? #f                       ;self-tests run in QEMU
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "LIBDIR=$(PREFIX)/lib")
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (add-before 'build 'pre-build
+                     (lambda _
+                       (chdir "src"))))))
+    (native-inputs (list pkg-config))
+    (propagated-inputs (list elfutils zlib)) ;in Requires.private of libbpf.pc
     (home-page "https://github.com/libbpf/libbpf")
     (synopsis "BPF CO-RE (Compile Once – Run Everywhere)")
     (description
      "Libbpf supports building BPF CO-RE-enabled applications, which, in
 contrast to BCC, do not require the Clang/LLVM runtime or linux kernel
 headers.")
-    (license `(,license:lgpl2.1 ,license:bsd-2))))
+    (license (list license:lgpl2.1 license:bsd-2))))
 
 (define-public bcc
   (package
