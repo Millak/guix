@@ -36,6 +36,7 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libevent)
@@ -45,7 +46,7 @@
 (define-public tmux
   (package
     (name "tmux")
-    (version "3.3a")
+    (version "3.4")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -53,10 +54,12 @@
                     version "/tmux-" version ".tar.gz"))
              (sha256
               (base32
-               "0gzrrm6imhcp3sr5vw8g71x9n40bbdidwvcdyk2741xx8dw39zg4"))))
+               "1ahr7si3akr55hadyms3p36f1pbwavpkbfxpsq55ql5zl3gbh6jm"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent ncurses))
+    (native-inputs
+     (list bison))
     (home-page "https://github.com/tmux/tmux/wiki")
     (synopsis "Terminal multiplexer")
     (description
