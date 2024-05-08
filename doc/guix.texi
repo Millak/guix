@@ -19679,7 +19679,7 @@ might want to turn it off for instance in a virtual machine that does
 not need it and where the extra boot time is a problem.
 
 @anchor{guix-configuration-channels}
-@item @code{channels} (default: @code{%default-channels})
+@item @code{channels} (default: @code{#f})
 List of channels to be specified in @file{/etc/guix/channels.scm}, which
 is what @command{guix pull} uses by default (@pxref{Invoking guix
 pull}).

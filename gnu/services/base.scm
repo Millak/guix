@@ -1859,7 +1859,7 @@ archive' public keys, with GUIX."
   (generate-substitute-key? guix-configuration-generate-substitute-key?
                             (default #t))         ;Boolean
   (channels         guix-configuration-channels ;file-like
-                    (default %default-channels))
+                    (default #f))
   (chroot-directories guix-configuration-chroot-directories ;list of file-like/strings
                       (default '()))
   (max-silent-time  guix-configuration-max-silent-time ;integer
