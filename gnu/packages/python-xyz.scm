@@ -17924,15 +17924,17 @@ connection pool.")
 (define-public python-argparse-manpage
   (package
     (name "python-argparse-manpage")
-    (version "1.1")
+    (version "4.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "argparse-manpage" version))
        (sha256
         (base32
-         "0blh31zns68anina9lba5wh81d1414s97p60zw5l0d0shhh0wj5p"))))
-    (build-system python-build-system)
+         "1nq4sq1zk1xzdsqq61hd27jhj978ys136aba1zjg02x1g0c0cg11"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-tomli))
     (home-page "https://github.com/praiskup/argparse-manpage")
     (synopsis "Build manual page from Python's ArgumentParser object")
     (description
