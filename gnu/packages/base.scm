@@ -830,7 +830,8 @@ the store.")
             (sha256
              (base32
               "09nrwb0ksbah9k35jchd28xxp2hidilqdgz7b8v5f30pz1yd8yzp"))
-            (patches (search-patches "glibc-ldd-powerpc.patch"
+            (patches (search-patches "glibc-2.39-git-updates.patch"
+                                     "glibc-ldd-powerpc.patch"
                                      "glibc-2.38-ldd-x86_64.patch"
                                      "glibc-dl-cache.patch"
                                      "glibc-2.37-versioned-locpath.patch"
@@ -842,6 +843,8 @@ the store.")
                                      "glibc-hurd-mach-print.patch"
                                      "glibc-hurd-gettyent.patch"
                                      "glibc-hurd-getauxval.patch"))))
+   (properties `((lint-hidden-cve . ("CVE-2024-33601" "CVE-2024-33602"
+                                     "CVE-2024-33600" "CVE-2024-33599"))))
    (build-system gnu-build-system)
 
    ;; Glibc's <limits.h> refers to <linux/limit.h>, for instance, so glibc
