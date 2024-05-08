@@ -856,6 +856,24 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
   `(;; Make the kernel config available at /proc/config.gz
     ("CONFIG_IKCONFIG" . #t)
     ("CONFIG_IKCONFIG_PROC" . #t)
+    ;; Debugging options.
+    ("CONFIG_DEBUG_INFO" . #t)          ;required by BTF
+    ,@(if (version>=? version "5.1")
+          '(("CONFIG_DEBUG_INFO_BTF" . #t))
+          '())
+    ,@(if (version>=? version "5.12")
+          '(("CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT" . #t))
+          '())
+    ("CONFIG_DEBUG_INFO_REDUCED" . #f)  ;incompatible with BTF
+    ;; Tracing and related options.
+    ,@(if (version>=? version "5.1")
+          '(("CONFIG_BPF_JIT" . #t)
+            ("CONFIG_BPF_JIT_ALWAYS_ON" . #t)
+            ("CONFIG_BPF_SYSCALL" . #t))
+          '())
+    ,@(if (version>=? version "5.13")
+          '(("BPF_UNPRIV_DEFAULT_OFF" . #t))
+          '())
     ;; Some very mild hardening.
     ("CONFIG_SECURITY_DMESG_RESTRICT" . #t)
     ;; All kernels should have NAMESPACES options enabled
@@ -1134,7 +1152,12 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
            ;; These are needed to compile the GCC plugins.
            gmp
            mpfr
-           mpc))
+           mpc
+           ;; These are needed when building with the CONFIG_DEBUG_INFO_BTF
+           ;; support.
+           dwarves                      ;for pahole
+           python-wrapper
+           zlib))
     (home-page "https://www.gnu.org/software/linux-libre/")
     (synopsis "100% free redistribution of a cleaned Linux kernel")
     (description "GNU Linux-Libre is a free (as in freedom) variant of the
