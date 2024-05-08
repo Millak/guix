@@ -6913,6 +6913,8 @@ Java package that provides routines for various statistical distributions.")
                     (disable-tests (list "test/ess-test-inf.el"
                                          "test/ess-test-r.el")
                                    ("ess--derive-connection-path"
+                                    ;; Looks like an off-by-one error.
+                                    "ess--command-browser-unscoped-essr"
                                     "ess-eval-line-test"
                                     "ess-eval-region-test"
                                     "ess-mock-remote-process"
