@@ -20133,6 +20133,24 @@ templates into Python modules.")
 server with very acceptable performance.")
     (license license:zpl2.1)))
 
+(define-public python-whatthepatch
+  (package
+    (name "python-whatthepatch")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "whatthepatch" version))
+       (sha256
+        (base32 "024grf30vkpcfr3bq822zv3slhx12ifm51rmfv1inn0j50blqdvz"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/cscorley/whatthepatch")
+    (synopsis "Patch parsing and application library")
+    (description
+     "This package provides a patch parsing and application library.")
+    (license license:expat)))
+
 (define-public python-whichcraft
   (package
     (name "python-whichcraft")
