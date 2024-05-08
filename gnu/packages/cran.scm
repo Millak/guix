@@ -37935,6 +37935,30 @@ customization by the user.")
      "This package extends the mlr3 package with cluster analysis.")
     (license license:lgpl3)))
 
+(define-public r-mlr3data
+  (package
+    (name "r-mlr3data")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mlr3data" version))
+       (sha256
+        (base32 "04hwmj8cdszwgd845va26pgzdw0k4cm025zjrmp3fr7ypp73mirg"))))
+    (properties `((upstream-name . "mlr3data")))
+    (build-system r-build-system)
+    (home-page "https://github.com/mlr-org/mlr3data")
+    (synopsis "Collection of machine learning data Sets for mlr3")
+    (description
+     "This package provides a small collection of interesting and educational
+machine learning data sets which are used as examples in the mlr3 book Applied
+machine learning using mlr3 in R @url{https://mlr3book.mlr-org.com}, the use case
+gallery  @url{https://mlr3gallery.mlr-org.com}, or in other examples.  All data
+sets are properly preprocessed and ready to be analyzed by most machine learning
+algorithms.  Data sets are automatically added to the dictionary of tasks if
+mlr3 is loaded.")
+    (license license:lgpl3)))
+
 (define-public r-mlr3measures
   (package
     (name "r-mlr3measures")
