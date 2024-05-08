@@ -21327,28 +21327,24 @@ respectively.")
 (define-public python-rope
   (package
     (name "python-rope")
-    (version "1.1.1")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rope" version))
        (sha256
         (base32
-         "0bkzwkllxxdxd3w70xiy137lqvnlmmaplsc2ya3s23ss4kq8y10k"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           `(modify-phases %standard-phases
-              (add-after 'unpack 'disable-broken-test
-                (lambda _
-                  (substitute* "ropetest/contrib/autoimporttest.py"
-                    (("def test_search_module")
-                     "def __notest_search_module")
-                    (("def test_search_submodule")
-                     "def __notest_search_submodule")))))))
+         "1078mkzivz45my8x2y5gxisr0vba630xj7yxx7anr068xhnpshsi"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-pytoolconfig))
     (native-inputs
-     (list python-pytest-timeout
-           python-pytest))
+     (list python-pre-commit
+           python-pytest
+           python-pytest-cov
+           python-pytest-timeout
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/python-rope/rope")
     (synopsis "Refactoring library for Python")
     (description "Rope is a refactoring library for Python.  It facilitates
