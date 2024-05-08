@@ -43,7 +43,7 @@
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;; Copyright © 2019, 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2019, 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2019, 2020, 2024 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2019-2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -5048,7 +5048,7 @@ libxml to ease remote use of the RESTful API.")
 (define-public libshumate
   (package
     (name "libshumate")
-    (version "1.0.5")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -5056,11 +5056,10 @@ libxml to ease remote use of the RESTful API.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0v4m07vxm3m4a2vqkp2wfsc3zsf92fpigc1k8yq49vkpj7gxikx8"))))
+                "04cwakbdr68nw4kh956xhf447fawz8badpyd76hg4ir1gq3yw18i"))))
     (build-system meson-build-system)
     (arguments
-     (list #:configure-flags #~(list "-Dlibsoup3=true")
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda* (#:key tests? test-options #:allow-other-keys)
@@ -5080,6 +5079,7 @@ libxml to ease remote use of the RESTful API.")
      (list gi-docgen
            `(,glib "bin")
            gobject-introspection
+           gperf
            pkg-config
            ;; For tests:
            xorg-server-for-tests
@@ -5090,7 +5090,9 @@ libxml to ease remote use of the RESTful API.")
      (list cairo
            glib
            gtk
+           json-glib
            libsoup
+           protobuf-c
            sqlite))
     (home-page "https://wiki.gnome.org/Projects/libshumate")
     (synopsis "GtkWidget C library for displaying maps")
