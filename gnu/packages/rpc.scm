@@ -107,11 +107,14 @@
            protobuf
            python-wrapper))
     (inputs
-     (list abseil-cpp-cxxstd11
-           c-ares/cmake
+     (list c-ares/cmake
            openssl
            re2
            zlib))
+    (propagated-inputs
+     ;; Abseil libraries are in the 'Requires' field of the various gRPC
+     ;; pkg-config files.
+     (list abseil-cpp-cxxstd11))
     (home-page "https://grpc.io")
     (synopsis "High performance universal RPC framework")
     (description "gRPC is a modern high performance @dfn{Remote Procedure Call}
