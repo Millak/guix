@@ -2238,6 +2238,33 @@ task of adding retry behavior to just about anything.")
 implementation for the Telegram Bot API.")
     (license license:gpl2)))
 
+(define-public python-pytoolconfig
+  (package
+    (name "python-pytoolconfig")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytoolconfig" version))
+       (sha256
+        (base32 "1bnvg9yiwp2fn0lvzhp1dd2mvrymxvjnasmbdap3i0hhdwdbvrji"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-packaging
+                             python-platformdirs
+                             python-pydantic
+                             python-sphinx
+                             python-sphinx-autodoc-typehints
+                             python-sphinx-rtd-theme
+                             python-tabulate
+                             python-tomli))
+    (native-inputs (list python-pdm-backend python-pytest))
+    (home-page "https://pypi.org/project/pytoolconfig/")
+    (synopsis "Python tool configuration")
+    (description "The goal of this project is to manage configuration for
+Python tools, such as rope and add support for a @file{pyproject.toml}
+configuration file.")
+    (license license:lgpl3+)))
+
 (define-public python-colorlog
   (package
     (name "python-colorlog")
