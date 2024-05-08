@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
@@ -224,6 +224,10 @@
                  "TEXMF = {$GUIX_TEXMF}\n")
                 (("\\$SELFAUTOLOC(/share/texmf-dist/web2c)" _ suffix)
                  (string-append #$output suffix))
+                ;; Ignore system-wide cache.  Use local one, by default
+                ;; "$HOME/.texliveYYYY/texmf-var/".
+                (("^TEXMFCACHE = .*")
+                 "TEXMFCACHE = $TEXMFVAR\n")
                 ;; Don't truncate lines.
                 (("^error_line = .*$") "error_line = 254\n")
                 (("^half_error_line = .*$") "half_error_line = 238\n")
