@@ -38219,6 +38219,34 @@ machine learning algorithms.  The search spaces are from scientific articles and
 work for a wide range of data sets.")
     (license license:lgpl3)))
 
+(define-public r-mlr3viz
+  (package
+    (name "r-mlr3viz")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mlr3viz" version))
+       (sha256
+        (base32 "1m2f54yqhk1bd4c30vd1z509yblz6y4i8qkwhg73aa1sflnsycvf"))))
+    (properties `((upstream-name . "mlr3viz")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate
+                             r-data-table
+                             r-ggplot2
+                             r-mlr3misc
+                             r-scales
+                             r-viridis))
+    (home-page "https://mlr3viz.mlr-org.com")
+    (synopsis "Visualizations for mlr3")
+    (description
+     "This package offers features plots for mlr3 objects such as tasks, learners,
+predictions, benchmark results, tuning instances and filters via the
+@code{autoplot()} generic of ggplot2.  The mlr3viz package draws plots with
+the viridis color palette and applies the minimal theme.  Visualizations include
+barplots, boxplots, histograms, ROC curves, and precision-recall curves.")
+    (license license:lgpl3)))
+
 (define-public r-paradox
   (package
     (name "r-paradox")
