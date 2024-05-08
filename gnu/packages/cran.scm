@@ -37959,6 +37959,33 @@ algorithms.  Data sets are automatically added to the dictionary of tasks if
 mlr3 is loaded.")
     (license license:lgpl3)))
 
+(define-public r-mlr3filters
+  (package
+    (name "r-mlr3filters")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mlr3filters" version))
+       (sha256
+        (base32 "16z359bc2li7f35xk4g08np3r2a3127avv0ak6bn9bywcs13z6bl"))))
+    (properties `((upstream-name . "mlr3filters")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-backports
+                             r-checkmate
+                             r-data-table
+                             r-mlr3
+                             r-mlr3misc
+                             r-paradox
+                             r-r6))
+    (home-page "https://mlr3filters.mlr-org.com")
+    (synopsis "Filter based feature selection for mlr3")
+    (description
+     "This package extends mlr3 with filter methods for feature selection.  Besides
+standalone filter methods built-in methods of any machine-learning algorithm are
+supported.  Partial scoring of multivariate filter methods is supported.")
+    (license license:lgpl3)))
+
 (define-public r-mlr3measures
   (package
     (name "r-mlr3measures")
