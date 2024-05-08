@@ -38047,6 +38047,42 @@ includes tuners for hyperparameter optimization in mlr3tuning and optimizers for
 black-box optimization in bbotk.")
     (license license:lgpl3)))
 
+(define-public r-mlr3mbo
+  (package
+    (name "r-mlr3mbo")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mlr3mbo" version))
+       (sha256
+        (base32 "0jdj5dx6jb7n0g950h0j8jhafdj5mcalv5vxfiyf07myr6mjipri"))))
+    (properties `((upstream-name . "mlr3mbo")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bbotk
+                             r-checkmate
+                             r-data-table
+                             r-lgr
+                             r-mlr3
+                             r-mlr3misc
+                             r-mlr3tuning
+                             r-paradox
+                             r-r6
+                             r-spacefillr))
+    (native-inputs (list r-knitr))
+    (home-page "https://mlr3mbo.mlr-org.com")
+    (synopsis "Flexible Bayesian optimization")
+    (description
+     "This package provides a flexible approach to Bayesian optimization / model
+based optimization building on the bbotk package.  The mlr3mbo is a toolbox
+providing both ready-to-use optimization algorithms as well as their fundamental
+building blocks allowing for straightforward implementation of custom algorithms.
+Single- and multi-objective optimization is supported as well as mixed continuous,
+categorical and conditional search spaces.  Moreover, using mlr3mbo for
+hyperparameter optimization of machine learning models within the mlr3 ecosystem
+is straightforward via mlr3tuning.")
+    (license license:lgpl3)))
+
 (define-public r-mlr3measures
   (package
     (name "r-mlr3measures")
