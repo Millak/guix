@@ -194,7 +194,7 @@ package definition."
     ((package-inputs ...)
      `((,input-type (list ,@(format-inputs package-inputs)))))))
 
-(define %cran-url "https://cran.r-project.org/web/packages/")
+(define %cran-url "https://cloud.r-project.org/web/packages/")
 (define %cran-canonical-url "https://cran.r-project.org/package=")
 (define %bioconductor-url "https://bioconductor.org/packages/")
 
