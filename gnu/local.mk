@@ -1128,6 +1128,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dune-istl-fix-solver-playground.patch	\
   %D%/packages/patches/durden-shadow-arcan.patch		\
   %D%/packages/patches/dvd+rw-tools-add-include.patch 		\
+  %D%/packages/patches/dwarves-threading-reproducibility.patch	\
   %D%/packages/patches/dynaconf-unvendor-deps.patch		\
   %D%/packages/patches/dyninst-fix-glibc-compatibility.patch	\
   %D%/packages/patches/efivar-211.patch			\

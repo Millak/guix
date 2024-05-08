@@ -2411,6 +2411,54 @@ by Robert Shea and Robert Anton Wilson.")
 partitions.  Write functionality is also provided but check the README.")
     (license license:gpl2+)))
 
+(define-public dwarves
+  (package
+    (name "dwarves")
+    (version "1.26")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/acmel/dwarves")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xfq0r3whc3dk922ss8i5vwyfcqhgc95dy27mm69j5niy7i5kzrd"))
+              (patches
+               (search-patches "dwarves-threading-reproducibility.patch"))))
+    (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-D__LIB=lib"
+                                               "-DLIBBPF_EMBEDDED=OFF")
+                     #:tests? #f))      ;no test suite
+    (native-inputs (list pkg-config))
+    (inputs (list libbpf))
+    (home-page "https://github.com/acmel/dwarves")
+    (synopsis "Debugging information processing library and utilities")
+    (description "Dwarves is a set of tools that use the debugging information
+inserted in ELF binaries by compilers such as GCC, used by well known
+debuggers such as GDB.
+
+Utilities in the Dwarves suite include @command{pahole}, that can be used to
+find alignment holes in structures and classes in languages such as C, C++,
+but not limited to these.  These tools can also be used to encode and read the
+BTF type information format used with the kernel Linux @code{bpf} syscall.
+
+The @command{codiff} command can be used to compare the effects changes in
+source code generate on the resulting binaries.
+
+The @command{pfunct} command can be used to find all sorts of information
+about functions, inlines, decisions made by the compiler about inlining, etc.
+
+The @command{pahole} command can be used to use all this type information to
+pretty print raw data according to command line directions.
+
+Headers can have its data format described from debugging info and offsets from
+it can be used to further format a number of records.
+
+Finally, the @command{btfdiff} command can be used to compare the output of
+pahole from BTF and DWARF, to make sure they produce the same results. ")
+    (license license:gpl2+)))
+
 (define-public fbset
   (package
     (name "fbset")
