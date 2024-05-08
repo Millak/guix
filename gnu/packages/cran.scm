@@ -38191,6 +38191,34 @@ resampled, benchmarked, and tuned.")
 performing ordinal regression.")
       (license license:expat))))
 
+(define-public r-mlr3tuningspaces
+  (package
+    (name "r-mlr3tuningspaces")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mlr3tuningspaces" version))
+       (sha256
+        (base32 "1snrd7xq388mvqh0ydaxvx8k9iwp40g06c3irp0m718jw3wsz5vm"))))
+    (properties `((upstream-name . "mlr3tuningspaces")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate
+                             r-data-table
+                             r-mlr3
+                             r-mlr3misc
+                             r-mlr3tuning
+                             r-paradox
+                             r-r6))
+    (home-page "https://mlr3tuningspaces.mlr-org.com")
+    (synopsis "Search spaces for mlr3")
+    (description
+     "This package is a collection of search spaces for hyperparameter optimization
+in the mlr3 ecosystem.  It features ready-to-use search spaces for many popular
+machine learning algorithms.  The search spaces are from scientific articles and
+work for a wide range of data sets.")
+    (license license:lgpl3)))
+
 (define-public r-paradox
   (package
     (name "r-paradox")
