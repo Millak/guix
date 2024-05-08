@@ -689,37 +689,6 @@ functionality")
     (home-page "https://invent.kde.org/plasma/kglobalacceld")
     (license license:gpl2+)))
 
-(define-public khotkeys
-  (package
-    (name "khotkeys")
-    (version "5.27.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma/" version "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1ipg71jz356jrngw7kqbjs7jplpnr8q3yz694rkhqklsqlfh91bd"))))
-    (build-system qt-build-system)
-    (native-inputs (list extra-cmake-modules))
-    (inputs (list kdbusaddons
-                  kdoctools
-                  kglobalaccel
-                  ki18n
-                  kcmutils
-                  kio
-                  ktextwidgets
-                  kxmlgui
-                  kdelibs4support
-                  plasma-workspace
-                  qtx11extras))
-    (synopsis "Trigger actions with the keyboard")
-    (description
-     "This package provides a way to trigger actions when certain keys
-are pressed.")
-    (home-page "https://invent.kde.org/plasma/khotkeys")
-    (license license:lgpl2.0)))
-
 (define-public kinfocenter
   (package
     (name "kinfocenter")
