@@ -38016,6 +38016,37 @@ and genetic search.  Moreover, it can automatically optimize learners and estima
 the performance of optimized feature sets with nested resampling.")
     (license license:lgpl3)))
 
+(define-public r-mlr3hyperband
+  (package
+    (name "r-mlr3hyperband")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mlr3hyperband" version))
+       (sha256
+        (base32 "1x6vfhadxlb4c9q61d5qv957mkyfwdwchzbg3flfd0j28b4bck1p"))))
+    (properties `((upstream-name . "mlr3hyperband")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bbotk
+                             r-checkmate
+                             r-data-table
+                             r-lgr
+                             r-mlr3
+                             r-mlr3misc
+                             r-mlr3tuning
+                             r-paradox
+                             r-r6))
+    (home-page "https://mlr3hyperband.mlr-org.com")
+    (synopsis "Hyperband for mlr3")
+    (description
+     "This package implements a successive halving and hyperband optimization
+algorithm for the mlr3 ecosystem.  The implementation in mlr3hyperband features
+improved scheduling and parallelizes the evaluation of configurations.  The package
+includes tuners for hyperparameter optimization in mlr3tuning and optimizers for
+black-box optimization in bbotk.")
+    (license license:lgpl3)))
+
 (define-public r-mlr3measures
   (package
     (name "r-mlr3measures")
