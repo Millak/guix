@@ -5,7 +5,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,55 +65,53 @@
                 "1fs407hnlnm0b8sncjwys9rc7ia5nb7wxrpx39nq3pzzfs1lv3vq"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; no test target
-       #:configure-flags
-       (list "-DgRPC_ZLIB_PROVIDER=package"
-             "-DgRPC_ABSL_PROVIDER=package"
-             "-DgRPC_CARES_PROVIDER=package"
-             "-DgRPC_SSL_PROVIDER=package"
-             "-DgRPC_PROTOBUF_PROVIDER=package"
-             "-DgRPC_RE2_PROVIDER=package"
-             (string-append "-DCMAKE_INSTALL_PREFIX="
-                            (assoc-ref %outputs "out"))
-             "-DCMAKE_INSTALL_LIBDIR=lib"
-             (string-append "-DCMAKE_INSTALL_RPATH="
-                            (assoc-ref %outputs "out") "/lib")
-             "-DCMAKE_VERBOSE_MAKEFILE=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'configure-shared
-           (lambda* (#:key (configure-flags '()) #:allow-other-keys)
-             (mkdir "../build-shared")
-             (with-directory-excursion "../build-shared"
-               (apply invoke
-                      "cmake" "../source"
-                      "-DBUILD_SHARED_LIBS=ON"
-                      configure-flags)
-               (apply invoke "make"
-                      `("-j" ,(number->string (parallel-job-count)))))))
-         (add-after 'install 'install-shared-libraries
-           (lambda _
-             (with-directory-excursion "../build-shared"
-               (invoke "make" "install"))))
-         (add-before 'strip 'move-static-libs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (static (assoc-ref outputs "static")))
-               (mkdir-p (string-append static "/lib"))
-               (with-directory-excursion
-                 (string-append out "/lib")
-                 (for-each
+     (list
+      #:tests? #f                       ; no test target
+      #:configure-flags
+      #~(list "-DgRPC_ZLIB_PROVIDER=package"
+              "-DgRPC_ABSL_PROVIDER=package"
+              "-DgRPC_CARES_PROVIDER=package"
+              "-DgRPC_SSL_PROVIDER=package"
+              "-DgRPC_PROTOBUF_PROVIDER=package"
+              "-DgRPC_RE2_PROVIDER=package"
+              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+              "-DCMAKE_INSTALL_LIBDIR=lib"
+              (string-append "-DCMAKE_INSTALL_RPATH=" #$output "/lib")
+              "-DCMAKE_VERBOSE_MAKEFILE=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'configure-shared
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (mkdir "../build-shared")
+              (with-directory-excursion "../build-shared"
+                (apply invoke "cmake" "../source"
+                       "-DBUILD_SHARED_LIBS=ON"
+                       configure-flags)
+                (apply invoke "make"
+                       (list "-j" (number->string (parallel-job-count)))))))
+          (add-after 'install 'install-shared-libraries
+            (lambda _
+              (with-directory-excursion "../build-shared"
+                (invoke "make" "install"))))
+          (add-before 'strip 'move-static-libs
+            (lambda _
+              (let ((static #$output:static))
+                (mkdir-p (string-append static "/lib"))
+                (with-directory-excursion (string-append #$output "/lib")
+                  (for-each
                    (lambda (file)
-                     (rename-file file
-                                  (string-append static "/lib/" file)))
-                   (find-files "." "\\.a$"))))
-             #t)))))
-    (inputs
-     (list abseil-cpp-cxxstd11 c-ares/cmake openssl re2 zlib))
+                     (rename-file file (string-append static "/lib/" file)))
+                   (find-files "." "\\.a$")))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("protobuf" ,protobuf)
-       ("python" ,python-wrapper)))
+     (list pkg-config
+           protobuf
+           python-wrapper))
+    (inputs
+     (list abseil-cpp-cxxstd11
+           c-ares/cmake
+           openssl
+           re2
+           zlib))
     (home-page "https://grpc.io")
     (synopsis "High performance universal RPC framework")
     (description "gRPC is a modern high performance @dfn{Remote Procedure Call}
@@ -159,18 +157,18 @@ browsers to backend services.")
     (arguments
      (substitute-keyword-arguments (package-arguments grpc)
        ((#:phases phases)
-        `(modify-phases ,phases
-           ;; Note: This would be nicer as a snippet, but that creates a tarball
-           ;; instead of a checkout and breaks assumptions made by the builder.
-           (add-after 'unpack 'rename-gettid
-             (lambda _
-               ;; Rename custom gettid() syscall wrapper to avoid conflict
-               ;; with gettid() from glibc 2.30.
-               (substitute* '("src/core/lib/gpr/log_linux.cc"
-                              "src/core/lib/gpr/log_posix.cc"
-                              "src/core/lib/iomgr/ev_epollex_linux.cc")
-                 (("gettid\\(")
-                  "sys_gettid("))))))))
+        #~(modify-phases #$phases
+            ;; Note: This would be nicer as a snippet, but that creates a tarball
+            ;; instead of a checkout and breaks assumptions made by the builder.
+            (add-after 'unpack 'rename-gettid
+              (lambda _
+                ;; Rename custom gettid() syscall wrapper to avoid conflict
+                ;; with gettid() from glibc 2.30.
+                (substitute* '("src/core/lib/gpr/log_linux.cc"
+                               "src/core/lib/gpr/log_posix.cc"
+                               "src/core/lib/iomgr/ev_epollex_linux.cc")
+                  (("gettid\\(")
+                   "sys_gettid("))))))))
     (inputs
      (modify-inputs (package-inputs grpc)
        (replace "abseil-cpp" abseil-cpp-20200923.3)))
