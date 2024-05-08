@@ -859,7 +859,7 @@ version to the original file.")
 (define-public repo2docker
   (package
     (name "repo2docker")
-    (version "2021.08.0")
+    (version "2024.03.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -868,38 +868,38 @@ version to the original file.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "111irpghzys0s5ixs8paskz7465cls1sm9d5bg45a15jklcw84a9"))))
+                "1bcnl91j6p3315lk2mmn02jq6mjsn68m9rcw5rkln4c9fx1160rx"))))
     (outputs '("out" "doc"))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'patch-shebangs 'fix-install-miniforge
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out")))
-                        (substitute* (find-files
-                                      out "^(install-miniforge|install-nix|\
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-shebangs 'fix-install-miniforge
+            (lambda _
+              (substitute* (find-files
+                            #$output "^(install-miniforge|install-nix|\
 nix-shell-wrapper|repo2docker-entrypoint)")
-                          (("^#!(.*)/bin/bash")
-                           "#!/bin/bash"))
-                        (substitute* (find-files out "^freeze\\.py$")
-                          (("^#!(.*)/bin/python3")
-                           "#!/bin/python3\n")))))
-                  (add-after 'install 'make-doc
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "doc"))
-                             (doc (string-append out "/share/doc/"
-                                                 ,(package-name this-package))))
-                        (setenv "PYTHONPATH"
-                                (string-append (getcwd) ":"
-                                               (getenv "GUIX_PYTHONPATH")))
-                        ;; Don't treat warnings as errors.
-                        (substitute* "docs/Makefile"
-                          (("(SPHINXOPTS[[:blank:]]+= )-W" _ group)
-                           group))
-                        (with-directory-excursion "docs"
-                          (invoke  "make" "html")
-                          (copy-recursively "build/html"
-                                            (string-append doc "/html")))))))))
+                (("^#!(.*)/bin/bash")
+                 "#!/bin/bash"))
+                (substitute* (find-files #$output "^freeze\\.py$")
+                  (("^#!(.*)/bin/python3")
+                   "#!/bin/python3\n"))))
+          (add-after 'install 'make-doc
+            (lambda _
+              (let ((doc (string-append #$output:out "/share/doc/"
+                                        #$(package-name this-package))))
+                (setenv "PYTHONPATH"
+                        (string-append (getcwd) ":"
+                                       (getenv "GUIX_PYTHONPATH")))
+                ;; Don't treat warnings as errors.
+                (substitute* "docs/Makefile"
+                  (("(SPHINXOPTS[[:blank:]]+= )-W" _ group)
+                   group))
+                (with-directory-excursion "docs"
+                  (invoke  "make" "html")
+                  (copy-recursively "build/html"
+                                    (string-append doc "/html")))))))))
     (inputs
      (list python-traitlets
            python-toml
@@ -913,8 +913,18 @@ nix-shell-wrapper|repo2docker-entrypoint)")
            python-docker
            python-chardet))
     (native-inputs
-     (list python-sphinx python-entrypoints python-recommonmark
-           python-sphinxcontrib-autoprogram python-pydata-sphinx-theme))
+     (list python-entrypoints
+           python-myst-parser
+           python-pydata-sphinx-theme
+           python-recommonmark
+           python-setuptools
+           python-sphinx
+           python-sphinx-autobuild
+           python-sphinx-copybutton
+           python-sphinxcontrib-autoprogram
+           python-sphinxext-opengraph
+           python-sphinxext-rediraffe
+           python-wheel))
     (home-page "https://repo2docker.readthedocs.io/en/latest/index.html#")
     (synopsis "Generate docker images from repositories")
     (description
