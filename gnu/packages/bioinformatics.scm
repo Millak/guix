@@ -13288,55 +13288,52 @@ secondary structure and comparative analysis in R.")
     (license license:gpl3+)))
 
 (define-public rcas-web
-  (package
-    (name "rcas-web")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/BIMSBbioinfo/rcas-web/"
-                           "releases/download/v" version
-                           "/rcas-web-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0wq951aj45gqki1bickg876i993lmawkp8x24agg264br5x716db"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'find-RCAS
-           ;; The configure script can't find non-1.3.x versions of RCAS because
-           ;; its R expression ‘1.10.1 >= 1.3.4’ evaluates to false.
-           (lambda _
-             (substitute* "configure"
-               (("1\\.3\\.4") "0.0.0"))
-             #t))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (json   (assoc-ref inputs "guile-json"))
-                    (redis  (assoc-ref inputs "guile-redis"))
-                    (path   (string-append
-                             json  "/share/guile/site/2.2:"
-                             redis "/share/guile/site/2.2")))
-               (wrap-program (string-append out "/bin/rcas-web")
-                 `("GUILE_LOAD_PATH" ":" = (,path))
-                 `("GUILE_LOAD_COMPILED_PATH" ":" = (,path))
-                 `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
-             #t)))))
-    (inputs
-     `(("r-minimal" ,r-minimal)
-       ("r-rcas" ,r-rcas)
-       ("guile" ,guile-2.2)
-       ("guile-json" ,guile-json-1)
-       ("guile-redis" ,guile2.2-redis)))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://github.com/BIMSBbioinfo/rcas-web")
-    (synopsis "Web interface for RNA-centric annotation system (RCAS)")
-    (description "This package provides a simple web interface for the
+  (let ((commit "71c93e3835653beb4eaa6e89b860bee3779729b8")
+        (revision "2"))
+    (package
+      (name "rcas-web")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/BIMSBbioinfo/rcas-web")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0232g0f7g0w5cgaib462zbfssvfq8i0iqv5b5wfmbrbn0sw99l9a"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'wrap-executable
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((json   #$(this-package-input "guile-json"))
+                       (redis  #$(this-package-input "guile-redis"))
+                       (path   (string-append
+                                json  "/share/guile/site/3.0:"
+                                redis "/share/guile/site/3.0")))
+                  (wrap-program (string-append #$output "/bin/rcas-web")
+                    `("GUILE_LOAD_PATH" ":" = (,path))
+                    `("GUILE_LOAD_COMPILED_PATH" ":" = (,path))
+                    `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE"))))))))))
+      (inputs
+       (list r-minimal
+             r-rcas
+             guile-3.0
+             guile-json-4
+             guile-redis))
+      (native-inputs
+       (list autoconf
+             automake
+             pkg-config))
+      (home-page "https://github.com/BIMSBbioinfo/rcas-web")
+      (synopsis "Web interface for RNA-centric annotation system (RCAS)")
+      (description "This package provides a simple web interface for the
 @dfn{RNA-centric annotation system} (RCAS).")
-    (license license:agpl3+)))
+      (license license:agpl3+))))
 
 (define-public r-chipkernels
   (let ((commit "c9cfcacb626b1221094fb3490ea7bac0fd625372")
