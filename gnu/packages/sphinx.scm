@@ -924,8 +924,7 @@ and several other projects.")
 (define-public python-myst-parser
   (package
     (name "python-myst-parser")
-    ;; The latest version (v2.0.0) require Sphinx >= v6.
-    (version "0.18.1")
+    (version "3.0.1")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -934,26 +933,13 @@ and several other projects.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lcz9vvy8hbp6cjmbslrlxn3pinf98jykiq8nx5lw5y0lz0mj162"))))
+                "0lac1mf9pnbmr1jcllhh0sh0y4cnmncx36g2mjbwyd6rm6akbajc"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; There are 3 test failures, seemingly due to expecting a slightly
-     ;; different output from Sphinx (see:
-     ;; https://github.com/executablebooks/MyST-Parser/issues/645).
-     (list #:test-flags #~(list "-k" (string-append
-                                      "not test_basic "
-                                      "and not test_gettext_html "
-                                      "and not test_fieldlist_extension "
-                                      "and not test_syntax_extensions"))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'relax-requirements
-                 (lambda _
-                   (substitute* "pyproject.toml"
-                     ;; "mdit-py-plugins~=0.3.1"
-                     (("0.3.1") "0.4.0")
-                     ;; "markdown-it-py>=1.0.0,<3.0.0"
-                     (("3.0.0") "4.0.0")))))))
+     (list
+      #:test-flags
+      ;; "Currently only dot format is supported."
+      '(list "--ignore=tests/test_renderers/test_parse_directives.py")))
     (native-inputs
      (list python-beautifulsoup4
            python-docutils
