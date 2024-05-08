@@ -23769,18 +23769,39 @@ numbers, real numbers, mixed types and more, and comes with a shell command
         (sha256
          (base32
           "0fjv5w2wvgdr8gb27v241bavliipyir9fdz48rsgc3xapm644mn0"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; Tests require the unpackaged pytest-benchmark.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-hardcoded-version
-           (lambda _ (substitute*
-                       "setup.py"
-                       (("'gevent==1.1rc1'") "'gevent'"))
-             #t)))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'use-poetry-core
+           (lambda _
+             ;; Patch to use the core poetry API.
+             (substitute* "pyproject.toml"
+               (("poetry.masonry.api")
+                "poetry.core.masonry.api")
+               ;; Poetry does not like line breaks.
+               (("description = \"\"\"")
+                "description = \"GraphQL-core is a Python port of GraphQL.js.\"\n")
+               (("^GraphQL-core is a Python.*") "")
+               (("^ the JavaScript reference.*") ""))))
+         (add-after 'unpack 'patch-setup.py
+           (lambda _
+             (substitute* "setup.py"
+               ;; Relax hardcoded version
+               (("'gevent==1.1rc1'") "'gevent'")
+               ;; Poetry complains about this line break.
+               (("a port of GraphQL.js,\"")
+                (string-append "a port of GraphQL.js, "
+                               "the JavaScript reference implementation for GraphQL."))
+               (("    \" the JavaScript reference.*") "")))))))
     (native-inputs
-     (list python-gevent python-mock python-pytest-mock))
+     (list python-gevent
+           python-mock
+           python-poetry-core
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-mock))
     (propagated-inputs
      (list python-promise python-six))
     (home-page "https://github.com/graphql-python/graphql-core")
