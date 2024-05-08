@@ -12307,13 +12307,12 @@ expression.")
       (license license:gpl3))))
 
 (define-public r-icellnet
-  ;; v1.0 tagged in 2020, last commit contains many fixes.
-  ;; DESCRIPTION says Version: 0.0.0.9000.
-  (let ((commit "b9c05488fb8b5ea69bd560018966eaf4e25f82a")
-        (revision "0"))
+  ;; This is an arbitrary commit because there is no tag for 2.2.1.
+  (let ((commit "e10ee4ae5feaf8130764dcb0736957d2a90b828c")
+        (revision "1"))
     (package
       (name "r-icellnet")
-      (version (git-version "1.0" revision commit))
+      (version (git-version "2.2.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -12322,15 +12321,18 @@ expression.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0cld7d6xqnvd0zpcpg3sx73an6vdc9divzywgnn6zxnqcd987cnw"))))
+                  "0bszxw9zcsd1gxhg9q89jfzi95266wfjn74hp7z8yb99cr3j53k4"))))
       (build-system r-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
+       (list
+        #:phases
+        '(modify-phases %standard-phases
            (add-after 'unpack 'enter-dir
              (lambda _ (chdir "icellnet"))))))
       (propagated-inputs
        (list r-annotationdbi
+             r-complexheatmap
+             r-circlize
              r-data-table
              r-dplyr
              r-ggplot2
