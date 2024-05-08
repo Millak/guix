@@ -8183,17 +8183,25 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
 (define-public python-lsp-jsonrpc
   (package
     (name "python-lsp-jsonrpc")
-    (version "1.0.0")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-lsp-jsonrpc" version))
        (sha256
         (base32
-         "1gb0fsamxndhplx25v8m0b3k7aknzy454fpa0qsqsqnv6c3igv3v"))))
-    (build-system python-build-system)
+         "04n95h0cqnsrdyh1gv0abh2i5ynyrq2wfqpppx9djp7mxr9y9226"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-coverage
+           python-pycodestyle
+           python-pyflakes
+           python-pylint
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-ujson))
     (home-page "https://github.com/python-lsp/python-lsp-jsonrpc")
