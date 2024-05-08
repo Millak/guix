@@ -18106,14 +18106,16 @@ applications.")
   (package
     (name "python-click-default-group")
     (version "1.2.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "click_default_group" version))
-              (sha256
-               (base32
-                "07i5w47lbihcb3cvs08vynz725z9skvhhzrarnk6qi8dxjckqgzb"))))
+    (source
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/click-contrib/click-default-group")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06h12qwg0lhvxlgfm9768afibwp8j6r3r440v630a30bv0nkhngm"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #false)) ;there are none
     (propagated-inputs
      (list python-click))
     (native-inputs
