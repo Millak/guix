@@ -9412,6 +9412,7 @@ properties, screen resolution, and other GNOME parameters.")
             (add-after 'install 'wrap-programs
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((gi-typelib-path  (getenv "GI_TYPELIB_PATH"))
+                      (gst-plugin-path  (getenv "GST_PLUGIN_SYSTEM_PATH"))
                       (python-path
                        (string-join
                         (filter (lambda (item)
@@ -9430,6 +9431,19 @@ properties, screen resolution, and other GNOME parameters.")
                      (string-append "'" gi-typelib-path "'.split(':').forEach("
                                     "path => imports.gi.GIRepository.Repository."
                                     "prepend_search_path(path));\n"
+                                    all)))
+                  ;; Screencast requires a pipewire service running
+                  ;; (i.e. as provided by home-pipewire-service-type)
+                  (substitute* (string-append #$output "/share/gnome-shell/"
+                                              "org.gnome.Shell.Screencast")
+                    (("imports\\.package\\.start" all)
+                     (string-append "'" gi-typelib-path "'.split(':').forEach("
+                                    "path => imports.gi.GIRepository.Repository."
+                                    "prepend_search_path(path));\n"
+                                    "imports.gi.GLib.setenv('GST_PLUGIN_SYSTEM_PATH',"
+                                    "[imports.gi.GLib.getenv('GST_PLUGIN_SYSTEM_PATH'),"
+                                    "'" gst-plugin-path "'].filter(v => v).join(':'),"
+                                    "true);\n"
                                     all)))
                   (for-each
                    (lambda (prog)
@@ -9496,6 +9510,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            gnome-settings-daemon
            graphene
            gst-plugins-base
+           gst-plugins-good
            ibus
            libcanberra
            libcroco
@@ -9506,6 +9521,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            mesa-headers
            mutter
            network-manager-applet
+           pipewire
            polkit
            pulseaudio
            python-pygobject
