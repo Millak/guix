@@ -12192,6 +12192,18 @@ When @var{recursive?} is true, call @code{(@var{select?} @var{file}
 absolute file name and @var{stat} is the result of @code{lstat}; exclude
 entries for which @var{select?} does not return true.
 
+@var{file} can be wrapped in the @code{assume-valid-file-name} syntactic
+keyword. When this is done, there will not be a warning when
+@code{local-file} is used with a non-literal path.  The path is still
+looked up relative to the current working directory at run time.
+Wrapping is done like this:
+
+@lisp
+(define alice-key-file-path "alice.pub")
+;; ...
+(local-file (assume-valid-file-name alice-key-file-path))
+@end lisp
+
 This is the declarative counterpart of the @code{interned-file} monadic
 procedure (@pxref{The Store Monad, @code{interned-file}}).
 @end deffn
