@@ -38219,6 +38219,42 @@ machine learning algorithms.  The search spaces are from scientific articles and
 work for a wide range of data sets.")
     (license license:lgpl3)))
 
+(define-public r-mlr3verse
+  (package
+    (name "r-mlr3verse")
+    (version "0.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mlr3verse" version))
+       (sha256
+        (base32 "0ld4vch1qdq3gh8vhj38s2wz7acn5z7f8hxmnwnrq22g44gckd8s"))))
+    (properties `((upstream-name . "mlr3verse")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bbotk
+                             r-data-table
+                             r-mlr3
+                             r-mlr3cluster
+                             r-mlr3data
+                             r-mlr3filters
+                             r-mlr3fselect
+                             r-mlr3hyperband
+                             r-mlr3learners
+                             r-mlr3mbo
+                             r-mlr3misc
+                             r-mlr3pipelines
+                             r-mlr3tuning
+                             r-mlr3tuningspaces
+                             r-mlr3viz
+                             r-paradox))
+    (home-page "https://mlr3verse.mlr-org.com")
+    (synopsis "Easily install and load of the mlr3 package family")
+    (description
+     "The mlr3 package family is a set of packages for machine-learning purposes
+built in a modular fashion.  This wrapper package is aimed to simplify the
+installation and loading of the core mlr3 packages.")
+    (license license:lgpl3)))
+
 (define-public r-mlr3viz
   (package
     (name "r-mlr3viz")
