@@ -3637,16 +3637,9 @@ WebSocket usage in Python programs.")
        (uri (pypi-uri "apiron" version))
        (sha256
         (base32 "1qwbqn47sf0aqznj1snbv37v8ijx476qqkjf5l9pac7xjkxsr8qk"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "--cov" "-k"
-                     ;; This test tries to connect to the internet.
-                     "not test_call"))))))
+     (list #:test-flags '(list "-k" "not test_call")))
     (propagated-inputs
      (list python-requests))
     (native-inputs
