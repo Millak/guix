@@ -3166,9 +3166,10 @@ tests.")
        (uri (pypi-uri "zope.i18nmessageid" version))
        (sha256
         (base32 "14mx62khys82p2gmmf3m40x4jmvcz3rndvl6qik2n2qfp13n7ds7"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-coverage python-zope-testrunner))
+     (list python-coverage python-setuptools
+           python-wheel python-zope-testrunner))
     (propagated-inputs
      (list python-six))
     (home-page "https://pypi.org/project/zope.i18nmessageid/")
