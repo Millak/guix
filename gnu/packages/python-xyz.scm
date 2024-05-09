@@ -3233,7 +3233,7 @@ Unicode-to-LaTeX conversion.")
       #:test-flags
       '(list "-k" "not test_load_config_target_version")))
     (propagated-inputs
-     (list python-black python-lsp-server python-tomli))
+     (list python-black python-lsp-server python-toml python-tomli))
     (native-inputs
      (list python-flake8 python-isort python-mypy python-pytest
            python-pytest-runner python-setuptools python-wheel))
