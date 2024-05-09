@@ -856,8 +856,8 @@ style and key ordering are kept, so you can diff the source.")
        (sha256
         (base32
          "1dmv163cnslyqccrybkxn0c9s1jk1mmafmgxv75iamnz5lk5l8hk"))))
-    (build-system python-build-system)
-    (home-page "https://bitbucket.org/bodhisnarkva/cbor")
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/brianolson/cbor_py")
     (synopsis "Implementation of the Concise Binary Object Representation")
     (description
      "Python-cbor provides an implementation of the Concise Binary Object
