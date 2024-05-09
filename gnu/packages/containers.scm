@@ -34,6 +34,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix utils)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
@@ -49,6 +50,8 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages version-control)
@@ -539,6 +542,34 @@ containers.
 The @code{machine} subcommand is not supported due to gvproxy not being
 packaged.")
     (license license:asl2.0)))
+
+(define-public podman-compose
+  (package
+    (name "podman-compose")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containers/podman-compose")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11dwpifkm20vyi6r3fgmiiqc01mpm4r8l0p5gfh0bawi2gklrhsf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "pytests")))
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-dotenv python-pyyaml))
+    (home-page "https://github.com/containers/podman-compose")
+    (synopsis "Script to run docker-compose.yml using podman")
+    (description "This package provides an implementation of
+@url{https://compose-spec.io/, Compose Spec} for @code{podman} focused on
+being rootless and not requiring any daemon to be running.")
+    (license license:gpl2)))
 
 (define-public buildah
   (package
