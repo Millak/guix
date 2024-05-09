@@ -4106,7 +4106,7 @@ formats, looking up tracks through metadata and audio fingerprints.")
               (sha256
                (base32
                 "1qdk6i8gyhbi1c4j5jmbfpac3q8sff2ysri1pnp7nb9wzcp615v3"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
        #:phases
