@@ -213,15 +213,9 @@ structure and layout algorithms.")
         (base32
          "0c573nzpm51qgz2g296f8pw8ys0i3r6daynxk06zagk5l5fgw9ar"))
        (patches (search-patches "python-uqbar-python3.10.patch"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "tests"))
-             #t)))))
+     (list #:test-flags '(list "tests")))
     (native-inputs
      (list graphviz
            python-flake8
