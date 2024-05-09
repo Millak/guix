@@ -71,7 +71,7 @@
       ("bzip2"              . ,(ref 'compression 'bzip2))
       ("xz"                 . ,(ref 'compression 'xz))
       ("git-minimal"        . ,(ref 'version-control 'git-minimal))
-      ("po4a"               . ,(ref 'gettext 'po4a))
+      ("po4a-minimal"       . ,(ref 'gettext 'po4a-minimal))
       ("gettext-minimal"    . ,(ref 'gettext 'gettext-minimal))
       ("gcc-toolchain"      . ,(ref 'commencement 'gcc-toolchain))
       ("glibc-utf8-locales" . ,(delay
@@ -291,8 +291,8 @@ DOMAIN, a gettext domain."
 
 (define (translate-texi-manuals source)
   "Return the translated texinfo manuals built from SOURCE."
-  (define po4a
-    (specification->package "po4a"))
+  (define po4a-minimal
+    (specification->package "po4a-minimal"))
 
   (define gettext-minimal
     (specification->package "gettext-minimal"))
@@ -317,7 +317,7 @@ DOMAIN, a gettext domain."
           (define (translate-tmp-texi po source output)
             "Translate Texinfo file SOURCE using messages from PO, and write
 the result to OUTPUT."
-            (invoke #+(file-append po4a "/bin/po4a-translate")
+            (invoke #+(file-append po4a-minimal "/bin/po4a-translate")
               "-M" "UTF-8" "-L" "UTF-8" "-k" "0" "-f" "texinfo"
               "-m" source "-p" po "-l" output))
 
