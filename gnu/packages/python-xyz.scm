@@ -15399,14 +15399,23 @@ directives.")
 (define-public python-autoflake
   (package
     (name "python-autoflake")
-    (version "1.3.1")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "autoflake" version))
        (sha256
-        (base32 "0nzr057dbmgprp4a52ymafdkdd5zp2wcqf42913xc7hhvvdbj338"))))
-    (build-system python-build-system)
+        (base32 "17lhrmz6h7pz2nald90p8gn3hhzbqwmd78819yf4b1habgf7b2y9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (invoke "python" "test_autoflake.py"))))))
+    (native-inputs
+     (list python-hatchling))
     (propagated-inputs
      (list python-pyflakes))
     (home-page "https://github.com/myint/autoflake")
