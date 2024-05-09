@@ -512,17 +512,13 @@ timestamps.")
               (sha256
                (base32
                 "189knrgxb3x21lzvqac6qlpd32308hcmpccxdlvr5wmrl46b6d1r"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "tests"
-                       ;; python-dateutil doesn't recognize America/Nuuk.
-                       ;; Remove when python-dateutil > 2.8.1.
-                       "-k" "not test_parse_tz_name_zzz")))))))
+     (list
+      #:test-flags '(list "tests"
+                          ;; python-dateutil doesn't recognize America/Nuuk.
+                          ;; Remove when python-dateutil > 2.8.1.
+                          "-k" "not test_parse_tz_name_zzz")))
     (native-inputs
      (list ;; For testing
            python-chai
