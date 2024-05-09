@@ -280,6 +280,14 @@ security standards.")
                          (setenv "USE_IP" "TRUE")
                          (setenv "IP_ADDRESS" "127.0.0.1")
 
+                         ;; This specific test is looking at performance "now
+                         ;; verify that we can quickly dump a database", and
+                         ;; we're not testing performance here (especially
+                         ;; since we're using faketime), so raise the
+                         ;; threshold
+                         (substitute* "nss/tests/dbtests/dbtests.sh"
+                           ((" -lt 5") " -lt 50"))
+
                          ;; The "PayPalEE.cert" certificate expires every six months,
                          ;; leading to test failures:
                          ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
