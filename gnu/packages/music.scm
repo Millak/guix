@@ -1856,7 +1856,7 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
 (define-public abjad-ext-nauert
   (package
     (name "abjad-ext-nauert")
-    (version "3.4")
+    (version "3.19")
     (source
      (origin
        (method git-fetch)
@@ -1865,20 +1865,10 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "05hr2lr6myzi493k8vc19cqzraxxnbdwlckwbnras19l5g5ns38x"))))
+        (base32 "0j4pf4h27jm3df0dn2rwkdx6zqcxvr7pqchbaa9rffz7q4hbakmf"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list lilypond
-           python-black
-           python-flake8
-           python-iniconfig
-           python-isort
-           python-mypy
-           python-pytest
-           python-pytest-cov
-           python-pytest-helpers-namespace
-           python-sphinx-autodoc-typehints))
+     (list lilypond python-pytest))
     (propagated-inputs
      (list abjad))
     (home-page "https://abjad.github.io")
