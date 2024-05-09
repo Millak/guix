@@ -1791,7 +1791,8 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
     (arguments
      (list
       #:test-flags
-      '(list "-k" (string-append
+      '(list "--ignore=pint/testsuite/benchmarks"
+             "-k" (string-append
                    ;; This test tries to write to $HOME/.cache/pint.
                    "not test_auto"
                    ;; Fails with "Group USCSLengthInternational already
