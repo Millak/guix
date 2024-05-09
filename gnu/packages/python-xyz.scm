@@ -18188,6 +18188,7 @@ convert an @code{.ipynb} notebook file into various static formats including:
            python-traitlets))
     (native-inputs
      (list python-coverage
+           python-jupyter-server
            python-nbval
            python-pytest
            python-pytest-cov
