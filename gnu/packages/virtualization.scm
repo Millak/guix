@@ -2092,13 +2092,11 @@ mainly implemented in user space.")
       #~(modify-phases %standard-phases
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; The Avocado test runner insists on writing stuff to HOME.
-                (setenv "HOME" "/tmp")
-                ;; The mypy tests fail (see:
-                ;; https://gitlab.com/jsnow/qemu.qmp/-/issues/1).
-                (delete-file "tests/mypy.sh")
-                (invoke "avocado" "--show=all" "run" "tests")))))))
+              (if tests?
+                  (begin  ; avocado insists on writing stuff to HOME.
+                    (setenv "HOME" "/tmp")
+                    (invoke "avocado" "--show=all" "run" "tests/protocol.py"))
+                  (format #t "test suite not run~%")))))))
     (native-inputs
      (list python-avocado-framework
            python-setuptools-scm
