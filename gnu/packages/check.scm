@@ -1994,10 +1994,10 @@ Python's @code{random.seed}.")
        (sha256
         (base32
          "11dnhxnjmh4nf1j8rnvx944ha3wg8ggrgrwdcx4c7d19xmi57n5l"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      ;; FIXME: The test suite requires 'python-flake8' and 'python-black',
+      ;; FIXME: The test suite requires 'python-pytest-virtualenv',
       ;; but that introduces a circular dependency.
       #:tests? #f
       #:phases
@@ -2011,14 +2011,10 @@ Python's @code{random.seed}.")
             (lambda _
               (let ((whl (car (find-files "dist" "\\.whl$"))))
                 (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (if tests?
-                  (invoke "pytest" "-vv")
-                  (format #t "test suite not run~%")))))))
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
     (native-inputs
-     (list python-pypa-build python-setuptools-scm python-wheel))
+     (list python-pip python-pypa-build python-pytest
+           python-setuptools python-setuptools-scm python-wheel))
     (home-page "https://github.com/pytest-dev/pytest-runner")
     (synopsis "Invoke py.test as a distutils command")
     (description
