@@ -6455,6 +6455,31 @@ beginning with @code{test} (for a test framework) or all functions beginning
 with @code{wc} (for a web service).")
     (license license:bsd-3)))
 
+(define-public ghc-language-python
+  (package
+    (name "ghc-language-python")
+    (version "0.5.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "language-python" version))
+       (sha256
+        (base32 "1mf3czvnh9582klv0c9g7pcn1wx4qjwpvhv8la6afaifv6y5lki2"))))
+    (build-system haskell-build-system)
+    (arguments
+     `(#:cabal-revision ("2"
+                         "024fn653gmxw4ndmqvg1d3lwmxbvrlllc9iw2zw0c3nkcgcv39sg")))
+    (native-inputs (list ghc-alex ghc-happy))
+    (inputs (list ghc-monads-tf ghc-utf8-string))
+    (home-page "http://github.com/bjpop/language-python")
+    (synopsis "Parse and pretty print Python code in Haskell")
+    (description
+     "@code{language-python} is a Haskell library for lexical analysis,
+parsing and pretty printing Python code.  It supports versions 2.x and 3.x of
+Python.")
+    (license license:bsd-3)
+    (properties '((upstream-name . "language-python")))))
+
 (define-public ghc-lens
   (package
     (name "ghc-lens")
