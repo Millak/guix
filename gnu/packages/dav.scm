@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,7 @@
 
 (define-module (gnu packages dav)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix licenses)
@@ -124,20 +126,12 @@ efficient syncing
              (sha256
               (base32
                "1fl21m10ghrpmkqa12g0qri99cxk9879pkb60jd4b4w2mgp8q1gx"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f                       ; the test suite is very flakey
+      #:test-flags '(list "-k" "not test_request_ssl")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-              (add-installed-pythonpath inputs outputs)
-              (setenv "DETERMINISTIC_TESTS" "true")
-              (setenv "DAV_SERVER" "radicale")
-              (setenv "REMOTESTORAGE_SERVER" "skip")
-              (if tests?
-                  (invoke "make" "test"))))
           (add-after 'unpack 'patch-version-call
             (lambda _
               (substitute* "docs/conf.py"
