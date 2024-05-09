@@ -860,21 +860,19 @@ nbshow present a single notebook in a terminal-friendly way
               (sha256
                (base32
                 "1n57nvxsc94gz9w8ymi83bjkfhfwkpmx4y14m6gjrmlqd49m1aw6"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests use git and hg, and they are sensitive to the
-             ;; exact printed output.
-             (for-each delete-file (list "tests/test-git.t"
-                                         "tests/test-hg.t"
-                                         "tests/test-status.t"
-                                         "tests/test-uninstall.t"))))
-         (add-before 'check 'set-CRAMSHELL
-           (lambda _
-             (setenv "CRAMSHELL" (which "bash")))))))
+     (list
+      ;; These tests use git and hg, and they are sensitive to the
+      ;; exact printed output.
+      #:test-flags '(map (lambda (test)
+                           (string-append "--ignore=tests/test-" test ".t"))
+                         '("git" "hg" "status" "uninstall"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-CRAMSHELL
+            (lambda _
+              (setenv "CRAMSHELL" (which "bash")))))))
     (propagated-inputs (list python-nbformat))
     (native-inputs
      (list python-pytest
