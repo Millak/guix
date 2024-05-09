@@ -1126,18 +1126,14 @@ environments.")
        (sha256
         (base32
          "1dq6f5ks3cinb355x712bls9bvv6bli6x3c43sdkqvawdw8xgv9j"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'use-unmodified-libarchive
            (lambda _
              (substitute* "setup.py"
-               (("archive_and_deps") "archive"))))
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "tests"))))))
+               (("archive_and_deps") "archive")))))))
     (propagated-inputs
      (list python-six python-tqdm))
     (inputs
