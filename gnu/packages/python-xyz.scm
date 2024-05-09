@@ -4831,7 +4831,6 @@ Python.")
     (native-inputs
      (list python-attrs
            python-coverage
-           python-pre-commit
            python-pycodestyle
            python-pydantic
            python-pytest
