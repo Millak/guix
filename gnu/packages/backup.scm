@@ -24,6 +24,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Feng Shu <tumashu@163.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1334,7 +1335,7 @@ compression parameters used by Gzip.")
        (uri (pypi-uri "borgmatic" version))
        (sha256
         (base32 "0im7kx9mq1gymid88wa6yxcif4bdqpz5lag5fp9kpm8r5k13p2sr"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases #~(modify-phases %standard-phases
@@ -1351,14 +1352,12 @@ compression parameters used by Gzip.")
                           (string-append start "'"
                                          (search-input-file inputs "bin/borg")
                                          "'")))))
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
+                   (add-before 'check 'set-path
+                     (lambda _
                          ;; Tests require the installed executable.
                          (setenv "PATH"
                                  (string-append #$output "/bin" ":"
-                                                (getenv "PATH")))
-                         (invoke "pytest")))))))
+                                                (getenv "PATH"))))))))
     (inputs (list borg
                   python-apprise
                   python-colorama
