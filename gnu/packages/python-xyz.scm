@@ -8572,22 +8572,16 @@ and integrated feature-set for programming Python effectively.")
        (sha256
         (base32
          "0yfahlqc7dsdp1js0cbv706apldnfnlbal9b53cww8n0hs40n0im"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'patch-source-shebangs 'use-absolute-file-names
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (let* ((inpts (or native-inputs inputs))
-                    (python3 (search-input-file inpts "/bin/python3")))
-               (substitute* (find-files "tests" "\\.py$")
-                 (("#!/usr/bin/env python3(\\.[0-9]+)?" _ minor-version)
-                  (string-append "#!" python3 (if (string? minor-version)
-                                                  minor-version
-                                                  "")))))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "pytest" "-vv")))))))
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* (find-files "tests" "\\.py$")
+               (("#!/usr/bin/env python3")
+                (string-append
+                 "#!" (search-input-file inputs "/bin/python3")))))))))
     (propagated-inputs
      (list python-click
            python-attrs
