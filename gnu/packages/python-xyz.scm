@@ -9469,16 +9469,12 @@ parse and apply unified diffs.  It has features such as:
        (sha256
         (base32
          "0k2z3g4s3w39h1nd293542hl9qv55j29gcr3bkia0rr3ldsppnxh"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-v" "numpydoc/tests"
-                       ;; TODO: unclear why these fail.
-                       "-k" "not test_MyClass and not test_my_function")))))))
+     (list #:test-flags
+           '(list "numpydoc/tests"
+                  ;; TODO: unclear why these fail.
+                  "-k" "not test_MyClass and not test_my_function")))
     (propagated-inputs (list python-jinja2 python-sphinx))
     (native-inputs (list python-matplotlib python-pytest python-pytest-cov))
     (home-page "https://pypi.org/project/numpydoc/")
