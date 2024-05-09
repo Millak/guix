@@ -1037,15 +1037,7 @@ to the OVHcloud APIs.")
        (uri (pypi-uri "cbor2" version))
        (sha256
         (base32 "15y78xcc3zkmvj1mdzz8gyhf3apbl91073kwhzbjk5abc1civwlw"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-pytest-cov python-setuptools-scm))
     (home-page "https://github.com/agronholm/cbor2")
     (synopsis "Concise Binary Object Representation (CBOR) (de)serializer")
