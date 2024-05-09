@@ -10255,9 +10255,8 @@ where key might be occurred more than once in the container.")
         (method url-fetch)
         (uri (pypi-uri "orderedmultidict" version))
         (sha256
-          (base32
-            "1bc2v0yflsxjyyjx4q9wqx0j3bvzcw9z87d5pz4iqac7bsxhn1q4"))))
-    (build-system python-build-system)
+          (base32 "1bc2v0yflsxjyyjx4q9wqx0j3bvzcw9z87d5pz4iqac7bsxhn1q4"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-six))
     (native-inputs
