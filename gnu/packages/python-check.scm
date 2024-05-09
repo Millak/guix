@@ -1606,18 +1606,16 @@ service processes for your tests with pytest.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1wqkr3g5gmqdxmhzfsxbwy8pm3cadaj6a8cxq58w9bacly4hqbh0"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (substitute* "setup.cfg"
-                 ((".*timeout.*") ""))
-               ;; Make the installed plugin discoverable by Pytest.
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (substitute* "setup.cfg"
+                  ((".*timeout.*") ""))))))))
     (native-inputs
      (list python-pydantic python-pytest python-pytest-isort))
     (home-page "https://github.com/samuelcolvin/pytest-toolbox")
