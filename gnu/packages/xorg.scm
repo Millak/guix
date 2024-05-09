@@ -66,6 +66,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages aidc)
@@ -94,6 +95,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages libedit)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages m4)
@@ -1724,6 +1726,45 @@ network-transparent printing system.")
     (description
      "This is an internal package that provides a build tool to
 generate code for the @code{python-xcbffib} package.")
+    (license license:expat)))
+
+(define-public python-xcffib
+  (package
+    (name "python-xcffib")
+    (version "1.5.0")
+    (source (package-source xcffibgen))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list pkg-config which xcb-proto xcffibgen))
+    (inputs
+     (list libxcb))
+    (propagated-inputs
+     (list python-cffi ; used at run time
+           python-six))
+    (arguments
+     (list
+      ;; Tests seem to require version 3.12 of Python.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'generate-bindings
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("^GEN=.*")
+                 (format #f "GEN=~a~%"
+                         (search-input-file inputs "/bin/xcffibgen"))))
+              (invoke "make" "xcffib")))
+          (add-before 'build 'fix-libxcb-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "xcffib/__init__.py"
+                (("ctypes\\.util\\.find_library\\(\"xcb\"\\)")
+                 (format #f "~s"
+                         (search-input-file inputs "/lib/libxcb.so.1")))))))))
+    (home-page "https://github.com/tych0/xcffib")
+    (synopsis "XCB Python bindings")
+    (description
+     "Xcffib is a replacement for xpyb, an XCB Python bindings.  It adds
+support for Python 3 and PyPy.  It is based on cffi.")
     (license license:expat)))
 
 (define-public randrproto
