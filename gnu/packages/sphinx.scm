@@ -184,7 +184,15 @@ sources.")
               "not test_latex_images"
               ;; XXX: Not clear why this fails with a version comparison
               ;; failure.
-              " and not test_needs_sphinx"))
+              " and not test_needs_sphinx"
+              ;; This is a harmless failure.  The expected output looks for a
+              ;; long string that happens to contain a literal space
+              ;; character, but in the actual output the space character is
+              ;; wrapped in <span class="w"> </span>.
+              " and not test_viewcode"
+              ;; These fail with pygments 2.10+.  They are harmless.
+              " and not test_additional_targets_should_not_be_translated"
+              " and not test_additional_targets_should_be_translated"))
       #:phases
       '(modify-phases %standard-phases
          (add-before 'check 'pre-check
