@@ -307,16 +307,7 @@ are useful when writing automated tests in Python.")
        (uri (pypi-uri "cucumber-tag-expressions" version))
        (sha256
         (base32 "0q7rn4l4ppjd1zsglr37ccc5xccg4iigaw827282zfzfsvzda573"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     ;; Ignore the configuration file since we don't
-                     ;; need HTML reports, etc.
-                     (invoke "pytest" "-c" "/dev/null" "-vv")))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-invoke python-pathpy python-pytest))
     (home-page "https://github.com/cucumber/tag-expressions-python")
