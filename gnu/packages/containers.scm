@@ -410,9 +410,6 @@ It can be used with QEMU, Hyperkit, Hyper-V and User-Mode Linux.
 The binary is called @command{gvproxy}.")
     (license license:asl2.0)))
 
-;; For podman to work, the user needs to run
-;; `sudo mount -t cgroup2 none /sys/fs/cgroup`
-
 (define-public podman
   (package
     (name "podman")
