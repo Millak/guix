@@ -217,7 +217,7 @@ chk_init_sys()
         _msg "${INF}init system is: sysv-init"
         INIT_SYS="sysv-init"
         return 0
-    elif [[ $(openrc --version 2>/dev/null) =~ \(OpenRC\) ]]; then
+    elif [[ $(openrc --version 2>/dev/null) =~ \(OpenRC ]]; then
         _msg "${INF}init system is: OpenRC"
         INIT_SYS="openrc"
         return 0
