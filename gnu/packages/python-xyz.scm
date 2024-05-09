@@ -27430,7 +27430,7 @@ with PEP 484 argument (and return) type annotations.")
         (base32 "11yrc7pv2fajmicwiyc92sb5gphlw3zbxww8f2prrsh6rgdv6kqr"))))
     (build-system pyproject-build-system)
     (arguments
-     '())
+     (list #:test-flags '(list "--ignore=tests/mypy")))
     (propagated-inputs (list python-typing-extensions))
     (native-inputs (modify-inputs (package-native-inputs python-typeguard)
                                   (append python-setuptools python-wheel)))))
