@@ -32649,18 +32649,10 @@ intended for validating data coming into Python as JSON, YAML, etc.")
        (sha256
         (base32
          "0h1naik558qh48gx2iyy0a0khvw5fz0in69y84mbrhsm9nq7w3bm"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 (invoke "pytest" "-vv" "-k"
-                         ;; These tests fail because no EDITOR is in PATH.
-                         "not test_find_editor_not_specified \
-and not test_transcript")
-                 (format #t "test suite not run~%")))))))
+     (list #:test-flags '(list "-k" "not test_find_editor_not_specified \
+and not test_transcript")))
     (propagated-inputs
      (list python-attrs python-colorama python-pyperclip python-wcwidth))
     (native-inputs
