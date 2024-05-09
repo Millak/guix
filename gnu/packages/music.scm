@@ -1831,7 +1831,7 @@ typographic detail of symbols on the page.")
 (define-public abjad-ext-rmakers
   (package
     (name "abjad-ext-rmakers")
-    (version "3.4")
+    (version "3.19")
     (source
      (origin
        (method git-fetch)
@@ -1840,20 +1840,10 @@ typographic detail of symbols on the page.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0wma9vzn42h1rhbzh2dwjsrzjhsi1yqdgn6wx1dfk78vaki6prd8"))))
+        (base32 "1y8s55b4mlsigm0xkk6qjpp08c75rv0swvjp0lj3cs6lgqdjxdjl"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list lilypond
-           python-black
-           python-flake8
-           python-iniconfig
-           python-isort
-           python-mypy
-           python-pytest
-           python-pytest-cov
-           python-pytest-helpers-namespace
-           python-sphinx-autodoc-typehints))
+     (list lilypond python-pytest))
     (propagated-inputs
      (list abjad))
     (home-page "https://abjad.github.io")
