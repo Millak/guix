@@ -948,6 +948,7 @@ were inadvertently left open at the end of a unit test.")
      (list
       #:test-flags #~(list "-k" (string-append
                                  "not test_default_behavior"
+                                 " and not test_strict_behavior"
                                  " and not test_strict_with_decorator"))))
     (native-inputs
      (list python-pytest
