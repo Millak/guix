@@ -7730,7 +7730,7 @@ interpreter written in pure Python.")
 (define-public python-http-ece
   (package
     (name "python-http-ece")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
       (origin
         (method git-fetch)
@@ -7740,7 +7740,7 @@ interpreter written in pure Python.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0bp4cc0xc123i72h80ax3qz3ixfwx3j7pw343kc7i6kdvfi8klx7"))))
+          "11v9cpmx4jc0nk25af96plzjz3mg1ysm1m001nx6jns06hil1gpy"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
