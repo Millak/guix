@@ -26,6 +26,7 @@
 (define-module (gnu packages containers)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix modules)
   #:use-module (gnu packages)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -388,6 +389,9 @@ configure network interfaces in Linux containers.")
      (list
       #:make-flags `(list ,(string-append "GIT_VERSION=v" version))
       #:test-target "test"
+      #:imported-modules
+      (source-module-closure `(,@%gnu-build-system-modules
+                               (guix build go-build-system)))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
@@ -401,7 +405,9 @@ configure network interfaces in Linux containers.")
               (invoke "rm" "-r" "test")))
           (replace 'install
             (lambda _
-              (install-file "bin/gvproxy" (string-append #$output "/bin")))))))
+              (install-file "bin/gvproxy" (string-append #$output "/bin"))))
+          (add-after 'install 'remove-go-references
+            (@@ (guix build go-build-system) remove-go-references)))))
     (native-inputs (list go-1.20))
     (home-page "https://github.com/containers/gvisor-tap-vsock")
     (synopsis "Network stack for virtualization based on gVisor")
