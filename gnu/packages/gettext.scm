@@ -317,3 +317,15 @@ from Markdown files.")
 more interestingly, the maintenance of translations) using gettext tools on
 areas where they were not expected like documentation.")
     (license gpl2+)))
+
+(define-public po4a-minimal
+  (package/inherit po4a
+    (native-inputs
+     ;; Remove test dependencies, primarily to reduce the size of the
+     ;; dependency graph of the ‘guix’ package.
+     (modify-inputs (package-native-inputs po4a)
+       (delete "docbook-xml" "perl-test-pod" "texlive-updmap.cfg")))
+    (arguments
+     (substitute-keyword-arguments (package-arguments po4a)
+       ((#:tests? _ #t) #f)))
+    (properties '((hidden? . #t)))))
