@@ -1155,9 +1155,12 @@ enabled web server.")
        (sha256
         (base32
          "049dlay21f4bccig31fkbzq2m8v0h6g63p1cn3dxay9q3h0mzgs0"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      ;; This test requires to download an objects.inv file
+      ;; from the Sphinx website.
+      #:test-flags '(list "-k" "not test_format_annotation")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'pretend-version
@@ -1165,14 +1168,7 @@ enabled web server.")
             ;; without the git metadata available, the version string is set to
             ;; '0.0.0'.
             (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "tests"
-                        ;; This test requires to download an objects.inv file
-                        ;; from the Sphinx website.
-                        "-k" "not test_format_annotation")))))))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs (list python-sphinx))
     (native-inputs
      (list python-nptyping
