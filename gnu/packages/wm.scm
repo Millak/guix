@@ -683,11 +683,11 @@ subscribe to events.")
     (name "qtile")
     (version "0.23.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "qtile" version))
-        (sha256
-          (base32 "1v8rxm2xg2igxv6gwa78wrkxzgfxmxfgflbjdp4fm7cxjdx3zrpa"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "qtile" version))
+       (sha256
+        (base32 "1v8rxm2xg2igxv6gwa78wrkxzgfxmxfgflbjdp4fm7cxjdx3zrpa"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -697,26 +697,28 @@ subscribe to events.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "libqtile/pangocffi.py"
-               (("^gobject = ffi.dlopen.*")
-                 (string-append "gobject = ffi.dlopen(\""
-                  (assoc-ref inputs "glib") "/lib/libgobject-2.0.so.0\")\n"))
-                (("^pango = ffi.dlopen.*")
-                 (string-append "pango = ffi.dlopen(\""
-                  (assoc-ref inputs "pango") "/lib/libpango-1.0.so.0\")\n"))
-                (("^pangocairo = ffi.dlopen.*")
-                 (string-append "pangocairo = ffi.dlopen(\""
-                  (assoc-ref inputs "pango") "/lib/libpangocairo-1.0.so.0\")\n")))))
-       (add-after 'install 'install-xsession
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (xsessions (string-append out "/share/xsessions"))
-                    (qtile (string-append out "/bin/qtile start")))
-               (mkdir-p xsessions)
-               (copy-file "resources/qtile.desktop" (string-append xsessions "/qtile.desktop"))
-               (substitute* (string-append xsessions "/qtile.desktop")
-                 (("qtile start") qtile)))))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "libqtile/pangocffi.py"
+                (("^(gobject = ffi.dlopen).*" all def)
+                 (format #f "~a(~s)~%" def
+                         (search-input-file inputs "/lib/libgobject-2.0.so.0")))
+                (("^(pango = ffi.dlopen).*" all def)
+                 (format #f "~a(~s)~%" def
+                         (search-input-file inputs "/lib/libpango-1.0.so.0")))
+                (("^(pangocairo = ffi.dlopen).*" all def)
+                 (format #f "~a(~s)~%" def
+                         (search-input-file
+                          inputs "/lib/libpangocairo-1.0.so.0"))))))
+          (add-after 'install 'install-xsessions
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (xsessions (string-append out "/share/xsessions"))
+                     (qtile (string-append out "/bin/qtile start")))
+                (mkdir-p xsessions)
+                (copy-file "resources/qtile.desktop"
+                           (string-append xsessions "/qtile.desktop"))
+                (substitute* (string-append xsessions "/qtile.desktop")
+                  (("qtile start") qtile)))))
           (add-before 'check 'pre-check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -725,17 +727,17 @@ subscribe to events.")
                 (setenv "DISPLAY" ":1")
                 (setenv "XDG_CACHE_HOME" "/tmp")))))))
     (inputs
-      (list glib pango pulseaudio))
+     (list glib pango pulseaudio))
     (propagated-inputs
-      (list python-cairocffi
-            python-cffi
-            python-dateutil
-            python-dbus-next
-            python-iwlib
-            python-keyring
-            python-mpd2
-            python-pyxdg
-            python-xcffib))
+     (list python-cairocffi
+           python-cffi
+           python-dateutil
+           python-dbus-next
+           python-iwlib
+           python-keyring
+           python-mpd2
+           python-pyxdg
+           python-xcffib))
     (native-inputs
       (list pkg-config
             python-flake8
