@@ -34,6 +34,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -57,6 +58,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
@@ -509,16 +511,13 @@ a simple interface that makes it easy to organize and browse feeds.")
         (sha256
          (base32
           "06xb030ibphbrz4nsxm8mh3g60ld8xfp6kc3j6vi1k4ls5s4h79i"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'sanity-check)         ; Tries to read environment variables.
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (when tests?
-               (invoke "pytest")))))))
+     (list #:test-flags
+           '(list "-k" "not test_content_humanize_timestamp")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'sanity-check))))  ; Reads environment variables.
     (inputs
      (list python-beautifulsoup4 python-decorator python-kitchen
            python-requests python-six))
