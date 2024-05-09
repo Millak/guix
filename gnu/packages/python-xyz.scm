@@ -20801,17 +20801,6 @@ checking library.")
             python-tomli
             python-setuptools
             python-wheel))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key outputs tests? #:allow-other-keys)
-             (when tests?
-               ;; Make installed executable available for running the tests.
-               (setenv "PATH"
-                       (string-append (assoc-ref outputs "out") "/bin"
-                                      ":" (getenv "PATH")))
-               (invoke "pytest" "-vv")))))))
     (home-page "https://github.com/codespell-project/codespell/")
     (synopsis "Spellchecker for code")
     (description "Codespell fixes common misspellings in text files.
