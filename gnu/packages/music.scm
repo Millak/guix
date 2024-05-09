@@ -1797,8 +1797,7 @@ listeners answer questions about music quickly and simply.")
 (define-public abjad
   (package
     (name "abjad")
-    ;; XXX: The latest version which supports current Guix's Python 3.9.9.
-    (version "3.4")
+    (version "3.19")
     (source
      (origin
        (method git-fetch)
@@ -1807,36 +1806,12 @@ listeners answer questions about music quickly and simply.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s63vk9fifp0im9c31kb9ck39mbaxhrls993d8fvg0nkg41z1jnz"))))
+        (base32 "1cgcnmwzxx2hr21pqm1hbsknpad748yw3gf7jncsb3w1azhjypzm"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX. Permit newer version of uqbar, remove for >3.4. Remove in
-          ;; the next update.
-          (add-after 'unpack 'loosen-requirements
-            (lambda _
-              (substitute* "setup.py"
-                ((", <0\\.5\\.0") ""))))
-          ;; FIXME: Check why it's failing with this: Note: compilation failed
-          ;; and \version outdated, did you update input syntax with
-          ;; convert-ly?
-          (add-before 'check 'disable-failing-tests
-            (lambda _
-              (substitute* "tests/test_ext_sphinx.py"
-                (("def test_ext_sphinx_01") "def __off_test_ext_sphinx_01")))))))
     (inputs
      (list lilypond))
     (native-inputs
-     (list python-flake8
-           python-isort
-           python-mypy
-           python-pytest
-           python-pytest-cov
-           python-pytest-helpers-namespace
-           python-six
-           python-sphinx-autodoc-typehints))
+     (list python-pytest))
     (propagated-inputs
      (list python-quicktions
            python-ply
