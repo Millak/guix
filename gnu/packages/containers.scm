@@ -105,7 +105,7 @@ Container Runtime fully written in C.")
 (define-public conmon
   (package
     (name "conmon")
-    (version "2.0.31")
+    (version "2.1.11")
     (source
      (origin
        (method git-fetch)
@@ -113,7 +113,7 @@ Container Runtime fully written in C.")
              (url "https://github.com/containers/conmon")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1cxklcihb2i4ywli0fxafkp2gi1x831r37z7spnigaj6pzj1517w"))
+        (base32 "1ax13n2npz5b7qa7f4glvnfq9biz220gyb8prh8s0jrvz6z2j221"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
