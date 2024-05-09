@@ -15377,15 +15377,7 @@ TODO notes checker plugin for flake8.")
         (uri (pypi-uri "flake8-isort" version))
         (sha256
           (base32 "0gk4q504v42hdzpkndczc0kkwnr85jn1h5pvb561jh65p91r6qyl"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "run_tests.py")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-flake8 python-isort))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/gforcada/flake8-isort")
