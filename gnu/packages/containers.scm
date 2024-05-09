@@ -580,16 +580,16 @@ being rootless and not requiring any daemon to be running.")
 (define-public buildah
   (package
     (name "buildah")
-    (version "1.29.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/containers/buildah")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1mcqkz68fjccdla1bgxw57w268a586brm6x28fcm6x425ah0w07h"))))
+    (version "1.35.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containers/buildah")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "07hr2cfp4kblnmva02ap97id5nzhbqigdfvx7c8nyrkfzw0340n0"))
+       (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/containers/buildah/cmd/buildah"
