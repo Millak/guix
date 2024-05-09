@@ -1160,8 +1160,8 @@ extracting, creating, and converting between formats.")
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/conda/conda")
-              (commit version)))
+             (url "https://github.com/conda/conda")
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
@@ -1208,60 +1208,60 @@ extracting, creating, and converting between formats.")
                 "test_make_entry_point")
                " and not ")))
       #:phases
-     #~(modify-phases %standard-phases
-         ;; The default version of pytest does not support these options.
-         (add-after 'unpack 'use-older-pytest
-           (lambda _
-             (substitute* "setup.cfg"
-               (("--xdoctest-.*") ""))))
-         (add-after 'unpack 'fix-ruamel-yaml-dependency
-           (lambda _
-             (substitute* "setup.py"
-               (("ruamel_yaml_conda") "ruamel.yaml"))))
-         (add-after 'unpack 'correct-python-executable-name
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((python (assoc-ref inputs "python-wrapper")))
-               (substitute* "conda/core/initialize.py"
-                 (("python_exe = join")
-                  (format #f "python_exe = \"~a/bin/python\" #"
-                          python))))))
-         (add-after 'unpack 'do-not-use-python-root-as-prefix
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (python (assoc-ref inputs "python-wrapper")))
-               (substitute* "tests/core/test_initialize.py"
-                 (("\"\"\"\\) % conda_prefix")
-                  (format #f "\"\"\") % ~s" python))
-                 (("CONDA_PYTHON_EXE \"%s\"' % join\\(conda_prefix")
-                  (format #f "CONDA_PYTHON_EXE \"%s\"' % join(~s"
-                          python))
-                 (("conda_prefix = abspath\\(sys.prefix\\)")
-                  (format #f "conda_prefix = abspath(~s)" out)))
-               (substitute* "conda/base/context.py"
-                 (("os.chdir\\(sys.prefix\\)")
-                  (format #f "os.chdir(~s)" out))
-                 (("sys.prefix, '.condarc'")
-                  (format #f "~s, '.condarc'" out))
-                 (("return abspath\\(sys.prefix\\)")
-                  (format #f "return abspath(~s)" out))
-                 (("os.path.join\\(sys.prefix, bin_dir, exe\\)")
-                  (format #f "\"~a/bin/conda\"" out))
-                 (("'CONDA_EXE', sys.executable")
-                  (format #f "'CONDA_EXE', \"~a/bin/conda\"" out))))))
-         (add-before 'build 'create-version-file
-           (lambda _
-             (with-output-to-file "conda/.version"
-               (lambda () (display #$version)))))
-         (add-after 'create-entrypoints 'init
-           ;; This writes a whole bunch of shell initialization files to the
-           ;; prefix directory.  Many features of conda can only be used after
-           ;; running "conda init".
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (setenv "HOME" "/tmp")
-             (invoke (string-append (assoc-ref outputs "out")
-                                    "/bin/conda")
-                     "init"))))))
+      #~(modify-phases %standard-phases
+          ;; The default version of pytest does not support these options.
+          (add-after 'unpack 'use-older-pytest
+            (lambda _
+              (substitute* "setup.cfg"
+                (("--xdoctest-.*") ""))))
+          (add-after 'unpack 'fix-ruamel-yaml-dependency
+            (lambda _
+              (substitute* "setup.py"
+                (("ruamel_yaml_conda") "ruamel.yaml"))))
+          (add-after 'unpack 'correct-python-executable-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((python (assoc-ref inputs "python-wrapper")))
+                (substitute* "conda/core/initialize.py"
+                  (("python_exe = join")
+                   (format #f "python_exe = \"~a/bin/python\" #"
+                           python))))))
+          (add-after 'unpack 'do-not-use-python-root-as-prefix
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (python (assoc-ref inputs "python-wrapper")))
+                (substitute* "tests/core/test_initialize.py"
+                  (("\"\"\"\\) % conda_prefix")
+                   (format #f "\"\"\") % ~s" python))
+                  (("CONDA_PYTHON_EXE \"%s\"' % join\\(conda_prefix")
+                   (format #f "CONDA_PYTHON_EXE \"%s\"' % join(~s"
+                           python))
+                  (("conda_prefix = abspath\\(sys.prefix\\)")
+                   (format #f "conda_prefix = abspath(~s)" out)))
+                (substitute* "conda/base/context.py"
+                  (("os.chdir\\(sys.prefix\\)")
+                   (format #f "os.chdir(~s)" out))
+                  (("sys.prefix, '.condarc'")
+                   (format #f "~s, '.condarc'" out))
+                  (("return abspath\\(sys.prefix\\)")
+                   (format #f "return abspath(~s)" out))
+                  (("os.path.join\\(sys.prefix, bin_dir, exe\\)")
+                   (format #f "\"~a/bin/conda\"" out))
+                  (("'CONDA_EXE', sys.executable")
+                   (format #f "'CONDA_EXE', \"~a/bin/conda\"" out))))))
+          (add-before 'build 'create-version-file
+            (lambda _
+              (with-output-to-file "conda/.version"
+                (lambda () (display #$version)))))
+          (add-after 'create-entrypoints 'init
+            ;; This writes a whole bunch of shell initialization files to the
+            ;; prefix directory.  Many features of conda can only be used after
+            ;; running "conda init".
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (add-installed-pythonpath inputs outputs)
+              (setenv "HOME" "/tmp")
+              (invoke (string-append (assoc-ref outputs "out")
+                                     "/bin/conda")
+                      "init"))))))
     (inputs
      (list python-wrapper))
     (propagated-inputs
