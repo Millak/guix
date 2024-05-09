@@ -5041,14 +5041,7 @@ matplotlib plots or supply colors for a web application.")
        (sha256
         (base32
          "07smqnzc9km7sbvxfyx4gdm9njrx58x8grdw6gs4gva81rk3rd10"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "-c" "/dev/null")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-six python-parse))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/jenisys/parse_type")
