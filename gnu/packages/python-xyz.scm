@@ -12123,17 +12123,10 @@ enforced method signatures and consistent documentation.")
        (uri (pypi-uri "jaraco.classes" version))
        (sha256
         (base32 "0d6g7qvfv1jlzbzh6asprqdblqd59grvlvr3nwbdqdqrmwlbfm7d"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Do not test the myproject.toml build as it tries to pull
-                ;; dependencies from the Internet.
-                (invoke "pytest" "-vv" "-k" "not project")))))))
+     (list  ; Do not test the myproject.toml build as it pulls dependencies.
+      #:test-flags '(list "-k" "not project")))
     (native-inputs
      (list python-pytest
            python-pytest-black
