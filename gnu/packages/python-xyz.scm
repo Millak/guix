@@ -6748,18 +6748,13 @@ templates.  A format string can be provided to control the output.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags '(list "pypugjs/testsuite/")
       #:phases #~(modify-phases %standard-phases
-                   ;; Our pyramid is outdated and pyramid-mako is not packaged.
                    (add-after 'unpack 'disable-pyramid
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       (substitute* "setup.py"
-                         (("'pyramid")
-                          "#'pyramid"))))
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (invoke "python" "-m" "pytest" "-v"
-                                 "pypugjs/testsuite/")))))))
+                     (lambda _
+                       ;; pyramid is outdated and pyramid-mako is unpackaged.
+                       (substitute* "setup.cfg"
+                         (("'(pyramid|pyramid-mako)[^']*',") "")))))))
     (native-inputs (list python-coverage
                          python-django
                          python-jinja2
