@@ -10226,14 +10226,7 @@ e.g. copy examples, fetch data, etc.")
        (sha256
         (base32
          "1kjrxav572j45xvr1iy60zb2g8zqvrinzdkl4ax36js4vczckl8d"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "pytest" "-vv")
-                          (format #t "test suite not run~%")))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-cov))
     (home-page "https://github.com/aio-libs/multidict/")
