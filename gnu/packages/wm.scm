@@ -64,7 +64,7 @@
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Jonathan Brielamier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Vessel Wave <vesselwave@disroot.org>
-;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023, 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
@@ -107,6 +107,7 @@
   #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
@@ -680,19 +681,22 @@ subscribe to events.")
 (define-public qtile
   (package
     (name "qtile")
-    (version "0.18.1")
+    (version "0.23.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "qtile" version))
         (sha256
-          (base32 "14hb26xkza7brvkd4276j60mxd3zsas72ih6y0cq3j060izm1865"))))
-    (build-system python-build-system)
+          (base32 "1v8rxm2xg2igxv6gwa78wrkxzgfxmxfgflbjdp4fm7cxjdx3zrpa"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; Tests require Xvfb and writable temp/cache space
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
+     (list
+      ;; A lot of tests fail despite Xvfb and writable temp/cache space.
+      #:tests? #f
+      #:test-flags '("--ignore=test/widgets/test_widget_init_configure.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "libqtile/pangocffi.py"
                (("^gobject = ffi.dlopen.*")
@@ -712,7 +716,14 @@ subscribe to events.")
                (mkdir-p xsessions)
                (copy-file "resources/qtile.desktop" (string-append xsessions "/qtile.desktop"))
                (substitute* (string-append xsessions "/qtile.desktop")
-                 (("qtile start") qtile))))))))
+                 (("qtile start") qtile)))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1")
+                (setenv "XDG_CACHE_HOME" "/tmp")))))))
     (inputs
       (list glib pango pulseaudio))
     (propagated-inputs
@@ -729,9 +740,11 @@ subscribe to events.")
       (list pkg-config
             python-flake8
             python-pep8-naming
-            python-psutil
+            python-pytest
             python-pytest-cov
-            python-setuptools-scm))
+            python-psutil
+            python-setuptools-scm
+            xorg-server-for-tests))
     (home-page "http://qtile.org")
     (synopsis "Hackable tiling window manager written and configured in Python")
     (description "Qtile is simple, small, and extensible.  It's easy to write
