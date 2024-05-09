@@ -9821,7 +9821,7 @@ persistent over reboots.")
 (define-public libbpf
   (package
     (name "libbpf")
-    (version "0.8.1")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -9831,7 +9831,7 @@ persistent over reboots.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zzpkk4x3f20483dzw43b3ml03d63vvkmqf4j8y3b61b67wm59bm"))))
+         "1d0bx4bmn80nkdh0dqjfwq6j37is3qwl49cjvx4yxb4vrxq3x05x"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -9840,12 +9840,37 @@ persistent over reboots.")
       #~(list (string-append "PREFIX=" #$output)
               (string-append "LIBDIR=$(PREFIX)/lib")
               (string-append "CC=" #$(cc-for-target)))
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'configure)
-                   (add-before 'build 'pre-build
-                     (lambda _
-                       (chdir "src"))))))
-    (native-inputs (list pkg-config))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'pre-build
+            (lambda _
+              (chdir "src")))
+          (add-after 'install 'install-linux-bpf-headers
+            ;; Workaround users such as 'dwarves' requiring btf_enum64
+            ;; definition from the kernel Linux >= 6 headers (see:
+            ;; https://github.com/acmel/dwarves/issues/49).
+            ;; TODO: Remove once our 'linux-libre-headers' package is
+            ;; upgraded to a >= 6 release.
+            (lambda _
+              (let ((linux-libre-headers #$(this-package-native-input
+                                            "linux-libre-headers")))
+                (for-each (lambda (f)
+                            (install-file (string-append linux-libre-headers
+                                                         "/include/" f)
+                                          (string-append #$output "/include/"
+                                                         (dirname f))))
+                          ;; This list contains btf.h and its transitive
+                          ;; dependencies.
+                          (list "asm/posix_types.h"
+                                "asm/types.h"
+                                "asm-generic/types.h"
+                                "asm-generic/int-ll64.h"
+                                "linux/btf.h"
+                                "linux/posix_types.h"
+                                "linux/stddef.h"
+                                "linux/types.h"))))))))
+    (native-inputs (list linux-libre-headers-6.8 pkg-config))
     (propagated-inputs (list elfutils zlib)) ;in Requires.private of libbpf.pc
     (home-page "https://github.com/libbpf/libbpf")
     (synopsis "BPF CO-RE (Compile Once – Run Everywhere)")
