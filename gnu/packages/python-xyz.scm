@@ -20854,7 +20854,7 @@ representation.")
 (define-public python-rich
   (package
     (name "python-rich")
-    (version "13.7.0")
+    (version "13.7.1")
     (source
       (origin
         ;; There are no tests in the PyPI tarball.
@@ -20865,7 +20865,7 @@ representation.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0qyhw2vvk17qdmfrmi45z4dd0fkwx3l2qrf3iy0yc2y7pfgrmg9g"))))
+          "0jvkcp473c0icbb8md3grc3285j2cy0z0swxgk2g67d9n0zfdfzc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
