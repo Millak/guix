@@ -2884,60 +2884,36 @@ style test suites, summarizing their results, and providing indication of
 failures.")
     (license license:ncsa)))
 
-;;; This is marked as a bootstrap package because it propagates bootstrapped
-;;; versions of jaraco-context and jaraco-functools.
-(define-public python-pytest-enabler-bootstrap
-  (hidden-package
-   (package
-     (name "python-pytest-enabler-bootstrap")
-     (version "1.2.1")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pytest-enabler" version))
-        (sha256
-         (base32 "023ymm0r2gpn5q7aikvx567s507j0zk46w41w6gxb69c688zgs73"))))
-     (build-system python-build-system)
-     (arguments (list #:tests? #f))
-     (propagated-inputs
-      (list python-jaraco-context-bootstrap
-            python-jaraco-functools-bootstrap
-            python-toml))
-     (native-inputs (list python-setuptools-scm))
-     (home-page "https://github.com/jaraco/pytest-enabler")
-     (synopsis "Enable installed pytest plugins")
-     (description "Enable installed pytest plugins")
-     (license license:expat))))
-
 (define-public python-pytest-enabler
-  (package/inherit python-pytest-enabler-bootstrap
-    (arguments
-     (substitute-keyword-arguments
-       (strip-keyword-arguments
-         '(#:tests?)
-         (package-arguments python-pytest-enabler-bootstrap))
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (invoke "python" "-m" "pytest" "-vv" "tests"))))))))
+  (package
+    (name "python-pytest-enabler")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-enabler" version))
+       (sha256
+        (base32 "023ymm0r2gpn5q7aikvx567s507j0zk46w41w6gxb69c688zgs73"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f
+                     #:test-flags '(list "tests")))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-pytest-enabler-bootstrap)
-       (replace "python-jaraco-context-bootstrap" python-jaraco-context)
-       (replace "python-jaraco-functools-bootstrap" python-jaraco-functools)))
-    (native-inputs
-     (modify-inputs (package-native-inputs python-pytest-enabler-bootstrap)
-       (append python-pytest
-               python-pytest-black
-               python-pytest-checkdocs
-               python-pytest-cov
-               python-pytest-flake8
-               python-pytest-mypy
-               python-types-toml)))
-    (properties (alist-delete 'hidden?
-                              (package-properties
-                               python-pytest-enabler-bootstrap)))))
+     (list python-jaraco-context
+           python-jaraco-functools
+           python-toml))
+    (native-inputs (list python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-flake8
+                         python-pytest-mypy
+                         python-setuptools
+                         python-setuptools-scm
+                         python-types-toml))
+    (home-page "https://github.com/jaraco/pytest-enabler")
+    (synopsis "Enable installed pytest plugins")
+    (description "Enable installed pytest plugins")
+    (license license:expat)))
 
 (define-public python-pytest-freezegun
   (package

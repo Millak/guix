@@ -12125,7 +12125,6 @@ enforced method signatures and consistent documentation.")
            python-pytest-black
            python-pytest-checkdocs
            python-pytest-cov
-           python-pytest-enabler-bootstrap ;OK since not propagated
            python-pytest-flake8
            python-pytest-mypy
            python-setuptools-scm
@@ -12200,99 +12199,72 @@ WeightedLookup: A specialized RangeMap for selecting an item by weights.
 @end itemize")
     (license license:expat)))
 
-;;; Variant used to break a cycle with python-pytest-enabler.
-(define-public python-jaraco-context-bootstrap
-  (hidden-package
-   (package
-     (name "python-jaraco-context-bootstrap")
-     (version "4.1.1")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "jaraco.context" version))
-        (sha256
-         (base32 "0hbjm1rpxf4pzmbdp9rh3ali4zqnlcr8m97bhh1nizxvzcpxim7h"))))
-     (build-system pyproject-build-system)
-     (arguments (list #:tests? #f))
-     (native-inputs (list python-setuptools-scm))
-     (home-page "https://github.com/jaraco/jaraco.context")
-     (synopsis "Context managers Python library")
-     (description "This Python library provides context managers-related
-procedures.")
-     (license license:expat))))
-
 (define-public python-jaraco-context
-  (package/inherit python-jaraco-context-bootstrap
+  (package
     (name "python-jaraco-context")
+    (version "4.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco.context" version))
+       (sha256
+        (base32 "0hbjm1rpxf4pzmbdp9rh3ali4zqnlcr8m97bhh1nizxvzcpxim7h"))))
+    (build-system pyproject-build-system)
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments python-jaraco-context-bootstrap)
-       ((#:tests? _ #f)
-        (not (%current-target-system)))
-       ;; Do not test the myproject.toml build as it pulls dependencies.
-       ((#:test-flags test-flags '())
-        '(list "-k" "not project"))))
+     (list #:tests? (not (%current-target-system))
+           ;; Do not test the myproject.toml build as it pulls dependencies.
+           #:test-flags '(list "-k" "not project")))
     (native-inputs
-     (modify-inputs
-         (package-native-inputs python-jaraco-context-bootstrap)
-       (append python-pytest
-               python-pytest-black
-               python-pytest-checkdocs
-               python-pytest-cov
-               python-pytest-enabler-bootstrap ;OK since not propagated
-               python-pytest-flake8
-               python-pytest-mypy)))
-    (properties (alist-delete 'hidden? (package-properties
-                                        python-jaraco-context-bootstrap)))))
-
-;;; Variant used to break a cycle with python-pytest-enabler.
-(define-public python-jaraco-functools-bootstrap
-  (hidden-package
-   (package
-     (name "python-jaraco-functools-bootstrap")
-     (version "3.5.0")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "jaraco.functools" version))
-        (sha256
-         (base32 "186xqzs3bqhjwajnprxy3sc3h0w5vdld8spc1dxjnn9720yykq1i"))))
-     (build-system pyproject-build-system)
-     (arguments (list #:tests? #f))
-     (native-inputs (list python-setuptools-scm))
-     (propagated-inputs (list python-more-itertools))
-     (home-page "https://github.com/jaraco/jaraco.functools")
-     (synopsis "Python library extending Python's @code{functools}")
-     (description "This library extends the standard @code{functools} Python
-module with a few extra procedures.")
-     (license license:expat))))
+     (list python-pytest
+           python-pytest-black
+           python-pytest-checkdocs
+           python-pytest-cov
+           python-pytest-flake8
+           python-pytest-mypy
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/jaraco/jaraco.context")
+    (synopsis "Context managers Python library")
+    (description "This Python library provides context managers-related
+procedures.")
+    (license license:expat)))
 
 (define-public python-jaraco-functools
-  (package/inherit python-jaraco-functools-bootstrap
+  (package
     (name "python-jaraco-functools")
+    (version "3.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco.functools" version))
+       (sha256
+        (base32 "186xqzs3bqhjwajnprxy3sc3h0w5vdld8spc1dxjnn9720yykq1i"))))
+    (build-system pyproject-build-system)
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments python-jaraco-functools-bootstrap)
-       ((#:tests? _ #f)
-        (not (%current-target-system)))
-       ;; Do not test the myproject.toml build as it pulls dependencies.
-       ;; Do not run a test that tries to emulate a broken proprietary CI
-       ;; set-up, fails to do so correctly, and then throws an error.
-       ((#:test-flags test-flags '())
-        '(list "-k" "not project and not test_function_throttled"))))
+     (list #:tests? (not (%current-target-system))
+           ;; Do not test the myproject.toml build as it pulls dependencies.
+           ;; Do not run a test that tries to emulate a broken proprietary
+           ;; CI set-up, fails to do so correctly, and then throws an error.
+           #:test-flags
+           '(list "-k" "not project and not test_function_throttled")))
     (native-inputs
-     (modify-inputs
-         (package-native-inputs python-jaraco-functools-bootstrap)
-       (append python-jaraco-classes
-               python-pytest
-               python-pytest-black
-               python-pytest-checkdocs
-               python-pytest-cov
-               python-pytest-enabler-bootstrap ;OK since not propagated
-               python-pytest-flake8
-               python-pytest-mypy)))
-    (properties (alist-delete 'hidden? (package-properties
-                                        python-jaraco-functools-bootstrap)))))
+     (list python-jaraco-classes
+           python-pytest
+           python-pytest-black
+           python-pytest-checkdocs
+           python-pytest-cov
+           python-pytest-flake8
+           python-pytest-mypy
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs (list python-more-itertools))
+    (home-page "https://github.com/jaraco/jaraco.functools")
+    (synopsis "Python library extending Python's @code{functools}")
+    (description "This library extends the standard @code{functools} Python
+module with a few extra procedures.")
+    (license license:expat)))
 
 (define-public python-jaraco-packaging
   (package
