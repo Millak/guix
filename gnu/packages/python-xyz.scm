@@ -30605,12 +30605,7 @@ information in various formats.")
        (uri (pypi-uri "CairoSVG" version))
        (sha256
         (base32 "1ylsisha2cc4w0yydxwhy7idkfw1inl9fsipxsrm7vyby080vi9z"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "pytest"))))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-cairocffi python-cssselect2 python-defusedxml
            python-pillow python-tinycss2))
