@@ -1699,29 +1699,32 @@ notebooks.")
        (uri (pypi-uri "nbval" version))
        (sha256
         (base32 "154h6xpf9h6spgg3ax6k79fd40j197ipwnfjmf5rc2kvc2bmgjbp"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-test
-           (lambda _
-             ;; This test fails because of a mismatch in the output of LaTeX
-             ;; equation environments.  Seems OK to skip.
-             (delete-file
-              "tests/ipynb-test-samples/test-latex-pass-correctouput.ipynb")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv"
-                       ;; nbdime forms a dependency cycle
-                       "--ignore=tests/test_nbdime_reporter.py")))))))
-    (native-inputs (list python-pytest-cov python-sympy))
+     (list
+      #:test-flags
+      '(list
+        ;; This test fails because of a mismatch in the output of LaTeX
+        ;; equation environments.  Seems OK to skip.
+        "--ignore=tests/test_nbdime_reporter.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-test
+            (lambda _
+              ;; This test fails because of a mismatch in the output of LaTeX
+              ;; equation environments.  Seems OK to skip.
+              (delete-file
+               "tests/ipynb-test-samples/test-latex-pass-correctouput.ipynb"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-sympy))
     (propagated-inputs
      (list python-coverage
            python-ipykernel
            python-jupyter-client
            python-nbformat
-           python-pytest))
+           python-six))
     (home-page "https://github.com/computationalmodelling/nbval")
     (synopsis "Pytest plugin to validate Jupyter notebooks")
     (description
