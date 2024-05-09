@@ -71,6 +71,7 @@
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;; Copyright © 2024 Erik Eduardo Alonso Hernández <erik@erikeduardo.xyz>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2024 bigbug <bigbookofbug@proton.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2589,6 +2590,23 @@ productive, customizable lisp based systems.")
        "This package provides a minimalistic Pulseaudio volume and microphone
 control module for StumpWM.")
       (license license:gpl3))))
+
+(define-public sbcl-stumpwm-binwarp
+  (package
+    (inherit stumpwm-contrib)
+    (name "sbcl-stumpwm-binwarp")
+    (arguments
+     '(#:asd-systems '("binwarp")
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "util/binwarp"))))))
+    (home-page "https://github.com/stumpwm/stumpwm-contrib")
+    (synopsis "Keyboard-driven divide-and-conquer mouse control mode")
+    (description "This package provides a keyboard-driven divide-and-conquer
+mouse control mode for StumpWM.")
+    (license (list license:gpl2+ license:gpl3+ license:bsd-2))))
 
 (define-public sbcl-stumpwm-ttf-fonts
   (package
