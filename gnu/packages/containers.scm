@@ -44,10 +44,13 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages man)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages python)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
@@ -458,84 +461,104 @@ Its main purpose is to support the key usage by @code{docker-init}:
        (uri (git-reference
              (url "https://github.com/containers/podman")
              (commit (string-append "v" version))))
-       (modules '((guix build utils)))
-       ;; FIXME: Btrfs libraries not detected by these scripts.
-       (snippet '(substitute* "Makefile"
-                   ((".*hack/btrfs.*") "")))
-       (patches
-        (search-patches
-         "podman-program-lookup.patch"))
        (sha256
         (base32 "0x8npz0i3dyiaw30vdlb5n8kiaflgjqnrdbdk0yn5zgf5k1jlb7i"))
        (file-name (git-file-name name version))))
-
     (build-system gnu-build-system)
     (arguments
      (list
       #:make-flags
-      #~(list #$(string-append "CC=" (cc-for-target))
-              (string-append "PREFIX=" #$output))
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              (string-append "HELPER_BINARIES_DIR=" #$output "/_guix")
+              (string-append "GOMD2MAN="
+                             #$go-github-com-go-md2man "/bin/go-md2man"))
       #:tests? #f                  ; /sys/fs/cgroup not set up in guix sandbox
       #:test-target "test"
+      #:imported-modules
+      (source-module-closure `(,@%gnu-build-system-modules
+                               (guix build go-build-system)))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
           (add-after 'unpack 'set-env
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; when running go, things fail because
-              ;; HOME=/homeless-shelter.
-              (setenv "HOME" "/tmp")))
+            (lambda _
+              ;; When running go, things fail because HOME=/homeless-shelter.
+              (setenv "HOME" "/tmp")
+              ;; Required for detecting btrfs in hack/btrfs* due to bug in GNU
+              ;; Make <4.4 causing CC not to be propagated into $(shell ...)
+              ;; calls.  Can be removed once we update to >4.3.
+              (setenv "CC" #$(cc-for-target))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;; (invoke "strace" "-f" "bin/podman" "version")
                 (invoke "make" "localsystem")
                 (invoke "make" "remotesystem"))))
           (add-after 'unpack 'fix-hardcoded-paths
             (lambda _
-              (substitute* "vendor/github.com/containers/common/pkg/config/config.go"
-                (("@SLIRP4NETNS_DIR@")
-                 (string-append #$slirp4netns "/bin"))
-                (("@PASST_DIR@")
-                 (string-append #$passt "/bin"))
-                (("@NETAVARK_DIR@")
-                 (string-append #$netavark "/bin")))
-              (substitute* "hack/install_catatonit.sh"
-                (("CATATONIT_PATH=\"[^\"]+\"")
-                 (string-append "CATATONIT_PATH=" (which "true"))))
               (substitute* "vendor/github.com/containers/common/pkg/config/config_linux.go"
                 (("/usr/local/libexec/podman")
                  (string-append #$output "/libexec/podman"))
                 (("/usr/local/lib/podman")
-                 (string-append #$output "/bin")))
-              (substitute* "vendor/github.com/containers/common/pkg/config/default.go"
-                (("/usr/libexec/podman/conmon") (which "conmon"))
-                (("/usr/local/libexec/cni")
-                 (string-append #$(this-package-input "cni-plugins")
-                                "/bin"))
-                (("/usr/bin/crun") (which "crun")))))
+                 (string-append #$output "/bin")))))
+          (add-after 'install 'symlink-helpers
+            (lambda _
+              (mkdir-p (string-append #$output "/_guix"))
+              (for-each
+               (lambda (what)
+                 (symlink (string-append (car what) "/bin/" (cdr what))
+                          (string-append #$output "/_guix/" (cdr what))))
+               ;; Only tools that cannot be discovered via $PATH are
+               ;; symlinked.  Rest is handled in the 'wrap-podman phase.
+               `((#$aardvark-dns     . "aardvark-dns")
+                 ;; Required for podman-machine, which is *not* supported out
+                 ;; of the box.  But it cannot be discovered via $PATH, so
+                 ;; there is no other way for the user to install it.  It
+                 ;; costs ~10MB, so let's leave it here.
+                 (#$gvisor-tap-vsock . "gvproxy")
+                 (#$netavark         . "netavark")))))
+          (add-after 'install 'wrap-podman
+            (lambda _
+              (wrap-program (string-append #$output "/bin/podman")
+                `("PATH" suffix
+                  (,(string-append #$catatonit      "/bin")
+                   ,(string-append #$conmon         "/bin")
+                   ,(string-append #$crun           "/bin")
+                   ,(string-append #$gcc            "/bin") ; cpp
+                   ,(string-append #$iptables       "/sbin")
+                   ,(string-append #$passt          "/bin")
+                   ,(string-append #$procps         "/bin") ; ps
+                   "/run/setuid-programs")))))
+          (add-after 'install 'remove-go-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((go (assoc-ref inputs "go")))
+                (for-each
+                 (lambda (file)
+                   (when (executable-file? file)
+                     ((@@ (guix build go-build-system) remove-store-reference)
+                      file go)))
+                 (append (find-files (string-append #$output "/bin"))
+                         (find-files (string-append #$output "/libexec"))
+                         (find-files (string-append #$output "/lib")))))))
           (add-after 'install 'install-completions
             (lambda _
               (invoke "make" "install.completions"
                       (string-append "PREFIX=" #$output)))))))
     (inputs
-     (list btrfs-progs
-           cni-plugins
-           conmon
-           crun
+     (list bash-minimal
+           btrfs-progs
            gpgme
-           go-github-com-go-md2man
-           iptables
            libassuan
            libseccomp
-           libselinux
-           passt
-           slirp4netns))
+           libselinux))
     (native-inputs
-     (list bats
+     (list (package/inherit grep
+             (inputs (list pcre2)))     ; Drop once grep on master supports -P
+           bats
            git
            go-1.21
-           ; strace ; XXX debug
+           go-github-com-go-md2man
+           mandoc
            pkg-config
            python))
     (home-page "https://podman.io")
@@ -545,8 +568,14 @@ Its main purpose is to support the key usage by @code{docker-init}:
 volumes mounted into those containers, and pods made from groups of
 containers.
 
-The @code{machine} subcommand is not supported due to gvproxy not being
-packaged.")
+Not all commands are working out of the box due to requiring additional
+binaries to be present in the $PATH.
+
+To get @code{podman compose} working, install either @code{podman-compose} or
+@code{docker-compose} packages.
+
+To get @code{podman machine} working, install @code{qemu-minimal}, and
+@code{openssh} packages.")
     (license license:asl2.0)))
 
 (define-public podman-compose
