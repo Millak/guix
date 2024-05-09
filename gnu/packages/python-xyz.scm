@@ -12344,11 +12344,7 @@ releases.")
                 "0h0x8qmvfkfqvwdx2m7kwhn53sg26k8gkaas7s1730ak772zqrvz"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases #~(modify-phases %standard-phases
-                   (replace 'check
-                     (lambda _
-                       (invoke "pytest" "-vv" "-k" "http"))))))
+     (list #:test-flags '(list "-k" "http")))
     (propagated-inputs (list python-jaraco-context python-jaraco-functools))
     (native-inputs (list python-flake8
                          python-pytest
