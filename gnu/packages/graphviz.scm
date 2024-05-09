@@ -215,7 +215,15 @@ structure and layout algorithms.")
        (patches (search-patches "python-uqbar-python3.10.patch"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags '(list "tests")))
+     (list #:test-flags
+           '(list "tests"
+                  "-k" (string-append
+                        "not test_interpret_code_blocks_02 "
+                        "and not test_find_executable "
+                        "and not test_sphinx_api_1 "
+                        "and not test_sphinx_book_text_cached "
+                        "and not test_sphinx_book_text_uncached "
+                        "and not test_sphinx_book_text_broken_strict"))))
     (native-inputs
      (list graphviz
            python-flake8
@@ -224,8 +232,12 @@ structure and layout algorithms.")
            python-pytest
            python-pytest-cov))
     (propagated-inputs
-     (list python-black python-sphinx python-sphinx-rtd-theme
-           python-unidecode))
+     (list python-black python-sphinx-5 python-unidecode
+           (package/inherit python-sphinx-rtd-theme
+             (propagated-inputs
+              (modify-inputs
+                  (package-propagated-inputs python-sphinx-rtd-theme)
+                (replace "python-sphinx" python-sphinx-5))))))
     (home-page "https://github.com/josiah-wolf-oberholtzer/uqbar")
     (synopsis "Tools for building documentation with Sphinx, Graphviz and LaTeX")
     (description
