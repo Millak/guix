@@ -320,6 +320,13 @@
        (sha256
         (base32 "0wvs1k71fipn617y9wsdcvwcgg2pd0nvriarlwl4438la4086ppg"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" "auto"
+              "--ignore=test/test_plugin_macosx.py"
+              "-k" (string-append "not test_plugin_mqtt_tls_connect_success"
+                                  " and not test_plugin_mqtt_tls_no_verify_success"))))
     (propagated-inputs (list python-certifi
                              python-click
                              python-dataclasses
@@ -336,18 +343,6 @@
                          python-pytest-mock
                          python-pytest-xdist
                          python-wheel))
-    (arguments
-     (list
-      #:phases
-        #~(modify-phases %standard-phases
-            (replace 'check
-              (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-                (when tests?
-                  (delete-file "test/test_plugin_macosx.py")
-                  (invoke "pytest" "-vv" "-k"
-                          (string-append
-                           "not test_plugin_mqtt_tls_connect_success"
-                           " and not test_plugin_mqtt_tls_no_verify_success"))))))))
     (home-page "https://github.com/caronc/apprise")
     (synopsis
      "Push notification Python library that works with many platforms")
