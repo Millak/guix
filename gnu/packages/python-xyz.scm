@@ -901,16 +901,8 @@ documentation of programming languages.")
         (base32 "0n8m52vxmlvkj7p5jmd4rfdks65rrp4q4vzak44y6kbg9l5qa6y4"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:tests? #false  ;there are none
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             ;; We don't have black 23.
-             (substitute* "pyproject.toml"
-               (("23.1.0") "22.3.0")))))))
-    (propagated-inputs (list python-black python-docspec python-nr-util))
+     (list #:tests? #false))  ;there are none
+    (propagated-inputs (list python-docspec python-nr-util))
     (native-inputs (list python-poetry-core))
     (home-page "https://github.com/NiklasRosenstein/docspec/")
     (synopsis "Produce docspec data from Python source code")
