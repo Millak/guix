@@ -1225,22 +1225,17 @@ simpler.")
        (uri (pypi-uri "pytest-trio" version))
        (sha256
         (base32 "0c8cqf9by2884riksrqymqfp2g1d2d798a2zalcw9hmf34c786y0"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-W" "error" "-ra" "-v" "--pyargs"
-                       "pytest_trio" "--verbose" "--cov" "-k"
-                       (string-append
-                         ;; Needs network
-                         "not test_async_yield_fixture_with_nursery"
-                         " and not test_try"
-                         ;; No keyboard interrupt in our build environment.
-                         " and not test_actual_test"))))))))
+     (list
+      #:test-flags '(list "-W" "error" "-ra" "-v" "--pyargs"
+                          "pytest_trio" "--verbose" "--cov" "-k"
+                          (string-append
+                           ;; Needs network
+                           "not test_async_yield_fixture_with_nursery"
+                           " and not test_try"
+                           ;; No keyboard interrupt in our build environment.
+                           " and not test_actual_test"))))
     (native-inputs
      (list python-hypothesis python-pytest python-pytest-cov))
     (propagated-inputs
