@@ -25093,19 +25093,13 @@ package attempts to address the shortcomings of @code{isodate}.")
        (sha256
         (base32
          "1vbwc4gpffclf6hw08lvvgqlvsgfjlw7gjsm28jfcrln2pixla7j"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags '(list "tests/unit/" "-k" "not test_gitignore"
+                          "--ignore=tests/unit/test_deprecated_finders.py")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
           (add-after 'install 'install-example-plugins
             (lambda _
               (for-each (lambda (source-directory)
@@ -25119,15 +25113,7 @@ package attempts to address the shortcomings of @code{isodate}.")
               (setenv "HOME" (getcwd))
               (let ((example-whls (find-files "dist" "^example.*\\.whl$")))
                 (apply invoke "pip" "--no-cache-dir" "--no-input"
-                       "install"  "--user" "--no-deps" example-whls))))
-          (replace 'check
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-              (when tests?
-                (let ((bin (string-append #$output "/bin")))
-                  (setenv "PATH" (string-append (getenv "PATH") ":" bin)))
-                (invoke "pytest" "-vv" "tests/unit/"
-                        "-k" "not test_gitignore" ;requires git
-                        "--ignore=tests/unit/test_deprecated_finders.py")))))))
+                       "install"  "--user" "--no-deps" example-whls)))))))
     (native-inputs
      (list python-black
            python-colorama
