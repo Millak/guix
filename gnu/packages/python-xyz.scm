@@ -31377,23 +31377,22 @@ Notation (CSON).")
 (define-public python-aionotify
   (package
     (name "python-aionotify")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        ;; Source tarball on PyPi lacks tests
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/rbarrois/aionotify")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sk9i8czxgsbrswsf1nlb4c82vgnlzi8zrvrxdip92w2z8hqh43y"))
-       (patches (search-patches "python-aionotify-0.2.0-py3.8.patch"))))
-    (build-system python-build-system)
+        (base32 "0qkzwccv8k6mx1yvc0hmsgnzgb4vh8h97kq7i64ic6xzxkd57vkz"))))
+    (build-system pyproject-build-system)
     (home-page "https://github.com/rbarrois/aionotify")
-    (synopsis "Asyncio-powered inotify library")
+    (synopsis "inotify library for Python")
     (description
-     "@code{aionotify} is a simple, asyncio-based inotify library.")
+     "@code{python-aionotify} is a simple, asyncio-based inotify library.")
     (license license:bsd-3)))
 
 (define-public python-forbiddenfruit
