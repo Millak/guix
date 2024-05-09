@@ -32,6 +32,7 @@
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
@@ -2844,9 +2845,8 @@ use with virtualization provisioning tools")
        (method url-fetch)
        (uri (pypi-uri "transient" version))
        (sha256
-        (base32
-         "148yiqrmcscsi6787y0f27i1y9cf0gcw3mqfv5frhpmsmv62mv5z"))))
-    (build-system python-build-system)
+        (base32 "148yiqrmcscsi6787y0f27i1y9cf0gcw3mqfv5frhpmsmv62mv5z"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f ; Requires behave
        #:phases (modify-phases %standard-phases
@@ -2854,8 +2854,12 @@ use with virtualization provisioning tools")
                     (lambda _
                       (substitute* "setup.py"
                         (("==")
-                         ">="))
-                      #t)))))
+                         ">=")))))))
+    (native-inputs
+     (list python-black
+           python-mypy
+           python-pyhamcrest
+           python-twine))
     (propagated-inputs
      (list python-beautifultable
            python-click
@@ -2865,12 +2869,8 @@ use with virtualization provisioning tools")
            python-progressbar2
            python-requests
            python-toml))
-    (native-inputs
-     (list python-black python-mypy python-pyhamcrest python-twine))
-    (home-page
-     "https://github.com/ALSchwalm/transient")
-    (synopsis
-     "QEMU Wrapper written in Python")
+    (home-page "https://github.com/ALSchwalm/transient")
+    (synopsis "QEMU Wrapper written in Python")
     (description
      "@code{transient} is a wrapper for QEMU allowing the creation of virtual
 machines with shared folder, ssh, and disk creation support.")
