@@ -240,7 +240,7 @@ containers or various tools.")
 (define-public slirp4netns
   (package
     (name "slirp4netns")
-    (version "1.2.3")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -248,7 +248,7 @@ containers or various tools.")
              (url "https://github.com/rootless-containers/slirp4netns")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0czvdsdv821fz4jd9rgrlkdhhjna6frawr8klvx3k2cfh444fbii"))
+        (base32 "1zwahs9fpb61h708k416l6brihgjl6z8ms0jbz4rvw7q34k2c8vw"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
