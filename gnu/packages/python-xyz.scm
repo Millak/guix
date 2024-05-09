@@ -9073,14 +9073,7 @@ objects.")
        (sha256
         (base32
          "1600xad37mff46xg80cy6bi3l2n6jm69j7sl19rzdmkcgyijfn2z"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "-v")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-numba python-numpy python-scipy))
     (native-inputs
