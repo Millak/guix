@@ -6262,14 +6262,14 @@ Capabilities include:
 (define-public python-unidecode
   (package
     (name "python-unidecode")
-    (version "1.1.1")
+    (version "1.3.8")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "Unidecode" version))
              (sha256
               (base32
-               "1s6cp2lv4m0f00hjckjz8p6m7d3n3v16jvg353llf5ia1iqsnsib"))))
-    (build-system python-build-system)
+               "1x620s4dk4d501pivhlfzbi2d1r5fnm9cssqwkn76f7d8sfk9nyg"))))
+    (build-system pyproject-build-system)
     (home-page "https://pypi.org/project/Unidecode/")
     (synopsis "ASCII transliterations of Unicode text")
     (description
