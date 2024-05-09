@@ -12264,7 +12264,7 @@ procedures.")
         (uri (pypi-uri "jaraco.functools" version))
         (sha256
          (base32 "186xqzs3bqhjwajnprxy3sc3h0w5vdld8spc1dxjnn9720yykq1i"))))
-     (build-system python-build-system)
+     (build-system pyproject-build-system)
      (arguments (list #:tests? #f))
      (native-inputs (list python-setuptools-scm))
      (propagated-inputs (list python-more-itertools))
@@ -12282,17 +12282,11 @@ module with a few extra procedures.")
          (package-arguments python-jaraco-functools-bootstrap)
        ((#:tests? _ #f)
         (not (%current-target-system)))
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  ;; Do not test the myproject.toml build as it tries to pull
-                  ;; dependencies from the Internet.  Do not run a test that
-                  ;; tries to emulate a broken proprietary CI set-up, fails
-                  ;; to do so correctly, and then throws an error about it.
-                  (invoke "pytest" "-vv" "-k"
-                          "not project and not test_function_throttled"))))))))
+       ;; Do not test the myproject.toml build as it pulls dependencies.
+       ;; Do not run a test that tries to emulate a broken proprietary CI
+       ;; set-up, fails to do so correctly, and then throws an error.
+       ((#:test-flags test-flags '())
+        '(list "-k" "not project and not test_function_throttled"))))
     (native-inputs
      (modify-inputs
          (package-native-inputs python-jaraco-functools-bootstrap)
