@@ -2038,7 +2038,7 @@ Amazon S3 compatible object storage server.")
 (define-public python-pycurl
   (package
     (name "python-pycurl")
-    (version "7.45.2")
+    (version "7.45.3")
     (source
      (origin
        (method git-fetch)
@@ -2048,8 +2048,7 @@ Amazon S3 compatible object storage server.")
                       "REL_" (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1dzdramcgf63m1zg8glhqa3ik9anzjy954mshk7s3z3gsi21n8fp"))))
+        (base32 "0sqxz14p8qvhdb9pvlbrfdldn8s27l6hpv252s77kbbrj2pp294c"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
@@ -2064,8 +2063,6 @@ Amazon S3 compatible object storage server.")
                    ;; <tests.multi_callback_test.MultiCallbackTest
                    ;; testMethod=test_multi_socket_action>.timer_result
                    " and not test_multi_socket_action"
-                   ;; E pycurl.error: (1, '')
-                   " and not test_http_version_3"
                    ;; OSError: tests/fake-curl/libcurl/with_gnutls.so: cannot
                    ;; open shared object file: No such file or directory
                    " and not test_libcurl_ssl_gnutls"
@@ -2076,7 +2073,9 @@ Amazon S3 compatible object storage server.")
                    ;; open shared object file: No such file or directory
                    " and not test_libcurl_ssl_openssl"
                    ;; Probably due to an expired CA
-                   " and not test_request_without_certinfo"))
+                   " and not test_request_without_certinfo"
+                   ;; "A libcurl function was given a bad argument"
+                   " and not test_proxy_tlsauth"))
        #:phases (modify-phases %standard-phases
                   (add-before 'build 'configure-tls-backend
                     (lambda _
