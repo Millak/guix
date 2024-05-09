@@ -36409,43 +36409,29 @@ Python @code{set} interface.")
          "0fj2ffvzfvjf4d7f672h5x5fzq26f8hax9j3dfsix158fwm0212w"))
        (patches (search-patches "dynaconf-unvendor-deps.patch"))
        (modules '((guix build utils)))
-       (snippet '(begin
-                   ;; Remove vendored dependencies
-                   (let ((unvendor '("click" "dotenv" "ruamel" "toml")))
-                     (with-directory-excursion "dynaconf/vendor"
-                       (for-each delete-file-recursively unvendor)))
-                   ;; Lower coverage quality gate for unit tests
-                   (substitute* ".coveragerc"
-                     (("fail_under = 95") "fail_under = 50"))))))
+       ;; Remove vendored dependencies
+       (snippet '(let ((unvendor '("click" "dotenv" "ruamel" "toml")))
+                   (with-directory-excursion "dynaconf/vendor"
+                     (for-each delete-file-recursively unvendor))))))
     (build-system pyproject-build-system)
     (arguments
      `(#:test-flags
-       '("-k"
-         ,(let ((click-tests '("test_negative_get"
-                               "test_inspect_invalid_format")))
-            ;; Disable integration tests
-            (string-append "not integration and not "
-                           ;; These tests fail because we use Click 8.* instead of
-                           ;; Click 7
-                           (string-join click-tests " and not "))))
+       '("--ignore=tests/test_vault.py"  ; depend on hvac and a live Vault
+         "-k" ,(let ((click-tests '("test_negative_get"
+                                    "test_inspect_invalid_format")))
+                 ;; Disable integration tests
+                 (string-append "not integration and not "
+                                ;; These tests fail because we use Click 8.*
+                                ;; instead of Click 7
+                                (string-join click-tests " and not ")))
+         "tests")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-for-click-8
            (lambda _
              (substitute* "dynaconf/cli.py"
                (("click.get_os_args\\()") ;deprecated from Click 8.1+
-                "sys.argv[1:]"))))
-         (replace 'check
-           (lambda* (#:key tests? test-flags #:allow-other-keys)
-             (when tests?
-               ;; These tests depend on hvac and a live Vault process.
-               (delete-file "tests/test_vault.py")
-               (apply invoke
-                      `("py.test" ,@test-flags "-v"
-                        "--cov-config" ".coveragerc"
-                        "--cov=dynaconf"
-                        "-l" "--tb=short"
-                        "--maxfail=1" "tests/"))))))))
+                "sys.argv[1:]")))))))
     (propagated-inputs
      (list python-click python-configobj python-dotenv-0.13.0
            python-ruamel.yaml-0.16 python-toml python-tomli))
