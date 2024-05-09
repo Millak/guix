@@ -3167,14 +3167,13 @@ tests.")
 (define-public python-zope-i18nmessageid
   (package
     (name "python-zope-i18nmessageid")
-    (version "5.0.1")
+    (version "5.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zope.i18nmessageid" version))
        (sha256
-        (base32
-         "0ndhn4w1qgwkfbwf9vm2bgq418z5g0wmfsgl0d9nz62cd0mi8d4m"))))
+        (base32 "14mx62khys82p2gmmf3m40x4jmvcz3rndvl6qik2n2qfp13n7ds7"))))
     (build-system python-build-system)
     (native-inputs
      (list python-coverage python-zope-testrunner))
