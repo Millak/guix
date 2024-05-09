@@ -49,6 +49,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages virtualization)
@@ -413,7 +414,7 @@ The binary is called @command{gvproxy}.")
 (define-public podman
   (package
     (name "podman")
-    (version "4.9.3")
+    (version "5.0.2")
     (source
      (origin
        (method git-fetch)
@@ -428,7 +429,7 @@ The binary is called @command{gvproxy}.")
         (search-patches
          "podman-program-lookup.patch"))
        (sha256
-        (base32 "17g7n09ndxhpjr39s9qwxdcv08wavjj0g5nmnrvrkz2wgdqigl1x"))
+        (base32 "0x8npz0i3dyiaw30vdlb5n8kiaflgjqnrdbdk0yn5zgf5k1jlb7i"))
        (file-name (git-file-name name version))))
 
     (build-system gnu-build-system)
@@ -459,7 +460,9 @@ The binary is called @command{gvproxy}.")
                 (("@SLIRP4NETNS_DIR@")
                  (string-append #$slirp4netns "/bin"))
                 (("@PASST_DIR@")
-                 (string-append #$passt "/bin")))
+                 (string-append #$passt "/bin"))
+                (("@NETAVARK_DIR@")
+                 (string-append #$netavark "/bin")))
               (substitute* "hack/install_catatonit.sh"
                 (("CATATONIT_PATH=\"[^\"]+\"")
                  (string-append "CATATONIT_PATH=" (which "true"))))
