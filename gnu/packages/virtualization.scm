@@ -2085,7 +2085,7 @@ mainly implemented in user space.")
        (uri (pypi-uri "qemu.qmp" version))
        (sha256
         (base32 "1rpsbiwvngij6fjcc5cx1azcc4dxmm080crr31wc7jrm7i61p7c2"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
