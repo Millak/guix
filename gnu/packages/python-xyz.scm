@@ -35481,17 +35481,7 @@ functions defined in POSIX.1-2001 and POSIX.1-2008.")
          "1367x25rcy2y8f0x9c2dbxl2qgdln3arr7ddyzybz2c28g6jrv5z"))
        (patches (search-patches "python-pyan3-fix-positional-arguments.patch"
                                 "python-pyan3-fix-absolute-path-bug.patch"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Extend PYTHONPATH so the built package will be found.
-               (setenv "GUIX_PYTHONPATH"
-                       (string-append (getcwd) ":" (getenv "GUIX_PYTHONPATH")))
-               (invoke "pytest")))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-cov python-wheel))
     (propagated-inputs
