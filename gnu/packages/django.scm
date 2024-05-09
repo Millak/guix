@@ -288,20 +288,17 @@ commands, additional database fields and admin extensions.")
        (uri (pypi-uri "django-localflavor" version))
        (sha256
         (base32 "0i1s0ijfd9rv2cp5x174jcyjpwn7fyg7s1wpbvlwm96bpdvs6bxc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (setenv "PYTHONPATH"
-                       (string-append ".:"
-                                      (getenv "GUIX_PYTHONPATH")))
-               (invoke "invoke" "test")))))))
-    (native-inputs
-     (list python-coverage python-invoke python-pytest-django which))
+     (list
+      #:test-flags '(list "--settings=tests.settings" "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (if tests?
+                  (apply invoke "python" "-m" "django" "test" test-flags)
+                  (format #t "test suite not run~%")))))))
     (propagated-inputs
      (list python-django python-stdnum))
     (home-page "https://django-localflavor.readthedocs.io/en/latest/")
