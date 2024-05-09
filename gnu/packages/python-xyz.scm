@@ -20228,18 +20228,10 @@ and provides a uniform API regardless of which JSON implementation is used.")
        (uri (pypi-uri "amqp" version))
        (sha256
         (base32 "1qmmffiy48nady7is8529vxcyqbq88v5zgawqr3fk4q8rkz166rc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"
-                        "-c" "/dev/null" ;take control over pytest options
-                        ;; Integration tests require network connectivity.
-                        "--ignore" "t/integration")))))))
+     (list  ; Integration tests require network connectivity.
+      #:test-flags '(list "--ignore=t/integration")))
     (native-inputs (list python-pytest))
     (propagated-inputs (list python-vine))
     (home-page "https://github.com/celery/py-amqp")
