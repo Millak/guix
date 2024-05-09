@@ -268,7 +268,7 @@ sources.")
 ;; Some packages do not support Sphinx 5 yet.  Remove when unused.
 (define-public python-sphinx-4
   (package
-    (inherit python-sphinx)
+    (inherit python-sphinx-5)
     (version "4.5.0")
     (source (origin
               (method url-fetch)
