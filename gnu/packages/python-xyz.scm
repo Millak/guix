@@ -12219,7 +12219,7 @@ WeightedLookup: A specialized RangeMap for selecting an item by weights.
         (uri (pypi-uri "jaraco.context" version))
         (sha256
          (base32 "0hbjm1rpxf4pzmbdp9rh3ali4zqnlcr8m97bhh1nizxvzcpxim7h"))))
-     (build-system python-build-system)
+     (build-system pyproject-build-system)
      (arguments (list #:tests? #f))
      (native-inputs (list python-setuptools-scm))
      (home-page "https://github.com/jaraco/jaraco.context")
@@ -12236,14 +12236,9 @@ procedures.")
          (package-arguments python-jaraco-context-bootstrap)
        ((#:tests? _ #f)
         (not (%current-target-system)))
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  ;; Do not test the myproject.toml build as it tries to pull
-                  ;; dependencies from the Internet.
-                  (invoke "pytest" "-vv" "-k" "not project"))))))))
+       ;; Do not test the myproject.toml build as it pulls dependencies.
+       ((#:test-flags test-flags '())
+        '(list "-k" "not project"))))
     (native-inputs
      (modify-inputs
          (package-native-inputs python-jaraco-context-bootstrap)
