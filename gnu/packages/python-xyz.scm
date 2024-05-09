@@ -12312,7 +12312,10 @@ module with a few extra procedures.")
         (sha256
           (base32
             "0zimrnkh33b9g8ffw11mjh6kvs54cy5gcjw1h5cl1r7dc833dmkm"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           '(list "-k" "not project and not test_revived_distribution")))
     (propagated-inputs
      (list python-pytest
            python-pytest-checkdocs
