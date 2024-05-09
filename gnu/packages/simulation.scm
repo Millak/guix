@@ -565,7 +565,7 @@ some support for generating and analysing traffic scenarios..")
         (sha256
           (base32
             "0lhqsq8ypdak0ahr2jnyvg07yrqp6wicjxi6k56zx24wp3qg60sc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (inputs
      (list openmpi python-numpy))
     (native-inputs
@@ -578,15 +578,16 @@ some support for generating and analysing traffic scenarios..")
          (add-after 'build 'mpi-setup
            ,%openmpi-setup)
          (replace 'check
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (setenv "HOME" "/tmp")
-             (with-directory-excursion "test"
-               ;; Disable parallel tests to avoid race condition.  See
-               ;; https://github.com/pytest-dev/pytest-cov/issues/237.
-               (substitute* "runtests.sh"
-                 (("for p in 1 4 8 16; do")
-                  "for p in 1; do"))
-               (invoke "./runtests.sh")))))))
+             (with-guix-pytest-plugin inputs
+               (with-directory-excursion "test"
+                 ;; Disable parallel tests to avoid race condition.  See
+                 ;; https://github.com/pytest-dev/pytest-cov/issues/237.
+                 (substitute* "runtests.sh"
+                   (("for p in 1 4 8 16; do")
+                    "for p in 1; do"))
+                 (invoke "./runtests.sh"))))))))
     (home-page "https://bitbucket.org/fenics-project/dijitso/")
     (synopsis "Distributed just-in-time building of shared libraries")
     (description
