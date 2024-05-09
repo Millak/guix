@@ -7019,24 +7019,18 @@ them to a designated prefix.")
          (sha256
           (base32
            "11afr6zy3r6rda81010iq496dazg4xid0izg3smg6ighpmvsnzf2"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (invoke "pytest" "-vv"
-                          ;; These tests fail due to networking requirements.
-                          "-k" (format #f "not ~a"
-                                       (string-join
-                                        '("test_post_chunked"
-                                          "test_remote"
-                                          "test_capture_http_proxy"
-                                          "test_capture_https_proxy"
-                                          "test_capture_https_proxy_same_session")
-                                        " and not ")))))))))
+        #:test-flags  ; These tests fail due to networking requirements.
+        '(list "-k" (format #f "not ~a"
+                            (string-join
+                             '("test_post_chunked"
+                               "test_remote"
+                               "test_capture_http_proxy"
+                               "test_capture_https_proxy"
+                               "test_capture_https_proxy_same_session")
+                             " and not ")))))
       (native-inputs
        ;; These inputs are required for the test suite.
        (list python-httpbin python-pytest-cov python-requests
