@@ -1693,6 +1693,39 @@ mechanism than copying the contents of the source pixmap.")
 network-transparent printing system.")
     (license license:x11)))
 
+(define xcffibgen
+  (package
+    (name "xcffibgen")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tych0/xcffib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wz6zlaqsmpw7ahaadpd7m5n5c5b2ya30xwsana4j5ljygdvzqp9"))))
+    (build-system haskell-build-system)
+    (native-inputs
+     (list ghc-hunit ghc-test-framework ghc-test-framework-hunit))
+    (inputs
+     (list libxcb
+           ghc
+           ghc-filemanip
+           ghc-split
+           ghc-language-python
+           ghc-attoparsec
+           ghc-either
+           ghc-optparse-applicative
+           ghc-xcb-types))
+    (home-page "https://github.com/tych0/xcffib")
+    (synopsis "Build tool for python-xcbffib bindings")
+    (description
+     "This is an internal package that provides a build tool to
+generate code for the @code{python-xcbffib} package.")
+    (license license:expat)))
+
 (define-public randrproto
   (package
     (name "randrproto")
