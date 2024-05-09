@@ -201,7 +201,7 @@ structure and layout algorithms.")
 (define-public python-uqbar
   (package
     (name "python-uqbar")
-    (version "0.5.9")
+    (version "0.6.9")
     (source
      (origin
        (method git-fetch)
@@ -210,20 +210,11 @@ structure and layout algorithms.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0c573nzpm51qgz2g296f8pw8ys0i3r6daynxk06zagk5l5fgw9ar"))
-       (patches (search-patches "python-uqbar-python3.10.patch"))))
+        (base32 "037qj3rymm6xzdpklddfhmfp2p1bq9fi3jrvxj6gmharphd5z869"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           '(list "tests"
-                  "-k" (string-append
-                        "not test_interpret_code_blocks_02 "
-                        "and not test_find_executable "
-                        "and not test_sphinx_api_1 "
-                        "and not test_sphinx_book_text_cached "
-                        "and not test_sphinx_book_text_uncached "
-                        "and not test_sphinx_book_text_broken_strict"))))
+    (arguments  ; XXX: Disable failing tests.
+     (list #:test-flags '(list "tests" "-k" "not test_find_executable \
+and not test_sphinx_book_text_broken_strict")))
     (native-inputs
      (list graphviz
            python-flake8
