@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
 ;;; Copyright © 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix utils)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -47,6 +49,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -151,19 +154,12 @@ created and all the services are started as specified in the configuration.")
         (sha256
          (base32
           "1m44smrggnqghxkqfl7vhapdw89m1p3vdr177r6cq17lr85jgqvc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-versioning
-           (lambda _
-             (substitute* "test-requirements.txt"
-               (("3.0.2") ,(package-version python-pytest))
-               (("2.3.1") ,(package-version python-pytest-cov))
-               (("2.4.1") ,(package-version python-flake8)))
-             #t)))))
+     (list  ; XXX: These tests require docker credentials to run.
+      #:test-flags '(list "--ignore=tests/store_test.py")))
     (native-inputs
-     (list python-flake8 python-pytest python-pytest-cov))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-six))
     (home-page "https://github.com/shin-/dockerpy-creds")
