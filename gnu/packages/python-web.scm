@@ -5185,14 +5185,7 @@ on the command line.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "12yw01ccgjn9c88cbkrd6k1ykjxd8fxip2b1isvxjirphnlqhn9g"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv" "-c" "/dev/null")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-flask))
     (native-inputs
