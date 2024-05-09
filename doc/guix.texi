@@ -40669,7 +40669,7 @@ After @command{guix system reconfigure} configure Nix for your user:
 
 @itemize
 @item Add a Nix channel and update it.  See
-@url{https://nixos.wiki/wiki/Nix_channels, Nix channels} for more
+@url{https://wiki.nixos.org/wiki/Nix_channels, Nix channels} for more
 information about the available channels.  If you would like to use the
 unstable Nix channel you can do this by running:
 
