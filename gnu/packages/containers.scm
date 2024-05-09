@@ -619,50 +619,75 @@ being rootless and not requiring any daemon to be running.")
        (sha256
         (base32 "07hr2cfp4kblnmva02ap97id5nzhbqigdfvx7c8nyrkfzw0340n0"))
        (file-name (git-file-name name version))))
-    (build-system go-build-system)
+    (build-system gnu-build-system)
     (arguments
-     (list #:import-path "github.com/containers/buildah/cmd/buildah"
-           #:unpack-path "github.com/containers/buildah"
-
-           ;; Some dependencies require go-1.18 to build.
-           #:go go-1.18
-
-           #:tests? #f
-           #:install-source? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'prepare-install-docs
-                 (lambda* (#:key unpack-path #:allow-other-keys)
-                   (substitute* (string-append "src/"
-                                               unpack-path
-                                               "/docs/Makefile")
-                     (("../tests/tools/build/go-md2man")
-                      (which "go-md2man")))
-                   (substitute* (string-append "src/"
-                                               unpack-path
-                                               "/docs/Makefile")
-                     (("/usr/local") (string-append #$output)))))
-               (add-after 'build 'build-docs
-                 (lambda* (#:key unpack-path #:allow-other-keys)
-                   (let ((doc (string-append "src/" unpack-path "/docs")))
-                     (invoke "make" "-C" doc))))
-               (add-after 'install 'install-docs
-                 (lambda* (#:key unpack-path #:allow-other-keys)
-                   (let ((doc (string-append "src/" unpack-path "/docs")))
-                     (invoke "make" "-C" doc "install")))))))
-    (inputs (list btrfs-progs
-                  cni-plugins
-                  conmon
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              (string-append "GOMD2MAN="
+                             #$go-github-com-go-md2man "/bin/go-md2man"))
+      #:tests? #f                  ; /sys/fs/cgroup not set up in guix sandbox
+      #:test-target "test-unit"
+      #:imported-modules
+      (source-module-closure `(,@%gnu-build-system-modules
+                               (guix build go-build-system)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'set-env
+            (lambda _
+              ;; When running go, things fail because HOME=/homeless-shelter.
+              (setenv "HOME" "/tmp")
+              ;; Required for detecting btrfs in hack/btrfs* due to bug in GNU
+              ;; Make <4.4 causing CC not to be propagated into $(shell ...)
+              ;; calls.  Can be removed once we update to >4.3.
+              (setenv "CC" #$(cc-for-target))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "test-unit")
+                (invoke "make" "test-conformance")
+                (invoke "make" "test-integration"))))
+          (add-after 'install 'symlink-helpers
+            (lambda _
+              (mkdir-p (string-append #$output "/_guix"))
+              (for-each
+               (lambda (what)
+                 (symlink (string-append (car what) "/bin/" (cdr what))
+                          (string-append #$output "/_guix/" (cdr what))))
+               ;; Only tools that cannot be discovered via $PATH are
+               ;; symlinked.  Rest is handled in the 'wrap-buildah phase.
+               `((#$aardvark-dns     . "aardvark-dns")
+                 (#$netavark         . "netavark")))))
+          (add-after 'install 'wrap-buildah
+            (lambda _
+              (wrap-program (string-append #$output "/bin/buildah")
+                `("CONTAINERS_HELPER_BINARY_DIR" =
+                  (,(string-append #$output "/_guix")))
+                `("PATH" suffix
+                  (,(string-append #$crun           "/bin")
+                   ,(string-append #$gcc            "/bin") ; cpp
+                   ,(string-append #$passt          "/bin")
+                   "/run/setuid-programs")))))
+          (add-after 'install 'remove-go-references
+            (@@ (guix build go-build-system) remove-go-references))
+          (add-after 'install 'install-completions
+            (lambda _
+              (invoke "make" "install.completions"
+                      (string-append "PREFIX=" #$output)))))))
+    (inputs (list bash-minimal
+                  btrfs-progs
                   eudev
                   glib
                   gpgme
                   libassuan
                   libseccomp
-                  lvm2
-                  runc))
+                  lvm2))
     (native-inputs
-     (list go-github-com-go-md2man
-           gnu-make
+     (list bats
+           go-1.21
+           go-github-com-go-md2man
            pkg-config))
     (synopsis "Build @acronym{OCI, Open Container Initiative} images")
     (description
