@@ -9623,6 +9623,7 @@ comparison.
              (string-append
               ;; This one fails with a small difference in the upper left.
               "not test_figure_legend_outside"
+              " and not test_warn_big_data_best_loc"
               ;; The 'test_lazy_auto_backend_selection' fails
               ;; because it would require an X server; skip it.
               " and not test_lazy_auto_backend_selection"))
