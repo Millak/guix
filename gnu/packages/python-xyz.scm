@@ -12773,7 +12773,6 @@ connect strings, then issue SQL commands within IPython or IPython Notebook.")
      (list python-argcomplete
            python-hatchling
            python-mypy
-           python-pre-commit
            python-pytest
            python-pytest-mock
            python-pytest-mypy-testing))
