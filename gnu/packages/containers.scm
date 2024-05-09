@@ -411,6 +411,34 @@ It can be used with QEMU, Hyperkit, Hyper-V and User-Mode Linux.
 The binary is called @command{gvproxy}.")
     (license license:asl2.0)))
 
+(define-public catatonit
+  (package
+    (name "catatonit")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/openSUSE/catatonit/releases/download/v"
+             version "/catatonit.tar.xz"))
+       (sha256
+        (base32 "141b5lypgqib546zmldi4kqzpqfd6vvqddqqkfaz3w11fjsc4hwq"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool))
+    (home-page "https://github.com/openSUSE/catatonit")
+    (synopsis "Container init")
+    (description
+     "Catatonit is a simple container init tool developed as a rewrite of
+@url{https://github.com/cyphar/initrs, initrs} in C due to the need for static
+compilation of Rust binaries with @code{musl}.  Inspired by other container
+inits like @url{https://github.com/krallin/tini, tini} and
+@url{https://github.com/Yelp/dumb-init, dumb-init}, catatonit focuses on
+correct signal handling, utilizing @code{signalfd(2)} for improved stability.
+Its main purpose is to support the key usage by @code{docker-init}:
+@code{/dev/init} – <your program>, with minimal additional features planned.")
+    (license license:gpl2+)))
+
 (define-public podman
   (package
     (name "podman")
