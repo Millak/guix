@@ -39,6 +39,7 @@
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023, 2024 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +64,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
@@ -90,6 +92,9 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages haskell)
+  #:use-module (gnu packages haskell-apps)
+  #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
@@ -973,6 +978,26 @@ the fonts protocol.")
 rendering commands to the X server.")
     (license license:x11)
     (properties `((superseded . ,xorgproto)))))
+
+(define-public ghc-xcb-types
+  (package
+    (name "ghc-xcb-types")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "xcb-types" version))
+       (sha256
+        (base32 "0qdfj4d83b1fjmlysqncgi65ldf3qnrsj4lync95mgbaq2kzxj2r"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "xcb-types")))
+    (inputs (list ghc-xml))
+    (home-page "http://community.haskell.org/~aslatter/code/xcb-types")
+    (synopsis "Parse XML files used by the XCB project")
+    (description
+     "This package provides types which mirror the structures used in the XCB code
+generation XML files and parses these XML files into Haskell data structures.")
+    (license license:bsd-3)))
 
 (define-public iceauth
   (package
