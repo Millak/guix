@@ -3400,13 +3400,7 @@ backported from Python 2.7 for Python 2.4+.")
               (sha256
                (base32
                 "0sv94wagi214h0l91zn8m04f78x5wn83vqxib81hnl1qahvx9hq7"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-c" "/dev/null" "-vv")))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-mock python-nose python-pathpy python-pyhamcrest
            python-pytest))
