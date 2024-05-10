@@ -18125,20 +18125,19 @@ time.")
 (define-public python-nbconvert
   (package
     (name "python-nbconvert")
-    (version "6.5.0")
+    (version "7.16.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nbconvert" version))
        (sha256
         (base32
-         "17g9xq4za7vvzml6l6d8zrzknhxsvgx02hymmsw9d1dygbi4cgi2"))))
+         "1x7pz43nhlq3hwjn7cv753gapzwav6wwb9kgr66l82kb4sx93jl6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "--pyargs" "nbconvert"
-             "-k"
+      '(list "-k"
              (string-append
               ;; These tests require pyppeteer, not yet
               ;; available in Guix.
@@ -18190,29 +18189,29 @@ time.")
     (inputs
      (list inkscape/stable pandoc))
     (native-inputs
-     (list python-ipykernel
+     (list python-flaky
+           python-hatchling
+           python-ipykernel
            ;; Adding ipywidgets would create a cycle.
            ;;python-ipywidgets
-           ;; XXX: Disabled, not in guix.
-           ;;python-pyppeteer
            python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-pytest-xdist))
     (propagated-inputs
      (list python-beautifulsoup4
            python-bleach
            python-defusedxml
-           python-entrypoints
+           python-importlib-metadata
            python-jinja2
            python-jupyter-core
+           python-jupyterlab-pygments
+           python-markupsafe
            python-mistune
            python-nbclient
            python-nbformat
+           python-packaging
            python-pandocfilters
            python-pygments
-           python-jupyterlab-pygments
-           python-testpath
+           python-tinycss2
            python-traitlets
            ;; Required, even if [serve] is not used.
            python-tornado-6
@@ -18244,6 +18243,7 @@ time.")
            texlive-pdfcol
            texlive-pgf
            texlive-rsfs
+           texlive-soul
            texlive-stringenc
            texlive-tcolorbox
            texlive-titling
