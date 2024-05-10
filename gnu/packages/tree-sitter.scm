@@ -434,6 +434,18 @@ which will be used as a snippet in origin."
    "0.1.2"
    #:repository-url "https://github.com/camdencheek/tree-sitter-dockerfile"))
 
+(define-public tree-sitter-erlang
+  ;; Versions newer than 0.4.0 use tree-sitter 0.22.1
+  (let ((version "0.4.0") ; In Cargo.toml, but untagged
+        (commit "57e69513efd831f9cc8207d65d96bad917ca4aa4")
+        (revision "0"))
+  (tree-sitter-grammar
+   "erlang" "Erlang"
+   "1h0c9qc6i0kz5a0yq68xp623f84g4mc8hcp00khdbf7y7z7b9izc"
+   (git-version version revision commit)
+   #:repository-url "https://github.com/WhatsApp/tree-sitter-erlang"
+   #:commit commit)))
+
 (define-public tree-sitter-elm
   (tree-sitter-grammar
    "elm" "Elm"
