@@ -53,6 +53,32 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages version-control))
 
+(define-public python-comm
+  (package
+    (name "python-comm")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipython/comm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18xsbpd8dgcfbc51xl59nlwaq7jnyzvgzjfj6psscv71894x4lg7"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-traitlets))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (home-page "https://github.com/ipython/comm")
+    (synopsis "Jupyter Python Comm implementation")
+    (description
+     "Jupyter Python Comm provides a way to register a Kernel Comm
+implementation, as per the Jupyter kernel protocol.  It also provides a base
+Comm implementation and a default CommManager that can be used.")
+    (license license:bsd-3)))
+
 (define-public python-nbclassic
   (package
     (name "python-nbclassic")
