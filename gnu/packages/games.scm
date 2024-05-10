@@ -82,6 +82,7 @@
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2024 Sébastien Lerique <sl@eauchat.org>
+;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7776,14 +7777,14 @@ some graphical niceities, and numerous bug-fixes and other improvements.")
 (define-public yamagi-quake2
   (package
     (name "yamagi-quake2")
-    (version "7.45")
+    (version "8.30")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://deponie.yamagi.org/quake2/quake2-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0rgz8x7lzd0zb0xqd0gvnf2641nr9xpfm6v14mgh99hspxklaln7"))))
+        (base32 "11lv22y5ccd80iyhk6zj94wligcbx6x5vwbqh3jkgz96v0x5dng2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
