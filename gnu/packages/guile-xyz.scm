@@ -17,7 +17,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2018–2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 swedebugia <swedebugia@riseup.net>
@@ -4928,31 +4928,27 @@ over, or update a value in arbitrary data structures.")
 (define-public guile-xapian
   (package
     (name "guile-xapian")
-    (version "0.3.1")
-    (home-page "https://git.systemreboot.net/guile-xapian")
+    (version "0.4.0")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference (url home-page)
-                           (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://guile-xapian.systemreboot.net/releases/guile-xapian-"
+                           version ".tar.lz"))
        (sha256
         (base32
-         "0axbahbi52ji0fxhykn642265v58rdp2yqliqv456nqs038wb5ja"))))
+         "1szjwha8rin65mdm0dviha4pybiij89pq1wfjmrir1js4w5mk1hr"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings
     (inputs
      (list guile-3.0 xapian zlib))
     (native-inputs
-     (list autoconf
-           autoconf-archive
-           automake
-           libtool
-           pkg-config
+     (list pkg-config
+           lzip
            swig))
     (propagated-inputs
      (list guile-lib))
+    (home-page "https://guile-xapian.systemreboot.net")
     (synopsis "Guile bindings for Xapian")
     (description "@code{guile-xapian} provides Guile bindings for Xapian, a
 search engine library.  Xapian is a highly adaptable toolkit which allows
