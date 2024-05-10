@@ -15557,17 +15557,18 @@ It also removes useless @code{pass} statements.")
 (define-public python-mistune
   (package
     (name "python-mistune")
-    (version "0.8.4")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mistune" version))
        (sha256
         (base32
-         "0vkmsh0x480rni51lhyvigfdf06b9247z868pk3bal1wnnfl58sr"))))
-    (build-system python-build-system)
+         "1s4ba1m69yldrhnyfj8lm4bl3axbi95g1dicxya27j9hv7g96zzw"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-nose python-cython))
+     (list python-setuptools
+           python-wheel))
     (home-page "https://github.com/lepture/mistune")
     (synopsis "Markdown parser in pure Python")
     (description "This package provides a fast markdown parser in pure
