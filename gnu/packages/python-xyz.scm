@@ -18365,24 +18365,21 @@ notebooks.")
 (define-public python-ipywidgets
   (package
     (name "python-ipywidgets")
-    (version "7.6.3")
+    (version "8.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ipywidgets" version))
        (sha256
         (base32
-         "1w217j8i53x14l7b05fk300k222zs9vkcjaa1rbrw3sk43k466lz"))))
+         "1ja2xibll6v40va3s7wz5dfp95q01yds64z6csl2dsds94gb9ffh"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-ipykernel
-           python-ipython
-           python-jupyterlab-widgets
-           python-nbformat
-           python-traitlets
-           python-widgetsnbextension))
+     (list python-comm python-ipython python-jupyterlab-widgets
+           python-traitlets python-widgetsnbextension))
     (native-inputs
-     (list python-mock python-pytest python-pytest-cov))
+     (list python-ipykernel python-jsonschema python-pytest python-pytest-cov
+           python-pytz))
     (home-page "https://ipython.org")
     (synopsis "IPython HTML widgets for Jupyter")
     (description "Ipywidgets are interactive HTML widgets for Jupyter
