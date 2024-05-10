@@ -725,3 +725,19 @@ which will be used as a snippet in origin."
    ;; Version 0.7.1 would be most recent, but would require tree-sitter >= 0.21.0.
    "0.6.2"
    #:repository-url "https://github.com/Beaglefoot/tree-sitter-awk"))
+
+(define-public tree-sitter-verilog
+  (let ((version "1.0.0") ; In package.json, but untagged
+        (commit "075ebfc84543675f12e79a955f79d717772dcef3")
+        (revision "0"))
+    (tree-sitter-grammar
+     "verilog" "Verilog"
+     "0j5iycqm5dmvzy7dssm8km1djhr7hnfgk26zyzcxanhrwwq3wi4k"
+     (git-version version revision commit)
+     #:commit commit
+     #:get-cleanup-snippet
+     (lambda _
+       #~(begin
+           (use-modules (guix build utils))
+           (delete-file "binding.gyp")
+           (delete-file-recursively "bindings"))))))
