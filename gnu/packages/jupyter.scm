@@ -648,17 +648,17 @@ endpoints—to Jupyter web applications.")
 (define-public python-jupyterlab-widgets
   (package
     (name "python-jupyterlab-widgets")
-    (version "1.1.4")
+    (version "3.0.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyterlab_widgets" version))
        (sha256
         (base32
-         "0kdib439i9pbv90cscq5c7w4nvv8214k9ik4dnbd152yf897cvpa"))))
+         "1h04kln8hp56svdjjk2hbsb0z1mby71cv4gss3wy89v7jw2arwh4"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-jupyter-packaging python-setuptools))
+     (list python-jupyter-packaging))
     (home-page "https://github.com/jupyter-widgets/ipywidgets")
     (synopsis "Interactive widgets for Jupyter Notebooks")
     (description "ipywidgets, also known as jupyter-widgets or simply widgets,
