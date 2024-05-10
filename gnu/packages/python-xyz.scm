@@ -18349,17 +18349,19 @@ interactive computing.")
 (define-public python-widgetsnbextension
   (package
     (name "python-widgetsnbextension")
-    (version "3.5.1")
+    (version "4.0.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "widgetsnbextension" version))
        (sha256
         (base32
-         "1ismyaxbv9d56yqqqb8xl58hg0iq0bbyy014a53y1g3hfbc8g7q7"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-notebook))
+         "13v88h3cvlf4cs70j568abr04w0bzckl56k9iqx1iadrydgnq6b4"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-jupyter-packaging
+           python-setuptools
+           python-wheel))
     (home-page "https://ipython.org")
     (synopsis "IPython HTML widgets for Jupyter")
     (description "This package provides interactive HTML widgets for Jupyter
