@@ -741,3 +741,35 @@ which will be used as a snippet in origin."
            (use-modules (guix build utils))
            (delete-file "binding.gyp")
            (delete-file-recursively "bindings"))))))
+
+(define-public tree-sitter-vhdl
+  (let ((version "0.1.1") ; In package.json, but untagged
+        (commit "a3b2d84990527c7f8f4ae219c332c00c33d2d8e5")
+        (revision "0"))
+    (tree-sitter-grammar
+     "vhdl" "VHDL"
+     "0gz2b0qg1jzi2q6wgj6k6g35kmni3pqglq4f5kblkxx909463n8a"
+     (git-version version revision commit)
+     #:repository-url "https://github.com/alemuller/tree-sitter-vhdl"
+     #:commit commit
+     #:get-cleanup-snippet
+     (lambda _
+       #~(begin
+           (use-modules (guix build utils))
+           (delete-file "binding.gyp")
+           ;; tree-sitter-vhdl does not have bindings/ directory.
+           (delete-file "src/grammar.json")
+           (delete-file "src/node-types.json")
+           (delete-file "src/parser.c")
+           (delete-file-recursively "src/tree_sitter")
+           ;; Fix a query error in the highlight.scm query test. This would be
+           ;; easier with a patch, but this works too, and we still get to use
+           ;; tree-sitter-grammar. The fix is taken from here:
+           ;; https://github.com/n8tlarsen/tree-sitter-vhdl/commit/dabf157c6bb7220d72d3ceba0ce1abd90bf62187
+           ;; This is a documented issue that has not been resolved for nearly 2
+           ;; years.
+           ;; https://github.com/alemuller/tree-sitter-vhdl/issues/2
+           (substitute* "queries/highlights.scm"
+             (("\\(integer_decimal\n") "(integer_decimal)\n")
+             (("\\(integer\\)") "")
+             (("\"0\")") "\"0\"")))))))
