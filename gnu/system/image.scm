@@ -534,10 +534,10 @@ used in the image."
                 (image-partition-table-type image)))
        (else "")))
 
-    (when (and (gpt-image? image)
+    (when (and (memq (bootloader-name bootloader)
+                     '(grub-efi grub-efi32 grub-efi-removable-bootloader))
                (not
-                (memq (bootloader-name bootloader)
-                      '(grub-efi grub-efi32 grub-efi-removable-bootloader))))
+                (gpt-image? image)))
       (raise
        (formatted-message
         (G_ "EFI bootloader required with GPT partitioning"))))
