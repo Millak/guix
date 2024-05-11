@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019 Li-cheng (Andy) Tai <atai@atai.org>
+;;; Copyright © 2019, 2024 Li-cheng (Andy) Tai <atai@atai.org>
 ;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +22,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (guix build-system cmake)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build utils)
   #:use-module (guix packages)
@@ -30,17 +31,16 @@
 (define-public squirrel
   (package
     (name "squirrel")
-    (version "3.1")
+    (version "3.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/squirrel/squirrel3/"
-                                  "squirrel " version " stable/squirrel_"
-                                  (string-join (string-split version #\.) "_")
-                                  "_stable.tar.gz"))
+              (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/albertodemichelis/squirrel.git")
+                     (commit (string-append "v" version))))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1jyh1523zrrnh9swanfrda0s14mvwc9431dh07g0nx74hbxsfia8"))))
+                "028v90k5bbcb8qwysgv6r0ycy6g920ns32i2sdq0i8hqib90ac5z"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DDISABLE_STATIC=ON")
@@ -49,26 +49,16 @@
        (modify-phases %standard-phases
          (add-after 'install 'install-documentation
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
+             (let* ((source (assoc-ref %build-inputs "source"))
+                    (out (assoc-ref outputs "out"))
                     (doc-dir (string-append out "/share/doc/squirrel")))
                (for-each
                 (lambda (file)
-                  (install-file (string-append "../squirrel3/" file) doc-dir))
+                  (install-file (string-append source "/" file) doc-dir))
                 '("COPYRIGHT" "HISTORY" "README"
-                  "doc/sqstdlib3.pdf" "doc/squirrel3.pdf")))
-             #t))
-         (add-after 'install 'install-headers
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (include-dir (string-append out "/include/squirrel")))
-               (mkdir-p include-dir)
-               (for-each
-                (lambda (header-file)
-                  (copy-recursively header-file
-                                    (string-append include-dir
-                                                   "/"
-                                                   (basename header-file))))
-                (find-files "../squirrel3/include")))
+                  ;"doc/sqstdlib3.pdf" "doc/squirrel3.pdf"  ;; pdf not build out of git; TODO
+
+                  )))
              #t)))))
     (native-inputs
      `(("cmake" ,cmake-minimal)
