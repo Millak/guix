@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1342,6 +1343,30 @@ Documentation} for more information (for example by running @samp{info
       (inputs
        (modify-inputs (package-inputs base)
          (append opensbi-generic))))))
+
+(define-public u-boot-starfive-visionfive2
+  (let ((base (make-u-boot-package "starfive_visionfive2" "riscv64-linux-gnu"
+                                   ;; Allow kernel-arguments pass more content.
+                                   ;; If out of range, boot will fail.
+                                   #:configs '("CONFIG_SYS_CBSIZE=1024"))))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (setenv "OPENSBI" (search-input-file inputs
+                                                       "fw_dynamic.bin"))))
+              (add-after 'install 'install-u-boot-spl.bin.normal.out
+                (lambda _
+                  (install-file "spl/u-boot-spl.bin.normal.out"
+                                (string-append #$output
+                                               "/libexec/spl"))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append opensbi-for-visionfive2))))))
 
 (define-public u-boot-rock64-rk3328
   (let ((base (make-u-boot-package "rock64-rk3328" "aarch64-linux-gnu")))
