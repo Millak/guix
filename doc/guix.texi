@@ -123,7 +123,7 @@ Copyright @copyright{} 2023 Foundation Devices, Inc.@*
 Copyright @copyright{} 2023 Thomas Ieong@*
 Copyright @copyright{} 2023 Saku Laesvuori@*
 Copyright @copyright{} 2023 Graham James Addis@*
-Copyright @copyright{} 2023 Tomas Volf@*
+Copyright @copyright{} 2023, 2024 Tomas Volf@*
 Copyright @copyright{} 2024 Herman Rimm@*
 Copyright @copyright{} 2024 Matthew Trzcinski@*
 Copyright @copyright{} 2024 Richard Sent@*
@@ -23621,6 +23621,15 @@ in @var{config}, are available.  The result should be used in place of
 @code{startx}.
 
 Usually the X server is started by a login manager.
+@end deffn
+
+@deffn {Procedure} xorg-start-command-xinit [config]
+Return a @code{startx} script in which the modules, fonts,
+etc. specified in @var{config} are available.  The result should be used
+in place of @code{startx} and should be invoked by the user from a tty
+after login.  Unlike @code{xorg-start-command}, this script calls
+xinit. Therefore it works well when executed from a tty.  If you are
+using a desktop environment, you are unlikely to need this procedure.
 @end deffn
 
 
