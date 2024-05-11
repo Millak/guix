@@ -49,6 +49,7 @@
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
 ;;; Copyright © 2024 Artyom Bologov <mail@aartaka.me>
+;;; Copyright © 2024 Felix Lechner <felix.lechner@lease-up.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -557,6 +558,33 @@ $(datadir)/guile/site/$(GUILE_EFFECTIVE_VERSION)\n"))
      "guile-aspell is a Guile Scheme library for comparing a string against a
 dictionary and suggesting spelling corrections.")
     (license license:gpl3+)))
+
+(define-public guile-avatar
+  (let ((commit "c2860952fd09ecc878c3d4f1ee2f1678668fbb7a")
+        (revision "0"))
+    (package
+      (name "guile-avatar")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://codeberg.org/lechner/guile-avatar")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1dq9zcx4q3m5s3cpixq4zvlmdrlcc626mpqb7nmmj7vnda8k717f"))))
+      (build-system guile-build-system)
+      (arguments
+       (list #:source-directory "scm"))
+      (inputs (list guile-3.0))
+      (propagated-inputs (list guile-hashing))
+      (home-page "https://codeberg.org/lechner/guile-avatar")
+      (synopsis "Get Libravatar URLs from an email address")
+      (description
+       "@code{guile-avatar} helps you to determine avatars (or profile
+pictures) for email addresses using the Libravatar specification.")
+      (license license:agpl3+))))
 
 (define-public guile2.0-bash
   ;; This project is currently retired.  It was initially announced here:
