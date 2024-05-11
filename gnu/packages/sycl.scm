@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2023 Andy Tai <atai@atai.org>
+;;; Copyright © 2023, 2024 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,19 +34,19 @@
 ;; tests that require such devices are all disabled.
 ;; Check https://lists.gnu.org/archive/html/guix-devel/2018-04/msg00293.html
 
-(define-public opensycl
+(define-public adaptivecpp
   (package
-    (name "opensycl")
-    (version "0.9.4")
+    (name "adaptivecpp")
+    (version "24.02.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/OpenSYCL/OpenSYCL/")
+                    (url "https://github.com/AdaptiveCpp/AdaptiveCpp/")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nynb93b68ghn1i1bsjvbbxpnh5b1yiw9jhhww1q1gi7w182x2g5"))))
+                "0gfr0mr9shgf33bj5sfy6nv2vh7wdky333ryy2n5ikvhfvjmqc7m"))))
     (build-system cmake-build-system)
     (native-inputs (list clang-15 llvm-15 python spirv-tools))
     (inputs (list boost rocm-opencl-runtime spirv-headers))
@@ -54,6 +54,10 @@
     (home-page "https://github.com/OpenSYCL/OpenSYCL")
     (synopsis "Implementation of the SYCL programming language for accelerators")
     (description
-     "Open SYCL is a modern SYCL implementation targeting CPUs and GPUs from all
-major vendors that supports many use cases and approaches for implementing SYCL")
+     "AdaptiveCpp is aImplementation of SYCL and C++ standard parallelism
+for CPUs and GPUs from all vendors, with independent, community-driven
+compiler for C++-based heterogeneous programming models")
     (license license:bsd-2)))
+
+(define-public opensycl
+  (deprecated-package "opensycl" adaptivecpp))
