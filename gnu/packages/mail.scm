@@ -4157,7 +4157,7 @@ It is a replacement for the @command{urlview} program.")
 (define-public mumi
   (package
     (name "mumi")
-    (version "0.0.10")
+    (version "0.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4166,7 +4166,7 @@ It is a replacement for the @command{urlview} program.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rfhbi25kh84whi88423736v2vxgsc6fdps3kqrc1gs6dni9li17"))))
+                "1989k5gjb6dgg2fd7bdi0a99dbwkj6bkgyffalvwsfdfm5f2hf5s"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4211,7 +4211,8 @@ It is a replacement for the @command{urlview} program.")
            guile-webutils
            guile-xapian
            guile-3.0
-           mailutils))
+           mailutils
+           xdg-utils))
     (native-inputs
      (list autoconf automake pkg-config sassc
            (origin
