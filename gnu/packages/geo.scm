@@ -1044,7 +1044,7 @@ during conversion.")
 (define-public python-osmnx
   (package
     (name "python-osmnx")
-    (version "1.8.1")
+    (version "1.9.3")
     (source
      (origin
        ;; Fetch from github as the pypi package is missing the tests dir.
@@ -1054,7 +1054,7 @@ during conversion.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n238n07pp5jw9cg8nqw9qhpkw8plzb5imz1gxbliw2l1idqyjcl"))))
+        (base32 "0yi9al6rrc584y24vigi7w52dq9k2l2zgblrj5ajwgk8079k8zsf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
