@@ -48,6 +48,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (rnrs bytevectors)
   #:export (git-reference
             git-reference?
             git-reference-url
@@ -86,20 +87,13 @@
   (let ((distro (resolve-interface '(gnu packages version-control))))
     (module-ref distro 'git-lfs)))
 
-(define* (git-fetch/in-band* ref hash-algo hash
-                             #:optional name
-                             #:key (system (%current-system))
-                             (guile (default-guile))
-                             (git (git-package))
-                             git-lfs)
-  "Shared implementation code for git-fetch/in-band & friends.  Refer to their
-respective documentation."
+(define (git-fetch-builder git git-lfs git-ref-recursive? hash-algo)
   (define inputs
     `(,(or git (git-package))
       ,@(if git-lfs
             (list git-lfs)
             '())
-      ,@(if (git-reference-recursive? ref)
+      ,@(if git-ref-recursive?
             ;; TODO: remove (standard-packages) after
             ;; 48e528a26f9c019eeaccf5e3de3126aa02c98d3b is merged into master;
             ;; currently when doing 'git clone --recursive', we need sed, grep,
@@ -132,59 +126,82 @@ respective documentation."
             (source-module-closure '((guix build git)
                                      (guix build utils)))))
 
-  (define build
-    (with-imported-modules modules
-      (with-extensions (list guile-json gnutls ;for (guix swh)
-                             guile-lzlib)
-        #~(begin
-            (use-modules (guix build git)
-                         ((guix build utils)
-                          #:select (set-path-environment-variable))
-                         (ice-9 match))
+  (with-imported-modules modules
+    (with-extensions (list guile-json gnutls ;for (guix swh)
+                           guile-lzlib)
+      #~(begin
+          (use-modules (guix build git)
+                       ((guix build utils)
+                        #:select (set-path-environment-variable))
+                       (ice-9 match)
+                       (rnrs bytevectors))
 
-            (define lfs?
-              (call-with-input-string (getenv "git lfs?") read))
+          (define lfs?
+            (call-with-input-string (getenv "git lfs?") read))
 
-            (define recursive?
-              (call-with-input-string (getenv "git recursive?") read))
+          (define recursive?
+            (call-with-input-string (getenv "git recursive?") read))
 
-            ;; Let Guile interpret file names as UTF-8, otherwise
-            ;; 'delete-file-recursively' might fail to delete all of
-            ;; '.git'--see <https://issues.guix.gnu.org/54893>.
-            (setenv "GUIX_LOCPATH"
-                    #+(file-append glibc-locales "/lib/locale"))
-            (setlocale LC_ALL "en_US.utf8")
+          ;; Let Guile interpret file names as UTF-8, otherwise
+          ;; 'delete-file-recursively' might fail to delete all of
+          ;; '.git'--see <https://issues.guix.gnu.org/54893>.
+          (setenv "GUIX_LOCPATH"
+                  #+(file-append glibc-locales "/lib/locale"))
+          (setlocale LC_ALL "en_US.utf8")
 
-            ;; The 'git submodule' commands expects Coreutils, sed, grep,
-            ;; etc. to be in $PATH.  This also ensures that git extensions are
-            ;; found.
-            (set-path-environment-variable "PATH" '("bin") '#+inputs)
+          ;; The 'git submodule' commands expects Coreutils, sed, grep,
+          ;; etc. to be in $PATH.  This also ensures that git extensions are
+          ;; found.
+          (set-path-environment-variable "PATH" '("bin") '#+inputs)
 
-            (setvbuf (current-output-port) 'line)
-            (setvbuf (current-error-port) 'line)
+          (setvbuf (current-output-port) 'line)
+          (setvbuf (current-error-port) 'line)
 
-            (git-fetch-with-fallback (getenv "git url") (getenv "git commit")
-                                     #$output
-                                     #:hash #$hash
-                                     #:hash-algorithm '#$hash-algo
-                                     #:lfs? lfs?
-                                     #:recursive? recursive?
-                                     #:git-command "git")))))
+          (git-fetch-with-fallback (getenv "git url") (getenv "git commit")
+                                   #$output
+                                   #:hash (u8-list->bytevector
+                                           (map
+                                            string->number
+                                            (string-split (getenv "hash") #\,)))
+                                   #:hash-algorithm '#$hash-algo
+                                   #:lfs? lfs?
+                                   #:recursive? recursive?
+                                   #:git-command "git")))))
 
+(define* (git-fetch/in-band* ref hash-algo hash
+                             #:optional name
+                             #:key (system (%current-system))
+                             (guile (default-guile))
+                             (git (git-package))
+                             git-lfs)
+  "Shared implementation code for git-fetch/in-band & friends.  Refer to their
+respective documentation."
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system)))
-    (gexp->derivation (or name "git-checkout") build
-
-                      ;; Use environment variables and a fixed script name so
-                      ;; there's only one script in store for all the
-                      ;; downloads.
+    (gexp->derivation (or name "git-checkout")
+                      ;; Avoid the builder differing for every single use as
+                      ;; having less builder is more efficient for computing
+                      ;; derivations.
+                      ;;
+                      ;; Don't pass package specific data in to the following
+                      ;; procedure, use #:env-vars below instead.
+                      (git-fetch-builder git git-lfs
+                                         (git-reference-recursive? ref)
+                                         hash-algo)
                       #:script-name "git-download"
                       #:env-vars
                       `(("git url" . ,(git-reference-url ref))
                         ("git commit" . ,(git-reference-commit ref))
                         ("git recursive?" . ,(object->string
                                               (git-reference-recursive? ref)))
-                        ("git lfs?" . ,(if git-lfs "#t" "#f")))
+                        ("git lfs?" . ,(if git-lfs "#t" "#f"))
+                        ;; To avoid pulling in (guix base32) in the builder
+                        ;; script, use bytevector->u8-list from (rnrs
+                        ;; bytevectors)
+                        ("hash" . ,(string-join
+                                    (map number->string
+                                         (bytevector->u8-list hash))
+                                    ",")))
                       #:leaked-env-vars '("http_proxy" "https_proxy"
                                           "LC_ALL" "LC_MESSAGES" "LANG"
                                           "COLUMNS")
