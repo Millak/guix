@@ -74,14 +74,7 @@
   (let ((distro (resolve-interface '(gnu packages version-control))))
     (module-ref distro 'subversion)))
 
-(define* (svn-fetch ref hash-algo hash
-                    #:optional name
-                    #:key (system (%current-system)) (guile (default-guile))
-                    (svn (subversion-package)))
-  "Return a fixed-output derivation that fetches REF, a <svn-reference>
-object.  The output is expected to have recursive hash HASH of type
-HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
-
+(define (svn-fetch-builder svn hash-algo)
   (define guile-json
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-json-4))
 
@@ -97,51 +90,64 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
           (module-ref (resolve-interface '(gnu packages base))
                       'tar)))
 
-  (define build
-    (with-imported-modules
-        (source-module-closure '((guix build svn)
-                                 (guix build download)
-                                 (guix build download-nar)
-                                 (guix build utils)
-                                 (guix swh)))
-      (with-extensions (list guile-json guile-gnutls   ;for (guix swh)
-                             guile-lzlib)
-        #~(begin
-            (use-modules (guix build svn)
-                         ((guix build download)
-                          #:select (download-method-enabled?))
-                         (guix build download-nar)
-                         (guix build utils)
-                         (guix swh)
-                         (ice-9 match))
+  (with-imported-modules
+      (source-module-closure '((guix build svn)
+                               (guix build download)
+                               (guix build download-nar)
+                               (guix build utils)
+                               (guix swh)))
+    (with-extensions (list guile-json guile-gnutls   ;for (guix swh)
+                           guile-lzlib)
+      #~(begin
+          (use-modules (guix build svn)
+                       ((guix build download)
+                        #:select (download-method-enabled?))
+                       (guix build download-nar)
+                       (guix build utils)
+                       (guix swh)
+                       (ice-9 match))
 
-            ;; Add tar and gzip to $PATH so
-            ;; 'swh-download-directory-by-nar-hash' can invoke them.
-            (set-path-environment-variable "PATH" '("bin") '(#+@tar+gzip))
+          ;; Add tar and gzip to $PATH so
+          ;; 'swh-download-directory-by-nar-hash' can invoke them.
+          (set-path-environment-variable "PATH" '("bin") '(#+@tar+gzip))
 
-            (or (and (download-method-enabled? 'upstream)
-                     (svn-fetch (getenv "svn url")
-                                (string->number (getenv "svn revision"))
-                                #$output
-                                #:svn-command #+(file-append svn "/bin/svn")
-                                #:recursive? (match (getenv "svn recursive?")
-                                               ("yes" #t)
-                                               (_ #f))
-                                #:user-name (getenv "svn user name")
-                                #:password (getenv "svn password")))
-                (and (download-method-enabled? 'nar)
-                     (download-nar #$output))
-                (and (download-method-enabled? 'swh)
-                     (parameterize ((%verify-swh-certificate? #f))
-                       (swh-download-directory-by-nar-hash #$hash '#$hash-algo
-                                                           #$output))))))))
+          (or (and (download-method-enabled? 'upstream)
+                   (svn-fetch (getenv "svn url")
+                              (string->number (getenv "svn revision"))
+                              #$output
+                              #:svn-command #+(file-append svn "/bin/svn")
+                              #:recursive? (match (getenv "svn recursive?")
+                                             ("yes" #t)
+                                             (_ #f))
+                              #:user-name (getenv "svn user name")
+                              #:password (getenv "svn password")))
+              (and (download-method-enabled? 'nar)
+                   (download-nar #$output))
+              (and (download-method-enabled? 'swh)
+                   (parameterize ((%verify-swh-certificate? #f))
+                     (swh-download-directory-by-nar-hash
+                      (u8-list->bytevector
+                       (map string->number
+                            (string-split (getenv "hash") #\,)))
+                      '#$hash-algo
+                      #$output))))))))
 
+(define* (svn-fetch ref hash-algo hash
+                    #:optional name
+                    #:key (system (%current-system)) (guile (default-guile))
+                    (svn (subversion-package)))
+  "Return a fixed-output derivation that fetches REF, a <svn-reference>
+object.  The output is expected to have recursive hash HASH of type
+HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (mlet %store-monad ((guile (package->derivation guile system)))
-    (gexp->derivation (or name "svn-checkout") build
-
-                      ;; Use environment variables and a fixed script name so
-                      ;; there's only one script in store for all the
-                      ;; downloads.
+    (gexp->derivation (or name "svn-checkout")
+                      ;; Avoid the builder differing for every single use as
+                      ;; having less builder is more efficient for computing
+                      ;; derivations.
+                      ;;
+                      ;; Don't pass package specific data in to the following
+                      ;; procedure, use #:env-vars below instead.
+                      (svn-fetch-builder svn hash-algo)
                       #:script-name "svn-download"
                       #:env-vars
                       `(("svn url" . ,(svn-reference-url ref))
@@ -161,7 +167,14 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                         ,@(match (getenv "GUIX_DOWNLOAD_METHODS")
                             (#f '())
                             (value
-                             `(("GUIX_DOWNLOAD_METHODS" . ,value)))))
+                             `(("GUIX_DOWNLOAD_METHODS" . ,value))))
+                        ;; To avoid pulling in (guix base32) in the builder
+                        ;; script, use bytevector->u8-list from (rnrs
+                        ;; bytevectors)
+                        ("hash" . ,(string-join
+                                    (map number->string
+                                         (bytevector->u8-list hash))
+                                    ",")))
 
                       #:system system
                       #:hash-algo hash-algo
