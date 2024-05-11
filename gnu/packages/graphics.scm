@@ -496,14 +496,14 @@ typically encountered in feature film production.")
 (define-public blender
   (package
     (name "blender")
-    (version "3.6.10")                   ;3.6.x is the current LTS version
+    (version "3.6.13")                   ;3.6.x is the current LTS version
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.blender.org/source/"
                                   "blender-" version ".tar.xz"))
               (sha256
                (base32
-                "1srwr365y40hhpjmfsg52rphdybvin0ay2r23pknm7b9pkpw0wqs"))))
+                "1sx2yz1y37h8g2p6k8cjf2935p3nlvn9nvjc9yfzp79bg4ypfpbz"))))
     (build-system cmake-build-system)
     (arguments
      (list
