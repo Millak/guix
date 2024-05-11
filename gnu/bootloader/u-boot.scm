@@ -49,6 +49,7 @@
             u-boot-rockpro64-rk3399-bootloader
             u-boot-sifive-unmatched-bootloader
             u-boot-qemu-riscv64-bootloader
+            u-boot-starfive-visionfive2-bootloader
             u-boot-ts7970-q-2g-1000mhz-c-bootloader
             u-boot-wandboard-bootloader))
 
@@ -158,6 +159,27 @@
                               image (* 34 512))
         (write-file-on-device u-boot (stat:size (stat u-boot))
                               image (* 2082 512)))))
+
+(define install-starfive-visionfive2-u-boot
+  #~(lambda (bootloader root-index image)
+      (let ((spl (string-append
+                  bootloader "/libexec/spl/u-boot-spl.bin.normal.out"))
+            (u-boot (string-append bootloader "/libexec/u-boot.itb")))
+        (write-file-on-device spl (stat:size (stat spl))
+                              image (* 34 512))
+        (write-file-on-device u-boot (stat:size (stat u-boot))
+                              image (* 2082 512)))))
+
+(define install-starfive-visionfive2-uEnv.txt
+  #~(lambda (bootloader device mount-point)
+      (mkdir-p (string-append mount-point "/boot"))
+      (call-with-output-file (string-append mount-point "/boot/uEnv.txt")
+        (lambda (port)
+          (format port
+                  ;; if board SPI use vender's u-boot, will find
+                  ;; ""starfive/starfive_visionfive2.dtb"", We cannot guarantee
+                  ;; that users will update this u-boot, so set it.
+                  "fdtfile=starfive/jh7110-starfive-visionfive-2-v1.3b.dtb~%")))))
 
 (define install-qemu-riscv64-u-boot
   #~(lambda (bootloader device mount-point)
@@ -315,6 +337,13 @@
    (inherit u-boot-bootloader)
    (package u-boot-sifive-unmatched)
    (disk-image-installer install-sifive-unmatched-u-boot)))
+
+(define u-boot-starfive-visionfive2-bootloader
+  (bootloader
+   (inherit u-boot-bootloader)
+   (package u-boot-starfive-visionfive2)
+   (installer install-starfive-visionfive2-uEnv.txt)
+   (disk-image-installer install-starfive-visionfive2-u-boot)))
 
 (define u-boot-qemu-riscv64-bootloader
   (bootloader
