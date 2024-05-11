@@ -30,6 +30,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
+  #:use-module (rnrs bytevectors)
   #:export (hg-reference
             hg-reference?
             hg-reference-url
@@ -58,13 +59,7 @@
   (let ((distro (resolve-interface '(gnu packages version-control))))
     (module-ref distro 'mercurial)))
 
-(define* (hg-fetch ref hash-algo hash
-                   #:optional name
-                   #:key (system (%current-system)) (guile (default-guile))
-                   (hg (hg-package)))
-  "Return a fixed-output derivation that fetches REF, a <hg-reference>
-object.  The output is expected to have recursive hash HASH of type
-HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
+(define (hg-fetch-builder hg hash-algo)
   (define inputs
     ;; The 'swh-download' procedure requires tar and gzip.
     `(("gzip" ,(module-ref (resolve-interface '(gnu packages compression))
@@ -88,56 +83,84 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                                      (guix build download-nar)
                                      (guix swh)))))
 
-  (define build
-    (with-imported-modules modules
-      (with-extensions (list guile-json gnutls ;for (guix swh)
-                             guile-lzlib)
-        #~(begin
-            (use-modules (guix build hg)
-                         (guix build utils) ;for `set-path-environment-variable'
-                         ((guix build download)
-                          #:select (download-method-enabled?))
-                         (guix build download-nar)
-                         (guix swh)
-                         (ice-9 match))
+  (with-imported-modules modules
+    (with-extensions (list guile-json gnutls ;for (guix swh)
+                           guile-lzlib)
+      #~(begin
+          (use-modules (guix build hg)
+                       (guix build utils) ;for `set-path-environment-variable'
+                       ((guix build download)
+                        #:select (download-method-enabled?))
+                       (guix build download-nar)
+                       (guix swh)
+                       (ice-9 match)
+                       (rnrs bytevectors))
 
-            (set-path-environment-variable "PATH" '("bin")
-                                           (match '#+inputs
-                                             (((names dirs outputs ...) ...)
-                                              dirs)))
+          (set-path-environment-variable "PATH" '("bin")
+                                         (match '#+inputs
+                                           (((names dirs outputs ...) ...)
+                                            dirs)))
 
-            (setvbuf (current-output-port) 'line)
-            (setvbuf (current-error-port) 'line)
+          (setvbuf (current-output-port) 'line)
+          (setvbuf (current-error-port) 'line)
 
-            (or (and (download-method-enabled? 'upstream)
-                     (hg-fetch '#$(hg-reference-url ref)
-                               '#$(hg-reference-changeset ref)
-                               #$output
-                               #:hg-command (string-append #+hg "/bin/hg")))
-                (and (download-method-enabled? 'nar)
-                     (download-nar #$output))
-                ;; As a last resort, attempt to download from Software Heritage.
-                ;; Disable X.509 certificate verification to avoid depending
-                ;; on nss-certs--we're authenticating the checkout anyway.
-                (and (download-method-enabled? 'swh)
-                     (parameterize ((%verify-swh-certificate? #f))
-                       (format (current-error-port)
-                               "Trying to download from Software Heritage...~%")
-                       (or (swh-download-directory-by-nar-hash
-                            #$hash '#$hash-algo #$output)
-                           (swh-download #$(hg-reference-url ref)
-                                         #$(hg-reference-changeset ref)
-                                         #$output)))))))))
+          (or (and (download-method-enabled? 'upstream)
+                   (hg-fetch (string->symbol (getenv "hg ref url"))
+                             (string->symbol (getenv "hg ref changeset"))
+                             #$output
+                             #:hg-command (string-append #+hg "/bin/hg")))
+              (and (download-method-enabled? 'nar)
+                   (download-nar #$output))
+              ;; As a last resort, attempt to download from Software Heritage.
+              ;; Disable X.509 certificate verification to avoid depending
+              ;; on nss-certs--we're authenticating the checkout anyway.
+              (and (download-method-enabled? 'swh)
+                   (parameterize ((%verify-swh-certificate? #f))
+                     (format (current-error-port)
+                             "Trying to download from Software Heritage...~%")
+                     (or (swh-download-directory-by-nar-hash
+                          (u8-list->bytevector
+                           (map string->number
+                                (string-split (getenv "hash") #\,)))
+                          '#$hash-algo
+                          #$output)
+                         (swh-download (getenv "hg ref url")
+                                       (getenv "hg ref changeset")
+                                       #$output)))))))))
 
+(define* (hg-fetch ref hash-algo hash
+                   #:optional name
+                   #:key (system (%current-system)) (guile (default-guile))
+                   (hg (hg-package)))
+  "Return a fixed-output derivation that fetches REF, a <hg-reference>
+object.  The output is expected to have recursive hash HASH of type
+HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (mlet %store-monad ((guile (package->derivation guile system)))
-    (gexp->derivation (or name "hg-checkout") build
+    (gexp->derivation (or name "hg-checkout")
+                      ;; Avoid the builder differing for every single use as
+                      ;; having less builder is more efficient for computing
+                      ;; derivations.
+                      ;;
+                      ;; Don't pass package specific data in to the following
+                      ;; procedure, use #:env-vars below instead.
+                      (hg-fetch-builder hg hash-algo)
                       #:leaked-env-vars '("http_proxy" "https_proxy"
                                           "LC_ALL" "LC_MESSAGES" "LANG"
                                           "COLUMNS")
-                      #:env-vars (match (getenv "GUIX_DOWNLOAD_METHODS")
-                                   (#f '())
-                                   (value
-                                    `(("GUIX_DOWNLOAD_METHODS" . ,value))))
+                      #:env-vars
+                      `(("hg ref url" . ,(hg-reference-url ref))
+                        ("hg ref changeset" . ,(hg-reference-changeset ref))
+                        ;; To avoid pulling in (guix base32) in the builder
+                        ;; script, use bytevector->u8-list from (rnrs
+                        ;; bytevectors)
+                        ("hash" . ,(string-join
+                                    (map number->string
+                                         (bytevector->u8-list hash))
+                                    ","))
+                        ,@(match (getenv "GUIX_DOWNLOAD_METHODS")
+                            (#f '())
+                            (value
+                             `(("GUIX_DOWNLOAD_METHODS" . ,value)))))
                       #:system system
                       #:local-build? #t           ;don't offload repo cloning
                       #:hash-algo hash-algo
