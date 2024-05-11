@@ -30,6 +30,7 @@
   #:use-module ((guix build utils) #:select (mkdir-p))
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:use-module (rnrs bytevectors)
   #:export (svn-reference
             svn-reference?
             svn-reference-url
@@ -179,14 +180,7 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (user-name  svn-multi-reference-user-name (default #f))
   (password   svn-multi-reference-password (default #f)))
 
-(define* (svn-multi-fetch ref hash-algo hash
-                          #:optional name
-                          #:key (system (%current-system)) (guile (default-guile))
-                          (svn (subversion-package)))
-  "Return a fixed-output derivation that fetches REF, a <svn-multi-reference>
-object.  The output is expected to have recursive hash HASH of type
-HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
-
+(define (svn-multi-fetch-builder svn hash-algo)
   (define guile-json
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-json-4))
 
@@ -202,69 +196,83 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
           (module-ref (resolve-interface '(gnu packages base))
                       'tar)))
 
-  (define build
-    (with-imported-modules
-        (source-module-closure '((guix build svn)
-                                 (guix build download)
-                                 (guix build download-nar)
-                                 (guix build utils)
-                                 (guix swh)))
-      (with-extensions (list guile-json guile-gnutls   ;for (guix swh)
-                             guile-lzlib)
-        #~(begin
-            (use-modules (guix build svn)
-                         (guix build utils)
-                         ((guix build download)
-                          #:select (download-method-enabled?))
-                         (guix build download-nar)
-                         (guix swh)
-                         (srfi srfi-1)
-                         (ice-9 match))
+  (with-imported-modules
+      (source-module-closure '((guix build svn)
+                               (guix build download)
+                               (guix build download-nar)
+                               (guix build utils)
+                               (guix swh)))
+    (with-extensions (list guile-json guile-gnutls   ;for (guix swh)
+                           guile-lzlib)
+      #~(begin
+          (use-modules (guix build svn)
+                       (guix build utils)
+                       ((guix build download)
+                        #:select (download-method-enabled?))
+                       (guix build download-nar)
+                       (guix swh)
+                       (srfi srfi-1)
+                       (ice-9 match)
+                       (rnrs bytevectors))
 
-            ;; Add tar and gzip to $PATH so
-            ;; 'swh-download-directory-by-nar-hash' can invoke them.
-            (set-path-environment-variable "PATH" '("bin") '(#+@tar+gzip))
+          ;; Add tar and gzip to $PATH so
+          ;; 'swh-download-directory-by-nar-hash' can invoke them.
+          (set-path-environment-variable "PATH" '("bin") '(#+@tar+gzip))
 
-            (or (every
-                 (lambda (location)
-                   ;; The directory must exist if we are to fetch only a
-                   ;; single file.
-                   (unless (string-suffix? "/" location)
-                     (mkdir-p (string-append #$output "/" (dirname location))))
-                   (and (download-method-enabled? 'upstream)
-                        (svn-fetch (string-append (getenv "svn url") "/" location)
-                                   (string->number (getenv "svn revision"))
-                                   (if (string-suffix? "/" location)
-                                       (string-append #$output "/" location)
-                                       (string-append #$output "/" (dirname location)))
-                                   #:svn-command #+(file-append svn "/bin/svn")
-                                   #:recursive? (match (getenv "svn recursive?")
-                                                  ("yes" #t)
-                                                  (_ #f))
-                                   #:user-name (getenv "svn user name")
-                                   #:password (getenv "svn password"))))
-                 (call-with-input-string (getenv "svn locations")
-                   read))
-                (begin
-                  (when (file-exists? #$output)
-                    (delete-file-recursively #$output))
-                  (or (and (download-method-enabled? 'nar)
-                           (download-nar #$output))
-                      (and (download-method-enabled? 'swh)
-                           ;; SWH keeps HASH as an ExtID for the combination
-                           ;; of files/directories, which allows us to
-                           ;; retrieve the entire combination at once:
-                           ;; <https://gitlab.softwareheritage.org/swh/infra/sysadm-environment/-/issues/5263>.
-                           (parameterize ((%verify-swh-certificate? #f))
-                             (swh-download-directory-by-nar-hash
-                              #$hash '#$hash-algo #$output))))))))))
+          (or (every
+               (lambda (location)
+                 ;; The directory must exist if we are to fetch only a
+                 ;; single file.
+                 (unless (string-suffix? "/" location)
+                   (mkdir-p (string-append #$output "/" (dirname location))))
+                 (and (download-method-enabled? 'upstream)
+                      (svn-fetch (string-append (getenv "svn url") "/" location)
+                                 (string->number (getenv "svn revision"))
+                                 (if (string-suffix? "/" location)
+                                     (string-append #$output "/" location)
+                                     (string-append #$output "/" (dirname location)))
+                                 #:svn-command #+(file-append svn "/bin/svn")
+                                 #:recursive? (match (getenv "svn recursive?")
+                                                ("yes" #t)
+                                                (_ #f))
+                                 #:user-name (getenv "svn user name")
+                                 #:password (getenv "svn password"))))
+               (call-with-input-string (getenv "svn locations")
+                 read))
+              (begin
+                (when (file-exists? #$output)
+                  (delete-file-recursively #$output))
+                (or (and (download-method-enabled? 'nar)
+                         (download-nar #$output))
+                    (and (download-method-enabled? 'swh)
+                         ;; SWH keeps HASH as an ExtID for the combination
+                         ;; of files/directories, which allows us to
+                         ;; retrieve the entire combination at once:
+                         ;; <https://gitlab.softwareheritage.org/swh/infra/sysadm-environment/-/issues/5263>.
+                         (parameterize ((%verify-swh-certificate? #f))
+                           (swh-download-directory-by-nar-hash
+                            (u8-list->bytevector
+                             (map string->number
+                                  (string-split (getenv "hash") #\,)))
+                            '#$hash-algo
+                            #$output))))))))))
 
+(define* (svn-multi-fetch ref hash-algo hash
+                          #:optional name
+                          #:key (system (%current-system)) (guile (default-guile))
+                          (svn (subversion-package)))
+  "Return a fixed-output derivation that fetches REF, a <svn-multi-reference>
+object.  The output is expected to have recursive hash HASH of type
+HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (mlet %store-monad ((guile (package->derivation guile system)))
-    (gexp->derivation (or name "svn-checkout") build
-
-                      ;; Use environment variables and a fixed script name so
-                      ;; there's only one script in store for all the
-                      ;; downloads.
+    (gexp->derivation (or name "svn-checkout")
+                      ;; Avoid the builder differing for every single use as
+                      ;; having less builder is more efficient for computing
+                      ;; derivations.
+                      ;;
+                      ;; Don't pass package specific data in to the following
+                      ;; procedure, use #:env-vars below instead.
+                      (svn-multi-fetch-builder svn hash-algo)
                       #:script-name "svn-multi-download"
                       #:env-vars
                       `(("svn url" . ,(svn-multi-reference-url ref))
@@ -286,7 +294,14 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                         ,@(match (getenv "GUIX_DOWNLOAD_METHODS")
                             (#f '())
                             (value
-                             `(("GUIX_DOWNLOAD_METHODS" . ,value)))))
+                             `(("GUIX_DOWNLOAD_METHODS" . ,value))))
+                        ;; To avoid pulling in (guix base32) in the builder
+                        ;; script, use bytevector->u8-list from (rnrs
+                        ;; bytevectors)
+                        ("hash" . ,(string-join
+                                    (map number->string
+                                         (bytevector->u8-list hash))
+                                    ",")))
 
                       #:leaked-env-vars '("http_proxy" "https_proxy"
                                           "LC_ALL" "LC_MESSAGES" "LANG"
