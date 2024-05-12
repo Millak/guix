@@ -211,7 +211,7 @@ and LICENSE."
                                               (maybe-cargo-development-inputs
                                                 cargo-development-inputs)))
                    (home-page ,home-page)
-                   (synopsis ,synopsis)
+                   (synopsis ,(beautify-synopsis synopsis))
                    (description ,(beautify-description description))
                    (license ,(match license
                                (() #f)
