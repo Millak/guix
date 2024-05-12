@@ -1325,16 +1325,17 @@ with strong support for multi-part, multi-channel use cases.")
 (define-public openimageio
   (package
     (name "openimageio")
-    (version "2.5.10.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/OpenImageIO/oiio")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "06x3lqj9qjh5m0zbr5g2g9ii6jk340pgzrhr4fb353y1y2pkx5sw"))))
+    (version "2.5.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AcademySoftwareFoundation/OpenImageIO")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0bqalfcfjjk31a7zv2hyx0jz8jpdhpsmc3sqwmfl4zf431g45hpb"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ; half the tests require online data or use redirection
@@ -1363,7 +1364,7 @@ with strong support for multi-part, multi-channel use cases.")
 related classes, utilities, and applications.  There is a particular emphasis
 on formats and functionality used in professional, large-scale animation and
 visual effects work for film.")
-    (home-page "https://www.openimageio.org")
+    (home-page "https://github.com/AcademySoftwareFoundation/OpenImageIO")
     (license license:bsd-3)))
 
 (define-public openscenegraph
