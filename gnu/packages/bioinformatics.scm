@@ -16666,6 +16666,8 @@ version does count multisplits.")
                (install-file "minimap2.1" man)
                (map (cut install-file <> inc)
                     (find-files "." "\\.h$"))
+               ;; Not this file.
+               (delete-file (string-append inc "/emmintrin.h"))
                (mkdir-p (string-append lib "/pkgconfig"))
                (with-output-to-file (string-append lib "/pkgconfig/minimap2.pc")
                 (lambda _
