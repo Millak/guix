@@ -463,6 +463,7 @@ and other formats.")
        #:phases
        (modify-phases %standard-phases
          ,@(if (or (target-riscv64?)
+                   (target-ppc64le?)
                    (target-aarch64?))
                `((add-after 'unpack 'update-config-scripts
                    (lambda* (#:key native-inputs inputs #:allow-other-keys)
@@ -475,6 +476,7 @@ and other formats.")
                '()))))
     (native-inputs
      `(,@(if (or (target-riscv64?)
+                 (target-ppc64le?)
                  (target-aarch64?))
              `(("config" ,config))
              `())
