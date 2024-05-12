@@ -8238,8 +8238,8 @@ retrieve.
 @item @code{url}
 The URL of the Mercurial repository to clone.
 
-@item @code{revision}
-This string denotes revision to fetch specified as a number.
+@item @code{changeset}
+This string denotes changeset to fetch.
 @end table
 @end deftp
 
