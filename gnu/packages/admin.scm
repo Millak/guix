@@ -36,7 +36,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021, 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hyunseok Kim <lasnesne@lagunposprasihopre.org>
@@ -398,7 +398,8 @@ interface and is based on GNU Guile.")
                        ;; affects any system without a functional real-time
                        ;; clock (RTC), but in practice these are typically Arm
                        ;; single-board computers.
-                       (if (target-arm?)
+                       (if (or (target-arm?)
+                               (target-riscv64?))
                            guile-fibers-1.1
                            guile-fibers))))
     (inputs (modify-inputs (package-inputs shepherd-0.9)
