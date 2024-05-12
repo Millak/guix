@@ -441,7 +441,7 @@ networks bypassing intermediate firewalls.")
              (setenv "TZDIR"
                      (search-input-directory inputs "share/zoneinfo"))
              ;; Speed-up the test suite on some of the architectures.
-             ,@(if (not (target-x86?))
+             ,@(if (not (target-x86-64?))
                    `((setenv "TESTS_SUITES_EXCLUDE" "rsa"))
                    '()))))
        #:configure-flags
