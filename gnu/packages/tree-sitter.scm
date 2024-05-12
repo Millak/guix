@@ -717,3 +717,11 @@ which will be used as a snippet in origin."
    "0.3.6"
    #:repository-url "https://github.com/fwcd/tree-sitter-kotlin"
    #:commit "0.3.6"))
+
+(define-public tree-sitter-awk
+  (tree-sitter-grammar
+   "awk" "AWK"
+   "1far60pxkqfrxi85hhn811g2r7vhnzdvfp5piy89fmpxk33s4vmi"
+   ;; Version 0.7.1 would be most recent, but would require tree-sitter >= 0.21.0.
+   "0.6.2"
+   #:repository-url "https://github.com/Beaglefoot/tree-sitter-awk"))
