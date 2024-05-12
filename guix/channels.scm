@@ -3,6 +3,8 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2024 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2024 Rostislav Svoboda <Rostislav.Svoboda@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -364,8 +366,11 @@ fails."
 
   (define (make-reporter start-commit end-commit commits)
     (format (current-error-port)
-            (G_ "Authenticating channel '~a', commits ~a to ~a (~h new \
-commits)...~%")
+            (N_ "Authenticating channel '~a', commits ~a to ~a (~h new \
+commit)...~%"
+                "Authenticating channel '~a', commits ~a to ~a (~h new \
+commits)...~%"
+                (length commits))
             (channel-name channel)
             (commit-short-id start-commit)
             (commit-short-id end-commit)
