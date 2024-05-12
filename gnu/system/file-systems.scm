@@ -369,7 +369,7 @@ TARGET in the other system."
   ;; List of know pseudo file system types.  This is used when validating file
   ;; system definitions.
   '("binfmt_misc" "cgroup" "cgroup2" "debugfs" "devpts" "devtmpfs" "efivarfs" "fusectl"
-    "hugetlbfs" "overlay" "proc" "securityfs" "sysfs" "tmpfs" "tracefs" "xenfs"))
+    "hugetlbfs" "overlay" "proc" "securityfs" "sysfs" "tmpfs" "tracefs" "virtiofs" "xenfs"))
 
 (define %fuse-control-file-system
   ;; Control file system for Linux' file systems in user-space (FUSE).
