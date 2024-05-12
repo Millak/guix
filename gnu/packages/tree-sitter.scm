@@ -709,3 +709,11 @@ which will be used as a snippet in origin."
    "1.0.8"
    ;; Version 1.2.1 is most recent, but requires tree-sitter >0.21.0
    #:repository-url "https://github.com/tlaplus-community/tree-sitter-tlaplus"))
+
+(define-public tree-sitter-kotlin
+  (tree-sitter-grammar
+   "kotlin" "Kotlin"
+   "0lqwjg778xy561hhf90c9m8zdjmv58z5kxgy0cjgys4xqsfbfri6"
+   "0.3.6"
+   #:repository-url "https://github.com/fwcd/tree-sitter-kotlin"
+   #:commit "0.3.6"))
