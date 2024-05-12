@@ -187,6 +187,7 @@ and LICENSE."
          (guix-name (crate-name->package-name name))
          (cargo-inputs (format-inputs cargo-inputs))
          (cargo-development-inputs (format-inputs cargo-development-inputs))
+         (description (beautify-description description))
          (pkg `(package
                    (name ,guix-name)
                    (version ,version)
@@ -212,7 +213,10 @@ and LICENSE."
                                                 cargo-development-inputs)))
                    (home-page ,home-page)
                    (synopsis ,(beautify-synopsis synopsis))
-                   (description ,(beautify-description description))
+                   (description ,(if (string-prefix? "This" description)
+                                     description
+                                     (string-append "This package provides "
+                                                    description)))
                    (license ,(match license
                                (() #f)
                                (#f #f)
