@@ -524,8 +524,8 @@ Performance is achieved by using the LLVM JIT compiler.")
   (deprecated-package "guile-aiscm-next" guile-aiscm))
 
 (define-public llama-cpp
-  (let ((commit "03bf161eb6dea6400ee49c6dc6b69bdcfa9fd3fc")
-        (revision "1"))
+  (let ((commit "fed0108491a3a3cbec6c6480dc8667ffff9d7659")
+        (revision "2"))
     (package
       (name "llama-cpp")
       (version (git-version "0.0.0" revision commit))
@@ -537,7 +537,7 @@ Performance is achieved by using the LLVM JIT compiler.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1ag1jash84hasz10h0piw72a8ginm8kzvhihbzzljz96gq2kjm88"))))
+          (base32 "16rm9gy0chd6k07crm8rkl2j3hg7y7h0km7k6c8q7bmm2jrd64la"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -559,6 +559,14 @@ Performance is achieved by using the LLVM JIT compiler.")
                              (guix build python-build-system))
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'disable-unrunable-tests
+              ;; test-eval-callback downloads ML model from network, cannot
+              ;; run in Guix build environment
+              (lambda _
+                (substitute* '("examples/eval-callback/CMakeLists.txt")
+                  (("add_test") "#add_test"))
+                (substitute* '("examples/eval-callback/CMakeLists.txt")
+                  (("set_property") "#set_property"))))
             (add-before 'install 'install-python-scripts
               (lambda _
                 (let ((bin (string-append #$output "/bin/")))
@@ -581,7 +589,7 @@ Performance is achieved by using the LLVM JIT compiler.")
                   (make-script "convert"))))
             (add-after 'install-python-scripts 'wrap-python-scripts
               (assoc-ref python:%standard-phases 'wrap))
-            (replace 'install
+            (add-after 'install 'install-main
               (lambda _
                 (copy-file "bin/main" (string-append #$output "/bin/llama")))))))
       (inputs (list python))
