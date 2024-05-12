@@ -257,7 +257,7 @@ package definition."
                  "https://package.elm-lang.org/packages/elm-guix/demo/3.0.0")
                 (synopsis "A test for `(guix import elm)`")
                 (description
-                 "This package provides a test for `(guix import elm)`")
+                 "This package provides a test for `(guix import elm)`.")
                 (properties '((upstream-name . "elm-guix/demo")))
                 (license license:gpl3+)))
             (equal? (directory-sha256 elm-guix-demo-dir)

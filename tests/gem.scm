@@ -117,7 +117,7 @@
           (build-system ruby-build-system)
           (propagated-inputs (list bundler ruby-bar))
           (synopsis "A cool gem")
-          (description "This package provides a cool gem")
+          (description "This package provides a cool gem.")
           (home-page "https://example.com")
           (license (list license:expat license:asl2.0)))
        #t)
@@ -146,7 +146,7 @@
           (build-system ruby-build-system)
           (propagated-inputs (list bundler ruby-bar))
           (synopsis "A cool gem")
-          (description "This package provides a cool gem")
+          (description "This package provides a cool gem.")
           (home-page "https://example.com")
           (license (list license:expat license:asl2.0)))
        #t)
@@ -182,7 +182,7 @@
                (build-system ruby-build-system)
                (propagated-inputs (list bundler))
                (synopsis "Another cool gem")
-               (description "Another cool gem")
+               (description "Another cool gem.")
                (home-page "https://example.com")
                (license #f))                      ;no licensing info
              (package
@@ -198,7 +198,7 @@
                (build-system ruby-build-system)
                (propagated-inputs (list bundler ruby-bar))
                (synopsis "A cool gem")
-               (description "This package provides a cool gem")
+               (description "This package provides a cool gem.")
                (home-page "https://example.com")
                (license (list license:expat license:asl2.0))))
            #t)
@@ -234,7 +234,7 @@
                (build-system ruby-build-system)
                (propagated-inputs (list bundler))
                (synopsis "Another cool gem")
-               (description "Another cool gem")
+               (description "Another cool gem.")
                (home-page "https://example.com")
                (license #f))                      ;no licensing info
              (package
@@ -250,7 +250,7 @@
                (build-system ruby-build-system)
                (propagated-inputs (list bundler ruby-bar))
                (synopsis "A cool gem")
-               (description "This package provides a cool gem")
+               (description "This package provides a cool gem.")
                (home-page "https://example.com")
                (license (list license:expat license:asl2.0))))
            #t)

@@ -48,7 +48,7 @@
                             (home-page "https://example.org/foo")
                             (repo "https://example.org/foo.git")
                             (synopsis "synopsis")
-                            (guix-description "description")
+                            (guix-description "description.")
                             (guix-license
                              '(list license:cc-by-sa4.0 license:lgpl3+))
                             (inputs '())

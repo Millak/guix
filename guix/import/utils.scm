@@ -370,6 +370,15 @@ LENGTH characters."
              (cons* "This" "package"
                     (string-downcase first) rest))
             (_ words)))
+         (new-words
+           (match new-words
+             ((rest ... last)
+              (reverse (cons (if (or (string-suffix? "." last)
+                                     (string-suffix? "!" last)
+                                     (string-suffix? "?" last))
+                               last
+                               (string-append last "."))
+                             (reverse rest))))))
          (cleaned
           (string-join (map fix-word new-words))))
     ;; Use double spacing between sentences

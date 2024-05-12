@@ -503,7 +503,7 @@
                          (("rust-leaf-alice" ('unquote 'rust-leaf-alice-0.7))))))
                       (home-page "http://example.com")
                       (synopsis "summary")
-                      (description "This package provides summary")
+                      (description "This package provides summary.")
                       (license (list license:expat license:asl2.0))))
 
            (string=? test-source-hash hash))
@@ -592,7 +592,7 @@
                  ('quasiquote (#:skip-build? #t)))
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-leaf-alice-0.7
               (package
@@ -611,7 +611,7 @@
                 (arguments ('quasiquote (#:skip-build? #t)))
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-leaf-bob-3
               (package
@@ -630,7 +630,7 @@
                 (arguments ('quasiquote (#:skip-build? #t)))
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-intermediate-b-1
               (package
@@ -653,7 +653,7 @@
                                  ('unquote rust-leaf-bob-3))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-intermediate-a-1
               (package
@@ -680,7 +680,7 @@
                                  ('unquote rust-leaf-bob-3))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-root-1
               (package
@@ -711,7 +711,7 @@
                                  ('unquote rust-intermediate-c-1))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0)))))
            #t)
           (x
@@ -740,7 +740,7 @@
                                  ('unquote rust-leaf-alice-0.7))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-leaf-alice-0.7
               (package
@@ -758,7 +758,7 @@
                 (build-system cargo-build-system)
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-leaf-bob-3
               (package
@@ -776,7 +776,7 @@
                 (build-system cargo-build-system)
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-intermediate-b-1
               (package
@@ -798,7 +798,7 @@
                                  ('unquote rust-leaf-bob-3))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-intermediate-a-1
               (package
@@ -824,7 +824,7 @@
                                  ('unquote rust-leaf-bob-3))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-root-1
               (package
@@ -855,7 +855,7 @@
                                  ('unquote rust-intermediate-c-1))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0)))))
            #t)
           (x
@@ -972,7 +972,7 @@
                              ('unquote 'rust-leaf-bob-4.0.0-yanked))))))
             (home-page "http://example.com")
             (synopsis "summary")
-            (description "This package provides summary")
+            (description "This package provides summary.")
             (license (list license:expat license:asl2.0)))))
        #t)
       (x
@@ -1038,7 +1038,7 @@
                 (build-system cargo-build-system)
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-leaf-bob-3.0.2-yanked
               (package
@@ -1058,7 +1058,7 @@
                 (build-system cargo-build-system)
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-leaf-bob-3
               (package
@@ -1076,7 +1076,7 @@
                 (build-system cargo-build-system)
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0))))
             (define-public 'rust-bar-1
               (package
@@ -1103,7 +1103,7 @@
                                  ('unquote 'rust-leaf-bob-4.0.0-yanked))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
-                (description "This package provides summary")
+                (description "This package provides summary.")
                 (license (list license:expat license:asl2.0)))))
             #t)
           (x
