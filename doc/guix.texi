@@ -8302,6 +8302,43 @@ This string denotes revision to fetch specified as a number.
 @end table
 @end deftp
 
+For CVS repositories, the module @code{(guix cvs-download)} defines the
+@code{cvs-fetch} origin method and @code{cvs-reference} data type for
+support of the Concurrent Versions System (CVS).
+
+@deffn {Procedure} cvs-fetch ref hash-algo hash [name]
+Return a fixed-output derivation that fetches @var{ref}, a
+@code{<cvs-reference>} object.  The output is expected to have recursive
+hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
+the file name, or a generic name if @code{#f}.
+@end deffn
+
+@deftp {Data Type} cvs-reference
+This data type represents a CVS reference for @code{cvs-fetch} to
+retrieve.
+
+@table @asis
+@item @code{root-directory}
+The CVS root directory.
+
+@item @code{module}
+Module to fetch.
+
+@item @code{revision}
+Revision to fetch.
+@end table
+
+The example below denotes a version of gnu-standards to fetch:
+
+@lisp
+(cvs-reference
+  (root-directory ":pserver:anonymous@@cvs.savannah.gnu.org:/sources/gnustandards")
+  (module "gnustandards")
+  (revision "2020-11-25"))
+@end lisp
+
+@end deftp
+
 @node Defining Package Variants
 @section Defining Package Variants
 
