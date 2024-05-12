@@ -5235,6 +5235,60 @@ next campaign.")
     (description "This package contains a dedicated server for @emph{The
 Battle for Wesnoth}.")))
 
+(define-public wordwarvi
+  (package
+    (name "wordwarvi")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smcameron/wordwarvi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f9xhm7267g27f2k1v4dylzvrfyhr9y60f5ypq5a5kiqrqykm245"))))
+    (build-system gnu-build-system)
+    (inputs (list alsa-lib gtk+-2 libvorbis portaudio))
+    (native-inputs (list pkg-config))
+    (arguments
+     (list
+      #:make-flags
+      #~(list "BINDIR=/bin"
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "DATADIR=" #$output "")
+              (string-append "DESTDIR=" #$output) "PREFIX=")
+      #:tests? #f ;no tests
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (add-after 'unpack 'fix-makefile
+                     (lambda _
+                       (substitute* "Makefile"
+                         (("/bin/rm")
+                          "rm")
+                         (("-DDATADIR=\\\\\"\\$\\{DATADIR\\}/\\\\\"")
+                          "-DDATADIR=\\\"${DESTDIR}/${DATADIR}/\\\"")))))))
+    (home-page "https://smcameron.github.io/wordwarvi/")
+    (synopsis "Arcade-style side scrolling space shooter")
+    (description
+     "In this game you pilot a combat space ship to rescue your lost \"vi\" .swp
+files avoiding OS defenses.  It contains several levels and the difficulty
+level is configurable on the command line.  It can be played with a keyboard
+or a joystick.  It is drawn mostly with lines, and supports various display
+modes.")
+    ;; For the code, most files are under GPLv2+, but since the ogg_to_pcm.c
+    ;; file is GPLv2 without 'any later version', we use 'gpl2' because of the
+    ;; ambiguity. For the sounds the licenses are declared in
+    ;; sounds/Attribution.txt and for aaaah_it_burns.ogg, it can be viewed with
+    ;; vorbiscomment -l.
+    (license (list license:gpl2 ;For the code
+                   ;; lucky-holiday-cornbread-stuffing-mono.ogg
+                   ;; lucky13-steve-mono-mix.ogg
+                   ;; aaaah_it_burns.ogg
+                   license:cc-by3.0
+                   ;; all other sounds are under cc-by-sa 3.0
+                   license:cc-by-sa3.0))))
+
 (define-public gamine
   (package
     (name "gamine")
