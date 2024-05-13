@@ -10958,14 +10958,14 @@ ManimPango is internally used in Manim to render (non-LaTeX) text.")
 (define-public python-xcffib
   (package
     (name "python-xcffib")
-    (version "1.4.0")
+    (version "0.11.1")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "xcffib" version))
       (sha256
        (base32
-        "095na8zk75829c6ahxw658jh4g4qxx115g4a32p7b36kzq6w0xxr"))))
+        "0nkglsm9nbhv238iagmmsjcz6lf1yfdvp5kmspphdj385vz9r50j"))))
     (build-system python-build-system)
     (inputs
      (list libxcb))
@@ -10982,7 +10982,16 @@ ManimPango is internally used in Manim to render (non-LaTeX) text.")
              (let ((libxcb (assoc-ref inputs "libxcb")))
                (substitute* '("xcffib/__init__.py")
                  (("soname = ctypes.util.find_library.*xcb.*")
-                  (string-append "soname = \"" libxcb "/lib/libxcb.so\"\n")))))))))
+                  (string-append "soname = \"" libxcb "/lib/libxcb.so\"\n")))
+               #t)))
+         (add-after 'install 'install-doc
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((doc (string-append (assoc-ref outputs "out") "/share"
+                                       "/doc/" ,name "-" ,version)))
+               (mkdir-p doc)
+               (copy-file "README.md"
+                          (string-append doc "/README.md"))
+               #t))))))
     (home-page "https://github.com/tych0/xcffib")
     (synopsis "XCB Python bindings")
     (description
