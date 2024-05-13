@@ -7,7 +7,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Huang Ying <huang.ying.caritas@gmail.com>
-;;; Copyright © 2017, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
@@ -1487,11 +1487,14 @@ This is meant to be used as a profile hook."
   (define guile-zlib
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-zlib))
 
+  (define guile-zstd
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-zstd))
+
   (define build
     (with-imported-modules (source-module-closure
                             '((guix build utils)
                               (gnu build linux-modules)))
-      (with-extensions (list guile-zlib)
+      (with-extensions (list guile-zlib guile-zstd)
         #~(begin
             (use-modules (ice-9 ftw)
                          (ice-9 match)

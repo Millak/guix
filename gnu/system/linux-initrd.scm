@@ -128,7 +128,7 @@ MODULES and taken from LINUX."
 
   (define build-exp
     (with-imported-modules imported-modules
-      (with-extensions (list guile-zlib)
+      (with-extensions (list guile-zlib guile-zstd)
         #~(begin
             (use-modules (gnu build linux-modules)
                          (guix build utils)
@@ -168,7 +168,9 @@ MODULES and taken from LINUX."
               ;; is already gzipped as a whole.
               (cond
                ((string-contains file ".ko.gz")
-                (invoke #+(file-append gzip "/bin/gunzip") file))))
+                (invoke #+(file-append gzip "/bin/gunzip") file))
+               ((string-contains file ".ko.zst")
+                (invoke #+(file-append zstd "/bin/zstd") "-d" file))))
 
             (mkdir #$output)
             (for-each (lambda (module)

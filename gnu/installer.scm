@@ -386,6 +386,7 @@ purposes."
                            guile-json-3 guile-git guile-webutils
                            guile-gnutls
                            guile-zlib           ;for (gnu build linux-modules)
+                           guile-zstd           ;for (gnu build linux-modules)
                            (current-guix))
       (with-imported-modules `(,@(source-module-closure
                                   `(,@modules

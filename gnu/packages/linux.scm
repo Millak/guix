@@ -874,6 +874,10 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
     ,@(if (version>=? version "5.13")
           '(("BPF_UNPRIV_DEFAULT_OFF" . #t))
           '())
+    ;; Compress kernel modules via Zstd.
+    ,(if (version>=? version "5.13")
+         '("CONFIG_MODULE_COMPRESS_ZSTD" . #t)
+         '("CONFIG_MODULE_COMPRESS_GZIP" . #t))
     ;; Some very mild hardening.
     ("CONFIG_SECURITY_DMESG_RESTRICT" . #t)
     ;; All kernels should have NAMESPACES options enabled
@@ -1063,7 +1067,10 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
                  "EXTRAVERSION ?="))
               (setenv "EXTRAVERSION"
                       #$(and extra-version
-                             (string-append "-" extra-version)))))
+                             (string-append "-" extra-version)))
+              ;; Use the maximum compression available for Zstd-compressed
+              ;; modules.
+              (setenv "ZSTD_CLEVEL" "19")))
           (replace 'configure
             (lambda _
               (let ((config
@@ -1157,7 +1164,9 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
            ;; support.
            dwarves                      ;for pahole
            python-wrapper
-           zlib))
+           zlib
+           ;; For Zstd compression of kernel modules.
+           zstd))
     (home-page "https://www.gnu.org/software/linux-libre/")
     (synopsis "100% free redistribution of a cleaned Linux kernel")
     (description "GNU Linux-Libre is a free (as in freedom) variant of the

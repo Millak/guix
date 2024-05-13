@@ -3,6 +3,7 @@
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2023 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module ((guix build utils) #:select (find-files invoke))
   #:use-module (guix build union)
   #:autoload   (zlib) (call-with-gzip-input-port)
+  #:autoload   (zstd) (call-with-zstd-input-port)
   #:use-module (rnrs io ports)
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
@@ -108,24 +110,29 @@ string list."
     (cons (string->symbol (string-take str =))
           (string-drop str (+ 1 =)))))
 
-;; Matches kernel modules, without compression, with GZIP compression or with
-;; XZ compression.
-(define module-regex "\\.ko(\\.gz|\\.xz)?$")
+;; Matches kernel modules, without compression, with GZIP, XZ or ZSTD
+;; compression.
+(define module-regex "\\.ko(\\.gz|\\.xz|\\.zst)?$")
 
 (define (modinfo-section-contents file)
   "Return the contents of the '.modinfo' section of FILE as a list of
 key/value pairs.."
+  (define (decompress-file decompressor file)
+    (let ((port (open-file file "r0")))
+      (dynamic-wind
+        (lambda ()
+          #t)
+        (lambda ()
+          (decompressor port get-bytevector-all))
+        (lambda ()
+          (close-port port)))))
+
   (define (get-bytevector file)
     (cond
      ((string-suffix? ".ko.gz" file)
-      (let ((port (open-file file "r0")))
-        (dynamic-wind
-          (lambda ()
-            #t)
-          (lambda ()
-            (call-with-gzip-input-port port get-bytevector-all))
-          (lambda ()
-            (close-port port)))))
+      (decompress-file call-with-gzip-input-port file))
+     ((string-suffix? ".ko.zst" file)
+      (decompress-file call-with-zstd-input-port file))
      (else
       (call-with-input-file file get-bytevector-all))))
 
@@ -213,11 +220,12 @@ modules that can be postloaded, of the soft dependencies of module FILE."
   (let ((suffix (match compression
                   ('xz   ".ko.xz")
                   ('gzip ".ko.gz")
+                  ('zstd ".ko.zst")
                   (else  ".ko"))))
     (string-append name suffix)))
 
 (define (ensure-dot-ko name compression)
-  "Return NAME with a '.ko[.gz|.xz]' suffix appended, unless it already has
+  "Return NAME with a '.ko[.gz|.xz|.zst]' suffix appended, unless it already has
 it."
   (if (string-contains name ".ko")
       name
@@ -235,7 +243,7 @@ underscores."
 
 (define (file-name->module-name file)
   "Return the module name corresponding to FILE, stripping the trailing
-'.ko[.gz|.xz]' and normalizing it."
+'.ko[.gz|.xz|.zst]' and normalizing it."
   (normalize-module-name (strip-extension (basename file))))
 
 (define (find-module-file directory module)
@@ -333,11 +341,11 @@ not a file name."
                              (recursive? #t)
                              (lookup-module dot-ko)
                              (black-list (module-black-list)))
-  "Load Linux module from FILE, the name of a '.ko[.gz|.xz]' file; return true
-on success, false otherwise.  When RECURSIVE? is true, load its dependencies
-first (à la 'modprobe'.)  The actual files containing modules depended on are
-obtained by calling LOOKUP-MODULE with the module name.  Modules whose name
-appears in BLACK-LIST are not loaded."
+  "Load Linux module from FILE, the name of a '.ko[.gz|.xz|.zst]' file; return
+true on success, false otherwise.  When RECURSIVE? is true, load its
+dependencies first (à la 'modprobe'.)  The actual files containing modules
+depended on are obtained by calling LOOKUP-MODULE with the module name.
+Modules whose name appears in BLACK-LIST are not loaded."
   (define (black-listed? module)
     (let ((result (member module black-list)))
       (when result
@@ -695,7 +703,7 @@ are required to access DEVICE."
   "Guess the file name corresponding to NAME, a module name.  That doesn't
 always work because sometimes underscores in NAME map to hyphens (e.g.,
 \"input-leds.ko\"), sometimes not (e.g., \"mac_hid.ko\").  If the module is
-compressed then COMPRESSED can be set to 'xz or 'gzip, depending on the
+compressed then COMPRESSED can be set to 'zstd, 'xz or 'gzip, depending on the
 compression type."
   (string-append directory "/" (ensure-dot-ko name compression)))
 
@@ -706,6 +714,8 @@ compression type."
   (define (guess-file-name name)
     (let ((names (list
                   (module-name->file-name/guess directory name)
+                  (module-name->file-name/guess directory name
+                                                #:compression 'zstd)
                   (module-name->file-name/guess directory name
                                                 #:compression 'xz)
                   (module-name->file-name/guess directory name
@@ -729,8 +739,8 @@ compression type."
 
 (define (write-module-name-database directory)
   "Write a database that maps \"module names\" as they appear in the relevant
-ELF section of '.ko[.gz|.xz]' files, to actual file names.  This format is
-Guix-specific.  It aims to deal with inconsistent naming, in particular
+ELF section of '.ko[.gz|.xz|.zst]' files, to actual file names.  This format
+is Guix-specific.  It aims to deal with inconsistent naming, in particular
 hyphens vs. underscores."
   (define mapping
     (map (lambda (file)
@@ -749,8 +759,8 @@ hyphens vs. underscores."
       (pretty-print mapping port))))
 
 (define (write-module-alias-database directory)
-  "Traverse the '.ko[.gz|.xz]' files in DIRECTORY and create the corresponding
-'modules.alias' file."
+  "Traverse the '.ko[.gz|.xz|.zst]' files in DIRECTORY and create the
+corresponding 'modules.alias' file."
   (define aliases
     (map (lambda (file)
            (cons (file-name->module-name file) (module-aliases file)))
@@ -796,9 +806,9 @@ are found, return a tuple (DEVNAME TYPE MAJOR MINOR), otherwise return #f."
   (char-set-complement (char-set #\-)))
 
 (define (write-module-device-database directory)
-  "Traverse the '.ko[.gz|.xz]' files in DIRECTORY and create the corresponding
-'modules.devname' file.  This file contains information about modules that can
-be loaded on-demand, such as file system modules."
+  "Traverse the '.ko[.gz|.xz|.zst]' files in DIRECTORY and create the
+corresponding 'modules.devname' file.  This file contains information about
+modules that can be loaded on-demand, such as file system modules."
   (define aliases
     (filter-map (lambda (file)
                   (match (aliases->device-tuple (module-aliases file))
