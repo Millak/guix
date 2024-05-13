@@ -7209,14 +7209,14 @@ or eta squared effect size.")
 (define-public r-logspline
   (package
     (name "r-logspline")
-    (version "2.1.21")
+    (version "2.1.22")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "logspline" version))
         (sha256
           (base32
-            "0xqbk3h28gkx3haj7hdg314616x673cmg9ia148g0q9j3zqkqflf"))))
+            "00pdcfj1hmafxzs7gqw3n072p6pxp9hvsdm062n0xkiby6igffkp"))))
     (properties `((upstream-name . "logspline")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
