@@ -314,9 +314,12 @@ Graphviz and LaTeX.")
                    (add-after 'install 'wrap
                      (lambda* (#:key inputs outputs #:allow-other-keys)
                        (let ((out (assoc-ref outputs "out"))
+                             (graphviz (assoc-ref inputs "graphviz"))
                              (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
                              (python-path (getenv "GUIX_PYTHONPATH")))
                          (wrap-program (string-append out "/bin/xdot")
+                           `("PATH" ":" prefix
+                             (,(string-append graphviz "/bin")))
                            `("GI_TYPELIB_PATH" ":" prefix
                              (,gi-typelib-path))
                            `("GUIX_PYTHONPATH" ":" prefix
