@@ -397,9 +397,14 @@ static void copyFile(int sourceFd, int destinationFd)
     } else {
 	if (result < 0)
 	    throw SysError(format("copy_file_range `%1%' to `%2%'") % sourceFd % destinationFd);
-	if (result < st.st_size)
-	    throw SysError(format("short write in copy_file_range `%1%' to `%2%'")
-			   % sourceFd % destinationFd);
+
+	/* If 'copy_file_range' copied less than requested, try again.  */
+	for (ssize_t copied = result; copied < st.st_size; copied += result) {
+	    result = copy_file_range(sourceFd, NULL, destinationFd, NULL,
+				     st.st_size - copied, 0);
+	    if (result < 0)
+		throw SysError(format("copy_file_range `%1%' to `%2%'") % sourceFd % destinationFd);
+	}
     }
 }
 
