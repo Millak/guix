@@ -1076,9 +1076,15 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
                   (close-port port))
                 (invoke "make" "oldconfig"))))
           (replace 'install
-            (lambda _
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
               (let ((moddir (string-append #$output "/lib/modules"))
-                    (dtbdir (string-append #$output "/lib/dtbs")))
+                    (dtbdir (string-append #$output "/lib/dtbs"))
+                    (make-flags
+                     (append make-flags
+                             (list "-j"
+                                   (if parallel-build?
+                                       (number->string (parallel-job-count))
+                                       "1")))))
                 ;; Install kernel image, kernel configuration and link map.
                 (for-each (lambda (file) (install-file file #$output))
                           (find-files "." "^(\\.config|bzImage|zImage|Image\
@@ -1086,22 +1092,23 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
                 ;; Install device tree files
                 (unless (null? (find-files "." "\\.dtb$"))
                   (mkdir-p dtbdir)
-                  (invoke "make" (string-append "INSTALL_DTBS_PATH=" dtbdir)
-                          "dtbs_install"))
+                  (apply invoke "make"
+                         (string-append "INSTALL_DTBS_PATH=" dtbdir)
+                         "dtbs_install" make-flags))
                 ;; Install kernel modules
                 (mkdir-p moddir)
-                (invoke "make"
-                        ;; Disable depmod because the Guix system's module
-                        ;; directory is an union of potentially multiple
-                        ;; packages.  It is not possible to use depmod to
-                        ;; usefully calculate a dependency graph while
-                        ;; building only one of them.
-                        "DEPMOD=true"
-                        (string-append "MODULE_DIR=" moddir)
-                        (string-append "INSTALL_PATH=" #$output)
-                        (string-append "INSTALL_MOD_PATH=" #$output)
-                        "INSTALL_MOD_STRIP=1"
-                        "modules_install")
+                (apply invoke "make"
+                       ;; Disable depmod because the Guix system's module
+                       ;; directory is an union of potentially multiple
+                       ;; packages.  It is not possible to use depmod to
+                       ;; usefully calculate a dependency graph while building
+                       ;; only one of them.
+                       "DEPMOD=true"
+                       (string-append "MODULE_DIR=" moddir)
+                       (string-append "INSTALL_PATH=" #$output)
+                       (string-append "INSTALL_MOD_PATH=" #$output)
+                       "INSTALL_MOD_STRIP=1"
+                       "modules_install" make-flags)
                 (let* ((versions (filter (lambda (name)
                                            (not (string-prefix? "." name)))
                                          (scandir moddir)))
@@ -1123,7 +1130,7 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
            elfutils                  ;needed to enable CONFIG_STACK_VALIDATION
            flex
            bison
-           util-linux                ;needed for hexdump
+           util-linux          ;needed for hexdump
            ;; These are needed to compile the GCC plugins.
            gmp
            mpfr
