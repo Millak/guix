@@ -3682,6 +3682,31 @@ termination analysis via the automatic synthesis of linear ranking
 functions.")
     (license license:gpl3+)))
 
+(define-public primecount
+  (package
+    (name "primecount")
+    (version "7.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kimwalisch/primecount")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0v3zm6mw4fb6a33zi542x94w1nd54rvn7r8dav670jm9dn60jfsn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                     "-DBUILD_STATIC_LIBS=OFF"
+                                     "-DBUILD_TESTS=ON")))
+    (home-page "https://github.com/kimwalisch/primecount")
+    (synopsis "Fast prime counting function implementations")
+    (description "@code{primecount} is a command-line program and C/C++
+library that counts the number of primes ≤ x (maximum 1031) using highly
+optimized implementations of the combinatorial prime counting algorithms.")
+    (license license:bsd-2)))
+
 (define-public primesieve
   (package
     (name "primesieve")
