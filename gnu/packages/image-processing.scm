@@ -167,7 +167,7 @@ Magnetic Resonance Imaging.")
 (define-public dcmtk
   (package
     (name "dcmtk")
-    (version "3.6.7")
+    (version "3.6.8")
     (source
      (origin
        (method url-fetch)
@@ -176,7 +176,7 @@ Magnetic Resonance Imaging.")
                        "dcmtk" (string-join (string-split version #\.) "")
                        "/dcmtk-" version ".tar.gz"))
        (sha256
-        (base32 "02kix73qhndgb56cmi5327666i6imp7hi17wwqp26q4d7s72jn3w"))))
+        (base32 "03vjv2lq5kr79ghf8v0q9wskkrcr2ygi097nybmqs4q3amjpc813"))))
     (build-system cmake-build-system)
     (arguments
      ;; By default, only static archives are built.
