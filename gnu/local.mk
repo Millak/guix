@@ -2231,8 +2231,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/xplanet-1.3.1-libdisplay_DisplayOutput.cpp.patch	\
   %D%/packages/patches/xplanet-1.3.1-libimage_gif.c.patch	\
   %D%/packages/patches/xplanet-1.3.1-xpUtil-Add2017LeapSecond.cpp.patch	\
-  %D%/packages/patches/xpra-5.0-systemd-run.patch		\
-  %D%/packages/patches/xpra-5.0-install_libs.patch		\
+  %D%/packages/patches/xpra-6.0-systemd-run.patch		\
+  %D%/packages/patches/xpra-6.0-install_libs.patch		\
   %D%/packages/patches/xsane-fix-memory-leak.patch		\
   %D%/packages/patches/xsane-fix-pdf-floats.patch		\
   %D%/packages/patches/xsane-fix-snprintf-buffer-length.patch	\
