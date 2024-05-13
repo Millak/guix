@@ -6296,14 +6296,14 @@ multivariate case.")
 (define-public r-tclust
   (package
     (name "r-tclust")
-    (version "2.0-3")
+    (version "2.0-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tclust" version))
        (sha256
         (base32
-         "0l0m77a4r7izzw8akx7cz1qcxpvbjgg364yjapazji290741rfs6"))))
+         "0y05aqpmal7ky33hs8n1phai94d7f48ich43jvy4m5wbfxkp2rm6"))))
     (build-system r-build-system)
     ;; These are all suggested packages, not build dependencies.
     (propagated-inputs
