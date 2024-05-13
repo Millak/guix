@@ -4,6 +4,7 @@
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,7 @@
 (define-module (gnu packages sagemath)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -42,6 +44,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz))
 
 
@@ -95,6 +98,36 @@ but it can be used independently.")
      "This package provides a Python interface to the GNU multiprecision
 libraries GMO, MPFR and MPC.")
     (license license:lgpl3+)))
+
+(define-public python-memory-allocator
+  (package
+    (name "python-memory-allocator")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "memory_allocator" version))
+       (sha256
+        (base32 "1r7g175ddbpn5kjgs6f09s7mfachzw94p02snki6f6830dmj22fn"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cython python-setuptools))
+    (home-page "https://github.com/sagemath/memory_allocator")
+    (synopsis "Extension class to allocate memory easily with Cython")
+    (description "This package provides a single extension class
+ @code{MemoryAllocator} with @{cdef} methods
+
+@itemize
+@item @code{malloc}
+@item @code{calloc}
+@item @code{allocarray}
+@item @code{realloc}
+@item @code{reallocarray}
+@item @code{aligned_malloc}
+@item @code{aligned_malloc}
+@item @code{aligned_calloc}
+@item @code{aligned_allocarray}")
+    (license license:gpl3+)))
 
 (define-public cliquer
   (package
