@@ -4046,6 +4046,35 @@ message-passing communication.  @code{petsc4py} provides Python
 bindings to almost all functions of PETSc.")
     (license license:bsd-3)))
 
+(define-public python-primecountpy
+  (package
+    (name "python-primecountpy")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "primecountpy" version))
+       (sha256
+        (base32 "0xh6zx5zw5scy7jygqirks9y6z4zyfm0zjfp8nd6dw0m471przkq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; there are no tests
+    (native-inputs
+     (list python-cysignals
+           python-cython
+           python-setuptools))
+    (inputs
+     (list pari-gp
+           primecount
+           primesieve))
+    (home-page "https://github.com/dimpase/primecountpy")
+    (synopsis "Cython interface for C++ primecount library")
+    (description "This package provides a Cython interface to the C++ library
+@code{primecount}.")
+    ;; pyproject.toml says gpl3 but file headers say gpl2+, see
+    ;; <https://github.com/dimpase/primecountpy/issues/16>.
+    (license license:gpl2+)))
+
 (define-public python-quadpy
   (package
     (name "python-quadpy")
