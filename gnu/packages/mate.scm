@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Fabian Harfert <fhmgufs@web.de>
-;;; Copyright © 2016, 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -779,7 +779,11 @@ infamous 'Wanda the Fish'.")
     (home-page "https://mate-desktop.org")
     (synopsis "Document viewer for Mate")
     (description
-     "Document viewer for Mate")
+     "Atril is a simple multi-page document viewer.  It can display and print
+@acronym{PostScript, PS}, @acronym{Encapsulated PostScript EPS}, DJVU, DVI, XPS
+and @acronym{Portable Document Format PDF} files.  When supported by the
+document, it also allows searching for text, copying text to the clipboard,
+hypertext navigation, and table-of-contents bookmarks.")
     (license license:gpl2)))
 
 (define-public caja
