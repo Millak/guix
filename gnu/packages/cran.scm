@@ -24403,13 +24403,13 @@ authoring books and technical documents with R Markdown.")
 (define-public r-options
   (package
     (name "r-options")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "options" version))
        (sha256
-        (base32 "0pprbp2pxvgh120f8dahswws44gpdm4f4nlq3h3nvqrlhnspwnb8"))))
+        (base32 "02qnbipdmnw01f40300pg1ycrcbnr37f8yiqbabm6jznf6r4ihm9"))))
     (properties `((upstream-name . "options")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
