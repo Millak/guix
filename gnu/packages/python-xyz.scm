@@ -22635,6 +22635,34 @@ multitouch applications.")
 Design spec without sacrificing ease of use or application performance.")
     (license license:expat)))
 
+(define-public python-async-lru
+  (package
+    (name "python-async-lru")
+    (version "2.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "async-lru" version))
+       (sha256
+        (base32 "09sn3bc3gc2flijm9k8kn4hmbnlkaddhqahb49izy188yrfrm9dq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-timeout
+           python-setuptools))
+    (propagated-inputs
+     (list python-typing-extensions))
+    (home-page "https://github.com/aio-libs/async-lru")
+    (synopsis "Simple LRU cache for asyncio")
+    (description
+     "This package is a port of Python's built-in @code{functools.lru_cache}
+function for @code{asyncio}.  To better handle async behaviour, it also
+ensures multiple concurrent calls will only result in 1 call to the wrapped
+function, with all awaits receiving the result of that call when it
+completes.")
+    (license license:expat)))
+
 (define-public python-asyncinject
   (package
     (name "python-asyncinject")
