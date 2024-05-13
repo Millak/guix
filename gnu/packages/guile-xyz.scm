@@ -4554,8 +4554,8 @@ function: raw, typed, and functional.")
       (license license:lgpl3+))))
 
 (define-public guile-gsl
-  (let ((commit "22ac81c45f33f897d7cc88744d427a6959682c24")
-        (revision "1"))
+  (let ((commit "d33de9219a167561132721ce79c94bcaf67724b0")
+        (revision "2"))
     (package
       (name "guile-gsl")
       (version (git-version "0.0.1" revision commit))
@@ -4567,7 +4567,7 @@ function: raw, typed, and functional.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0gwxyd5flq107ibqdqvx7dl5z23an171jwckn7dvlqc60b7n2x64"))))
+          (base32 "02ngki3z64cs5mabs61vnx2chagcc8srmgfvccpr4zkn36fw3cx8"))))
       (build-system guile-build-system)
       (arguments
        (list
@@ -4589,7 +4589,14 @@ function: raw, typed, and functional.")
       (synopsis "Bindings for GNU Scientific library in Guile")
       (description
        "This package provides a Guile Scheme wrapper for @code{libgsl.so}.
-Implements vector, matrix, and BLAS operations.")
+Implements
+@itemize
+@item GSL vectors.
+@item Matrices.
+@item BLAS operations.
+@item Eigensystem solutions.
+@item One-dimensional root solvers.
+@end itemize")
       (license license:gpl3+))))
 
 (define-public guile-ffi-fftw
