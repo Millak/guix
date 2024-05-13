@@ -1565,7 +1565,7 @@ is also needed for the @code{tuxedo-control-center} (short tcc) package.")
 (define-public evdi
   (package
     (name "evdi")
-    (version "1.14.1")                  ;inherited by libevdi
+    (version "1.14.4")                  ;inherited by libevdi
     (source
      (origin
        (method git-fetch)
@@ -1574,7 +1574,7 @@ is also needed for the @code{tuxedo-control-center} (short tcc) package.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vfbph6bdb206zgdp0bvpqck2zvkx1367xdxbavv41qsmgkxhvbs"))))
+        (base32 "1r9gd4ffr8sh9y3ic8fxwgp4gjls2yd6bgsgvcf0vy571s2aqggr"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
@@ -1617,6 +1617,7 @@ display settings applets in graphical environments")
                               (mkdir-p lib)
                               (install-file "libevdi.so" lib)))))))
     (inputs (list libdrm))
+    (native-inputs (list pkg-config))
     (synopsis
      "@acronym{EVDI, Extensible Virtual Display Interface} user-space library")
     (description
