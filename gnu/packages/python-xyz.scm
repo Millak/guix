@@ -3646,6 +3646,29 @@ metaclass-based @code{NamedTuple} implementation and a @code{NamedConstant}
 class.")
     (license license:bsd-3)))
 
+(define-public python-calver
+  (package
+    (name "python-calver")
+    (version "2022.06.26")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/di/calver")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14l9kv9igcmp5k6d2ahnx6z4dn6zy5kykz95hkh0rkqswn8x79b1"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pretend python-pytest python-setuptools))
+    (home-page "https://github.com/di/calver")
+    (synopsis "Setuptools extension for CalVer package versions")
+    (description
+     "The calver package is a setuptools extension for automatically defining
+your Python package version as a calendar version.")
+    (license license:asl2.0)))
+
 (define-public python-can
   (package
     (name "python-can")
