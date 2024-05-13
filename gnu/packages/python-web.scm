@@ -9224,6 +9224,39 @@ list, create, update, or delete resources (e.g. Order, Product, Collection).")
      "This package provides a library to parse and apply patches.")
     (license license:expat)))
 
+(define-public python-pybadges
+  (package
+    (name "python-pybadges")
+    (version "3.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/pybadges")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               "1zgb9idz7m3mzf8wvik0gwmyrxp753axqjv2pab326cr5myj1s4b")))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~'("-k"
+          ;; Disable network dependent tests.
+          "not test_changes and not test_not_image_url and not test_http_url")))
+    (propagated-inputs (list python-jinja2 python-requests))
+    (native-inputs (list python-flask
+                         python-fonttools
+                         python-nox
+                         python-pillow
+                         python-pytest
+                         python-xmldiff))
+    (home-page "https://github.com/google/pybadges")
+    (synopsis "Generate Github-style badges on the command-line")
+    (description
+     "This package provides @code{python-pybadges}: a library and command-line
+tool for generating Github-style badges as SVG images.")
+    (license license:asl2.0)))
+
 (define-public python-grid5000
   (package
     (name "python-grid5000")
