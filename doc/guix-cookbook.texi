@@ -1682,7 +1682,7 @@ creates a package.
                             ;; See kernel-config for an example.
                             (configuration-file #f)
                             (defconfig "defconfig")
-                            (extra-options %default-extra-linux-options))
+                            (extra-options (default-extra-linux-options version)))
   ...)
 @end lisp
 
@@ -1750,7 +1750,7 @@ The second way to create a custom kernel is to pass a new value to the
 it:
 
 @lisp
-(define %default-extra-linux-options
+(define (default-extra-linux-options version)
   `(;; https://lists.gnu.org/archive/html/guix-devel/2014-04/msg00039.html
    ("CONFIG_DEVPTS_MULTIPLE_INSTANCES" . #true)
    ;; Modules required for initrd:
@@ -1800,7 +1800,7 @@ custom kernel:
           %file-systems
           %efi-support
           %emulation
-          (@@@@ (gnu packages linux) %default-extra-linux-options)))
+          ((@@@@ (gnu packages linux) default-extra-linux-options) version)))
 
 (define-public linux-libre-macbook41
   ;; XXX: Access the internal 'make-linux-libre*' procedure, which is
@@ -1814,11 +1814,12 @@ custom kernel:
    #:extra-options %macbook41-config-options))
 @end lisp
 
-In the above example @code{%file-systems} is a collection of flags enabling
-different file system support, @code{%efi-support} enables EFI support and
-@code{%emulation} enables a x86_64-linux machine to act in 32-bit mode also.
-@code{%default-extra-linux-options} are the ones quoted above, which had to be
-added in since they were replaced in the @code{extra-options} keyword.
+In the above example @code{%file-systems} is a collection of flags
+enabling different file system support, @code{%efi-support} enables EFI
+support and @code{%emulation} enables a x86_64-linux machine to act in
+32-bit mode also.  The @code{default-extra-linux-options} procedure is
+the one defined above, which had to be used to avoid loosing the default
+configuration options of the @code{extra-options} keyword.
 
 This all sounds like it should be doable, but how does one even know which
 modules are required for a particular system?  Two places that can be helpful

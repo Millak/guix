@@ -852,7 +852,7 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
          (config (search-auxiliary-file file)))
     (and config (local-file config))))
 
-(define %default-extra-linux-options
+(define (default-extra-linux-options version)
   `(;; Make the kernel config available at /proc/config.gz
     ("CONFIG_IKCONFIG" . #t)
     ("CONFIG_IKCONFIG_PROC" . #t)
@@ -965,7 +965,7 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
                            ;; for an example.
                            (configuration-file #f)
                            (defconfig "defconfig")
-                           (extra-options %default-extra-linux-options)
+                           (extra-options (default-extra-linux-options version))
                            (patches
                             `(,%boot-logo-patch
                               ,@(if (apply-infodoc-patch? version)
@@ -991,7 +991,7 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
                             ;; See kernel-config for an example.
                             (configuration-file #f)
                             (defconfig "defconfig")
-                            (extra-options %default-extra-linux-options))
+                            (extra-options (default-extra-linux-options version)))
   (package
     (name (if extra-version
               (string-append "linux-libre-" extra-version)
@@ -1243,7 +1243,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      (append
                       `(;; needed to fix the RTC on rockchip platforms
                         ("CONFIG_RTC_DRV_RK808" . #t))
-                      %default-extra-linux-options)))
+                      (default-extra-linux-options linux-libre-version))))
 
 (define-public linux-libre-arm-generic-5.10
   (make-linux-libre* linux-libre-5.10-version
@@ -1256,7 +1256,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      (append
                       `(;; needed to fix the RTC on rockchip platforms
                         ("CONFIG_RTC_DRV_RK808" . #t))
-                      %default-extra-linux-options)))
+                      (default-extra-linux-options linux-libre-5.10-version))))
 
 (define-public linux-libre-arm-generic-5.4
   (make-linux-libre* linux-libre-5.4-version
@@ -1269,7 +1269,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      (append
                       `(;; needed to fix the RTC on rockchip platforms
                         ("CONFIG_RTC_DRV_RK808" . #t))
-                      %default-extra-linux-options)))
+                      (default-extra-linux-options linux-libre-5.4-version))))
 
 (define-public linux-libre-arm-generic-4.19
   (make-linux-libre* linux-libre-4.19-version
@@ -1321,7 +1321,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                         ("CONFIG_BATTERY_CW2015" . m)
                         ("CONFIG_CHARGER_GPIO" . m)
                         ("CONFIG_SND_SOC_ES8316" . m))
-                      %default-extra-linux-options)))
+                      (default-extra-linux-options linux-libre-version))))
 
 (define-public linux-libre-arm64-generic-5.10
   (make-linux-libre* linux-libre-5.10-version
@@ -1347,7 +1347,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                         ("CONFIG_BATTERY_CW2015" . m)
                         ("CONFIG_CHARGER_GPIO" . m)
                         ("CONFIG_SND_SOC_ES8316" . m))
-                      %default-extra-linux-options)))
+                      (default-extra-linux-options linux-libre-5.10-version))))
 
 (define-public linux-libre-arm64-generic-5.4
   (make-linux-libre* linux-libre-5.4-version
@@ -1360,7 +1360,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      (append
                       `(;; needed to fix the RTC on rockchip platforms
                         ("CONFIG_RTC_DRV_RK808" . #t))
-                      %default-extra-linux-options)))
+                      (default-extra-linux-options linux-libre-5.4-version))))
 
 (define-public linux-libre-riscv64-generic
   (make-linux-libre* linux-libre-version
@@ -1384,7 +1384,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                         ("CONFIG_HW_RANDOM_VIRTIO" . m)
                         ("CONFIG_VIRTIO_CONSOLE" . m)
                         ("CONFIG_CRYPTO_XTS" . m))
-                      %default-extra-linux-options)))
+                      (default-extra-linux-options linux-libre-version))))
 
 (define-public linux-libre-mips64el-fuloong2e
   (make-linux-libre* linux-libre-version
@@ -1396,7 +1396,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      #:extra-options
                      (append
                       `(("CONFIG_OVERLAY_FS" . m))
-                      %default-extra-linux-options)))
+                      (default-extra-linux-options linux-libre-version))))
 
 (define-public linux-libre-with-bpf
   (let ((base-linux-libre
@@ -1410,7 +1410,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
           #:configuration-file kernel-config
           #:extra-options
           (append %bpf-extra-linux-options
-                  %default-extra-linux-options))))
+                  (default-extra-linux-options linux-libre-6.8-version)))))
     (package
       (inherit base-linux-libre)
       (inputs (modify-inputs (package-inputs base-linux-libre)
