@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012, 2015-2016, 2024 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -52,6 +52,11 @@ guix download "file:///does-not-exist" "file://$abs_top_srcdir/README" && false
 # Test git support with local repository.
 # First, create a dummy git repo in the temporary directory.
 (
+    # Avoid interference with user config.
+    GIT_CONFIG_GLOBAL=/dev/null
+    GIT_CONFIG_SYSTEM=/dev/null
+    export GIT_CONFIG_SYSTEM GIT_CONFIG_GLOBAL
+
     cd $test_git_repo
     git init
     touch test
