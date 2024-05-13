@@ -23860,15 +23860,18 @@ interactive commands and functions, such as @code{completing-read}.")
     (arguments
      (list
       #:tests? #f                       ;FIXME: check phase freezes
-      #:test-command #~(list "buttercup" "-L" ".")))
+      #:test-command #~(list "buttercup" "-L" ".")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-helm-org-ql
+            (lambda _
+              (delete-file "helm-org-ql.el"))))))
     (native-inputs
      (list emacs-buttercup emacs-with-simulated-input emacs-xr))
     (propagated-inputs
      (list emacs-compat
            emacs-dash
            emacs-f
-           emacs-helm
-           emacs-helm-org
            emacs-org
            emacs-org-super-agenda
            emacs-ov
@@ -23880,6 +23883,34 @@ interactive commands and functions, such as @code{completing-read}.")
     (description "This package provides a Lispy query language for Org
 files, allowing for actions to be performed based on search criteria.")
     (license license:gpl3+)))
+
+(define-public emacs-helm-org-ql
+  (package
+    (inherit emacs-org-ql)
+    (name "emacs-helm-org-ql")
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-emacs-org-ql
+            (lambda _
+              (install-file "helm-org-ql.el" "..")
+              (let ((cwd (getcwd)))
+                (with-directory-excursion ".."
+                  (delete-file-recursively cwd)
+                  (mkdir cwd)
+                  (install-file "helm-org-ql.el" cwd))))))))
+    (propagated-inputs
+     (list emacs-dash
+           emacs-helm
+           emacs-helm-org
+           emacs-org-ql
+           emacs-s))
+    (synopsis "Helm commands for @code{emacs-org-ql}")
+    (description "This package provides @code{emacs-helm} commands for
+@{emacs-org-ql}, a Lispy query language for Org files, allowing for actions to
+be performed based on search criteria.")))
 
 (define-public emacs-bing-dict
   (package
