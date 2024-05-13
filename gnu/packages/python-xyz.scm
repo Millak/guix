@@ -21642,6 +21642,43 @@ in Python.  It allows you to declare the libraries your project depends on and
 it will manage (install/update) them for you.")
     (license license:expat)))
 
+(define-public python-pyproject-api
+  (package
+    (name "python-pyproject-api")
+    (version "1.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyproject_api" version))
+       (sha256
+        (base32 "0f75rajzk72ay4x9ajw1835amm932q7cdn0yrbwiy3fwi80xq5qq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This test fails with AssertionError.
+      #~(list "-k" "not test_setuptools_prepare_metadata_for_build_wheel")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'relax-packaging
+                     (lambda _
+                       (substitute* "pyproject.toml"
+                         ;; We have packaging 21.3.
+                         (("packaging>=23.1") "packaging>=21.3")))))))
+    (native-inputs
+     (list python-covdefaults
+           python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-pytest-mock))
+    (propagated-inputs
+     (list python-packaging python-tomli))
+    (home-page "https://pyproject-api.readthedocs.io/latest/")
+    (synopsis "API to interact with the Python pyproject.toml based projects")
+    (description
+     "@code{pyproject-api} aims to abstract away interaction with
+@code{pyproject.toml} style projects in a flexible way.")
+    (license license:expat)))
+
 (define-public python-pyproject-hooks
   (package
     (name "python-pyproject-hooks")
