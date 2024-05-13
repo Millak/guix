@@ -41002,14 +41002,14 @@ database, and more.")
 (define-public r-paws-storage
   (package
     (name "r-paws-storage")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.storage" version))
        (sha256
         (base32
-         "0v2g1shv9m4h2fz2lvjad479g3nmxc92wlyrxj4s7fifzzs2pd97"))))
+         "1mngxy88r94n1zwbvimj71hw4w9myk5kgqpgyj0m3spwv7338rfd"))))
     (properties `((upstream-name . "paws.storage")))
     (build-system r-build-system)
     (propagated-inputs
