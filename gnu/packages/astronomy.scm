@@ -130,13 +130,12 @@
            #:tests? (not (or (%current-target-system)
                              ;; The test suite consumes all disk space
                              (target-riscv64?)))
+           #:test-target "fittest"
            #:phases #~(modify-phases %standard-phases
                         (delete 'configure)
                         (delete 'check)
                         (add-after 'install 'post-install-check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "make" "fittest")))))))
+                          (assoc-ref %standard-phases 'check)))))
     (inputs (list cfitsio gfortran))
     (home-page "https://nebulousresearch.org/codes/alfa/")
     (synopsis "Automated line fitting algorithm")
