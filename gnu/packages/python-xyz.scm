@@ -36104,6 +36104,27 @@ async I/O support.")
      "This package adds ANSI colors and decorations to your strings.")
     (license license:isc)))
 
+(define-public python-types-dateutil
+  (package
+    (name "python-types-dateutil")
+    (version "2.9.0.20240316")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-python-dateutil" version))
+       (sha256
+        (base32 "00h2xi8p6ygdv9nhgwdyx86ky9m9dpdqgmsdji05x4461cj2wbsx"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for python-dateutil")
+    (description
+     "This is a PEP 561 type stub package for the @code{python-dateutil}
+package.")
+    (license license:asl2.0)))
+
 (define-public python-types-freezegun
   (package
     (name "python-types-freezegun")
