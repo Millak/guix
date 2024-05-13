@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2020 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -587,6 +587,8 @@
   5
   (terminal-string-width "hello"))
 
+;; The following test requires a Unicode-capable locale encoding.
+(test-skip (if (string=? (port-encoding (current-output-port)) "UTF-8") 0 1))
 (test-equal "terminal-string-width Japanese"
   6
   (terminal-string-width "今日は"))
