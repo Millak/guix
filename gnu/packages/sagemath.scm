@@ -33,8 +33,10 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pkg-config)
@@ -226,6 +228,26 @@ represented as strings.")
 coefficients of which are modular integers.")
     (license (list license:gpl2 license:gpl3)) ; dual licensed
     (home-page "https://gitlab.com/sagemath/zn_poly")))
+
+(define-public python-pplpy
+  (package
+    (name "python-pplpy")
+    (version "0.8.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pplpy" version))
+       (sha256
+        (base32 "1zggfj09zkfcabcsasq27vwbhdmkig4yn380gi6wykcih9n22anl"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-cython-3 python-pytest))
+    (inputs (list gmp mpc mpfr pari-gp ppl))
+    (propagated-inputs (list python-cysignals python-gmpy2))
+    (home-page "https://github.com/sagemath/pplpy")
+    (synopsis "Python PPL wrapper")
+    (description "This Python package provides a wrapper to the C++ Parma
+Polyhedra Library (PPL).")
+    (license license:gpl3+)))
 
 (define-public brial
   (package
