@@ -723,6 +723,35 @@ alignment-free, it runs much faster and also easier to use.")
 and utilities for PacBio C++ applications.")
     (license license:bsd-3)))
 
+(define-public r-anndatar
+  (let ((commit "5c3eb7e498d0d9bf1c522ad66f4eb8ad277238b6")
+        (revision "1"))
+    (package
+      (name "r-anndatar")
+      (version (git-version "0.99.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/scverse/anndataR")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0sx87i8cb4p08ihgpgflxs0fhkr1kw6lxvky4w766rq7wqy41cgk"))))
+      (properties `((upstream-name . "anndataR")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-matrix r-r6))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/scverse/anndataR")
+      (synopsis "AnnData interoperability in R")
+      (description
+       "This package aims to bring the power and flexibility of @code{AnnData}
+to the R ecosystem, allowing you to effortlessly manipulate and analyze your
+single-cell data.  This package lets you work with backed h5ad and zarr files,
+directly access various slots (e.g. X, obs, var), or convert the data into
+@code{SingleCellExperiment} and Seurat objects.")
+      (license license:expat))))
+
 (define-public r-bedtorch
   (let ((commit "f5ff4f83b94f59eac660333c64e4b2f296b35cea")
         (revision "1"))
