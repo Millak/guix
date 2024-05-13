@@ -19878,18 +19878,19 @@ large datasets (> 100,000 samples) very efficiently.")
 (define-public r-qlcmatrix
   (package
     (name "r-qlcmatrix")
-    (version "0.9.7")
+    (version "0.9.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qlcMatrix" version))
        (sha256
         (base32
-         "0iqkcvvy8rxlk0s83sjq57dd6fadb18p5z31lzy0gnzv1hsy1x8y"))))
+         "0d38jb653787s05g8syc9wgaljaifmkviijwz5rzcd881glgs8sv"))))
     (properties `((upstream-name . "qlcMatrix")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-docopt r-matrix r-slam r-sparsesvd))
+    (native-inputs (list r-knitr r-rmarkdown))
     (home-page "https://cran.r-project.org/web/packages/qlcMatrix")
     (synopsis "Sparse matrix functions for quantitative language comparison")
     (description
