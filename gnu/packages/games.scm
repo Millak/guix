@@ -7380,7 +7380,7 @@ fight against their plot and save his fellow rabbits from slavery.")
            fmt
            freetype
            gloox
-           icu4c-68
+           icu4c
            libidn
            libpng
            libsodium
