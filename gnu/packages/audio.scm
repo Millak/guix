@@ -1049,16 +1049,18 @@ tools.")
 (define-public tenacity
   (package
     (name "tenacity")
-    (version "1.3.1")
+    (version "1.3.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://codeberg.org/tenacityteam/tenacity")
-             (commit (string-append "v" version))))
+             (commit (string-append "v" version))
+             ;; TODO Unbundle vcpkg when packaged in Guix.
+             (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qpcih96c97s4b7lmcvqac9ds09j7a7llvm41p926hll5xmjgsy1"))))
+        (base32 "0jqdza1alk524fkrssgkr7gabs44sk9a99914gwfkscvyqly4kai"))))
     (build-system cmake-build-system)
     (arguments
      (list
