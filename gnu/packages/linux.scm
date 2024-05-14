@@ -1023,6 +1023,7 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
               (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
 
               ;; Other variables useful for reproducibility.
+              (setenv "KBUILD_BUILD_VERSION" "1")
               (setenv "KBUILD_BUILD_USER" "guix")
               (setenv "KBUILD_BUILD_HOST" "guix")
 
