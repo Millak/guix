@@ -524,50 +524,45 @@ non-blocking."
                                     (errno (system-error-errno args)))))
                  (loop rest)))))))))
 
-(define* (connect-to-daemon uri #:key non-blocking?)
-  "Connect to the daemon at URI, a string that may be an actual URI or a file
-name, and return an input/output port.  If NON-BLOCKING?, use a non-blocking
-socket when using the file, unix or guix URI schemes.
+(define* (connect-to-daemon uri-or-filename #:key non-blocking?)
+  "Connect to the daemon at URI-OR-FILENAME and return an input/output port.
+If NON-BLOCKING?, use a non-blocking socket when using the file, unix or guix
+URI schemes.
 
 This is a low-level procedure that does not perform the initial handshake with
 the daemon.  Use 'open-connection' for that."
   (define (not-supported)
     (raise (condition (&store-connection-error
-                       (file uri)
+                       (file uri-or-filename)
                        (errno ENOTSUP)))))
 
-  (define connect
-    (match (string->uri uri)
-      (#f                                         ;URI is a file name
-       open-unix-domain-socket)
-      ((? uri? uri)
-       (match (uri-scheme uri)
-         ((or #f 'file 'unix)
-          (lambda (_)
-            (open-unix-domain-socket (uri-path uri)
-                                     #:non-blocking? non-blocking?)))
-         ('guix
-          (lambda (_)
-            (open-inet-socket (uri-host uri)
-                              (or (uri-port uri) %default-guix-port)
-                              #:non-blocking? non-blocking?)))
-         ((? symbol? scheme)
-          ;; Try to dynamically load a module for SCHEME.
-          ;; XXX: Errors are swallowed.
-          (match (false-if-exception
-                  (resolve-interface `(guix store ,scheme)))
-            ((? module? module)
-             (match (false-if-exception
-                     (module-ref module 'connect-to-daemon))
-               ((? procedure? connect)
-                (lambda (_)
-                  (connect uri)))
-               (x (not-supported))))
-            (#f (not-supported))))
-         (x
-          (not-supported))))))
-
-  (connect uri))
+  (match (string->uri uri-or-filename)
+    (#f                                 ;URI is a file name
+     (open-unix-domain-socket uri-or-filename
+                              #:non-blocking? non-blocking?))
+    ((? uri? uri)
+     (match (uri-scheme uri)
+       ((or #f 'file 'unix)
+        (open-unix-domain-socket (uri-path uri)
+                                 #:non-blocking? non-blocking?))
+       ('guix
+        (open-inet-socket (uri-host uri)
+                          (or (uri-port uri) %default-guix-port)
+                          #:non-blocking? non-blocking?))
+       ((? symbol? scheme)
+        ;; Try to dynamically load a module for SCHEME.
+        ;; XXX: Errors are swallowed.
+        (match (false-if-exception
+                (resolve-interface `(guix store ,scheme)))
+          ((? module? module)
+           (match (false-if-exception
+                   (module-ref module 'connect-to-daemon))
+             ((? procedure? connect)
+              (connect uri))
+             (x (not-supported))))
+          (#f (not-supported))))
+       (x
+        (not-supported))))))
 
 (define* (open-connection #:optional (uri (%daemon-socket-uri))
                           #:key port (reserve-space? #t) cpu-affinity
