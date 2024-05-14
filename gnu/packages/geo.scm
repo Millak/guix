@@ -2920,17 +2920,25 @@ growing set of geoscientific methods.")
         (base32 "0mdgqyqr3nswp5qfpjrpr35lxizcrz73a1gs3ddxsd1xr9amzb5s"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:modules ((guix build cmake-build-system)
+     (list
+      #:modules '((guix build cmake-build-system)
                   ((guix build python-build-system) #:prefix python:)
                   (guix build qt-utils)
                   (guix build utils))
-       #:imported-modules (,@%cmake-build-system-modules
+      #:imported-modules `(,@%cmake-build-system-modules
                            (guix build python-build-system)
                            (guix build qt-utils))
-       #:configure-flags
-       '("-DWITH_QTWEBKIT=NO")
-       #:phases
-       (modify-phases %standard-phases
+      #:configure-flags
+      #~(list "-DWITH_QTWEBKIT=NO")
+      #:phases
+      #~(let* ((grass-version #$(package-version (this-package-input "grass")))
+               (grass-majorminor (string-join
+                                  (list-head
+                                   (string-split grass-version #\.) 2)
+                                  ""))
+               (grass-dir (string-append #$(this-package-input "grass")
+                                         "/grass" grass-majorminor)))
+          (modify-phases %standard-phases
          ;; Configure correct path to PyQt5 SIP directory
          (add-after 'unpack 'configure-pyqt5-sip-path
            (lambda* (#:key inputs #:allow-other-keys)
@@ -2952,21 +2960,14 @@ growing set of geoscientific methods.")
          (replace 'check
            (lambda* (#:key inputs outputs tests? parallel-tests?
                      #:allow-other-keys)
-             (when tests?
+             (if tests?
+             (begin
              (setenv "HOME" "/tmp")
              (system "Xvfb :1 &")
              (setenv "DISPLAY" ":1")
              (setenv "TRAVIS" "true")
              (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
-             (let* ((out (assoc-ref outputs "out"))
-                    (grass-version ,(package-version grass))
-                    (grass-majorminor (string-join
-                                       (list-head
-                                        (string-split grass-version #\.) 2)
-                                       ""))
-                    (grass (string-append (assoc-ref inputs "grass")
-                                          "/grass" grass-majorminor)))
-               (setenv "GISBASE" grass))
+             (setenv "GISBASE" grass-dir)
              (invoke "ctest"
                      "-j" (if parallel-tests?
                               (number->string (parallel-job-count))
@@ -3057,31 +3058,23 @@ growing set of geoscientific methods.")
                              "qgis_sipify"
                              "qgis_sip_include"
                              "qgis_sip_uptodate")
-                           "|")))))
+                           "|")))
+             (format #t "test suite not run~%"))))
          (add-after 'install 'wrap-python
            (assoc-ref python:%standard-phases 'wrap))
          (add-after 'wrap-python 'wrap-qt
            (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "qgis" #:output out #:inputs inputs))))
+             (wrap-qt-program "qgis" #:output #$output #:inputs inputs)))
          (add-after 'wrap-qt 'wrap-gis
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; TODO: Find if there is a way to get SAGA to work.
              ;; Currently QGIS says "version of SAGA not supported".
              ;; Disable it for now.
-             (let* ((out (assoc-ref outputs "out"))
-                    ;;(saga (string-append (assoc-ref inputs "saga") "/bin"))
-                    (grass-version ,(package-version grass))
-                    (grass-majorminor (string-join
-                                       (list-head
-                                        (string-split grass-version #\.) 2)
-                                       ""))
-                    (grass (string-append (assoc-ref inputs "grass")
-                                          "/grass" grass-majorminor)))
-               (wrap-program (string-append out "/bin/qgis")
-                 ;;`("PATH" ":" prefix (,saga))
-                 `("QGIS_PREFIX_PATH" = (,out))
-                 `("GISBASE" = (,grass)))))))))
+             (wrap-program (string-append #$output "/bin/qgis")
+                 ;; `("PATH" ":" prefix
+                 ;; (,(dirname (search-input-file inputs "/bin/saga_cmd"))))
+                 `("QGIS_PREFIX_PATH" = (,#$output))
+                 `("GISBASE" = (,grass-dir)))))))))
     (inputs
      (list bash-minimal
            exiv2
