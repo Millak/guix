@@ -305,7 +305,13 @@
               (substitute* "tests/qtest/meson.build"
                 ;; These tests fail to get the expected number of tests
                 ;; on arm platforms.
-                (("'arm-cpu-features',") ""))))
+                (("'arm-cpu-features',") "")
+                ;; This test is known to be flaky.
+                ;; See <https://gitlab.com/qemu-project/qemu/-/issues/2121>.
+                (("\\['ahci-test'\\]") "[]"))
+              ;; This test appears to be flaky as well, probably resulting
+              ;; from a race condition.
+              (delete-file "tests/qemu-iotests/tests/copy-before-write")))
           #$@(if (target-riscv64?)
                  '((add-after 'unpack 'disable-some-tests
                      (lambda _
