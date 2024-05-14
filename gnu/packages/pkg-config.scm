@@ -29,7 +29,13 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages bash)
-  #:use-module (gnu packages check)
+
+  ;; Note: Because this module defines the 'pkg-config' macro, it cannot be
+  ;; caught in a cycle with other package modules or the macro wouldn't be
+  ;; visible at the time those other modules are compiled.  To fulfill that
+  ;; constraint, load (gnu packages check) lazily.
+  #:autoload   (gnu packages check) (atf kyua)
+
   #:use-module (guix memoization)
   #:export (pkg-config))
 
