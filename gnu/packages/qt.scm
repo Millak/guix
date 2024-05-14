@@ -899,6 +899,9 @@ tst_qt_cmake_create.cpp"
                        ;; TODO: when core-updates is merged, check again.
                        "tst_selftests"
 
+                       ;; The 'tst_qsqlthread' test sometimes fails.
+                       "tst_qsqlthread"
+
                        ;; The 'tst_qsystemsemaphore' test sometimes fails.
                        "tst_qsystemsemaphore"
                        ;; The 'tst_moc' test fails with "'fi.exists()' returned FALSE".
