@@ -1135,6 +1135,8 @@ tools.")
            sqlite
            twolame
            vamp
+           libebml
+           libmatroska
            libvorbis
            lv2
            lilv ;for lv2
