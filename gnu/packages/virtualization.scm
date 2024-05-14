@@ -1922,7 +1922,7 @@ domains, their live performance and resource utilization statistics.")
 (define-public vmware-open-vm-tools
   (package
     (name "vmware-open-vm-tools")
-    (version "12.3.0")
+    (version "13.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1931,7 +1931,7 @@ domains, their live performance and resource utilization statistics.")
              (commit (string-append "stable-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hbimhady0v1kd45azknl1lgzgldhgdjd7bj540rn3y4cai5cnk1"))))
+        (base32 "19zqfkd4rxajgghjc4czssvqxxw1q6mc6mnp50j7lnqaviwvb5fm"))))
     (build-system gnu-build-system)
     (arguments
      (list
