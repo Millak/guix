@@ -2931,7 +2931,93 @@ growing set of geoscientific methods.")
       #:configure-flags
       #~(list "-DWITH_QTWEBKIT=NO")
       #:phases
-      #~(let* ((grass-version #$(package-version (this-package-input "grass")))
+      #~(let* ((ignored-tests (list
+                               ;; Disable tests that require network access
+                               "PyQgsExternalStorageAwsS3"
+                               "PyQgsExternalStorageWebDav"
+                               "qgis_filedownloader"
+                               "test_core_networkaccessmanager"
+                               "test_core_tiledownloadmanager"
+                               "test_gui_filedownloader"
+                               "test_provider_wcsprovider"
+                               ;; Disable tests that need OGR built with
+                               ;; libspatialite support
+                               "PyQgsAttributeTableModel"
+                               "PyQgsOGRProviderSqlite"
+                               "PyQgsWFSProvider"
+                               "PyQgsOapifProvider"
+                               ;; Disable tests that need Python compiled
+                               ;; with loadable SQLite extensions.
+                               "PyQgsFieldFormattersTest"
+                               "PyQgsSpatialiteProvider"
+                               "PyQgsLayerDependencies"
+                               "PyQgsDBManagerGpkg"
+                               "PyQgsDBManagerSpatialite"
+                               ;; Disable tests that need poppler (with Cairo)
+                               "PyQgsLayoutExporter"
+                               "PyQgsPalLabelingLayout"
+                               ;; Disable tests that need Orfeo ToolBox
+                               "ProcessingOtbAlgorithmsTest"
+                               ;; TODO: Find why the following tests fail
+                               "ProcessingQgisAlgorithmsTestPt1"
+                               "ProcessingQgisAlgorithmsTestPt3"
+                               "ProcessingQgisAlgorithmsTestPt4"
+                               "ProcessingGdalAlgorithmsRasterTest"
+                               "ProcessingGdalAlgorithmsVectorTest"
+                               "ProcessingGrass7AlgorithmsImageryTest"
+                               "ProcessingGrass7AlgorithmsRasterTestPt1"
+                               "ProcessingGrass7AlgorithmsRasterTestPt2"
+                               "ProcessingGrass7AlgorithmsVectorTest"
+                               "test_core_authconfig"
+                               "test_core_authmanager"
+                               "test_core_compositionconverter"
+                               "test_core_expression"
+                               "test_core_gdalutils"
+                               "test_core_labelingengine"
+                               "test_core_layoutpicture"
+                               "test_core_layouttable"
+                               "test_core_pointcloudlayerexporter"
+                               "test_core_projectstorage"
+                               "test_core_coordinatereferencesystem"
+                               "test_core_overlayexpression"
+                               "test_gui_queryresultwidget"
+                               "test_provider_copcprovider"
+                               "test_provider_eptprovider"
+                               "test_analysis_processingalgspt1"
+                               "test_analysis_processingalgspt2"
+                               "test_analysis_processing"
+                               "test_app_gpsintegration"
+                               "PyQgsAnnotation"
+                               "PyQgsAuthenticationSystem"
+                               "PyQgsConnectionRegistry"
+                               "PyQgsDatumTransform"
+                               "PyQgsFileUtils"
+                               "PyQgsGeometryTest"
+                               "PyQgsGoogleMapsGeocoder"
+                               "PyQgsGroupLayer"
+                               "PyQgsHashLineSymbolLayer"
+                               "PyQgsLayerMetadataProviderPython"
+                               "PyQgsLayoutHtml"
+                               "PyQgsLineSymbolLayers"
+                               "PyQgsMapLayer"
+                               "PyQgsOGRProviderGpkg"
+                               "PyQgsProcessExecutablePt1"
+                               "PyQgsProcessExecutablePt2"
+                               "PyQgsProjectionSelectionWidgets"
+                               "PyQgsProviderConnectionGpkg"
+                               "PyQgsProviderConnectionSpatialite"
+                               "PyQgsOGRProvider"
+                               "PyQgsSettingsTreeNode"
+                               "PyQgsTextRenderer"
+                               "PyQgsVectorFileWriter"
+                               "PyQgsVectorLayerEditBuffer"
+                               "PyQgsVirtualLayerProvider"
+                               "PyQgsAuxiliaryStorage"
+                               "PyQgsSelectiveMasking"
+                               "qgis_sipify"
+                               "qgis_sip_include"
+                               "qgis_sip_uptodate"))
+               (grass-version #$(package-version (this-package-input "grass")))
                (grass-majorminor (string-join
                                   (list-head
                                    (string-split grass-version #\.) 2)
@@ -2939,142 +3025,57 @@ growing set of geoscientific methods.")
                (grass-dir (string-append #$(this-package-input "grass")
                                          "/grass" grass-majorminor)))
           (modify-phases %standard-phases
-         ;; Configure correct path to PyQt5 SIP directory
-         (add-after 'unpack 'configure-pyqt5-sip-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((sip-dir (string-append
-                             (assoc-ref inputs "python-pyqt+qscintilla")
-                             "/lib/python"
-                             (python:python-version (assoc-ref inputs "python"))
-                             "/site-packages/PyQt5/bindings")))
-               (substitute* "cmake/FindPyQt5.py"
-                 (("sip_dir = cfg.default_sip_dir")
-                  (string-append "sip_dir = \"" sip-dir "\"")))
-               (substitute* "cmake/FindPyQt5.cmake"
-                 (("SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
-                  (string-append "SET(PYQT5_SIP_DIR \"" sip-dir "\")"))))
-             (substitute* (list "tests/code_layout/test_qt_imports.sh"
-                                "tests/code_layout/test_qgsscrollarea.sh")
-               (("\\$\\(git rev-parse --show-toplevel\\)")
-                (getcwd)))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? parallel-tests?
-                     #:allow-other-keys)
-             (if tests?
-             (begin
-             (setenv "HOME" "/tmp")
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             (setenv "TRAVIS" "true")
-             (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
-             (setenv "GISBASE" grass-dir)
-             (invoke "ctest"
-                     "-j" (if parallel-tests?
-                              (number->string (parallel-job-count))
-                              "1")
-                     "-E" (string-join
-                           '(;; Disable tests that require network access
-                             "PyQgsExternalStorageAwsS3"
-                             "PyQgsExternalStorageWebDav"
-                             "qgis_filedownloader"
-                             "test_core_networkaccessmanager"
-                             "test_core_tiledownloadmanager"
-                             "test_gui_filedownloader"
-                             "test_provider_wcsprovider"
-                             ;; Disable tests that need OGR built with
-                             ;; libspatialite support
-                             "PyQgsAttributeTableModel"
-                             "PyQgsOGRProviderSqlite"
-                             "PyQgsWFSProvider"
-                             "PyQgsOapifProvider"
-                             ;; Disable tests that need Python compiled
-                             ;; with loadable SQLite extensions.
-                             "PyQgsFieldFormattersTest"
-                             "PyQgsSpatialiteProvider"
-                             "PyQgsLayerDependencies"
-                             "PyQgsDBManagerGpkg"
-                             "PyQgsDBManagerSpatialite"
-                             ;; Disable tests that need poppler (with Cairo)
-                             "PyQgsLayoutExporter"
-                             "PyQgsPalLabelingLayout"
-                             ;; Disable tests that need Orfeo ToolBox
-                             "ProcessingOtbAlgorithmsTest"
-                             ;; TODO: Find why the following tests fail
-                             "ProcessingQgisAlgorithmsTestPt1"
-                             "ProcessingQgisAlgorithmsTestPt3"
-                             "ProcessingQgisAlgorithmsTestPt4"
-                             "ProcessingGdalAlgorithmsRasterTest"
-                             "ProcessingGdalAlgorithmsVectorTest"
-                             "ProcessingGrass7AlgorithmsImageryTest"
-                             "ProcessingGrass7AlgorithmsRasterTestPt1"
-                             "ProcessingGrass7AlgorithmsRasterTestPt2"
-                             "ProcessingGrass7AlgorithmsVectorTest"
-                             "test_core_authconfig"
-                             "test_core_authmanager"
-                             "test_core_compositionconverter"
-                             "test_core_expression"
-                             "test_core_gdalutils"
-                             "test_core_labelingengine"
-                             "test_core_layoutpicture"
-                             "test_core_layouttable"
-                             "test_core_pointcloudlayerexporter"
-                             "test_core_projectstorage"
-                             "test_core_coordinatereferencesystem"
-                             "test_core_overlayexpression"
-                             "test_gui_queryresultwidget"
-                             "test_provider_copcprovider"
-                             "test_provider_eptprovider"
-                             "test_analysis_processingalgspt1"
-                             "test_analysis_processingalgspt2"
-                             "test_analysis_processing"
-                             "test_app_gpsintegration"
-                             "PyQgsAnnotation"
-                             "PyQgsAuthenticationSystem"
-                             "PyQgsConnectionRegistry"
-                             "PyQgsDatumTransform"
-                             "PyQgsFileUtils"
-                             "PyQgsGeometryTest"
-                             "PyQgsGoogleMapsGeocoder"
-                             "PyQgsGroupLayer"
-                             "PyQgsHashLineSymbolLayer"
-                             "PyQgsLayerMetadataProviderPython"
-                             "PyQgsLayoutHtml"
-                             "PyQgsLineSymbolLayers"
-                             "PyQgsMapLayer"
-                             "PyQgsOGRProviderGpkg"
-                             "PyQgsProcessExecutablePt1"
-                             "PyQgsProcessExecutablePt2"
-                             "PyQgsProjectionSelectionWidgets"
-                             "PyQgsProviderConnectionGpkg"
-                             "PyQgsProviderConnectionSpatialite"
-                             "PyQgsOGRProvider"
-                             "PyQgsSettingsTreeNode"
-                             "PyQgsTextRenderer"
-                             "PyQgsVectorFileWriter"
-                             "PyQgsVectorLayerEditBuffer"
-                             "PyQgsVirtualLayerProvider"
-                             "PyQgsAuxiliaryStorage"
-                             "PyQgsSelectiveMasking"
-                             "qgis_sipify"
-                             "qgis_sip_include"
-                             "qgis_sip_uptodate")
-                           "|")))
-             (format #t "test suite not run~%"))))
-         (add-after 'install 'wrap-python
-           (assoc-ref python:%standard-phases 'wrap))
-         (add-after 'wrap-python 'wrap-qt
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (wrap-qt-program "qgis" #:output #$output #:inputs inputs)))
-         (add-after 'wrap-qt 'wrap-gis
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; TODO: Find if there is a way to get SAGA to work.
-             ;; Currently QGIS says "version of SAGA not supported".
-             ;; Disable it for now.
-             (wrap-program (string-append #$output "/bin/qgis")
-                 ;; `("PATH" ":" prefix
-                 ;; (,(dirname (search-input-file inputs "/bin/saga_cmd"))))
-                 `("QGIS_PREFIX_PATH" = (,#$output))
-                 `("GISBASE" = (,grass-dir)))))))))
+            ;; Configure correct path to PyQt5 SIP directory
+            (add-after 'unpack 'configure-pyqt5-sip-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((sip-dir (string-append
+                                (assoc-ref inputs "python-pyqt+qscintilla")
+                                "/lib/python"
+                                (python:python-version (assoc-ref inputs "python"))
+                                "/site-packages/PyQt5/bindings")))
+                  (substitute* "cmake/FindPyQt5.py"
+                    (("sip_dir = cfg.default_sip_dir")
+                     (string-append "sip_dir = \"" sip-dir "\"")))
+                  (substitute* "cmake/FindPyQt5.cmake"
+                    (("\
+SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
+                     (string-append "SET(PYQT5_SIP_DIR \"" sip-dir "\")"))))
+                (substitute* (list "tests/code_layout/test_qt_imports.sh"
+                                   "tests/code_layout/test_qgsscrollarea.sh")
+                  (("\\$\\(git rev-parse --show-toplevel\\)")
+                   (getcwd)))))
+            (replace 'check
+              (lambda* (#:key inputs outputs tests? parallel-tests?
+                        #:allow-other-keys)
+                (if tests?
+                    (begin
+                      (setenv "HOME" "/tmp")
+                      (system "Xvfb :1 &")
+                      (setenv "DISPLAY" ":1")
+                      (setenv "TRAVIS" "true")
+                      (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
+                      (setenv "GISBASE" grass-dir)
+                      (invoke "ctest"
+                              "-j" (if parallel-tests?
+                                       (number->string (parallel-job-count))
+                                       "1")
+                              "-E" (string-join ignored-tests "|")))
+                    (format #t "test suite not run~%"))))
+            (add-after 'install 'wrap-python
+              (assoc-ref python:%standard-phases 'wrap))
+            (add-after 'wrap-python 'wrap-qt
+              (lambda* (#:key inputs #:allow-other-keys)
+                (wrap-qt-program "qgis" #:output #$output #:inputs inputs)))
+            (add-after 'wrap-qt 'wrap-gis
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; TODO: Find if there is a way to get SAGA to work.
+                ;; Currently QGIS says "version of SAGA not supported".
+                ;; Disable it for now.
+                (wrap-program (string-append #$output "/bin/qgis")
+                  ;; `("PATH" ":" prefix
+                  ;; (,(dirname (search-input-file inputs "/bin/saga_cmd"))))
+                  `("QGIS_PREFIX_PATH" = (,#$output))
+                  `("GISBASE" = (,grass-dir)))))))))
     (inputs
      (list bash-minimal
            exiv2
@@ -3124,19 +3125,19 @@ growing set of geoscientific methods.")
            (list zstd "lib")))
     (native-inputs
      (append
-       (list bison
-             flex
-             perl
-             perl-yaml-tiny
-             pkg-config
-             python-mock
-             python-nose2
-             python-pyqt-builder
-             qttools-5)
-       (if (supported-package? shellcheck)
-         (list shellcheck)
-         '())
-       (list xorg-server-for-tests)))
+      (list bison
+            flex
+            perl
+            perl-yaml-tiny
+            pkg-config
+            python-mock
+            python-nose2
+            python-pyqt-builder
+            qttools-5)
+      (if (supported-package? shellcheck)
+          (list shellcheck)
+          '())
+      (list xorg-server-for-tests)))
     (home-page "https://qgis.org")
     (synopsis "Geographical information system")
     (description "QGIS is an easy to use Geographical Information
