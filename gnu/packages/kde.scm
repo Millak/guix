@@ -18,6 +18,7 @@
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
+;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -726,7 +727,8 @@ painting, image manipulating and icon editing.")
              "mirror://kde/stable/krita/" version "/krita-" version
              ".tar.gz"))
        (sha256
-        (base32 "1kzmn89b1vrasba7z8hp8izyrrskgc7ggnz82zqyyy1v5d8mnri7"))))
+        (base32 "1kzmn89b1vrasba7z8hp8izyrrskgc7ggnz82zqyyy1v5d8mnri7"))
+       (patches (search-patches "krita-bump-sip-abi-version-to-12.8.patch"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f
