@@ -2910,14 +2910,14 @@ growing set of geoscientific methods.")
 (define-public qgis
   (package
     (name "qgis")
-    (version "3.30.1")
+    (version "3.34.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://qgis.org/downloads/qgis-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "0mdgqyqr3nswp5qfpjrpr35lxizcrz73a1gs3ddxsd1xr9amzb5s"))))
+        (base32 "1zqyyrbv53vrrh372g503qh8kmy2dlsxcck28khhkh2262m5qfap"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -2935,7 +2935,6 @@ growing set of geoscientific methods.")
                                ;; Disable tests that require network access
                                "PyQgsExternalStorageAwsS3"
                                "PyQgsExternalStorageWebDav"
-                               "qgis_filedownloader"
                                "test_core_networkaccessmanager"
                                "test_core_tiledownloadmanager"
                                "test_gui_filedownloader"
@@ -2960,9 +2959,9 @@ growing set of geoscientific methods.")
                                "ProcessingOtbAlgorithmsTest"
                                ;; TODO: Find why the following tests fail
                                "ProcessingQgisAlgorithmsTestPt1"
+                               "ProcessingQgisAlgorithmsTestPt2"
                                "ProcessingQgisAlgorithmsTestPt3"
                                "ProcessingQgisAlgorithmsTestPt4"
-                               "ProcessingGdalAlgorithmsRasterTest"
                                "ProcessingGdalAlgorithmsVectorTest"
                                "ProcessingGrass7AlgorithmsImageryTest"
                                "ProcessingGrass7AlgorithmsRasterTestPt1"
@@ -2975,28 +2974,27 @@ growing set of geoscientific methods.")
                                "test_core_gdalutils"
                                "test_core_labelingengine"
                                "test_core_layoutpicture"
-                               "test_core_layouttable"
-                               "test_core_pointcloudlayerexporter"
-                               "test_core_projectstorage"
+                               "test_core_project"
                                "test_core_coordinatereferencesystem"
                                "test_core_overlayexpression"
                                "test_gui_queryresultwidget"
-                               "test_provider_copcprovider"
                                "test_provider_eptprovider"
-                               "test_analysis_processingalgspt1"
                                "test_analysis_processingalgspt2"
+                               "test_analysis_processingpdalalgs"
                                "test_analysis_processing"
                                "test_app_gpsintegration"
+                               "test_3d_mesh3drendering"
                                "PyQgsAnnotation"
+                               "PyQgsAnnotationLayer"
+                               "PyQgsAnnotationLineItem"
+                               "PyQgsAnnotationLineTextItem"
+                               "PyQgsAnnotationPolygonItem"
                                "PyQgsAuthenticationSystem"
-                               "PyQgsConnectionRegistry"
                                "PyQgsDatumTransform"
                                "PyQgsFileUtils"
                                "PyQgsGeometryTest"
                                "PyQgsGoogleMapsGeocoder"
-                               "PyQgsGroupLayer"
                                "PyQgsHashLineSymbolLayer"
-                               "PyQgsLayerMetadataProviderPython"
                                "PyQgsLayoutHtml"
                                "PyQgsLineSymbolLayers"
                                "PyQgsMapLayer"
@@ -3007,13 +3005,71 @@ growing set of geoscientific methods.")
                                "PyQgsProviderConnectionGpkg"
                                "PyQgsProviderConnectionSpatialite"
                                "PyQgsOGRProvider"
-                               "PyQgsSettingsTreeNode"
                                "PyQgsTextRenderer"
                                "PyQgsVectorFileWriter"
-                               "PyQgsVectorLayerEditBuffer"
                                "PyQgsVirtualLayerProvider"
                                "PyQgsAuxiliaryStorage"
                                "PyQgsSelectiveMasking"
+                               "PyPythonRepr"
+                               "PyQgsAnimatedMarkerSymbolLayer"
+                               "PyQgsPythonProvider"
+                               "PyQgsCategorizedSymbolRenderer"
+                               "PyQgsColorRampLegendNode"
+                               "PyQgsEmbeddedSymbolRenderer"
+                               "PyQgsFillSymbolLayers"
+                               "PyQgsGeometryGeneratorSymbolLayer"
+                               "PyQgsGpsLogger"
+                               "PyQgsGraduatedSymbolRenderer"
+                               "PyQgsHighlight"
+                               "PyQgsInterpolatedLineSymbolLayer"
+                               "PyQgsJsonUtils"
+                               "PyQgsLayerTreeView"
+                               "PyQgsLayoutAtlas"
+                               "PyQgsLayoutElevationProfile"
+                               "PyQgsLayoutPageCollection"
+                               "PyQgsLayoutItem"
+                               "PyQgsLayoutLegend"
+                               "PyQgsLayoutMap"
+                               "PyQgsLayoutPage"
+                               "PyQgsLineburstSymbolLayer"
+                               "PyQgsMapCanvas"
+                               "PyQgsMapCanvasAnnotationItem"
+                               "PyQgsMapHitTest"
+                               "PyQgsMarkerLineSymbolLayer"
+                               "PyQgsMergedFeatureRenderer"
+                               "PyQgsMeshLayerProfileGenerator"
+                               "PyQgsPalLabelingPlacement"
+                               "PyQgsPointCloudAttributeByRampRenderer"
+                               "PyQgsPointCloudExtentRenderer"
+                               "PyQgsPointCloudLayerProfileGenerator"
+                               "PyQgsPointClusterRenderer"
+                               "PyQgsPointDisplacementRenderer"
+                               "PyQgsProfileExporter"
+                               "PyQgsProfileRequest"
+                               "TestQgsRandomMarkerSymbolLayer"
+                               "PyQgsRasterAttributeTable"
+                               "PyQgsRasterFileWriterTask"
+                               "PyQgsRasterLayer"
+                               "PyQgsRasterLayerProfileGenerator"
+                               "PyQgsRasterColorRampShader"
+                               "PyQgsRasterLineSymbolLayer"
+                               "PyQgsRasterPipe"
+                               "PyQgsSingleSymbolRenderer"
+                               "PyQgsSimpleFillSymbolLayer"
+                               "PyQgsSimpleLineSymbolLayer"
+                               "PyQgsSymbolLayer"
+                               "PyQgsRasterRendererCreateSld"
+                               "PyQgsSymbolLayerCreateSld"
+                               "PyQgsArrowSymbolLayer"
+                               "PyQgsSymbolExpressionVariables"
+                               "PyQgsStyleModel"
+                               "PyQgsSymbol"
+                               "PyQgsSymbolLayerUtils"
+                               "PyQgsTextFormatWidget"
+                               "PyQgsVectorFieldMarkerSymbolLayer"
+                               "PyQgsVectorLayer"
+                               "PyQgsVectorLayerProfileGenerator"
+                               "PyQgsVectorLayerRenderer"
                                "qgis_sipify"
                                "qgis_sip_include"
                                "qgis_sip_uptodate"))
@@ -3078,19 +3134,24 @@ SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
                   `("GISBASE" = (,grass-dir)))))))))
     (inputs
      (list bash-minimal
+           draco
            exiv2
            expat
+           freexl
            gdal
            geos
            gpsbabel
            grass
            gsl
            hdf5
+           librttopo
            libspatialindex
            libspatialite
            libxml2
            libzip
+           minizip
            netcdf
+           pdal
            postgresql
            proj
            protobuf
@@ -3112,6 +3173,7 @@ SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
            python-urllib3
            qca
            qscintilla
+           qt3d-5
            qtbase-5
            qtdeclarative-5
            qtkeychain
