@@ -1575,8 +1575,7 @@ command.")
      (substitute-keyword-arguments (package-arguments glibc/hurd)
        ;; We just pass the flags really needed to build the headers.
        ((#:configure-flags flags)
-        `(list "--enable-add-ons"
-               ,@%glibc/hurd-configure-flags))
+        `(list "--enable-add-ons"))
        ((#:phases _)
         '(modify-phases %standard-phases
            (replace 'install
