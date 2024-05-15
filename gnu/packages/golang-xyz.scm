@@ -2982,6 +2982,30 @@ processes.")
 on top of the standard library @code{flag} package.")
     (license license:bsd-3)))
 
+(define-public go-github-com-pion-logging
+  (package
+    (name "go-github-com-pion-logging")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/logging/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11ay8c15xk3pv7y9nd80szk3mci480x67yqlgb10vswrz4h4mx3v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pion/logging"))
+    (home-page "https://github.com/pion/logging/")
+    (synopsis "Logging library for Golang projects")
+    (description
+"This package provides a logging library used by @url{https://github.com/pion,
+Pion}.")
+    (license license:expat)))
+
 (define-public go-github-com-prometheus-client-model
   (package
     (name "go-github-com-prometheus-client-model")
