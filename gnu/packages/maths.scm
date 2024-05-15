@@ -4091,7 +4091,7 @@ book.")
 (define-public minizinc
   (package
     (name "minizinc")
-    (version "2.5.5")
+    (version "2.8.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4100,7 +4100,7 @@ book.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10b2hsl1fx9psh0iagmp8ki3f60f3qg5hmvra5aczjlfmbl88ggp"))
+                "03iliizyadd0wvx6a63rg22lb6p4m6krhlpfm2hfzwj66y3a76j6"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
