@@ -2704,9 +2704,9 @@ and quadratic objectives using the Simplex algorithm.")
 
 (define-public gecode
   ;; The current release is not compatible with minizinc anymore.
-  ;; Use the latest commit on the release/6.3.0 branch.
-  (let ((commit "f7f0d7c273d6844698f01cec8229ebe0b66a016a")
-        (revision "1"))
+  ;; Use a commit that has been tested with minizinc.
+  (let ((commit "2d20e88cae176584b6e09d909aca3eb72ae76829")
+        (revision "2"))
     (package
       (name "gecode")
       (version (git-version "6.2.0" revision commit))
@@ -2718,7 +2718,7 @@ and quadratic objectives using the Simplex algorithm.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "16gzwa64w90vifaflmii515rsrqclf2y7nziq621m4ad9cjgcixj"))
+          (base32 "0hf7hd7m5p26xwn8f561f0gn2a6q33xz818jg3ivmvp2ysmmmm4r"))
          (modules '((guix build utils)))
          (snippet '(begin
                      ;; delete generated sources
