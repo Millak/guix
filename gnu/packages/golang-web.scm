@@ -1668,6 +1668,24 @@ throughout the @url{https://github.com/pion, Pion} modules.")
      (list
       #:import-path "github.com/pion/transport/v2"))))
 
+(define-public go-github-com-pion-transport-v3
+  (package
+    (inherit go-github-com-pion-transport)
+    (name "go-github-com-pion-transport-v3")
+    (version "3.0.2")
+    (source
+     (origin
+       (inherit (package-source go-github-com-pion-transport))
+       (uri (git-reference
+             (url "https://github.com/pion/transport/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j7ljkbyf2qd7daxg7d1rd6c92md64agi59b69g6jyqpz5jww998"))))
+    (arguments
+     (list
+      #:import-path "github.com/pion/transport/v3"))))
+
 (define-public go-github-com-pires-go-proxyproto
   (package
     (name "go-github-com-pires-go-proxyproto")
