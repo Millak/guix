@@ -310,7 +310,7 @@ programmatic functions.")
 (define-public chuffed
   (package
     (name "chuffed")
-    (version "0.13.1")
+    (version "0.13.2")
     (source
      (origin
        (method git-fetch)
@@ -318,23 +318,21 @@ programmatic functions.")
              (url "https://github.com/chuffed/chuffed")
              (commit version)))
        (sha256
-        (base32 "1c28q166qh84q4i5wz77fqvw7kld3fmhd245sgdvyxcbjpi2wr0m"))))
+         (base32
+           "164brmwn71p9gb2441kh7b1gzmy2sg7bjv5z00wjs9nw41qc908g"))))
     (build-system cmake-build-system)
-    (synopsis "Lazy clause generation solver")
     (arguments
-     (list
-      #:tests? #f ;no 'test' target
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'build 'patch-msc
-                     (lambda _
-                       (let ((out #$output))
-                         (substitute* "chuffed.msc"
-                           ;; Replace fzn-chuffed and chuffed paths
-                           ;; before build.
-                           (("\\.\\./../..")
-                            out)
-                           (("\\.\\.")
-                            (string-append out "/share/minizinc")))))))))
+      (list #:tests? #f ;no 'test' target
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-before 'build 'patch-msc
+                  (lambda* (#:key outputs #:allow-other-keys)
+                    (let ((out (assoc-ref outputs "out")))
+                      (substitute* "chuffed.msc"
+                        (("\\.\\./../..") out)
+                        (("\\.\\.")
+                         (string-append out "/share/minizinc")))))))))
+    (synopsis "Lazy clause generation solver")
     (description
      "Chuffed is a state of the art lazy clause solver designed from the
 ground up with lazy clause generation in mind.  Lazy clause generation
