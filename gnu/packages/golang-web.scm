@@ -1620,6 +1620,33 @@ which produce colorized output using github.com/fatih/color.")
 in Golang.")
     (license license:expat)))
 
+(define-public go-github-com-pion-dtls-v2
+  (package
+    (inherit go-github-com-pion-dtls)
+    (name "go-github-com-pion-dtls-v2")
+    (version "2.2.11")
+    (source
+     (origin
+       (inherit (package-source go-github-com-pion-dtls))
+       (uri (git-reference
+             (url "https://github.com/pion/dtls")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10nn9349f7snqkzncda5m013fgnzicrcxi6pb6ghc0vb6rhqkf30"))))
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/pion/dtls/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pion-logging
+           go-github-com-pion-transport-v2
+           go-github-com-pion-transport-v3
+           go-golang-org-x-crypto
+           go-golang-org-x-net))))
+
 (define-public go-github-com-pion-mdns
   (package
     (name "go-github-com-pion-mdns")
