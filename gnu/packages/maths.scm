@@ -4154,17 +4154,18 @@ book.")
                   #t))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; no ‘check’ target
-       #:modules ((guix build cmake-build-system)
-                  (guix build utils)
-                  (srfi srfi-1))
+     (list
+       #:tests? #f ; no ‘check’ target
+       #:modules '((guix build cmake-build-system)
+                   (guix build utils)
+                   (srfi srfi-1))
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (add-after 'install 'install-solver-configs
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((chuffed (assoc-ref inputs "chuffed"))
-                   (gecode (assoc-ref inputs "gecode"))
-                   (pkgdatadir (string-append (assoc-ref outputs "out")
+           (lambda _
+             (let ((chuffed #$(this-package-input "chuffed"))
+                   (gecode #$(this-package-input "gecode"))
+                   (pkgdatadir (string-append #$output
                                               "/share/minizinc")))
                (call-with-output-file (string-append pkgdatadir
                                                      "/Preferences.json")
