@@ -19,7 +19,7 @@
 ;;; Copyright © 2016 Albin Söderqvist <albin@fripost.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Steve Webber <webber.sl@gmail.com>
 ;;; Copyright © 2017 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@hyperbola.info>
@@ -7884,22 +7884,20 @@ making Yamagi Quake II one of the most solid Quake II implementations available.
        (sha256
         (base32
          "1ag2cp346f9bz9qy6za6q54id44d2ypvkyhvnjha14qzzapwaysj"))))
-    (build-system gnu-build-system)
+    (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (delete 'configure)
-         ;; There is no "install" phase.  By default, tbe is installed
-         ;; in the build directory.  Provide our own installation.
-         (replace 'install
+         (add-after 'unpack 'set-cmake-install-prefix
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (share (string-append out "/share")))
-               (install-file "usr/games/tbe" bin)
-               (mkdir-p share)
-               (copy-recursively "usr/share" share)
-               #t))))
+             (substitute* "CMakeLists.txt"
+               (("/usr") (assoc-ref outputs "out"))
+               (("TBE_BIN_DIR     games") "TBE_BIN_DIR     bin"))))
+         (add-after 'unpack 'disable-translations
+           ;; TODO: Re-enable translations when they no longer fail to build.
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               ((".*i18n.*") "")))))
        ;; Test suite requires a running Xorg server. Even when
        ;; provided, it fails with "D-Bus library appears to be
        ;; incorrectly set up; failed to read machine uuid: Failed to
@@ -7909,8 +7907,7 @@ making Yamagi Quake II one of the most solid Quake II implementations available.
     (inputs
      (list qtbase-5 qtsvg-5))
     (native-inputs
-     `(("cmake" ,cmake-minimal)
-       ("gettext-minimal" ,gettext-minimal)
+     `(("gettext-minimal" ,gettext-minimal)
        ("qttools-5" ,qttools-5)))
     (synopsis "Realistic physics puzzle game")
     (description "The Butterfly Effect (tbe) is a game that uses
