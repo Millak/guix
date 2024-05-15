@@ -71,6 +71,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -79,6 +80,7 @@
   #:use-module (gnu packages benchmark)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages file)
@@ -86,6 +88,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages java)
   #:use-module (gnu packages llvm)
@@ -860,6 +863,47 @@ C, forked from the zip manipulation library found in the zlib distribution.")
       (description "SfArk extractor converts SoundFonts in the compressed legacy
 sfArk file format to the uncompressed sf2 format.")
       (license license:gpl3+))))
+
+(define-public draco
+  (package
+    (name "draco")
+    (version "1.5.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/draco")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1v1idvqr9mww9wi36yzb10lq66ls78dlrgnxchjjjv5paw2g0mk3"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; There is a testdata directory but apparently no actual tests.
+     ;; src/draco/tools/install_test contains a sanity check, but this
+     ;; check is useless here.
+     (list #:tests? #f
+           #:configure-flags
+           #~(list "-DBUILD_SHARED_LIBS=true"
+                   (string-append "-DDRACO_EIGEN_PATH="
+                                  #$(this-package-input "eigen"))
+                   (string-append "-DDRACO_FILESYSTEM_PATH="
+                                  #$(this-package-input "gulrak-filesystem"))
+                   (string-append "-DDRACO_TINYGLTF_PATH="
+                                  #$(this-package-input "tinygltf")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'delete-static-lib
+                 (lambda _
+                   (delete-file (string-append #$output
+                                               "/lib/libdraco.a")))))))
+    (inputs (list eigen gulrak-filesystem tinygltf))
+    (home-page "https://google.github.io/draco/")
+    (synopsis "Compress and decompress 3D geometric meshes and point clouds")
+    (description "Draco is a library for compressing and decompressing 3D
+geometric meshes and point clouds.  It is intended to improve the storage and
+transmission of 3D graphics.")
+    (license license:asl2.0)))
 
 (define-public libmspack
   (package
