@@ -9497,36 +9497,41 @@ numeric differences and differences in numeric formats.")
                (base32
                 "0fq8wg8ji2v2ssz1d681glmk8glps1irnmdlhqfklaggx01hlf4p"))))
     (build-system ocaml-build-system)
-    (native-inputs
-     (list autoconf automake coq ocaml which))
-    (propagated-inputs
-     (list camlzip ocaml-graph ocaml-menhir ocaml-num ocaml-zarith))
-    (inputs
-     (list coq-flocq emacs-minimal zlib))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'bootstrap
-           (lambda _
-             (invoke "./autogen.sh")
-             (setenv "CONFIG_SHELL" (which "sh"))
-             (substitute* "configure"
-               (("#! /bin/sh") (string-append "#!" (which "sh")))
-               ;; find ocaml-num in the correct directory
-               (("\\$DIR/nums.cma") "$DIR/num.cma")
-               (("\\$DIR/num.cmi") "$DIR/core/num.cmi"))
-             #t))
-         (add-after 'configure 'fix-makefile
-           (lambda _
-             (substitute* "Makefile"
-               ;; find ocaml-num in the correct directory
-               (("site-lib/num") "site-lib"))
-             #t))
-        (add-after 'install 'install-lib
-          (lambda _
-            (invoke "make" "byte")
-            (invoke "make" "install-lib")
-            #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'bootstrap
+                 (lambda _
+                   (invoke "./autogen.sh")
+                   (setenv "CONFIG_SHELL" (which "sh"))
+                   (substitute* "configure"
+                     (("#! /bin/sh") (string-append "#!" (which "sh")))
+                     ;; find ocaml-num in the correct directory
+                     (("\\$DIR/nums.cma") "$DIR/num.cma")
+                     (("\\$DIR/num.cmi") "$DIR/core/num.cmi"))))
+               (add-after 'configure 'fix-makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     ;; find ocaml-num in the correct directory
+                     (("site-lib/num") "site-lib"))))
+            (add-after 'install 'install-lib
+              (lambda _
+                (invoke "make" "byte")
+                (invoke "make" "install-lib"))))))
+    (native-inputs (list autoconf
+                         automake
+                         coq
+                         ocaml
+                         ocaml-findlib
+                         which))
+    (propagated-inputs (list camlzip
+                             ocaml-graph
+                             ocaml-menhir
+                             ocaml-num
+                             ocaml-zarith))
+    (inputs (list coq-flocq
+                  emacs-minimal
+                  zlib))
     (home-page "https://why3.lri.fr")
     (synopsis "Deductive program verification")
     (description "Why3 provides a language for specification and programming,
