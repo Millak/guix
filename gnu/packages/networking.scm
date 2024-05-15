@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2020, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -123,6 +123,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -3086,9 +3087,14 @@ does not use SSH and requires a pre-shared symmetric key.")
                (base32
                 "1lsksqxij5f1llqn86pkygrf5672kvrqn1kvxghi169hqf1c0r73"))
               (patches
-               (search-patches "quagga-reproducible-build.patch"))))
+               (search-patches "quagga-reproducible-build.patch"))
+              (snippet
+               #~(begin (delete-file "lib/memtypes.h")
+                        (delete-file "lib/route_types.h")
+                        (delete-file "lib/version.h")
+                        (delete-file "vtysh/extract.pl")))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config perl dejagnu))
+    (native-inputs (list gawk pkg-config perl dejagnu))
     (inputs (list readline c-ares))
     (synopsis "Routing Software Suite")
     (description "Quagga is a routing software suite, providing implementations
