@@ -310,15 +310,16 @@ programmatic functions.")
 (define-public chuffed
   (package
     (name "chuffed")
-    (version "0.13.1")
+    (version "0.13.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/chuffed/chuffed")
              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1c28q166qh84q4i5wz77fqvw7kld3fmhd245sgdvyxcbjpi2wr0m"))))
+        (base32 "164brmwn71p9gb2441kh7b1gzmy2sg7bjv5z00wjs9nw41qc908g"))))
     (build-system cmake-build-system)
     (synopsis "Lazy clause generation solver")
     (arguments
