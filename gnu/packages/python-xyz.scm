@@ -32924,7 +32924,7 @@ used to retry a function a given number of times.")
 (define-public python-pivy
   (package
     (name "python-pivy")
-    (version "0.6.5")
+    (version "0.6.8")
     (source
       (origin
         (method git-fetch)
@@ -32933,7 +32933,7 @@ used to retry a function a given number of times.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0vids7sxk8w5vr73xdnf8xdci71a7syl6cd35aiisppbqyyfmykx"))))
+         (base32 "00l4r06dwmgn8h29nrl3g3yv33cfyizyylk28x1j95qyj36sggfb"))))
     (build-system python-build-system)
     (arguments
      (list
