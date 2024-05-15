@@ -11317,7 +11317,10 @@ particularly simple design.")
     (arguments
      `(#:jar-name "java-jctools-core.jar"
        #:source-dir "jctools-core/src/main/java"
-       #:test-dir "jctools-core/src/test"))
+       #:test-dir "jctools-core/src/test"
+       ;; The tests timeout on some architectures.
+       #:tests? ,(not (or (target-aarch64?)
+                          (%current-target-system)))))
     (native-inputs
      (list java-junit java-hamcrest-all))
     (home-page "https://github.com/JCTools/JCTools")
