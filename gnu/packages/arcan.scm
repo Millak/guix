@@ -174,13 +174,13 @@ engine with a Lua scripting interface.")
     (inputs
      (modify-inputs (package-inputs arcan)
        (delete "libdrm")
-       (prepend glu libglvnd mesa sdl)))
+       (prepend glu libglvnd mesa sdl2)))
     (arguments
      `(,@(ensure-keyword-arguments
           (package-arguments arcan)
           '(#:configure-flags
             '("-DCMAKE_C_FLAGS=-fcommon"
-              "-DVIDEO_PLATFORM=sdl" "-DBUILTIN_LUA=off"
+              "-DHYBRID_SDL=on" "-DBUILTIN_LUA=off"
               "-DSTATIC_OPENAL=off" "-DDISABLE_JIT=off"
               "-DENABLE_LWA=on" "-DSTATIC_SQLITE3=off"
               "-DSTATIC_FREETYPE=off" "-DSHMIF_TUI_ACCEL=on")))))
