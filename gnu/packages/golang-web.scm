@@ -1650,6 +1650,24 @@ packetizer and depacketizer.")
 throughout the @url{https://github.com/pion, Pion} modules.")
     (license license:expat)))
 
+(define-public go-github-com-pion-transport-v2
+  (package
+    (inherit go-github-com-pion-transport)
+    (name "go-github-com-pion-transport-v2")
+    (version "2.2.5")
+    (source
+     (origin
+       (inherit (package-source go-github-com-pion-transport))
+       (uri (git-reference
+             (url "https://github.com/pion/transport/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00q3v37l56yr1ch25g5w70jy8y923csbvy4krvy4dv3h5f1mdpmf"))))
+    (arguments
+     (list
+      #:import-path "github.com/pion/transport/v2"))))
+
 (define-public go-github-com-pires-go-proxyproto
   (package
     (name "go-github-com-pires-go-proxyproto")
