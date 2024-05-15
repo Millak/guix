@@ -5794,6 +5794,31 @@ extensive prebuilt widgets make it possible to build beautiful,
 responsive, and powerful applications with minimal effort.")
     (license license:artistic2.0)))
 
+(define-public r-shinydisconnect
+  (package
+    (name "r-shinydisconnect")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "shinydisconnect" version))
+       (sha256
+        (base32 "1yhppfx8jpvz48iwxnimcwqhj02vqjrfmh4z5rdn9d35p51c8zjc"))))
+    (properties `((upstream-name . "shinydisconnect")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate r-glue r-htmltools r-shiny))
+    (home-page "https://github.com/daattali/shinydisconnect")
+    (synopsis "Show a nice message when a Shiny app disconnects or errors")
+    (description
+     "This package provides a Shiny app that can disconnect for a variety of
+reasons: an unrecoverable error occurred in the app, the server went down, the
+user lost internet connection, or any other reason that might cause the Shiny
+app to lose connection to its server.  With shinydisconnect, you can call
+@code{disonnectMessage} anywhere in a Shiny app's UI to add a nice message
+when this happens.  It works locally (running Shiny apps within RStudio) and
+on Shiny servers.")
+    (license license:expat)))
+
 (define-public r-shinyhelper
   (package
     (name "r-shinyhelper")
