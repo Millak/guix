@@ -701,8 +701,7 @@ returned."
            ((#:configure-flags flags)
             `(cons ,(string-append "--host=" target)
                    ,(if (target-hurd? target)
-                        `(append (list "--disable-werror"
-                                       ,@%glibc/hurd-configure-flags)
+                        `(append (list "--disable-werror")
                                  ,flags)
                         flags)))
            ((#:phases phases)
