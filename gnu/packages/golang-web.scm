@@ -1744,6 +1744,31 @@ packetizer and depacketizer.")
 +request retransmissions.")
     (license license:expat)))
 
+(define-public go-github-com-pion-stun-v2
+  (package
+    (inherit go-github-com-pion-stun)
+    (name "go-github-com-pion-stun-v2")
+    (version "2.0.0")
+    (source
+     (origin
+       (inherit (package-source go-github-com-pion-stun))
+       (uri (git-reference
+             (url "https://github.com/pion/stun")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zli55ls5izpr6cw0wj0gy44872xn9rk20i8ay9cfk7j2rb60y60"))))
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/pion/stun/v2"))
+    (propagated-inputs
+     (list go-github-com-pion-dtls-v2
+           go-github-com-pion-logging
+           go-github-com-pion-transport-v3
+           go-golang-org-x-crypto
+           go-golang-org-x-net))))
+
 (define-public go-github-com-pion-transport
   (package
     (name "go-github-com-pion-transport")
