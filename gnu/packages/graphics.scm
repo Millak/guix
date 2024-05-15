@@ -2413,6 +2413,73 @@ and build scripts for the OpenXR loader.")
     ;; Dual licensed.  Either license applies.
     (license (list license:asl2.0 license:expat))))
 
+(define-public tinygltf
+  (package
+    (name "tinygltf")
+    (version "2.8.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/syoyo/tinygltf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14712lndwlk4y001jxf2rxhwrw0w5gbc2hyh9kpik1galdzg41ii"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (for-each delete-file-recursively
+                              (list "examples" ".github" "tools"))
+                    ;; tinygltf bundles json, stb-image and stb-image-write
+                    ;; headers. Delete those, and use symlink ours instead.
+                    (for-each delete-file
+                              (list "json.hpp"
+                                    "stb_image.h"
+                                    "stb_image_write.h"
+                                    "tests/catch.hpp"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-our-packages
+            (lambda* (#:key inputs #:allow-other-keys)
+              (symlink (search-input-file inputs "include/nlohmann/json.hpp")
+                       "json.hpp")
+              (symlink (search-input-file inputs "include/stb_image.h")
+                       "stb_image.h")
+              (symlink (search-input-file inputs "include/stb_image_write.h")
+                       "stb_image_write.h")
+              (symlink (search-input-file inputs "include/catch.hpp")
+                       "catch.hpp")))
+          (add-after 'install 'delete-static-lib
+            (lambda _
+              (delete-file (string-append #$output
+                                          "/lib/libtinygltf.a"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (with-directory-excursion "../source/tests"
+                    (invoke "make")
+                    (invoke "./tester")
+                    (invoke "./tester_noexcept"))
+                  (format #t "test suite not run~%")))))))
+    (inputs (list nlohmann-json stb-image stb-image-write))
+    (native-inputs (list catch-framework clang))
+    (home-page "https://github.com/syoyo/tinygltf")
+    (synopsis "Header only GL Transmission Format library")
+    (description "This package provides a header only C++11
+@url{https://github.com/KhronosGroup/glTF, glTF} (GL Transmission Format) 2.0
+library.
+
+GL Transmission Format (glTF) is a royalty-free specification for the
+efficient transmission and loading of 3D scenes and models by applications.
+glTF minimizes both the size of 3D assets, and the runtime processing needed
+to unpack and use those assets. glTF defines an extensible, common publishing
+format for 3D content tools and services that streamlines authoring workflows
+and enables interoperable use of content across the industry.")
+    (license license:expat)))
+
 (define-public monado
   (package
     (name "monado")
