@@ -1748,7 +1748,8 @@ graphics card on Optimus laptops.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19vi7dk4jv5wm18cznz4lj2fb1c7m7j3ig62x4a6qy9djxf9z472"))))
+        (base32 "19vi7dk4jv5wm18cznz4lj2fb1c7m7j3ig62x4a6qy9djxf9z472"))
+       (patches (search-patches "ddcci-driver-linux-linux-6.8.patch"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ; no tests
