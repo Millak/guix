@@ -4156,6 +4156,35 @@ your host privately.")
 inputs and applications using PipeWire.")
     (license license:gpl2+)))
 
+(define-public obs-source-record
+  (package
+    (name "obs-source-record")
+    (version "0.3.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/exeldro/obs-source-record")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07yglklrjn3nkyw8755nwchcfgvyw7d0n4qynvja8s7rgqbbs0an"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:configure-flags
+      #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
+                             #$(this-package-input "obs") "/lib")
+              "-DBUILD_OUT_OF_TREE=On"
+              "-Wno-dev")))
+    (inputs (list obs))
+    (home-page "https://github.com/exeldro/obs-source-record")
+    (synopsis "OBS plugin for recording sources via a filter")
+    (description "This package provides an OBS plugin for recording sources
+via a filter.")
+    (license license:gpl2)))
+
 (define-public obs-websocket
   ;; Functionality was merged into OBS.
   (deprecated-package "obs-websocket" obs))
