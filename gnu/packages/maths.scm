@@ -9525,9 +9525,15 @@ numeric differences and differences in numeric formats.")
                          ocaml-findlib
                          which))
     (propagated-inputs (list camlzip
+                             lablgtk3
                              ocaml-graph
+                             ocaml-lablgtk3-sourceview3
                              ocaml-menhir
+                             ocaml-ppx-deriving
+                             ocaml-ppx-sexp-conv
                              ocaml-num
+                             ocaml-re
+                             ocaml-sexplib
                              ocaml-zarith))
     (inputs (list coq-flocq
                   emacs-minimal
