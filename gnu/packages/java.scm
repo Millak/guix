@@ -3071,7 +3071,7 @@ specification.")
          (origin
            (method url-fetch)
            (uri (string-append
-                 "http://download.eclipse.org/eclipse/downloads/drops4/"
+                 "https://archive.eclipse.org/eclipse/downloads/drops4/"
                  "R-" version "-201710090410/swt-" version
                  "-gtk-linux-" file ".zip"))
            (sha256 (base32 hash))))))
