@@ -3965,7 +3965,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "29.0.2")
+    (version "29.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3975,7 +3975,7 @@ be used for realtime video capture via Linux-specific APIs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ijn19wy52fa7ahr29v1rzvh6j0qr7i5xl129m6s9c644f7i51ac"))
+                "192p7m3g8ynbkq3s894w6a0w6gix3k237q5jwqrrr8idwfwwyh0g"))
               (patches
                (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
@@ -4013,6 +4013,7 @@ be used for realtime video capture via Linux-specific APIs.")
     (inputs
      (list
       alsa-lib
+      asio
       bash-minimal
       curl
       eudev
@@ -4030,6 +4031,7 @@ be used for realtime video capture via Linux-specific APIs.")
       luajit
       mbedtls-lts
       mesa
+      nlohmann-json
       pciutils
       pipewire
       pulseaudio
@@ -4043,6 +4045,7 @@ be used for realtime video capture via Linux-specific APIs.")
       vlc
       wayland
       wayland-protocols
+      websocketpp
       zlib))
     (synopsis "Live streaming software")
     (description "Open Broadcaster Software provides a graphical interface for
