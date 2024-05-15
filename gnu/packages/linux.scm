@@ -9193,7 +9193,15 @@ privileges.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04nar65ac11qqx41vkfs7iip8kfiah0zms7l4rmsxncpiz2iqfik"))))
+                "04nar65ac11qqx41vkfs7iip8kfiah0zms7l4rmsxncpiz2iqfik"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; That file declares its own 'strlcat' as static.  To avoid a
+               ;; conflict with the function now in glibc 2.39, give it a
+               ;; different name.
+               #~(substitute* "ptl_ips/ips_proto_dump.c"
+                   (("strlcat")
+                    "psm2_custom_strlcat")))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
