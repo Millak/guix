@@ -64,6 +64,7 @@
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9485,7 +9486,7 @@ numeric differences and differences in numeric formats.")
 (define-public why3
   (package
     (name "why3")
-    (version "1.6.0")
+    (version "1.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9494,7 +9495,7 @@ numeric differences and differences in numeric formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0k3y98xzhrl44vwzq2m6k4nrllrwp3ll69lc2gfl8d77w0wg7gkp"))))
+                "0fq8wg8ji2v2ssz1d681glmk8glps1irnmdlhqfklaggx01hlf4p"))))
     (build-system ocaml-build-system)
     (native-inputs
      (list autoconf automake coq ocaml which))
