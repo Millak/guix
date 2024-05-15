@@ -2710,68 +2710,68 @@ and quadratic objectives using the Simplex algorithm.")
     (package
       (name "gecode")
       (version (git-version "6.2.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Gecode/gecode")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "16gzwa64w90vifaflmii515rsrqclf2y7nziq621m4ad9cjgcixj"))
-                (modules '((guix build utils)))
-                (snippet
-                 '(begin
-                    ;; delete generated sources
-                    (for-each delete-file
-                              '("gecode/kernel/var-imp.hpp"
-                                "gecode/kernel/var-type.hpp"))))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Gecode/gecode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "16gzwa64w90vifaflmii515rsrqclf2y7nziq621m4ad9cjgcixj"))
+         (modules '((guix build utils)))
+         (snippet '(begin
+                     ;; delete generated sources
+                     (for-each delete-file
+                               '("gecode/kernel/var-imp.hpp"
+                                 "gecode/kernel/var-type.hpp"))))))
       (outputs '("out" "examples"))
       (build-system gnu-build-system)
       (arguments
-       `(#:configure-flags
-         (list (string-append "GLDFLAGS=-Wl,-rpath="
-                              (assoc-ref %outputs "out")
-                              "/lib")
-               "--enable-examples=no")
-         #:modules ((guix build gnu-build-system)
+       (list
+        #:configure-flags #~(list (string-append "GLDFLAGS=-Wl,-rpath="
+                                                 #$output "/lib")
+                                  "--enable-examples=no")
+        #:modules '((guix build gnu-build-system)
                     (guix build utils)
                     (ice-9 rdelim)
                     (ice-9 popen))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'build 'build-examples
-             (lambda* (#:key outputs #:allow-other-keys)
-               (invoke "make" "compileexamples")))
-           ;; The Makefile disrespects GLDFLAGS for some reason, so we have to
-           ;; patch it ourselves... *sigh*
-           (add-after 'install 'fix-rpath
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((libdir (string-append (assoc-ref outputs "out") "/lib")))
-                 (for-each
-                  (lambda (file)
-                    (let* ((pipe (open-pipe* OPEN_READ "patchelf"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'build 'build-examples
+              (lambda _
+                (invoke "make" "compileexamples")))
+            ;; The Makefile disrespects GLDFLAGS for some reason,
+            ;; so we have to patch it ourselves.
+            (add-after 'install 'fix-rpath
+              (lambda _
+                (let ((libdir (string-append #$output "/lib")))
+                  (for-each (lambda (file)
+                              (let* ((pipe (open-pipe* OPEN_READ
+                                            "patchelf"
                                             "--print-rpath" file))
-                           (line (read-line pipe)))
-                      (and (zero? (close-pipe pipe))
-                           (invoke "patchelf" "--set-rpath"
-                                   (string-append libdir ":" line)
-                                   file))))
-                  (find-files libdir ".*\\.so$")))))
-           (add-after 'install 'install-examples
-             (lambda* (#:key outputs #:allow-other-keys)
-               (invoke "make" "installexamples"
-                       (string-append "bindir=" (assoc-ref outputs "examples")
-                                      "/bin"))))
-           ;; Tests depend on installed libraries.
-           (delete 'check)
-           (add-after 'fix-rpath 'check
-             (assoc-ref %standard-phases 'check)))))
-      (native-inputs
-       (list patchelf perl sed))
+                                     (line (read-line pipe)))
+                                (and (zero? (close-pipe pipe))
+                                     (invoke "patchelf" "--set-rpath"
+                                             (string-append libdir
+                                                            ":" line)
+                                             file))))
+                            (find-files libdir ".*\\.so$")))))
+            (add-after 'install 'install-examples
+              (lambda _
+                (invoke "make" "installexamples"
+                        (string-append "bindir="
+                                       #$output "/bin"))))
+            ;; Tests depend on installed libraries.
+            (delete 'check)
+            (add-after 'fix-rpath 'check
+              (assoc-ref %standard-phases
+                         'check)))))
+      (native-inputs (list patchelf perl sed))
       (home-page "https://www.gecode.org")
       (synopsis "Toolkit for developing constraint-based systems")
-      (description "Gecode is a C++ toolkit for developing constraint-based
+      (description
+       "Gecode is a C++ toolkit for developing constraint-based
 systems and applications.  It provides a modular and extensible solver.")
       (license license:expat))))
 
