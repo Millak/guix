@@ -1588,6 +1588,41 @@ which produce colorized output using github.com/fatih/color.")
     (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-pion-mdns
+  (package
+    (name "go-github-com-pion-mdns")
+    (version "2.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/mdns/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03675hx82lx3c8akkxdbkch1z4dbq54r05jk6jgdyd7mrdh9k4lm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests are implemented in GitHub Actions and require aditional
+      ;; packaging, see
+      ;; <https://github.com/pion/.goassets/blob/master/.github/workflows/test.reusable.yml>.
+      #:tests? #f
+      #:go go-1.21
+      #:import-path "github.com/pion/mdns"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pion-logging
+           go-github-com-pion-transport-v3
+           go-golang-org-x-net))
+    (home-page "https://github.com/pion/mdns/")
+    (synopsis "Pure Go implementation of Multicast DNS")
+    (description
+     "This package implements a mDNS (multicast DNS) used by
+@url{https://github.com/pion, Pion}.")
+    (license license:expat)))
+
 (define-public go-github-com-pion-rtp
   (package
     (name "go-github-com-pion-rtp")
