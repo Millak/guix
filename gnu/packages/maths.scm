@@ -2704,28 +2704,26 @@ and quadratic objectives using the Simplex algorithm.")
     (license license:epl1.0)))
 
 (define-public gecode
-  ;; The current release is not compatible with minizinc anymore.
-  ;; Use a commit that has been tested with minizinc.
-  (let ((commit "2d20e88cae176584b6e09d909aca3eb72ae76829")
-        (revision "2"))
+  (let* ((commit "f7f0d7c273d6844698f01cec8229ebe0b66a016a")
+         (version (git-version "6.2.0" "1" commit)))
     (package
       (name "gecode")
-      (version (git-version "6.2.0" revision commit))
+      (version version)
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Gecode/gecode")
-               (commit commit)))
+                (url "https://github.com/Gecode/gecode")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0hf7hd7m5p26xwn8f561f0gn2a6q33xz818jg3ivmvp2ysmmmm4r"))
+          (base32
+            "16gzwa64w90vifaflmii515rsrqclf2y7nziq621m4ad9cjgcixj"))
          (modules '((guix build utils)))
-         (snippet '(begin
-                     ;; delete generated sources
-                     (for-each delete-file
-                               '("gecode/kernel/var-imp.hpp"
-                                 "gecode/kernel/var-type.hpp"))))))
+         ;; delete generated sources
+         (snippet '(for-each delete-file
+                             '("gecode/kernel/var-imp.hpp"
+                               "gecode/kernel/var-type.hpp")))))
       (outputs '("out" "examples"))
       (build-system gnu-build-system)
       (arguments
@@ -2739,6 +2737,16 @@ and quadratic objectives using the Simplex algorithm.")
                     (ice-9 popen))
         #:phases
         #~(modify-phases %standard-phases
+            (add-before 'configure 'patch-msc-and-version
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((out (assoc-ref outputs "out")))
+                  (substitute* "tools/flatzinc/gecode.msc.in"
+                    (("\\.\\./../..") out)
+                    (("\\.\\.")
+                     (string-append out "/share/minizinc")))
+                  (substitute* "configure"
+                    (("(PACKAGE_[^0-9]*)[0-9\\.]+" all match)
+                     (string-append match #$version))))))
             (add-after 'build 'build-examples
               (lambda _
                 (invoke "make" "compileexamples")))
@@ -2747,33 +2755,27 @@ and quadratic objectives using the Simplex algorithm.")
             (add-after 'install 'fix-rpath
               (lambda _
                 (let ((libdir (string-append #$output "/lib")))
-                  (for-each (lambda (file)
-                              (let* ((pipe (open-pipe* OPEN_READ
-                                            "patchelf"
-                                            "--print-rpath" file))
-                                     (line (read-line pipe)))
-                                (and (zero? (close-pipe pipe))
-                                     (invoke "patchelf" "--set-rpath"
-                                             (string-append libdir
-                                                            ":" line)
-                                             file))))
-                            (find-files libdir ".*\\.so$")))))
+                  (for-each
+                    (lambda (file)
+                      (let* ((pipe (open-pipe* OPEN_READ "patchelf"
+                                               "--print-rpath" file))
+                             (line (read-line pipe)))
+                        (and (zero? (close-pipe pipe))
+                             (invoke "patchelf" "--set-rpath"
+                                     (string-append libdir ":" line)
+                                     file))))
+                    (find-files libdir ".*\\.so$")))))
             (add-after 'install 'install-examples
-              (lambda _
-                (invoke "make" "installexamples"
-                        (string-append "bindir="
-                                       #$output "/bin"))))
-            ;; Tests depend on installed libraries.
-            (delete 'check)
-            (add-after 'fix-rpath 'check
-              (assoc-ref %standard-phases
-                         'check)))))
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((examples (assoc-ref outputs "examples"))
+                       (bindir (format #f "bindir=~a/bin" examples)))
+                  (invoke "make" "installexamples" bindir)))))))
       (native-inputs (list patchelf perl sed))
       (home-page "https://www.gecode.org")
       (synopsis "Toolkit for developing constraint-based systems")
       (description
-       "Gecode is a C++ toolkit for developing constraint-based
-systems and applications.  It provides a modular and extensible solver.")
+        "Gecode is a C++ toolkit for developing constraint-based systems
+and applications.  It provides a modular and extensible solver.")
       (license license:expat))))
 
 (define-public libfixmath
@@ -4181,33 +4183,12 @@ book.")
 }"
                             port)
                    (newline port)))
-
-               (copy-recursively
-                 (string-append chuffed "/share/minizinc/solvers")
-                 (string-append pkgdatadir "/solvers"))
-               (call-with-output-file (string-append pkgdatadir
-                                                     "/solvers/gecode.msc")
-                 (lambda (port)
-                   (format port
-                    "\
-{
-  \"id\": \"org.gecode.gecode\",
-  \"name\": \"Gecode\",
-  \"description\": \"Gecode FlatZinc executable\",
-  \"version\": ~s,
-  \"mznlib\": ~s,
-  \"executable\": ~s,
-  \"supportsMzn\": false,
-  \"supportsFzn\": true,
-  \"needsSolns2Out\": true,
-  \"needsMznExecutable\": false,
-  \"needsStdlibDir\": false,
-  \"isGUIApplication\": false
-}"
-                    (last (string-split gecode #\-))
-                    (string-append gecode "/share/gecode/mznlib")
-                    (string-append gecode "/bin/fzn-gecode"))
-                   (newline port)))))))))
+               (for-each
+                 (lambda (solver)
+                   (copy-recursively
+                     (string-append solver "/share/minizinc/solvers")
+                     (string-append pkgdatadir "/solvers")))
+                 (list gecode chuffed))))))))
     (native-inputs
      (list bison flex))
     (inputs
