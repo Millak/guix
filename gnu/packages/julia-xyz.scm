@@ -1102,15 +1102,6 @@ color scales for graphics.")
        (sha256
         (base32 "0cp5wbi2bhnxp4h7wpzkx341d47744f4c9a8n0w0kn016qa16m86"))))
     (build-system julia-build-system)
-    (arguments
-     (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'skip-failing-test
-             (lambda _
-               (substitute* "test/conversions.jl"
-                 (("@test promote\\(RGB\\{N0f8")
-                  "@test_broken promote(RGB{N0f8")))))))
     (propagated-inputs
      (list julia-fixedpointnumbers))
     (native-inputs
@@ -2337,35 +2328,33 @@ writing @acronym{FITS, Flexible Image Transport System} files, based on the
     (license license:expat)))
 
 (define-public julia-fixedpointnumbers
-  (let ((commit "59ee94b93f2f1ee75544ef44187fc0e440cd8015")
-        (revision "1"))
-    (package
-      (name "julia-fixedpointnumbers")
-      (version (git-version "0.8.4" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/JuliaMath/FixedPointNumbers.jl")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1ghriy7p2fj7mwdx11ssjg28jmwz8pi13c3j8p1grvwb4nvc0jnq"))))
-      (build-system julia-build-system)
-      (arguments
-       (list #:tests? #f))      ; Cycle with julia-documenter
-      (propagated-inputs
-       (list julia-compat))
-      (home-page "https://github.com/JuliaMath/FixedPointNumbers.jl")
-      (synopsis "Fixed point types for Julia")
-      (description "@code{FixedPointNumbers.jl} implements fixed-point number
+  (package
+    (name "julia-fixedpointnumbers")
+    (version "0.8.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaMath/FixedPointNumbers.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cixh2acxscrgxglgbj2mlp2bk2yvqil1kjfvnp1xi0zp6px60f6"))))
+    (build-system julia-build-system)
+    (arguments
+     (list #:tests? #f))      ; Cycle with julia-documenter
+    (propagated-inputs
+     (list julia-compat))
+    (home-page "https://github.com/JuliaMath/FixedPointNumbers.jl")
+    (synopsis "Fixed point types for Julia")
+    (description "@code{FixedPointNumbers.jl} implements fixed-point number
 types for Julia.  A fixed-point number represents a fractional, or
 non-integral, number.  In contrast with the more widely known floating-point
 numbers, with fixed-point numbers the decimal point doesn't \"float\":
 fixed-point numbers are effectively integers that are interpreted as being
 scaled by a constant factor.  Consequently, they have a fixed number of
 digits (bits) after the decimal (radix) point.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public julia-formatting
   (package
