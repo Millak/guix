@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2018 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2017 David Thompson <davet@gnu.org>
-;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016, 2018, 2019, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018 Julian Graham <joolean@gmail.com>
@@ -580,19 +580,21 @@ support.")
 (define-public slade
   (package
     (name "slade")
-    (version "3.2.1")
+    (version "3.2.5a")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/sirjuddington/SLADE")
              (commit version)))
-       (sha256 (base32 "11ab38nv190lpvkdba5r2gckdrk4h15pri0zzslz7zy8qzg5fm18"))
+       (sha256
+        (base32 "1pdrw5ysyh9s907gj6bwf16sf9nm89dlnwlpn0y8x49662kx41v3"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
            #~(list "-DWX_GTK3=ON" "-DNO_WEBVIEW=ON"
+                   "-DBUILD_PK3=ON"
                    (string-append "-DWITH_WXPATH="
                                   #$(this-package-input "wxwidgets") "/bin")
                    (string-append "-DwxWidgets_LIBRARIES="
