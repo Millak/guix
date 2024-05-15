@@ -21498,18 +21498,16 @@ inspection of types defined in the Python standard typing module.")
 (define-public python-lazy-loader
   (package
     (name "python-lazy-loader")
-    (version "0.3")
+    (version "0.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "lazy_loader" version))
               (sha256
                (base32
-                "0dwghffnsjjf4pi4gwbl43rx04jmap375hdamafs5cpm6j78js1v"))))
+                "1lacaz292qxpgw6kxiirkx6sv9c5883nq4ssm3hs94cvb2153is7"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pre-commit
-           python-pytest
-           python-pytest-cov))
+     (list python-numpy python-pytest))
     (propagated-inputs
      (list python-flit-core))
     (home-page "https://scientific-python.org/specs/spec-0001/")
