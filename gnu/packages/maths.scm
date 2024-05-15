@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2020, 2023 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2020, 2023, 2024 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2016, 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
@@ -2703,73 +2703,77 @@ and quadratic objectives using the Simplex algorithm.")
     (license license:epl1.0)))
 
 (define-public gecode
-  (package
-    (name "gecode")
-    (version "6.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Gecode/gecode")
-                    (commit (string-append "release-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0b1cq0c810j1xr2x9y9996p894571sdxng5h74py17c6nr8c6dmk"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; delete generated sources
-                  (for-each delete-file
-                            '("gecode/kernel/var-imp.hpp"
-                              "gecode/kernel/var-type.hpp"))))))
-    (outputs '("out" "examples"))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       (list (string-append "GLDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out")
-                            "/lib")
-             "--enable-examples=no")
-       #:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (ice-9 rdelim)
-                  (ice-9 popen))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-examples
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "make" "compileexamples")))
-         ;; The Makefile disrespects GLDFLAGS for some reason, so we have to
-         ;; patch it ourselves... *sigh*
-         (add-after 'install 'fix-rpath
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((libdir (string-append (assoc-ref outputs "out") "/lib")))
-               (for-each
-                (lambda (file)
-                  (let* ((pipe (open-pipe* OPEN_READ "patchelf"
-                                          "--print-rpath" file))
-                         (line (read-line pipe)))
-                    (and (zero? (close-pipe pipe))
-                         (invoke "patchelf" "--set-rpath"
-                                 (string-append libdir ":" line)
-                                 file))))
-                (find-files libdir ".*\\.so$")))))
-         (add-after 'install 'install-examples
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "make" "installexamples"
-                     (string-append "bindir=" (assoc-ref outputs "examples")
-                                    "/bin"))))
-         ;; Tests depend on installed libraries.
-         (delete 'check)
-         (add-after 'fix-rpath 'check
-           (assoc-ref %standard-phases 'check)))))
-    (native-inputs
-     (list patchelf perl sed))
-    (home-page "https://www.gecode.org")
-    (synopsis "Toolkit for developing constraint-based systems")
-    (description "Gecode is a C++ toolkit for developing constraint-based
+  ;; The current release is not compatible with minizinc anymore.
+  ;; Use the latest commit on the release/6.3.0 branch.
+  (let ((commit "f7f0d7c273d6844698f01cec8229ebe0b66a016a")
+        (revision "1"))
+    (package
+      (name "gecode")
+      (version (git-version "6.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Gecode/gecode")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "16gzwa64w90vifaflmii515rsrqclf2y7nziq621m4ad9cjgcixj"))
+                (modules '((guix build utils)))
+                (snippet
+                 '(begin
+                    ;; delete generated sources
+                    (for-each delete-file
+                              '("gecode/kernel/var-imp.hpp"
+                                "gecode/kernel/var-type.hpp"))))))
+      (outputs '("out" "examples"))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:configure-flags
+         (list (string-append "GLDFLAGS=-Wl,-rpath="
+                              (assoc-ref %outputs "out")
+                              "/lib")
+               "--enable-examples=no")
+         #:modules ((guix build gnu-build-system)
+                    (guix build utils)
+                    (ice-9 rdelim)
+                    (ice-9 popen))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'build 'build-examples
+             (lambda* (#:key outputs #:allow-other-keys)
+               (invoke "make" "compileexamples")))
+           ;; The Makefile disrespects GLDFLAGS for some reason, so we have to
+           ;; patch it ourselves... *sigh*
+           (add-after 'install 'fix-rpath
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((libdir (string-append (assoc-ref outputs "out") "/lib")))
+                 (for-each
+                  (lambda (file)
+                    (let* ((pipe (open-pipe* OPEN_READ "patchelf"
+                                            "--print-rpath" file))
+                           (line (read-line pipe)))
+                      (and (zero? (close-pipe pipe))
+                           (invoke "patchelf" "--set-rpath"
+                                   (string-append libdir ":" line)
+                                   file))))
+                  (find-files libdir ".*\\.so$")))))
+           (add-after 'install 'install-examples
+             (lambda* (#:key outputs #:allow-other-keys)
+               (invoke "make" "installexamples"
+                       (string-append "bindir=" (assoc-ref outputs "examples")
+                                      "/bin"))))
+           ;; Tests depend on installed libraries.
+           (delete 'check)
+           (add-after 'fix-rpath 'check
+             (assoc-ref %standard-phases 'check)))))
+      (native-inputs
+       (list patchelf perl sed))
+      (home-page "https://www.gecode.org")
+      (synopsis "Toolkit for developing constraint-based systems")
+      (description "Gecode is a C++ toolkit for developing constraint-based
 systems and applications.  It provides a modular and extensible solver.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public libfixmath
   (let ((commit "1416c9979635c69f344d3c1de84b3246001a6540")
