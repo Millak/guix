@@ -173,6 +173,9 @@
             package-error-invalid-input
             &package-cross-build-system-error
             package-cross-build-system-error?
+            &package-unsupported-target-error
+            package-unsupported-target-error?
+            package-unsupported-target-error-target
 
             package->bag
             bag->derivation
@@ -849,6 +852,10 @@ exist, return #f instead."
 
 (define-condition-type &package-cross-build-system-error &package-error
   package-cross-build-system-error?)
+
+(define-condition-type &package-unsupported-target-error &package-error
+  package-unsupported-target-error?
+  (target package-unsupported-target-error-target))
 
 (define* (package-full-name package #:optional (delimiter "@"))
   "Return the full name of PACKAGE--i.e., `NAME@VERSION'.  By specifying
