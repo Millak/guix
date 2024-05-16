@@ -1340,7 +1340,22 @@ the tty to run, among other things."
                     (positive-time-to-live (* 3600 24))
                     (negative-time-to-live 3600)
                     (check-files? #t)             ;check /etc/services changes
-                    (persistent? #t))))
+                    (persistent? #t))
+
+        ;; Enable minimal caching of the user databases, not so much for
+        ;; caching but rather to allow that uses of NSS plugins like LDAP
+        ;; don't lead user processes to dlopen them (which is likely to fail
+        ;; due to them not being found in $LD_LIBRARY_PATH).
+        (nscd-cache (database 'passwd)
+                    (positive-time-to-live 600)
+                    (negative-time-to-live 20)
+                    (check-files? #t)             ;check /etc/passwd changes
+                    (persistent? #f))
+        (nscd-cache (database 'group)
+                    (positive-time-to-live 600)
+                    (negative-time-to-live 20)
+                    (check-files? #t)             ;check /etc/group changes
+                    (persistent? #f))))
 
 (define-deprecated %nscd-default-configuration
   #f
