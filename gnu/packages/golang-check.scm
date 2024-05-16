@@ -192,6 +192,35 @@ style).
 @end itemize")
     (license license:isc)))
 
+(define-public go-github-com-elgris-jsondiff
+  (package
+    (name "go-github-com-elgris-jsondiff")
+    (version "0.0.0-20160530203242-765b5c24c302")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elgris/jsondiff")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jm1q0s531hmkqdx8jqphfpmzysn44aphkpwlzqwp3hkz89g4d4q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/elgris/jsondiff"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-mgutz-ansi))
+    (home-page "https://github.com/elgris/jsondiff")
+    (synopsis "JSON diff diagnostics for Golang")
+    (description
+     "This package provides a simple little tool that produces readable diff
+of 2 JSON-able and convertible to @code{map[string]interface{}} objects.
+Useful for diagnostics or debugging")
+    (license license:expat)))
+
 (define-public go-github-com-felixge-fgprof
   (package
     (name "go-github-com-felixge-fgprof")
