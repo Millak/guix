@@ -1709,6 +1709,41 @@ in Golang.")
 packetizer and depacketizer.")
     (license license:expat)))
 
+(define-public go-github-com-pion-stun
+  (package
+    (name "go-github-com-pion-stun")
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/stun")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0172fcm1xvzvy3d5lcpscayzpf3i5w4bpfydifdc9l4n2wslx0sm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/pion/stun"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list  go-github-com-pion-dtls-v2
+            go-github-com-pion-logging
+            go-github-com-pion-transport-v2))
+    (home-page "https://github.com/pion/stun")
+    (synopsis "Go implementation of STUN")
+    (description
+     "Package @code{stun} implements Session Traversal Utilities for
++NAT (STUN) (@url{https://tools.ietf.org/html/rfc5389, RFC 5389}) protocol and
++@url{https://pkg.go.dev/github.com/pion/stun#Client, client} with no external
++dependencies and zero allocations in hot paths.  Client
++@url{https://pkg.go.dev/github.com/pion/stun#WithRTO, supports} automatic
++request retransmissions.")
+    (license license:expat)))
+
 (define-public go-github-com-pion-transport
   (package
     (name "go-github-com-pion-transport")
