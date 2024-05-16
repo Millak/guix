@@ -128,10 +128,10 @@ that was originally contributed to Debian.")
 (define-public nss-certs
   (package
     (name "nss-certs")
-    ;; XXX We used to refer to the nss package here, but that eventually caused
+    ;; FIXME We used to refer to the nss package here, but that eventually caused
     ;; module cycles.  The below is a quick copy-paste job that must be kept in
     ;; sync manually.  Surely there's a better way…?
-    (version "3.88.1")
+    (version "3.99")
     (source (origin
               (method url-fetch)
               (uri (let ((version-with-underscores
@@ -142,7 +142,7 @@ that was originally contributed to Debian.")
                       "nss-" version ".tar.gz")))
               (sha256
                (base32
-                "15il9fsmixa1r4446zq1wl627sg0hz9h67w6kjxz273xz3nl7li7"))
+                "1g89ig40gfi1sp02gybvl2z818lawcnrqjzsws36cdva834c5maw"))
               ;; Create nss.pc and nss-config.
               (patches (search-patches "nss-3.56-pkgconfig.patch"
                                        "nss-getcwd-nonnull.patch"
@@ -187,22 +187,6 @@ that was originally contributed to Debian.")
 taken from the NSS package and thus ultimately from the Mozilla project.")
     (home-page "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS")
     (license license:mpl2.0)))
-
-(define-public nss-certs-3.99
-  (package
-    (inherit nss-certs)
-    (version "3.99")
-    (source (origin
-              (method url-fetch)
-              (uri (let ((version-with-underscores
-                          (string-join (string-split version #\.) "_")))
-                     (string-append
-                      "https://ftp.mozilla.org/pub/mozilla.org/security/nss/"
-                      "releases/NSS_" version-with-underscores "_RTM/src/"
-                      "nss-" version ".tar.gz")))
-              (sha256
-               (base32
-                "1g89ig40gfi1sp02gybvl2z818lawcnrqjzsws36cdva834c5maw"))))))
 
 (define-public le-certs
   (package
