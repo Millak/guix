@@ -3239,7 +3239,7 @@ notifies the user using any notification daemon implementing
 (define-public waypipe
   (package
     (name "waypipe")
-    (version "0.8.1")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -3248,7 +3248,7 @@ notifies the user using any notification daemon implementing
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v08dv3dfz420v51ahz7qgv3429073kmgrf8f66s4c3jlpch2pa1"))))
+        (base32 "0pf1q8kyqyqa7gxar99i35q9np0k4vsf7xlrg12gyzc5k36lhknf"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config scdoc
