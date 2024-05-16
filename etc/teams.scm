@@ -688,7 +688,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Maxim Cournoyer"
                        "maxim.cournoyer@gmail.com")
-  gnome qt telephony)
+  documentation gnome qt telephony)
 
 (define-member (person "Katherine Cox-Buday"
                        "cox.katherine.e+guix@gmail.com")
