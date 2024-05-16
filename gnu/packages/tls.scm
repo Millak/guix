@@ -84,7 +84,9 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages base)
-  #:use-module (srfi srfi-1))
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35))
 
 (define-public libtasn1
   (package
@@ -390,7 +392,7 @@ bindings that were formerly provided as part of GnuTLS.")
      (modify-inputs (package-inputs guile-gnutls)
        (replace "guile" guile-2.2)))))
 
-(define (target->openssl-target target)
+(define (target->openssl-target pkg target)
   "Return the value to set CONFIGURE_TARGET_ARCH to when cross-compiling
 OpenSSL for TARGET."
   ;; Keep this code outside the build code,
@@ -411,7 +413,10 @@ OpenSSL for TARGET."
                    ((target-linux? target)
                     "linux")
                    (else
-                    (error "unsupported openssl target kernel"))))
+                    (raise (condition
+                            (&package-unsupported-target-error
+                             (package pkg)
+                             (target target)))))))
             (arch
              (cond
               ((target-x86-32? target)
@@ -438,7 +443,10 @@ OpenSSL for TARGET."
               ((target-64bit? target)
                "generic64")
               (else
-               (error "unsupported openssl target architecture")))))
+               (raise (condition
+                       (&package-unsupported-target-error
+                        (package pkg)
+                        (target target))))))))
         (string-append kernel "-" arch))))
 
 (define-public openssl-1.1
@@ -488,6 +496,7 @@ OpenSSL for TARGET."
                         (setenv "CROSS_COMPILE" (string-append target "-"))
                         (setenv "CONFIGURE_TARGET_ARCH"
                                 #$(target->openssl-target
+                                   this-package
                                    (%current-target-system))))))
                  #~())
           #$@(if (target-hurd?)
