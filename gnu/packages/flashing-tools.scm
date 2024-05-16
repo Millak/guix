@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2023 B. Wilson <x@wilsonb.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,7 +113,7 @@ programmer devices.")
 (define-public 0xffff
   (package
     (name "0xffff")
-    (version "0.9")
+    (version "0.10")
     (source
      (origin
        (method git-fetch)
@@ -121,22 +122,21 @@ programmer devices.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rl1xzbxl991pm2is98zbryac1lgjrc3zphmbd8agv07av0r6r6n"))))
+        (base32 "1nqbrr64kjr0h3h6gzhrj1vd106nni4y9mhjdr8mh2x9lcgn4fj5"))))
     (build-system gnu-build-system)
     (inputs
      ;; Building with libusb-compat will succeed but the result will be broken.
      ;; See <https://github.com/pali/0xFFFF/issues/3>.
      (list libusb-0.1))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure))           ; no configure
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             "HOST_CC=gcc"
-             "BUILD_DATE=GNU Guix"
-             (string-append "PREFIX=" %output))
-       #:tests? #f))                    ; no 'check' target
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)) ;no configure
+      #:make-flags #~(list (string-append "CC="
+                                          #$(cc-for-target)) "HOST_CC=gcc"
+                           "BUILD_DATE=GNU Guix"
+                           (string-append "PREFIX=" %output))
+      #:tests? #f)) ;no 'check' target
     (home-page "https://github.com/pali/0xFFFF")
     (synopsis "Flash FIASCO images on Maemo devices")
     (description
