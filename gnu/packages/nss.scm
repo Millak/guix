@@ -114,8 +114,7 @@ in the Mozilla clients.")
     ;; IMPORTANT: Also update and test the nss-certs package, which duplicates
     ;; version and source to avoid a top-level variable reference & module
     ;; cycle.
-    (version "3.88.1")
-    (replacement nss/fixed)
+    (version "3.99")
     (source (origin
               (method url-fetch)
               (uri (let ((version-with-underscores
@@ -126,7 +125,7 @@ in the Mozilla clients.")
                       "nss-" version ".tar.gz")))
               (sha256
                (base32
-                "15il9fsmixa1r4446zq1wl627sg0hz9h67w6kjxz273xz3nl7li7"))
+                "1g89ig40gfi1sp02gybvl2z818lawcnrqjzsws36cdva834c5maw"))
               ;; Create nss.pc and nss-config.
               (patches (search-patches "nss-3.56-pkgconfig.patch"
                                        "nss-getcwd-nonnull.patch"
@@ -206,11 +205,19 @@ in the Mozilla clients.")
                     (setenv "USE_IP" "TRUE")
                     (setenv "IP_ADDRESS" "127.0.0.1")
 
+                    ;; This specific test is looking at performance "now
+                    ;; verify that we can quickly dump a database", and
+                    ;; we're not testing performance here (especially
+                    ;; since we're using faketime), so raise the
+                    ;; threshold
+                    (substitute* "nss/tests/dbtests/dbtests.sh"
+                      ((" -lt 5") " -lt 50"))
+
                     ;; The "PayPalEE.cert" certificate expires every six months,
                     ;; leading to test failures:
                     ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
                     ;; work around that, set the time to roughly the release date.
-                    (invoke "faketime" "2022-11-01" "./nss/tests/all.sh"))
+                    (invoke "faketime" "2024-01-23" "./nss/tests/all.sh"))
                   (format #t "test suite not run~%"))))
           (replace 'install
             (lambda* (#:key outputs #:allow-other-keys)
