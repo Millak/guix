@@ -409,6 +409,7 @@ written in Go.")
                              "vendor/github.com/cespare"
                              "vendor/github.com/davecgh"
                              "vendor/github.com/dustin"
+                             "vendor/github.com/elgris"
                              "vendor/github.com/flynn"
                              "vendor/github.com/francoispqt"
                              "vendor/github.com/fsnotify"
@@ -420,8 +421,8 @@ written in Go.")
                              "vendor/github.com/hashicorp"
                              "vendor/github.com/ipfs/go-cid"
                              "vendor/github.com/ipfs/go-cidutil"
-                             "vendor/github.com/ipfs/go-log"
                              "vendor/github.com/ipfs/go-ipfs-util"
+                             "vendor/github.com/ipfs/go-log"
                              "vendor/github.com/jackpal"
                              "vendor/github.com/jbenet"
                              "vendor/github.com/julienschmidt"
@@ -483,7 +484,7 @@ written in Go.")
                   ;;go-github-com-cheggaaa-pb
                   ;;go-github-com-coreos-go-systemd-v22
                   go-github-com-dustin-go-humanize
-                  ;;go-github-com-elgris-jsondiff
+                  go-github-com-elgris-jsondiff
                   ;;go-github-com-facebookgo-atomicfile
                   go-github-com-fsnotify-fsnotify
                   go-github-com-google-uuid
@@ -581,7 +582,6 @@ written in Go.")
                   go-github-com-jackpal-go-nat-pmp
                   go-github-com-klauspost-compress
                   go-github-com-mattn-go-runewidth
-                  go-github-com-mgutz-ansi
                   go-github-com-multiformats-go-multiaddr-fmt
                   go-github-com-multiformats-go-multistream
                   go-golang-org-x-oauth2
