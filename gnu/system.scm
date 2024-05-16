@@ -339,7 +339,13 @@ VERSION is the target version of the boot-parameters record."
                    (G_ "multiple 'nss-certs' packages found; 'nss-certs' \
 is now included by default in '%base-packages'; ensure it is not explicitly \
 listed in the operating system 'packages' field~%"))
-          (fold delete packages (drop nss-certs-packages 1)))
+          (let ((nss-certs-packages (delete-duplicates nss-certs-packages eq?)))
+            (if (> (length nss-certs-packages) 1)
+                ;; Only mismatched nss-certs packages need to be handled to
+                ;; avoid profile collisions; same objects are later
+                ;; deduplicated in `packages->profile-entry'.
+                (fold delete packages (drop nss-certs-packages 1))
+                packages)))             ;no-op
         packages)))
 
 (define* (operating-system-kernel-arguments
