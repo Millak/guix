@@ -472,27 +472,12 @@ for example, for recording or replaying web content.")
   (package
     (name "python-certifi")
     (version "2022.6.15")
-    (replacement python-certifi/fixed)
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "certifi" version))
               (sha256
                (base32
-                "03c2l11lgljx0kz17cvdc4hlc3p1594ajdih9zq0a4dig285mj44"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;no tests
-    (home-page "https://certifi.io/")
-    (synopsis "Python CA certificate bundle")
-    (description
-     "Certifi is a Python library that contains a CA certificate bundle, which
-is used by the Requests library to verify HTTPS requests.")
-    (license license:asl2.0)))
-
-(define python-certifi/fixed
-  (package
-    (inherit python-certifi)
-    (source (origin
-              (inherit (package-source python-certifi))
+                "03c2l11lgljx0kz17cvdc4hlc3p1594ajdih9zq0a4dig285mj44"))
               (snippet
                #~(begin
                    (delete-file "certifi/cacert.pem")
@@ -521,7 +506,15 @@ def where() -> str:
 
 def contents() -> str:
     with open(where(), \"r\", encoding=\"ascii\") as data:
-        return data.read()")))))))))
+        return data.read()")))))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))          ;no tests
+    (home-page "https://certifi.io/")
+    (synopsis "Python CA certificate bundle")
+    (description
+     "Certifi is a Python library that contains a CA certificate bundle, which
+is used by the Requests library to verify HTTPS requests.")
+    (license license:asl2.0)))
 
 (define-public python-cryptography-vectors
   (package
