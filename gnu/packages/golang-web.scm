@@ -1615,6 +1615,41 @@ which produce colorized output using github.com/fatih/color.")
 packetizer and depacketizer.")
     (license license:expat)))
 
+(define-public go-github-com-pion-transport
+  (package
+    (name "go-github-com-pion-transport")
+    (version "0.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/transport")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0331kywqaa6fymc64wrqgwnxlhx31qdf299i927vifx1wdcl9ikp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Source-only package
+      #:tests? #f
+      #:import-path "github.com/pion/transport"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pion-logging
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/pion/transport")
+    (synopsis "Golang networking related functions")
+    (description
+     "This package implements a various networking related functions used
+throughout the @url{https://github.com/pion, Pion} modules.")
+    (license license:expat)))
+
 (define-public go-github-com-pires-go-proxyproto
   (package
     (name "go-github-com-pires-go-proxyproto")
