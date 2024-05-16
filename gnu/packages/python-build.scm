@@ -284,36 +284,20 @@ Included are implementations of:
   (package
     (name "python-pip")
     (version "23.1")
-    (replacement python-pip/fixed)
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pip" version))
        (sha256
         (base32
-         "0jnk639v9h7ghslm4jnlic6rj3v29nygflx1hgxxndg5gs4kk1a0"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f))          ; there are no tests in the pypi archive.
-    (home-page "https://pip.pypa.io/")
-    (synopsis "Package manager for Python software")
-    (description
-     "Pip is a package manager for Python software, that finds packages on the
-Python Package Index (PyPI).")
-    (license license:expat)))
-
-(define python-pip/fixed
-  (package
-    (inherit python-pip)
-    (source (origin
-              (inherit (package-source python-pip))
-              (snippet
-               #~(begin
-                   (delete-file "src/pip/_vendor/certifi/cacert.pem")
-                   (delete-file "src/pip/_vendor/certifi/core.py")
-                   (with-output-to-file "src/pip/_vendor/certifi/core.py"
-                     (lambda _
-                       (display "\"\"\"
+         "0jnk639v9h7ghslm4jnlic6rj3v29nygflx1hgxxndg5gs4kk1a0"))
+       (snippet
+        #~(begin
+            (delete-file "src/pip/_vendor/certifi/cacert.pem")
+            (delete-file "src/pip/_vendor/certifi/core.py")
+            (with-output-to-file "src/pip/_vendor/certifi/core.py"
+              (lambda _
+                (display "\"\"\"
 certifi.py
 ~~~~~~~~~~
 This file is a Guix-specific version of core.py.
@@ -335,7 +319,16 @@ def where() -> str:
 
 def contents() -> str:
     with open(where(), \"r\", encoding=\"ascii\") as data:
-        return data.read()")))))))))
+        return data.read()")))))))
+    (build-system python-build-system)
+    (arguments
+     '(#:tests? #f))          ; there are no tests in the pypi archive.
+    (home-page "https://pip.pypa.io/")
+    (synopsis "Package manager for Python software")
+    (description
+     "Pip is a package manager for Python software, that finds packages on the
+Python Package Index (PyPI).")
+    (license license:expat)))
 
 (define-public python-setuptools
   (package
