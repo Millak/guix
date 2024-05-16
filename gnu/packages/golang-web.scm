@@ -1588,6 +1588,38 @@ which produce colorized output using github.com/fatih/color.")
     (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-pion-dtls
+  (package
+    (name "go-github-com-pion-dtls")
+    (version "1.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/dtls")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qc5dbgh31lilbd1lpmajj1fjzy4jx9iadzqgl9jd1ry9fj3ly1d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: TestClientCertificate: Client failed(x509: certificate relies on
+      ;; legacy Common Name field, use SANs instead)
+      #:tests? #f
+      #:import-path "github.com/pion/dtls"))
+    (propagated-inputs
+     (list go-github-com-pion-logging
+           go-github-com-pion-transport
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/pion/dtls")
+    (synopsis "DTLS 1.2 Server/Client implementation for Go")
+    (description
+     "This package provides a native
+@url{https://datatracker.ietf.org/doc/html/rfc6347, DTLS 1.2} implementation
+in Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-pion-mdns
   (package
     (name "go-github-com-pion-mdns")
