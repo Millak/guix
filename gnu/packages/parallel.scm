@@ -9,7 +9,7 @@
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
@@ -195,6 +195,8 @@ when jobs finish.")
               (sha256
                (base32
                 "08rz3r1rlnb3pmfdnbh542gm44ja0fdy8rkj4vm4lclc48cvqp2a"))
+              (patches
+               (search-patches "slurm-23-salloc-fallback-shell.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -292,6 +294,7 @@ by managing a queue of pending work.")
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
                     version ".tar.bz2"))
+              (patches '())                       ;drop 'salloc' patch
               (sha256
                (base32
                 "0f3hhlki8g7slllsnyj1qikbsvr62i0hig85lcdcfnmsagzlhbyi"))))))
@@ -306,6 +309,7 @@ by managing a queue of pending work.")
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
                     version ".tar.bz2"))
+              (patches '())                       ;drop 'salloc' patch
               (sha256
                (base32
                 "1sjln54idc9rhg8f2nvm38sgs6fncncyzslas8ixy65pqz2hphbf"))))))
@@ -320,6 +324,7 @@ by managing a queue of pending work.")
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
                     version ".tar.bz2"))
+              (patches '())                       ;drop 'salloc' patch
               (sha256
                (base32
                 "0xq2d6dm285y541dyg1h66z7svsisrq8c81ag0f601xz1cn3mq9m"))))))
@@ -334,6 +339,7 @@ by managing a queue of pending work.")
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
                     version ".tar.bz2"))
+              (patches '())                       ;drop 'salloc' patch
               (sha256
                (base32
                 "0qj4blfymrd2ry2qmb58l3jbr4jwygc3adcfw7my27rippcijlyc"))))
@@ -353,6 +359,7 @@ by managing a queue of pending work.")
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
                     version ".tar.bz2"))
+              (patches '())                       ;drop 'salloc' patch
               (sha256
                (base32
                 "10c9j4a9a6d4ibpf75006mn03p8xgpaprc247x2idakysjf2fw43"))))))
@@ -368,6 +375,7 @@ by managing a queue of pending work.")
         (uri (string-append
                "https://download.schedmd.com/slurm/slurm-"
                version ".tar.bz2"))
+        (patches '())                             ;drop 'salloc' patch
         (sha256
          (base32
           "1bgrpz75m7l4xhirsd0fvnkzlkrl8v2qpmjcz60barc5qm2kn457"))))))

@@ -1,0 +1,39 @@
+Have 'salloc' use $SHELL or /bin/sh as the fallback shell.
+
+This is useful in situations where glibc’s Name Service Switch (NSS) is
+dysfunctional (with ‘getpwuid’ returning NULL), which can happen when
+/etc/nsswitch.conf specifies plugins that fail to be loaded in user code, for
+instance because user code is linked against an incompatible libc.
+
+Similar patch submitted upstream: https://bugs.schedmd.com/show_bug.cgi?id=19896
+
+diff --git a/src/salloc/opt.c b/src/salloc/opt.c
+index ffff7c8..74563ad 100644
+--- a/src/salloc/opt.c
++++ b/src/salloc/opt.c
+@@ -329,6 +329,7 @@ static void _opt_args(int argc, char **argv, int het_job_offset)
+  * NOTE: This function is NOT reentrant (see getpwuid_r if needed) */
+ static char *_get_shell(void)
+ {
++	char *shell;
+ 	struct passwd *pw_ent_ptr;
+ 
+ 	if (opt.uid == SLURM_AUTH_NOBODY)
+@@ -336,11 +337,13 @@ static char *_get_shell(void)
+ 	else
+ 		pw_ent_ptr = getpwuid(opt.uid);
+ 
+-	if (!pw_ent_ptr) {
+-		pw_ent_ptr = getpwnam("nobody");
+-		warning("no user information for user %u", opt.uid);
++	if (pw_ent_ptr) {
++		shell = pw_ent_ptr->pw_shell;
++	} else {
++		shell = getenv("SHELL") ?: "/bin/sh";
++		warning("no user information for user %u, using '%s' as the shell", opt.uid, shell);
+ 	}
+-	return pw_ent_ptr->pw_shell;
++	return shell;
+ }
+ 
+ static void _salloc_default_command(int *argcp, char **argvp[])

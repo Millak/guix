@@ -2084,6 +2084,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/slim-config.patch			\
   %D%/packages/patches/slim-login.patch				\
   %D%/packages/patches/slim-display.patch			\
+  %D%/packages/patches/slurm-23-salloc-fallback-shell.patch	\
   %D%/packages/patches/stex-copy-from-immutable-store.patch	\
   %D%/packages/patches/sysdig-shared-falcosecurity-libs.patch	\
   %D%/packages/patches/syslinux-gcc10.patch			\
