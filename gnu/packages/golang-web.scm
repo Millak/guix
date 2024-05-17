@@ -1696,6 +1696,36 @@ Connectivity Establishment protocol}, specified in
 part of @url{https://github.com/pion, Pion} WebRTC implementation.")
     (license license:expat)))
 
+(define-public go-github-com-pion-ice-v2
+  (package
+    (inherit go-github-com-pion-ice)
+    (name "go-github-com-pion-ice-v2")
+    (version "2.3.24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/ice/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mh7l31vv15gxpl61f22jwpc77b5l9wx4hbjv4h8cgmpb9911cv8"))))
+    (arguments
+     (list
+      #:tests? #f ;Tests require network access.
+      #:go go-1.21
+      #:import-path "github.com/pion/ice/v2"))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-github-com-pion-dtls-v2
+           go-github-com-pion-logging
+           go-github-com-pion-mdns
+           go-github-com-pion-randutil
+           go-github-com-pion-stun
+           go-github-com-pion-transport-v2
+           go-github-com-pion-turn-v2
+           go-golang-org-x-net))))
+
 (define-public go-github-com-pion-mdns
   (package
     (name "go-github-com-pion-mdns")
