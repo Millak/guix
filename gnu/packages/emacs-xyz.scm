@@ -20554,20 +20554,20 @@ highlighting.")
   ;; upstreamed.  By convention, it should refer to a commit in which
   ;; jsonrpc.el was actually touched.  In order to find this, you can refer to
   ;; <https://git.savannah.gnu.org/cgit/emacs.git/log/?qt=grep&q=jsonrpc>.
-  (let ((commit "731cfee3b45361158d88bded3c32c9a48ace7bdb")) ;version bump
+  (let ((commit "4e8e877c377e41d72705235922f97b69d81d0267")) ;version bump
     (package
       (name "emacs-jsonrpc")
-      (version "1.0.23")
+      (version "1.0.25")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/emacs")
+               (url "https://git.savannah.gnu.org/git/emacs/")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0xrlqjd4kj7z5ssidi159n8fm1hx35if2h1ds586ppf8y057bmhn"))))
+           "1vwk5pwmf61d7yb49wp0ljim3aw002bjdnpw45cpjcbqhbhkgsc6"))))
       (build-system emacs-build-system)
       (arguments
        (list #:phases
