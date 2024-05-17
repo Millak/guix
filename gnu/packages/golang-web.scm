@@ -1647,6 +1647,55 @@ in Golang.")
            go-golang-org-x-crypto
            go-golang-org-x-net))))
 
+(define-public go-github-com-pion-ice
+  (package
+    (name "go-github-com-pion-ice")
+    (version "0.7.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/ice/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17108z4fkr9b2fxf5icxspgif29a40gi57bhp9a50mlfr36yv9vk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Source-only package
+      #:tests? #f
+      #:import-path "https://github.com/pion/ice"
+      #:phases
+      ;; Failed to build and only requried for inheritance:
+      ;;
+      ;; cannot use a.net (type *vnet.Net) as type transport.Net in field value:
+      ;; *vnet.Net does not implement transport.Net (wrong type for CreateDialer method)
+      ;;         have CreateDialer(*net.Dialer) vnet.Dialer
+      ;;         want CreateDialer(*net.Dialer) transport.Dialer
+      #~(modify-phases %standard-phases
+          (delete 'build))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-github-com-pion-dtls-v2
+           go-github-com-pion-logging
+           go-github-com-pion-mdns
+           go-github-com-pion-randutil
+           go-github-com-pion-stun
+           go-github-com-pion-transport
+           go-github-com-pion-turn-v2
+           go-golang-org-x-net))
+    (home-page "https://github.com/pion/ice/")
+    (synopsis "Go implementation of ICE")
+    (description
+     "This package provides an implementation of @acronym{ICE, Interactive
+Connectivity Establishment protocol}, specified in
+@url{https://datatracker.ietf.org/doc/html/rfc8445, RFC8445}.  It is used as a
+part of @url{https://github.com/pion, Pion} WebRTC implementation.")
+    (license license:expat)))
+
 (define-public go-github-com-pion-mdns
   (package
     (name "go-github-com-pion-mdns")
