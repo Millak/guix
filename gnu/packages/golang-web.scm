@@ -1840,6 +1840,52 @@ throughout the @url{https://github.com/pion, Pion} modules.")
      (list
       #:import-path "github.com/pion/transport/v3"))))
 
+(define-public go-github-com-pion-turn
+  (package
+    (name "go-github-com-pion-turn")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/turn/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16lkgmrlks0qdzbk8jj0c0j66qfxhb54cvzgrfn4imvm56dbxp2n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;Tests require network access.
+      #:import-path "github.com/pion/turn"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pion-logging
+           go-github-com-pion-stun
+           go-github-com-pion-transport
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/pion/turn/")
+    (synopsis "API for building TURN clients and servers in Golang")
+    (description
+     "This package provides a toolkit for building @acronym{TURN, Traversal
+Using Relays around NAT}, specified in
+@url{https://datatracker.ietf.org/doc/html/rfc8656, RFC 8656}, servers and
+clients.
+
+@code{pion/turn} is an API for building STUN/TURN clients and servers, not a
+binary you deploy then configure.  It may require copying the examples and
+making minor modifications to fit your need, no knowledge of Go is required
+however.
+
+The advantage of this is that you don't need to deal with complicated
+configuration files, or custom APIs to modify the state of Pion TURN.  After
+you instantiate an instance of a Pion TURN server or client you interact with
+it like any library.  The quickest way to get started is to look at the
+@url{https://github.com/pion/turn/blob/master/examples, examples} or
+@url{https://godoc.org/github.com/pion/turn, GoDoc}.")
+    (license license:expat)))
+
 (define-public go-github-com-pires-go-proxyproto
   (package
     (name "go-github-com-pires-go-proxyproto")
