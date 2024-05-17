@@ -1776,14 +1776,14 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.2.4")
+    (version "4.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "034cmp6wv6k1gc5zw90z7782cap72j7jvyqn12rl8w9kfi20zga6"))))
+        (base32 "07r6n7xjckx5scp3d6s61hc54v5p5k4kaqik8jn3m9x9hymr7rsm"))))
     (build-system qt-build-system)
     (arguments
      (list
