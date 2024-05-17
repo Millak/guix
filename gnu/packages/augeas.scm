@@ -25,9 +25,13 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
+  #:use-module (gnu packages check)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages xml))
@@ -65,4 +69,29 @@ Augeas then modifies underlying configuration files according to the changes
 that have been made to the tree; it does as little modeling of configurations
 as possible, and focuses exclusivley on transforming the tree-oriented syntax
 of its public API to the myriad syntaxes of individual configuration files.")
+    (license license:lgpl2.1+)))
+
+(define-public python-augeas
+  (package
+    (name "python-augeas")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hercules-team/python-augeas")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l17gl23f5naram1jaab7gjr9bhjdj97fd9sydvs7cmpns91rbrf"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest pkg-config))
+    (propagated-inputs
+     (list python-cffi))
+    (inputs
+     (list augeas libxml2))
+    (home-page "https://github.com/hercules-team/python-augeas")
+    (synopsis "Python bindings for Augeas")
+    (description "Pure Python bindings for @url{https://augeas.net, Augeas}.")
     (license license:lgpl2.1+)))
