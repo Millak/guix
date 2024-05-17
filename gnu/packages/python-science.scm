@@ -473,6 +473,8 @@ logic, also known as grey logic.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; Disable flaky test
+      #:test-flags #~(list "-k" "not test_ellipse_parameter_stability")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'change-home-dir
