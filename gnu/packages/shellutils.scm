@@ -18,6 +18,7 @@
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,29 +71,30 @@
 (define-public ascii
   (package
     (name "ascii")
-    (version "3.18")
+    (version "3.20")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.catb.org/~esr/ascii/"
                                   "ascii-" version ".tar.gz"))
               (sha256
                (base32
-                "0b87vy06s8s3a8q70pqavsbk4m4ff034sdml2xxa6qfsykaj513j"))))
+                "0x0nq6ydm06rikayskmqcri73ysf4mk67ki4l01sh6flc3m5fvly"))))
     (build-system gnu-build-system)
-    (arguments `(#:make-flags
-                 (list (string-append "CC=" ,(cc-for-target))
-                       (string-append "PREFIX=" %output))
-                 #:phases
-                 (modify-phases %standard-phases
-                   (delete 'configure)
-                   (add-before 'install 'create-directories
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let* ((out (assoc-ref outputs "out"))
-                              (bin (string-append out "/bin"))
-                              (man1 (string-append out "/share/man/man1")))
-                         (mkdir-p bin)
-                         (mkdir-p man1)))))
-                 #:tests? #f))
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-before 'install 'create-directories
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin"))
+                          (man1 (string-append out "/share/man/man1")))
+                     (mkdir-p bin)
+                     (mkdir-p man1)))))
+           #:tests? #f))
     (home-page "http://www.catb.org/~esr/ascii/")
     (synopsis "ASCII name and synonym chart")
     (description
