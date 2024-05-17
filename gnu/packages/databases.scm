@@ -5324,18 +5324,15 @@ connecting to MS SQL and Sybase servers over TCP/IP.")
 (define-public python-tinydb
   (package
     (name "python-tinydb")
-    (version "4.5.2")
+    (version "4.8.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "tinydb" version))
               (sha256
-               (base32 "1x9c4s42930wwal3ds0plwb57kg5c3gj7kbpy64c29vq478b463x"))))
-    (build-system python-build-system)
-    ;; PyPi tarball does not contain tests and github repository does not
-    ;; have a setup.py file (only pyproject).
-    (arguments `(#:tests? #f))
-    (propagated-inputs
-     (list python-typing-extensions))
+               (base32 "0r6mavw0wm03lbmqbgglsyff3vws86ddg3q8h29glpd7qnlqdmkd"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+      (list python-poetry-core python-pytest))
     (home-page "https://github.com/msiemens/tinydb")
     (synopsis "TinyDB is a lightweight document oriented database")
     (description
