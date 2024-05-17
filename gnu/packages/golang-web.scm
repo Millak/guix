@@ -1886,6 +1886,32 @@ it like any library.  The quickest way to get started is to look at the
 @url{https://godoc.org/github.com/pion/turn, GoDoc}.")
     (license license:expat)))
 
+(define-public go-github-com-pion-turn-v2
+  (package
+    (inherit go-github-com-pion-turn)
+    (name "go-github-com-pion-turn-v2")
+    (version "2.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/turn/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iw7nvqsxpqy90k5a8mq3dyask272391m59cbiy30aak1y2wwaac"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments
+                                    go-github-com-pion-turn)
+       ((#:import-path flags ''())
+        "github.com/pion/turn/v2")))
+    (propagated-inputs
+     (list go-github-com-pion-logging
+           go-github-com-pion-randutil
+           go-github-com-pion-stun
+           go-github-com-pion-transport-v2
+           go-golang-org-x-sys))))
+
 (define-public go-github-com-pires-go-proxyproto
   (package
     (name "go-github-com-pires-go-proxyproto")
