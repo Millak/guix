@@ -5093,7 +5093,7 @@ use_guix()
     # Predefine configure flags.
     configure()
     @{
-        ./configure --localstatedir=/var --prefix=
+        ./configure
     @}
     export_function configure
 
