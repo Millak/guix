@@ -68466,22 +68466,26 @@ crate unless you're working on a regex implementation.")
 (define-public rust-region-3
   (package
     (name "rust-region")
-    (version "3.0.0")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "region" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0bji1p0c9abzh78ps5hs0ygg9pxkg7gjspll43lxr14q6v18kqbn"))))
+        (base32 "19wrf7fg741jfnyz2314dv9m9hwssh816v27rpwsw2f07g8ypdp6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--"
+         "--skip=alloc::tests::alloc_frees_memory_when_dropped"
+         "--skip=query::tests::query_returns_one_region_for_multiple_page_allocation")
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-mach" ,rust-mach-0.3)
-        ("rust-winapi" ,rust-winapi-0.3))))
+        ("rust-mach2" ,rust-mach2-0.4)
+        ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-mmap-fixed" ,rust-mmap-fixed-0.1))))
     (home-page "https://github.com/darfink/region-rs")
     (synopsis "Library for manipulating memory regions")
     (description
