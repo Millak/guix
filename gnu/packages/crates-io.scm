@@ -47829,6 +47829,28 @@ possible over the OS abstractions.")
     (description "This package provides mktemp files and directories.")
     (license license:mpl2.0)))
 
+(define-public rust-mmap-fixed-0.1
+  (package
+    (name "rust-mmap-fixed")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mmap-fixed" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "106lbziidb8bwi3bs4hx5znjlwkh7x6x08qdg0914rpcd2w1qw1v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-tempdir" ,rust-tempdir-0.3))))
+    (home-page "https://github.com/khang06/rust-mmap-fixed-fixed")
+    (synopsis "Library for dealing with memory-mapped I/O")
+    (description
+     "This package provides a library for dealing with memory-mapped I/O.")
+    (license license:expat)))
+
 (define-public rust-mock-instant-0.3
   (package
     (name "rust-mock-instant")
