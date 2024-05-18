@@ -13420,6 +13420,14 @@ libraries.  Applications do not need to be recompiled--or even restarted.")
       #:configure-flags #~(list "-Dnetwork_tests=false" "-Ddocs=true")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda _
+              ;; With Gnome 4.14, GtkStackPage has an autoptr already, so it'd
+              ;; get redefined.  Drop this phase when updating gnome-builder to
+              ;; 46.0 or newer.  See also
+              ;; <https://gitlab.gnome.org/GNOME/gnome-builder/-/commit/7aaaecefc2ea8a37eaeae8b4d726d119d4eb8fa3>
+              (substitute* "src/libide/tweaks/ide-tweaks-window.c"
+                (("G_DEFINE_AUTOPTR_CLEANUP_FUNC \\(GtkStackPage, .*\\)") ""))))
           (add-after 'unpack 'patch-meson
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "meson.build"
