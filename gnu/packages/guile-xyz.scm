@@ -5734,8 +5734,8 @@ ffi-helper from nyacc.")
       (license license:lgpl3+))))
 
 (define-public schmutz
-  (let ((commit "add24588c59552537b8f1316df99a0cdd62c221e")
-        (revision "1"))
+  (let ((commit "f8043e6c258d2e29d153bc37cb17b130fee0579f")
+        (revision "2"))
     (package
       (name "schmutz")
       (version (git-version "0" revision commit))
@@ -5747,13 +5747,13 @@ ffi-helper from nyacc.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1z3n61sj62lnn15mandvyrpjzli07rp9r62ypvgg3a8bvh37yc89"))))
+                  "0cgk0b27f1vik3wnv1cz47ip7d8rkmqxfdlqba4avi9h5fah7xrw"))))
       (build-system cmake-build-system)
       (arguments `(#:tests? #f))
       (native-inputs
        (list pkg-config))
       (inputs
-       (list guile-2.2))
+       (list guile-3.0))
       (home-page "https://github.com/arximboldi/schmutz")
       (synopsis "Bind C++ code to Scheme")
       (description "Schmutz is a header-only library to declare Scheme bindings
