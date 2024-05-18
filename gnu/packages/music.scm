@@ -827,17 +827,15 @@ It is a fork of Clementine aimed at music collectors and audiophiles.")
                 "1k50z99v2yqshycx6mbk4g5bsaalg5dgzjv3xvwq14abwkw44hli"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; cmus does not include tests
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; It's an idiosyncratic configure script that doesn't
-               ;; understand --prefix=..; it wants prefix=.. instead.
-               (invoke "./configure"
-                       (string-append "prefix=" out))
-               #t))))))
+     (list
+      #:tests? #f ; cmus does not include tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              ;; It's an idiosyncratic configure script that doesn't
+              ;; understand --prefix=..; it wants prefix=.. instead.
+              (invoke "./configure" (string-append "prefix=" #$output)))))))
     ;; TODO: cmus optionally supports the following formats, which haven't yet
     ;; been added to Guix:
     ;;
