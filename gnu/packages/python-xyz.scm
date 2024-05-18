@@ -17614,17 +17614,17 @@ developed separately, both serve the same purpose: provide Python bindings for
 libmagic.")))
 
 (define-public python-pydevd
-  (let ((revision "1")
-        (commit "d0f81de46ec51687ac24ae9598eb2615010a4b44"))
     (package
       (name "python-pydevd")
-      (version (git-version "3.2.3" revision commit))
+      (version "3.2.3")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/fabioz/PyDev.Debugger")
-               (commit commit)))
+               (commit (string-append
+                        "pydev_debugger_"
+                        (string-join (string-split version #\.) "_")))))
          (modules '((guix build utils)))
          (snippet '(begin
                      ;; Delete pre-built binaries.
@@ -17646,18 +17646,14 @@ libmagic.")))
                  ;; Python 3.10:
                  ;; <https://github.com/fabioz/PyDev.Debugger/issues/222>.
                  "not test_set_pydevd_break_01 "
-                 ;; This one fails for unknown reasons.
-                 "and not test_completion_sockets_and_messages "
                  ;; the GUI event loop requires an X server.
                  "and not test_gui_event_loop_custom "
                  ;; This test validates that 'pydevd' is not in the
                  ;; exception message, but it is due to being part
                  ;; of the build file name present in the message.
                  "and not test_evaluate_exception_trace "
-                 ;; These fail on systems with YAMA LSM’s ptrace
-                 ;; scope > 0. Upstream issue:
-                 ;; https://github.com/fabioz/PyDev.Debugger/issues/218
-                 "and not test_attach_to_pid"))
+                 ;; This test fail with TimeoutError, no message on stderr.
+                 "and not test_soft_terminate "))
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'fix-tests
@@ -17725,7 +17721,7 @@ libmagic.")))
       (synopsis "Python debugger")
       (description "PyDev.Debugger is a capable Python debugger used in PyDev
 and other @acronym{IDEs, Integrated Development Environments}.")
-      (license license:epl1.0))))
+      (license license:epl1.0)))
 
 (define-public python-debugpy
   (package
