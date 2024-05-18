@@ -69236,14 +69236,14 @@ MessagePack format.")
 (define-public rust-rmpv-1
   (package
    (name "rust-rmpv")
-   (version "1.0.1")
+   (version "1.3.0")
    (source
     (origin
      (method url-fetch)
      (uri (crate-uri "rmpv" version))
      (file-name (string-append name "-" version ".tar.gz"))
      (sha256
-      (base32 "1v01az3ahglmag94d75qgdygfcgwj9bh5921rvn49d52lha043if"))))
+      (base32 "1adjigqyrzbv71s18qz3sa77zqggqip0p8j4rrrk5scyrlihfiaq"))))
    (build-system cargo-build-system)
    (arguments
     `(#:cargo-inputs
