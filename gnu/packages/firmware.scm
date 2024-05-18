@@ -585,6 +585,20 @@ executing in M-mode.")
     (description
      "This package contains OpenSBI firmware files for use with QEMU.")))
 
+(define-public opensbi-for-visionfive2
+  (package
+    (inherit opensbi-generic)
+    (name "opensbi-for-visionfive2")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments opensbi-generic)
+       ((#:make-flags flags)
+        ;; visionfive2's u-boot need opensbi with the following flags.
+        ;; see https://docs.u-boot.org/en/latest/board/starfive/visionfive2.html
+        #~(cons* "FW_TEXT_START=0x40000000"
+                 "FW_OPTIONS=0"
+                 #$flags))))))
+
 (define-public seabios
   (package
     (name "seabios")
