@@ -137,7 +137,7 @@ and others.")
 (define-public readymedia
   (package
     (name "readymedia")
-    (version "1.3.1")
+    (version "1.3.3")
     (source
      (origin
        (method git-fetch)
@@ -147,7 +147,7 @@ and others.")
                       "v" (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09fg3697wshg0j46mi3bp2i6ypiqm39vmzx52bci8r6j07yz7fwx"))))
+        (base32 "1al04jx72bxwqch1nv9lx536mb6pvj7pgnqzy6lm32q6xa114yr2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--with-os-name=Linux")      ; uname -s
