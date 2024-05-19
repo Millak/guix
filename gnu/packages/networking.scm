@@ -60,7 +60,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2024 Alexey Abramov <levenson@mmer.org>
@@ -247,7 +247,7 @@ IP hosts on the local network.")
 (define-public axel
   (package
     (name "axel")
-    (version "2.17.11")
+    (version "2.17.14")
     (source
      (origin
        (method url-fetch)
@@ -255,7 +255,7 @@ IP hosts on the local network.")
                            "releases/download/v" version "/"
                            "axel-" version ".tar.xz"))
        (sha256
-        (base32 "1yfcsi0zv07bvhj8klgna3y1ycc4jhaija1b3rzzv0i4d4c2q2sq"))))
+        (base32 "14rn8k0lb77awd9qx40kicz0767jfsavz6rmhb66zgvqqk4fg3lk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gettext-minimal pkg-config))
