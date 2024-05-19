@@ -33597,6 +33597,19 @@ values of all the exported APIs match the platform that libc is compiled for.")
     (license (list license:expat
                    license:asl2.0))))
 
+(define-public rust-libc-0.2.153
+  (package
+    (inherit rust-libc-0.2)
+    (name "rust-libc")
+    (version "0.2.153")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gg7m1ils5dms5miq9fyllrcp0jxnbpgkx71chd2i0lafa8qy6cw"))))))
+
 (define-public rust-libc-print-0.1
   (package
     (name "rust-libc-print")
