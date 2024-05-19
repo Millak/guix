@@ -9468,6 +9468,11 @@ to the user's query of interest.")
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--with-ncurses")
+       ;; The samtools test suite (and software) expects SSE-based math, even on
+       ;; i686-linux, and not 387-based math.  Adjust the CPPFLAGS accordingly.
+       ,@(if (target-x86-32?)
+             `(#:make-flags (list "CPPFLAGS = -msse -mfpmath=sse"))
+             '())
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-tests
