@@ -1245,7 +1245,6 @@ LVM D-Bus API).")
     (build-system scons-build-system)
     (arguments
      (list
-      #:scons scons-python2
       #:scons-flags
       #~(list (string-append "--prefix=" #$output)
               (string-append "--actual-prefix=" #$output))
