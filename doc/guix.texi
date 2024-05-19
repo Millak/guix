@@ -14433,6 +14433,39 @@ and generate package expressions for all those packages that are not yet
 in Guix.
 @end table
 
+@item npm-binary
+@cindex npm
+@cindex Node.js
+Import metadata from the @uref{https://registry.npmjs.org, npm
+Registry}, as in this example:
+
+@example
+guix import npm-binary buffer-crc32
+@end example
+
+The npm-binary importer also allows you to specify a version string:
+
+@example
+guix import npm-binary buffer-crc32@@1.0.0
+@end example
+
+@quotation Note
+Generated package expressions skip the build step of the
+@code{node-build-system}. As such, generated package expressions often
+refer to transpiled or generated files, instead of being built from
+source.
+@end quotation
+
+Additional options include:
+
+@table @code
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
+@end table
+
 @item opam
 @cindex OPAM
 @cindex OCaml
