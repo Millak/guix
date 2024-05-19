@@ -68736,6 +68736,28 @@ loading and layout routines of XeTeX as a crate, currently providing only
 a C API.")
     (license license:expat)))
 
+(define-public rust-temp-env-0.3
+  (package
+    (name "rust-temp-env")
+    (version "0.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "temp-env" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0l7hpkd0nhiy4w70j9xbygl1vjr9ipcfxii164n40iwg0ralhdwn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-futures" ,rust-futures-0.3)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/vmx/temp-env")
+    (synopsis "Set environment variables temporarily")
+    (description
+     "This Rust library lets you set environment variables temporarily.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-temp-testdir-0.2
   (package
     (name "rust-temp-testdir")
