@@ -33616,6 +33616,7 @@ PeachPy can generate ELF, MS-COFF, Mach-O object files, and assembly listings
 for the Go language tool chain; it adapts to different calling conventions and
 application binary interfaces (ABIs); it takes care of register allocation; it
 supports x86_64 instructions up to AVX-512 and SHA.")
+      (supported-systems '("x86_64-linux"))
       (license license:bsd-2))))
 
 (define-public python-sgmllib3k
