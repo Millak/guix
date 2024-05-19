@@ -28,6 +28,8 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system mozilla)
   #:use-module ((guix licenses) #:prefix license:)
@@ -35,6 +37,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages sqlite))
@@ -299,3 +302,49 @@ security standards.")
                          ;; work around that, set the time to roughly the release date.
                          (invoke "faketime" "2024-01-23" "./nss/tests/all.sh"))
                        (format #t "test suite not run~%"))))))))))))
+
+(define-public nsncd
+  (package
+    (name "nsncd")
+    (version "2024-04-09")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/twosigma/nsncd")
+             (commit "7605e330d5a313a8656e6fcaf1c10cd6b5cdd427")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hk8bh2a02nyk3rpzbjx1a2iiz15d0vx3ysa180wmr8gsc9ymph5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--"
+         ;; These tests fail with the current builder network setup
+         "--skip=ffi::test_gethostbyaddr_r"
+         "--skip=ffi::test_gethostbyname2_r")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-atoi" ,rust-atoi-2)
+        ("rust-slog" ,rust-slog-2)
+        ("rust-slog-async" ,rust-slog-async-2-8)
+        ("rust-slog-term" ,rust-slog-term-2)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-nix" ,rust-nix-0.28)
+        ("rust-num-derive" ,rust-num-derive-0.3)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-sd-notify" ,rust-sd-notify-0.4)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-dns-lookup" ,rust-dns-lookup-2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-temp-env" ,rust-temp-env-0.3))))
+    (home-page "https://github.com/twosigma/nsncd")
+    (synopsis "The name service non-caching daemon")
+    (description
+     "This package provides @command{nscd}, a daemon compatible that proxies
+lookups, compatible with the GNU C Library's @command{nscd}, but without
+caching.  It can be used in situations where you want to make an application
+use @acronym{NSS, Name Service Switch} plugins available to a different libc
+than the one the application will load.")
+    (license (list license:asl2.0))))
