@@ -41005,6 +41005,37 @@ nitrokey-test crate.")
     (description "Unified interface for Linux network state querying.")
     (license license:asl2.0)))
 
+(define-public rust-nix-0.28
+  (package
+    (name "rust-nix")
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r0rylax4ycx3iqakwjvaa178jrrwiiwghcw95ndzy72zk25c8db"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cfg-aliases" ,rust-cfg-aliases-0.1)
+                       ("rust-libc" ,rust-libc-0.2.153)
+                       ("rust-memoffset" ,rust-memoffset-0.9)
+                       ("rust-pin-utils" ,rust-pin-utils-0.1))
+       #:cargo-development-inputs (("rust-assert-impl" ,rust-assert-impl-0.1)
+                                   ("rust-caps" ,rust-caps-0.5)
+                                   ("rust-parking-lot" ,rust-parking-lot-0.12)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-semver" ,rust-semver-1)
+                                   ("rust-sysctl" ,rust-sysctl-0.4)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/nix-rust/nix")
+    (synopsis "Rust friendly bindings to *nix APIs")
+    (description "Rust friendly bindings to *nix APIs")
+    (license license:expat)))
+
 (define-public rust-nix-0.27
   (package
     (name "rust-nix")
