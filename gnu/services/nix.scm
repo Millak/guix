@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020, 2021 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Peng Mei Yu <i@pengmeiyu.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -26,6 +26,7 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu services web)
   #:use-module (gnu services)
+  #:use-module (gnu system file-systems)
   #:use-module (gnu system shadow)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -129,6 +130,20 @@ GID."
                                     '#$build-sandbox-items))
                     (for-each (cut display <>) '#$extra-config)))))))))))
 
+(define %nix-store-directory
+  "/nix/store")
+
+(define %immutable-nix-store
+  ;; Read-only store to avoid users or daemons accidentally modifying it.
+  ;; 'nix-daemon' has provisions to remount it read-write in its own name
+  ;; space.
+  (list (file-system
+          (device %nix-store-directory)
+          (mount-point %nix-store-directory)
+          (type "none")
+          (check? #f)
+          (flags '(read-only bind-mount)))))
+
 (define nix-shepherd-service
   ;; Return a <shepherd-service> for Nix.
   (match-lambda
@@ -137,7 +152,7 @@ GID."
       (shepherd-service
        (provision '(nix-daemon))
        (documentation "Run nix-daemon.")
-       (requirement '())
+       (requirement '(user-processes file-system-/nix/store))
        (start #~(make-forkexec-constructor
                  (list (string-append #$package "/bin/nix-daemon")
                        #$@extra-options)
@@ -156,7 +171,9 @@ GID."
           (service-extension activation-service-type nix-activation)
           (service-extension etc-service-type nix-service-etc)
           (service-extension profile-service-type
-                             (compose list nix-configuration-package))))
+                             (compose list nix-configuration-package))
+          (service-extension file-system-service-type
+                             (const %immutable-nix-store))))
    (description "Run the Nix daemon.")
    (default-value (nix-configuration))))
 
