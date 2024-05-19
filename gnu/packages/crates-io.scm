@@ -62944,6 +62944,30 @@ implementations.")
     (description "This package provides an asynchronous drain for slog.")
     (license (list license:mpl2.0 license:expat license:asl2.0))))
 
+(define-public rust-slog-async-2-8
+  (package
+    (name "rust-slog-async")
+    (version "2.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "slog-async" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "113b17aw7jx7mr68vwfq2yiv6mb4702hz6a0g587jb4ai67h7j3j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-slog" ,rust-slog-2)
+                       ("rust-take-mut" ,rust-take-mut-0.2)
+                       ("rust-thread-local" ,rust-thread-local-1))))
+    (home-page "https://github.com/slog-rs/slog")
+    (synopsis "Asynchronous drain for slog-rs")
+    (description
+     "This package provides an asynchronous drain for slog-rs, the Rust
+logging library.")
+    (license (list license:mpl2.0 license:expat license:asl2.0))))
+
 (define-public rust-slog-kvfilter-0.7
   (package
     (name "rust-slog-kvfilter")
