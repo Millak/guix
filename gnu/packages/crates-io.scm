@@ -19942,6 +19942,31 @@ a vector.")
 not support network, only raw protocol parser.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-dns-lookup-2
+  (package
+    (name "rust-dns-lookup")
+    (version "2.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dns-lookup" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z74n2zij2gahycabm0gkmkyx574h76gwk7sz93yqpr3qa3n0xp5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/keeperofdakeys/dns-lookup/")
+    (synopsis "DNS resolution interface")
+    (description
+     "This package provides a simple DNS resolving interface, much like Rust's
+unstable API.  It includes @code{getaddrinfo} and @code{getnameinfo} wrappers
+for libc variants.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dns-sd-0.1
   (package
     (name "rust-dns-sd")
