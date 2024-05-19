@@ -1927,7 +1927,7 @@ games.")
 (define-public godot-lts
   (package
     (name "godot")
-    (version "3.4.2")
+    (version "3.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1936,7 +1936,7 @@ games.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bm9yl995chvx6jwkdia12yjrgwcpzb1r9bmj606q8z264aw2ma5"))
+                "0zibc6am9axbbm8l57jf2d324a2m44pf6ncp2i4h1b219jjq89l6"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
@@ -1948,7 +1948,6 @@ games.")
                   (with-directory-excursion "thirdparty"
                     (let* ((preserved-files
                             '("README.md"
-                              "assimp"
                               "certs"
                               "cvtt"
                               "embree"
@@ -1966,6 +1965,7 @@ games.")
                               "oidn"
                               "pvrtccompressor"
                               "recastnavigation"
+                              "rvo2"
                               "squish"
                               "stb_rect_pack"
                               "tinyexr"
@@ -1977,8 +1977,7 @@ games.")
                                                  (cons* "." ".." preserved-files)))))))))
     (build-system scons-build-system)
     (arguments
-     `(#:scons ,scons-python2
-       #:scons-flags (list "platform=x11" "target=release_debug"
+     `(#:scons-flags (list "platform=x11" "target=release_debug"
                            ;; Avoid using many of the bundled libs.
                            ;; Note: These options can be found in the SConstruct file.
                            "builtin_bullet=no"
@@ -2032,18 +2031,13 @@ games.")
                ;; Tell the editor where to find zenity for OS.alert().
                (wrap-program (string-append out "/bin/godot")
                  `("PATH" ":" prefix (,(string-append zenity "/bin")))))))
-         (add-after 'install 'wrap
+         (add-after 'install 'wrap-ld-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; FIXME: Mesa tries to dlopen libudev.so.0 and fails.  Pending a
-             ;; fix of the mesa package we wrap the pcb executable such that
-             ;; Mesa can find libudev.so.0 through LD_LIBRARY_PATH.
-             ;; also append ld path for pulseaudio and alsa-lib
              (let* ((out (assoc-ref outputs "out"))
-                    (udev_path (string-append (assoc-ref inputs "eudev") "/lib"))
                     (pulseaudio_path (string-append (assoc-ref inputs "pulseaudio") "/lib"))
                     (alas_lib_path (string-append (assoc-ref inputs "alsa-lib") "/lib")))
                (wrap-program (string-append out "/bin/godot")
-                 `("LD_LIBRARY_PATH" ":" prefix (,udev_path ,pulseaudio_path ,alas_lib_path))))))
+                 `("LD_LIBRARY_PATH" ":" prefix (,pulseaudio_path ,alas_lib_path))))))
          (add-after 'install 'install-godot-desktop
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -2064,7 +2058,7 @@ games.")
     (inputs
      (list alsa-lib
            bullet
-           freetype
+           freetype-with-brotli
            glew
            glu
            libtheora
@@ -2081,7 +2075,7 @@ games.")
            opusfile
            pcre2
            pulseaudio
-           eudev                        ; FIXME: required by mesa
+           eudev
            wslay
            zenity
            `(,zstd "lib")))
