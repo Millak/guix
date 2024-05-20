@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -489,6 +490,32 @@ for authoring custom addons.")
     (synopsis "Jupyter Server extension for serving Mathjax")
     (description "This package provides a Jupyter Server extension for serving
 Mathjax, the JavaScript display engine for mathematics.")
+    (license license:bsd-3)))
+
+(define-public python-comm
+  (package
+    (name "python-comm")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/ipython/comm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18xsbpd8dgcfbc51xl59nlwaq7jnyzvgzjfj6psscv71894x4lg7"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling python-pytest python-setuptools-scm))
+    (propagated-inputs
+     (list python-traitlets))
+    (home-page "https://github.com/ipython/comm")
+    (synopsis "Python Comm implementation for the Jupyter kernel protocol")
+    (description
+     "This package provides a way to register a Kernel Comm implementation, as
+per the Jupyter kernel protocol. It also provides a base Comm implementation
+and a default CommManager that can be used.")
     (license license:bsd-3)))
 
 (define-public python-nbclient
