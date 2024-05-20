@@ -68401,8 +68401,31 @@ TOML/JSON/MessagePack strings and serializable values.")
         ("rust-serde-codegen-internals" ,rust-serde-codegen-internals-0.14)
         ("rust-syn" ,rust-syn-0.11))))))
 
+(define-public rust-serde-derive-internals-0.29
+  (package
+    (name "rust-serde-derive-internals")
+    (version "0.29.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde_derive_internals" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04g7macx819vbnxhi52cx0nhxi56xlhrybgwybyy7fb9m4h6mlhq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://serde.rs")
+    (synopsis "AST representation used by Serde derive macros")
+    (description "This package provides AST representation used by Serde
+derive macros.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-derive-internals-0.26
   (package
+    (inherit rust-serde-derive-internals-0.29)
     (name "rust-serde-derive-internals")
     (version "0.26.0")
     (source
@@ -68412,17 +68435,11 @@ TOML/JSON/MessagePack strings and serializable values.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0g2zdr6s8i0r29yy7pdl6ahimq8w6ck70hvrciiry2ljwwlq5gw5"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; no variant or associated item named `__TestExhaustive`
+     `(#:tests? #f    ; no variant or associated item named `__TestExhaustive`
        #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))
-    (home-page "https://serde.rs")
-    (synopsis "AST representation used by Serde derive macros")
-    (description "This package provides AST representation used by Serde
-derive macros.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-serde-derive-internals-0.25
   (package
