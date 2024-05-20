@@ -9243,6 +9243,36 @@ almost the same speed for encoding: about 3% slower when encoding 32 bytes.
     (description "This crate provides encoding and decoding support for BSON.")
     (license license:expat)))
 
+(define-public rust-bson-1
+  (package
+    (inherit rust-bson-2)
+    (name "rust-bson")
+    (version "1.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bson" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cbc9mbjm4imzcv95y8r6rgl6kgv7ka5ifhhlxaqi4sv0dwaa2ny"))))
+    (arguments
+     `(#:tests? #f      ; file not found for module `tests`
+       #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.13)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-decimal" ,rust-decimal-2)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-uuid" ,rust-uuid-0.8))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11))))))
+
 (define-public rust-bstr-1
   (package
     (name "rust-bstr")
