@@ -5268,6 +5268,85 @@ for optimal @code{matching} of weighted N-dimensional image intensity data
 using (multivariate) polynomials.")
     (license license:bsd-3)))
 
+(define-public python-yt
+  (package
+    (name "python-yt")
+    (version "4.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "yt" version))
+       (sha256
+        (base32 "03jy35vyniyd1pd3sv0zpd2f3ks2iyqw65xv28ids8nw6v1vavbv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:build-backend "setuptools.build_meta"
+      #:test-flags
+      #~(list "-n" "auto")
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; XXX: Updating ipywidgets requires long chain of rebuilds,
+               ;; maybe for python-team.
+               ;;
+               ;; ipywidgets>=8.0.0
+               ((">=8.0.0") ">=7.6.3"))))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-cmyt
+           python-ewah-bool-utils
+           python-ipywidgets
+           python-matplotlib
+           python-more-itertools-next
+           python-numpy
+           python-packaging
+           python-pillow
+           python-tomli-w
+           python-tqdm
+           python-unyt))
+    (native-inputs
+     (list python-cython-3
+           python-nose
+           python-nose-exclude
+           python-nose-timer
+           python-pyaml
+           python-pytest
+           python-pytest-mpl
+           python-pytest-xdist
+           python-setuptools
+           python-sympy))
+    (home-page "http://yt-project.org/")
+    (synopsis "Analyzing and visualizing volumetric data framework")
+    (description
+     "This package provides a structured, variable-resolution meshes,
+ unstructured meshes, and discrete or sampled data such as particles.  Focused on
+ driving physically-meaningful inquiry, it has been applied in domains such as
+ astrophysics, seismology, nuclear engineering, molecular dynamics, and
+ oceanography.")
+    (license (list
+              ;; COPYING.txt: for Python code.
+              ;;
+              ;; yt uses a shared copyright model. Each contributor maintains
+              ;; copyright over their contributions to yt. But, it is important
+              ;; to note that these contributions are typically only changes to
+              ;; the repositories. Thus, the yt source code, in its entirety is
+              ;; not the copyright of any single person or institution. Instead,
+              ;; it is the collective copyright of the entire yt Development
+              ;; Team. If individual contributors want to maintain a record of
+              ;; what changes/contributions they have specific copyright on,
+              ;; they should indicate their copyright in the commit message of
+              ;; the change, when they commit the change to one of the yt
+              ;; repositories.
+              license:bsd-3
+              ;; yt/frontends/artio/artio_headers/LICENSE: for C code.
+              license:lgpl3))))
+
 (define-public unsio
   ;; There is no versioned tag, use the latest commit.
   (let ((commit "25e52468298e1194c9726ef5dba9d5fbb46870f5")
