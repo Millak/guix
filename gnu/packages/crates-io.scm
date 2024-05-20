@@ -61534,14 +61534,14 @@ uses finite automata and guarantees linear time matching on all inputs.")
 (define-public rust-regex-automata-0.4
   (package
     (name "rust-regex-automata")
-    (version "0.4.3")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "regex-automata" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gs8q9yhd3kcg4pr00ag4viqxnh5l7jpyb9fsfr8hzh451w4r02z"))))
+        (base32 "1spaq7y4im7s56d1gxa2hi4hzf6dwswb1bv8xyavzya7k25kpf46"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Not all files included.
