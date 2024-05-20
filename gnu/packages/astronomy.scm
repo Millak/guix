@@ -2299,13 +2299,13 @@ code to be greatly simplified.")
 (define-public python-dust-extinction
   (package
     (name "python-dust-extinction")
-    (version "1.3")
+    (version "1.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dust_extinction" version))
        (sha256
-        (base32 "14zy6kyrfi4ash7qg1k3im1zzgr2r7rnaggzk0ar3jlfmsii743k"))))
+        (base32 "0yw2mdsbsmk0cs9wzsmmrnkhriyhj1gir6irjsfxd518fa8bik2k"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-astropy python-scipy))
