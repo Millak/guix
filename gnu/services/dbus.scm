@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2019-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -234,12 +234,12 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
             (requirement '(user-processes syslogd))
             (start #~(make-forkexec-constructor
                       (list (string-append #$dbus "/bin/dbus-daemon")
-                            "--nofork" "--system" "--syslog-only")
+                            "--nofork" "--system")
+                      #:log-file "/var/log/dbus-daemon.log"
                       #$@(if verbose?
                              ;; Since the verbose output goes to the console,
                              ;; not syslog, add a log file to capture it.
-                             '(#:environment-variables '("DBUS_VERBOSE=1")
-                               #:log-file "/var/log/dbus-daemon.log")
+                             '(#:environment-variables '("DBUS_VERBOSE=1"))
                              '())
                       #:pid-file "/run/dbus/pid"))
             (stop #~(make-kill-destructor)))))))
