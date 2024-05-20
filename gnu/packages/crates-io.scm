@@ -6651,17 +6651,17 @@ RFC4648 Base32 or in Crockford Base32.")
 c6e7d37.  However, this package works only up to 128 bytes.")
     (license license:expat)))
 
-(define-public rust-base64-0.21
+(define-public rust-base64-0.22
   (package
     (name "rust-base64")
-    (version "0.21.7")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "base64" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0rw52yvsk75kar9wgqfwgb414kvil1gn7mqkrhn9zf1537mpsacx"))))
+    (version "0.22.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "base64" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1imqzgh7bxcikp5vx3shqvw9j09g9ly0xr0jma0q66i52r7jbcvj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
@@ -6677,6 +6677,28 @@ c6e7d37.  However, this package works only up to 128 bytes.")
     (description
      "This package encodes and decodes base64 as bytes or utf8.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-base64-0.21
+  (package
+    (inherit rust-base64-0.22)
+    (name "rust-base64")
+    (version "0.21.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "base64" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0rw52yvsk75kar9wgqfwgb414kvil1gn7mqkrhn9zf1537mpsacx"))))
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rstest" ,rust-rstest-0.13)
+        ("rust-rstest-reuse" ,rust-rstest-reuse-0.6)
+        ("rust-strum" ,rust-strum-0.25))))))
 
 (define-public rust-base64-0.20
   (package
