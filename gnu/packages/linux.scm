@@ -63,7 +63,7 @@
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Ryan Sundberg <ryan@arctype.co>
-;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022-2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -6017,12 +6017,12 @@ applications.")
     (license license:lgpl2.1+)))
 
 (define-public blktrace
-  ;; Take a newer commit to get the fix for CVE-2018-10689.
-  (let ((commit "db4f6340e04716285ea56fe26d76381c3adabe58")
+  ;; Take a newer commit to get the latest patches.
+  (let ((commit "b9ea6e507e8849f01d06aa48c0c59c5cee4820be")
         (revision "1"))
     (package
       (name "blktrace")
-      (version (git-version "1.2.0" revision commit))
+      (version (git-version "1.3.0" revision commit))
       (home-page
         "https://git.kernel.org/pub/scm/linux/kernel/git/axboe/blktrace.git")
       (source (origin
@@ -6031,24 +6031,23 @@ applications.")
                       (url home-page)
                       (commit commit)))
                 (sha256
-                 (base32 "0ah7xn4qnx09k6bm39p69av7d0c8cl6863drv6a1nf914sq1kpgp"))
+                 (base32 "0a4830mlqckbhchar1xcn2w4f24bzb75bigdig5wpm2axl0zc8cq"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
-       `(#:make-flags
-         (list ,(string-append "CC=" (cc-for-target))
-               (string-append "prefix=" %output))
-         #:tests? #f                    ; no tests
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)          ; no configure script
-           (add-after 'unpack 'fix-gnuplot-path
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((gnuplot (assoc-ref inputs "gnuplot")))
-                 (substitute* "btt/bno_plot.py"
-                   (("gnuplot %s")
-                    (string-append gnuplot "/bin/gnuplot %s")))
-                 #t))))))
+       (list #:make-flags
+             #~(list (string-append "CC=" #$(cc-for-target))
+                     (string-append "prefix=" #$output))
+             #:tests? #f                    ; no tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)          ; no configure script
+                 (add-after 'unpack 'fix-gnuplot-path
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((gnuplot (assoc-ref inputs "gnuplot")))
+                       (substitute* "btt/bno_plot.py"
+                         (("gnuplot %s")
+                          (string-append gnuplot "/bin/gnuplot %s")))))))))
       (inputs
        `(("libaio" ,libaio)
          ("gnuplot" ,gnuplot)
