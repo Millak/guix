@@ -2875,13 +2875,13 @@ orbits described in TLE files.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "5.1.2")
+    (version "5.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "0h62qh74xanj2drikjch7h0a5g4dsaf3v4qxx38vjazmibc37ynp"))))
+        (base32 "0bqpbdgd3blpa4y5f45j5cqn0xdnmqvqnqr1vmqwn5ddlx88z5lh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
