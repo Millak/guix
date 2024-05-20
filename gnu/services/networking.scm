@@ -1001,7 +1001,7 @@ maps ports 22 and 80 of the Onion Service to the local ports 22 and 8080."))
                (display "\
 ### These lines were generated from your system configuration:
 DataDirectory /var/lib/tor
-Log notice syslog\n" port)
+Log notice stderr\n" port)
                (when (eq? 'unix '#$socks-socket-type)
                  (display "\
 SocksPort unix:/var/run/tor/socks-sock
@@ -1046,9 +1046,6 @@ HiddenServicePort ~a ~a~%"
                                    (source "/var/lib/tor")
                                    (target source)
                                    (writable? #t))
-                                  (file-system-mapping
-                                   (source "/dev/log") ;for syslog
-                                   (target source))
                                   (file-system-mapping
                                    (source "/var/run/tor")
                                    (target source)
