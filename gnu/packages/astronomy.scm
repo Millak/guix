@@ -191,20 +191,21 @@ reused in several astronomical applications, such as @code{wsclean},
 (define-public calceph
   (package
     (name "calceph")
-    (version  "3.5.5")
+    (version  "4.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://www.imcce.fr/content/medias/recherche/equipes/asd/calceph/calceph-"
-             version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.obspm.fr/imcce_calceph/calceph")
+             (commit (string-append name "_"
+                                    (string-replace-substring version "." "_")))))
        (sha256
-        (base32 "1jiaqyir2qcxzjlhk7f9fhrf6snjsiwxznvzdl996xr6m4lzbb7p"))))
-    (build-system gnu-build-system)
+        (base32 "1yabdq51plg3dijp68xajhsz395gi2fyp5qkvrj3dgv8d4qw52nw"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
     (native-inputs
      (list gfortran))
     (home-page "https://www.imcce.fr/inpop/calceph")
-    (properties `((release-monitoring-url . ,home-page)))
     (synopsis "Astronomical library to access the binary planetary ephemeris files")
     (description
      "The CALCEPH Library is designed to access the binary planetary ephemeris files,
