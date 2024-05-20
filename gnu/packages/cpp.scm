@@ -1379,7 +1379,9 @@ point and then, after each tween step, plugging back the result.")
                (base32
                 "1p4djhm1f011ficbjjxx3n8428p8481p20j4glpaawnpsi362hkl"))
               (patches
-               (search-patches "abseil-cpp-fix-strerror_test.patch"))))
+               (search-patches "abseil-cpp-fix-strerror_test.patch"
+                               "abseil-cpp-20200923.3-adjust-sysinfo.patch"
+                               "abseil-cpp-20200923.3-duration-test.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
