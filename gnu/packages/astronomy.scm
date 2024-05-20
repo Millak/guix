@@ -2855,7 +2855,7 @@ changing the pixel resolution, orientation, coordinate system.")
        (uri (pypi-uri "sgp4" version))
        (sha256
         (base32 "0aalbmldks6ykgkcxwkvnp04q0avhv903m5zwvg8i7zvl99xrbfq"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/brandon-rhodes/python-sgp4")
