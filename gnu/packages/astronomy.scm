@@ -2709,6 +2709,11 @@ interest, and which require portability between platforms or ease of scripting."
        (sha256
         (base32 "0cm6agaf1gvc5bi95wx6a70ngj9vn95rx78fs59vlrmpww7q2807"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Disable one failing test, see
+      ;; <https://github.com/astropy/pyvo/issues/547>.
+      #:test-flags #~(list "-k" "not test_single_table_description")))
     (native-inputs
      (list python-pytest-astropy python-requests-mock python-setuptools-scm))
     (propagated-inputs
