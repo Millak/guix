@@ -959,6 +959,32 @@ systems and integrates readily with other Python GIS packages such as
 pyproj, Rtree, and Shapely.")
     (license license:bsd-3)))
 
+(define-public python-geopack
+  (package
+    (name "python-geopack")
+    (version "1.0.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "geopack" version))
+       (sha256
+        (base32 "0mryjp7m4h99qlpvnn40s81sygr73qcv8rkmjp9pcli1gz829kjf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX Reported upstream <https://github.com/tsssss/geopack/issues/21>.
+      #:tests? #f))
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-numpy python-scipy))
+    (home-page "https://github.com/tsssss/geopack")
+    (synopsis "Python version of geopack and Tsyganenko models")
+    (description
+     "Python version of geopack and Tsyganenko models, compatible with
+@code{geopack05} and @code{geopack08}.")
+    (license license:expat)))
+
 (define-public python-geopandas
   (package
     (name "python-geopandas")
