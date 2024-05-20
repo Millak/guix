@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2017 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016-2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2019, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
@@ -398,7 +398,7 @@ overlapping images, as well as some command line tools.")
            graphviz-minimal  ; for 'dot'
            font-ghostscript
            imagemagick/stable
-           librsvg
+           (librsvg-for-system)
            m4
            perl-readonly
            texlive-texloganalyser
