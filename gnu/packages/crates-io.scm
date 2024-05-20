@@ -24068,14 +24068,14 @@ is configured via an environment variable.")
   (package
     (inherit rust-env-logger-0.11)
     (name "rust-env-logger")
-    (version "0.10.1")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "env_logger" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kmy9xmfjaqfvd4wkxr1f7d16ld3h9b487vqs2q9r0s8f3kg7cwm"))))
+        (base32 "1005v71kay9kbz1d5907l0y7vh9qn2fqsp2yfgb8bjvin6m0bm2c"))))
     (arguments
      `(#:cargo-inputs
        (("rust-humantime" ,rust-humantime-2)
