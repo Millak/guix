@@ -43,7 +43,7 @@
                 "0ikg95mgwfqh0bq4dzvkfmdiycacqvv27g91hl6adwk5y3gzl96g"))))
     (build-system gnu-build-system)
     (inputs
-     (list glib cairo gtk+ librsvg libusb))
+     (list glib cairo gtk+ (librsvg-for-system) libusb))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.gnu.org/software/inklingreader/")
