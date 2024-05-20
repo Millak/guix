@@ -3324,7 +3324,7 @@ read and write, and compatible with JSON.")
     (inputs
      (list cairo
            glib
-           librsvg
+           (librsvg-for-system)
            libxcb
            libxml2
            pango
