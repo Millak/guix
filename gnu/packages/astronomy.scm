@@ -2150,13 +2150,13 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "11.17.20")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "crds" version))
-              (sha256
-               (base32
-                "0480jjklv2p60fp892dr4qglwv44k86hx29y8q1c967l9k53wc9f"))))
+    (version "11.17.22")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "crds" version))
+       (sha256
+        (base32 "1i2wh7cgyn7r0fnn7ikfsdqjrcpg46xsk619mhdqywk5yjcxlz9f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2164,24 +2164,19 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
       ;; additional test data. See:
       ;; https://github.com/spacetelescope/crds/blob/master/setup_test_cache
       #:tests? #f))
-    (propagated-inputs (list python-asdf
-                             python-astropy
-                             python-boto3
-                             python-filelock
-                             python-numpy
-                             python-parsley
-                             python-pysynphot
-                             python-roman-datamodels
-                             python-stsynphot
-                             python-requests))
-    (native-inputs (list python-flake8
-                         python-ipython
-                         python-lockfile
-                         python-mock
-                         python-nose
-                         python-pylint
-                         python-pytest
-                         python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf
+           python-astropy
+           python-boto3
+           python-filelock
+           python-numpy
+           python-parsley
+           python-pysynphot
+           python-roman-datamodels
+           python-stsynphot
+           python-requests))
+    (native-inputs
+     (list python-setuptools-scm))
     (home-page "https://hst-crds.stsci.edu")
     (synopsis "Calibration Reference Data System for HST and JWST")
     (description
