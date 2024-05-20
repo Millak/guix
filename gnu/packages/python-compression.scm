@@ -200,13 +200,13 @@ following algorithms are available:
 (define-public python-ewah-bool-utils
   (package
     (name "python-ewah-bool-utils")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ewah_bool_utils" version))
        (sha256
-        (base32 "11z9vv9m19370j762z100dqhy2ndjzkxk3w9z02lzwadbyibal3h"))))
+        (base32 "1bff3cv5m4n5pwqz0q90dy42vpyrrhylnrkcd49g1dlf3fs6r0pp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
