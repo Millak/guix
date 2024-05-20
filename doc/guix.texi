@@ -19458,9 +19458,11 @@ the nscd---e.g., @code{(list @var{nss-mdns})}.
 Package object denoting the GNU C Library providing the @command{nscd}
 command.
 
-@item @code{log-file} (default: @code{"/var/log/nscd.log"})
-Name of the nscd log file.  This is where debugging output goes when
-@code{debug-level} is strictly positive.
+@item @code{log-file} (default: @code{#f})
+Name of the nscd log file.  Debugging output goes to that file when
+@code{debug-level} is strictly positive, or to standard error if it is
+@code{#f}.  Regular messages are written to syslog when
+@code{debug-level} is zero, regardless of the value of @code{log-file}.
 
 @item @code{debug-level} (default: @code{0})
 Integer denoting the debugging levels.  Higher numbers mean that more

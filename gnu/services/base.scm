@@ -1285,7 +1285,7 @@ the tty to run, among other things."
   make-nscd-configuration
   nscd-configuration?
   (log-file    nscd-configuration-log-file        ;string
-               (default "/var/log/nscd.log"))
+               (default #f))
   (debug-level nscd-debug-level                   ;integer
                (default 0))
   ;; TODO: See nscd.conf in glibc for other options to add.
