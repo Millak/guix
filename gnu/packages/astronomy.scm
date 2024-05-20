@@ -5214,6 +5214,37 @@ astronomical images, especially when there is no WCS information available.")
 orbit around the Earth.")
     (license license:expat)))
 
+(define-public python-viresclient
+  (package
+    (name "python-viresclient")
+    (version "0.11.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "viresclient" version))
+       (sha256
+        (base32 "1npn5ka0cflvl6ngf5b08z59dh79hnyh5v2z4sf0872q9zkwmjjw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core python-pytest))
+    (propagated-inputs
+     (list python-cdflib
+           python-jinja2
+           python-netcdf4
+           python-pandas
+           python-requests
+           python-tables
+           python-tqdm
+           python-xarray))
+    (home-page "https://viresclient.readthedocs.io/en/latest/")
+    (synopsis "Python client for interacting with a VirES server")
+    (description
+     "This package provides a Python client for interacting with a
+@code{VirES} server, of which there are two: VirES for
+@url{https://vires.services, Swarm} and VirES for
+@url{https://aeolus.services, Aeolus}")
+    (license license:expat)))
+
 (define-public python-wiimatch
   (package
     (name "python-wiimatch")
