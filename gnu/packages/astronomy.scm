@@ -2324,13 +2324,13 @@ implemented using the astropy.modeling framework.")
   (package
     (name "python-ephem")
     (version "4.1.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "ephem" version))
-              (sha256
-               (base32
-                "0ainqbnvw320pc61q5b6ad6f2mhn1pvrlnq489cwfx0m82mahr0c"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ephem" version))
+       (sha256
+        (base32 "0ainqbnvw320pc61q5b6ad6f2mhn1pvrlnq489cwfx0m82mahr0c"))))
+    (build-system pyproject-build-system)
     (native-inputs (list tzdata))
     (home-page "https://rhodesmill.org/pyephem/")
     (synopsis "Compute positions of the planets and stars")
