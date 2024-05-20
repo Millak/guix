@@ -1936,13 +1936,13 @@ to access online Astronomical data.  Each web service has its own sub-package.")
 (define-public python-astroscrappy
   (package
     (name "python-astroscrappy")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astroscrappy" version))
        (sha256
-        (base32 "0shmfilvzpmlwz4fh0bx4kqmzr0y39fgga6vipxb5d1rx1y6q6by"))))
+        (base32 "0r2alg8imr201ykjsvr6y43bzw8mwbc4ddprn8f6qfw9k4hsx8ff"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1958,12 +1958,9 @@ to access online Astronomical data.  Each web service has its own sub-package.")
               (make-file-writable "astroscrappy/_compiler.c")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
-     (list python-cython
+     (list python-cython-3
            python-extension-helpers
-           python-h5py
-           python-pandas
            python-pytest-astropy
-           python-scikit-image
            python-scipy
            python-setuptools-scm))
     (propagated-inputs (list python-astropy python-numpy))
