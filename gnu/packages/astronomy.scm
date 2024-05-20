@@ -4472,19 +4472,16 @@ spectra, and data.")
       (license license:bsd-3))))
 
 (define-public python-sep
-  (package
-    (inherit libsep)
+  (package/inherit libsep
     (name "python-sep")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (strip-keyword-arguments
-      '(#:make-flags) (package-arguments libsep)))
+     (list #:test-flags #~(list "test.py")))
     (native-inputs
-     (modify-inputs (package-inputs libsep)
-       (prepend python-cython)))
+     (list python-cython python-pytest))
     (propagated-inputs
-     (modify-inputs (package-inputs libsep)
-       (prepend python-numpy)))))
+     (list  python-numpy))
+    (synopsis "Python library for Source Extraction and Photometry")))
 
 (define-public python-suntime
   (package
