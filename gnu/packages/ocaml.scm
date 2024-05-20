@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2016, 2018-2020, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018-2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2024 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1430,7 +1430,7 @@ Knuth’s LR(1) parser construction technique.")
            libgnomecanvas
            libgnomeui
            libglade
-           librsvg))
+           (librsvg-for-system)))
     (arguments
      `(#:tests? #f ; no check target
 
