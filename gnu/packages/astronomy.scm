@@ -3229,13 +3229,13 @@ spherical polygons that represent arbitrary regions of the sky.")
 (define-public python-stsci-image
   (package
     (name "python-stsci-image")
-    (version "2.3.5")
+    (version "2.3.7")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "stsci.image" version))
+       (uri (pypi-uri "stsci_image" version))
        (sha256
-        (base32 "1vnp4256nbdvapa69cmm80sjz11ygxa49abr9nbvssj6nyyp5icb"))))
+        (base32 "13sbych5929isrick2035rk31qcb1icm2l6pz7pjqsi45hsffxxm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
