@@ -47941,7 +47941,7 @@ directly.")
 (define-public rust-num-integer-0.1
   (package
     (name "rust-num-integer")
-    (version "0.1.45")
+    (version "0.1.46")
     (source
      (origin
        (method url-fetch)
@@ -47949,7 +47949,7 @@ directly.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1ncwavvwdmsqzxnn65phv6c6nn72pnv9xhpmjd6a429mzf4k6p92"))))
+         "13w5g54a9184cqlbsq80rnxw4jj4s0d8wv75jsq5r2lms8gncsbr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
