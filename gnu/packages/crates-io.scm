@@ -30329,6 +30329,32 @@ and loading crate.")
         ("rust-plain" ,rust-plain-0.2)
         ("rust-scroll" ,rust-scroll-0.11))))))
 
+(define-public rust-graphql-parser-0.3
+  (package
+    (name "rust-graphql-parser")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "graphql-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wp6vnrhgi6q3b942zkc6p4mi104gbw71pnc0d5c1ps7ab7d9ayi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-combine" ,rust-combine-3)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.5))))
+    (home-page "https://github.com/graphql-rust/graphql-parser")
+    (synopsis
+     "Parser, AST and serializer for graphql query language")
+    (description
+     "This package provides a parser, AST and serializer for graphql query
+language and scheme definition language (sometimes called IDL).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-greetd-ipc-0.9
   (package
     (name "rust-greetd-ipc")
