@@ -1154,7 +1154,7 @@ the XDG Autostart specification.")
 (define-public fnott
   (package
     (name "fnott")
-    (version "1.4.1")
+    (version "1.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1163,9 +1163,15 @@ the XDG Autostart specification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fmjvmsm2ikcmdzrf6xwyq6vxb9p1dd3bhvz3bvi7q7rb2g8h8pi"))))
+                "04g1d0app9lpvzq3gxs7qjkd9zgbrmlvfy2n3h464r46j0wpgsx2"))))
     (build-system meson-build-system)
-    (arguments `(#:build-type "release"))
+    (arguments `(#:build-type "release"
+                 #:phases
+                 (modify-phases %standard-phases
+                   (add-after 'unpack 'patch-dbus-install-dir
+                     (lambda _
+                       (substitute* "dbus/meson.build"
+                         (("^.*pkgconfig.*$") "")))))))
     (native-inputs
      (list pkg-config
            wayland-protocols
