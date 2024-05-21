@@ -757,7 +757,7 @@ console.")
 (define-public btop
   (package
     (name "btop")
-    (version "1.3.0")
+    (version "1.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -766,7 +766,7 @@ console.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fbrkzg03n2vamg1pfzdb8wxm3xffy6gp4izhqppl45zngy3c0s1"))))
+                "084n0nbv1029lvfv4na2k9fqyray7m77dff1537b8ffk08ib4d4j"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no test suite
