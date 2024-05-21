@@ -47539,14 +47539,14 @@ numbers.")
 (define-public rust-num-complex-0.4
   (package
     (name "rust-num-complex")
-    (version "0.4.4")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num-complex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "051j73vvdj07kdlpqv056s3a50ragsx3183cbpl1shc51355g88v"))))
+        (base32 "15cla16mnw12xzf5g041nxbjjm9m85hdgadd5dl5d0b30w9qmy3k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
