@@ -4557,8 +4557,101 @@ in the Rust programming language.")
     (description "This package provides macros for poem.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-reqwest-0.12
+  (package
+    (name "rust-reqwest")
+    (version "0.12.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "reqwest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "047aa0qnngnlnf9i0abrs6pgmz15vk81p5pvscwhk3l6jbfsyv2n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=badssl"
+                            "--skip=test_allowed_methods"
+                            "--skip=test_tls_info"
+                            "--skip=connect_many_timeout"
+                            "--skip=connect_timeout")
+       #:cargo-inputs
+       (("rust-async-compression" ,rust-async-compression-0.4)
+        ("rust-base64" ,rust-base64-0.22)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-cookie" ,rust-cookie-0.17)
+        ("rust-cookie-store" ,rust-cookie-store-0.20)
+        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-h2" ,rust-h2-0.4)
+        ("rust-h3" ,rust-h3-0.0.4)
+        ("rust-h3-quinn" ,rust-h3-quinn-0.0.5)
+        ("rust-hickory-resolver" ,rust-hickory-resolver-0.24)
+        ("rust-http" ,rust-http-1)
+        ("rust-http-body" ,rust-http-body-1)
+        ("rust-http-body-util" ,rust-http-body-util-0.1)
+        ("rust-hyper" ,rust-hyper-1)
+        ("rust-hyper-rustls" ,rust-hyper-rustls-0.26)
+        ("rust-hyper-tls" ,rust-hyper-tls-0.6)
+        ("rust-hyper-util" ,rust-hyper-util-0.1)
+        ("rust-ipnet" ,rust-ipnet-2)
+        ("rust-js-sys" ,rust-js-sys-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mime" ,rust-mime-0.3)
+        ("rust-mime-guess" ,rust-mime-guess-2)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-quinn" ,rust-quinn-0.10)
+        ("rust-rustls" ,rust-rustls-0.22)
+        ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.7)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
+        ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
+        ("rust-sync-wrapper" ,rust-sync-wrapper-0.1)
+        ("rust-system-configuration" ,rust-system-configuration-0.5)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.25)
+        ("rust-tokio-socks" ,rust-tokio-socks-0.5)
+        ("rust-tokio-util" ,rust-tokio-util-0.7)
+        ("rust-tower-service" ,rust-tower-service-0.3)
+        ("rust-url" ,rust-url-2)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
+        ("rust-wasm-streams" ,rust-wasm-streams-0.4)
+        ("rust-web-sys" ,rust-web-sys-0.3)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.26)
+        ("rust-winreg" ,rust-winreg-0.52))
+       #:cargo-development-inputs
+       (("rust-brotli" ,rust-brotli-3)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-hyper" ,rust-hyper-1)
+        ("rust-hyper-util" ,rust-hyper-util-0.1)
+        ("rust-libflate" ,rust-libflate-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
+        ("rust-zstd" ,rust-zstd-0.13))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl (list zstd "lib")))
+    (home-page "https://github.com/seanmonstar/reqwest")
+    (synopsis "High level HTTP client library")
+    (description "This package provides a high level HTTP client library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-reqwest-0.11
   (package
+    (inherit rust-reqwest-0.12)
     (name "rust-reqwest")
     (version "0.11.23")
     (source
@@ -4568,7 +4661,6 @@ in the Rust programming language.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hgvzb7r46656r9vqhl5qk1kbr2xzjb91yr2cb321160ka6sxc9p"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -4637,15 +4729,7 @@ in the Rust programming language.")
         ("rust-serde" ,rust-serde-1)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
-    (inputs
-     (list openssl))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://github.com/seanmonstar/reqwest")
-    (synopsis "High level HTTP client library")
-    (description "This package provides a high level HTTP client library.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
 
 (define-public rust-reqwest-0.10
   (package
