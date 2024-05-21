@@ -88340,8 +88340,39 @@ attribute that is not in the shared backend crate.")
      "This package provides a low-level @code{WebAssembly} encoder.")
     (license license:asl2.0)))
 
+(define-public rust-wasm-streams-0.4
+  (package
+    (name "rust-wasm-streams")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasm-streams" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ad17c59xb8fffsnbrqbyqz93hb66nzxhizpii31icb31g4w8pdn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-js-sys" ,rust-js-sys-0.3)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
+        ("rust-web-sys" ,rust-web-sys-0.3))
+       #:cargo-development-inputs
+       (("rust-pin-project" ,rust-pin-project-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
+        ("rust-web-sys" ,rust-web-sys-0.3))))
+    (home-page "https://github.com/MattiasBuelens/wasm-streams/")
+    (synopsis "Bridge between web streams and Rust streams using WebAssembly")
+    (description
+     "Bridging between web streams and Rust streams using WebAssembly.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-wasm-streams-0.3
   (package
+    (inherit rust-wasm-streams-0.4)
     (name "rust-wasm-streams")
     (version "0.3.0")
     (source
@@ -88351,7 +88382,6 @@ attribute that is not in the shared backend crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1iqa4kmhbsjj8k4q15i1x0x4p3xda0dhbg7zw51mydr4g129sq5l"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-futures-util" ,rust-futures-util-0.3)
                        ("rust-js-sys" ,rust-js-sys-0.3)
@@ -88361,12 +88391,7 @@ attribute that is not in the shared backend crate.")
        #:cargo-development-inputs (("rust-pin-project" ,rust-pin-project-1)
                                    ("rust-tokio" ,rust-tokio-1)
                                    ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-                                   ("rust-web-sys" ,rust-web-sys-0.3))))
-    (home-page "https://github.com/MattiasBuelens/wasm-streams/")
-    (synopsis "Bridge between web streams and Rust streams using WebAssembly")
-    (description
-     "Bridging between web streams and Rust streams using WebAssembly.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-web-sys" ,rust-web-sys-0.3))))))
 
 (define-public rust-wasm-streams-0.2
   (package
