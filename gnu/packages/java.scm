@@ -1682,7 +1682,7 @@ blacklisted.certs.pem"
                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))))
 
 ;;; Convenience alias to point to the latest version of OpenJDK.
-(define-public openjdk openjdk19)
+(define-public openjdk openjdk21)
 
 
 ;; This version of JBR is here in order to be able to build custom
