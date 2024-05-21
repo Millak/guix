@@ -10031,6 +10031,39 @@ cl-plumbing libraries.")
 (define-public ecl-cl-octet-streams
   (sbcl-package->ecl-package sbcl-cl-octet-streams))
 
+(define-public sbcl-in-memory-streams
+  (let ((commit "bb4ce9c8c08479c9904f5d29f2b6187f264dc620")
+        (revision "1"))
+    (package
+      (name "sbcl-in-memory-streams")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/glv/cl-in-memory-streams")
+               (commit commit)))
+         (file-name (git-file-name "cl-in-memory-streams" version))
+         (sha256
+          (base32 "1fls1jnkf86wimip6f95y496sc4rxpsh2y65lgqsqpi0yda5xl2f"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list sbcl-trivial-gray-streams))
+      (synopsis "In-memory streams for any element type")
+      (description
+       "This Common Lisp library provides an implementation of in-memory input
+streams, output streams and io streams for any type of elements.")
+      (home-page "https://codeberg.org/glv/cl-in-memory-streams")
+      (license license:gpl3+))))
+
+(define-public cl-in-memory-streams
+  (sbcl-package->cl-source-package sbcl-in-memory-streams))
+
+(define-public ecl-in-memory-streams
+  (sbcl-package->ecl-package sbcl-in-memory-streams))
+
 (define-public sbcl-lzlib
   (let ((commit "22767ca12d1c1bd59a7ae1f9c5ef7d2e937206bb")
         (revision "2"))
