@@ -2587,8 +2587,36 @@ transfer coding.")
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-tracing" ,rust-tracing-0.1))))))
 
+(define-public rust-h3-quinn-0.0.5
+  (package
+    (name "rust-h3-quinn")
+    (version "0.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "h3-quinn" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ii06bi5a19k4qfkppn5019nw8xca2wzfl66cax949jc1v66ny3k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-h3" ,rust-h3-0.0.4)
+        ("rust-quinn" ,rust-quinn-0.10)
+        ("rust-quinn-proto" ,rust-quinn-proto-0.10)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-util" ,rust-tokio-util-0.7))))
+    (home-page "https://github.com/hyperium/h3")
+    (synopsis "QUIC transport implementation based on Quinn")
+    (description
+     "This package provides QUIC transport implementation based on Quinn.")
+    (license license:expat)))
+
 (define-public rust-h3-quinn-0.0.4
   (package
+    (inherit rust-h3-quinn-0.0.5)
     (name "rust-h3-quinn")
     (version "0.0.4")
     (source
@@ -2598,7 +2626,6 @@ transfer coding.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1r0sm0j51crlfpy2j1wfhgpg2lrfq2xmf5qjd98ksg3h9l0pb5mc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
                        ("rust-futures" ,rust-futures-0.3)
@@ -2606,12 +2633,7 @@ transfer coding.")
                        ("rust-quinn" ,rust-quinn-0.10)
                        ("rust-quinn-proto" ,rust-quinn-proto-0.10)
                        ("rust-tokio" ,rust-tokio-1)
-                       ("rust-tokio-util" ,rust-tokio-util-0.7))))
-    (home-page "https://github.com/hyperium/h3")
-    (synopsis "QUIC transport implementation based on Quinn")
-    (description
-     "This package provides QUIC transport implementation based on Quinn.")
-    (license license:expat)))
+                       ("rust-tokio-util" ,rust-tokio-util-0.7))))))
 
 (define-public rust-h3-quinn-0.0.3
   (package
