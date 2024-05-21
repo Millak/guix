@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2020-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
@@ -3169,7 +3169,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
 (define-public rust-xremap
   (package
     (name "rust-xremap")
-    (version "0.8.14")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
@@ -3177,7 +3177,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1691clzqbwcywz66k0lf5wjz3q5cpbks0l090bfv42idzr5a0ghl"))))
+         "13pvlc40zha7c9ma30s32x65c8qciqcnsznw43crx3wymlaqc9sn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '()
@@ -3190,7 +3190,6 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
         ("rust-env-logger" ,rust-env-logger-0.10)
         ("rust-evdev" ,rust-evdev-0.12)
         ("rust-fork" ,rust-fork-0.1)
-        ("rust-hyprland" ,rust-hyprland-0.3)
         ("rust-indoc" ,rust-indoc-2)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
@@ -3200,7 +3199,6 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-with" ,rust-serde-with-3)
         ("rust-serde-yaml" ,rust-serde-yaml-0.9)
-        ("rust-swayipc" ,rust-swayipc-3)
         ("rust-toml" ,rust-toml-0.8)
         ("rust-wayland-client" ,rust-wayland-client-0.30)
         ("rust-wayland-protocols-wlr" ,rust-wayland-protocols-wlr-0.1)
@@ -3215,19 +3213,19 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
                     (xremap (string-append out "/bin/xremap")))
                (mkdir-p (string-append share "/bash-completion/completions"))
                (with-output-to-file
-                 (string-append share "/bash-completion/completions/xremap")
+                   (string-append share "/bash-completion/completions/xremap")
                  (lambda _ (invoke xremap "--completions" "bash")))
                (mkdir-p (string-append share "/fish/vendor_completions.d"))
                (with-output-to-file
-                 (string-append share "/fish/vendor_completions.d/xremap.fish")
+                   (string-append share "/fish/vendor_completions.d/xremap.fish")
                  (lambda _ (invoke xremap "--completions" "fish")))
                (mkdir-p (string-append share "/zsh/site-functions"))
                (with-output-to-file
-                 (string-append share "/zsh/site-functions/_xremap")
+                   (string-append share "/zsh/site-functions/_xremap")
                  (lambda _ (invoke xremap "--completions" "zsh")))
                (mkdir-p (string-append share "/elvish/lib"))
                (with-output-to-file
-                 (string-append share "/elvish/lib/xremap")
+                   (string-append share "/elvish/lib/xremap")
                  (lambda _ (invoke xremap "--completions" "elvish")))))))))
     (home-page "https://github.com/k0kubun/xremap")
     (synopsis "Dynamic key remapp for X and Wayland")
@@ -3242,22 +3240,6 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
      (substitute-keyword-arguments (package-arguments rust-xremap)
        ((#:features _) '(list "gnome"))))))
 
-(define-public xremap-hyprland
-  (package
-    (inherit rust-xremap)
-    (name "xremap-hyprland")
-    (arguments
-     (substitute-keyword-arguments (package-arguments rust-xremap)
-       ((#:features _) '(list "hypr"))))))
-
-(define-public xremap-sway
-  (package
-    (inherit rust-xremap)
-    (name "xremap-sway")
-    (arguments
-     (substitute-keyword-arguments (package-arguments rust-xremap)
-       ((#:features _) '(list "sway"))))))
-
 (define-public xremap-wlroots
   (package
     (inherit rust-xremap)
@@ -3265,6 +3247,12 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
     (arguments
      (substitute-keyword-arguments (package-arguments rust-xremap)
        ((#:features _) '(list "wlroots"))))))
+
+(define-public xremap-hyprland
+  (deprecated-package "xremap-hyprland" xremap-wlroots))
+
+(define-public xremap-sway
+  (deprecated-package "xremap-sway" xremap-wlroots))
 
 (define-public xremap-x11
   (package
