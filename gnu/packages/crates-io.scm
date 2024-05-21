@@ -53062,17 +53062,20 @@ function data structures.")
 (define-public rust-pin-project-1
   (package
     (name "rust-pin-project")
-    (version "1.0.12")
+    (version "1.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pin-project" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1k3f9jkia3idxl2pqxamszwnl89dk52fa4jqj3p7zmmwnq4scadd"))))
+        (base32 "1cxl146x0q7lawp0m1826wsgj8mmmfs6ja8q7m6f7ff5j6vl7gxn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     ;; XXX: Tests fail with "error[E0433]: failed to resolve: use of
+     ;; undeclared crate or module `macrotest`".
+     `(#:tests? #false
+       #:cargo-inputs
        (("rust-pin-project-internal" ,rust-pin-project-internal-1))
        #:cargo-development-inputs
        (("rust-macrotest" ,rust-macrotest-1)
