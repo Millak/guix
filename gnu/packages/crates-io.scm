@@ -55487,6 +55487,26 @@ replacements, adding colorful diffs.")
         ("rust-ansi-term" ,rust-ansi-term-0.11)
         ("rust-difference" ,rust-difference-2))))))
 
+(define-public rust-pretty-assertions-0.5
+  (package
+    (inherit rust-pretty-assertions-0.7)
+    (name "rust-pretty-assertions")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pretty_assertions" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1ins6swkpxmrh8q5h96h8nv0497d3dclsiyx2lyvqi6py0q980is"))))
+    (arguments
+     `(#:tests? #f                      ;XXX: Tests fail
+       #:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.11)
+        ("rust-difference" ,rust-difference-2))))))
+
 (define-public rust-pretty-assertions-0.4
   (package
     (inherit rust-pretty-assertions-0.6)
