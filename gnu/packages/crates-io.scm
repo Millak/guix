@@ -20899,6 +20899,34 @@ structs and enums.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-derive-utils-0.11
+  (package
+    (name "rust-derive-utils")
+    (version "0.11.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "derive_utils" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1gx7giwn8x427d5f8c92n9h0hhcqdsasvz7i8iq2rqffvhalqask"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/taiki-e/derive_utils")
+    (synopsis "Macro helper for easily writing derives macros for enum")
+    (description
+     "This crate provides a procedural macro helper for easily
+writing derives macros for enums.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-derive-where-1
   (package
     (name "rust-derive-where")
