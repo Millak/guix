@@ -47393,6 +47393,25 @@ Rust.")
         ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
         ("rust-serde-test" ,rust-serde-test-1))))))
 
+(define-public rust-num-cmp-0.1
+  (package
+    (name "rust-num-cmp")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "num-cmp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1alavi36shn32b3cwbmkncj1wal3y3cwzkm21bxy5yil5hp5ncv3"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/lifthrasiir/num-cmp")
+    (synopsis "Comparison between differently typed numbers")
+    (description
+     "This crate provides tools for comparison between differently typed
+numbers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-num-complex-0.4
   (package
     (name "rust-num-complex")
