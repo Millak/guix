@@ -36276,8 +36276,40 @@ allocation per spawned future, whereas the futures Threadpool uses std
 concurrency primitives and multiple allocations.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-juniper-codegen-0.15
+  (package
+    (name "rust-juniper-codegen")
+    (version "0.15.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "juniper_codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nvigsc1yrfv09wx1yv830dd60ay556haz87p80h7m8s0rqpdsdf"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; XXX: Tests fail with "error[E0599]: no variant or associated item
+     ;; named `__TestExhaustive` found for enum `syn::Type` in the current
+     ;; scope".
+     `(#:tests? #false
+       #:cargo-inputs
+       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-juniper" ,rust-juniper-0.15))))
+    (home-page "https://github.com/graphql-rust/juniper")
+    (synopsis "Internal custom derive trait for Juniper GraphQL")
+    (description
+     "This package provides an internal custom derive trait for Juniper
+GraphQL.")
+    (license license:bsd-2)))
+
 (define-public rust-juniper-codegen-0.14
   (package
+    (inherit rust-juniper-codegen-0.15)
     (name "rust-juniper-codegen")
     (version "0.14.2")
     (source
@@ -36287,7 +36319,6 @@ concurrency primitives and multiple allocations.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "06ym8568k9p75kvnfc4ywqbkzaa4ib6gngx9vpbsjwg9v0sg42nl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #false                  ;FIXME: fail due to unresolved import
        #:cargo-inputs
@@ -36295,40 +36326,44 @@ concurrency primitives and multiple allocations.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
-       (("rust-juniper" ,rust-juniper-0.14))))
-    (home-page "https://github.com/graphql-rust/juniper")
-    (synopsis "Internal custom derive trait for Juniper GraphQL")
-    (description
-     "This package provides an internal custom derive trait for Juniper
-GraphQL.")
-    (license license:bsd-2)))
+       (("rust-juniper" ,rust-juniper-0.14))))))
 
-(define-public rust-juniper-0.14
+(define-public rust-juniper-0.15
   (package
     (name "rust-juniper")
-    (version "0.14.2")
+    (version "0.15.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "juniper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0s56rb31yddhvjynl5bk8jihcdln8h5yfsx63kfxdhzvw98vlqpn"))))
+        (base32 "1dg1b5msr8k4kwmam2h0f64z7aamk4799vdh3cg55c881idclpc7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-chrono" ,rust-chrono-0.4)
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-bson" ,rust-bson-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-chrono-tz" ,rust-chrono-tz-0.5)
         ("rust-fnv" ,rust-fnv-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-enum" ,rust-futures-enum-0.1)
+        ("rust-graphql-parser" ,rust-graphql-parser-0.3)
         ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-juniper-codegen" ,rust-juniper-codegen-0.14)
+        ("rust-juniper-codegen" ,rust-juniper-codegen-0.15)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smartstring" ,rust-smartstring-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
         ("rust-url" ,rust-url-2)
-        ("rust-uuid" ,rust-uuid-0.7))
+        ("rust-uuid" ,rust-uuid-0.8))
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-serde-json" ,rust-serde-json-1))))
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/graphql-rust/juniper")
     (synopsis "GraphQL server library for Rust")
     (description
@@ -36342,6 +36377,33 @@ provides a pre-built integration for the Actix, Hyper, Iron, Rocket, and Warp
 frameworks, including embedded Graphiql and GraphQL Playground for easy
 debugging.")
     (license license:bsd-2)))
+
+(define-public rust-juniper-0.14
+  (package
+    (inherit rust-juniper-0.15)
+    (name "rust-juniper")
+    (version "0.14.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "juniper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s56rb31yddhvjynl5bk8jihcdln8h5yfsx63kfxdhzvw98vlqpn"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-juniper-codegen" ,rust-juniper-codegen-0.14)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-url" ,rust-url-2)
+        ("rust-uuid" ,rust-uuid-0.7))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-keccak-0.1
   (package
