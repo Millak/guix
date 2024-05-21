@@ -28249,6 +28249,40 @@ the computation on the threads themselves.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-futures-enum-0.1
+  (package
+    (name "rust-futures-enum")
+    (version "0.1.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "futures-enum" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07kvpnr21qalhw4hw44h3335wi0lgrdf02n1vglm4flhwx6x28il"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-derive-utils" ,rust-derive-utils-0.11)
+        ("rust-find-crate" ,rust-find-crate-0.6)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-futures-sink" ,rust-futures-sink-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3))))
+    (home-page "https://github.com/taiki-e/futures-enum")
+    (synopsis
+     "Future, Stream, Sink, AsyncRead, AsyncWrite, AsyncSeek, AsyncBufRead for enums")
+    (description
+     "This crate provides @code{#[derive(Future, Stream, Sink, AsyncRead, AsyncWrite,
+AsyncSeek, AsyncBufRead)]} for enums.")
+    (license (list license:asl2.0 license:expat))))
+
+
 (define-public rust-futures-executor-0.3
   (package
     (name "rust-futures-executor")
