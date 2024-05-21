@@ -53138,21 +53138,21 @@ function data structures.")
 (define-public rust-pin-project-internal-1
   (package
     (name "rust-pin-project-internal")
-    (version "1.0.12")
+    (version "1.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pin-project-internal" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0maa6icn7rdfy4xvgfaq7m7bwpw9f19wg76f1ncsiixd0lgdp6q6"))))
+        (base32 "0r9r4ivwiyqf45sv6b30l1dx282lxaax2f6gl84jwa3q590s8f1g"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #false
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/taiki-e/pin-project")
     (synopsis "Implementation detail of the @code{pin-project} crate")
     (description
