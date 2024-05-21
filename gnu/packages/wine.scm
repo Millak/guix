@@ -44,6 +44,7 @@
   #:use-module (gnu packages cups)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages image)
   #:use-module (gnu packages gettext)
@@ -69,6 +70,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match)
@@ -191,11 +193,13 @@ integrate Windows applications into your desktop.")
            libxi
            libxext
            libxcursor
+           libxkbcommon
            libxrender
            libxrandr
            libxinerama
            libxxf86vm
            libxcomposite
+           mesa
            mit-krb5
            openal
            pulseaudio
@@ -203,7 +207,9 @@ integrate Windows applications into your desktop.")
            unixodbc
            v4l-utils
            vkd3d
-           vulkan-loader))
+           vulkan-loader
+           wayland
+           wayland-protocols))
     (arguments
      (substitute-keyword-arguments (package-arguments wine-minimal)
        ((#:phases phases)
