@@ -3865,7 +3865,7 @@ configuration."))))
 (define-public yambar-wayland
   (package
     (name "yambar-wayland")
-    (version "1.10.0")
+    (version "1.11.0")
     (home-page "https://codeberg.org/dnkl/yambar")
     (source
      (origin
@@ -3876,7 +3876,7 @@ configuration."))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "14lxhgyyia7sxyqjwa9skps0j9qlpqi8y7hvbsaidrwmy4857czr"))))
+         "0c3sk2i14fcb0l95pvfnj2sx0vx4ql1vldhimfccbf2qj0r30b20"))))
     (build-system meson-build-system)
     (arguments
      (list
