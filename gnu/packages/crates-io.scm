@@ -48100,14 +48100,14 @@ number of running threads for the current process.")
 (define-public rust-num-traits-0.2
   (package
     (name "rust-num-traits")
-    (version "0.2.17")
+    (version "0.2.19")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num-traits" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0z16bi5zwgfysz6765v3rd6whfbjpihx3mhsn4dg8dzj2c221qrr"))))
+        (base32 "0h984rhdkkqd4ny9cif7y2azl3xdfb7768hb9irhpsch4q3gq787"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
