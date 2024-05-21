@@ -250,6 +250,7 @@ RECIPE."
        (uri (git-reference
              (url ,url)
              (commit ,commit)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
          ,(bytevector->nix-base32-string
