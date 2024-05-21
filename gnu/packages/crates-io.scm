@@ -47257,14 +47257,14 @@ macros used in ntest.")
 (define-public rust-num-0.4
   (package
     (name "rust-num")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bz7kvj94pyw4zi1pm7knziljzii218sw79ap8qfb81xkvb80ldh"))))
+        (base32 "0hbaawqgb3gsmx2i94ygbhc7nyqi6a30zbpja453n43xya5b0d9i"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
