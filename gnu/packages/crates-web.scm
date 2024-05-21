@@ -3,7 +3,7 @@
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
@@ -2492,25 +2492,25 @@ transfer coding.")
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
 
-(define-public rust-h3-0.0.3
+(define-public rust-h3-0.0.4
   (package
     (name "rust-h3")
-    (version "0.0.3")
+    (version "0.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "h3" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "101vg73galsyk5gnjb49cjb6q40c9z2npcdxpfsj99ky2waijgmq"))))
+        (base32 "04clhh6b5iqlgnbppikbz4zpxl78g4vkyhyrjgnyg4vfkrmqij5i"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Not all files included
+     `(#:tests? #f                      ;not all files included
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
         ("rust-fastrand" ,rust-fastrand-2)
         ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-http" ,rust-http-0.2)
+        ("rust-http" ,rust-http-1)
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tracing" ,rust-tracing-0.1))
@@ -2530,6 +2530,41 @@ transfer coding.")
     (synopsis "Async HTTP/3 implementation")
     (description "This package provides an async HTTP/3 implementation.")
     (license license:expat)))
+
+(define-public rust-h3-0.0.3
+  (package
+    (inherit rust-h3-0.0.4)
+    (name "rust-h3")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "h3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "101vg73galsyk5gnjb49cjb6q40c9z2npcdxpfsj99ky2waijgmq"))))
+    (arguments
+     `(#:tests? #f                      ; Not all files included
+       #:cargo-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-fastrand" ,rust-fastrand-2)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-quinn" ,rust-quinn-0.10)
+        ("rust-quinn-proto" ,rust-quinn-proto-0.10)
+        ("rust-rcgen" ,rust-rcgen-0.11)
+        ("rust-rustls" ,rust-rustls-0.21)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-util" ,rust-tokio-util-0.7)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
 
 (define-public rust-h3-0.0.2
   (package
