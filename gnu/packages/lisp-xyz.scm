@@ -22333,20 +22333,20 @@ Django with a syntax similar to Python Jinja2.")
   (sbcl-package->cl-source-package sbcl-djula))
 
 (define-public sbcl-for
-  (let ((commit "2e4fcfa0f9c1d2f4559c58cef20ccefa50ba180d")
+  (let ((commit "a39782991292e44ee3b5e2e25cddaa8115f6d363")
         (revision "1"))
     (package
       (name "sbcl-for")
-      (version (git-version "1.1.0" revision commit))
+      (version (git-version "1.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/Shinmera/for")
                (commit commit)))
-         (file-name (git-file-name "for" version))
+         (file-name (git-file-name "cl-for" version))
          (sha256
-          (base32 "1akz9ggh33x2cq3h0f1cd0p632v1mbagv3dzsb0r10bwg9lh3nmv"))))
+          (base32 "07jdwqkyb3qd65mng60cs723z7p0bv2769hhalz4c0mfzn8qrn99"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils sbcl-form-fiddle sbcl-lambda-fiddle))
