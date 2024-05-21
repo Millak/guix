@@ -35041,8 +35041,34 @@ stream runs in a TTY.")
 Windows Subsystem for Linux.")
     (license license:expat)))
 
+(define-public rust-iso8601-0.6
+  (package
+    (name "rust-iso8601")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "iso8601" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lqif1zp19fjmrbhcdjx0ydnljax3090san5zq8r1x98x9rmsklj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/badboy/iso8601")
+    (synopsis "Parsing ISO8601 dates using @code{nom}")
+    (description "This crate parses ISO8601 dates using @code{nom}.")
+    (license license:expat)))
+
 (define-public rust-iso8601-0.4
   (package
+    (inherit rust-iso8601-0.6)
     (name "rust-iso8601")
     (version "0.4.2")
     (source
@@ -35052,13 +35078,8 @@ Windows Subsystem for Linux.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "15nfg6d4qlniw4gk7039s5y07lzgr1dp9snsw63lsxarnyz4zfg5"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-nom" ,rust-nom-7))))
-    (home-page "https://github.com/badboy/iso8601")
-    (synopsis "Parsing ISO8601 dates using nom")
-    (description "Parsing ISO8601 dates using nom.")
-    (license license:expat)))
+     `(#:cargo-inputs (("rust-nom" ,rust-nom-7))))))
 
 (define-public rust-iso8601-0.3
   (package
