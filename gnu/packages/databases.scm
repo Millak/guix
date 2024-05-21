@@ -2057,18 +2057,17 @@ extremely small.")
 (define-public perl-dbix-class
   (package
     (name "perl-dbix-class")
-    (version "0.082842")
+    (version "0.082843")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/R/RI/RIBASUSHI/"
                            "DBIx-Class-" version ".tar.gz"))
        (sha256
-        (base32 "1rh7idjjbibc1zmiaaarask434lh0lx7f2xyfwmy37k9fa0xcpmh"))))
+        (base32 "0lgjw7z4y2inf3yyfph1ljdp4f5zdmy9vh56fj8w9n19rdp0n7il"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-dbd-sqlite
-           perl-file-temp
            perl-module-install
            perl-package-stash
            perl-test-deep
@@ -2086,15 +2085,13 @@ extremely small.")
            perl-devel-globaldestruction
            perl-hash-merge
            perl-module-find
-           perl-moo
+           perl-moo-2
            perl-mro-compat
            perl-namespace-clean
            perl-path-class
-           perl-scalar-list-utils
            perl-scope-guard
            perl-sql-abstract-classic
            perl-sub-name
-           perl-text-balanced
            perl-try-tiny))
     (home-page "https://metacpan.org/release/DBIx-Class")
     (synopsis "Extensible and flexible object <-> relational mapper")
@@ -2106,6 +2103,9 @@ still providing access to as many of the capabilities of the database as
 possible, including retrieving related records from multiple tables in a
 single query, \"JOIN\", \"LEFT JOIN\", \"COUNT\", \"DISTINCT\", \"GROUP BY\",
 \"ORDER BY\" and \"HAVING\" support.")
+    (properties
+     ;; This is needed for perl-catalyst-authentication-store-dbix-class
+     `((updater-extra-propagated-inputs . ("perl-data-page"))))
     (license license:perl-license)))
 
 (define-public perl-dbix-class-cursor-cached
