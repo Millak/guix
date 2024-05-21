@@ -796,14 +796,14 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-13
   (package
     (inherit gcc-11)
-    (version "13.2.0")
+    (version "13.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gcc/gcc-"
                                   version "/gcc-" version ".tar.xz"))
               (sha256
                (base32
-                "1nj3qyswcgc650sl3h0480a171ixp33ca13zl90p61m689jffxg2"))
+                "10y0l1hx1haz4cj4d4g9f2ci5h7z9555i52f90zs2hwm3iifji88"))
               (patches (search-patches "gcc-12-strmov-store-file-names.patch"
                                        "gcc-5.0-libvtv-runpath.patch"))
               (modules '((guix build utils)))
