@@ -3738,8 +3738,48 @@ dependencies.")
     (description "Proxy connector for the Hyper HTTP library.")
     (license license:expat)))
 
+(define-public rust-hyper-rustls-0.26
+  (package
+    (name "rust-hyper-rustls")
+    (version "0.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-rustls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b4m1jvs147hxi8677n2dxxib663s7c31xmfni7b5qkanihsggm0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ;not all files included
+       #:cargo-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-http" ,rust-http-1)
+        ("rust-hyper" ,rust-hyper-1)
+        ("rust-hyper-util" ,rust-hyper-util-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rustls" ,rust-rustls-0.22)
+        ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.7)
+        ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.25)
+        ("rust-tower-service" ,rust-tower-service-0.3)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.26))
+       #:cargo-development-inputs
+       (("rust-http-body-util" ,rust-http-body-util-0.1)
+        ("rust-hyper-util" ,rust-hyper-util-0.1)
+        ("rust-rustls" ,rust-rustls-0.22)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rustls/hyper-rustls")
+    (synopsis "Rustls+Hyper integration for pure Rust HTTPS")
+    (description
+     "This package provides Rustls+Hyper integration for pure Rust HTTPS.")
+    (license (list license:asl2.0 license:isc license:expat))))
+
 (define-public rust-hyper-rustls-0.24
   (package
+    (inherit rust-hyper-rustls-0.26)
     (name "rust-hyper-rustls")
     (version "0.24.2")
     (source
@@ -3749,9 +3789,8 @@ dependencies.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1475j4a2nczz4aajzzsq3hpwg1zacmzbqg393a14j80ff8izsgpc"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f              ; Not all files included.
+     `(#:tests? #f                      ; Not all files included.
        #:cargo-inputs (("rust-futures-util" ,rust-futures-util-0.3)
                        ("rust-http" ,rust-http-0.2)
                        ("rust-hyper" ,rust-hyper-0.14)
@@ -3764,12 +3803,7 @@ dependencies.")
        #:cargo-development-inputs (("rust-hyper" ,rust-hyper-0.14)
                                    ("rust-rustls" ,rust-rustls-0.21)
                                    ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
-                                   ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/rustls/hyper-rustls")
-    (synopsis "Rustls+Hyper integration for pure Rust HTTPS")
-    (description
-     "This package provides Rustls+Hyper integration for pure Rust HTTPS.")
-    (license (list license:asl2.0 license:isc license:expat))))
+                                   ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-hyper-rustls-0.23
   (package
