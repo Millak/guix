@@ -450,6 +450,35 @@ with dice-roll statistics.")
 (define-public ecl-alea
   (sbcl-package->ecl-package sbcl-alea))
 
+(define-public sbcl-cf
+  (let ((commit "9a8ecb2fa3f9d36a1384647067c5c630d132d5b6")
+        (revision "1"))
+    (package
+      (name "sbcl-cf")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/glv/cl-cf")
+               (commit commit)))
+         (file-name (git-file-name "cl-cf" version))
+         (sha256
+          (base32 "0w6vqykx65jhk8i3a7j85fa60f9irnd5a0338rg50m45bj3vrc25"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (synopsis "Continued fractions library")
+      (description "CF is a Common Lisp library for doing computations using
+continued fractions.")
+      (home-page "https://codeberg.org/glv/cl-cf")
+      (license license:gpl3+))))
+
+(define-public cl-cf
+  (sbcl-package->cl-source-package sbcl-cf))
+
+(define-public ecl-cf
+  (sbcl-package->ecl-package sbcl-cf))
+
 (define-public sbcl-bubble-operator-upwards
   (let ((commit "846275a318b960de81b62caecb1e31930f70aef6")
         (revision "0"))
