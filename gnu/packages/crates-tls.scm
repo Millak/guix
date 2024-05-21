@@ -3,7 +3,7 @@
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2021, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -1452,18 +1452,22 @@ PEM-encodings commonly used to store keys and certificates at rest.")
 (define-public rust-rustls-pki-types-1
   (package
     (name "rust-rustls-pki-types")
-    (version "1.0.1")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-pki-types" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16rkx6gn5l2zximxy8fx9h2vzks1hfxi5z5cd9y97r0fl853wrz7"))))
+        (base32 "0banlc9xzwqrx8n0h4bd0igmq3z5hc72rn941lf22cp3gkkraqlp"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-web-time" ,rust-web-time-1))))
     (home-page "https://github.com/rustls/pki-types")
     (synopsis "Shared types for the rustls PKI ecosystem")
-    (description "Shared types for the rustls PKI ecosystem.")
+    (description
+     "This crate provides shared types for the rustls PKI ecosystem.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-rustls-webpki-0.102
