@@ -28,14 +28,14 @@
 (define-public musl
   (package
     (name "musl")
-    (version "1.2.4")
+    (version "1.2.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.musl-libc.org/releases/"
                                   "musl-" version ".tar.gz"))
               (sha256
                (base32
-                "0fgh2hhsbaksx7my6yiva4jqixi6hxwxx20ivb0afwjk7piyldbs"))))
+                "1r3mgky9d19b2285s274qxzlgs7sncx8plm01vd691sdx2xii8d9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; musl has no tests
