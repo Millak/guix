@@ -1087,6 +1087,39 @@ gracefully enhance standard library testing package and behaviors of the
 the end of a test.")
     (license license:expat)))
 
+(define-public go-go-uber-org-mock
+  (package
+    (name "go-go-uber-org-mock")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber-go/mock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mz1cy02m70mdh7hyaqks8bkh9iyv4jgj6h4psww52nr3b9pnyyy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: The project contains subdirectory which complicate it's testing
+      ;; and it does not produce any binary.
+      #:tests? #f
+      #:go go-1.20
+      #:import-path "go.uber.org/mock"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build))))
+    (propagated-inputs
+     (list go-golang-org-x-mod go-golang-org-x-tools))
+    (home-page "https://pkg.go.dev/go.uber.org/mock")
+    (synopsis "Mocking framework for the Golang")
+    (description
+     "This package provides a mocking framework which integrates well with
+built-in @code{testing} package, but can be used in other contexts too.")
+    (license license:asl2.0)))
+
 (define-public go-honnef-co-go-tools
   (package
     (name "go-honnef-co-go-tools")
