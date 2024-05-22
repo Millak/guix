@@ -5440,11 +5440,14 @@ golang's database/sql package.")
                 "042k0gbzs5waqpxmd7nv5h93mlva861s66c3s9gfg1fym5dx4vmd"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/syndtr/goleveldb/leveldb"
-           #:unpack-path "github.com/syndtr/goleveldb"))
-    (propagated-inputs (list go-github-com-onsi-gomega
-                             go-github-com-onsi-ginkgo
-                             go-github-com-golang-snappy))
+     (list
+      #:go go-1.21
+      #:import-path "github.com/syndtr/goleveldb/leveldb"
+      #:unpack-path "github.com/syndtr/goleveldb"))
+    (propagated-inputs
+     (list go-github-com-onsi-gomega
+           go-github-com-onsi-ginkgo
+           go-github-com-golang-snappy))
     (home-page "https://github.com/syndtr/goleveldb")
     (synopsis "LevelDB implementation in Go")
     (description
