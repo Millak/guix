@@ -4029,6 +4029,46 @@ dissimilarity analysis.  Most of its multivariate tools can be used for other
 data types as well.")
     (license license:gpl2+)))
 
+(define-public r-tglkmeans
+  (package
+    (name "r-tglkmeans")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tglkmeans" version))
+       (sha256
+        (base32 "1plg03k9r4sp8ck5qcj8shblr8378bynyyc7yqwcqv856vkl9icd"))))
+    (properties `((upstream-name . "tglkmeans")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-dofuture
+                             r-dplyr
+                             r-future
+                             r-ggplot2
+                             r-magrittr
+                             r-matrix
+                             r-metacell
+                             r-plyr
+                             r-purrr
+                             r-rcpp
+                             r-rcppparallel
+                             r-tgstat
+                             r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://tanaylab.github.io/tglkmeans/")
+    (synopsis "Efficient implementation of K-Means++ algorithm")
+    (description
+     "This package provides an efficient implementation of the K-Means++
+algorithm.  For more information see (1) \"kmeans++ the advantages of the
+k-means++ algorithm\" by David Arthur and Sergei Vassilvitskii (2007),
+Proceedings of the eighteenth annual ACM-SIAM symposium on Discrete
+algorithms, Society for Industrial and Applied Mathematics, Philadelphia, PA,
+USA, pp. 1027-1035, and (2) \"The Effectiveness of Lloyd-Type Methods for the
+k-Means Problem\" by Rafail Ostrovsky, Yuval Rabani, Leonard J. Schulman and
+Chaitanya Swamy <doi:10.1145/2395116.2395117>.")
+    (license license:expat)))
+
 (define-public r-tgp
   (package
     (name "r-tgp")
