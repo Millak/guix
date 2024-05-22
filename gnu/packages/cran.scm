@@ -37,6 +37,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022-2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2024 Marco Baggio <guix@mawumag.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -15774,6 +15775,27 @@ the analyzed items.")
      "This package contains data structures and algorithms for sparse arrays and matrices,
 based on index arrays and simple triplet representations, respectively.")
     (license license:gpl2)))
+
+(define-public r-slanter
+  (package
+    (name "r-slanter")
+    (version "0.2-0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "slanter" version))
+       (sha256
+        (base32 "024dkman0r5qzc215gw0ds932vdaz8krrhv64fjw9pni37ixc3mf"))))
+    (properties `((upstream-name . "slanter")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-pheatmap r-pracma))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=slanter")
+    (synopsis "Slanted matrices and ordered clustering")
+    (description
+     "This is a package for slanted matrices and ordered clustering for better
+visualization of similarity data.")
+    (license license:expat)))
 
 (define-public r-manipulatewidget
   (package
