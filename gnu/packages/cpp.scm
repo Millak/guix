@@ -1484,6 +1484,11 @@ Google's C++ code base.")
                  (search-patches "abseil-cpp-20220623.1-no-kepsilon-i686.patch"))))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
+         ((#:configure-flags flags #~'())
+          (if (target-riscv64?)
+              #~(cons* "-DCMAKE_SHARED_LINKER_FLAGS=-latomic"
+                       #$flags)
+              flags))
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-before 'check 'set-env-vars
