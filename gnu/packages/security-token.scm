@@ -394,6 +394,31 @@ authentication, encryption and digital signatures.  OpenSC implements the PKCS
 #15 standard and the PKCS #11 API.")
     (license license:lgpl2.1+)))
 
+
+(define-public pkcs11-helper
+  (package
+    (name "pkcs11-helper")
+    (version "1.30.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/OpenSC/pkcs11-helper/releases/download/pkcs11-helper-"
+             version "/pkcs11-helper-" version ".tar.bz2"))
+       (sha256
+        (base32 "1ac86jfj4qfwzbvsg6l9r4w4bbwxj2i9qi4dy1nz5aqcj6x1an2c"))))
+    (build-system gnu-build-system)
+    (inputs (list openssl pcsc-lite))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/OpenSC/pkcs11-helper")
+    (synopsis "Library that simplifies the interaction with PKCS#11 providers")
+    (description
+     "Pkcs11-helper is a library that simplifies the interaction with
+PKCS#11 providers for end-user applications. PKCS#11 is published standard.
+PKCS#11 is the de-facto standard to access cryptographic devices")
+    (license (list license:gpl2 license:bsd-3))))
+
+
 (define-public yubico-piv-tool
   (package
     (name "yubico-piv-tool")
