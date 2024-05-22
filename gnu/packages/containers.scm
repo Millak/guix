@@ -289,14 +289,14 @@ network namespaces.")
 (define-public passt
   (package
     (name "passt")
-    (version "2024_03_20.71dd405")
+    (version "2024_05_10.7288448")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://passt.top/passt/snapshot/passt-" version
                            ".tar.gz"))
        (sha256
-        (base32 "1xyi1rqc3q2nbkd5mc4mp2m488ih5jy8v3xg0dgznh0149alx3y0"))))
+        (base32 "12lg216d0r8zb0rpxmnzzfyz4v5gc7ahdvypp811px0ip0qkzj25"))))
     (build-system gnu-build-system)
     (arguments
      (list
