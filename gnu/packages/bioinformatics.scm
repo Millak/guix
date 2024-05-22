@@ -21425,7 +21425,7 @@ scripts for manipulating 3C/4C/5C/Hi-C data.")
     (license license:asl2.0)))
 
 (define-public ensembl-vep
-  (let* ((api-version "103")
+  (let* ((api-version "112")
          (api-module
           (lambda (name hash)
             (origin (method git-fetch)
@@ -21437,7 +21437,7 @@ scripts for manipulating 3C/4C/5C/Hi-C data.")
                     (sha256 (base32 hash))))))
     (package
       (name "ensembl-vep")
-      (version (string-append api-version ".1"))
+      (version api-version)
       (source
        (origin
          (method git-fetch)
@@ -21447,7 +21447,7 @@ scripts for manipulating 3C/4C/5C/Hi-C data.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1iq7p72cv9b38jz2v8a4slzy2n8y0md487943180ym9xc8qvw09c"))))
+           "0nznmiln2q6bzd3xp8d5cw56higa5w3g9rmg66956bkfky53chvw"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build gnu-build-system)
@@ -21538,6 +21538,7 @@ runtests(@test_files);
              perl-dbi
              perl-dbd-mysql
              perl-libwww
+             perl-list-moreutils
              perl-http-tiny
              perl-json
              which))
@@ -21548,18 +21549,20 @@ runtests(@test_files);
          ("perl" ,perl)
          ("api-module-ensembl"
           ,(api-module "ensembl"
-                       "0s59rj905g72hljzfpvnx5nxwz925b917y4jp912i23f5gwxh14v"))
+                       "10r576iqrz1p61mqbbfs87w4w3nldi45p51z52mq76f3n00l010h"))
          ("api-module-ensembl-variation"
           ,(api-module "ensembl-variation"
-                       "1dvwdzzfjhzymq02b6n4p6j3a9q4jgq0g89hs7hj1apd7zhirgkq"))
+                       "0ad03xnyyqpya1bkg6igq9abqxdmi58j89wn2kb3m4bvy1zs03mf"))
          ("api-module-ensembl-funcgen"
           ,(api-module "ensembl-funcgen"
-                       "1x23pv38dmv0w0gby6rv3wds50qghb4v3v1mf43vk55msfxzry8n"))
+                       "1m3dxnr6k9x5hmcsxckpxlqx7vbc82lk74r84vcjijgxjkfa5rpp"))
          ("api-module-ensembl-io"
           ,(api-module "ensembl-io"
-                       "14adb2x934lzsq20035mazdkhrkcw0qzb0xhz6zps9vk4wixwaix"))
+                       "1xr6kdqqzmbi3m4bls589d1dfjvbs13dxlbf1y172xjyipvmag43"))
+         ("perl-test-deep" ,perl-test-deep)
+         ("perl-test-exception" ,perl-test-exception)
          ("perl-test-harness" ,perl-test-harness)
-         ("perl-test-exception" ,perl-test-exception)))
+         ("perl-test-warnings" ,perl-test-warnings)))
       (home-page "http://www.ensembl.org/vep")
       (synopsis "Predict functional effects of genomic variants")
       (description
