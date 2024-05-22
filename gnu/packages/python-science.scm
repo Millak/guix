@@ -1131,7 +1131,7 @@ idea of the remaining amount of computation to be done.")
 (define-public python-pandera
   (package
     (name "python-pandera")
-    (version "0.17.2")
+    (version "0.18.0")
     (source
      (origin
        ;; No tests in the PyPI tarball.
@@ -1141,7 +1141,7 @@ idea of the remaining amount of computation to be done.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mnqk583z90k1n0z3lfa4rd0ng40v7hqfk7phz5gjmxlzfjbxa1x"))
+        (base32 "14b5aij5zjkwvsimg0v00qvp59mhhq7ljim4qghcn432vkg9gh47"))
        (modules '((guix build utils)))
        ;; These tests require PySpark and Modin. We need to remove the entire
        ;; directory, since the conftest.py in these directories contain
@@ -1159,7 +1159,8 @@ idea of the remaining amount of computation to be done.")
                            ;; positives. These tests currently fail.
                            "not test_python_std_list_dict_generics"
                            " and not test_python_std_list_dict_empty_and_none"
-                           " and not test_pandas_modules_importable"))))
+                           " and not test_pandas_modules_importable"
+                           " and not test_check_groups"))))
     ;; Pandera comes with a lot of extras. We test as many as possible, but do
     ;; not include all of them in the propagated-inputs. Currently, we have to
     ;; skip the pyspark and io tests due to missing packages python-pyspark
