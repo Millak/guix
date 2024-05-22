@@ -441,6 +441,7 @@ written in Go.")
                              "vendor/github.com/prometheus/client_model"
                              "vendor/github.com/prometheus/common"
                              "vendor/github.com/prometheus/procfs"
+                             "vendor/github.com/quic-go/quic-go"
                              "vendor/github.com/spaolacci"
                              "vendor/github.com/stretchr"
                              "vendor/github.com/syndtr"
@@ -542,6 +543,7 @@ written in Go.")
                   go-github-com-pbnjay-memory
                   go-github-com-pkg-errors
                   go-github-com-prometheus-client-golang
+                  go-github-com-quic-go-quic-go
                   go-github-com-stretchr-testify
                   go-github-com-syndtr-goleveldb-leveldb
                   ;;go-github-com-tidwall-gjson
@@ -570,10 +572,8 @@ written in Go.")
                   ;; A list of indirect dependencies requiring for the vendored models.
                   ;; XXX: Remove them when all of the vendored packages are available.
                   ;;
-                  go-github-com-alecthomas-units
-                  go-github-com-flynn-noise
-                  go-github-com-francoispqt-gojay
-                  go-github-com-gogo-protobuf
+                  go-github-com-alecthomas-units   ; github.com/ipfs/boxo
+                  go-github-com-flynn-noise        ; github.com/libp2p/go-libp2p
                   go-github-com-golang-groupcache
                   go-github-com-gorilla-mux
                   go-github-com-gorilla-websocket
