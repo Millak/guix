@@ -132,7 +132,7 @@
      (shepherd-service
       (documentation "Network statistics gatherer.")
       (provision '(darkstat))
-      (requirement '(networking))
+      (requirement '(user-processes networking))
       (start #~(make-forkexec-constructor
                 (list #$(file-append package "/sbin/darkstat")
                       "-i" #$interface
