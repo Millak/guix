@@ -407,6 +407,27 @@ simulating diversification models, dating trees, comparing trees, and
 reading/writing trees in Newick format.")
     (license license:gpl2+)))
 
+(define-public r-chameleon
+  (package
+    (name "r-chameleon")
+    (version "0.2-3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "chameleon" version))
+       (sha256
+        (base32 "0a3azp0zaakpqqx0pp94hkj3vgb2apnf8gb5ga0as4i8lrn9dz8i"))))
+    (properties `((upstream-name . "chameleon")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-clue r-ggplot2 r-umap))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=chameleon")
+    (synopsis "Automatic colors for multi-dimensional data")
+    (description
+     "This package lets you assign distinct colors to arbitrary
+multi-dimensional data, considering its structure.")
+    (license license:expat)))
+
 (define-public r-changepoint
   (package
     (name "r-changepoint")
