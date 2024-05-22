@@ -65,6 +65,7 @@
   #:use-module (gnu system images novena)
   #:use-module (gnu system images pine64)
   #:use-module (gnu system images pinebook-pro)
+  #:use-module (gnu system images visionfive2)
   #:use-module (gnu tests)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -246,7 +247,8 @@ SYSTEM."
   (list hurd-barebones-qcow2-image
         pine64-barebones-raw-image
         pinebook-pro-barebones-raw-image
-        novena-barebones-raw-image))
+        novena-barebones-raw-image
+        visionfive2-barebones-raw-image))
 
 (define (hours hours)
   (* 3600 hours))
