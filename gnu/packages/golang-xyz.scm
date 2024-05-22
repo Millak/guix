@@ -1421,6 +1421,26 @@ Slim-Sprig is a fork of Sprig that removes all external dependencies to make
 the library more lightweight.")
       (license license:expat))))
 
+(define-public go-github-com-go-task-slim-sprig-v3
+  (package
+    (inherit go-github-com-go-task-slim-sprig)
+    (name "go-github-com-go-task-slim-sprig-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-task/slim-sprig")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h6m9n8w6yk0fp1kpk574kac6l3ibkh71myjakvns1nmqphb085w"))))
+    (build-system go-build-system)
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-go-task-slim-sprig)
+       ((#:import-path _) "github.com/go-task/slim-sprig/v3")))))
+
 (define-public go-github-com-gobwas-glob
   (package
     (name "go-github-com-gobwas-glob")
