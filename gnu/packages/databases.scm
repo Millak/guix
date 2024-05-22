@@ -854,7 +854,6 @@ autocompletion and syntax highlighting.")
      (list python-cli-helpers
            python-click
            python-configobj
-           python-cryptography
            python-prompt-toolkit
            python-pyaes
            python-pygments
@@ -1624,8 +1623,8 @@ CSV, DB3, iXF, SQLite, MS-SQL or MySQL to PostgreSQL.")
        (sha256
         (base32 "1l2cj0ps96g3bblvhdszgyjv9bi405bxrx0bqq1p8h9bmwd629z1"))))
     (build-system pyproject-build-system)
-    (inputs
-     (list python-cryptography))
+    (propagated-inputs
+     (list python-cryptography python-pynacl))
     (arguments
      `(#:tests? #f))                    ; tests expect a running MySQL
     (home-page "https://github.com/PyMySQL/PyMySQL/")
@@ -1987,8 +1986,7 @@ which uses SQL to describe changes.")
                   "0x2q4m9ryw68kifalnm3x4bv9v2xrc2ffsiap8m9wnw6lf1h05la"))))
       (build-system python-build-system)
       (inputs
-       (list python-cryptography python-psycopg2 python-pymysql
-             python-sqlalchemy))
+       (list python-psycopg2 python-pymysql python-sqlalchemy))
       (home-page "https://github.com/coffeeandscripts/sqlcrush")
       (synopsis "Text console-based database viewer and editor")
       (description
