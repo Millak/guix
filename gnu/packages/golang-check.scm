@@ -612,7 +612,7 @@ Gomega matcher library.")
   (package
     (inherit go-github-com-onsi-ginkgo)
     (name "go-github-com-onsi-ginkgo-v2")
-    (version "2.17.1")
+    (version "2.18.0")
     (source
      (origin
        (method git-fetch)
@@ -621,16 +621,16 @@ Gomega matcher library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "089x6pz5563ldbxiwaqvd2g4dqfzlr25dflmas3gfq51ibwzh4vz"))))
+        (base32 "1w5dldjjcz2kpyxml4zd9yah7galfpmhcpc2l4zc5pr3skpwpibv"))))
     (arguments
      (list
       #:go go-1.20
       #:import-path "github.com/onsi/ginkgo/v2"))
     (propagated-inputs
      (list go-github-com-go-logr-logr
-           ;; go-github-com-google-pprof ; not packed yet in Guix, for profiling
+           go-github-com-go-task-slim-sprig-v3
+           go-github-com-google-pprof
            go-github-com-onsi-gomega
-           go-github-com-go-task-slim-sprig
            go-golang-org-x-net
            go-golang-org-x-sys
            go-golang-org-x-tools))))
