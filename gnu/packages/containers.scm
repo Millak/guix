@@ -454,7 +454,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
 (define-public podman
   (package
     (name "podman")
-    (version "5.0.2")
+    (version "5.0.3")
     (source
      (origin
        (method git-fetch)
@@ -462,7 +462,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
              (url "https://github.com/containers/podman")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0x8npz0i3dyiaw30vdlb5n8kiaflgjqnrdbdk0yn5zgf5k1jlb7i"))
+        (base32 "1wgaiwh7m547j9irz6z6ckxcbw8fwzqixh55q1fk2g7kfclfc3iw"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
