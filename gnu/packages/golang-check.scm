@@ -1198,6 +1198,21 @@ thoroughly
 ;;; Executables:
 ;;;
 
+(define-public go-ginkgo
+  (package
+    (inherit go-github-com-onsi-ginkgo-v2)
+    (name "ginkgo")
+    (arguments
+     (list
+       #:go go-1.20
+       #:import-path "github.com/onsi/ginkgo/ginkgo"
+       #:unpack-path "github.com/onsi/ginkgo"
+       #:install-source? #f))
+    (description
+     (string-append (package-description go-github-com-onsi-ginkgo-v2)
+                    "  This package provides an command line interface (CLI)
+tool."))))
+
 (define-public go-keyify
   (package
     (inherit go-honnef-co-go-tools)
