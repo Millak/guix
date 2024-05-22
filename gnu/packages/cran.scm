@@ -1805,6 +1805,175 @@ quickly isolate key differences makes understanding test failures much
 easier.")
     (license license:expat)))
 
+;; We use the git repository, because it contains the JavaScript source code.
+;; We have to use this seemingly arbitrary commit after 0.2.5, because the
+;; sources for placeholder.js were not included in the latest release.
+(define-public r-waiter
+  (let ((commit "927501bfa41c37e33d13a90bbc329a2887e0cec0")
+        (revision "1"))
+    (package
+      (name "r-waiter")
+      (version (git-version "0.2.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/JohnCoene/waiter")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0s5d09srd1d1s35lp2fb93dvyfkjv1rasbl25ps1p137jv7zn079"))
+                (modules '((guix build utils)))
+                (snippet
+                 '(delete-file-recursively "inst/packer"))))
+      (properties `((upstream-name . "waiter")))
+      (build-system r-build-system)
+      (arguments
+       (list
+        #:modules
+        '((guix build r-build-system)
+          (guix build minify-build-system)
+          (guix build utils))
+        #:imported-modules
+        `(,@%r-build-system-modules
+          (guix build minify-build-system))
+        #:phases
+        '(modify-phases (@ (guix build r-build-system) %standard-phases)
+           (add-after 'unpack 'process-javascript
+             (lambda* (#:key inputs #:allow-other-keys)
+               (mkdir-p "inst/packer")
+               (call-with-output-file "build.js"
+                 (lambda (port)
+                   (display "\
+const esbuild = require('esbuild');
+const path = require('path');
+const fs = require('fs');
+
+// Define the entries and output directory
+const entries = {
+  'waiter': './srcjs/exts/waiter/waiter.js',
+  'waitress': './srcjs/exts/waitress/waitress.js',
+  'hostess': './srcjs/exts/hostess/hostess.js',
+  'attendant': './srcjs/exts/attendant/attendant.js',
+  'placeholder': './srcjs/exts/placeholder/placeholder.js'
+};
+
+// A little plugin to inject the CSS into the generated JavaScript file.
+let style = {
+  name: 'style',
+  setup(build) {
+    const cwd = process.cwd();
+    const opt = {
+      logLevel: 'silent',
+      bundle: true,
+      write: false,
+      minify: true,
+      charset: 'utf8'
+    };
+
+    build.onResolve({ filter: /\\.css$/, namespace: 'file' }, args => {
+      const absPath = path.join(args.resolveDir, args.path);
+      const relPath = path.relative(cwd, absPath);
+      const resolved = fs.existsSync(absPath) ? relPath : args.path;
+      return { path: resolved, namespace: 'style-stub' };
+    });
+
+    build.onResolve({ filter: /\\.css$/, namespace: 'style-stub' }, args => {
+      return { path: args.path, namespace: 'style-content' };
+    });
+
+    build.onResolve({ filter: /^__style_helper__$/, namespace: 'style-stub' }, args => ({
+      path: args.path,
+      namespace: 'style-helper',
+      sideEffects: false,
+    }));
+
+    build.onLoad({ filter: /.*/, namespace: 'style-helper' }, async () => ({
+      contents: `
+        export function injectStyle(text) {
+          if (typeof document !== 'undefined') {
+            var style = document.createElement('style')
+            var node = document.createTextNode(text)
+            style.appendChild(node)
+            document.head.appendChild(style)
+          }
+        }
+      `,
+    }));
+
+    build.onLoad({ filter: /.*/, namespace: 'style-stub' }, async args => ({
+      contents: `
+        import { injectStyle } from \"__style_helper__\"
+        import css from ${JSON.stringify(args.path)}
+        injectStyle(css)
+      `,
+    }));
+
+    build.onLoad({ filter: /.*/, namespace: 'style-content' }, async args => {
+      const options = { entryPoints: [args.path], ...opt };
+      const { errors, warnings, outputFiles } = await esbuild.build(options);
+      return { errors, warnings, contents: outputFiles[0].text, loader: \"text\" };
+    });
+  },
+};
+
+esbuild.build({
+  entryPoints: Object.values(entries),
+  entryNames: '[name]',
+  outdir: './inst/packer',
+  bundle: true,
+  minify: true,
+  format: 'iife',
+  globalName: 'waiter',
+  external: ['shiny', 'jquery'],
+  loader: {
+    '.js': 'js',
+  },
+  plugins: [style]
+})
+" port)))
+               (install-file (search-input-file inputs "/dist/loading-bar.js")
+                             "srcjs/exts/hostess")
+               (install-file (search-input-file inputs "/dist/loading-bar.css")
+                             "srcjs/exts/hostess")
+               (substitute* "srcjs/exts/hostess/hostess.js"
+                 (("@loadingio/loading-bar/lib/") "./")
+                 (("@loadingio/loading-bar/dist/") "./"))
+               (setenv "ESBUILD_BINARY_PATH" (search-input-file inputs "/bin/esbuild"))
+               (invoke "node" "build.js")
+
+               ;; Almost forgot this one...
+               (minify (search-input-file inputs "loadgo-nojquery.js")
+                       #:target
+                       "inst/assets/garcon/garcon.min.js"))))))
+      (propagated-inputs (list r-htmltools r-r6 r-shiny))
+      (native-inputs
+       (list esbuild-node node-lts r-knitr
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/loadingio/loading-bar")
+                     (commit "0.1.0")))
+               (file-name (git-file-name "js-loading-bar" "0.1.0"))
+               (sha256
+                (base32
+                 "12z8m362k3gldkjhx3l65zrw7ifqkz21zgv9b2hw6ai5blkd33nv")))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/franverona/loadgo")
+                     (commit "2.2.1")))
+               (file-name (git-file-name "js-loadgo" "2.2.1"))
+               (sha256
+                (base32
+                 "1n11lhlv5i48xm0x7hj296lv363dbx4cldg12vr07q01pvj5fbdl")))))
+      (home-page "https://waiter.john-coene.com/")
+      (synopsis "Loading screen for Shiny")
+      (description
+       "This package provides full screen and partial loading screens for
+Shiny with spinners, progress bars, and notifications.")
+      (license license:expat))))
+
 (define-public r-wheatmap
   (package
     (name "r-wheatmap")
