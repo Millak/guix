@@ -2041,9 +2041,6 @@ the Go standard library}.")
 protocol.")
     (license license:expat)))
 
-(define-public go-github-com-lucas-clemente-quic-go
-  (deprecated-package "go-github-com-lucas-clemente-quic-go" go-github-com-quic-go-quic-go))
-
 (define-public go-github-com-sherclockholmes-webpush-go
   (package
     (name "go-github-com-sherclockholmes-webpush-go")
