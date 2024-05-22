@@ -5778,6 +5778,89 @@ application framework for R, making it easy to create attractive dashboards.")
     ;; later.
     (license license:gpl2+)))
 
+(define-public r-shinydashboardplus
+  (package
+    (name "r-shinydashboardplus")
+    (version "2.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "shinydashboardPlus" version))
+              (sha256
+               (base32
+                "11ckx8il1v4jk26ss0bylk73xb5bh3xd2d5421i5s8wlxlwd0z5q"))
+              (modules '((guix build utils)))
+              (snippet
+               `(begin
+                  (with-directory-excursion
+                      ,(string-append "inst/shinydashboardPlus-" version
+                                      "/js/")
+                    (for-each delete-file
+                              '("app.min.js"
+                                "shinydashboardPlus.min.js"
+                                "shinydashboardPlus.min.js.map")))
+                  (with-directory-excursion "inst/materialDesign-1.0/js"
+                    (for-each delete-file
+                              '("material.min.js"
+                                "ripples.min.js")))))))
+    (properties `((upstream-name . "shinydashboardPlus")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      ;; The tests launch a shinyApp; they are interactive tests that
+      ;; will block forever, so we just don't run them.
+      #:tests? #false
+      #:modules
+      '((guix build r-build-system)
+        (guix build minify-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:imported-modules
+      `(,@%r-build-system-modules
+        (guix build minify-build-system))
+      #:phases
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion
+                  (string-append "inst/shinydashboardPlus-" #$version "/js/")
+                (for-each
+                 (match-lambda
+                   ((source . target)
+                    (minify source #:target target)))
+                 `(("app.js" . "app.min.js")
+                   ("shinydashboardPlus.js" . "shinydashboardPlus.min.js")
+                   (,(search-input-file inputs "/dist/js/material.js")
+                    . "materialDesign-1.0/js/material.min.js")
+                   (,(search-input-file inputs "/dist/js/ripples.js")
+                    . "materialDesign-1.0/js/ripples.min.js")))))))))
+    (propagated-inputs
+     (list r-fresh
+           r-htmltools
+           r-lifecycle
+           r-shiny
+           r-shinydashboard
+           r-waiter))
+    (native-inputs
+     (list esbuild r-knitr
+           (let ((commit "92a2284b47aed56a9d7ae92cf9b40072d27982b3"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/DucThanhNguyen/MaterialAdminLTE")
+                     (commit commit)))
+               (file-name (git-file-name "MaterialAdminLTE"
+                                         (git-version "0" "0" commit)))
+               (sha256
+                (base32
+                 "0cn11hxpf25h7xj2lk473z24swgz979dz255zwk2m2fj00iljkn9"))))))
+    (home-page "https://github.com/RinteRface/shinydashboardPlus")
+    (synopsis "Add more AdminLTE2 components to shinydashboard")
+    (description
+     "This package extends shinydashboard with AdminLTE2 components.
+AdminLTE2 is a Bootstrap 3 dashboard template.  Customize boxes, add timelines
+and a lot more.")
+    (license license:gpl2+)))
+
 (define-public r-shinyfiles
   (package
     (name "r-shinyfiles")
