@@ -271,7 +271,7 @@ host	all	all	::1/128 	trust"))))))
 (define %guix-home-service-os
   (simple-operating-system
    (service guix-home-service-type
-            `(("alice" ,%guix-home-service-he)))))
+            `(("alice" . ,%guix-home-service-he)))))
 
 (define (run-guix-home-service-test)
   (define os

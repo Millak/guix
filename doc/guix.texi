@@ -39607,7 +39607,7 @@ the value is a home-environment configuration.
 
 (operating-system
   (services (append (list (service guix-home-service-type
-                                   `(("alice" ,my-home))))
+                                   `(("alice" . ,my-home))))
                     %base-services)))
 @end lisp
 
@@ -39616,7 +39616,7 @@ environments, as in this example:
 
 @lisp
 (simple-service 'my-extra-home home-service-type
-                `(("bob" ,my-extra-home))))
+                `(("bob" . ,my-extra-home))))
 @end lisp
 @end defvar
 
