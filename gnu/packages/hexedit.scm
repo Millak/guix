@@ -3,6 +3,7 @@
 ;;; Copyright © 2017 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018, 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,7 +97,7 @@ Development Environment} (IDE).")
 (define-public bvi
   (package
     (name "bvi")
-    (version "1.4.1")
+    (version "1.4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -104,7 +105,7 @@ Development Environment} (IDE).")
                     "/bvi-" version ".src.tar.gz"))
               (sha256
                (base32
-                "0a0yl0dcyff31k3dr4dpgqmlwygp8iaslnr5gmb6814ylxf2ad9h"))))
+                "1wllrvs8r8bdm11sx01095j8cj4drjmw0dlkjfdkm5lnnk11dfjb"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f))          ; no check target
     (inputs
