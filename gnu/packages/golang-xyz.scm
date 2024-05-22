@@ -1404,9 +1404,15 @@ while callers can implement logging with whatever backend is appropriate.")
       (build-system go-build-system)
       (arguments
        (list
-        ;; Tests try to access the network.
-        #:tests? #f
-        #:import-path "github.com/go-task/slim-sprig"))
+        #:import-path "github.com/go-task/slim-sprig"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-failing-tests
+              (lambda* (#:key import-path #:allow-other-keys)
+                (delete-file
+                 (string-append "src/" import-path "/network_test.go")))))))
+      (native-inputs
+       (list  go-github-com-stretchr-testify))
       (home-page "https://github.com/go-task/slim-sprig")
       (synopsis "Various useful template functions for Go")
       (description
