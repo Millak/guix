@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2020, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -131,13 +131,17 @@
            (provision '(avahi-daemon))
            (requirement '(user-processes dbus-system networking))
 
-           (start #~(make-forkexec-constructor
+           (start #~(make-systemd-constructor
                      (list #$(file-append avahi "/sbin/avahi-daemon")
-                           "--daemonize"
                            #$@(if debug? #~("--debug") #~())
                            "-f" #$config)
-                     #:pid-file "/run/avahi-daemon/pid"))
-           (stop #~(make-kill-destructor))
+                     (list (endpoint
+                            (make-socket-address
+                             AF_UNIX
+                             "/run/avahi-daemon/socket")))
+                     #:lazy-start? #f
+                     #:log-file "/var/log/avahi-daemon.log"))
+           (stop #~(make-systemd-destructor))
            (actions (list (shepherd-configuration-action config)))))))
 
 (define avahi-service-type
