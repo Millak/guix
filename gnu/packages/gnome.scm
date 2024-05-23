@@ -9563,11 +9563,10 @@ like switching to windows and launching applications.")
      `(#:glib-or-gtk? #t))   ; To wrap binaries and/or compile schemas
     (native-inputs
      (append
-      ;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
-      ;; dependency on other platforms (FIXME).
-       (if (target-x86-64?)
-           (list gjs)
-           '())
+      ;; GJS depends on Rust so remove the GJS dependency on other platforms.
+      (if (supported-package? gjs)
+          (list gjs)
+          '())
        (list gettext-minimal
              `(,glib "bin")
              gobject-introspection
