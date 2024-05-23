@@ -178,7 +178,6 @@
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
-  #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages openldap)
@@ -9573,7 +9572,6 @@ like switching to windows and launching applications.")
        (list gettext-minimal
              `(,glib "bin")
              gobject-introspection
-             node
              perl
              pkg-config
              python-wrapper
