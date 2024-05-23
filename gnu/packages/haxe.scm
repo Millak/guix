@@ -177,7 +177,7 @@ interactive languages.")
                   ocaml-extlib
                   ocaml-luv
                   ocaml-ptmap
-                  ocaml-sedlex
+                  ocaml-sedlex-2
                   ocaml-sha
                   ocaml-xml-light
                   pcre2

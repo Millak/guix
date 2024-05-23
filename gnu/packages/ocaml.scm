@@ -3709,7 +3709,7 @@ and consumable.")
 (define-public ocaml-sedlex
   (package
     (name "ocaml-sedlex")
-    (version "2.6")
+    (version "3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3718,11 +3718,10 @@ and consumable.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1z8mmk1idh9hjhh2b9rp5b1h8kmzcxhagqkw0pvxn6ykx1brskq1"))))
+                "1vzsmp8mvx9vrgjr5chsk2p2s5ii08c9kizw9ilx78jj30nzamz5"))))
     (build-system dune-build-system)
     (arguments
-     (list #:tests? #f                      ; no tests
-           #:package "sedlex"
+     (list #:package "sedlex"
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'build 'copy-resources
@@ -3744,6 +3743,7 @@ and consumable.")
                (add-before 'build 'chmod
                  (lambda _
                    (for-each (lambda (file) (chmod file #o644)) (find-files "." ".*")))))))
+    (native-inputs (list ocaml-ppx-expect))
     (propagated-inputs
      (list ocaml-gen ocaml-ppxlib ocaml-uchar))
     (inputs
@@ -3752,6 +3752,25 @@ and consumable.")
     (synopsis "Lexer generator for Unicode and OCaml")
     (description "Lexer generator for Unicode and OCaml.")
     (license license:expat)))
+
+(define-public ocaml-sedlex-2
+  (package
+    (inherit ocaml-sedlex)
+    (name "ocaml-sedlex")
+    (version "2.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ocaml-community/sedlex")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1z8mmk1idh9hjhh2b9rp5b1h8kmzcxhagqkw0pvxn6ykx1brskq1"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments ocaml-sedlex)
+       ((#:tests? _ #t) #f)))               ; no tests
+    (native-inputs '())))
 
 (define-public ocaml-uchar
   (package
@@ -5155,7 +5174,7 @@ Format module of the OCaml standard library.")
      (list which))
     (propagated-inputs
      `(("ocaml-xmlm" ,ocaml-xmlm)
-       ("ocaml-sedlex" ,ocaml-sedlex)
+       ("ocaml-sedlex" ,ocaml-sedlex-2)
        ("ocaml-easy-format" ,ocaml-easy-format)
        ("ocaml-base64" ,ocaml-base64)))
     (home-page "https://piqi.org")
