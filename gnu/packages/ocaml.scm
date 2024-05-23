@@ -3720,27 +3720,25 @@ and consumable.")
                 "1z8mmk1idh9hjhh2b9rp5b1h8kmzcxhagqkw0pvxn6ykx1brskq1"))))
     (build-system dune-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:package "sedlex"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'copy-resources
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "src/generator/data"
-               ;; Newer versions of dune emit an error if files it wants to
-               ;; build already exist. Delete the dune file so dune doesn't
-               ;; complain.
-               (delete-file "dune")
-               (for-each
-                (lambda (file)
-                  (copy-file (assoc-ref inputs file) file))
-                '("DerivedCoreProperties.txt" "DerivedGeneralCategory.txt"
-                  "PropList.txt")))
-             #t))
-         (add-before 'build 'chmod
-           (lambda _
-             (for-each (lambda (file) (chmod file #o644)) (find-files "." ".*"))
-             #t)))))
+     (list #:tests? #f                      ; no tests
+           #:package "sedlex"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'copy-resources
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (with-directory-excursion "src/generator/data"
+                     ;; Newer versions of dune emit an error if files it wants to
+                     ;; build already exist. Delete the dune file so dune doesn't
+                     ;; complain.
+                     (delete-file "dune")
+                     (for-each
+                      (lambda (file)
+                        (copy-file (assoc-ref inputs file) file))
+                      '("DerivedCoreProperties.txt" "DerivedGeneralCategory.txt"
+                        "PropList.txt")))))
+               (add-before 'build 'chmod
+                 (lambda _
+                   (for-each (lambda (file) (chmod file #o644)) (find-files "." ".*")))))))
     (propagated-inputs
      (list ocaml-gen ocaml-ppxlib ocaml-uchar))
     ;; These three files are needed by src/generator/data/dune, but would be
