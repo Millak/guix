@@ -15416,7 +15416,7 @@ output of segemehl is a SAM or BAM formatted alignment file.")
 (define-public kallisto
   (package
     (name "kallisto")
-    (version "0.48.0")
+    (version "0.50.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -15425,31 +15425,15 @@ output of segemehl is a SAM or BAM formatted alignment file.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wx1ndmhndsd60952piaa925lk8bjr59d2yr1m2hcsqcb6cdjwpn"))
-              (modules '((guix build utils)))
-              (snippet
-               '(delete-file-recursively "ext/htslib/"))))
+                "0zfs79mv75599cf9d7d3c5a3s8idgz9qvl4qfzhvhbd87y3dv7p0"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f          ; no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'do-not-use-bundled-htslib
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("^ExternalProject_Add" m)
-                (string-append "if (NEVER)\n" m))
-               (("^\\)")
-                (string-append ")\nendif(NEVER)"))
-               (("include_directories\\(\\$\\{htslib_PREFIX.*" m)
-                (string-append "# " m)))
-             (substitute* "src/CMakeLists.txt"
-               (("target_link_libraries\\(kallisto kallisto_core pthread \
-\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/../ext/htslib/libhts.a\\)")
-                "target_link_libraries(kallisto kallisto_core pthread hts)")
-               (("include_directories\\(\\.\\./ext/htslib\\)") "")))))))
-    (inputs
-     (list hdf5 htslib-1.9 zlib))
+     (list
+      #:tests? #false          ;no "check" target
+      ;; The build system attempts to link libbifrost.a into the kallisto
+      ;; executable before the library has been built.
+      #:parallel-build? #false))
+    (inputs (list hdf5 zlib))
     (home-page "https://pachterlab.github.io/kallisto/")
     (synopsis "Near-optimal RNA-Seq quantification")
     (description
