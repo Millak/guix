@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2018, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
@@ -1599,19 +1599,21 @@ realistic reflections, shading, perspective and other effects.")
 (define-public ctl
   (package
     (name "ctl")
-    (version "1.5.2")
+    (version "1.5.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/ampas/CTL/archive/ctl-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ampas/CTL")
+                     (commit (string-append "ctl-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gg04pyvw0m398akn0s1l07g5b1haqv5na1wpi5dii1jjd1w3ynp"))))
+                "1qhfp9b90czvxjkf66sbnqyw3wvmdvl1pkh6201fxhqg7grbfvwc"))))
     (build-system cmake-build-system)
-    (arguments '(#:tests? #f))                    ;no 'test' target
 
     ;; Headers include OpenEXR and IlmBase headers.
     (propagated-inputs (list openexr-2))
+    (inputs (list libtiff))
 
     (home-page "https://ampasctl.sourceforge.net")
     (synopsis "Color Transformation Language")
