@@ -1754,8 +1754,9 @@ and the ability to read and write via stdin and stdout.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/realh/roxterm.git")
+                     (url "https://github.com/realh/roxterm")
                      (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "19y4lxwj18pr231597rnyyk6f5hwvsajjv7w21wb5c62jjjyfrws"))))
@@ -1770,6 +1771,6 @@ and the ability to read and write via stdin and stdout.")
     (synopsis "ROXTerm terminal emulator")
     (description "This package provides a terminal emulator with hyperlink
 support.  It's based on VTE and aimed at power users.")
-    (home-page "https://realh.github.io/roxterm/")
+    (home-page "https://realh.github.io/roxterm/en/index.html")
     ;; src/gresources.c is under LGPL 2.1+
     (license (list license:gpl2+ license:lgpl2.1+))))
