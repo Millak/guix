@@ -10326,14 +10326,9 @@ playing media, scanning, and much more.")
   (gnome-meta-package
    (name "gnome-meta-core-utilities")
    (propagated-inputs
-    (append
-     ;; XXX: EoG requires librsvg-next, which depends on Rust, which currently
-     ;; only works on x86_64, so exclude it on other architectures.
-     (if (string-prefix? "x86_64" (%current-system))
-         (list eog)
-         '())
      (list baobab
            cheese
+           eog
            epiphany
            evince
            file-roller
@@ -10358,7 +10353,7 @@ playing media, scanning, and much more.")
            totem
            tracker-miners
            xdg-desktop-portal-gnome
-           yelp)))))
+           yelp))))
 
 (define-public gnome-essential-extras
   (gnome-meta-package
