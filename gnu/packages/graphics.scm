@@ -36,7 +36,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2867,7 +2867,7 @@ desired local properties.")
 (define-public f3d
   (package
     (name "f3d")
-    (version "2.2.1")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -2876,7 +2876,7 @@ desired local properties.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f076754zsxb4gwk6bxj94iyjj0dfxmmc8w88f55xd6hbm3qdnwd"))
+        (base32 "1vls3jbq8r5ph937a2d1i8dv2zjhjjm9cmfgyap5424z7k5anv40"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -2953,7 +2953,7 @@ desired local properties.")
            openexr
            vtk
            zlib))
-    (home-page "https://f3d-app.github.io/f3d/")
+    (home-page "https://f3d.app/")
     (synopsis "VTK-based 3D viewer")
     (description "F3D (pronounced @samp{/fɛd/}) is a VTK-based 3D viewer with
 simple interaction mechanisms and which is fully controllable using arguments
