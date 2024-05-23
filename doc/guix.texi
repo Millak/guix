@@ -38974,7 +38974,7 @@ footers.
            (index-title "My git repositories")
            (intro '((p "This is all my public work!")))
            (footer '((p "This is the end")))
-           (nginx-server-block
+           (nginx
              (nginx-server-configuration
                (ssl-certificate
                  "/etc/certs/myweb.site/fullchain.pem")
@@ -39069,7 +39069,7 @@ of repositories, on the index page.
 The footer content, as a list of sxml expressions.  This is shown on every
 page served by Gitile.
 
-@item @code{nginx-server-block}
+@item @code{nginx}
 An nginx server block that will be extended and used as a reverse proxy by
 Gitile to serve its pages, and as a normal web server to serve its assets.
 
