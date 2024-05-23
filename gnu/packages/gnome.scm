@@ -3266,9 +3266,8 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
               (setenv "DISPLAY" ":1"))))))
     (inputs
      (append
-      ;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
-      ;; dependency on other platforms (FIXME).
-      (if (target-x86-64?)
+      ;; GJS depends on Rust so remove the GJS dependency on other platforms.
+      (if (supported-package? gjs)
           (list gjs)
           '())
       (list gtk+ libxml2)))
