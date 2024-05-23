@@ -5604,7 +5604,7 @@ keyboard shortcuts.")
     (arguments
      (list #:glib-or-gtk? #t))
     (native-inputs (list pkg-config
-                         cmake
+                         cmake-minimal
                          gettext-minimal
                          desktop-file-utils
                          appstream-glib
