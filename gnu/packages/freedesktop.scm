@@ -579,9 +579,13 @@ display servers.  It supports many different languages and emoji.")
     (inputs
      (list glib libxml2))
     (native-inputs
-     (list gettext-minimal pkg-config python xdgmime
-           ;; For 'doc' output.
-           docbook-xml-4.1.2 docbook-xsl xmlto))
+     (append
+       (if (%current-target-system)
+           (list libxml2 this-package)
+           '())
+       (list gettext-minimal pkg-config python xdgmime
+             ;; For 'doc' output.
+             docbook-xml-4.1.2 docbook-xsl xmlto)))
     (outputs (list "out" "doc"))
     (home-page "https://www.freedesktop.org/wiki/Software/shared-mime-info")
     (synopsis "Database of common MIME types")
