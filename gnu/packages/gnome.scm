@@ -1362,15 +1362,23 @@ It has miners for Facebook, Flickr, Google, ownCloud and SkyDrive.")
                 "0iil7wgix0nzhf3i2w6g1wjqly49r9rsffca97ai9kr2vfpvbv9g"))))
     (build-system meson-build-system)
     (arguments
-     (list #:configure-flags #~'("-Dgtk_doc=true")))
+     (list #:configure-flags
+           #~(list "-Dgtk_doc=true"
+                   ;; Manpages are built using pandoc.
+                   #$@(if (this-package-native-input "pandoc")
+                          #~("-Dmanpages=true")
+                          #~("-Dmanpages=false")))))
     (native-inputs
-     (list gettext-minimal
-           `(,glib "bin")
-           gi-docgen
-           gobject-introspection
-           pandoc
-           pkg-config
-           vala))
+     (append
+       (if (supported-package? pandoc)
+           (list pandoc)
+           '())
+       (list gettext-minimal
+             `(,glib "bin")
+             gi-docgen
+             gobject-introspection
+             pkg-config
+             vala)))
     (inputs
      (list gtk))
     (propagated-inputs
