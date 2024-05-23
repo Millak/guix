@@ -69,6 +69,7 @@ for TRIPLET."
                               "ppc64"
                               "ppc"))
                          ((target-riscv64? triplet) "riscv64")
+                         ((target-loongarch64? triplet) "loongarch64")
                          (else
                           (raise
                            (condition
