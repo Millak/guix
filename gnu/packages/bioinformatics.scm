@@ -26,6 +26,7 @@
 ;;; Copyright © 2022, 2023, 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2024 Alexis Simon <alexis.simon@runbox.com>
+;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4258,15 +4259,16 @@ splice junctions between exons.")
 (define-public bwa
   (package
     (name "bwa")
-    (version "0.7.17")
+    (version "0.7.18")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/lh3/bwa/releases/download/v"
-                    version "/bwa-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lh3/bwa")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zfhv2zg9v1icdlq4p9ssc8k01mca5d1bd87w71py2swfi74s6yy"))))
+                "1vf3iwkzxqkzhcfz2q3qyvcv3jrvbb012qy21pfgjl8lv20ywfr1"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f ;no "check" target
@@ -4284,12 +4286,10 @@ splice junctions between exons.")
                (install-file "libbwa.a" lib)
                (install-file "README.md" doc)
                (install-file "bwa.1" man))))
-           ;; no "configure" script
-          (delete 'configure))))
+         ;; no "configure" script
+         (delete 'configure))))
     (inputs (list zlib))
-    ;; Non-portable SSE instructions are used so building fails on platforms
-    ;; other than x86_64.
-    (supported-systems '("x86_64-linux"))
+    (supported-systems '("x86_64-linux" "aarch64-linux"))
     (home-page "https://bio-bwa.sourceforge.net/")
     (synopsis "Burrows-Wheeler sequence aligner")
     (description
