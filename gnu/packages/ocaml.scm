@@ -87,6 +87,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages unicode)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages web)
@@ -3725,6 +3726,8 @@ and consumable.")
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'build 'copy-resources
+                 ;; These three files are needed by src/generator/data/dune,
+                 ;; but would be downloaded using curl at build time.
                  (lambda* (#:key inputs #:allow-other-keys)
                    (with-directory-excursion "src/generator/data"
                      ;; Newer versions of dune emit an error if files it wants to
@@ -3733,38 +3736,18 @@ and consumable.")
                      (delete-file "dune")
                      (for-each
                       (lambda (file)
-                        (copy-file (assoc-ref inputs file) file))
-                      '("DerivedCoreProperties.txt" "DerivedGeneralCategory.txt"
-                        "PropList.txt")))))
+                        (copy-file (search-input-file inputs file)
+                                   (basename file)))
+                      '("share/ucd/extracted/DerivedGeneralCategory.txt"
+                        "share/ucd/DerivedCoreProperties.txt"
+                        "share/ucd/PropList.txt")))))
                (add-before 'build 'chmod
                  (lambda _
                    (for-each (lambda (file) (chmod file #o644)) (find-files "." ".*")))))))
     (propagated-inputs
      (list ocaml-gen ocaml-ppxlib ocaml-uchar))
-    ;; These three files are needed by src/generator/data/dune, but would be
-    ;; downloaded using curl at build time.
     (inputs
-     `(("DerivedCoreProperties.txt"
-        ,(origin
-           (method url-fetch)
-           (uri "https://www.unicode.org/Public/12.1.0/ucd/DerivedCoreProperties.txt")
-           (sha256
-            (base32
-             "0s6sn1yr9qmb2i6gf8dir2zpsbjv1frdfzy3i2yjylzvf637msx6"))))
-       ("DerivedGeneralCategory.txt"
-        ,(origin
-           (method url-fetch)
-           (uri "https://www.unicode.org/Public/12.1.0/ucd/extracted/DerivedGeneralCategory.txt")
-           (sha256
-            (base32
-             "1rifzq9ba6c58dn0lrmcb5l5k4ksx3zsdkira3m5p6h4i2wriy3q"))))
-       ("PropList.txt"
-        ,(origin
-           (method url-fetch)
-           (uri "https://www.unicode.org/Public/12.1.0/ucd/PropList.txt")
-           (sha256
-            (base32
-             "0gsb1jpj3mnqbjgbavi4l95gl6g4agq58j82km22fdfg63j3w3fk"))))))
+     (list ucd))
     (home-page "https://www.cduce.org/download.html#side")
     (synopsis "Lexer generator for Unicode and OCaml")
     (description "Lexer generator for Unicode and OCaml.")
