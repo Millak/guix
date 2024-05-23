@@ -14332,23 +14332,23 @@ SVG, EPS, PNG and terminal output.")
                 "0ycibcs6kvd3xi4zsxna81claqifyb9dn6z6jwc5x7lqqplnbbdz"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-ipykernel
-           python-matplotlib
-           python-mypy
-           python-nbconvert
+     (list python-matplotlib
            python-numpy
-           python-numpydoc
            python-pandas
-           python-pyyaml
            python-scipy
            python-statsmodels))
     (native-inputs
      (list python-flake8
            python-flit-core
+           python-ipykernel
+           python-mypy
+           python-nbconvert
+           python-numpydoc
            python-pre-commit
            python-pytest
            python-pytest-cov
-           python-pytest-xdist))
+           python-pytest-xdist
+           python-pyyaml))
     (home-page "https://seaborn.pydata.org/")
     (synopsis "Statistical data visualization")
     (description
