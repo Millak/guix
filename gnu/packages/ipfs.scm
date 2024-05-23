@@ -543,7 +543,6 @@ written in Go.")
                   go-github-com-pbnjay-memory
                   go-github-com-pkg-errors
                   go-github-com-prometheus-client-golang
-                  go-github-com-quic-go-quic-go
                   go-github-com-stretchr-testify
                   go-github-com-syndtr-goleveldb-leveldb
                   ;;go-github-com-tidwall-gjson
@@ -569,26 +568,29 @@ written in Go.")
                   go-gopkg-in-yaml-v3
 
                   ;;
-                  ;; A list of indirect dependencies requiring for the vendored models.
-                  ;; XXX: Remove them when all of the vendored packages are available.
+                  ;; A list of indirect dependencies required for the vendored
+                  ;; models.
+                  ;; XXX: Remove them when all of the vendored packages are
+                  ;; available.
                   ;;
-                  go-github-com-alecthomas-units   ; github.com/ipfs/boxo
-                  go-github-com-flynn-noise        ; github.com/libp2p/go-libp2p
-                  go-github-com-golang-groupcache
-                  go-github-com-gorilla-mux
-                  go-github-com-gorilla-websocket
-                  go-github-com-hashicorp-golang-lru
-                  go-github-com-hashicorp-golang-lru-v2
-                  go-github-com-jackpal-go-nat-pmp
-                  go-github-com-klauspost-compress
-                  go-github-com-mattn-go-runewidth
-                  go-github-com-multiformats-go-multiaddr-fmt
-                  go-github-com-multiformats-go-multistream
-                  go-golang-org-x-oauth2
-                  go-golang-org-x-term
-                  go-golang-org-x-text
-                  go-golang-org-x-xerrors
-                  go-gopkg-in-square-go-jose-v2))
+                  go-github-com-alecthomas-units              ; github.com/ipfs/boxo
+                  go-github-com-flynn-noise                   ; github.com/libp2p/go-libp2p
+                  go-github-com-golang-groupcache             ; go.opencensus.io/trace
+                  go-github-com-gorilla-mux                   ; github.com/ipfs/boxo
+                  go-github-com-gorilla-websocket             ; github.com/libp2p/go-libp2p
+                  go-github-com-hashicorp-golang-lru          ; github.com/libp2p/go-libp2p-kad-dht
+                  go-github-com-hashicorp-golang-lru-v2       ; github.com/ipfs/boxo
+                  go-github-com-jackpal-go-nat-pmp            ; github.com/libp2p/go-nat
+                  go-github-com-klauspost-compress            ; github.com/libp2p/go-libp2p
+                  go-github-com-mattn-go-runewidth            ; github.com/cheggaaa/pb
+                  go-github-com-multiformats-go-multiaddr-fmt ; github.com/libp2p/go-libp2p
+                  go-github-com-multiformats-go-multistream   ; github.com/libp2p/go-libp2p
+                  go-github-com-quic-go-quic-go               ; github.com/libp2p/go-libp2p
+                  go-golang-org-x-oauth2                      ; github.com/ipfs/boxo
+                  go-golang-org-x-term                        ; github.com/ipfs/go-ipfs-cmds
+                  go-golang-org-x-xerrors                     ; github.com/whyrusleeping/cbor-gen
+                  go-gopkg-in-square-go-jose-v2               ; github.com/ceramicnetwork/go-dag-jose
+                  ))
     (native-inputs
      (append (if (%current-target-system)
                  (list this-package)
