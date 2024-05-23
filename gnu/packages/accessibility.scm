@@ -152,17 +152,22 @@ terminals.")
             (assoc-ref python:%standard-phases
                        'add-install-to-pythonpath)))))
     (native-inputs
-     (list clisp
-           python-cython
-           doxygen
-           gettext-minimal
-           `(,icedtea "jdk")
-           ;; ("linuxdoc" ,linuxdoc-tools)
-           ocaml
-           ocaml-findlib
-           pkg-config
-           python-wrapper
-           tcl))
+     (append
+       (list clisp
+             python-cython
+             doxygen
+             gettext-minimal)
+       ;; icedtea doesn't build reliably on all architectures.
+       (if (or (target-x86?)
+               (target-aarch64?))
+           (list `(,icedtea "jdk"))
+           '())
+       (list ;; ("linuxdoc" ,linuxdoc-tools)
+             ocaml
+             ocaml-findlib
+             pkg-config
+             python-wrapper
+             tcl)))
     (inputs
      (list alsa-lib
            at-spi2-core
