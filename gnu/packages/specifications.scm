@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,36 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix build-system copy))
+
+(define-public specification-ipld
+  (let ((commit "84a5cc6c168314a26be0d447c26fe76e46ce2a42")
+        (revision "0"))
+    (package
+      (name "specification-ipld")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ipld/ipld")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0avgjp4hjkh4jmsxx09vnwi74rax6409k28h29jwfl95v42h6yyl"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan '(("./specs/schemas" "share/ipld/specs/"))
+         #:phases (modify-phases %standard-phases
+                    (delete 'strip))))
+      (home-page "https://ipld.io/")
+      (synopsis "InterPlanetary Linked Data")
+      (description
+       "This package provides specification schemas of
+@acronym{InterPlanetary Linked Data, IPLD} which may be used for the test
+suites of application implementing the standard.")
+      ;; This library is dual-licensed under either of Apache 2.0 or MIT
+      ;; terms.
+      (license (list license:expat license:asl2.0)))))
 
 (define-public specification-multibase
   (let ((commit "4c8344e37852773de155f587dcf5897771b3fc19")
