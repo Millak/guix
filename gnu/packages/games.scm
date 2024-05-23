@@ -11467,7 +11467,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
 (define-public vcmi
   (package
     (name "vcmi")
-    (version "1.4.5")
+    (version "1.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11476,11 +11476,11 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1z4vy3drj6dra8rb243pyryr61jnlw3l7yxsxwl9rddv8cdk69lz"))
+                "1s3a23p9k081ccbkhvifx2rhg6rv82fkrsbjh6allmmsa1lhq6fd"))
               (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DFORCE_BUNDLED_FL=OFF")
+     (list #:configure-flags #~(list "-DFORCE_BUNDLED_FL=OFF" "-DENABLE_INNOEXTRACT=OFF")
            ;; Test suites do not seem well supported upstream and are disabled by default.
            ;; Pass -DENABLE_TEST to configure to enable.
            #:tests? #f))
