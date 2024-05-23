@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,14 +36,14 @@
 (define-public entr
   (package
     (name "entr")
-    (version "5.4")
+    (version "5.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://eradman.com/entrproject/code/entr-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "17hz4aca6dsh6z58625jg8fbk5m9ng3s95pl4s6ws79zrk9dw7a9"))))
+                "09p5aqbb95bysdx73n094v0b07hn3v9kqg6k7yyycnpaxzi0r30j"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
