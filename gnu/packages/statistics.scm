@@ -1224,13 +1224,13 @@ sampler for Markov chain Monte Carlo (MCMC).")
 (define-public python-statsmodels
   (package
     (name "python-statsmodels")
-    (version "0.14.0")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "statsmodels" version))
        (sha256
-        (base32 "1927ysv7m46m1x3wz05i0s3r5x0nasmidf2yy54djrp9i7bcfxb8"))
+        (base32 "1bfnxkzdcz5fj7hh1gc021hc3b9181f1mfph4kd1ra6kg8a501c9"))
        (modules '((guix build utils)))
        (snippet
         '(for-each delete-file (find-files "." "\\.c$")))))
