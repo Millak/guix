@@ -467,7 +467,9 @@ result documents that can be read by tools such as Jenkins or Bamboo.")
            python-greenlet
            python-pytest
            python-pytest-asyncio
-           python-pytest-trio))
+           python-pytest-trio
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/joerick/pyinstrument")
     (synopsis "Call stack profiler for Python")
     (description
@@ -1299,7 +1301,11 @@ simpler.")
         (base32 "01qhbkb3n8c5c4id94w6b06q9wb7b6a33mqwyrkdfzk5pzv1gcyd"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #false)) ;there are none
-    (native-inputs (list python-coverage python-pytest))
+    (native-inputs
+     (list python-coverage
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/tarpas/pytest-testmon")
     (synopsis "Selects tests affected by changed files and methods")
     (description
@@ -1328,7 +1334,11 @@ simpler.")
                            ;; No keyboard interrupt in our build environment.
                            " and not test_actual_test"))))
     (native-inputs
-     (list python-hypothesis python-pytest python-pytest-cov))
+     (list python-hypothesis
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (propagated-inputs
       (list python-async-generator python-outcome python-pytest python-trio))
     (home-page "https://github.com/python-trio/pytest-trio")
@@ -1617,7 +1627,11 @@ service processes for your tests with pytest.")
                 (substitute* "setup.cfg"
                   ((".*timeout.*") ""))))))))
     (native-inputs
-     (list python-pydantic python-pytest python-pytest-isort))
+     (list python-pydantic
+           python-pytest
+           python-pytest-isort
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/samuelcolvin/pytest-toolbox")
     (synopsis "Numerous useful plugins for Pytest")
     (description
@@ -1708,7 +1722,9 @@ notebooks.")
     (native-inputs
      (list python-pytest
            python-pytest-cov
-           python-sympy))
+           python-setuptools
+           python-sympy
+           python-wheel))
     (propagated-inputs
      (list python-coverage
            python-ipykernel
@@ -2229,6 +2245,7 @@ them using any Python VM with basically no runtime overhead.")
     (native-inputs
      (list python-beartype
            python-mypy
+           python-setuptools
            python-typeguard
            python-wheel))
     (propagated-inputs (list python-numpy python-typing-extensions))

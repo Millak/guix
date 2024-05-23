@@ -111,6 +111,7 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
@@ -1760,7 +1761,12 @@ generate code for the @code{python-xcbffib} package.")
     (source (package-source xcffibgen))
     (build-system pyproject-build-system)
     (native-inputs
-     (list pkg-config which xcb-proto xcffibgen))
+     (list pkg-config
+           python-setuptools
+           python-wheel
+           which
+           xcb-proto
+           xcffibgen))
     (inputs
      (list libxcb))
     (propagated-inputs

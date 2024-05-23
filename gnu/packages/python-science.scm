@@ -2467,7 +2467,9 @@ parentdir_prefix = dask_expr-
      ;; package without creating a mutually recursive dependency.
      (list python-dask/bootstrap
            python-pytest
-           python-versioneer))
+           python-setuptools
+           python-versioneer
+           python-wheel))
     (home-page "https://github.com/dask/dask-expr")
     (synopsis "Dask DataFrames with query optimization")
     (description "This is a rewrite of Dask DataFrame that includes query

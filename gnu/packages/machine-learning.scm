@@ -5121,7 +5121,8 @@ Actions for the Lightning suite of libraries.")
                          python-parameterized
                          python-pytest
                          python-pytest-cov
-                         python-scikit-learn))
+                         python-scikit-learn
+                         python-setuptools))
     (home-page "https://captum.ai")
     (synopsis "Model interpretability for PyTorch")
     (description "Captum is a model interpretability and understanding library
@@ -5692,6 +5693,7 @@ inference.")
     (native-inputs (list python-flake8
                          python-flake8-print
                          python-pytest
+                         python-setuptools
                          python-setuptools-scm
                          python-twine))
     (home-page "https://github.com/cornellius-gp/linear_operator/")
@@ -5724,6 +5726,7 @@ linear algebra routines needed for structured matrices (or operators).")
                          python-flake8-print
                          python-nbval
                          python-pytest
+                         python-setuptools
                          python-twine))
     (home-page "https://gpytorch.ai")
     (synopsis "Implementation of Gaussian Processes in PyTorch")

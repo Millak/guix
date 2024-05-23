@@ -436,7 +436,8 @@ the JupyterLab CSS variables.")
            python-requests-mock
            python-ruamel.yaml
            python-strict-rfc3339
-           python-werkzeug))
+           python-werkzeug
+           python-wheel))
     (home-page "https://jupyter.org")
     (synopsis "Server components for JupyterLab applications")
     (description "JupyterLab Server sits between JupyterLab and Jupyter
@@ -878,7 +879,9 @@ nbshow present a single notebook in a terminal-friendly way
      (list python-pytest
            python-pytest-cram
            python-pytest-flake8
-           python-pytest-runner))
+           python-pytest-runner
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/kynan/nbstripout")
     (synopsis "Strips outputs from Jupyter and IPython notebooks")
     (description

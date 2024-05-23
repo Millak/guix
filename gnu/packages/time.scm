@@ -257,7 +257,11 @@ Pendulum instances.")
                      ;; XXX: Fails to get timezone from /etc/localtime.
                      "--ignore=dateutil/test/test_tz.py")))
     (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools-scm))
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-six))
     (home-page "https://dateutil.readthedocs.io/en/stable/")
@@ -513,13 +517,14 @@ timestamps.")
                           ;; Remove when python-dateutil > 2.8.1.
                           "-k" "not test_parse_tz_name_zzz")))
     (native-inputs
-     (list ;; For testing
-           python-chai
+     (list python-chai
            python-pytest
            python-pytest-cov
            python-pytest-mock
            python-pytz
-           python-simplejson))
+           python-setuptools
+           python-simplejson
+           python-wheel))
     (propagated-inputs
      (list python-dateutil))
     (home-page "https://github.com/arrow-py/arrow")

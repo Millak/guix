@@ -1811,7 +1811,7 @@ listeners answer questions about music quickly and simply.")
     (inputs
      (list lilypond))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-quicktions
            python-ply
@@ -1843,7 +1843,7 @@ typographic detail of symbols on the page.")
         (base32 "1y8s55b4mlsigm0xkk6qjpp08c75rv0swvjp0lj3cs6lgqdjxdjl"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list lilypond python-pytest))
+     (list lilypond python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list abjad))
     (home-page "https://abjad.github.io")
@@ -1868,7 +1868,7 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
         (base32 "0j4pf4h27jm3df0dn2rwkdx6zqcxvr7pqchbaa9rffz7q4hbakmf"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list lilypond python-pytest))
+     (list lilypond python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list abjad))
     (home-page "https://abjad.github.io")
@@ -4074,7 +4074,11 @@ formats, looking up tracks through metadata and audio fingerprints.")
                  (("( +)@given" all spaces)
                   (string-append spaces "@settings(deadline=None)\n" all))))))))
     (native-inputs
-     (list python-pytest python-hypothesis python-flake8))
+     (list python-flake8
+           python-hypothesis
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://mutagen.readthedocs.io/")
     (synopsis "Read and write audio tags")
     (description "Mutagen is a Python module to handle audio metadata.  It

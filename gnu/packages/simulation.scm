@@ -569,7 +569,7 @@ some support for generating and analysing traffic scenarios..")
     (inputs
      (list openmpi python-numpy))
     (native-inputs
-     (list python-pytest-cov))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-mpi4py))
     (arguments

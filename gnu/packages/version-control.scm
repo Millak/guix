@@ -2315,14 +2315,16 @@ visualize your public Git repositories on a web interface.")
                         " and not test_healthy_venv_creator"
                         " and not test_r_hook and not test_r_inline"))))))))
     (native-inputs
-     `(("git" ,git-minimal/pinned)
-       ("python-covdefaults" ,python-covdefaults)
-       ("python-coverage" ,python-coverage)
-       ("python-distlib" ,python-distlib)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-env" ,python-pytest-env)
-       ("python-re-assert" ,python-re-assert)
-       ("which" ,which)))
+     (list git-minimal
+           python-covdefaults
+           python-coverage
+           python-distlib
+           python-pytest
+           python-pytest-env
+           python-re-assert
+           python-setuptools
+           python-wheel
+           which))
     ;; Propagate because pre-commit is also used as a module.
     (propagated-inputs
      (list python-cfgv

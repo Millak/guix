@@ -527,7 +527,9 @@ a simple interface that makes it easy to organize and browse feeds.")
            python-mock
            python-pylint
            python-pytest
-           python-vcrpy))
+           python-setuptools
+           python-vcrpy
+           python-wheel))
     (home-page "https://gitlab.com/ajak/tuir")
     (synopsis "Terminal viewer for Reddit (Terminal UI for Reddit)")
     (description

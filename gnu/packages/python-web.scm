@@ -706,7 +706,9 @@ comes with a SOCKS proxy client.")
      (list python-pytest
            python-pytest-asyncio
            python-pytest-cov
-           python-pytest-runner))
+           python-pytest-runner
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/vxgmichel/aiostream")
     (synopsis "Generator-based operators for asynchronous iteration")
     (description "@code{aiostream} provides a collection of stream operators that can
@@ -1038,7 +1040,12 @@ to the OVHcloud APIs.")
        (sha256
         (base32 "15y78xcc3zkmvj1mdzz8gyhf3apbl91073kwhzbjk5abc1civwlw"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-pytest-cov python-setuptools-scm))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/agronholm/cbor2")
     (synopsis "Concise Binary Object Representation (CBOR) (de)serializer")
     (description "This Python library provides encoding and decoding for the
@@ -1447,7 +1454,9 @@ HTTP servers, RESTful APIs, and web services.")
                          python-pytest-cov
                          python-pytest-localserver
                          python-pytest-socket
-                         python-setuptools-scm))
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
     (home-page "https://parfive.readthedocs.io/")
     (synopsis "HTTP and FTP parallel file downloader")
     (description
@@ -1634,7 +1643,9 @@ object graph to and from JSON.")
            python-pytest-httpbin
            python-pytest-mock
            python-pytest-runner
-           python-requests-mock))
+           python-requests-mock
+           python-setuptools
+           python-wheel))
     (home-page "https://mechanicalsoup.readthedocs.io/")
     (synopsis "Python library for automating website interaction")
     (description
@@ -3924,9 +3935,14 @@ adapter for use with the Requests library.")
                (base32
                 "0w621mg956m9rn7v39jpwi4gpnpl90pprwl29cp640dahqqv38ms"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-async-timeout python-pytest
-                         python-pytest-asyncio python-pytest-cov
-                         python-trustme))
+    (native-inputs
+     (list python-async-timeout
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-setuptools
+           python-trustme
+           python-wheel))
     (propagated-inputs (list python-siosocks))
     (home-page "https://aioftp.readthedocs.io/")
     (synopsis "FTP client/server for asyncio in Python")
@@ -6222,8 +6238,12 @@ the non-map-specific features.  It can be used to generate HTML + JS.")
      (list #:test-flags
            '(list "-k" "not test_speedups")))
     (native-inputs
-     (list python-pytest-cov python-pytest-flake8 python-pytest-isort
-           python-pytest-runner))
+     (list python-pytest-cov
+           python-pytest-flake8
+           python-pytest-isort
+           python-pytest-runner
+           python-setuptools
+           python-wheel))
     (home-page "https://tinycss.readthedocs.io/")
     (synopsis "Complete yet simple CSS parser for Python")
     (description
@@ -6443,6 +6463,7 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
            python-pytest-cov
            python-sphinx
            texinfo))
+    (propagated-inputs (list python-packaging python-setuptools python-wheel))
     (home-page "https://gunicorn.org/")
     (synopsis "Python WSGI HTTP Server for UNIX")
     (description "Gunicorn ‘Green Unicorn’ is a Python WSGI HTTP
@@ -7254,8 +7275,13 @@ according to the standard set by PasteDeploy")
     (build-system python-build-system)
     (arguments '(#:test-target "pytest"))
     (native-inputs
-     (list python-pytest python-pytest-runner python-watchdog python-mock
-           python-pytest-cov))
+     (list python-mock
+           python-pytest
+           python-pytest-cov
+           python-pytest-runner
+           python-setuptools
+           python-watchdog
+           python-wheel))
     (propagated-inputs
      (list python-pytz))
     (home-page "https://readthedocs.org/projects/hupper")
@@ -8046,11 +8072,13 @@ applications.")
            python-pytest-benchmark
            python-pytest-sanic
            python-sanic-testing
+           python-setuptools
            python-slotscheck
            python-towncrier
            python-tox
            python-types-ujson
-           python-uvicorn))
+           python-uvicorn
+           python-wheel))
     (home-page "https://github.com/sanic-org/sanic/")
     (synopsis "Async Python web server/framework")
     (description

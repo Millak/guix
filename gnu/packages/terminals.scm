@@ -1205,8 +1205,14 @@ per-line fullscreen terminal rendering, and keyboard input event reporting.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-colorama python-log-symbols python-six
                              python-spinners python-termcolor))
-    (native-inputs (list python-coverage python-nose python-pylint python-tox
-                         python-twine))
+    (native-inputs
+     (list python-coverage
+           python-nose
+           python-pylint
+           python-setuptools
+           python-tox
+           python-twine
+           python-wheel))
     (home-page "https://github.com/manrajgrover/halo")
     (synopsis "Python library to display graphical spinners in the terminal")
     (description "Halo is a Python library to display graphical spinners in

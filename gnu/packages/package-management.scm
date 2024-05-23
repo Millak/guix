@@ -1139,8 +1139,13 @@ environments.")
     (inputs
      (list libarchive))
     (native-inputs
-     (list python-cython python-pytest python-pytest-cov
-           python-pytest-mock python-mock))
+     (list python-cython
+           python-mock
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
     (home-page "https://conda.io")
     (synopsis "Create and extract conda packages of various formats")
     (description
@@ -1280,7 +1285,8 @@ extracting, creating, and converting between formats.")
      (list python-coverage
            python-flaky
            python-pytest-timeout
-           python-pytest-xprocess))
+           python-pytest-xprocess
+           python-wheel))
     (home-page "https://github.com/conda/conda")
     (synopsis "Cross-platform, OS-agnostic, system-level binary package manager")
     (description

@@ -221,7 +221,9 @@ and not test_sphinx_book_text_broken_strict")))
            python-isort
            python-mypy
            python-pytest
-           python-pytest-cov))
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-black python-sphinx-5 python-unidecode
            (package/inherit python-sphinx-rtd-theme

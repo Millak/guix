@@ -3285,8 +3285,14 @@ the managed genomes, STAR indexing and mapping and more.")
                (("==") ">=")))))))
     (propagated-inputs (list python-htsget python-psutil python-requests
                              python-tqdm python-urllib3))
-    (native-inputs (list python-coverage python-pytest python-pyfakefs
-                         python-responses python-mock))
+    (native-inputs
+     (list python-coverage
+           python-mock
+           python-pyfakefs
+           python-pytest
+           python-responses
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/EGA-archive/ega-download-client")
     (synopsis "EGA download client")
     (description "PyEGA3 is a tool for viewing and downloading files from

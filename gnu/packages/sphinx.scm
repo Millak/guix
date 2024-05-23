@@ -1173,9 +1173,11 @@ enabled web server.")
     (native-inputs
      (list python-nptyping
            python-pytest
+           python-setuptools
            python-setuptools-scm
            python-sphobjinv
-           python-typing-extensions))
+           python-typing-extensions
+           python-wheel))
     (home-page "https://pypi.org/project/sphinx-autodoc-typehints/")
     (synopsis "Type hints for the Sphinx autodoc extension")
     (description "This extension allows you to use Python 3 annotations for
