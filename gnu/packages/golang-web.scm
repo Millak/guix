@@ -1912,6 +1912,32 @@ it like any library.  The quickest way to get started is to look at the
            go-github-com-pion-transport-v2
            go-golang-org-x-sys))))
 
+(define-public go-github-com-pion-turn-v3
+  (package
+    (inherit go-github-com-pion-turn)
+    (name "go-github-com-pion-turn-v3")
+    (version "3.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/turn/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l78m9ym0sv1zfalbv95lwblmr789fc53d957ph5mdznhjx89lyx"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments
+                                    go-github-com-pion-turn)
+       ((#:import-path flags ''())
+        "github.com/pion/turn/v3")))
+    (propagated-inputs
+     (list go-github-com-pion-logging
+           go-github-com-pion-randutil
+           go-github-com-pion-stun-v2
+           go-github-com-pion-transport-v3
+           go-golang-org-x-sys))))
+
 (define-public go-github-com-pires-go-proxyproto
   (package
     (name "go-github-com-pires-go-proxyproto")
