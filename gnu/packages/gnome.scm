@@ -1404,6 +1404,9 @@ a debugging tool, @command{gssdp-device-sniffer}.")
               (sha256
                (base32
                 "10hm8cgh2p8441xc83kswjgghrrqpzgblvc5523jp0pvayfq8xl6"))))
+    (arguments
+     (list #:configure-flags
+           #~(list "-Dgtk_doc=true")))
     (propagated-inputs (modify-inputs (package-propagated-inputs gssdp)
               (replace "libsoup" libsoup-minimal-2)))))
 
