@@ -1007,20 +1007,20 @@ value (e.g. @samp{x=\"95.0\"} becomes @samp{x=\"95\"})
 @end itemize")
     (license license:bsd-3)))
 
-(define-public fontobene-qt5
+(define-public fontobene-qt
   (package
-    (name "fontobene-qt5")
-    (version "0.2.0")
+    (name "fontobene-qt")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/fontobene/fontobene-qt5")
+                    (url "https://github.com/fontobene/fontobene-qt")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gy3sfraf23k7dm4ha8nqpd6madzk0zmxkcb204micyn5b5l8ljg"))))
-    (inputs (list qtbase-5))
+                "098ys33l563hjyzm6azzw8kmlybja374vacakczwhh2k3ifn37r9"))))
+    (inputs (list qtbase))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -1028,13 +1028,16 @@ value (e.g. @samp{x=\"95.0\"} becomes @samp{x=\"95\"})
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "./tests/fontobene-qt5-tests")))))))
+               (invoke "./tests/fontobene-qt-tests")))))))
     (home-page "https://github.com/fontobene/fontobene-qt5")
     (synopsis "Parser for FontoBene stroke fonts")
-    (description "FontoBene-Qt5 is a header-only library to parse FontoBene
-stroke fonts with C++11/Qt5.")
+    (description "FontoBene-Qt is a header-only library to parse FontoBene
+stroke fonts with C++11/Qt.")
     ;; Dual-licensed, either license applies.
     (license (list license:asl2.0 license:expat))))
+
+(define-public fontobene-qt5
+  (deprecated-package "fontobene-qt5" fontobene-qt))
 
 (define-public ttfautohint
   (package
