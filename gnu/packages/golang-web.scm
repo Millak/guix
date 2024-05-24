@@ -1650,7 +1650,7 @@ in Golang.")
 (define-public go-github-com-pion-mdns
   (package
     (name "go-github-com-pion-mdns")
-    (version "2.0.7")
+    (version "0.0.12")
     (source
      (origin
        (method git-fetch)
@@ -1659,7 +1659,7 @@ in Golang.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03675hx82lx3c8akkxdbkch1z4dbq54r05jk6jgdyd7mrdh9k4lm"))))
+        (base32 "18nz0vddxik3q11mn4z65zvrfhspxv0xymxv9w3kgk2kszwq2byy"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1668,6 +1668,7 @@ in Golang.")
       ;; <https://github.com/pion/.goassets/blob/master/.github/workflows/test.reusable.yml>.
       #:tests? #f
       #:go go-1.21
+      #:unpack-path "github.com/pion/mdns"
       #:import-path "github.com/pion/mdns"))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -1681,6 +1682,28 @@ in Golang.")
      "This package implements a mDNS (multicast DNS) used by
 @url{https://github.com/pion, Pion}.")
     (license license:expat)))
+
+(define-public go-github-com-pion-mdns-v2
+  (package
+    (inherit go-github-com-pion-mdns)
+    (name "go-github-com-pion-mdns-v2")
+    (version "2.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/mdns/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03675hx82lx3c8akkxdbkch1z4dbq54r05jk6jgdyd7mrdh9k4lm"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments
+                                    go-github-com-pion-mdns)
+       ((#:unpack-path flags ''())
+        "github.com/pion/mdns/v2")
+       ((#:import-path flags ''())
+        "github.com/pion/mdns/v2")))))
 
 (define-public go-github-com-pion-rtp
   (package
