@@ -119,6 +119,31 @@ particular severity level.  It allows logging to be controlled from the
 command line.")
     (license license:bsd-3)))
 
+(define-public plog
+  (package
+    (name "plog")
+    (version "1.1.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SergiusTheBest/plog")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1kxqz3vn98y1qij60sxn0ldv5q2xh2zbp7v8cd9m21sf1yp636im"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~'("-DPLOG_BUILD_TESTS=ON")))
+    (home-page "https://github.com/SergiusTheBest/plog")
+    (synopsis "C++ logging library")
+    (description
+     "Plog is a C++ logging library that is designed to be simple, small and
+flexible.  It is created as an alternative to existing large libraries and
+provides some unique features such as CSV log format and wide string support.")
+    (license license:expat)))
+
 ;; This is the legacy version of the tailon package.  The new version, written
 ;; in Go in available here: https://github.com/gvalkov/tailon.
 (define-public tailon
