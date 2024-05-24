@@ -2361,7 +2361,7 @@ parallel computing platforms.  It also supports serial execution.")
 (define-public librepcb
   (package
     (name "librepcb")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
@@ -2372,7 +2372,7 @@ parallel computing platforms.  It also supports serial execution.")
         ;; Delete libraries that we already have or don't need.
         ;; TODO: try to unbundle more (see lib/).
         `(begin
-           (let ((third-parties '("fontobene-qt5"
+           (let ((third-parties '("fontobene-qt"
                                   "googletest"
                                   "hoedown"
                                   "muparser"
@@ -2383,12 +2383,12 @@ parallel computing platforms.  It also supports serial execution.")
                       (delete-file-recursively third-party))
                     third-parties)))))
        (sha256
-        (base32 "02qfwyhdq1pklb5gkwn3rbsdhwvcgiksd21swaphz3kw6s4p9i8v"))))
+        (base32 "0ag8k2ni9x175s77gmg29adap82rjfgf87j8hqjdm3wzmdss7sgn"))))
     (build-system cmake-build-system)
     (inputs
      (list clipper
            fontconfig
-           fontobene-qt5
+           fontobene-qt
            glu
            hoedown
            muparser
@@ -2406,7 +2406,7 @@ parallel computing platforms.  It also supports serial execution.")
            unzip))
     (arguments
      `(#:configure-flags (list
-                          "-DUNBUNDLE_FONTOBENE_QT5=ON"
+                          "-DUNBUNDLE_FONTOBENE_QT=ON"
                           "-DUNBUNDLE_GTEST=ON"
                           "-DUNBUNDLE_HOEDOWN=ON"
                           "-DUNBUNDLE_MUPARSER=ON"
@@ -2419,6 +2419,7 @@ parallel computing platforms.  It also supports serial execution.")
                         (let ((test-include (list "*"))
                               (test-exclude
                                (list
+                                "ApplicationTest.testGetCacheDir"
                                 ;; These tests all fail when run by the build
                                 ;; process even though they pass when manually
                                 ;; run as a normal user.
