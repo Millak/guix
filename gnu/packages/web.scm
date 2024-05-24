@@ -2158,6 +2158,29 @@ modifying pages and incoming and outgoing headers, monitoring pages for
 changes, and much more.")
     (license license:gpl2+)))
 
+(define-public libjuice
+  (package
+    (name "libjuice")
+    (version "1.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/paullouisageneau/libjuice")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "035kqyp5bcawzkpqpjb1qjwqf0dp2gm9h2j9py5iiahcvfjwh70i"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ; requires internet access
+    (home-page "https://github.com/paullouisageneau/libjuice")
+    (synopsis "UDP Interactive Connectivity Establishment library")
+    (description "@code{libjuice} allows to open bidirectionnal User Datagram
+Protocol (UDP) streams with Network Address Translator (NAT) traversal.  It's a
+simplified implementation of the Interactive Connectivity Establishment (ICE)
+protocol, client-side and server-side, written in C without dependencies for
+POSIX platforms.")
+    (license license:mpl2.0)))
 (define-public liboauth
   (package
     (name "liboauth")
