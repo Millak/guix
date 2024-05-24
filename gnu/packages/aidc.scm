@@ -228,30 +228,22 @@ Python as well as GUI widgets for GTK and Qt.")
 (define-public qrcodegen-cpp
   (package
     (name "qrcodegen-cpp")
-    (version "1.6.0")
+    (version "1.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/nayuki/QR-Code-generator")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (patches (search-patches "qrcodegen-cpp-make-install.patch"))
+              (patches (search-patches "qrcodegen-cpp-cmake.patch"))
               (sha256
                (base32
-                "0iq9sv9na0vg996aqrxrjn9rrbiyy7sc9vslw945p3ky22pw3lql"))))
-    (build-system gnu-build-system)
+                "0dk9ci5gchxa8gh0hyhlj3d5jwxqlnfm85xyp791ldaia14bkj39"))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; no test suite
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; No ./configure script
-         ;; Only build the C++ variant.
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "cpp")
-             #t)))))
+     (list #:configure-flags
+           #~'("-DBUILD_TESTS=ON"
+               "-DBUILD_SHARED_LIBS=ON")))
     (synopsis "QR Code generator library")
     (description "qrcodegen-cpp is a QR code generator library in C++.  The
 project also offers Java, Javascript, Python, C, and Rust implementations.")

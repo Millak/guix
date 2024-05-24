@@ -1,0 +1,506 @@
+From 283d6a4bae95f42aaccd9ddd06d16c2e33ed4abf Mon Sep 17 00:00:00 2001
+From: Vitaly Zaitsev <vitaly@easycoding.org>
+Date: Thu, 21 Apr 2022 15:36:23 +0200
+Subject: [PATCH 1/2] Implemented CMake build support.
+
+Co-authored-by: leha-bot <leha-bot@users.noreply.github.com>
+Signed-off-by: Vitaly Zaitsev <vitaly@easycoding.org>
+---
+ CMakeLists.txt                     | 235 +++++++++++++++++++++++++++++
+ c/Makefile                         |  88 -----------
+ cmake/qrcodegen-config.cmake.in    |   4 +
+ cmake/qrcodegen.pc.in              |  11 ++
+ cmake/qrcodegencpp-config.cmake.in |   4 +
+ cmake/qrcodegencpp.pc.in           |  11 ++
+ cpp/Makefile                       |  84 -----------
+ 7 files changed, 265 insertions(+), 172 deletions(-)
+ create mode 100644 CMakeLists.txt
+ delete mode 100644 c/Makefile
+ create mode 100644 cmake/qrcodegen-config.cmake.in
+ create mode 100644 cmake/qrcodegen.pc.in
+ create mode 100644 cmake/qrcodegencpp-config.cmake.in
+ create mode 100644 cmake/qrcodegencpp.pc.in
+ delete mode 100644 cpp/Makefile
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 0000000..b07197f
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,235 @@
++# ==============================
++# === Project initialization ===
++# ==============================
++
++cmake_minimum_required(VERSION 3.12)
++
++project(QR-Code-generator
++    VERSION 1.8.0
++    DESCRIPTION "High-quality QR Code generator library in Java, TypeScript/JavaScript, Python, C++, C, Rust"
++    HOMEPAGE_URL "https://www.nayuki.io/page/qr-code-generator-library"
++    LANGUAGES C CXX
++)
++
++set(CMAKE_CXX_STANDARD 11)
++set(CMAKE_CXX_STANDARD_REQUIRED ON)
++
++# =======================
++# === Project options ===
++# =======================
++
++option(BUILD_EXAMPLES "Build examples and demos" OFF)
++option(BUILD_TESTS "Build and run unit tests" OFF)
++
++# =======================
++# === Paths detection ===
++# =======================
++
++include(GNUInstallDirs)
++
++# ============================
++# === CMake config helpers ===
++# ============================
++
++include(CMakePackageConfigHelpers)
++
++# ========================
++# === C library target ===
++# ========================
++
++set(QRCODEGEN_NAME "qrcodegen")
++
++set(QRCODEGEN_SOURCES
++    c/qrcodegen.c
++)
++
++set(QRCODEGEN_HEADERS
++    c/qrcodegen.h
++)
++
++add_library(${QRCODEGEN_NAME}
++    ${QRCODEGEN_SOURCES}
++    ${QRCODEGEN_HEADERS}
++)
++
++target_include_directories(${QRCODEGEN_NAME} PUBLIC
++    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/c>
++    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${QRCODEGEN_NAME}>
++)
++
++set_property(TARGET ${QRCODEGEN_NAME} PROPERTY PUBLIC_HEADER ${QRCODEGEN_HEADERS})
++set_property(TARGET ${QRCODEGEN_NAME} PROPERTY VERSION ${CMAKE_PROJECT_VERSION})
++set_property(TARGET ${QRCODEGEN_NAME} PROPERTY SOVERSION 1)
++
++install(TARGETS ${QRCODEGEN_NAME}
++    EXPORT ${QRCODEGEN_NAME}-targets
++    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
++    BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR}
++    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${QRCODEGEN_NAME}
++)
++
++configure_package_config_file(cmake/${QRCODEGEN_NAME}-config.cmake.in
++    ${QRCODEGEN_NAME}-config.cmake
++    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${QRCODEGEN_NAME}
++)
++write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${QRCODEGEN_NAME}-config-version.cmake
++    COMPATIBILITY ExactVersion
++)
++
++install(FILES
++    ${CMAKE_CURRENT_BINARY_DIR}/${QRCODEGEN_NAME}-config.cmake
++    ${CMAKE_CURRENT_BINARY_DIR}/${QRCODEGEN_NAME}-config-version.cmake
++    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${QRCODEGEN_NAME}
++)
++
++install(EXPORT ${QRCODEGEN_NAME}-targets
++    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${QRCODEGEN_NAME}
++    NAMESPACE ${QRCODEGEN_NAME}::
++)
++
++configure_file(cmake/${QRCODEGEN_NAME}.pc.in
++    ${CMAKE_CURRENT_BINARY_DIR}/${QRCODEGEN_NAME}.pc
++    @ONLY
++)
++
++install(FILES
++    ${CMAKE_CURRENT_BINARY_DIR}/${QRCODEGEN_NAME}.pc
++    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
++)
++
++# =========================
++# === C examples target ===
++# =========================
++
++if(BUILD_EXAMPLES)
++    set(QRCODEGENDEMO_SOURCES
++        c/qrcodegen-demo.c
++    )
++
++    add_executable(${QRCODEGEN_NAME}-demo
++        ${QRCODEGENDEMO_SOURCES}
++    )
++
++    target_link_libraries(${QRCODEGEN_NAME}-demo PRIVATE
++        ${QRCODEGEN_NAME}
++    )
++endif()
++
++# ======================
++# === C tests target ===
++# ======================
++
++if (BUILD_TESTS)
++    set(QRCODEGENTEST_SOURCES
++        c/qrcodegen-test.c
++    )
++
++    add_library(${QRCODEGEN_NAME}-testable OBJECT
++        ${QRCODEGEN_SOURCES}
++        ${QRCODEGEN_HEADERS}
++    )
++
++    target_compile_options(${QRCODEGEN_NAME}-testable PUBLIC
++        -DQRCODEGEN_TEST
++    )
++
++    add_executable(${QRCODEGEN_NAME}-test
++        ${QRCODEGENTEST_SOURCES}
++    )
++
++    target_link_libraries(${QRCODEGEN_NAME}-test PRIVATE
++        ${QRCODEGEN_NAME}-testable
++    )
++
++    add_test(NAME ${QRCODEGEN_NAME}-test COMMAND ${QRCODEGEN_NAME}-test)
++endif()
++
++# ==========================
++# === C++ library target ===
++# ==========================
++
++set(QRCODEGENCPP_NAME "qrcodegencpp")
++
++set(QRCODEGENCPP_SOURCES
++    cpp/qrcodegen.cpp
++)
++
++set(QRCODEGENCPP_HEADERS
++    cpp/qrcodegen.hpp
++)
++
++add_library(${QRCODEGENCPP_NAME}
++    ${QRCODEGENCPP_SOURCES}
++    ${QRCODEGENCPP_HEADERS}
++)
++
++target_include_directories(${QRCODEGENCPP_NAME} PUBLIC
++    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/cpp>
++    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${QRCODEGENCPP_NAME}>
++)
++
++set_property(TARGET ${QRCODEGENCPP_NAME} PROPERTY PUBLIC_HEADER ${QRCODEGENCPP_HEADERS})
++set_property(TARGET ${QRCODEGENCPP_NAME} PROPERTY VERSION ${CMAKE_PROJECT_VERSION})
++set_property(TARGET ${QRCODEGENCPP_NAME} PROPERTY SOVERSION 1)
++
++install(TARGETS ${QRCODEGENCPP_NAME}
++    EXPORT ${QRCODEGENCPP_NAME}-targets
++    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
++    BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR}
++    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${QRCODEGENCPP_NAME}
++)
++
++configure_package_config_file(cmake/${QRCODEGENCPP_NAME}-config.cmake.in
++    ${QRCODEGENCPP_NAME}-config.cmake
++    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${QRCODEGENCPP_NAME}
++)
++write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${QRCODEGENCPP_NAME}-config-version.cmake
++    COMPATIBILITY ExactVersion
++)
++
++install(FILES
++    ${CMAKE_CURRENT_BINARY_DIR}/${QRCODEGENCPP_NAME}-config.cmake
++    ${CMAKE_CURRENT_BINARY_DIR}/${QRCODEGENCPP_NAME}-config-version.cmake
++    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${QRCODEGENCPP_NAME}
++)
++
++install(EXPORT ${QRCODEGENCPP_NAME}-targets
++    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${QRCODEGENCPP_NAME}
++    NAMESPACE ${QRCODEGENCPP_NAME}::
++)
++
++configure_file(cmake/${QRCODEGENCPP_NAME}.pc.in
++    ${CMAKE_CURRENT_BINARY_DIR}/${QRCODEGENCPP_NAME}.pc
++    @ONLY
++)
++
++install(FILES
++    ${CMAKE_CURRENT_BINARY_DIR}/${QRCODEGENCPP_NAME}.pc
++    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
++)
++
++# ===========================
++# === C++ examples target ===
++# ===========================
++
++if(BUILD_EXAMPLES)
++    set(QRCODEGENCPPDEMO_SOURCES
++        cpp/QrCodeGeneratorDemo.cpp
++    )
++
++    add_executable(${QRCODEGENCPP_NAME}-demo
++        ${QRCODEGENCPPDEMO_SOURCES}
++    )
++
++    target_link_libraries(${QRCODEGENCPP_NAME}-demo PRIVATE
++        ${QRCODEGENCPP_NAME}
++    )
++endif()
++
++# ====================
++# === Tests export ===
++# ====================
++
++if (BUILD_TESTS)
++    enable_testing()
++endif()
+diff --git a/c/Makefile b/c/Makefile
+deleted file mode 100644
+index 661b1f7..0000000
+--- a/c/Makefile
++++ /dev/null
+@@ -1,88 +0,0 @@
+-# 
+-# Makefile for QR Code generator (C)
+-# 
+-# Copyright (c) Project Nayuki. (MIT License)
+-# https://www.nayuki.io/page/qr-code-generator-library
+-# 
+-# Permission is hereby granted, free of charge, to any person obtaining a copy of
+-# this software and associated documentation files (the "Software"), to deal in
+-# the Software without restriction, including without limitation the rights to
+-# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+-# the Software, and to permit persons to whom the Software is furnished to do so,
+-# subject to the following conditions:
+-# - The above copyright notice and this permission notice shall be included in
+-#   all copies or substantial portions of the Software.
+-# - The Software is provided "as is", without warranty of any kind, express or
+-#   implied, including but not limited to the warranties of merchantability,
+-#   fitness for a particular purpose and noninfringement. In no event shall the
+-#   authors or copyright holders be liable for any claim, damages or other
+-#   liability, whether in an action of contract, tort or otherwise, arising from,
+-#   out of or in connection with the Software or the use or other dealings in the
+-#   Software.
+-# 
+-
+-
+-# ---- Configuration options ----
+-
+-# External/implicit variables:
+-# - CC: The C compiler, such as gcc or clang.
+-# - CFLAGS: Any extra user-specified compiler flags (can be blank).
+-
+-# Recommended compiler flags:
+-CFLAGS += -std=c99 -O
+-
+-# Extra flags for diagnostics:
+-# CFLAGS += -g -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -fsanitize=undefined,address
+-
+-
+-# ---- Controlling make ----
+-
+-# Clear default suffix rules
+-.SUFFIXES:
+-
+-# Don't delete object files
+-.SECONDARY:
+-
+-# Stuff concerning goals
+-.DEFAULT_GOAL = all
+-.PHONY: all clean
+-
+-
+-# ---- Targets to build ----
+-
+-LIB = qrcodegen
+-LIBFILE = lib$(LIB).a
+-LIBOBJ = qrcodegen.o
+-MAINS = qrcodegen-demo qrcodegen-test
+-
+-# Build all binaries
+-all: $(LIBFILE) $(MAINS)
+-
+-# Delete build output
+-clean:
+-	rm -f -- $(LIBOBJ) $(LIBFILE) $(MAINS:=.o) $(MAINS)
+-	rm -rf .deps
+-
+-# Executable files
+-%: %.o $(LIBFILE)
+-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< -L . -l $(LIB)
+-
+-# Special executable
+-qrcodegen-test: qrcodegen-test.c $(LIBOBJ:%.o=%.c)
+-	$(CC) $(CFLAGS) $(LDFLAGS) -DQRCODEGEN_TEST -o $@ $^
+-
+-# The library
+-$(LIBFILE): $(LIBOBJ)
+-	$(AR) -crs $@ -- $^
+-
+-# Object files
+-%.o: %.c .deps/timestamp
+-	$(CC) $(CFLAGS) -c -o $@ -MMD -MF .deps/$*.d $<
+-
+-# Have a place to store header dependencies automatically generated by compiler
+-.deps/timestamp:
+-	mkdir -p .deps
+-	touch .deps/timestamp
+-
+-# Make use of said dependencies if available
+--include .deps/*.d
+diff --git a/cmake/qrcodegen-config.cmake.in b/cmake/qrcodegen-config.cmake.in
+new file mode 100644
+index 0000000..0b82c63
+--- /dev/null
++++ b/cmake/qrcodegen-config.cmake.in
+@@ -0,0 +1,4 @@
++@PACKAGE_INIT@
++
++include("${CMAKE_CURRENT_LIST_DIR}/@QRCODEGEN_NAME@-targets.cmake")
++check_required_components(@QRCODEGEN_NAME@)
+diff --git a/cmake/qrcodegen.pc.in b/cmake/qrcodegen.pc.in
+new file mode 100644
+index 0000000..c68955b
+--- /dev/null
++++ b/cmake/qrcodegen.pc.in
+@@ -0,0 +1,11 @@
++prefix=@CMAKE_INSTALL_PREFIX@
++exec_prefix=${prefix}
++libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
++includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@/@QRCODEGEN_NAME@
++
++Name: @QRCODEGEN_NAME@
++Description: @CMAKE_PROJECT_DESCRIPTION@
++Version: @CMAKE_PROJECT_VERSION@
++
++Libs: -L${libdir} -l@QRCODEGEN_NAME@
++Cflags: -I${includedir}
+diff --git a/cmake/qrcodegencpp-config.cmake.in b/cmake/qrcodegencpp-config.cmake.in
+new file mode 100644
+index 0000000..3d18f99
+--- /dev/null
++++ b/cmake/qrcodegencpp-config.cmake.in
+@@ -0,0 +1,4 @@
++@PACKAGE_INIT@
++
++include("${CMAKE_CURRENT_LIST_DIR}/@QRCODEGENCPP_NAME@-targets.cmake")
++check_required_components(@QRCODEGENCPP_NAME@)
+diff --git a/cmake/qrcodegencpp.pc.in b/cmake/qrcodegencpp.pc.in
+new file mode 100644
+index 0000000..89db084
+--- /dev/null
++++ b/cmake/qrcodegencpp.pc.in
+@@ -0,0 +1,11 @@
++prefix=@CMAKE_INSTALL_PREFIX@
++exec_prefix=${prefix}
++libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
++includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@/@QRCODEGENCPP_NAME@
++
++Name: @QRCODEGENCPP_NAME@
++Description: @CMAKE_PROJECT_DESCRIPTION@
++Version: @CMAKE_PROJECT_VERSION@
++
++Libs: -L${libdir} -l@QRCODEGENCPP_NAME@
++Cflags: -I${includedir}
+diff --git a/cpp/Makefile b/cpp/Makefile
+deleted file mode 100644
+index 57dc0bf..0000000
+--- a/cpp/Makefile
++++ /dev/null
+@@ -1,84 +0,0 @@
+-# 
+-# Makefile for QR Code generator (C++)
+-# 
+-# Copyright (c) Project Nayuki. (MIT License)
+-# https://www.nayuki.io/page/qr-code-generator-library
+-# 
+-# Permission is hereby granted, free of charge, to any person obtaining a copy of
+-# this software and associated documentation files (the "Software"), to deal in
+-# the Software without restriction, including without limitation the rights to
+-# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+-# the Software, and to permit persons to whom the Software is furnished to do so,
+-# subject to the following conditions:
+-# - The above copyright notice and this permission notice shall be included in
+-#   all copies or substantial portions of the Software.
+-# - The Software is provided "as is", without warranty of any kind, express or
+-#   implied, including but not limited to the warranties of merchantability,
+-#   fitness for a particular purpose and noninfringement. In no event shall the
+-#   authors or copyright holders be liable for any claim, damages or other
+-#   liability, whether in an action of contract, tort or otherwise, arising from,
+-#   out of or in connection with the Software or the use or other dealings in the
+-#   Software.
+-# 
+-
+-
+-# ---- Configuration options ----
+-
+-# External/implicit variables:
+-# - CXX: The C++ compiler, such as g++ or clang++.
+-# - CXXFLAGS: Any extra user-specified compiler flags (can be blank).
+-
+-# Recommended compiler flags:
+-CXXFLAGS += -std=c++11 -O
+-
+-# Extra flags for diagnostics:
+-# CXXFLAGS += -g -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -fsanitize=undefined,address
+-
+-
+-# ---- Controlling make ----
+-
+-# Clear default suffix rules
+-.SUFFIXES:
+-
+-# Don't delete object files
+-.SECONDARY:
+-
+-# Stuff concerning goals
+-.DEFAULT_GOAL = all
+-.PHONY: all clean
+-
+-
+-# ---- Targets to build ----
+-
+-LIB = qrcodegencpp
+-LIBFILE = lib$(LIB).a
+-LIBOBJ = qrcodegen.o
+-MAINS = QrCodeGeneratorDemo
+-
+-# Build all binaries
+-all: $(LIBFILE) $(MAINS)
+-
+-# Delete build output
+-clean:
+-	rm -f -- $(LIBOBJ) $(LIBFILE) $(MAINS:=.o) $(MAINS)
+-	rm -rf .deps
+-
+-# Executable files
+-%: %.o $(LIBFILE)
+-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $< -L . -l $(LIB)
+-
+-# The library
+-$(LIBFILE): $(LIBOBJ)
+-	$(AR) -crs $@ -- $^
+-
+-# Object files
+-%.o: %.cpp .deps/timestamp
+-	$(CXX) $(CXXFLAGS) -c -o $@ -MMD -MF .deps/$*.d $<
+-
+-# Have a place to store header dependencies automatically generated by compiler
+-.deps/timestamp:
+-	mkdir -p .deps
+-	touch .deps/timestamp
+-
+-# Make use of said dependencies if available
+--include .deps/*.d
+-- 
+2.41.0
+
