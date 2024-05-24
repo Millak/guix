@@ -4113,30 +4113,31 @@ addon for removing tracking fields from URLs.")
 (define-public python-urllib3
   (package
     (name "python-urllib3")
-    (version "1.26.15")
+    (version "2.2.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "urllib3" version))
-        (sha256
-         (base32
-          "01dkqv0rsjqyw4wrp6yj8h3bcnl7c678qkj845596vs7p4bqff4a"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "urllib3" version))
+       (sha256
+        (base32
+         "06fg8jj64lgxr2jrizzrsdvaf1avpg5qmhvnswhfbf8sqrv0hmyh"))))
+    (build-system pyproject-build-system)
     (arguments `(#:tests? #f))
+    (native-inputs (list python-hatchling))
     (propagated-inputs
      (append
-       ;; These 5 inputs are used to build urrlib3[secure]
-       (list python-certifi)
-       (if (member (%current-system)
-                   (package-transitive-supported-systems python-cryptography))
-         (list python-cryptography)
-         '())
-       (list python-idna)
-       (if (member (%current-system)
-                   (package-transitive-supported-systems python-pyopenssl))
-         (list python-pyopenssl)
-         '())
-       (list python-pysocks)))
+      ;; These 5 inputs are used to build urrlib3[secure]
+      (list python-certifi)
+      (if (member (%current-system)
+                  (package-transitive-supported-systems python-cryptography))
+          (list python-cryptography)
+          '())
+      (list python-idna)
+      (if (member (%current-system)
+                  (package-transitive-supported-systems python-pyopenssl))
+          (list python-pyopenssl)
+          '())
+      (list python-pysocks)))
     (home-page "https://urllib3.readthedocs.io/")
     (synopsis "HTTP library with thread-safe connection pooling")
     (description
