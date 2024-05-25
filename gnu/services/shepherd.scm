@@ -380,8 +380,7 @@ as shepherd package."
         (scm->go (cute scm->go <> shepherd)))
     (define config
       #~(begin
-          (use-modules (srfi srfi-34)
-                       (system repl error-handling))
+          (use-modules (srfi srfi-1))
 
           (define (make-user-module)
             ;; Copied from (shepherd support), where it's private.
@@ -415,19 +414,25 @@ as shepherd package."
           ;; <https://bugs.gnu.org/40572>.
           (default-pid-file-timeout 30)
 
-          ;; Arrange to spawn a REPL if something goes wrong.  This is better
-          ;; than a kernel panic.
-          (call-with-error-handling
-            (lambda ()
-              (register-services
-               (parameterize ((current-warning-port
-                               (%make-void-port "w")))
-                 (map (lambda (file)
-                        (save-module-excursion
-                         (lambda ()
-                           (set-current-module (make-user-module))
-                           (load-compiled file))))
-                      '#$(map scm->go files))))))
+          ;; Load service files one by one; filter out those that could not be
+          ;; loaded--e.g., due to an unbound variable--such that an error in
+          ;; one service definition does not prevent the system from booting.
+          (register-services
+           (parameterize ((current-warning-port (%make-void-port "w")))
+             (filter-map (lambda (file)
+                           (with-exception-handler
+                               (lambda (exception)
+                                 (format #t "Exception caught \
+while loading '~a': ~s~%"
+                                         file exception)
+                                 #f)
+                             (lambda ()
+                               (save-module-excursion
+                                (lambda ()
+                                  (set-current-module (make-user-module))
+                                  (load-compiled file))))
+                             #:unwind? #t))
+                         '#$(map scm->go files))))
 
           (format #t "starting services...~%")
           (let ((services-to-start
