@@ -12932,11 +12932,11 @@ Scalable Vector Graphics files.")
   (sbcl-package->cl-source-package sbcl-cl-svg))
 
 (define-public sbcl-nodgui
-  (let ((commit "35fd379e11162995ed48c2f8ebe6a5bf0a6f48cb")
+  (let ((commit "9d0c9731bc2f2b434f0ddabe4b3796432aad8cba")
         (revision "1"))
     (package
       (name "sbcl-nodgui")
-      (version (git-version "0.6.0.2" revision commit))
+      (version (git-version "0.6.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -12945,22 +12945,26 @@ Scalable Vector Graphics files.")
                (commit commit)))
          (file-name (git-file-name "cl-nodgui" version))
          (sha256
-          (base32 "01l1hyzf8ryc35ydrjhqjn4az8asdwn46knl5gx8v02z2jcv7j24"))))
+          (base32 "0j98mcq0mn3wrlqm3j29pv530q0pkq00sk6liai97an51i1n08g6"))))
       (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-clunit2))
       (inputs
        (list sbcl-alexandria
              sbcl-bordeaux-threads
              sbcl-cl-colors2
              sbcl-cl-ppcre-unicode
              sbcl-cl-unicode
-             sbcl-clunit2
              sbcl-esrap
+             sbcl-flexi-streams
              sbcl-jpeg-turbo
              sbcl-named-readtables
              sbcl-cl-opengl
              sbcl-parse-number
              sbcl-pngload
              sbcl-sdl2
+             sbcl-static-vectors
+             sbcl-trivial-garbage
              sbcl-zpng
              tk
              tklib))
