@@ -20341,25 +20341,23 @@ latitude/longitude and MGRS.")
   (sbcl-package->ecl-package sbcl-mgrs))
 
 (define-public sbcl-misc-extensions
-  (let ((commit "101c05112bf2f1e1bbf527396822d2f50ca6327a")
-        (revision "1"))
-    (package
-      (name "sbcl-misc-extensions")
-      (version (git-version "3.3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://gitlab.common-lisp.net/misc-extensions/devel.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0gz5f4p70qzilnxsnf5lih2n9m4wjcw8hlw4w8mpn9jyhyppyyv0"))))
-      (build-system asdf-build-system/sbcl)
-      (synopsis "Collection of small macros and extensions for Common Lisp")
-      (description
-       "This project is intended as a catchall for small, general-purpose
+  (package
+    (name "sbcl-misc-extensions")
+    (version "4.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.common-lisp.net/misc-extensions/misc-extensions.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-misc-extensions" version))
+       (sha256
+        (base32
+         "02hw5k7zfzs736dhpcii8ncvx3ia4l5byw5ngzmhydqscbi4hcvc"))))
+    (build-system asdf-build-system/sbcl)
+    (synopsis "Collection of small macros and extensions for Common Lisp")
+    (description
+     "This project is intended as a catchall for small, general-purpose
 extensions to Common Lisp.  It contains:
 
 @itemize
@@ -20367,8 +20365,8 @@ extensions to Common Lisp.  It contains:
 @code{let*} and @code{multiple-value-bind},
 @item @code{gmap}, an iteration macro that generalizes @code{map}.
 @end itemize\n")
-      (home-page "https://common-lisp.net/project/misc-extensions/")
-      (license license:public-domain))))
+    (home-page "https://common-lisp.net/project/misc-extensions/")
+    (license license:public-domain)))
 
 (define-public cl-misc-extensions
   (sbcl-package->cl-source-package sbcl-misc-extensions))
