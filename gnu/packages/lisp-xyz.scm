@@ -451,8 +451,8 @@ with dice-roll statistics.")
   (sbcl-package->ecl-package sbcl-alea))
 
 (define-public sbcl-cf
-  (let ((commit "9a8ecb2fa3f9d36a1384647067c5c630d132d5b6")
-        (revision "1"))
+  (let ((commit "fbc025b6f274687ee9acc8d07496d44999ac428e")
+        (revision "2"))
     (package
       (name "sbcl-cf")
       (version (git-version "1.0" revision commit))
@@ -464,7 +464,7 @@ with dice-roll statistics.")
                (commit commit)))
          (file-name (git-file-name "cl-cf" version))
          (sha256
-          (base32 "0w6vqykx65jhk8i3a7j85fa60f9irnd5a0338rg50m45bj3vrc25"))))
+          (base32 "182laa57j9qs567g75qwf8vh4xb0d22lr94x84r32dy28mrwi5ig"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs (list sbcl-fiveam))
       (synopsis "Continued fractions library")
