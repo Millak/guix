@@ -1436,14 +1436,14 @@ interactive environment for the functional language Haskell.")
     (package
       (inherit base)
       (name "ghc")
-      (version "9.2.5")
+      (version "9.2.8")
       (source (origin
                 (method url-fetch)
                 (uri (string-append "https://www.haskell.org/ghc/dist/" version
                                     "/ghc-" version "-src.tar.xz"))
                 (sha256
                  (base32
-                  "07028i0hm74svvq9b3jpkczaj6lsdgn3hgr4wa7diqiq3dypj1h6"))
+                  "18b7ln4gx2vy62jpv3z5slv3zfxmxnmkgajznks15zglddwd24sz"))
                 (patches (search-patches "ghc-9.2-glibc-2.33-link-order.patch"
                                          "ghc-9.2-cabal-support-package-path.patch"))))
       (arguments
@@ -1475,7 +1475,7 @@ interactive environment for the functional language Haskell.")
                    version "/ghc-" version "-testsuite.tar.xz"))
              (sha256
               (base32
-               "19ha0hidrijawy53vm2r0sgml5zkl8126mqy7p0pyacmw3k7913l"))
+               "0cmmwhcwv9fjzvmgjj85d354858qqbmqfzaz5160xqj4yl9zk225"))
              (patches (search-patches "ghc-9.2-grep-warnings.patch"))))
          ,@(filter (match-lambda
                      (("ghc-bootstrap" . _) #f)
