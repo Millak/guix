@@ -65,6 +65,7 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3234,31 +3235,31 @@ frequently used directories by typing only a small pattern.")
 (define-public fasd
   (package
     (name "fasd")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/clvv/fasd")
+                    (url "https://github.com/whjvenyl/fasd")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1awi71jdv3mhjrmar2d4z1i90kn7apd7aq1w31sh6w4yibz9kiyj"))))
+                "0q72a54dcahc9pan5qkmnsvpqiqgjjxwdxzzm8pxzylpr329jjyh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (delete 'configure))  ;no configuration
        #:tests? #f                      ;no tests
        #:make-flags (list (string-append "PREFIX=" %output))))
-    (home-page "https://github.com/clvv/fasd")
+    (home-page "https://github.com/whjvenyl/fasd")
     (synopsis "Quick access to files and directories for shells")
     (description
-     "Fasd (pronounced similar to \"fast\") is a command-line productivity
-booster.  Fasd offers quick access to files and directories for POSIX shells.
-It is inspired by tools like autojump, z, and v.  Fasd keeps track of files
-and directories you have accessed so that you can quickly reference them in
-the command line.")
-    (license license:x11)))
+     "Fasd (pronounced similar to \"fast\") is a command-line productivity booster.
+Fasd offers quick access to files and directories for POSIX shells.  It is inspired
+by tools like @code{autojump}, @code{z}, and @code{v}.  Fasd keeps track of files and
+directories you have accessed so that you can quickly reference them in the command
+line.")
+    (license license:expat)))
 
 (define-public iftop
   (package
