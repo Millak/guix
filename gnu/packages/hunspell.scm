@@ -276,7 +276,7 @@ spell-checking library.")
                          (#\_ #\-)
                          (chr chr))
                        (string-downcase dict-name))))
-    (version "7.5.4.2")
+    (version "7.6.7.2")
     (source
      (origin
        (method git-fetch)
@@ -287,7 +287,7 @@ spell-checking library.")
               (string-append "libreoffice-" version))))
        (file-name (git-file-name "libreoffice-dictionaries" version))
        (sha256
-        (base32 "1yzhyx8zwlfdqw4swxyr1lq68im2bfi1chimyc15jmli72n32szs"))))
+        (base32 "1f54z1kmpwv9s5a9jdgf97m43nhwbmsar0i6rri3qkgf3kkgz1f7"))))
     (build-system trivial-build-system)
     (native-inputs
      `(("source" ,source)))

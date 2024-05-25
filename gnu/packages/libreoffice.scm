@@ -887,12 +887,10 @@ commonly called @code{ftoa} or @code{dtoa}.")
     (sha256
      (base32 "1d0iwy0q5sjznv23d3nbwmy0r7m1mdzlnv5pc4izddkx9xld10h0"))))
 
-;; When updating libreoffice, also make sure to update the
-;; hunspell dictionaries! They use the libreoffice version.
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.6.3.1")
+    (version "7.6.7.2")               ;keep in sync with hunspell dictionaries
     (source
      (origin
        (method url-fetch)
@@ -901,7 +899,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
          "https://download.documentfoundation.org/libreoffice/src/"
          (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
        (sha256
-        (base32 "148084acq370483y0xwvcvck30kxhr78cnmibp5lks17xqp5f9q7"))))
+        (base32 "159vbv4zhibfd4xjdamcqs4h0p3h5y79kcjwrmshvjhs23p55l3m"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
