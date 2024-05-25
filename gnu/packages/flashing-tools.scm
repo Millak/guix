@@ -149,15 +149,19 @@ brick your device.")
 (define-public avrdude
   (package
     (name "avrdude")
-    (version "6.3")
+    (version "7.3")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://savannah/avrdude/avrdude-"
-                          version ".tar.gz"))
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/avrdudes/avrdude/")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
       (sha256
-       (base32 "15m1w1qad3dj7r8n5ng1qqcaiyx1gyd6hnc3p2apgjllccdp77qg"))))
-    (build-system gnu-build-system)
+       (base32 "0g7c30baaxav43rlfj0cdbl40p2swamp44glz0rgf096wc0bg996"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f))                      ; no tests
     (inputs
      (list libelf libusb-compat libftdi))
     (native-inputs
@@ -165,9 +169,9 @@ brick your device.")
     (home-page "https://www.nongnu.org/avrdude/")
     (synopsis "AVR downloader and uploader")
     (description
-     "AVRDUDE is a utility to download/upload/manipulate the ROM and
-EEPROM contents of AVR microcontrollers using the @acronym{ISP, in-system
-programming} technique.")
+     "@code{AVRDUDE} is a utility to download/upload/manipulate the ROM and EEPROM
+contents of AVR microcontrollers using the @acronym{ISP, in-system programming}
+technique.")
     (license license:gpl2+)))
 
 (define-public dfu-programmer
