@@ -22812,8 +22812,8 @@ window it creates as just another output for your graphics, analogous to how
 (define-public sbcl-stmx
   ;; No release for years and recent commits contain fixes for recent SBCL
   ;; versions.
-  (let ((commit "f71e742a50b85e3abc0af9bb5f02802f218a1705")
-        (revision "2"))
+  (let ((commit "95f7dea8e1e58dee59e14a1deb148908d920839f")
+        (revision "3"))
     (package
      (name "sbcl-stmx")
      (version (git-version "2.0.5" revision commit))
@@ -22823,24 +22823,13 @@ window it creates as just another output for your graphics, analogous to how
        (uri (git-reference
              (url "https://github.com/cosmos72/stmx/")
              (commit commit)))
-       (file-name (git-file-name name version))
+       (file-name (git-file-name "cl-stmx" version))
        (sha256
-        (base32 "0q739mlw3s3z5kclzccz4r64ag38ks11fmd38109qwjv5knn69jv"))))
+        (base32 "1qq25y79casaa56a76gj9hk2f3hjcc5z3f4na4vy3sw99km54hn9"))))
      (build-system asdf-build-system/sbcl)
      (inputs
       (list sbcl-alexandria sbcl-bordeaux-threads sbcl-log4cl
             sbcl-closer-mop sbcl-trivial-garbage))
-     (arguments
-      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'fix-build
-             (lambda _
-               (substitute* "asm/transaction.lisp"
-                 (("\\(ftype \\(function \\(\\) fixnum\\)        transaction-begin\\)")
-                  "(ftype (function () (unsigned-byte 32))        transaction-begin)")
-                 (("\\(values fixnum  &optional\\)")
-                  "(unsigned-byte 32)")))))))
      (home-page "https://stmx.org/")
      (synopsis "High performance Transactional Memory for Common Lisp")
      (description
