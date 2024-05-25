@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2018 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
@@ -812,7 +812,7 @@ WHILE-LIST."
                                         (passwd:gecos pwd)))
                          (uid uid) (gid gid) (shell bash)
                          (directory (if (or user (not pwd))
-                                        (string-append "/home/" user)
+                                        (string-append "/home/" name)
                                         (passwd:dir pwd))))))
             (groups   (list (group-entry (name "users") (gid gid))
                             (group-entry (gid 65534) ;the overflow GID
