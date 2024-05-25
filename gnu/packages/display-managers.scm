@@ -154,6 +154,19 @@ to create smooth, animated user interfaces.")
     ;; QML files are MIT licensed and images are CC BY 3.0.
     (license (list license:gpl2+ license:expat license:cc-by3.0))))
 
+(define-public sddm-qt5
+  (package
+    (inherit sddm)
+    (name "sddm-qt5")
+    (native-inputs (modify-inputs (package-native-inputs sddm)
+                     (replace "qttools" qttools-5)))
+    (inputs (modify-inputs (package-inputs sddm)
+              (replace "qtbase" qtbase-5)
+              (replace "qtsvg" qtsvg-5)
+              (replace "qtdeclarative" qtdeclarative-5)
+              (replace "qtwayland" qtwayland-5)
+              (append qtgraphicaleffects qtquickcontrols-5 qtquickcontrols2-5)))))
+
 (define-public abstractdark-sddm-theme
   (let ((commit "e817d4b27981080cd3b398fe928619ffa16c52e7")
         (revision "0"))
