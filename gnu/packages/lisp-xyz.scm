@@ -17047,8 +17047,8 @@ table.")
   (sbcl-package->ecl-package sbcl-concurrent-hash-tables))
 
 (define-public sbcl-collectors
-  (let ((commit "748f0a1613ce161edccad4cc815eccd7fc55aaf3")
-        (revision "1"))
+  (let ((commit "4c5e70cf399381de8fb485d4ed5a5c8fd7555146")
+        (revision "2"))
     (package
       (name "sbcl-collectors")
       (version (git-version "1.0" revision commit))
@@ -17060,7 +17060,7 @@ table.")
                (commit commit)))
          (file-name (git-file-name "cl-collectors" version))
          (sha256
-          (base32 "1mxcq7wq2jwbjd39afihpd46qkaidq76prgjbzpkv5749wf2spib"))))
+          (base32 "1kc9q05wyp8yjz5wqc73nar7l49vcnfhj4924li81v76hlb03665"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria sbcl-closer-mop sbcl-symbol-munger))
