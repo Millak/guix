@@ -22,18 +22,19 @@
 ;;
 ;; or something like
 ;;
-;;     guix shell --pure git git:send-email openssh
-
-(use-modules (guix profiles)
-             (gnu packages gnupg)
-             (gnu packages perl)
-             (gnu packages package-management))
+;;     guix shell --pure -m manifest.scm hello ...
 
 (concatenate-manifests
- (list (package->development-manifest guix)
-
-       ;; Extra packages used by make dist.
-       (packages->manifest (list perl))
-
+ (list (package->development-manifest (specification->package "guix"))
        ;; Extra packages used by unit tests.
-       (packages->manifest (list gnupg))))
+       (specifications->manifest (list "gnupg"))
+
+       ;; Useful extras for patches submission.
+       (specifications->manifest
+        (list "b4"
+              "git"
+              "git:send-email"
+              "mumi"
+              "nss-certs"
+              "openssl"              ;required if using 'smtpEncryption = tls'
+              "patman"))))
