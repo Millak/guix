@@ -3019,6 +3019,16 @@ guidelines.")
               (substitute* "Makefile.am"
                 (("/bin/bash") (which "bash")))
               (delete-file "configure")))
+          #$@(if (this-package-native-input "config")
+                 #~((add-after 'unpack 'update-config-scripts
+                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                        (for-each (lambda (file)
+                                    (install-file
+                                      (search-input-file
+                                        (or native-inputs inputs)
+                                        (string-append "/bin/" file)) "."))
+                                  '("config.guess" "config.sub")))))
+                 #~())
           (add-after 'install 'add-install-to-pythonpath
             (@@ (guix build python-build-system) add-install-to-pythonpath))
           (add-after 'add-install-to-pythonpath 'wrap-for-python
@@ -3051,16 +3061,20 @@ guidelines.")
            libnotify
            packagekit))
     (native-inputs
-     (list pkg-config
-           desktop-file-utils
-           glib
-           autoconf
-           automake
-           gettext-minimal
-           xmlto
-           docbook-xml-4.1.2
-           docbook-xsl
-           libxml2))
+     (append
+       (if (target-riscv64?)
+           (list config)
+           '())
+       (list pkg-config
+             desktop-file-utils
+             glib
+             autoconf
+             automake
+             gettext-minimal
+             xmlto
+             docbook-xml-4.1.2
+             docbook-xsl
+             libxml2)))
     (home-page "https://github.com/zdohnal/system-config-printer")
     (synopsis "CUPS administration tool")
     (description
