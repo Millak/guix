@@ -2638,6 +2638,7 @@ GNOME Desktop.")
                         #$output "/share/p11-kit/modules/")
          (string-append "--with-pkcs11-modules="
                         #$output "/share/p11-kit/modules/"))
+      #:parallel-tests? (not (target-riscv64?))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-/bin/sh-reference
