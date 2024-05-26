@@ -353,6 +353,7 @@ TARGET (e.g., \"/dev/md0\"), using 'mdadm'."
 (define lvm-device-mapping
   (mapped-device-kind
    (open open-lvm-device)
-   (close close-lvm-device)))
+   (close close-lvm-device)
+   (modules '((srfi srfi-1)))))
 
 ;;; mapped-devices.scm ends here
