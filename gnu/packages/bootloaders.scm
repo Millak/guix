@@ -113,7 +113,8 @@
                 "1qbycnxkx07arj9f2nlsi9kp0dyldspbv07ysdyd34qvz55a97mp"))
               (patches (search-patches
                         "grub-efi-fat-serial-number.patch"
-                        "grub-setup-root.patch"))
+                        "grub-setup-root.patch"
+                        "grub-ignore-metadata-csum-seed.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
