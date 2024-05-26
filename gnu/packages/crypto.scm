@@ -811,9 +811,7 @@ data on your platform, so the seed itself will be as random as possible.
     (arguments
      `(#:configure-flags
        (list
-        ,@(if (any (cute string-prefix? <> (or (%current-system)
-                                               (%current-target-system)))
-                   '("x86_64" "i686"))
+        ,@(if (target-x86?)
               ;; fat only checks for Intel optimisations
               '("--enable-fat")
               '())
