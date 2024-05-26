@@ -1116,15 +1116,6 @@ with the Linux kernel.")
    (license lgpl2.0+)
    (home-page "https://www.gnu.org/software/libc/")))
 
-(define glibc/fixed
-  (package
-    (inherit glibc)
-    (source
-     (origin (inherit (package-source glibc))
-             (patches
-              (append (search-patches "glibc-2.35-CVE-2023-4911.patch")
-                      (origin-patches (package-source glibc))))))))
-
 ;; Define a variation of glibc which uses the default /etc/ld.so.cache, useful
 ;; in FHS containers.
 (define-public glibc-for-fhs
