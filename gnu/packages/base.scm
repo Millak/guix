@@ -1161,6 +1161,12 @@ with the Linux kernel.")
      (substitute-keyword-arguments (package-arguments glibc)
        ((#:configure-flags flags #~'())
         #~(cons* "--enable-crypt"
+                 ;; We do not want to use the C++ compiler, because its
+                 ;; libstdc++ is linked against a newer glibc, and so relies
+                 ;; on those newer symbols.  Pretend it doesn't link (the test
+                 ;; doesn't actually check that the compiler works with new
+                 ;; libstdc++ and older glibc).
+                 "libc_cv_cxx_link_ok=no"
                  #$flags))
        ((#:phases phases)
         ;; The C.UTF-8 fails to build in glibc 2.35:
@@ -1189,14 +1195,7 @@ with the Linux kernel.")
                         (member (basename patch)
                                 '("glibc-2.35-CVE-2023-4911.patch"
                                   "glibc-hurd-clock_gettime_monotonic.patch")))
-                             (origin-patches (package-source glibc-2.35)))))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments glibc-2.35)
-       ((#:configure-flags flags ''())
-        ;; There are undefined references to pthread symbols while linking
-        ;; 'support/links-dso-program.cc'.  Since this isn't needed here, turn
-        ;; off C++ tests.
-        #~(cons "libc_cv_cxx_link_ok=no" #$flags))))))
+                             (origin-patches (package-source glibc-2.35)))))))))
 
 (define-public glibc-2.32
   (package
