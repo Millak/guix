@@ -17258,10 +17258,10 @@ version:
                     %base-packages)))
 @end lisp
 
-@findex specification->package+output
+@findex specifications->packages
 When a package has more than one output it can be a challenge to refer to a
 specific output instead of just to the standard @code{out} output.  For these
-situations one can use the @code{specification->package+output} procedure from
+situations one can use the @code{specifications->packages} procedure from
 the @code{(gnu packages)} module.  For example:
 
 @lisp
@@ -17269,8 +17269,8 @@ the @code{(gnu packages)} module.  For example:
 
 (operating-system
   ;; ...
-  (packages (append (map specification->package+output
-                         '("git" "git:send-email"))
+  (packages (append (specifications->packages
+                      '("git" "git:send-email"))
                     %base-packages)))
 
 @end lisp
