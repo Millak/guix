@@ -1385,48 +1385,47 @@ to the @code{share/locale} sub-directory of this package.")
           `((gnu build locale)
             ,@%default-gnu-imported-modules))
          ((#:phases phases)
-          `(modify-phases ,phases
-             (replace 'build
-               (lambda _
-                 (invoke "make" "localedata/install-locales"
-                         "-j" (number->string (parallel-job-count)))))
-             (add-after 'build 'symlink-normalized-codesets
-               (lambda* (#:key outputs #:allow-other-keys)
-                 ;; The above phase does not install locales with names using
-                 ;; the "normalized codeset."  Thus, create symlinks like:
-                 ;;   en_US.utf8 -> en_US.UTF-8
-                 (define (locale-directory? file stat)
-                   (and (file-is-directory? file)
-                        (string-index (basename file) #\_)
-                        (string-rindex (basename file) #\.)))
+          #~(modify-phases #$phases
+              (replace 'build
+                (lambda _
+                  (invoke "make" "localedata/install-locales"
+                          "-j" (number->string (parallel-job-count)))))
+              (add-after 'build 'symlink-normalized-codesets
+                (lambda* (#:key outputs #:allow-other-keys)
+                  ;; The above phase does not install locales with names using
+                  ;; the "normalized codeset."  Thus, create symlinks like:
+                  ;;   en_US.utf8 -> en_US.UTF-8
+                  (define (locale-directory? file stat)
+                    (and (file-is-directory? file)
+                         (string-index (basename file) #\_)
+                         (string-rindex (basename file) #\.)))
 
-                 (let* ((out (assoc-ref outputs "out"))
-                        (locales (find-files out locale-directory?
-                                             #:directories? #t)))
-                   (for-each (lambda (directory)
-                               (let*-values (((base)
-                                              (basename directory))
-                                             ((name codeset)
-                                              (locale->name+codeset base))
-                                             ((normalized)
-                                              (normalize-codeset codeset)))
-                                 (unless (string=? codeset normalized)
-                                   (symlink base
-                                            (string-append (dirname directory)
-                                                           "/" name "."
-                                                           normalized)))))
-                             locales))))
-             (delete 'install)
-             (delete 'install-utf8-c-locale)
-             (delete 'move-static-libs)))
+                  (let* ((locales (find-files #$output locale-directory?
+                                              #:directories? #t)))
+                    (for-each (lambda (directory)
+                                (let*-values (((base)
+                                               (basename directory))
+                                              ((name codeset)
+                                               (locale->name+codeset base))
+                                              ((normalized)
+                                               (normalize-codeset codeset)))
+                                  (unless (string=? codeset normalized)
+                                    (symlink base
+                                             (string-append (dirname directory)
+                                                            "/" name "."
+                                                            normalized)))))
+                              locales))))
+              (delete 'install)
+              (delete 'install-utf8-c-locale)
+              (delete 'move-static-libs)))
          ((#:configure-flags flags)
-          `(append ,flags
-                   ;; Use $(libdir)/locale/X.Y as is the case by default.
-                   (list (string-append "libc_cv_complocaledir="
-                                        (assoc-ref %outputs "out")
-                                        "/lib/locale/"
-                                        ,(version-major+minor
-                                          (package-version glibc)))))))))
+          #~(append #$flags
+                    ;; Use $(libdir)/locale/X.Y as is the case by default.
+                    (list (string-append "libc_cv_complocaledir="
+                                         #$output
+                                         "/lib/locale/"
+                                         #$(version-major+minor
+                                            (package-version glibc)))))))))
     (properties `((upstream-name . "glibc")))))
 
 (define %default-utf8-locales
