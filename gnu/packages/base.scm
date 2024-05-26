@@ -1511,6 +1511,9 @@ test environments.")
    (make-glibc-utf8-locales glibc)))
 
 ;; Packages provided to ease use of binaries linked against the previous libc.
+(define-public glibc-locales-2.35
+  (package (inherit (make-glibc-locales glibc-2.35))
+           (name "glibc-locales-2.35")))
 (define-public glibc-locales-2.33
   (package (inherit (make-glibc-locales glibc-2.33))
            (name "glibc-locales-2.33")))
