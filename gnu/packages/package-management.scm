@@ -490,8 +490,10 @@ $(prefix)/etc/openrc\n")))
                        ("automake" ,automake)
                        ("gettext" ,gettext-minimal)
                        ("texinfo" ,texinfo)
-                       ("graphviz" ,graphviz-minimal)
+                       ("graphviz" ,graphviz) ;non-minimal for PDF support
                        ("font-ghostscript" ,font-ghostscript) ;fonts for 'dot'
+                       ("imagemagick" ,imagemagick) ;for 'make dist'
+                       ("perl" ,perl)               ;for 'make dist'
                        ("help2man" ,help2man)
                        ("po4a" ,po4a-minimal)))
       (inputs
