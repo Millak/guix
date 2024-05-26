@@ -15,6 +15,7 @@
 ;;; Copyright © 2022 Jacob Hrbek <kreyren@rixotstudio.cz>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2024 hapster <o.rojon@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -681,7 +682,7 @@ devices.")
 (define-public hidapi
   (package
     (name "hidapi")
-    (version "0.10.1")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
@@ -690,7 +691,7 @@ devices.")
              (commit (string-append "hidapi-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nr4z4b10vpbh3ss525r7spz4i43zim2ba5qzfl15dgdxshxxivb"))))
+        (base32 "121laqsml0104d1h4hp115gp21qiqi0r9dgcaqdi9ismmq3b6yx7"))))
     (build-system gnu-build-system)
     (inputs
      (list libusb eudev))
