@@ -78,6 +78,7 @@
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-crypto)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages lxqt)
   #:use-module (gnu packages man)
@@ -361,14 +362,14 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "4.2.2")
+    (version "4.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0hdrxcj7pvfryn9lbjdjb5bpq0dxs66mky3grzwhvxghqwi8p5i0"))))
+                "0bc6jvvsprrpnr0bjfi6z0h0z3x0dkq5h38y9nipg7zny85zky9n"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -391,7 +392,8 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
            perl
            python
            ruby
-           tcl))
+           tcl
+           cjson))
     (arguments
      `(#:configure-flags
        (list "-DENABLE_PHP=OFF"
