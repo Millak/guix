@@ -36397,6 +36397,7 @@ their specific needs.")
            texlive-knuth-lib
            texlive-plain
            texlive-ptex-base
+           texlive-ptex-bin
            texlive-ptex-fonts))
     (home-page "https://ctan.org/pkg/ptex")
     (synopsis "TeX system for publishing in Japanese")
@@ -36405,6 +36406,80 @@ their specific needs.")
 problems in typesetting Japanese.  A manual (in both Japanese and English) is
 distributed as package @code{pTeX-manual}.")
     (license license:bsd-3)))
+
+(define-public texlive-ptex-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-ptex-bin")
+    (source
+     (origin
+       (inherit texlive-source)
+       (modules '((guix build utils)
+                  (ice-9 ftw)))
+       (snippet
+        #~(let ((delete-other-directories
+                 (lambda (root dirs)
+                   (with-directory-excursion root
+                     (for-each
+                      delete-file-recursively
+                      (scandir "."
+                               (lambda (file)
+                                 (and (not (member file (append '("." "..") dirs)))
+                                      (eq? 'directory (stat:type (stat file)))))))))))
+            (delete-other-directories "libs" '())
+            (delete-other-directories "utils" '())
+            (delete-other-directories "texk" '("makejvf" "mendexk" "web2c"))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(cons* "--enable-makejvf"
+                 "--enable-mendexk"
+                 (delete "--enable-web2c" #$flags)))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion "texk/makejvf"
+                    (invoke "make" "check"))
+                  (with-directory-excursion "texk/mendexk"
+                    (invoke "make" "check")))))
+            (add-after 'build 'build-web2c-binaries
+              (lambda _
+                (with-directory-excursion "texk/web2c"
+                  (for-each (lambda (target) (invoke "make" target))
+                            '("eptex" "pmpost")))))
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/makejvf"
+                  (invoke "make" "install"))
+                (with-directory-excursion "texk/mendexk"
+                  (invoke "make" "install"))
+                ;; Install Web2C parts.
+                (let ((bin (string-append #$output "/bin")))
+                  (with-directory-excursion "texk/web2c"
+                    (for-each (lambda (f) (install-file f bin))
+                              '("eptex" "pmpost")))
+                  (with-directory-excursion bin
+                    (for-each symlink
+                              '("eptex" "pmpost"   "pmpost")
+                              '("ptex"  "pdvitomp" "r-pmpost"))
+                    ;; Some executables are symlinks to TEXLIVE-UPTEX-BIN's.
+                    (let ((uptex #$(this-package-input "texlive-uptex-bin")))
+                      (for-each
+                       symlink
+                       (map (lambda (f) (string-append uptex "/bin/" f))
+                            '("upbibtex" "updvitype" "uppltotf" "uptftopl"))
+                       '("pbibtex" "pdvitype" "ppltotf" "ptftopl")))))))))))
+    (native-inputs (list pkg-config))
+    (inputs
+     (modify-inputs (package-inputs texlive-bin)
+       (append cairo gmp mpfr texlive-libptexenc texlive-uptex-bin)))
+    (home-page (package-home-page texlive-ptex))
+    (synopsis "Binaries for @code{texlive-ptex}")
+    (description
+     "This package provides the binaries for @code{texlive-ptex}.")
+    (license (package-license texlive-ptex))))
 
 (define-public texlive-ptex-base
   (package
