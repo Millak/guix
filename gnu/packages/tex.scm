@@ -58785,7 +58785,7 @@ AMS-LaTeX, AMS-TeX, and plain TeX).  The distribution includes Michael Barr's
               "0iyaxab3wyhy3nw0id892aklpqf17z1cl85v4m3rjy5nmb8darn9")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs (list texlive-kpathsea))
+    (propagated-inputs (list texlive-bibtex-bin texlive-kpathsea))
     (home-page "https://ctan.org/pkg/bibtex")
     (synopsis "Process bibliographies for LaTeX")
     (description
@@ -58794,6 +58794,29 @@ printing citations in a document in the form specified by a BibTeX style, to
 be specified in the document itself (one often needs a LaTeX citation-style
 package, such as @command{natbib} as well).")
     (license license:knuth)))
+
+(define-public texlive-bibtex-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-bibtex-bin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(delete "--enable-web2c" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/web2c"
+                  (invoke "make" "bibtex")
+                  (install-file "bibtex"
+                                (string-append #$output "/bin")))))))))
+    (native-inputs (list pkg-config))
+    (home-page (package-home-page texlive-bibtex))
+    (synopsis "Binary for @code{texlive-bibtex}")
+    (description
+     "This package provides the binary for @code{texlive-bibtex}.")
+    (license (package-license texlive-bibtex))))
 
 (define-public texlive-charissil
   (package
