@@ -1149,7 +1149,7 @@ for calling methods on remote servers by exchanging JSON objects.")
 (define-public guile-ares-rs
   (package
     (name "guile-ares-rs")
-    (version "0.9.4")
+    (version "0.9.5")
     (source
      (origin
        (method git-fetch)
@@ -1159,11 +1159,11 @@ for calling methods on remote servers by exchanging JSON objects.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ksj39ka8n7cbsqf56z67hyk2jcjz6zlkgnbdrqa9kp95p47xp41"))))
+         "06fc5kbcniysqixadi54vv96hy8l4wx6hqcii134fkb1d93078lq"))))
     (build-system guile-build-system)
     (arguments
      (list
-      #:source-directory "src"))
+      #:source-directory "src/guile"))
     ;; Remove guile-next dependency, when guile package get custom text port
     (inputs `(("guile" ,guile-next)))
     (propagated-inputs (list guile-fibers))
