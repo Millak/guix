@@ -37322,17 +37322,56 @@ and e-upTeX.")
            texlive-plain
            texlive-ptex-base
            texlive-uptex-base
+           texlive-uptex-bin
            texlive-uptex-fonts))
     (home-page "https://ctan.org/pkg/uptex")
     (synopsis "Unicode version of pTeX")
     (description
-     "upTeX is an extension of pTeX, using UTF-8 input and producing UTF-8 output.
-It was originally designed to improve support for Japanese, but is also useful
-for documents in Chinese and Korean.  It can process Chinese simplified,
-Chinese traditional, Japanese, and Korean simultaneously, and can also process
-original LaTeX with @code{\\inputenc@{utf8@}} and Babel
+     "upTeX is an extension of pTeX, using UTF-8 input and producing UTF-8
+output.  It was originally designed to improve support for Japanese, but is
+also useful for documents in Chinese and Korean.  It can process Chinese
+simplified, Chinese traditional, Japanese, and Korean simultaneously, and can
+also process original LaTeX with @code{\\inputenc@{utf8@}} and Babel
 (Latin/Cyrillic/Greek etc.) by switching its @code{\\kcatcode} tables.")
     (license license:bsd-3)))
+
+(define-public texlive-uptex-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-uptex-bin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(delete "--enable-web2c" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'build 'build-binaries
+              (lambda _
+                (with-directory-excursion "texk/web2c"
+                  (for-each (lambda (target) (invoke "make" target))
+                            '("euptex" "upbibtex" "updvitype" "upmpost"
+                              "uppltotf" "uptex" "uptftopl" "wovp2ovf")))))
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/web2c"
+                  (let ((bin (string-append #$output "/bin")))
+                    (for-each (lambda (f) (install-file f bin))
+                              '("euptex" "upbibtex" "updvitype"
+                                "upmpost" "uppltotf" "uptex" "uptftopl"
+                                "wovp2ovf"))
+                    (with-directory-excursion bin
+                      (for-each symlink
+                                '("upmpost" "upmpost")
+                                '("r-upmpost" "updvitomp")))))))))))
+    (native-inputs (list pkg-config))
+    (inputs
+     (modify-inputs (package-inputs texlive-bin)
+       (append cairo gmp mpfr texlive-libptexenc)))
+    (home-page (package-home-page texlive-uptex))
+    (synopsis "Binaries for @code{texlive-uptex}")
+    (description
+     "This package provides the binaries for @code{texlive-uptex}.")
+    (license (package-license texlive-uptex))))
 
 (define-public texlive-uptex-fonts
   (package
