@@ -20691,6 +20691,39 @@ long-running threads.  In principle, it is like an in-Lisp process supervisor.")
 (define-public ecl-moira
   (sbcl-package->ecl-package sbcl-moira))
 
+(define-public sbcl-more-conditions
+  (let ((commit "b4859fb119b3b88719c3c4d5f6d7a620052fefc2")
+        (revision "1"))
+    (package
+      (name "sbcl-more-conditions")
+      (version (git-version "0.4.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/scymtym/more-conditions")
+               (commit commit)))
+         (file-name (git-file-name "cl-more-conditions" version))
+         (sha256
+          (base32 "1n0xbz0yiqn9dxf0ycm57wqvsr4gh2q4hs5fskjbv87c47d7l7zr"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam sbcl-let-plus))
+      (inputs
+       (list sbcl-alexandria sbcl-closer-mop))
+      (synopsis "General condition classes and signalling helpers")
+      (description
+       "This package provides some condition classes, functions and macros
+which may be useful when building slightly complex systems.")
+      (home-page "https://github.com/scymtym/more-conditions")
+      (license license:llgpl))))
+
+(define-public cl-more-conditions
+  (sbcl-package->cl-source-package sbcl-more-conditions))
+
+(define-public ecl-more-conditions
+  (sbcl-package->ecl-package sbcl-more-conditions))
+
 (define-public sbcl-montezuma
   (let ((commit "ee2129eece7065760de4ebbaeffaadcb27644738")
         (revision "1"))
