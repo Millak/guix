@@ -38474,7 +38474,7 @@ TeX tree.")
             ;; This map file is supposed to be generated in a profile hook.
             (lambda _
               (delete-file "fonts/map/dvipdfmx/updmap/kanjix.map"))))))
-    (propagated-inputs (list texlive-glyphlist))
+    (propagated-inputs (list texlive-glyphlist texlive-dvipdfmx-bin))
     (home-page "https://ctan.org/pkg/dvipdfmx")
     (synopsis "Extended version of dvipdfm")
     (description
@@ -38485,6 +38485,97 @@ compatibility mode, so that users of the both packages need only keep one
 executable.  A secondary design goal is to support as many PDF features as
 does pdfTeX.")
     (license license:gpl3+)))
+
+(define-public texlive-dvipdfmx-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-dvipdfmx-bin")
+    (source
+     (origin
+       (inherit texlive-source)
+       (modules '((guix build utils)
+                  (ice-9 ftw)))
+       (snippet
+        #~(let ((delete-other-directories
+                 (lambda (root dirs)
+                   (with-directory-excursion root
+                     (for-each
+                      delete-file-recursively
+                      (scandir "."
+                               (lambda (file)
+                                 (and (not (member file (append '("." "..") dirs)))
+                                      (eq? 'directory (stat:type (stat file)))))))))))
+            (delete-other-directories "libs" '())
+            (delete-other-directories "utils" '())
+            (delete-other-directories "texk" '("dvipdfm-x"))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(cons "--enable-dvipdfm-x" (delete "--enable-web2c" #$flags)))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion "texk/dvipdfm-x"
+                    (invoke "make" "check")))))
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/dvipdfm-x"
+                  (invoke "make" "install"))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list libpaper libpng texlive-libkpathsea))
+    (propagated-inputs '())
+    (home-page (package-home-page texlive-dvipdfmx))
+    (synopsis "Binaries for @code{texlive-dvipdfmx}")
+    (description
+     "This package provides the binaries for @code{texlive-dvipdfmx}.")
+    (license (package-license texlive-dvipdfmx))))
+
+(define texlive-dvips-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-dvips-bin")
+    (source
+     (origin
+       (inherit texlive-source)
+       (modules '((guix build utils)
+                  (ice-9 ftw)))
+       (snippet
+        #~(let ((delete-other-directories
+                 (lambda (root dirs)
+                   (with-directory-excursion root
+                     (for-each
+                      delete-file-recursively
+                      (scandir "."
+                               (lambda (file)
+                                 (and (not (member file (append '("." "..") dirs)))
+                                      (eq? 'directory (stat:type (stat file)))))))))))
+            (delete-other-directories "libs" '())
+            (delete-other-directories "utils" '())
+            ;; XXX: One test needs "texmf.cnf" file to be present in the tree.
+            (delete-other-directories "texk" '("dvipsk" "kpathsea" "tests"))
+            (with-directory-excursion "texk/kpathsea"
+              (for-each
+               delete-file-recursively
+               (scandir "." (lambda (f)
+                              (not (member f '("." ".." "texmf.cnf")))))))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(cons* "--enable-dvipsk" (delete "--enable-web2c" #$flags)))
+       ((#:phases _)
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion "texk/dvipsk"
+                    (invoke "make" "check")))))
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/dvipsk"
+                  (invoke "make" "install"))))))))
+    (inputs '())))
 
 (define-public texlive-dvips
   (package
