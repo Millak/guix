@@ -34826,6 +34826,7 @@ sources, and with LaTeX @file{.fd} files.")
               "0ng27m6cz92aa52z99gnw5i8s8fbkxq4354mygwnchchgxndcba0")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs (list texlive-fontware-bin))
     (home-page "https://ctan.org/pkg/vfware")
     (synopsis "Tools for virtual font metrics")
     (description
@@ -34836,6 +34837,30 @@ package translate between the two forms: @command{vptovf} takes a VPL file and
 generates a VF file and a TFM file; @command{vftovp} takes a VF file and a TFM
 file and generates a VPL file.")
     (license license:knuth)))
+
+(define-public texlive-fontware-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-fontware-bin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(delete "--enable-web2c" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/web2c"
+                  (let ((bin (string-append #$output "/bin"))
+                        (files '("pltotf" "tftopl" "vftovp" "vptovf")))
+                    (for-each (lambda (f) (invoke "make" f)) files)
+                    (for-each (lambda (f) (install-file f bin)) files)))))))))
+    (native-inputs (list pkg-config))
+    (home-page (package-home-page texlive-fontware))
+    (synopsis "Binaries for @code{texlive-fontware}")
+    (description
+     "This package provides the binaries for @code{texlive-fontware}.")
+    (license (package-license texlive-fontware))))
 
 (define-public texlive-forest-quickstart
   (package
