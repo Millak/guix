@@ -162,6 +162,18 @@
   (define-deprecated/public old-name name
     (deprecated-package (symbol->string 'old-name) name)))
 
+(define texlive-source
+  (origin
+    (method svn-fetch)
+    (uri (svn-reference
+          (url (string-append "svn://www.tug.org/texlive/tags/"
+                              %texlive-tag "/Build/source/"))
+          (revision %texlive-revision)))
+    (file-name (string-append "texlive-source-" %texlive-tag "-checkout"))
+    (sha256
+     (base32
+      "186q0r00zfd39wc9r56rvbxs8f1xix7hlrz62zj07c68a0fy76rd"))))
+
 (define-public texlive-libkpathsea
   (package
     (name "texlive-libkpathsea")
