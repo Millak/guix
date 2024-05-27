@@ -38989,13 +38989,36 @@ considered as word, header etc.")
               "03y05mv0n04hyj0lcq54grx7w5wv95h61j6xlx2jc9v0ib9akq4y")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs (list texlive-kpathsea))
+    (propagated-inputs (list texlive-kpathsea texlive-patgen-bin))
     (home-page "https://ctan.org/pkg/patgen")
     (synopsis "Generate hyphenation patterns")
     (description
      "Patgen takes a list of hyphenated words and generates a set of patterns
 that can be used by the TeX 82 hyphenation algorithm.")
     (license license:public-domain)))
+
+(define-public texlive-patgen-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-patgen-bin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(delete "--enable-web2c" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/web2c"
+                  (invoke "make" "patgen")
+                  (install-file "patgen"
+                                (string-append #$output "/bin")))))))))
+    (native-inputs (list pkg-config))
+    (home-page (package-home-page texlive-patgen))
+    (synopsis "Binary for @code{texlive-patgen}")
+    (description
+     "This package provides the binary for @code{texlive-patgen}.")
+    (license (package-license texlive-patgen))))
 
 (define-public texlive-pdfbook2
   (package
