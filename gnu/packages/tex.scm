@@ -215,21 +215,31 @@
             ;; environment variable defined via a search path below.
             ;;
             ;; This phase must happen before the `configure' phase, because
-            ;; the value of the TEXMFCNF variable (modified along with the
-            ;; SELFAUTOLOC reference below) is used at compile time to
+            ;; the value of the TEXMFCNF variable is used at compile time to
             ;; generate "paths.h" file.
             (lambda _
               (substitute* "texk/kpathsea/texmf.cnf"
-                (("^TEXMFROOT = .*")
-                 "TEXMFROOT = {$GUIX_TEXMF}/..\n")
+                (("^TEXMFROOT = .*") "TEXMFROOT = {$GUIX_TEXMF}/..\n")
+                (("^TEXMFDIST = .*") "TEXMFDIST = {$GUIX_TEXMF}\n")
+                ;; "ls-R" files are to be expected only in the TEXMFDIST
+                ;; directories.  However, those are not always present, e.g.,
+                ;; when building a package with `texlive-build-system' or when
+                ;; generating a profile.  Since both situations need to be
+                ;; handled, drop the "!!" prefixes.
                 (("^TEXMF = .*")
-                 "TEXMF = {$GUIX_TEXMF}\n")
-                (("\\$SELFAUTOLOC(/share/texmf-dist/web2c)" _ suffix)
-                 (string-append #$output suffix))
-                ;; Ignore system-wide cache.  Use local one, by default
-                ;; "$HOME/.texliveYYYY/texmf-var/".
-                (("^TEXMFCACHE = .*")
-                 "TEXMFCACHE = $TEXMFVAR\n")
+                 "TEXMF = {$TEXMFCONFIG,$TEXMFVAR,$TEXMFHOME,$TEXMFSYSCONFIG,$TEXMFSYSVAR,$TEXMFDIST}\n")
+                (("^TEXMFDBS = .*") "TEXMFDBS = {$TEXMFDIST}\n")
+                ;; Ignore system-wide cache, which is not writable.  Use local
+                ;; one instead, i.e. "$HOME/.texliveYYYY/texmf-var/".
+                (("^TEXMFCACHE = .*") "TEXMFCACHE = $TEXMFVAR\n")
+                ;; Set TEXMFCNF.  Since earlier values of variables have
+                ;; precedence over later ones, insert the desired value first.
+                (("^TEXMFCNF =")
+                 (string-append
+                  "TEXMFCNF = " #$output "/share/texmf-dist/web2c\n"
+                  "TEXMFCNF ="))
+                ;; Help TeX finding fonts installed on the system.
+                (("^OSFONTDIR = .*") "OSFONTDIR = {$XDG_DATA_DIRS}\n")
                 ;; Don't truncate lines.
                 (("^error_line = .*$") "error_line = 254\n")
                 (("^half_error_line = .*$") "half_error_line = 238\n")
@@ -237,9 +247,9 @@
           (add-after 'unpack 'patch-directory-traversal
             ;; When ST_NLINK_TRICK is set, kpathsea attempts to avoid work
             ;; when searching files by assuming that a directory with exactly
-            ;; two links has no subdirectories.  This assumption does not hold
-            ;; in our case, so some directories with symlinked sub-directories
-            ;; would not be traversed.
+            ;; two links has no sub-directories.  This assumption does not
+            ;; hold in our case, so some directories with symlinked
+            ;; sub-directories would not be traversed.
             (lambda _
               (substitute* "texk/kpathsea/config.h"
                 (("#define ST_NLINK_TRICK") ""))))
