@@ -78,8 +78,8 @@
 ;;; When updating Jami, make sure that the patches used for ffmpeg-jami are up
 ;;; to date with those listed in
 ;;; <https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak>.
-(define %jami-nightly-version "20240325.0")
-(define %jami-daemon-commit "32f39e65483cb22729eb922d72434013b337f2c9")
+(define %jami-nightly-version "20240524.0")
+(define %jami-daemon-commit "fd2f2815448ce4072dcbc3995950788573d63f3b")
 
 (define-public libjami
   (package
@@ -93,14 +93,18 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kha2v46l5hmycklhyxrs2qybm640nbrk98z1xvicjxyq6bfszh4"))
+                "1bw0laj93w4pvlxsr5abz59805ypbmg21z5393yzm82j4d35cfyr"))
               (patches (search-patches
-                        "libjami-ac-config-files.patch"
-                        "jami-disable-integration-tests.patch"))))
+                        "libjami-ac-config-files.patch"))))
     (outputs '("out" "bin" "debug"))    ;"bin' contains jamid
     (build-system gnu-build-system)
     (arguments
      (list
+      ;; XXX: The test suites reportedly takes 2 h 30 to run by upstream's CI.
+      ;; Many tests also fail, within and without the containerized
+      ;; environment.  Some issues have recently been fixed, so try again in
+      ;; the next release.
+      #:tests? #f
       ;; The agent links the daemon binary with libguile, which enables the
       ;; execution of test plans described in Scheme.  It may be useful in
       ;; user scripts too, until more general purpose Scheme bindings are made
@@ -122,9 +126,8 @@
                         (find-files (string-append #$output "/lib")
                                     "\\.a$"))))
           (add-after 'install 'move-jamid
-            ;; This nearly halves the size of the main output (from 1566.2 MiB
-            ;; to 833.6 MiB), due to not depending on dbus-c++ and its large
-            ;; dependencies.
+            ;; This reduces the size of the main output, due to not depending
+            ;; on sdbus-c++.
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((libexec (string-append #$output:bin "/libexec"))
                     (share (string-append #$output:bin "/share")))
@@ -144,7 +147,7 @@
            jack-1
            jsoncpp
            libarchive
-           libgit2-1.6
+           libgit2-1.8
            libnatpmp
            libsecp256k1
            libupnp
@@ -227,7 +230,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08lv8azjd47n56i25d9ax248xmidixpsnwh5kc4qjxib7985bdhs"))
+                "1wqi50n80khyngj48brc8wg3m6jq471h9gm62yxpj4f8z5j81ncd"))
               (patches (search-patches
                         "jami-libjami-headers-search.patch"
                         "jami-qwindowkit.patch"

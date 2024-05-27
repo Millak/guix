@@ -1505,7 +1505,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/isl-0.11.1-aarch64-support.patch	\
   %D%/packages/patches/isync-openssl3-fix.patch			\
   %D%/packages/patches/itk-snap-alt-glibc-compat.patch		\
-  %D%/packages/patches/jami-disable-integration-tests.patch	\
   %D%/packages/patches/jami-libjami-headers-search.patch	\
   %D%/packages/patches/jami-qwindowkit.patch			\
   %D%/packages/patches/jami-skip-tests-requiring-internet.patch	\
