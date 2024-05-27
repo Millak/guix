@@ -13291,10 +13291,10 @@ diffs, \"context\" format diffs, and \"vdelta\" format binary diffs.")
   (sbcl-package->ecl-package sbcl-diff))
 
 (define-public sbcl-dissect
-  (let ((commit "cffd38479f0e64e805f167bbdb240b783ecc8d45"))
+  (let ((commit "a70cabcd748cf7c041196efd711e2dcca2bbbb2c"))
     (package
       (name "sbcl-dissect")
-      (version (git-version "1.0.0" "1" commit))
+      (version (git-version "1.0.0" "2" commit))
       (source
        (origin
          (method git-fetch)
@@ -13304,7 +13304,7 @@ diffs, \"context\" format diffs, and \"vdelta\" format binary diffs.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0rmsjkgjl90gl6ssvgd60hb0d5diyhsiyypvw9hbc0ripvbmk5r5"))))
+           "1ym1zggwrj15l7y2mcz5l2gfk68prqxhdswffd9s5014pa6zyysr"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-cl-ppcre))
