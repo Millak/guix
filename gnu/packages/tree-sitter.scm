@@ -370,6 +370,18 @@ which will be used as a snippet in origin."
    "0.2.0"
    #:repository-url "https://github.com/camdencheek/tree-sitter-dockerfile"))
 
+(define-public tree-sitter-dot
+  ;; 0.1.6 is taken from Cargo.toml. The package.json has 0.1.5.
+  (let ((version "0.1.6")
+        (commit "9ab85550c896d8b294d9b9ca1e30698736f08cea")
+        (revision "0"))
+    (tree-sitter-grammar
+     "dot" "Dot"
+     "013brrljrhgpnks1r0cdvj93l303kb68prm18gpl96pvhjfci063"
+     (git-version version revision commit)
+     #:repository-url "https://github.com/rydesun/tree-sitter-dot"
+     #:commit commit)))
+
 (define-public tree-sitter-elixir
   (tree-sitter-grammar
    "elixir" "Elixir"
