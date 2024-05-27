@@ -74273,6 +74273,7 @@ that it will build with web2c out of the box.")
            texlive-plain
            texlive-tex-ini-files
            texlive-unicode-data
+           texlive-xetex-bin
            texlive-xetexconfig))
     (home-page "https://ctan.org/pkg/xetex")
     (synopsis "Extended variant of TeX for use with Unicode sources")
@@ -74287,6 +74288,48 @@ computers).  XeTeX's immediate output is an extended variant of DVI format,
 which is ordinarily processed by a tightly bound processor (called
 @code{xdvipdfmx}), that produces PDF.")
     (license license:x11)))
+
+(define-public texlive-xetex-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-xetex-bin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(cons* "--disable-web2c"
+                 "--enable-xetex"
+                 (delete "--disable-xetex"
+                         (delete "--enable-web2c" #$flags))))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'set-default-xetex-outputdriver
+              ;; XeTeX requires the "xdvipdfmx" binary to be available in the
+              ;; same tree, so as to use it as a safe default "outputdriver".
+              ;; Use the one from TEXLIVE-DVIPDFMX-BIN instead of reporting an
+              ;; error each time "xelatex" is invoked.
+              (lambda _
+                (substitute* "texk/web2c/xetexdir/XeTeX_ext.c"
+                  (("(\\*outputdriver = \")xdvipdfmx " _ prefix)
+                   (string-append prefix
+                                  #$(this-package-input "texlive-dvipdfmx-bin")
+                                  "/bin/xdvipdfmx ")))))
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin")))
+                  (with-directory-excursion "texk/web2c"
+                    (invoke "make" "xetex")
+                    (install-file "xetex" bin))
+                  (with-directory-excursion bin
+                    (symlink "xetex" "xelatex")))))))))
+    (native-inputs (list pkg-config))
+    (inputs
+     (modify-inputs (package-inputs texlive-bin)
+       (append freetype teckit texlive-dvipdfmx-bin)))
+    (home-page (package-home-page texlive-xetex))
+    (synopsis "Binary for @code{texlive-xetex}")
+    (description
+     "This package provides the binary for @code{texlive-xetex}.")
+    (license (package-license texlive-xetex))))
 
 (define-public texlive-xfor
   (package
