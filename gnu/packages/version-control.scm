@@ -975,6 +975,20 @@ write native speed custom Git applications in any language with bindings.")
                               "deps/winhttp"
                               "deps/zlib"))))))))
 
+(define-public libgit2-1.8
+  (package
+    (inherit libgit2-1.7)
+    (version "1.8.0")
+    (source (origin
+              (inherit (package-source libgit2-1.7))
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "libgit2" version))
+              (sha256
+               (base32
+                "0f0vqml6fp94z07xkpim2sdj2xvpxnsrwbm1q1dibx4vqjd7mh3q"))))))
+
 (define-public libgit2-1.6
   (package
     (inherit libgit2)
