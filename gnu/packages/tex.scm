@@ -177,35 +177,25 @@
 (define-public texlive-libkpathsea
   (package
     (name "texlive-libkpathsea")
-    (version "20230313")
+    (version (number->string %texlive-revision))
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "ftp://tug.org/historic/systems/texlive/"
-                           (string-take version 4)
-                           "/texlive-" version "-source.tar.xz"))
-       (sha256
-        (base32
-         "1fbrkv7g9j6ipmwjx27l8l9l974rmply8bhf7c2iqc6h3q7aly1q"))
+       (inherit texlive-source)
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
-        #~(begin
-            (with-directory-excursion "libs"
-              (for-each
-               delete-file-recursively
-               (scandir "."
-                        (lambda (file)
-                          (and (not (member file '("." "..")))
-                               (eq? 'directory (stat:type (stat file))))))))
-            (with-directory-excursion "texk"
-              (let ((preserved-directories '("." ".." "kpathsea")))
-                (for-each
-                 delete-file-recursively
-                 (scandir "."
-                          (lambda (file)
-                            (and (not (member file preserved-directories))
-                                 (eq? 'directory (stat:type (stat file)))))))))))))
+        #~(let ((delete-other-directories
+                 (lambda (root dirs)
+                   (with-directory-excursion root
+                     (for-each
+                      delete-file-recursively
+                      (scandir "."
+                               (lambda (file)
+                                 (and (not (member file (append '("." "..") dirs)))
+                                      (eq? 'directory (stat:type (stat file)))))))))))
+            (delete-other-directories "libs" '())
+            (delete-other-directories "utils" '())
+            (delete-other-directories "texk" '("kpathsea"))))))
     (build-system gnu-build-system)
     (arguments
      (list
