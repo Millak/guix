@@ -34042,6 +34042,7 @@ or watermarks.")
               "010bs4iyaja7mq5wy9mz6fzxlxf9472c2zdm93x9i474dzgnh2vl")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs (list texlive-dvicopy-bin))
     (home-page "https://ctan.org/pkg/dvicopy")
     (synopsis "Copy DVI files, flattening VFs")
     (description
@@ -34050,6 +34051,29 @@ file that references composite fonts (VF) and convert it into a DVI file that
 does not contain such references.  It also serves as a basis for writing DVI
 drivers (much like DVItype).")
     (license license:gpl3+)))
+
+(define-public texlive-dvicopy-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-dvicopy-bin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(delete "--enable-web2c" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/web2c"
+                  (invoke "make" "dvicopy")
+                  (install-file "dvicopy"
+                                (string-append #$output "/bin")))))))))
+    (native-inputs (list pkg-config))
+    (home-page (package-home-page texlive-dvicopy))
+    (synopsis "Binary for @code{texlive-dvicopy}")
+    (description
+     "This package provides the binary for @code{texlive-dvicopy}.")
+    (license (package-license texlive-dvicopy))))
 
 (define-public texlive-dvidvi
   (package
