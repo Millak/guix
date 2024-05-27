@@ -39772,17 +39772,21 @@ part of the cite bundle of the author's citation-related packages.")
               (let* ((cwd (getcwd))
                      (pkdir
                       (string-append cwd "/fonts/pk/ljfour/public/cm/dpi600"))
-                     (build-dir (string-append cwd "/build")))
+                     (build-dir (string-append cwd "/build"))
+                     (gftopk
+                      (string-append
+                       #$(this-package-native-input "texlive-mfware-bin")
+                       "/bin/gftopk")))
                 (with-directory-excursion "fonts/source/public/cm/"
                   (mkdir-p pkdir)
                   (for-each
                    (lambda (font)
                      (let ((font-name (basename font ".mf")))
-                       (invoke "gftopk"
+                       (invoke gftopk
                                (string-append build-dir "/" font-name ".600gf")
                                (string-append pkdir "/" font-name ".pk"))))
                    (find-files "." "cm(.*[0-9]+.*|inch)\\.mf$")))))))))
-    (native-inputs (list texlive-metafont))
+    (native-inputs (list texlive-metafont texlive-mfware-bin))
     (home-page "https://ctan.org/pkg/cm")
     (synopsis "Computer Modern fonts for TeX")
     (description
@@ -40828,12 +40832,38 @@ Taco Hoekwater.")
               "0l0xy2zl7yzb14wbzsg4sz5bdj22ggqlsw54d0yrm430wlr1s6sd")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs (list texlive-mfware-bin))
     (home-page "https://ctan.org/pkg/mfware")
     (synopsis "Supporting tools for use with Metafont")
     (description
      "This package provides a collection of programs (as web source) for
 processing the output of Metafont.")
     (license license:public-domain)))
+
+(define-public texlive-mfware-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-mfware-bin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(delete "--enable-web2c" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/web2c"
+                  (let ((bin (string-append #$output "/bin"))
+                        (files '("gftodvi" "gftopk" "gftype" "mft" "pktogf"
+                                 "pktype")))
+                    (for-each (lambda (f) (invoke "make" f)) files)
+                    (for-each (lambda (f) (install-file f bin)) files)))))))))
+    (native-inputs (list pkg-config))
+    (home-page (package-home-page texlive-mfware))
+    (synopsis "Binaries for @code{texlive-mfware}")
+    (description
+     "This package provides the binaries for @code{texlive-mfware}.")
+    (license (package-license texlive-mfware))))
 
 (define-public texlive-milsymb
   (package
