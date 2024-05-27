@@ -16774,6 +16774,7 @@ Indian Type Foundry, with support for LaTeX and pdfLaTeX.")
            texlive-etex
            texlive-everyshi
            texlive-firstaid
+           texlive-hitex-bin
            texlive-hyphen-base
            texlive-knuth-lib
            texlive-l3backend
@@ -16799,6 +16800,35 @@ format supports variable and varying screen sizes, leveraging the ability of
 TeX to format a document for nearly-arbitrary values of @code{\\hsize} and
 @code{\\vsize}.")
     (license license:x11)))
+
+(define-public texlive-hitex-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-hitex-bin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(cons* "--disable-web2c"
+                 "--enable-hitex"
+                 (delete "--disable-hitex"
+                         (delete "--enable-web2c" #$flags))))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/web2c"
+                  (let ((bin (string-append #$output "/bin"))
+                        (files '("hishrink" "histretch" "hitex")))
+                    (for-each (lambda (f) (invoke "make" f)) files)
+                    (for-each (lambda (f) (install-file f bin)) files)
+                    (with-directory-excursion bin
+                      (symlink "hitex" "hilatex"))))))))))
+    (native-inputs (list pkg-config))
+    (home-page (package-home-page texlive-hitex))
+    (synopsis "Binaries for @code{texlive-hitex}")
+    (description
+     "This package provides the binaries for @code{texlive-hitex}.")
+    (license (package-license texlive-hitex))))
 
 (define-public texlive-hitszbeamer
   (package
