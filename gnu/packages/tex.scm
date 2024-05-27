@@ -702,33 +702,45 @@ and should be preferred to it whenever a package would otherwise depend on
 (define-deprecated-package texlive-ukrhyph texlive-hyphen-complete)
 
 (define-public texlive-bin
-  (package/inherit texlive-libkpathsea
+  (package
     (name "texlive-bin")
+    (version (number->string %texlive-revision))
     (source
      (origin
-       (inherit (package-source texlive-libkpathsea))
+       (inherit texlive-source)
+       (modules '((guix build utils)
+                  (ice-9 ftw)))
        (snippet
-        ;; TODO: Unbundle stuff in texk/dvisvgm/dvisvgm-src/libs too.
-        #~(with-directory-excursion "libs"
-            (let ((preserved-directories '("." ".." "lua53" "luajit" "pplib" "xpdf")))
-              ;; Delete bundled software, except Lua which cannot easily be
-              ;; used as an external dependency, pplib and xpdf which aren't
-              ;; supported as system libraries (see m4/kpse-xpdf-flags.m4).
-              (for-each delete-file-recursively
-                        (scandir "."
-                                 (lambda (file)
-                                   (and (not (member file preserved-directories))
-                                        (eq? 'directory
-                                             (stat:type (stat file))))))))))))
+        #~(let ((delete-other-directories
+                 (lambda (root dirs)
+                   (with-directory-excursion root
+                     (for-each
+                      delete-file-recursively
+                      (scandir "."
+                               (lambda (file)
+                                 (and (not (member file
+                                                   (append '("." "..") dirs)))
+                                      (eq? 'directory
+                                           (stat:type (stat file)))))))))))
+            ;; Delete bundled software, except Lua which cannot easily be used
+            ;; as an external dependency, pplib and xpdf which aren't
+            ;; supported as system libraries (see m4/kpse-xpdf-flags.m4).
+            (delete-other-directories "libs" '("lua53" "luajit" "pplib" "xpdf"))
+            ;; Remove all packages: they are installed through their
+            ;; respective regular TeX Live package.
+            (delete-other-directories "utils" '())
+            (delete-other-directories "texk" '("kpathsea" "tests" "web2c"))
+            ;; Tests require the "texmf.cnf" file to still be present in the
+            ;; tree.
+            (with-directory-excursion "texk/kpathsea"
+              (for-each
+               delete-file-recursively
+               (scandir "." (lambda (f)
+                              (not (member f '("." ".." "texmf.cnf")))))))))))
+    (build-system gnu-build-system)
     (arguments
      (list
-      #:modules '((guix build gnu-build-system)
-                  (guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-1)
-                  (srfi srfi-26))
       #:out-of-source? #t
-      #:parallel-tests? #f              ;bibtex8.test fails otherwise
       #:configure-flags
       #~(let ((kpathsea #$(this-package-input "texlive-libkpathsea")))
           (list "--with-banner-add=/GNU Guix"
@@ -736,158 +748,91 @@ and should be preferred to it whenever a package would otherwise depend on
                 "--disable-native-texlive-build"
                 "--disable-static"
                 "--disable-linked-scripts"
-                "--disable-kpathsea"
-                "--with-system-cairo"
-                "--with-system-freetype2"
-                "--with-system-gd"
-                "--with-system-gmp"
-                "--with-system-graphite2"
-                "--with-system-harfbuzz"
-                "--with-system-icu"
-                "--with-system-libgs"
-                "--with-system-libpaper"
-                "--with-system-libpng"
-                "--with-system-mpfr"
-                "--with-system-pixman"
-                "--with-system-potrace"
-                "--with-system-teckit"
-                "--with-system-zlib"
-                "--with-system-zziplib"
+                "--disable-all-pkgs"
                 ;; Help locating external kpathsea.  For some reason
                 ;; PKG-CONFIG is unable to find it.
                 "--with-system-kpathsea"
                 (format #f "--with-kpathsea-includes=~a/include" kpathsea)
-                (format #f "--with-kpathsea-lib=~a/lib" kpathsea)
-                ;; LuaJIT is not ported to some architectures yet.
-                #$@(if (or (target-ppc64le?)
-                           (target-riscv64?))
-                       '("--disable-luajittex"
-                         "--disable-luajithbtex"
-                         "--disable-mfluajit")
-                       '())))
-      ;; Disable tests on some architectures to cope with a failure of
-      ;; luajiterr.test.
-      ;;
-      ;; XXX FIXME fix luajit properly on these architectures.
-      #:tests? (let ((s (or (%current-target-system)
-                            (%current-system))))
-                 (not (or (string-prefix? "aarch64" s)
-                          (string-prefix? "mips64" s)
-                          (string-prefix? "powerpc64le" s))))
+                (format #f "--with-kpathsea-libdir=~a/lib" kpathsea)
+                "--enable-web2c"
+                ;; Disable web2c parts provided in their own packages.  See
+                ;; "texk/web2c/ac/web2c.ac" in source.
+                "--disable-aleph"
+                "--disable-eptex"
+                "--disable-euptex"
+                "--disable-hitex"
+                "--disable-luajithbtex"
+                "--disable-luajittex"
+                "--disable-mflua"
+                "--disable-mfluajit"
+                "--disable-mp"
+                "--disable-pmp"
+                "--disable-ptex"
+                "--disable-upmp"
+                "--disable-uptex"
+                "--disable-web-progs"
+                "--disable-xetex"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'locate-external-kpathsea
-            ;; Despite our best efforts, the configure scripts below is not
-            ;; able to find external kpathsea.
+            ;; Despite our best efforts, the configure script below is not
+            ;; able to find an external Kpathsea library.  Set include
+            ;; directory when appropriate.
             (lambda _
-              (substitute* "texk/web2c/configure"
-                (("/usr/include /usr/local/include")
-                 (string-append #$(this-package-input "texlive-libkpathsea")
-                                "/include")))))
-          (add-after 'unpack 'patch-psutils-test
+              (when (file-exists? "texk/web2c/configure")
+                (substitute* "texk/web2c/configure"
+                  (("/usr/include /usr/local/include")
+                   (string-append #$(this-package-input "texlive-libkpathsea")
+                                  "/include"))))))
+          (add-after 'install 'maybe-create-symlinks
+            ;; Create symbolic links for the latex variants.  We link lualatex
+            ;; to luahbtex; see issue #51252 for details.
+            ;;
+            ;; Make it conditional so packages inheriting from this one do not
+            ;; need to remove this phase.
             (lambda _
-              ;; This test fails due to a rounding difference with libpaper
-              ;; 1.2: <https://github.com/rrthomas/libpaper/issues/23>.
-              ;;
-              ;; Adjust the expected outcome to account for the minute
-              ;; difference.
-              (substitute* "texk/psutils/tests/playres.ps"
-                (("844\\.647799") "844.647797"))))
-          (add-after 'unpack 'configure-ghostscript-executable
-            ;; ps2eps.pl uses the "gswin32c" ghostscript executable on
-            ;; Windows, and the "gs" ghostscript executable on Unix.  It
-            ;; detects Unix by checking for the existence of the /usr/bin
-            ;; directory.  Since Guix System does not have /usr/bin, it is
-            ;; also detected as Windows.
-            (lambda _
-              (substitute* "utils/ps2eps/ps2eps-src/bin/ps2eps.pl"
-                (("gswin32c") "gs"))))
-          (add-after 'unpack 'patch-dvisvgm-build-files
-            (lambda _
-              ;; XXX: Ghostscript is detected, but HAVE_LIBGS is never set, so
-              ;; the appropriate linker flags are not added.
-              (substitute* "texk/dvisvgm/configure"
-                (("^have_libgs=yes" all)
-                 (string-append all "\nHAVE_LIBGS=1")))))
-          (add-after 'unpack 'disable-failing-test
-            (lambda _
-              ;; FIXME: This test fails on 32-bit architectures since Glibc
-              ;; 2.28: <https://bugzilla.redhat.com/show_bug.cgi?id=1631847>.
-              (substitute* "texk/web2c/omegafonts/check.test"
-                (("^\\./omfonts -ofm2opl \\$srcdir/tests/check tests/xcheck \\|\\| exit 1")
-                 "./omfonts -ofm2opl $srcdir/tests/check tests/xcheck || exit 77"))))
-          #$@(if (or (target-ppc32?)
-                     (target-riscv64?))
-                 ;; Some mendex tests fail on some architectures.
-                 `((add-after 'unpack 'skip-mendex-tests
-                     (lambda _
-                       (substitute* '("texk/mendexk/tests/mendex.test"
-                                      "texk/upmendex/tests/upmendex.test")
-                         (("srcdir/tests/pprecA-0.ind pprecA-0.ind1 \\|\\| exit 1")
-                          "srcdir/tests/pprecA-0.ind pprecA-0.ind1 || exit 77")))))
-                 '())
-          #$@(if (or (target-arm32?)
-                     (target-ppc32?))
-                 `((add-after 'unpack 'skip-faulty-test
-                     (lambda _
-                       ;; Skip this faulty test on armhf-linux:
-                       ;;   https://issues.guix.gnu.org/54055
-                       (substitute* '("texk/mendexk/tests/mendex.test"
-                                      "texk/upmendex/tests/upmendex.test")
-                         (("^TEXMFCNF=" all)
-                          (string-append "exit 77 # skip\n" all))))))
-                 '())
-          (add-after 'install 'post-install
-            (lambda _
-              ;; Create symbolic links for the latex variants.  We link
-              ;; lualatex to luahbtex; see issue #51252 for details.
               (with-directory-excursion (string-append #$output "/bin/")
-                (for-each symlink
-                          '("pdftex" "pdftex"   "xetex"   "luahbtex")
-                          '("latex"  "pdflatex" "xelatex" "lualatex")))
-              ;; texlua shebangs are not patched by the patch-source-shebangs
-              ;; phase because the texlua executable does not exist at that
-              ;; time.
-              (setenv "PATH"
-                      (string-append (getenv "PATH") ":" #$output "/bin"))
+                (when (file-exists? "tex") ;for TEXLIVE-BIN only
+                  (for-each symlink
+                            '("pdftex" "pdftex"   "luahbtex")
+                            '("latex"  "pdflatex" "lualatex"))
+                  ;; XXX: No matter the combination of configure flags,
+                  ;; process insists on creating those dangling links,
+                  ;; resulting in an error during `validate-runpath' phase.
+                  (for-each delete-file
+                            '("pbibtex" "pdvitype" "ppltotf" "ptftopl"))))))
+          (add-after 'install 'remove-documentation
+            ;; Documentation is provided by specific TeX Live packages, in
+            ;; a dedicated "doc" output.  Ignore documentation generated when
+            ;; building TEXLIVE-BIN and its derivatives.
+            (lambda _
               (with-directory-excursion #$output
-                (assoc-ref %standard-phases 'patch-source-shebangs)))))))
-    (native-inputs (list groff-minimal pkg-config))
+                (for-each (lambda (d)
+                            (when (file-exists? d)
+                              (delete-file-recursively d)))
+                          '("share/info"
+                            "share/man"
+                            "share/texmf-dist/doc"))))))))
+    (native-inputs (list perl pkg-config))
     (inputs
-     (list cairo
-           config
-           fontconfig
-           fontforge
-           freetype
-           gd
-           ghostscript
-           gmp
-           graphite2
+     (list fontconfig
            harfbuzz
            icu4c
-           libpaper
            libpng
-           libxaw
            libxt
-           mpfr
-           perl
-           pixman
-           potrace
-           python
-           ruby-2.7
-           tcsh
-           teckit
            zlib
            zziplib))
     (propagated-inputs (list texlive-libkpathsea texlive-scripts))
     (synopsis "TeX Live, a package of the TeX typesetting system")
     (description
      "TeX Live provides a comprehensive TeX document production system.
-It includes all the major TeX-related programs, macro packages, and fonts
-that are free software, including support for many languages around the
-world.
+It includes all the major TeX-related programs, macro packages, and fonts that
+are free software, including support for many languages around the world.
 
-This package contains the binaries.")
+This package contains some Web2C binaries and Metafont.  TeX engines, in
+addition to TeX itself, are limited to LuaHBTeX, LuaTeX and pdfTeX.  For
+a self-sufficient TeX installation, users are advised to add at least a TeX
+Live collection or scheme package to their profile instead of this package.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
     (home-page "https://www.tug.org/texlive/")))
 
