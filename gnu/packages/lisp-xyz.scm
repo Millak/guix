@@ -4762,6 +4762,51 @@ from/to strings, streams and files.")
 (define-public ecl-cl-csv
   (sbcl-package->ecl-package sbcl-cl-csv))
 
+(define-public sbcl-cl-data-structures
+  (let ((commit "25dd479377eb40ce54eed4ecc0d660aed32f3a78")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-data-structures")
+      (version (git-version "1.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sirherrbatka/cl-data-structures")
+               (commit commit)))
+         (file-name (git-file-name "cl-data-structures" version))
+         (sha256
+          (base32 "1yhfahnsx56s9jzdk7jnqic5a3fiq29i1a9d0ay6fd1rg2wfa3k3"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-prove))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cl-ppcre
+             sbcl-closer-mop
+             sbcl-documentation-utils-extensions
+             sbcl-flexichain
+             sbcl-iterate
+             sbcl-lparallel
+             sbcl-metabang-bind
+             sbcl-more-conditions
+             sbcl-serapeum
+             sbcl-trivial-garbage))
+      (synopsis "Data Structures and streaming algorithms for Common Lisp")
+      (description
+       "CL-DATA-STRUCTURES is a Common Lisp library providing a portable
+collection of mutable and immutable data structures (dictionaries, sets,
+queues, sequences) and algorithms.")
+      (home-page "https://sirherrbatka.github.io/cl-data-structures/main.html")
+      (license license:bsd-2))))
+
+(define-public cl-data-structures
+  (sbcl-package->cl-source-package sbcl-cl-data-structures))
+
+(define-public ecl-cl-data-structures
+  (sbcl-package->ecl-package sbcl-cl-data-structures))
+
 (define-public sbcl-cl-debug
   (let ((commit "b334280806104ee7f7d3aec666bf7e08d2f89b31")
         (revision "1"))
