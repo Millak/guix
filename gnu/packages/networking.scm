@@ -3850,7 +3850,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
 (define-public opendht
   (package
     (name "opendht")
-    (version "3.1.7")
+    (version "3.1.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3859,7 +3859,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15jx62fm1frbbvpkxysvvwz1a8d605xi53aacf0bvp4mb1dzpddn"))))
+                "05zli0c14wg5dafw12xjhnva0rlsm3dgiksn6n9g8ab990d915ll"))))
     (outputs '("out" "python" "tools" "debug"))
     (build-system gnu-build-system)
     (arguments
