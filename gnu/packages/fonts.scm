@@ -3841,3 +3841,40 @@ the pixel grid of standard digital screens.  Oswald is designed to be
 used freely across the internet by web browsers on desktop computers,
 laptops and mobile devices.")
       (license license:silofl1.1))))
+
+(define-public font-teko
+  (let ((version "0")
+        (commit "2bf909d46b0061a5e3e16e8acc4fef670e36a8f2")
+        (revision "0"))
+    (package
+      (name "font-teko")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/googlefonts/teko")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "18gwb3k4a3a2406pxpxh9zcziggajl8wwki4730xsh1m066f6gk9"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/googlefonts/teko")
+      (synopsis "Devanagari and Latin scripts typeface")
+      (description "Teko is a typeface that currently supports the
+Devanagari and Latin scripts.  This font family has been created for
+use in headlines and other display-sized text on screen.  Five font
+styles make up the initial release.
+
+The Teko typeface features letterforms with low stroke contrast,
+square proportions and a structure that appears visually simple.
+
+The Regular, Medium and Semibold fonts are recommended for use in long
+headlines, while Bold is intended primarily for setting just one or
+two words.  The Light is a variant that may be put to good use in
+large headlines on websites.  At display sizes, Teko works equally
+well on screen or in print.  Each font contains 1090 glyphs, offering
+full support for the conjuncts and ligatures required by languages
+written with the Devanagari script.")
+      (license license:silofl1.1))))
