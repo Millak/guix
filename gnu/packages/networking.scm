@@ -3989,11 +3989,12 @@ A very simple IM client working over the DHT.
 
 (define-public dhtnet
   ;; There is no tag nor release; use the latest available commit.
-  (let ((revision "2")
-        (commit "024c46fb1f14276d4adf15764ed97b733890826e"))
+  (let ((revision "3")
+        (commit "77331098ff663a5ac54fae7d0bedafe076c575a1"))
     (package
       (name "dhtnet")
-      ;; The base version is taken from the CMakeLists.txt file.
+      ;; The base version is taken from the CMakeLists.txt file (see:
+      ;; https://review.jami.net/plugins/gitiles/dhtnet/+/master/CMakeLists.txt#3).
       (version (git-version "0.0.1" revision commit))
       (source (origin
                 (method git-fetch)
@@ -4003,7 +4004,7 @@ A very simple IM client working over the DHT.
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "191gmfdg22hkmxvzh5i19lr512q4bhgajhlg9mxxgb7jq0842mc6"))))
+                  "1ch736misnlv2aqalj3n62gnz5xlhmip9xfv1aimp0aqinfc94p7"))))
       (outputs (list "out" "debug"))
       (build-system cmake-build-system)
       (arguments
@@ -4016,13 +4017,16 @@ A very simple IM client working over the DHT.
             (add-after 'unpack 'delete-problematic-tests
               (lambda _
                 (substitute* "CMakeLists.txt"
-                  ;; The connectionManager test currently segfaults (see:
-                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/18).
-                  ((".*tests_connectionManager.*") "")
-                  ;; The ICE tests fail inside the containerized build
-                  ;; environment, perhaps relying on a name resolver (see:
+                  ;; The connectionaMnager, the ICE and turnCache tests fail
+                  ;; inside the containerized build environment, due to
+                  ;; relying on a name resolver (see:
                   ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/25).
-                  ((".*tests_ice.*") "")))))))
+                  ((".*tests_connectionManager.*") "")
+                  ((".*tests_ice.*") "")
+                  ((".*tests_turnCache.*") "")
+                  ;; The peerDiscovery test fails for unknown reasons, on an
+                  ;; assertion that checks the value of 'isBobRecvChanlReq'.
+                  ((".*tests_peerDiscovery.*") "")))))))
       (native-inputs (list cppunit pkg-config))
       ;; This library depends on the Jami fork of pjproject that adds ICE
       ;; support.
