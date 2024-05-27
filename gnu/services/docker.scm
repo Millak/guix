@@ -687,18 +687,19 @@ operating-system, gexp or file-like records but ~a was found")
                         (if (oci-image? image) name image) "."))
                       (start
                        #~(lambda ()
-                          (when #$(oci-image? image)
-                            (invoke #$(%oci-image-loader
-                                       name image image-reference)))
-                          (fork+exec-command
-                           ;; docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
-                           (list #$docker "run" "--rm" "--name" #$name
-                                 #$@options #$@extra-arguments
-                                 #$image-reference #$@command)
-                           #:user #$user
-                           #:group #$group
-                           #:environment-variables
-                           (list #$@host-environment))))
+                           #$@(if (oci-image? image)
+                                  #~((invoke #$(%oci-image-loader
+                                                name image image-reference)))
+                                  #~())
+                           (fork+exec-command
+                            ;; docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+                            (list #$docker "run" "--rm" "--name" #$name
+                                  #$@options #$@extra-arguments
+                                  #$image-reference #$@command)
+                            #:user #$user
+                            #:group #$group
+                            #:environment-variables
+                            (list #$@host-environment))))
                       (stop
                        #~(lambda _
                            (invoke #$docker "rm" "-f" #$name)))
