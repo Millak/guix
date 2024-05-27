@@ -2718,8 +2718,7 @@ many readers as needed).")
                   (guix build utils))
        #:imported-modules ((guix build guile-build-system)
                            ,@%gnu-build-system-modules)
-       #:configure-flags (list "--with-ncursesw" ; Unicode support
-                               "--with-gnu-filesystem-hierarchy")
+       #:configure-flags (list "--with-gnu-filesystem-hierarchy")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'fix-libguile-ncurses-file-name
