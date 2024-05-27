@@ -275,6 +275,66 @@
 of user-specified directories similar to how shells look up executables.")
     (license license:lgpl2.1)))
 
+(define-public texlive-libptexenc
+  (package
+    (name "texlive-libptexenc")
+    (version (number->string %texlive-revision))
+    (source
+     (origin
+       (inherit texlive-source)
+       (modules '((guix build utils)
+                  (ice-9 ftw)))
+       (snippet
+        #~(let ((delete-other-directories
+                 (lambda (root dirs)
+                   (with-directory-excursion root
+                     (for-each
+                      delete-file-recursively
+                      (scandir "."
+                               (lambda (file)
+                                 (and (not (member file (append '("." "..") dirs)))
+                                      (eq? 'directory (stat:type (stat file)))))))))))
+            (delete-other-directories "libs" '())
+            (delete-other-directories "utils" '())
+            (delete-other-directories "texk" '("ptexenc"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:out-of-source? #t
+      #:configure-flags
+      #~(list "--disable-static"
+              "--disable-native-texlive-build"
+              "--enable-shared"
+              "--with-banner-add=/GNU Guix"
+              "--disable-all-pkgs")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'install-missing-files
+            ;; These two files are not installed (on purpose, see ChangeLog),
+            ;; but are required nonetheless if this library is meant to be
+            ;; used externally.
+            (lambda _
+              (with-directory-excursion "texk/ptexenc/ptexenc"
+                (let ((inc (string-append #$output "/include/ptexenc")))
+                  (for-each (lambda (f) (install-file f inc))
+                            '("kanjicnv.h" "unicode-jp.h"))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "texk/ptexenc"
+                  (invoke "make" "check")))))
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "texk/ptexenc"
+                (invoke "make" "install")))))))
+    (native-inputs (list pkg-config texlive-libkpathsea))
+    (inputs (list libiconv))
+    (home-page "http://tutimura.ath.cx/ptexlive/?ptexenc%2FDetails")
+    (synopsis "Library for Japanese pTeX")
+    (description
+     "This package provides a library for Japanese pTeX and its surrounding tools.")
+    (license license:gpl2)))
+
 (define-public texlive-scripts
   (package
     (name "texlive-scripts")
