@@ -2099,7 +2099,8 @@ number styles are available.")
     (build-system texlive-build-system)
     (arguments (list #:create-formats #~(list "aleph")))
     (propagated-inputs
-     (list texlive-cm
+     (list texlive-aleph-bin
+           texlive-cm
            texlive-hyphen-base
            texlive-knuth-lib
            texlive-lambda
@@ -2111,6 +2112,31 @@ number styles are available.")
      "This package provides a development of Omega, using most of the
 extensions of TeX, itself developed for e-TeX.")
     (license license:gpl3+)))
+
+(define-public texlive-aleph-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-aleph-bin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(cons* "--disable-web2c"
+                 "--enable-aleph"
+                 (delete "--disable-aleph"
+                         (delete "--enable-web2c" #$flags))))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/web2c"
+                  (invoke "make" "aleph")
+                  (install-file "aleph" (string-append #$output "/bin")))))))))
+    (native-inputs (list pkg-config))
+    (home-page (package-home-page texlive-aleph))
+    (synopsis "Binary for @code{texlive-aleph}")
+    (description
+     "This package provides the binary for @code{texlive-aleph}.")
+    (license (package-license texlive-aleph))))
 
 (define-public texlive-alfaslabone
   (package
