@@ -24202,11 +24202,53 @@ LuaTeX.")
               "06kzz0342h6vvc32ydrzgpqsdqv5l0jbd5finr43fmzqi5jnswil")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs (list texlive-omegaware-bin))
     (home-page "https://ctan.org/pkg/omega")
-    (synopsis "Documentation for Omega executables")
+    (synopsis "Wide-character-set extension of TeX")
     (description
-     "This package provides the documentation for Omega executables.")
+     "This package provides a development of TeX, which deals in multi-octet
+Unicode characters, to enable native treatment of a wide range of languages
+without changing character-set.  Work on Omega has ceased (the TeX Live
+package contains only support files); its compatible successor is Aleph, which
+is itself also in major maintenance mode only.  Ongoing projects developing
+Omega (and Aleph) ideas include Omega-2 and LuaTeX.")
     (license license:gpl3+)))
+
+(define-public texlive-omegaware-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-omegaware-bin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(delete "--enable-web2c" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin")))
+                  (with-directory-excursion "texk/web2c"
+                    (let ((files '("odvicopy" "odvitype""otangle" "wofm2opl"
+                                   "wopl2ofm" "wovf2ovp")))
+                      (for-each (lambda (t) (invoke "make" t)) files)
+                      (for-each (lambda (f) (install-file f bin)) files))
+                    (with-directory-excursion "omegafonts"
+                      (invoke "make" "omfonts")
+                      (install-file "omfonts" bin))
+                    (with-directory-excursion "otps"
+                      (for-each (lambda (t)
+                                  (invoke "make" t)
+                                  (install-file t bin))
+                                '("otp2ocp" "outocp"))))
+                  (with-directory-excursion bin
+                    (for-each (lambda (l) (symlink "omfonts" l))
+                              '("ofm2opl" "opl2ofm" "ovf2ovp" "ovp2ovf"))))))))))
+    (native-inputs (list pkg-config))
+    (home-page (package-home-page texlive-omegaware))
+    (synopsis "Binaries for @code{texlive-omegaware}")
+    (description
+     "This package provides the binaries for @code{texlive-omegaware}.")
+    (license (package-license texlive-omegaware))))
 
 (define-public texlive-onrannual
   (package
