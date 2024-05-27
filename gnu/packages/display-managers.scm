@@ -69,7 +69,7 @@
 (define-public sddm
   (package
     (name "sddm")
-    (version "0.20.0")
+    (version "0.21.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -78,7 +78,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1450zv03d3mbid27986p4mdshw9qf3ar8crl4idybf7khxgan22y"))))
+                "0mxrh0z9x4r4bli25g746n66adwnf3r42lzq0yssc50v9y7fc1a1"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config qttools-5))
@@ -105,6 +105,8 @@
       #~(list
          "-DENABLE_WAYLAND=ON"
          "-DENABLE_PAM=ON"
+         ;; PAM is configured by pam service.
+         "-DINSTALL_PAM_CONFIGURATION=OFF"
          ;; Both flags are required for elogind support.
          "-DNO_SYSTEMD=ON"
          "-DUSE_ELOGIND=ON"
