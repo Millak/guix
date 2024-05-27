@@ -43460,6 +43460,7 @@ university, is proposed.")
               "122r0aq02vwx6irsnapnfbvhgy5d09x90rc8zc7a0bi7b25bxnd1")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs (list texlive-texware-bin))
     (home-page "https://ctan.org/pkg/texware")
     (synopsis "Utility programs for use with TeX")
     (description
@@ -43470,6 +43471,30 @@ file into human-readable form; @command{tftopl} and @command{pltotf}, which
 convert TeX Font Metric (TFM) file to human readable Property List (PL) files
 and vice versa.")
     (license license:public-domain)))
+
+(define-public texlive-texware-bin
+  (package
+    (inherit texlive-bin)
+    (name "texlive-texware-bin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags flags)
+        #~(delete "--enable-web2c" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "texk/web2c"
+                  (let ((bin (string-append #$output "/bin"))
+                        (files '("dvitype" "pooltype")))
+                    (for-each (lambda (f) (invoke "make" f)) files)
+                    (for-each (lambda (f) (install-file f bin)) files)))))))))
+    (native-inputs (list pkg-config))
+    (home-page (package-home-page texlive-texware))
+    (synopsis "Binaries for @code{texlive-texware}")
+    (description
+     "This package provides the binaries for @code{texlive-texware}.")
+    (license (package-license texlive-texware))))
 
 (define-public texlive-ticollege
   (package
