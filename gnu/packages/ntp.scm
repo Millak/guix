@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,11 +30,13 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages tls)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
@@ -47,14 +50,16 @@
 (define-public chrony
   (package
     (name "chrony")
-    (version "4.4")
+    (version "4.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://download.tuxfamily.org/chrony/"
-                           "chrony-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/chrony/chrony")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "123h2a9rpc6wbvnysvhl5pmckvynzrnqay7l00i18azrvbk0gyza"))))
+        (base32 "0w6wgpgvwidsfc4mmi5zb73y9lydzwgwxpj0q5r1m47gd1qxa24n"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -79,23 +84,24 @@
               (let* ((doc (string-append #$output "/share/doc/"
                                          #$name "-" #$version)))
                 (for-each (cut install-file <> doc)
-                          (list "README" "FAQ"))
+                          (list "README"))
                 (copy-recursively "examples"
                                   (string-append doc "/examples"))))))))
     (native-inputs
-     (list pkg-config))
+     (list bison ruby-asciidoctor pkg-config))
     (inputs
      (list gnutls libcap libseccomp nettle))
-    (home-page "https://chrony.tuxfamily.org/")
-    (synopsis "System clock synchronisation service that speaks NTP")
+    (home-page "https://chrony-project.org/")
+    (synopsis "System clock synchronization service that speaks NTP")
     (description
      "Chrony keeps your system time accurate.  It synchronises your computer's
 clock with @acronym{NTP, Network Time Protocol} servers, reference clocks such
 as GPS receivers, or even manual input of the correct time from a wristwatch.
 
 Chrony will determine the rate at which the computer gains or loses time, and
-compensate for it.  It can also operate as an NTPv4 (RFC 5905) server and peer
-to tell time to other computers on the network.
+compensate for it.  It can also operate as an
+NTPv4 (@url{https://www.rfc-editor.org/rfc/rfc5905, RFC 5905}) server and peer to
+tell time to other computers on the network.
 
 It's designed to perform well even under adverse conditions: congested
 networks, unreliable clocks drifting with changes in temperature, and devices
