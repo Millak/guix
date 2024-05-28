@@ -48040,8 +48040,22 @@ in the same way as BSD/GNU @code{getopt_long(3)} functions do.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     (list #:texlive-latex-bin? #f
-           #:create-formats #~(list "dviluatex" "luatex")))
+     (list
+      #:texlive-latex-bin? #f
+      #:create-formats #~(list "dviluatex" "luatex")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'customize-texmfcnf.lua
+            (lambda _
+              (substitute* "web2c/texmfcnf.lua"
+                (("TEXMFDIST *=.*") "TEXMFDIST = os.getenv(\"GUIX_TEXMF\"),\n")
+                (("TEXMFSYSVAR *=.*")
+                 "TEXMFSYSVAR = \"$TEXMFDIST/../texmf-var\",\n")
+                (("TEXMFSYSCONFIG *=.*")
+                 "TEXMFSYSCONFIG = \"$TEXMFDIST/../texmf-config\",\n")
+                (("TEXMF *=.*")
+                 "TEXMF = \"{$TEXMFCONFIG,$TEXMFVAR,$TEXMFHOME,$TEXMFSYSCONFIG,$TEXMFSYSVAR,$TEXMFDIST}\",\n")))))))
+    (native-inputs (list texlive-kpathsea))
     (propagated-inputs
      (list texlive-cm
            texlive-etex
