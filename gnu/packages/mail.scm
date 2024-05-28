@@ -1975,7 +1975,7 @@ delivery.")
 (define-public exim
   (package
     (name "exim")
-    (version "4.96.1")
+    (version "4.97.1")
     (source
      (origin
        (method url-fetch)
@@ -1989,7 +1989,7 @@ delivery.")
                     (string-append "https://ftp.exim.org/pub/exim/exim4/old/"
                                    file-name))))
        (sha256
-        (base32 "0g83cxkq3znh5b3r2a3990qxysw7d2l71jwcxaxzvq8pqdahgb4k"))))
+        (base32 "1afzxyffjqm2xm5v6b731hbfm1fi4q35ja45a29kaycsa1bj0y5x"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
@@ -2042,6 +2042,12 @@ delivery.")
                    (substitute* "scripts/Configure-config.h"
                      (("\\| /bin/sh") "| sh"))
                    (patch-shebang "scripts/Configure-eximon")))
+               (add-before 'build 'fix-perl-file-names
+                 (lambda _
+                  (substitute* (list  "Local/Makefile"
+                                      "OS/Makefile-Default")
+                    (("PERL_COMMAND=/usr/bin/perl")
+                     (string-append "PERL_COMMAND=" #$perl "/bin/perl")))))
                (add-before 'build 'build-reproducibly
                  (lambda _
                    ;; The ‘compilation number’ increments on every build in the
@@ -2066,6 +2072,7 @@ delivery.")
            libxaw
            libxt
            perl
+           perl-file-fcntllock
            xz))
     (home-page "https://www.exim.org/")
     (synopsis
