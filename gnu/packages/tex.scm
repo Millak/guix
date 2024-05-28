@@ -58768,17 +58768,30 @@ a counter to be reset when another is incremented) and
     (build-system texlive-build-system)
     (arguments
      (list
-      #:link-scripts #~(list "context.lua" "mtxrun.lua")
+      #:link-scripts #~(list "mtxrun.lua")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'link-scripts 'add-symlinks
+          (add-after 'unpack 'locate-texmfcnf.lua
+            ;; Out of the box, "mtxrun" first looks for "texmfcnf.lua" in
+            ;; "~/texmf", then in TEXMFCNF.  The latter is set within
+            ;; TEXLIVE-LIBKPATHSEA; it cannot contain the configuration file
+            ;; provided by TEXLIVE-LUATEX.  Point to the right file instead.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((texmfcnf.lua
+                     (search-input-file inputs
+                                        "share/texmf-dist/web2c/texmfcnf.lua")))
+                (substitute* (find-files "." "\\.lua$")
+                  (("kpse\\.default_texmfcnf\\(\\)")
+                   (format #f "\"~a\"" (dirname texmfcnf.lua)))))))
+          (add-after 'unpack 'create-context-wrapper
+            ;; Create a "context" script for convenience.
             (lambda _
+              (mkdir-p (string-append #$output "/bin"))
               (with-directory-excursion (string-append #$output "/bin")
-                (symlink "../share/texmf-dist/scripts/context/lua/context.lua"
-                         "context.lua")
-                (symlink "../share/texmf-dist/scripts/context/lua/mtxrun.lua"
-                         "mtxrun.lua")
-                (symlink "mtxrun" "luametatex")))))))
+                (call-with-output-file "context"
+                  (lambda (port)
+                    (format port "#!/bin/sh~%mtxrun --script context \"$@\"")))
+                (chmod "context" #o755)))))))
     (propagated-inputs
      (list texlive-amsfonts
            texlive-lm
