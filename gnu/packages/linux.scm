@@ -8939,7 +8939,15 @@ libraries, which are often integrated directly into libfabric.")
                  "psm-arch.patch"     ; uname -p returns "unknown" on Debian 9
                  "psm-ldflags.patch"  ; build shared lib with LDFLAGS
                  "psm-repro.patch"    ; reproducibility
-                 "psm-disable-memory-stats.patch"))))
+                 "psm-disable-memory-stats.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; That file declares its own 'strlcat' as static.  To avoid a
+        ;; conflict with the function now in glibc 2.39, give it a
+        ;; different name.
+        #~(substitute* "ptl_ips/ips_proto_dump.c"
+            (("strlcat")
+             "psm_custom_strlcat")))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (inputs `(("libuuid" ,util-linux "lib")))
