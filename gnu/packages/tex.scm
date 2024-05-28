@@ -4167,8 +4167,6 @@ other parts.")
       #:tests? #true
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: Since we're building "axohelp" from source here, it can be
-          ;; removed from `texlive-bin' (world rebuild).
           (add-after 'unpack 'build-axohelp
             (lambda* (#:key tests? #:allow-other-keys)
               (with-directory-excursion "source/latex/axodraw2"
