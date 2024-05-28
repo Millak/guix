@@ -31196,6 +31196,58 @@ and implementation of treeview controls using treemacs as a tree renderer.")
 in Docker environment.")
       (license license:gpl3+))))
 
+(define-public emacs-dape
+  (let ((commit "51fad7df7473778fbc4bac703317de7f7713b307")
+        (revision "0"))
+    (package
+      (name "emacs-dape")
+      (version (git-version "0.12.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/svaante/dape")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1jics02b9fxjs0lykiv7z924z18id550mqhf6piqzv0sgan91pg2"))))
+      (build-system emacs-build-system)
+      (arguments
+       ;; FIXME python tests pass, JS tests require additional dependencies
+       ;; See https://lists.sr.ht/~abcdw/rde-devel/patches/51878
+       (list #:tests? #f
+             #:test-command #~'("emacs" "--batch" "-l" "dape.el"
+                                "-l" "dape-tests.el"
+                                "-f" "ert-run-tests-batch-and-exit")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'support-unwrapped-python
+                   (lambda _
+                     (substitute* "dape.el"
+                       (("command \"python\"")
+                        "command \"python3\""))))
+                 (add-before 'check 'pre-check
+                   (lambda* (#:key tests? inputs #:allow-other-keys)
+                     (if tests?
+                         (setenv
+                          "PATH"
+                          (string-append
+                           (getenv "PATH")
+                           ":" (dirname (search-input-file inputs "/bin/python3"))
+                           ":" (dirname (search-input-file inputs "/bin/node"))))
+                         (format #t "test suite not run~%")))))))
+      (native-inputs (list node-lts python-minimal python-debugpy))
+      (propagated-inputs (list emacs-jsonrpc))
+      (home-page "https://github.com/svaante/dape")
+      (synopsis "Debug Adapter Protocol for Emacs")
+      (description
+       "Dape is a debug adapter client for Emacs.  The debug adapter protocol,
+much like its more well-known counterpart, the language server protocol,
+aims to establish a common API for programming tools.  However, instead of
+functionalities such as code completions, it provides a standardized
+interface for debuggers.")
+      (license license:gpl3+))))
+
 (define-public emacs-dap-mode
   (package
     (name "emacs-dap-mode")
