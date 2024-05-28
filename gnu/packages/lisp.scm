@@ -27,6 +27,7 @@
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Andrew Kravchuk <awkravchuk@gmail.com>
 ;;; Copyright © 2024 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2024 bigbug <bigbookofbug@proton.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,12 +63,15 @@
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -1614,3 +1618,40 @@ be built as a stand-alone REPL interpreter.")
                 (delete-file (string-append #$output "/bin/ffitest"))))))))
     (native-inputs (list s7-bootstrap))
     (properties (alist-delete 'hidden? (package-properties s7-bootstrap)))))
+
+(define-public roswell
+  (package
+   (name "roswell")
+   (version "23.10.14.114")
+   (home-page "https://github.com/roswell/roswell")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/roswell/roswell")
+           (commit (string-append "v" version))))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32 "05w5sjh1bfy2wnblc09cb9qs8h7hxkx5hcqlbgpn7md32b0m4h7g"))))
+   (build-system gnu-build-system)
+   (arguments
+    (list #:configure-flags #~(list (string-append "--prefix=" #$output))
+          #:tests? #f))
+   (native-inputs
+    (list autoconf automake intltool))
+   (inputs
+    (list curl))
+   (propagated-inputs
+    ;; Has to be propagated in order to be found during setup.
+    (list gnu-make patchelf))
+   (synopsis "Common Lisp implementation manager, launcher, and more")
+   (description
+    "Roswell started out as a command-line tool with the aim to make
+installing and managing Common Lisp implementations really simple and easy.
+Roswell has now evolved into a full-stack environment for Common Lisp
+development, and has many features that makes it easy to test, share, and
+distribute your Lisp applications.
+
+Roswell is still in beta.  Despite this, the basic interfaces are stable and
+not likely to change.")
+   (license license:expat)))
