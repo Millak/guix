@@ -65,7 +65,6 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2024 dan <i@dan.games>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -235,23 +234,30 @@ simplicity in mind.")
 (define-public aide
   (package
     (name "aide")
-    (version "0.16.2")
+    (version "0.18.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/aide/aide/releases/download/v"
                            version "/aide-" version ".tar.gz"))
        (sha256
-        (base32 "15xp47sz7kk1ciffw3f5xw2jg2mb2lqrbr3q6p4bkbz5dap9iy8p"))))
+        (base32 "0q1sp0vwrwbmw6ymw1kwd4i8walijwppa0dq61b2qzni6b32srhn"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~(list "--with-posix-acl"
+                                     "--with-selinux"
+                                     "--with-xattr"
+                                     "--with-config-file=/etc/aide.conf")))
     (native-inputs
-     (list bison flex))
+     (list bison flex pkg-config))
     (inputs
-     (list libgcrypt
+     (list acl
+           attr
+           libgcrypt
            libgpg-error
            libmhash
-           `(,pcre "static")
-           pcre
+           libselinux
+           pcre2
            `(,zlib "static")
            zlib))
     (synopsis "File and directory integrity checker")
