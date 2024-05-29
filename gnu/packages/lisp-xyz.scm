@@ -12343,10 +12343,10 @@ JavaScript code.")
   (sbcl-package->ecl-package sbcl-css-lite))
 
 (define-public sbcl-ctype
-  (let ((commit "4fc4c5ae44c435ed82556969f698005bee50101c"))
+  (let ((commit "9b824aa75d7ceb9f3504590b09c6d8a57269f026"))
     (package
       (name "sbcl-ctype")
-      (version (git-version "0.0.0" "1" commit))
+      (version (git-version "0.0.0" "2" commit))
       (source
        (origin
          (method git-fetch)
@@ -12355,12 +12355,12 @@ JavaScript code.")
                (commit commit)))
          (file-name (git-file-name "cl-ctype" version))
          (sha256
-          (base32 "05smc81ml9rbcbzdhqg2mi9drnjsipq62r5q7f7qql8hbx01vl9i"))))
+          (base32 "00d82v7hb7vii6gaaaa7ykzl70hga93laz7w9z1hhdl3z7zb473a"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria))
       (arguments
-       '(#:asd-systems '("ctype" "ctype-tfun")))
+       '(#:asd-systems '("ctype" "ctype/tfun" "ctype/ext")))
       (home-page "https://github.com/s-expressionists/ctype")
       (synopsis "Common Lisp type system implementation")
       (description
