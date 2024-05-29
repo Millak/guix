@@ -25778,14 +25778,14 @@ objects on other machines, also known as remote procedure calls (RPC).")
 (define-public python-phonenumbers
   (package
     (name "python-phonenumbers")
-    (version "8.9.1")
+    (version "8.13.37")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "phonenumbers" version))
        (sha256
         (base32
-         "03fmrgb4r8x3ykmddjs9i3zhs703in8smikj3a6447blqpimwyh1"))))
+         "1whw3p0p90x1iyw5cqf2pval90zy20c26ry3ywb0bsls2pnmycdx"))))
     (build-system python-build-system)
     (home-page
      "https://github.com/daviddrysdale/python-phonenumbers")
