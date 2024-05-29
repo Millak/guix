@@ -15,6 +15,7 @@
 # Copyright © 2020 David A. Redick <david.a.redick@gmail.com>
 # Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 # Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+# Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
 #
 # This file is part of GNU Guix.
 #
@@ -79,6 +80,12 @@ REQUIRE=(
     "tail"
     "tr"
     "xz"
+)
+
+# Add variables using form FOO_INIT_REQUIRE when init system FOO dependencies
+# should be checked.
+SYSV_INIT_REQUIRE=(
+    "daemonize"
 )
 
 PAS=$'[ \033[32;1mPASS\033[0m ] '
@@ -146,6 +153,18 @@ chk_require()
     [ "${#warn}" -ne 0 ] && die "Missing commands: ${warn[*]}."
 
     _msg "${PAS}verification of required commands completed"
+}
+
+add_init_sys_require()
+{ # Add the elements of FOO_INIT_SYS to REQUIRE
+    local init_require="${INIT_SYS}_REQUIRE[@]"
+    if [[ ! -z "$init_require" ]]; then
+        # Have to add piecemeal because ${!foo[@]} performs direct array key
+        # expansion, not indirect plain array expansion.
+        for r in "${!init_require}"; do
+            REQUIRE+=("$r")
+        done
+    fi
 }
 
 chk_gpg_keyring()
@@ -794,9 +813,10 @@ main_install()
     _msg "Starting installation ($(date))"
 
     chk_term
+    chk_init_sys
+    add_init_sys_require
     chk_require "${REQUIRE[@]}"
     chk_gpg_keyring
-    chk_init_sys
     chk_sys_arch
     chk_sys_nscd
 
