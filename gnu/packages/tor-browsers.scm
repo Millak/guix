@@ -110,56 +110,56 @@
   (mozilla-locales
    ;;                      sha256                            changeset    locale
    ;;---------------------------------------------------------------------------
-   ("14wnjv13alaj04pd8i8ysillbr3ic2jqa867rbj5ncz8h4hxxfxc" "4c7e24ef78bd" "ar")
-   ("0mcc15n3p7yk4zdbr3na2fm7wq2184mbcrkk3cvppkl6p4k8654d" "24d50653ab5c" "ca")
-   ("0ray22hdb3nrv2yi5z98cvbmpk9kpsv96a8wzad5dr4sxy44ii0d" "0d96b6b04bfb" "cs")
-   ("0is7qbykv2pj0z9ll9r35vwjp0x29vmfr10yjl3s0amfaqzjqpqc" "0a0b774407cc" "da")
-   ("0yq7m4v7d7ayg90m66j73mflrnp709qw9n7skhpsl9h1wbhrd7q7" "633986260777" "de")
-   ("19g2ha32syq6rjcyl4ypmy7sc9w7xkvrpkic5lfc2yja6ll9116p" "e2f2d1541e38" "el")
-   ("018qi9zn24kzfcidsj9lbqfg5n97r295yr8fs953nyfdbim9jsfv" "accf5e4506c0" "es-ES")
-   ("11prhmh2cp95dpv6z0k479mb11zbfm541bvigs3gnkh3nazjvc8q" "37aa71d77cb6" "fa")
-   ("1lv9l98q88ixb0ph970yzphahgzbl97x0w069bkxa54kblkv1ch1" "dc40a4fd5d0e" "fi")
-   ("0wx4k7mwhvpv5w0wa4y5pca2q3jac62jv804nxqnfwh1bvi90wv0" "415c1f0e84bd" "fr")
-   ("17j68a6rbaphfcq38mgz6s1076fyy92fk0ldw8igql6gd85qjlaa" "d271f275cf48" "ga-IE")
-   ("0b7qdayljb4ryyqgalvi626lzg238gyn03m3a2f7afs9zi6px526" "46f8d7c031a6" "he")
-   ("14xbrzvc09fcp7qzllb65nis27hkg9pg5615y29xzwiz4g090my1" "086ac0260d6b" "hu")
-   ("0q5s4iz02xgmbw6nnpg6xg4pwz7n55nvxb9mj8vqdakq3faybbd5" "f03a6b3069a5" "id")
-   ("1lwklx3nkm56420xc3kbg892jm2b6202sjw33nvv766sm9hbvcap" "5c4b61165e1d" "is")
-   ("1n7l5idw9399n8ih1r1d6m8vzpzhwmnxmr9i7jvygkdc8d6adp1k" "07d5e1ff5f9b" "it")
-   ("1w6nw9cd92p1ndy82wwlq9xizyq3i8rq0nj7118gbxbx368mk2kj" "e6f9db9ce3e6" "ja")
-   ("1js99gbyc1dj33xc425wb08s1aw3bfznaacrqhw3l42yw1g1ghy4" "a15eb9feea2c" "ka")
-   ("116a8s0k2yvijy7qf0xpqm5w66gdzs32jhc06364sdar5v34lyhh" "805b85981696" "ko")
-   ("1yrjrhmmd0b810kxryja1j1md3rr2zpn1j9cbg05dgp5s8i89psk" "943a26276832" "lt")
-   ("08zccz7gflzpr20y0hvhmdsiz6ncags39kh83cay5ivchyib5qbi" "fbef80de5499" "mk")
-   ("100k4ibpwys9i4ghi5xvmgwr9api67ngav2hvb613rj6hdfd57f7" "20ec0915ec35" "ms")
-   ("0kk3cjlpghbi7j3ndb2s0c7g838fzd2mpzg01bp0cra8lzd0n2ac" "4ab6f0d05aa6" "my")
-   ("1i3r2ici95mazw07m2mrf192fc6bfa3x6j3c2pcc1zg7z9srihgh" "561b0cd86ec1" "nb-NO")
-   ("1c0m8jhn52h1dif5bswrdwrlzppgga01y61wlii4aaaw15imd6yd" "2a55df0cc389" "nl")
-   ("1gssvg306b80drp7kvc35kvcxwldb5sga0bapaxhv362irq1nya8" "a64a7dab01c4" "pl")
-   ("1dzh13x85a7src8szbrq5pjmrbak4isln9xdwjk7a1yq4g9h7jgs" "33bf2a9f4c49" "pt-BR")
-   ("0jx9y7fv44wxqapmcgr924wgb1l5cm95bgpmnhnjchp1zpmyfdl5" "a367feeadd33" "ro")
-   ("09x2jirf04kgc118a70z0xrb3msbm7vr4f41ig4xrwf2s5b816r3" "528b76d6aaca" "ru")
-   ("02y898f0ncjwka474r9lw361b0kywx1w56hj09i7im4j5jrsjnh1" "fa28d9d79cd3" "sq")
-   ("1cyimbd42aaq2amyhdbbx26jwsns77lsfl8g9a70bsjlpwzwzryg" "cc8e8962e59c" "sv-SE")
-   ("03mqrvcal7i172gf9239q9fnynfp5kg9b3r1w8gr9iz7rkr22gw5" "d361502c559e" "th")
-   ("12srgqkqwaidcwbz0y7zr59165f7aq5k5s3b81ql7ixdbwia91pm" "f6173aca4762" "tr")
-   ("1d91gfx5p6wyb455syw0b57wxl1sd4b4kcdvfk92pb050rqaqfgv" "c5ad4d4f70eb" "uk")
-   ("1dj8q2jw60a184f018jyldl51rfmvz1cndz3kbw0cc5l5sli7hwr" "0e75c226763d" "vi")
-   ("1dl2dpif4wwrlpx7zkz5qf8kk4vhxyf63016xcfpbhxizqqwc1ki" "df2d025ed631" "zh-CN")
-   ("1c63ngff9lsc1x3pi6lnkyxw19gdc65yc67p7alzvrka3cv292ia" "11f8d68148a4" "zh-TW")))
+   ("1218mldjxybhgzdi0myzkwjr2fgnysl71pl847kr7wyn1j8wk3a5" "c25d00080479" "ar")
+   ("11c96jhfzd3h46qhblhvn2acsn895ykynarai8r5pf0655nfjs0j" "2de60e3d6d0c" "ca")
+   ("0yhycgb3s3kydbzy6f2q7f7g2lp975spr092prf9xp8ha62ghby7" "609edd15f9a9" "cs")
+   ("1kzx94n36c5vv954j7w65djvb37c178zazy25b35l71q2rvhmlhj" "2197a99c9a08" "da")
+   ("13h7hk11bbd0yq8gqdv7ndbizkgwlm3ybz225l3x2b5cnyjxyg14" "b7a533e5edc9" "de")
+   ("13ay27vdrqfv2ysyi7c2jmz50lps7rff9rmnws1z7jkj0a5chwrn" "20baf15379d8" "el")
+   ("0mdr5b6pqxjmg9c8064x3hpf53h6w9j8ghl32655sx9jh4v3ykza" "beff1baac7c5" "es-ES")
+   ("1pnyg09j6r15w8m62lwj89x6rz4br877z60p8s1hlrb9hj2s3vdx" "ebe0b60b0b36" "fa")
+   ("067r505626cvlrsalnndf2ykz3nnkiy0b8yaxzf1rracpzmp0hni" "d5ae6a933d71" "fi")
+   ("0026zzjv2bqc8sg06yvyd0mhny6mwwvhpvzjrhv2fi5v4wkxapdj" "496c2eb73b82" "fr")
+   ("1dxcp26y8siap4k54zsw7mqa7k0l4f1505rdf4hnnxrzf9a643g5" "2fcccb5b19b3" "ga-IE")
+   ("14v6xnlyj65hzaz2rmzxcl4skjgm48426jgr9mwkwiqis587lp4a" "c53cea027f8f" "he")
+   ("04fdw2gzb64fb51bvs0bwsidzlvkdahmcy76vdg3gfcxslnlpi3y" "5a76dd3b5d5c" "hu")
+   ("0bpyxpclfy74bcsjrs1ajh2am4zv6j6j9q4gc4vz8pgvzy9354zp" "6e6de17dcac4" "id")
+   ("131ph8n235kr6nj1pszk0m00nh6kl360r4qvx4hjm8s22mw0k8qd" "536265635dfe" "is")
+   ("03fbp4vgkwyimfmbm4n8blx1m16yhms2wm8j4wlx2h3cpxp5r71k" "91951e37e2b8" "it")
+   ("0ncm531d7ih7phcn9d83zwq0dfphvmzg3gmhqmrrkkbydi1g3pbb" "895dcf8bb524" "ja")
+   ("1x3110v730ak522zfm8j3r3v1x5lq3ig82kcgyxkc49xywajy0ni" "d0819a64fc40" "ka")
+   ("14rc9mr4ngxdzwpjagzhz47jazgp1a6vwb0vbwj31yxv9iwkrgzi" "6ef881aff44b" "ko")
+   ("1gl85z550amhbaxp39zdj6yyvashj9xd4ampfhm9jdpbf6n5j2l8" "afcbc29a15e5" "lt")
+   ("1hz5g3iprfkbd88ncppyksbhlws73lhs75nf62hangw8l73wdn69" "84f3d6c7e2da" "mk")
+   ("14aq37ngnav5m2kcb4wavxwhp28ad4jzdkzc7i64h0qvvxq5n3hf" "c9ec27a5db3d" "ms")
+   ("0h7dlnawm5mbcx4qdlz5c7n4axz2dpa677v13ljdgm2b5w76msmq" "5c1480ccc040" "my")
+   ("1b12azc1n8j1i2l20v66r74q79zqjvc5sf9pd8rmj3xd0fkxzdp2" "fc1896a0a24d" "nb-NO")
+   ("1fh4dhlb6hynlpb2997gssv9v8zk5b7qrw0sclggczb5pcpjk6wc" "7e6da4f01bdb" "nl")
+   ("1w8x3jjrd28f6g6ywwxldizpiipfkr63dzqd74kjpg24s2lqzp80" "e86a451a9cb5" "pl")
+   ("1v3v4n82sn7a4h2d9n653fmgc31mikacf59lvdj6gbwvzpjb5yfa" "94c3dbb67a5d" "pt-BR")
+   ("061a4z0lffgks3wlr6yh5z7x9arcn804mjwvffcmibs106vzamyq" "470b13b5805b" "ro")
+   ("1fxgh7nfxpg2zknvfff8igq9q1vm5n4q033v7lm2c0xn3dbl8m28" "402b2ecbf04d" "ru")
+   ("1i119g6dnhzxmpaz5r2jr9yzm1v24v2q6m3z6bfz2yihj0w7m133" "f637484e72b6" "sq")
+   ("1nllh3ax323sxwhj7xvwvbfnh4179332pcmpfyybw1vaid3nr39k" "bb2d5d96d69e" "sv-SE")
+   ("136m68fd0641k3qqmsw6zp016cvvd0sipsyv6rx2b9nli56agz57" "0e6c56bf2ac9" "th")
+   ("0q8p8bwq8an65yfdwzm4dhl6km68r83bv5i17kay2gak8msxxhsb" "91e611ae3f19" "tr")
+   ("1f2g7rnxpr2gjzngfsv19g11vk9zqpyrv01pz07mw2z3ffbkxf0j" "99d5ffa0b81e" "uk")
+   ("1rizwsfgr7vxm31bin3i7bwhcqa67wcylak3xa387dvgf1y9057i" "5fd44724e22d" "vi")
+   ("02ifa94jfii5f166rwdvv8si3bazm4bcf4qhi59c8f1hxbavb52h" "081aeb1aa308" "zh-CN")
+   ("0qx9sh56pqc2x5qrh386cp1fi1gidhcmxxpvqkg9nh2jbizahznr" "9015a180602e" "zh-TW")))
 
 ;; We copy the official build id, which can be found there:
 ;; https://aus1.torproject.org/torbrowser/update_3/release/.
-(define %torbrowser-build-date "20240416150000")
+(define %torbrowser-build-date "20240510150000")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "13.0.14")
+(define %torbrowser-version "13.0.15")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "115.10.0esr-13.0-1-build1")
+(define %torbrowser-firefox-version "115.11.0esr-13.0-1-build2")
 
 ;; See tor-browser-build/projects/translation/config.
 (define torbrowser-translation-base
@@ -167,11 +167,11 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "d31e6b16c372e2eb235c4f2b0eae0b573a5515ba")))
+          (commit "a28a8b2cb9e207d12fca11181818c0a0694b56af")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "0pyd49v0ivxbw2lbzi5vz9kl78i972p2kcaaahympaf6x5i0q1xd"))))
+      "159wza7mvz53bjvdj8nnipz9ya5150pymjz5x3jz2qpkz8ansxws"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define torbrowser-translation-specific
@@ -179,11 +179,11 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "d37455a56f966b4f87f5f326b534a91f71fd5c88")))
+          (commit "e03ffdea5b74ad280616dccd21744cba7b2d4565")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "1pksrbyzx2bq0kv46y24m6y7jri3df4mjr4cixyh83mbhpb3wyc0"))))
+      "0d8f9p36wfxbwhiprj6wrzjs4nz8mbaqnqz48rl57x5b82achjd0"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -199,7 +199,7 @@
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "19fhkpjcbb4pscsyhsj8hvbs6nfxz2bmh22irw6a8sspqp67cr2i"))))
+         "1rd4m8bg359yj2w5dfvmnnjgr79bx1cc9bkziwzxnyz5zjn0arkv"))))
     (arguments
      (list
       #:install-plan
@@ -237,7 +237,7 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "1gqiv873f0lbm6xny8x08iygnwl517q67hljgv1vxpyr7d223qjw"))))
+         "0z2sz42jjfcd99zmysvz9k03zk9nccygba53rvkhbskcvil5zgjd"))))
     (build-system mozilla-build-system)
     (inputs
      (list go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
