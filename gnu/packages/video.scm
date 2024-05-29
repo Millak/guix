@@ -2050,6 +2050,11 @@ audio/video codec library.")
                 "--disable-programs"
                 "--disable-postproc"
 
+                "--enable-libpipewire"
+                "--enable-filter=pipewiregrab"
+                "--enable-indev=lavfi"
+                "--enable-decoder=wrapped_avframe"
+
                 "--disable-protocols"
                 "--enable-protocol=crypto"
                 "--enable-protocol=file"
@@ -2257,7 +2262,9 @@ audio/video codec library.")
                          "--enable-encoder=vp8_vaapi"
                          "--enable-encoder=mjpeg_vaapi"
                          "--enable-encoder=hevc_vaapi")
-                       '())))))))
+                       '())))))
+    (inputs (modify-inputs (package-inputs ffmpeg)
+              (append pipewire)))))
 
 (define-public ffmpegthumbnailer
   (package
