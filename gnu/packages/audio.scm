@@ -2964,13 +2964,13 @@ cross-platform audio input/output stream library.")
 (define-public python-pulsectl
   (package
     (name "python-pulsectl")
-    (version "22.3.2")
+    (version "24.4.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pulsectl" version))
               (sha256
                (base32
-                "115ha1cwpd2r84ssnxdbr59hgs0jbx0lz3xpqli64kmxxqf4w5yc"))))
+                "0r9igs365cqgrn1m55a8qjz0hc446nwjm3p3i9kphbj5gl7dazk9"))))
     (build-system python-build-system)
     (inputs (list pulseaudio))
     (arguments
