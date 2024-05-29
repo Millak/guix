@@ -1,0 +1,26 @@
+Fix an issue where ctest wouldn't find the qml test files.
+Upstream status: forwarded to jami@gnu.org
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e802357f..75cffda2 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -884,5 +884,6 @@ qt_finalize_executable(${PROJECT_NAME})
+ # tests
+ if(BUILD_TESTING)
+   message("Add Jami tests")
++  enable_testing()
+   add_subdirectory(${TESTS_DIR})
+ endif()
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 37796e52..06008ccf 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -1,6 +1,6 @@
+ cmake_minimum_required(VERSION 3.16)
+ 
+-enable_testing(true)
++enable_testing()
+ 
+ set(QT_TESTING_MODULES
+     ${QT_MODULES}

@@ -232,6 +232,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
                (base32
                 "1wqi50n80khyngj48brc8wg3m6jq471h9gm62yxpj4f8z5j81ncd"))
               (patches (search-patches
+                        "jami-enable-testing.patch"
                         "jami-libjami-headers-search.patch"
                         "jami-qwindowkit.patch"
                         "jami-skip-tests-requiring-internet.patch"
@@ -276,22 +277,28 @@ QSortFilterProxyModel conveniently exposed for QML.")
               ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1504).
               (setenv "XDG_SESSION_TYPE" "x11")))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
               (when tests?
                 (setenv "QT_QPA_PLATFORM" "offscreen")
                 (setenv "QT_QUICK_BACKEND" "software")
                 ;; The tests require a writable HOME.
                 (setenv "HOME" "/tmp")
 
-                (display "Running unit tests...\n")
-                (invoke "tests/unit_tests")
+                (let ((ctest-args
+                       (list "-V" "--output-on-failure"
+                             "-j" (if parallel-tests?
+                                      (number->string (parallel-job-count))
+                                      "1"))))
 
-                ;; The qml_tests suite is not run, as it currently exits with
-                ;; an unclear status of 1 (see:
-                ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1605).
-                ;; (display "Running functional tests...\n")
-                ;; (invoke "tests/qml_tests")
-                ))))))
+                  (display "Running unit tests...\n")
+                  (apply invoke "ctest" "-R" "Unit_Tests" ctest-args)
+
+                  ;; The QML test suite is currently disabled as it segfaults
+                  ;; (see:
+                  ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1631).
+                  ;; (display "Running functional tests...\n") (apply invoke
+                  ;; "ctest" "-R" "Qml_Tests" ctest-args)
+                  )))))))
     (native-inputs
      (list googletest
            pkg-config
