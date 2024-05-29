@@ -2904,7 +2904,7 @@ user interaction (e.g.  measuring distances).")
 (define-public volctl
   (package
     (name "volctl")
-    (version "0.9.3")
+    (version "0.9.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url "https://github.com/buzz/volctl")
@@ -2912,7 +2912,7 @@ user interaction (e.g.  measuring distances).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fz80w3ywq54jn4v31frfdj01s5g9lz6v9cd7hpg3kirca0zisln"))))
+                "0anrwz8rvbliskmcgpw2zabgjj5c72hpi7cf0jg05vvmlpnbsd4g"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
