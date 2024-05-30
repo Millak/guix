@@ -15652,28 +15652,35 @@ of the files and the line numbers where they were found.")
   (sbcl-package->ecl-package sbcl-formgrep))
 
 (define-public sbcl-fset
-  (let ((commit "6d2f9ded8934d2b42f2571a0ba5bda091037d852")
+  (let ((commit "a75a4ec713277780d9e15bfaa486b56949142d35")
         (revision "1"))
     (package
       (name "sbcl-fset")
-      (version (git-version "1.3.2" revision commit))
+      (version (git-version "1.3.3" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/slburson/fset")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-fset" version))
          (sha256
-          (base32
-           "127acblwrbqicx47h6sgvknz1cqyfn8p4xkhkn1m7hxh8w5gk1zy"))
+          (base32 "0bah0z8zrcykvnbi2wcdlbx902r818xg5dvd3384wf75kr2ccxvv"))
          (snippet '(begin
                      ;; Remove obsolete copy of system definition.
-                     (delete-file "Code/fset.asd")
-                     #t))))
+                     (delete-file "Code/fset.asd")))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-misc-extensions sbcl-mt19937 sbcl-named-readtables))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-build
+                   (lambda _
+                     ;; Fix for SBCL > 2.4.4
+                     (substitute* "Code/port.lisp"
+                       (("sb-ext::once-only")
+                        "sb-int:once-only")))))))
       (synopsis "Functional set-theoretic collections library")
       (description
        "FSet is a functional set-theoretic collections library for Common Lisp.
