@@ -176,6 +176,14 @@
                   ((".*killed process should not have exitStatus.*")
                    ""))
 
+                ;; This was fixed sometime between 102.15.1 and 115.11.0.
+                ;; These tests are supposed to be skipped on all 64-bit systems.
+                #$@(if (target-riscv64?)
+                       #~((substitute* '("non262/Array/regress-157652.js"
+                                         "non262/regress/regress-422348.js")
+                            (("mips64") "mips64|riscv64")))
+                       #~())
+
                 ;; The test suite expects a lightly patched ICU.  Disable tests
                 ;; that do not work with the system version.  See
                 ;; "intl/icu-patches" for clues.
