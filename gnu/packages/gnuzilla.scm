@@ -422,7 +422,7 @@ variable defined below.  It requires guile-json to be installed."
        (format #t "~{~s~%~}" data)
        data))))
 
-(define all-mozilla-locales
+(define-public all-mozilla-locales
   (mozilla-locales
    ;;                      sha256                            changeset    locale
    ;;---------------------------------------------------------------------------
@@ -503,6 +503,7 @@ variable defined below.  It requires guile-json to be installed."
    ("0c8dl12n5fjdd3bjaf8idyaxsf8ppbma132vdw8bk2wqnh4cv69a" "92110fd6e211" "rm")
    ("0mxxy56kj0k5jhjxjv8v4zz57pha819mz7j803lcilax7w52wgca" "5eeba1f64743" "ro")
    ("0jrd95n108r4sxdwgy39zjynm5nlzzmiijsfpxxfwj7886wl4faz" "47131134e349" "ru")
+   ("1lwm5jv3hvjp84a70186x2083nhr3mfcl7kpmw5in9amaflfi41b" "a5cd6d3d67ee" "sat")
    ("1q6pn3iixzcas9blf61bhvwgppbsh0am0wdz6a6p9f9978894d73" "880b7986692a" "sc")
    ("0xndsph4v725q3xcpmxxjb9vxv19sssqnng82m9215cdsv9klgpb" "bf5f6e362f6f" "sco")
    ("0l70n8817mbmbc09fsnn2aqjj9k9dhad2gmzgphmiilf9mqm2dpf" "1f705c926a99" "si")
