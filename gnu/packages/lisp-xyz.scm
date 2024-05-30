@@ -13152,6 +13152,39 @@ manner.")
 (define-public ecl-depot
   (sbcl-package->ecl-package sbcl-depot))
 
+(define-public sbcl-asn1
+  (let ((commit "b0388fa98878b20069ef266cc9cbd5aac13c4a69")
+        (revision "0"))
+    (package
+      (name "sbcl-asn1")
+      (build-system asdf-build-system/sbcl)
+      (version (git-version "0.1.0" revision commit))
+      (home-page "https://github.com/fukamachi/asn1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name "cl-asn1" version))
+         (sha256
+          (base32 "16gs4xznmg19ii0cg7g2yxrk9ls5vah8ynjj80s99rv8wi3789z1"))))
+      (native-inputs (list sbcl-cl-base64 sbcl-rove))
+      (inputs
+        (list sbcl-trivia
+              sbcl-fast-io
+              sbcl-ironclad))
+      (synopsis "ASN.1 decoder for Common Lisp")
+      (description "This package provides an ASN.1 encoder/decoder for
+Common Lisp.")
+      (license license:bsd-2))))
+
+(define-public cl-asn1
+  (sbcl-package->cl-source-package sbcl-asn1))
+
+(define-public ecl-asn1
+  (sbcl-package->ecl-package sbcl-asn1))
+
 (define-public sbcl-dexador
   (let ((commit "051cbb784ea3015cef9731eb5a624f3122de84b5")
         (revision "2"))
