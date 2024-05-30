@@ -1214,7 +1214,12 @@ provides the GNU compiler for the Go programming language.")
        (substitute-keyword-arguments (package-arguments gccgo)
          ((#:phases phases)
           #~(modify-phases #$phases
-              #$@(if (version>=? (package-version gccgo) "12.0")
+              #$@(if (and (version>=? (package-version gccgo) "12.0")
+                          ;; This somehow breaks gccgo@12 on riscv64-linux.
+                          (not (and (target-riscv64?)
+                                    (string=? (version-prefix
+                                                (package-version gccgo) 1)
+                                               "12"))))
                      #~((add-after 'unpack 'adjust-libgo-dependencies
                           (lambda _
                             (substitute* "Makefile.in"
