@@ -23,6 +23,7 @@
   #:use-module (gnu home services)
   #:use-module (gnu home services shepherd)
   #:use-module (gnu services configuration)
+  #:use-module (gnu services xorg)
   #:autoload   (gnu packages glib)    (dbus)
   #:autoload   (gnu packages xdisorg) (redshift unclutter)
   #:autoload   (gnu packages xorg) (setxkbmap xmodmap)
@@ -43,7 +44,9 @@
             home-unclutter-service-type
 
             home-xmodmap-configuration
-            home-xmodmap-service-type))
+            home-xmodmap-service-type
+
+            home-startx-command-service-type))
 
 
 ;;;
@@ -429,3 +432,12 @@ defaults."))))
    (default-value (home-xmodmap-configuration))
    (description "Run the @code{xmodmap} utility to modify keymaps and pointer
 buttons under the Xorg display server via user-defined expressions.")))
+
+
+(define home-startx-command-service-type
+  (service-type
+   (inherit (system->home-service-type startx-command-service-type))
+   (default-value (for-home (xorg-configuration)))))
+
+(define-service-type-mapping
+  startx-command-service-type => home-startx-command-service-type)
