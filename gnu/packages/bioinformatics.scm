@@ -1967,6 +1967,53 @@ cell types.  Cell2cell is suitable for single-cell RNA sequencing
 from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
     (license license:bsd-3)))
 
+(define-public python-celltypist
+  (package
+    (name "python-celltypist")
+    (version "1.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Teichlab/celltypist")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0c42cx01zkxr0dk5f1d7q71qdi18v2smlc3wpvwyjlzplya7k2iy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'set-home
+           ;; The sanity check requires a HOME directory, because celltypist
+           ;; wants to write settings.
+           (lambda _ (setenv "HOME" "/tmp")))
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'build 'set-numba-cache-dir
+           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs
+     (list python-click
+           python-leidenalg
+           python-numpy
+           python-openpyxl
+           python-pandas
+           python-scanpy
+           python-scikit-learn
+           python-requests))
+    (home-page "https://github.com/Teichlab/celltypist")
+    (synopsis "Tool for semi-automatic cell type classification")
+    (description
+     "CellTypist is an automated cell type annotation tool for scRNA-seq
+datasets on the basis of logistic regression classifiers optimised by the
+stochastic gradient descent algorithm.  CellTypist allows for cell prediction
+using either built-in (with a current focus on immune sub-populations) or
+custom models, in order to assist in the accurate classification of different
+cell types and subtypes.")
+    (license license:expat)))
+
 (define-public python-cmseq
   (package
     (name "python-cmseq")
