@@ -835,7 +835,7 @@ Browser.")
     (description
      "Tor Browser is the Tor Project version of Firefox browser.  It is the
 only recommended way to anonymously browse the web that is supported by the
-project.  It modifies Firefox in order to avoid many know application level
+project.  It modifies Firefox in order to avoid many known application level
 attacks on the privacy of Tor users.")
     (license license:mpl2.0)))       ;And others, see
                                      ;toolkit/content/license.html
