@@ -263,7 +263,7 @@ standard utility.")
 
 (define-public patch
   (package
-   (name "patch")
+    (name "patch")
     (version "2.7.6")
     (source (origin
               (method url-fetch)
@@ -273,23 +273,23 @@ standard utility.")
                (base32
                 "1zfqy4rdcy279vwn2z1kbv19dcfw25d2aqy9nzvdkq5bjzd0nqdc"))
               (patches (search-patches "patch-hurd-path-max.patch"))))
-   (build-system gnu-build-system)
-   (arguments
-    ;; Work around a cross-compilation bug whereby libpatch.a would provide
-    ;; '__mktime_internal', which conflicts with the one in libc.a.
-    (if (%current-target-system)
-        `(#:configure-flags '("gl_cv_func_working_mktime=yes"))
-        '()))
-   (native-inputs (list ed))
-   (synopsis "Apply differences to originals, with optional backups")
-   (description
-    "Patch is a program that applies changes to files based on differences
+    (build-system gnu-build-system)
+    (arguments
+     ;; Work around a cross-compilation bug whereby libpatch.a would provide
+     ;; '__mktime_internal', which conflicts with the one in libc.a.
+     (if (%current-target-system)
+         `(#:configure-flags '("gl_cv_func_working_mktime=yes"))
+         '()))
+    (native-inputs (list ed))
+    (synopsis "Apply differences to originals, with optional backups")
+    (description
+     "Patch is a program that applies changes to files based on differences
 laid out as by the program \"diff\".  The changes may be applied to one or more
 files depending on the contents of the diff file.  It accepts several
 different diff formats.  It may also be used to revert previously applied
 differences.")
-   (license gpl3+)
-   (home-page "https://savannah.gnu.org/projects/patch/")))
+    (license gpl3+)
+    (home-page "https://savannah.gnu.org/projects/patch/")))
 
 (define-public diffutils
   (package
