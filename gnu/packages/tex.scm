@@ -241,10 +241,17 @@
             (lambda _
               (substitute* "texk/kpathsea/config.h"
                 (("#define ST_NLINK_TRICK") ""))))
-          (add-after 'install 'post-install
+          (replace 'install
             (lambda _
               (with-directory-excursion "texk/kpathsea"
-                (invoke "make" "install")))))))
+                (invoke "make" "install"))))
+          (add-after 'install 'remove-documentation
+            ;; Documentation is provided by TEXLIVE-KPATHSEA, in a dedicated
+            ;; "doc" output.  Remove duplicates.
+            (lambda _
+              (with-directory-excursion #$output
+                (for-each delete-file-recursively
+                          '("share/info" "share/man"))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "GUIX_TEXMF")
