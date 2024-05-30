@@ -27,6 +27,7 @@
   #:use-module (guix packages)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system perl)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -34,6 +35,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnupg)
@@ -43,7 +45,10 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages wget)
+  #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
 (define-public debian-archive-keyring
@@ -235,6 +240,160 @@ contains the archive keys used for that.")
 contains the archive keys used for that.")
     (license (list license:public-domain ; the keys
                    license:gpl2+)))) ; see debian/copyright
+
+(define-public debian-devscripts-bts
+  (package
+    (name "debian-devscripts-bts")
+    (version "2.23.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://salsa.debian.org/debian/devscripts.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "031467rclglk1hdx8z2vzx5z88vpy0sk73qi8ni0sai3jx62ji75"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      #:tests? #f ; tests assume various Debian specific capabilities
+      #:phases
+      ;; only includes the bts command as that's useful for Guix packagers
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-programs
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion "scripts"
+                (substitute* "bts.pl" (("/bin/bash") (which "bash")))
+                (substitute* "bts.pl" (("/bin/rm") (which "rm")))
+                (substitute* "bts.pl" (("/bin/cat") (which "cat")))
+                ;; Avoid having to provide Debian's sensible-browser package
+                (substitute* "bts.pl"
+                  (("my \\$browser;") "my $browser = $ENV{'BROWSER'};"))
+                (substitute* "bts.pl"
+                  (("'sensible-browser',") "$browser,"))
+                ;; Use Guix's debbugs - patching the source as putting a config
+                ;; file into #$output/etc doesn't work
+                (substitute* "bts.pl"
+                  (("= 'https://bugs.debian.org'")
+                    "= 'https://debbugs.gnu.org'"))
+                (rename-file "bts.pl" "bts"))))
+          (delete 'configure)
+          (delete 'build)
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((bindir (string-append #$output "/bin"))
+                     (bashcomp (string-append #$output
+                                              "/etc/bash_completion.d"))
+                     (perl-lib (string-append #$output
+                                              "/lib/perl5/site_perl/Devscripts"))
+                     (wrap.pl
+                      (lambda (scripts keys)
+                        (for-each
+                         (lambda (script)
+                           (wrap-program script
+                             `("PERL5LIB" ":" prefix
+                               ,(cons*
+                                 (getenv "PERL5LIB")
+                                 (string-append #$output
+                                                "/lib/perl5/site_perl")
+                                 (map
+                                  (lambda (key)
+                                    (string-append
+                                     (assoc-ref inputs key)
+                                     "/lib/perl5/site_perl"))
+                                  keys)))))
+                         scripts)))
+                     (doc (string-append #$output
+                                         "/share/doc/" #$name "-" #$version)))
+                (with-directory-excursion "scripts"
+                  (for-each (lambda (f) (install-file f bindir))
+                            '("bts"))
+                  (mkdir-p bashcomp)
+                  (copy-file "bts.bash_completion" (string-append bashcomp "/bts")))
+                (wrap.pl (find-files bindir)
+                         (list "dpkg"
+                               "perl-authen-sasl"
+                               "perl-db-file"
+                               "perl-encode"
+                               "perl-encode-locale"
+                               "perl-file-homedir"
+                               "perl-file-listing"
+                               "perl-file-which"
+                               "perl-http-cookies"
+                               "perl-http-daemon"
+                               "perl-http-date"
+                               "perl-http-message"
+                               "perl-http-negotiate"
+                               "perl-http-parser"
+                               "perl-io-socket-ssl"
+                               "perl-ipc-run"
+                               "perl-json"
+                               "perl-libwww"
+                               "perl-list-compare"
+                               "perl-lwp-protocol-https"
+                               "perl-moo"
+                               "perl-mozilla-ca"
+                               "perl-net-http"
+                               "perl-try-tiny"
+                               "perl-uri"
+                               "perl-www-robotrules"))
+                (with-directory-excursion "lib/Devscripts/"
+                  (for-each (lambda (f) (install-file f perl-lib))
+                            (find-files "./")))
+                (for-each (lambda (f) (install-file f doc))
+                          '("README")))))
+          (add-after 'install 'manpage
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ( (man1 (string-append #$output "/share/man/man1"))
+                     (man5 (string-append #$output "/share/man/man5")))
+                (with-directory-excursion "scripts"
+                  (invoke "pod2man" "--utf8" "--center='  '" "bts" "bts.1")
+                  (install-file "bts.1" man1))
+                (with-directory-excursion "doc"
+                  (invoke "make" "devscripts.1")
+                  (install-file "devscripts.1" man1)
+                  (install-file "devscripts.conf.5" man5))))))))
+    (inputs
+     (list
+      bash-minimal
+      dpkg
+      perl-authen-sasl
+      perl-db-file
+      perl-encode
+      perl-encode-locale
+      perl-file-homedir
+      perl-file-listing
+      perl-file-which
+      perl-http-cookies
+      perl-http-daemon
+      perl-http-date
+      perl-http-message
+      perl-http-negotiate
+      perl-http-parser
+      perl-io-socket-ssl
+      perl-ipc-run
+      perl-json
+      perl-libwww
+      perl-list-compare
+      perl-lwp-protocol-https
+      perl-moo
+      perl-mozilla-ca
+      perl-net-http
+      perl-try-tiny
+      perl-uri
+      perl-www-robotrules))
+    (native-inputs
+     (list perl perl-libwww perl-uri pkg-config python))
+    (propagated-inputs
+     (list perl-lwp-protocol-https))
+    (home-page "https://tracker.debian.org/pkg/devscripts")
+    (synopsis "BTS script from Debian's devscripts")
+    (description "This package only provides the bts script from the Debian
+devscripts archive.  It's useful for Guix Developers that interact with GNU's
+debbugs server.")
+    (license license:gpl2+)))
 
 (define-public debootstrap
   (package
