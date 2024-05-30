@@ -808,6 +808,13 @@ It also includes runtime support libraries for these languages.")
                                        "gcc-5.0-libvtv-runpath.patch"))
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments gcc-11)
+       ((#:phases phases #~%standard-phases)
+       (if (target-hurd?)
+           #~(modify-phases #$phases
+               (delete 'patch-hurd-libpthread))
+           phases))))
     (properties
      `((compiler-cpu-architectures
         ("aarch64" ,@%gcc-13-aarch64-micro-architectures)
