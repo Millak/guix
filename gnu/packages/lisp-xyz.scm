@@ -14701,7 +14701,9 @@ basic everyday functions and macros.")
                (commit commit)))
          (file-name (git-file-name "cl-fast-generic-functions" version))
          (sha256
-          (base32 "16hf9bi2p5s77p3m3aqsihcd9iicqjhhxxpsarjv93c41qs54yad"))))
+          (base32 "16hf9bi2p5s77p3m3aqsihcd9iicqjhhxxpsarjv93c41qs54yad"))
+         (patches
+          (search-patches "sbcl-fast-generic-functions-fix-sbcl-2.4.patch"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-closer-mop
