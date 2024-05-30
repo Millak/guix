@@ -2944,8 +2944,8 @@ definition objects.")
   (sbcl-package->ecl-package sbcl-cesdi))
 
 (define-public sbcl-cf
-  (let ((commit "fbc025b6f274687ee9acc8d07496d44999ac428e")
-        (revision "2"))
+  (let ((commit "d386072d1c45970c1fec3a53309ac4e6d8f244bd")
+        (revision "3"))
     (package
       (name "sbcl-cf")
       (version (git-version "1.0" revision commit))
@@ -2957,7 +2957,7 @@ definition objects.")
                (commit commit)))
          (file-name (git-file-name "cl-cf" version))
          (sha256
-          (base32 "182laa57j9qs567g75qwf8vh4xb0d22lr94x84r32dy28mrwi5ig"))))
+          (base32 "0744cja2b6404gxwzwzaxsmrr76jlgnq5713x2fff9hwxqxwhhnk"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs (list sbcl-fiveam))
       (synopsis "Continued fractions library")
