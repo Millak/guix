@@ -13220,6 +13220,43 @@ parser for Common Lisp.")
 (define-public ecl-pem
   (sbcl-package->ecl-package sbcl-pem))
 
+(define-public sbcl-jose
+  (let ((commit "5b9f42dd4144138e41d75ec67ca46e6e91728f2c")
+        (revision "0"))
+    (package
+      (name "sbcl-jose")
+      (build-system asdf-build-system/sbcl)
+      (version (git-version "0.1.0" revision commit))
+      (home-page "https://github.com/fukamachi/jose")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name "cl-jose" version))
+         (sha256
+          (base32 "1z7xjy4ihxa8ay5vznhnxkjflfx6xmfpgwxdakk9wmkw30p2yn4h"))))
+      (native-inputs (list sbcl-pem sbcl-rove))
+      (inputs
+        (list sbcl-alexandria
+              sbcl-assoc-utils
+              sbcl-cl-base64
+              sbcl-ironclad
+              sbcl-jonathan
+              sbcl-split-sequence
+              sbcl-trivial-utf-8))
+      (synopsis "JOSE implementation for Common Lisp")
+      (description "A JSON Object Signing and Encryption (JOSE)
+implementation for Common Lisp.")
+      (license license:bsd-2))))
+
+(define-public cl-jose
+  (sbcl-package->cl-source-package sbcl-jose))
+
+(define-public ecl-jose
+  (sbcl-package->ecl-package sbcl-jose))
+
 (define-public sbcl-dexador
   (let ((commit "051cbb784ea3015cef9731eb5a624f3122de84b5")
         (revision "2"))
