@@ -23627,9 +23627,11 @@ Usually the X server is started by a login manager.
 Return a @code{startx} script in which the modules, fonts,
 etc. specified in @var{config} are available.  The result should be used
 in place of @code{startx} and should be invoked by the user from a tty
-after login.  Unlike @code{xorg-start-command}, this script calls
-xinit. Therefore it works well when executed from a tty.  If you are
-using a desktop environment, you are unlikely to need this procedure.
+after login.  Unlike @code{xorg-start-command}, this script calls xinit.
+Therefore it works well when executed from a tty.  This script can be
+set up as @code{startx} using @code{startx-command-service-type}.  If
+you are using a desktop environment, you are unlikely to need this
+procedure.
 @end deffn
 
 
@@ -23690,6 +23692,14 @@ Whether to setup program as setuid binary.
 @end table
 
 @end deftp
+
+@defvar startx-command-service-type
+Add @command{startx} to the system profile putting it onto @env{PATH}.
+
+The value for this service is a @code{<xorg-configuration>} object which
+is passed to the @code{xorg-start-command-xinit} procedure producing the
+@command{startx} used.  Default value is @code{(xorg-configuration)}.
+@end defvar
 
 
 @node Printing Services

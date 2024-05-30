@@ -92,6 +92,7 @@
             xorg-start-command-xinit
             xinitrc
             xorg-server-service-type
+            startx-command-service-type
 
             %default-slim-theme
             %default-slim-theme-name
@@ -495,6 +496,38 @@ therefore it works well when executed from tty."
                    (cdr (command-line)))))))
 
   (program-file "startx" exp))
+
+(define (startx-command-profile-service config)
+  ;; XXX: profile-service-type only accepts <package> objects.
+  (package
+    (name "startx-profile-package")
+    (version "0")
+    (source (xorg-start-command-xinit config))
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let ((bin (string-append #$output "/bin")))
+            (mkdir-p bin)
+            (symlink #$source (string-append bin "/startx"))))))
+    (home-page #f)
+    (synopsis #f)
+    (description #f)
+    (license #f)))
+
+(define startx-command-service-type
+  (service-type
+   (name 'startx-command)
+   (extensions
+    (list (service-extension profile-service-type
+                             (compose list startx-command-profile-service))))
+   (default-value (xorg-configuration))
+   (description "Add @command{startx} to the system profile.")))
+
+
 
 (define* (xinitrc #:key fallback-session)
   "Return a system-wide xinitrc script that starts the specified X session,
