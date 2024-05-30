@@ -40,10 +40,12 @@
 
 
 (define-module (gnu packages librewolf)
+  #:use-module ((srfi srfi-1) #:hide (zip))
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -62,6 +64,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gnuzilla)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages hunspell)
   #:use-module (gnu packages icu4c)
@@ -81,6 +84,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages speech)
@@ -88,6 +92,117 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
+
+(define (firefox-source-origin version hash)
+  (origin
+    (method url-fetch)
+    (uri (string-append
+          "https://ftp.mozilla.org/pub/firefox/releases/"
+          version "/source/" "firefox-" version
+          ".source.tar.xz"))
+    (sha256 (base32 hash))))
+
+(define (librewolf-source-origin version hash)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://codeberg.org/librewolf/source.git")
+          (commit version)
+          (recursive? #t)))
+    (file-name (git-file-name "librewolf-source" version))
+    (sha256 (base32 hash))))
+
+(define computed-origin-method (@@ (guix packages) computed-origin-method))
+
+(define librewolf-source
+  (let* ((ff-src (firefox-source-origin "125.0.2" "16gpd6n52lshvkkha41z7xicggj64dw0qhr5gd07bcxsc4rmdl39"))
+         (version "125.0.2-1")
+         (lw-src (librewolf-source-origin version "17i36s2ny1pv3cz44w0gz48fy4vjfw6vp9jk21j62f5d3dl726x8")))
+
+    (origin
+      (method computed-origin-method)
+      (file-name (string-append "librewolf-" version ".source.tar.gz"))
+      (sha256 #f)
+      (uri
+       (delay
+         (with-imported-modules '((guix build utils))
+           #~(begin
+               (use-modules (guix build utils))
+               (set-path-environment-variable
+                "PATH" '("bin")
+                (list #+python
+                      #+(canonical-package bash)
+                      #+(canonical-package gnu-make)
+                      #+(canonical-package coreutils)
+                      #+(canonical-package findutils)
+                      #+(canonical-package patch)
+                      #+(canonical-package xz)
+                      #+(canonical-package sed)
+                      #+(canonical-package grep)
+                      #+(canonical-package gzip)
+                      #+(canonical-package tar)))
+               (set-path-environment-variable
+                "PYTHONPATH"
+                (list #+(format #f "lib/python~a/site-packages"
+                                (version-major+minor
+                                 (package-version python))))
+                '#+(cons python-jsonschema
+                         (map second
+                              (package-transitive-propagated-inputs
+                               python-jsonschema))))
+
+               ;; Copy LibreWolf source into the build directory and make
+               ;; everything writable.
+               (copy-recursively #+lw-src ".")
+               (for-each make-file-writable (find-files "."))
+
+               ;; Patch Makefile to use the upstream source instead of
+               ;; downloading.
+               (substitute* '("Makefile")
+                 (("^ff_source_tarball:=.*")
+                  (string-append "ff_source_tarball:=" #+ff-src)))
+
+               ;; Remove encoding_rs patch, it doesn't build with Rust 1.75.
+               (substitute* '("assets/patches.txt")
+                 (("patches/encoding_rs.patch\\\n$")
+                  ""))
+
+               ;; Stage locales.
+               (begin
+                 (format #t "Staging locales...~%")
+                 (force-output)
+                 (mkdir "l10n-staging")
+                 (with-directory-excursion "l10n-staging"
+                   (for-each
+                    (lambda (locale-dir)
+                      (let ((locale
+                             (string-drop
+                              (basename locale-dir)
+                              (+ 32     ; length of hash
+                                 (string-length "-mozilla-locale-")))))
+                        (format #t "  ~a~%" locale)
+                        (force-output)
+                        (copy-recursively locale-dir locale
+                                          #:log (%make-void-port "w"))
+                        (for-each make-file-writable (find-files locale))
+                        (with-directory-excursion locale
+                          (when (file-exists? ".hgtags")
+                            (delete-file ".hgtags")))))
+                    '#+all-mozilla-locales)))
+
+               ;; Patch build script to use staged locales.
+               (begin
+                 (substitute* '("scripts/generate-locales.sh")
+                   (("wget") "# wget")
+                   (("unzip") "# unzip")
+                   (("mv browser/locales/l10n/\\$1-\\*/")
+                    "mv ../l10n-staging/$1/")))
+
+               ;; Run the build script
+               (invoke "make" "all")
+               (copy-file (string-append "librewolf-" #$version
+                                         ".source.tar.gz")
+                          #$output))))))))
 
 ;; Define the versions of rust needed to build librewolf, trying to match
 ;; upstream.  See the file taskcluster/ci/toolchain/rust.yml at
@@ -104,18 +219,7 @@
   (package
     (name "librewolf")
     (version "125.0.2-1")
-    (source
-     (origin
-       (method url-fetch)
-
-       (uri (string-append "https://gitlab.com/api/v4/projects/32320088/"
-                           "packages/generic/librewolf-source/"
-                           version
-                           "/librewolf-"
-                           version
-                           ".source.tar.gz"))
-       (sha256
-        (base32 "09qzdaq9l01in9h4q14vyinjvvffycha2iyjqj5p4dd5jh6q5zma"))))
+    (source librewolf-source)
     (build-system gnu-build-system)
     (arguments
      (list
