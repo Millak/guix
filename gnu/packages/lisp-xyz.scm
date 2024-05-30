@@ -13185,6 +13185,41 @@ Common Lisp.")
 (define-public ecl-asn1
   (sbcl-package->ecl-package sbcl-asn1))
 
+(define-public sbcl-pem
+  (let ((commit "1ffb17efaa786574928b5cf5089695d37e4ec550")
+        (revision "0"))
+    (package
+      (name "sbcl-pem")
+      (build-system asdf-build-system/sbcl)
+      (version (git-version "0.1.0" revision commit))
+      (home-page "https://github.com/fukamachi/pem")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name "cl-pem" version))
+         (sha256
+          (base32 "1mi34anznbz12wzng4lma8vcskb20ph5ap6lpsbg0h3pc40kxrzv"))))
+      (native-inputs (list sbcl-rove))
+      (inputs
+        (list sbcl-asn1
+              sbcl-cl-ppcre
+              sbcl-trivia
+              sbcl-ironclad
+              sbcl-cl-base64))
+      (synopsis "PEM parser for Common Lisp")
+      (description "This package provides a PEM (Privacy-Enhanced Mail)
+parser for Common Lisp.")
+      (license license:bsd-2))))
+
+(define-public cl-pem
+  (sbcl-package->cl-source-package sbcl-pem))
+
+(define-public ecl-pem
+  (sbcl-package->ecl-package sbcl-pem))
+
 (define-public sbcl-dexador
   (let ((commit "051cbb784ea3015cef9731eb5a624f3122de84b5")
         (revision "2"))
