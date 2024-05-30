@@ -784,23 +784,20 @@ and should be preferred to it whenever a package would otherwise depend on
                   (("/usr/include /usr/local/include")
                    (string-append #$(this-package-input "texlive-libkpathsea")
                                   "/include"))))))
-          (add-after 'install 'maybe-create-symlinks
-            ;; Create symbolic links for the latex variants.  We link lualatex
-            ;; to luahbtex; see issue #51252 for details.
+          (add-after 'install 'maybe-clear-symlinks
+            ;; XXX: No matter the combination of configure flags, process
+            ;; insists on creating those dangling links, resulting in an error
+            ;; during `validate-runpath' phase.
             ;;
-            ;; Make it conditional so packages inheriting from this one do not
-            ;; need to remove this phase.
+            ;; Make it specific to TEXLIVE-BIN package by verifying the
+            ;; existence of "tex" binary so that packages inheriting from this
+            ;; one do not need to remove the phase.
             (lambda _
-              (with-directory-excursion (string-append #$output "/bin/")
-                (when (file-exists? "tex") ;for TEXLIVE-BIN only
-                  (for-each symlink
-                            '("pdftex" "pdftex"   "luahbtex")
-                            '("latex"  "pdflatex" "lualatex"))
-                  ;; XXX: No matter the combination of configure flags,
-                  ;; process insists on creating those dangling links,
-                  ;; resulting in an error during `validate-runpath' phase.
-                  (for-each delete-file
-                            '("pbibtex" "pdvitype" "ppltotf" "ptftopl"))))))
+              (let ((bin (string-append #$output "/bin/")))
+                (when (file-exists? (string-append bin "tex"))
+                  (with-directory-excursion bin
+                    (for-each delete-file
+                              '("pbibtex" "pdvitype" "ppltotf" "ptftopl")))))))
           (add-after 'install 'remove-documentation
             ;; Documentation is provided by specific TeX Live packages, in
             ;; a dedicated "doc" output.  Ignore documentation generated when
@@ -46024,7 +46021,21 @@ formats.")
     (arguments
      (list
       #:texlive-latex-bin? #f
-      #:create-formats #~(list "dvilualatex" "latex" "lualatex" "pdflatex")))
+      #:create-formats #~(list "dvilualatex" "latex" "lualatex" "pdflatex")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'symlink-binaries
+            ;; Create symbolic links for the latex variants.  We link lualatex
+            ;; to luahbtex; see issue #51252 for details.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pdftex (search-input-file inputs "bin/pdftex"))
+                    (luahbtex (search-input-file inputs "bin/luahbtex"))
+                    (bin (string-append #$output "/bin")))
+                (mkdir-p bin)
+                (with-directory-excursion bin
+                  (symlink pdftex "latex")
+                  (symlink pdftex "pdflatex")
+                  (symlink luahbtex "lualatex"))))))))
     (propagated-inputs
      (list texlive-atbegshi
            texlive-atveryend
