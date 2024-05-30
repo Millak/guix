@@ -26816,6 +26816,10 @@ using the latest algorithms.")
        (list sbcl-fiveam))
       (inputs
        (list sbcl-alexandria sbcl-introspect-environment))
+      (arguments
+       ;; FIXME: Tests fail with:
+       ;;   Unable to compile test syntax-layer-test define-specialization/name.
+       (list #:tests? #f))
       (home-page "https://github.com/markcox80/specialization-store")
       (synopsis "Different type of generic function for Common Lisp")
       (description
@@ -26828,11 +26832,7 @@ function.")
   (sbcl-package->cl-source-package sbcl-specialization-store))
 
 (define-public ecl-specialization-store
-  (package
-    (inherit (sbcl-package->ecl-package sbcl-specialization-store))
-    (arguments
-     ;; TODO: Find why the tests get stuck forever; disable them for now.
-     `(#:tests? #f))))
+  (sbcl-package->ecl-package sbcl-specialization-store))
 
 (define-public sbcl-specialized-function
   (let ((commit "5e2b04432bdf728496e6ff7227f210f845af7247")
