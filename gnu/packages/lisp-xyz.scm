@@ -5625,8 +5625,8 @@ Common Lisp via Gobject Introspection.")
 ;;   (sbcl-package->ecl-package sbcl-cl-gltf))
 
 (define-public sbcl-cl-gobject-introspection
-  (let ((commit "83beec4492948b52aae4d4152200de5d5c7ac3e9")
-        (revision "3"))
+  (let ((commit "4908a84c16349929b309c50409815ff81fb9b3c4")
+        (revision "4"))
     (package
       (name "sbcl-cl-gobject-introspection")
       (version (git-version "0.3" revision commit))
@@ -5639,7 +5639,7 @@ Common Lisp via Gobject Introspection.")
                (commit commit)))
          (file-name (git-file-name "cl-gobject-introspection" version))
          (sha256
-          (base32 "0xwmj4b3whz12i474g54krp1v6h0fpvsx8lgwpk6rkli9xc71wc3"))))
+          (base32 "0iw8fciydh9bi2svq30hi029df16arpspk0mjzh0cm1c6kjm9dcj"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list glib
