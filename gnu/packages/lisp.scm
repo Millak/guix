@@ -109,7 +109,7 @@
 (define-public cl-asdf
   (package
     (name "cl-asdf")
-    (version "3.3.5")
+    (version "3.3.7")
     (source
      (origin
        (method url-fetch)
@@ -117,7 +117,7 @@
         (string-append "https://common-lisp.net/project/asdf/archives/asdf-"
                        version ".lisp"))
        (sha256
-        (base32 "1mydyrii3f0aig1q5admj6hyf59vjn4a5x1q8hqgh483987ilz6h"))))
+        (base32 "12dirg0qaq2rk8s11z7nnw793l94ysqna9mbqy8a0cx6bqiqykl7"))))
     (build-system trivial-build-system)
     (native-inputs
      `(("config-patch" ,@(search-patches "cl-asdf-config-directories.patch"))
