@@ -25346,8 +25346,8 @@ only.")
   (sbcl-package->ecl-package sbcl-sb-cga))
 
 (define-public sbcl-schemeish
-  (let ((commit "dff57bafae5d0cffa104c8fdc4146502f32d7f85")
-        (revision "1"))
+  (let ((commit "872ea3dc3f2ea8438388b5e7660acd9446c49948")
+        (revision "2"))
     (package
       (name "sbcl-schemeish")
       (version (git-version "0.0.1" revision commit))
@@ -25357,12 +25357,22 @@ only.")
          (uri (git-reference
                (url "https://github.com/chebert/schemeish")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-schemeish" version))
          (sha256
-          (base32 "0q9b07spmhg1b576cnnacvkf7zr3mab2rdydfylbn92y9mms9vyj"))))
+          (base32 "08lbrmsamfpva83l1ap33gp8ff99v0l2dyyidjgwdchmbdgq3gqf"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       (list sbcl-trivial-arguments))
+       (list sbcl-trivial-arguments sbcl-trivial-cltl2))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-build
+                   (lambda _
+                     ;; To fix the warning:
+                     ;; Argument of type (INTEGER 1 1) cannot be used as a keyword.
+                     (substitute* "src/arities.lisp"
+                       (("1 2 3 4 5 6 7 8")
+                        ":a1 :a2 :a3 :a4 :a5 :a6 :a7 :a8")))))))
       (synopsis "Scheme style syntax/macros/functions for Common Lisp")
       (description
        "Schemeish implements several useful Scheme constructs for Common Lisp.
