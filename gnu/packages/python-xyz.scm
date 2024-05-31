@@ -30457,14 +30457,14 @@ an upload option to send your work back to the platform.")
 (define-public python-titlecase
   (package
     (name "python-titlecase")
-    (version "2.4")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "titlecase" version))
        (sha256
         (base32
-         "00h92jdpj108z4sb6dpayfblpax20698290jnbyi5z5iwk5974i6"))))
+         "1x9myq3rlbw6wh946ncch8px7wyabhzacy2fjji13nmvrivs50vx"))))
     (build-system python-build-system)
     (home-page "https://github.com/ppannuto/python-titlecase")
     (synopsis "Capitalize strings similar to book titles")
