@@ -24472,28 +24472,30 @@ function @code{?} is abbreviation wrapper for @code{quicksearch}.")
   (sbcl-package->ecl-package sbcl-quicksearch))
 
 (define-public sbcl-quri
-  (package
-    (name "sbcl-quri")
-    (version "0.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/fukamachi/quri")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0l1jnvvkyaxbf08lnqfdbv6lrkq02iqr3y3rwvqxm4fvnzp7mnpz"))))
-    (build-system asdf-build-system/sbcl)
-    (native-inputs (list sbcl-prove))
-    (inputs (list sbcl-babel sbcl-split-sequence sbcl-cl-utilities
-                  sbcl-alexandria))
-    (home-page "https://github.com/fukamachi/quri")
-    (synopsis "Yet another URI library for Common Lisp")
-    (description
-     "QURI (pronounced \"Q-ree\") is yet another URI library for Common
+  (let ((commit "03ecaf3771561d713e58a9c5c22b4d95a7592527")
+        (revision "0"))
+    (package
+      (name "sbcl-quri")
+      (version (git-version "0.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fukamachi/quri")
+               (commit commit)))
+         (file-name (git-file-name "cl-quri" version))
+         (sha256
+          (base32 "1dd96mvgwbs799qzh7amc7kgwy84qhi1gw1yj08n83wmy5k4b9k2"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-prove))
+      (inputs (list sbcl-babel sbcl-split-sequence sbcl-cl-utilities
+                    sbcl-alexandria))
+      (home-page "https://github.com/fukamachi/quri")
+      (synopsis "Yet another URI library for Common Lisp")
+      (description
+       "QURI (pronounced \"Q-ree\") is yet another URI library for Common
 Lisp.  It is intended to be a replacement of PURI.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public cl-quri
   (sbcl-package->cl-source-package sbcl-quri))
