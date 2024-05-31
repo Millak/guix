@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2022 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2023, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -162,6 +162,16 @@
       "texmf-dist/tex/lollipop/lollipop.ini"
       "texmf-dist/tex/lollipop/lollipop.tex")
      (catalogue-license . "gpl3"))
+    ("m-tx"
+     (name . "m-tx")
+     (shortdesc . "A preprocessor for pmx")
+     (longdesc . "M-Tx is a preprocessor to pmx")
+     (depend "m-tx.ARCH")
+     (runfiles "texmf-dist/scripts/m-tx/m-tx.lua"))
+    ("m-tx.x86_64-linux"
+     (name . "m-tx.x86_64-linux")
+     (binfiles "bin/x86_64-linux/m-tx"
+               "bin/x86_64-linux/prepmx"))
     ("pax"
      (name . "pax")
      (shortdesc . "Extract and reinsert PDF...")
@@ -329,7 +339,22 @@ completely compatible with Plain TeX.")
                "texmf-dist/fonts/tfm/public/trsym/trsy12.tfm"
                "texmf-dist/tex/latex/trsym/trsym.sty"
                "texmf-dist/tex/latex/trsym/utrsy.fd")
-     (catalogue-license . "lppl"))))
+     (catalogue-license . "lppl"))
+    ("vlna"
+     (name . "vlna")
+     (shortdesc . "Add ~ after non-syllabic preposition")
+     (longdesc . "Preprocessor for TeX source")
+     (depend "vlna.ARCH")
+     (docfiles "texmf-dist/doc/man/man1/vlna.1"))
+    ("vlna.x86_64-linux"
+     (shortdesc "x86_64-linux files of vlna")
+     (binfiles "bin/x86_64-linux/vlna"))
+    ("web"
+     (depend "web.ARCH")
+     (docfiles "texmf-dist/doc/man/man1/tangle.1"))
+    ("web.x86_64-linux"
+     (name . "web.x86_64-linux")
+     (binfiles "bin/x86_64-linux/tangle"))))
 
 (test-assert "texlive->guix-package, no docfiles"
   ;; Replace network resources with sample data.
@@ -788,6 +813,107 @@ completely compatible with Plain TeX.")
                 ('list '#:link-scripts ('gexp ('list "pdfannotextractor.pl"))))
                ('inputs
                 ('list 'perl))
+               ('home-page _)
+               ('synopsis _)
+               ('description _)
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, propagated binaries, no script"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "vlna"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-vlna")
+               ('version _)
+               ('source _)
+               ('outputs _)
+               ('build-system 'texlive-build-system)
+               ('propagated-inputs
+                ('list 'texlive-vlna-bin))
+               ('home-page _)
+               ('synopsis _)
+               ('description _)
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, propagated binaries and scripts"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "m-tx"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-m-tx")
+               ('version _)
+               ('source _)
+               ('build-system 'texlive-build-system)
+               ('arguments
+                ('list '#:link-scripts ('gexp ('list "m-tx.lua"))))
+               ('propagated-inputs
+                ('list 'texlive-m-tx-bin))
+               ('home-page _)
+               ('synopsis _)
+               ('description _)
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, with skipped propagated binaries"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "web"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-web")
+               ('version _)
+               ('source _)
+               ('outputs _)
+               ('build-system 'texlive-build-system)
                ('home-page _)
                ('synopsis _)
                ('description _)

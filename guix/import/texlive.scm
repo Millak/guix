@@ -64,6 +64,23 @@
         "tex/generic/hyphen/"
         "web2c/"))
 
+;; The following packages should propagate their binaries according to the TeX
+;; Live database, but won't because said binaries are already provided by
+;; "texlive-bin".  As a consequence, the importer does not make them propagate
+;; their "-bin" counterpart.
+(define no-bin-propagation-packages
+  (list "cweb"
+        "latex-bin"
+        "luahbtex"
+        "luatex"
+        "metafont"
+        "pdftex"
+        "pdftosrc"
+        "synctex"
+        "tex"
+        "tie"
+        "web"))
+
 (define string->license
   (match-lambda
     ("artistic2" 'artistic2.0)
@@ -296,33 +313,39 @@ When TEXLIVE-ONLY is true, only TeX Live packages are returned."
              ;; Get the right (alphabetic) order.
              (reverse actions))))))
 
-(define (linked-scripts name package-database)
+(define (list-binfiles name package-database)
+  "Return the list of \"binfiles\", i.e., files meant to be installed in
+\"bin/\" directory, for package NAME according to PACKAGE-DATABASE."
+  (or (and-let* ((data (assoc-ref package-database name))
+                 (depend (assoc-ref data 'depend))
+                 ((member (string-append name ".ARCH") depend))
+                 (bin-data (assoc-ref package-database
+                                      ;; Any *nix-like architecture will do.
+                                      (string-append name ".x86_64-linux"))))
+        (map basename (assoc-ref bin-data 'binfiles)))
+      '()))
+
+(define (list-linked-scripts name package-database)
   "Return a list of script names to symlink from \"bin/\" directory for
 package NAME according to PACKAGE-DATABASE.  Consider as scripts files with
 \".lua\", \".pl\", \".py\", \".rb\", \".sh\", \".tcl\", \".texlua\", \".tlu\"
 extensions, and files without extension."
-  (and-let* ((data (assoc-ref package-database name))
-             ;; Check if binaries are associated to the package.
-             (depend (assoc-ref data 'depend))
-             ((member (string-append name ".ARCH") depend))
-             ;; List those binaries.
-             (bin-data (assoc-ref package-database
-                                  ;; Any *nix-like architecture will do.
-                                  (string-append name ".x86_64-linux")))
-             (binaries (map basename (assoc-ref bin-data 'binfiles)))
-             ;; List scripts candidates.  Bail out if there are none.
-             (runfiles (assoc-ref data 'runfiles))
-             (scripts (filter (cut string-prefix? "texmf-dist/scripts/" <>)
-                              runfiles))
-             ((pair? scripts)))
-    (filter-map (lambda (script)
-                  (and (any (lambda (ext)
-                              (member (basename script ext) binaries))
-                            '(".lua" ".pl" ".py" ".rb" ".sh" ".tcl" ".texlua"
-                              ".tlu"))
-                       (basename script)))
-                ;; Get the right (alphabetic) order.
-                (reverse scripts))))
+  (or (and-let* ((data (assoc-ref package-database name))
+                 ;; List scripts candidates.  Bail out if there are none.
+                 (runfiles (assoc-ref data 'runfiles))
+                 (scripts (filter (cut string-prefix? "texmf-dist/scripts/" <>)
+                                  runfiles))
+                 ((pair? scripts))
+                 (binfiles (list-binfiles name package-database)))
+        (filter-map (lambda (script)
+                      (and (any (lambda (ext)
+                                  (member (basename script ext) binfiles))
+                                '(".lua" ".pl" ".py" ".rb" ".sh" ".tcl" ".texlua"
+                                  ".tlu"))
+                           (basename script)))
+                    ;; Get the right (alphabetic) order.
+                    (reverse scripts)))
+      '()))
 
 (define* (files-differ? directory package-name
                         #:key
@@ -408,7 +431,20 @@ of those files are returned that are unexpectedly installed."
              (source (with-store store
                        (download-multi-svn-to-store
                         store ref (string-append name "-svn-multi-checkout")))))
-    (let* ((scripts (linked-scripts texlive-name package-database))
+    (let* ((scripts (list-linked-scripts texlive-name package-database))
+           (propagated-inputs
+            (let ((binfiles (list-binfiles texlive-name package-database)))
+              (sort (append
+                     ;; Check if propagation of binaries is necessary.  It
+                     ;; happens when binfiles outnumber the scripts, if any.
+                     (if (and (> (length binfiles) (length scripts))
+                              (not (member texlive-name
+                                           no-bin-propagation-packages)))
+                         (list (string-append name "-bin"))
+                         '())
+                     ;; Regular dependencies, as specified in database.
+                     (map guix-name (translate-depends depends)))
+                    string<?)))
            (tex-formats (formats data))
            (meta-package? (null? locs))
            (empty-package? (and meta-package? (not (pair? tex-formats)))))
@@ -481,16 +517,14 @@ of those files are returned that are unexpectedly installed."
                                        ((string-suffix? ".rb" s) '(ruby))
                                        ((string-suffix? ".tcl" s) '(tcl tk))
                                        (else '())))
-                               (or scripts '()))
+                               scripts)
               (() '())
               (inputs `((inputs (list ,@(delete-duplicates inputs eq?))))))
           ;; Propagated inputs.
-          ,@(match (translate-depends depends)
+          ,@(match (map string->symbol propagated-inputs)
               (() '())
-              (inputs
-               `((propagated-inputs
-                  (list ,@(map (compose string->symbol guix-name)
-                               (sort inputs string<?)))))))
+              (inputs `((propagated-inputs (list ,@inputs)))))
+          ;; Home page, synopsis, description and license.
           (home-page
            ,(cond
              (meta-package? "https://www.tug.org/texlive/")
@@ -505,6 +539,7 @@ of those files are returned that are unexpectedly installed."
               '(fsf-free "https://www.tug.org/texlive/copying.html"))
              ((assoc-ref data 'catalogue-license) => string->license)
              (else #f))))
+       ;; List of pure TeX Live dependencies for recursive calls.
        (translate-depends depends #t)))))
 
 (define texlive->guix-package
