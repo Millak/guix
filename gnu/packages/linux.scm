@@ -2640,12 +2640,10 @@ Linux kernel module and the server needs the @file{usbip_host} Linux kernel
 module.")
     (license license:gpl2)))
 
-;; XXX: Before updating to 1.47+ check if grub supports the ext4 flag
-;; metadata_csum_seed, otherwise grub will complain about an unknown filesystem.
 (define-public e2fsprogs
   (package
     (name "e2fsprogs")
-    (version "1.46.6")
+    (version "1.47.0")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -2654,7 +2652,7 @@ module.")
                    "e2fsprogs-" version ".tar.xz"))
              (sha256
               (base32
-               "1z7lqkvrw97jym2w2gz1aj3d9maxhrk6alv3vrzfkr7mkzqifxd7"))))
+               "1nymjw801lmlr5y6bg1zv9jsip5dkyxqislbdzpir4mx5czzajhl"))))
     (build-system gnu-build-system)
     (inputs (list `(,util-linux "lib")))
     (native-inputs (list pkg-config
