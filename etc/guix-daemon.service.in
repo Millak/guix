@@ -7,7 +7,8 @@ Description=Build daemon for GNU Guix
 
 [Service]
 ExecStart=@localstatedir@/guix/profiles/per-user/root/current-guix/bin/guix-daemon \
-    --build-users-group=guixbuild --discover=no
+    --build-users-group=guixbuild --discover=no \
+    --substitute-urls='@GUIX_SUBSTITUTE_URLS@'
 Environment='GUIX_LOCPATH=@localstatedir@/guix/profiles/per-user/root/guix-profile/lib/locale' LC_ALL=en_US.utf8
 StandardOutput=journal
 StandardError=journal

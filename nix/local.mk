@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2016, 2018-2020, 2024 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 #
@@ -166,8 +166,9 @@ etc/%.mount: etc/%.mount.in	\
 etc/guix-%.service: etc/guix-%.service.in	\
 			 $(top_builddir)/config.status
 	$(AM_V_GEN)$(MKDIR_P) "`dirname $@`";	\
-	$(SED) -e 's|@''localstatedir''@|$(localstatedir)|' <	\
-	       "$<" > "$@.tmp";		\
+	$(SED) -e 's|@''localstatedir''@|$(localstatedir)|' \
+	       -e 's|@''GUIX_SUBSTITUTE_URLS''@|$(GUIX_SUBSTITUTE_URLS)|' \
+	       < "$<" > "$@.tmp";		\
 	mv "$@.tmp" "$@"
 
 # The service script for sysvinit.
@@ -177,8 +178,9 @@ nodist_sysvinitservice_DATA = etc/init.d/guix-daemon
 etc/init.d/guix-daemon: etc/init.d/guix-daemon.in	\
 			 $(top_builddir)/config.status
 	$(AM_V_GEN)$(MKDIR_P) "`dirname $@`";	\
-	$(SED) -e 's|@''localstatedir''@|$(localstatedir)|' <	\
-	       "$<" > "$@.tmp";		\
+	$(SED) -e 's|@''localstatedir''@|$(localstatedir)|' \
+	       -e 's|@''GUIX_SUBSTITUTE_URLS''@|$(GUIX_SUBSTITUTE_URLS)|' \
+	       < "$<" > "$@.tmp";		\
 	mv "$@.tmp" "$@"
 
 # The service script for openrc.
@@ -199,8 +201,9 @@ nodist_upstartjob_DATA = etc/guix-daemon.conf etc/guix-publish.conf
 etc/guix-%.conf: etc/guix-%.conf.in	\
 			 $(top_builddir)/config.status
 	$(AM_V_GEN)$(MKDIR_P) "`dirname $@`";	\
-	$(SED) -e 's|@''localstatedir''@|$(localstatedir)|' <	\
-	       "$<" > "$@.tmp";		\
+	$(SED) -e 's|@''localstatedir''@|$(localstatedir)|' \
+	       -e 's|@''GUIX_SUBSTITUTE_URLS''@|$(GUIX_SUBSTITUTE_URLS)|' \
+	        < "$<" > "$@.tmp";		\
 	mv "$@.tmp" "$@"
 
 CLEANFILES +=					\
