@@ -14411,10 +14411,9 @@ SVG, EPS, PNG and terminal output.")
      (list python-flake8
            python-flit-core
            python-ipykernel
-           python-mypy
            python-nbconvert
            python-numpydoc
-           python-pre-commit
+           python-mypy
            python-pytest
            python-pytest-cov
            python-pytest-xdist
