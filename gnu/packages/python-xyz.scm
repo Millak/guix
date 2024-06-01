@@ -28545,6 +28545,29 @@ and corruption checks.")
 library to allow local file system access via @code{file://} URLs.")
     (license license:asl2.0)))
 
+(define-public python-ukkonen
+  (package
+    (name "python-ukkonen")
+    (version "1.0.1")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/asottile/ukkonen")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17gspl2dsykg000275svvyam4k7wz9ypi9xrfrmsgcgryczravlc"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-cffi))
+    (home-page "https://github.com/asottile/ukkonen")
+    (synopsis "Implementation of bounded Levenshtein distance (Ukkonen)")
+    (description "This package is an implementation of of bounded Levenshtein
+distance (Ukkonen).")
+    (license license:expat)))
+
 (define-public python-identify
   (package
     (name "python-identify")
