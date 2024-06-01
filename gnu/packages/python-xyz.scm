@@ -21074,7 +21074,6 @@ syntax highlighting, markdown and more to the terminal.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-click python-importlib-metadata python-rich))
-    (native-inputs (list python-pre-commit))
     (home-page "https://github.com/ewels/rich-click")
     (synopsis "Format click help output nicely with rich")
     (description "Click is a \"Python package for creating beautiful command
