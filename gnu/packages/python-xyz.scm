@@ -28571,7 +28571,7 @@ distance (Ukkonen).")
 (define-public python-identify
   (package
     (name "python-identify")
-    (version "1.4.25")
+    (version "2.5.36")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -28581,19 +28581,16 @@ distance (Ukkonen).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fqgci6skckcq0x5pnxh6k2qjzn1ndsrgha1j6wwv1ld4g9bd3hz"))))
-    (build-system python-build-system)
+        (base32 "1il0d1zh31jx36m0lvhpiykx95i95dcfrgrfbz2x6la884zsmvq8"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; system-error "utime" "~A" ("No such file or directory")
-         (delete 'ensure-no-mtimes-pre-1980)
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   ;; system-error "utime" "~A" ("No such file or directory")
+                   (delete 'ensure-no-mtimes-pre-1980))))
     (native-inputs
-     (list python-coverage python-pytest python-setuptools python-wheel))
+     (list python-coverage python-pytest python-setuptools
+           python-ukkonen python-wheel))
     (propagated-inputs
      (list python-editdistance))
     (home-page "https://github.com/chriskuehl/identify")
