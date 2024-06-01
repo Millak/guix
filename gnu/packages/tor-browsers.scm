@@ -268,9 +268,7 @@ Browser.")
            libxcomposite
            libxt
            libffi
-           ;; Support for FFmpeg 6 was only added in version 112 (see:
-           ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1819374).
-           ffmpeg-5
+           ffmpeg
            libvpx
            icu4c-73
            pixman
