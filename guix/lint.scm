@@ -73,6 +73,7 @@
                                     hg-reference-url)
   #:autoload   (guix bzr-download) (bzr-reference?
                                     bzr-reference-url)
+  #:use-module ((guix import pypi) #:select (pypi-ignored-inputs))
   #:use-module (guix import stackage)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
@@ -602,14 +603,12 @@ of a package, and INPUT-NAMES, a list of package specifications such as
             "m4"
             "qttools-5"
             "yasm" "nasm" "fasm"
-            "python-coverage"
             "python-cython"
             "python-docutils"
             "python-mock"
             "python-nose"
             "python-pbr"
             "python-pytest"
-            "python-pytest-cov"
             "python-setuptools-scm"
             "python-sphinx"
             "scdoc"
@@ -631,10 +630,13 @@ of a package, and INPUT-NAMES, a list of package specifications such as
 (define (check-inputs-should-not-be-an-input-at-all package)
   ;; Emit a warning if some inputs of PACKAGE are likely to should not be
   ;; an input at all.
-  (let ((input-names '("python-pip"
-                       "python-pre-commit"
-                       "tzdata"
-                       "nss-certs")))
+  (let ((input-names (append
+                      '("python-pip"
+                        "python-pre-commit"
+                        "tzdata"
+                        "nss-certs")
+                      (map (cut string-append "python-" <>)
+                           pypi-ignored-inputs))))
     (map (lambda (input)
            (make-warning
             package

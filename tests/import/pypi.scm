@@ -97,6 +97,7 @@ bar != 2
 
 [test]
 pytest (>=2.5.0)
+pytest-cov  # read but ignored
 ")
 
 ;; Beaker contains only optional dependencies.
@@ -258,7 +259,7 @@ files specified by SPECS.  Return its file name."
   (map specification->requirement-name test-specifications))
 
 (test-equal "parse-requires.txt"
-  (list '("foo" "bar") '("pytest"))
+  (list '("foo" "bar") '("pytest" "pytest-cov"))
   (mock ((ice-9 ports) call-with-input-file
          call-with-input-string)
         (parse-requires.txt test-requires.txt)))

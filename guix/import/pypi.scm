@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Vivien Kraus <vivien@planete-kraus.eu>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -68,6 +69,7 @@
   #:use-module (guix upstream)
   #:use-module ((guix licenses) #:prefix license:)
   #:export (%pypi-base-url
+            pypi-ignored-inputs
             parse-requires.txt
             parse-wheel-metadata
             specification->requirement-name
@@ -83,6 +85,18 @@
 (define %pypi-base-url
   ;; Base URL of the PyPI API.
   (make-parameter "https://pypi.org/pypi/"))
+
+(define pypi-ignored-inputs
+  ;; This list contains packages that are useful for development or quality
+  ;; testing, but that most of the time are not necessary to have as an input.
+  (list "argparse" "wheel" "import-metadata" ; native, backports
+        "nox" "tox" ; test wrapper for other environments
+        "codecov" "coverage" ; test coverage reporting
+        "black" "isort" "pycodestyle" "pep8" ; style
+        "check-manifest" "pyflakes" "flake8" "pylint" "mypy" ; style+lint
+        "coveralls" "twine" ; upload integration tools
+        "pytest-isort" "pytest-flake8" "pytest-cov" "pytest-black" ; variants
+        "pytest-pep8" "pytest-mypy" "pytest-pep8" "pre-commit"))   ;
 
 (define non-empty-string-or-false
   (match-lambda
@@ -499,12 +513,12 @@ cannot determine package dependencies from source archive: ~a~%")
   "Given the SOURCE-URL and WHEEL-URL of an already downloaded ARCHIVE, return
 the corresponding list of <upstream-input> records."
   (define (requirements->upstream-inputs deps type)
-    (filter-map (match-lambda
-                  ("argparse" #f)
-                  (name (upstream-input
-                         (name name)
-                         (downstream-name (python->package-name name))
-                         (type type))))
+    (filter-map (lambda (name)
+                  (and (not (member name pypi-ignored-inputs))
+                       (upstream-input
+                        (name name)
+                        (downstream-name (python->package-name name))
+                        (type type))))
                 (sort deps string-ci<?)))
 
   (define (add-missing-native-inputs inputs)
