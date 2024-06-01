@@ -404,6 +404,7 @@ upon boot."
         (create? (file-system-create-mount-point? file-system))
         (mount?  (file-system-mount? file-system))
         (dependencies (file-system-dependencies file-system))
+        (requirements (file-system-shepherd-requirements file-system))
         (packages (file-system-packages (list file-system))))
     (and (or mount? create?)
          (with-imported-modules (source-module-closure
@@ -412,7 +413,8 @@ upon boot."
             (provision (list (file-system->shepherd-service-name file-system)))
             (requirement `(root-file-system
                            udev
-                           ,@(map dependency->shepherd-service-name dependencies)))
+                           ,@(map dependency->shepherd-service-name dependencies)
+                           ,@requirements))
             (documentation "Check, mount, and unmount the given file system.")
             (start #~(lambda args
                        #$(if create?
@@ -461,12 +463,20 @@ upon boot."
                                  (or (file-system-mount? x)
                                      (file-system-create-mount-point? x)))
                                file-systems)))
+
     (define sink
       (shepherd-service
        (provision '(file-systems))
        (requirement (cons* 'root-file-system 'user-file-systems
                            (map file-system->shepherd-service-name
-                                file-systems)))
+                                ;; Do not require file systems with Shepherd
+                                ;; requirements to provision
+                                ;; 'file-systems. Many Shepherd services
+                                ;; require 'file-systems, so we would likely
+                                ;; deadlock.
+                                (filter (lambda (file-system)
+                                          (null? (file-system-shepherd-requirements file-system)))
+                                        file-systems))))
        (documentation "Target for all the initially-mounted file systems")
        (start #~(const #t))
        (stop #~(const #f))))

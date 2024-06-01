@@ -57,6 +57,7 @@
             file-system-repair
             file-system-create-mount-point?
             file-system-dependencies
+            file-system-shepherd-requirements
             file-system-location
 
             file-system-type-predicate
@@ -161,33 +162,35 @@ flags are found."
 (define-record-type* <file-system> file-system
   make-file-system
   file-system?
-  (device           file-system-device) ; string | <uuid> | <file-system-label>
-  (mount-point      file-system-mount-point)      ; string
-  (type             file-system-type)             ; string
-  (flags            file-system-flags             ; list of symbols
-                    (default '())
-                    (sanitize validate-file-system-flags))
-  (options          file-system-options           ; string or #f
-                    (default #f))
-  (mount?           file-system-mount?            ; Boolean
-                    (default #t))
-  (mount-may-fail?  file-system-mount-may-fail?   ; Boolean
-                    (default #f))
-  (needed-for-boot? %file-system-needed-for-boot? ; Boolean
-                    (default #f))
-  (check?           file-system-check?            ; Boolean
-                    (default #t))
-  (skip-check-if-clean? file-system-skip-check-if-clean? ; Boolean
-                        (default #t))
-  (repair           file-system-repair            ; symbol or #f
-                    (default 'preen))
-  (create-mount-point? file-system-create-mount-point? ; Boolean
-                       (default #f))
-  (dependencies     file-system-dependencies      ; list of <file-system>
-                    (default '()))                ; or <mapped-device>
-  (location         file-system-location
-                    (default (current-source-location))
-                    (innate)))
+  (device                file-system-device)               ; string | <uuid> | <file-system-label>
+  (mount-point           file-system-mount-point)          ; string
+  (type                  file-system-type)                 ; string
+  (flags                 file-system-flags                 ; list of symbols
+                         (default '())
+                         (sanitize validate-file-system-flags))
+  (options               file-system-options               ; string or #f
+                         (default #f))
+  (mount?                file-system-mount?                ; Boolean
+                         (default #t))
+  (mount-may-fail?       file-system-mount-may-fail?       ; Boolean
+                         (default #f))
+  (needed-for-boot?      %file-system-needed-for-boot?     ; Boolean
+                         (default #f))
+  (check?                file-system-check?                ; Boolean
+                         (default #t))
+  (skip-check-if-clean?  file-system-skip-check-if-clean?  ; Boolean
+                         (default #t))
+  (repair                file-system-repair                ; symbol or #f
+                         (default 'preen))
+  (create-mount-point?   file-system-create-mount-point?   ; Boolean
+                         (default #f))
+  (dependencies          file-system-dependencies          ; list of <file-system>
+                         (default '()))                    ; or <mapped-device>
+  (shepherd-requirements file-system-shepherd-requirements ; list of symbols
+                         (default '()))
+  (location              file-system-location
+                         (default (current-source-location))
+                         (innate)))
 
 ;; A file system label for use in the 'device' field.
 (define-record-type <file-system-label>

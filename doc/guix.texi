@@ -17862,6 +17862,20 @@ a dependency of @file{/sys/fs/cgroup/cpu} and
 
 Another example is a file system that depends on a mapped device, for
 example for an encrypted partition (@pxref{Mapped Devices}).
+
+@item @code{shepherd-requirements} (default: @code{'()})
+This is a list of symbols denoting Shepherd requirements that must be
+met before mounting the file system.
+
+As an example, an NFS file system would typically have a requirement for
+@code{networking}.
+
+Typically, file systems are mounted before most other Shepherd services
+are started.  However, file systems with a non-empty
+shepherd-requirements field are mounted after Shepherd services have
+begun.  Any Shepherd service that depends on a file system with a
+non-empty shepherd-requirements field must depend on it directly and not
+on the generic symbol @code{file-systems}.
 @end table
 @end deftp
 
