@@ -28761,7 +28761,7 @@ Let's Encrypt.")
 (define-public python-cfgv
   (package
     (name "python-cfgv")
-    (version "3.3.1")
+    (version "3.4.0")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -28771,15 +28771,8 @@ Let's Encrypt.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pci97cmn3v45sfch9s3lshidrl0309ls9byidic0l8drkwnkwcj"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+        (base32 "0g7jg6dssyax6k85lk8afs8qdzgq138g6ij0jmmhgdv5fzks6k9z"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/asottile/cfgv")
