@@ -36,6 +36,7 @@
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Luis Higino <luishenriquegh2701@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1185,6 +1186,33 @@ atimes for files.")
      "Package @code{times} provides a platform-independent way to get atime,
 mtime,ctime and btime for files.")
     (license license:expat)))
+
+(define-public go-github-com-docopt-docopt-go
+  (let ((commit "ee0de3bc6815ee19d4a46c7eb90f829db0e014b1")
+        (revision "0"))
+    (package
+      (name "go-github-com-docopt-docopt-go")
+      (version (git-version "0.6.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/docopt/docopt.go")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hlra7rmi5pmd7d93rv56ahiy4qkgmq8a6mz0jpadvbi5qh8lq6j"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/docopt/docopt-go"))
+      (home-page "https://github.com/docopt/docopt.go")
+      (synopsis "Implementation of docopt in Golang")
+      (description
+       "This package provides command-line arguments parser based on written
+help message which may simplify crating CLI applications, it's Golang
+implementation of http://docopt.org/.")
+      (license license:expat))))
 
 (define-public go-github-com-dustin-gojson
   (package
