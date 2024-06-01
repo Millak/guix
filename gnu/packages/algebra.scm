@@ -922,7 +922,7 @@ algorithms from the FORTRAN library MINPACK.")
 (define-public symengine
   (package
     (name "symengine")
-    (version "0.11.2")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -931,7 +931,7 @@ algorithms from the FORTRAN library MINPACK.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j6vd72hjj9fnsw5iiykmkrw8vyjcyyycgib2zxlmlzi6sj4618b"))))
+        (base32 "0vi9d0isfpdhraigpw5zffcqh5fy08anax7kji7csm3n6jx9zy29"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
