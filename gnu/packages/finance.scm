@@ -2228,13 +2228,13 @@ interactive controls.  This package provides a GTK+ graphical user interface
 (define-public python-ta-lib
   (package
     (name "python-ta-lib")
-    (version "0.4.21")
+    (version "0.4.32")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "TA-Lib" version))
        (sha256
-        (base32 "17sf222mq2vx924f15qlz5czkkq5vsnsjy9ibwkrk8lalr6g5lkl"))))
+        (base32 "186sgkpggy50gs2pa2p22zppl57xgfhpmja5l13xiskv44iw6x7v"))))
     (build-system python-build-system)
     (inputs
      (list ta-lib))
