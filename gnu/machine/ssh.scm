@@ -222,7 +222,8 @@ exist on the machine."
                    (not (member (file-system-type fs)
                                 %pseudo-file-system-types))
                    ;; Don't try to validate network file systems.
-                   (not (string-prefix? "nfs" (file-system-type fs)))
+                   (not (or (string-prefix? "nfs" (file-system-type fs))
+                            (string-prefix? "cifs" (file-system-type fs))))
                    (not (memq 'bind-mount (file-system-flags fs)))))
             (operating-system-file-systems (machine-operating-system machine))))
 

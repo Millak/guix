@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +38,7 @@
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
+  #:use-module (ice-9 regex)
   #:use-module (system foreign)
   #:autoload   (system repl repl) (start-repl)
   #:use-module (srfi srfi-1)
@@ -1047,8 +1049,11 @@ file name or an nfs-root containing ':/')."
 
   (match spec
     ((? string?)
-     (if (or (string-contains spec ":/") (string=? spec "none"))
-         spec                  ; do not resolve NFS / tmpfs devices
+     (if (or (string-contains spec ":/") ;nfs
+             (and (>= (string-length spec) 2)
+                  (equal? (string-take spec 2) "//")) ;cifs
+             (string=? spec "none"))
+         spec                  ; do not resolve NFS / CIFS / tmpfs devices
          ;; Nothing to do, but wait until SPEC shows up.
          (resolve identity spec identity)))
     ((? file-system-label?)
@@ -1181,6 +1186,40 @@ corresponds to the symbols listed in FLAGS."
                                 (string-append "," options)
                                 "")))))
 
+  (define (mount-cifs source mount-point type flags options)
+    ;; Source is of form "//<server-ip-or-host>/<service>"
+    (let* ((regex-match (string-match "//([^/]+)/(.+)" source))
+           (server (match:substring regex-match 1))
+           (share (match:substring regex-match 2))
+           ;; Match ",guest,", ",guest$", "^guest,", or "^guest$," not
+           ;; e.g. user=foo,pass=notaguest
+           (guest? (string-match "(^|,)(guest)($|,)" options))
+           ;; Perform DNS resolution now instead of attempting kernel dns
+           ;; resolver upcalling. /sbin/request-key does not exist and the
+           ;; kernel hardcodes the path.
+           ;;
+           ;; (getaddrinfo) doesn't support cifs service, so omit it.
+           (inet-addr (host-to-ip server)))
+      (mount source mount-point type flags
+             (string-append "ip="
+                            inet-addr
+                            ;; As of Linux af1a3d2ba9 (v5.11) unc is ignored
+                            ;; and source is parsed by the kernel
+                            ;; directly. Pass it for compatibility.
+                            ",unc="
+                            ;; Match format of mount.cifs's mount syscall.
+                            "\\\\" server "\\" share
+                            (if guest?
+                                ",user=,pass="
+                                "")
+                            (if options
+                                ;; No need to delete "guest" from options.
+                                ;; linux/fs/smb/client/fs_context.c explicitly
+                                ;; ignores it. Also, avoiding excess commas
+                                ;; when deleting is a pain.
+                                (string-append "," options)
+                                "")))))
+
   (let* ((type    (file-system-type fs))
          (source  (canonicalize-device-spec (file-system-device fs)))
          (target  (string-append root "/"
@@ -1215,6 +1254,8 @@ corresponds to the symbols listed in FLAGS."
         (cond
          ((string-prefix? "nfs" type)
           (mount-nfs source target type flags options))
+         ((string-prefix? "cifs" type)
+          (mount-cifs source target type flags options))
          ((memq 'shared (file-system-flags fs))
           (mount source target type flags options)
           (mount "none" target #f MS_SHARED))
