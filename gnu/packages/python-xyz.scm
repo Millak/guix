@@ -28669,7 +28669,7 @@ effort to simplify the man pages with practical examples.")
 (define-public python-nodeenv
   (package
     (name "python-nodeenv")
-    (version "1.4.0")
+    (version "1.8.0")
     (source
      (origin
        ;; There's no tarball in PyPI.
@@ -28679,15 +28679,13 @@ effort to simplify the man pages with practical examples.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y443icx0w7jlzmxmmcm4q8dqfiwgafbb9cp8jpm68mbqxbz40a7"))))
-    (build-system python-build-system)
+        (base32 "0g8zp8zw5nnfc14ml0sil9yh7lnpz3xrdkazdkwg6pf5jqsxlvv9"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             ;; This test fails. It tries to open a network socket.
-             (invoke "pytest" "-vv" "-k" "not test_smoke"))))))
+     (list #:test-flags
+           #~(list "-k" (string-append
+                         "not test_smoke"
+                         " and not test_smoke_n_system_special_chars"))))
     (native-inputs
      (list python-coverage
            python-mock
