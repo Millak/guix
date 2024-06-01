@@ -654,9 +654,19 @@ use the Vulkan API.")
                 "0x4jhc8n9c4k8svmmcaxxs613xbsav7wam94gacddlm738cwp13v"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f                      ;no test
-       #:configure-flags '("-DVOLK_INSTALL=ON" "-DVOLK_PULL_IN_VULKAN=ON")))
-    (inputs (list vulkan-headers))
+     (list
+      #:tests? #f                      ;no test
+      #:configure-flags #~(list "-DVOLK_INSTALL=ON" "-DVOLK_PULL_IN_VULKAN=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-loader-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "volk.c"
+                (("dlopen\\(\"libvulkan.so")
+                 (string-append "dlopen(\""
+                                (search-input-file
+                                 inputs "/lib/libvulkan.so")))))))))
+    (inputs (list vulkan-headers vulkan-loader))
     (synopsis "Meta loader for Vulkan API")
     (description
      "Volk is a meta-loader for Vulkan.  It allows you to dynamically load
