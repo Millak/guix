@@ -1156,6 +1156,14 @@ corresponds to the symbols listed in FLAGS."
                             (repair (file-system-repair fs)))
   "Mount the file system described by FS, a <file-system> object, under ROOT."
 
+  (define* (host-to-ip host #:optional service)
+    "Return the IP address for host, which may be an IP address or a hostname."
+    (let* ((aa (match (getaddrinfo host service) ((x . _) x)))
+           (sa (addrinfo:addr aa))
+           (inet-addr (inet-ntop (sockaddr:fam sa)
+                                 (sockaddr:addr sa))))
+      inet-addr))
+
   (define (mount-nfs source mount-point type flags options)
     (let* ((idx (string-rindex source #\:))
            (host-part (string-take source idx))
@@ -1163,11 +1171,7 @@ corresponds to the symbols listed in FLAGS."
            (host (match (string-split host-part (string->char-set "[]"))
                  (("" h "") h)
                  ((h) h)))
-           (aa (match (getaddrinfo host "nfs") ((x . _) x)))
-           (sa (addrinfo:addr aa))
-           (inet-addr (inet-ntop (sockaddr:fam sa)
-                                 (sockaddr:addr sa))))
-
+           (inet-addr (host-to-ip host "nfs")))
       ;; Mounting an NFS file system requires passing the address
       ;; of the server in the addr= option
       (mount source mount-point type flags
@@ -1176,6 +1180,7 @@ corresponds to the symbols listed in FLAGS."
                             (if options
                                 (string-append "," options)
                                 "")))))
+
   (let* ((type    (file-system-type fs))
          (source  (canonicalize-device-spec (file-system-device fs)))
          (target  (string-append root "/"
