@@ -35800,6 +35800,32 @@ Ignore cpuid check for supported CPU models.
 @item @code{thermald} (default: @var{thermald})
 Package object of thermald.
 
+@cindex PowerTOP
+@cindex power consumption tuning with PowerTOP
+@subsubheading PowerTOP
+
+The @code{(gnu services pm)} module also provides a service definition
+for @uref{https://01.org/powertop/, PowerTOP}, a power consumption
+analysis and tuning tool.  When started, it tunes Linux kernel settings
+to reduce power consumption.
+
+@defvar powertop-service-type
+The service type for PowerTOP.  No configuration is necessary.  When the
+service starts, it executes @code{powertop --auto-tune}.
+
+@lisp
+(service powertop-service-type)
+@end lisp
+@end defvar
+
+Available @code{powertop-configuration} fields are:
+
+@deftypevr {@code{powertop-configuration} parameter} package powertop
+The PowerTOP package.  Defaults to @code{powertop} in the @code{(gnu
+packages linux)} module
+
+@end deftypevr
+
 @end table
 @end deftp
 

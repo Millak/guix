@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
+;;; Copyright © 2024 Ian Eure <ian@retrospec.tv>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,6 +19,8 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services pm)
+  #:use-module (srfi srfi-1)
+  #:use-module (ice-9 match)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix records)
@@ -37,7 +40,10 @@
             tlp-configuration
 
             thermald-configuration
-            thermald-service-type))
+            thermald-service-type
+
+            powertop-configuration
+            powertop-service-type))
 
 ;;;
 ;;; power-profiles-daemon
@@ -525,3 +531,37 @@ shutdown on system startup."))
    (default-value (thermald-configuration))
    (description "Run thermald, a CPU frequency scaling service that helps
 prevent overheating.")))
+
+
+
+;;;
+;;; powertop
+;;;
+;;; Calls `powertop --auto-tune' to reduce energy consumption.
+
+(define-configuration powertop-configuration
+  (powertop (package powertop) "PowerTOP package to use."))
+
+(define powertop-shepherd-service
+  (match-lambda
+    (($ <powertop-configuration> powertop)
+     (shepherd-service
+      (documentation "Tune kernel power settings at boot.")
+      (provision '(powertop powertop-auto-tune))
+      (requirement '(user-processes))
+      (one-shot? #t)
+      (start #~(lambda _
+                 (zero? (system* #$(file-append powertop "/sbin/powertop")
+                                 "--auto-tune"))))))))
+
+(define powertop-service-type
+  (service-type
+   (name 'powertop)
+   (extensions
+    (list
+     (service-extension shepherd-root-service-type
+                        (compose list powertop-shepherd-service))))
+   (compose concatenate)
+   (default-value (powertop-configuration))
+   (description "Tune power-related kernel parameters to reduce energy
+ consumption.")))
