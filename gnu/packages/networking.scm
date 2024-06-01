@@ -4608,7 +4608,7 @@ QUIC protocol.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.5.5")
+    (version "0.5.6")
     (source
      (origin
        (method git-fetch)
@@ -4619,7 +4619,7 @@ QUIC protocol.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yzgs4b0q945ygrqlc5hnmh78awl5p35azx83fz61bzfg20d52b4"))
+        (base32 "1wcvqk45p1k165bd32dc3hl73r0i6g14rxxkjxfr9x2d8410l91f"))
       (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
