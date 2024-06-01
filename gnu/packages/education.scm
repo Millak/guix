@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Luis Higino <luishenriquegh2701@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,6 +50,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gstreamer)
@@ -89,6 +91,71 @@
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1))
+
+(define-public cf-tool
+  (package
+    (name "cf-tool")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xalanq/cf-tool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ad2mljjg4pr8jjk9i1asnld16xi1wdfnh25drngm3c590cmrnfj"))
+       (patches (search-patches "cf-tool-add-languages.patch"))
+       (modules '((guix build utils)))
+       ;; Remove assets and vendorized dependencies from checkout
+       (snippet '(begin
+                   (delete-file-recursively "assets")
+                   (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:install-source? #f
+      #:import-path "github.com/xalanq/cf-tool"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'add-alternate-name
+            (lambda* _
+              (let ((bin (string-append #$output "/bin")))
+                (symlink (string-append bin "/cf-tool")
+                         (string-append bin "/cf"))))))))
+    (native-inputs
+     (list go-github-com-docopt-docopt-go
+           go-github-com-fatih-color
+           go-github-com-k0kubun-go-ansi
+           go-github-com-mitchellh-go-homedir
+           go-github-com-olekukonko-tablewriter
+           go-github-com-puerkitobio-goquery
+           go-github-com-sergi-go-diff
+           go-github-com-shirou-gopsutil
+           go-github-com-skratchdot-open-golang
+           go-golang-org-x-crypto
+           go-golang-org-x-term))
+    (home-page "https://github.com/xalanq/cf-tool")
+    (synopsis
+     "Command-line interface tool for @url{https://codeforces.com, Codeforces}")
+    (description
+     "Codeforces Tool is a command-line interface tool for
+@url{https://codeforces.com,Codeforces}.  Its features include:
+@itemize
+@item support Contests, Gym, Groups and acmsguru
+@item support all programming languages in Codeforces
+@item submit codes
+@item watch submissions' status dynamically
+@item fetch problems' samples
+@item compile and test locally
+@item clone all codes of someone
+@item generate codes from the specified template (including timestamp, author, etc.)
+@item list problems' stats of one contest
+@item use default web browser to open problems' pages, standings' page, etc.
+@item setup a network proxy and  setup a mirror host
+@end itemize")
+    (license license:expat)))
 
 (define-public gcompris
   (package
