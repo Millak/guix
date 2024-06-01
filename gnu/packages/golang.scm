@@ -8816,7 +8816,7 @@ dependencies and a simple API.")
 (define-public go-github-com-arceliar-ironwood
   (package
     (name "go-github-com-arceliar-ironwood")
-    (version "v0.0.0-20231127131626-465b82dfb5bd")
+    (version "v0.0.0-20240529054413-b8e59574e2b2")
     (source
      (origin
        (method git-fetch)
@@ -8826,15 +8826,16 @@ dependencies and a simple API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0sywrcvrpkkzi1jxfz2ahqs855h4bmdn1l79q5sdgqiaczr7q4b7"))))
+         "06ay82gqm3k649m7x0r3a3crnqv9x0yxhyqfabrf1b7inki35mfs"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/Arceliar/ironwood"
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; Source-only package
-         (delete 'build))))
+     (list #:import-path "github.com/Arceliar/ironwood"
+           #:go go-1.21
+           #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+             ;; Source-only package
+             (delete 'build))))
     (propagated-inputs
      (list go-golang-org-x-crypto go-github-com-arceliar-phony))
     (home-page "https://github.com/Arceliar/ironwood")
