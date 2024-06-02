@@ -299,7 +299,8 @@ Enhanced Subpixel Morphological Anti-Aliasing
     (license (list license:bsd-3    ; src/reshade/LICENSE.md
                    license:zlib)))) ; LICENSE
 
-(define-public vulkan-headers
+;; vulkan-headers, but without the path to vulkan-loader patched in.
+(define-public vulkan-headers/no-loader
   (package
     (name "vulkan-headers")
     (version "1.3.280.0")
@@ -316,12 +317,32 @@ Enhanced Subpixel Morphological Anti-Aliasing
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; No tests.
+    (properties '((hidden? . #t)))
     (home-page
      "https://github.com/KhronosGroup/Vulkan-Headers")
     (synopsis "Vulkan Header files and API registry")
     (description
      "Vulkan-Headers contains header files and API registry for Vulkan.")
     (license (list license:asl2.0)))) ;LICENSE.txt
+
+(define-public vulkan-headers
+  (package
+    (inherit vulkan-headers/no-loader)
+    (arguments
+     (substitute-keyword-arguments (package-arguments vulkan-headers/no-loader)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-libvulkan-file-name
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "include/vulkan/vulkan.hpp"
+                  (("dlopen\\( \"libvulkan.so")
+                   (string-append "dlopen(\""
+                                  (search-input-file
+                                   inputs "/lib/libvulkan.so"))))))))))
+    (inputs
+     (modify-inputs (package-inputs vulkan-headers/no-loader)
+       (prepend vulkan-loader)))
+    (properties '())))
 
 (define-public vulkan-loader
   (package
@@ -383,7 +404,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
            python
            wayland))
     (inputs
-     (list vulkan-headers libxrandr))
+     (list vulkan-headers/no-loader libxrandr))
     (native-search-paths
      (list (search-path-specification
             (variable "XDG_DATA_DIRS")
