@@ -98,12 +98,14 @@ GID."
   #~(begin
       (use-modules (guix build utils)
                    (srfi srfi-26))
-      (for-each (cut mkdir-p <>) '("/nix/store" "/nix/var/log"
+      (for-each (cut mkdir-p <>) '("/nix/var/log"
                                    "/nix/var/nix/gcroots/per-user"
                                    "/nix/var/nix/profiles/per-user"))
-      (chown "/nix/store"
-             (passwd:uid (getpw "root")) (group:gid (getpw "nixbld01")))
-      (chmod "/nix/store" #o775)
+      (unless (file-exists? #$%nix-store-directory)
+        (mkdir-p #$%nix-store-directory)
+        (chown #$%nix-store-directory
+               (passwd:uid (getpw "root")) (group:gid (getpw "nixbld01")))
+        (chmod #$%nix-store-directory #o775))
       (for-each (cut chmod <> #o777) '("/nix/var/nix/profiles"
                                        "/nix/var/nix/profiles/per-user"))))
 
