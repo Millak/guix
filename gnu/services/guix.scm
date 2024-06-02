@@ -696,7 +696,7 @@ ca-certificates.crt file in the system profile."
 
 (define (guix-home-shepherd-service config)
   (map (match-lambda
-         (((? string? user) . (? home-environment? he))
+         ((user he)
           (shepherd-service
            (documentation "Activate Guix Home.")
            (requirement '(user-processes))
@@ -710,9 +710,7 @@ ca-certificates.crt file in the system profile."
                      (list (string-append "HOME=" (passwd:dir (getpw #$user)))
                            "GUIX_SYSTEM_IS_RUNNING_HOME_ACTIVATE=t")
                      #:group (group:name (getgrgid (passwd:gid (getpw #$user))))))
-           (stop #~(make-kill-destructor))))
-         (e (error "Invalid value for guix-home, it should be in a form of
-(\"user-name\" . home-environment), but the following value is provided:\n" e)))
+           (stop #~(make-kill-destructor)))))
        config))
 
 (define guix-home-service-type
