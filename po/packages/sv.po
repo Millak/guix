@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-03-10 17:18+0000\n"
-"PO-Revision-Date: 2024-04-23 16:41+0000\n"
+"PO-Revision-Date: 2024-05-09 09:35+0000\n"
 "Last-Translator: Rey Lopezch <taodeking@tutanota.com>\n"
 "Language-Team: Swedish <https://translate.fedoraproject.org/projects/guix/packages/sv/>\n"
 "Language: sv\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.4\n"
+"X-Generator: Weblate 5.5.2\n"
 
 #: gnu/packages/abiword.scm:124
 msgid "Word processing program"
@@ -1839,7 +1839,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:6277
 msgid "Record audio streams to your hard drive"
-msgstr ""
+msgstr "Spela in ljudströmmar till din hårddisk"
 
 #: gnu/packages/audio.scm:6278
 msgid ""
@@ -5004,6 +5004,9 @@ msgid ""
 "platform-jumping, key-collecting, ancient pyramid exploring game, vaguely in\n"
 "the style of similar games for the Commodore+4."
 msgstr ""
+"Abe's Amazing Adventure är ett sidorullande\n"
+"plattformsspel där man samlar nycklar samt utforskar antika pyramider\n"
+"och det liknar vagt spelen till Commodore+4."
 
 #: gnu/packages/games.scm:361
 msgid "Action game in four spatial dimensions"
@@ -5422,7 +5425,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:1827
 msgid "Chess board for GNOME"
-msgstr ""
+msgstr "Schackbräde för GNOME"
 
 #: gnu/packages/games.scm:1828
 msgid ""
@@ -5431,6 +5434,10 @@ msgid ""
 "Portable Game Notation.  To play against a computer, install a chess engine\n"
 "such as chess or stockfish."
 msgstr ""
+"GNOME Chess tillhandahåller ett tvådimensionellt schackbräde\n"
+"för att spela mot mänskliga eller datordrivna motståndare.    Det kan läsa in\n"
+"och spara partier via filformatet Portable Game Notation (PNG).    Installera en\n"
+"schackmotor så som chess eller stockfish för att spela mot datorn."
 
 #: gnu/packages/games.scm:1888
 msgid "Backgammon game"
@@ -5447,7 +5454,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:1928
 msgid "3d Rubik's cube game"
-msgstr ""
+msgstr "Tredimensionellt Rubikskubspel"
 
 #: gnu/packages/games.scm:1930
 msgid ""
@@ -5460,17 +5467,19 @@ msgstr ""
 
 #: gnu/packages/games.scm:1952
 msgid "The game of Shogi (Japanese chess)"
-msgstr ""
+msgstr "Spelet Shogi (japansk schack)"
 
 #: gnu/packages/games.scm:1953
 msgid ""
 "GNU Shogi is a program that plays the game Shogi (Japanese\n"
 "Chess).  It is similar to standard chess but this variant is far more complicated."
 msgstr ""
+"GNU Shogi är ett program som spelar spelet Shogi (japanskt schack)\n"
+"Det liknar vanlig schack men denna variant är betydligt mer komplicerad."
 
 #: gnu/packages/games.scm:1981
 msgid "Tetris clone based on the SDL library"
-msgstr ""
+msgstr "Tetrisklon baserad på SDL-biblioteket"
 
 #: gnu/packages/games.scm:1983
 msgid ""
@@ -5527,13 +5536,15 @@ msgstr ""
 
 #: gnu/packages/games.scm:2246
 msgid "Action platformer game"
-msgstr ""
+msgstr "Action- och plattformsspel"
 
 #: gnu/packages/games.scm:2248
 msgid ""
 "ReTux is an action platformer loosely inspired by the Mario games,\n"
 "utilizing the art assets from the @code{SuperTux} project."
 msgstr ""
+"ReTux är ett action- och plattformsspel löst inspirerat av Mario-spelen\n"
+"och nyttjar grafik med mera från @code{SuperTux}-projektet,"
 
 #: gnu/packages/games.scm:2283
 msgid "Thematic meditative game"
@@ -5575,7 +5586,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:2558
 msgid "Lightweight game engine for Action-RPGs"
-msgstr ""
+msgstr "Resurssnål spelmotor för action-rpg:er"
 
 #: gnu/packages/games.scm:2560
 msgid ""
@@ -5583,6 +5594,9 @@ msgid ""
 "scripted in Lua.  It has been designed with 16-bit classic Action-RPGs\n"
 "in mind."
 msgstr ""
+"Solarus är en tvådimensionell spelmotor skriven i C++ och som\n"
+"kan köra spel skriptade i Lua.    Den har formgivits med klassiska 16-bitars\n"
+"action-rpg:er i åtanke."
 
 #: gnu/packages/games.scm:2587
 msgid "Create and modify quests for the Solarus engine"
@@ -5644,7 +5658,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:2923
 msgid "UFO: AI data files"
-msgstr ""
+msgstr "Datafiler för UFO: AI"
 
 #: gnu/packages/games.scm:2925
 msgid "This package contains maps and other assets for UFO: Alien Invasion."
@@ -5706,7 +5720,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:3192
 msgid "Lemmings clone"
-msgstr ""
+msgstr "Lemmings-klon"
 
 #: gnu/packages/games.scm:3194
 msgid ""
@@ -5754,7 +5768,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:3334
 msgid "Full chess implementation"
-msgstr ""
+msgstr "Fullständig schackimplementation"
 
 #: gnu/packages/games.scm:3335
 msgid ""
@@ -5762,6 +5776,9 @@ msgid ""
 "against the computer in a game of chess, either through the default terminal\n"
 "interface or via an external visual interface such as GNU XBoard."
 msgstr ""
+"GNU Chess är en schackmotor.   Den gör att du kan tävla mot datorn\n"
+"i ett parti schack, antingen via gränssnittet för standardterminalen eller \n"
+"genom ett externt visuellt gränssnitt så som GNU XBoard."
 
 #: gnu/packages/games.scm:3395
 msgid "Twisted adventures of young pig farmer Dink Smallwood"
@@ -5777,7 +5794,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:3423
 msgid "Game data for GNU Freedink"
-msgstr ""
+msgstr "Speldata för GNU Freedink"
 
 #: gnu/packages/games.scm:3425
 msgid "This package contains the game data of GNU Freedink."
@@ -5795,7 +5812,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:3517
 msgid "Graphical user interface for chess programs"
-msgstr ""
+msgstr "Grafiskt användargränssnitt för schackprogram"
 
 #: gnu/packages/games.scm:3518
 msgid ""
@@ -5805,6 +5822,11 @@ msgid ""
 "fully interactive graphical interface and it can load and save games in the\n"
 "Portable Game Notation."
 msgstr ""
+"GNU XBoard är ett grafiskt bräde för alla schackvarianter,\n"
+"så som internationellt schack, xiangqi (kinesiskt schack), shogi (japanskt schack)\n"
+"och Makruk.    Flera mindre kända varianter stöds också.    Det tillhandahåller ett\n"
+"fullständigt interaktivt grafiskt gränssnitt och det kan läsa in och spara partier i\n"
+"filformatet Portable Game Notation (PGN)."
 
 #: gnu/packages/games.scm:3551
 msgid "Typing tutor"
@@ -5963,6 +5985,9 @@ msgid ""
 "against each other or just trying to beat the computer; single-player mode is\n"
 "also available."
 msgstr ""
+"SuperTuxKart är ett tredimensionellt rallyspel med fokus på\n"
+"spelglädje snarare än realism.    Du kan spela med upp till fyra vänner på en dator,\n"
+"tävla mot varandra eller bara försöka slå datorn; det finns också enspelarläge."
 
 #: gnu/packages/games.scm:4216
 msgid "Isometric realtime strategy, economy and city building simulation"
@@ -6344,6 +6369,8 @@ msgid ""
 "SuperTux is a classic 2D jump'n run sidescroller game in\n"
 "a style similar to the original Super Mario games."
 msgstr ""
+"SuperTux är ett klassiskt tvådimensionellt sidorullande spel\n"
+"som liknar de ursprungliga Super Mario-spelen."
 
 #: gnu/packages/games.scm:5757
 msgid "MUD client"
@@ -7331,17 +7358,19 @@ msgstr ""
 
 #: gnu/packages/games.scm:10276
 msgid "Graphical user interface to play chess"
-msgstr ""
+msgstr "Grafiskt användargränssnitt för att spela schack"
 
 #: gnu/packages/games.scm:10278
 msgid ""
 "Eboard is a chess board interface for ICS (Internet Chess Servers)\n"
 "and chess engines."
 msgstr ""
+"Eboard är ett schackbrädesgränssnitt för ICS (Internet Chess Servers)\n"
+"och schackmotorer."
 
 #: gnu/packages/games.scm:10329
 msgid "Chess game database"
-msgstr ""
+msgstr "Databas för schackpartier"
 
 #: gnu/packages/games.scm:10331
 msgid ""
@@ -7349,10 +7378,13 @@ msgid ""
 "collection of chess games in many ways: browse, edit, add, organize, analyze,\n"
 "etc.  You can also play games on FICS or against an engine."
 msgstr ""
+"ChessX är en schackdatabas.    Med ChessX kan du hantera din samling\n"
+"av schackpartier på flera sätt: bläddra, redigera, lägga till, organisera, analysera\n"
+"med mera.    Du kan även spela partier på FICS eller mot en motor."
 
 #: gnu/packages/games.scm:10397
 msgid "Strong chess engine"
-msgstr ""
+msgstr "Stark schackmotor"
 
 #: gnu/packages/games.scm:10399
 msgid ""
@@ -7360,6 +7392,9 @@ msgid ""
 "best human chess grandmasters.  It can be used with UCI-compatible GUIs like\n"
 "ChessX."
 msgstr ""
+"Stockfish är en oerhört stark schackmotor.     Den är avsevärt starkare än\n"
+"de bästa mänskliga schackstormästarna.    Den kan användas med UCI-kompatibla \n"
+"grafiska användargränssnitt som ChessX."
 
 #: gnu/packages/games.scm:10426
 msgid "Violent point-and-click shooting game with nice effects"
@@ -8074,7 +8109,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:1330
 msgid "Color profile manager for the GNOME desktop"
-msgstr ""
+msgstr "Färgprofilhanterare för skrivbordsmiljön GNOME"
 
 #: gnu/packages/gnome.scm:1331
 msgid ""

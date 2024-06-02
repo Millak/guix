@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2021 the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the GNU guix package.
-# Marek Felšöci <marek@felsoci.sk>, 2021, 2022, 2023.
+# Marek Felšöci <marek@felsoci.sk>, 2021, 2022, 2023, 2024.
 # Rostislav Svoboda <Rostislav.Svoboda@gmail.com>, 2022.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2023, 2024.
 #: guix/diagnostics.scm:159
@@ -10,15 +10,15 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-02-26 22:56+0000\n"
-"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
+"PO-Revision-Date: 2024-05-31 06:49+0000\n"
+"Last-Translator: Marek Felšöci <marek@felsoci.sk>\n"
 "Language-Team: Slovak <https://translate.fedoraproject.org/projects/guix/guix/sk/>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 5.4\n"
+"X-Generator: Weblate 5.5.5\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -105,10 +105,9 @@ msgid "This is a simple service."
 msgstr "Toto je jednoduchá služba."
 
 #: gnu/services.scm:342
-#, fuzzy, scheme-format
-#| msgid "modify-services: service '~a' not found in service list"
+#, scheme-format
 msgid "modify-services: service '~a' was deleted here: ~a"
-msgstr "modify-services: služba „~a“ sa nenašla v zozname služieb"
+msgstr "modify-services: služba „~a“ bola odstránená tu: ~a"
 
 #: gnu/services.scm:375
 #, scheme-format
@@ -486,6 +485,8 @@ msgid ""
 "Use the @code{pam_limits} authentication module to set the specified\n"
 "resource usage limits."
 msgstr ""
+"Použiť modul overenia totožnosti @{pam_limits} na nastavenie zadaných\n"
+"obmedzení využitia prostriedkov."
 
 #: gnu/services/base.scm:2068
 msgid "Run the build daemon of GNU@tie{}Guix, aka. @command{guix-daemon}."
@@ -548,15 +549,14 @@ msgid "Write, say, @samp{\"~a/24\"} for a 24-bit network mask."
 msgstr "Zadajte, napríklad, @samp{\"~a/24\"} pre 24-bitovú sieťovú masku."
 
 #: gnu/services/base.scm:2715
-#, fuzzy, scheme-format
-#| msgid "signature is not a valid s-expression: ~s~%"
+#, scheme-format
 msgid "Value (~S) is not a valid mac address.~%"
-msgstr "podpis nie je platným s-výrazom: ~s~%"
+msgstr "Hodnota (~S) nie je platnou MAC adresou.~%"
 
 #: gnu/services/base.scm:2727
 #, scheme-format
 msgid "Value (~S) is not a symbol.~%"
-msgstr ""
+msgstr "Hodnota (~S) nie je znak.~%"
 
 #: gnu/services/base.scm:2813
 #, scheme-format
@@ -569,16 +569,14 @@ msgid "ignoring network route for '~a'~%"
 msgstr "sieťová cesta pre „~a“ sa neberie do úvahy~%"
 
 #: gnu/services/base.scm:2952
-#, fuzzy, scheme-format
-#| msgid "file system with label '~a' not found~%"
+#, scheme-format
 msgid "Interface with name '~a' not found~%"
-msgstr "súborový systém s menovkou „~a“ sa nenašiel~%"
+msgstr "Rozhranie s názvom „~a“ sa nenašlo~%"
 
 #: gnu/services/base.scm:2959
-#, fuzzy, scheme-format
-#| msgid "file system with label '~a' not found~%"
+#, scheme-format
 msgid "Interface with mac-address '~a' not found~%"
-msgstr "súborový systém s menovkou „~a“ sa nenašiel~%"
+msgstr "Rozhranie s MAC adresou „~a“ sa nenašlo~%"
 
 #: gnu/services/base.scm:3105
 msgid ""
@@ -886,7 +884,7 @@ msgstr ""
 
 #: gnu/services/shepherd.scm:201
 msgid "'provision' must be a non-empty list of symbols"
-msgstr ""
+msgstr "„provision“ musí byť zoznam znakov s aspoň jednou položkou"
 
 #: gnu/services/shepherd.scm:258
 #, scheme-format
@@ -1123,6 +1121,12 @@ msgid ""
 "during that time, the @code{x11-display} service is marked as failing to\n"
 "start."
 msgstr ""
+"Vytvoriť službu Shepherda @code{x11-display}, ktorá počká\n"
+"na spustenie servera grafickej obrazovky X Window (alebo „X11“)\n"
+"a riadne nastaví premennú prostredia @code{DISPLAY} príkazu\n"
+"@command{shepherd}.  Ak sa vrámci nastaviteľného časového\n"
+"úseku nespustí prístupný server X11, služba @code{x11-display}\n"
+"bude označená ako neschopná spustenia."
 
 #: gnu/home/services/desktop.scm:280
 msgid ""
@@ -1155,16 +1159,12 @@ msgstr ""
 "polohovacích zariadení pod zobrazovacím serverom Xorg pomocou používateľských výrazov."
 
 #: gnu/home/services/dotfiles.scm:116
-#, fuzzy
-#| msgid ""
-#| "Files that will be put in\n"
-#| "@file{~/.guix-home/files/.config}, and further processed during activation."
 msgid ""
 "Files that will be put in the user's home directory\n"
 "following GNU Stow's algorithm, and further processed during activation."
 msgstr ""
-"Súbory, ktoré budú umiestnené do\n"
-"@file{~/.guix-home/files/.config}, a neskôr spracované pri spúšťaní."
+"Súbory, ktoré budú umiestnené do domovského priečinka používateľa\n"
+"podľa algoritmu GNU Stow, a neskôr spracované pri spúšťaní."
 
 #: gnu/home/services/fontutils.scm:89
 msgid ""
@@ -1188,7 +1188,7 @@ msgstr ""
 
 #: gnu/home/services/gnupg.scm:225
 msgid "Incrementally refresh GnuPG keyrings over Tor."
-msgstr ""
+msgstr "Postupne obnoviť zväzky kľúčov GnuPG cez Tor."
 
 #: gnu/home/services/guix.scm:44
 msgid "Manages the per-user Guix channels specification."
@@ -1239,7 +1239,7 @@ msgstr "Nainštalovať a nastaviť Fish, priateľský príkazový riadok s priam
 
 #: gnu/home/services/shells.scm:762
 msgid "Configure readline in @code{.inputrc}."
-msgstr ""
+msgstr "Nastaviť readline v @code{.inputrc}."
 
 #: gnu/home/services/shepherd.scm:165
 msgid "Configure and install userland Shepherd."
@@ -1247,7 +1247,7 @@ msgstr "Nastaviť a nainštalovať Shepherda v používateľskom prostredí."
 
 #: gnu/home/services/sound.scm:127
 msgid "Start essential PipeWire services."
-msgstr ""
+msgstr "Spustiť nevyhnutné PipeWire služby."
 
 #: gnu/home/services/sound.scm:214
 msgid ""
@@ -1440,7 +1440,7 @@ msgstr "nepodporovaný druh oddielu: ~a"
 
 #: gnu/system/image.scm:542
 msgid "EFI bootloader required with GPT partitioning"
-msgstr ""
+msgstr "Rozdelenie GPT vyžaduje zavádzač EFI"
 
 #: gnu/system/image.scm:1046
 #, scheme-format
@@ -3798,10 +3798,9 @@ msgid "#:tests? must not be explicitly set to #t"
 msgstr "hodnota #:tests? by nemala byť výslovne #t"
 
 #: guix/lint.scm:323
-#, fuzzy, scheme-format
-#| msgid "'GUIX_ENVIRONMENT' is set to '~a' instead of '~a'~%"
+#, scheme-format
 msgid "'~0@*~a' should be set to '~1@*~a' instead of '~2@*~a'"
-msgstr "„GUIX_ENVIRONMENT“ bola pridelená hodnota „~a“ namiesto „~a“~%"
+msgstr "hodnota „~0@*~a“ by mala byť nastavená na „~1@*~a“ namiesto „~2@*~a“"
 
 #: guix/lint.scm:381
 msgid "description should not be empty"
@@ -4164,7 +4163,7 @@ msgstr "Overiť či sú testy výslovne povolené"
 
 #: guix/lint.scm:1920
 msgid "Check that cross-compilers are used when cross-compiling"
-msgstr ""
+msgstr "Overiť, či sa pri krížovom zostavení používajú krížové prekladače"
 
 #: guix/lint.scm:1924
 msgid "Validate package descriptions"
@@ -4317,27 +4316,16 @@ msgstr ""
 "  -o, --output=SÚBOR      stiahnuť do SÚBORU"
 
 #: guix/scripts/download.scm:187
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -r, --root=FILE        make FILE a symlink to the result, and register it\n"
-#| "                         as a garbage collector root"
 msgid ""
 "\n"
 "  -g, --git              download the default branch's latest commit of the\n"
 "                         Git repository at URL"
 msgstr ""
 "\n"
-"  -r, --root=SÚBOR        určiť SÚBOR ako symbolický odkaz na výsledok\n"
-"                         a zaznamenať ho ako koreň zberača odpadkov"
+"  -g, --git              stiahnuť najnovšiu úpravu predvolenej vetvy\n"
+"                         Git repozitára cez PREPOJENIE"
 
 #: guix/scripts/download.scm:190
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --substitute STORE-FILE DESTINATION\n"
-#| "                         download STORE-FILE and store it as a Nar in file\n"
-#| "                         DESTINATION"
 msgid ""
 "\n"
 "      --commit=COMMIT-OR-TAG\n"
@@ -4345,34 +4333,27 @@ msgid ""
 "                         repository at URL"
 msgstr ""
 "\n"
-"      --substitute SÚBOR-ÚLOŽISKA CIEĽOVÝ-SÚBOR\n"
-"                         stiahnuť SÚBOR-ÚLOŽISKA a uložiť ho ako Nar\n"
-"                         do CIEĽOVÉHO-SÚBORU"
+"      --commit=ÚPRAVA-ALEBO-ZNAČKA\n"
+"                         stiahnuť danú úpravu alebo značku Git\n"
+"                         repozitára cez PREPOJENIE"
 
 #: guix/scripts/download.scm:194
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --url=URL          download \"guix\" channel from the Git repository at URL"
 msgid ""
 "\n"
 "      --branch=BRANCH    download the given branch of the Git repository\n"
 "                         at URL"
 msgstr ""
 "\n"
-"      --url=PREPOJENIE          stiahnuť Git repozitár kanála „guix“ z PREPOJENIA"
+"      --branch=VETVA    stiahnuť danú vetvu Git repozitára\n"
+"                         cez PREPOJENIE"
 
 #: guix/scripts/download.scm:197
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -r, --recursive        import packages recursively"
 msgid ""
 "\n"
 "  -r, --recursive        download a Git repository recursively"
 msgstr ""
 "\n"
-"  -r, --recursive        nahrať balíky rekurzívne"
+"  -r, --recursive        rekurzívne stiahnuť Git repozitár"
 
 #: guix/scripts/download.scm:230 guix/scripts/hash.scm:126
 #, scheme-format
@@ -5367,17 +5348,14 @@ msgstr ""
 "  -C, --channels=SÚBOR    použiť kanály zo SÚBORU"
 
 #: guix/scripts/pull.scm:87 guix/scripts/time-machine.scm:59
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -q                     inhibit loading of 'guix.scm' and 'manifest.scm'"
 msgid ""
 "\n"
 "  -q, --no-channel-files\n"
 "                         inhibit loading of user and system 'channels.scm'"
 msgstr ""
 "\n"
-"  -q                     zabrániť nahratiu „guix.scm„ a „manifest.scm“"
+"  -q, --no-channel-files\n"
+"                         zabrániť nahratiu súboru „channels.scm“, či už na úrovni používateľa alebo systému"
 
 #: guix/scripts/pull.scm:90
 msgid ""
@@ -6251,31 +6229,22 @@ msgstr ""
 "                         ktoré sa zhodujú s REGULÁRNYM-VÝRAZOM"
 
 #: guix/scripts/system.scm:1201
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --help-deb-format  list options specific to the deb format"
 msgid ""
 "\n"
 "      --help-docker-format list options specific to the docker image type."
 msgstr ""
 "\n"
-"      --help-deb-format  zobraziť voľby pre formát deb"
+"      --help-docker-format zobraziť voľby obrazov Dockera."
 
 #: guix/scripts/system.scm:1205
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --prein-file=FILE\n"
-#| "                         Embed the provided prein script"
 msgid ""
 "\n"
 "      --max-layers=N\n"
 "                         Number of image layers"
 msgstr ""
 "\n"
-"      --prein-file=SÚBOR\n"
-"                         Vložiť poskytnutý pred-inštalačný skript"
+"      --max-layers=POČET\n"
+"                         Počet vrstiev obrazu"
 
 #: guix/scripts/system.scm:1231
 #, scheme-format
@@ -6433,10 +6402,9 @@ msgid "validate package definitions"
 msgstr "overiť zadania balíkov"
 
 #: guix/scripts/locate.scm:132
-#, fuzzy, scheme-format
-#| msgid "profile ~a is locked by another process~%"
+#, scheme-format
 msgid "~a: database is locked by another process~%"
-msgstr "profil ~a bol uzamknutý iným procesom~%"
+msgstr "~a: databázu uzamkol iný proces~%"
 
 #: guix/scripts/locate.scm:256
 #, scheme-format
@@ -7106,7 +7074,7 @@ msgstr "preskúšať servery náhrad porovnaním ich binárnych súborov"
 #: guix/scripts/challenge.scm:545
 #, scheme-format
 msgid "could not determine current substitute URLs; using defaults~%"
-msgstr ""
+msgstr "nepodarilo sa zistiť súčasné náhradné prepojenia; použijú sa predvolené~%"
 
 #: guix/scripts/copy.scm:61
 #, scheme-format
@@ -7251,16 +7219,12 @@ msgstr ""
 "  rpm           RPM archív inštalovateľný cez rpm/yum"
 
 #: guix/scripts/pack.scm:1347
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --help-deb-format  list options specific to the deb format"
 msgid ""
 "\n"
 "      --help-docker-format  list options specific to the docker format"
 msgstr ""
 "\n"
-"      --help-deb-format  zobraziť voľby pre formát deb"
+"      --help-docker-format  zobraziť voľby formátu Docker"
 
 #: guix/scripts/pack.scm:1351
 msgid ""

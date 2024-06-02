@@ -1,7 +1,7 @@
 # htmlxref.cnf - reference file for free Texinfo manuals on the web.
 # Modified by Ludovic Courtès <ludo@gnu.org> for the GNU Guix manual.
 
-htmlxrefversion=2024-03-31.22; # UTC
+htmlxrefversion=2024-06-02.15; # UTC
 
 # Copyright 2010-2020, 2022 Free Software Foundation, Inc.
 # 
@@ -442,6 +442,8 @@ GUIX_COOKBOOK = ${GUIX_ROOT}/cookbook
  guix-cookbook.pt_BR	node    ${GUIX_COOKBOOK}/pt-br/html_node/
  guix-cookbook.sk	mono    ${GUIX_COOKBOOK}/sk/guix-cookbook.sk.html
  guix-cookbook.sk	node    ${GUIX_COOKBOOK}/sk/html_node/
+ guix-cookbook.sv	mono    ${GUIX_COOKBOOK}/sv/guix-cookbook.sv.html
+ guix-cookbook.sv	node    ${GUIX_COOKBOOK}/sv/html_node/
  guix-cookbook		mono    ${GUIX_COOKBOOK}/en/guix-cookbook.html
  guix-cookbook		node	${GUIX_COOKBOOK}/en/html_node/
 

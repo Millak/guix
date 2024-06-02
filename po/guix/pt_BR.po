@@ -11,21 +11,22 @@
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2023, 2024.
 # Camila Flores Granella <cgranell@redhat.com>, 2023.
 # Frank McCay <frank.mccay@outlook.com.br>, 2024.
+# Felipe Silva <fedora@felipeqq2.rocks>, 2024.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-03-08 13:36+0000\n"
-"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
+"PO-Revision-Date: 2024-05-04 18:14+0000\n"
+"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/projects/guix/guix/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.4\n"
+"X-Generator: Weblate 5.5.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -385,10 +386,8 @@ msgid "host name '~a' contains invalid characters"
 msgstr "host name '~a' contains invalid characters"
 
 #: gnu/services/base.scm:767
-#, fuzzy
-#| msgid "Populate the @file{/etc} directory."
 msgid "Populate the @file{/etc/hosts} file."
-msgstr "Popula o diretório @file{/etc}."
+msgstr "Popula o arquivo @file{/etc/hosts}."
 
 #: gnu/services/base.scm:784
 msgid "Initialize the machine's host name."
@@ -399,7 +398,6 @@ msgid "Ensure the Linux virtual terminals run in UTF-8 mode."
 msgstr "Certifique-se de que os terminais virtuais Linux sejam executados no modo UTF-8."
 
 #: gnu/services/base.scm:874
-#, fuzzy
 msgid ""
 "Install the given fonts on the specified ttys (fonts are per\n"
 "virtual console on GNU/Linux).  The value of this service is a list of\n"
@@ -416,10 +414,12 @@ msgid ""
 "                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
 "@end example\n"
 msgstr ""
-"Install the given fonts on the specified ttys (fonts are per\n"
-"virtual console on GNU/Linux).  The value of this service is a list of\n"
-"tty/font pairs.  The font can be the name of a font provided by the @code{kbd}\n"
-"package or any valid argument to @command{setfont}, as in this example:\n"
+"Instala as fontes selecionadas nos ttys especificados (no\n"
+"GNU/Linux, as fontes são para cada console virtual). O valor\n"
+"desse serviço é uma lista de pares fonte/tty. A fonte pode ser\n"
+"o nome de uma fonte proveniente do pacote @code{kbd} ou\n"
+"qualquer argumento válido ao comando @command{setfont},\n"
+"como neste exemplo:\n"
 "\n"
 "@example\n"
 "`((\"tty1\" . \"LatGrkCyr-8x16\")\n"
@@ -470,10 +470,8 @@ msgid "Service syslog has been asked to reload its settings file."
 msgstr "O serviço syslog solicita recarregar seu arquivo de configurações."
 
 #: gnu/services/base.scm:1578
-#, fuzzy
-#| msgid "Service transmission-daemon is not running."
 msgid "Service syslog is not running."
-msgstr "O serviço transmission-daemon não está em execução."
+msgstr "O serviço syslog não está em execução."
 
 #: gnu/services/base.scm:1595
 msgid ""
@@ -577,22 +575,19 @@ msgid "network links are currently ignored on GNU/Hurd~%"
 msgstr "links de rede são atualmente ignorados no GNU/Hurd~%"
 
 #: gnu/services/base.scm:2838
-#, fuzzy, scheme-format
-#| msgid "importing file or directory '~a'...~%"
+#, scheme-format
 msgid "ignoring network route for '~a'~%"
-msgstr "importando arquivo ou diretório \"~a\"...~%"
+msgstr "ignorando a rota de rede para '~a'~%"
 
 #: gnu/services/base.scm:2952
-#, fuzzy, scheme-format
-#| msgid "file system with label '~a' not found~%"
+#, scheme-format
 msgid "Interface with name '~a' not found~%"
-msgstr "sistema de arquivos com rótulo \"~a\" não localizado~%"
+msgstr "interface com o nome \"~a\" não localizada~%"
 
 #: gnu/services/base.scm:2959
-#, fuzzy, scheme-format
-#| msgid "file system with label '~a' not found~%"
+#, scheme-format
 msgid "Interface with mac-address '~a' not found~%"
-msgstr "sistema de arquivos com rótulo \"~a\" não localizado~%"
+msgstr "interface com endereço mac \"~a\" não localizada~%"
 
 #: gnu/services/base.scm:3105
 msgid ""
@@ -768,10 +763,9 @@ msgstr ""
 " rede anônimo."
 
 #: gnu/services/networking.scm:1176
-#, fuzzy, scheme-format
-#| msgid "The 'system' field is deprecated, please use 'systems' instead.~%"
+#, scheme-format
 msgid "the 'iwd?' field is deprecated, please use 'shepherd-requirement' field instead~%"
-msgstr "O campo \"system\" foi descontinuado, por favor use \"systems\" em vez disso.~%"
+msgstr "o campo \"iwd?\" foi descontinuado, por favor use \"shepherd-requirement\" em vez disso.~%"
 
 #: gnu/services/networking.scm:1324
 msgid ""
@@ -1176,16 +1170,12 @@ msgstr ""
 "de botões no servidor de exibição Xorg por meio de expressões definidas pelo usuário."
 
 #: gnu/home/services/dotfiles.scm:116
-#, fuzzy
-#| msgid ""
-#| "Files that will be put in\n"
-#| "@file{~/.guix-home/files/.config}, and further processed during activation."
 msgid ""
 "Files that will be put in the user's home directory\n"
 "following GNU Stow's algorithm, and further processed during activation."
 msgstr ""
-"Arquivos que serão colocados em\n"
-"@file{~/.guix-home/files/.config}, e processadas posteriormente durante a ativação."
+"Arquivos que serão colocados na pasta $HOME seguindo o\n"
+"algoritmo do GNU Stow, e processadas durante a ativação."
 
 #: gnu/home/services/fontutils.scm:89
 msgid ""
@@ -1483,43 +1473,32 @@ msgstr ""
 "de rede é fornecido pelo hospedeiro."
 
 #: gnu/system/linux-container.scm:227
-#, fuzzy
 msgid ""
 "Usage: run-container [OPTION ...]\n"
 "Run the container with the given options."
 msgstr ""
-"Usage: run-container [OPTION ...]\n"
-"Run the container with the given options."
+"Uso: run-container [OPÇÃO ...]\n"
+"Executa o container com as opções dadas."
 
 #: gnu/system/linux-container.scm:230
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --share=SPEC       for containers, share writable host file system\n"
-#| "                         according to SPEC"
 msgid ""
 "\n"
 "      --share=SPEC       share host file system with read/write access\n"
 "                         according to SPEC"
 msgstr ""
 "\n"
-"      --share=ESPEC      para contêineres, compartilha o sistema de arquivos do\n"
-"                         hospedeiro com permissão de escrita de acordo com ESPEC"
+"      --share=ESPEC       compartilhar sistema de arquivos do hospedeiro com acesso de leitura/escrita\n"
+"                                            de acordo com ESPEC"
 
 #: gnu/system/linux-container.scm:233
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --expose=SPEC      for containers, expose read-only host file system\n"
-#| "                         according to SPEC"
 msgid ""
 "\n"
 "      --expose=SPEC      expose host file system directory as read-only\n"
 "                         according to SPEC"
 msgstr ""
 "\n"
-"      --expose=ESPEC     para contêineres, expõe o sistema de arquivos do\n"
-"                         hospedeiro em modo somente leitura de acordo com ESPEC"
+"      --expose=ESPEC     expor sistema de arquivos do hospedeiro com acesso de\n"
+"                         leitura apenas de acordo com ESPEC"
 
 #: gnu/system/linux-container.scm:237 guix/scripts/build.scm:469
 #: guix/scripts/download.scm:201 guix/scripts/package.scm:496
@@ -1705,10 +1684,9 @@ msgid "~A: download failed~%"
 msgstr "~A: falha no download~%"
 
 #: guix/import/elpa.scm:271
-#, fuzzy, scheme-format
-#| msgid "Unsupported MELPA fetcher: ~a, falling back to unstable MELPA source.~%"
+#, scheme-format
 msgid "unsupported MELPA fetcher: ~a, falling back to unstable MELPA source~%"
-msgstr "Captador MELPA não suportado: ~a, utilizando fonte MELPA instável em seu lugar.~%"
+msgstr "cliente MELPA não suportado: ~a, utilizando fonte instável do MELPA em seu lugar~%"
 
 #: guix/import/elpa.scm:479
 msgid "Updater for ELPA packages"
@@ -2142,10 +2120,8 @@ msgid "Restart the installer"
 msgstr "Reiniciar o instalador"
 
 #: gnu/installer/newt/final.scm:87 gnu/installer/newt/welcome.scm:165
-#, fuzzy
-#| msgid "Restart the installer"
 msgid "Report the failure"
-msgstr "Reiniciar o instalador"
+msgstr "Reportar o erro"
 
 #: gnu/installer/newt/final.scm:88
 msgid "The final system installation step failed.  You can resume from a specific step, or restart the installer."
@@ -2749,7 +2725,7 @@ msgid "Pre-install warning"
 msgstr "Aviso de pré-instalação"
 
 #: gnu/installer/newt/welcome.scm:143
-#, fuzzy, scheme-format
+#, scheme-format
 msgid ""
 "Devices not supported by free software were found on your computer:\n"
 "\n"
@@ -2758,22 +2734,20 @@ msgid ""
 "\n"
 "To address it, we recommend choosing hardware that respects your freedom as a user--hardware for which free drivers and firmware exist.  See \"Hardware Considerations\" in the manual for more information."
 msgstr ""
-"Devices not supported by free software were found on your computer:\n"
+"Dispositivos não suportados por software livre foram encontrados no seu computador:\n"
 "\n"
 "~{  - ~a~%~}\n"
-"Unfortunately, it means those devices will not be usable.\n"
+"Infelizmente, isso significa que esses dispositivos não poderão ser utilizados.\n"
 "\n"
-"To address it, we recommend choosing hardware that respects your freedom as a user--hardware for which free drivers and firmware exist.  See \"Hardware Considerations\" in the manual for more information."
+"Para evitar esse problema, recomendamos a escolha de dispositivos que respeitem a sua liberdade enquanto usuário--dispositivos para os quais existem drives e firmwares livres. Veja a seção \"Considerações de Hardware\" no manual para mais informações."
 
 #: gnu/installer/newt/welcome.scm:154
 msgid "Hardware support warning"
 msgstr "Aviso de suporte de hardware"
 
 #: gnu/installer/newt/welcome.scm:163
-#, fuzzy
-#| msgid "Installation failed"
 msgid "Previous installation failed"
-msgstr "Instalação falhou"
+msgstr "Instalação anterior falhou"
 
 #: gnu/installer/newt/welcome.scm:166
 msgid "It seems that the previous installation exited unexpectedly and generated a core dump.  Do you want to continue or to report the failure first?"
@@ -2915,7 +2889,7 @@ msgid ""
 ";; file system identifiers there (\"UUIDs\") can be obtained\n"
 ";; by running 'blkid' in a terminal.\n"
 msgstr ""
-";; A lista de sistemas de arquivos que são \"montados\". Os identificadores \n"
+";; A lista de sistemas de arquivos que são \"montados\". Os identificadores\n"
 ";; únicos de sistema de arquivos (\"UUIDs\") podem ser obtidos\n"
 ";; executando o comando 'blkid' em um terminal.\n"
 
@@ -2933,6 +2907,8 @@ msgid ""
 ";; To configure OpenSSH, pass an 'openssh-configuration'\n"
 ";; record as a second argument to 'service' below.\n"
 msgstr ""
+";; Para configurar o OpenSSH, passe um registro 'openssh-configuration'\n"
+";; como o segundo argumento do serviço abaixo.\n"
 
 #: gnu/installer/services.scm:110
 msgid "Tor anonymous network router"
@@ -2971,6 +2947,9 @@ msgid ""
 ";; Below is the list of system services.  To search for available\n"
 ";; services, run 'guix system search KEYWORD' in a terminal.\n"
 msgstr ""
+";; Está disponível abaixo a lista de serviços de sistema. Para pesquisar\n"
+";; por serviços disponíveis, execute 'guix system search PALAVRA-CHAVE'\n"
+";; num terminal.\n"
 
 #: gnu/installer/services.scm:182
 msgid ""
@@ -2978,18 +2957,25 @@ msgid ""
 ";; under their own account: use 'guix search KEYWORD' to search\n"
 ";; for packages and 'guix install PACKAGE' to install a package.\n"
 msgstr ""
+";; Pacotes instalados no sistema. Usuários também podem instalar\n"
+";; pacotes em suas contas pessoais: use 'guix search PALAVRA-CHAVE'\n"
+";; para pesquisar por pacotes e 'guix install PACOTE' para instalar um pacote.\n"
 
 #: gnu/installer/services.scm:214
 msgid ""
 ";; This is the default list of services we\n"
 ";; are appending to.\n"
 msgstr ""
+";; Essa é a lista padrão de serviços na\n"
+";; qual estamos adicionando.\n"
 
 #: gnu/installer/steps.scm:234
 msgid ""
 ";; Indicate which modules to import to access the variables\n"
 ";; used in this configuration.\n"
 msgstr ""
+";; Indica quais módulos importar para acessar as variáveis\n"
+";; usadas nessa configuração.\n"
 
 #. TRANSLATORS: This is a comment within a Scheme file.  Each line must
 #. start with ";; " (two semicolons and a space).  Please keep line
@@ -3004,6 +2990,13 @@ msgid ""
 ";; to the 'guix system reconfigure' command to effect your\n"
 ";; changes.\n"
 msgstr ""
+";; Esta é uma configuração do sistema operacional\n"
+";; gerada pelo instalador gráfico.\n"
+";;\n"
+";; Quando a instalação estiver completa, você pode\n"
+";; ler e modificar esse arquivo para ajustar a configuração\n"
+";; do sistema, e usar o comando 'guix system reconfigure'\n"
+";; para aplicar suas mudanças.\n"
 
 #: gnu/installer/timezone.scm:110
 #, scheme-format
@@ -3012,7 +3005,7 @@ msgstr "Não foi possível localizar o caminho: ~a."
 
 #: gnu/installer/user.scm:62
 msgid ";; The list of user accounts ('root' is implicit).\n"
-msgstr ""
+msgstr ";; A lista de contas de usuário ('root' está implícito).\n"
 
 #: gnu/installer/utils.scm:182
 #, scheme-format
@@ -3089,8 +3082,7 @@ msgid "incorrect target system ('~a' was given, while the system reports that it
 msgstr "sistema alvo incorreto (\"~a\" foi fornecido, enquanto os relatórios de sistema que é \"~a\")~%"
 
 #: gnu/machine/ssh.scm:499
-#, fuzzy, scheme-format
-#| msgid "no signing key '~a'. have you run 'guix archive --generate-key?'"
+#, scheme-format
 msgid "no signing key '~a'. Have you run 'guix archive --generate-key'?"
 msgstr "nenhuma chave de assinatura \"~a\". Você executou \"guix archive --generate-key\"?"
 
@@ -3434,10 +3426,9 @@ msgid "The available targets are:\n"
 msgstr "Os alvos disponíveis são:\n"
 
 #: guix/scripts/build.scm:373
-#, fuzzy, scheme-format
-#| msgid "'~a' is not a supported target~%"
+#, scheme-format
 msgid "'~a' is not a supported cross-compilation target~%"
-msgstr "'~a' não é um alvo suportado~%"
+msgstr "'~a' não é um alvo suportado para compilação cruzada~%"
 
 #: guix/scripts/build.scm:377
 #, scheme-format
@@ -4344,27 +4335,16 @@ msgstr ""
 "  -o, --output=ARQUIVO   baixa para ARQUIVO"
 
 #: guix/scripts/download.scm:187
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -r, --root=FILE        make FILE a symlink to the result, and register it\n"
-#| "                         as a garbage collector root"
 msgid ""
 "\n"
 "  -g, --git              download the default branch's latest commit of the\n"
 "                         Git repository at URL"
 msgstr ""
 "\n"
-"  -r, --root=ARQUIVO     faz do ARQUIVO um link simbólico para o resultado\n"
-"                          e o registra, como um coletor de lixo"
+"  -g, --git              baixa o último commit da branch padrão\n"
+"                         do repositório Git na URL"
 
 #: guix/scripts/download.scm:190
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --substitute STORE-FILE DESTINATION\n"
-#| "                         download STORE-FILE and store it as a Nar in file\n"
-#| "                         DESTINATION"
 msgid ""
 "\n"
 "      --commit=COMMIT-OR-TAG\n"
@@ -4372,34 +4352,26 @@ msgid ""
 "                         repository at URL"
 msgstr ""
 "\n"
-"      --substitute ARQUIVO-DO-ARMAZÉM DESTINO\n"
-"                         baixa ARQUIVO-DO-ARMAZÉM e armazena-o como um\n"
-"                         Nar no arquivo DESTINO"
+"      --commit=COMMIT-OU-TAG\n"
+"                          baixa o commit ou tag especificado\n"
+"                          do repositório Git na URL"
 
 #: guix/scripts/download.scm:194
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --url=URL          download \"guix\" channel from the Git repository at URL"
 msgid ""
 "\n"
 "      --branch=BRANCH    download the given branch of the Git repository\n"
 "                         at URL"
 msgstr ""
 "\n"
-"      --url=URL          baixa o canal \"guix\" do repositório Git na URL"
+"      --branch=BRANCH    baixa a branch especificada do repositório Git na URL"
 
 #: guix/scripts/download.scm:197
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -r, --recursive        import packages recursively"
 msgid ""
 "\n"
 "  -r, --recursive        download a Git repository recursively"
 msgstr ""
 "\n"
-"  -r, --recursive        importa pacotes recursivamente"
+"  -r, --recursive        baixa um repositório Git de forma recursiva"
 
 #: guix/scripts/download.scm:230 guix/scripts/hash.scm:126
 #, scheme-format
@@ -4762,11 +4734,8 @@ msgid "nothing to do~%"
 msgstr "nada para ser feito~%"
 
 #: guix/scripts/package.scm:1067
-#, fuzzy
-#| msgid "~a package in profile~%"
-#| msgid_plural "~a packages in profile~%"
 msgid "manage packages and profiles"
-msgstr "~a pacote no perfil~%"
+msgstr "gerenciar pacotes e perfis"
 
 #: guix/scripts/install.scm:31
 msgid ""
