@@ -1173,11 +1173,11 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-version         linux-libre-6.8-version)
-(define-public linux-libre-gnu-revision    linux-libre-6.8-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-6.8-pristine-source)
-(define-public linux-libre-source          linux-libre-6.8-source)
-(define-public linux-libre                 linux-libre-6.8)
+(define-public linux-libre-version         linux-libre-6.9-version)
+(define-public linux-libre-gnu-revision    linux-libre-6.9-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-6.9-pristine-source)
+(define-public linux-libre-source          linux-libre-6.9-source)
+(define-public linux-libre                 linux-libre-6.9)
 
 (define-public linux-libre-6.6
   (make-linux-libre* linux-libre-6.6-version
