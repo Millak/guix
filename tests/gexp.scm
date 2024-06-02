@@ -251,6 +251,12 @@
       (let ((file (local-file (string-copy "../base32.scm"))))
         (local-file-absolute-file-name file)))))
 
+(test-equal "local-file, non-literal source relative file name"
+  (current-filename)
+  (let ((file (local-file (assume-source-relative-file-name
+                           (string-append "gexp" ".scm")))))
+    (local-file-absolute-file-name file)))
+
 (test-assert "local-file, relative file name, within gexp"
   (let* ((file     (search-path %load-path "guix/base32.scm"))
          (interned (add-to-store %store "base32.scm" #f "sha256" file)))

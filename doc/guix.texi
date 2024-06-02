@@ -12251,6 +12251,11 @@ Wrapping is done like this:
 (local-file (assume-valid-file-name alice-key-file-path))
 @end lisp
 
+@var{file} can be wrapped in the @code{assume-source-relative-file-name}
+syntactic keyword.  When this is done, the file name will be looked up
+relative to the source file where it appears even when it is not a
+string literal.
+
 This is the declarative counterpart of the @code{interned-file} monadic
 procedure (@pxref{The Store Monad, @code{interned-file}}).
 @end deffn

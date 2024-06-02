@@ -52,6 +52,7 @@
             gexp-input-native?
 
             assume-valid-file-name
+            assume-source-relative-file-name
             local-file
             local-file?
             local-file-file
@@ -485,6 +486,12 @@ the given file name is valid, even if it's not a string literal, and thus not
 warn about it."
   file)
 
+(define-syntax-rule (assume-source-relative-file-name file)
+  "This is a syntactic keyword to tell 'local-file' that it can assume that
+the given file is relative to the source directory, even if it's not a string
+literal."
+  file)
+
 (define-syntax local-file
   (lambda (s)
     "Return an object representing local file FILE to add to the store; this
@@ -503,10 +510,16 @@ where FILE is the entry's absolute file name and STAT is the result of
 This is the declarative counterpart of the 'interned-file' monadic procedure.
 It is implemented as a macro to capture the current source directory where it
 appears."
-    (syntax-case s (assume-valid-file-name)
+    (syntax-case s (assume-valid-file-name assume-source-relative-file-name)
       ((_ file rest ...)
        (string? (syntax->datum #'file))
        ;; FILE is a literal, so resolve it relative to the source directory.
+       #'(%local-file file
+                      (delay (absolute-file-name file (current-source-directory)))
+                      rest ...))
+      ((_ (assume-source-relative-file-name file) rest ...)
+       ;; FILE is not a literal, but the user requested we look it up
+       ;; relative to the current source directory.
        #'(%local-file file
                       (delay (absolute-file-name file (current-source-directory)))
                       rest ...))
