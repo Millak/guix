@@ -10018,6 +10018,36 @@ contrast to BCC, do not require the Clang/LLVM runtime or linux kernel
 headers.")
     (license (list license:lgpl2.1 license:bsd-2))))
 
+(define-public libbpf-0.8
+  (package
+    (inherit libbpf)
+    (name "libbpf")
+    (version "0.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libbpf/libbpf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1zzpkk4x3f20483dzw43b3ml03d63vvkmqf4j8y3b61b67wm59bm"))))
+    (arguments
+     (list
+      #:tests? #f                       ;self-tests run in QEMU
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "LIBDIR=$(PREFIX)/lib")
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (add-before 'build 'pre-build
+                     (lambda _
+                       (chdir "src"))))))
+    (native-inputs (list pkg-config))
+    (propagated-inputs (list elfutils zlib)))) ;in Requires.private of libbpf.pc
+
 (define-public bcc
   (package
     (name "bcc")
