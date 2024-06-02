@@ -174,6 +174,9 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
              (string-append "-DLLVM_EXTERNAL_LIT="
                             (assoc-ref %build-inputs "python-lit")
                             "/bin/lit")
+             (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
+                            (assoc-ref %outputs "out") "/lib")
+             "-DBUILD_SHARED_LIBS=ON"
              "-DLLVM_SPIRV_INCLUDE_TESTS=ON")))
     (inputs (list llvm-18))
     (native-inputs (list clang-18 llvm-18 python-lit spirv-headers))
