@@ -949,20 +949,20 @@ Extensions} (DNSSEC).")
            ragel
            texinfo))
     (inputs
-     `(("fstrm" ,fstrm)
-       ("gnutls" ,gnutls)
-       ("jansson" ,jansson)
-       ("libbpf" ,libbpf-0.8)
-       ("libcap-ng" ,libcap-ng)
-       ("libedit" ,libedit)
-       ("libelf" ,libelf)
-       ("libidn" ,libidn)
-       ("libmnl" ,libmnl)
-       ("libnghttp2" ,nghttp2 "lib")
-       ("liburcu" ,liburcu)
-       ("lmdb" ,lmdb)
-       ("ncurses" ,ncurses)
-       ("protobuf-c" ,protobuf-c)))
+     (list fstrm
+           gnutls
+           jansson
+           libbpf-0.8
+           libcap-ng
+           libedit
+           libelf
+           libidn
+           libmnl
+           `(,nghttp2 "lib")
+           liburcu
+           lmdb
+           ncurses
+           protobuf-c))
     (home-page "https://www.knot-dns.cz/")
     (synopsis "Authoritative DNS name server")
     (description "Knot DNS is an authoritative name server for the @dfn{Domain
