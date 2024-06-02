@@ -40737,11 +40737,53 @@ The following is an example @code{dicod-service-type} configuration.
 
 The @code{(gnu services docker)} module provides the following services.
 
+@cindex containerd, container runtime
+@defvar containerd-service-type
+
+This service type operates containerd
+@url{https://containerd.io,containerd}, a daemon responsible for
+overseeing the entire container lifecycle on its host system. This
+includes image handling, storage management, container execution,
+supervision, low-level storage operations, network connections, and
+more.
+
+@end defvar
+
+@deftp {Data Type} containerd-configuration
+This is the data type representing the configuration of containerd.
+
+@table @asis
+
+@item @code{containerd} (default: @code{containerd})
+The containerd daemon package to use.
+
+@item @code{debug?} (default @code{#f})
+Enable or disable debug output.
+
+@item @code{environment-variables} (default: @code{'()})
+List of environment variables to set for @command{containerd}.
+
+This must be a list of strings where each string has the form
+@samp{@var{key}=@var{value}} as in this example:
+
+@lisp
+(list "HTTP_PROXY=socks5://127.0.0.1:9150"
+      "HTTPS_PROXY=socks5://127.0.0.1:9150")
+@end lisp
+
+@end table
+@end deftp
+
 @defvar docker-service-type
 
 This is the type of the service that runs @url{https://www.docker.com,Docker},
 a daemon that can execute application bundles (sometimes referred to as
 ``containers'') in isolated environments.
+
+The @code{containerd-service-type} service need to be added to a system
+configuration, otherwise a message about not any service provides
+@code{containerd} will be displayed during @code{guix system
+reconfigure}.
 
 @end defvar
 
@@ -40757,7 +40799,7 @@ The Docker daemon package to use.
 The Docker client package to use.
 
 @item @code{containerd} (default: @var{containerd})
-The Containerd package to use.
+This field is deprecated in favor of @code{containerd-service-type} service.
 
 @item @code{proxy} (default @var{docker-libnetwork-cmd-proxy})
 The Docker user-land networking proxy package to use.

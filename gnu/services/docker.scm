@@ -49,7 +49,9 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
 
-  #:export (docker-configuration
+  #:export (containerd-configuration
+            containerd-service-type
+            docker-configuration
             docker-service-type
             singularity-service-type
             oci-image
@@ -99,7 +101,7 @@
    "Docker client package.")
   (containerd
    (file-like containerd)
-   "containerd package.")
+   "Deprecated.  Do not use.")
   (proxy
    (file-like docker-libnetwork-cmd-proxy)
    "The proxy package to support inter-container and outside-container
@@ -121,6 +123,18 @@ loop-back communications.")
    "JSON configuration file to pass to dockerd")
   (no-serialization))
 
+(define-configuration containerd-configuration
+  (containerd
+   (file-like containerd)
+   "containerd package.")
+  (debug?
+   (boolean #f)
+   "Enable or disable debug output.")
+  (environment-variables
+   (list '())
+   "Environment variables to set for containerd.")
+  (no-serialization))
+
 (define %docker-accounts
   (list (user-group (name "docker") (system? #t))))
 
@@ -138,24 +152,37 @@ loop-back communications.")
         (mkdir-p #$state-dir))))
 
 (define (containerd-shepherd-service config)
-  (let* ((package (docker-configuration-containerd config))
-         (debug? (docker-configuration-debug? config))
-         (containerd (docker-configuration-containerd config)))
+  (match-record config <containerd-configuration>
+                (containerd debug? environment-variables)
     (shepherd-service
-           (documentation "containerd daemon.")
-           (provision '(containerd))
-           (start #~(make-forkexec-constructor
-                     (list (string-append #$package "/bin/containerd")
-                           #$@(if debug?
-                                  '("--log-level=debug")
-                                  '()))
-                     ;; For finding containerd-shim binary.
-                     #:environment-variables
-                     (list (string-append "PATH=" #$containerd "/bin"))
-                     #:pid-file "/run/containerd/containerd.pid"
-                     #:pid-file-timeout 300
-                     #:log-file "/var/log/containerd.log"))
-           (stop #~(make-kill-destructor)))))
+     (documentation "containerd daemon.")
+     (provision '(containerd))
+     (start #~(make-forkexec-constructor
+               (list (string-append #$containerd "/bin/containerd")
+                     #$@(if debug?
+                            '("--log-level=debug")
+                            '()))
+               ;; For finding containerd-shim binary.
+               #:environment-variables
+               (list #$@environment-variables
+                     (string-append "PATH=" #$containerd "/bin"))
+               #:pid-file "/run/containerd/containerd.pid"
+               #:pid-file-timeout 300
+               #:log-file "/var/log/containerd.log"))
+     (stop #~(make-kill-destructor)))))
+
+(define containerd-service-type
+  (service-type (name 'containerd)
+                (description "Run containerd container runtime.")
+                (extensions
+                 (list
+                  ;; Make sure the 'ctr' command is available.
+                  (service-extension profile-service-type
+                                     (compose list containerd-configuration-containerd))
+                  (service-extension shepherd-root-service-type
+                                     (lambda (config)
+                                       (list (containerd-shepherd-service config))))))
+                (default-value (containerd-configuration))))
 
 (define (docker-shepherd-service config)
   (let* ((docker (docker-configuration-docker config))
@@ -212,8 +239,7 @@ bundles in Docker containers.")
                                      %docker-activation)
                   (service-extension shepherd-root-service-type
                                      (lambda (config)
-                                       (list (containerd-shepherd-service config)
-                                             (docker-shepherd-service config))))
+                                       (list (docker-shepherd-service config))))
                   (service-extension account-service-type
                                      (const %docker-accounts))))
                 (default-value (docker-configuration))))

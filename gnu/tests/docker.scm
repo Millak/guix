@@ -54,6 +54,7 @@
    (service dbus-root-service-type)
    (service polkit-service-type)
    (service elogind-service-type)
+   (service containerd-service-type)
    (service docker-service-type)))
 
 (define (run-docker-test docker-tarball)
@@ -88,7 +89,21 @@ inside %DOCKER-OS."
           (test-runner-current (system-test-runner #$output))
           (test-begin "docker")
 
-          (test-assert "service running"
+          (test-assert "containerd service running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (match (start-service 'containerd)
+                  (#f #f)
+                  (('service response-parts ...)
+                   (match (assq-ref response-parts 'running)
+                     ((pid) (number? pid))))))
+             marionette))
+
+          (test-assert "containerd PID file present"
+            (wait-for-file "/run/containerd/containerd.pid" marionette))
+
+          (test-assert "dockerd service running"
             (marionette-eval
              '(begin
                 (use-modules (gnu services herd))
@@ -234,6 +249,20 @@ inside %DOCKER-OS."
           (test-runner-current (system-test-runner #$output))
           (test-begin "docker")
 
+          (test-assert "containerd service running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (match (start-service 'containerd)
+                  (#f #f)
+                  (('service response-parts ...)
+                   (match (assq-ref response-parts 'running)
+                     ((pid) (number? pid))))))
+             marionette))
+
+          (test-assert "containerd PID file present"
+            (wait-for-file "/run/containerd/containerd.pid" marionette))
+
           (test-assert "service running"
             (marionette-eval
              '(begin
@@ -327,6 +356,7 @@ docker-image} inside Docker.")
    (service dbus-root-service-type)
    (service polkit-service-type)
    (service elogind-service-type)
+   (service containerd-service-type)
    (service docker-service-type)
    (extra-special-file "/shared.txt"
                        (plain-file "shared.txt" "hello"))
@@ -383,6 +413,20 @@ docker-image} inside Docker.")
 
           (test-runner-current (system-test-runner #$output))
           (test-begin "oci-container")
+
+          (test-assert "containerd service running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (match (start-service 'containerd)
+                  (#f #f)
+                  (('service response-parts ...)
+                   (match (assq-ref response-parts 'running)
+                     ((pid) (number? pid))))))
+             marionette))
+
+          (test-assert "containerd PID file present"
+            (wait-for-file "/run/containerd/containerd.pid" marionette))
 
           (test-assert "dockerd running"
             (marionette-eval
