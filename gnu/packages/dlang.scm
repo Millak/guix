@@ -177,8 +177,8 @@ to a minimal test case.")
          (replace 'build
            ;; Building with Make would result in "make: *** [Makefile:166:
            ;; all] Error 2".
-           (lambda* (#:key make-flags parallel-tests? #:allow-other-keys)
-             (let ((job-count (number->string (or (and parallel-tests?
+           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (let ((job-count (number->string (or (and parallel-build?
                                                        (parallel-job-count))
                                                   1))))
                (apply invoke "cmake" "--build" "." "-j" job-count
