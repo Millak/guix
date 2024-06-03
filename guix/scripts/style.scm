@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -304,7 +304,7 @@ counterpart."
            value))
       (('unquote-splicing x)
        (if (= quotation 1)
-           `(ungexp-splicing x)
+           `(ungexp-splicing ,x)
            value))
       (('quasiquote x)
        (list 'quasiquote (loop x (+ quotation 1))))

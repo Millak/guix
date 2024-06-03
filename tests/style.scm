@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -499,6 +499,29 @@
 
       (load file)
       (read-package-field (@ (my-packages) my-coreutils) 'arguments 7))))
+
+(test-equal "gexpify arguments, substitute-keyword-arguments + unquote-splicing"
+  "\
+        (substitute-keyword-arguments (package-arguments coreutils)
+          ((#:make-flags flags
+            #~'())
+           #~(cons \"-DXYZ=yes\"
+                   #$@(if #t flags
+                          '())))))\n"
+  (call-with-test-package '((arguments
+                             (substitute-keyword-arguments
+                                 (package-arguments coreutils)
+                               ((#:make-flags flags ''())
+                                `(cons "-DXYZ=yes" ,@(if #t flags '()))))))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory "my-coreutils"
+               "-S" "arguments")
+
+      (load file)
+      (read-package-field (@ (my-packages) my-coreutils) 'arguments 6))))
 
 (test-equal "gexpify arguments, append substitute-keyword-arguments"
   "\
