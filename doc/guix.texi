@@ -2403,21 +2403,12 @@ the Cryptsetup/LUKS utilities to do that (see @inlinefmtifelse{html,
 @uref{https://linux.die.net/man/8/cryptsetup, @code{man cryptsetup}},
 @code{man cryptsetup}} for more information).
 
-@quotation Warning
-While efforts are in progress to extend support to LUKS2, please note
-that Guix only supports devices of type LUKS1 at the moment. You can
-verify that your existing LUKS device is of the right type by running
-@command{cryptsetup luksDump @var{device}}. Alternatively, you can
-create a new LUKS1 device with @command{cryptsetup luksFormat --type
-luks1 @var{device}}.
-@end quotation
-
 Assuming you want to store the root partition on @file{/dev/sda2}, the
-command sequence to format it as a LUKS1 partition would be along these
+command sequence to format it as a LUKS partition would be along these
 lines:
 
 @example
-cryptsetup luksFormat --type luks1 /dev/sda2
+cryptsetup luksFormat /dev/sda2
 cryptsetup open /dev/sda2 my-partition
 mkfs.ext4 -L my-root /dev/mapper/my-partition
 @end example

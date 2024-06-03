@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2019, 2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -104,25 +104,28 @@
 (define-public grub
   (package
     (name "grub")
-    (version "2.06")
+    (version "2.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/grub/grub-" version ".tar.xz"))
               (sha256
                (base32
-                "1qbycnxkx07arj9f2nlsi9kp0dyldspbv07ysdyd34qvz55a97mp"))
+                "1ahgzvvvwdxx7rl08pv5dyqlgp76jxz0q2cflxvsdsn4yy8p7jgk"))
               (patches (search-patches
                         "grub-efi-fat-serial-number.patch"
-                        "grub-setup-root.patch"
-                        "grub-ignore-metadata-csum-seed.patch"))
+                        "grub-setup-root.patch"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  ;; Adjust QEMU invocation to not use a deprecated device
-                  ;; name that was removed in QEMU 6.0.  Remove for >2.06.
-                  (substitute* "tests/ahci_test.in"
-                    (("ide-drive")
-                     "ide-hd"))))))
+               #~(begin
+                   ;; Add file missing from the release tarball.
+                   (call-with-output-file "grub-core/extra_deps.lst"
+                     (lambda (port)
+                       (display "depends bli part_gpt\n" port)))
+
+                   ;; Use exit code 77, not 99, to tell Automake that a test
+                   ;; is skipped.
+                   (substitute* (find-files "tests" "\\.in$")
+                     (("exit 99") "exit 77"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -348,8 +351,10 @@ menu to select one of the installed operating systems.")
                       "grub_script_return"
                       "grub_script_setparams"
                       "grub_cmd_date"
+                      "grub_cmd_set_date"
                       "grub_cmd_sleep"
                       "grub_cmd_regexp"
+                      "grub_cmd_test"
                       "grub_script_not"
                       "grub_cmd_echo"
                       "grub_script_expansion"
