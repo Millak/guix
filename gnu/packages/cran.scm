@@ -31108,6 +31108,30 @@ and multivariate regression), and analysis of variance tolerance intervals.
 Visualizations are also available for most of these settings.")
     (license license:gpl2+)))
 
+(define-public r-topdom
+  (package
+    (name "r-topdom")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "TopDom" version))
+       (sha256
+        (base32 "1rryfnwvdlpdrjgs6sciy91cxfp4jykll0swclasydjvj4n642i6"))))
+    (properties `((upstream-name . "TopDom")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-matrixstats r-reshape2 r-tibble))
+    (home-page "https://github.com/HenrikBengtsson/TopDom")
+    (synopsis "Efficient method for identifying genomic topological domains")
+    (description
+     "This method identifies topological domains in genomes from Hi-C sequence
+data.  The authors published an implementation of their method as an R script.
+This package originates from those original @code{TopDom} R scripts and
+provides help pages adopted from the original @code{TopDom} PDF documentation.
+It also provides a small number of bug fixes to the original code.")
+    ;; Either version of the GPL
+    (license (list license:gpl2 license:gpl3))))
+
 ;; Keep this in sync with the liblantern package.
 (define-public r-torch
   (package
