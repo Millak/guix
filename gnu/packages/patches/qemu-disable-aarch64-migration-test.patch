@@ -1,0 +1,13 @@
+Disable the qtest-aarch64/migration-test, which sometimes fail non-deterministically.
+See: https://gitlab.com/qemu-project/qemu/-/issues/1230.
+
+--- qemu-7.1.0/tests/qtest/meson.build.old	1969-12-31 19:00:01.000000000 -0500
++++ qemu-7.1.0/tests/qtest/meson.build	2022-09-26 11:11:05.434209797 -0400
+@@ -219,7 +219,6 @@
+   ['arm-cpu-features',
+    'numa-test',
+    'boot-serial-test',
+-   'migration-test',
+    'bcm2835-dma-test']
+ 
+ qtests_s390x = \

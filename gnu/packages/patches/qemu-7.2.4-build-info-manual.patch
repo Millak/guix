@@ -1,0 +1,62 @@
+From 2793f47c066ed396b38893c10533202fceb1a05f Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Date: Thu, 17 Sep 2020 13:28:19 -0400
+Subject: [PATCH] build: Build and install a Texinfo version of the manual.
+
+Take advantage of the Sphinx texinfo backend to generate a QEMU info
+manual.  The Texinfo format allows for more structure and info readers
+provide more advanced navigation capabilities compared to manpages
+readers.
+
+* docs/meson.build (texi, info): New targets.
+
+Signed-off-by: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+
+diff --git a/docs/meson.build b/docs/meson.build
+--- a/docs/meson.build
++++ b/docs/meson.build
+@@ -92,4 +92,25 @@ if build_docs
+   alias_target('sphinxdocs', sphinxdocs)
+   alias_target('html', sphinxdocs)
+   alias_target('man', sphinxmans)
++
++  # Generate a Texinfo version of the QEMU manual.
++  makeinfo = find_program(['texi2any', 'makeinfo'])
++  if makeinfo.found()
++    sphinxtexi = custom_target(
++      'QEMU manual generated texinfo source',
++      output: ['QEMU.texi', 'sphinxtexi.stamp'],
++      depfile: 'sphinxtexi.d',
++      command: [SPHINX_ARGS, '-Ddepfile=@DEPFILE@',
++               '-Ddepfile_stamp=@OUTPUT1@', '-b', 'texinfo',
++               meson.current_source_dir(), meson.current_build_dir()])
++    sphinxinfo = custom_target(
++      'QEMU info manual',
++      input: sphinxtexi,
++      output: 'QEMU.info',
++      install: true,
++      install_dir: get_option('infodir'),
++      command: [makeinfo, '--no-split', '@INPUT0@', '--output=@OUTPUT@'])
++    alias_target('texi', sphinxtexi)
++    alias_target('info', sphinxinfo)
++  endif
+ endif
+diff --git a/meson.build b/meson.build
+--- a/meson.build
++++ b/meson.build
+@@ -37,6 +37,7 @@ endif
+ qemu_confdir = get_option('sysconfdir') / get_option('qemu_suffix')
+ qemu_datadir = get_option('datadir') / get_option('qemu_suffix')
+ qemu_docdir = get_option('docdir') / get_option('qemu_suffix')
++qemu_infodir = get_option('infodir') / get_option('qemu_suffix')
+ qemu_moddir = get_option('libdir') / get_option('qemu_suffix')
+ 
+ qemu_desktopdir = get_option('datadir') / 'applications'
+@@ -3698,6 +3699,7 @@ else
+   summary_info += {'local state directory': 'queried at runtime'}
+ endif
+ summary_info += {'Doc directory':     get_option('prefix') / get_option('docdir')}
++summary_info += {'Info directory':    get_option('prefix') / get_option('infodir')}
+ summary_info += {'Build directory':   meson.current_build_dir()}
+ summary_info += {'Source path':       meson.current_source_dir()}
+ summary_info += {'GIT submodules':    config_host['GIT_SUBMODULES']}
