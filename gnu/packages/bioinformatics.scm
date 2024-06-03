@@ -13915,6 +13915,50 @@ for analyzing gene-level association tests in meta-analyses for binary
 trait.")
     (license license:gpl3)))
 
+(define-public r-rnacrosslinkoo
+  (let ((commit "a317e0fa6ddf34c309529d57390769e2b2b5bfb7")
+        (revision "1"))
+    (package
+      (name "r-rnacrosslinkoo")
+      (version (git-version "0.1.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cran/rnaCrosslinkOO")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0csv9924z0ish960k034qzv3gxh1yabnxni8hsrn5j6xl1r3cdpl"))))
+      (properties `((upstream-name . "rnaCrosslinkOO")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-classdiscovery
+                               r-doparallel
+                               r-foreach
+                               r-genomicranges
+                               r-ggplot2
+                               r-ggrepel
+                               r-heatmap3
+                               r-igraph
+                               r-iranges
+                               r-mass
+                               r-mixtools
+                               r-patchwork
+                               r-r4rna
+                               r-rcolorbrewer
+                               r-reshape2
+                               r-rrna
+                               r-s4vectors
+                               r-seqinr
+                               r-tidyverse
+                               r-topdom))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/cran/rnaCrosslinkOO")
+      (synopsis "Analysis of RNA crosslinking data")
+      (description
+       "The package is ideal for analyzing RNA structure and chemical probing data.")
+      (license license:gpl3))))
+
 (define-public r-rnaseqdtu
   (let ((commit "5bee1e769d2e1dc6a3f1cecb78078050eeb5b9ac")
         (revision "1"))
