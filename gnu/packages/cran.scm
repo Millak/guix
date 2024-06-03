@@ -3883,6 +3883,31 @@ on a Solomon-Cox approximation).  Estimates should be treated with caution if
 the group sizes are small.")
     (license license:gpl2)))
 
+(define-public r-mcmcglmm
+  (package
+    (name "r-mcmcglmm")
+    (version "2.36")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "MCMCglmm" version))
+       (sha256
+        (base32 "1wca9x5c9x88cryj1pkhl73chmnbc1653j08faz7lp03z2mdkzv6"))))
+    (properties `((upstream-name . "MCMCglmm")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape
+                             r-coda
+                             r-corpcor
+                             r-cubature
+                             r-matrix
+                             r-tensora))
+    (home-page "https://github.com/jarrodhadfield/MCMCglmm")
+    (synopsis "MCMC generalised linear mixed models")
+    (description
+     "This package fits multivariate generalized linear mixed models and
+related models.  This is done using Markov chain Monte Carlo techniques.")
+    (license license:gpl2+)))
+
 (define-public r-shadowtext
   (package
     (name "r-shadowtext")
