@@ -1171,6 +1171,43 @@ from single-cell RNA-seq data.")
       ;; GPLv3.
       (license license:gpl3))))
 
+(define-public r-scent
+  (let ((commit "f01f18ac30f8a9bcf85b738c6c7815017e2c8ee5")
+        (revision "1"))
+    (package
+      (name "r-scent")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/immunogenomics/SCENT")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "18krksy8ac7yy8hghzaxscj91c61j195yg7j60zswdq97islvfzi"))))
+      (properties `((upstream-name . "SCENT")))
+      (build-system r-build-system)
+      (inputs (list bedtools))
+      (propagated-inputs (list r-boot
+                               r-data-table
+                               r-hmisc
+                               r-lme4
+                               r-mass
+                               r-matrix
+                               r-r-utils
+                               r-stringr))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/immunogenomics/SCENT")
+      (synopsis
+       "Single-Cell enhancer target gene mapping for multimodal single-cell data")
+      (description
+       "This package contains functions for the SCENT algorithm.
+SCENT uses single-cell multimodal data and links ATAC-seq peaks
+to their target genes by modeling association between chromatin
+accessibility and gene expression across individual single cells.")
+      (license license:expat))))
+
 (define-public r-saige
   (let ((commit "c6717ba9c5a967bcf612e97566d845397b1b7167")
         (revision "1"))
