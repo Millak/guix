@@ -148,14 +148,14 @@ to a minimal test case.")
 (define ldc-bootstrap
   (package
     (name "ldc")
-    (version "1.35.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/ldc-developers/ldc/releases"
                            "/download/v" version "/ldc-" version "-src.tar.gz"))
        (sha256
-        (base32 "186z4r1d8y4dfpv5cdqgz9al6w7qnfh9l4q9ws9w0xkcf29njabf"))))
+        (base32 "13pkg69wjj4ali4ikijicccpg8y6f2hghhb70z9lrqr2w3pkhqna"))))
     (build-system cmake-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
@@ -257,9 +257,10 @@ bootstrapping more recent compilers written in D.")
                                    "/lib/linux\",\n"))))))
            (add-after 'unpack 'patch-paths-in-tests
              (lambda _
-               (substitute* '("tests/dmd/Makefile"
-                              "runtime/druntime/test/profile/Makefile")
+               (substitute* "runtime/druntime/test/profile/Makefile"
                  (("/bin/bash") (which "bash")))
+               (substitute* "tests/driver/cli_CC_envvar.d"
+                 (("cc") (which "clang")))
                (substitute* "tests/linking/linker_switches.d"
                  (("echo") (which "echo")))
                (substitute* "tests/dmd/dshell/test6952.d"
@@ -276,9 +277,6 @@ bootstrapping more recent compilers written in D.")
                ;; The following tests plugins we don't have.
                (delete-file "tests/plugins/addFuncEntryCall/testPlugin.d")
                (delete-file "tests/plugins/addFuncEntryCall/testPluginLegacy.d")
-               ;; The following tests requires AVX instruction set in the CPU.
-               (substitute* "tests/dmd/runnable/cdvecfill.sh"
-                 (("^// DISABLED: ") "^// DISABLED: linux64 "))
                ;; This unit test requires networking, fails with
                ;; "core.exception.RangeError@std/socket.d(778): Range
                ;; violation".
@@ -288,13 +286,18 @@ bootstrapping more recent compilers written in D.")
                ;; The GDB tests suite fails; there are a few bug reports about
                ;; it upstream.
                (for-each delete-file (find-files "tests" "gdb.*\\.(c|d|sh)$"))
-               (delete-file "tests/dmd/runnable/debug_info.d")
                (delete-file "tests/dmd/runnable/b18504.d")
                (substitute* "runtime/druntime/test/exceptions/Makefile"
                  ((".*TESTS\\+=rt_trap_exceptions_drt_gdb.*")
                   ""))
                ;; Unsupported with glibc-2.35.
                (delete-file "tests/dmd/compilable/stdcheaders.c")
+               (delete-file "tests/dmd/compilable/test23958.c")
+               (delete-file "tests/dmd/runnable/test23889.c")
+               (delete-file "tests/dmd/runnable/test23402.d")
+               (delete-file "tests/dmd/runnable/helloc.c")
+               ;; Only works in 2024 and without SOURCE_DATE_EPOCH
+               (delete-file "tests/dmd/compilable/ddocYear.d")
                ;; Drop gdb_dflags from the test suite.
                (substitute* "tests/dmd/CMakeLists.txt"
                  (("\\$\\{gdb_dflags\\}") ""))
