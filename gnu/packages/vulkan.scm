@@ -167,7 +167,11 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
         (base32 "0yfz02mlnf4ffn67g2ms0w8f7jgdsn438w2dbxd5mvcf5dk2x27b"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
+     ;; The test suite is known to fail on several architectures:
+     ;; https://github.com/llvm/llvm-project/issues/59637
+     `(#:tests? ,(and (not (%current-target-system))
+                      (target-x86-64?))
+       #:configure-flags
        (list (string-append "-DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR="
                             (assoc-ref %build-inputs "spirv-headers")
                             "/include/spirv")
