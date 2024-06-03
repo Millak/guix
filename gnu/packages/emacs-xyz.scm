@@ -138,6 +138,7 @@
 ;;; Copyright © 2023 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26646,6 +26647,26 @@ Emacs minor mode to escape sequences in code.")
     (synopsis "Startup screen extracted from Spacemacs")
     (description "This package provides an extensible Emacs dashboard, with
 sections for bookmarks, Projectile projects, Org Agenda and more.")
+    (license license:gpl3+)))
+
+(define-public emacs-enlight
+  (package
+    (name "emacs-enlight")
+    (version "0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ichernyshovvv/enlight")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0crccz28f54xc0202gdbnpkn7kfsxf66p2m2grs6wnwyjxrmpnsq"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://github.com/ichernyshovvv/enlight")
+    (synopsis "Highly customizable startup screen for Emacs")
+    (description "Lightweight yet very flexible startup screen for Emacs.")
     (license license:gpl3+)))
 
 (define-public emacs-slime-company
