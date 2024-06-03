@@ -455,11 +455,11 @@ trouble using them, because you do not have to remember each snippet name.")
       (license license:expat)))) ; ??? check again
 
 (define-public vim-coqtail
-  (let ((commit "dfe3939c9caff69d9af76bfd74f1a40fb7dc5609")
-        (revision "0"))
+  (let ((commit "d77080e17787afe9ad0366d86327658da36febbb")
+        (revision "1"))
     (package
       (name "vim-coqtail")
-      (version (git-version "1.7.0" revision commit))
+      (version (git-version "1.7.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -468,7 +468,7 @@ trouble using them, because you do not have to remember each snippet name.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0av2m075n6z05ah9ndrgnp9s16yrz6n2lj0igd9fh3c5k41x5xks"))))
+                  "03qq50mas5dk3aj1rbv1f0x68rfa9b07cacj12sxp76sda9c0prz"))))
       (build-system vim-build-system)
       (arguments
        `(#:plugin-name "coqtail"
