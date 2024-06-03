@@ -128,140 +128,140 @@
                      (("exit 99") "exit 77"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       ;; Counterintuitively, this *disables* a spurious Python dependency by
-       ;; calling the ‘true’ binary instead.  Python is only needed during
-       ;; bootstrapping (for genptl.py), not when building from a release.
-       (list "PYTHON=true")
-       ;; Grub fails to load modules stripped with --strip-unneeded.
-       #:strip-flags '("--strip-debug" "--enable-deterministic-archives")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-stuff
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (substitute* "grub-core/Makefile.in"
-               (("/bin/sh") (which "sh")))
+     (list #:configure-flags
+           ;; Counterintuitively, this *disables* a spurious Python dependency by
+           ;; calling the ‘true’ binary instead.  Python is only needed during
+           ;; bootstrapping (for genptl.py), not when building from a release.
+           #~(list "PYTHON=true")
 
-             ;; Give the absolute file name of 'mdadm', used to determine the
-             ;; root file system when it's a RAID device.  Failing to do that,
-             ;; 'grub-probe' silently fails if 'mdadm' is not in $PATH.
-             (when (assoc-ref inputs "mdadm")
-               (substitute* "grub-core/osdep/linux/getroot.c"
-                 (("argv\\[0\\] = \"mdadm\"")
-                  (string-append "argv[0] = \""
-                                 (assoc-ref inputs "mdadm")
-                                 "/sbin/mdadm\""))))
+           ;; GRUB fails to load modules stripped with --strip-unneeded.
+           #:strip-flags
+           #~(list "--strip-debug" "--enable-deterministic-archives")
 
-             ;; Make the font visible.
-             (copy-file (assoc-ref (or native-inputs inputs)
-                                   "unifont")
-                        "unifont.bdf.gz")
-             (system* "gunzip" "unifont.bdf.gz")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-stuff
+                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                   (substitute* "grub-core/Makefile.in"
+                     (("/bin/sh") (which "sh")))
 
-             ;; Give the absolute file name of 'ckbcomp'.
-             (substitute* "util/grub-kbdcomp.in"
-               (("^ckbcomp ")
-                (string-append
-                 (search-input-file inputs "/bin/ckbcomp")
-                 " ")))))
-         (add-after 'unpack 'set-freetype-variables
-           ;; These variables need to be set to the native versions of the
-           ;; dependencies because they are used to build programs which are
-           ;; executed during build time.
-           (lambda* (#:key native-inputs #:allow-other-keys)
-             (when (assoc-ref native-inputs "freetype")
-               (let ((freetype (assoc-ref native-inputs "freetype")))
-                 (setenv "BUILD_FREETYPE_LIBS"
-                         (string-append "-L" freetype
-                                        "/lib -lfreetype"))
-                 (setenv "BUILD_FREETYPE_CFLAGS"
-                         (string-append "-I" freetype
-                                        "/include/freetype2"))))))
-         (add-before 'check 'disable-flaky-test
-           (lambda _
-             ;; This test is unreliable. For more information, see:
-             ;; <https://bugs.gnu.org/26936>.
-             (substitute* "Makefile.in"
-               (("grub_cmd_date grub_cmd_set_date grub_cmd_sleep")
-                "grub_cmd_date grub_cmd_sleep"))))
-         (add-before 'check 'disable-pixel-perfect-test
-           (lambda _
-             ;; This test compares many screenshots rendered with an older
-             ;; Unifont (9.0.06) than that packaged in Guix.
-             (substitute* "Makefile.in"
-               (("test_unset grub_func_test")
-                "test_unset")))))
-       ;; Disable tests on ARM and AARCH64 platforms or when cross-compiling.
-       #:tests? ,(not (or (any (cute string-prefix? <> (or (%current-target-system)
-                                                           (%current-system)))
-                               '("arm" "aarch64"))
-                          (%current-target-system)))))
+                   ;; Give the absolute file name of 'mdadm', used to determine the
+                   ;; root file system when it's a RAID device.  Failing to do that,
+                   ;; 'grub-probe' silently fails if 'mdadm' is not in $PATH.
+                   (let ((mdadm (false-if-exception
+                                 (search-input-file inputs "/sbin/mdadm"))))
+                     (when mdadm
+                       (substitute* "grub-core/osdep/linux/getroot.c"
+                         (("argv\\[0\\] = \"mdadm\"")
+                          (string-append "argv[0] = \"" mdadm "/sbin/mdadm\"")))))
+
+                   ;; Make the font visible.
+                   (copy-file #+unifont "unifont.bdf.gz")
+                   (system* "gunzip" "unifont.bdf.gz")
+
+                   ;; Give the absolute file name of 'ckbcomp'.
+                   (substitute* "util/grub-kbdcomp.in"
+                     (("^ckbcomp ")
+                      (string-append
+                       (search-input-file inputs "/bin/ckbcomp")
+                       " ")))))
+               (add-after 'unpack 'set-freetype-variables
+                 ;; These variables need to be set to the native versions of the
+                 ;; dependencies because they are used to build programs which are
+                 ;; executed during build time.
+                 (lambda* (#:key native-inputs #:allow-other-keys)
+                   (when (assoc-ref native-inputs "freetype")
+                     (let ((freetype (assoc-ref native-inputs "freetype")))
+                       (setenv "BUILD_FREETYPE_LIBS"
+                               (string-append "-L" freetype
+                                              "/lib -lfreetype"))
+                       (setenv "BUILD_FREETYPE_CFLAGS"
+                               (string-append "-I" freetype
+                                              "/include/freetype2"))))))
+               (add-before 'check 'disable-flaky-test
+                 (lambda _
+                   ;; This test is unreliable. For more information, see:
+                   ;; <https://bugs.gnu.org/26936>.
+                   (substitute* "Makefile.in"
+                     (("grub_cmd_date grub_cmd_set_date grub_cmd_sleep")
+                      "grub_cmd_date grub_cmd_sleep"))))
+               (add-before 'check 'disable-pixel-perfect-test
+                 (lambda _
+                   ;; This test compares many screenshots rendered with an older
+                   ;; Unifont (9.0.06) than that packaged in Guix.
+                   (substitute* "Makefile.in"
+                     (("test_unset grub_func_test")
+                      "test_unset")))))
+
+           ;; Disable tests on ARM and AARCH64 platforms or when cross-compiling.
+           #:tests? (not (or (any (cute string-prefix? <> (%current-system))
+                                  '("arm" "aarch64"))
+                             (%current-target-system)))))
     (inputs
-     `(("gettext" ,gettext-minimal)
+     (append (list gettext-minimal freetype ncurses
 
-       ;; Depend on LVM2 for libdevmapper, used by 'grub-probe' and
-       ;; 'grub-install' to recognize mapped devices (LUKS, etc.)
-       ,@(if (member (or (%current-target-system)
-                         (%current-system))
-                     (package-supported-systems lvm2))
-             `(("lvm2" ,lvm2))
-             '())
+                   ;; Console-setup's ckbcomp is invoked by grub-kbdcomp.  It
+                   ;; is required for generating alternative keyboard layouts.
+                   console-setup)
 
-       ;; Depend on mdadm, which is invoked by 'grub-probe' and 'grub-install'
-       ;; to determine whether the root file system is RAID.
-       ,@(if (member (or (%current-target-system)
-                         (%current-system))
-                     (package-supported-systems mdadm))
-             `(("mdadm" ,mdadm))
-             '())
+             ;; Depend on LVM2 for libdevmapper, used by 'grub-probe' and
+             ;; 'grub-install' to recognize mapped devices (LUKS, etc.)
+             (if (member (or (%current-target-system)
+                               (%current-system))
+                           (package-supported-systems lvm2))
+                 (list lvm2)
+                 '())
 
-       ;; Console-setup's ckbcomp is invoked by grub-kbdcomp.  It is required
-       ;; for generating alternative keyboard layouts.
-       ("console-setup" ,console-setup)
+             ;; Depend on mdadm, which is invoked by 'grub-probe' and
+             ;; 'grub-install' to determine whether the root file system is
+             ;; RAID.
+             (if (member (or (%current-target-system)
+                             (%current-system))
+                         (package-supported-systems mdadm))
+                 (list mdadm)
+                 '())
 
-       ;; Needed for ‘grub-mount’, the only reliable way to tell whether a given
-       ;; file system will be readable by GRUB without rebooting.
-       ,@(if (member (or (%current-target-system)
-                         (%current-system))
-                     (package-supported-systems fuse-2))
-             `(("fuse" ,fuse-2))
-             '())
-
-       ("freetype" ,freetype)
-       ;; ("libusb" ,libusb)
-       ("ncurses" ,ncurses)))
+             ;; Needed for ‘grub-mount’, the only reliable way to tell whether
+             ;; a given file system will be readable by GRUB without
+             ;; rebooting.
+             (if (member (or (%current-target-system)
+                             (%current-system))
+                           (package-supported-systems fuse-2))
+                 (list fuse-2)
+                 '())))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("unifont" ,unifont)
-       ("bison" ,bison)
-       ("flex" ,flex)
-       ("texinfo" ,texinfo)
-       ("help2man" ,help2man)
-       ("freetype" ,freetype)     ;native version needed for build-grub-mkfont
+     (append (list pkg-config
+                   bison
+                   flex
+                   texinfo
+                   help2man
+                   freetype       ;native version needed for build-grub-mkfont
 
-       ;; XXX: When building GRUB 2.02 on 32-bit x86, we need a binutils
-       ;; capable of assembling 64-bit instructions.  However, our default
-       ;; binutils on 32-bit x86 is not 64-bit capable.
-       ,@(if (string-match "^i[3456]86-" (%current-system))
-             (let ((binutils (package/inherit
-                                 binutils
-                               (name "binutils-i386")
-                               (arguments
-                                (substitute-keyword-arguments (package-arguments binutils)
-                                  ((#:configure-flags flags ''())
-                                   `(cons "--enable-64-bit-bfd" ,flags)))))))
-               `(("ld-wrapper" ,(make-ld-wrapper "ld-wrapper-i386"
-                                                 #:binutils binutils))
-                 ("binutils" ,binutils)))
-             '())
+                   ;; Dependencies of the test suite.
+                   parted
+                   xorriso)
 
-       ;; Dependencies for the test suite.  The "real" QEMU is needed here,
-       ;; because several targets are used.
-       ("parted" ,parted)
-       ,@(if (member (%current-system) (package-supported-systems qemu-minimal))
-             `(("qemu" ,qemu-minimal))
-             '())
-       ("xorriso" ,xorriso)))
+             ;; For the test suite, the "real" QEMU is needed because several
+             ;; targets are used.
+             (if (member (%current-system) (package-supported-systems qemu-minimal))
+                 (list qemu-minimal)
+                 '())
+
+             ;; XXX: When building GRUB 2.02 on 32-bit x86, we need a binutils
+             ;; capable of assembling 64-bit instructions.  However, our default
+             ;; binutils on 32-bit x86 is not 64-bit capable.
+             (if (string-match "^i[3456]86-" (%current-system))
+                 (let ((binutils (package/inherit
+                                     binutils
+                                   (name "binutils-i386")
+                                   (arguments
+                                    (substitute-keyword-arguments (package-arguments binutils)
+                                      ((#:configure-flags flags ''())
+                                       `(cons "--enable-64-bit-bfd" ,flags)))))))
+                   (list (make-ld-wrapper "ld-wrapper-i386"
+                                          #:binutils binutils)
+                         binutils))
+                 '())))
     (home-page "https://www.gnu.org/software/grub/")
     (synopsis "GRand Unified Boot loader")
     (description
@@ -286,24 +286,21 @@ menu to select one of the installed operating systems.")
        (delete "help2man" "texinfo" "parted" "qemu" "xorriso")))
     (arguments
      (substitute-keyword-arguments (package-arguments grub)
-       ((#:configure-flags _ ''())
-        '(list "PYTHON=true"))
+       ((#:configure-flags _ #~'())
+        #~(list "PYTHON=true"))
        ((#:tests? _ #t)
         #f)
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (replace 'patch-stuff
-             (lambda* (#:key native-inputs inputs #:allow-other-keys)
-               (substitute* "grub-core/Makefile.in"
-                 (("/bin/sh") (which "sh")))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'patch-stuff
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (substitute* "grub-core/Makefile.in"
+                  (("/bin/sh")
+                   (which "sh")))
 
-               ;; Make the font visible.
-               (copy-file (assoc-ref (or native-inputs inputs)
-                                     "unifont")
-                          "unifont.bdf.gz")
-               (system* "gunzip" "unifont.bdf.gz")
-
-               #t))))))))
+                ;; Make the font visible.
+                (copy-file #+unifont "unifont.bdf.gz")
+                (system* "gunzip" "unifont.bdf.gz")))))))))
 
 (define-public grub-coreboot
   (package
@@ -311,66 +308,62 @@ menu to select one of the installed operating systems.")
     (name "grub-coreboot")
     (synopsis "GRand Unified Boot loader (Coreboot payload version)")
     (arguments
-     `(,@(substitute-keyword-arguments (package-arguments grub)
-           ((#:phases phases '%standard-phases)
-            `(modify-phases ,phases
-               (add-before 'check 'disable-broken-tests
-                 (lambda _
-                   (setenv "DISABLE_HARD_ERRORS" "1")
-                   (setenv
-                    "XFAIL_TESTS"
-                    (string-join
-                     ;; TODO: All the tests below use grub shell
-                     ;; (tests/util/grub-shell.in), and here grub-shell uses
-                     ;; QEMU and a Coreboot image to run the tests. Since we
-                     ;; don't have a Coreboot package in Guix yet these tests
-                     ;; are disabled. See the Guix bug #64667 for more details
-                     ;; (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=64667).
-                     (list
-                      "pata_test"
-                      "ahci_test"
-                      "uhci_test"
-                      "ehci_test"
-                      "example_grub_script_test"
-                      "ohci_test"
-                      "grub_script_eval"
-                      "grub_script_echo1"
-                      "grub_script_test"
-                      "grub_script_leading_whitespace"
-                      "grub_script_echo_keywords"
-                      "grub_script_vars1"
-                      "grub_script_for1"
-                      "grub_script_while1"
-                      "grub_script_if"
-                      "grub_script_comments"
-                      "grub_script_functions"
-                      "grub_script_continue"
-                      "grub_script_break"
-                      "grub_script_shift"
-                      "grub_script_blockarg"
-                      "grub_script_return"
-                      "grub_script_setparams"
-                      "grub_cmd_date"
-                      "grub_cmd_set_date"
-                      "grub_cmd_sleep"
-                      "grub_cmd_regexp"
-                      "grub_cmd_test"
-                      "grub_script_not"
-                      "grub_cmd_echo"
-                      "grub_script_expansion"
-                      "grub_script_gettext"
-                      "grub_script_escape_comma"
-                      "help_test"
-                      "grub_script_strcmp"
-                      "test_sha512sum"
-                      "grub_cmd_tr"
-                      "test_unset"
-                      "file_filter_test")
-                     " "))))))
-           ((#:configure-flags flags
-             ''())
-            `(cons* "--with-platform=coreboot"
-                    ,flags)))))))
+     (substitute-keyword-arguments (package-arguments grub)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'disable-broken-tests
+              (lambda _
+                (setenv "DISABLE_HARD_ERRORS" "1")
+                (setenv "XFAIL_TESTS"
+                        (string-join
+                         ;; TODO: All the tests below use grub shell
+                         ;; (tests/util/grub-shell.in), and here grub-shell uses
+                         ;; QEMU and a Coreboot image to run the tests. Since we
+                         ;; don't have a Coreboot package in Guix yet these tests
+                         ;; are disabled. See the Guix bug #64667 for more details
+                         ;; (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=64667).
+                         (list "pata_test"
+                               "ahci_test"
+                               "uhci_test"
+                               "ehci_test"
+                               "example_grub_script_test"
+                               "ohci_test"
+                               "grub_script_eval"
+                               "grub_script_echo1"
+                               "grub_script_test"
+                               "grub_script_leading_whitespace"
+                               "grub_script_echo_keywords"
+                               "grub_script_vars1"
+                               "grub_script_for1"
+                               "grub_script_while1"
+                               "grub_script_if"
+                               "grub_script_comments"
+                               "grub_script_functions"
+                               "grub_script_continue"
+                               "grub_script_break"
+                               "grub_script_shift"
+                               "grub_script_blockarg"
+                               "grub_script_return"
+                               "grub_script_setparams"
+                               "grub_cmd_date"
+                               "grub_cmd_set_date"
+                               "grub_cmd_sleep"
+                               "grub_cmd_regexp"
+                               "grub_cmd_test"
+                               "grub_script_not"
+                               "grub_cmd_echo"
+                               "grub_script_expansion"
+                               "grub_script_gettext"
+                               "grub_script_escape_comma"
+                               "help_test"
+                               "grub_script_strcmp"
+                               "test_sha512sum"
+                               "grub_cmd_tr"
+                               "test_unset"
+                               "file_filter_test")
+                         " "))))))
+       ((#:configure-flags flags #~'())
+        #~(cons* "--with-platform=coreboot" #$flags))))))
 
 (define-public grub-efi
   (package
@@ -385,39 +378,38 @@ menu to select one of the installed operating systems.")
      (modify-inputs (package-native-inputs grub)
        (delete "parted" "qemu" "xorriso")))
     (arguments
-     `(;; TODO: Tests need a UEFI firmware for qemu. There is one at
-       ;; https://github.com/tianocore/edk2/tree/master/OvmfPkg .
-       ;; Search for 'OVMF' in "tests/util/grub-shell.in".
-       ,@(substitute-keyword-arguments (package-arguments grub)
-           ((#:tests? _ #f) #f)
-           ((#:configure-flags flags ''())
-            `(cons* "--with-platform=efi"
-                    ,@(if (string-prefix? "x86_64"
-                                          (or (%current-target-system)
-                                              (%current-system)))
-                          '("--enable-stack-protector") ; EFI-only for now
-                          '())
-                    ,flags))
-           ((#:phases phases)
-            `(modify-phases ,phases
-               (add-after 'patch-stuff 'use-absolute-efibootmgr-path
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "grub-core/osdep/unix/platform.c"
-                     (("efibootmgr")
-                      (search-input-file inputs
-                                         "/sbin/efibootmgr")))))
-               (add-after 'patch-stuff 'use-absolute-mtools-path
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let ((mtools (assoc-ref inputs "mtools")))
-                     (substitute* "util/grub-mkrescue.c"
-                       (("\"mformat\"")
-                        (string-append "\"" mtools
-                                       "/bin/mformat\"")))
-                     (substitute* "util/grub-mkrescue.c"
-                       (("\"mcopy\"")
-                        (string-append "\"" mtools
-                                       "/bin/mcopy\"")))
-                     #t))))))))))
+     ;; TODO: Tests need a UEFI firmware for qemu. There is one at
+     ;; https://github.com/tianocore/edk2/tree/master/OvmfPkg .
+     ;; Search for 'OVMF' in "tests/util/grub-shell.in".
+     (substitute-keyword-arguments (package-arguments grub)
+       ((#:tests? _ #f) #f)
+       ((#:configure-flags flags #~'())
+        #~(cons* "--with-platform=efi"
+                 #$@(if (string-prefix? "x86_64"
+                                        (or (%current-target-system)
+                                            (%current-system)))
+                        #~("--enable-stack-protector") ;EFI-only for now
+                        #~())
+                 #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'patch-stuff 'use-absolute-efibootmgr-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "grub-core/osdep/unix/platform.c"
+                  (("efibootmgr")
+                   (search-input-file inputs "/sbin/efibootmgr")))))
+            (add-after 'patch-stuff 'use-absolute-mtools-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "util/grub-mkrescue.c"
+                  (("\"mformat\"")
+                   (string-append "\""
+                                  (search-input-file inputs "/bin/mformat")
+                                  "\"")))
+                (substitute* "util/grub-mkrescue.c"
+                  (("\"mcopy\"")
+                   (string-append "\""
+                                  (search-input-file inputs "/bin/mcopy")
+                                  "\"")))))))))))
 
 (define-public grub-efi32
   (package
@@ -425,17 +417,19 @@ menu to select one of the installed operating systems.")
     (name "grub-efi32")
     (synopsis "GRand Unified Boot loader (UEFI 32bit version)")
     (arguments
-     `(,@(substitute-keyword-arguments (package-arguments grub-efi)
-           ((#:configure-flags flags ''())
-            `(cons*
-              ,@(cond ((target-x86?) '("--target=i386"))
-                      ((target-aarch64?)
-                       (list "--target=arm"
-                             (string-append "TARGET_CC="
-                                            (cc-for-target "arm-linux-gnueabihf"))))
-                      ((target-arm?) '("--target=arm"))
-                      (else '()))
-              ,flags)))))
+     (substitute-keyword-arguments (package-arguments grub-efi)
+       ((#:configure-flags flags #~'())
+        #~(cons* #$@(cond ((target-x86?)
+                           #~("--target=i386"))
+                          ((target-aarch64?)
+                           #~("--target=arm"
+                              (string-append "TARGET_CC="
+                                             #$(cc-for-target
+                                                "arm-linux-gnueabihf"))))
+                          ((target-arm?)
+                           #~("--target=arm"))
+                          (else #~()))
+                 #$flags))))
     (native-inputs
      (if (target-aarch64?)
          (modify-inputs (package-native-inputs grub-efi)
@@ -459,24 +453,26 @@ menu to select one of the installed operating systems.")
        (prepend grub)))
     (arguments
      (substitute-keyword-arguments (package-arguments grub-efi)
-       ((#:modules modules `((guix build utils) (guix build gnu-build-system)))
+       ((#:modules modules `((guix build utils)
+                             (guix build gnu-build-system)))
         `((ice-9 ftw) ,@modules))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'install 'install-non-efi
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((input-dir (search-input-directory inputs
-                                                        "/lib/grub"))
-                     (output-dir (string-append (assoc-ref outputs "out")
-                                                "/lib/grub")))
-                 (for-each
-                  (lambda (basename)
-                    (if (not (or (string-prefix? "." basename)
-                                 (file-exists? (string-append output-dir "/" basename))))
-                        (symlink (string-append input-dir "/" basename)
-                                 (string-append output-dir "/" basename))))
-                  (scandir input-dir))
-                 #t)))))))))
+        #~(modify-phases #$phases
+            (add-after 'install 'install-non-efi
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let ((input-dir (search-input-directory inputs "/lib/grub"))
+                      (output-dir (string-append (assoc-ref outputs "out")
+                                                 "/lib/grub")))
+                  (for-each (lambda (basename)
+                              (unless (or (string-prefix? "." basename)
+                                          (file-exists? (string-append
+                                                         output-dir "/"
+                                                         basename)))
+                                (symlink (string-append input-dir "/"
+                                                        basename)
+                                         (string-append output-dir "/"
+                                                        basename))))
+                            (scandir input-dir)))))))))))
 
 (define-public (make-grub-efi-netboot name subdir)
   "Make a grub-efi-netboot package named NAME, which will be able to boot over
