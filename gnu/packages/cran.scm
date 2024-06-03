@@ -1749,6 +1749,23 @@ Functions include searching for people, searching by DOI, or searching by
 Orcid ID.")
     (license license:expat)))
 
+(define-public r-rrna
+  (package
+    (name "r-rrna")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RRNA" version))
+       (sha256
+        (base32 "0bgsakpz1wr3wr6c5xa7wx2xmzs3xzkscrgwn6dc7f93kpq1j17p"))))
+    (properties `((upstream-name . "RRNA")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=RRNA")
+    (synopsis "Secondary structure plotting for RNA")
+    (description "This package facilitates RNA secondary structure plotting.")
+    (license license:gpl3)))
+
 (define-public r-ruv
   (package
     (name "r-ruv")
