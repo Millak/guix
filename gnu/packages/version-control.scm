@@ -2786,23 +2786,19 @@ any project with more than one developer, is one of Aegis's major functions.")
 (define-public tig
   (package
     (name "tig")
-    (version "2.5.8")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/jonas/tig/releases/download/tig-"
-                    version "/tig-" version ".tar.gz"))
-              (sha256
-               (base32
-                "14b38200bmwvi3030hqnwdsp34854ck3bzncj0wlljnpmr10l3mp"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; TODO: Delete and rebuild doc/*.(1|5|7).
-                  (for-each delete-file (find-files "doc" "\\.html$"))))))
+    (version "2.5.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jonas/tig")
+             (commit (string-append "tig-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m7v6xkvly3cbc5hs7plxdny4r41x3vkx7xylygjva4jcvnz0fjr"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list asciidoc xmlto))
+     (list asciidoc autoconf automake docbook-xsl libxml2 pkg-config xmlto))
     (inputs
      (list ncurses readline))
     (arguments
