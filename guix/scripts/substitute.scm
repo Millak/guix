@@ -77,7 +77,7 @@
 
 (define %narinfo-expired-cache-entry-removal-delay
   ;; How often we want to remove files corresponding to expired cache entries.
-  (* 7 24 3600))
+  (* 5 24 3600))
 
 (define (warn-about-missing-authentication)
   (warning (G_ "authentication and authorization of substitutes \
@@ -169,8 +169,9 @@ was found."
   "Return the expiration time for FILE, which is a cached narinfo."
   (define max-ttl
     ;; Upper bound on the TTL used to avoid keeping around cached narinfos for
-    ;; too long, which makes the cache bigger and more expensive to traverse.
-    (* 2 30 24 60 60))                            ;2 months
+    ;; too long, which makes the cache bigger and more expensive to traverse
+    ;; when deleting old entries.
+    (* 2 24 60 60))
 
   (catch 'system-error
     (lambda ()
