@@ -2769,8 +2769,11 @@ git config user.signingkey CABBA6EA1DC0FF33
 To check that commits are signed with correct key, use:
 
 @example
-make authenticate
+guix git authenticate
 @end example
+
+@xref{Building from Git} for running the first authentication of a Guix
+checkout.
 
 To avoid accidentally pushing unsigned or signed with the wrong key
 commits to Savannah, make sure to configure Git according to
