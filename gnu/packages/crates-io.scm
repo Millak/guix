@@ -19955,7 +19955,12 @@ not support network, only raw protocol parser.")
         (base32 "1z74n2zij2gahycabm0gkmkyx574h76gwk7sz93yqpr3qa3n0xp5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+     `(#:cargo-test-flags
+       '("--"
+         ;; the builder sandbox breaks getaddrinfo, failing two tests.
+         "--skip=nameinfo::test_getnameinfo"
+         "--skip=src/lib.rs")
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-socket2" ,rust-socket2-0.5)
                        ("rust-windows-sys" ,rust-windows-sys-0.48))))
