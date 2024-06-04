@@ -2797,28 +2797,28 @@ any project with more than one developer, is one of Aegis's major functions.")
        (sha256
         (base32 "0m7v6xkvly3cbc5hs7plxdny4r41x3vkx7xylygjva4jcvnz0fjr"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda _
+              (invoke "make" "install-doc")))
+          (add-after 'install 'install-completions
+            (lambda _
+              (let ((share (string-append #$output "/share")))
+                (mkdir-p (string-append share "/bash-completion/completions"))
+                (mkdir-p (string-append share "/zsh/site-functions"))
+                (copy-file "contrib/tig-completion.bash"
+                           (string-append share "/bash-completion/completions/tig"))
+                (copy-file "contrib/tig-completion.zsh"
+                           (string-append share "/zsh/site-functions/_tig"))))))
+      #:test-target "test"
+      #:tests? #f))                    ; tests require access to /dev/tty
     (native-inputs
      (list asciidoc autoconf automake docbook-xsl libxml2 pkg-config xmlto))
     (inputs
      (list ncurses readline))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-doc
-           (lambda _
-             (invoke "make" "install-doc")))
-         (add-after 'install 'install-completions
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (share (string-append out "/share")))
-               (mkdir-p (string-append share "/bash-completion/completions"))
-               (mkdir-p (string-append share "/zsh/site-functions"))
-               (copy-file "contrib/tig-completion.bash"
-                          (string-append share "/bash-completion/completions/tig"))
-               (copy-file "contrib/tig-completion.zsh"
-                          (string-append share "/zsh/site-functions/_tig"))))))
-       #:test-target "test"
-       #:tests? #f))                    ; tests require access to /dev/tty
     (home-page "https://jonas.github.io/tig/")
     (synopsis "Ncurses-based text user interface for Git")
     (description
