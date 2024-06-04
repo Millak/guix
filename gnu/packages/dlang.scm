@@ -191,8 +191,8 @@ to a minimal test case.")
        ("libedit" ,libedit)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("lld-wrapper" ,(make-lld-wrapper lld-15 #:lld-as-ld? #t))
-       ("llvm" ,llvm-15)
+     `(("lld-wrapper" ,(make-lld-wrapper lld-17 #:lld-as-ld? #t))
+       ("llvm" ,llvm-17)
        ("ldc" ,gdmd)
        ("ninja" ,ninja)
        ("python-wrapper" ,python-wrapper)
@@ -361,7 +361,7 @@ integration tests...\n")
      (append (delete "llvm"
                      (alist-replace "ldc" (list ldc-bootstrap)
                                     (package-native-inputs ldc-bootstrap)))
-         `(("clang" ,clang-15)          ;propagates llvm and clang-runtime
+         `(("clang" ,clang-17)          ;propagates llvm and clang-runtime
            ("python-lit" ,python-lit))))))
 
 ;;; Bootstrap version of phobos that is built with GDC, using GDC's standard
