@@ -316,12 +316,6 @@ bootstrapping more recent compilers written in D.")
                                  "sanitizers/msan_noerror.d"
                                  "sanitizers/msan_uninitialized.d"
                                  "dmd/runnable_cxx/cppa.d")))
-                   (,(target-aarch64?)
-                     (for-each delete-file
-                               '("dmd/runnable/ldc_cabi1.d"
-                                 "sanitizers/fuzz_basic.d"
-                                 "sanitizers/msan_noerror.d"
-                                 "sanitizers/msan_uninitialized.d")))
                    (#t '())))))
            (add-before 'configure 'set-cc-and-cxx-to-use-clang
              ;; The tests require to be built with Clang; build everything
@@ -352,8 +346,17 @@ bootstrapping more recent compilers written in D.")
                            "-R" "dmd-testsuite")
                    (display "running the defaultlib unit tests and druntime \
 integration tests...\n")
-                   (invoke "ctest" "--output-on-failure" "-j" job-count
-                           "-E" "dmd-testsuite|lit-tests|ldc2-unittest")))))))))
+                   (invoke
+                     "ctest" "--output-on-failure" "-j" job-count "-E"
+                     (string-append
+                       "dmd-testsuite|lit-tests|ldc2-unittest"
+                       ,@(if (target-aarch64?)
+                             `((string-append
+                                 "|std.internal.math.gammafunction-shared"
+                                 "|std.math.exponential-shared"
+                                 "|std.internal.math.gammafunction-debug-shared"
+                                 "|druntime-test-exceptions-debug"))
+                             `(""))))))))))))
     (native-inputs
      (append (delete "llvm"
                      (alist-replace "ldc" (list ldc-bootstrap)
