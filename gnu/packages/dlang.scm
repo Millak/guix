@@ -227,7 +227,10 @@ bootstrapping more recent compilers written in D.")
                "ldc2-unittest" "all-test-runners"))
        ((#:configure-flags _ #~'())
         `(list "-GNinja"
-               "-DBUILD_SHARED_LIBS=ON"))
+               "-DBUILD_SHARED_LIBS=ON"
+               ,@(if (target-riscv64?)
+                     `("-DCMAKE_EXE_LINKER_FLAGS=-latomic")
+                     '())))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'fix-compiler-rt-library-discovery
@@ -283,6 +286,15 @@ bootstrapping more recent compilers written in D.")
                (substitute* "runtime/phobos/std/socket.d"
                  (("assert\\(ih.addrList\\[0\\] == 0x7F_00_00_01\\);.*")
                   ""))
+
+               ;; These tests fail on riscv64-linux.
+               (substitute* "runtime/phobos/std/math/operations.d"
+                 (("static assert\\(getNaNPayload\\(a\\)" all )
+                  (string-append "// " all)))
+               (substitute* "runtime/phobos/std/math/traits.d"
+                 (("static assert\\(signbit\\(-.*\\.nan" all)
+                  (string-append "// " all)))
+
                ;; The GDB tests suite fails; there are a few bug reports about
                ;; it upstream.
                (for-each delete-file (find-files "tests" "gdb.*\\.(c|d|sh)$"))
@@ -316,6 +328,12 @@ bootstrapping more recent compilers written in D.")
                                  "sanitizers/msan_noerror.d"
                                  "sanitizers/msan_uninitialized.d"
                                  "dmd/runnable_cxx/cppa.d")))
+                   (,(target-riscv64?)
+                     (for-each delete-file
+                               '("codegen/simd_alignment.d"
+                                 "dmd/runnable/argufilem.d"
+                                 "dmd/compilable/test23705.d"
+                                 "dmd/fail_compilation/diag7420.d")))
                    (#t '())))))
            (add-before 'configure 'set-cc-and-cxx-to-use-clang
              ;; The tests require to be built with Clang; build everything
@@ -350,13 +368,35 @@ integration tests...\n")
                      "ctest" "--output-on-failure" "-j" job-count "-E"
                      (string-append
                        "dmd-testsuite|lit-tests|ldc2-unittest"
-                       ,@(if (target-aarch64?)
-                             `((string-append
+                       ,@(cond
+                           ((target-aarch64?)
+                            `(,(string-append
                                  "|std.internal.math.gammafunction-shared"
                                  "|std.math.exponential-shared"
                                  "|std.internal.math.gammafunction-debug-shared"
-                                 "|druntime-test-exceptions-debug"))
-                             `(""))))))))))))
+                                 "|druntime-test-exceptions-debug")))
+                           ((target-riscv64?)
+                            `(,(string-append
+                                 "|std.internal.math.errorfunction-shared"
+                                 "|std.internal.math.gammafunction-shared"
+                                 "|std.math.exponential-shared"
+                                 "|std.math.trigonometry-shared"
+                                 "|std.mathspecial-shared"
+                                 "|std.socket-shared"
+                                 "|std.internal.math.errorfunction-debug-shared"
+                                 "|std.internal.math.gammafunction-debug-shared"
+                                 "|std.math.operations-debug-shared"
+                                 "|std.math.exponential-debug-shared"
+                                 "|std.math.traits-debug-shared"
+                                 "|std.mathspecial-debug-shared"
+                                 "|std.math.trigonometry-debug-shared"
+                                 "|std.socket-debug-shared"
+                                 ;; These four hang forever
+                                 "|core.thread.fiber-shared"
+                                 "|core.thread.osthread-shared"
+                                 "|core.thread.fiber-debug-shared"
+                                 "|core.thread.osthread-debug-shared")))
+                           (#t `("")))))))))))))
     (native-inputs
      (append (delete "llvm"
                      (alist-replace "ldc" (list ldc-bootstrap)
