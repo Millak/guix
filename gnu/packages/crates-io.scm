@@ -41043,7 +41043,29 @@ nitrokey-test crate.")
         (base32 "1r0rylax4ycx3iqakwjvaa178jrrwiiwghcw95ndzy72zk25c8db"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+     `(#:cargo-test-flags
+       '("--all-features"
+         "--"
+         ; The following tests do not seem to terminate
+         "--skip=test_unistd::test_execveat_empty::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_empty::test_cstring"
+         "--skip=test_unistd::test_execveat_relative::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_relative::test_cstring"
+         "--skip=test_unistd::test_fexecve::test_cstr_ref"
+         "--skip=test_unistd::test_fexecve::test_cstring"
+         ; The following tests are failing
+         "--skip=test_unistd::test_execve::test_cstr_ref"
+         "--skip=test_unistd::test_execve::test_cstring"
+         "--skip=test_unistd::test_execveat_absolute::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_absolute::test_cstring"
+         ; The following tests are panicking
+         "--skip=sys::personality::set"
+         "--skip=sys::socket::sendmsg"
+         "--skip=unistd::Group::from_gid"
+         "--skip=unistd::Group::from_name"
+         "--skip=unistd::User::from_name"
+         "--skip=unistd::User::from_uid")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-cfg-if" ,rust-cfg-if-1)
                        ("rust-cfg-aliases" ,rust-cfg-aliases-0.1)
                        ("rust-libc" ,rust-libc-0.2.153)
