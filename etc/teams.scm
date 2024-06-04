@@ -668,7 +668,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Simon Tournier"
                        "zimon.toutoune@gmail.com")
-  julia core mentors)
+  julia core mentors r)
 
 (define-member (person "宋文武"
                        "iyzsong@envs.net")
