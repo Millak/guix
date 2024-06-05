@@ -2048,7 +2048,7 @@ an embedded event driven algorithm.")
                  (("^SUBDIRS = misc maths frontend spicelib include/ngspice")
                   "SUBDIRS = misc maths frontend spicelib"))))
            (delete 'delete-program-manuals)
-           (delete 'delete-script-files)))))
+           (delete 'delete-scripts)))))
     (inputs
      (list libngspice readline))))
 
