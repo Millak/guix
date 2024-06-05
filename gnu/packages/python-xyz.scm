@@ -176,6 +176,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages astronomy)
   #:use-module (gnu packages attr)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -248,6 +249,7 @@
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -4418,6 +4420,36 @@ videos in a notebook.")
      "The @code{simplaudio} package provides cross-platform, dependency-free
 audio playback capability for Python 3 on OSX, Windows, and Linux.")
     (license license:expat))) ; MIT license
+
+(define-public python-wavefile
+  (package
+    (name "python-wavefile")
+    (version "1.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "wavefile" version))
+              (sha256
+               (base32
+                "04mdcxq7n1vnwb9y65j0cwpy91ik5rh9vki1f45xqnh4ygz91n75"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-libsndfile-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "wavefile/libsndfile.py"
+                     (("'libsndfile")
+                      (string-append "'" (assoc-ref inputs "libsndfile")
+                                     "/lib/libsndfile"))))))))
+    (inputs
+     (list libsndfile portaudio))
+    (propagated-inputs (list python-numpy python-pyaudio))
+    (home-page "https://github.com/vokimon/python-wavefile")
+    (synopsis "Pythonic audio file reader and writer")
+    (description
+     "This package provides pythonic libsndfile wrapper to read and write audio
+files.")
+    (license license:gpl3+)))
 
 (define-public python-jsonalias
   (package
