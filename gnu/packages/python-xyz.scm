@@ -36160,6 +36160,33 @@ terminal.  It has red, blue, green, yellow, purple and black/white (default)
 colors.")
     (license license:expat)))
 
+(define-public python-mido
+  (package
+    (name "python-mido")
+    (version "1.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "mido" version))
+              (sha256
+               (base32
+                "0j63cydiinfyrvlhydzsb00cb7dyvrw3bnhjbdyp63vkxnv2isis"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; This package requires python-packaging~=23.1 which is not yet
+               ;; updated to. As per pyproject.toml, it is required to provide
+               ;; a nice version_info opbject.
+               ;; TODO: After updating python-packaging, fix this.
+               (delete 'sanity-check))))
+    (propagated-inputs (list python-importlib-metadata python-packaging))
+    (native-inputs (list python-pytest))
+    (home-page "https://mido.readthedocs.io/en/stable/")
+    (synopsis "MIDI Objects for Python")
+    (description "This library is for working with MIDI 1.0 ports, messages and
+files.")
+    (license license:expat)))
+
 (define-public python-musical-scales
   (package
     (name "python-musical-scales")
