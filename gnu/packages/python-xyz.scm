@@ -4485,6 +4485,30 @@ type hints and parse from command line, config files and environment
 variables.")
     (license license:expat)))
 
+(define-public python-pymarshal
+  (package
+    (name "python-pymarshal")
+    (version "2.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pymarshal" version))
+              (sha256
+               (base32
+                "1lhb7yim60pvclbd440zd4n50xs1d2rvmnrhhvib3hyv0dxil5j3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Test fails with this error:
+     ;; "CovReportWarning: Failed to generate report: No data to report."
+     (list #:tests? #f))
+    (native-inputs
+     (list python-pytest python-pytest-cov))
+    (propagated-inputs (list python-bson python-pyyaml))
+    (home-page "https://gitlab.com/d3v-t00lz/pymarshal")
+    (synopsis "Pythonic implementation of Golang struct (un)marshalling")
+    (description "PyMarshal replicates the feature of (un)marshalling structs
+in Golang.")
+    (license license:bsd-2)))
+
 (define-public python-simplejson
   (package
     (name "python-simplejson")
