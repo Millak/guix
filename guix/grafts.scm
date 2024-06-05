@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,7 +54,7 @@
   (origin             graft-origin)               ;derivation | store item
   (origin-output      graft-origin-output         ;string | #f
                       (default "out"))
-  (replacement        graft-replacement)          ;derivation | store item
+  (replacement        graft-replacement)    ;derivation | store item | monadic
   (replacement-output graft-replacement-output    ;string | #f
                       (default "out")))
 
@@ -274,6 +275,20 @@ derivations to the corresponding set of grafts."
                                       #:system system)))))
           (reference-origins drv items)))
 
+  ;; If the 'replacement' field of the <graft> record is a procedure,
+  ;; this means that it is a value in the store monad and the actual
+  ;; derivation needs to be computed here.
+  (define (finalize-graft item)
+    (let ((replacement (graft-replacement item)))
+      (if (procedure? replacement)
+          (graft
+            (inherit item)
+            (replacement
+             (run-with-store store replacement
+                             #:guile-for-build guile
+                             #:system system)))
+          item)))
+
   (with-cache (list (derivation-file-name drv) outputs grafts)
     (match (non-self-references store drv outputs)
       (()                                         ;no dependencies
@@ -290,7 +305,8 @@ derivations to the corresponding set of grafts."
               ;; Use APPLICABLE, the subset of GRAFTS that is really
               ;; applicable to DRV, to avoid creating several identical
               ;; grafted variants of DRV.
-              (let* ((new    (graft-derivation/shallow* store drv applicable
+              (let* ((new    (graft-derivation/shallow* store drv
+                                                        (map finalize-graft applicable)
                                                         #:outputs outputs
                                                         #:guile guile
                                                         #:system system))

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -1091,10 +1091,13 @@
          (dummy (dummy-package "dummy"
                   (arguments '(#:implicit-inputs? #f))
                   (inputs (list dep*)))))
-    (equal? (package-grafts %store dummy)
-            (list (graft
-                    (origin (package-derivation %store dep))
-                    (replacement (package-derivation %store new)))))))
+    (match (package-grafts %store dummy)
+      ((graft)
+       (and (eq? (graft-origin graft)
+                 (package-derivation %store dep))
+            (eq? (run-with-store %store
+                   (graft-replacement graft))
+                 (package-derivation %store new)))))))
 
 ;; XXX: This test would require building the cross toolchain just to see if it
 ;; needs grafting, which is obviously too expensive, and thus disabled.
@@ -1127,10 +1130,13 @@
          (dummy (dummy-package "dummy"
                   (arguments '(#:implicit-inputs? #f))
                   (inputs (list prop)))))
-    (equal? (package-grafts %store dummy)
-            (list (graft
-                    (origin (package-derivation %store dep))
-                    (replacement (package-derivation %store new)))))))
+    (match (package-grafts %store dummy)
+      ((graft)
+       (and (eq? (graft-origin graft)
+                 (package-derivation %store dep))
+            (eq? (run-with-store %store
+                   (graft-replacement graft))
+                 (package-derivation %store new)))))))
 
 (test-assert "package-grafts, same replacement twice"
   (let* ((new  (dummy-package "dep"
@@ -1149,12 +1155,15 @@
          (p3   (dummy-package "final"
                  (arguments '(#:implicit-inputs? #f))
                  (inputs (list p1 p2)))))
-    (equal? (package-grafts %store p3)
-            (list (graft
-                    (origin (package-derivation %store
-                                                (package (inherit dep)
-                                                         (replacement #f))))
-                    (replacement (package-derivation %store new)))))))
+    (match (package-grafts %store p3)
+      ((graft)
+       (and (eq? (graft-origin graft)
+                 (package-derivation %store
+                                     (package (inherit dep)
+                                              (replacement #f))))
+            (eq? (run-with-store %store
+                   (graft-replacement graft))
+                 (package-derivation %store new)))))))
 
 (test-assert "package-grafts, dependency on several outputs"
   ;; Make sure we get one graft per output; see <https://bugs.gnu.org/41796>.
@@ -1167,17 +1176,22 @@
             (p1  (dummy-package "p1"
                    (arguments '(#:implicit-inputs? #f))
                    (inputs (list p0 `(,p0 "lib"))))))
-    (lset= equal? (pk (package-grafts %store p1))
-           (list (graft
-                   (origin (package-derivation %store p0))
-                   (origin-output "out")
-                   (replacement (package-derivation %store p0*))
-                   (replacement-output "out"))
-                 (graft
-                   (origin (package-derivation %store p0))
-                   (origin-output "lib")
-                   (replacement (package-derivation %store p0*))
-                   (replacement-output "lib"))))))
+    (match (sort (package-grafts %store p1)
+                 (lambda (graft1 graft2)
+                   (string<? (graft-origin-output graft1)
+                             (graft-origin-output graft2))))
+      ((graft1 graft2)
+       (and (eq? (graft-origin graft1) (graft-origin graft2)
+                 (package-derivation %store p0))
+            (eq? (run-with-store %store (graft-replacement graft1))
+                 (run-with-store %store (graft-replacement graft2))
+                 (package-derivation %store p0*))
+            (string=? "lib"
+                      (graft-origin-output graft1)
+                      (graft-replacement-output graft1))
+            (string=? "out"
+                      (graft-origin-output graft2)
+                      (graft-replacement-output graft2)))))))
 
 (test-assert "replacement also grafted"
   ;; We build a DAG as below, where dotted arrows represent replacements and
@@ -1244,15 +1258,18 @@
                                (symlink (assoc-ref %build-inputs "p2")
                                         "p2")
                                #t))))))
-    (lset= equal?
-           (package-grafts %store p3)
-           (list (graft
-                   (origin (package-derivation %store p1 #:graft? #f))
-                   (replacement (package-derivation %store p1r)))
-                 (graft
-                   (origin (package-derivation %store p2 #:graft? #f))
-                   (replacement
-                    (package-derivation %store p2r #:graft? #t)))))))
+    (match (package-grafts %store p3)
+      ((graft1 graft2)
+       (and (eq? (graft-origin graft1)
+                 (package-derivation %store p1 #:graft? #f))
+            (eq? (run-with-store %store
+                   (graft-replacement graft1))
+                 (package-derivation %store p1r))
+            (eq? (graft-origin graft2)
+                 (package-derivation %store p2 #:graft? #f))
+            (eq? (run-with-store %store
+                   (graft-replacement graft2))
+                 (package-derivation %store p2r #:graft? #t)))))))
 
 ;;; XXX: Nowadays 'graft-derivation' needs to build derivations beforehand to
 ;;; find out about their run-time dependencies, so this test is no longer

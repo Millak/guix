@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1818,8 +1819,10 @@ graft, and #f otherwise."
              (mcached eq? (=> %package-graft-cache)
                       (mlet %store-monad ((orig (package->derivation package system
                                                                      #:graft? #f))
-                                          (new  (package->derivation replacement system
-                                                                     #:graft? #t)))
+                                          (new -> (package->derivation replacement system
+                                                                       #:graft? #t)))
+                        ;; Keep NEW as a monadic value so that its computation
+                        ;; is delayed until necessary.
                         (return (graft
                                   (origin orig)
                                   (origin-output output)
@@ -1840,9 +1843,11 @@ graft, and #f otherwise."
              (mlet %store-monad ((orig (package->cross-derivation package
                                                                   target system
                                                                   #:graft? #f))
-                                 (new  (package->cross-derivation replacement
-                                                                  target system
-                                                                  #:graft? #t)))
+                                 (new -> (package->cross-derivation replacement
+                                                                    target system
+                                                                    #:graft? #t)))
+               ;; Keep NEW as a monadic value so that its computation
+               ;; is delayed until necessary.
                (return (graft
                          (origin orig)
                          (origin-output output)
