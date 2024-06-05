@@ -434,6 +434,7 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/6.9-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.9-i686.conf	\
   gnu/packages/aux-files/linux-libre/6.9-x86_64.conf	\
+  gnu/packages/aux-files/linux-libre/6.9-riscv.conf	\
   gnu/packages/aux-files/linux-libre/6.8-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.8-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.8-i686.conf	\
