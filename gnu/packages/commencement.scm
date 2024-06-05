@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017, 2018, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2019, 2021, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019-2022 Marius Bakke <marius@gnu.org>
@@ -2042,6 +2042,11 @@ exec " gcc "/bin/" program
                       '(substitute* "gnulib-tests/Makefile"
                          (("^XFAIL_TESTS =")
                           "XFAIL_TESTS = test-fnmatch ")))
+                     ("armhf-linux"
+                      '(substitute* "gnulib-tests/Makefile"
+                         (("^XFAIL_TESTS =")
+                          "XFAIL_TESTS = test-fnmatch ")
+                         (("test-pthread-thread\\$\\(EXEEXT\\)") "")))
                      (_
                       ;; XXX: The pthread tests are known to fail at least on
                       ;; ARM; skip them.
