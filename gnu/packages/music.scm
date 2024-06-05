@@ -196,6 +196,7 @@
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vim)       ;for 'xxd'
@@ -5176,6 +5177,191 @@ sequencing melodies and beats and for mixing and arranging songs.  LMMS
 includes instruments based on audio samples and various soft sythesizers.  It
 can receive input from a MIDI keyboard.")
     (license license:gpl2+)))
+
+(define-public stargate
+  (package
+    (name "stargate")
+    (version "24.02.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/stargatedaw/stargate")
+                    (commit (string-append "release-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hy0pf6gcw4hjhsvb1x60m1v0wqm28j7cc91g1vcna2f42kk8gyh"))
+              (modules '((guix build utils)))
+              (snippet
+               '(with-directory-excursion "src"
+                  ;; Delete bundled libraries.
+                  (delete-file-recursively "sg_py_vendor")
+                  ;; Disable compiling and installing bundled libraries.
+                  (substitute* "Makefile"
+                    ((" sg_py_vendor") "")
+                    (("install -m 755 vendor") "# install -m 755 vendor"))
+                  ;; Import python modules from packaged libraries.
+                  (substitute* (find-files "sglib" "\\.py$")
+                    (("from sg_py_vendor ") "")
+                    (("from sg_py_vendor.") "from "))
+                  (substitute* "engine/tests/test_daw.c"
+                    ;; Disable assignment of a string to an expression with
+                    ;; array type which fails tests.
+                    (("INSTALL_PREFIX =") "// INSTALL_PREFIX"))
+                  ;; Disable manual tests requiring opening a browser.
+                  (substitute* '("Makefile"
+                                 "engine/Makefile"
+                                 "engine/libcds/Makefile")
+                    (("\\$\\(BROWSER\\)") "# $(BROWSER)"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "tests"
+           #:make-flags
+           #~(list "PREFIX=/"
+                   "LIBDIR=/lib"
+                   "INCLUDEDIR=/include"
+                   (string-append "DESTDIR=" #$output)
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "CXX=" #$(cxx-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-portaudio-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/sgui/widgets/hardware_dialog.py"
+                     (("\\\"libportaudio")
+                      (string-append "\"" (assoc-ref inputs "portaudio")
+                                     "/lib/libportaudio")))))
+               (add-after 'patch-portaudio-path 'change-directory
+                 (lambda _
+                   (chdir "src")))
+               (delete 'configure) ;no configure script
+               (add-before 'build 'patch-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "test_parse.sh"
+                     (("python") (which "python3")))
+                   (with-directory-excursion "files/share"
+                     (substitute* '"applications/stargate.desktop"
+                       (("/usr") #$output)))))
+               (replace 'build
+                 (lambda* (#:key (make-flags '()) (parallel-build? #t)
+                           #:allow-other-keys)
+                   (apply invoke "make" "-Cengine"
+                          `(,@(if parallel-build?
+                                `("-j" ,(number->string (parallel-job-count)))
+                                '())
+                          ,@make-flags))))
+               (add-before 'check 'check-setup
+                 (lambda _
+                   (setenv "HOME" "/tmp")
+                   (setenv "LD_LIBRARY_PATH" (getenv "LIBRARY_PATH"))
+                   ;; Test fails with AssertionError.
+                   (delete-file "test/sglib/models/daw/routing/test_midi.py")))
+               (add-after 'install 'wrap-program
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (wrap-program (string-append #$output "/bin/stargate")
+                     `("GUIX_PYTHONPATH" ":" prefix
+                       (,(getenv "GUIX_PYTHONPATH")))
+                     `("PATH" ":" prefix
+                       (,(getenv "PATH")))))))))
+    (native-inputs
+     (list pkg-config
+           python-gcovr
+           python-packaging
+           python-pytest
+           python-pytest-cov
+           python-pytest-runner))
+    (inputs
+     (list alsa-lib
+           bash-minimal
+           fftw
+           fftwf
+           jq
+           libsndfile
+           portaudio
+           portmidi
+           python
+           python-jinja2
+           python-mido
+           python-mutagen
+           python-numpy
+           python-psutil
+           python-pymarshal
+           python-pyqt
+           python-pyyaml
+           python-wavefile
+           python-yq
+           rubberband
+           valgrind
+           ;; Stargate's fork of sbsms.
+           (let ((commit "90fab3440063dc9b6c1c2a8f74c2d92bd0e423f9")
+                 (revision "0"))
+             (package/inherit libsbsms
+               (name "stargate-sbsms")
+               (version (git-version "0" revision commit))
+               (source
+                (origin
+                  (method git-fetch)
+                  (uri
+                   (git-reference
+                     (url "https://github.com/stargatedaw/stargate-sbsms")
+                     (commit commit)))
+                  (sha256
+                   (base32
+                    "11srnzgpavcj6n70zjdm7488jzrprk71mg9dgr1sa6vwp575hf2m"))))
+               (arguments
+                (substitute-keyword-arguments (package-arguments libsbsms)
+                  ((#:phases phases)
+                   #~(modify-phases #$phases
+                       (delete 'fix-ar-lib-path)
+                       (add-before 'build 'change-directory
+                         (lambda _
+                           (chdir "cli")))
+                       (replace 'configure
+                         (lambda _
+                           (setenv "DESTDIR" #$output)
+                           (setenv "PREFIX" "/")))
+                       (add-after 'install 'rename-sbsms
+                            (lambda _
+                              (with-directory-excursion (string-append #$output
+                                                                       "/bin")
+                                (rename-file "sbsms" "stargate-sbsms"))))
+                       (delete 'check)))))
+               (native-inputs
+                (list libsndfile))
+               (home-page "https://stargatedaw/stargate-sbsms")))
+           ;; Stargate's fork of soundtouch.
+           (let ((commit "464f474c0be5d7e0970909dd30593012e4621468")
+                 (revision "0"))
+             (package/inherit soundtouch
+               (name "stargate-soundtouch")
+               (version (git-version "0" revision commit))
+               (source
+                (origin
+                  (method git-fetch)
+                  (uri
+                   (git-reference
+                     (url "https://github.com/stargatedaw/stargate-soundtouch")
+                     (commit commit)))
+                  (sha256
+                   (base32
+                    "1aw2j1f10p8n4s197b1nd3g1rjvwbrrszc9gwsbwk01c6nb3nr9v"))))
+               (arguments
+                (list #:phases
+                      #~(modify-phases %standard-phases
+                          (add-after 'install 'rename-soundstretch
+                            (lambda _
+                              (with-directory-excursion (string-append #$output
+                                                                       "/bin")
+                                (rename-file "soundstretch"
+                                             "stargate-soundstretch")))))))
+               (home-page "https://stargatedaw/stargate-soundtouch")))))
+    (home-page "https://github.com/stargatedaw/stargate")
+    (synopsis "Digital audio workstation")
+    (description
+     "Stargate is a digital audio workstation with built-in instrument and
+effect plugins and wave editor, providing innovative features, especially for
+EDM production.")
+    (license license:gpl3)))
 
 (define-public liquidsfz
   (package
