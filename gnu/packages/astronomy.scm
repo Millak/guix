@@ -556,6 +556,59 @@ Main features:
 @end itemize")
     (license license:expat)))
 
+(define-public python-asdf
+  (package
+    (name "python-asdf")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf" version))
+       (sha256
+        (base32 "1wj556g15gwp6ir5hg083l15sifdsf23giqkx0jbn4lgdwjffbgr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-n" "auto" "-p" "no:legacypath")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pypojrect-toml
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; ImportError: Error importing plugin " no:legacypath": No
+                ;; module named ' no:legacypath'
+                ((".*:legacypath.*") "")
+                ;; TypeError: Configuration.__init__() got an unexpected
+                ;; keyword argument 'version_file'
+                (("version_file = \"asdf/_version.py\"") "")))))))
+    (native-inputs
+     (list python-fsspec
+           python-packaging
+           python-psutil
+           python-pytest
+           python-pytest-doctestplus
+           python-pytest-remotedata
+           python-pytest-xdist
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf-standard
+           python-asdf-transform-schemas
+           python-attrs ;; for vendorized jsonschema
+           python-importlib-metadata
+           python-jmespath
+           python-lz4
+           python-numpy
+           python-pyyaml
+           python-semantic-version))
+    (home-page "https://github.com/asdf-format/asdf")
+    (synopsis "Python tools to handle ASDF files")
+    (description
+     "The Advanced Scientific Data Format (ASDF) is a next-generation
+interchange format for scientific data.  This package contains the Python
+implementation of the ASDF Standard.")
+    (license license:bsd-3)))
+
 (define-public python-astroml
   (package
     (name "python-astroml")
@@ -4490,59 +4543,6 @@ object.")
      "This package provides a replacement for IRAF STSDAS SYNPHOT and ASTROLIB
 PYSYNPHOT, utilizing Astropy and covering the non-instrument specific portions
 of the old packages.")
-    (license license:bsd-3)))
-
-(define-public python-asdf
-  (package
-    (name "python-asdf")
-    (version "3.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf" version))
-       (sha256
-        (base32 "1wj556g15gwp6ir5hg083l15sifdsf23giqkx0jbn4lgdwjffbgr"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-n" "auto" "-p" "no:legacypath")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pypojrect-toml
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; ImportError: Error importing plugin " no:legacypath": No
-                ;; module named ' no:legacypath'
-                ((".*:legacypath.*") "")
-                ;; TypeError: Configuration.__init__() got an unexpected
-                ;; keyword argument 'version_file'
-                (("version_file = \"asdf/_version.py\"") "")))))))
-    (native-inputs
-     (list python-fsspec
-           python-packaging
-           python-psutil
-           python-pytest
-           python-pytest-doctestplus
-           python-pytest-remotedata
-           python-pytest-xdist
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-asdf-standard
-           python-asdf-transform-schemas
-           python-attrs ;; for vendorized jsonschema
-           python-importlib-metadata
-           python-jmespath
-           python-lz4
-           python-numpy
-           python-pyyaml
-           python-semantic-version))
-    (home-page "https://github.com/asdf-format/asdf")
-    (synopsis "Python tools to handle ASDF files")
-    (description
-     "The Advanced Scientific Data Format (ASDF) is a next-generation
-interchange format for scientific data.  This package contains the Python
-implementation of the ASDF Standard.")
     (license license:bsd-3)))
 
 (define-public python-asdf-compression
