@@ -3709,57 +3709,6 @@ R. Seaman's protocol}
 @end itemize\n")
     (license license:gpl3+)))
 
-(define-public xplanet
-  (package
-    (name "xplanet")
-    (version "1.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append
-         "mirror://sourceforge/xplanet/xplanet/"
-         version "/xplanet-" version ".tar.gz"))
-       (sha256
-        (base32 "1rzc1alph03j67lrr66499zl0wqndiipmj99nqgvh9xzm1qdb023"))
-       (patches
-        (search-patches
-         "xplanet-1.3.1-cxx11-eof.patch"
-         "xplanet-1.3.1-libdisplay_DisplayOutput.cpp.patch"
-         "xplanet-1.3.1-libimage_gif.c.patch"
-         "xplanet-1.3.1-xpUtil-Add2017LeapSecond.cpp.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list
-         ;; No NASA JPL cspice support.
-         "--without-cspice"
-         (string-append "CPPFLAGS=-I" #$(this-package-input "netpbm")
-                        "/include/netpbm"))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list freetype
-           giflib
-           libice
-           libjpeg-turbo
-           libpng
-           libtiff
-           libx11
-           libxscrnsaver
-           netpbm
-           pango
-           zlib))
-    (home-page "https://xplanet.sourceforge.net/")
-    (synopsis "Planetary body renderer")
-    (description
-     "Xplanet renders an image of a planet into an X window or file.
-All of the major planets and most satellites can be drawn and different map
-projections are also supported, including azimuthal, hemisphere, Lambert,
-Mercator, Mollweide, Peters, polyconic, orthographic and rectangular.")
-    (license license:gpl2+)))
-
 (define-public gpredict
   ;; The latest tag, 2.3, has no major difference with 2.2.1 and is dated for
   ;; 2018. Additionally, there is some activity on the master branch.
@@ -5381,3 +5330,54 @@ using (multivariate) polynomials.")
 an API for performing input and output operations on different kinds of
 n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
       (license license:cecill))))
+
+(define-public xplanet
+  (package
+    (name "xplanet")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append
+         "mirror://sourceforge/xplanet/xplanet/"
+         version "/xplanet-" version ".tar.gz"))
+       (sha256
+        (base32 "1rzc1alph03j67lrr66499zl0wqndiipmj99nqgvh9xzm1qdb023"))
+       (patches
+        (search-patches
+         "xplanet-1.3.1-cxx11-eof.patch"
+         "xplanet-1.3.1-libdisplay_DisplayOutput.cpp.patch"
+         "xplanet-1.3.1-libimage_gif.c.patch"
+         "xplanet-1.3.1-xpUtil-Add2017LeapSecond.cpp.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; No NASA JPL cspice support.
+         "--without-cspice"
+         (string-append "CPPFLAGS=-I" #$(this-package-input "netpbm")
+                        "/include/netpbm"))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list freetype
+           giflib
+           libice
+           libjpeg-turbo
+           libpng
+           libtiff
+           libx11
+           libxscrnsaver
+           netpbm
+           pango
+           zlib))
+    (home-page "https://xplanet.sourceforge.net/")
+    (synopsis "Planetary body renderer")
+    (description
+     "Xplanet renders an image of a planet into an X window or file.
+All of the major planets and most satellites can be drawn and different map
+projections are also supported, including azimuthal, hemisphere, Lambert,
+Mercator, Mollweide, Peters, polyconic, orthographic and rectangular.")
+    (license license:gpl2+)))
