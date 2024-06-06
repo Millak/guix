@@ -576,6 +576,31 @@ in FITS files.")
     (license (license:non-copyleft "file://License.txt"
                                    "See License.txt in the distribution."))))
 
+(define-public erfa
+  (package
+    (name "erfa")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/liberfa/erfa")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hxjbcvdlq4871r17fphbaf3bd8dsjagp1rdb3j8v6kr4f1dil9n"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list automake autoconf libtool pkg-config))
+    (home-page "https://github.com/liberfa/erfa")
+    (synopsis "Essential Routines for Fundamental Astronomy")
+    (description
+     "The @acronym{ERFA, Essential Routines for Fundamental Astronomy} C library
+contains key algorithms for astronomy, and is based on the @acronym{SOFA,
+Standards of Fundamental Astronomy} library published by the @acronym{IAU,
+International Astronomical Union}.")
+    (license license:bsd-3)))
+
 (define-public python-aplpy
   (package
     (name "python-aplpy")
@@ -975,31 +1000,6 @@ zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
      (modify-inputs (package-inputs python-ginga)
        (prepend python-pyqt)))
     (synopsis "Qt5 image viewer build based on python-ginga library")))
-
-(define-public erfa
-  (package
-    (name "erfa")
-    (version "2.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/liberfa/erfa")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1hxjbcvdlq4871r17fphbaf3bd8dsjagp1rdb3j8v6kr4f1dil9n"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list automake autoconf libtool pkg-config))
-    (home-page "https://github.com/liberfa/erfa")
-    (synopsis "Essential Routines for Fundamental Astronomy")
-    (description
-     "The @acronym{ERFA, Essential Routines for Fundamental Astronomy} C library
-contains key algorithms for astronomy, and is based on the @acronym{SOFA,
-Standards of Fundamental Astronomy} library published by the @acronym{IAU,
-International Astronomical Union}.")
-    (license license:bsd-3)))
 
 (define-public eye
   (package
