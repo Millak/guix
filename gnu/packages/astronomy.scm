@@ -5380,3 +5380,8 @@ All of the major planets and most satellites can be drawn and different map
 projections are also supported, including azimuthal, hemisphere, Lambert,
 Mercator, Mollweide, Peters, polyconic, orthographic and rectangular.")
     (license license:gpl2+)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above in alphabetical order.
+;;;
