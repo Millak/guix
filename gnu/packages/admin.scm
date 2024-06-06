@@ -65,6 +65,7 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4719,7 +4720,7 @@ cache of unix and unix-like systems.")
 (define-public solaar
   (package
     (name "solaar")
-    (version "1.0.7")
+    (version "1.1.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4728,7 +4729,7 @@ cache of unix and unix-like systems.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0k7mjdfvf28fay50b2hs2z4qk6s23h71wvl8777idlrz5i5f43j5"))))
+                "1fz3qgjx3ygr4clgh7iryxgvvjy510rgy8ixr2xld2wr0xa6p0mi"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -4736,9 +4737,12 @@ cache of unix and unix-like systems.")
          (add-before 'build 'setenv-PATH
            (lambda _
              (setenv "PYTHONPATH" "lib"))))))
+    (native-inputs (list python-pytest))
     (propagated-inputs
      (list python-pygobject
            python-pyudev
+           python-dbus-python
+           python-evdev
            ;; For GUI.
            python-pyyaml
            python-psutil
