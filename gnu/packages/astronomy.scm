@@ -1133,39 +1133,6 @@ header.")
                  (delete-file-recursively "C/flexed")))))
     (properties '((hidden? . #t)))))
 
-(define-public wcstools
-  (package
-    (name "wcstools")
-    (version "3.9.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "http://tdc-www.harvard.edu/software/wcstools/wcstools-"
-             version ".tar.gz"))
-       (sha256
-        (base32 "125hqzspvqrx6372smzsmxwg06ib2arjc5awnwnq53w1xdq6jpsj"))
-       (patches (search-patches "wcstools-extend-makefiles.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f ;No tests provided.
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              (string-append "PREFIX=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure))))
-    (home-page "http://tdc-www.harvard.edu/software/wcstools/")
-    (synopsis "Handle the WCS of a FITS image")
-    (description
-     "WCSTools is a set of software utilities, written in C, which create,
-display and manipulate the world coordinate system of a FITS or IRAF image,
-using specific keywords in the image header which relate pixel position within
-the image to position on the sky.  Auxillary programs search star catalogs and
-manipulate images.")
-    (license license:gpl2+)))
-
 (define-public glnemo2
   (package
     (name "glnemo2")
@@ -5303,6 +5270,39 @@ any arbitrary astrometric projection defined in the WCS standard.")
 an API for performing input and output operations on different kinds of
 n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
       (license license:cecill))))
+
+(define-public wcstools
+  (package
+    (name "wcstools")
+    (version "3.9.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "http://tdc-www.harvard.edu/software/wcstools/wcstools-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "125hqzspvqrx6372smzsmxwg06ib2arjc5awnwnq53w1xdq6jpsj"))
+       (patches (search-patches "wcstools-extend-makefiles.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No tests provided.
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (home-page "http://tdc-www.harvard.edu/software/wcstools/")
+    (synopsis "Handle the WCS of a FITS image")
+    (description
+     "WCSTools is a set of software utilities, written in C, which create,
+display and manipulate the world coordinate system of a FITS or IRAF image,
+using specific keywords in the image header which relate pixel position within
+the image to position on the sky.  Auxillary programs search star catalogs and
+manipulate images.")
+    (license license:gpl2+)))
 
 (define-public weightwatcher
   (package
