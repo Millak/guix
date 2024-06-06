@@ -917,25 +917,6 @@ zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
        (prepend python-pyqt)))
     (synopsis "Qt5 image viewer build based on python-ginga library")))
 
-(define-public qfits
-  (package
-    (name "qfits")
-    (version "6.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "ftp://ftp.eso.org/pub/qfits/qfits-" version ".tar.gz"))
-       (sha256
-        (base32 "0m2b21mim3a7wgfg3ph2w5hv7mdvr03jmmhzipc0wcahijglcw9j"))))
-    (build-system gnu-build-system)
-    (home-page "https://www.eso.org/sci/software/eclipse/qfits/")
-    (synopsis "C library offering access to astronomical FITS files")
-    (description
-     "@code{qfits} is a C library giving access to FITS file internals, both
-for reading and writing.")
-    (license license:gpl2+)))
-
 (define-public erfa
   (package
     (name "erfa")
@@ -5210,6 +5191,25 @@ using (multivariate) polynomials.")
               license:bsd-3
               ;; yt/frontends/artio/artio_headers/LICENSE: for C code.
               license:lgpl3))))
+
+(define-public qfits
+  (package
+    (name "qfits")
+    (version "6.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "ftp://ftp.eso.org/pub/qfits/qfits-" version ".tar.gz"))
+       (sha256
+        (base32 "0m2b21mim3a7wgfg3ph2w5hv7mdvr03jmmhzipc0wcahijglcw9j"))))
+    (build-system gnu-build-system)
+    (home-page "https://www.eso.org/sci/software/eclipse/qfits/")
+    (synopsis "C library offering access to astronomical FITS files")
+    (description
+     "@code{qfits} is a C library giving access to FITS file internals, both
+for reading and writing.")
+    (license license:gpl2+)))
 
 (define-public sunclock
   (let ((commit "f4106eb0a81f7594726d6b2859efd8fc64cc1225")
