@@ -27,6 +27,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 Cairn <cairn@pm.me>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -178,7 +179,7 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
 (define-public feh
   (package
     (name "feh")
-    (version "3.10")
+    (version "3.10.2")
     (home-page "https://feh.finalrewind.org/")
     (source (origin
               (method url-fetch)
@@ -186,7 +187,7 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "166cayf1zh84y5bfaykxmi7ypxvq36hnjsbnwbjzx7zyvkvd2w8x"))))
+                "0sc9dqcqz33pkc9x4m5i9lpq8avq5mhk3x0cdy3rhlsww9ysg52z"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
