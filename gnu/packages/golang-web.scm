@@ -1726,6 +1726,36 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
            go-github-com-pion-turn-v2
            go-golang-org-x-net))))
 
+(define-public go-github-com-pion-ice-v3
+  (package
+    (inherit go-github-com-pion-ice)
+    (name "go-github-com-pion-ice-v3")
+    (version "3.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/ice/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f9jy80law69zb26rkb6kl6w1c66vdghdrmifhwlmzngb644ihdb"))))
+    (arguments
+     (list
+      #:tests? #f ;Tests require network access.
+      #:go go-1.21
+      #:import-path "github.com/pion/ice/v3"))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-github-com-pion-dtls-v2
+           go-github-com-pion-logging
+           go-github-com-pion-mdns-v2
+           go-github-com-pion-randutil
+           go-github-com-pion-stun-v2
+           go-github-com-pion-transport-v3
+           go-github-com-pion-turn-v3
+           go-golang-org-x-net))))
+
 (define-public go-github-com-pion-mdns
   (package
     (name "go-github-com-pion-mdns")
