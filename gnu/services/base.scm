@@ -448,7 +448,11 @@ upon boot."
                       ;; Make sure PID 1 doesn't keep TARGET busy.
                       (chdir "/")
 
-                      (umount #$target)
+                      #$(if (file-system-mount-may-fail? file-system)
+                            #~(catch 'system-error
+                                (lambda () (umount #$target))
+                                (const #f))
+                            #~(umount #$target))
                       #f))
 
             ;; We need additional modules.
