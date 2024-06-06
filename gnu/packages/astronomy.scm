@@ -4024,65 +4024,6 @@ more.")
   ;; Default version of INDI..
   indi-1.9)
 
-(define-public sunclock
-  (let ((commit "f4106eb0a81f7594726d6b2859efd8fc64cc1225")
-        (revision "1"))
-    (package
-      (name "sunclock")
-      (version (git-version "3.57" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/nongiach/Sunclock")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1rczdpmhvfw57b9r793vq8vqlbdhlkgj52fxwrdfl6cwj95a9kv2"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:make-flags
-         (list (string-append "DESTDIR=" %output)
-               ;; Fix incorrect argument given to gcc. Error message:
-               ;; "gcc: error: DefaultGcc2AMD64Opt: No such file or directory"
-               "CDEBUGFLAGS=")
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'configure
-             (lambda _
-               (chdir "sunclock-3.57")
-               (substitute* "Imakefile"
-                 (("^MANDIR=/X11R6/man/man1")
-                  "MANDIR=/share/man/man1")
-                 (("^BINDIR=/X11R6/bin")
-                  "BINDIR=/bin")
-                 ;; Disable ZLIB support for vmf files because zlib implements
-                 ;; `gzgetc` as a macro instead of a function, which results in
-                 ;; a compilation error.
-                 ((" -DZLIB") "")
-                 ((" -lz") "")
-                 (("cd \\$\\(DESTDIR\\)\\$\\(SHAREDIR\\)/earthmaps/vmf ; \
-gzip -f \\*.vmf")
-                  ""))
-               ;; Generate Makefile.
-               (invoke "xmkmf"))))
-         #:tests? #f))  ; No check target.
-      (inputs
-       (list libjpeg-turbo libpng libx11 libxpm))
-      (native-inputs
-       (list imake))
-      (home-page "https://github.com/nongiach/Sunclock")
-      (synopsis
-       "Map of the Earth that shows which portion is illuminated by the Sun")
-      (description
-       "Sunclock displays a map of the Earth and shows which portion is
-illuminated by the Sun.  It can commute between two states, the \"clock window\"
-and the \"map window\".  The clock window displays a small map of the Earth and
-therefore occupies little space on the screen, while the \"map window\" displays
-a large map and offers more advanced functions: local time of cities, Sun and
-Moon position, etc.")
-      (license license:gpl2+))))
-
 (define-public python-jplephem
   (package
     (name "python-jplephem")
@@ -5270,6 +5211,65 @@ using (multivariate) polynomials.")
               license:bsd-3
               ;; yt/frontends/artio/artio_headers/LICENSE: for C code.
               license:lgpl3))))
+
+(define-public sunclock
+  (let ((commit "f4106eb0a81f7594726d6b2859efd8fc64cc1225")
+        (revision "1"))
+    (package
+      (name "sunclock")
+      (version (git-version "3.57" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/nongiach/Sunclock")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1rczdpmhvfw57b9r793vq8vqlbdhlkgj52fxwrdfl6cwj95a9kv2"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:make-flags
+         (list (string-append "DESTDIR=" %output)
+               ;; Fix incorrect argument given to gcc. Error message:
+               ;; "gcc: error: DefaultGcc2AMD64Opt: No such file or directory"
+               "CDEBUGFLAGS=")
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'configure
+             (lambda _
+               (chdir "sunclock-3.57")
+               (substitute* "Imakefile"
+                 (("^MANDIR=/X11R6/man/man1")
+                  "MANDIR=/share/man/man1")
+                 (("^BINDIR=/X11R6/bin")
+                  "BINDIR=/bin")
+                 ;; Disable ZLIB support for vmf files because zlib implements
+                 ;; `gzgetc` as a macro instead of a function, which results in
+                 ;; a compilation error.
+                 ((" -DZLIB") "")
+                 ((" -lz") "")
+                 (("cd \\$\\(DESTDIR\\)\\$\\(SHAREDIR\\)/earthmaps/vmf ; \
+gzip -f \\*.vmf")
+                  ""))
+               ;; Generate Makefile.
+               (invoke "xmkmf"))))
+         #:tests? #f))  ; No check target.
+      (inputs
+       (list libjpeg-turbo libpng libx11 libxpm))
+      (native-inputs
+       (list imake))
+      (home-page "https://github.com/nongiach/Sunclock")
+      (synopsis
+       "Map of the Earth that shows which portion is illuminated by the Sun")
+      (description
+       "Sunclock displays a map of the Earth and shows which portion is
+illuminated by the Sun.  It can commute between two states, the \"clock window\"
+and the \"map window\".  The clock window displays a small map of the Earth and
+therefore occupies little space on the screen, while the \"map window\" displays
+a large map and offers more advanced functions: local time of cities, Sun and
+Moon position, etc.")
+      (license license:gpl2+))))
 
 (define-public swarp
   (package
