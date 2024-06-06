@@ -1125,32 +1125,6 @@ the image to position on the sky.  Auxillary programs search star catalogs and
 manipulate images.")
     (license license:gpl2+)))
 
-(define-public weightwatcher
-  (package
-    (name "weightwatcher")
-    (version "1.12")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/astromatic/weightwatcher")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0701z6bdqq32jv7ga3n6jh27q684ni0hbfjm1mak7rh0qqx089gi"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list "CFLAGS=-fcommon")))      ; fix build with GCC 10
-    (home-page "https://www.astromatic.net/software/weightwatcher")
-    (synopsis "Weight-map/flag-map multiplexer and rasteriser")
-    (description
-     "Weightwatcher is a program hat combines weight-maps, flag-maps and
-polygon data in order to produce control maps which can directly be used in
-astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
-    (license license:gpl3+)))
-
 (define-public glnemo2
   (package
     (name "glnemo2")
@@ -5329,6 +5303,32 @@ any arbitrary astrometric projection defined in the WCS standard.")
 an API for performing input and output operations on different kinds of
 n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
       (license license:cecill))))
+
+(define-public weightwatcher
+  (package
+    (name "weightwatcher")
+    (version "1.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/weightwatcher")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0701z6bdqq32jv7ga3n6jh27q684ni0hbfjm1mak7rh0qqx089gi"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-fcommon")))      ; fix build with GCC 10
+    (home-page "https://www.astromatic.net/software/weightwatcher")
+    (synopsis "Weight-map/flag-map multiplexer and rasteriser")
+    (description
+     "Weightwatcher is a program hat combines weight-maps, flag-maps and
+polygon data in order to produce control maps which can directly be used in
+astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
+    (license license:gpl3+)))
 
 (define-public xplanet
   (package
