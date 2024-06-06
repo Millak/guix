@@ -452,6 +452,86 @@ with namespaces, exception handling, and member template functions.")
     (license (license:non-copyleft "file://License.txt"
                                    "See License.txt in the distribution."))))
 
+(define-public celestia
+  (package
+    (name "celestia")
+    (version "1.6.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/celestiaproject/celestia")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nz9k5nd2zmrbwj1qhsfwmvqymqk8c4yjxpybck44isrild2ah9j"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules
+      `((guix build gnu-build-system)
+        (guix build utils)
+        (srfi srfi-1)
+        (srfi srfi-71))
+      #:configure-flags
+      #~(list "--with-glut"
+              (string-append "--with-lua=" #$(this-package-input "lua")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-lua-version
+            (lambda _
+              (let* ((_ version (package-name->name+version
+                                 #$(this-package-input "lua")))
+                     (components (string-split version #\.))
+                     (major+minor (string-join (take components 2) ".")))
+                (substitute* "configure.ac"
+                  (("lua5.3")
+                   (string-append "lua-" major+minor)))))))))
+    (native-inputs
+     (list autoconf
+           automake
+           gettext-minimal
+           libgit2
+           libtool
+           perl
+           pkg-config))
+    (inputs
+     (list freeglut
+           glu
+           libjpeg-turbo
+           libpng
+           libtheora
+           mesa))
+    (propagated-inputs
+     (list lua))
+    (home-page "https://celestia.space/")
+    (synopsis "Real-time 3D visualization of space")
+    (description
+     "This simulation program lets you explore our universe in three
+dimensions.  Celestia simulates many different types of celestial objects.
+From planets and moons to star clusters and galaxies, you can visit every
+object in the expandable database and view it from any point in space and
+time.  The position and movement of solar system objects is calculated
+accurately in real time at any rate desired.")
+    (license license:gpl2+)))
+
+(define-public celestia-gtk
+  (package/inherit celestia
+    (name "celestia-gtk")
+    (inputs
+     (modify-inputs (package-inputs celestia)
+       (replace "freeglut" gtk+-2)
+       (prepend cairo gtkglext libxmu libtheora pango-1.42)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments celestia)
+       ((#:configure-flags flags '())
+        #~(append #$flags
+                  (list "--enable-cairo"
+                        "--enable-theora"
+                        "--without-glut"
+                        "--with-gtk")))))
+    (synopsis "Real-time 3D visualization of space (using GTK+)")))
+
 (define-public cfitsio
   (package
     (name "cfitsio")
@@ -1557,87 +1637,6 @@ It generates object lists in ASCII which can read by the SkyMaker program to
 produce realistic astronomical fields.  Stuff is part of the
 @uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
     (license license:gpl3+)))
-
-(define-public celestia
-  (package
-    (name "celestia")
-    (version "1.6.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/celestiaproject/celestia")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0nz9k5nd2zmrbwj1qhsfwmvqymqk8c4yjxpybck44isrild2ah9j"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:modules
-      `((guix build gnu-build-system)
-        (guix build utils)
-        (srfi srfi-1)
-        (srfi srfi-71))
-      #:configure-flags
-      #~(list "--with-glut"
-              (string-append "--with-lua=" #$(this-package-input "lua")))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-lua-version
-            (lambda _
-              (let* ((_ version (package-name->name+version
-                                 #$(this-package-input "lua")))
-                     (components (string-split version #\.))
-                     (major+minor (string-join (take components 2) ".")))
-                (substitute* "configure.ac"
-                  (("lua5.3")
-                   (string-append "lua-" major+minor)))))))))
-    (native-inputs
-     (list autoconf
-           automake
-           gettext-minimal
-           libgit2
-           libtool
-           perl
-           pkg-config))
-    (inputs
-     (list freeglut
-           glu
-           libjpeg-turbo
-           libpng
-           libtheora
-           mesa))
-    (propagated-inputs
-     (list lua))
-    (home-page "https://celestia.space/")
-    (synopsis "Real-time 3D visualization of space")
-    (description
-     "This simulation program lets you explore our universe in three
-dimensions.  Celestia simulates many different types of celestial objects.
-From planets and moons to star clusters and galaxies, you can visit every
-object in the expandable database and view it from any point in space and
-time.  The position and movement of solar system objects is calculated
-accurately in real time at any rate desired.")
-    (license license:gpl2+)))
-
-
-(define-public celestia-gtk
-  (package/inherit celestia
-    (name "celestia-gtk")
-    (inputs
-     (modify-inputs (package-inputs celestia)
-       (replace "freeglut" gtk+-2)
-       (prepend cairo gtkglext libxmu libtheora pango-1.42)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments celestia)
-       ((#:configure-flags flags '())
-        #~(append #$flags
-                  (list "--enable-cairo"
-                        "--enable-theora"
-                        "--without-glut"
-                        "--with-gtk")))))
-    (synopsis "Real-time 3D visualization of space (using GTK+)")))
 
 (define-public python-astropy
   (package
