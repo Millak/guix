@@ -744,6 +744,47 @@ interchange format for scientific data.  This package contains the Python
 implementation of the ASDF Standard.")
     (license license:bsd-3)))
 
+(define-public python-asdf-astropy
+  (package
+    (name "python-asdf-astropy")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf-astropy" version))
+       (sha256
+        (base32 "1ipjpjiirycj2npicbp39ka7db61vx45j8dm2iis71g5l1rzkblp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-n" "auto")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'set-home-env
+                     (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-coverage
+           python-h5py
+           python-pandas
+           python-pytest
+           python-pytest-astropy
+           python-pytest-xdist
+           python-scipy
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf
+           python-asdf-coordinates-schemas
+           python-asdf-transform-schemas
+           python-astropy
+           python-numpy
+           python-packaging))
+    (home-page "https://github.com/astropy/asdf-astropy")
+    (synopsis "ASDF serialization support for astropy")
+    (description
+     "This package includes plugins that provide ASDF serialization support for
+Astropy objects.")
+    (license license:bsd-3)))
+
 (define-public python-astroalign
   (package
     (name "python-astroalign")
@@ -4700,47 +4741,6 @@ support for reading and writing chunked
 @url{https://zarr.readthedocs.io/en/stable/,Zarr} arrays, a file storage
 format for chunked, compressed, N-dimensional arrays based on an open-source
 specification.")
-    (license license:bsd-3)))
-
-(define-public python-asdf-astropy
-  (package
-    (name "python-asdf-astropy")
-    (version "0.6.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf-astropy" version))
-       (sha256
-        (base32 "1ipjpjiirycj2npicbp39ka7db61vx45j8dm2iis71g5l1rzkblp"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-n" "auto")
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'check 'set-home-env
-                     (lambda _ (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-coverage
-           python-h5py
-           python-pandas
-           python-pytest
-           python-pytest-astropy
-           python-pytest-xdist
-           python-scipy
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-asdf
-           python-asdf-coordinates-schemas
-           python-asdf-transform-schemas
-           python-astropy
-           python-numpy
-           python-packaging))
-    (home-page "https://github.com/astropy/asdf-astropy")
-    (synopsis "ASDF serialization support for astropy")
-    (description
-     "This package includes plugins that provide ASDF serialization support for
-Astropy objects.")
     (license license:bsd-3)))
 
 (define python-asdf-wcs-schemas
