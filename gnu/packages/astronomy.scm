@@ -689,6 +689,39 @@ interchange format for scientific data.  This package contains the Python
 implementation of the ASDF Standard.")
     (license license:bsd-3)))
 
+(define-public python-astroalign
+  (package
+    (name "python-astroalign")
+    (version "2.5.1")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quatrope/astroalign")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kr5cszcxvrdbksy7mvv3ps1h1jzrn4yamfr6x7whkbi6bpqf7xp"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-astropy
+           python-ccdproc
+           python-pillow
+           python-pytest))
+    (propagated-inputs
+     (list python-bottleneck
+           python-numpy
+           python-scikit-image
+           python-scipy
+           python-sep))
+    (home-page "https://astroalign.readthedocs.io/")
+    (synopsis "Astrometric Alignment of Images")
+    (description
+     "ASTROALIGN is a python module that will try to align two stellar
+astronomical images, especially when there is no WCS information available.")
+    (license license:expat)))
+
 (define-public python-astroml
   (package
     (name "python-astroml")
@@ -4951,39 +4984,6 @@ representation of the same items within the Python code.  That is not a concern
 for Roman since FITS format data files will not be used by the Roman calibration
 pipelines.")
     (license license:bsd-3)))
-
-(define-public python-astroalign
-  (package
-    (name "python-astroalign")
-    (version "2.5.1")
-    (source
-     (origin
-       ;; There are no tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/quatrope/astroalign")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1kr5cszcxvrdbksy7mvv3ps1h1jzrn4yamfr6x7whkbi6bpqf7xp"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-astropy
-           python-ccdproc
-           python-pillow
-           python-pytest))
-    (propagated-inputs
-     (list python-bottleneck
-           python-numpy
-           python-scikit-image
-           python-scipy
-           python-sep))
-    (home-page "https://astroalign.readthedocs.io/")
-    (synopsis "Astrometric Alignment of Images")
-    (description
-     "ASTROALIGN is a python module that will try to align two stellar
-astronomical images, especially when there is no WCS information available.")
-    (license license:expat)))
 
 (define-public python-skyfield
   (package
