@@ -139,6 +139,7 @@
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
+;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32843,6 +32844,32 @@ values in files farther away from it.
 You might want to use this to globally set dir-local variables that apply to
 all of your projects, then override or add variables on a per-project basis.")
       (license license:gpl3+))))
+
+(define-public emacs-casual-dired
+  (package
+    (name "emacs-casual-dired")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kickingvegas/casual-dired")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07dn2nfjvg348qy7kfn1kywclw9g71x8j85ilwz26pp9hv64qhmc"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "lisp"))))))
+    (home-page "https://github.com/kickingvegas/casual-dired")
+    (synopsis "Transient-based porcelain for dired")
+    (description
+     "Casual Dired is an opinionated Transient-based porcelain for Emacs Dired.")
+    (license license:gpl3+)))
 
 (define-public emacs-calibredb
   (package
