@@ -77,14 +77,14 @@ renderer.")
 (define-public ucd
   (package
     (name "ucd")
-    (version "15.0.0")
+    (version "15.1.0")
     (source
      (origin
        (method url-fetch/zipbomb)
        (uri (string-append "https://www.unicode.org/Public/zipped/" version
                            "/UCD.zip"))
        (sha256
-        (base32 "133inqn33hcfvylmps63yjr6rrqrfq6x7a5hr5fd51z6yc0f9gaz"))))
+        (base32 "0xv10nkvg6451415imvb0qx72ljp0hv9f8h1sl6509ir0lync76b"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
