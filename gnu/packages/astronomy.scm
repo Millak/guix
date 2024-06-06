@@ -601,6 +601,36 @@ Standards of Fundamental Astronomy} library published by the @acronym{IAU,
 International Astronomical Union}.")
     (license license:bsd-3)))
 
+(define-public eye
+  (package
+    (name "eye")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/eye")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j8rpgz3fjp6fw0qmxgfqycf3n01fzxds4w12vgyrhbnk658ia41"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CPPFLAGS=-fcommon")))    ; fix build with GCC 10
+    (home-page "https://www.astromatic.net/software/eye")
+    (synopsis "Small image feature detector using machine learning")
+    (description
+     "In @acronym{EyE, Enhance Your Extraction} an artificial neural network
+connected to pixels of a moving window (@dfn{retina}) is trained to associate
+these input stimuli to the corresponding response in one or several output
+image(s).  The resulting filter can be loaded in SExtractor to operate
+complex, wildly non-linear filters on astronomical images.  Typical
+applications of EyE include adaptive filtering, feature detection and cosmetic
+corrections.")
+    (license license:cecill)))
+
 (define-public python-aplpy
   (package
     (name "python-aplpy")
@@ -1000,36 +1030,6 @@ zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
      (modify-inputs (package-inputs python-ginga)
        (prepend python-pyqt)))
     (synopsis "Qt5 image viewer build based on python-ginga library")))
-
-(define-public eye
-  (package
-    (name "eye")
-    (version "1.4.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/astromatic/eye")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1j8rpgz3fjp6fw0qmxgfqycf3n01fzxds4w12vgyrhbnk658ia41"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list "CPPFLAGS=-fcommon")))    ; fix build with GCC 10
-    (home-page "https://www.astromatic.net/software/eye")
-    (synopsis "Small image feature detector using machine learning")
-    (description
-     "In @acronym{EyE, Enhance Your Extraction} an artificial neural network
-connected to pixels of a moving window (@dfn{retina}) is trained to associate
-these input stimuli to the corresponding response in one or several output
-image(s).  The resulting filter can be loaded in SExtractor to operate
-complex, wildly non-linear filters on astronomical images.  Typical
-applications of EyE include adaptive filtering, feature detection and cosmetic
-corrections.")
-    (license license:cecill)))
 
 (define-public wcslib
   (package
