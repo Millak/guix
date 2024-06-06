@@ -2357,7 +2357,7 @@ compositors that support the layer-shell protocol.")
 (define-public kanshi
   (package
     (name "kanshi")
-    (version "1.5.1")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2366,10 +2366,10 @@ compositors that support the layer-shell protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mc2zcqsv79y7682nwi1gn8p751zwflm9zirl98v2q2kvx334k8a"))))
+        (base32 "10ym28xkxbs6nkjk3clb680815606c42vagbshd9qs9cvc8zncra"))))
     (build-system meson-build-system)
     (inputs (list wayland))
-    (native-inputs (list pkg-config scdoc))
+    (native-inputs (list pkg-config scdoc libscfg))
     (home-page "https://wayland.emersion.fr/kanshi")
     (synopsis "Hotswappable output profiles for Wayland")
     (description "Kanshi allows you to define output profiles that are
