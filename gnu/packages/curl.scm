@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2020, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2017, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -370,7 +370,7 @@ curl to obtain exactly that HTTP request.")
 (define-public coeurl
   (package
     (name "coeurl")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -379,7 +379,7 @@ curl to obtain exactly that HTTP request.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b435c2szwibm4i4r7mh22klyv9ncdkwkiy95p4xjfalsx4ripxh"))))
+        (base32 "1l9lx8chpc4bx7xxycdgr8mgqqjdrvipljmq869c2x1zjwrnasil"))))
     (build-system meson-build-system)
     (native-inputs
      (list doctest pkg-config))
