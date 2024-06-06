@@ -1,0 +1,75 @@
+From adbf7ce2c2b03ce5ee25d4c68f9bb247b0dcbc2b Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Date: Thu, 30 May 2024 14:48:04 -0400
+Subject: [PATCH] bootstrap: Use gnulib-tool from PATH if available.
+
+Some distributions such as GNU Guix include in their package for
+gnulib a 'gnulib-tool' command under their $bindir
+prefix (e.g. '/bin') for users to use, along the unmodified full
+sources.  The idea is that any wrapping or distribution modifications
+for the *execution* of the script at run time is done on these
+commands, while the rest of the source should be in their
+pristine (unmodified) version.  Adjust the 'gnulib-tool' discovery
+mechanism to support such installation layout.
+
+* build-aux/bootstrap (autogen) <gnulib_tool>: Prefer to use from
+PATH, else from $GNULIB_SRCDIR/../../bin/gnulib-tool, else from
+$GNULIB_SRCDIR/gnulib-tool.
+* gnulib-tool.sh (func_gnulib_dir): Honor GNULIB_SRCDIR to locate
+gnulib's main directory.
+---
+ build-aux/bootstrap | 11 +++++++++--
+ gnulib-tool.sh      |  6 +++++-
+ 2 files changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/build-aux/bootstrap b/build-aux/bootstrap
+index 6295b8a128..06271eea8b 100755
+--- a/build-aux/bootstrap
++++ b/build-aux/bootstrap
+@@ -3,7 +3,7 @@
+ 
+ # Bootstrap this package from checked-out sources.
+ 
+-scriptversion=2024-04-13.15; # UTC
++scriptversion=2024-05-30.20; # UTC
+ 
+ # Copyright (C) 2003-2024 Free Software Foundation, Inc.
+ #
+@@ -1164,7 +1164,14 @@ autogen()
+   fi
+ 
+   if $use_gnulib; then
+-    gnulib_tool=$GNULIB_SRCDIR/gnulib-tool
++    gnulib_tool=$(command -v gnulib-tool)
++    if test -x "$gnulib_tool"; then
++      :                         # done
++    elif test -x $GNULIB_SRCDIR/../../bin/gnulib-tool; then
++      gnulib_tool=$GNULIB_SRCDIR/../../bin/gnulib-tool
++    else
++      gnulib_tool=$GNULIB_SRCDIR/gnulib-tool
++    fi
+     <$gnulib_tool || return
+   fi
+ 
+diff --git a/gnulib-tool.sh b/gnulib-tool.sh
+index 12f0b82461..0aefbe2b2b 100755
+--- a/gnulib-tool.sh
++++ b/gnulib-tool.sh
+@@ -518,7 +518,11 @@ func_gnulib_dir ()
+       * ) self_abspathname=`echo "$self_abspathname" | sed -e 's,/[^/]*$,,'`/"$linkval" ;;
+     esac
+   done
+-  gnulib_dir=`echo "$self_abspathname" | sed -e 's,/[^/]*$,,'`
++  if test -n "$GNULIB_SRCDIR"; then
++    gnulib_dir=$GNULIB_SRCDIR
++  else
++    gnulib_dir=`echo "$self_abspathname" | sed -e 's,/[^/]*$,,'`
++  fi
+ }
+ 
+ # func_tmpdir
+
+base-commit: ac4b301ae15223c98b51cd5a0eda2e2cf57c817b
+-- 
+2.41.0
+

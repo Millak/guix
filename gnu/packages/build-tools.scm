@@ -13,7 +13,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
-;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -853,12 +853,15 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
                           ;; FIXME: tests/uniname/HangulSyllableNames.txt
                           ;; seems like a UCD file but it is not distributed
                           ;; with UCD.
-                          "tests/uniwbrk/WordBreakTest.txt")))))))
+                          "tests/uniwbrk/WordBreakTest.txt")))))
+       (patches (search-patches "gnulib-bootstrap.patch"))))
     (build-system copy-build-system)
     (arguments
      (list
       #:install-plan
       #~'(("./gnulib-tool" "bin/")
+          ("./gnulib-tool.py" "bin/")
+          ("./gnulib-tool.sh" "bin/")
           ("." "src/gnulib" #:exclude-regexp ("\\.git.*")))
       #:modules '((ice-9 match)
                   (guix build utils)
@@ -866,6 +869,13 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
                   ((guix build gnu-build-system) #:prefix gnu:))
       #:phases
       #~(modify-phases %standard-phases
+          ;; Since this package is intended to be used in source form, it
+          ;; should not retain references to tools (with the exception for the
+          ;; commands we install, which should be wrapper for proper
+          ;; execution).
+          (delete 'patch-source-shebangs)
+          (delete 'patch-generated-file-shebangs)
+          (delete 'patch-usr-bin-file)
           (add-before 'install 'check
             (assoc-ref gnu:%standard-phases 'check))
           (add-before 'check 'fix-tests
@@ -889,8 +899,10 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
   sc_Wundef_boolean \\
   sc_copyright_check \\
   sc_file_system \\
+  sc_error_message_warn_fatal \\
   sc_indent \\
   sc_keep_gnulib_texi_files_mostly_ascii \\
+  sc_prefer_angle_bracket_headers \\
   sc_prohibit_assert_without_use \\
   sc_prohibit_close_stream_without_use \\
   sc_prohibit_defined_have_decl_tests \\
@@ -899,15 +911,22 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
   sc_prohibit_intprops_without_use \\
   sc_prohibit_openat_without_use \\
   sc_prohibit_test_minus_ao \\
-  sc_unportable_grep_q"))
+  sc_readme_link_copying \\
+  sc_readme_link_install \\
+  sc_unportable_grep_q \\
+  sc_unsigned_char \\
+  sc_unsigned_int \\
+  sc_unsigned_long \\
+  sc_unsigned_short"))
               (substitute* "Makefile"
-                (("sc_check_(sym_list|copyright)" rule)
+                (("sc_check_(sym_list|copyright|config_h_reminder)" rule)
                  (string-append "disabled_check_" rule))
                 (("sc_cpp_indent_check")
                  "disabled_cpp_indent_check")
                 (("sc_prefer_ac_check_funcs_once")
                  "disabled_prefer_ac_check_funcs_once")
-                (("sc_prohibit_(AC_LIBOBJ_in_m4|leading_TABs)" rule)
+                (("sc_prohibit_(AC_LIBOBJ_in_m4|leading_TABs\
+|sc_omitted_at)" rule)
                  (string-append "disabled_prohibit_" rule)))))
           (add-before 'check 'regenerate-unicode
             (lambda* (#:key inputs #:allow-other-keys)
@@ -939,7 +958,8 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
                              (sha256
                               (base32
                                "0k6wyijyzdl5g3nibcwfm898kfydx1pqaz28v7fdvnzdvd5fz7lh"))))
-                        (find-ucd-files "EastAsianWidth.txt"
+                        (find-ucd-files "BidiMirroring.txt"
+                                        "EastAsianWidth.txt"
                                         "LineBreak.txt"
                                         "auxiliary/WordBreakProperty.txt"
                                         "auxiliary/GraphemeBreakProperty.txt"
@@ -962,22 +982,9 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
                    ("NormalizationTest.txt" . "uninorm")
                    ("auxiliary/GraphemeBreakTest.txt" . "unigbrk")
                    ("auxiliary/WordBreakTest.txt" . "uniwbrk")))
-                (delete-file "gen-uni-tables"))))
-          (add-after 'install 'restore-shebangs
-            (lambda _
-              (substitute* (find-files
-                            (string-append #$output "/src/gnulib")
-                            (lambda (fname stat)
-                              (and (not (string-suffix? "/lib/javaversion.class" fname))
-                                   (not (string-suffix? ".mo" fname)))))
-                (("^#! ?(.*)/bin/sh" _ prefix)
-                 "#!/bin/sh")
-                (("^#! ?(.*)/bin/python3" _ prefix)
-                 "#!/usr/bin/env python3")
-                (("^#! ?(.*)/bin/([a-zA-Z0-9-]+)" _ prefix program)
-                 (string-append "#!/usr/bin/" program))))))))
+                (delete-file "gen-uni-tables")))))))
     (inputs
-     (list bash-minimal))                         ;shebang for gnulib-tool
+     (list bash-minimal)) ;shebang for gnulib-tool
     (native-inputs
      (list
       bash-minimal python perl clisp
@@ -1005,9 +1012,9 @@ maintenance-related files, for convenience.")
 
 (define-public gnulib
   (gnulib-checkout
-   #:version "2022-12-31"
-   #:commit "875461ffdf58ac04677957b4ae4160465b83b940"
-   #:hash (base32 "0bf7a6wdns9c5wwv60qfcn9llg0j6jz5ryd2qgsqqx2i6xkmp77c")))
+   #:version "2024-05-30"
+   #:commit "ac4b301ae15223c98b51cd5a0eda2e2cf57c817b"
+   #:hash (base32 "0f4w56fc97clg13mmdghx84dh9xqmaqr3j672ppfh3h66gmmmvzs")))
 
 (define-public pdpmake
   (package
