@@ -4553,7 +4553,7 @@ passwords in the GNOME keyring.")
 (define-public vala
   (package
     (name "vala")
-    (version "0.56.14")
+    (version "0.56.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/vala/"
@@ -4561,7 +4561,7 @@ passwords in the GNOME keyring.")
                                   "vala-" version ".tar.xz"))
               (sha256
                (base32
-                "0mzmldhf6474dp2jkxj160kkafdz32c2l5f8xnm05p4vr9lc50lk"))))
+                "16yaiff5nl2dfyvs3bj8y7wvzh9riz6wqlx7csgg1lpm01b7nj05"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -13420,6 +13420,14 @@ libraries.  Applications do not need to be recompiled--or even restarted.")
       #:configure-flags #~(list "-Dnetwork_tests=false" "-Ddocs=true")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda _
+              ;; With Gnome 4.14, GtkStackPage has an autoptr already, so it'd
+              ;; get redefined.  Drop this phase when updating gnome-builder to
+              ;; 46.0 or newer.  See also
+              ;; <https://gitlab.gnome.org/GNOME/gnome-builder/-/commit/7aaaecefc2ea8a37eaeae8b4d726d119d4eb8fa3>
+              (substitute* "src/libide/tweaks/ide-tweaks-window.c"
+                (("G_DEFINE_AUTOPTR_CLEANUP_FUNC \\(GtkStackPage, .*\\)") ""))))
           (add-after 'unpack 'patch-meson
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "meson.build"

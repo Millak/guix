@@ -127,13 +127,13 @@ engine that uses Wayland for graphics output.")
 (define-public webkitgtk
   (package
     (name "webkitgtk")
-    (version "2.42.5")
+    (version "2.44.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "0jg7c7z572afywwrnvdj3m5agaviv0vkqmzznnzzv30byb0phhmn"))
+               (base32 "0qamkk9db8m6x4qv5y10lihc18yzgrgbn6ldqw00ckghn1ci8ns2"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
@@ -162,6 +162,7 @@ engine that uses Wayland for graphics output.")
               ;; tool to validate the good operation of
               ;; webkitgtk.
               "-DENABLE_MINIBROWSER=ON"
+              "-DUSE_LIBBACKTRACE=OFF"  ; XXX: circular dependency
               ;; The default lib installation prefix is lib64.
               (string-append "-DLIB_INSTALL_DIR=" #$output "/lib")
               ;; XXX: WebKitGTK makes use of elogind's systemd-compatible
@@ -222,8 +223,8 @@ engine that uses Wayland for graphics output.")
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((doc (assoc-ref outputs "doc")))
                 (mkdir-p (string-append doc "/share"))
-                (rename-file (string-append #$output "/share/gtk-doc")
-                             (string-append doc "/share/gtk-doc"))))))))
+                (rename-file (string-append #$output "/share/doc")
+                             (string-append doc "/share/doc"))))))))
     (native-inputs
      (list bison
            gettext-minimal
@@ -295,9 +296,8 @@ propagated by default) such as @code{gst-plugins-good} and
     (arguments
      (substitute-keyword-arguments (package-arguments webkitgtk)
        ((#:configure-flags flags)
-        #~(cons* "-DENABLE_GTKDOC=ON"
-                 (delete "-DENABLE_INTROSPECTION=ON"
-                         (delete "-DUSE_GTK4=ON" #$flags))))))
+        #~(cons* "-DUSE_GTK4=OFF"
+                 (delete "-DUSE_GTK4=ON" #$flags)))))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs webkitgtk)
        (replace "gtk" gtk+)))
@@ -322,13 +322,13 @@ propagated by default) such as @code{gst-plugins-good} and
   (package
     (inherit webkitgtk)
     (name "wpewebkit")
-    (version "2.40.5")
+    (version "2.44.1")
     (source (origin
               (inherit (package-source webkitgtk))
               (uri (string-append "https://wpewebkit.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "0cv74qy67a0hg8sba18wrjcmmwkj4z23wqnn5yqrh3n594q8srac"))))
+               (base32 "16y1gdz38d4b99b8zrvxy0nbrc70ih02ngi8090x7148rx7vz7rc"))))
     (arguments
      (substitute-keyword-arguments (package-arguments webkitgtk)
        ((#:configure-flags flags)

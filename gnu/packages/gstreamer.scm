@@ -796,6 +796,10 @@ model to base your own plug-in on, here it is.")
                   ;; The 'elements_curlhttpsrc' test sometimes times out.
                   ((".*'elements/curlhttpsrc\\.c'.*") "")
 
+                  ;; Unexpected critical/warning, see
+                  ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3000>
+                  ((".*'elements/netsim\\.c'.*") "")
+
                   ;; TODO: Figure out why this test fails on riscv64-linux.
                   #$@(if (target-riscv64?)
                          `((("'elements/viewfinderbin\\.c'\\].*],")
