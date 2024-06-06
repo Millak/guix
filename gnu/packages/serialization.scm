@@ -19,6 +19,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -419,6 +420,28 @@ that implements both the msgpack and msgpack-rpc specifications.")
                                 "/lib/lua/" lua-major+minor))))))
     (inputs
      `(("lua" ,lua-5.2)))))
+
+(define-public libscfg
+  (package
+    (name "libscfg")
+    (version "0.1.1")
+    (home-page "https://git.sr.ht/~emersion/libscfg")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~emersion/libscfg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b1ps7wba4anm3x1yndnd730dwl6rdz3zwjgxmsyq31fnjrjydv9"))))
+    (build-system meson-build-system)
+    (synopsis "Scfg library written in C")
+    (description
+     "This package provides a C library for to parse
+@uref{https://git.sr.ht/~emersion/scfg, scfg}, a simple configuration file
+format with one directive per line.")
+    (license license:expat)))
 
 (define-public libyaml
   (package
