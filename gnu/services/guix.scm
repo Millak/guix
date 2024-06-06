@@ -291,7 +291,8 @@
                 (build-coordinator (make-build-coordinator
                                     #:database-uri-string #$database-uri-string
                                     #:hooks hooks-with-defaults
-                                    #:allocation-strategy #$allocation-strategy)))
+                                    #:allocation-strategy #$allocation-strategy
+                                    #:timestamp-log-output? #f)))
 
            (run-coordinator-service
             build-coordinator
@@ -421,6 +422,7 @@
              (fork+exec-command
               (list #$(file-append package "/bin/guix-build-coordinator-agent")
                     #$(string-append "--coordinator=" coordinator)
+                    "--timestamp-log-output=false"
                     #$@(match authentication
                          (($ <guix-build-coordinator-agent-password-auth>
                              uuid password)
