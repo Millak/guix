@@ -1558,31 +1558,6 @@ produce realistic astronomical fields.  Stuff is part of the
 @uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
     (license license:gpl3+)))
 
-(define-public swarp
-  (package
-    (name "swarp")
-    (version "2.41.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/astromatic/swarp")
-             (commit (string-append version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "00463r5rd4xl74xs4h1n4gl2qk7v9p5nw9x05pbzgh8jm77q90qq"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list automake autoconf libtool pkg-config))
-    (inputs
-     (list cfitsio))
-    (home-page "https://www.astromatic.net/software/swarp")
-    (synopsis "FITS image resampling and co-addition")
-    (description
-     "SWarp is a program that resamples and co-adds together FITS images using
-any arbitrary astrometric projection defined in the WCS standard.")
-    (license license:gpl3+)))
-
 (define-public celestia
   (package
     (name "celestia")
@@ -5295,6 +5270,31 @@ using (multivariate) polynomials.")
               license:bsd-3
               ;; yt/frontends/artio/artio_headers/LICENSE: for C code.
               license:lgpl3))))
+
+(define-public swarp
+  (package
+    (name "swarp")
+    (version "2.41.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/swarp")
+             (commit (string-append version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00463r5rd4xl74xs4h1n4gl2qk7v9p5nw9x05pbzgh8jm77q90qq"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list automake autoconf libtool pkg-config))
+    (inputs
+     (list cfitsio))
+    (home-page "https://www.astromatic.net/software/swarp")
+    (synopsis "FITS image resampling and co-addition")
+    (description
+     "SWarp is a program that resamples and co-adds together FITS images using
+any arbitrary astrometric projection defined in the WCS standard.")
+    (license license:gpl3+)))
 
 (define-public unsio
   ;; There is no versioned tag, use the latest commit.
