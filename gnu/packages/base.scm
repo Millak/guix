@@ -19,7 +19,7 @@
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
@@ -46,8 +46,10 @@
   #:use-module (gnu packages acl)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages attr)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages multiprecision)
@@ -261,35 +263,83 @@ standard utility.")
    (license gpl3+)
    (home-page "https://www.gnu.org/software/tar/")))
 
-(define-public patch
-  (package
-    (name "patch")
-    (version "2.7.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/patch/patch-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "1zfqy4rdcy279vwn2z1kbv19dcfw25d2aqy9nzvdkq5bjzd0nqdc"))
-              (patches (search-patches "patch-hurd-path-max.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     ;; Work around a cross-compilation bug whereby libpatch.a would provide
-     ;; '__mktime_internal', which conflicts with the one in libc.a.
-     (if (%current-target-system)
-         `(#:configure-flags '("gl_cv_func_working_mktime=yes"))
-         '()))
-    (native-inputs (list ed))
-    (synopsis "Apply differences to originals, with optional backups")
-    (description
-     "Patch is a program that applies changes to files based on differences
+;;; TODO: Replace/merge with 'patch' on core-updates.
+(define-public patch/pinned
+  (hidden-package
+   (package
+     (name "patch")
+     (version "2.7.6")
+     (source (origin
+               (method url-fetch)
+               (uri (string-append "mirror://gnu/patch/patch-"
+                                   version ".tar.xz"))
+               (sha256
+                (base32
+                 "1zfqy4rdcy279vwn2z1kbv19dcfw25d2aqy9nzvdkq5bjzd0nqdc"))
+               (patches (search-patches "patch-hurd-path-max.patch"))))
+     (build-system gnu-build-system)
+     (arguments
+      ;; Work around a cross-compilation bug whereby libpatch.a would provide
+      ;; '__mktime_internal', which conflicts with the one in libc.a.
+      (if (%current-target-system)
+          `(#:configure-flags '("gl_cv_func_working_mktime=yes"))
+          '()))
+     (native-inputs (list ed))
+     (synopsis "Apply differences to originals, with optional backups")
+     (description
+      "Patch is a program that applies changes to files based on differences
 laid out as by the program \"diff\".  The changes may be applied to one or more
 files depending on the contents of the diff file.  It accepts several
 different diff formats.  It may also be used to revert previously applied
 differences.")
-    (license gpl3+)
-    (home-page "https://savannah.gnu.org/projects/patch/")))
+     (license gpl3+)
+     (home-page "https://savannah.gnu.org/projects/patch/"))))
+
+(define-public patch
+  ;; The latest release is from 2018, and lacks multiple security related
+  ;; patches.  Since Fedora carries 23 patches, simply use the latest commit
+  ;; until a proper release is made.
+  (let ((revision "0")
+        (commit "f144b35425d9d7732ea5485034c1a6b7a106ab92")
+        (base patch/pinned))
+    (package
+      (inherit base)
+      (name "patch")
+      (version (git-version "2.7.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/patch.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1bk38169c0xh01b0q0zmnrjqz8k9byz3arp4q7q66sn6xwf94nvz"))
+                (patches (search-patches "patch-hurd-path-max.patch"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'copy-gnulib-sources
+                (lambda _
+                  ;; XXX: We copy the source instead of using 'gnulib' as a
+                  ;; native input to avoid introducing a dependency cycle.
+                  (copy-recursively #+gnulib "gnulib")
+                  (setenv "GNULIB_SRCDIR"
+                          (string-append (getcwd) "/gnulib/src/gnulib"))))
+              (add-after 'copy-gnulib-sources 'update-bootstrap-script
+                (lambda _
+                  (copy-file "gnulib/src/gnulib/build-aux/bootstrap"
+                             "bootstrap")))
+              (add-after 'unpack 'patch-configure.ac
+                (lambda _
+                  (substitute* "configure.ac"
+                    ;; The gnulib-provided git-version-gen script has a plain
+                    ;; shebang of #!/bin/sh; avoid using it.
+                    (("build-aux/git-version-gen" all)
+                     (string-append "sh " all)))))))))
+      (native-inputs (list autoconf automake bison ed))
+      (properties '()))))
 
 (define-public diffutils
   (package

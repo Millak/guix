@@ -899,7 +899,7 @@ identifiers.  The result is inferred from the file names of patches."
       ("gzip"  ,(ref '(gnu packages compression) 'gzip))
       ("lzip"  ,(ref '(gnu packages compression) 'lzip))
       ("unzip" ,(ref '(gnu packages compression) 'unzip))
-      ("patch" ,(ref '(gnu packages base) 'patch))
+      ("patch" ,(ref '(gnu packages base) 'patch/pinned))
       ("locales"
        ,(parameterize ((%current-target-system #f)
                        (%current-system system))

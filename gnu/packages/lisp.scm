@@ -382,7 +382,7 @@ interface.")
     (build-system trivial-build-system)
     (native-inputs
      `(("config-patch" ,@(search-patches "cl-asdf-config-directories.patch"))
-       ("patch" ,patch)))
+       ("patch" ,patch/pinned)))
     (arguments
      `(#:modules ((guix build utils)
                   (guix build lisp-utils))
