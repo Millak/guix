@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Brian Cully <bjc@spork.org>
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1442,7 +1443,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.2.3")
+    (version "2.2.4")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -1451,7 +1452,7 @@ with the included @command{xfstests-check} helper.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "1hqsv2skymrhzg9n94bcna8r7m1zl30wjb5knaw43j659vri599h"))))
+           (base32 "1h0yqchirzsn2gll1w2gclb13hr8511z67lf85cigm43frgr144p"))))
     (build-system linux-module-build-system)
     (arguments
      (list
