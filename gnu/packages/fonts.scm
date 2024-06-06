@@ -11,7 +11,7 @@
 ;;; Copyright © 2016 Jookia <166291@gmail.com>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Dmitry Nikolaev <cameltheman@gmail.com>
-;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Toni Reina <areina@riseup.net>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -88,6 +88,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
+  #:use-module (gnu packages)
   #:use-module (gnu packages c)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -436,8 +437,6 @@ font is provided in the OpenType font (OTF) format.")
 (define-public font-gnu-freefont
   (package
     (name "font-gnu-freefont")
-    ;; Note: Remove the special FontForge input and package once the 2020
-    ;; release is out.
     (version "20120503")
     (source (origin
              (method url-fetch)
@@ -445,7 +444,10 @@ font is provided in the OpenType font (OTF) format.")
                                  version ".tar.gz"))
              (sha256
               (base32
-               "0yk58blhcd4hm7nyincmqq4jrzjjk82wif2zmk1l3y2m4vif4qhd"))))
+               "0yk58blhcd4hm7nyincmqq4jrzjjk82wif2zmk1l3y2m4vif4qhd"))
+             (patches (search-patches "font-gnu-freefont-python3-compat.patch"))
+             (snippet
+              '(begin (delete-file "tools/generate/buildutils.pyc")))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -491,8 +493,7 @@ font is provided in the OpenType font (OTF) format.")
                                    (lambda (file) (string-suffix? "woff" file))
                                    (find-files "." "")))))))
        #:test-target "tests"))
-    ;; FreeFont anno 2012 requires a FontForge built with Python 2.
-    (native-inputs (list fontforge-20190801))
+    (native-inputs (list fontforge))
     (home-page "https://www.gnu.org/software/freefont/")
     (synopsis "Unicode-encoded outline fonts")
     (description
