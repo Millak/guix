@@ -1633,33 +1633,6 @@ can be used to control telescopes over a serial port for tracking celestial
 objects.")
     (license license:gpl2+)))
 
-(define-public stuff
-  (package
-    (name "stuff")
-    (version "2.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/astromatic/stuff")
-             ;; XXX: No version tag available in GitHub.
-             ;; See: https://github.com/astromatic/stuff/issues/6
-             (commit "9008dc022ef53331092da248cf0a794abd6783bf")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "004sry5lqqm7s9x4l3agysp3n63y3ga35x1rwwda4m6dc6zvla6b"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (home-page "https://www.astromatic.net/software/stuff")
-    (synopsis "Astronomical catalogue simulation")
-    (description
-     "Stuff is a program that simulates \"perfect\" astronomical catalogues.
-It generates object lists in ASCII which can read by the SkyMaker program to
-produce realistic astronomical fields.  Stuff is part of the
-@uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
-    (license license:gpl3+)))
-
 (define-public python-astropy
   (package
     (name "python-astropy")
@@ -5151,6 +5124,33 @@ using (multivariate) polynomials.")
      "@code{qfits} is a C library giving access to FITS file internals, both
 for reading and writing.")
     (license license:gpl2+)))
+
+(define-public stuff
+  (package
+    (name "stuff")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/stuff")
+             ;; XXX: No version tag available in GitHub.
+             ;; See: https://github.com/astromatic/stuff/issues/6
+             (commit "9008dc022ef53331092da248cf0a794abd6783bf")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "004sry5lqqm7s9x4l3agysp3n63y3ga35x1rwwda4m6dc6zvla6b"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (home-page "https://www.astromatic.net/software/stuff")
+    (synopsis "Astronomical catalogue simulation")
+    (description
+     "Stuff is a program that simulates \"perfect\" astronomical catalogues.
+It generates object lists in ASCII which can read by the SkyMaker program to
+produce realistic astronomical fields.  Stuff is part of the
+@uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
+    (license license:gpl3+)))
 
 (define-public sunclock
   (let ((commit "f4106eb0a81f7594726d6b2859efd8fc64cc1225")
