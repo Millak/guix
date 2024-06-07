@@ -69,8 +69,7 @@ Zig, V, and Nim programming language standard libraries.")
 (define-public xxhash
   (package
     (name "xxhash")
-    ;; XXX Remove the 'fix-man-page-links phase when updating.
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -79,7 +78,7 @@ Zig, V, and Nim programming language standard libraries.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h6080lvcr5mpbvy4fhb4i7wvhpy72nrixk3djmpai4hxq41hsnr"))))
+        (base32 "1ljsmxcxfyxzxzk435qnjiyy441bgrxirn285lymyvv39nrwz1wj"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -93,12 +92,6 @@ Zig, V, and Nim programming language standard libraries.")
                    (string-append "prefix=" (assoc-ref %outputs "out")))
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-man-page-links
-                 ;; https://github.com/Cyan4973/xxHash/issues/647
-                 (lambda _
-                   (substitute* "Makefile"
-                     (("ln -sf \\$\\(MAN\\)")
-                      "ln -sf xxhsum.1"))))
                (delete 'configure))))         ; no configure script
     (home-page "https://cyan4973.github.io/xxHash/")
     (synopsis "Extremely fast hash algorithm")
