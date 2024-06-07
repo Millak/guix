@@ -3110,12 +3110,12 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
                 "056prmry1lag1pandcw058y5yzbah80ccmz8qlmlx9siz8zlxqyw"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; No tests.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'change-to-build-dir
-           (lambda _
-             (chdir "neo"))))))
+     (list #:tests? #f                  ; No tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'change-to-build-dir
+                 (lambda _
+                   (chdir "neo"))))))
     (inputs
      (list curl
            libx11
