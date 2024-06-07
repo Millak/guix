@@ -1157,6 +1157,49 @@ metrics to Graphite.")
 structs in the Go programming language.")
     (license license:expat)))
 
+(define-public go-github-com-d5-tengo-v2
+  (package
+    (name "go-github-com-d5-tengo-v2")
+    (version "2.17.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/d5/tengo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12h7fg2hj9s64hzsv5mz0pl9q1hf1lw3b5k9fr40nfqlq1bw84da"))))
+    (build-system go-build-system)
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:import-path "github.com/d5/tengo/v2"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda* (#:key import-path outputs #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (let* ((data (string-append #$output:doc "/share"))
+                       (doc (string-append data "/doc/" #$name "-" #$version)))
+                  (copy-recursively "docs/" doc))))))))
+    (home-page "https://github.com/d5/tengo")
+    (synopsis "Script language for Go")
+    (description
+     "Tengo is a small, dynamic, fast, secure script language for Go.
+Features:
+@itemize
+@item simple and highly readable syntax
+@item dynamic typing with type coercion
+@item higher-order functions and closures
+@item immutable values
+@item securely embeddable and extensible
+@item compiler/runtime written in native Go (no external deps or cgo)
+@item executable as a standalone language/REPL
+@item use cases: rules engine, state machine, data pipeline, transpiler
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-danwakefield-fnmatch
   (let ((commit "cbb64ac3d964b81592e64f957ad53df015803288")
         (revision "0"))
