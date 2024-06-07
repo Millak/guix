@@ -22470,11 +22470,11 @@ from @code{groovy-mode} for editing Jenkins declarative pipeline files.")
       (license license:gpl3+))))
 
 (define-public emacs-org-tree-slide
-  (let ((commit "d6529bc2df727d09014e0e56abf4f15a8e8fc20f")
+  (let ((commit "e2599a106a26ce5511095e23df4ea04be6687a8a")
         (revision "0"))
     (package
       (name "emacs-org-tree-slide")
-      (version (git-version "2.8.18" revision commit))
+      (version (git-version "2.8.22" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -22482,7 +22482,7 @@ from @code{groovy-mode} for editing Jenkins declarative pipeline files.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1br32mpwarmrn158y2pkkmfl2ssv8q8spzknkg2avr16fil0j1pz"))
+                  "0i1mzgq178sl6x2wf7k0ad57dy1d34wbk2k99fiyvv70rfbj2yy2"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (home-page "https://github.com/takaxp/org-tree-slide")
