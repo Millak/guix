@@ -3663,6 +3663,33 @@ Metrics library.")
       (home-page "https://github.com/rcrowley/go-metrics")
       (license license:bsd-2))))
 
+(define-public go-github-com-remeh-sizedwaitgroup
+  (package
+    (name "go-github-com-remeh-sizedwaitgroup")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/remeh/sizedwaitgroup")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xwdzby27xzcghsqhli3il165iz3vkx3g4abgvkl99wysyhcvn0a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/remeh/sizedwaitgroup"))
+    (home-page "https://github.com/remeh/sizedwaitgroup")
+    (synopsis "Goroutines limit amount implementation of standard @code{sync.WaitGroup}")
+    (description
+     "This package implements a feature of limiting the maximum number of
+concurrently started routines which has the same role and API as
+@code{sync.WaitGroup}.  It could for example be used to start multiples
+routines querying a database but without sending too much queries in order to
+not overload the given database.")
+    (license license:expat)))
+
 (define-public go-github-com-schollz-progressbar-v3
   (package
     (name "go-github-com-schollz-progressbar-v3")
