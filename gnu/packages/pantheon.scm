@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2023 Wamm K. D. <jaft.r@outlook.com>
-;;; Copyright © 2023 altadil <Altadil@protonmail.com>
+;;; Copyright © 2023, 2024 altadil <Altadil@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +36,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
   #:use-module (guix build-system meson)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -94,7 +95,7 @@ in apps built for the Pantheon desktop.")
 (define-public pantheon-calculator
   (package
     (name "pantheon-calculator")
-    (version "2.0.2")
+    (version "8.0.0")
     (source
      (origin
        (method git-fetch)
@@ -104,15 +105,15 @@ in apps built for the Pantheon desktop.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1w59sgznzybawhz411avqayws8jq0471n6hwhkplvcz7inxlzdrw"))))
+         "1as5rxd0b6z3lnh8my36szr056rxxqwkjzvaiylspx5g2kg3qjs0"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-schema-cache-generation
-           (lambda _
-             (setenv "DESTDIR" "/"))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'disable-schema-cache-generation
+                     (lambda _
+                       (setenv "DESTDIR" "/"))))))
     (inputs
       (list granite
             glib
