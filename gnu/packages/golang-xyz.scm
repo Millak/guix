@@ -4659,6 +4659,20 @@ go-github-com-tklauser-numcpus source.")))
      "This package provides a CLI build from the
 go-github-com-orisano-pixelmatch source.")))
 
+(define-public go-tengo
+  (package
+    (inherit go-github-com-d5-tengo-v2)
+    (name "tengo")
+    (arguments
+     (list
+      #:import-path "github.com/d5/tengo/cmd/tengo"
+      #:unpack-path "github.com/d5/tengo"
+      #:install-source? #f))
+    (description
+     (string-append (package-description go-github-com-d5-tengo-v2)
+                    "\nThis package provides an command line interface (CLI)
+tool."))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
