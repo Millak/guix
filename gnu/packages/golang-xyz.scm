@@ -1772,6 +1772,67 @@ the library more lightweight.")
      "This package provides a Go implementation of globs.")
     (license license:expat)))
 
+(define-public go-github-com-gookit-color
+  (package
+    (name "go-github-com-gookit-color")
+    (version "1.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gookit/color")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "012naz084chvdqzrrzv9pklqfh259hi2jcp2f3n39fppvjwmzgkf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/gookit/color"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Error: Received unexpected
+                ;; error: open README.md: permission denied.
+                ;; Reported upstream, see
+                ;; <https://github.com/gookit/color/pull/91>.
+                (substitute* "utils_test.go"
+                  (("os.O_WRONLY") "os.O_RDONLY"))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-xo-terminfo
+           go-golang-org-x-sys))
+    (home-page "https://github.com/gookit/color")
+    (synopsis "Terminal color rendering library")
+    (description
+     "This package provides a command-line color library with 16/256/True
+color support, universal API methods and Windows support.
+
+Features:
+@itemize
+@item supports rich color output: 16-color (4-bit), 256-color (8-bit), true
+color (24-bit, RGB)
+@item support converts HEX HSL value to RGB color
+@item generic API methods: @code{Print}, @code{Printf}, @code{Println},
+@code{Sprint}, @code{Sprintf}
+@item supports HTML tag-style color rendering, such as @code{<green>message</>
+<fg=red;bg=blue>text</>}
+@item basic colors: @code{Bold}, @code{Black}, @code{White}, @code{Gray},
+@code{Red}, @code{Green}, @code{Yellow}, @code{Blue}, @code{Magenta},
+@code{Cyan}
+@item additional styles: @code{Info}, @code{Note}, @code{Light}, @code{Error},
+@code{Danger}, @code{Notice}, @code{Success}, @code{Comment}, @code{Primary},
+@code{Warning}, @code{Question}, @code{Secondary}
+@item support by set @code{NO_COLOR} for disable color or use
+@code{FORCE_COLOR} for force open color render
+@item support RGB, 256, 16 color conversion
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-hashicorp-errwrap
   (package
     (name "go-github-com-hashicorp-errwrap")
