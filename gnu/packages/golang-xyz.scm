@@ -1457,6 +1457,32 @@ scanner API made public.")
 for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
     (license license:expat)))
 
+(define-public go-github-com-expr-lang-expr
+  (package
+    (name "go-github-com-expr-lang-expr")
+    (version "1.16.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/expr-lang/expr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08p7gcxm7psgn1rzhhy2s2va59ssy77x8wd706gdp2pif7wln883"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/expr-lang/expr"))
+    (home-page "https://expr-lang.org/")
+    (synopsis "Expression language and expression evaluation for Go")
+    (description
+     "The package @strong{Expr} provides a Go-centric expression language
+designed to deliver dynamic configurations with unparalleled accuracy, safety,
+and speed.")
+    (license license:expat)))
+
 (define-public go-github-com-facette-natsort
   (package
     (name "go-github-com-facette-natsort")
