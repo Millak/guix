@@ -62,6 +62,33 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-atomicgo-dev-assert
+  (package
+    (name "go-atomicgo-dev-assert")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atomicgo/assert")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ra5bx3w6vynwbxgsz5knibk2xwmfi6654fsi29zsmk77f39g8vv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "atomicgo.dev/assert"))
+    (home-page "https://atomicgo.dev/assert")
+    (synopsis "Go package with tons of assertions")
+    (description
+     "Package assert provides obj set of assertion functions.  Every assertion
+function returns obj boolean.  This package does not integrate into the
+testing package automatically and requires to check the returning boolean
+value and call @code{t.Fatal()} if the assertion fails.")
+    (license license:expat)))
+
 (define-public go-github-com-alecthomas-assert-v2
   (package
     (name "go-github-com-alecthomas-assert-v2")
