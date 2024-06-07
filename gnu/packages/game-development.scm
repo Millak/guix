@@ -22,7 +22,7 @@
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Dmitry Polyakov <polyakov@liltechdude.xyz>
-;;; Copyright © 2020-2022 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2020-2022, 2024 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
@@ -3101,13 +3101,13 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
     (name "dhewm3")
     (version "1.5.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/dhewm/dhewm3/releases/download/"
-                    version "/dhewm3-" version "-src.tar.xz"))
+              (method git-fetch)
+              (uri (git-reference (url "https://github.com/dhewm/dhewm3")
+                                  (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "10p0w1x5wx9b7d8mzvb6yqjia9prhkjwz04vbvphy8p383r33am6"))))
+                "056prmry1lag1pandcw058y5yzbah80ccmz8qlmlx9siz8zlxqyw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; No tests.
