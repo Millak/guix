@@ -456,6 +456,35 @@ for Go")
      "This package provides SCSS compiler support for Go applications.")
     (license license:expat)))
 
+(define-public go-github-com-cenkalti-backoff-v4
+  (package
+    (name "go-github-com-cenkalti-backoff-v4")
+    (version "4.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cenkalti/backoff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pwr7fzxgngb073q98qrz1f90bkk3pljynif6jl5a6q6kcsn7xf1"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:go go-1.21
+           #:import-path "github.com/cenkalti/backoff/v4"))
+    (home-page "https://github.com/cenkalti/backoff")
+    (synopsis "The exponential backoff algorithm in Go")
+    (description "This is a Go port of the exponential backoff algorithm from
+@url{https://github.com/google/google-http-java-client/blob/da1aa993e90285ec18579f1553339b00e19b3ab5/google-http-client/src/main/java/com/google/api/client/util/ExponentialBackOff.java,
+Google's HTTP Client Library for Java}.
+
+@url{http://en.wikipedia.org/wiki/Exponential_backoff, Exponential backoff} is an
+algorithm that uses feedback to multiplicatively decrease the rate of some process,
+in order to gradually find an acceptable rate.  The retries exponentially increase
+and stop increasing when a certain threshold is met.")
+    (license license:expat)))
+
 (define-public go-github-com-chris-ramon-douceur
   (package
     (name "go-github-com-chris-ramon-douceur")
