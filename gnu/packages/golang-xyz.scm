@@ -745,10 +745,10 @@ indicator to any terminal application.")
 similar to Go's standard library @code{json} and @code{xml} package.")
     (license license:expat)))
 
-(define-public go-github-com-cheggaaa-pb-v3
+(define-public go-github-com-cheggaaa-pb
   (package
-    (name "go-github-com-cheggaaa-pb-v3")
-    (version "3.0.8")
+    (name "go-github-com-cheggaaa-pb")
+    (version "1.0.29")
     (source
      (origin
        (method git-fetch)
@@ -757,22 +757,43 @@ similar to Go's standard library @code{json} and @code{xml} package.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d701s2niy39r650d1phjw19h4l27b1yfc2ih6s31f56b3zzqspx"))))
+        (base32 "0n8y589gf9aw53j72y4z8mzkgahbf6k8h19n2j0mllw5xpvpgijy"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/cheggaaa/pb/v3"
-       #:unpack-path "github.com/cheggaaa/pb"))
+     (list
+      #:import-path "github.com/cheggaaa/pb"))
     (propagated-inputs
      (list go-github-com-fatih-color
            go-github-com-mattn-go-colorable
            go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-runewidth
-           go-github-com-vividcortex-ewma))
+           go-github-com-mattn-go-runewidth))
     (home-page "https://github.com/cheggaaa/pb/")
     (synopsis "Console progress bar for Go")
     (description
      "This package is a Go library that draws progress bars on the terminal.")
     (license license:bsd-3)))
+
+(define-public go-github-com-cheggaaa-pb-v3
+  (package
+    (inherit go-github-com-cheggaaa-pb)
+    (name "go-github-com-cheggaaa-pb-v3")
+    (version "3.0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cheggaaa/pb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d701s2niy39r650d1phjw19h4l27b1yfc2ih6s31f56b3zzqspx"))))
+    (arguments
+     (list
+      #:import-path "github.com/cheggaaa/pb/v3"
+      #:unpack-path "github.com/cheggaaa/pb"))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs go-github-com-cheggaaa-pb)
+       (append go-github-com-vividcortex-ewma)))))
 
 (define-public go-github-com-chzyer-logex
   (package
@@ -3812,24 +3833,6 @@ Go.")
     (arguments
      (list
       #:import-path "gopkg.in/alecthomas/kingpin.v2"))))
-
-(define-public go-gopkg-in-cheggaaa-pb-v1
-  (package
-    (inherit go-github-com-cheggaaa-pb-v3)
-    (name "go-gopkg-in-cheggaaa-pb-v1")
-    (version "1.0.29")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gopkg.in/cheggaaa/pb.v1.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0n8y589gf9aw53j72y4z8mzkgahbf6k8h19n2j0mllw5xpvpgijy"))))
-    (arguments
-     (list
-      #:import-path "github.com/cheggaaa/pb"))))
 
 (define-public go-gopkg-in-natefinch-lumberjack.v2
   (package
