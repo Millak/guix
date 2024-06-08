@@ -61,6 +61,7 @@
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Mehmet Tekman <mtekman89@gmail.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -965,7 +966,7 @@ selection's dimensions to stdout.")
 (define-public maim
   (package
     (name "maim")
-    (version "5.6.3")
+    (version "5.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -974,7 +975,7 @@ selection's dimensions to stdout.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "181mjjrjb9fs1ficcv9miqbk94v95j1yli7fjp2dj514g7nj9l3x"))))
+                "0n5fa0vf33wmw50fhxv5sj94rv1a0m9gbczlgnic2yyak546mmpy"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))            ; no "check" target
@@ -985,6 +986,7 @@ selection's dimensions to stdout.")
            libxcomposite
            libxfixes
            libxrandr
+           libwebp
            mesa
            slop
            zlib))
