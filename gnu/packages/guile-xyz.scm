@@ -3151,7 +3151,11 @@ key-value cache and store.")
                   (substitute* "configure"
                     (("2\\.2 2\\.0")
                      "3.0 2.2 2.0"))
-                  #t))))
+                  ;; The 'en_US.utf8' locale is missing, but C.UTF-8 is
+                  ;; enough.
+                  (substitute* (find-files "tests/inlines" "\\.scm$")
+                    (("en_US.utf8")
+                     "C.UTF-8"))))))
     (build-system gnu-build-system)
     ;; The tests throw exceptions with Guile 3.0.5, because they evaluate
     ;; (exit ...).
