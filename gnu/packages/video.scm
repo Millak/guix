@@ -2765,13 +2765,13 @@ the last played position, etc.")
 (define-public jellyfin-mpv-shim
   (package
     (name "jellyfin-mpv-shim")
-    (version "2.6.0")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jellyfin-mpv-shim" version))
        (sha256
-        (base32 "1cy2sfv84k5nw8bqy4aa7v0hdawp7gk5s7wq850xizqk0sz7cipp"))))
+        (base32 "0lgs3d6qxxf338mg4mmm4jrkvw1alrks16hx30figwn3dcv5l0qh"))))
     (build-system python-build-system)
     (arguments
      (list
