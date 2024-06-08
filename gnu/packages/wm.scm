@@ -860,37 +860,17 @@ manager and a system tray.")
 (define-public xmonad
   (package
     (name "xmonad")
-    (version "0.17.1")
-    (source (origin
-              (method url-fetch)
-              (uri (hackage-uri "xmonad" version))
-              (sha256
-               (base32
-                "1apqwyqmc51gamfgsvlanzqqig9qvjss89ibcamhnha1gs1k4jl8"))
-              (patches (search-patches "xmonad-dynamic-linking.patch"))))
+    (version "0.17.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "xmonad" version))
+       (sha256
+        (base32 "19qz9a23377nzc0qq8nca45s745mfncd4i2vwba14gi7ipipfcil"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xmonad")))
     (inputs (list ghc-x11 ghc-data-default-class ghc-setlocale))
     (native-inputs (list ghc-quickcheck ghc-quickcheck-classes))
-    (arguments
-      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'install 'install-xsession
-             (lambda _
-               (let ((xsessions (string-append #$output "/share/xsessions")))
-                 (mkdir-p xsessions)
-                 (call-with-output-file (string-append xsessions
-                                                       "/xmonad.desktop")
-                  (lambda (port)
-                    (format port "~
-                     [Desktop Entry]~@
-                     Name=~a~@
-                     Comment=xmonad window manager~@
-                     Exec=~a/bin/xmonad~@
-                     Type=Application~%" #$name #$output)))))))
-       #:cabal-revision '("2"
-                          "1rgwrnyb7kijzl2mqm8ks2nydh37q5vkbg4400rg9n6x13w2r9b3")))
     (home-page "http://xmonad.org")
     (synopsis "Tiling window manager")
     (description
@@ -950,7 +930,11 @@ tiled on several screens.")
          (add-before 'build 'patch-test-shebang
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "test/Xmobar/Plugins/Monitors/AlsaSpec.hs"
-               (("/bin/bash") (which "bash"))))))))
+               (("/bin/bash") (which "bash")))))
+         (add-before 'build 'patch-cairo-path
+           (lambda _
+             (substitute* "src/Xmobar/X11/CairoSurface.hsc"
+               (("cairo/cairo-xlib.h") "cairo-xlib.h")))))))
     (home-page "https://xmobar.org")
     (synopsis "Haskell library for minimalistic text based status bars")
     (description

@@ -109,7 +109,8 @@
            (lambda _
              (substitute* "purescript.cabal"
                (("\\b(language-javascript|process)\\s+[^,]+" all dep)
-                dep))))
+                dep)
+               (("happy:happy ==1.20.0") "happy:happy"))))
          (add-after 'register 'remove-libraries
            (lambda _
              (delete-file-recursively

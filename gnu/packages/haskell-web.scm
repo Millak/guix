@@ -72,29 +72,22 @@ for screen-scraping.")
 (define-public ghc-cookie
   (package
     (name "ghc-cookie")
-    (version "0.4.5")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "cookie" version))
        (sha256
-        (base32
-         "10rmdasb7mypbwxdj2mhr810vqhkakpik7hyd8fvj60hng8r8zvh"))))
+        (base32 "1ajbcsk4k0jc6v2fqn36scs6l8wa6fq46gd54pak75rbqdbajhcc"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "cookie")))
-    (inputs
-     (list ghc-old-locale
-           ghc-blaze-builder
-           ghc-data-default-class
-           ghc-hunit
-           ghc-quickcheck
-           ghc-tasty
-           ghc-tasty-hunit
-           ghc-tasty-quickcheck))
+    (inputs (list ghc-data-default-class))
+    (native-inputs (list ghc-hunit ghc-quickcheck ghc-tasty ghc-tasty-hunit
+                         ghc-tasty-quickcheck))
     (home-page "https://github.com/snoyberg/cookie")
     (synopsis "HTTP cookie parsing and rendering")
     (description "HTTP cookie parsing and rendering library for Haskell.")
-    (license license:bsd-3)))
+    (license license:expat)))
 
 (define-public ghc-curl
   (package
@@ -363,58 +356,54 @@ and HPACK.  Currently HTTP/2 16 framing and HPACK 10 is supported.")
 
 (define-public ghc-http-conduit
   (package
-    (name  "ghc-http-conduit")
-    (version "2.3.8")
+    (name "ghc-http-conduit")
+    (version "2.3.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "http-conduit" version))
        (sha256
-        (base32
-         "1bj24phbcb7s3k6v48l5gk82m3m23j8zy9l7c5ccxp3ghn9z5gng"))))
+        (base32 "11zf4hyw8f1gpj0w1cmgc9g62xwy2v4hhzqazdsla4q49iqbzxgd"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "http-conduit")))
-    ;; FIXME: `httpLbs TLS` in test-suite `test` fails with
-    ;; ConnectionFailure getProtocolByName: does not exist (no such protocol
-    ;; name: tcp)
-    (arguments `(#:tests? #f))
-    (inputs
-     (list ghc-aeson
-           ghc-resourcet
-           ghc-conduit
-           ghc-conduit-extra
-           ghc-http-types
-           ghc-lifted-base
-           ghc-http-client
-           ghc-http-client-tls
-           ghc-monad-control
-           ghc-exceptions
-           ghc-unliftio))
-    (native-inputs
-     (list ghc-hunit
-           ghc-hspec
-           ghc-data-default-class
-           ghc-connection
-           ghc-warp-tls
-           ghc-blaze-builder
-           ghc-conduit
-           ghc-utf8-string
-           ghc-case-insensitive
-           ghc-lifted-base
-           ghc-network
-           ghc-wai
-           ghc-warp
-           ghc-wai-conduit
-           ghc-http-types
-           ghc-cookie
-           ghc-conduit-extra
-           ghc-streaming-commons
-           ghc-aeson
-           ghc-temporary
-           ghc-resourcet))
-    (home-page "https://hackage.haskell.org/package/http-conduit")
+    (inputs (list ghc-attoparsec
+                  ghc-resourcet
+                  ghc-conduit
+                  ghc-conduit-extra
+                  ghc-http-types
+                  ghc-http-client
+                  ghc-http-client-tls
+                  ghc-unliftio-core
+                  ghc-aeson))
+    (native-inputs (list ghc-hunit
+                         ghc-hspec
+                         ghc-data-default-class
+                         ghc-warp-tls
+                         ghc-tls
+                         ghc-blaze-builder
+                         ghc-utf8-string
+                         ghc-case-insensitive
+                         ghc-unliftio
+                         ghc-wai
+                         ghc-warp
+                         ghc-wai-conduit
+                         ghc-cookie
+                         ghc-streaming-commons
+                         ghc-temporary
+                         ghc-network))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "1wvr0v948s5fmlf47r4pqjan355x6v65rm7dz7y65ngj10xwk5f9")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'update-constraints
+           (lambda _
+             (substitute* "http-conduit.cabal"
+               ((", network") ", network\n                 , connection\n")))))))
+    (home-page "https://github.com/snoyberg/http-client")
     (synopsis "HTTP/HTTPS client with conduit interface")
-    (description "This library uses attoparsec for parsing the actual
+    (description
+     "This library uses attoparsec for parsing the actual
 contents of the HTTP connection.  It also provides higher-level functions
 which allow you to avoid direct usage of conduits.")
     (license license:bsd-3)))
@@ -781,18 +770,21 @@ See also:
 (define-public ghc-xss-sanitize
   (package
     (name "ghc-xss-sanitize")
-    (version "0.3.7.1")
-    (source (origin
-              (method url-fetch)
-              (uri (hackage-uri "xss-sanitize" version))
-              (sha256
-               (base32
-                "1lmmyh28mb1k44m63m7qx6iy4x2fgqq5srmky47dsm0fby9iag1h"))))
+    (version "0.3.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "xss-sanitize" version))
+       (sha256
+        (base32 "0in9kn51i2ddh5c8scyf9l8zi6zxidwznn34qwj02nglw5dpzfqv"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xss-sanitize")))
     (inputs (list ghc-attoparsec ghc-css-text ghc-network-uri ghc-tagsoup
                   ghc-utf8-string))
     (native-inputs (list ghc-hunit ghc-hspec))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "1l8y52nja9a2iyxawm3vp23jcs46ziwx0yj2w46drb7knaa306d0")))
     (home-page "https://github.com/yesodweb/haskell-xss-sanitize#readme")
     (synopsis "Sanitize untrusted HTML to prevent XSS attacks")
     (description
@@ -930,7 +922,8 @@ entity decoding bugfixes applied.")
               (uri (hackage-uri "aeson" version))
               (sha256
                (base32
-                "09dk0j33n262dm75vff3y3i9fm6lh06dyqswwv7a6kvnhhmhlxhr"))))
+                "09dk0j33n262dm75vff3y3i9fm6lh06dyqswwv7a6kvnhhmhlxhr"))
+              (patches (search-patches "ghc-aeson-encodeDouble.patch"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "aeson")))
     (inputs (list ghc-base-compat-batteries
@@ -1196,13 +1189,13 @@ avoid any issues with characters.")
 (define-public ghc-yesod-core
   (package
     (name "ghc-yesod-core")
-    (version "1.6.24.0")
-    (source (origin
-              (method url-fetch)
-              (uri (hackage-uri "yesod-core" version))
-              (sha256
-               (base32
-                "19ilgm73108ki1hvqc86kir0yrx36vp9g45na6g8dmfsvk9izr10"))))
+    (version "1.6.24.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "yesod-core" version))
+       (sha256
+        (base32 "0cql4gk83ya0lyv0nyrp387nljpab4dwwy288rzp8klq9z5r2a7j"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "yesod-core")))
     (inputs (list ghc-aeson
@@ -1241,9 +1234,6 @@ avoid any issues with characters.")
                          ghc-hspec-expectations
                          ghc-network
                          ghc-streaming-commons))
-    (arguments
-     `(#:cabal-revision ("1"
-                         "1406s7is60ji6nn3h1mafkdh7729ipq3i06cqsq77hz2ilj264jl")))
     (home-page "http://www.yesodweb.com/")
     (synopsis "Core package for the Yesod web framework")
     (description
@@ -1282,13 +1272,13 @@ from Yesod.")
 (define-public ghc-yesod-form
     (package
       (name "ghc-yesod-form")
-      (version "1.7.3")
-      (source (origin
-                (method url-fetch)
-                (uri (hackage-uri "yesod-form" version))
-                (sha256
-                 (base32
-                  "10y3mfh96sicqyzngvl7f4wrjgkvl3znqnh71s8gx1vf7158sjww"))))
+      (version "1.7.4")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (hackage-uri "yesod-form" version))
+         (sha256
+          (base32 "012w6pq0zznwqn19nx5h30rmd7dazcd0d75a6426d7brxvf9vn98"))))
       (build-system haskell-build-system)
       (properties '((upstream-name . "yesod-form")))
       (inputs (list ghc-aeson
@@ -2156,13 +2146,13 @@ aims to be compliant with @url{https://www.w3.org/TR/cors}.")
 (define-public ghc-network-run
   (package
     (name "ghc-network-run")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
-      (origin
-        (method url-fetch)
-        (uri (hackage-uri "network-run" version))
-        (sha256
-          (base32 "0w3dmwk03j4n01xkiq8m4sqa27bskh239mpw7m4ihjmkxqcwc5gl"))))
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "network-run" version))
+       (sha256
+        (base32 "08662w7ja9w4a4fwikaawxnxcszkd0mdmaajmshas2dd25xyikwi"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "network-run")))
     (inputs (list ghc-network))

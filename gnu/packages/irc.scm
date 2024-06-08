@@ -121,6 +121,10 @@
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'configure 'update-constraints
+           (lambda _
+             (substitute* "glirc.cabal"
+               (("vty\\s+>=5.35\\s+&&\\s+<5.36") "vty"))))
           (add-after 'install 'install-extra-documentation
             (lambda _
               (install-file "glirc.1"

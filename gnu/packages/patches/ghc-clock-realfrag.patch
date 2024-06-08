@@ -1,0 +1,22 @@
+From 8372e801ef062223756db69818a7b60cfd9bb066 Mon Sep 17 00:00:00 2001
+From: amesgen <amesgen@amesgen.de>
+Date: Tue, 8 Aug 2023 23:36:45 +0200
+Subject: [PATCH] Fix `RealFrac Seconds` instance
+
+---
+ System/Clock/Seconds.hs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/System/Clock/Seconds.hs b/System/Clock/Seconds.hs
+index a9a1c78..f7457cb 100644
+--- a/System/Clock/Seconds.hs
++++ b/System/Clock/Seconds.hs
+@@ -50,7 +50,7 @@ instance Fractional Seconds where
+ 
+ instance RealFrac Seconds where
+   properFraction (Seconds (TimeSpec s ns))
+-    | s >= 0 = (fromIntegral s, Seconds $ TimeSpec 0 ns)
++    | s >= 0 || ns == 0 = (fromIntegral s, Seconds $ TimeSpec 0 ns)
+     | otherwise = (fromIntegral (s+1), Seconds $ TimeSpec (-1) ns)
+ 
+ -- | The 'getTime' function shall return the current value for the

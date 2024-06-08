@@ -324,17 +324,19 @@ elsewhere.")
 (define-public ghc-digest
   (package
     (name "ghc-digest")
-    (version "0.0.1.4")
-    (source (origin
-              (method url-fetch)
-              (uri (hackage-uri "digest" version))
-              (sha256
-               (base32
-                "05pc5l4bwddszc6vy1hazwi1dnrxg323521gdkis9cvh7zs2a4gr"))))
+    (version "0.0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "digest" version))
+       (sha256
+        (base32 "02jzw0bsng87y1n2kgpy7vb30lvqsnpbfd8dpg4hmvbg9s06qgdj"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "digest")))
     (arguments
-     `(#:extra-directories ("zlib")))
+     `(#:extra-directories ("zlib")
+       #:cabal-revision ("1"
+                         "0wh34kyag2vhwvsdwv8qmvm13gy32nc94yfyqfdnl67nyc2sx8wl")))
     (inputs (list zlib))
     (native-inputs (list pkg-config))
     (home-page "http://hackage.haskell.org/package/digest")
@@ -722,13 +724,13 @@ extensions.")
 (define-public ghc-hsopenssl
   (package
     (name "ghc-hsopenssl")
-    (version "0.11.7.4")
-    (source (origin
-              (method url-fetch)
-              (uri (hackage-uri "HsOpenSSL" version))
-              (sha256
-               (base32
-                "0zxcfa8b0ng97v53vb8fvg2gss89b28xiz83rx38a0h4lsxpn2xf"))))
+    (version "0.11.7.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "HsOpenSSL" version))
+       (sha256
+        (base32 "0y0l5nb0jsc8lm12w66a2n7nwcrgjxy1q2xdy8a788695az5xy71"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "HsOpenSSL")))
     (inputs (list ghc-network openssl))

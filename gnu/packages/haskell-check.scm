@@ -190,13 +190,13 @@ framework}.")
 (define-public ghc-tasty-hspec
   (package
     (name "ghc-tasty-hspec")
-    (version "1.2.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (hackage-uri "tasty-hspec" version))
-              (sha256
-               (base32
-                "0ibl2xi6mmqad2mriz67nb7pjwwvjik385amp24j9kc7a7zkx091"))))
+    (version "1.2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "tasty-hspec" version))
+       (sha256
+        (base32 "0cfcpi25jmnmzfzsx364qsj68q6gyph5z112kl8ja222hnhhr2n2"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "tasty-hspec")))
     (inputs (list ghc-hspec
@@ -206,9 +206,6 @@ framework}.")
                   ghc-tasty-smallcheck
                   ghc-tasty-quickcheck
                   ghc-tagged))
-    (arguments
-     `(#:cabal-revision ("1"
-                         "0a6r4gzxzp6n90z0nif7ha7p7am57hs48i54i2y4z9kgjv6lnvll")))
     (home-page "https://github.com/mitchellwrosen/tasty-hspec")
     (synopsis "Hspec support for the Tasty test framework")
     (description
@@ -365,13 +362,13 @@ development.")
 (define-public ghc-quickcheck-instances
   (package
     (name "ghc-quickcheck-instances")
-    (version "0.3.28")
-    (source (origin
-              (method url-fetch)
-              (uri (hackage-uri "quickcheck-instances" version))
-              (sha256
-               (base32
-                "1jycijv7gaj6qrkp219nllrdv9zd0ifp0mb0rch430fm95xin4f4"))))
+    (version "0.3.29.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "quickcheck-instances" version))
+       (sha256
+        (base32 "0jx2wfy7y5dr14s9i457g2aah4isjxry4mlbqhj7vlav6ib84gdj"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "quickcheck-instances")))
     (inputs (list ghc-quickcheck
@@ -392,7 +389,11 @@ development.")
                   ghc-unordered-containers
                   ghc-uuid-types
                   ghc-vector
+                  ghc-data-array-byte
                   ghc-text-short))
+    (arguments
+     `(#:cabal-revision ("2"
+                         "118xy4z4dy4bpkzsp98daiv3l4n5j7ph9my0saca7cqjybqwkcip")))
     (home-page "https://github.com/haskellari/qc-instances")
     (synopsis "Common quickcheck instances")
     (description "This package provides QuickCheck instances for types
@@ -445,14 +446,13 @@ use HUnit assertions as QuickCheck properties.")
 (define-public ghc-quickcheck
   (package
     (name "ghc-quickcheck")
-    (version "2.14.2")
+    (version "2.14.3")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "QuickCheck" version))
        (sha256
-        (base32
-         "1wrnrm9sq4s0bly0q58y80g4153q45iglqa34xsi2q3bd62nqyyq"))))
+        (base32 "0085lwy14r7hk7ibmv8d7d54ja9zin0ijf0b27xai898dfrj43sw"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "QuickCheck")))
     (inputs
@@ -755,18 +755,18 @@ Haskell, inspired by the Ruby library RSpec.")
   (package
     (name "ghc-hspec-contrib")
     (version "0.5.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (hackage-uri "hspec-contrib" version))
-              (sha256
-               (base32
-                "1nyb5n2jiq920yyf3flzyxrs5xpfyppl3jn18zhviyysjjk5drpx"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "hspec-contrib" version))
+       (sha256
+        (base32 "1nyb5n2jiq920yyf3flzyxrs5xpfyppl3jn18zhviyysjjk5drpx"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hspec-contrib")))
-    (inputs (list ghc-hunit ghc-hspec-core))
+    (inputs (list ghc-hunit ghc-call-stack ghc-hspec-core))
     (native-inputs (list ghc-quickcheck ghc-hspec hspec-discover))
-    (arguments (list #:tests? #f)) ; Tests fail to compile.
-    (home-page "http://hspec.github.io/")
+    (arguments (list #:tests? #f)) ; Fail to build.
+    (home-page "https://hspec.github.io/")
     (synopsis "Contributed functionality for Hspec")
     (description "This package provides contributed Hspec extensions.")
     (license license:expat)))
