@@ -3817,7 +3817,7 @@ Go.")
   (package
     (inherit go-github-com-cheggaaa-pb-v3)
     (name "go-gopkg-in-cheggaaa-pb-v1")
-    (version "1.0.28")
+    (version "1.0.29")
     (source
      (origin
        (method git-fetch)
@@ -3826,10 +3826,10 @@ Go.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13a66cqbpdif804qj12z9ad8r24va9q41gfk71qbc4zg1wsxs3rh"))))
+        (base32 "0n8y589gf9aw53j72y4z8mzkgahbf6k8h19n2j0mllw5xpvpgijy"))))
     (arguments
      (list
-      #:import-path "gopkg.in/cheggaaa/pb.v1"))))
+      #:import-path "github.com/cheggaaa/pb"))))
 
 (define-public go-gopkg-in-natefinch-lumberjack.v2
   (package
