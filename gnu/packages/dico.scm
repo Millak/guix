@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2016, 2018, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -26,6 +26,7 @@
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages groff)
@@ -75,6 +76,7 @@
            readline
            zlib
            wordnet
+           libxcrypt                              ;for 'crypt'
            libltdl))
     (home-page "https://www.gnu.org/software/dico/")
     (synopsis "Implementation of DICT server (RFC 2229)")
