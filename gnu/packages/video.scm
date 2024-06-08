@@ -100,6 +100,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
@@ -147,6 +148,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnunet)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
@@ -2962,37 +2964,46 @@ To load this plugin, specify the following option when starting mpv:
        (patches (search-patches "libvpx-CVE-2016-2818.patch"
                                 "libvpx-CVE-2023-5217.patch"))))))
 
-(define-public orf-dl
-  (let ((commit "2dbbe7ef4e0efe0f3c1d59c503108e22d9065999")
-        (revision "1"))
-    (package
-      (name "orf-dl")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/tpoechtrager/orf_dl")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1w413miy01cm7rzb5c6wwfdnc2sqv87cvxwikafgrkswpimvdjsk"))))
-      (build-system copy-build-system)
-      (arguments
-       (list #:install-plan #~`(("orf_dl.php" "bin/orf-dl"))
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'patch-source
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (substitute* "orf_dl.php"
-                       (("ffmpeg")
-                        (search-input-file inputs "bin/ffmpeg"))))))))
-      (inputs (list php ffmpeg))
-      (home-page "https://github.com/tpoechtrager/orf_dl")
-      (synopsis "Download videos from tvthek.orf.at")
-      (description "This package provides a PHP-based command line application
+(define-public orfondl
+  (package
+    (name "orfondl")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/badlogic/orfondl")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0h1zcxxhvshbc3gkmr33npki6sdjh79haack1cci9k40a0gk144v"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Delete prebuilt binary file.
+                          (delete-file "orfondl")))))
+    (build-system go-build-system)
+    (arguments
+     (list #:go go-1.19
+           #:install-source? #f
+           #:import-path "github.com/badlogic/orfondl"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-source
+                 (lambda* (#:key inputs import-path #:allow-other-keys)
+                   (substitute* (string-append "src/" import-path "/main.go")
+                     (("\"ffmpeg\"")
+                      (string-append "\""
+                                     (search-input-file inputs "bin/ffmpeg")
+                                     "\""))))))))
+    (inputs (list ffmpeg))
+    (home-page "https://github.com/tpoechtrager/orf_dl")
+    (synopsis "Download videos from ORF ON")
+    (description "This package provides a Go-based command line application
 to download videos from Austria's national television broadcaster.")
-      (license license:gpl2+))))
+    (license license:bsd-3)))
+
+(define-public orf-dl
+  (deprecated-package "orf-dl" orfondl))
 
 (define-public yle-dl
   (package
