@@ -406,7 +406,9 @@ written in Go.")
                              "vendor/github.com/benbjohnson"
                              "vendor/github.com/beorn7/perks"
                              "vendor/github.com/blang"
+                             "vendor/github.com/cenkalti"
                              "vendor/github.com/cespare"
+                             "vendor/github.com/cheggaaa"
                              "vendor/github.com/davecgh"
                              "vendor/github.com/dustin"
                              "vendor/github.com/elgris"
@@ -445,6 +447,7 @@ written in Go.")
                              "vendor/github.com/spaolacci"
                              "vendor/github.com/stretchr"
                              "vendor/github.com/syndtr"
+                             "vendor/github.com/tidwall"
                              "vendor/github.com/whyrusleeping/go-sysinfo"
                              "vendor/go.uber.org"
                              "vendor/golang.org"
@@ -480,9 +483,9 @@ written in Go.")
                   ;;go-contrib-go-opencensus-io-exporter-prometheus
                   go-github-com-benbjohnson-clock
                   go-github-com-blang-semver-v4
-                  ;;go-github-com-cenkalti-backoff-v4
+                  go-github-com-cenkalti-backoff-v4
                   ;;go-github-com-ceramicnetwork-go-dag-jose
-                  ;;go-github-com-cheggaaa-pb
+                  go-github-com-cheggaaa-pb
                   ;;go-github-com-coreos-go-systemd-v22
                   go-github-com-dustin-go-humanize
                   go-github-com-elgris-jsondiff
@@ -545,8 +548,7 @@ written in Go.")
                   go-github-com-prometheus-client-golang
                   go-github-com-stretchr-testify
                   go-github-com-syndtr-goleveldb-leveldb
-                  ;;go-github-com-tidwall-gjson
-                  ;;go-github-com-tidwall-sjson
+                  go-github-com-tidwall-sjson
                   go-github-com-whyrusleeping-go-sysinfo
                   ;;go-github-com-whyrusleeping-multiaddr-filter
                   ;;go-go-opencensus-io
@@ -582,7 +584,6 @@ written in Go.")
                   go-github-com-hashicorp-golang-lru-v2       ; github.com/ipfs/boxo
                   go-github-com-jackpal-go-nat-pmp            ; github.com/libp2p/go-nat
                   go-github-com-klauspost-compress            ; github.com/libp2p/go-libp2p
-                  go-github-com-mattn-go-runewidth            ; github.com/cheggaaa/pb
                   go-github-com-multiformats-go-multiaddr-fmt ; github.com/libp2p/go-libp2p
                   go-github-com-multiformats-go-multistream   ; github.com/libp2p/go-libp2p
                   go-github-com-quic-go-quic-go               ; github.com/libp2p/go-libp2p
