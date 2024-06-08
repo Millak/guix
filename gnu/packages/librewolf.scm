@@ -115,9 +115,9 @@
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
 (define librewolf-source
-  (let* ((ff-src (firefox-source-origin "126.0" "09l5hsyrkimmkd7wbhnamy5mwmwwxjfa742hpkjjkhlyk6hq43li"))
-         (version "126.0-1")
-         (lw-src (librewolf-source-origin version "1q8fjki6rgzrir84y7j2anra2w213bm0g74nw205gja9qsxlassc")))
+  (let* ((ff-src (firefox-source-origin "126.0.1" "0fr679rcwshwpfxidc55b2xsn4pmrr7p9ix4rr2mv2k7kwsjcc7n"))
+         (version "126.0.1-1")
+         (lw-src (librewolf-source-origin version "0cac80073vkzd85ai9rbnwixs1h9bpy4dj2ri6jxdlqsy5d663km")))
 
     (origin
       (method computed-origin-method)
@@ -213,12 +213,12 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20240530072108")
+(define %librewolf-build-id "20240607212143")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "126.0-1")
+    (version "126.0.1-1")
     (source librewolf-source)
     (build-system gnu-build-system)
     (arguments
