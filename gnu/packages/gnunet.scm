@@ -192,7 +192,7 @@ authentication and support for SSL3 and TLS.")
 (define-public gnunet
   (package
     (name "gnunet")
-    (version "0.21.1")
+    (version "0.21.2")
     (source
      (origin
        (method url-fetch)
@@ -200,7 +200,7 @@ authentication and support for SSL3 and TLS.")
                            ".tar.gz"))
        (sha256
         (base32
-         "0p3q9590bm0d6q6p17jcbq2yiciqmvk5ys6pwdrp4257mhz8prlk"))))
+         "18czv9yxxmaf7y061ngzwcc9rxwrwdy372wb52ns52wviqk528wc"))))
     (build-system gnu-build-system)
     (inputs
      (list bluez
