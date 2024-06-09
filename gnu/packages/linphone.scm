@@ -683,7 +683,7 @@ including media capture, encoding and decoding, and rendering.")
 (define-public lime
   (package
     (name "lime")
-    (version "5.2.49")
+    (version "5.3.57")
     (source
      (origin
        (method git-fetch)
@@ -692,39 +692,36 @@ including media capture, encoding and decoding, and rendering.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mglnypxl3glwvwf2h5q4ikbm6wbcd9pb7kdws8zajjhk9q803jr"))))
+        (base32 "1jd549f4cky5rcvq3d2zn8d383jahdi71nhkzblnr6mqqbn6b7sa"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:configure-flags (list "-DENABLE_STATIC=NO"
-                               "-DENABLE_C_INTERFACE=YES"
-                               "-DENABLE_DOC=YES")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             ;; Disable tests that require networking.
-             (substitute* "tester/CMakeLists.txt"
-               (("add_test\\(?.*\"Hello World\"\\)") "")
-               (("add_test\\(?.*\"lime\"\\)") "")
-               (("add_test\\(?.*\"FFI\"\\)") "")
-               (("add_test\\(?.*\"Multidomains\"\\)") "")
-               (("add_test\\(?.*\"Lime server\"\\)") ""))))
-         (add-after 'build 'build-doc
-           (lambda _
-             (invoke "make" "doc")))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((doc (assoc-ref outputs "doc"))
-                    (dir (string-append doc "/share/doc"))
-                    (dest (string-append dir "/" ,name "-" ,version)))
-               (mkdir-p dest)
-               (copy-recursively "doc" dest)))))))
-    (native-inputs
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)))
-    (inputs
-     (list bctoolbox belle-sip soci))
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                     "-DENABLE_C_INTERFACE=YES"
+                                     "-DENABLE_DOC=YES")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-source
+                 (lambda _
+                   ;; Disable tests that require networking.
+                   (substitute* "tester/CMakeLists.txt"
+                     (("add_test\\(?.*\"Hello World\"\\)") "")
+                     (("add_test\\(?.*\"lime\"\\)") "")
+                     (("add_test\\(?.*\"FFI\"\\)") "")
+                     (("add_test\\(?.*\"Multidomains\"\\)") "")
+                     (("add_test\\(?.*\"Lime server\"\\)") ""))))
+               (add-after 'build 'build-doc
+                 (lambda _
+                   (invoke "make" "doc")))
+               (add-after 'install 'install-doc
+                 (lambda _
+                   (let* ((doc #$output:doc)
+                          (dir (string-append doc "/share/doc"))
+                          (dest (string-append dir "/" #$name "-" #$version)))
+                     (mkdir-p dest)
+                     (copy-recursively "doc" dest)))))))
+    (native-inputs (list graphviz doxygen))
+    (inputs (list bctoolbox belle-sip belr soci))
     (synopsis "Belledonne Communications Encryption Library")
     (description "LIME is an encryption library for one-to-one and group
 instant messaging, allowing users to exchange messages privately and
