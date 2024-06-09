@@ -444,7 +444,7 @@ implements the RFC 3550 standard.")
 (define-public bzrtp
   (package
     (name "bzrtp")
-    (version "5.2.49")
+    (version "5.3.57")
     (source
      (origin
        (method git-fetch)
@@ -453,15 +453,17 @@ implements the RFC 3550 standard.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dvn1w0g9c07llz9n82l6qdzz8lzz74jcdm1yyfks0jy7i63cr8w"))))
+        (base32 "1q8w5blf2cjmzyv4bdd7zg4lv3pfjq6w6cfm6d75az4xqzg023kp"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list
-        "-DENABLE_STATIC=NO"
-        "-DENABLE_TESTS=YES")))
-    (inputs
-     (list bctoolbox libxml2 sqlite))
+     (list
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=YES"
+                                "-DENABLE_DOC=YES")
+      #:tests? #f))                     ;tests require external resources
+    (inputs (list bctoolbox libxml2))
+    ;; sqlite is listed in the interface link libraries of bzrtp, and must be
+    ;; available at build time when using the bzrtp library.
+    (propagated-inputs (list sqlite))
     (synopsis "Belledonne Communications ZRTP Library")
     (description "BZRTP is an implementation of ZRTP keys exchange protocol,
 written in C.  It is fully portable and can be executed on many platforms
