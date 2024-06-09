@@ -46,6 +46,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages tls)
@@ -733,7 +734,7 @@ device.")
 (define-public liblinphone
   (package
     (name "liblinphone")
-    (version "5.2.50")
+    (version "5.3.57")
     (source
      (origin
        (method git-fetch)
@@ -742,37 +743,41 @@ device.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lvbva234rmck57cxgswgqqvnq8r58i0ls4qgpymrxdfj74rinxj"))))
+        (base32 "1f3hcbdkd8nqvjm5avylz226a8in360yiafcsxpa69wvh1a03i4h"))
+       (patches (search-patches "liblinphone-jsoncpp.patch"))))
     (outputs '("out" "tester"))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #f                       ; Tests require networking
       #:configure-flags
-      '(list "-DENABLE_FLEXIAPI=NO"  ;requires jsoncpp, but it cannot be found
-             "-DENABLE_STATIC=NO"
-             "-DENABLE_DOC=NO"       ;requires unpackaged javasphinx
-             "-DENABLE_LDAP=YES"
-             "-DENABLE_STRICT=NO")
+      #~(list "-DBUILD_SHARED_LIBS=ON"
+              "-DENABLE_DOC=NO"         ;requires unpackaged javasphinx
+              "-DENABLE_LDAP=YES"
+              "-DENABLE_STRICT=NO")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'separate-outputs
             (lambda* (#:key outputs #:allow-other-keys)
-              (let ((tester-name (string-append #$name "_tester")))
+              (let ((tester-name (string-append #$name "-tester")))
                 (for-each mkdir-p
                           (list (string-append #$output:tester "/bin")
                                 (string-append #$output:tester "/share")))
-                (rename-file (string-append #$output "/bin/" tester-name)
-                             (string-append #$output:tester "/bin/" tester-name))
-                (rename-file (string-append #$output "/bin/groupchat_benchmark")
-                             (string-append #$output:tester "/bin/groupchat_benchmark"))
-                (rename-file (string-append #$output "/share/" tester-name)
-                             (string-append #$output:tester "/share/" tester-name))))))))
+                (rename-file
+                 (string-append #$output "/bin/" tester-name)
+                 (string-append #$output:tester "/bin/" tester-name))
+                (rename-file
+                 (string-append #$output "/bin/liblinphone-groupchat-benchmark")
+                 (string-append #$output:tester "/bin/liblinphone-groupchat-benchmark"))
+                (rename-file
+                 (string-append #$output "/share/" tester-name)
+                 (string-append #$output:tester "/share/" tester-name))))))))
     (native-inputs
      (list graphviz
            doxygen
            gettext-minimal
            perl
+           pkg-config
            python-wrapper
            python-pystache
            python-six
@@ -780,20 +785,24 @@ device.")
     (inputs
      (list bctoolbox
            belcard
-           belle-sip
            belr
            bzrtp
-           lime
            libnotify
-           libxml2
-           mediastreamer2
            openldap-for-linphone
-           ortp
            soci
-           sqlite
            xsd
            zlib
-           zxing-cpp-1.2a))
+           zxing-cpp))
+    (propagated-inputs
+     ;; The following libraries are "required" by the LibLinphoneConfig.cmake
+     ;; CMake module.
+     (list belle-sip
+           jsoncpp
+           mediastreamer2
+           libxml2
+           lime
+           ortp
+           sqlite))
     (synopsis "Belledonne Communications Softphone Library")
     (description "Liblinphone is a high-level SIP library integrating
 all calling and instant messaging features into an unified

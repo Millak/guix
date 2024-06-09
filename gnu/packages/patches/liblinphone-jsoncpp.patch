@@ -1,0 +1,82 @@
+diff --git a/cmake/FindJsonCPP.cmake b/cmake/FindJsonCPP.cmake
+index 59e971a58..18260fde8 100644
+--- a/cmake/FindJsonCPP.cmake
++++ b/cmake/FindJsonCPP.cmake
+@@ -39,10 +39,11 @@
+ #  JsonCPP_FOUND - The jsoncpp library has been found
+ #  JsonCPP_TARGET - The name of the CMake target for the jsoncpp library
+ 
++if(TARGET jsoncpp_lib OR TARGET jsoncpp_static OR TARGET PkgConfig::jsoncpp)
+ 
+-if(TARGET jsoncpp_lib OR TARGET jsoncpp_static)
+-
+-	if(TARGET jsoncpp_lib)
++	if(TARGET PkgConfig::jsoncpp)
++		set(JsonCPP_TARGET PkgConfig::jsoncpp)
++	elseif(TARGET jsoncpp_lib)
+ 		set(JsonCPP_TARGET jsoncpp_lib)
+ 	else()
+ 		set(JsonCPP_TARGET jsoncpp_static)
+@@ -57,24 +58,50 @@ if(TARGET jsoncpp_lib OR TARGET jsoncpp_static)
+ 	mark_as_advanced(JsonCPP_TARGET)
+ 
+ else()
+-	
+-	set(_OPTIONS "CONFIG")
++	find_package(PkgConfig QUIET)
++
++	set(_OPTIONS1 "CONFIG")
++	set(_OPTIONS2 "IMPORTED_TARGET") # for pkg_check_modules fallback
++
+ 	if(JsonCPP_FIND_REQUIRED)
+-		list(APPEND _OPTIONS "REQUIRED")
+-	endif()  
+-	if(JsonCPP_FIND_QUIETLY)
+-		list(APPEND _OPTIONS "QUIET")
++		if(PKG_CONFIG_FOUND)
++			list(APPEND _OPTIONS2 "REQUIRED")
++		else()
++		    list(APPEND _OPTIONS1 "REQUIRED")
++		endif()
+ 	endif()
+-	if(JsonCPP_FIND_VERSION)
+-		list(PREPEND _OPTIONS "${jsoncpp_FIND_VERSION}")
++	if(JsonCPP_FIND_QUIETLY)
++		list(APPEND _OPTIONS1 "QUIET")
++		list(APPEND _OPTIONS2 "QUIET")
+ 	endif()
+-	if(JsonCPP_FIND_EXACT)
+-		list(APPEND _OPTIONS "EXACT")
++	if(PKG_CONFIG_FOUND)
++		if(JsonCPP_FIND_VERSION)
++			if(JsonCPP_FIND_EXACT)
++				list(APPEND _OPTIONS2 "jsoncpp=${JsonCPP_FIND_VERSION}")
++			else()
++				list(APPEND _OPTIONS2 "jsoncpp>=${JsonCPP_FIND_VERSION}")
++			endif()
++		else()
++			list(APPEND _OPTIONS2 "jsoncpp")
++		endif()
++	else()
++		if(JsonCPP_FIND_VERSION)
++			list(PREPEND _OPTIONS1 "${jsoncpp_FIND_VERSION}")
++		endif()
++		if(JsonCPP_FIND_EXACT)
++			list(APPEND _OPTIONS1 "EXACT")
++		endif()
+ 	endif()
+ 
+-	find_package(jsoncpp ${_OPTIONS})
++	find_package(jsoncpp ${_OPTIONS1})
++
++	if(NOT JsonCPP_FOUND)
++		pkg_check_modules(jsoncpp ${_OPTIONS2})
++	endif()
+ 
+-	if(TARGET jsoncpp_lib)
++	if(TARGET PkgConfig::jsoncpp)
++		set(JsonCPP_TARGET jsoncpp)
++	elseif(TARGET jsoncpp_lib)
+ 		set(JsonCPP_TARGET jsoncpp_lib)
+ 	else()
+ 		set(JsonCPP_TARGET jsoncpp_static)
