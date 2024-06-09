@@ -20017,7 +20017,7 @@ encoding algorithms to do fuzzy string matching.")
 (define-public python-pdfminer-six
   (package
     (name "python-pdfminer-six")
-    (version "20201018")
+    (version "20231228")
     ;; There are no tests in the PyPI tarball.
     (source
      (origin
@@ -20027,23 +20027,19 @@ encoding algorithms to do fuzzy string matching.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a2fxxnnjqbx344znpvx7cnv1881dk6585ibw01inhfq3w6yj2lr"))))
-    (build-system python-build-system)
+        (base32 "1anyr0gm7amwls8qifflql1viz5rq6q95lfwcg43v3180h4w8wrd"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Tests write to the source tree.
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "make" "test"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; Tests write to the source tree.
+               (add-after 'unpack 'make-git-checkout-writable
+                 (lambda _
+                   (for-each make-file-writable (find-files ".")))))))
     (propagated-inputs
-     (list python-chardet python-cryptography python-sortedcontainers))
+     (list python-charset-normalizer python-cryptography))
     (native-inputs
-     (list python-nose python-tox))
+     (list python-pytest))
     (home-page "https://github.com/pdfminer/pdfminer.six")
     (synopsis "PDF parser and analyzer")
     (description "@code{pdfminer.six} is a community maintained fork of
