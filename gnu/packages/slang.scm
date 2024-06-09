@@ -38,14 +38,14 @@
 (define-public slang
   (package
     (name "slang")
-    (version "2.3.2")
+    (version "2.3.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.jedsoft.org/releases/slang/slang-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "06p379fqn6w38rdpqi98irxi2bf4llb0rja3dlgkqz7nqh7kp7pw"))
+                "062siwy785q699y3plnsbhy0xlaxdm485sh82b37668kmra5057r"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
