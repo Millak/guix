@@ -13,6 +13,7 @@
 ;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.counoyer@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -410,52 +411,49 @@ the Net to search for documents which are not on the local system.")
     (license license:lgpl2.1+)))
 
 (define-public zeal
-  (let ((commit "1cfa7c637f745be9d98777f06b4f8dec90892bf2")
-        (revision "1"))
-    (package
-      (name "zeal")
-      (version (git-version "0.6.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/zealdocs/zeal")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1m7pp3cwc21x03718vhwfd9j2n8md3hv5dp10s234vcsd755s7a3"))))
-      (build-system qt-build-system)
-      (arguments
-       `(#:tests? #f                    ;no tests
-         #:phases
-         (modify-phases %standard-phases
+  (package
+    (name "zeal")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zealdocs/zeal")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yz9zz18rh1d67w40ib4pna70vqkwa9i9nyj423rjysv5rdj2pzp"))))
+    (build-system qt-build-system)
+    (arguments
+      (list
+       #:tests? #f                    ;no tests
+       #:phases
+       #~(modify-phases %standard-phases
            (add-after 'wrap 'wrap-qt-process-path
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin/zeal"))
-                      (qt-process-path (string-append
-                                        (assoc-ref inputs "qtwebengine-5")
-                                        "/lib/qt5/libexec/QtWebEngineProcess")))
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let* ((bin (string-append #$output "/bin/zeal"))
+                      (qt-process-path
+                        (search-input-file inputs
+                          "/lib/qt5/libexec/QtWebEngineProcess")))
                  (wrap-program bin
-                   `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
-                 #t))))))
-      (native-inputs
-       (list extra-cmake-modules pkg-config))
-      (inputs
-       `(("libarchive" ,libarchive)
-         ("sqlite" ,sqlite)
-         ("qtbase" ,qtbase-5)
-         ("qtdeclarative-5" ,qtdeclarative-5)
-         ("qtwebchannel-5" ,qtwebchannel-5)
-         ("qtwebengine-5" ,qtwebengine-5)
-         ("qtquickcontrols-5" ,qtquickcontrols-5)
-         ("qtx11extras" ,qtx11extras)
-         ("xcb-util-keyms" ,xcb-util-keysyms)))
-      (home-page "https://zealdocs.org/")
-      (synopsis "Offline documentation browser inspired by Dash")
-      (description "Zeal is a simple offline documentation browser
+                   `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (inputs
+     (list libarchive
+           sqlite
+           qtbase-5
+           qtdeclarative-5
+           qtwebchannel-5
+           qtwebengine-5
+           qtquickcontrols-5
+           qtx11extras
+           xcb-util-keysyms))
+    (home-page "https://zealdocs.org/")
+    (synopsis "Offline documentation browser inspired by Dash")
+    (description "Zeal is a simple offline documentation browser
 inspired by Dash.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public markdeep
   (package
