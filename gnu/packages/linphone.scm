@@ -289,7 +289,7 @@ format.")
 (define-public bcmatroska2
   (package
     (name "bcmatroska2")
-    (version "5.2.1")
+    (version "5.3.57")
     (source
      (origin
        (method git-fetch)
@@ -298,21 +298,12 @@ format.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14c79znw37q3yc7llbv2wmxmm4a3ws6iq3cvgkbmcnf7hmhm7zdi"))))
+        (base32 "1fdlvsca34armxasj2g4vxjzm9iiqfl7832qqlggh04yw21cfa5c"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #f                                     ;No test target
-      #:phases
-      '(modify-phases %standard-phases
-         ;; See
-         ;; https://gitlab.linphone.org/BC/public/bcmatroska2/-/merge_requests/18
-         (add-after 'unpack 'fix-build-system
-           (lambda _
-             (substitute* "corec/corec/CMakeLists.txt"
-               (("helpers/file/file_libc.c") "")))))
-      #:configure-flags
-      '(list "-DENABLE_STATIC=NO"))) ;Not required
+      #:configure-flags '(list "-DBUILD_SHARED_LIBS=ON")))
     (inputs (list bctoolbox))
     (synopsis "Belledonne Communications Media Container")
     (description "BcMatroska is a free and open standard multi-media container
@@ -586,7 +577,7 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:configure-flags '(list "-DENABLE_STATIC=NO"
+      #:configure-flags '(list "-DBUILD_SHARED_LIBS=ON"
                                "-DENABLE_PCAP=YES"
                                ;; Do not fail on compile warnings.
                                "-DENABLE_STRICT=NO"
