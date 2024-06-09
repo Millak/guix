@@ -1018,11 +1018,13 @@ WebRTC codec.  It includes features from WebRTC, such as, iSAC and AECM.")
       (license license:gpl2+))))
 
 (define-public msamr
-  (let ((commit "5ab5c098299107048dfcbfc741f7392faef167bd")
-        (revision "0"))
+  ;; The latest 1.1.4 release is 2 years old, doesn't build with a recent
+  ;; bctoolbox; use the latest commit available.
+  (let ((commit "129fc98c04a5cd412d5393427d43b0b445263ead")
+        (revision "1"))
     (package
       (name "msamr")
-      (version (git-version "1.1.3" revision commit))
+      (version (git-version "1.1.4" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -1031,19 +1033,30 @@ WebRTC codec.  It includes features from WebRTC, such as, iSAC and AECM.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1g79lw1qi1mlw3v1b0cixmqiwjql81gz9naakb15n8pvaag9aaqm"))))
+          (base32 "0zp5vmhgp18812j2pbys7g3v0slkc70q9qp7k26bk7iddg1yy9x2"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:tests? #f                    ; No test target
-         #:configure-flags
-         (list "-DENABLE_STATIC=NO"     ; Not required
-               "-DENABLE_WIDEBAND=YES")))
+       (list
+        #:tests? #f                     ; No test target
+        #:configure-flags
+        #~(list "-DBUILD_SHARED_LIBS=YES"
+                "-DENABLE_WIDEBAND=YES")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-Mediastreamer2_PLUGINS_DIR
+              (lambda _
+                ;; msamr tries to install its plugins to
+                ;; Mediastreamer2_PLUGINS_DIR, which is provided by
+                ;; mediastreamer2 and points to its installation prefix.
+                (substitute* "src/CMakeLists.txt"
+                  (("\\$\\{Mediastreamer2_PLUGINS_DIR}")
+                   (string-append #$output "/lib/mediastreamer/plugins"))))))))
       (inputs
-       `(("bctoolbox" ,bctoolbox)
-         ("mediastreamer2" ,mediastreamer2)
-         ("opencoreamr" ,opencore-amr)
-         ("ortp" ,ortp)
-         ("voamrwbenc" ,vo-amrwbenc)))
+       (list bctoolbox
+             mediastreamer2
+             opencore-amr
+             ortp
+             vo-amrwbenc))
       (synopsis "Media Streamer AMR Codec")
       (description "MSAMR is a plugin of MediaStreamer, adding support for AMR
 codec.  It is based on the opencore-amr implementation.")
