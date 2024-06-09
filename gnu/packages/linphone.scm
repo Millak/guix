@@ -479,7 +479,7 @@ including both ARM and x86.")
 (define-public belle-sip
   (package
     (name "belle-sip")
-    (version "5.2.49")
+    (version "5.3.57")
     (source
      (origin
        (method git-fetch)
@@ -488,12 +488,12 @@ including both ARM and x86.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yx1qvzp11ysh24hxrvz7dm69j8zswa0xcx9m42vcv95z72166cq"))))
+        (base32 "1jmvf1s54ppc0qfi2wl6whk7s3lghpzzp6597nblncjsr2i6ha6c"))))
     (build-system cmake-build-system)
     (outputs '("out" "tester"))
     (arguments
      (list
-      #:configure-flags '(list "-DENABLE_STATIC=NO"
+      #:configure-flags '(list "-DBUILD_SHARED_LIBS=ON"
                                "-DENABLE_MDNS=ON"
                                ;; We skip a test and thus have an unused
                                ;; procedure, so we need to disable -Werror.
@@ -528,7 +528,7 @@ including both ARM and x86.")
            (delete 'check)              ;move after install
            (add-after 'install 'separate-outputs
              (lambda _
-               (let ((tester-name "belle_sip_tester"))
+               (let ((tester-name "belle-sip-tester"))
                  (for-each mkdir-p (list (string-append #$output:tester "/bin")
                                          (string-append #$output:tester "/share")))
                  (rename-file (string-append #$output "/bin")
@@ -539,7 +539,7 @@ including both ARM and x86.")
              (lambda* (#:key tests? #:allow-other-keys)
                (when tests?
                  (let ((tester (string-append #$output:tester
-                                              "/bin/belle_sip_tester")))
+                                              "/bin/belle-sip-tester")))
                    (for-each (lambda (suite-name)
                                (invoke tester "--suite" suite-name))
                              (list "Object inheritance"
@@ -558,8 +558,7 @@ including both ARM and x86.")
                                    "Refresher"
                                    ;;"HTTP stack"
                                    "Object")))))))))
-    (inputs
-     (list avahi bctoolbox belr zlib))
+    (inputs (list avahi bctoolbox belr zlib))
     (synopsis "Belledonne Communications SIP Library")
     (description "Belle-sip is a modern library implementing SIP transport,
 transaction and dialog layers.  It is written in C, with an object-oriented
