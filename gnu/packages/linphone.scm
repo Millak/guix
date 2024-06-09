@@ -187,7 +187,7 @@ Communications software like belle-sip, mediastreamer2 and linphone.")
 (define-public belr
   (package
     (name "belr")
-    (version "5.2.49")
+    (version "5.3.57")
     (source
      (origin
        (method git-fetch)
@@ -196,33 +196,33 @@ Communications software like belle-sip, mediastreamer2 and linphone.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bj8qd4ahbff476z0ccwsxy7qznqi6n5l1pdd7zbvk0h53zyj74c"))))
+        (base32 "1jqv2rfclzwsglwgvx7ypy0yhwbjxrsbik6xipf48770qmdz3bj9"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug" "tester"))
     (arguments
      (list
-      #:configure-flags '(list "-DENABLE_STATIC=OFF")
+      #:configure-flags '(list "-DBUILD_SHARED_LIBS=ON")
        #:phases
        #~(modify-phases %standard-phases
            (delete 'check)              ;moved after the install phase
            (add-after 'install 'check
              (lambda* (#:key tests? outputs #:allow-other-keys)
                (when tests?
-                 (invoke (string-append #$output:tester "/bin/belr_tester")))))
+                 (invoke (string-append #$output:tester "/bin/belr-tester")))))
            (add-after 'install 'move-tester
              (lambda _
                (for-each mkdir-p
                          (list (string-append #$output:tester "/bin")
                                (string-append #$output:tester "/share")))
                (rename-file
-                (string-append #$output "/bin/belr_tester")
-                (string-append #$output:tester "/bin/belr_tester"))
+                (string-append #$output "/bin/belr-tester")
+                (string-append #$output:tester "/bin/belr-tester"))
                (rename-file
                 (string-append #$output "/share/belr-tester/res")
                 ;; The detect_res_prefix procedure in bctoolbox's tester.c
                 ;; resolves the resource path based on the executable path and
                 ;; name, so have it match.
-                (string-append #$output:tester "/share/belr_tester")))))))
+                (string-append #$output:tester "/share/belr-tester")))))))
     (inputs
      (list bctoolbox))
     (synopsis "Belledonne Communications Language Recognition Library")
