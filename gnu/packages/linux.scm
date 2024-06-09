@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021, 2021-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2021-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
@@ -2710,7 +2710,12 @@ module.")
                                (chmod file #o666))
                              archives)))))
            ,@(if (system-hurd?)
-                 '((add-after 'unpack 'skip-tests
+                 '((add-after 'unpack 'set-PATH_MAX
+                     (lambda _
+                       ;; Shamelessly introduce an arbitrary limit.
+                       (substitute* "misc/tune2fs.c"
+                         (("PATH_MAX") "4096"))))
+                   (add-after 'unpack 'skip-tests
                      (lambda _
                        (with-directory-excursion "tests"
                          (for-each
