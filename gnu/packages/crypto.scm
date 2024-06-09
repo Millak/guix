@@ -23,7 +23,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Allan Adair <allan@adair.no>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2024-2025 Maxim Cournoyer <maxim@guixoic.coop>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
@@ -137,55 +137,59 @@ fast, secure, parallelizable, capable of incremental updates.")
     (license (list license:asl2.0 license:cc0)))) ; dual licensed
 
 (define-public libdecaf
-  (package
-    (name "libdecaf")
-    (version "1.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "git://git.code.sf.net/p/ed448goldilocks/code")
-                    (commit
-                     (string-append "v" version))))
-              (file-name
-               (git-file-name name version))
-              (sha256
-               (base32 "1ajgmyvc6a4m1h2hg1g4wz7ibx10x1xys9m6ancnmmf1f2srlfly"))))
-    (build-system cmake-build-system)
-    (outputs '("out" "python" "doc"))
-    (arguments
-     `(#:configure-flags '("-DENABLE_STATIC=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-python-binding
-           (lambda _
-             (substitute* "python/setup.py"
-               (("gmake")
-                "make")
-               (("'\\.\\.', 'build', 'lib', 'libdecaf\\.so'")
-                "'..', '..', 'build', 'src', 'libdecaf.so'"))))
-         (add-after 'install 'install-python-binding
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion "../source/python"
-               (invoke "python" "setup.py" "install"
-                       (string-append "--prefix=" (assoc-ref outputs "python"))
-                       "--root=/"))))
-         (add-after 'install-python-binding 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "make" "doc")
-             (let* ((doc (assoc-ref outputs "doc"))
-                    (dest (string-append doc "/share/doc")))
-               (copy-recursively "doc" dest)))))))
-    (native-inputs
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("python" ,python-wrapper)))
-    (synopsis "Decaf Elliptic Curve Library")
-    (description "The libdecaf library is an implementation of elliptic curve
+  ;; The 1.0.2 release fails due to some compiler warning treated as an error
+  ;; (see: https://sourceforge.net/p/ed448goldilocks/tickets/16/). Use the
+  ;; latest commit available.
+  (let ((commit "e5cc6240690d3ffdfcbdb1e4e851954b789cd5d9")
+        (revision "0"))
+    (package
+      (name "libdecaf")
+      (version (git-version "1.0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "git://git.code.sf.net/p/ed448goldilocks/code")
+                       (commit commit)))
+                (file-name
+                 (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gxf503cnmgsv7s0dm82rrizjhifdhdh42sfvbfsdj55syjnv1p2"))))
+      (build-system cmake-build-system)
+      (outputs '("out" "python" "doc"))
+      (arguments
+       (list #:imported-modules (append %cmake-build-system-modules
+                                        %python-build-system-modules)
+             #:modules '((guix build cmake-build-system)
+                         ((guix build python-build-system) #:prefix python:)
+                         (guix build utils))
+             #:configure-flags #~(list "-DENABLE_STATIC=OFF")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-python-binding
+                   (lambda _
+                     (substitute* "python/setup.py"
+                       (("gmake")
+                        "make")
+                       (("'\\.\\.', 'build', 'lib', 'libdecaf\\.so'")
+                        "'..', '..', 'build', 'src', 'libdecaf.so'"))))
+                 (add-after 'unpack 'ensure-no-mtimes-pre-1980
+                   (assoc-ref python:%standard-phases 'ensure-no-mtimes-pre-1980))
+                 (add-after 'install 'install-python-binding
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (with-directory-excursion "../source/python"
+                       (invoke "python" "setup.py" "install"
+                               (string-append
+                                "--prefix="
+                                (python:site-packages inputs outputs)))))))))
+      (native-inputs (list python-minimal-wrapper))
+      (synopsis "Decaf Elliptic Curve Library")
+      (description "The libdecaf library is an implementation of elliptic curve
 cryptography using the Montgomery and Edwards curves Curve25519, Ed25519,
 Ed448-Goldilocks and Curve448, using the Decaf encoding.")
-    (home-page "https://ed448goldilocks.sourceforge.net/")
-    (license (list license:expat        ;library
-                   license:bsd-2))))    ;python bindings
+      (home-page "https://ed448goldilocks.sourceforge.net/")
+      (license (list license:expat      ;library
+                     license:bsd-2)))))    ;python bindings
 
 (define-public libsodium
   (package
