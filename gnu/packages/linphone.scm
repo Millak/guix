@@ -124,7 +124,7 @@ writing, administering, and running unit tests in C.")
 (define-public bctoolbox
   (package
     (name "bctoolbox")
-    (version "5.2.49")
+    (version "5.3.57")
     (source
      (origin
        (method git-fetch)
@@ -133,52 +133,51 @@ writing, administering, and running unit tests in C.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b51308jy5z32gp594r78jvbyrha16sanxdnbcmxgrwnb4myqx5j"))))
+        (base32 "178axy7gmmi6fzjbz7aaawcx0qg50i4hnn7ab6w642b02vxfr386"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
-     `(#:configure-flags (list "-DENABLE_STATIC=OFF"
-                               ;; Do not use -Werror, because due to skipping
-                               ;; a test there are unused procedures.
-                               "-DENABLE_STRICT=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-cmake
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Fix decaf dependency (see:
-             ;; https://gitlab.linphone.org/BC/public/bctoolbox/-/issues/3).
-             (let* ((decaf (assoc-ref inputs "libdecaf")))
-               (substitute* (find-files "." "CMakeLists.txt")
-                 (("find_package\\(Decaf CONFIG\\)")
-                  "set(DECAF_FOUND 1)")
-                 (("\\$\\{DECAF_INCLUDE_DIRS\\}")
-                  (string-append decaf "/include/decaf"))
-                 (("\\$\\{DECAF_TARGETNAME\\}")
-                  "decaf")))))
-         (add-after 'unpack 'skip-problematic-tests
-           (lambda _
-             ;; The following test relies on networking; disable it.
-             (substitute* "tester/port.c"
-               (("[ \t]*TEST_NO_TAG.*bctbx_addrinfo_sort_test\\),")
-                ""))))
-         (add-after 'unpack 'fix-installed-resource-directory-detection
-           (lambda _
-             ;; There's some broken logic in tester.c that checks if CWD, or
-             ;; if its parent exist, and if so, sets the prefix where the test
-             ;; resources are looked up to; disable it (see:
-             ;; https://gitlab.linphone.org/BC/public/bctoolbox/-/issues/4).
-             (substitute* "src/tester.c"
-               (("if \\(file_exists\\(\".\"\\)\\)")
-                "if (NULL)")
-               (("if \\(file_exists\\(\"..\"\\)\\)")
-                "if (NULL)"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "tester"
-                 (invoke "./bctoolbox_tester"))))))))
-    (inputs
-     (list bcunit libdecaf mbedtls-lts))
+     (list
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                ;; Do not use -Werror, because due to skipping
+                                ;; a test there are unused procedures.
+                                "-DENABLE_STRICT=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Fix decaf dependency (see:
+              ;; https://gitlab.linphone.org/BC/public/bctoolbox/-/issues/3).
+              (substitute* (find-files "." "CMakeLists.txt")
+                (("find_package\\(Decaf CONFIG\\)")
+                 "set(DECAF_FOUND 1)")
+                (("\\$\\{DECAF_INCLUDE_DIRS\\}")
+                 (search-input-directory inputs "include/decaf"))
+                (("\\$\\{DECAF_TARGETNAME\\}")
+                 "decaf"))))
+          (add-after 'unpack 'skip-problematic-tests
+            (lambda _
+              ;; The following test relies on networking; disable it.
+              (substitute* "tester/port.c"
+                (("[ \t]*TEST_NO_TAG.*bctbx_addrinfo_sort_test\\),")
+                 ""))))
+          (add-after 'unpack 'fix-installed-resource-directory-detection
+            (lambda _
+              ;; There's some broken logic in tester.c that checks if CWD, or
+              ;; if its parent exist, and if so, sets the prefix where the test
+              ;; resources are looked up to; disable it (see:
+              ;; https://gitlab.linphone.org/BC/public/bctoolbox/-/issues/4).
+              (substitute* "src/tester.c"
+                (("if \\(file_exists\\(\".\"\\)\\)")
+                 "if (NULL)")
+                (("if \\(file_exists\\(\"..\"\\)\\)")
+                 "if (NULL)"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tester"
+                  (invoke "./bctoolbox-tester"))))))))
+    (inputs (list bcunit libdecaf mbedtls-lts))
     (synopsis "Belledonne Communications Tool Box")
     (description "BcToolBox is an utilities library used by Belledonne
 Communications software like belle-sip, mediastreamer2 and linphone.")
