@@ -236,7 +236,7 @@ IETF.")
 (define-public belcard
   (package
     (name "belcard")
-    (version "5.2.49")
+    (version "5.3.57")
     (source
      (origin
        (method git-fetch)
@@ -245,12 +245,12 @@ IETF.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rl1x7rnlnncb45sjp8r2xbcwr9l8qv5bhfybhr0mmvsv3a4k4a3"))))
+        (base32 "1d69s7v3yd276nasfxnsjp3q820pcchdpdpw4y7ak7sf6gr6mrrh"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug" "tester"))
     (arguments
      (list
-      #:configure-flags '(list "-DENABLE_STATIC=OFF")
+      #:configure-flags '(list "-DBUILD_SHARED_LIBS=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-vcard-grammar-location
@@ -263,7 +263,7 @@ IETF.")
                    (format #f "define VCARD_GRAMMAR ~s" vcard-grammar))))))
           (add-after 'install 'install-tester
             (lambda _
-              (let ((test-name (string-append #$name "_tester")))
+              (let ((test-name (string-append #$name "-tester")))
                 (for-each mkdir-p
                           (list (string-append #$output:tester "/bin")
                                 (string-append #$output:tester "/share")))
@@ -276,9 +276,10 @@ IETF.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke (string-append #$output:tester
-                                       "/bin/belcard_tester"))))))))
-    (inputs
-     (list bctoolbox belr))
+                                       "/bin/belcard-tester"))))))))
+    (inputs (list bctoolbox))
+    ;; Belr is required by BelCardConfig.cmake, so must be propagated.
+    (propagated-inputs (list belr))
     (synopsis "Belledonne Communications VCard Library")
     (description "Belcard is a C++ library to manipulate VCard standard
 format.")
