@@ -570,7 +570,7 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
 (define-public mediastreamer2
   (package
     (name "mediastreamer2")
-    (version "5.2.49")
+    (version "5.3.57")
     (source
      (origin
        (method git-fetch)
@@ -579,7 +579,7 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mj0q2xaac22p2wf5gvgaiga03fbydilxfxzwyc6nwp5fyjnzawd"))))
+        (base32 "1zv13icfdpaq7fa325mnqf340vbvif9791hb9h22qpc0f2wcwvjb"))))
     (outputs '("out" "doc" "tester"))
     (build-system cmake-build-system)
     (arguments
@@ -611,7 +611,7 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
           (delete 'check)               ;move after install
           (add-after 'install 'separate-outputs
             (lambda _
-              (let ((tester-name (string-append #$name "_tester"))
+              (let ((tester-name (string-append #$name "-tester"))
                     (doc-name (string-append #$name "-" #$version)))
                 (for-each mkdir-p
                           (list (string-append #$output:tester "/bin")
@@ -629,7 +629,7 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
           (add-after 'separate-outputs 'check
             (lambda _
               (let ((tester (string-append #$output:tester
-                                           "/bin/mediastreamer2_tester")))
+                                           "/bin/mediastreamer2-tester")))
                 (for-each (lambda (suite-name)
                             (invoke tester "--suite" suite-name))
                           ;; Some tests fail, due to requiring access to the
@@ -650,28 +650,28 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
            bcg729
            bcmatroska2
            bctoolbox
+           bzrtp
            ffmpeg-4
            glew
            glu
-           mesa-utils
            gsm
+           libjpeg-turbo
+           libpcap
+           libsrtp
+           libtheora
+           libvpx
+           libx11
+           libxv
            mesa
+           mesa-utils
            opus
            ortp
-           libpcap
            portaudio
            pulseaudio
            spandsp
            speex
            speexdsp
-           libsrtp
-           libtheora
-           libjpeg-turbo
-           v4l-utils
-           libvpx
-           libx11
-           libxv
-           bzrtp))
+           v4l-utils))
     (synopsis "Belledonne Communications Streaming Engine")
     (description "Mediastreamer2 is a powerful and lightweight streaming engine
 for telephony applications.  This media processing and streaming toolkit is
