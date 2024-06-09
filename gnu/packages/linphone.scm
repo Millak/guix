@@ -62,70 +62,64 @@
   #:use-module (guix build-system qt))
 
 (define-public bcunit
-  (let ((commit "74021cc7cb20a4e177748dd2948173e1f9c270ae")
-        (revision "0"))
-    (package
-      (name "bcunit")
-      (version (git-version "3.0.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "git://git.linphone.org/bcunit")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0npdwvanjkfg9vrqs5yi8vh6wliv50ycdli8pzavir84nb31nq1b"))))
-      (build-system cmake-build-system)
-      (outputs '("out" "doc"))
-      (arguments
-       `(#:configure-flags (list "-DENABLE_STATIC=NO"
-                                 "-DENABLE_CURSES=ON"
-                                 "-DENABLE_DOC=ON"
-                                 "-DENABLE_EXAMPLES=ON"
-                                 "-DENABLE_TEST=ON"
-                                 "-DENABLE_MEMTRACE=ON")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-source
-             (lambda _
-               ;; Include BCunit headers for examples.
-               (substitute* "Examples/CMakeLists.txt"
-                 (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}")
-                  (string-append "${CMAKE_CURRENT_SOURCE_DIR} "
-                                 "${PROJECT_SOURCE_DIR}/BCUnit/Headers "
-                                 "${CMAKE_BINARY_DIR}/BCUnit/Headers")))
-               ;; Link bcunit and bcunit_tests libraries.
-               (substitute* "BCUnit/Sources/CMakeLists.txt"
-                 (("target_include_directories\\(bcunit_test PUBLIC Test\\)")
-                  (string-append
-                   "target_include_directories(bcunit_test PUBLIC Test)\n"
-                   "target_link_libraries(bcunit_test bcunit)")))))
-           (replace 'check
-             (lambda _
-               (with-directory-excursion "BCUnit/Sources/Test"
-                 (invoke "./test_bcunit"))))
-           (add-after 'install 'move-doc
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out"))
-                     (doc (assoc-ref outputs "doc")))
-                 (for-each mkdir-p
-                           `(,(string-append doc "/share/doc")
-                             ,(string-append doc "/share/BCUnit")))
-                 (rename-file
-                  (string-append out "/share/doc/BCUnit")
-                  (string-append doc "/share/doc/BCUnit"))
-                 (rename-file
-                  (string-append out "/share/BCUnit/Examples")
-                  (string-append doc "/share/BCUnit/Examples"))))))))
-      (inputs
-       (list ncurses))
-      (synopsis "Belledonne Communications Unit Testing Framework")
-      (description "BCUnit is a fork of the defunct project CUnit, with
+  (package
+    (name "bcunit")
+    (version "5.3.57")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.linphone.org/BC/public/bcunit.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02aqc8052vidc8ylkwiv2rqddl58fccrjz561j8zfqlwm2irnsg3"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                "-DENABLE_BCUNIT_CURSES=ON"
+                                "-DENABLE_BCUNIT_DOC=ON"
+                                "-DENABLE_BCUNIT_EXAMPLES=ON"
+                                "-DENABLE_BCUNIT_TEST=ON"
+                                "-DENABLE_BCUNIT_MEMTRACE=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda _
+              ;; Include BCunit headers for examples.
+              (substitute* "Examples/CMakeLists.txt"
+                (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}")
+                 (string-append "${CMAKE_CURRENT_SOURCE_DIR} "
+                                "${PROJECT_SOURCE_DIR}/BCUnit/Headers "
+                                "${CMAKE_BINARY_DIR}/BCUnit/Headers")))
+              ;; Link bcunit and bcunit_tests libraries.
+              (substitute* "BCUnit/Sources/CMakeLists.txt"
+                (("target_include_directories\\(bcunit_test PUBLIC Test\\)")
+                 (string-append
+                  "target_include_directories(bcunit_test PUBLIC Test)\n"
+                  "\ttarget_link_libraries(bcunit_test bcunit)")))))
+          (add-after 'install 'patch-BCUnitConfig.cmake
+            (lambda _
+              (substitute* (string-append
+                            #$output "/share/BCUnit/cmake/BCUnitConfig.cmake")
+                ;; This is only added for convenience when doing static builds.
+                ;; Since this is not a common case, avoid the find_dependency on
+                ;; ncurses, which would require propagating it.
+                (("find_dependency\\(Curses)")
+                 ""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "BCUnit/Sources/Test"
+                  (invoke "./test_bcunit"))))))))
+    (inputs (list ncurses))
+    (synopsis "Belledonne Communications Unit Testing Framework")
+    (description "BCUnit is a fork of the defunct project CUnit, with
 several fixes and patches applied.  It is a unit testing framework for
 writing, administering, and running unit tests in C.")
-      (home-page "https://gitlab.linphone.org/BC/public/bcunit")
-      (license license:lgpl2.0+))))
+    (home-page "https://gitlab.linphone.org/BC/public/bcunit")
+    (license license:lgpl2.0+)))
 
 (define-public bctoolbox
   (package
