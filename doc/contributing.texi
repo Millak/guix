@@ -2394,6 +2394,11 @@ To view discussions related to issue number @var{n}, go to
 
 @subsubsection Command-line interface
 
+@cindex mumi CLI
+@cindex mumi am
+@cindex mumi compose
+@cindex mumi send-email
+@cindex mumi www
 Mumi also comes with a command-line interface that can be used to search
 existing issues, open new issues, compose replies, apply and send
 patches.  You do not need to use Emacs to use the mumi command-line
