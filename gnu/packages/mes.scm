@@ -159,6 +159,7 @@ parsers to allow execution with Guile as extension languages.")))
               (method url-fetch)
               (uri (string-append "mirror://gnu/mes/"
                                   "mes-" version ".tar.gz"))
+              (patches (search-patches "mes-0.26.1-fixups.patch"))
               (sha256
                (base32
                 "1x7wq9cj8pybdl736mn8z48zcwgvyvi9mr9mr9vv9jxzii90sdz1"))))
