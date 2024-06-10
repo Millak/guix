@@ -14177,6 +14177,58 @@ an important subset of samtools functionality, including view, index,
 sort, markdup, and depth.")
     (license license:gpl2+)))
 
+(define-public r-rphyloxml
+  (let ((commit "a30e39249239b2de01d6964ae2a2205a6c48b475")
+        (revision "1"))
+    (package
+      (name "r-rphyloxml")
+      (version (git-version "0.0-9000" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/USCbiostats/rphyloxml")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "15ijzqvjxx6vqyqlg5asdbqlhw1g0ix6palf1rism3si0qapddgw"))
+         (snippet
+          '(delete-file "docs/jquery.sticky-kit.min.js"))))
+      (properties `((upstream-name . "rphyloxml")))
+      (build-system r-build-system)
+      (arguments
+       (list
+        #:modules
+        '((guix build r-build-system)
+          (guix build minify-build-system)
+          (guix build utils))
+        #:imported-modules
+        `(,@%r-build-system-modules (guix build minify-build-system))
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'process-javascript
+             (lambda* (#:key inputs #:allow-other-keys)
+               (with-directory-excursion "inst/"
+                 (minify (assoc-ref inputs "js-jquery-sticky-kit")
+                         #:target "docs/jquery.sticky-kit.min.js")))))))
+      (propagated-inputs (list r-ape r-xml2))
+      (native-inputs
+       `(("esbuild" ,esbuild)
+         ("js-jquery-sticky-kit"
+          ,(origin
+             (method url-fetch)
+             (uri "https://raw.githubusercontent.com/leafo/sticky-kit/\
+v1.1.2/jquery.sticky-kit.js")
+             (sha256
+              (base32
+               "17c3a1hqc3ybwj7hpw8prazajp2x98aq7nyfn71h6lzjvblq297g"))))))
+      (home-page "https://github.com/USCbiostats/rphyloxml")
+      (synopsis "Read and write phyloXML files in R")
+      (description
+       "The package reads phylogenetic data in the @code{phyloXML} format.
+It also includes functions for writing data in this format.")
+      (license license:expat))))
+
 (define-public ritornello
   (package
     (name "ritornello")
