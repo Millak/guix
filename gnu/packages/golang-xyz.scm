@@ -3755,6 +3755,7 @@ Go.")
 (define-public go-gopkg-in-alecthomas-kingpin-v2
   (package
     (inherit go-github-com-alecthomas-kingpin)
+    (name "go-gopkg-in-alecthomas-kingpin-v2")
     (arguments
      (list
       #:import-path "gopkg.in/alecthomas/kingpin.v2"))))
