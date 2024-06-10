@@ -29153,10 +29153,10 @@ and comments.")
       (license license:gpl3+))))
 
 (define-public emacs-yeetube
-  (let ((commit "c74e4e77156297624d278a05bdd19c016a91ff9b")) ;version bump
+  (let ((commit "c9721a295f4fd30a44e94b3424151fa8a14d22ae")) ;version bump
     (package
       (name "emacs-yeetube")
-      (version "2.1.4")
+      (version "2.1.6")
       (source
        (origin
          (method git-fetch)
@@ -29165,7 +29165,7 @@ and comments.")
                (commit commit)))
          (sha256
           (base32
-           "1gpfm41d4wzk1i0hnmfn81xv05ida9ljibar7ji4d7nisjbd4vp9"))
+           "0lrcs0n30h800sm6py4av44a3fcfgasmj223mnl76q34syyrgz6k"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
@@ -29181,15 +29181,12 @@ and comments.")
                   (("\\(executable-find \"torsocks\"\\)")
                    (format #f "~s"
                            (search-input-file inputs "/bin/torsocks")))
-                  (("\\(executable-find \"wget\"\\)")
-                   (format #f "~s"
-                           (search-input-file inputs "/bin/wget")))
                   (("\\(executable-find \"yt-dlp\"\\)")
                    (format #f "~s"
                            (search-input-file inputs "/bin/yt-dlp")))))))))
-      (inputs (list mpv torsocks wget yt-dlp))
+      (inputs (list mpv torsocks yt-dlp))
       (propagated-inputs (list emacs-compat))
-      (home-page "https://thanosapollo.com/blog/yeetube/")
+      (home-page "https://thanosapollo.org/projects/yeetube/")
       (synopsis "Youtube and Invidious front-end for Emacs")
       (description
        "This package offers an Emacs interface that allows you to search YouTube
