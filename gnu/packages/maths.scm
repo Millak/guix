@@ -65,6 +65,7 @@
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -223,14 +224,14 @@ beginners.")
 (define-public bitwise
   (package
     (name "bitwise")
-    (version "0.43")
+    (version "0.50")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mellowcandle/bitwise"
                                   "/releases/download/v" version
                                   "/bitwise-v" version ".tar.gz"))
               (sha256
-               (base32 "1yrgrbfgp6cavc6gyfp9b0zgjf9p1g7xhwzn9pydw44a32agf97m"))))
+               (base32 "0zp9rb0qv1m9hk593sc08jajkxd80h075s0m0dhf07gkbgx72ql0"))))
     (build-system gnu-build-system)
     (inputs
      (list ncurses readline))
