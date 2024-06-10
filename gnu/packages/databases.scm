@@ -59,7 +59,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
-;;; Copyright © 2023 Felix Gruber <felgru@posteo.ne
+;;; Copyright © 2023, 2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
@@ -195,7 +195,7 @@
 (define-public duckdb
   (package
     (name "duckdb")
-    (version "0.9.2")
+    (version "1.0.0")
     (source
       (origin
        (method git-fetch)
@@ -205,7 +205,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0dbsxyiz7c8sxflbfj87qv0b2s69zk802vsk5h00ra8w8fcbqlj0"))
+         "11yqgnf354g3fjj0rvsw8zzz915vf9i3jxmpchpwy09yzxd72cbg"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
