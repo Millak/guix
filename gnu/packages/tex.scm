@@ -38508,8 +38508,15 @@ style file.")
               "1k2d09z2my38nhxhzdq53jg4alzg5jzirdsb1qa7szm3dya46xgm")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:link-scripts #~(list "latexindent.pl")))
-    (inputs (list perl))
+    (arguments
+     (list #:link-scripts #~(list "latexindent.pl")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'link-scripts 'wrap-perl-script
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/latexindent")
+                     `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))))))
+    (inputs (list perl perl-file-homedir perl-yaml-tiny))
     (home-page "https://ctan.org/pkg/latexindent")
     (synopsis "Indent a LaTeX document, highlighting the programming structure")
     (description
