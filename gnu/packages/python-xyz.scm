@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2017, 2021, 2022 Eric Bavier <bavier@posteo.net>
@@ -20339,7 +20339,12 @@ for Python inspired by modern web development.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1x11kfn4g244fia9a7y4ly8dqv5zsxfg3l5azc54dl6gkp2bk7vx"))))
+         "1x11kfn4g244fia9a7y4ly8dqv5zsxfg3l5azc54dl6gkp2bk7vx"))
+       (modules '((guix build utils)))
+       ;; Adjust expected output for file@5.45.
+       (snippet #~(substitute* "test/libmagic_test.py"
+                    (("PDF document, version 1\\.2, 2 pages")
+                     "PDF document, version 1.2, 2 page(s)")))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -20358,7 +20363,7 @@ for Python inspired by modern web development.")
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       ;; The test suite mandates this variable.
-                      (setenv "LC_ALL" "en_US.UTF-8")
+                      (setenv "LC_ALL" "C.UTF-8")
                       (if tests?
                           (with-directory-excursion "test"
                             (invoke "python" "./libmagic_test.py"))
