@@ -1464,11 +1464,12 @@ with a single function call.")
     (license license:expat)))
 
 (define-public onnx-optimizer-for-torch2
-  (package
-    (inherit onnx-optimizer)
-    (inputs
-     (modify-inputs (package-inputs onnx-optimizer)
-       (replace "onnx" onnx-for-torch2)))))
+  (hidden-package
+   (package
+     (inherit onnx-optimizer)
+     (inputs
+      (modify-inputs (package-inputs onnx-optimizer)
+        (replace "onnx" onnx-for-torch2))))))
 
 (define-public rxcpp
   (package
