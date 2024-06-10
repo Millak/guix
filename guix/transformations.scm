@@ -504,8 +504,12 @@ actual compiler."
                             (list "-C" (string-append "target_cpu="
                                                       #$micro-architecture)))
                            (else
-                             (list (string-append "-march="
-                                                  #$micro-architecture))))))))))))
+                             (list
+                               ;; Some architectures take '-mcpu' and not '-march'.
+                               (if (string-prefix? "power" #$micro-architecture)
+                                   (string-append "-mcpu=" #$micro-architecture)
+                                   (string-append "-march="
+                                                  #$micro-architecture)))))))))))))
 
     (define program
       (program-file (string-append "tuning-compiler-wrapper-" micro-architecture)
