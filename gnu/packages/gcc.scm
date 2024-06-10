@@ -599,6 +599,9 @@ Go.  It also includes runtime support libraries for these languages.")
           '("armv8.3-a" "armv8.4-a" "armv8.5-a" "armv8.6-a"
             "armv8-r" "armv8.1-m.main")))
 
+(define %gcc-10-ppc64le-micro-architectures
+  '("power8" "power9" "power10" "powerpc64le"))
+
 (define %gcc-10-x86_64-micro-architectures
   ;; Suitable '-march' values for GCC 10.
   (append %gcc-7.5-x86_64-micro-architectures
@@ -730,6 +733,7 @@ It also includes runtime support libraries for these languages.")
     `((compiler-cpu-architectures
        ("aarch64" ,@%gcc-10-aarch64-micro-architectures)
        ("armhf" ,@%gcc-10-armhf-micro-architectures)
+       ("powerpc64le" ,@%gcc-10-ppc64le-micro-architectures)
        ("i686" ,@%gcc-10-x86_64-micro-architectures)
        ("x86_64" ,@%gcc-10-x86_64-micro-architectures))
       ,@(package-properties gcc-8)))))
@@ -767,6 +771,7 @@ It also includes runtime support libraries for these languages.")
        ("aarch64" ,@%gcc-11-aarch64-micro-architectures)
        ("armhf" ,@%gcc-11-armhf-micro-architectures)
        ("i686" ,@%gcc-11-x86_64-micro-architectures)
+       ("powerpc64le" ,@%gcc-10-ppc64le-micro-architectures)
        ("x86_64" ,@%gcc-11-x86_64-micro-architectures))
       ,@(package-properties gcc-8)))))
 
@@ -790,6 +795,7 @@ It also includes runtime support libraries for these languages.")
        ("aarch64" ,@%gcc-12-aarch64-micro-architectures)
        ("armhf" ,@%gcc-12-armhf-micro-architectures)
        ("i686" ,@%gcc-12-x86_64-micro-architectures)
+       ("powerpc64le" ,@%gcc-10-ppc64le-micro-architectures)
        ("x86_64" ,@%gcc-12-x86_64-micro-architectures))
       ,@(package-properties gcc-11)))))
 
@@ -820,6 +826,7 @@ It also includes runtime support libraries for these languages.")
         ("aarch64" ,@%gcc-13-aarch64-micro-architectures)
         ("armhf" ,@%gcc-13-armhf-micro-architectures)
         ("i686" ,@%gcc-13-x86_64-micro-architectures)
+        ("powerpc64le" ,@%gcc-10-ppc64le-micro-architectures)
         ("x86_64" ,@%gcc-13-x86_64-micro-architectures))
        ,@(package-properties gcc-11)))))
 
