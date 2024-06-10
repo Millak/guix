@@ -46667,7 +46667,8 @@ for the user.")
                             "build/")
               (setenv "TEXINPUTS" (string-append (getcwd) "/build:")))))))
     (native-inputs
-     (list (texlive-origin
+     (list texlive-ttfutils
+           (texlive-origin
             "ctxdocstrip.tex" (number->string %texlive-revision)
             (list "tex/generic/ctex/ctxdocstrip.tex")
             (base32
