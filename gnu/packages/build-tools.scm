@@ -374,7 +374,7 @@ resembles Python.")
            ninja
            python-colorama
            python-cython
-           python-pyproject-metadata-0.7
+           python-pyproject-metadata
            python-tomli
            python-typing-extensions
            python-wheel))
