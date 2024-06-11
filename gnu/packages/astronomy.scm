@@ -5237,6 +5237,50 @@ using (multivariate) polynomials.")
               ;; yt/frontends/artio/artio_headers/LICENSE: for C code.
               license:lgpl3))))
 
+(define-public python-yt-astro-analysis
+  (package
+    (name "python-yt-astro-analysis")
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "yt_astro_analysis" version))
+       (sha256
+        (base32 "1fb3sdp6hq2c4c28pd33v9yj14x9l7qizf3y3qpl594qdq1ffmpi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Disable test which require MPI setup and failed to run, check why.
+      #:test-flags #~(list "--ignore=test_halo_finders_ts.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-h5py
+           python-numpy
+           python-packaging
+           python-yt))
+    (native-inputs
+     (list python-cython
+           python-nose
+           python-tomli))
+    (home-page "https://github.com/yt-project/yt_astro_analysis")
+    (synopsis "YT astrophysical analysis modules")
+    (description
+     "This package provides an @code{yt} extension package for astrophysical
+analysis.  This package contains functionality for:
+
+@itemize
+@item halo finding and analysis
+@item lightcones
+@item planning cosmological simulations for making lightcones and lightrays
+@item exporting to the RADMC-3D radiation transport code
+@item creating PPV FITS cubes
+@end itemize")
+    (license (list license:bsd-3 license:lgpl3))))
+
 (define-public qfits
   (package
     (name "qfits")
