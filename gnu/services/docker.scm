@@ -76,6 +76,7 @@
             oci-container-configuration-requirement
             oci-container-configuration-log-file
             oci-container-configuration-auto-start?
+            oci-container-configuration-respawn?
             oci-container-configuration-network
             oci-container-configuration-ports
             oci-container-configuration-volumes
@@ -472,6 +473,10 @@ if it does not exist, otherwise it is appended to.")
    (boolean #t)
    "Whether this service should be started automatically by the Shepherd.  If it
 is @code{#f} the service has to be started manually with @command{herd start}.")
+  (respawn?
+   (boolean #f)
+   "Whether to restart the service when it stops, for instance when the
+underlying process dies.")
   (network
    (maybe-string)
    "Set a Docker network for the spawned container.")
@@ -685,6 +690,8 @@ operating-system, gexp or file-like records but ~a was found")
          (log-file (oci-container-configuration-log-file config))
          (provision (oci-container-configuration-provision config))
          (requirement (oci-container-configuration-requirement config))
+         (respawn?
+          (oci-container-configuration-respawn? config))
          (image (oci-container-configuration-image config))
          (image-reference (oci-image-reference image))
          (options (oci-container-configuration->options config))
@@ -694,7 +701,7 @@ operating-system, gexp or file-like records but ~a was found")
 
     (shepherd-service (provision `(,(string->symbol name)))
                       (requirement `(dockerd user-processes ,@requirement))
-                      (respawn? #f)
+                      (respawn? respawn?)
                       (auto-start? auto-start?)
                       (documentation
                        (string-append

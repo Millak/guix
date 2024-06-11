@@ -40894,6 +40894,10 @@ if it does not exist, otherwise it is appended to.
 Whether this service should be started automatically by the Shepherd.  If it
 is @code{#f} the service has to be started manually with @command{herd start}.
 
+@item @code{respawn?} (default: @code{#f}) (type: boolean)
+Whether to have Shepherd restart the service when it stops, for instance when
+the underlying process dies.
+
 @item @code{network} (default: @code{""}) (type: string)
 Set a Docker network for the spawned container.
 
