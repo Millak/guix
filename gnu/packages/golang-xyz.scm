@@ -3537,6 +3537,33 @@ iteration, and parsing JSON lines.")
 readability, or to compact JSON for smaller payloads.")
     (license license:expat)))
 
+(define-public go-github-com-tidwall-sjson
+  (package
+    (name "go-github-com-tidwall-sjson")
+    (version "1.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tidwall/sjson")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16yaikpxiwqz00zxa70w17k2k52nr06svand88sv2br6b6i8v09r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tidwall/sjson"))
+    (propagated-inputs
+     (list go-github-com-tidwall-gjson
+           go-github-com-tidwall-pretty))
+    (home-page "https://github.com/tidwall/sjson")
+    (synopsis "Quick value JSON values setting in Golang")
+    (description
+     "This package provides a fast and simple way to set a value in a JSON
+document.")
+    (license license:expat)))
+
 (define-public go-github-com-tklauser-go-sysconf
   (package
     (name "go-github-com-tklauser-go-sysconf")
