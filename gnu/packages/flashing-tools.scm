@@ -660,7 +660,7 @@ It can be used to upload images to I.MX SoC's using at least their boot ROM.")
              go-github-com-google-gousb
              go-github-com-logrusorgru-aurora
              go-github-com-marcinbor85-gohex
-             go-gopkg-in-cheggaaa-pb-v1
+             go-github-com-cheggaaa-pb
              pkg-config))
       (home-page "https://ergodox-ez.com/pages/wally")
       (synopsis "Flashing tool for ZSA keyboards")
