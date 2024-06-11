@@ -3462,6 +3462,34 @@ well as a program to generate applications and command files.")
 storage system.")
     (license license:bsd-2)))
 
+(define-public go-github-com-tidwall-gjson
+  (package
+    (name "go-github-com-tidwall-gjson")
+    (version "1.17.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tidwall/gjson")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gcjzbs5in4kics39d2v3j2v9gvfxkdgp0bdgbfmcsa5arqgq7g5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tidwall/gjson"))
+    (propagated-inputs
+     (list go-github-com-tidwall-match
+           go-github-com-tidwall-pretty))
+    (home-page "https://github.com/tidwall/gjson")
+    (synopsis "JSON parser for Golang")
+    (description
+     "This package provides a fast and simple way to get values from a JSON
+document.  It has features such as one line retrieval, dot notation paths,
+iteration, and parsing JSON lines.")
+    (license license:expat)))
+
 (define-public go-github-com-tidwall-match
   (package
     (name "go-github-com-tidwall-match")
