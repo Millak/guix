@@ -77,6 +77,7 @@
             oci-container-configuration-log-file
             oci-container-configuration-auto-start?
             oci-container-configuration-respawn?
+            oci-container-configuration-shepherd-actions
             oci-container-configuration-network
             oci-container-configuration-ports
             oci-container-configuration-volumes
@@ -328,6 +329,17 @@ found!")
   ;; '(("/mnt/dir" . "/dir") "/run/current-system/profile:/java")
   (oci-sanitize-mixed-list "volumes" value ":"))
 
+(define (oci-sanitize-shepherd-actions value)
+  (map
+   (lambda (el)
+     (if (shepherd-action? el)
+         el
+         (raise
+          (formatted-message
+           (G_ "shepherd-actions may only be shepherd-action records
+but ~a was found") el))))
+   value))
+
 (define (oci-sanitize-extra-arguments value)
   (define (valid? member)
     (or (string? member)
@@ -477,6 +489,11 @@ is @code{#f} the service has to be started manually with @command{herd start}.")
    (boolean #f)
    "Whether to restart the service when it stops, for instance when the
 underlying process dies.")
+  (shepherd-actions
+   (list '())
+   "This is a list of @code{shepherd-action} records defining actions supported
+by the service."
+   (sanitizer oci-sanitize-shepherd-actions))
   (network
    (maybe-string)
    "Set a Docker network for the spawned container.")
@@ -680,6 +697,7 @@ operating-system, gexp or file-like records but ~a was found")
                             (oci-image-repository image))))))
 
   (let* ((docker (file-append docker-cli "/bin/docker"))
+         (actions (oci-container-configuration-shepherd-actions config))
          (auto-start?
           (oci-container-configuration-auto-start? config))
          (user (oci-container-configuration-user config))
@@ -731,15 +749,17 @@ operating-system, gexp or file-like records but ~a was found")
                       (actions
                        (if (oci-image? image)
                            '()
-                           (list
-                            (shepherd-action
-                             (name 'pull)
-                             (documentation
-                              (format #f "Pull ~a's image (~a)."
-                                      name image))
-                             (procedure
-                              #~(lambda _
-                                  (invoke #$docker "pull" #$image))))))))))
+                           (append
+                            (list
+                             (shepherd-action
+                              (name 'pull)
+                              (documentation
+                               (format #f "Pull ~a's image (~a)."
+                                       name image))
+                              (procedure
+                               #~(lambda _
+                                   (invoke #$docker "pull" #$image)))))
+                            actions))))))
 
 (define %oci-container-accounts
   (list (user-account

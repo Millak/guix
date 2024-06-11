@@ -40898,6 +40898,10 @@ is @code{#f} the service has to be started manually with @command{herd start}.
 Whether to have Shepherd restart the service when it stops, for instance when
 the underlying process dies.
 
+@item @code{shepherd-actions} (default: @code{'()}) (type: list-of-symbols)
+This is a list of @code{shepherd-action} records defining actions supported
+by the service.
+
 @item @code{network} (default: @code{""}) (type: string)
 Set a Docker network for the spawned container.
 
