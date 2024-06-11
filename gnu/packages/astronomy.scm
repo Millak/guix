@@ -1044,13 +1044,13 @@ Python.")
 (define-public python-ginga
   (package
     (name "python-ginga")
-    (version "5.0.1")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ginga" version))
        (sha256
-        (base32 "1zw93487a0ilkb5w5qjgrdnavxlmdmjp6c2wyc1wp8qahby9c0xa"))))
+        (base32 "0c6vpcz59x889z8ggq6r5ci9cf10m7r9h262r6chx31mzdr010wf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
