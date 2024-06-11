@@ -40788,6 +40788,7 @@ processes as Shepherd Services.
 (service oci-container-service-type
          (list
           (oci-container-configuration
+           (network "host")
            (image
             (oci-image
              (repository "guile")
@@ -40800,20 +40801,17 @@ processes as Shepherd Services.
             '("-c" "(display \"hello!\n\")")))
           (oci-container-configuration
            (image "prom/prometheus")
-           (network "host")
            (ports
              '(("9000" . "9000")
                ("9090" . "9090"))))
           (oci-container-configuration
            (image "grafana/grafana:10.0.1")
            (network "host")
-           (ports
-             '(("3000" . "3000")))
            (volumes
              '("/var/lib/grafana:/var/lib/grafana")))))
 @end lisp
 
-In this example two different Shepherd services are going be added to the
+In this example three different Shepherd services are going be added to the
 system.  Each @code{oci-container-configuration} record translates to a
 @code{docker run} invocation and its fields directly map to options.  You can
 refer to the
@@ -40821,8 +40819,8 @@ refer to the
 documentation for the semantics of each value.  If the images are not found they
 will be
 @url{https://docs.docker.com/engine/reference/commandline/pull/,pulled}.  The
-spawned services are going to be attached to the host network and are supposed
-to behave like other processes.
+services with @code{(network "host")} are going to be attached to the host network
+and are supposed to behave like native processes with regard to networking.
 
 @end defvar
 
@@ -40854,8 +40852,8 @@ possible to securely set values in the container environment.  This field's
 value can be a list of pairs or strings, even mixed:
 
 @lisp
-(list '(\"LANGUAGE\" . \"eo:ca:eu\")
-      \"JAVA_HOME=/opt/java\")
+(list '("LANGUAGE\" . "eo:ca:eu")
+      "JAVA_HOME=/opt/java")
 @end lisp
 
 Pair members can be strings, gexps or file-like objects. Strings are passed
