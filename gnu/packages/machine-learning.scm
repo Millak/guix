@@ -549,8 +549,8 @@ Performance is achieved by using the LLVM JIT compiler.")
   (deprecated-package "guile-aiscm-next" guile-aiscm))
 
 (define-public llama-cpp
-  (let ((commit "fed0108491a3a3cbec6c6480dc8667ffff9d7659")
-        (revision "2"))
+  (let ((commit "a5735e4426b19a3ebd0c653ad8ac01420458ee95")
+        (revision "3"))
     (package
       (name "llama-cpp")
       (version (git-version "0.0.0" revision commit))
@@ -562,19 +562,27 @@ Performance is achieved by using the LLVM JIT compiler.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "16rm9gy0chd6k07crm8rkl2j3hg7y7h0km7k6c8q7bmm2jrd64la"))))
+          (base32 "0nx55wchwf204ld6jygfn37cjrzc4lspwn5v0qk8i6p92499bv0h"))))
       (build-system cmake-build-system)
       (arguments
        (list
-        #:configure-flags #~'("-DLLAMA_BLAS=ON"
-                              "-DLLAMA_BLAS_VENDOR=OpenBLAS"
+        #:configure-flags
+        #~(list "-DBUILD_SHARED_LIBS=ON"
+                "-DLLAMA_BLAS=ON"
+                "-DLLAMA_BLAS_VENDOR=OpenBLAS"
+                (string-append "-DBLAS_INCLUDE_DIRS="
+                               #$(this-package-input "openblas")
+                               "/include")
+                (string-append "-DBLAS_LIBRARIES="
+                               #$(this-package-input "openblas")
+                               "/lib/libopenblas.so")
 
-                              "-DLLAMA_NATIVE=OFF" ;no '-march=native'
-                              "-DLLAMA_FMA=OFF"    ;and no '-mfma', etc.
-                              "-DLLAMA_AVX2=OFF"
-                              "-DLLAMA_AVX512=OFF"
-                              "-DLLAMA_AVX512_VBMI=OFF"
-                              "-DLLAMA_AVX512_VNNI=OFF")
+                "-DLLAMA_NATIVE=OFF" ;no '-march=native'
+                "-DLLAMA_FMA=OFF"    ;and no '-mfma', etc.
+                "-DLLAMA_AVX2=OFF"
+                "-DLLAMA_AVX512=OFF"
+                "-DLLAMA_AVX512_VBMI=OFF"
+                "-DLLAMA_AVX512_VNNI=OFF")
 
         #:modules '((ice-9 textual-ports)
                     (guix build utils)
@@ -609,14 +617,14 @@ Performance is achieved by using the LLVM JIT compiler.")
                   (mkdir-p bin)
                   (make-script "convert-hf-to-gguf")
                   (make-script "convert-llama-ggml-to-gguf")
-                  (make-script "convert-lora-to-ggml")
-                  (make-script "convert-persimmon-to-gguf")
-                  (make-script "convert"))))
+                  (make-script "convert-hf-to-gguf-update.py"))))
             (add-after 'install-python-scripts 'wrap-python-scripts
               (assoc-ref python:%standard-phases 'wrap))
             (add-after 'install 'install-main
               (lambda _
-                (copy-file "bin/main" (string-append #$output "/bin/llama")))))))
+                (with-directory-excursion (string-append #$output "/bin")
+                    (symlink "main" "llama"))))
+            )))
       (inputs (list python))
       (native-inputs (list pkg-config))
       (propagated-inputs
