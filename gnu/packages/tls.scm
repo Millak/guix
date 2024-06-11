@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2017, 2019-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2017, 2019-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
@@ -701,7 +701,19 @@ kilobytes of RAM.")
                        "/share/libressl-"
                        ,(package-version this-package))
         ;; Provide a TLS-enabled netcat.
-        "--enable-nc")))
+        "--enable-nc")
+
+       #:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        ;; 'tests/tlstest.sh' started failing in 2024 due to
+                        ;; an expired test certificate.
+                        (invoke "datefudge" "2020-01-01"
+                                "make" "check"
+                                "-j" (number->string
+                                      (parallel-job-count)))))))))
+    (native-inputs (list datefudge))
     (properties
      `((release-monitoring-url . "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/")))
     (home-page "https://www.libressl.org/")
