@@ -3462,6 +3462,30 @@ well as a program to generate applications and command files.")
 storage system.")
     (license license:bsd-2)))
 
+(define-public go-github-com-tidwall-pretty
+  (package
+    (name "go-github-com-tidwall-pretty")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tidwall/pretty")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0prj9vpjgrca70rvx40kkl566yf9lw4fsbcmszwamwl364696jsb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tidwall/pretty"))
+    (home-page "https://github.com/tidwall/pretty")
+    (synopsis "JSON beautifier and compactor for Golang")
+    (description
+     "This package provides fast methods for formatting JSON for human
+readability, or to compact JSON for smaller payloads.")
+    (license license:expat)))
+
 (define-public go-github-com-tklauser-go-sysconf
   (package
     (name "go-github-com-tklauser-go-sysconf")
