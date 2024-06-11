@@ -74,6 +74,7 @@
             oci-container-configuration-image
             oci-container-configuration-provision
             oci-container-configuration-requirement
+            oci-container-configuration-log-file
             oci-container-configuration-network
             oci-container-configuration-ports
             oci-container-configuration-volumes
@@ -461,6 +462,11 @@ Engine, and follow the usual format
    (list-of-symbols '())
    "Set additional Shepherd services dependencies to the provisioned Shepherd
 service.")
+  (log-file
+   (maybe-string)
+   "When @code{log-file} is set, it names the file to which the service’s
+standard output and standard error are redirected.  @code{log-file} is created
+if it does not exist, otherwise it is appended to.")
   (network
    (maybe-string)
    "Set a Docker network for the spawned container.")
@@ -669,6 +675,7 @@ operating-system, gexp or file-like records but ~a was found")
          (host-environment
           (oci-container-configuration-host-environment config))
          (command (oci-container-configuration-command config))
+         (log-file (oci-container-configuration-log-file config))
          (provision (oci-container-configuration-provision config))
          (requirement (oci-container-configuration-requirement config))
          (image (oci-container-configuration-image config))
@@ -698,6 +705,9 @@ operating-system, gexp or file-like records but ~a was found")
                                   #$image-reference #$@command)
                             #:user #$user
                             #:group #$group
+                            #$@(if (maybe-value-set? log-file)
+                                   (list #:log-file log-file)
+                                   '())
                             #:environment-variables
                             (list #$@host-environment))))
                       (stop

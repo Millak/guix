@@ -40885,6 +40885,11 @@ Set the name of the provisioned Shepherd service.
 Set additional Shepherd services dependencies to the provisioned
 Shepherd service.
 
+@item @code{log-file} (type: maybe-string)
+When @code{log-file} is set, it names the file to which the service's
+standard output and standard error are redirected.  @code{log-file} is created
+if it does not exist, otherwise it is appended to.
+
 @item @code{network} (default: @code{""}) (type: string)
 Set a Docker network for the spawned container.
 
