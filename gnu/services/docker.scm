@@ -75,6 +75,7 @@
             oci-container-configuration-provision
             oci-container-configuration-requirement
             oci-container-configuration-log-file
+            oci-container-configuration-auto-start?
             oci-container-configuration-network
             oci-container-configuration-ports
             oci-container-configuration-volumes
@@ -467,6 +468,10 @@ service.")
    "When @code{log-file} is set, it names the file to which the service’s
 standard output and standard error are redirected.  @code{log-file} is created
 if it does not exist, otherwise it is appended to.")
+  (auto-start?
+   (boolean #t)
+   "Whether this service should be started automatically by the Shepherd.  If it
+is @code{#f} the service has to be started manually with @command{herd start}.")
   (network
    (maybe-string)
    "Set a Docker network for the spawned container.")
@@ -670,6 +675,8 @@ operating-system, gexp or file-like records but ~a was found")
                             (oci-image-repository image))))))
 
   (let* ((docker (file-append docker-cli "/bin/docker"))
+         (auto-start?
+          (oci-container-configuration-auto-start? config))
          (user (oci-container-configuration-user config))
          (group (oci-container-configuration-group config))
          (host-environment
@@ -688,6 +695,7 @@ operating-system, gexp or file-like records but ~a was found")
     (shepherd-service (provision `(,(string->symbol name)))
                       (requirement `(dockerd user-processes ,@requirement))
                       (respawn? #f)
+                      (auto-start? auto-start?)
                       (documentation
                        (string-append
                         "Docker backed Shepherd service for "

@@ -40890,6 +40890,10 @@ When @code{log-file} is set, it names the file to which the service's
 standard output and standard error are redirected.  @code{log-file} is created
 if it does not exist, otherwise it is appended to.
 
+@item @code{auto-start?} (default: @code{#t}) (type: boolean)
+Whether this service should be started automatically by the Shepherd.  If it
+is @code{#f} the service has to be started manually with @command{herd start}.
+
 @item @code{network} (default: @code{""}) (type: string)
 Set a Docker network for the spawned container.
 
