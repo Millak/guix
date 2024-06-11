@@ -654,7 +654,18 @@ It can be used to upload images to I.MX SoC's using at least their boot ROM.")
       (arguments
        (list
         #:install-source? #f
-        #:import-path "github.com/zsa/wally-cli"))
+        #:import-path "github.com/zsa/wally-cli"
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; XXX: Upstream Golang module name was changed from
+            ;; <gopkg.in/cheggaaa/pb.v1> to <github.com/cheggaaa/pb>, adjust
+            ;; references to it accordingly. Remove it in the new release of
+            ;; the package.
+            (add-after 'unpack 'fix-module-name
+              (lambda* (#:key import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (substitute* "main.go"
+                    (("gopkg.in/cheggaaa/pb.v1") "github.com/cheggaaa/pb"))))))))
       (native-inputs
        (list go-github-com-briandowns-spinner
              go-github-com-google-gousb
