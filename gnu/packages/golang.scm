@@ -6961,36 +6961,6 @@ stripped.")
 can be used almost directly in Go source code.")
     (license license:expat)))
 
-(define-public go-github-com-sergi-go-diff
-  (package
-    (name "go-github-com-sergi-go-diff")
-    (version "1.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/sergi/go-diff")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0cbj8nshllq102iiav0k1s01b8gwbkzj674g71n938qqna32y2pa"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/sergi/go-diff/diffmatchpatch"
-       #:unpack-path "github.com/sergi/go-diff"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (home-page "https://github.com/sergi/go-diff/")
-    (synopsis "Algorithms to perform operations for synchronizing plain text")
-    (description "@code{go-diff} offers algorithms to perform operations required for
-synchronizing plain text:
-@itemize
-@item compare two texts and return their differences
-@item perform fuzzy matching of text
-@item apply patches onto text
-@end itemize\n")
-    (license license:expat)))
-
 (define-public go-github-com-muesli-reflow-wordwrap
   (package
     (name "go-github-com-muesli-reflow-wordwrap")
