@@ -83,6 +83,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages statistics)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -2405,6 +2406,37 @@ of dates.")
     (description
      "The @code{mpl_animators} package provides a set of classes which allow
 the easy construction of interactive matplotlib widget based animations.")
+    (license license:bsd-3)))
+
+(define-public python-naima
+  (package
+    (name "python-naima")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "naima" version))
+       (sha256
+        (base32 "1lng2prl2kzzpgrkj11hl53cvqdh0gpk8cdqkvcg08k3bivzk8q8"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-astropy
+           python-corner
+           python-emcee
+           python-h5py
+           python-matplotlib
+           python-pyyaml
+           python-scipy))
+    (native-inputs
+     (list python-pytest python-setuptools-scm))
+    (home-page "http://github.com/zblz/naima")
+    (synopsis "Derivation of non-thermal particle distributions through MCMC spectral fitting")
+    (description
+     "This package implement functionality for computation of non-thermal
+radiation from relativistic particle populations.  It includes tools to
+perform MCMC fitting of radiative models to X-ray, GeV, and TeV spectra using
+@code{emcee}, an affine-invariant ensemble sampler for Markov Chain Monte
+Carlo.")
     (license license:bsd-3)))
 
 (define-public python-ndcube
