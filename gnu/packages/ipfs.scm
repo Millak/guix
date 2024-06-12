@@ -207,6 +207,35 @@ that are shared between @command{go-ipfs/commands} and its rewrite
      "Common utilities used by @code{go-ipfs} and other related Go packages.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipld-format
+  (package
+    (name "go-github-com-ipfs-go-ipld-format")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipld-format")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zl172ncmx9h5z2p3d0j1377xm9glw4zfyamks31p0pvvx2kyn7c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/ipfs/go-ipld-format"))
+    (propagated-inputs
+     (list go-github-com-multiformats-go-multihash
+           go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid))
+    (home-page "https://github.com/ipfs/go-ipld-format")
+    (synopsis "IPLD Node and Resolver interfaces in Go")
+    (description
+     "@code{go-ipld-format} is a set of interfaces that a type needs to implement in
+order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-forest.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-api
   (let ((commit
           "dafc2a13a4389ac1a6c2786e34ab70a4f26d3a3f")
