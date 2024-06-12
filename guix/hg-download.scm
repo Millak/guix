@@ -105,8 +105,8 @@
           (setvbuf (current-error-port) 'line)
 
           (or (and (download-method-enabled? 'upstream)
-                   (hg-fetch (string->symbol (getenv "hg ref url"))
-                             (string->symbol (getenv "hg ref changeset"))
+                   (hg-fetch (getenv "hg ref url")
+                             (getenv "hg ref changeset")
                              #$output
                              #:hg-command (string-append #+hg "/bin/hg")))
               (and (download-method-enabled? 'nar)
