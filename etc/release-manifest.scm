@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;;
@@ -144,6 +144,11 @@ TARGET."
                        ;; it's pointless.
                        "x86_64-linux-gnu"
                        "i686-linux-gnu"
+
+                       ;; Ignore bare-metal targets.
+                       "avr"
+                       "or1k-elf"
+                       "xtensa-ath9k-elf"
 
                        ;; XXX: Important bits like libsigsegv and libffi don't
                        ;; support RISCV at the moment, so don't require RISCV
