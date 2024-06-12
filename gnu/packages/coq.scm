@@ -388,7 +388,7 @@ part of the distribution.")
 (define-public coq-coquelicot
   (package
     (name "coq-coquelicot")
-    (version "3.4.0")
+    (version "3.4.1")
     (source
      (origin
        (method git-fetch)
@@ -398,7 +398,7 @@ part of the distribution.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1f6zim6hnm6zrij964vas6rfbxh5p147qsxxmmbxm7gyb85hhy45"))))
+         "1y22dqdklh3c8rbhar0d7mzaj84q6zyfik7namx5q4ma76s2rx73"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake ocaml which coq))
