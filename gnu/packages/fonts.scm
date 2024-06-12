@@ -2518,6 +2518,34 @@ formatting.")
     (home-page "https://madmalik.github.io/mononoki/")
     (license license:silofl1.1)))
 
+(define-public font-paytone-one
+  (let ((version "0")
+        (commit "b1438bc11966d48a1e9e8943b7b8a32dcb0c533c")
+        (revision "0"))
+    (package
+      (name "font-paytone-one")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/googlefonts/paytoneFont")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1gbmrjx8yj8xjh6fs0pzh8j0kxvwvhhjlp16gmv5c7i6b8s7r4r2"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/googlefonts/paytoneFont")
+      (synopsis "Sans serif typeface")
+      (description "Paytone One is a sans serif typeface developed for
+use as a display and headlining webfont.
+
+The face has a slight casual appearance with ample round bowls.  The
+slanted stroke terminals add some visual play to the overall appearance
+of the font.")
+      (license license:silofl1.1))))
+
 (define-public font-plemoljp
   (package
     (name "font-plemoljp")
