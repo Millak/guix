@@ -645,7 +645,7 @@ also provided in Coq, without associated proofs.")
 (define-public coq-stdpp
   (package
     (name "coq-stdpp")
-    (version "1.8.0")
+    (version "1.10.0")
     (synopsis "Alternative Coq standard library std++")
     (source (origin
               (method git-fetch)
@@ -655,7 +655,7 @@ also provided in Coq, without associated proofs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xawh3xkh76yhs689zw52k55cbzga2gyzl4g1a3pgg6yy420chjn"))))
+                "0lnvdfn4qq2lyabiq4ikb5ya46f4jp59dynyprnhki0ay9xagz3d"))))
     (build-system gnu-build-system)
     (inputs
      (list coq))
