@@ -2369,14 +2369,14 @@ following features:
 (define-public subversion
   (package
     (name "subversion")
-    (version "1.14.2")
+    (version "1.14.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/subversion/"
                                   "subversion-" version ".tar.bz2"))
               (sha256
                (base32
-                "0a6csc84hfymm8b5cnvq1n1p3rjjf33qy0z7y1k8lwkm1f6hw4y9"))))
+                "0h54l4p2dlk1rm4zm428hi6ij6xpqxqlqmvkhmz5yhq9392zv7ll"))))
     (build-system gnu-build-system)
     (arguments
      (list
