@@ -38,6 +38,38 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages shells))
 
+(define-public go-github-com-ipfs-go-block-format
+  (package
+    (name "go-github-com-ipfs-go-block-format")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-block-format")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pd8ww06ss922g3w2fgi3w0q66y2mkb9b2q9x5qxabrjj65xranz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/ipfs/go-block-format"))
+    (propagated-inputs
+     (list go-github-com-multiformats-go-multihash
+           go-github-com-multiformats-go-varint
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-ipfs-util))
+    (home-page "https://github.com/ipfs/go-block-format")
+    (synopsis "Set of interfaces for CID addressable blocks of data")
+    (description
+     "Package @code{blocks} contains the lowest level of @acronym{IPLD,
+InterPlanetary Linked Data} data structures. A block is raw data accompanied
+by a @acronym{Content Identifiers,CID}. The CID contains the multihash
+corresponding to the block.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-cid
   (package
     (name "go-github-com-ipfs-go-cid")
