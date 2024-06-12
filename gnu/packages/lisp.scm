@@ -71,6 +71,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages elf)
@@ -1717,6 +1718,7 @@ the HTML documentation of TXR.")
     (inputs
      (list bash-minimal
            libffi
+           libxcrypt
            zlib))
     (synopsis "General-purpose, multi-paradigm programming language")
     (description
