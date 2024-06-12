@@ -48788,6 +48788,7 @@ available.")
     (arguments
      (list #:create-formats #~(list "csplain" "luacsplain" "pdfcsplain")))
     (build-system texlive-build-system)
+    (native-inputs (list texlive-xetex))
     (propagated-inputs
      (list texlive-cm
            texlive-cs
