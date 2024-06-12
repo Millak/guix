@@ -512,7 +512,7 @@ for the IRCv3 protocol.")
 (define-public catgirl
   (package
     (name "catgirl")
-    (version "2.2")
+    (version "2.2a")
     (source
      (origin
        (method git-fetch)
@@ -521,7 +521,7 @@ for the IRCv3 protocol.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r1h10qdhhgy3359ndbjh269daivm126qc0c23db7bffv0xs4bff"))))
+        (base32 "0fvjx4a523bf2m522ya8r94ikhs8d864hrd85jn6bm414sga877p"))))
     (build-system gnu-build-system)
     (arguments
      (list
