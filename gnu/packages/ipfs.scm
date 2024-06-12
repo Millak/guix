@@ -544,9 +544,14 @@ written in Go.")
                              "vendor/github.com/google/uuid"
                              "vendor/github.com/gorilla"
                              "vendor/github.com/hashicorp"
+                             "vendor/github.com/ipfs/go-block-format"
                              "vendor/github.com/ipfs/go-cid"
                              "vendor/github.com/ipfs/go-cidutil"
+                             "vendor/github.com/ipfs/go-datastore"
+                             "vendor/github.com/ipfs/go-detect-race"
+                             "vendor/github.com/ipfs/go-ipfs-delay"
                              "vendor/github.com/ipfs/go-ipfs-util"
+                             "vendor/github.com/ipfs/go-ipld-format"
                              "vendor/github.com/ipfs/go-log"
                              "vendor/github.com/jackpal"
                              "vendor/github.com/jbenet"
@@ -617,11 +622,10 @@ written in Go.")
                   go-github-com-google-uuid
                   go-github-com-hashicorp-go-multierror
                   ;;go-github-com-ipfs-boxo
-                  ;;go-github-com-ipfs-go-block-format
+                  go-github-com-ipfs-go-block-format
                   go-github-com-ipfs-go-cid
                   go-github-com-ipfs-go-cidutil
-                  ;;go-github-com-ipfs-go-datastore
-                  ;;go-github-com-ipfs-go-detect-race
+                  go-github-com-ipfs-go-datastore
                   ;;go-github-com-ipfs-go-ds-badger
                   ;;go-github-com-ipfs-go-ds-flatfs
                   ;;go-github-com-ipfs-go-ds-leveldb
@@ -629,7 +633,7 @@ written in Go.")
                   ;;go-github-com-ipfs-go-fs-lock
                   ;;go-github-com-ipfs-go-ipfs-cmds
                   ;;go-github-com-ipfs-go-ipld-cbor
-                  ;;go-github-com-ipfs-go-ipld-format
+                  go-github-com-ipfs-go-ipld-format
                   ;;go-github-com-ipfs-go-ipld-git
                   ;;go-github-com-ipfs-go-ipld-legacy
                   go-github-com-ipfs-go-log
