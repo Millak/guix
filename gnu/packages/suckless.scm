@@ -228,13 +228,13 @@ a custom raw video format with a simple container.")
 (define-public dwm
   (package
     (name "dwm")
-    (version "6.3")
+    (version "6.5")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://dl.suckless.org/dwm/dwm-"
                                  version ".tar.gz"))
              (sha256
-              (base32 "1387lg370yrg7ssi3045di3904gkchxlza7rswgvl7wva8la1nms"))))
+              (base32 "0acpl05rg6rg6nrg3rv4kp388iqzp1n6dhin30a97yzjm6zrxmr1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
