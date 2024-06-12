@@ -857,41 +857,41 @@ attacks on the privacy of Tor users.")
   (mozilla-locales
    ;;                      sha256                            changeset    locale
    ;;---------------------------------------------------------------------------
-   ("14wnjv13alaj04pd8i8ysillbr3ic2jqa867rbj5ncz8h4hxxfxc" "4c7e24ef78bd" "ar")
-   ("0is7qbykv2pj0z9ll9r35vwjp0x29vmfr10yjl3s0amfaqzjqpqc" "0a0b774407cc" "da")
-   ("0yq7m4v7d7ayg90m66j73mflrnp709qw9n7skhpsl9h1wbhrd7q7" "633986260777" "de")
-   ("018qi9zn24kzfcidsj9lbqfg5n97r295yr8fs953nyfdbim9jsfv" "accf5e4506c0" "es-ES")
-   ("11prhmh2cp95dpv6z0k479mb11zbfm541bvigs3gnkh3nazjvc8q" "37aa71d77cb6" "fa")
-   ("1lv9l98q88ixb0ph970yzphahgzbl97x0w069bkxa54kblkv1ch1" "dc40a4fd5d0e" "fi")
-   ("0wx4k7mwhvpv5w0wa4y5pca2q3jac62jv804nxqnfwh1bvi90wv0" "415c1f0e84bd" "fr")
-   ("1n7l5idw9399n8ih1r1d6m8vzpzhwmnxmr9i7jvygkdc8d6adp1k" "07d5e1ff5f9b" "it")
-   ("1w6nw9cd92p1ndy82wwlq9xizyq3i8rq0nj7118gbxbx368mk2kj" "e6f9db9ce3e6" "ja")
-   ("116a8s0k2yvijy7qf0xpqm5w66gdzs32jhc06364sdar5v34lyhh" "805b85981696" "ko")
-   ("0kk3cjlpghbi7j3ndb2s0c7g838fzd2mpzg01bp0cra8lzd0n2ac" "4ab6f0d05aa6" "my")
-   ("1i3r2ici95mazw07m2mrf192fc6bfa3x6j3c2pcc1zg7z9srihgh" "561b0cd86ec1" "nb-NO")
-   ("1c0m8jhn52h1dif5bswrdwrlzppgga01y61wlii4aaaw15imd6yd" "2a55df0cc389" "nl")
-   ("1gssvg306b80drp7kvc35kvcxwldb5sga0bapaxhv362irq1nya8" "a64a7dab01c4" "pl")
-   ("1dzh13x85a7src8szbrq5pjmrbak4isln9xdwjk7a1yq4g9h7jgs" "33bf2a9f4c49" "pt-BR")
-   ("09x2jirf04kgc118a70z0xrb3msbm7vr4f41ig4xrwf2s5b816r3" "528b76d6aaca" "ru")
-   ("1cyimbd42aaq2amyhdbbx26jwsns77lsfl8g9a70bsjlpwzwzryg" "cc8e8962e59c" "sv-SE")
-   ("03mqrvcal7i172gf9239q9fnynfp5kg9b3r1w8gr9iz7rkr22gw5" "d361502c559e" "th")
-   ("12srgqkqwaidcwbz0y7zr59165f7aq5k5s3b81ql7ixdbwia91pm" "f6173aca4762" "tr")
-   ("1dl2dpif4wwrlpx7zkz5qf8kk4vhxyf63016xcfpbhxizqqwc1ki" "df2d025ed631" "zh-CN")
-   ("1c63ngff9lsc1x3pi6lnkyxw19gdc65yc67p7alzvrka3cv292ia" "11f8d68148a4" "zh-TW")))
+   ("1218mldjxybhgzdi0myzkwjr2fgnysl71pl847kr7wyn1j8wk3a5" "c25d00080479" "ar")
+   ("1kzx94n36c5vv954j7w65djvb37c178zazy25b35l71q2rvhmlhj" "2197a99c9a08" "da")
+   ("13h7hk11bbd0yq8gqdv7ndbizkgwlm3ybz225l3x2b5cnyjxyg14" "b7a533e5edc9" "de")
+   ("0mdr5b6pqxjmg9c8064x3hpf53h6w9j8ghl32655sx9jh4v3ykza" "beff1baac7c5" "es-ES")
+   ("1pnyg09j6r15w8m62lwj89x6rz4br877z60p8s1hlrb9hj2s3vdx" "ebe0b60b0b36" "fa")
+   ("067r505626cvlrsalnndf2ykz3nnkiy0b8yaxzf1rracpzmp0hni" "d5ae6a933d71" "fi")
+   ("0026zzjv2bqc8sg06yvyd0mhny6mwwvhpvzjrhv2fi5v4wkxapdj" "496c2eb73b82" "fr")
+   ("03fbp4vgkwyimfmbm4n8blx1m16yhms2wm8j4wlx2h3cpxp5r71k" "91951e37e2b8" "it")
+   ("0ncm531d7ih7phcn9d83zwq0dfphvmzg3gmhqmrrkkbydi1g3pbb" "895dcf8bb524" "ja")
+   ("14rc9mr4ngxdzwpjagzhz47jazgp1a6vwb0vbwj31yxv9iwkrgzi" "6ef881aff44b" "ko")
+   ("0h7dlnawm5mbcx4qdlz5c7n4axz2dpa677v13ljdgm2b5w76msmq" "5c1480ccc040" "my")
+   ("1b12azc1n8j1i2l20v66r74q79zqjvc5sf9pd8rmj3xd0fkxzdp2" "fc1896a0a24d" "nb-NO")
+   ("1fh4dhlb6hynlpb2997gssv9v8zk5b7qrw0sclggczb5pcpjk6wc" "7e6da4f01bdb" "nl")
+   ("1w8x3jjrd28f6g6ywwxldizpiipfkr63dzqd74kjpg24s2lqzp80" "e86a451a9cb5" "pl")
+   ("1v3v4n82sn7a4h2d9n653fmgc31mikacf59lvdj6gbwvzpjb5yfa" "94c3dbb67a5d" "pt-BR")
+   ("1fxgh7nfxpg2zknvfff8igq9q1vm5n4q033v7lm2c0xn3dbl8m28" "402b2ecbf04d" "ru")
+   ("1nllh3ax323sxwhj7xvwvbfnh4179332pcmpfyybw1vaid3nr39k" "bb2d5d96d69e" "sv-SE")
+   ("136m68fd0641k3qqmsw6zp016cvvd0sipsyv6rx2b9nli56agz57" "0e6c56bf2ac9" "th")
+   ("0q8p8bwq8an65yfdwzm4dhl6km68r83bv5i17kay2gak8msxxhsb" "91e611ae3f19" "tr")
+   ("02ifa94jfii5f166rwdvv8si3bazm4bcf4qhi59c8f1hxbavb52h" "081aeb1aa308" "zh-CN")
+   ("0qx9sh56pqc2x5qrh386cp1fi1gidhcmxxpvqkg9nh2jbizahznr" "9015a180602e" "zh-TW")))
 
 ;; We copy the official build id, which can be found there:
 ;; https://cdn.mullvad.net/browser/update_responses/update_1/release.
-(define %mullvadbrowser-build-date "20240408204645")
+(define %mullvadbrowser-build-date "20240510190000")
 
 ;; To find the last version, look at
 ;; https://mullvad.net/en/download/browser/linux.
-(define %mullvadbrowser-version "13.0.14")
+(define %mullvadbrowser-version "13.0.16")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/mullvadbrowser/<%mullvadbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-mullvad-browser-".
-(define %mullvadbrowser-firefox-version "115.10.0esr-13.0-1-build1")
+(define %mullvadbrowser-firefox-version "115.12.0esr-13.0-1-build1")
 
 ;; See tor-browser-build/projects/translation/config.
 (define mullvadbrowser-translation-base
@@ -899,11 +899,11 @@ attacks on the privacy of Tor users.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "d31e6b16c372e2eb235c4f2b0eae0b573a5515ba")))
+          (commit "f28525699864f4e3d764c354130bd898ce5b20aa")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "0pyd49v0ivxbw2lbzi5vz9kl78i972p2kcaaahympaf6x5i0q1xd"))))
+      "1vf6nl7fdmlmg2gskf3w1xlsgcm0pxi54z2daz5nwr6q9gyi0lkf"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define mullvadbrowser-translation-specific
@@ -911,11 +911,11 @@ attacks on the privacy of Tor users.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "c5361cb496ae7e047fd9226139537f1fcfc7938d")))
+          (commit "bff8092bbe5ae93b2c162ade300d739b2cd9e92d")))
     (file-name "translation-mullvad-browser")
     (sha256
      (base32
-      "0kxna8hcn6xyj9mq0k8pzmj0xh6drq6fs69vjhk31g9wjjm99hss"))))
+      "0742ylhz80445a28ssp2hpshy0dvr12h2c1mcv5pjdipzcwhgil8"))))
 
 (define mullvadbrowser-assets
   ;; This is a prebuilt Mullvad Browser from which we take the assets we need.
@@ -931,7 +931,7 @@ attacks on the privacy of Tor users.")
          version "/mullvad-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "1qq1bmknnq9ycfqgslwpwdflpzdl8sl3a4bgx0i817m3myvdkdyg"))))
+         "1bpchiz12zjyrzpgyk71naf1jdf3msjcjwggb1mziyawc6pyxj7v"))))
     (arguments
      (list
       #:install-plan
@@ -974,7 +974,7 @@ Mullvad Browser.")
          %mullvadbrowser-firefox-version ".tar.xz"))
        (sha256
         (base32
-         "07lwjl8569ck0fm3fq0hsh1zd65zph06vpfm4r8mjzqpn7bcny75"))))
+         "1xs4qwa3c6nfq6cj5q6asfrzki4brafg65g6hbn0fc9qqcmrhkv5"))))
     (arguments
      (substitute-keyword-arguments (package-arguments mullvadbrowser-base)
        ((#:phases phases)
