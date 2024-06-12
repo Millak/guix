@@ -3152,6 +3152,7 @@ format.")
                      (cmake (assoc-ref inputs "cmake")))
                  (mkdir-p "build")
                  (invoke "cmake"
+                         "-DCMAKE_CXX_FLAGS=-DBOOST_TIMER_ENABLE_DEPRECATED"
                          (string-append "-DCMAKE_INSTALL_PREFIX=" out)))))
            (delete 'configure))))
       (home-page "https://github.com/Heeks/libarea")
