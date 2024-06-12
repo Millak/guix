@@ -1211,8 +1211,12 @@ teTeX distribution that was maintained by Thomas Esser.")
 ;; inputs.
 (define-public texlive-updmap.cfg
   (lambda* (#:optional (packages '()))
-    "Return a 'texlive-updmap.cfg' package which contains the fonts map
-configuration of a base set of packages plus PACKAGES."
+    "Return a 'texlive-updmap.cfg' package which contains the fonts map and
+mktex scripts configuration, along with a base set of packages plus additional
+PACKAGES.
+
+This function is meant to be used in packages as a native input, to build
+documentation in the TeX format."
     (let ((default-packages (list texlive-scheme-basic)))
       (package
         (version (number->string %texlive-revision))
@@ -1227,9 +1231,18 @@ configuration of a base set of packages plus PACKAGES."
                       (ice-9 textual-ports))
           #:install-plan
           #~'(("texmf-dist/web2c/updmap.cfg" "share/texmf-config/web2c/")
-              ("texmf-dist/web2c/map" "share/texmf-dist/fonts/map"))
+              ("texmf-dist/web2c/mktex.cnf"  "share/texmf-config/web2c/")
+              ("texmf-dist/web2c/map"        "share/texmf-dist/fonts/map"))
           #:phases
           #~(modify-phases %standard-phases
+              (add-after 'unpack 'generate-mktex.cnf
+                ;; When building a package, mktex programs try to create files
+                ;; in TEXMFVAR, which is unavailable.  Force creating those
+                ;; files in the working directory instead.
+                (lambda _
+                  (with-directory-excursion "texmf-dist/web2c"
+                    (with-output-to-file "mktex.cnf"
+                      (lambda _ (display ": ${MT_DESTROOT=''}"))))))
               (add-before 'install 'regenerate-updmap.cfg
                 (lambda _
                   (with-directory-excursion "texmf-dist/web2c"
@@ -1244,8 +1257,8 @@ configuration of a base set of packages plus PACKAGES."
                       (when (not (zero? (status:exit-val (close-pipe port))))
                         (error "failed to filter updmap.cfg")))
 
-                    ;; Set TEXMFSYSVAR to a sane and writable value; updmap fails
-                    ;; if it cannot create its log file there.
+                    ;; Set TEXMFSYSVAR to a sane and writable value; updmap
+                    ;; fails if it cannot create its log file.
                     (setenv "TEXMFSYSVAR" (getcwd))
 
                     ;; Generate maps.
