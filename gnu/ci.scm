@@ -192,7 +192,8 @@ SYSTEM."
     ;; Return true if SYSTEM and TARGET are the same thing.  This is so we
     ;; don't try to cross-compile to 'mips64el-linux-gnu' from
     ;; 'mips64el-linux'.
-    (or (string-contains target system)
+    (or (and (string-contains target system)
+             (not (string=? "x86_64-linux-gnux32" target)))
         (and (string-prefix? "armhf" system)    ;armhf-linux
              (string-prefix? "arm" target))))   ;arm-linux-gnueabihf
 
