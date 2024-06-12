@@ -2839,26 +2839,28 @@ orienteering sport.")
                                       (assoc-ref outputs "out"))
                        "--with-blas"
                        "--with-bzlib"
-                       (string-append "--with-freetype-includes="
-                                      (assoc-ref inputs "freetype")
-                                      "/include/freetype2")
-                       (string-append "--with-freetype-libs="
-                                      (assoc-ref inputs "freetype")
-                                      "/lib")
+                       (string-append
+                        "--with-freetype-includes="
+                        (search-input-directory inputs "/include/freetype2"))
+                       (string-append
+                        "--with-freetype-libs="
+                        (dirname
+                         (search-input-file inputs "/lib/libfreetype.so")))
                        "--with-geos"
                        "--with-lapack"
                        "--with-mysql"
-                       (string-append "--with-mysql-includes="
-                                      (assoc-ref inputs "mariadb-dev")
-                                      "/include/mysql")
-                       (string-append "--with-mysql-libs="
-                                      (assoc-ref inputs "mariadb-lib")
-                                      "/lib")
+                       (string-append
+                        "--with-mysql-includes="
+                        (search-input-directory inputs "/include/mysql"))
+                       (string-append
+                        "--with-mysql-libs="
+                        (dirname
+                         (search-input-file inputs "/lib/libmariadb.so")))
                        "--with-netcdf"
                        "--with-postgres"
-                       (string-append "--with-proj-share="
-                                      (assoc-ref inputs "proj")
-                                      "/share/proj")
+                       (string-append
+                        "--with-proj-share="
+                        (search-input-directory inputs "/share/proj"))
                        "--with-pthread"
                        "--with-readline"
                        "--with-sqlite"
