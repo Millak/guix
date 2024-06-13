@@ -34532,7 +34532,7 @@ the packages provided by the @code{my-channel} channel.
 @lisp
 (define %cuirass-specs
   #~(list (specification
-           (name "my-channel")
+           (name 'my-channel)
            (build '(channels my-channel))
            (channels
             (cons (channel
@@ -34551,7 +34551,7 @@ channel, one can use the following configuration.
 @lisp
 (define %cuirass-specs
   #~(list (specification
-           (name "my-linux")
+           (name 'my-linux)
            (build '(packages "linux-libre")))))
 
 (service cuirass-service-type
