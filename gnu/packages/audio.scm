@@ -4012,6 +4012,43 @@ stretching and pitch scaling of audio.  This package contains the library.")
     ;; containing gpl2.
     (license license:gpl2)))
 
+(define-public stargate-sbsms
+  ;; Stargate's fork of sbsms.
+  (let ((commit "90fab3440063dc9b6c1c2a8f74c2d92bd0e423f9")
+        (revision "0"))
+    (package/inherit libsbsms
+      (name "stargate-sbsms")
+      (version (git-version "0" revision commit))
+      (home-page "https://github.com/stargatedaw/stargate-sbsms")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference (url home-page) (commit commit)))
+         (sha256
+          (base32
+           "11srnzgpavcj6n70zjdm7488jzrprk71mg9dgr1sa6vwp575hf2m"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments libsbsms)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (delete 'fix-ar-lib-path)
+              (add-before 'build 'change-directory
+                (lambda _
+                  (chdir "cli")))
+              (replace 'configure
+                (lambda _
+                  (setenv "DESTDIR" #$output)
+                  (setenv "PREFIX" "/")))
+              (add-after 'install 'rename-sbsms
+                (lambda _
+                  (with-directory-excursion (string-append #$output
+                                                           "/bin")
+                    (rename-file "sbsms" "stargate-sbsms"))))
+              (delete 'check)))))
+      (native-inputs
+       (list libsndfile))
+      (properties '((hidden? . #t))))))
+
 (define-public libkeyfinder
   (package
     (name "libkeyfinder")
@@ -4204,6 +4241,32 @@ and playback rates of audio streams or audio files.  It is intended for
 application developers writing sound processing tools that require tempo/pitch
 control functionality, or just for playing around with the sound effects.")
     (license license:lgpl2.1+)))
+
+(define-public stargate-soundtouch
+  ;; Stargate's fork of soundtouch.
+  (let ((commit "464f474c0be5d7e0970909dd30593012e4621468")
+        (revision "0"))
+    (package/inherit soundtouch
+      (name "stargate-soundtouch")
+      (version (git-version "0" revision commit))
+      (home-page "https://github.com/stargatedaw/stargate-soundtouch")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference (url home-page) (commit commit)))
+         (sha256
+          (base32
+           "1aw2j1f10p8n4s197b1nd3g1rjvwbrrszc9gwsbwk01c6nb3nr9v"))))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'install 'rename-soundstretch
+                   (lambda _
+                     (with-directory-excursion (string-append #$output
+                                                              "/bin")
+                       (rename-file "soundstretch"
+                                    "stargate-soundstretch")))))))
+      (properties '((hidden? . #t))))))
 
 (define-public sox
   (package
