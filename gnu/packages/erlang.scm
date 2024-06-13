@@ -456,13 +456,13 @@ specifications.")
 (define-public erlang-jsone
   (package
     (name "erlang-jsone")
-    (version "1.7.0")
+    (version "1.8.1")
     (source
       (origin
         (method url-fetch)
         (uri (hexpm-uri "jsone" version))
         (sha256
-          (base32 "1gaxiw76syjp3s9rygskm32y9799b917q752rw8bxj3bxq93g8x3"))))
+          (base32 "0f4px5l89a988rc8h79gb35zi0b2pjdy6y66hix1mia88491i2f7"))))
     (build-system rebar-build-system)
     (arguments
      `(#:phases
