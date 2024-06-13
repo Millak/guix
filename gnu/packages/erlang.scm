@@ -768,16 +768,16 @@ rebar3.")
 (define-public erlang-lfe
   (package
     (name "erlang-lfe")
-    (version "2.1.2")
+    (version "2.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/lfe/lfe")
-                    (commit "v2.1.2")))
+                    (commit  (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "180hz1p2v3vb6yyzcfwircmljlnd86ln8z80lzy3mwlyrcxblvxy"))))
+                "0yyh8jmdi7c4y6vjrk3zw4iy7iyqcs5h88hx96ml9dx2im2aydlq"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -825,6 +825,11 @@ rebar3.")
               (when tests?
                 (begin
                   (setenv "REBAR_CACHE_DIR" "/tmp")
+                  (substitute* "Makefile"
+                    ;; More strict argument parsing since rebar v3.23.0 seems
+                    ;; to break backwards compatibility. See more info at:
+                    ;; https://github.com/erlang/rebar3/pull/2813.
+                    (("-n 20,ct") "-n 20, ct"))
                   (invoke "make" "-j" (number->string (parallel-job-count))
                           "tests"))))))))
     (native-inputs (list rebar3 rebar3-proper erlang-proper))
