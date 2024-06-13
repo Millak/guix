@@ -3304,6 +3304,33 @@ spherical polygons that represent arbitrary regions of the sky.")
     ;; QD_LIBRARY_LICENSE.rst for bandeled QD source
     (license license:bsd-3)))
 
+(define-public python-statmorph
+  (package
+    (name "python-statmorph")
+    (version "0.5.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "statmorph" version))
+       (sha256
+        (base32 "06rbwrqlvdzn9innx05kjjmm4mmacd8kwwsfdf5idbwzby5ny5lw"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-photutils
+           python-scikit-image
+           python-scipy))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/vrodgom/statmorph")
+    (synopsis "Non-parametric morphological diagnostics of galaxy images")
+    (description
+     "The package @code{statmorph} implements functionality of calculating
+non-parametric morphological diagnostics of galaxy images (e.g., Gini-M_{20}
+and CAS statistics), as well as fitting 2D Sérsic profiles.")
+    (license license:bsd-3)))
+
 (define-public python-stsci-image
   (package
     (name "python-stsci-image")
