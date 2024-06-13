@@ -139,7 +139,7 @@ being successfully used in web development and the embedded software domain.")
 (define-public elixir-hex
   (package
     (name "elixir-hex")
-    (version "2.0.5")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)
@@ -149,7 +149,7 @@ being successfully used in web development and the embedded software domain.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1kvczwvij58kgkhak68004ap81pl26600bczg21mymy2sypkgxmj"))))
+         "0fmrbl7dj8ndq1z7h13qgx3cv7vw3b1zf6krdrahcmx43bcdsix4"))))
     ;; The mix-build-system assumes that Hex exists.
     ;; We build Hex using the gnu-build-system.
     ;; Other Elixir packages use the mix-build-system.
