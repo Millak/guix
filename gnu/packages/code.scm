@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -823,14 +824,14 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
 (define-public astyle
   (package
     (name "astyle")
-    (version "3.4.8")
+    (version "3.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/astyle/astyle/astyle%20"
-                           version "/astyle_"  version "_linux.tar.gz"))
+                           version "/astyle-"  version ".tar.bz2"))
        (sha256
-        (base32 "1ms54wcs7hg1bsywqwf2lhdfizgbk7qxc9ghasxk8i99jvwlrk6b"))))
+        (base32 "0g4jyp47iz97ld9ac4wb5k59j4cs8dbw4dp8f32bwqx8pyvirz6y"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -839,11 +840,13 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
       #~(list (string-append "prefix=" #$output)
               "INSTALL=install"
               "release" "shared")
-      #:modules '((guix build gnu-build-system) ;FIXME use %default-modules
-                  (guix build utils)
-                  (ice-9 regex))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-makefile
+            (lambda _
+              (substitute* "build/gcc/Makefile"
+                (("CBASEFLAGS = -Wall -Wextra -fno-rtti -fno-exceptions -std=c\\+\\+11")
+                 "CBASEFLAGS = -Wall -Wextra -fno-rtti -fno-exceptions -std=c++17"))))
           (replace 'configure
             (lambda _
               (chdir "build/gcc")))
@@ -852,12 +855,6 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
               ;; Libraries and headers aren't installed by default.
               (let ((include (string-append #$output "/include"))
                     (lib     (string-append #$output "/lib")))
-                (define (link.so file strip-pattern)
-                  (symlink
-                   (basename file)
-                   (regexp-substitute #f
-                                      (string-match strip-pattern file)
-                                      'pre)))
                 (mkdir-p include)
                 (copy-file "../../src/astyle.h"
                            (string-append include "/astyle.h"))
@@ -865,12 +862,7 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
                 (for-each (lambda (l)
                             (copy-file
                              l (string-append lib "/" (basename l))))
-                          (find-files "bin" "^lib.*\\.so"))
-                (for-each
-                 (lambda (file)
-                   (link.so file "(\\.[0-9]+){3}$")  ;.so
-                   (link.so file "(\\.[0-9]+){2}$")) ;.so.3
-                 (find-files lib "lib.*\\.so\\..*"))))))))
+                          (find-files "bin" "^lib.*\\.so"))))))))
     (home-page "https://astyle.sourceforge.net/")
     (synopsis "Source code indenter, formatter, and beautifier")
     (description
