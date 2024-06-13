@@ -939,11 +939,12 @@ and video calls or instant messaging capabilities to an application.")
       (license license:gpl2+))))
 
 (define-public mssilk
-  (let ((commit "dd0f31ee795faa7ea89e601b072dae4cd1df7e3f")
+  ;; The latest release doesn't build; use the latest commit.
+  (let ((commit "0c6893fb74ecca34cb2707f7fffd0d7487b24925")
         (revision "0"))
     (package
       (name "mssilk")
-      (version (git-version "1.1.1" revision commit))
+      (version (git-version "1.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -952,14 +953,20 @@ and video calls or instant messaging capabilities to an application.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1dann5fnzqp6wjlwc6bl2k9b6rvn6bznqb3qsi1kgv9dnq44cbr0"))))
+          (base32 "1hpsh0iyby44hdanmkjnad7p9flhq2wcim8nl5bkyv1gw50sanli"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:tests? #f                    ; No test target
-         #:configure-flags
-         (list "-DENABLE_STATIC=NO")))  ; Not required
-      (inputs
-       (list bctoolbox mediastreamer2 ortp))
+       (list
+        #:tests? #f                     ; No test target
+        #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-Mediastreamer2_PLUGINS_DIR
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("\\$\\{Mediastreamer2_PLUGINS_DIR}")
+                   (string-append #$output "/lib/mediastreamer/plugins"))))))))
+      (inputs (list bctoolbox mediastreamer2 ortp))
       (synopsis "Media Streamer SILK Codec")
       (description "MSSILK is a plugin of MediaStreamer, adding support for AMR
 codec.  It is based on the Skype's SILK implementation.")
