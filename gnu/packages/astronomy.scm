@@ -2800,6 +2800,54 @@ setup(ext_modules=get_extensions())")))))
     (description "Regions is an Astropy package for region handling.")
     (license license:bsd-3)))
 
+(define-public python-regularizepsf
+  (package
+    (name "python-regularizepsf")
+    (version "0.3.4")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/punch-mission/regularizepsf")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "078nklks6hjq0hgv6wpbh2x1m2yh6kmzyfgdzd9q82lxpjy1vq0i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               ;; numpy==1.26.4
+               (("==1.26.4") ">=1.23"))))
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-astropy
+           python-dill
+           python-h5py
+           python-lmfit
+           python-matplotlib
+           python-numpy
+           python-scikit-image
+           python-scipy
+           python-sep))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-pytest-mpl
+           python-pytest-runner))
+    (home-page "https://github.com/punch-mission/regularizepsf")
+    (synopsis "Point spread function modeling and regularization")
+    (description
+     "This package inplements functionality of @acronym{Point Spread Function,
+PSF} describing how the optical system spreads light from sources.")
+    (license license:expat)))
+
 (define-public python-reproject
   (package
     (name "python-reproject")
