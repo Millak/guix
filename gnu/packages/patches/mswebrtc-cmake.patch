@@ -1,0 +1,626 @@
+From e52911c291e5ebe16da764e53cb740b7deb77e75 Mon Sep 17 00:00:00 2001
+From: Ghislain MARY <ghislain.mary@belledonne-communications.com>
+Date: Mon, 13 Mar 2023 19:05:30 +0100
+Subject: [PATCH] Update CMakeLists.txt so that the project can be added as a
+ subdirectory of linphone-sdk.
+
+Rename CMake targets for uniform naming.
+---
+ CMakeLists.txt                 | 68 ++++++++++++++++++----------------
+ cmake/FindBcToolbox.cmake      | 67 +++++++++++++++++++++++++++++++++
+ cmake/FindMediastreamer2.cmake | 46 +++++++++++++++++++++++
+ cmake/FindOrtp.cmake           | 43 +++++++++++++++++++++
+ 4 files changed, 193 insertions(+), 31 deletions(-)
+ create mode 100644 cmake/FindBcToolbox.cmake
+ create mode 100644 cmake/FindMediastreamer2.cmake
+ create mode 100644 cmake/FindOrtp.cmake
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0f26f4f..fd5b52e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,6 +1,6 @@
+ ############################################################################
+ # CMakeLists.txt
+-# Copyright (C) 2014  Belledonne Communications, Grenoble France
++# Copyright (C) 2014-2023  Belledonne Communications, Grenoble France
+ #
+ ############################################################################
+ #
+@@ -20,7 +20,8 @@
+ #
+ ############################################################################
+ 
+-cmake_minimum_required(VERSION 3.1)
++cmake_minimum_required(VERSION 3.22)
++
+ project(mswebrtc VERSION 1.1.1 LANGUAGES C CXX)
+ 
+ 
+@@ -34,8 +35,6 @@ set(PACKAGE_URL "")
+ set(VERSION "${PACKAGE_VERSION}")
+ 
+ 
+-option(ENABLE_SHARED "Build shared library." YES)
+-option(ENABLE_STATIC "Build static library." YES)
+ option(ENABLE_AEC "Enable the WebRTC echo canceller support." YES)
+ option(ENABLE_AECM "Enable the WebRTC echo canceller for mobile support." YES)
+ option(ENABLE_ISAC "Enable the ISAC audio codec support." YES)
+@@ -60,9 +59,20 @@ if(NOT CMAKE_INSTALL_RPATH AND CMAKE_INSTALL_PREFIX)
+ 	message(STATUS "Setting install rpath to ${CMAKE_INSTALL_RPATH}")
+ endif()
+ 
+-find_package(Mediastreamer2 REQUIRED CONFIG)
+-find_package(ortp REQUIRED CONFIG)
+-find_package(bctoolbox REQUIRED CONFIG)
++list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
++
++find_package(BcToolbox)
++if(NOT BCTOOLBOX_FOUND)
++	find_package(bctoolbox REQUIRED CONFIG)
++endif()
++find_package(Ortp)
++if(NOT ORTP_FOUND)
++	find_package(ortp REQUIRED CONFIG)
++endif()
++find_package(Mediastreamer2)
++if(NOT MEDIASTREAMER2_FOUND)
++	find_package(Mediastreamer2 REQUIRED CONFIG)
++endif()
+ 
+ find_library(LIBM NAMES m)
+ 
+@@ -410,24 +420,18 @@ endif()
+ 
+ set(MS2_PLUGINS_DIR "${MEDIASTREAMER2_PLUGINS_LOCATION}")
+ 
+-if(ENABLE_STATIC)
+-	add_library(mswebrtc-static STATIC ${SOURCE_FILES})
+-	set_target_properties(mswebrtc-static PROPERTIES OUTPUT_NAME mswebrtc)
+-	set_target_properties(mswebrtc-static PROPERTIES LINKER_LANGUAGE CXX)
+-	target_link_libraries(mswebrtc-static ${LIBS})
+-	install(TARGETS mswebrtc-static
+-		ARCHIVE DESTINATION "${MS2_PLUGINS_DIR}"
+-		PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+-	)
+-endif()
+-if(ENABLE_SHARED)
+-	if(NOT IOS)
+-		add_library(mswebrtc MODULE ${SOURCE_FILES})
+-	else()
++if(BUILD_SHARED_LIBS)
++	if(IOS)
+ 		add_library(mswebrtc SHARED ${SOURCE_FILES})
++	else()
++		add_library(mswebrtc MODULE ${SOURCE_FILES})
+ 	endif()
+-	target_link_libraries(mswebrtc PRIVATE mediastreamer ortp bctoolbox ${LIBS})
+-	set_target_properties(mswebrtc PROPERTIES LINKER_LANGUAGE CXX)
++else()
++	add_library(mswebrtc STATIC ${SOURCE_FILES})
++endif()
++target_link_libraries(mswebrtc PRIVATE mediastreamer2 ortp bctoolbox ${LIBS})
++set_target_properties(mswebrtc PROPERTIES LINKER_LANGUAGE CXX)
++if(BUILD_SHARED_LIBS)
+ 	if(APPLE)
+ 		if(IOS)
+ 			set(MIN_OS ${LINPHONE_IOS_DEPLOYMENT_TARGET})
+@@ -441,7 +445,7 @@ if(ENABLE_SHARED)
+ 			set(MIN_OS ${CMAKE_OSX_DEPLOYMENT_TARGET})
+ 		endif()
+ 
+-		set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/osx/")
++		set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/build/osx/")
+ 	endif()
+ 	if(MSVC)
+ 		if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+@@ -454,14 +458,16 @@ if(ENABLE_SHARED)
+ 			set_target_properties(mswebrtc PROPERTIES PREFIX "lib")
+ 		endif()
+ 	endif()
+-	install(TARGETS mswebrtc
+-			RUNTIME DESTINATION ${MS2_PLUGINS_DIR}
+-			LIBRARY DESTINATION ${MS2_PLUGINS_DIR}
+-			ARCHIVE DESTINATION ${MS2_PLUGINS_DIR}
+-			FRAMEWORK DESTINATION Frameworks
+-			PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+-	)
+ endif()
+ 
++install(TARGETS mswebrtc
++		RUNTIME DESTINATION ${MS2_PLUGINS_DIR}
++		LIBRARY DESTINATION ${MS2_PLUGINS_DIR}
++		ARCHIVE DESTINATION ${MS2_PLUGINS_DIR}
++		FRAMEWORK DESTINATION Frameworks
++		PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
++)
++
++
+ add_subdirectory(build)
+ 
+diff --git a/cmake/FindBcToolbox.cmake b/cmake/FindBcToolbox.cmake
+new file mode 100644
+index 0000000..5766478
+--- /dev/null
++++ b/cmake/FindBcToolbox.cmake
+@@ -0,0 +1,67 @@
++############################################################################
++# FindBctoolbox.cmake
++# Copyright (C) 2023  Belledonne Communications, Grenoble France
++#
++############################################################################
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License
++# as published by the Free Software Foundation; either version 2
++# of the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
++#
++############################################################################
++#
++# - Find the bctoolbox include files and library
++#
++#  BCTOOLBOX_FOUND - System has lib bctoolbox
++#  BCTOOLBOX_INCLUDE_DIRS - The bctoolbox include directories
++#  BCTOOLBOX_LIBRARIES - The libraries needed to use bctoolbox
++#  BCTOOLBOX_CMAKE_DIR - The bctoolbox cmake directory
++#  BCTOOLBOX_CORE_FOUND - System has core bctoolbox
++#  BCTOOLBOX_CORE_INCLUDE_DIRS - The core bctoolbox include directories
++#  BCTOOLBOX_CORE_LIBRARIES - The core bctoolbox libraries
++#  BCTOOLBOX_TESTER_FOUND - System has bctoolbox tester
++#  BCTOOLBOX_TESTER_INCLUDE_DIRS - The bctoolbox tester include directories
++#  BCTOOLBOX_TESTER_LIBRARIES - The bctoolbox tester libraries 
++
++if(TARGET bctoolbox)
++
++	set(BCTOOLBOX_CORE_LIBRARIES bctoolbox)
++	get_target_property(BCTOOLBOX_CORE_INCLUDE_DIRS bctoolbox INTERFACE_INCLUDE_DIRECTORIES)
++	set(BCTOOLBOX_CORE_FOUND TRUE)
++	get_target_property(BCTOOLBOX_SOURCE_DIR bctoolbox SOURCE_DIR)
++	set(BCTOOLBOX_CMAKE_DIR "${BCTOOLBOX_SOURCE_DIR}/../cmake")
++	if(TARGET bctoolbox-tester)
++		set(BCTOOLBOX_TESTER_LIBRARIES bctoolbox-tester)
++		get_target_property(BCTOOLBOX_TESTER_INCLUDE_DIRS bctoolbox-tester INTERFACE_INCLUDE_DIRECTORIES)
++		set(BCTOOLBOX_TESTER_FOUND TRUE)
++		set(BCTOOLBOX_TESTER_COMPONENT_VARIABLES BCTOOLBOX_TESTER_FOUND BCTOOLBOX_TESTER_INCLUDE_DIRS BCTOOLBOX_TESTER_LIBRARIES)
++	endif()
++	set(BCTOOLBOX_LIBRARIES ${BCTOOLBOX_CORE_LIBRARIES} ${BCTOOLBOX_TESTER_LIBRARIES})
++	set(BCTOOLBOX_INCLUDE_DIRS ${BCTOOLBOX_CORE_INCLUDE_DIRS} ${BCTOOLBOX_TESTER_INCLUDE_DIRS})
++
++
++	include(FindPackageHandleStandardArgs)
++	find_package_handle_standard_args(BcToolbox
++		DEFAULT_MSG
++		BCTOOLBOX_INCLUDE_DIRS BCTOOLBOX_LIBRARIES BCTOOLBOX_CMAKE_DIR
++		BCTOOLBOX_CORE_FOUND BCTOOLBOX_CORE_INCLUDE_DIRS BCTOOLBOX_CORE_LIBRARIES
++		${BCTOOLBOX_TESTER_COMPONENT_VARIABLES}
++	)
++
++	mark_as_advanced(
++		BCTOOLBOX_INCLUDE_DIRS BCTOOLBOX_LIBRARIES BCTOOLBOX_CMAKE_DIR
++		BCTOOLBOX_CORE_FOUND BCTOOLBOX_CORE_INCLUDE_DIRS BCTOOLBOX_CORE_LIBRARIES
++		${BCTOOLBOX_TESTER_COMPONENT_VARIABLES}
++	)
++
++endif()
+diff --git a/cmake/FindMediastreamer2.cmake b/cmake/FindMediastreamer2.cmake
+new file mode 100644
+index 0000000..64ac8f2
+--- /dev/null
++++ b/cmake/FindMediastreamer2.cmake
+@@ -0,0 +1,46 @@
++############################################################################
++# FindMediastreamer2.cmake
++# Copyright (C) 2023  Belledonne Communications, Grenoble France
++#
++############################################################################
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License
++# as published by the Free Software Foundation; either version 2
++# of the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
++#
++############################################################################
++#
++# - Find the mediastreamer2 include files and library
++#
++#  MEDIASTREAMER2_FOUND - system has lib mediastreamer2
++#  MEDIASTREAMER2_INCLUDE_DIRS - the mediasteamer2 include directory
++#  MEDIASTREAMER2_LIBRARIES - The library needed to use mediasteamer2
++#  MEDIASTREAMER2_PLUGINS_LOCATION - The location of the mediastreamer2 plugins
++
++if(TARGET mediastreamer2)
++
++	set(MEDIASTREAMER2_LIBRARIES mediastreamer2)
++	get_target_property(MEDIASTREAMER2_INCLUDE_DIRS mediastreamer2 INTERFACE_INCLUDE_DIRECTORIES)
++	define_property(TARGET PROPERTY "MS2_PLUGINS" BRIEF_DOCS "Stores the location of mediastreamer2 plugins" FULL_DOCS "Stores the location of mediastreamer2 plugins")
++	get_target_property(MEDIASTREAMER2_PLUGINS_LOCATION mediastreamer2 MS2_PLUGINS)
++
++
++	include(FindPackageHandleStandardArgs)
++	find_package_handle_standard_args(Mediastreamer2
++		DEFAULT_MSG
++		MEDIASTREAMER2_INCLUDE_DIRS MEDIASTREAMER2_LIBRARIES
++	)
++
++	mark_as_advanced(MEDIASTREAMER2_INCLUDE_DIRS MEDIASTREAMER2_LIBRARIES)
++
++endif()
+diff --git a/cmake/FindOrtp.cmake b/cmake/FindOrtp.cmake
+new file mode 100644
+index 0000000..13121fb
+--- /dev/null
++++ b/cmake/FindOrtp.cmake
+@@ -0,0 +1,43 @@
++############################################################################
++# FindOrtp.cmake
++# Copyright (C) 2023  Belledonne Communications, Grenoble France
++#
++############################################################################
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License
++# as published by the Free Software Foundation; either version 2
++# of the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
++#
++############################################################################
++#
++# - Find the ortp include files and library
++#
++#  ORTP_FOUND - system has lib ortp
++#  ORTP_INCLUDE_DIRS - the ortp include directory
++#  ORTP_LIBRARIES - The library needed to use ortp
++
++if(TARGET ortp)
++
++	set(ORTP_LIBRARIES ortp)
++	get_target_property(ORTP_INCLUDE_DIRS ortp INTERFACE_INCLUDE_DIRECTORIES)
++
++
++	include(FindPackageHandleStandardArgs)
++	find_package_handle_standard_args(Ortp
++		DEFAULT_MSG
++		ORTP_INCLUDE_DIRS ORTP_LIBRARIES
++	)
++
++	mark_as_advanced(ORTP_INCLUDE_DIRS ORTP_LIBRARIES)
++
++endif()
+-- 
+GitLab
+
+From b5aea9bdaeecd99f6fc5601bfb88541d4e55841b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Micka=C3=ABl=20Turnel?=
+ <mickael.turnel@belledonne-communications.com>
+Date: Fri, 23 Jun 2023 11:05:24 +0200
+Subject: [PATCH] Change the library path in the binary dir so it can be
+ retrieved easily by testers
+
+---
+ CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fd5b52e..ab3e651 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -24,6 +24,7 @@ cmake_minimum_required(VERSION 3.22)
+ 
+ project(mswebrtc VERSION 1.1.1 LANGUAGES C CXX)
+ 
++set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/mediastreamer2/plugins")
+ 
+ set(PACKAGE "${PROJECT_NAME}")
+ set(PACKAGE_NAME "${PROJECT_NAME}")
+-- 
+GitLab
+
+From 1809337d6191ec40f88191b5ce07cfb01ed07b20 Mon Sep 17 00:00:00 2001
+From: Ghislain MARY <ghislain.mary@belledonne-communications.com>
+Date: Tue, 20 Jun 2023 11:47:00 +0200
+Subject: [PATCH] Improve CMake find_package functionality.
+
+---
+ CMakeLists.txt                 | 30 ++++-----------
+ build/CMakeLists.txt           |  3 +-
+ cmake/FindBcToolbox.cmake      | 67 ----------------------------------
+ cmake/FindMediastreamer2.cmake | 46 -----------------------
+ cmake/FindOrtp.cmake           | 43 ----------------------
+ 5 files changed, 10 insertions(+), 179 deletions(-)
+ delete mode 100644 cmake/FindBcToolbox.cmake
+ delete mode 100644 cmake/FindMediastreamer2.cmake
+ delete mode 100644 cmake/FindOrtp.cmake
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ab3e651..a869908 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -22,7 +22,7 @@
+ 
+ cmake_minimum_required(VERSION 3.22)
+ 
+-project(mswebrtc VERSION 1.1.1 LANGUAGES C CXX)
++project(MSWebRTC VERSION 1.1.1 LANGUAGES C CXX)
+ 
+ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/mediastreamer2/plugins")
+ 
+@@ -60,20 +60,8 @@ if(NOT CMAKE_INSTALL_RPATH AND CMAKE_INSTALL_PREFIX)
+ 	message(STATUS "Setting install rpath to ${CMAKE_INSTALL_RPATH}")
+ endif()
+ 
+-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+-
+-find_package(BcToolbox)
+-if(NOT BCTOOLBOX_FOUND)
+-	find_package(bctoolbox REQUIRED CONFIG)
+-endif()
+-find_package(Ortp)
+-if(NOT ORTP_FOUND)
+-	find_package(ortp REQUIRED CONFIG)
+-endif()
+-find_package(Mediastreamer2)
+-if(NOT MEDIASTREAMER2_FOUND)
+-	find_package(Mediastreamer2 REQUIRED CONFIG)
+-endif()
++find_package(BCToolbox 5.3.0 REQUIRED)
++find_package(Mediastreamer2 5.3.0 REQUIRED)
+ 
+ find_library(LIBM NAMES m)
+ 
+@@ -92,7 +80,7 @@ endif()
+ if(ENABLE_VAD)
+ 	set(BUILD_VAD 1)
+ endif()
+-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
++configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/config.h")
+ 
+ set(WEBRTC_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/webrtc")
+ set(WEBRTC_SRC_DIR "${WEBRTC_ROOT_DIR}/webrtc")
+@@ -419,8 +407,6 @@ if(LIBM)
+ 	list(APPEND LIBS ${LIBM})
+ endif()
+ 
+-set(MS2_PLUGINS_DIR "${MEDIASTREAMER2_PLUGINS_LOCATION}")
+-
+ if(BUILD_SHARED_LIBS)
+ 	if(IOS)
+ 		add_library(mswebrtc SHARED ${SOURCE_FILES})
+@@ -430,7 +416,7 @@ if(BUILD_SHARED_LIBS)
+ else()
+ 	add_library(mswebrtc STATIC ${SOURCE_FILES})
+ endif()
+-target_link_libraries(mswebrtc PRIVATE mediastreamer2 ortp bctoolbox ${LIBS})
++target_link_libraries(mswebrtc PRIVATE ${Mediastreamer2_TARGET} ${LIBS})
+ set_target_properties(mswebrtc PROPERTIES LINKER_LANGUAGE CXX)
+ if(BUILD_SHARED_LIBS)
+ 	if(APPLE)
+@@ -462,9 +448,9 @@ if(BUILD_SHARED_LIBS)
+ endif()
+ 
+ install(TARGETS mswebrtc
+-		RUNTIME DESTINATION ${MS2_PLUGINS_DIR}
+-		LIBRARY DESTINATION ${MS2_PLUGINS_DIR}
+-		ARCHIVE DESTINATION ${MS2_PLUGINS_DIR}
++		RUNTIME DESTINATION ${Mediastreamer2_PLUGINS_DIR}
++		LIBRARY DESTINATION ${Mediastreamer2_PLUGINS_DIR}
++		ARCHIVE DESTINATION ${Mediastreamer2_PLUGINS_DIR}
+ 		FRAMEWORK DESTINATION Frameworks
+ 		PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+ )
+diff --git a/build/CMakeLists.txt b/build/CMakeLists.txt
+index 82694c6..8f9108b 100755
+--- a/build/CMakeLists.txt
++++ b/build/CMakeLists.txt
+@@ -21,7 +21,8 @@
+ ############################################################################
+ 
+ if(NOT CPACK_PACKAGE_NAME)
+-	set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
++	string(TOLOWER "${PROJECT_NAME}" LOWERCASE_PROJECT_NAME)
++	set(CPACK_PACKAGE_NAME "${LOWERCASE_PROJECT_NAME}")
+ endif()
+ 
+ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../COPYING")
+diff --git a/cmake/FindBcToolbox.cmake b/cmake/FindBcToolbox.cmake
+deleted file mode 100644
+index 5766478..0000000
+--- a/cmake/FindBcToolbox.cmake
++++ /dev/null
+@@ -1,67 +0,0 @@
+-############################################################################
+-# FindBctoolbox.cmake
+-# Copyright (C) 2023  Belledonne Communications, Grenoble France
+-#
+-############################################################################
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License
+-# as published by the Free Software Foundation; either version 2
+-# of the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-#
+-############################################################################
+-#
+-# - Find the bctoolbox include files and library
+-#
+-#  BCTOOLBOX_FOUND - System has lib bctoolbox
+-#  BCTOOLBOX_INCLUDE_DIRS - The bctoolbox include directories
+-#  BCTOOLBOX_LIBRARIES - The libraries needed to use bctoolbox
+-#  BCTOOLBOX_CMAKE_DIR - The bctoolbox cmake directory
+-#  BCTOOLBOX_CORE_FOUND - System has core bctoolbox
+-#  BCTOOLBOX_CORE_INCLUDE_DIRS - The core bctoolbox include directories
+-#  BCTOOLBOX_CORE_LIBRARIES - The core bctoolbox libraries
+-#  BCTOOLBOX_TESTER_FOUND - System has bctoolbox tester
+-#  BCTOOLBOX_TESTER_INCLUDE_DIRS - The bctoolbox tester include directories
+-#  BCTOOLBOX_TESTER_LIBRARIES - The bctoolbox tester libraries 
+-
+-if(TARGET bctoolbox)
+-
+-	set(BCTOOLBOX_CORE_LIBRARIES bctoolbox)
+-	get_target_property(BCTOOLBOX_CORE_INCLUDE_DIRS bctoolbox INTERFACE_INCLUDE_DIRECTORIES)
+-	set(BCTOOLBOX_CORE_FOUND TRUE)
+-	get_target_property(BCTOOLBOX_SOURCE_DIR bctoolbox SOURCE_DIR)
+-	set(BCTOOLBOX_CMAKE_DIR "${BCTOOLBOX_SOURCE_DIR}/../cmake")
+-	if(TARGET bctoolbox-tester)
+-		set(BCTOOLBOX_TESTER_LIBRARIES bctoolbox-tester)
+-		get_target_property(BCTOOLBOX_TESTER_INCLUDE_DIRS bctoolbox-tester INTERFACE_INCLUDE_DIRECTORIES)
+-		set(BCTOOLBOX_TESTER_FOUND TRUE)
+-		set(BCTOOLBOX_TESTER_COMPONENT_VARIABLES BCTOOLBOX_TESTER_FOUND BCTOOLBOX_TESTER_INCLUDE_DIRS BCTOOLBOX_TESTER_LIBRARIES)
+-	endif()
+-	set(BCTOOLBOX_LIBRARIES ${BCTOOLBOX_CORE_LIBRARIES} ${BCTOOLBOX_TESTER_LIBRARIES})
+-	set(BCTOOLBOX_INCLUDE_DIRS ${BCTOOLBOX_CORE_INCLUDE_DIRS} ${BCTOOLBOX_TESTER_INCLUDE_DIRS})
+-
+-
+-	include(FindPackageHandleStandardArgs)
+-	find_package_handle_standard_args(BcToolbox
+-		DEFAULT_MSG
+-		BCTOOLBOX_INCLUDE_DIRS BCTOOLBOX_LIBRARIES BCTOOLBOX_CMAKE_DIR
+-		BCTOOLBOX_CORE_FOUND BCTOOLBOX_CORE_INCLUDE_DIRS BCTOOLBOX_CORE_LIBRARIES
+-		${BCTOOLBOX_TESTER_COMPONENT_VARIABLES}
+-	)
+-
+-	mark_as_advanced(
+-		BCTOOLBOX_INCLUDE_DIRS BCTOOLBOX_LIBRARIES BCTOOLBOX_CMAKE_DIR
+-		BCTOOLBOX_CORE_FOUND BCTOOLBOX_CORE_INCLUDE_DIRS BCTOOLBOX_CORE_LIBRARIES
+-		${BCTOOLBOX_TESTER_COMPONENT_VARIABLES}
+-	)
+-
+-endif()
+diff --git a/cmake/FindMediastreamer2.cmake b/cmake/FindMediastreamer2.cmake
+deleted file mode 100644
+index 64ac8f2..0000000
+--- a/cmake/FindMediastreamer2.cmake
++++ /dev/null
+@@ -1,46 +0,0 @@
+-############################################################################
+-# FindMediastreamer2.cmake
+-# Copyright (C) 2023  Belledonne Communications, Grenoble France
+-#
+-############################################################################
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License
+-# as published by the Free Software Foundation; either version 2
+-# of the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-#
+-############################################################################
+-#
+-# - Find the mediastreamer2 include files and library
+-#
+-#  MEDIASTREAMER2_FOUND - system has lib mediastreamer2
+-#  MEDIASTREAMER2_INCLUDE_DIRS - the mediasteamer2 include directory
+-#  MEDIASTREAMER2_LIBRARIES - The library needed to use mediasteamer2
+-#  MEDIASTREAMER2_PLUGINS_LOCATION - The location of the mediastreamer2 plugins
+-
+-if(TARGET mediastreamer2)
+-
+-	set(MEDIASTREAMER2_LIBRARIES mediastreamer2)
+-	get_target_property(MEDIASTREAMER2_INCLUDE_DIRS mediastreamer2 INTERFACE_INCLUDE_DIRECTORIES)
+-	define_property(TARGET PROPERTY "MS2_PLUGINS" BRIEF_DOCS "Stores the location of mediastreamer2 plugins" FULL_DOCS "Stores the location of mediastreamer2 plugins")
+-	get_target_property(MEDIASTREAMER2_PLUGINS_LOCATION mediastreamer2 MS2_PLUGINS)
+-
+-
+-	include(FindPackageHandleStandardArgs)
+-	find_package_handle_standard_args(Mediastreamer2
+-		DEFAULT_MSG
+-		MEDIASTREAMER2_INCLUDE_DIRS MEDIASTREAMER2_LIBRARIES
+-	)
+-
+-	mark_as_advanced(MEDIASTREAMER2_INCLUDE_DIRS MEDIASTREAMER2_LIBRARIES)
+-
+-endif()
+diff --git a/cmake/FindOrtp.cmake b/cmake/FindOrtp.cmake
+deleted file mode 100644
+index 13121fb..0000000
+--- a/cmake/FindOrtp.cmake
++++ /dev/null
+@@ -1,43 +0,0 @@
+-############################################################################
+-# FindOrtp.cmake
+-# Copyright (C) 2023  Belledonne Communications, Grenoble France
+-#
+-############################################################################
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License
+-# as published by the Free Software Foundation; either version 2
+-# of the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-#
+-############################################################################
+-#
+-# - Find the ortp include files and library
+-#
+-#  ORTP_FOUND - system has lib ortp
+-#  ORTP_INCLUDE_DIRS - the ortp include directory
+-#  ORTP_LIBRARIES - The library needed to use ortp
+-
+-if(TARGET ortp)
+-
+-	set(ORTP_LIBRARIES ortp)
+-	get_target_property(ORTP_INCLUDE_DIRS ortp INTERFACE_INCLUDE_DIRECTORIES)
+-
+-
+-	include(FindPackageHandleStandardArgs)
+-	find_package_handle_standard_args(Ortp
+-		DEFAULT_MSG
+-		ORTP_INCLUDE_DIRS ORTP_LIBRARIES
+-	)
+-
+-	mark_as_advanced(ORTP_INCLUDE_DIRS ORTP_LIBRARIES)
+-
+-endif()
+-- 
+GitLab
+

@@ -1903,6 +1903,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/mosaicatcher-unbundle-htslib.patch	\
   %D%/packages/patches/mrrescue-support-love-11.patch		\
   %D%/packages/patches/mrustc-patches.patch			\
+  %D%/packages/patches/mswebrtc-b64-refactor.patch		\
+  %D%/packages/patches/mswebrtc-cmake.patch			\
   %D%/packages/patches/mtools-mformat-uninitialized.patch	\
   %D%/packages/patches/mupen64plus-ui-console-notice.patch	\
   %D%/packages/patches/musescore-fix-build.patch			\
