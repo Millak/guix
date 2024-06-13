@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,9 @@
 (define-module (gnu packages aspell)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix licenses)
   #:use-module (guix utils)
@@ -438,3 +442,43 @@ dictionaries, including personal ones.")
 European languages.")
     (home-page "https://www.cs.hmc.edu/~geoff/ispell.html")
     (license bsd-3)))
+
+;;; This is basically ispell but built with CMake, and which provides a CMake
+;;; config file.
+(define-public ispell-for-linphone
+  (let ((commit "05574fe160222c3d0b6283c1433c9b087271fad1")
+        (revision "0"))
+    (package
+      (inherit ispell)
+      (name "ispell-for-linphone")
+      ;; The version is captured in the ISPELL_VERSION variable in the
+      ;; CMakeLists.txt file at the root of the project.
+      (version (git-version "3.4.05" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.linphone.org/BC/public/external/ispell")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0shwbms6y0i18n2qnvjlbwfmzk5rydlp7wbf4dl1rn74r244p132"))
+                (patches (search-patches "ispell-for-linphone-cmake.patch"))))
+      (build-system cmake-build-system)
+      (arguments
+       (substitute-keyword-arguments (package-arguments ispell)
+         ((#:modules _ ''())
+          '((guix build cmake-build-system)
+            (guix build utils)
+            (srfi srfi-26)))
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-before 'configure 'really-configure
+                (assoc-ref %standard-phases 'configure))
+              (add-after 'configure 'install-headers
+                (lambda _
+                  (let ((include-dir (string-append #$output "/include/ISpell")))
+                    (with-directory-excursion "../source"
+                      (for-each (cut install-file <> include-dir)
+                                '("config.h" "defhash.h" "ispell.h"
+                                  "libispell.h" "local.h")))))))))))))
