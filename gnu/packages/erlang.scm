@@ -10,6 +10,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 wrobell <wrobell@riseup.net>
 ;;; Copyright © 2023 Tim Johann <t1m@phrogstar.de>
+;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -638,6 +639,29 @@ Erlang.")
                     "eunit_formatters" "getopt" "hex_core" "erlware_commons"
                     "parse_trans" "relx" "ssl_verify_fun" "providers"))))
          (delete 'configure)
+         ;; By default rebar3 produces escripts with embedded ZIP archives
+         ;; with files with current timestamps which is not suitable for
+         ;; reproducible builds. We fix it by setting predefined timestamps.
+         (add-before 'build 'make-escriptize-reproducible
+           (lambda _
+             (let ((escriptize "src/rebar_prv_escriptize.erl"))
+               (substitute* escriptize
+                 (("\\[dir_entries\\(filename:dirname\\(Filename1\\)\\),")
+                  (string-append "FilePath = filename:join(Dir, Filename),"
+                                 "{ok, FileInfo0} = file:read_file_info(FilePath),"
+                                 "DateTime = {{1970, 1, 1}, {0, 0, 1}},"
+                                 "FileInfo = FileInfo0#file_info{mtime = DateTime},"
+                                 "[dir_entries(filename:dirname(Filename1)),")))
+               (substitute* escriptize
+                 (((string-append
+                    "\\{Filename1, file_contents\\(filename:join\\(Dir, "
+                    "Filename\\)\\)\\}\\]."))
+                  "{Filename1, file_contents(FilePath), FileInfo}]."))
+               (substitute* escriptize
+                 (((string-append "\\[\\{FName,FBin\\} \\|\\| \\{FName,FBin\\} <- "
+                                  "Files, FBin =/= <<>>\\]\\."))
+                  (string-append "[{FName,FBin,FInfo} || {FName,FBin,FInfo} <- "
+                                 "Files, FBin =/= <<>>]."))))))
          (replace 'build
            (lambda _
              (setenv "HOME" (getcwd))
