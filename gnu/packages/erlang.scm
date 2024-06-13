@@ -480,13 +480,13 @@ specifications.")
 (define-public erlang-parse-trans
   (package
     (name "erlang-parse-trans")
-    (version "3.4.1")
+    (version "3.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "parse_trans" version))
        (sha256
-        (base32 "16p4c2xjrvz16kzpr9pmcvi6nxq6rwckqi9fp0ksibaxwxn402k2"))))
+        (base32 "1jnr4k93vgcwnphsvczkwgm0pvnfs51sns9fscr5ghxpwdyk89ac"))))
     (build-system rebar-build-system)
     (inputs
      (list erlang-getopt))
