@@ -587,13 +587,13 @@ a well configured release directory.")
 (define-public erlang-ssl-verify-fun
   (package
     (name "erlang-ssl-verify-fun")
-    (version "1.1.6")
+    (version "1.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ssl_verify_fun" version))
        (sha256
-        (base32 "1026l1z1jh25z8bfrhaw0ryk5gprhrpnirq877zqhg253x3x5c5x"))))
+        (base32 "1y37pj5q6gk1vrnwg1vraws9yihrv9g4133w2qq1sh1piw71jk7y"))))
     (build-system rebar-build-system)
     (home-page "https://github.com/deadtrickster/ssl_verify_fun.erl")
     (synopsis "SSL verification functions for Erlang")
