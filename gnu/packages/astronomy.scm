@@ -2410,18 +2410,25 @@ the easy construction of interactive matplotlib widget based animations.")
 (define-public python-ndcube
   (package
     (name "python-ndcube")
-    (version "2.2.0")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ndcube" version))
        (sha256
-        (base32 "1b3vbnm438j5jb48vilp145lq137fbrg1l4845rc55mz2p025x34"))))
+        (base32 "0d82xldinvjw4csql4w3k44ibprbz0b0g5ixq9a5f6c7zbvfc24l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; Break cycle: python-ndcube -> python-specutils -> python-ndcube, see
+      ;; <https://github.com/sunpy/ndcube/issues/733>.
+      #:test-flags #~(list "-k" "not test_rebin_specutils")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'break-cycle
+            (lambda _
+              (substitute* "ndcube/tests/test_ndcube.py"
+                (("from specutils import Spectrum1D") ""))))
           (add-before 'check 'set-home-env
             (lambda _
               ;; Tests require HOME to be set.
