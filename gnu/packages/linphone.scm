@@ -911,11 +911,12 @@ and video calls or instant messaging capabilities to an application.")
     (license license:gpl3+)))
 
 (define-public msopenh264
-  (let ((commit "88697cc95140017760d6da408cb0efdc5e86e40a")
+  ;; Unreleased commits are needed for the build to succeed.
+  (let ((commit "041b07a81f88f1dde2ebb7a1ea0b0e2ec281ab20")
         (revision "0"))
     (package
       (name "msopenh264")
-      (version (git-version "1.2.1" revision commit))
+      (version (git-version "5.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -924,14 +925,20 @@ and video calls or instant messaging capabilities to an application.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "10y3b6s934f2wbsf60b3p0g6hffizjqrj5in8l4sida2fjdxlwwy"))))
+          (base32 "0hwf8x5dc3iksdv61k4raswngyk3cyx8700v2rzrm296aw74f5r1"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:tests? #f                    ; No test target
-         #:configure-flags
-         (list "-DENABLE_STATIC=NO")))  ; Not required
-      (inputs
-       (list bctoolbox mediastreamer2 openh264 ortp))
+       (list
+        #:tests? #f                     ; No test target
+        #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-Mediastreamer2_PLUGINS_DIR
+              (lambda _
+                (substitute* "src/CMakeLists.txt"
+                  (("\\$\\{Mediastreamer2_PLUGINS_DIR}")
+                   (string-append #$output "/lib/mediastreamer/plugins"))))))))
+      (inputs (list bctoolbox mediastreamer2 openh264 ortp))
       (synopsis "Media Streamer H.264 Codec")
       (description "MsOpenH264 is an  H.264 encoder/decoder plugin for
  mediastreamer2 based on the openh264 library.")
