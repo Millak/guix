@@ -4047,7 +4047,16 @@ milliarcsecond).")
               (uri (pypi-uri "jwst" version))
               (sha256
                (base32
-                "0knl2x0z3djsln8mi3a4bkxjz49iwmnr1v6wwsk13zvpkfq21vv4"))))
+                "0knl2x0z3djsln8mi3a4bkxjz49iwmnr1v6wwsk13zvpkfq21vv4"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Replace reference to external configobj.
+                  (substitute* (find-files "." "\\.py$")
+                    (("from astropy.extern import configobj") "import configobj")
+                    (("from astropy.extern.configobj import validate") "import validate")
+                    (("from astropy.extern.configobj.configobj import ") "from configobj import ")
+                    (("from astropy.extern.configobj.validate import ") "from validate import "))))))
     (build-system pyproject-build-system)
     (arguments
      (list
