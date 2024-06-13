@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2014-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 # Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 #
@@ -355,17 +355,22 @@ for example in gnu/system/examples/*.tmpl; do
 	    # Skip it.
 	    continue
 	    ;;
+	*desktop*)
+	    # This image uses 'grub-efi-bootloader' so it needs a GPT
+	    # partition.
+	    options="-t efi-raw --system=x86_64-linux";;
 	*)
 	    options=""
 	    ;;
     esac
-    guix system -n disk-image $options "$example"
+    guix system -n image $options "$example"
 done
 
 # Make sure the desktop image can be built on major architectures.
 for system in x86_64-linux aarch64-linux
 do
-    guix system -n image -s "$system" gnu/system/examples/desktop.tmpl
+    guix system -n image -s "$system" -t efi-raw \
+	 gnu/system/examples/desktop.tmpl
 done
 
 # Verify that the images can be built.
