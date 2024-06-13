@@ -4024,6 +4024,7 @@ stretching and pitch scaling of audio.  This package contains the library.")
        (origin
          (method git-fetch)
          (uri (git-reference (url home-page) (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32
            "11srnzgpavcj6n70zjdm7488jzrprk71mg9dgr1sa6vwp575hf2m"))))
@@ -4254,6 +4255,7 @@ control functionality, or just for playing around with the sound effects.")
        (origin
          (method git-fetch)
          (uri (git-reference (url home-page) (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32
            "1aw2j1f10p8n4s197b1nd3g1rjvwbrrszc9gwsbwk01c6nb3nr9v"))))
