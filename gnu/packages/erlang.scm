@@ -604,7 +604,7 @@ Erlang.")
 (define-public rebar3
   (package
     (name "rebar3")
-    (version "3.18.0")
+    (version "3.23.0")
     (source
      (origin
        (method git-fetch)
@@ -613,7 +613,7 @@ Erlang.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09648hzc2mnjwf9klm20cg4hb5rn2xv2gmzcg98ffv37p5yfl327"))))
+        (base32 "0jinjx3mk5j1kczxmblixbvhf24q0yfwih2ggs11x5ykmrqpbckl"))))
     (build-system gnu-build-system)
     ;; TODO: remove vendored modules, install man-page, install lib(?)
     (arguments
@@ -644,7 +644,7 @@ Erlang.")
          ;; reproducible builds. We fix it by setting predefined timestamps.
          (add-before 'build 'make-escriptize-reproducible
            (lambda _
-             (let ((escriptize "src/rebar_prv_escriptize.erl"))
+             (let ((escriptize "apps/rebar/src/rebar_prv_escriptize.erl"))
                (substitute* escriptize
                  (("\\[dir_entries\\(filename:dirname\\(Filename1\\)\\),")
                   (string-append "FilePath = filename:join(Dir, Filename),"
