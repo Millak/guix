@@ -2696,19 +2696,14 @@ interest, and which require portability between platforms or ease of scripting."
 (define-public python-pyvo
   (package
     (name "python-pyvo")
-    (version "1.5.1")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyvo" version))
        (sha256
-        (base32 "0cm6agaf1gvc5bi95wx6a70ngj9vn95rx78fs59vlrmpww7q2807"))))
+        (base32 "0wcg3jhfwjd9gqs74mw63sgi1yhmgljx1bwk3mxn0p6fv924r8mq"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Disable one failing test, see
-      ;; <https://github.com/astropy/pyvo/issues/547>.
-      #:test-flags #~(list "-k" "not test_single_table_description")))
     (native-inputs
      (list python-pytest-astropy python-requests-mock python-setuptools-scm))
     (propagated-inputs
