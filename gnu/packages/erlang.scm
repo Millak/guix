@@ -332,13 +332,13 @@ On @emph{hex.pm}, this plugin was previously called @code{rebar_covertool}.")
 (define-public erlang-cth-readable
   (package
     (name "erlang-cth-readable")
-    (version "1.5.1")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "cth_readable" version))
        (sha256
-        (base32 "104xgybb6iciy6i28pyyrarqzliddi8kjyq43ajaav7y5si42rb8"))))
+        (base32 "16851qzf2mjgw36s2bx3bb4x2vm8fpg8jk3dz8ph1mai5dim47lh"))))
     (build-system rebar-build-system)
     (propagated-inputs
      (list erlang-cf))
