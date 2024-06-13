@@ -181,7 +181,10 @@
                     (share (string-append out "/share/")))
                (mkdir-p share)
                (with-directory-excursion share
-                 (invoke "tar" "xvf" manpages))))))))
+                 (invoke "tar" "xvf" manpages)))))
+         (add-after 'install-doc 'install-chunks
+           (lambda _
+             (invoke "make" "install-docs" "DOC_TARGETS=chunks"))))))
     (home-page "https://www.erlang.org/")
     (synopsis "The Erlang programming language")
     (description
