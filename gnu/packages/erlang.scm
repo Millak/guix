@@ -565,13 +565,13 @@ testing of stateful systems.")
 (define-public erlang-relx
   (package
     (name "erlang-relx")
-    (version "4.6.0")
+    (version "4.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "relx" version))
        (sha256
-        (base32 "02gmfx1vxg9m3mq4njsqhs4972l4nb8m5p1pdcf64g09ccf17y1g"))))
+        (base32 "1iamihsd3gi82sc7169rx5730drvgm0n4k7clg75pap79b6pgjqj"))))
     (build-system rebar-build-system)
     (propagated-inputs
      (list erlang-bbmustache))
