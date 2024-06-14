@@ -33,10 +33,10 @@
 
 (define-public drawterm
   (let ((revision "1")
-        (commit "c97fe4693f6112504d6f13fab46f7cc8b27685c1"))
+        (commit "f11139d4c918802a87730bc14d094670ee4ce572"))
     (package
       (name "drawterm")
-      (version (git-version "20210628" revision commit))
+      (version (git-version "20240703" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -45,7 +45,7 @@
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "059sl60ap6c9lz8k91k6bd34694a290wm0s93b2vfszzzv683spw"))))
+          (base32 "0ggh5g19899iq9bb5r03bvhamndyai4ylr3ajkbd02xkhz65fh5y"))))
       (build-system gnu-build-system)
       (arguments
        `(#:make-flags (list "CONF=unix"
