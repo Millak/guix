@@ -36,6 +36,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module ((guix utils) #:select (target-64bit?))
   #:use-module (guix packages)
@@ -56,6 +57,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
@@ -409,6 +411,33 @@ to SLURM.  Using DRMAA, grid applications builders, portal developers and ISVs
 can use the same high-level API to link their software with different
 cluster/resource management systems.")
     (license license:gpl3+)))
+
+(define-public python-schwimmbad
+  (package
+    (name "python-schwimmbad")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "schwimmbad" version))
+       (sha256
+        (base32 "1aac1rswb0r0vzbxvjj2jyx5j0vqyjj7mygc71n9zbkpmr8m1rpg"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-dill
+           python-joblib
+           python-mpi4py
+           python-multiprocess))
+    (native-inputs
+     (list python-hatch-vcs python-hatchling python-pytest))
+    (home-page "https://github.com/adrn/schwimmbad")
+    (synopsis "Common interface for parallel processing pools")
+    (description
+     "@code{schwimmbad} provides a uniform interface to parallel processing
+pools and enables switching easily between local development (e.g., serial
+processing or with @code{multiprocessing}) and deployment on a cluster or
+supercomputer (via, e.g., MPI or JobLib).")
+    (license license:expat)))
 
 (define-public python-slurm-magic
   (let ((commit "73dd1a2b85799f7dae4b3f1cd9027536eff0c4d7")
