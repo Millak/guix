@@ -25,7 +25,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 luhux <luhux@outlook.com>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2021, 2022 Raphaël Mélotte <raphael.melotte@mind.be>
+;;; Copyright © 2021, 2022, 2024 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
@@ -102,6 +102,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
@@ -1498,7 +1499,7 @@ terminal are replicated to the others.
 (define-public tio
   (package
     (name "tio")
-    (version "2.7")
+    (version "3.3")
     (source
      (origin
        (method url-fetch)
@@ -1506,10 +1507,10 @@ terminal are replicated to the others.
              "https://github.com/tio/tio/releases/download/v"
              version "/tio-" version ".tar.xz"))
        (sha256
-        (base32 "19fswmyiwlify269h6nwdlbnhq4q7i8442xg81jinb4chhsf93xz"))))
+        (base32 "13favpvl343nbc0h26snn53lddwbznvd106rvvinnc12x6r3arjh"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list libinih))
+    (inputs (list glib lua))
     (home-page "https://tio.github.io/")
     (synopsis "Simple TTY terminal I/O application")
     (description "tio is a simple TTY terminal application which features a
