@@ -12376,10 +12376,10 @@ JavaScript code.")
   (sbcl-package->ecl-package sbcl-css-lite))
 
 (define-public sbcl-ctype
-  (let ((commit "9b824aa75d7ceb9f3504590b09c6d8a57269f026"))
+  (let ((commit "c514623a0cd5c4340ab4ab13d90509f15f09c47a"))
     (package
       (name "sbcl-ctype")
-      (version (git-version "0.0.0" "2" commit))
+      (version (git-version "0.0.0" "3" commit))
       (source
        (origin
          (method git-fetch)
@@ -12388,7 +12388,7 @@ JavaScript code.")
                (commit commit)))
          (file-name (git-file-name "cl-ctype" version))
          (sha256
-          (base32 "00d82v7hb7vii6gaaaa7ykzl70hga93laz7w9z1hhdl3z7zb473a"))))
+          (base32 "0qnssrjssb7258i3a1s1bv3z6plx4pzrkg65i8an25bvwrjwpvqv"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria))
