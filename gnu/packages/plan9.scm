@@ -28,7 +28,11 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
 
 (define-public drawterm
@@ -70,6 +74,20 @@
 Plan 9 systems.  It behaves like a Plan 9 kernel and will attempt to
 reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
       (license license:expat))))
+
+(define-public drawterm-wayland
+  (package
+    (inherit drawterm)
+    (name "drawterm-wayland")
+    (arguments
+     (substitute-keyword-arguments (package-arguments drawterm)
+       ((#:make-flags _)
+        `(list "CONF=linux"
+               ,(string-append "CC=" (cc-for-target))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libxkbcommon pipewire wayland wayland-protocols wlr-protocols))))
 
 (define-public plan9port
   ;; no releases
