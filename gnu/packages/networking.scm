@@ -4581,7 +4581,7 @@ network.")
 (define-public ngtcp2
   (package
     (name "ngtcp2")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
@@ -4589,7 +4589,7 @@ network.")
                            "releases/download/v" version "/"
                            "ngtcp2-" version ".tar.xz"))
        (sha256
-        (base32 "0zw5vd1yjfh9j4gl3ixisp495fp9g7qxn1kxkc1dc4v3ps63ch1a"))))
+        (base32 "0fh2c0iafjihvg7cb2kkhxzs0gvlz4phczqil61ckhk9sd15lmrf"))))
     (build-system gnu-build-system)
     (arguments
      (list
