@@ -1545,6 +1545,38 @@ region of practical equivalence (rope), or that the second classifier has
 higher scores.")
     (license license:expat)))
 
+(define-public python-fast-histogram
+  (package
+    (name "python-fast-histogram")
+    (version "0.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fast_histogram" version))
+       (sha256
+        (base32 "1sk9xa85cgm4sylzblwv3qr2dmm0ic06zkwxqa2xlazjiawp629r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-hypothesis python-pytest))
+    (home-page "https://github.com/astrofrog/fast-histogram")
+    (synopsis "Fast simple 1D and 2D histograms")
+    (description
+     "The fast-histogram mini-package aims to provide simple and fast
+histogram functions for regular bins that don't compromise on performance. It
+doesn't do anything complicated - it just implements a simple histogram
+algorithm in C and keeps it simple. The aim is to have functions that are fast
+but also robust and reliable. The result is a 1D histogram function here that
+is 7-15x faster than @code{numpy.histogram}, and a 2D histogram function that
+is 20-25x faster than @code{numpy.histogram2d}.")
+    (license license:bsd-3)))
+
 (define-public python-fastcluster
   (package
     (name "python-fastcluster")
