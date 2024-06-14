@@ -12,6 +12,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Antero Mejr <mail@antr.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -835,6 +836,28 @@ parts of files defined using cut-off points or regular expressions.")
     (synopsis "Hatch plugin for versioning with your preferred VCS")
     (description "This package is a plugin for Hatch that uses your preferred
 version control system (like Git) to determine project versions.")
+    (license license:expat)))
+
+(define-public python-installer
+  (package
+    (name "python-installer")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "installer" version))
+       (sha256
+        (base32 "0cdnqh3a3amw8k4s1pzfjh0hpvzw4pczgl702s1b16r82qqkwvd2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;avoid extra test dependencies
+    (native-inputs
+     (list python-flit-core))
+    (home-page "https://installer.rtfd.io/")
+    (synopsis "Installer library for Python wheels")
+    (description
+     "This package provides a low-level library for installing a Python
+package from a wheel distribution.  It provides basic functionality and
+abstractions for handling wheels and installing packages from wheels.")
     (license license:expat)))
 
 (define-public python-pdm-backend
