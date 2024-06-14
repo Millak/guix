@@ -328,6 +328,7 @@
                            (when (and (file-exists? (string-append bin
                                                                    "/guile"))
                                       (file-exists? "var/guix/db/db.sqlite")
+                                      (file-is-directory? "tmp")
                                       (string=? (string-append #$%bootstrap-guile "/bin")
                                                 (pk 'binlink (readlink bin)))
 
