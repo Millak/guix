@@ -1,0 +1,24 @@
+Retrieved from: https://git.pld-linux.org/?p=packages/linphone.git;a=blob_plain;f=linphone-ispell.patch;h=67bbae61835c7fa813edcc006b5b67901ca42abe;hb=HEAD
+
+--- linphone-desktop-5.2.2/linphone-app/src/components/other/spell-checker/SpellCheckerLinux.cpp.orig	2024-03-11 18:30:37.000000000 +0100
++++ linphone-desktop-5.2.2/linphone-app/src/components/other/spell-checker/SpellCheckerLinux.cpp	2024-03-31 18:17:09.041543370 +0200
+@@ -20,7 +20,7 @@
+ 
+ 
+ #include "SpellChecker.hpp"
+-#include <libispell.h>
++#include <ISpell/libispell.h>
+ #include "app/paths/Paths.hpp"
+ #include <unistd.h>
+ #include <cstdio>
+--- linphone-desktop-5.2.2/linphone-app/cmake_builder/linphone_package/CMakeLists.txt.orig	2024-04-01 08:06:42.275231951 +0200
++++ linphone-desktop-5.2.2/linphone-app/cmake_builder/linphone_package/CMakeLists.txt	2024-04-01 17:44:16.670826307 +0200
+@@ -338,8 +338,6 @@ else()# Not Windows and Apple
+ 	if(ENABLE_APP_WEBVIEW)
+ 		install(FILES "${QT_PATH}/plugins/webview/libqtwebview_webengine.so" DESTINATION "plugins/webview")	#Workaround : linuxdeploy doesn't deploy it
+ 	endif()
+-# ISPELL
+-	install(DIRECTORY "${ISpell_SOURCE_DIR}/ispell_dictionaries" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${EXECUTABLE_NAME}" USE_SOURCE_PERMISSIONS)
+ endif ()
+ 
+ 

@@ -1,7 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;;
 ;;; Copyright © 2020, 2021 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
@@ -25,6 +24,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages aidc)
+  #:use-module (gnu packages aspell)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages cpp)
@@ -815,7 +815,7 @@ and video calls or instant messaging capabilities to an application.")
 (define-public linphone-desktop
   (package
     (name "linphone-desktop")
-    (version "5.0.14")
+    (version "5.2.6")
     (source
      (origin
        (method git-fetch)
@@ -824,29 +824,30 @@ and video calls or instant messaging capabilities to an application.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0glrfsp087ni5hn6x6p4f6y63r4nyp061yyy0rfgddbxkzdqi2j1"))
-       (patches (search-patches "linphone-desktop-without-sdk.patch"))))
+        (base32 "06qfmgnsyaw1mdhd04pibsyfchy1bj15zvy36wz82g5dx3c5yj17"))
+       (patches
+        (search-patches "linphone-desktop-cmake-belcard.patch"
+                        "linphone-desktop-cmake-find-modules.patch"
+                        "linphone-desktop-ispell.patch"
+                        "linphone-desktop-qtkeychain.patch"))))
     (build-system qt-build-system)
     (outputs '("out" "debug"))
     (arguments
      (list
       #:tests? #f                       ; No test target
       #:configure-flags
-      #~(list (string-append "-DFULL_VERSION=" #$version)
-              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+      #~(list (string-append "-DLINPHONEAPP_VERSION=" #$version)
               (string-append "-DCMAKE_INSTALL_BINDIR=" #$output "/bin")
               (string-append "-DCMAKE_INSTALL_DATAROOTDIR=" #$output "/share")
+              (string-append "-DCMAKE_INSTALL_INCLUDEDIR=" #$output "/include")
               (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib")
               "-DENABLE_UPDATE_CHECK=NO"
               "-DENABLE_DAEMON=YES"
-              "-DENABLE_CONSOLE_UI=YES")
+              "-DENABLE_CONSOLE_UI=YES"
+              "-DLinphoneCxx_TARGET=liblinphone++"
+              "-DLINPHONE_QT_ONLY=YES") ;avoid building linphone SDK
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'pre-configure
-            (lambda _
-              (make-file-writable "linphone-app/linphoneqt_version.cmake")
-              (substitute* "linphone-app/linphoneqt_version.cmake"
-                (("\\$\\{GUIX-SET-VERSION\\}") #$version))))
           (add-before 'install 'pre-install
             (lambda _
               (mkdir-p (string-append #$output "/share/linphone"))
@@ -873,18 +874,19 @@ and video calls or instant messaging capabilities to an application.")
                 (mkdir-p (dirname grammar-dest))
                 (symlink (string-append liblinphone "/share/belr/grammars")
                          grammar-dest)))))))
-    (native-inputs
-     (list pkg-config qttools-5))
+    (native-inputs (list pkg-config qttools-5))
     (inputs
      (list bctoolbox
            belcard
-           belr
+           ispell-for-linphone
            liblinphone
            mediastreamer2
            ortp
            qtbase-5
            qtdeclarative-5
            qtgraphicaleffects
+           qtkeychain
+           qtmultimedia-5
            qtquickcontrols-5
            qtquickcontrols2-5
            qtsvg-5

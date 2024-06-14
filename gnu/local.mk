@@ -1807,7 +1807,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/lierolibre-remove-arch-warning.patch	\
   %D%/packages/patches/lierolibre-try-building-other-arch.patch	\
   %D%/packages/patches/libcdio-glibc-compat.patch		\
-  %D%/packages/patches/linphone-desktop-without-sdk.patch	\
+  %D%/packages/patches/linphone-desktop-ispell.patch	\
+  %D%/packages/patches/linphone-desktop-qtkeychain.patch	\
   %D%/packages/patches/linux-libre-infodocs-target.patch	\
   %D%/packages/patches/linux-libre-support-for-Pinebook-Pro.patch \
   %D%/packages/patches/linux-libre-arm64-mnt-reform-revert-phy-rockchip-samsung.patch	\

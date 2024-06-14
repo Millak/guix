@@ -1,0 +1,39 @@
+From 0216b81c46f2612b8acf33b1a7c5886db25f45ff Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Date: Thu, 13 Jun 2024 16:04:29 -0400
+Subject: [PATCH] cmake: Fix BelCard cmake module name.
+
+* linphone-app/CMakeLists.txt: cmake: Fix BelCard cmake module name.
+
+Fixes: <https://gitlab.linphone.org/BC/public/linphone-desktop/-/issues/32>
+---
+ linphone-app/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/linphone-app/CMakeLists.txt b/linphone-app/CMakeLists.txt
+index d40842fa..f1c225a5 100644
+--- a/linphone-app/CMakeLists.txt
++++ b/linphone-app/CMakeLists.txt
+@@ -24,7 +24,7 @@ cmake_minimum_required(VERSION 3.22)
+ 
+ 
+ #Linphone targets
+-set(LINPHONE_PACKAGES LinphoneCxx Mediastreamer2 Belcard LibLinphone)
++set(LINPHONE_PACKAGES LinphoneCxx Mediastreamer2 BelCard LibLinphone)
+ 
+ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+ 
+@@ -115,7 +115,7 @@ set(PLUGIN_TARGETS ${LinphoneCxx_TARGET})
+ set(APP_TARGETS ${LinphoneCxx_TARGET}
+ 				${BCToolbox_TARGET}#Logger/App
+ 				${Mediastreamer2_TARGET}#MediastreamerUtils
+-				${Belcard_TARGET}#VCard Model
++				${BelCard_TARGET}#VCard Model
+ 				${LibLinphone_TARGET})#MediastreamerUtils
+ 
+ ####################################
+
+base-commit: e34beffe06802efcc5904d5059006ac0d2f7ef32
+-- 
+2.45.1
+

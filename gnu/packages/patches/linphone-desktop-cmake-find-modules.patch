@@ -1,0 +1,422 @@
+From 25bdfe9ad3a33e1db6e5db8290b3a5112f4d621e Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Date: Fri, 14 Jun 2024 22:33:58 -0400
+Subject: [PATCH] cmake: Delete most CMake find modules.
+
+They do not appear to bring any value compared to the config files
+installed by each project, and cause issues like the following, at
+least when using system libraries:
+
+	-- Trying to find LibLinphone
+	CMake Error at linphone-app/cmake/FindLibLinphone.cmake:31 (include):
+	  include could not find requested file:
+
+		LibLinphoneTargets
+	Call Stack (most recent call first):
+	  linphone-app/CMakeLists.txt:108 (find_package)
+
+Fixes: <https://gitlab.linphone.org/BC/public/linphone-desktop/-/issues/30>
+---
+ linphone-app/cmake/FindBCToolbox.cmake      | 60 ---------------------
+ linphone-app/cmake/FindBelcard.cmake        | 44 ---------------
+ linphone-app/cmake/FindISpell.cmake         | 47 ----------------
+ linphone-app/cmake/FindLibLinphone.cmake    | 46 ----------------
+ linphone-app/cmake/FindLinphoneCxx.cmake    | 45 ----------------
+ linphone-app/cmake/FindMediastreamer2.cmake | 49 -----------------
+ linphone-app/cmake/FindQtKeychain.cmake     | 48 -----------------
+ 7 files changed, 339 deletions(-)
+ delete mode 100644 linphone-app/cmake/FindBCToolbox.cmake
+ delete mode 100644 linphone-app/cmake/FindBelcard.cmake
+ delete mode 100644 linphone-app/cmake/FindISpell.cmake
+ delete mode 100644 linphone-app/cmake/FindLibLinphone.cmake
+ delete mode 100644 linphone-app/cmake/FindLinphoneCxx.cmake
+ delete mode 100644 linphone-app/cmake/FindMediastreamer2.cmake
+ delete mode 100644 linphone-app/cmake/FindQtKeychain.cmake
+
+diff --git a/linphone-app/cmake/FindBCToolbox.cmake b/linphone-app/cmake/FindBCToolbox.cmake
+deleted file mode 100644
+index 707cc147..00000000
+--- a/linphone-app/cmake/FindBCToolbox.cmake
++++ /dev/null
+@@ -1,60 +0,0 @@
+-############################################################################
+-# FindBctoolbox.cmake
+-# Copyright (C) 2023  Belledonne Communications, Grenoble France
+-#
+-############################################################################
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License
+-# as published by the Free Software Foundation; either version 2
+-# of the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-#
+-############################################################################
+-
+-# This module will set the following variables in your project:
+-#
+-#  BCToolbox_FOUND - The bctoolbox library has been found
+-#  BCToolbox_TARGET - The name of the CMake target for the bctoolbox library
+-#  BCToolbox_CMAKE_DIR - The bctoolbox CMake directory
+-#  BCToolbox_CMAKE_UTILS - The path to the bctoolbox CMake utils script
+-#  BCToolbox_tester_FOUND - The bctoolbox-tester library has been found
+-#  BCToolbox_tester_TARGET - The name of the CMake target for the bctoolbox-tester library
+-
+-
+-if(NOT TARGET bctoolbox)
+-    set(EXPORT_PATH ${LINPHONE_OUTPUT_DIR})
+-    include(GNUInstallDirs)
+-    set(BCToolbox_CMAKE_DIR ${EXPORT_PATH}/${CMAKE_INSTALL_DATADIR}/bctoolbox/cmake)
+-    include(${BCToolbox_CMAKE_DIR}/bctoolboxTargets.cmake)
+-endif()
+-
+-set(_BCToolbox_REQUIRED_VARS BCToolbox_TARGET BCToolbox_CMAKE_DIR BCToolbox_CMAKE_UTILS)
+-set(_BCToolbox_CACHE_VARS ${_BCToolbox_REQUIRED_VARS})
+-
+-if(TARGET bctoolbox)
+-	set(BCToolbox_TARGET bctoolbox)
+-	get_target_property(_BCToolbox_SOURCE_DIR ${BCToolbox_TARGET} SOURCE_DIR)
+-	set(BCToolbox_CMAKE_DIR "${_BCToolbox_SOURCE_DIR}/../cmake")
+-	set(BCToolbox_CMAKE_UTILS "${BCToolbox_CMAKE_DIR}/BCToolboxCMakeUtils.cmake")
+-	if(TARGET bctoolbox-tester)
+-		set(BCToolbox_tester_FOUND TRUE)
+-		set(BCToolbox_tester_TARGET bctoolbox-tester)
+-		list(APPEND _BCToolbox_CACHE_VARS BCToolbox_tester_TARGET)
+-	endif()
+-endif()
+-
+-include(FindPackageHandleStandardArgs)
+-find_package_handle_standard_args(BCToolbox
+-	REQUIRED_VARS ${_BCToolbox_REQUIRED_VARS}
+-	HANDLE_COMPONENTS
+-)
+-mark_as_advanced(${_BCToolbox_CACHE_VARS})
+diff --git a/linphone-app/cmake/FindBelcard.cmake b/linphone-app/cmake/FindBelcard.cmake
+deleted file mode 100644
+index ce89497c..00000000
+--- a/linphone-app/cmake/FindBelcard.cmake
++++ /dev/null
+@@ -1,44 +0,0 @@
+-############################################################################
+-# FindBelcard.cmake
+-# Copyright (C) 2023  Belledonne Communications, Grenoble France
+-#
+-############################################################################
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License
+-# as published by the Free Software Foundation; either version 2
+-# of the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-#
+-############################################################################
+-#
+-#  Belcard_FOUND - The liblinphone library has been found
+-#  Belcard_TARGET - The name of the CMake target
+-
+-if(NOT TARGET belcard)
+-    set(EXPORT_PATH ${LINPHONE_OUTPUT_DIR})
+-    include(GNUInstallDirs)
+-    include(${EXPORT_PATH}/${CMAKE_INSTALL_DATADIR}/Belcard/cmake/BelcardTargets.cmake)
+-endif()
+-
+-set(_Belcard_REQUIRED_VARS Belcard_TARGET)
+-set(_Belcard_CACHE_VARS ${_Belcard_REQUIRED_VARS})
+-
+-if(TARGET belcard)
+-	set(Belcard_TARGET belcard)
+-endif()
+-
+-include(FindPackageHandleStandardArgs)
+-find_package_handle_standard_args(Belcard
+-	REQUIRED_VARS ${_Belcard_REQUIRED_VARS}
+-	HANDLE_COMPONENTS
+-)
+-mark_as_advanced(${_Belcard_CACHE_VARS})
+diff --git a/linphone-app/cmake/FindISpell.cmake b/linphone-app/cmake/FindISpell.cmake
+deleted file mode 100644
+index 7a9269fa..00000000
+--- a/linphone-app/cmake/FindISpell.cmake
++++ /dev/null
+@@ -1,47 +0,0 @@
+-############################################################################
+-# FindISpell.cmake
+-# Copyright (C) 2023  Belledonne Communications, Grenoble France
+-#
+-############################################################################
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License
+-# as published by the Free Software Foundation; either version 2
+-# of the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-#
+-############################################################################
+-#
+-# - Find the ispell include files and library
+-#
+-#  ISpell_FOUND - system has lib ispell
+-#  ISpell_SOURCE_DIR - the ispell include directory
+-#  ISpell_BINARY_DIR - the ispell library directory
+-
+-if(NOT TARGET ${ISPELL_TARGET_NAME})
+-    set(EXPORT_PATH ${ISPELL_OUTPUT_DIR})
+-    include(GNUInstallDirs)
+-    include(${EXPORT_PATH}/${CMAKE_INSTALL_LIBDIR}/cmake/${ISPELL_TARGET_NAME}/${ISPELL_TARGET_NAME}Config.cmake)
+-endif()
+-
+-set(_ISpell_REQUIRED_VARS ISpell_TARGET)
+-set(_ISpell_CACHE_VARS ${_ISpell_REQUIRED_VARS})
+-
+-if(TARGET ${ISPELL_TARGET_NAME})
+-	set(ISpell_TARGET ${ISPELL_TARGET_NAME})
+-endif()
+-
+-include(FindPackageHandleStandardArgs)
+-find_package_handle_standard_args(ISpell
+-	REQUIRED_VARS ${_ISpell_REQUIRED_VARS}
+-	HANDLE_COMPONENTS
+-)
+-mark_as_advanced(${_ISpell_CACHE_VARS})
+diff --git a/linphone-app/cmake/FindLibLinphone.cmake b/linphone-app/cmake/FindLibLinphone.cmake
+deleted file mode 100644
+index 826bb0d8..00000000
+--- a/linphone-app/cmake/FindLibLinphone.cmake
++++ /dev/null
+@@ -1,46 +0,0 @@
+-############################################################################
+-# FindLinphone.cmake
+-# Copyright (C) 2023  Belledonne Communications, Grenoble France
+-#
+-############################################################################
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License
+-# as published by the Free Software Foundation; either version 2
+-# of the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-#
+-############################################################################
+-#
+-#  LibLinphone_FOUND - The liblinphone library has been found
+-#  LibLinphone_TARGET - The name of the CMake target for the liblinphone library
+-#  LibLinphone_PLUGINS_DIR - The directory where to install liblinphone plugins
+-
+-if(NOT TARGET liblinphone)
+-    set(EXPORT_PATH ${LINPHONE_OUTPUT_DIR})
+-    include(GNUInstallDirs)
+-    include(${EXPORT_PATH}/${CMAKE_INSTALL_DATADIR}/linphone/cmake/linphoneTargets.cmake)
+-endif()
+-
+-set(_LibLinphone_REQUIRED_VARS LibLinphone_TARGET LibLinphone_PLUGINS_DIR)
+-set(_LibLinphone_CACHE_VARS ${_LibLinphone_REQUIRED_VARS})
+-
+-if(TARGET liblinphone)
+-	set(LibLinphone_TARGET liblinphone)
+-	get_target_property(LibLinphone_PLUGINS_DIR ${LibLinphone_TARGET} LIBLINPHONE_PLUGINS_DIR)
+-endif()
+-
+-include(FindPackageHandleStandardArgs)
+-find_package_handle_standard_args(LibLinphone
+-	REQUIRED_VARS ${_LibLinphone_REQUIRED_VARS}
+-	HANDLE_COMPONENTS
+-)
+-mark_as_advanced(${_LibLinphone_CACHE_VARS})
+diff --git a/linphone-app/cmake/FindLinphoneCxx.cmake b/linphone-app/cmake/FindLinphoneCxx.cmake
+deleted file mode 100644
+index 0f81fe20..00000000
+--- a/linphone-app/cmake/FindLinphoneCxx.cmake
++++ /dev/null
+@@ -1,45 +0,0 @@
+-############################################################################
+-# FindLinphoneCxx.cmake
+-# Copyright (C) 2023  Belledonne Communications, Grenoble France
+-#
+-############################################################################
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License
+-# as published by the Free Software Foundation; either version 2
+-# of the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-#
+-############################################################################
+-#
+-#  LinphoneCxx_FOUND - The liblinphone library has been found
+-#  LinphoneCxx_TARGET - The name of the CMake target for the liblinphone library
+-
+-if(NOT TARGET liblinphone++)
+-    set(EXPORT_PATH ${LINPHONE_OUTPUT_DIR})
+-    include(GNUInstallDirs)
+-    include(${EXPORT_PATH}/${CMAKE_INSTALL_DATADIR}/LinphoneCxx/cmake/LinphoneCxxTargets.cmake)
+-endif()
+-
+-set(_LinphoneCxx_REQUIRED_VARS LinphoneCxx_TARGET)
+-set(_LinphoneCxx_CACHE_VARS ${_LinphoneCxx_REQUIRED_VARS})
+-
+-if(TARGET liblinphone++)
+-	set(LinphoneCxx_TARGET liblinphone++)
+-endif()
+-
+-include(FindPackageHandleStandardArgs)
+-find_package_handle_standard_args(LinphoneCxx
+-	REQUIRED_VARS ${_LinphoneCxx_REQUIRED_VARS}
+-	HANDLE_COMPONENTS
+-)
+-mark_as_advanced(${_LinphoneCxx_CACHE_VARS})
+-
+diff --git a/linphone-app/cmake/FindMediastreamer2.cmake b/linphone-app/cmake/FindMediastreamer2.cmake
+deleted file mode 100644
+index dc41f187..00000000
+--- a/linphone-app/cmake/FindMediastreamer2.cmake
++++ /dev/null
+@@ -1,49 +0,0 @@
+-############################################################################
+-# FindMediastreamer2.cmake
+-# Copyright (C) 2023  Belledonne Communications, Grenoble France
+-#
+-############################################################################
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License
+-# as published by the Free Software Foundation; either version 2
+-# of the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-#
+-############################################################################
+-#
+-# This module will set the following variables in your project:
+-#
+-#  Mediastreamer2_FOUND - The mediastreamer2 library has been found
+-#  Mediastreamer2_TARGET - The name of the CMake target for the mediastreamer2 library
+-#  Mediastreamer2_PLUGINS_DIR - The directory where to install mediastreamer2 plugins
+-
+-if(NOT TARGET mediastreamer2)
+-    set(EXPORT_PATH ${LINPHONE_OUTPUT_DIR})
+-    include(GNUInstallDirs)
+-    include(${EXPORT_PATH}/${CMAKE_INSTALL_DATADIR}/Mediastreamer2/cmake/Mediastreamer2Targets.cmake)
+-endif()
+-
+-set(_Mediastreamer2_REQUIRED_VARS Mediastreamer2_TARGET Mediastreamer2_PLUGINS_DIR)
+-set(_Mediastreamer2_CACHE_VARS ${_Mediastreamer2_REQUIRED_VARS})
+-
+-if(TARGET mediastreamer2)
+-	set(Mediastreamer2_TARGET mediastreamer2)
+-	get_target_property(Mediastreamer2_PLUGINS_DIR ${Mediastreamer2_TARGET} MS2_PLUGINS_DIR)
+-endif()
+-
+-include(FindPackageHandleStandardArgs)
+-find_package_handle_standard_args(Mediastreamer2
+-	REQUIRED_VARS ${_Mediastreamer2_REQUIRED_VARS}
+-	HANDLE_COMPONENTS
+-)
+-mark_as_advanced(${_Mediastreamer2_CACHE_VARS})
+-
+diff --git a/linphone-app/cmake/FindQtKeychain.cmake b/linphone-app/cmake/FindQtKeychain.cmake
+deleted file mode 100644
+index 9b7911aa..00000000
+--- a/linphone-app/cmake/FindQtKeychain.cmake
++++ /dev/null
+@@ -1,48 +0,0 @@
+-############################################################################
+-# FindQtKeychain.cmake
+-# Copyright (C) 2023  Belledonne Communications, Grenoble France
+-#
+-############################################################################
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License
+-# as published by the Free Software Foundation; either version 2
+-# of the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-#
+-############################################################################
+-#
+-# - Find the linphonecxx include files and library
+-#
+-#  QtKeychain_FOUND - system has lib linphonecxx
+-#  QtKeychain_INCLUDE_DIRS - the linphonecxx include directory
+-#  QtKeychain_LIBRARIES - The library needed to use linphonecxx
+-if(NOT TARGET ${QTKEYCHAIN_TARGET_NAME})
+-    set(EXPORT_PATH ${QTKEYCHAIN_OUTPUT_DIR})
+-    include(GNUInstallDirs)
+-    include(${EXPORT_PATH}/${CMAKE_INSTALL_LIBDIR}/cmake/${QTKEYCHAIN_TARGET_NAME}/${QTKEYCHAIN_TARGET_NAME}Config.cmake)
+-endif()
+-
+-set(_QtKeychain_REQUIRED_VARS QtKeychain_TARGET)
+-set(_QtKeychain_CACHE_VARS ${_QtKeychain_REQUIRED_VARS})
+-
+-if(TARGET ${QTKEYCHAIN_TARGET_NAME})
+-	set(QtKeychain_TARGET ${QTKEYCHAIN_TARGET_NAME})
+-	set(QtKeychain_USE_BUILD_INTERFACE TRUE)
+-endif()
+-
+-include(FindPackageHandleStandardArgs)
+-find_package_handle_standard_args(QtKeychain
+-	REQUIRED_VARS ${_QtKeychain_REQUIRED_VARS}
+-	HANDLE_COMPONENTS
+-)
+-mark_as_advanced(${_QtKeychain_CACHE_VARS})
+-
+
+base-commit: d69e033508265f756fb47b39b76b7d589be159c0
+prerequisite-patch-id: 1df5d6e9367036cd8ce918e1f3e3d7b3661f73c2
+-- 
+2.45.1
+
