@@ -5803,7 +5803,8 @@ The drivers officially supported by @code{libdbi} are:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12aq7pama96l2c1kmfkclb4bvrsxs9a8ppgk5gmzw45w2lg35i0y"))))
+                "12aq7pama96l2c1kmfkclb4bvrsxs9a8ppgk5gmzw45w2lg35i0y"))
+              (patches (search-patches "soci-mysql-ddl-types.patch"))))
     (build-system cmake-build-system)
     (propagated-inputs
      ;; Headers of soci has include-references to headers of these inputs.

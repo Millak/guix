@@ -1,0 +1,15 @@
+Description: Add two unusual column type entries to make liblinphone work
+Author: Dennis Filder <d.filder@web.de>
+Bug-Debian: https://bugs.debian.org/984534
+Last-Update: 2021-03-10
+--- a/src/backends/sqlite3/statement.cpp
++++ b/src/backends/sqlite3/statement.cpp
+@@ -440,6 +440,8 @@
+     m["mediumint"]          = dt_integer;
+     m["smallint"]           = dt_integer;
+     m["tinyint"]            = dt_integer;
++    m["tinyintunsigned"]    = dt_integer;
++    m["intunsigned"]        = dt_integer;
+ 
+     // dt_long_long
+     m["bigint"]             = dt_long_long;
