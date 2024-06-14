@@ -138,3 +138,31 @@ CID}).")
 well-established cryptographic hash functions, addressing size + encoding
 considerations.")
       (license (list license:expat license:cc-by-sa3.0)))))
+
+(define-public specification-specreduce-data
+  (let ((commit "dcba1c601348ee3a5797ae2d84a068d83393058e")
+        (revision "0"))
+    (package
+      (name "specification-specreduce-data")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/astropy/specreduce-data")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1c6mrjfykkfbbyg489h7czr65nz6bcb3gszz5xa2cg2ccs00m8ii"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan '(("specreduce_data/" "share/specreduce_data//"))
+         #:phases (modify-phases %standard-phases
+                    (delete 'strip))))
+      (home-page "https://specreduce.readthedocs.io/")
+      (synopsis "Reference and calibration data for the reducing optical/IR spectra")
+      (description
+       "This package provides a general reference and calibration data for
+spectroscopic data reduction (e.g. standard star spectra, atmospheric
+extinction curves, line lists for calibration lamps).")
+      (license license:bsd-3))))
