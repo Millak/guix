@@ -28111,51 +28111,51 @@ uniform interface to them all.")
   (sbcl-package->ecl-package sbcl-trees))
 
 (define-public sbcl-triads
-  (let ((commit "840b025bf3d65cc5eaead4542a02a3ca6d77c2b6")
-        (revision "0"))
-    (package
-      (name "sbcl-triads")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/charJe/triads")
-               (commit commit)))
-         (file-name (git-file-name "cl-triads" version))
-         (sha256
-          (base32 "146mwshynhdw82m2nxrcjvf1nk0z3fn6ywcd2vqxkly5qricc53w"))))
-      (build-system asdf-build-system/sbcl)
-      (outputs '("out" "bin"))
-      (arguments
-       '(#:asd-systems '("charje.triads")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'create-asdf-configuration 'build-binary
-             (lambda* (#:key outputs #:allow-other-keys)
-               (setenv "HOME" (getcwd))
-               (invoke
-                "sbcl" "--eval" "(require :asdf)" "--eval"
-                (format
-                 #f "~S"
-                 `(progn
-                   (require "charje.triads"
-                            ,(string-append (getcwd) "/charje.triads.asd"))
-                   (asdf:make "charje.triads"))))
-               (install-file
-                (string-append (getcwd) "/triads")
-                (string-append (assoc-ref outputs "bin") "/bin")))))))
-      (inputs
-       (list sbcl-cl-str
-             sbcl-serapeum
-             sbcl-trivia))
-      (home-page "https://github.com/charJe/triads")
-      (synopsis "Music composition tool to convert roman numerals into triads")
-      (description "Triads is a simple command line tool that reads roman
+  (package
+    (name "sbcl-triads")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~charje/triads")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-triads" version))
+       (sha256
+        (base32 "0s47rcp3karml5b06g98adjr2wxn6y9p9bigh8y7wjihpr3075x1"))))
+    (build-system asdf-build-system/sbcl)
+    (outputs '("out" "bin"))
+    (arguments
+     '(#:asd-systems '("charje.triads")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'create-asdf-configuration 'build-binary
+           (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "HOME" (getcwd))
+             (invoke
+              "sbcl" "--eval" "(require :asdf)" "--eval"
+              (format
+               #f "~S"
+               `(progn
+                 (require "charje.triads"
+                          ,(string-append (getcwd) "/charje.triads.asd"))
+                 (asdf:make "charje.triads"))))
+             (install-file
+              (string-append (getcwd) "/triads")
+              (string-append (assoc-ref outputs "bin") "/bin")))))))
+    (inputs
+     (list sbcl-charje.loop
+           sbcl-cl-str
+           sbcl-command-line-args
+           sbcl-serapeum
+           sbcl-trivia))
+    (home-page "https://git.sr.ht/~charje/triads")
+    (synopsis "Music composition tool to convert roman numerals into triads")
+    (description "Triads is a simple command line tool that reads roman
 numeral notation from standard input (or a file) and an musical key and outputs
 the roman numeral in addition to the notes of the triad associated with that
 roman numeral given in the key.")
-      (license license:gpl3))))
+    (license license:gpl3)))
 
 (define-public cl-triads
   (sbcl-package->cl-source-package sbcl-triads))
