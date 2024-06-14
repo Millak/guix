@@ -3164,7 +3164,7 @@ initialization methods.")
 (define-public sbcl-charje.loop
   (package
     (name "sbcl-charje.loop")
-    (version "0.0.0")
+    (version "0.0.1")
     (source
      (origin
        (method git-fetch)
@@ -3174,7 +3174,7 @@ initialization methods.")
        (file-name (git-file-name "cl-charje.loop" version))
        (sha256
         (base32
-         "1x1hw5xmrx9xmfzga8y0yi6s27r7zc80rwl2z7l4d2h24ykscvd4"))))
+         "13353ycjm4jyczlqxh5r7f7q8g679pyfx91w4hj9p6mp7paqsn16"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria
