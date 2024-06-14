@@ -223,7 +223,7 @@ to the clients.")
 (define-public simde
   (package
     (name "simde")
-    (version "0.7.2")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -232,7 +232,7 @@ to the clients.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xkf21gbkgz6zlxabkmgwvy7py6cdnfqx9aplj90gz25gzrr1mkb"))))
+        (base32 "0giijq5n3q1nv8c5skfq2dar70rgbsm7yk0gdj22wpsa58fc624a"))))
     (build-system meson-build-system)
     ;; We really want this for the headers, and the tests require a bundled library.
     (arguments '(#:configure-flags '("-Dtests=false")))
