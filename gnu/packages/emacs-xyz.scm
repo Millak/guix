@@ -39195,6 +39195,45 @@ and text properties.  The package styles headlines, keywords, tables and
 source blocks.")
    (license license:gpl3+)))
 
+(define-public emacs-org-margin
+  (let* ((commit "4013b59ff829903a7ab86b95593be71aa5c9b87d")
+         (revision "0"))
+    (package
+      (name "emacs-org-margin")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rougier/org-margin")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "13x5568yfqm1lfmy29vcii2bdkjxjygmhslbr0fwgm2xq9rn63yv"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'makeinfo
+              (lambda _
+                (invoke "emacs"
+                        "--batch"
+                        "--eval=(require 'ox-texinfo)"
+                        "--eval=(find-file \"README.org\")"
+                        "--eval=(org-texinfo-export-to-info)")
+                (rename-file "README.info" "org-margin.info")
+                (install-file "org-margin.info"
+                              (string-append #$output "/share/info")))))))
+      (native-inputs (list texinfo))
+      (license license:gpl3+)
+      (home-page "https://github.com/rougier/org-margin")
+      (synopsis "Outdent headlines in emacs org-mode")
+      (description "@code{org-margin} mode allows to outdent org headlines by
+moving leading stars into the margin and transform them into markers depending
+on the chosen style."))))
+
 (define-public emacs-pyimport
   (let ((commit "a6f63cf7ed93f0c0f7c207e6595813966f8852b9")
         (revision "0"))
