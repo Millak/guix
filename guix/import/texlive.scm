@@ -274,10 +274,10 @@ Guix-specific packages."
                          (loop all (record key value current field-type) key))))
                      (loop all current #false))))))))))))
 
-;; Packages listed below are used to build "latex-bin" package, and therefore
-;; cannot provide it automatically as a native input.  Consequently, the
-;; importer sets TEXLIVE-LATEX-BIN? argument to #F for all of them.
 (define latex-bin-dependency-tree
+  ;; Return a list of packages used to build "latex-bin" package.  Those
+  ;; cannot provide it as a native input.  Consequently, the importer sets
+  ;; TEXLIVE-LATEX-BIN? argument to #F for all of them.
   (memoize
    (lambda (package-database)
      ;; Start out with "latex-bin", but also provide native inputs, which do
