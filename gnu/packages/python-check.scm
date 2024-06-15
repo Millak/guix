@@ -2310,6 +2310,35 @@ execution of a test suite.  It will also store a history of all test runs to
 help in debugging failures and optimizing the scheduler to improve speed.")
     (license license:asl2.0)))
 
+(define-public python-pytest-subprocess
+  (package
+    (name "python-pytest-subprocess")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/aklajnert/pytest-subprocess")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "103nxv37sjvxlwmw87hxsrphkxkryv4dgb65kjjfr4722r37vmxv"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-anyio
+                         python-coverage
+                         python-docutils
+                         python-nox
+                         python-pygments
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-rerunfailures))
+    (home-page "https://github.com/aklajnert/pytest-subprocess")
+    (synopsis "Fake subprocess for Pytest")
+    (description
+     "This package provides a plugin to fake subprocess for Pytest.")
+    (license license:expat)))
+
 ;; This is only used by python-sanic
 (define-public python-pytest-sanic
   (package
