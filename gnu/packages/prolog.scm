@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages perl)
@@ -41,6 +43,9 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages valgrind)
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages vim)
   #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1))
 
@@ -171,6 +176,45 @@ compiler with a rich set of built-in predicates.  It offers a fast, robust and
 small environment which enables substantial applications to be developed with
 it.")
     (license license:bsd-2)))
+
+(define-public trealla
+  (package
+    (name "trealla")
+    (version "2.52.34")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/trealla-prolog/trealla")
+         (commit (string-append "v" version))))
+       (sha256
+        (base32 "17lyd8iy4dki9isxfkdv96brwjbvxyqmly9arvjqsdmz3rpsmn0h"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list git valgrind xxd))
+    (inputs
+     (list libffi openssl readline))
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Upstream does not use a configure script.
+          (delete 'configure)
+          (replace 'install
+            ;; Upstream does not provide an install target.
+            (lambda _
+              (install-file "tpl" (string-append #$output "/bin")))))))
+    (home-page "https://trealla-prolog.org/")
+    (synopsis "Compact and efficient Prolog interpreter")
+    (description "This package provides a compact and efficient Prolog
+interpreter with ISO Prolog aspirations.")
+    (license
+     (list license:expat
+           ;; The tiny-regex-c library uses the Unlicense license.
+           license:unlicense))))
 
 (define-public logtalk
   (package
