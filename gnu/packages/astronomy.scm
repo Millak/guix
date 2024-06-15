@@ -948,21 +948,21 @@ exitinction laws found in the literature.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.2.1")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "19him5rcpjyz14ghkmifnd1xl3ivlyy84h45k6j2pyr5ixc60ky6"))
+        (base32 "0y7n7wh73ha6439djrhwmqbvgpagrdgaasbrikvw2zb5qx3y6zym"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio. When update the package check the
         ;; current bundled version.
         #~(begin
-            (delete-file-recursively "cfitsio-4.2.0")
+            (delete-file-recursively "cfitsio-4.4.1-20240617")
             (substitute* "MANIFEST.in"
-              (("recursive-include cfitsio-4.2.0.*$\n") ""))))))
+              (("recursive-include cfitsio-4.4.0.*$\n") ""))))))
     (build-system pyproject-build-system)
     (arguments
      (list
