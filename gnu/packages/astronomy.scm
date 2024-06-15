@@ -2172,13 +2172,13 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "11.17.22")
+    (version "11.17.25")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crds" version))
        (sha256
-        (base32 "1i2wh7cgyn7r0fnn7ikfsdqjrcpg46xsk619mhdqywk5yjcxlz9f"))))
+        (base32 "18j0mn11nfgnbx42h1hzhfmyzg9ww9bgmrjxss8ni98kdj35q9kv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
