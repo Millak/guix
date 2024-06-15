@@ -1495,6 +1495,32 @@ evaluating arrays of polynomials based on @code{numpy.ndarray objects}.")
     (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))
     (license license:bsd-2)))
 
+(define-public python-spin
+  (package
+  (name "python-spin")
+  (version "0.8")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (pypi-uri "spin" version))
+     (sha256
+      (base32 "0ff48nagfaai3j26g1db4zq2bwdv6kj5l7xhcs2l9kzg7qzrmhr7"))))
+  (build-system pyproject-build-system)
+  (propagated-inputs (list python-click python-colorama python-tomli))
+  (native-inputs (list python-pytest))
+  (home-page "https://github.com/scientific-python/spin")
+  (synopsis "Developer tool for scientific Python libraries")
+  (description "@code{spin} is a simple interface for common development
+tasks.  It comes with a few common build commands out the box, but can
+easily be customized per project.
+
+The impetus behind developing the tool was the mass migration of scientific
+Python libraries (SciPy, scikit-image, and NumPy, etc.) to Meson, after
+distutils was deprecated.  When many of the build and installation commands
+changed, it made sense to abstract away the nuisance of having to re-learn
+them.")
+  (license license:bsd-3)))
+
 (define-public python-baycomp
   (package
     (name "python-baycomp")
