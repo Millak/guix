@@ -12177,15 +12177,15 @@ without using the configuration machinery.")
 (define-public python-treelib
   (package
     (name "python-treelib")
-    (version "1.6.1")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "treelib" version))
               (sha256
                (base32
-                "1247rv9fbb8pw3xbkbz04q3vnvvva3hcw002gp1clp5psargzgqw"))))
+                "0qgv61g1p06kzf5fd2hcim5s49nzbv8k210frnk45rmr2vs1mzwv"))))
     (build-system python-build-system)
-    (propagated-inputs (list python-future))
+    (propagated-inputs (list python-six))
     (home-page "https://github.com/caesar0301/treelib")
     (synopsis "Implementation of a tree structure in Python")
     (description
