@@ -32324,6 +32324,83 @@ cleanly print different types of messages.")
     (description "This package provides a tool for modifying a user's PATH.")
     (license license:expat)))
 
+(define-public hatch
+  (package
+    (name "hatch")
+    (version "1.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hatch" version))
+       (sha256
+        (base32 "0ipvj1pxdb6wb1sblh22h9gnh6byjnwcl7hfcnk88dmkslgp1z3s"))
+       (modules '((guix build utils)))
+       (snippet '(substitute* "pyproject.toml"
+                   ;; We have virtualenv 20.3.1.
+                   (("virtualenv>=20.16.2")
+                    "virtualenv>=20.3.1")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: tests below fail due to zipfile reporting incorrect zip dates.
+      #~(list "-k"
+              (string-append
+               "not "
+               (string-join
+                (list "test_default"
+                      "test_explicit_path"
+                      "test_editable_default"
+                      "test_editable_default_dependencies"
+                      "test_editable_default_force_include"
+                      "test_editable_default_force_include_option"
+                      "test_editable_exact"
+                      "test_editable_exact_extra_dependencies"
+                      "test_editable_exact_force_include"
+                      "test_editable_exact_force_include_option"
+                      "test_editable_exact_force_include_build_data_precedence"
+                      "test_editable_pth")
+                " and not ")))
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'pre-check
+                          (lambda _
+                            (setenv "HOME" "/tmp"))))))
+    (native-inputs (list git-minimal
+                         python-pytest
+                         python-pytest-mock
+                         python-pytest-xdist))
+    (propagated-inputs (list python-click
+                             python-hatchling
+                             python-httpx
+                             python-hyperlink
+                             python-keyring
+                             python-packaging
+                             python-pexpect
+                             python-platformdirs
+                             python-pyperclip
+                             python-rich
+                             python-shellingham
+                             python-tomli-w
+                             python-tomlkit
+                             python-userpath
+                             python-virtualenv))
+    (home-page "https://hatch.pypa.io/latest/")
+    (synopsis "Python project management")
+    (description "Hatch is a modern, extensible Python project manager.
+
+Features
+
+@itemize
+@item Standardized build system with reproducible builds by default
+@item Robust environment management with support for custom scripts
+@item Configurable Python distribution management
+@item Easy publishing to PyPI or other indexes
+@item Version management
+@item Configurable project generation with sane defaults
+@item Responsive CLI, ~2-3x faster than equivalent tools
+@end itemize")
+    (license license:expat)))
+
 (define-public python-nestedtext
   (package
     (name "python-nestedtext")
