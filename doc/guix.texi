@@ -39654,7 +39654,7 @@ This service can be extended by other services to add additional home
 environments, as in this example:
 
 @lisp
-(simple-service 'my-extra-home home-service-type
+(simple-service 'my-extra-home guix-home-service-type
                 `(("bob" ,my-extra-home))))
 @end lisp
 @end defvar
