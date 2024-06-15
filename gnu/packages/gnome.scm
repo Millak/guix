@@ -8826,7 +8826,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
 (define-public network-manager-applet
   (package
     (name "network-manager-applet")
-    (version "1.34.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/network-manager-applet/"
@@ -8834,7 +8834,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
                                   "network-manager-applet-" version ".tar.xz"))
               (sha256
                (base32
-                "1a55mf4ww06lqacs6zndp29ayyby5f8rgg1lp341y5kb1x3qwdmb"))))
+                "0lz2lxj5xy65l7qcn3df83spkxxqk2sjmys7bi4f3bx3gr408ix8"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
