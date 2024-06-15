@@ -1,461 +1,153 @@
 Find dependencies via pkg-config.
 
 ---
- CMakeLists.txt                                |  16 +-
- .../Applications/esmini-dyn/CMakeLists.txt    |   5 +-
- .../Applications/esmini/CMakeLists.txt        |   1 +
- EnvironmentSimulator/CMakeLists.txt           | 296 +-----------------
- .../Modules/Controllers/ControllerSumo.cpp    |   1 -
- .../Modules/RoadManager/CMakeLists.txt        |   8 +-
- .../Modules/ScenarioEngine/CMakeLists.txt     |  15 +-
- 7 files changed, 23 insertions(+), 319 deletions(-)
+ CMakeLists.txt                                | 72 +++----------------
+ .../Applications/esmini/main.cpp              |  2 +
+ EnvironmentSimulator/CMakeLists.txt           |  3 -
+ .../Modules/Controllers/ControllerSumo.cpp    |  1 -
+ .../Modules/RoadManager/CMakeLists.txt        |  7 +-
+ .../Modules/ScenarioEngine/CMakeLists.txt     | 17 +----
+ 6 files changed, 16 insertions(+), 86 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 156d9448..10ec48f9 100644
+index aec4cf55..c9689b44 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -8,6 +8,7 @@ else()
-   cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
+@@ -13,6 +13,8 @@ else()
+         FATAL_ERROR)
  endif()
  
 +include(FindPkgConfig)
- 
- project (EnvironmentSimulator)
- 
-@@ -33,15 +34,10 @@ else ()
-   set (LINUX false)
- endif ()
- 
--if (LINUX OR APPLE OR MINGW OR MSVC)
--  set(INSTALL_DIRECTORY "${CMAKE_HOME_DIRECTORY}/bin")
--else ()
--  message(FATAL_ERROR "Unrecognized platform therefore there isn't an installation directory. Stopping the cmake process.")
--endif ()
--
- set(INSTALL_DIRECTORY_CODE_EXAMPLES "${CMAKE_HOME_DIRECTORY}/code-examples-bin")
- 
--set(PUGIXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/externals/pugixml")
-+find_package(pugixml)
 +
- set(EXPR_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/externals/expr")
- if(MSVC)
-     set(DIRENT_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/externals/dirent/win")
-@@ -61,10 +57,14 @@ set(ENABLE_SANITIZERS False CACHE BOOL "Enable sanitizers (Only valid for Linux
+ # ############################# Project generate options ###########################################################
  
+ project(
+@@ -138,75 +140,26 @@ set_special_build_flags()
+ include(${CMAKE_CURRENT_SOURCE_DIR}/support/cmake/utils/get_subdirectories.cmake)
+ include(${CMAKE_CURRENT_SOURCE_DIR}/support/cmake/utils/set_folder.cmake)
  
- if (USE_OSG)
+-# ############################### Downloading cloud packages #########################################################
+-
+-include(${CMAKE_CURRENT_SOURCE_DIR}/support/cmake/cloud/set_cloud_links.cmake)
+-set_cloud_links()
+-
+-include(${CMAKE_CURRENT_SOURCE_DIR}/support/cmake/cloud/download.cmake)
+-
+-message(STATUS "Downloading dependencies...")
+-
+-download(
+-    osg
+-    ${EXTERNALS_OSG_PATH}
+-    ${EXTERNALS_OSG_OS_SPECIFIC_PATH}
+-    "${OSG_PACKAGE_URL}")
+-
+-download(
+-    osi
+-    ${EXTERNALS_OSI_PATH}
+-    ${EXTERNALS_OSI_OS_SPECIFIC_PATH}
+-    "${OSI_PACKAGE_URL}")
+-
+-download(
+-    sumo
+-    ${EXTERNALS_SUMO_PATH}
+-    ${EXTERNALS_SUMO_OS_SPECIFIC_PATH}
+-    "${SUMO_PACKAGE_URL}")
+-
+-download(
+-    implot
+-    ${EXTERNALS_IMPLOT_PATH}
+-    ${EXTERNALS_IMPLOT_OS_SPECIFIC_PATH}
+-    "${IMPLOT_PACKAGE_URL}")
+-
+-download(
+-    models
+-    ${RESOURCES_PATH}
+-    ${MODELS_PATH}
+-    "${MODELS_PACKAGE_URL}")
+-
+-if(NOT
+-   (APPLE
+-    OR MINGW))
+-    download(
+-        googletest
+-        ${EXTERNALS_GOOGLETEST_PATH}
+-        ${EXTERNALS_GOOGLETEST_OS_SPECIFIC_PATH}
+-        ${GTEST_PACKAGE_URL})
+-endif()
+-
+ # ############################### Loading external packages ##########################################################
+ 
+ if(USE_GTEST)
+-    include(${CMAKE_CURRENT_SOURCE_DIR}/support/cmake/external/gtest.cmake)
+-    set_gtest_libs()
++    find_package(GTest REQUIRED)
+ endif()
+ 
+ if(USE_OSG)
+-    include(${CMAKE_CURRENT_SOURCE_DIR}/support/cmake/external/osg.cmake)
+-    set_osg_libs()
 +  pkg_check_modules(OSG REQUIRED openscenegraph osgdb_jpeg osgdb_osg
 +                                 osgdb_serializers_osg
 +                                 osgdb_serializers_osgsim)
-   add_definitions(-D_USE_OSG)
- endif (USE_OSG)
+ endif()
  
- if (USE_OSI)
-+  find_package(open_simulation_interface REQUIRED)
-   add_definitions(-D_USE_OSI)
- endif (USE_OSI)
+ if(USE_OSI)
+-    include(${CMAKE_CURRENT_SOURCE_DIR}/support/cmake/external/osi.cmake)
+-    set_osi_libs()
++    find_package(open_simulation_interface REQUIRED)
++    set(EXTERNALS_OSI_INCLUDES "${OPEN_SIMULATION_INTERFACE_INCLUDE_DIRS}")
++    set(OSI_LIBRARIES open_simulation_interface::open_simulation_interface)
+ endif()
  
-@@ -73,6 +73,7 @@ if (USE_SUMO)
- endif (USE_SUMO)
+ if(USE_SUMO)
+-    include(${CMAKE_CURRENT_SOURCE_DIR}/support/cmake/external/sumo.cmake)
+-    set_sumo_libs()
++    set ( SUMO_LIBRARIES sumocpp tracicpp )
+ endif()
  
- if (USE_GTEST)
-+  find_package(GTest REQUIRED)
-   add_definitions(-D_USE_GTEST)
- endif (USE_GTEST)
- 
-@@ -90,5 +91,4 @@ if( NOT EXISTS "test/OSC-ALKS-scenarios/.git" )
+ if(USE_IMPLOT)
+@@ -229,10 +182,7 @@ if(NOT
  endif()
  
  # Add variables to global scope, e.g. when esmini is used as submodule
--set(PUGIXML_INCLUDE_DIR ${PUGIXML_INCLUDE_DIR} CACHE INTERNAL "")
- set(EXPR_INCLUDE_DIR ${EXPR_INCLUDE_DIR} CACHE INTERNAL "")
-diff --git a/EnvironmentSimulator/Applications/esmini-dyn/CMakeLists.txt b/EnvironmentSimulator/Applications/esmini-dyn/CMakeLists.txt
-index 83d89420..e15062d3 100644
---- a/EnvironmentSimulator/Applications/esmini-dyn/CMakeLists.txt
-+++ b/EnvironmentSimulator/Applications/esmini-dyn/CMakeLists.txt
-@@ -1,7 +1,7 @@
- 
- include_directories (
-   ${SCENARIOENGINE_DLL_INCLUDE_DIR}
--  ${COMMON_MINI_INCLUDE_DIR}  
-+  ${COMMON_MINI_INCLUDE_DIR}
-   ${OSI_INCLUDE_DIR}
- )
- 
-@@ -19,11 +19,12 @@ link_directories( ${OSI_DIR}/lib )
- add_executable ( ${TARGET} ${SOURCES} ${INCLUDES} )
- 
- 
--target_link_libraries ( 
-+target_link_libraries (
- 	${TARGET}
- 	esminiLib
- 	CommonMini
- 	${TIME_LIB}
-+        pugixml::pugixml
-   project_options
- )
- 
-diff --git a/EnvironmentSimulator/Applications/esmini/CMakeLists.txt b/EnvironmentSimulator/Applications/esmini/CMakeLists.txt
-index 6890c26a..a088ebdc 100644
---- a/EnvironmentSimulator/Applications/esmini/CMakeLists.txt
-+++ b/EnvironmentSimulator/Applications/esmini/CMakeLists.txt
-@@ -44,6 +44,7 @@ target_link_libraries (
- 	${sumo_libs}
- 	${TIME_LIB}
-     ${SOCK_LIB}
-+    pugixml::pugixml
-     project_options
- )
+-set(EXTERNALS_PUGIXML_PATH
+-    ${EXTERNALS_PUGIXML_PATH}
+-    CACHE INTERNAL
+-          "")
++find_package(pugixml)
+ set(EXTERNALS_EXPR_PATH
+     ${EXTERNALS_EXPR_PATH}
+     CACHE INTERNAL
+diff --git a/EnvironmentSimulator/Applications/esmini/main.cpp b/EnvironmentSimulator/Applications/esmini/main.cpp
+index 84f38c7f..943c42c8 100644
+--- a/EnvironmentSimulator/Applications/esmini/main.cpp
++++ b/EnvironmentSimulator/Applications/esmini/main.cpp
+@@ -13,7 +13,9 @@
+ #include "playerbase.hpp"
+ #include "CommonMini.cpp"
+ #include "OSCParameterDistribution.hpp"
++#if _USE_IMPLOT
+ #include "Plot.hpp"
++#endif
+ #include <osgViewer/ViewerEventHandlers>
+ #include <signal.h>
  
 diff --git a/EnvironmentSimulator/CMakeLists.txt b/EnvironmentSimulator/CMakeLists.txt
-index 157e8fe0..e771231a 100644
+index 87e1dd98..3db513a0 100644
 --- a/EnvironmentSimulator/CMakeLists.txt
 +++ b/EnvironmentSimulator/CMakeLists.txt
-@@ -1,7 +1,3 @@
--
--set ( FILE_STORAGE "esmini" ) # "dropbox", "google", "esmini"  (limited GB/Day)
--set ( MODEL_STORAGE "esmini" ) # "dropbox", "google", "esmini"  (limited GB/Day)
--
- set ( VIEWER_BASE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Modules/ViewerBase" )
- set ( PLAYER_BASE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Modules/PlayerBase" )
- set ( ROADMANAGER_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Modules/RoadManager" )
-@@ -17,88 +13,12 @@ set ( CONTROLLERS_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Modules/Controllers")
- 
- # OpenSceneGraph package adapted for this project
- set ( OSG_VERSION "osg161" )
--set ( OSG_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../externals/OpenSceneGraph" )
--set ( OSI_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../externals/OSI" )
--set ( SUMO_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../externals/SUMO" )
- 
- # GoogleTest package
- set ( GTEST_VERSION "1.10.1" )
--set ( GTEST_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../externals/googletest" )
- 
- set( CMAKE_VERBOSE_MAKEFILE true )
- 
--if ( ${FILE_STORAGE} STREQUAL "dropbox" )
--    if (APPLE)
--        set ( OSG_PACKAGE_URL https://www.dropbox.com/s/d0czj6b89p9jyvv/OpenSceneGraph_mac.7z?dl=1 )
--        set ( OSI_PACKAGE_URL https://www.dropbox.com/s/m62v19gp0m73dte/osi_mac.7z?dl=1 )
--        set ( SUMO_PACKAGE_URL https://www.dropbox.com/s/0x8kwztk7nmacs1/sumo_mac.7z?dl=1 )
--    elseif (LINUX)
--        set ( OSG_PACKAGE_URL https://www.dropbox.com/s/4ug0gmkgdavzyb4/osg_linux_glibc_2_31_gcc_7_5_0.7z?dl=1 )
--        set ( OSI_PACKAGE_URL https://dl.dropboxusercontent.com/s/kwtdg0c1c8pawa1/osi_linux.7z?dl=1 )
--        set ( SUMO_PACKAGE_URL https://dl.dropboxusercontent.com/s/gfwtqd3gf76f86a/sumo_linux.7z?dl=1 )
--        set ( GTEST_PACKAGE_URL https://dl.dropboxusercontent.com/s/si7jsjjsy5bpoym/googletest_linux.7z?dl=1 )
--    elseif (MSVC)
--        set ( OSG_PACKAGE_URL https://dl.dropboxusercontent.com/s/e95hnoo782p40uc/OpenSceneGraph_v10.7z?dl=1 )
--        set ( OSI_PACKAGE_URL https://dl.dropboxusercontent.com/s/an58ckp2qfx5069/osi_v10.7z?dl=1 )
--        set ( SUMO_PACKAGE_URL https://dl.dropboxusercontent.com/s/5jtpnnd61wonxuh/sumo_v10.7z?dl=1 )
--        set ( GTEST_PACKAGE_URL https://dl.dropboxusercontent.com/s/aaiehwzc6woqbc6/googletest_v10.7z?dl=1 )
--    elseif (MINGW)
--        message("MinGW, enforcing slimmed esmini")
--    else ()
--        message ("Unsupported configuration")
--    endif ()
--elseif ( ${FILE_STORAGE} STREQUAL "google" )
--    if (APPLE)
--        set ( OSG_PACKAGE_URL https://drive.google.com/u/1/uc?id=1mfn_vrcXBoFBekR_t8RXTWB4sD59JD7p&export=download )
--        set ( OSI_PACKAGE_URL https://drive.google.com/u/1/uc?id=1UVzO8cPQaDU9KVn9v2v8Suj0uUw1dzYI&export=download )
--        set ( SUMO_PACKAGE_URL https://drive.google.com/u/1/uc?id=1FAve0-MlJPv6lUZy0HvriZI7xstLAzvX&export=download )
--    elseif (LINUX)
--        set ( OSG_PACKAGE_URL https://drive.google.com/u/1/uc?id=1Ya1bLp_0-qqlhs67WAwbGW7l37wqP3o2&export=download )
--        set ( OSI_PACKAGE_URL https://drive.google.com/u/1/uc?id=1Q8O9YciIC0BPEszIKtQ2UW9KcVRZS4iB&export=download )
--        set ( SUMO_PACKAGE_URL https://drive.google.com/u/1/uc?id=1m4znxNIXapP0D-l21oIm2l7L5ti-JbZH&export=download )
--        set ( GTEST_PACKAGE_URL https://drive.google.com/u/1/uc?id=1Hyr9eJX2GmgpYwZhx14xOoXlZ2j-FY_p&export=download )
--    elseif (MSVC)
--        set ( OSG_PACKAGE_URL https://drive.google.com/u/1/uc?id=1RTag0aUn_pJPK697j0-E72ABW10wZvOm&export=download )
--        set ( OSI_PACKAGE_URL https://drive.google.com/u/1/uc?id=1pcQcVHUESOk2Wmi-zUA7uzdxxE6iwRJx&export=download )
--        set ( SUMO_PACKAGE_URL https://drive.google.com/u/1/uc?id=18PhbSLyvs0IGWTAY3YBoYzpVnMFPbOuR&export=download )
--        set ( GTEST_PACKAGE_URL https://drive.google.com/u/1/uc?id=1So-3gtrmEdW9RhEvVQisj1QFksHM_otU&export=download )
--    elseif (MINGW)
--        message("MinGW, enforcing slimmed esmini")
--    else ()
--        message ("Unsupported configuration")
--    endif ()
--elseif ( ${FILE_STORAGE} STREQUAL "esmini" )
--    if (APPLE)
--        set ( OSG_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD766065121/libs/OpenSceneGraph_mac.7z )
--        set ( OSI_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD766065121/libs/osi_mac.7z )
--        set ( SUMO_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD766065121/libs/sumo_mac.7z )
--    elseif (LINUX)
--        set ( OSG_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD766065121/libs/osg_linux_glibc_2_31_gcc_7_5_0.7z )
--        set ( OSI_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD766065121/libs/osi_linux.7z )
--        set ( SUMO_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD766065121/libs/sumo_linux.7z )
--        set ( GTEST_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD766065121/libs/googletest_linux.7z )
--    elseif (MSVC)
--        set ( OSG_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD766065121/libs/OpenSceneGraph_v10.7z )
--        set ( OSI_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD766065121/libs/osi_v10.7z )
--        set ( SUMO_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD766065121/libs/sumo_v10.7z )
--        set ( GTEST_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD766065121/libs/googletest_v10.7z )
--    elseif (MINGW)
--        message("MinGW, enforcing slimmed esmini")
--    else ()
--        message ("Unsupported configuration")
--    endif ()
--else ()
--    Message("Unknown storage type: " ${FILE_STORAGE})
--endif()
--
--if ( ${MODEL_STORAGE} STREQUAL "dropbox" )
--    set ( MODELS_PACKAGE_URL https://dl.dropboxusercontent.com/s/5gk8bvgzqiaaoco/models.7z?dl=0 )
--elseif ( ${MODEL_STORAGE} STREQUAL "google" )
--    set ( MODELS_PACKAGE_URL https://drive.google.com/u/1/uc?id=1c3cqRzwY41gWXbg0rmugQkL5I_5L6DH_&export=download )
--elseif ( ${MODEL_STORAGE} STREQUAL "esmini" )
--    set ( MODELS_PACKAGE_URL https://esmini.asuscomm.com/AICLOUD779364751/models/models.7z )
--endif()
--
- if (APPLE)
-   set ( EXT_DIR_NAME "mac" )
-   set ( TIME_LIB "" )
-@@ -127,21 +47,8 @@ set ( OSI_DIR "${OSI_BASE_DIR}/${EXT_DIR_NAME}" )
- set ( SUMO_DIR "${SUMO_BASE_DIR}/${EXT_DIR_NAME}" )
- set ( GTEST_DIR "${GTEST_BASE_DIR}/${EXT_DIR_NAME}" )
- 
--set ( OSG_INCLUDE_DIR
--    "${OSG_DIR}/build/include"
--    "${OSG_DIR}/include"
--)
--set ( OSG_LIBRARIES_PATH
--    "${OSG_DIR}/lib"
--    "${OSG_DIR}/lib/osgPlugins-3.6.5"
--)
--
- set ( OSI_INCLUDE_DIR "${OSI_DIR}/include" )
--if (DYN_PROTOBUF)
--  set ( OSI_LIBRARIES_PATH "${OSI_DIR}/lib-dyn" )
--else ()
--  set ( OSI_LIBRARIES_PATH "${OSI_DIR}/lib" )
--endif (DYN_PROTOBUF)
-+set ( OSI_LIBRARIES_PATH "${OSI_DIR}/lib" )
- 
- set ( SUMO_INCLUDE_DIR "${SUMO_DIR}/include" )
- set ( SUMO_LIBRARIES_PATH "${SUMO_DIR}/lib" )
-@@ -153,74 +60,6 @@ link_directories(${OSG_LIBRARIES_PATH} ${OSI_LIBRARIES_PATH} ${SUMO_LIBRARIES_PA
- 
- if(APPLE)
-   SET(CMAKE_CXX_FLAGS "${CXX_STD_FLAG} -std=c++14 -pthread -fPIC -flto -DGL_SILENCE_DEPRECATION -Wl,-dead_strip")
--  
--  set ( OSG_LIBRARIES
--    osg
--    osgViewer
--    osgDB
--    osgdb_serializers_osgsim
--    osgdb_serializers_osg
--    osgGA
--    osgText
--    osgSim
--    osgdb_osg
--    osgdb_jpeg
--    osgUtil
--    osgAnimation
--    osg
--    OpenThreads
--    jpeg
--    "-framework OpenGL"
--    "-framework Cocoa"
--    dl
--    z
--  )
--
--  if (DYN_PROTOBUF)
--    set ( OSI_LIBRARIES
--      open_simulation_interface
--      protobuf
--    )
--  else ()
--    set ( OSI_LIBRARIES
--      open_simulation_interface_pic
--      protobuf
--    )
--  endif (DYN_PROTOBUF)
--
--
--  set ( SUMO_LIBRARIES
--    optimized libsumostatic debug libsumostaticd
--    optimized netload debug netloadd
--    optimized traciserver debug traciserverd
--    optimized libsumostatic debug libsumostaticd
--    optimized utils_vehicle debug utils_vehicled
--    optimized utils_distribution debug utils_distributiond
--    optimized utils_shapes debug utils_shapesd
--    optimized utils_options debug utils_optionsd
--    optimized utils_xml debug utils_xmld
--    optimized utils_geom debug utils_geomd
--    optimized utils_common debug utils_commond
--    optimized utils_iodevices debug utils_iodevicesd
--    optimized utils_traction_wire debug utils_traction_wired
--    optimized utils_emissions debug utils_emissionsd
--    optimized microsim_engine debug microsim_engined
--    optimized microsim_lcmodels debug microsim_lcmodelsd
--    optimized microsim_devices debug microsim_devicesd
--    optimized microsim_trigger debug microsim_triggerd
--    optimized microsim_output debug microsim_outputd
--    optimized microsim_transportables debug microsim_transportablesd
--    optimized microsim_actions debug microsim_actionsd
--    optimized microsim_traffic_lights debug microsim_traffic_lightsd
--    optimized microsim debug microsimd
--    optimized mesosim debug mesosimd
--    optimized foreign_phemlight debug foreign_phemlightd
--    optimized foreign_tcpip debug foreign_tcpipd
--    optimized microsim_cfmodels debug microsim_cfmodelsd
--    optimized zlibstatic debug zlibstaticd
--    optimized xerces-c_3 debug xerces-c_3D
--    "-framework CoreServices"
--  )
- 
- elseif(LINUX)
- 
-@@ -251,82 +90,8 @@ elseif(LINUX)
-     SET(CMAKE_CXX_FLAGS "${CXX_STD_FLAG} -pthread -fPIC -Wl,-strip-all")
-   endif()
- 
--  set ( OSG_LIBRARIES
--    optimized osg debug osgd
--    optimized osgViewer debug osgViewerd
--    optimized osgDB debug osgDBd
--    optimized osgdb_serializers_osgsim debug osgdb_serializers_osgsimd
--    optimized osgdb_serializers_osg debug osgdb_serializers_osgd
--    optimized osgGA debug osgGAd
--    optimized osgText debug osgTextd
--    optimized osgSim debug osgSimd
--    optimized osgdb_osg debug osgdb_osgd
--    optimized osgdb_jpeg debug osgdb_jpegd
--    optimized osgUtil debug osgUtild
--    optimized osgAnimation debug osgAnimationd
--    optimized osg debug osgd
--    optimized OpenThreads debug OpenThreadsd
--    optimized jpeg debug jpegd
--
--    GL
--    X11
--    Xrandr
--    dl
--    z
--    Xinerama
--    fontconfig
--  )
--
--  if (DYN_PROTOBUF)
--    set ( OSI_LIBRARIES
--      optimized open_simulation_interface debug open_simulation_interfaced
--      optimized protobuf debug protobufd
--    )
--  else ()
--    set ( OSI_LIBRARIES
--      optimized open_simulation_interface_pic debug open_simulation_interface_picd
--      optimized protobuf debug protobufd
--    )
--  endif (DYN_PROTOBUF)
--
--  set ( SUMO_LIBRARIES
--    optimized libsumostatic debug libsumostaticd
--    optimized netload debug netloadd
--    optimized traciserver debug traciserverd
--    optimized libsumostatic debug libsumostaticd
--    optimized utils_vehicle debug utils_vehicled
--    optimized utils_distribution debug utils_distributiond
--    optimized utils_shapes debug utils_shapesd
--    optimized utils_options debug utils_optionsd
--    optimized utils_xml debug utils_xmld
--    optimized utils_geom debug utils_geomd
--    optimized utils_common debug utils_commond
--    optimized utils_iodevices debug utils_iodevicesd
--    optimized utils_traction_wire debug utils_traction_wired
--    optimized utils_emissions debug utils_emissionsd
--    optimized microsim_engine debug microsim_engined
--    optimized microsim_lcmodels debug microsim_lcmodelsd
--    optimized microsim_devices debug microsim_devicesd
--    optimized microsim_trigger debug microsim_triggerd
--    optimized microsim_output debug microsim_outputd
--    optimized microsim_transportables debug microsim_transportablesd
--    optimized microsim_actions debug microsim_actionsd
--    optimized microsim_traffic_lights debug microsim_traffic_lightsd
--    optimized microsim debug microsimd
--    optimized mesosim debug mesosimd
--    optimized foreign_phemlight debug foreign_phemlightd
--    optimized foreign_tcpip debug foreign_tcpipd
--    optimized microsim_cfmodels debug microsim_cfmodelsd
--    optimized zlibstatic debug zlibstaticd
--    optimized xerces-c_3 debug xerces-c_3D
--  )
--
--  set (GTEST_LIBRARIES
--    optimized gmock debug gmockd
--    optimized gmock_main debug gmock_maind
--    optimized gtest debug gtestd
--    optimized gtest_main debug gtest_maind
--  )
-+  set ( OSI_LIBRARIES open_simulation_interface::open_simulation_interface )
-+  set ( SUMO_LIBRARIES sumocpp tracicpp )
- 
- elseif(MSVC)
- 
-@@ -510,61 +275,6 @@ FOREACH(subdir ${SUBDIRS})
-     endif ()
- ENDFOREACH()
- 
--
--#
--# Download library and content binary packets
--#
--
--function (download_and_extract url target_folder target_filename)
--    message (STATUS "downloading ${target_filename} ...")
--    file (DOWNLOAD ${url} ${target_folder}/${target_filename} STATUS DOWNLOAD_STATUS)
--
--    if(DOWNLOAD_STATUS AND NOT DOWNLOAD_STATUS EQUAL 0)
--        message(FATAL_ERROR "FAILED to download ${target_filename} (Status: ${DOWNLOAD_STATUS})")
--    endif()
--
--    execute_process (COMMAND sleep 1)  # allow for file to be completely flushed
--
--    message (STATUS "extracting ${target_filename} ... ")
--    execute_process (COMMAND ${CMAKE_COMMAND} -E tar xfz ${target_filename} WORKING_DIRECTORY ${target_folder} RESULT_VARIABLE STATUS)
--
--    if(STATUS AND NOT STATUS EQUAL 0)
--        message(FATAL_ERROR "FAILED to unpack ${target_filename}")
--    endif()
--
--    file (REMOVE ${target_folder}/${target_filename})
--endfunction (download_and_extract)
--
--# download OpenSceneGraph
--set ( OSG_PACKAGE_FILENAME "osg.7z" )
--if (DEFINED OSG_DIR AND (FORCE_DOWNLOAD_BINARIES OR NOT EXISTS ${OSG_DIR} ))
--    download_and_extract( ${OSG_PACKAGE_URL} ${OSG_BASE_DIR} ${OSG_PACKAGE_FILENAME} )
--endif()
--
--# download OSI
--set ( OSI_PACKAGE_FILENAME "osi.7z" )
--if (DEFINED OSI_DIR AND (FORCE_DOWNLOAD_BINARIES OR NOT EXISTS ${OSI_DIR} ))
--    download_and_extract( ${OSI_PACKAGE_URL} ${OSI_BASE_DIR} ${OSI_PACKAGE_FILENAME} )
--endif()
--
--# download SUMO
--set ( SUMO_PACKAGE_FILENAME "sumo.7z" )
--if (DEFINED SUMO_DIR AND (FORCE_DOWNLOAD_BINARIES OR NOT EXISTS ${SUMO_DIR} ))
--  download_and_extract( ${SUMO_PACKAGE_URL} ${SUMO_BASE_DIR} ${SUMO_PACKAGE_FILENAME} )
--endif()
--
--# download googletest
--if(NOT (APPLE OR MINGW))  # not available for Mac yet
--  set ( GTEST_PACKAGE_FILENAME "googletest.7z" )
--  if (DEFINED GTEST_DIR AND (FORCE_DOWNLOAD_BINARIES OR NOT EXISTS ${GTEST_DIR} ))
--      download_and_extract( ${GTEST_PACKAGE_URL} ${GTEST_BASE_DIR} ${GTEST_PACKAGE_FILENAME} )
--  endif()
--endif()
--
--if (DEFINED MODELS_DIR AND (FORCE_DOWNLOAD_BINARIES OR NOT EXISTS ${MODELS_DIR} ))
--    download_and_extract(${MODELS_PACKAGE_URL} ${MODELS_BASE_DIR} ${MODELS_PACKAGE_FILENAME})
--endif()
--
- add_subdirectory(Applications/odrplot)
- add_subdirectory(Applications/replayer)
- 
+@@ -57,9 +57,6 @@ set_folder(
+ set_folder(
+     ScenarioEngine
+     ${ModulesFolder})
+-set_folder(
+-    Externals
+-    ${ModulesFolder})
+ set_folder(
+     RoadManager
+     ${ModulesFolder})
 diff --git a/EnvironmentSimulator/Modules/Controllers/ControllerSumo.cpp b/EnvironmentSimulator/Modules/Controllers/ControllerSumo.cpp
-index 4c701d94..cb5de5bb 100644
+index 92b40c90..764d2d3b 100644
 --- a/EnvironmentSimulator/Modules/Controllers/ControllerSumo.cpp
 +++ b/EnvironmentSimulator/Modules/Controllers/ControllerSumo.cpp
 @@ -16,7 +16,6 @@
@@ -467,75 +159,95 @@ index 4c701d94..cb5de5bb 100644
  #include <libsumo/Vehicle.h>
  #include <libsumo/TraCIDefs.h>
 diff --git a/EnvironmentSimulator/Modules/RoadManager/CMakeLists.txt b/EnvironmentSimulator/Modules/RoadManager/CMakeLists.txt
-index e4fad5f1..32d7a79c 100644
+index afb77338..b8beba48 100644
 --- a/EnvironmentSimulator/Modules/RoadManager/CMakeLists.txt
 +++ b/EnvironmentSimulator/Modules/RoadManager/CMakeLists.txt
-@@ -2,7 +2,7 @@
- include_directories (
-   ${PUGIXML_INCLUDE_DIR}
-   ${COMMON_MINI_INCLUDE_DIR}
--  ${ROADMANAGER_INCLUDE_DIR}  
-+  ${ROADMANAGER_INCLUDE_DIR}
- )
+@@ -20,9 +20,6 @@ set(SOURCES
+     odrSpiral.cpp
+     LaneIndependentRouter.cpp)
  
- set ( SOURCES
-@@ -11,8 +11,6 @@ set ( SOURCES
-   LaneIndependentRouter.cpp
- )
- 
--set ( SRC_ADDITIONAL ../../../externals/pugixml/pugixml.cpp)
+-set(SRC_ADDITIONAL
+-    ${EXTERNALS_PUGIXML_PATH}/pugixml.cpp)
 -
- SOURCE_GROUP("External Libraries" FILES ${SRC_ADDITIONAL})
+ source_group(
+     "External Libraries"
+     FILES ${SRC_ADDITIONAL})
+@@ -44,6 +41,7 @@ add_library(
+ target_link_libraries(
+     ${TARGET}
+     PRIVATE CommonMini
++            pugixml
+             # project_options
+ )
  
- set ( INCLUDES
-@@ -25,6 +23,6 @@ if(MSVC)
- 	add_definitions("/wd4482")
- endif()
+@@ -54,8 +52,7 @@ target_include_directories(
+ target_include_directories(
+     ${TARGET}
+     SYSTEM
+-    PUBLIC ${EXTERNALS_PUGIXML_PATH}
+-           ${ROAD_MANAGER_PATH})
++    PUBLIC ${ROAD_MANAGER_PATH})
  
--add_library ( RoadManager STATIC ${SOURCES} ${SRC_ADDITIONAL} ${INCLUDES} )
-+add_library ( RoadManager STATIC ${SOURCES} ${INCLUDES} )
- 
--target_link_libraries ( RoadManager CommonMini project_options)
-\ No newline at end of file
-+target_link_libraries ( RoadManager CommonMini pugixml::pugixml project_options)
+ disable_static_analysis(${TARGET})
+ disable_iwyu(${TARGET})
 diff --git a/EnvironmentSimulator/Modules/ScenarioEngine/CMakeLists.txt b/EnvironmentSimulator/Modules/ScenarioEngine/CMakeLists.txt
-index aec86ad6..86da77c1 100644
+index 5089dfc1..4b95a071 100644
 --- a/EnvironmentSimulator/Modules/ScenarioEngine/CMakeLists.txt
 +++ b/EnvironmentSimulator/Modules/ScenarioEngine/CMakeLists.txt
-@@ -5,7 +5,7 @@ include_directories (
-   ${ROADMANAGER_INCLUDE_DIR}
-   ${COMMON_MINI_INCLUDE_DIR}
-   ${CONTROLLERS_INCLUDE_DIR}
--  ${REPLAY_INCLUDE_DIR}  
-+  ${REPLAY_INCLUDE_DIR}
-   ${RDB_INCLUDE_DIR}
-   ${OSI_INCLUDE_DIR}
-   ${SUMO_INCLUDE_DIR}
-@@ -20,20 +20,15 @@ if (NOT USE_OSI)
-     list(REMOVE_ITEM SRC_SOURCEFILES "${CMAKE_CURRENT_LIST_DIR}/SourceFiles/OSIReporter.cpp")
- endif (NOT USE_OSI)
+@@ -3,9 +3,6 @@
+ set(TARGET
+     ScenarioEngine)
  
--set ( SRC_ADDITIONAL ../../../externals/pugixml/pugixml.cpp )
+-set(EXTERNAL_TARGET
+-    Externals)
 -
- SOURCE_GROUP(OSCTypeDefs FILES ${SRC_OSCTYPEDEFS})
- SOURCE_GROUP("Source Files" FILES ${SRC_SOURCEFILES})
- SOURCE_GROUP("External Libraries" FILES ${SRC_ADDITIONAL})
+ # ############################### Loading desired rules ##############################################################
  
--add_library ( ScenarioEngine STATIC 
--  ${SRC_OSCTYPEDEFS} 
--  ${SRC_SOURCEFILES} 
--  ${SRC_ADDITIONAL} 
-+add_library ( ScenarioEngine STATIC
-+  ${SRC_OSCTYPEDEFS}
-+  ${SRC_SOURCEFILES}
- )
+ include(${CMAKE_SOURCE_DIR}/support/cmake/rule/disable_static_analysis.cmake)
+@@ -40,26 +37,15 @@ endif(
+     NOT
+     USE_OSI)
  
- add_definitions(-D_CRT_SECURE_NO_WARNINGS)
- 
--target_link_libraries(ScenarioEngine PRIVATE project_options)
+-set(SRC_ADDITIONAL
+-    ${EXTERNALS_PUGIXML_PATH}/pugixml.cpp)
 -
--	
-+target_link_libraries(ScenarioEngine PRIVATE pugixml::pugixml project_options)
+ source_group(
+     OSCTypeDefs
+     FILES ${SRC_OSCTYPEDEFS})
+ source_group(
+     "Source Files"
+     FILES ${SRC_SOURCEFILES})
+-source_group(
+-    "External Libraries"
+-    FILES ${SRC_ADDITIONAL})
+ 
+ # ############################### Creating library ###################################################################
+ 
+-add_library(
+-    ${EXTERNAL_TARGET}
+-    STATIC
+-    ${SRC_ADDITIONAL})
+-
+ add_library(
+     ${TARGET}
+     STATIC
+@@ -68,7 +54,7 @@ add_library(
+ 
+ target_link_libraries(
+     ${TARGET}
+-    PRIVATE project_options)
++    PRIVATE project_options pugixml)
+ 
+ target_include_directories(
+     ${TARGET}
+@@ -84,7 +70,6 @@ target_include_directories(
+     PUBLIC ${ROAD_MANAGER_PATH}
+            ${EXTERNALS_OSI_INCLUDES}
+            ${EXTERNALS_SUMO_INCLUDES}
+-           ${EXTERNALS_PUGIXML_PATH}
+            ${EXTERNALS_EXPR_PATH})
+ 
+ target_link_libraries(
 -- 
-2.38.1
+2.45.1
 

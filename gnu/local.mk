@@ -1173,7 +1173,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ergodox-firmware-fix-json-target.patch	\
   %D%/packages/patches/ergodox-firmware-fix-numpad.patch	\
   %D%/packages/patches/erlang-man-path.patch			\
-  %D%/packages/patches/esmini-no-clutter-log.patch		\
   %D%/packages/patches/esmini-use-pkgconfig.patch		\
   %D%/packages/patches/esmtp-add-lesmtp.patch		\
   %D%/packages/patches/eudev-rules-directory.patch		\

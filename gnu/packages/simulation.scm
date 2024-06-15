@@ -495,15 +495,14 @@ functions in virtual scenarios.")
 (define-public esmini
   (package
     (name "esmini")
-    (version "2.27.1")
+    (version "2.37.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/esmini/esmini")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (patches (search-patches "esmini-use-pkgconfig.patch"
-                                       "esmini-no-clutter-log.patch"))
+              (patches (search-patches "esmini-use-pkgconfig.patch"))
               (modules '((guix build utils) (ice-9 ftw)))
               (snippet
                #~(with-directory-excursion "externals"
@@ -513,29 +512,21 @@ functions in virtual scenarios.")
                     (scandir "."))))
               (sha256
                (base32
-                "07ccydz7kxy5jc52f8fmxg4nkr1spshfnpzcv0wgd5lqz9ghjahz"))))
+                "07pwa34nf0b4ihb9fn1pvfi0b39hd8r630nfa6v3a17dsy66a730"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-DDYN_PROTOBUF=TRUE")
+      #:configure-flags
+      #~(list "-DDYN_PROTOBUF=TRUE"
+              ;; Missing implot package
+              "-DUSE_IMPLOT=FALSE")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-cmake
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (substitute* "CMakeLists.txt"
-                (("\\$\\{CMAKE_HOME_DIRECTORY\\}/bin")
-                 (string-append (assoc-ref outputs "out") "/bin")))
-              (substitute* "EnvironmentSimulator/CMakeLists.txt"
-                (("\\$\\{OSI_DIR\\}/(include|lib)(-dyn)?" all what)
-                 (search-input-directory
-                  inputs
-                  (string-append what "/osi"
-                                 #$(version-major
-                                    (package-version
-                                     (this-package-input
-                                      "open-simulation-interface"))))))
-                (("\\$\\{SUMO_BASE_DIR\\}/\\$\\{EXT_DIR_NAME\\}")
-                 #$(this-package-input "sumo")))))
+              (substitute* "support/cmake/common/locations.cmake"
+                (("\\$\\{CMAKE_SOURCE_DIR\\}/bin")
+                 (string-append (assoc-ref outputs "out") "/bin")))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (with-directory-excursion "EnvironmentSimulator/Unittest/"
@@ -549,7 +540,7 @@ functions in virtual scenarios.")
                    (lambda (f)
                      (rename-file f (string-append out "/lib/"
                                                    (basename f))))
-                   (find-files "." "\\.so$")))))))))
+                   (find-files "." "\\.(a|so)$")))))))))
     (inputs (list mesa
                   openscenegraph `(,openscenegraph "pluginlib")
                   open-simulation-interface
