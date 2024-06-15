@@ -32301,6 +32301,29 @@ a console.  It provides a collection of ‘print’ functions that allow you to 
 cleanly print different types of messages.")
     (license license:gpl3+)))
 
+(define-public python-userpath
+  (package
+    (name "python-userpath")
+    (version "1.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "userpath" version))
+       (sha256
+        (base32 "05fqxzdi27vqm5lywxs6bm2j4d8k91fx2ihqhg65g4h6mf6jhlkc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; See https://github.com/ofek/userpath/issues/43.
+     ;; In Guix, tests try to find the temporary build directory in PATH, but
+     ;; only the store output is present.
+     (list #:tests? #f))
+    (native-inputs (list python-hatchling python-pytest))
+    (propagated-inputs (list python-click))
+    (home-page "https://github.com/ofek/userpath")
+    (synopsis "Add locations to the user's PATH")
+    (description "This package provides a tool for modifying a user's PATH.")
+    (license license:expat)))
+
 (define-public python-nestedtext
   (package
     (name "python-nestedtext")
