@@ -81,6 +81,7 @@
 (define-public ibus-minimal
   (package
     (name "ibus")
+    (replacement ibus-minimal/fixed)
     (version "1.5.27")
     (source (origin
               (method url-fetch)
@@ -278,6 +279,23 @@ may also simplify input method development.")
             (files '("lib/gtk-3.0/3.0.0/immodules-gtk3.cache")))
            (package-native-search-paths ibus-minimal)))
     (properties (alist-delete 'hidden? (package-properties ibus-minimal)))))
+
+(define-public ibus-minimal/fixed
+  ;; Fixes <https://github.com/ibus/ibus/issues/2476>.
+  ;; Ungraft on gnome-team, core-updates or a dedicated ungrafing branch.
+  (package
+    (inherit ibus-minimal)
+    (version "1.5.29")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/ibus/ibus/"
+                                  "releases/download/"
+                                  version "/ibus-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0vjybn3xq5sz616fdy21f5c4b4ajrj4wmfnbjqz6584xw887yiaa"))))
+    (inputs (modify-inputs (package-inputs ibus-minimal)
+              (prepend libdbusmenu)))))
 
 (define-public ibus-libpinyin
   (package
