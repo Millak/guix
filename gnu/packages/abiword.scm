@@ -5,6 +5,7 @@
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages boost)
@@ -53,7 +55,9 @@
       (origin
         (method url-fetch)
         (uri
-          (string-append "https://www.abisource.com/downloads/abiword/" version
+         ;; XXX: The main site <https://www.abisource.com/> is down.  Only a (partial)
+         ;;      mirror is available at <http://www.nl.abisource.com/>.
+          (string-append "http://www.nl.abisource.com/downloads/abiword/" version
                          "/source/abiword-" version ".tar.gz"))
         (sha256
          (base32 "1d1179pnslijpjhz1q155fsc828rrlqf7lsn2inqsl3hk5z28mqj"))
@@ -62,35 +66,35 @@
 
     (build-system glib-or-gtk-build-system)
     (arguments                   ;; NOTE: rsvg is disabled, since Abiword
-      `(#:configure-flags        ;; supports it directly, and its BS is broken.
-        (list                    ;; wmf was removed from Guix for security.
-          "--enable-clipart"     ;; TODO: The following plugins have unresolved
-          "--enable-templates"   ;; dependencies: aiksaurus, grammar, wpg, gda,
-          (string-append         ;; wordperfect, psion, mathview.
-            "--enable-plugins="
-              "applix " "babelfish " "bmp " "clarisworks " "collab " "command "
-              "docbook " "eml " "epub " "freetranslation " "garble " "gdict "
-              "gimp " "goffice " "google " "hancom " "hrtext " "iscii " "kword "
-              "latex " "loadbindings " "mht " "mif " "mswrite " "opendocument "
-              "openwriter " "openxml " "opml " "ots " "paint " "passepartout "
-              "pdb " "pdf " "presentation " "s5 " "sdw " "t602 " "urldict "
-              "wikipedia " "wml " "xslfo")
-          "--enable-introspection"
-          (string-append "--with-gir-dir="
-                         (assoc-ref %outputs "out")
-                         "/share/gir-1.0")
-          (string-append "--with-typelib-dir="
-                         (assoc-ref %outputs "out")
-                         "/lib/girepository-1.0"))
-        ;; tests fail with: Gtk-CRITICAL **: gtk_settings_get_for_screen:
-        ;;                  assertion 'GDK_IS_SCREEN (screen)' failed
-        ;;                  GLib-GObject-CRITICAL **: g_object_get_qdata:
-        ;;                  assertion 'G_IS_OBJECT (object)' failed
-        ;; Manually starting the X server before the test phase did not help
-        ;; the tests to pass.
-        #:tests? #f
-        #:make-flags
-        (list "gtk_update_icon_cache=true")))
+     (list #:configure-flags        ;; supports it directly, and its BS is broken.
+           #~(list                    ;; wmf was removed from Guix for security.
+              "--enable-clipart"     ;; TODO: The following plugins have unresolved
+              "--enable-templates"   ;; dependencies: aiksaurus, grammar, wpg, gda,
+              (string-append         ;; wordperfect, psion, mathview.
+               "--enable-plugins="
+               "applix " "babelfish " "bmp " "clarisworks " "collab " "command "
+               "docbook " "eml " "epub " "freetranslation " "garble " "gdict "
+               "gimp " "goffice " "google " "hancom " "hrtext " "iscii " "kword "
+               "latex " "loadbindings " "mht " "mif " "mswrite " "opendocument "
+               "openwriter " "openxml " "opml " "ots " "paint " "passepartout "
+               "pdb " "pdf " "presentation " "s5 " "sdw " "t602 " "urldict "
+               "wikipedia " "wml " "xslfo")
+              "--enable-introspection"
+              (string-append "--with-gir-dir="
+                             #$output
+                             "/share/gir-1.0")
+              (string-append "--with-typelib-dir="
+                             #$output
+                             "/lib/girepository-1.0"))
+           ;; tests fail with: Gtk-CRITICAL **: gtk_settings_get_for_screen:
+           ;;                  assertion 'GDK_IS_SCREEN (screen)' failed
+           ;;                  GLib-GObject-CRITICAL **: g_object_get_qdata:
+           ;;                  assertion 'G_IS_OBJECT (object)' failed
+           ;; Manually starting the X server before the test phase did not help
+           ;; the tests to pass.
+           #:tests? #f
+           #:make-flags
+           #~(list "gtk_update_icon_cache=true")))
     (inputs
      (list boost
            enchant
@@ -120,7 +124,7 @@
            libtool
            pkg-config
            python-wrapper))
-    (home-page "https://www.abisource.com/")
+    (home-page "http://www.nl.abisource.com/")
     (synopsis "Word processing program")
 
     ;; HACKERS: The comment below is here so that it shows up early in the
