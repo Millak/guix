@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -152,12 +153,10 @@
                                (chr (char-downcase chr)))
                              name)))
 
-(define* (translate-depends depends #:optional texlive-only)
-  "Translate TeX Live packages DEPENDS into their equivalent Guix names
-in `(gnu packages tex)' module, without \"texlive-\" prefix.  The function
-also removes packages not necessary in Guix.
-
-When TEXLIVE-ONLY is true, only TeX Live packages are returned."
+(define* (filter-depends depends #:optional texlive-only)
+  "Filter upstream package names DEPENDS to include only their equivalent Guix
+package names, without \"texlive-\" prefix.  When TEXLIVE-ONLY is true, ignore
+Guix-specific packages."
   (delete-duplicates
    (filter-map (match-lambda
                  ;; Hyphenation.  Every TeX Live package is replaced with
@@ -288,10 +287,10 @@ When TEXLIVE-ONLY is true, only TeX Live packages are returned."
                  (list "latex-bin" "metafont" "modes" "tex"))
                 (deps '()))
        (if (null? packages)
-           ;; `translate-depends' will always translate "hyphen-base" into
+           ;; `filter-depends' will always translate "hyphen-base" into
            ;; "hyphen-complete".  Make sure plain hyphen-base appears in the
            ;; dependency tree.
-           (cons "hyphen-base" (translate-depends deps))
+           (cons "hyphen-base" (filter-depends deps))
            (loop (append-map (lambda (name)
                                (let ((data (assoc-ref package-database name)))
                                  (or (assoc-ref data 'depend)
@@ -299,7 +298,7 @@ When TEXLIVE-ONLY is true, only TeX Live packages are returned."
                              packages)
                  (append packages deps)))))))
 
-(define (formats package-data)
+(define (list-formats package-data)
   "Return a list of formats to build according to PACKAGE-DATA."
   (and=> (assoc-ref package-data 'execute)
          (lambda (actions)
@@ -443,9 +442,9 @@ of those files are returned that are unexpectedly installed."
                          (list (string-append name "-bin"))
                          '())
                      ;; Regular dependencies, as specified in database.
-                     (map guix-name (translate-depends depends)))
+                     (map guix-name (filter-depends depends)))
                     string<?)))
-           (tex-formats (formats data))
+           (tex-formats (list-formats data))
            (meta-package? (null? locs))
            (empty-package? (and meta-package? (not (pair? tex-formats)))))
       (values
@@ -540,7 +539,7 @@ of those files are returned that are unexpectedly installed."
              ((assoc-ref data 'catalogue-license) => string->license)
              (else #f))))
        ;; List of pure TeX Live dependencies for recursive calls.
-       (translate-depends depends #t)))))
+       (filter-depends depends #t)))))
 
 (define texlive->guix-package
   (memoize
