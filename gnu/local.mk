@@ -271,6 +271,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/fabric-management.scm		\
   %D%/packages/fcitx.scm			\
   %D%/packages/fcitx5.scm			\
+  %D%/packages/fediverse.scm			\
   %D%/packages/figlet.scm			\
   %D%/packages/file.scm				\
   %D%/packages/file-systems.scm			\
@@ -441,7 +442,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/machine-learning.scm		\
   %D%/packages/magic-wormhole.scm		\
   %D%/packages/man.scm				\
-  %D%/packages/mastodon.scm			\
   %D%/packages/mail.scm				\
   %D%/packages/make-bootstrap.scm		\
   %D%/packages/markup.scm			\
