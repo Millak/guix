@@ -850,6 +850,63 @@ JupyterLab.")
 datasets across widgets.")
     (license license:bsd-3)))
 
+(define-public python-papermill
+  (package
+    (name "python-papermill")
+    (version "2.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "papermill" version))
+       (sha256
+        (base32 "097ai2n7f72a7hya9qnds3f28cg70p8xdj2c3cwqymzx28cskqlz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Do not bother testing Azure, AWS, and Google Cloud features.
+      '(list "--ignore=papermill/tests/test_abs.py"
+             "--ignore=papermill/tests/test_adl.py"
+             "--ignore=papermill/tests/test_gcs.py"
+             "--ignore=papermill/tests/test_s3.py")))
+    (propagated-inputs (list python-aiohttp
+                             python-ansicolors
+                             python-click
+                             python-entrypoints
+                             python-nbclient
+                             python-nbformat
+                             python-pyyaml
+                             python-requests
+                             python-tenacity
+                             python-tqdm))
+    (native-inputs (list python-attrs
+                         python-black
+                         python-boto3
+                         python-botocore
+                         python-bumpversion
+                         python-check-manifest
+                         python-codecov
+                         python-coverage
+                         python-ipython
+                         python-ipywidgets
+                         python-moto
+                         python-notebook
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-env
+                         python-pytest-mock
+                         python-recommonmark
+                         python-requests
+                         python-setuptools
+                         python-tox
+                         python-twine
+                         python-wheel))
+    (home-page "https://github.com/nteract/papermill")
+    (synopsis "Parameterize and run Jupyter and nteract Notebooks")
+    (description "Papermill is a tool for parameterizing, executing, and
+analyzing Jupyter Notebooks.")
+    (license license:bsd-3)))
+
 (define-public python-voila
   (package
     (name "python-voila")
