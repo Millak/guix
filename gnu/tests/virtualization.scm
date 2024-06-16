@@ -94,6 +94,9 @@
                      ((pid) (number? pid))))))
              marionette))
 
+          ;; Give the libvirtd service time to start up.
+          (sleep 1)
+
           (test-eq "fetch version"
             0
             (marionette-eval
