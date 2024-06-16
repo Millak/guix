@@ -45,7 +45,8 @@
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:export (texlive->guix-package
-            texlive-recursive-import))
+            texlive-recursive-import
+            %texlive-updater))
 
 ;;; Commentary:
 ;;;
@@ -101,6 +102,42 @@
         "tex"
         "tie"
         "web"))
+
+;; Guix introduces two specific packages based on TEXLIVE-BUILD-SYSTEM.  Add
+;; an entry for them in the package database, so they can be imported, and
+;; updated, like any other regular TeX Live package.
+(define tlpdb-guix-packages
+  '(("hyphen-complete"
+     (docfiles "texmf-dist/doc/generic/dehyph-exptl/"
+               "texmf-dist/doc/generic/elhyphen/"
+               "texmf-dist/doc/generic/huhyphen/"
+               "texmf-dist/doc/generic/hyph-utf8/"
+               "texmf-dist/doc/luatex/hyph-utf8/"
+               "texmf-dist/doc/generic/ukrhyph/")
+     (runfiles "texmf-dist/tex/generic/config/"
+               "texmf-dist/tex/generic/dehyph/"
+               "texmf-dist/tex/generic/dehyph-exptl/"
+               "texmf-dist/tex/generic/hyph-utf8/"
+               "texmf-dist/tex/generic/hyphen/"
+               "texmf-dist/tex/generic/ruhyphen/"
+               "texmf-dist/tex/generic/ukrhyph/"
+               "texmf-dist/tex/luatex/hyph-utf8/")
+     (srcfiles "texmf-dist/source/generic/hyph-utf8/"
+               "texmf-dist/source/luatex/hyph-utf8/"
+               "texmf-dist/source/generic/ruhyphen/")
+     (shortdesc . "Hyphenation patterns expressed in UTF-8")
+     (longdesc . "Modern native UTF-8 engines such as XeTeX and LuaTeX
+need hyphenation patterns in UTF-8 format, whereas older systems require
+hyphenation patterns in the 8-bit encoding of the font in use (such encodings
+are codified in the LaTeX scheme with names like OT1, T2A, TS1, OML, LY1,
+etc).  The present package offers a collection of conversions of existing
+patterns to UTF-8 format, together with converters for use with 8-bit fonts in
+older systems.
+
+This Guix-specific package provides hyphenation patterns for all languages
+supported in TeX Live.  It is a strict super-set of code{hyphen-base} package
+and should be preferred to it whenever a package would otherwise depend on
+@code{hyph-utf8}."))))
 
 (define (svn-command . args)
   "Execute \"svn\" command with arguments ARGS, provided as strings, and
@@ -301,7 +338,8 @@ association list."
              (last-property #false))
           (let ((line (read-line port)))
             (cond
-             ((eof-object? line) (values all))
+             ;; End of file.  Don't forget to include Guix-specific package.
+             ((eof-object? line) (values (append tlpdb-guix-packages all)))
 
              ;; End of record.
              ((string-null? line)
@@ -616,5 +654,34 @@ VERSION."
                     #:version version
                     #:repo->guix-package texlive->guix-package
                     #:guix-name guix-name))
+
+;;;
+;;; Updates.
+;;;
+
+(define (package-from-texlive-repository? package)
+  (and (string-prefix? "texlive-" (package-name package))
+       (eq? 'texlive (build-system-name (package-build-system package)))))
+
+(define* (latest-release package #:key version)
+  "Return an <upstream-source> for the latest release of PACKAGE.  Optionally
+include a VERSION string to fetch a specific version."
+  (let* ((version (or version (latest-texlive-tag)))
+         (database (tlpdb/cached version))
+         (upstream-name (package-upstream-name* package)))
+    (upstream-source
+     (package upstream-name)
+     (version version)
+     (urls (texlive->svn-multi-reference upstream-name version database))
+     (inputs (list-upstream-inputs upstream-name version database)))))
+
+(define %texlive-updater
+  ;; The TeX Live updater.  It is restricted to TeX Live releases (2023.0,
+  ;; 2024.2, ...); it doesn't include revision bumps for individual packages.
+  (upstream-updater
+   (name 'texlive)
+   (description "Updater for TeX Live packages")
+   (pred package-from-texlive-repository?)
+   (import latest-release)))
 
 ;;; texlive.scm ends here

@@ -28,6 +28,7 @@
   #:use-module ((guix download)
                 #:select (download-to-store url-fetch))
   #:use-module (guix git-download)
+  #:use-module (guix svn-download)
   #:use-module (guix gnupg)
   #:use-module (guix packages)
   #:use-module (guix diagnostics)
@@ -49,6 +50,7 @@
   #:use-module (srfi srfi-35)
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 regex)
   #:export (upstream-source
             upstream-source?
             upstream-source-package
@@ -107,7 +109,7 @@
   upstream-source?
   (package        upstream-source-package)        ;string
   (version        upstream-source-version)        ;string
-  (urls           upstream-source-urls)           ;list of strings|git-reference
+  (urls           upstream-source-urls) ;list of strings|git-references...
   (signature-urls upstream-source-signature-urls  ;#f | list of strings
                   (default #f))
   (inputs         upstream-source-inputs        ;#f | list of <upstream-input>
@@ -463,10 +465,19 @@ SOURCE, an <upstream-source>."
            #:recursive? (git-reference-recursive? ref))
           source))
 
+(define* (package-update/svn-multi-fetch store package source
+                                         #:key key-download key-server)
+  "Return the version, checkout, and SOURCE, to update PACKAGE to
+SOURCE, an <upstream-source>."
+  (values (upstream-source-version source)
+          (download-multi-svn-to-store store (upstream-source-urls source))
+          source))
+
 (define %method-updates
   ;; Mapping of origin methods to source update procedures.
   `((,url-fetch . ,package-update/url-fetch)
-    (,git-fetch . ,package-update/git-fetch)))
+    (,git-fetch . ,package-update/git-fetch)
+    (,svn-multi-fetch . ,package-update/svn-multi-fetch)))
 
 (define* (package-update store package
                          #:optional (updaters (force %updaters))
@@ -608,9 +619,9 @@ specified in SOURCE, an <upstream-source>."
   "Modify the source file that defines PACKAGE to refer to SOURCE, an
 <upstream-source> whose tarball has SHA256 HASH (a bytevector).  Return the
 new version string if an update was made, and #f otherwise."
-  (define (update-expression expr replacements)
+  (define (replace-atom expr replacements)
     ;; Apply REPLACEMENTS to package expression EXPR, a string.  REPLACEMENTS
-    ;; must be a list of replacement pairs, either bytevectors or strings.
+    ;; must be a list of replacement pairs, either of byte-vectors or strings.
     (fold (lambda (replacement str)
             (match replacement
               (((? bytevector? old-bv) . (? bytevector? new-bv))
@@ -623,62 +634,111 @@ new version string if an update was made, and #f otherwise."
           expr
           replacements))
 
-  (let ((name        (package-name package))
-        (version     (upstream-source-version source))
-        (version-loc (package-field-location package 'version)))
-    (if version-loc
-        (let* ((loc         (package-location package))
-               (old-version (package-version package))
-               (old-hash    (content-hash-value
-                             (origin-hash (package-source package))))
-               (old-url     (match (origin-uri (package-source package))
-                              ((? string? url) url)
-                              ((? git-reference? ref)
-                               (git-reference-url ref))
-                              (_ #f)))
-               (new-url     (match (upstream-source-urls source)
-                              ((first _ ...) first)
-                              ((? git-reference? ref)
-                               (git-reference-url ref))
-                              (_ #f)))
-               (old-commit  (match (origin-uri (package-source package))
-                              ((? git-reference? ref)
-                               (git-reference-commit ref))
-                              (_ #f)))
-               (new-commit  (match (upstream-source-urls source)
-                              ((? git-reference? ref)
-                               (git-reference-commit ref))
-                              (_ #f)))
-               (file        (and=> (location-file loc)
-                                   (cut search-path %load-path <>))))
-          (if file
-              ;; Be sure to use absolute filename.  Replace the URL directory
-              ;; when OLD-URL is available; this is useful notably for
-              ;; mirror://cpan/ URLs where the directory may change as a
-              ;; function of the person who uploads the package.  Note that
-              ;; package definitions usually concatenate fragments of the URL,
-              ;; which is why we only attempt to replace a subset of the URL.
-              (let ((replacements `((,old-version . ,version)
-                                    (,old-hash . ,hash)
-                                    ,@(if (and old-commit new-commit)
-                                          `((,old-commit . ,new-commit))
-                                          '())
-                                    ,@(if (and old-url new-url)
-                                          `((,(dirname old-url) .
-                                             ,(dirname new-url)))
-                                          '()))))
-                (and (edit-expression (location->source-properties
-                                       (absolute-location loc))
-                                      (cut update-expression <> replacements))
-                     (or (not (upstream-source-inputs source))
-                         (update-package-inputs package source))
-                     version))
-              (begin
-                (warning (G_ "~a: could not locate source file")
-                         (location-file loc))
-                #f)))
-        (warning (package-location package)
-                 (G_ "~a: no `version' field in source; skipping~%")
-                 name))))
+  (define (replace-commit old new expr)
+    ;; Replace OLD commit or revision with NEW commit or revision in package
+    ;; expression EXPR.  Special care is given to ensure the commit or
+    ;; revision does not inadvertently match a part of a bigger item.
+    (let ((regexp (make-regexp (format #f " ~s($|[ )])" old)
+                               regexp/newline)))
+      (regexp-substitute/global
+       #f regexp expr 'pre (lambda (m) (format #f " ~s" new)) 1 'post)))
+
+  (define (replace-list old new expr)
+    ;; Replace list OLD with list NEW in package expression EXPR.  Elements in
+    ;; NEW are aligned vertically, at the same column as the first element in
+    ;; OLD.
+    (if (equal? old new)
+        expr
+        (let ((regexp
+               (make-regexp
+                (string-append
+                 "(^[^\"]*)"            ;initial indentation in group 1
+                 (string-join (map (compose regexp-quote object->string) old)
+                              "[ \t\n]*"))
+                regexp/newline))
+              (f
+               (lambda (m)
+                 (let* ((lead (match:substring m 1))
+                        (indent (make-string (string-length lead) #\space)))
+                   (string-append
+                    lead
+                    (string-join (map object->string new)
+                                 (string-append "\n" indent)))))))
+          (regexp-substitute/global #f regexp expr 'pre f 'post))))
+
+  (let* ((name        (package-name package))
+         (loc         (package-location package))
+         (version     (upstream-source-version source))
+         (old-version (package-version package))
+         (old-hash    (content-hash-value
+                       (origin-hash (package-source package))))
+         (old-url     (match (origin-uri (package-source package))
+                        ((? string? url) url)
+                        ((? git-reference? ref)
+                         (git-reference-url ref))
+                        ((? svn-multi-reference? ref)
+                         (svn-multi-reference-url ref))
+                        (_ #f)))
+         (old-commit  (match (origin-uri (package-source package))
+                        ((? git-reference? ref)
+                         (git-reference-commit ref))
+                        ((? svn-multi-reference? ref)
+                         (svn-multi-reference-revision ref))
+                        (_ #f)))
+         (old-locations (match (origin-uri (package-source package))
+                          ((? svn-multi-reference? ref)
+                           (svn-multi-reference-locations ref))
+                          (_ #f)))
+         (new-url     (match (upstream-source-urls source)
+                        ((first _ ...) first)
+                        ((? git-reference? ref)
+                         (git-reference-url ref))
+                        ((? svn-multi-reference? ref)
+                         (svn-multi-reference-url ref))
+                        (_ #f)))
+         (new-commit  (match (upstream-source-urls source)
+                        ((? git-reference? ref)
+                         (git-reference-commit ref))
+                        ((? svn-multi-reference? ref)
+                         (svn-multi-reference-revision ref))
+                        (_ #f)))
+         (new-locations (match (upstream-source-urls source)
+                          ((? svn-multi-reference? ref)
+                           (svn-multi-reference-locations ref))
+                          (_ #f))))
+    (cond
+     ;; Ensure package exists, has a version field, and is stored in a file
+     ;; with an absolute file name.
+     ((not (package-field-location package 'version))
+      (warning (package-location package)
+               (G_ "~a: no `version' field in source; skipping~%")
+               name))
+     ((not (and=> (location-file loc)
+                  (cut search-path %load-path <>)))
+      (warning (G_ "~a: could not locate source file")
+               (location-file loc))
+      #f)
+     ;; Proceed with replacements.
+     (else
+      (let ((replacement-pairs
+             `((,old-version . ,version)
+               (,old-hash . ,hash)
+               ;; Replace the URL directory when OLD-URL is available; this is
+               ;; useful notably for mirror://cpan/ URLs where the directory
+               ;; may change as a function of the person who uploads the
+               ;; package.  Note that package definitions usually concatenate
+               ;; fragments of the URL, which is why we only attempt to
+               ;; replace a subset of the URL.
+               ,@(if (and old-url new-url)
+                     `((,(dirname old-url) . ,(dirname new-url)))
+                     '()))))
+        (and (edit-expression
+              (location->source-properties (absolute-location loc))
+              (compose (cut replace-atom <> replacement-pairs)
+                       (cut replace-commit old-commit new-commit <>)
+                       (cut replace-list old-locations new-locations <>)))
+             (or (not (upstream-source-inputs source))
+                 (update-package-inputs package source))
+             version))))))
 
 ;;; upstream.scm ends here
