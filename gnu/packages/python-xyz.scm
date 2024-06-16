@@ -35356,13 +35356,13 @@ adapted from the @code{packaging} package.")
 (define-public python-shtab
   (package
     (name "python-shtab")
-    (version "1.5.3")
+    (version "1.7.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "shtab" version))
         (sha256
-          (base32 "127mymfm7r0hddk2vknqq34fj6dirj6ip990i3g4isx0lsd7pnsc"))))
+          (base32 "0g14778c5zgiq6b92k40n9irp75c5vcsvl5541cw8bmqxq1cnjsf"))))
     (build-system pyproject-build-system)
     (native-inputs
       (list bash
