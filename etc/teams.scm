@@ -604,7 +604,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Tobias Geerinckx-Rice"
                        "me@tobias.gr")
-  core kernel mentors)
+  core mentors)
 
 (define-member (person "Leo Famulari"
                        "leo@famulari.name")
