@@ -2386,13 +2386,13 @@ Meier, Nelson Aalen and regression.")
 (define-public python-mapie
   (package
     (name "python-mapie")
-    (version "0.8.3")
+    (version "0.8.6")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "MAPIE" version))
               (sha256
                (base32
-                "13kgyqk1hp603n9zym835kp1pqs83k0j7ymayw4fk0zx4z1nmvdx"))))
+                "013ljcjjl3k9yb3166fnvr6nsb9ph4rhidpdjjks78qw0w1j7faa"))))
     (build-system pyproject-build-system)
     ;; See https://github.com/scikit-learn-contrib/MAPIE/issues/432
     (arguments
