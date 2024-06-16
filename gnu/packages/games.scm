@@ -7667,14 +7667,14 @@ abilities and powers.")
 (define-public quakespasm
   (package
     (name "quakespasm")
-    (version "0.93.2")
+    (version "0.96.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/quakespasm/Source/quakespasm-"
-                           version ".tgz"))
+                           version ".tar.gz"))
        (sha256
-        (base32 "0qm0j5drybvvq8xadfyppkpk3rxqsxbywzm6iwsjwdf0iia3gss5"))))
+        (base32 "0hr58w1d2yw82vm9lkln05z6d4sjlcr6grxhf6sqdqwyfy9nv1mw"))))
     (arguments
      `(#:tests? #f
        #:make-flags '("CC=gcc"
