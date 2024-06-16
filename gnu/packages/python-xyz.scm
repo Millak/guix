@@ -35363,7 +35363,7 @@ adapted from the @code{packaging} package.")
         (uri (pypi-uri "shtab" version))
         (sha256
           (base32 "127mymfm7r0hddk2vknqq34fj6dirj6ip990i3g4isx0lsd7pnsc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
       (list bash
             python-pytest
@@ -35371,15 +35371,6 @@ adapted from the @code{packaging} package.")
             python-pytest-timeout
             python-setuptools-scm
             python-wheel))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace
-             'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest")))))))
     (home-page "https://github.com/iterative/shtab")
     (synopsis "Automagic shell tab completion for Python CLI applications")
     (description
