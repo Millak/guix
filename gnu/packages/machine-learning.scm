@@ -150,6 +150,26 @@
 representations and sentence classification.")
     (license license:expat)))
 
+(define-public python-autograd-gamma
+  (package
+    (name "python-autograd-gamma")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "autograd-gamma" version))
+       (sha256
+        (base32 "1i699a9m5ndnj8cwzjjf2agb77aawhzrzxfbmn5zrkxridxvnypj"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-autograd python-scipy))
+    (home-page "https://github.com/CamDavidsonPilon/autograd-gamma")
+    (synopsis
+     "Autograd-compatible approximations to the gamma family of functions")
+    (description
+     "This package provides Autograd-compatible approximations to the gamma
+family of functions.")
+    (license license:expat)))
+
 (define-public python-fasttext
   (package
     (inherit fasttext)
