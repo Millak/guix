@@ -21,22 +21,28 @@
 (define-module (guix import texlive)
   #:use-module (gcrypt hash)
   #:use-module (guix base32)
-  #:use-module (guix build-system texlive)
+  #:use-module (guix build-system)
   #:use-module (guix derivations)
+  #:use-module (guix diagnostics)
   #:use-module (guix gexp)
+  #:use-module (guix i18n)
   #:use-module (guix import utils)
   #:use-module (guix memoization)
   #:use-module (guix monads)
-  #:use-module (guix serialization)
+  #:use-module (guix packages)
+  #:use-module ((guix serialization) #:select (write-file))
   #:use-module (guix store)
   #:use-module (guix svn-download)
   #:use-module (guix upstream)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
+  #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-2)
+  #:use-module (srfi srfi-11)
+  #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:export (texlive->guix-package
             texlive-recursive-import))
@@ -48,6 +54,20 @@
 ;;; locations in the SVN repository of the Texlive project.
 ;;;
 ;;; Code:
+
+(define texlive-repository "svn://www.tug.org/texlive")
+
+(define* (texlive-repository-location version #:optional location)
+  (format #f
+          "~a/tags/texlive-~a/~a"
+          texlive-repository
+          version
+          (cond
+           ((not location) "")
+           ((string-prefix? "/" location)
+            (string-drop location 1))
+           (else
+            location))))
 
 ;; Generic locations are parts of the tree shared by multiple packages.
 ;; Package definitions should single out files stored there, or all files in
@@ -81,6 +101,58 @@
         "tex"
         "tie"
         "web"))
+
+(define (svn-command . args)
+  "Execute \"svn\" command with arguments ARGS, provided as strings, and
+return its output as a string.  Raise an error if the command execution did
+not succeed."
+  (define subversion
+    ;; Resolve this variable lazily so that (gnu packages ...) does not end up
+    ;; in the closure of this module.
+    (module-ref (resolve-interface '(gnu packages version-control))
+                'subversion))
+  (let* ((svn
+          (with-store store
+            (run-with-store store
+              (mlet* %store-monad
+                  ((drv (lower-object subversion))
+                   (built (built-derivations (list drv))))
+                (match (derivation->output-paths drv)
+                  (((names . locations) ...)
+                   (return (string-append (first locations) "/bin/svn"))))))))
+         (command (string-append svn (string-join args " " 'prefix)))
+         (pipe (open-input-pipe command))
+         (output (read-string pipe)))
+    ;; Output from these commands is memoized.  Raising an error prevent from
+    ;; storing bogus values in memory.
+    (unless (zero? (status:exit-val (close-pipe pipe)))
+      (report-error (G_ "failed to run command: '~a'") command))
+    output))
+
+(define version->revision
+  ;; Return revision, as a number, associated to string VERSION.
+  (lambda (version)
+    (let ((output (svn-command "info"
+                               (texlive-repository-location version)
+                               "--show-item 'last-changed-revision'"
+                               "--no-newline")))
+      (string->number output))))
+
+(define (current-day)
+  "Return number of days since Epoch."
+  (floor (/ (time-second (current-time)) (* 24 60 60))))
+
+(define latest-texlive-tag
+  ;; Return the latest TeX Live tag in repository.  The argument refers to
+  ;; current day, so memoization is only active a single day, as the
+  ;; repository may have been updated between two calls.
+  (memoize
+   (lambda* (#:key (day (current-day)))
+     (let ((output
+            (svn-command "ls" (string-append texlive-repository "/tags") "-v")))
+       ;; E.g. "70951 karl april 15 18:11 texlive-2024.2/\n\n"
+       (and=> (string-match "texlive-([^/]+)/\n*$" output)
+              (cut match:substring <> 1))))))
 
 (define string->license
   (match-lambda
@@ -185,95 +257,81 @@ Guix-specific packages."
                  (name name))
                depends)))
 
-(define (tlpdb-file)
-  (define texlive-scripts
-    ;; Resolve this variable lazily so that (gnu packages ...) does not end up
-    ;; in the closure of this module.
-    (module-ref (resolve-interface '(gnu packages tex))
-                'texlive-scripts))
-
-  (with-store store
-    (run-with-store store
-      (mlet* %store-monad
-          ((drv (lower-object texlive-scripts))
-           (built (built-derivations (list drv))))
-        (match (derivation->output-paths drv)
-          (((names . items) ...)
-           (return (string-append (second items) ;"out"
-                                  "/share/tlpkg/texlive.tlpdb"))))))))
-
-(define tlpdb
-  (memoize
-   (lambda ()
-     (let ((file (tlpdb-file))
-           (fields
-            '((name     . string)
-              (shortdesc . string)
-              (longdesc . string)
-              (catalogue . string)
-              (catalogue-license . string)
-              (catalogue-ctan . string)
-              (srcfiles . list)
-              (runfiles . list)
-              (docfiles . list)
-              (binfiles . list)
-              (depend   . simple-list)
-              (execute  . simple-list)))
-           (record
-            (lambda* (key value alist #:optional (type 'string))
-              (let ((new
-                     (or (and=> (assoc-ref alist key)
-                                (lambda (existing)
-                                  (cond
-                                   ((eq? type 'string)
-                                    (string-append existing " " value))
-                                   ((or (eq? type 'list) (eq? type 'simple-list))
-                                    (cons value existing)))))
-                         (cond
-                          ((eq? type 'string)
-                           value)
-                          ((or (eq? type 'list) (eq? type 'simple-list))
-                           (list value))))))
-                (acons key new (alist-delete key alist))))))
-       (call-with-input-file file
-         (lambda (port)
-           (let loop ((all (list))
-                      (current (list))
-                      (last-property #false))
-             (let ((line (read-line port)))
-               (cond
-                ((eof-object? line) all)
-
-                ;; End of record.
-                ((string-null? line)
-                 (loop (cons (cons (assoc-ref current 'name) current)
-                             all)
-                       (list) #false))
-
-                ;; Continuation of a list
-                ((and (zero? (string-index line #\space)) last-property)
-                 ;; Erase optional second part of list values like
-                 ;; "details=Readme" for files
-                 (let ((plain-value (first
-                                     (string-split
-                                      (string-trim-both line) #\space))))
-                   (loop all (record last-property
-                                     plain-value
-                                     current
-                                     'list)
-                         last-property)))
-                (else
-                 (or (and-let* ((space (string-index line #\space))
-                                (key   (string->symbol (string-take line space)))
-                                (value (string-drop line (1+ space)))
-                                (field-type (assoc-ref fields key)))
-                       ;; Erase second part of list keys like "size=29"
+(define (tlpdb version)
+  "Return the TeX Live database associated to VERSION repository tag.  The
+function fetches the requested \"texlive.tlpdb\" file and parses it as
+association list."
+  (let* ((fields
+          '((name     . string)
+            (shortdesc . string)
+            (longdesc . string)
+            (catalogue . string)
+            (catalogue-license . string)
+            (catalogue-ctan . string)
+            (srcfiles . list)
+            (runfiles . list)
+            (docfiles . list)
+            (binfiles . list)
+            (depend   . simple-list)
+            (execute  . simple-list)))
+         (record
+          (lambda* (key value alist #:optional (type 'string))
+            (let ((new
+                   (or (and=> (assoc-ref alist key)
+                              (lambda (existing)
+                                (cond
+                                 ((eq? type 'string)
+                                  (string-append existing " " value))
+                                 ((or (eq? type 'list) (eq? type 'simple-list))
+                                  (cons value existing)))))
                        (cond
-                        ((eq? field-type 'list)
-                         (loop all current key))
-                        (else
-                         (loop all (record key value current field-type) key))))
-                     (loop all current #false))))))))))))
+                        ((eq? type 'string)
+                         value)
+                        ((or (eq? type 'list) (eq? type 'simple-list))
+                         (list value))))))
+              (acons key new (alist-delete key alist)))))
+         (database-url
+          (texlive-repository-location version "Master/tlpkg/texlive.tlpdb")))
+    (call-with-input-string (svn-command "cat" database-url)
+      (lambda (port)
+        (let loop
+            ;; Store the SVN revision of the packages database.
+            ((all (list (cons 'database-revision (version->revision version))))
+             (current (list))
+             (last-property #false))
+          (let ((line (read-line port)))
+            (cond
+             ((eof-object? line) (values all))
+
+             ;; End of record.
+             ((string-null? line)
+              (loop (cons (cons (assoc-ref current 'name) current)
+                          all)
+                    (list)
+                    #false))
+             ;; Continuation of a list
+             ((and (zero? (string-index line #\space)) last-property)
+              ;; Erase optional second part of list values like
+              ;; "details=Readme" for files
+              (let ((plain-value (first (string-split (string-trim-both line)
+                                                      #\space))))
+                (loop all
+                      (record last-property plain-value current 'list)
+                      last-property)))
+             (else
+              (or (and-let* ((space (string-index line #\space))
+                             (key   (string->symbol (string-take line space)))
+                             (value (string-drop line (1+ space)))
+                             (field-type (assoc-ref fields key)))
+                    ;; Erase second part of list keys like "size=29"
+                    (cond
+                     ((eq? field-type 'list)
+                      (loop all current key))
+                     (else
+                      (loop all (record key value current field-type) key))))
+                  (loop all current #false))))))))))
+
+(define tlpdb/cached (memoize tlpdb))
 
 (define latex-bin-dependency-tree
   ;; Return a list of packages used to build "latex-bin" package.  Those
@@ -346,12 +404,11 @@ extensions, and files without extension."
                     (reverse scripts)))
       '()))
 
-(define (list-upstream-inputs upstream-name)
+(define (list-upstream-inputs upstream-name version database)
   "Return the list of <upstream-input> corresponding to all the dependencies
-of package with UPSTREAM-NAME."
-  (let* ((database (tlpdb))
-         (package-data (assoc-ref database upstream-name))
-         (scripts (list-linked-scripts upstream-name database)))
+of package with UPSTREAM-NAME in VERSION."
+  (let ((package-data (assoc-ref database upstream-name))
+        (scripts (list-linked-scripts upstream-name database)))
     (append
      ;; Native inputs.
      ;;
@@ -438,46 +495,48 @@ of package with UPSTREAM-NAME."
             (delete-duplicates (sort (map trim-filename specific) string<)
                                string-prefix?))))
 
-(define (tlpdb->package name version package-database)
-  (and-let* ((data (assoc-ref package-database name))
-             (locs (files->locations
-                    (filter-map (lambda (file)
-                                  ;; Ignore any file not starting with the
-                                  ;; expected prefix.  Nothing good can come
-                                  ;; from this.
-                                  (and (string-prefix? "texmf-dist/" file)
-                                       (string-drop file (string-length "texmf-dist/"))))
-                                (append (or (assoc-ref data 'docfiles) (list))
-                                        (or (assoc-ref data 'runfiles) (list))
-                                        (or (assoc-ref data 'srcfiles) (list))))))
-             (texlive-name name)
-             (name (guix-name name))
-             ;; TODO: we're ignoring the VERSION argument because that
-             ;; information is distributed across %texlive-tag and
-             ;; %texlive-revision.
-             (ref (svn-multi-reference
-                   (url (string-append "svn://www.tug.org/texlive/tags/"
-                                       %texlive-tag "/Master/texmf-dist"))
-                   (locations locs)
-                   (revision %texlive-revision)))
-             ;; Ignore arch-dependent packages.
-             (depends (or (assoc-ref data 'depend) '()))
+(define (texlive->svn-multi-reference upstream-name version database)
+  "Return <svn-multi-reference> object for TeX Live package with UPSTREAM-NAME
+at VERSION."
+  (let* ((data (assoc-ref database upstream-name))
+         (locations
+          (files->locations
+           (filter-map (lambda (file)
+                         ;; Ignore any file not starting with the expected
+                         ;; prefix.  Nothing good can come from this.
+                         (and (string-prefix? "texmf-dist/" file)
+                              (string-drop file (string-length "texmf-dist/"))))
+                       (append (or (assoc-ref data 'docfiles) (list))
+                               (or (assoc-ref data 'runfiles) (list))
+                               (or (assoc-ref data 'srcfiles) (list)))))))
+    (svn-multi-reference
+     (url (texlive-repository-location version "Master/texmf-dist"))
+     (locations (sort locations string<))
+     (revision (assoc-ref database 'database-revision)))))
+
+(define (tlpdb->package upstream-name version database)
+  (and-let* ((data (assoc-ref database upstream-name))
+             (name (guix-name upstream-name))
+             (reference
+              (texlive->svn-multi-reference upstream-name version database))
              (source (with-store store
                        (download-multi-svn-to-store
-                        store ref (string-append name "-svn-multi-checkout")))))
-    (let* ((scripts (list-linked-scripts texlive-name package-database))
-           (upstream-inputs (list-upstream-inputs texlive-name))
+                        store reference
+                        (format #f "~a-~a-svn-multi-checkout" name version)))))
+    (let* ((scripts (list-linked-scripts upstream-name database))
+           (upstream-inputs
+            (list-upstream-inputs upstream-name version database))
            (tex-formats (list-formats data))
-           (meta-package? (null? locs))
+           (meta-package? (null? (svn-multi-reference-locations reference)))
            (empty-package? (and meta-package? (not (pair? tex-formats)))))
       (values
        `(package
           (name ,name)
-          (version (number->string %texlive-revision))
+          (version ,version)
           (source ,(and (not meta-package?)
                         `(texlive-origin
                           name version
-                          (list ,@(sort locs string<))
+                          (list ,@(svn-multi-reference-locations reference))
                           (base32
                            ,(bytevector->nix-base32-string
                              (let-values (((port get-hash) (open-sha256-port)))
@@ -487,17 +546,16 @@ of package with UPSTREAM-NAME."
           ,@(if (assoc-ref data 'docfiles)
                 '((outputs '("out" "doc")))
                 '())
-          ;; Set build-system.
+          ;; Build system.
           ;;
           ;; Use trivial build system only when the package contains no files,
           ;; and no TeX format file is expected to be built.
           (build-system ,(if empty-package?
                              'trivial-build-system
                              'texlive-build-system))
-          ;; Generate arguments field.
+          ;; Arguments.
           ,@(let* ((latex-bin-dependency?
-                    (member texlive-name
-                            (latex-bin-dependency-tree package-database)))
+                    (member upstream-name (latex-bin-dependency-tree database)))
                    (arguments
                     (append (if empty-package?
                                 '(#:builder #~(mkdir #$output))
@@ -521,7 +579,7 @@ of package with UPSTREAM-NAME."
           ,@(match (upstream-inputs->texlive-inputs upstream-inputs 'regular)
               (() '())
               (inputs `((inputs (list ,@inputs)))))
-          ,@(match (upstream-inputs->texlive-inputs upstream-inputs 'regular)
+          ,@(match (upstream-inputs->texlive-inputs upstream-inputs 'propagated)
               (() '())
               (inputs `((propagated-inputs (list ,@inputs)))))
           ;; Home page, synopsis, description and license.
@@ -540,17 +598,17 @@ of package with UPSTREAM-NAME."
              ((assoc-ref data 'catalogue-license) => string->license)
              (else #f))))
        ;; List of pure TeX Live dependencies for recursive calls.
-       (filter-depends depends #t)))))
+       (filter-depends (or (assoc-ref data 'depend) '()) #t)))))
 
 (define texlive->guix-package
-  (memoize
-   (lambda* (name #:key
-                  (version (number->string %texlive-revision))
-                  (package-database tlpdb)
-                  #:allow-other-keys)
-     "Find the metadata for NAME in the tlpdb and return the `package'
-s-expression corresponding to that package, or #f on failure."
-     (tlpdb->package name version (package-database)))))
+  (lambda* (name #:key version database #:allow-other-keys)
+    "Find the metadata for NAME in the TeX Live database and return the
+associated Guix package, or #f on failure.  Fetch metadata for a specific
+version whenever VERSION keyword is specified.  Otherwise, grab package latest
+release.  When DATABASE is provided, fetch metadata from there, ignoring
+VERSION."
+    (let ((version (or version (latest-texlive-tag))))
+      (tlpdb->package name version (or database (tlpdb/cached version))))))
 
 (define* (texlive-recursive-import name #:key repo version)
   (recursive-import name
