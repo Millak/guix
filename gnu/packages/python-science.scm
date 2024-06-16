@@ -142,6 +142,32 @@ optimization problems in Python.")
 numerical software for solving convex second-order cone programs (SOCPs).")
     (license license:gpl3)))
 
+(define-public python-formulaic
+  (package
+    (name "python-formulaic")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "formulaic" version))
+       (sha256
+        (base32 "18gvd3f2x358jj0df8vx5fhhnvzw047rsrs03vmvqnxaly97kpb4"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-astor
+                             python-cached-property
+                             python-interface-meta
+                             python-numpy
+                             python-pandas
+                             python-scipy
+                             python-typing-extensions
+                             python-wrapt))
+    (native-inputs (list python-hatchling python-hatch-vcs python-pytest))
+    (home-page "https://github.com/matthewwardrop/formulaic")
+    (synopsis "Implementation of Wilkinson formulas")
+    (description "Formulaic is a high-performance implementation of Wilkinson
+formulas for Python.")
+    (license license:expat)))
+
 (define-public python-osqp
   (package
     (name "python-osqp")
