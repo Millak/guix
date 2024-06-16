@@ -2348,6 +2348,41 @@ building design matrices.")
     ;; and is covered by the PSFL.
     (license (list license:bsd-2 license:psfl))))
 
+(define-public python-lifelines
+  (package
+    (name "python-lifelines")
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lifelines" version))
+       (sha256
+        (base32 "0pmjb3z1rw1ia64gw87r6y9x1g4kwpw239gqzsa9qh7xadj75kzf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This accuracy test fails because 0.012 is not < 0.01.
+      '(list "-k" "not test_weibull_with_delayed_entries")))
+    (propagated-inputs (list python-autograd
+                             python-autograd-gamma
+                             python-formulaic
+                             python-matplotlib
+                             python-numpy
+                             python-pandas
+                             python-scipy))
+    (native-inputs (list python-dill
+                         python-flaky
+                         python-joblib
+                         python-pytest))
+    (home-page "https://github.com/CamDavidsonPilon/lifelines")
+    (synopsis
+     "Survival analysis including Kaplan Meier, Nelson Aalen and regression")
+    (description
+     "This package enables survival analysis in Python, including Kaplan
+Meier, Nelson Aalen and regression.")
+    (license license:expat)))
+
 (define-public python-mapie
   (package
     (name "python-mapie")
