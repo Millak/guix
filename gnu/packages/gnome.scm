@@ -9685,7 +9685,7 @@ easy, safe, and automatic.")
 (define-public tracker
   (package
     (name "tracker")
-    (version "3.6.0")
+    (version "3.7.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/tracker/"
@@ -9693,7 +9693,7 @@ easy, safe, and automatic.")
                                   "tracker-" version ".tar.xz"))
               (sha256
                (base32
-                "1whdqidxmagsc35pmz9kcc5vs3bmvbkmnis7prnx3zxs37z2qnaj"))))
+                "1yfi53fpfszfjajrqf1g80cri472k6wxpxj6g3nwa13yjd84lgdb"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -9747,18 +9747,7 @@ easy, safe, and automatic.")
                 ;; Some tests expect to write to $HOME.
                 (setenv "HOME" "/tmp")
                 (apply invoke "dbus-run-session" "--" "meson" "test"
-                       "--print-errorlogs" test-options))))
-          (add-after 'glib-or-gtk-wrap 'unwrap-libexec
-            (lambda* (#:key outputs #:allow-other-keys)
-              (with-directory-excursion (string-append (assoc-ref outputs "out")
-                                                       "/libexec/tracker3")
-                (for-each
-                 (lambda (f)
-                   (let ((real (string-append "." (basename f) "-real")))
-                     (when (file-exists? real)
-                       (delete-file f)
-                       (rename-file real f))))
-                 (find-files "."))))))))
+                       "--print-errorlogs" test-options)))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
