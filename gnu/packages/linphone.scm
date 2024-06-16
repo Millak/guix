@@ -651,6 +651,7 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
            bcmatroska2
            bctoolbox
            bzrtp
+           dav1d
            ffmpeg-4
            glew
            glu

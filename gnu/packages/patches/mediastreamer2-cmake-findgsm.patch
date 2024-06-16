@@ -1,0 +1,63 @@
+Retrieved from: https://git.pld-linux.org/?p=packages/mediastreamer.git;a=blob_plain;f=mediastreamer-cmake-find.patch;h=4f1e3577f43bf791ed5cdb180ca455f919b80c8d;hb=HEAD
+
+--- mediastreamer2-5.3.29/cmake/FindGSM.cmake.orig	2024-02-21 12:02:03.000000000 +0100
++++ mediastreamer2-5.3.29/cmake/FindGSM.cmake	2024-03-09 20:16:25.064077414 +0100
+@@ -58,7 +58,7 @@ else()
+ 	set(_GSM_ROOT_PATHS ${CMAKE_INSTALL_PREFIX})
+ 
+ 	find_path(_GSM_INCLUDE_DIRS
+-		NAMES gsm/gsm.h
++		NAMES gsm.h gsm/gsm.h
+ 		HINTS ${_GSM_ROOT_PATHS}
+ 		PATH_SUFFIXES include
+ 	)
+--- mediastreamer2-5.3.29/cmake/FindDav1d.cmake.orig	2024-02-21 12:02:03.000000000 +0100
++++ mediastreamer2-5.3.29/cmake/FindDav1d.cmake	2024-03-09 20:44:17.671682787 +0100
+@@ -65,17 +65,17 @@ else()
+ 		PATH_SUFFIXES bin lib lib/Win32
+ 	)
+ 
+-	if(_Dav1d_INCLUDE_DIRS AND _Dav1d_LIBRARY)
++	if(Dav1d_INCLUDE_DIRS AND Dav1d_LIBRARY)
+ 		add_library(libdav1d UNKNOWN IMPORTED)
+ 		if(WIN32)
+ 			set_target_properties(libdav1d PROPERTIES
+-				INTERFACE_INCLUDE_DIRECTORIES "${_Dav1d_INCLUDE_DIRS}"
+-				IMPORTED_IMPLIB "${_Dav1d_LIBRARY}"
++				INTERFACE_INCLUDE_DIRECTORIES "${Dav1d_INCLUDE_DIRS}"
++				IMPORTED_IMPLIB "${Dav1d_LIBRARY}"
+ 			)
+ 		else()
+ 			set_target_properties(libdav1d PROPERTIES
+-				INTERFACE_INCLUDE_DIRECTORIES "${_Dav1d_INCLUDE_DIRS}"
+-				IMPORTED_LOCATION "${_Dav1d_LIBRARY}"
++				INTERFACE_INCLUDE_DIRECTORIES "${Dav1d_INCLUDE_DIRS}"
++				IMPORTED_LOCATION "${Dav1d_LIBRARY}"
+ 			)
+ 		endif()
+ 
+--- mediastreamer2-5.3.29/cmake/FindAom.cmake.orig	2024-02-21 12:02:03.000000000 +0100
++++ mediastreamer2-5.3.29/cmake/FindAom.cmake	2024-03-09 20:45:16.931361750 +0100
+@@ -65,17 +65,17 @@ else()
+ 		PATH_SUFFIXES bin lib lib/Win32
+ 	)
+ 
+-	if(_Aom_INCLUDE_DIRS AND _Aom_LIBRARY)
++	if(Aom_INCLUDE_DIRS AND Aom_LIBRARY)
+ 		add_library(aom UNKNOWN IMPORTED)
+ 		if(WIN32)
+ 			set_target_properties(aom PROPERTIES
+-				INTERFACE_INCLUDE_DIRECTORIES "${_Aom_INCLUDE_DIRS}"
+-				IMPORTED_IMPLIB "${_Aom_LIBRARY}"
++				INTERFACE_INCLUDE_DIRECTORIES "${Aom_INCLUDE_DIRS}"
++				IMPORTED_IMPLIB "${Aom_LIBRARY}"
+ 			)
+ 		else()
+ 			set_target_properties(aom PROPERTIES
+-				INTERFACE_INCLUDE_DIRECTORIES "${_Aom_INCLUDE_DIRS}"
+-				IMPORTED_LOCATION "${_Aom_LIBRARY}"
++				INTERFACE_INCLUDE_DIRECTORIES "${Aom_INCLUDE_DIRS}"
++				IMPORTED_LOCATION "${Aom_LIBRARY}"
+ 			)
+ 		endif()
+ 
