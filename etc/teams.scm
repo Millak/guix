@@ -644,7 +644,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Ricardo Wurmus"
                        "rekado@elephly.net")
-  core mentors r sugar tex)
+  r sugar)
 
 (define-member (person "Christopher Baines"
                        "guix@cbaines.net")
