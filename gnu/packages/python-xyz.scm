@@ -11628,6 +11628,26 @@ finding unresolved symbols in Python code and their corresponding imports.")
      "@code{inotify-simple} is a simple wrapper around inotify library.")
     (license license:bsd-3)))
 
+(define-public python-interface-meta
+  (package
+    (name "python-interface-meta")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "interface_meta" version))
+       (sha256
+        (base32 "18brkmz2ssjikkrkb23cwccp683yi6y1alfdbmjvjgxpppw96i4a"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page "https://github.com/matthewwardrop/interface_meta")
+    (synopsis
+     "API for enforced method signatures and consistent documentation")
+    (description
+     "This package provides a convenient way to expose an extensible API with
+enforced method signatures and consistent documentation.")
+    (license license:expat)))
+
 (define-public python-jaraco-classes
   (package
     (name "python-jaraco-classes")
