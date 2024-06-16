@@ -30,6 +30,7 @@
   #:use-module (guix serialization)
   #:use-module (guix store)
   #:use-module (guix svn-download)
+  #:use-module (guix upstream)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
@@ -345,6 +346,79 @@ extensions, and files without extension."
                     (reverse scripts)))
       '()))
 
+(define (list-upstream-inputs upstream-name)
+  "Return the list of <upstream-input> corresponding to all the dependencies
+of package with UPSTREAM-NAME."
+  (let* ((database (tlpdb))
+         (package-data (assoc-ref database upstream-name))
+         (scripts (list-linked-scripts upstream-name database)))
+    (append
+     ;; Native inputs.
+     ;;
+     ;; Texlive build system generates font metrics whenever a font metrics
+     ;; file has the same base name as a Metafont file.  In this case, provide
+     ;; TEXLIVE-METAFONT.
+     (or (and-let* ((runfiles (assoc-ref package-data 'runfiles))
+                    (metrics
+                     (filter-map (lambda (f)
+                                   (and (string-suffix? ".tfm" f)
+                                        (basename f ".tfm")))
+                                 runfiles))
+                    ((not (null? metrics)))
+                    ((any (lambda (f)
+                            (and (string-suffix? ".mf" f)
+                                 (member (basename f ".mf") metrics)))
+                          runfiles)))
+           (list (upstream-input
+                  (name "metafont")
+                  (downstream-name "texlive-metafont")
+                  (type 'native))))
+         '())
+     ;; Regular inputs.
+     ;;
+     ;; Those may be required by scripts associated to the package.
+     (match (append-map (lambda (s)
+                          (cond ((string-suffix? ".pl" s) '("perl"))
+                                ((string-suffix? ".py" s) '("python"))
+                                ((string-suffix? ".rb" s) '("ruby"))
+                                ((string-suffix? ".tcl" s) '("tcl" "tk"))
+                                (else '())))
+                        scripts)
+       (() '())
+       (inputs (map (lambda (input-name)
+                      (upstream-input
+                       (name input-name)
+                       (downstream-name input-name)
+                       (type 'regular)))
+                    (delete-duplicates inputs string=))))
+     ;; Propagated inputs.
+     ;;
+     ;; Return the "depend" references given in the TeX Live database.  Also
+     ;; check if the package has associated binaries built from
+     ;; TEXLIVE-SOURCE.  In that case, add a Guix-specific NAME-bin propagated
+     ;; input.
+     (let ((binfiles (list-binfiles upstream-name database)))
+       (map (lambda (input-name)
+              (upstream-input
+               (name input-name)
+               (downstream-name (guix-name input-name))
+               (type 'propagated)))
+            (sort (append
+                   (filter-depends (or (assoc-ref package-data 'depend) '()))
+                   ;; Check if propagation of binaries is necessary.  It
+                   ;; happens when binfiles outnumber the scripts, if any.
+                   (if (and (> (length binfiles) (length scripts))
+                            (not (member upstream-name
+                                         no-bin-propagation-packages)))
+                       (list (string-append upstream-name "-bin"))
+                       '()))
+                  string<?))))))
+
+(define (upstream-inputs->texlive-inputs upstream-inputs type)
+  (map (compose string->symbol upstream-input-downstream-name)
+       (filter (upstream-input-type-predicate type)
+               upstream-inputs)))
+
 (define (files->locations files)
   (define (trim-filename entry)
     (string-join (drop-right (string-split entry #\/) 1) "/" 'suffix))
@@ -392,19 +466,7 @@ extensions, and files without extension."
                        (download-multi-svn-to-store
                         store ref (string-append name "-svn-multi-checkout")))))
     (let* ((scripts (list-linked-scripts texlive-name package-database))
-           (propagated-inputs
-            (let ((binfiles (list-binfiles texlive-name package-database)))
-              (sort (append
-                     ;; Check if propagation of binaries is necessary.  It
-                     ;; happens when binfiles outnumber the scripts, if any.
-                     (if (and (> (length binfiles) (length scripts))
-                              (not (member texlive-name
-                                           no-bin-propagation-packages)))
-                         (list (string-append name "-bin"))
-                         '())
-                     ;; Regular dependencies, as specified in database.
-                     (map guix-name (filter-depends depends)))
-                    string<?)))
+           (upstream-inputs (list-upstream-inputs texlive-name))
            (tex-formats (list-formats data))
            (meta-package? (null? locs))
            (empty-package? (and meta-package? (not (pair? tex-formats)))))
@@ -452,36 +514,14 @@ extensions, and files without extension."
               (if (pair? arguments)
                   `((arguments (list ,@arguments)))
                   '()))
-          ;; Native inputs.
-          ;;
-          ;; Texlive build system generates font metrics whenever a font
-          ;; metrics file has the same base name as a Metafont file.  In this
-          ;; case, provide `texlive-metafont'.
-          ,@(or (and-let* ((runfiles (assoc-ref data 'runfiles))
-                           (metrics
-                            (filter-map (lambda (f)
-                                          (and (string-suffix? ".tfm" f)
-                                               (basename f ".tfm")))
-                                        runfiles))
-                           ((not (null? metrics)))
-                           ((any (lambda (f)
-                                   (and (string-suffix? ".mf" f)
-                                        (member (basename f ".mf") metrics)))
-                                 runfiles)))
-                  '((native-inputs (list texlive-metafont))))
-                '())
           ;; Inputs.
-          ,@(match (append-map (lambda (s)
-                                 (cond ((string-suffix? ".pl" s) '(perl))
-                                       ((string-suffix? ".py" s) '(python))
-                                       ((string-suffix? ".rb" s) '(ruby))
-                                       ((string-suffix? ".tcl" s) '(tcl tk))
-                                       (else '())))
-                               scripts)
+          ,@(match (upstream-inputs->texlive-inputs upstream-inputs 'native)
               (() '())
-              (inputs `((inputs (list ,@(delete-duplicates inputs eq?))))))
-          ;; Propagated inputs.
-          ,@(match (map string->symbol propagated-inputs)
+              (inputs `((native-inputs (list ,@inputs)))))
+          ,@(match (upstream-inputs->texlive-inputs upstream-inputs 'regular)
+              (() '())
+              (inputs `((inputs (list ,@inputs)))))
+          ,@(match (upstream-inputs->texlive-inputs upstream-inputs 'regular)
               (() '())
               (inputs `((propagated-inputs (list ,@inputs)))))
           ;; Home page, synopsis, description and license.
