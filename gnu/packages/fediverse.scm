@@ -2,6 +2,7 @@
 ;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2024 Sergio Durigan Junior <sergiodj@sergiodj.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,12 +24,15 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -44,6 +48,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages xml))
 
 (define-public toot
@@ -189,4 +194,58 @@ seamlessly with your desktop environment.")
     (synopsis "Python wrapper for the Mastodon API")
     (description
      "This package provides a python wrapper for the Mastodon API.")
+    (license license:expat)))
+
+(define-public snac2
+  (package
+    (name "snac")
+    (version "2.55")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/grunfink/snac2")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06qmg0wy1f4r6l8j52jnma4d2b8sj8fqf52vn7qqbbs8jz7aj74s"))))
+    (build-system gnu-build-system)
+    (inputs (list curl openssl))
+    (arguments
+     (list
+       #:phases #~(modify-phases %standard-phases
+                    (delete 'configure)
+                    (add-after 'unpack 'remove-usr-local
+                      (lambda _
+                        (substitute* "Makefile"
+                          (("-I/usr/local/include")
+                           "")
+                          (("-L/usr/local/lib")
+                           "")))))
+       #:tests? #f ; no test target
+       #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                            (string-append "CFLAGS=-O2 -g -Wall -Wextra")
+                            (string-append "PREFIX=" #$output))))
+    (home-page "https://codeberg.org/grunfink/snac2")
+    (synopsis
+     "Simple, minimalistic ActivityPub instance written in portable C")
+    (description
+     "Snac is a simple, minimalistic ActivityPub instance written in
+portable C.
+
+It features:
+
+@itemize
+@item Lightweight, minimal dependencies
+@item Extensive support of ActivityPub operations, e.g. write public notes,
+follow users, be followed, reply to the notes of others, admire wonderful
+content (like or boost), write private messages, etc.
+@item Multiuser support
+@item Mastodon API support, so Mastodon-compatible apps can be used
+@item Simple but effective web interface
+@item Easily-accessed MUTE button to silence users
+@item Tested interoperability with related software
+@item No database needed
+@item Totally JavaScript-free; no cookies either
+@end itemize")
     (license license:expat)))
