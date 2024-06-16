@@ -3882,7 +3882,7 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.45.1.0")
+    (version "3.46.0.0")
     ;; The compressed release has fetching functionality disabled.
     (source
      (origin
@@ -3892,7 +3892,7 @@ PickleShare.")
              version "/apsw-" version ".zip"))
        (sha256
         (base32
-         "1vfrzb414pbh5k0cgcqkp039jvla2galapn4a551zgh8xi70bnrp"))))
+         "10yfbasi4mq63g0svyl1h49ylwn9znjylq78id16dzxzk9q9ipdx"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list unzip))
