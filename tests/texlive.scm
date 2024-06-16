@@ -369,8 +369,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "example"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-example")
@@ -403,8 +403,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "texsis"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-texsis")
@@ -449,8 +449,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "trsym"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name _)
@@ -483,8 +483,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "12many"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-12many")
@@ -520,8 +520,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "chs-physics-report"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-chs-physics-report")
@@ -556,8 +556,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "collection-texworks"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-collection-texworks")
@@ -592,8 +592,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "lollipop"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-lollipop")
@@ -629,8 +629,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "adforn"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-adforn")
@@ -661,8 +661,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "collection-basic"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-collection-basic")
@@ -696,8 +696,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "tex"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-tex")
@@ -731,8 +731,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "authorindex"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-authorindex")
@@ -765,8 +765,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "cyrillic-bin"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-cyrillic-bin")
@@ -800,8 +800,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "pax"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-pax")
@@ -836,8 +836,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "vlna"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-vlna")
@@ -870,8 +870,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "m-tx"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-m-tx")
@@ -905,8 +905,8 @@ completely compatible with Plain TeX.")
              (lambda ()
                (display "source")))))
         (let ((result (texlive->guix-package "web"
-                                             #:package-database
-                                             (lambda _ %fake-tlpdb))))
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
           (match result
             (('package
                ('name "texlive-web")
