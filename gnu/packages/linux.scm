@@ -508,7 +508,8 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (sha256 hash)))
 
 
-;; The current "mainline" kernel.
+;; The current "stable" kernels. That is, the most recently released major
+;; versions that are still supported upstream.
 
 (define-public linux-libre-6.9-version "6.9.4")
 (define-public linux-libre-6.9-gnu-revision "gnu")
@@ -525,23 +526,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.9)))
 
-;; The current "stable" kernels. That is, the most recently released major
-;; versions that are still supported upstream.
-
-(define-public linux-libre-6.8-version "6.8.12")
-(define-public linux-libre-6.8-gnu-revision "gnu")
-(define deblob-scripts-6.8
-  (linux-libre-deblob-scripts
-   linux-libre-6.8-version
-   linux-libre-6.8-gnu-revision
-   (base32 "17gvccv60mcpi8l9d83p4jh56vhwsv62blahz774kzyb40j8jsd4")
-   (base32 "049qgwx6njh139vzdhgyzpfbc58vqs66nbsyblq6vszqrz27kmki")))
-(define-public linux-libre-6.8-pristine-source
-  (let ((version linux-libre-6.8-version)
-        (hash (base32 "0fb0m0fv4521g63gq04d7lm6hy8169s1rykiav5bkd99s9b1kcqr")))
-   (make-linux-libre-source version
-                            (%upstream-linux-source version hash)
-                            deblob-scripts-6.8)))
 
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
@@ -670,11 +654,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
-(define-public linux-libre-6.8-source
-  (source-with-patches linux-libre-6.8-pristine-source
-                       (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
-
 (define-public linux-libre-6.6-source
   (source-with-patches linux-libre-6.6-pristine-source
                        (list %boot-logo-patch
@@ -794,11 +773,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-6.9-version
                              linux-libre-6.9-gnu-revision
                              linux-libre-6.9-source))
-
-(define-public linux-libre-headers-6.8
-  (make-linux-libre-headers* linux-libre-6.8-version
-                             linux-libre-6.8-gnu-revision
-                             linux-libre-6.8-source))
 
 (define-public linux-libre-headers-6.6
   (make-linux-libre-headers* linux-libre-6.6-version
@@ -1161,14 +1135,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
   (make-linux-libre* linux-libre-6.9-version
                      linux-libre-6.9-gnu-revision
                      linux-libre-6.9-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux"
-                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
-                     #:configuration-file kernel-config))
-
-(define-public linux-libre-6.8
-  (make-linux-libre* linux-libre-6.8-version
-                     linux-libre-6.8-gnu-revision
-                     linux-libre-6.8-source
                      '("x86_64-linux" "i686-linux" "armhf-linux"
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
