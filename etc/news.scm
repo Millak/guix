@@ -31,7 +31,7 @@
 (channel-news
  (version 0)
 
- (entry (commit "8511ea597bcf1d1452ef617023c90fdd038b722e")
+ (entry (commit "6fad0fd1c32db2cb25447b694f08d5c7836536ad")
         (title
           (en "Linux-libre 6.8 removed due to end of upstream support")
           (de "Linux-libre 6.8 wurde entfernt"))
