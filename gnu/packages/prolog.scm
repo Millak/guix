@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;;
@@ -193,12 +193,19 @@ it.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     (list git valgrind xxd))
+     (append
+       (if (supported-package? valgrind)
+           (list valgrind)
+           '())
+       (list xxd)))
     (inputs
      (list libffi openssl readline))
     (arguments
      (list
       #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:test-target (if (this-package-native-input "valgrind")
+                        "check"
+                        "test")
       #:phases
       #~(modify-phases %standard-phases
           ;; Upstream does not use a configure script.
