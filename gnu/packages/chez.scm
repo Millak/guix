@@ -297,7 +297,7 @@ will name the threaded machine type unless THREADS? is provided as #f."
     (name "chez-scheme-for-racket")
     ;; The version should match `(scheme-version-number #t)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "9.9.9-pre-release.23")
+    (version "10.1.0-pre-release.1")
     (source #f)
     (build-system gnu-build-system)
     (inputs `(,@(if (nix-system->native-chez-machine-type)
