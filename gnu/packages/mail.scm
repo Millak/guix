@@ -3316,6 +3316,10 @@ from the Cyrus IMAP project.")
          ;; Fix some incorrectly hard-coded external tool file names.
          (add-after 'unpack 'patch-FHS-file-names
            (lambda _
+             ;; avoids warning smtpd: couldn't enqueue offline message
+             ;; smtpctl exited abnormally
+             (substitute* "usr.sbin/smtpd/smtpd.h"
+               (("/usr/bin/smtpctl") "/run/setuid-programs/smtpctl"))
              (substitute* "usr.sbin/smtpd/smtpctl.c"
                ;; ‘gzcat’ is auto-detected at compile time, but ‘cat’ isn't.
                (("/bin/cat") (which "cat")))
