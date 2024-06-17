@@ -9978,7 +9978,7 @@ persistent over reboots.")
                                 "linux/posix_types.h"
                                 "linux/stddef.h"
                                 "linux/types.h"))))))))
-    (native-inputs (list linux-libre-headers-6.8 pkg-config))
+    (native-inputs (list linux-libre-headers-6.9 pkg-config))
     (propagated-inputs (list elfutils zlib)) ;in Requires.private of libbpf.pc
     (home-page "https://github.com/libbpf/libbpf")
     (synopsis "BPF CO-RE (Compile Once – Run Everywhere)")
