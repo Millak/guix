@@ -5288,6 +5288,28 @@ for Python web development.  It is very similar to the web form API
 available in Django, but is a standalone package.")
     (license license:bsd-3)))
 
+(define-public python-wtforms-sqlalchemy
+  (package
+    (name "python-wtforms-sqlalchemy")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "WTForms-SQLAlchemy" version))
+       (sha256
+        (base32 "1nx4x0ifanlbrzh3f9ns8ihnchlkzf54ilvqmgcgcz2j72vm43rp"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-sqlalchemy python-wtforms))
+    (home-page "https://github.com/wtforms/wtforms-sqlalchemy/")
+    (synopsis "SQLAlchemy tools for WTForms")
+    (description
+     "WTForms-SQLAlchemy is a fork of the @code{wtforms.ext.sqlalchemy}
+package from WTForms.  The package has been renamed to
+@code{wtforms_sqlalchemy} but otherwise should function the same as
+@code{wtforms.ext.sqlalchemy} did.")
+    (license license:bsd-3)))
+
 (define-public python-paste
   (package
     (name "python-paste")
