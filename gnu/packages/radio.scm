@@ -3081,7 +3081,7 @@ instruction sets.")
 (define-public gnss-sdr
   (package
     (name "gnss-sdr")
-    (version "0.0.17")
+    (version "0.0.19")
     (source
      (origin
        (method git-fetch)
@@ -3090,7 +3090,7 @@ instruction sets.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kxn98vmrsd2a157cf3hsmivi6p4k4a3907j5w8hmcs0nn92786i"))))
+        (base32 "0l1hqfqh8ffgy6nxqdk390vmnmhv66x7m8323mz2izczqc5acy1p"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("googletest-source" ,(package-source googletest))
@@ -3101,11 +3101,14 @@ instruction sets.")
     (inputs
      (list armadillo
            boost
+           cpu-features
            fmt
            gflags
            glog
            gmp
            gnuradio
+           gnuplot
+           gnutls
            gr-osmosdr
            libpcap
            log4cpp
@@ -3115,11 +3118,14 @@ instruction sets.")
            protobuf
            pugixml
            spdlog
-           volk))
+           volk
+           volk-gnsssdr))
     (arguments
      `(#:configure-flags
        (list "-DENABLE_GENERIC_ARCH=ON"
              "-DENABLE_OSMOSDR=ON"
+
+             "-DENABLE_UNIT_TESTING=FALSE" ; many tests needing data download
              "-DBLA_VENDOR=OpenBLAS"
              (string-append "-DGFLAGS_ROOT="
                             (assoc-ref %build-inputs "gflags"))
