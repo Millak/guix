@@ -4225,6 +4225,47 @@ science corrections sequentially, producing both fully-calibrated individual
 exposures and high-level data products (mosaics, extracted spectra, etc.).")
     (license license:bsd-3)))
 
+(define-public python-jwst-reffiles
+  (package
+    (name "python-jwst-reffiles")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jwst_reffiles" version))
+       (sha256
+        (base32 "1dlw955cw49qczdmimglmlcbal8vd3wbv5j48ckllvjgd59pwr3s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; FIXME: Invistigate why it failes on python-jwst side where the
+      ;; python-tweakwcs is built just fine:
+      ;;
+      ;; <...>/tweakwcs/matchutils.py:18: in <module>
+      ;; from stsci.stimage import xyxymatch
+      ;; E   ModuleNotFoundError: No module named 'stsci.stimage'
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'sanity-check))))
+    (propagated-inputs
+     (list python-astropy
+           python-jwst
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-pytest
+           python-stsci-stimage))
+    (home-page "https://github.com/spacetelescope/jwst_reffiles")
+    (synopsis "Tool for JWST's CRDS-formatted reference files creation")
+    (description
+     "This package provides a tool to create @acronym{Calibration References
+Data System,CRDS}-formatted reference files for @acronym{James Webb Space
+Telescope,JWST} from a set of input dark current files and a set of flat field
+files.")
+    (license license:bsd-3)))
+
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
