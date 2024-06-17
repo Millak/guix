@@ -19274,13 +19274,13 @@ designed to work across multiple versions of Python.")
 (define-public python-cookiecutter
   (package
     (name "python-cookiecutter")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cookiecutter" version))
        (sha256
-        (base32 "1v1iafk8j2f5cciw9mf4263v91070c6z049cpnw42gwffhs907p6"))))
+        (base32 "0762882zrvf3sslr9r7v8wkdwjckhm2clj4d831gvx54kqbgh8fv"))))
     (build-system python-build-system)
     (arguments
      (list
