@@ -5,6 +5,7 @@
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -157,6 +158,30 @@ with @url{https://github.com/ipld/cid, CIDs}.")
 that are shared between @command{go-ipfs/commands} and its rewrite
 @command{go-ipfs-cmds}.")
       (license license:expat))))
+
+(define-public go-github-com-ipfs-go-ipfs-delay
+  (package
+    (name "go-github-com-ipfs-go-ipfs-delay")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-delay")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a5acj622sk1hibnh893mya4h86nsy1dan0wlh9q444c04iqpviw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ipfs-delay"))
+    (home-page "https://github.com/ipfs/go-ipfs-delay")
+    (synopsis "Configurable delays to other objects")
+    (description
+     "This package implements a threadsafe configurable delays to other
+objects.")
+    (license license:expat)))
 
 (define-public go-github-com-ipfs-go-detect-race
   (package
