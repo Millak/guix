@@ -5,14 +5,13 @@
 ;;; Copyright © 2016, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Guy Fleury Iteriteka <hoonandon@gmail.com>
-;;; Copyright © 2019 Andy Tai <atai@atai.org>
+;;; Copyright © 2019, 2022, 2024 Andy Tai <atai@atai.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
 ;;;
@@ -645,6 +644,44 @@ intrinsics as defined in the @file{arm_neon.h} header and x86 SSE (up to
 SSE4.2) intrinsic functions as defined in corresponding x86 compilers headers
 files.")
       (license license:bsd-2))))
+
+(define-public cpu-features
+  (package
+    (name "cpu-features")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/cpu_features")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0297li3408zm1dqnibaasrb51vs7n7iscnxsji3b78g0pir7jwxr"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DBUILD_TESTING=off" ;; XXX: insists on using bundled googletest
+              "-DBUILD_SHARED_LIBS=ON")))
+    (home-page "https://github.com/google/cpu_features")
+    (synopsis "Cross platform C99 library to get cpu features at runtime")
+    (description
+     "Cpu_features is a cross-platform C library to retrieve CPU features
+(such as available instructions) at runtime, and supports these CPU architectures
+@itemize
+@item x86-64
+@item AArch64
+@item ARM
+@item MIPS
+@item POWER
+@item RISC-V
+@item LoongArch
+@item S390x
+@end itemize")
+    (license license:asl2.0)))
+
 
 (define-public blinkenlights
   (package
