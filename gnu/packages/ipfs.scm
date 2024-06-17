@@ -183,6 +183,43 @@ that are shared between @command{go-ipfs/commands} and its rewrite
 objects.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-datastore
+  (package
+    (name "go-github-com-ipfs-go-datastore")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-datastore")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xbhh3gm7bgd2d1p821w8gmbh87aix1g1ynhbl7gjaxxyhrsh68n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-datastore"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-github-com-ipfs-go-detect-race
+           go-github-com-ipfs-go-ipfs-delay
+           go-github-com-jbenet-goprocess
+           go-go-uber-org-multierr
+           go-golang-org-x-xerrors))
+    (home-page "https://github.com/ipfs/go-datastore")
+    (synopsis "Key-value datastore interfaces")
+    (description
+     "Datastore is a generic layer of abstraction for data store and database access.
+It is a simple API with the aim to enable application development in a
+datastore-agnostic way, allowing datastores to be swapped seamlessly without
+changing application code.  Thus, one can leverage different datastores with
+different strengths without committing the application to one datastore
+throughout its lifetime.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-detect-race
   (package
     (name "go-github-com-ipfs-go-detect-race")
