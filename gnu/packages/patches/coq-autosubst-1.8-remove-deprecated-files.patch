@@ -1,0 +1,43 @@
+This patch compatibility problems with Coq 8.19.
+
+It was taken from the master branch of coq-autosubst as there is only
+this change since version 1.8 of autosubst and they haven't released a
+newer version yet.
+
+To recreate this patch:
+
+wget https://github.com/coq-community/autosubst/commit/97eea491813b691c6187d53d92ae6020874a82a3.patch \
+     -O coq-autosubst-1.8-remove-deprecated-files.patch
+
+From 97eea491813b691c6187d53d92ae6020874a82a3 Mon Sep 17 00:00:00 2001
+From: Pierre Rousselin <rousselin@math.univ-paris13.fr>
+Date: Sun, 15 Oct 2023 14:34:31 +0200
+Subject: [PATCH] Remove deprecated files in Coq.Arith
+
+This is necessary for Coq/Coq:#18164
+---
+ theories/Autosubst_Basics.v | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/theories/Autosubst_Basics.v b/theories/Autosubst_Basics.v
+index 477c87c..1940c3b 100644
+--- a/theories/Autosubst_Basics.v
++++ b/theories/Autosubst_Basics.v
+@@ -5,7 +5,7 @@
+ *)
+ 
+ Require Import Coq.Program.Tactics.
+-Require Import Coq.Arith.Plus List FunctionalExtensionality.
++Require Import Coq.Arith.PeanoNat List FunctionalExtensionality.
+ 
+ (** Annotate "a" with additional information. *)
+ Definition annot {A B} (a : A) (b : B) : A := a.
+@@ -240,7 +240,7 @@ Lemma plusSn n m : S n + m = S (n + m). reflexivity. Qed.
+ Lemma plusnS n m : n + S m = S (n + m). symmetry. apply plus_n_Sm. Qed.
+ Lemma plusOn n : O + n = n. reflexivity. Qed.
+ Lemma plusnO n : n + O = n. symmetry. apply plus_n_O. Qed.
+-Lemma plusA n m k : n + (m + k) = (n + m) + k. apply plus_assoc. Qed.
++Lemma plusA n m k : n + (m + k) = (n + m) + k. apply Nat.add_assoc. Qed.
+ 
+ Lemma scons_eta f n : f n .: (+S n) >>> f = (+n) >>> f.
+ Proof.

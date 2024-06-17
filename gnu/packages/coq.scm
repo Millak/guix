@@ -528,7 +528,9 @@ Coq proof assistant.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0qk72r6cqxwhqqkl2kmryhw365w3l2016qii1q1sk3md7zq46jcz"))))
+               (base32 "0qk72r6cqxwhqqkl2kmryhw365w3l2016qii1q1sk3md7zq46jcz"))
+              (patches
+               (search-patches "coq-autosubst-1.8-remove-deprecated-files.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
