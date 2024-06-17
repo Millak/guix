@@ -9486,7 +9486,7 @@ correct movement and editing than you would otherwise have.")
                (base32
                 "191cjzrw9xm5bvcf8s1yr9hdcn9i02789xfd8pz33lk65s0rq413"))))
     (build-system emacs-build-system)
-    (home-page "https://git.sr.ht/~pkal/compat")
+    (home-page "https://elpa.gnu.org/packages/compat.html")
     (synopsis "Emacs Lisp Compatibility Library")
     (description
      "To allow for the usage of Emacs functions and macros that are defined
