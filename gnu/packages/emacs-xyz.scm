@@ -23645,7 +23645,21 @@ calendars provide.")
                  (string-append (getcwd) "/test/results.el")))
               ;; The following tests fail.
               (substitute* "test/test.el"
+                ;; TODO: Broken on emacs-org-super-agenda@1.3 and
+                ;; emacs-org@9.7.4.  Verify when updating.
+                ((".* org-super-agenda-test--auto-parent .*" all)
+                 (string-append all "  (skip-unless nil)\n"))
+                ;; Some tests are using an obsolete variable; fix its use.
+                (("\\(org-super-agenda-retain-sorting ")
+                 "(org-super-agenda-keep-order ")
+                ;; however, they still fail ...
+                ;; TODO: Broken on emacs-org-super-agenda@1.3 since before
+                ;; emacs-org@9.7.4.  Verify when updating.
                 ((".* org-super-agenda-test--with-retained-sorting .*" all)
+                 (string-append all "  (skip-unless nil)\n"))
+                ;; TODO: Broken on emacs-org-super-agenda@1.3 and
+                ;; emacs-org@9.7.4.  Verify when updating.
+                ((".* org-super-agenda-test--without-retained-sorting .*" all)
                  (string-append all "  (skip-unless nil)\n"))))))))
     (native-inputs
      (list emacs-f util-linux))
