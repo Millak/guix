@@ -329,8 +329,6 @@ will name the threaded machine type unless THREADS? is provided as #f."
         (ice-9 match)
         (srfi srfi-34))
       #:out-of-source? #t
-      ;; Intermittent failures: https://github.com/cisco/ChezScheme/issues/809
-      #:tests? #f
       #:test-target "test" ; test-one test-some-fast test-some test test-more
       #:configure-flags
       #~`(,@(let* ((chez+version (strip-store-file-name #$output))
@@ -509,6 +507,7 @@ version of Chez Scheme.")
                 "1q66vafhiwk617z51qkm1v64r3bxqhhf5lzrmsa4l9d5yhvlyk09"))
               (file-name (git-file-name name version))
               (patches (search-patches "chez-scheme-backport-configure.patch"
+                                       "chez-scheme-backport-signal.patch"
                                        "chez-scheme-bin-sh.patch"))
               (snippet #~(begin
                            (use-modules (guix build utils))

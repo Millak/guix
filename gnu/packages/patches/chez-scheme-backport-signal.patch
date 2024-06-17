@@ -1,0 +1,87 @@
+From e416651d8b53fa2eca6edde764a9131d128cd166 Mon Sep 17 00:00:00 2001
+From: Matthew Flatt <mflatt@racket-lang.org>
+Date: Sat, 2 Mar 2024 07:18:41 -0700
+Subject: [PATCH] constrain signal delivery to Scheme to the main thread (#813)
+
+The intent is to avoid crashes when a signal gets delimited to a
+thread that might not even be a Scheme thread. Also, we don't try to
+queue the event directly in the main thread's context, because then
+we'd need more of a lock (while signal handling is otherwise an
+implicit lock).
+
+(cherry picked from commit fc081fc447a786dd53286e5d7314b7217631cb68)
+---
+
+Notes:
+    This should fix intermittent test failures experienced by Guix:
+    see <https://github.com/cisco/ChezScheme/issues/809>.
+
+ c/globals.h      |  1 +
+ c/schsig.c       | 10 ++++++++++
+ c/thread.c       |  1 +
+ csug/system.stex |  2 ++
+ 4 files changed, 14 insertions(+)
+
+diff --git a/c/globals.h b/c/globals.h
+index d2a08299..eb2965c5 100644
+--- a/c/globals.h
++++ b/c/globals.h
+@@ -49,6 +49,7 @@ EXTERN int S_num_preserve_ownership_threads;
+ # ifdef IMPLICIT_ATOMIC_AS_EXPLICIT
+ EXTERN s_thread_mutex_t S_implicit_mutex;
+ # endif
++EXTERN s_thread_t S_main_thread_id;
+ #endif
+ 
+ /* segment.c */
+diff --git a/c/schsig.c b/c/schsig.c
+index a89ab62a..04677730 100644
+--- a/c/schsig.c
++++ b/c/schsig.c
+@@ -666,6 +666,16 @@ ptr S_dequeue_scheme_signals(ptr tc) {
+ static void forward_signal_to_scheme(INT sig) {
+   ptr tc = get_thread_context();
+ 
++#ifdef PTHREADS
++  /* deliver signals to the main thread, only; depending
++     on the threads that are running, `tc` might even be NULL */
++  if (tc != TO_PTR(&S_G.thread_context)) {
++    pthread_kill(S_main_thread_id, sig);
++    RESET_SIGNAL
++    return;
++  }
++#endif
++
+   if (enqueue_scheme_signal(tc, sig)) {
+     SIGNALINTERRUPTPENDING(tc) = Strue;
+     SOMETHINGPENDING(tc) = Strue;
+diff --git a/c/thread.c b/c/thread.c
+index 9a341b22..f130f44d 100644
+--- a/c/thread.c
++++ b/c/thread.c
+@@ -40,6 +40,7 @@ void S_thread_init(void) {
+     s_thread_cond_init(&S_terminated_cond);
+     S_alloc_mutex.owner = 0;
+     S_alloc_mutex.count = 0;
++    S_main_thread_id = s_thread_self();
+ 
+ # ifdef IMPLICIT_ATOMIC_AS_EXPLICIT
+     s_thread_mutex_init(&S_implicit_mutex);
+diff --git a/csug/system.stex b/csug/system.stex
+index d4f2bcbb..bb89f419 100644
+--- a/csug/system.stex
++++ b/csug/system.stex
+@@ -547,6 +547,8 @@ After a signal handler for a given signal has been registered, receipt
+ of the specified signal results in a call to the handler.
+ The handler is passed the signal number, allowing the same handler to
+ be used for different signals while differentiating among them.
++In a threaded version of the system, signals are always delivered to
++the main thread.
+ 
+ Signals handled in this fashion are treated like keyboard interrupts in
+ that the handler is not called immediately when the signal is delivered
+
+base-commit: 253230f7dfbb4fe777277d6bbf93f39f9567f086
+-- 
+2.41.0
+
