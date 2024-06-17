@@ -5411,18 +5411,19 @@ files.")
 (define-public python-pyld
   (package
     (name "python-pyld")
-    (version "1.0.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "PyLD" version))
-              (sha256
-               (base32
-                "1ywbdbsrkg533qh8xn9ifjh2mvam6v5msrjyqq73jfpvcp89qvff"))))
+    (version "2.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyLD" version))
+       (sha256
+        (base32 "1k7ars8n6kramkvadxgy0qfsi5g1hipyha4wqw8l75mw1l7ka7ii"))))
     (build-system python-build-system)
+    (native-inputs (list python-lxml))
+    (propagated-inputs (list python-cachetools python-frozendict))
     (home-page "https://github.com/digitalbazaar/pyld")
     (synopsis "Python implementation of the JSON-LD specification")
-    (description
-     "PyLD is an implementation of the JSON-LD specification.")
+    (description "PyLD is an implementation of the JSON-LD specification.")
     (license license:bsd-3)))
 
 (define-public python-cli-helpers
