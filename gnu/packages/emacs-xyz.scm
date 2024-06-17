@@ -17140,7 +17140,7 @@ passive voice.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.6.30")
+    (version "9.7.4")
     (source
      (origin
        (method git-fetch)
@@ -17149,7 +17149,7 @@ passive voice.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v4b3yl4limrq3jgf0jvvx73cs7d36p14c2x93pdvn50mjykii3f"))))
+        (base32 "00crs2q4yvmv2jgzmcfyl2g6m7g42zpggyssmcj8anwrsp748z9b"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -17178,12 +17178,25 @@ passive voice.")
                 (for-each make-file-writable
                           '("babel.org"
                             "ob-awk-test.org"
-                            "ob-sed-test.org"
-                            "ob-shell-test.org"))
+                            "ob-sed-test.org"))
                 ;; Specify where sh executable is.
                 (let ((sh (search-input-file inputs "/bin/sh")))
                   (substitute* "babel.org"
                     (("/bin/sh") sh))))
+              ;; XXX: Fix failure in ob-tangle/collect-blocks.  The test
+              ;; assumes that ~/../.. corresponds to /.  This isn't true in
+              ;; our case.
+              (substitute* "testing/lisp/test-ob-tangle.el"
+                ((" ~/\\.\\./\\.\\./")
+                 (string-append " ~"
+                                ;; relative path from ${HOME} to / during
+                                ;; build
+                                (string-join
+                                 (map-in-order
+                                  (lambda (x)
+                                    (if (equal? x "") "" ".."))
+                                  (string-split (getcwd) #\/)) "/")
+                                "/")))
               ;; XXX: Skip failing tests.
               (substitute* "testing/lisp/test-ob-shell.el"
                 (("ob-shell/remote-with-stdin-or-cmdline .*" all)
