@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Ryan Tolboom <ryan@using.tech>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,6 +41,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages assembly)
   #:use-module (gnu packages astronomy)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages avahi)
@@ -3041,6 +3043,39 @@ of devices than RTL-SDR.")
      "The Universal Radio Hacker (URH) is a complete suite for wireless
 protocol investigation with native support for many common Software Defined
 Radios.")
+    (license license:gpl3+)))
+
+(define-public volk-gnsssdr
+  (package
+    (name "volk-gnsssdr")
+    (version "0.0.19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gnss-sdr/gnss-sdr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l1hqfqh8ffgy6nxqdk390vmnmhv66x7m8323mz2izczqc5acy1p"))))
+    (build-system cmake-build-system)
+    (native-inputs (list python python-mako))
+    (inputs (list cpu-features))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "src/algorithms/libs/volk_gnsssdr_module/volk_gnsssdr"))))))
+    (home-page "https://github.com/gnss-sdr/gnss-sdr/blob/main/src/algorithms/libs/volk_gnsssdr_module/volk_gnsssdr/")
+    (synopsis "Extra VOLK kernels for GNSS-SDR")
+    (description
+     "This library contains VOLK kernels of hand-written SIMD code for
+different mathematical operations used by GNSS-SDR, mainly with 8-bit and
+16-bit real and complex data types, offering a platform/architecture agnostic
+version that will run in all machines, plus other versions for different SIMD
+instruction sets.")
     (license license:gpl3+)))
 
 (define-public gnss-sdr
