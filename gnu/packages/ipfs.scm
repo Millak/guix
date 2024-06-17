@@ -200,7 +200,7 @@ objects.")
     (arguments
      (list
       #:go go-1.21
-      #:import-path "github.com/ipfs/go-log/v2"))
+      #:import-path "github.com/ipfs/go-detect-race"))
     (home-page "https://github.com/ipfs/go-detect-race")
     (synopsis "Detect if compiled with race")
     (description "Check if the race detector is running.")
