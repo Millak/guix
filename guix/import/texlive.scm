@@ -570,7 +570,7 @@ at VERSION."
       (values
        `(package
           (name ,name)
-          (version ,version)
+          (version ,(if empty-package? '%texlive-version version))
           (source ,(and (not meta-package?)
                         `(texlive-origin
                           name version

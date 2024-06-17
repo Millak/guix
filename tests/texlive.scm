@@ -561,7 +561,7 @@ completely compatible with Plain TeX.")
           (match result
             (('package
                ('name "texlive-collection-texworks")
-               ('version _)
+               ('version '%texlive-version)
                ('source #f)
                ('build-system 'trivial-build-system)
                ('arguments
