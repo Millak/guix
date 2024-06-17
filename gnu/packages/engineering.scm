@@ -2783,7 +2783,9 @@ comments.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s720q6vxlh78jzahqp69nl8wagb42l05dym5aqhfnr31dx666hc"))))
+        (base32 "0s720q6vxlh78jzahqp69nl8wagb42l05dym5aqhfnr31dx666hc"))
+       ;; https://github.com/FreeCAD/FreeCAD/pull/11496
+       (patches (search-patches "freecad-vtk-9.3.patch"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen
