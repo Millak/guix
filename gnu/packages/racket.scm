@@ -243,7 +243,7 @@
 (define-public zuo
   (package
     (name "zuo")
-    (version "1.9") ; defined in racket/src/zuo/zuo.c or the following
+    (version "1.10") ; defined in racket/src/zuo/zuo.c or the following
     #;(displayln (~a (hash-ref (runtime-env) 'version) "."
                      (hash-ref (runtime-env) 'minor-version)))
     (source (origin
@@ -252,7 +252,7 @@
                     (url "https://github.com/racket/zuo")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "0zasir33nx1qi1ciz9dn6h8k39i443lr6apw5d1i6mjmhpzxmdhp"))
+               (base32 "007bjbhxbw3dq75klaa6f6ljhri2qxi43q6n74wyy50vr9yhx4s1"))
               (file-name (git-file-name name version))
               (patches (search-patches "zuo-bin-sh.patch"))))
     (outputs '("out" "debug"))
