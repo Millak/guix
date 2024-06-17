@@ -9479,12 +9479,13 @@ correct movement and editing than you would otherwise have.")
     (name "emacs-compat")
     (version "29.1.4.5")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://elpa.gnu.org/packages/"
-                                  "compat-" version ".tar"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emacs-compat/compat")
+                    (commit version)))
               (sha256
                (base32
-                "191cjzrw9xm5bvcf8s1yr9hdcn9i02789xfd8pz33lk65s0rq413"))))
+                "1bq2nk052g5ydl6qgiiiflnamzn1lgikv6yc8ijfzwksg06wq959"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/compat.html")
     (synopsis "Emacs Lisp Compatibility Library")
