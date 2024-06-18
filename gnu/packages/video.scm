@@ -1989,7 +1989,8 @@ audio/video codec library.")
               (commit "eda6effcabcf9c238e4635eb058d72371336e09b")))
         (sha256
          (base32 "1by8rmbva8mfrivdbbkr2gx4kga89zqygkd4cfjl76nr8mdcdamb"))
-        (file-name (git-file-name "ffmpeg" version))))
+        (file-name (git-file-name "ffmpeg" version))
+        (patches (search-patches "ffmpeg-4-binutils-2.41.patch"))))
      (arguments
       (substitute-keyword-arguments (package-arguments ffmpeg-4)
         ((#:configure-flags flags)
