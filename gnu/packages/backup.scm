@@ -743,7 +743,7 @@ detection, and lossless compression.")
                             "docs/misc/internals-picture.txt"
                             "docs/misc/prune-example.txt"))
                 (copy-recursively "docs/man" man))))
-          (add-after 'install-docs 'install-shell-completions
+          (add-after 'install-doc 'install-shell-completions
             (lambda _
               (let ((etc (string-append #$output "/etc"))
                     (share (string-append #$output "/share")))
