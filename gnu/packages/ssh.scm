@@ -541,7 +541,7 @@ responsive, especially over Wi-Fi, cellular, and long-distance links.")
                        (substitute* "src/default_options.h"
                          (("#define DROPBEAR_X11FWD 0")
                           "#define DROPBEAR_X11FWD 1")))))))
-    (inputs (list libtomcrypt libtommath zlib))
+    (inputs (list libtomcrypt libtommath libxcrypt zlib))
     (synopsis "Small SSH server and client")
     (description "Dropbear is a relatively small SSH server and
 client.  It runs on a variety of POSIX-based platforms.  Dropbear is
