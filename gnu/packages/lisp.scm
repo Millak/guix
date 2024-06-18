@@ -1045,7 +1045,8 @@ libraries for Machine Learning, Neural Nets and statistical estimation.")
                    #t))))
     (build-system gnu-build-system)
     (inputs
-     `(("openssl" ,openssl)))
+     `(("libxcrypt" ,libxcrypt)
+       ("openssl" ,openssl)))
     (arguments
      `(#:system ,(match (%current-system)
                    ((or "armhf-linux" "aarch64-linux")
