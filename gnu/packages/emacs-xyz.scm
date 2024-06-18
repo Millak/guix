@@ -17891,16 +17891,16 @@ using a convenient notation.")
 (define-public emacs-beframe
   (package
     (name "emacs-beframe")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.sr.ht/~protesilaos/beframe")
+                    (url "https://github.com/protesilaos/beframe")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08k9lwfxfvpm50n1c0gcm07sicd6yw7dbyyvhp8lai6pfxl465v9"))))
+                "03b5yb2vxcfg2ihiqkl3434rhwn51mr312kzcfhvr4xshgp2g0q5"))))
     (build-system emacs-build-system)
     (arguments
      (list
