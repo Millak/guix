@@ -4013,7 +4013,7 @@ or errors (Left).")
                     (call-with-input-file "srfi-197-syntax-case.scm"
                       (lambda (in-port)
                         (display (get-string-all in-port) port)))))))
-            (add-after 'install 'check-installed
+            (add-after 'build 'check-installed
               (lambda _
                 (define-values (scm go) (target-guile-scm+go #$output))
                 (invoke "guile" "-L" scm "-C" go
