@@ -533,7 +533,7 @@ the same, being completely separated from the Internet.")
                (base32
                 "1z5x0i0k1hmnxm7mb3dfn6qrz9am96my5ivinxl3gsp1dj5acyxx"))))
     (build-system gnu-build-system)
-    (inputs (list libxml2 libxslt openssl pcre zlib))
+    (inputs (list libxcrypt libxml2 libxslt openssl pcre zlib))
     (arguments
      (list
       #:tests? #f                       ; no test target
