@@ -18315,7 +18315,7 @@ type an abbreviation and automatically expand it into function templates.")
 (define-public emacs-yasnippet-snippets
   (package
     (name "emacs-yasnippet-snippets")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -18324,10 +18324,16 @@ type an abbreviation and automatically expand it into function templates.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m78jxhjyf4212ig2ncxr6bhhd6yx4c3nc8x4ylamzq21x4fl21r"))))
+        (base32 "0p38k8a3l9vpph1g2a6wz40y30wb2nhp770rv8947bxzjc5xc0gf"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:include (cons* "^snippets\\/" %default-include)))
+     (list
+      #:include #~(cons* "^snippets\\/" %default-include)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-home
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
     (propagated-inputs
      (list emacs-yasnippet))
     (home-page "https://github.com/AndreaCrotti/yasnippet-snippets")
