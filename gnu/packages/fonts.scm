@@ -3782,6 +3782,8 @@ Most characters are just 4px wide, which is brilliant for low dpi(90-120) displa
          "02vf72bgrp30vrbfhxjw82s115z27dwfgnmmzfb0n9wfhxxfpyf6"))
        (snippet '(delete-file "._Tuffy.otf"))))
     (build-system font-build-system)
+    ;; TODO: remove this when font-build-system have 'zstd'.
+    (native-inputs (list zstd))
     (home-page "http://tulrich.com/fonts/")
     (synopsis "The Tuffy Truetype Font Family")
     (description
