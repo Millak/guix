@@ -19728,16 +19728,14 @@ conflicts.")
 (define-public emacs-xelb
   (package
     (name "emacs-xelb")
-    (version "0.18")
+    (version "0.19")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/xelb-"
                                   version ".tar"))
               (sha256
                (base32
-                "1fp5mzl63sh0h3ws4l5p4qgvi7ny8a3fj6k4dhqa98xgw2bx03v7"))
-              (patches
-               (search-patches "emacs-xelb-ignore-length-element.patch"))))
+                "1jgpb1ym7p2dfkk45zrv6w1jqgw66sb76jvjfjsqbrkx5605x2hk"))))
     (build-system emacs-build-system)
     ;; The following functions and variables needed by emacs-xelb are
     ;; not included in emacs-minimal:
@@ -19750,6 +19748,8 @@ conflicts.")
        (modify-phases %standard-phases
          (add-after 'unpack 'regenerate-el-files
            (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "xelb-gen"
+               (("/usr/bin/env") (which "env")))
              (invoke "make"
                      (string-append "PROTO_PATH="
                                     (assoc-ref inputs "xcb-proto")
