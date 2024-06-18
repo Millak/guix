@@ -6804,40 +6804,6 @@ maps (because they are not addressable using Go reflection).")
     (native-inputs
      (list go-gopkg-in-yaml-v3))))
 
-(define-public go-github-com-masterminds-sprig
-  (package
-    (name "go-github-com-masterminds-sprig")
-    (version "3.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Masterminds/sprig")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0wwi8n2adjc5jlga25lqq0hrz4jcgd5vpll68y2dfji034caaq18"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:tests? #f ;network tests only
-       #:import-path "github.com/Masterminds/sprig"))
-    (native-inputs
-     (list go-github-com-masterminds-goutils
-           go-github-com-masterminds-semver
-           go-github-com-google-uuid
-           go-github-com-huandu-xstrings
-           go-github-com-imdario-mergo
-           go-github-com-mitchellh-reflectwalk
-           go-github-com-mitchellh-copystructure
-           go-github-com-spf13-cast
-           go-golang-org-x-crypto
-           go-github-com-stretchr-testify))
-    (home-page "https://github.com/Masterminds/sprig/")
-    (synopsis "Template functions for Go templates")
-    (description "Sprig is a library that provides more than 100 commonly used
-template functions.")
-    (license license:expat)))
-
 (define-public go-github-com-bmatcuk-doublestar
   (package
     (name "go-github-com-bmatcuk-doublestar")
