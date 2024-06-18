@@ -2359,8 +2359,15 @@ implementing features like:
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f ;network tests only
-      #:import-path "github.com/Masterminds/sprig/v3"))
+      #:import-path "github.com/Masterminds/sprig/v3"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests tries to reach Google:
+          ;; tpl := `{{"www.google.com" | getHostByName}}`
+          (add-after 'unpack 'remove-network-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file
+               (string-append "src/" import-path "/network_test.go")))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
