@@ -1340,27 +1340,28 @@ buffer.")
       (license license:gpl3+))))
 
 (define-public emacs-prism
-  (package
-    (name "emacs-prism")
-    (version "0.3.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/alphapapa/prism.el")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0n2gf7302hqdnhsax1y3ahksfmmpd8cmiv1zgb7rjg8qhcs0iqp2"))))
-    (build-system emacs-build-system)
-    (propagated-inputs (list emacs-dash))
-    (home-page "https://github.com/alphapapa/prism.el")
-    (synopsis
-     "Disperses bracket-bounded syntax into a spectrum of color by depth")
-    (description
-     "Prism is a Rainbow Blocks-like mode for Emacs.  It preserves non-color
+  (let ((commit "6046a5cf793f65ff86fe0392e0edf29ffcd57567")) ;version bump
+    (package
+      (name "emacs-prism")
+      (version "0.3.5")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/alphapapa/prism.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1p4vqyc4jm0pg4999i0k04pl0sa9nhrczxf4bng4id1r19sxm6dh"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-compat emacs-dash))
+      (home-page "https://github.com/alphapapa/prism.el")
+      (synopsis
+       "Disperses bracket-bounded syntax into a spectrum of color by depth")
+      (description
+       "Prism is a Rainbow Blocks-like mode for Emacs.  It preserves non-color
 face properties and allows configuration of faces and colors.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-project
   (package
