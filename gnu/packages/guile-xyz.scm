@@ -5576,7 +5576,7 @@ using a short read-capability.")
       (arguments
        (list
         #:phases #~(modify-phases %standard-phases
-                     (add-after 'install 'link-and-wrap-executable
+                     (add-after 'build 'link-and-wrap-executable
                        (lambda _
                          (let* ((bin (string-append #$output "/bin"))
                                 ;; bin directory for PATH.
