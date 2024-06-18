@@ -3302,6 +3302,7 @@ from the Cyrus IMAP project.")
            libevent
            libressl
            linux-pam
+           libxcrypt
            zlib))
     (native-inputs
      (list bison
