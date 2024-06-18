@@ -4099,7 +4099,7 @@ for interacting with an OpenDHT distributed network.")
                 "1r7gh5h27ii7d1d0z0x48wx7hs8vvympv3gqvy3cwzg05q5vk9xs"))))
     (build-system gnu-build-system)
     (inputs
-     (list c-ares json-c libcap libyang readline))
+     (list c-ares json-c libcap libxcrypt libyang readline))
     (native-inputs
      (list perl pkg-config python-wrapper python-pytest))
     (home-page "https://frrouting.org/")
