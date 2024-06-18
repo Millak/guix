@@ -560,7 +560,7 @@ written in Go.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.28.0")
+    (version "0.29.0")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -568,7 +568,7 @@ written in Go.")
              "https://dist.ipfs.io/kubo/v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "01lk6dd2j660rykchc3ggi9cln92cngz5ijlldsaj5mxnajlvbwy"))
+        (base32 "121zm4k0wz2iqrl65c7bdg5d2bvz3hvj4pavk5178dyd1p49bl5r"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
@@ -581,15 +581,24 @@ written in Go.")
                              "vendor/github.com/cenkalti"
                              "vendor/github.com/cespare"
                              "vendor/github.com/cheggaaa"
+                             "vendor/github.com/coreos"
                              "vendor/github.com/davecgh"
+                             "vendor/github.com/docker"
                              "vendor/github.com/dustin"
                              "vendor/github.com/elgris"
+                             "vendor/github.com/felixge"
                              "vendor/github.com/flynn"
                              "vendor/github.com/francoispqt"
                              "vendor/github.com/fsnotify"
+                             "vendor/github.com/gabriel-vasile"
+                             "vendor/github.com/go-logr/logr"
+                             "vendor/github.com/go-task"
+                             "vendor/github.com/godbus"
                              "vendor/github.com/gogo"
                              "vendor/github.com/golang/groupcache"
                              "vendor/github.com/golang/snappy"
+                             "vendor/github.com/google/gopacket"
+                             "vendor/github.com/google/pprof"
                              "vendor/github.com/google/uuid"
                              "vendor/github.com/gorilla"
                              "vendor/github.com/hashicorp"
@@ -602,20 +611,24 @@ written in Go.")
                              "vendor/github.com/ipfs/go-ipfs-util"
                              "vendor/github.com/ipfs/go-ipld-format"
                              "vendor/github.com/ipfs/go-log"
+                             "vendor/github.com/ipld/go-ipld-prime"
                              "vendor/github.com/jackpal"
                              "vendor/github.com/jbenet"
                              "vendor/github.com/julienschmidt"
                              "vendor/github.com/klauspost"
                              "vendor/github.com/mattn"
                              "vendor/github.com/mgutz"
+                             "vendor/github.com/miekg"
                              "vendor/github.com/minio"
                              "vendor/github.com/mitchellh"
                              "vendor/github.com/mr-tron"
                              "vendor/github.com/multiformats"
+                             "vendor/github.com/onsi"
                              "vendor/github.com/opentracing"
                              "vendor/github.com/pbnjay"
                              "vendor/github.com/pkg"
                              "vendor/github.com/pmezard"
+                             "vendor/github.com/polydawn"
                              "vendor/github.com/prometheus/client_golang"
                              "vendor/github.com/prometheus/client_model"
                              "vendor/github.com/prometheus/common"
@@ -663,7 +676,7 @@ written in Go.")
                   go-github-com-cenkalti-backoff-v4
                   ;;go-github-com-ceramicnetwork-go-dag-jose
                   go-github-com-cheggaaa-pb
-                  ;;go-github-com-coreos-go-systemd-v22
+                  go-github-com-coreos-go-systemd-v22
                   go-github-com-dustin-go-humanize
                   go-github-com-elgris-jsondiff
                   ;;go-github-com-facebookgo-atomicfile
@@ -695,7 +708,7 @@ written in Go.")
                   ;;go-github-com-ipld-go-car
                   ;;go-github-com-ipld-go-car-v2
                   ;;go-github-com-ipld-go-codec-dagpb
-                  ;;go-github-com-ipld-go-ipld-prime
+                  go-github-com-ipld-go-ipld-prime
                   go-github-com-jbenet-go-random
                   go-github-com-jbenet-go-temp-err-catcher
                   go-github-com-jbenet-goprocess
@@ -752,8 +765,13 @@ written in Go.")
                   ;; available.
                   ;;
                   go-github-com-alecthomas-units              ; github.com/ipfs/boxo
+                  go-github-com-docker-go-units               ; github.com/containerd/cgroups
+                  go-github-com-felixge-httpsnoop             ; go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
                   go-github-com-flynn-noise                   ; github.com/libp2p/go-libp2p
+                  go-github-com-gabriel-vasile-mimetype       ; github.com/ipfs/boxo
+                  go-github-com-go-logr-logr                  ; go.opentelemetry.io/otel
                   go-github-com-golang-groupcache             ; go.opencensus.io/trace
+                  go-github-com-google-gopacket               ; github.com/libp2p/go-libp2p-kad-dht
                   go-github-com-gorilla-mux                   ; github.com/ipfs/boxo
                   go-github-com-gorilla-websocket             ; github.com/libp2p/go-libp2p
                   go-github-com-hashicorp-golang-lru          ; github.com/libp2p/go-libp2p-kad-dht
