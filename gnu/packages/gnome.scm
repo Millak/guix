@@ -3335,7 +3335,7 @@ the GNOME desktop environment.")
         (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'wrap 'wrap-python
+          (add-after 'glib-or-gtk-wrap 'wrap-python
             (assoc-ref python:%standard-phases 'wrap))
           (add-before 'check 'pre-check
             (lambda _
