@@ -1500,6 +1500,30 @@ scanner API made public.")
 for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
     (license license:expat)))
 
+(define-public go-github-com-errata-ai-regexp2
+  (package
+    (inherit go-github-com-dlclark-regexp2)
+    (name "go-github-com-errata-ai-regexp2")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/errata-ai/regexp2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p28af5c7dn4knnksl9dxjb44cicsmadzb8kwzyyf20kr7hrq53q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/errata-ai/regexp2"))
+    (home-page "https://github.com/errata-ai/regexp2")
+    (description
+     (string-append (package-description go-github-com-dlclark-regexp2)
+                    "  This package is a fork of dlclark/regexp2 providing a
+more similar API to regexp."))))
+
 (define-public go-github-com-expr-lang-expr
   (package
     (name "go-github-com-expr-lang-expr")
