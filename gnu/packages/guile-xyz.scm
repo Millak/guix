@@ -4793,7 +4793,6 @@ and space linear in the size of the input text.")
     (build-system guile-build-system)
     (arguments
      (list
-      #:implicit-inputs? #f             ;needs nothing but Guile
       #:compile-flags #~(list "--r6rs" "-Wunbound-variable" "-Warity-mismatch")
       #:phases
       #~(modify-phases %standard-phases
@@ -4840,7 +4839,7 @@ and space linear in the size of the input text.")
                     (("#!/usr/bin/env scheme-script")
                      (string-append "#!" (which "guile")))))
                 (invoke "./run-tests.sh"))))
-          (add-after 'install 'install-doc
+          (add-after 'build-doc 'install-doc
             (lambda _
               (install-file "docs/ac-d-bus.info"
                             (string-append #$output "/share/info")))))))
