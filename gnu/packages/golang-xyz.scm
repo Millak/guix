@@ -3135,6 +3135,34 @@ on top of the standard library @code{flag} package.")
 Pion}.")
     (license license:expat)))
 
+(define-public go-github-com-polydawn-refmt
+  (package
+    (name "go-github-com-polydawn-refmt")
+    (version "0.89.1-0.20231129105047-37766d95467a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/polydawn/refmt/")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0grgzacc7igfndk1v3n1g6k4wdz6bjsiqfq3n5br2zpr7n40ha9n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/polydawn/refmt"))
+    (propagated-inputs
+     (list go-github-com-urfave-cli
+           go-github-com-warpfork-go-wish
+           go-github.com-smartystreets-goconvey
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/polydawn/refmt/")
+    (synopsis "Object mapping for Go language")
+    (description
+     "@code{refmt} is a serialization and object-mapping library.")
+    (license license:expat)))
+
 (define-public go-github-com-prometheus-client-model
   (package
     (name "go-github-com-prometheus-client-model")
