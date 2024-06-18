@@ -24178,7 +24178,7 @@ Citar note support:
 (define-public emacs-citar-denote
   (package
     (name "emacs-citar-denote")
-    (version "2.0")
+    (version "2.2.1")
     (source
      (origin
        (method git-fetch)
@@ -24187,7 +24187,7 @@ Citar note support:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g476awbrdws7k7smk1qasz15df20zilx3wqbi3wj0i1q2dbsi8z"))))
+        (base32 "0rsi2j4gfznpyvf3z1p1xxl0zxfbddha4ig4d30svwnq2maxri7r"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-citar emacs-denote))
     (home-page "https://github.com/pprevos/citar-denote")
