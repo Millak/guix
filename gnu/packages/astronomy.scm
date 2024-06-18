@@ -3176,7 +3176,7 @@ see @url{https://github.com/astropy/astropy-APEs/blob/main/APE13.rst, APE13}.")
 (define-public python-spherical-geometry
   (package
     (name "python-spherical-geometry")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -3185,7 +3185,7 @@ see @url{https://github.com/astropy/astropy-APEs/blob/main/APE13.rst, APE13}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "172f81h42jq6mv3gpx497z2nkhkx11w4pzmcqljcicri2zqj1m6g"))))
+        (base32 "0znzfy3bmnsncvahf8qdav0c9403fn99d1gp25lainhv7kxfk44c"))))
     (build-system pyproject-build-system)
     (arguments
      (list
