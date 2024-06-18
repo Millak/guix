@@ -18311,12 +18311,10 @@ the Emacs TempEl package.")
       (license license:gpl3+))))
 
 (define-public emacs-yasnippet
-  ;; The latest release is more than 5 years old, has test problems.
-  (let ((revision "0")
-        (commit "297546f0853a6a51f5b05e954d0c6aea8caa5ec2"))
+  (let ((commit "297546f0853a6a51f5b05e954d0c6aea8caa5ec2")) ;version bump
     (package
       (name "emacs-yasnippet")
-      (version (git-version "0.14.0" revision commit))
+      (version "0.14.1")
       (source
        (origin
          (method git-fetch)
