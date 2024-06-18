@@ -162,45 +162,45 @@ several new APIs such as DirectX and DDK, and 64-bit support.")
         (base32 "047f4m37kxf7g8qj23qplrzfd9cirfkkv8d175sfv2zfd7hbqriz"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
+     (list
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (srfi srfi-1))
-       #:phases
-       (append
-        (modify-phases %standard-phases
-          (add-after 'unpack 'cd-gendef
-            (lambda _
-              (chdir "mingw-w64-tools/gendef"))))
-        (modify-phases %standard-phases
-          (replace 'unpack
-            (lambda _
-              (chdir "../genidl"))))
-        (modify-phases %standard-phases
-          (replace 'unpack
-            (lambda _
-              (chdir "../genlib"))))
-        (modify-phases %standard-phases
-          (replace 'unpack
-            (lambda _
-              (chdir "../genpeimg"))))
-        (append-map
-         (lambda (target)
-           (modify-phases %standard-phases
-             (replace 'unpack
-               (lambda _
-                 (chdir "../widl")
-                 (false-if-exception
-                  (delete-file-recursively "../build"))
-                 #t))
-             (replace 'configure
-               (lambda args
-                 (apply (assoc-ref %standard-phases 'configure)
-                        (append args (list #:out-of-source? #t
-                                           #:configure-flags
-                                           `("--target" ,target
-                                             "--program-prefix"
-                                             ,(string-append target "-")))))))))
-         '("i686-w64-mingw32" "x86_64-w64-mingw32")))))
+      #:phases
+      #~(append
+         (modify-phases %standard-phases
+           (add-after 'unpack 'cd-gendef
+             (lambda _
+               (chdir "mingw-w64-tools/gendef"))))
+         (modify-phases %standard-phases
+           (replace 'unpack
+             (lambda _
+               (chdir "../genidl"))))
+         (modify-phases %standard-phases
+           (replace 'unpack
+             (lambda _
+               (chdir "../genlib"))))
+         (modify-phases %standard-phases
+           (replace 'unpack
+             (lambda _
+               (chdir "../genpeimg"))))
+         (append-map
+          (lambda (target)
+            (modify-phases %standard-phases
+              (replace 'unpack
+                (lambda _
+                  (chdir "../widl")
+                  (false-if-exception
+                   (delete-file-recursively "../build"))))
+              (replace 'configure
+                (lambda args
+                  (apply (assoc-ref %standard-phases 'configure)
+                         (append args (list #:out-of-source? #t
+                                            #:configure-flags
+                                            `("--target" ,target
+                                              "--program-prefix"
+                                              ,(string-append target "-")))))))))
+          '("i686-w64-mingw32" "x86_64-w64-mingw32")))))
     (home-page "https://mingw-w64.org")
     (synopsis "Tools of Minimalist GNU for Windows")
     (description "This package provides the tools of Minimalist GNU for
