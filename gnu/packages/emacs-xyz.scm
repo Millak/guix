@@ -27032,6 +27032,31 @@ device tree files.")
 for editing Devicetree files.")
     (license license:gpl3+)))
 
+(define-public emacs-devil
+  (package
+    (name "emacs-devil")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/susam/devil")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pr9yf6f37sz5qy1snn8ag5bvg6lza7q635jh8jhaqqfp37jvv1y"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #true
+           #:test-command #~(list "make" "tests")))
+    (home-page "https://github.com/susam/devil")
+    (synopsis "Minor mode for translating key sequences")
+    (description
+     "Devil intercepts your devil key (comma by default) to let you type key
+sequences without using modifier keys.  Devil is highly configurable and it
+can be configured to perform other key sequence translations.")
+    (license license:expat)))
+
 (define-public emacs-daemons
   (package
     (name "emacs-daemons")
