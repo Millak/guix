@@ -3563,6 +3563,44 @@ comparison library, to Go.  Both a library and a command-line tool are
 included in this package.")
     (license license:expat)))
 
+(define-public go-github-com-otiai10-copy
+  (package
+    (name "go-github-com-otiai10-copy")
+    (version "1.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/otiai10/copy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fv4cwk4k5fsd3hq5akqxrd5qxj9qm6a2wlp6s1knblhzkm1jxzb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/otiai10/copy"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'make-test-directory-writable
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each make-file-writable (find-files "./test")))))
+          (add-after 'check 'remove-test-data
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "./test")))))))
+    (native-inputs
+     (list go-github-com-otiai10-mint))
+    (propagated-inputs
+     (list go-golang-org-x-sync go-golang-org-x-sys))
+    (home-page "https://github.com/otiai10/copy")
+    (synopsis "Go copy directory recursively")
+    (description
+     "This package implments recursive copy functinoality for directory.")
+    (license license:expat)))
+
 (define-public go-github-com-pbnjay-memory
   (let ((commit "7b4eea64cf580186c0eceb10dc94ba3a098af46c")
         (revision "2"))
