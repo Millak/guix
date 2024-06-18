@@ -33,6 +33,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -190,7 +191,7 @@ as required.")
      `(#:configure-flags
        (list "--disable-static")))
     (native-inputs
-     (list cppunit gettext-minimal pkg-config))
+     (list cppunit gettext-minimal libxcrypt pkg-config))
     (inputs
      (list gnutls nettle))
     (home-page "https://lib.filezilla-project.org")
