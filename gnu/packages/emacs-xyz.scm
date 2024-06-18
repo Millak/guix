@@ -18750,7 +18750,7 @@ highlights quasi-quoted expressions.")
 (define-public emacspeak
   (package
     (name "emacspeak")
-    (version "59.0")
+    (version "60.0")
     (source
      (origin
        (method git-fetch)
@@ -18759,7 +18759,7 @@ highlights quasi-quoted expressions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "010c8hy8nmffaqn1h8n8hmyxvn7gx6ygx4pxgdfp1vl8bb1bz54y"))))
+        (base32 "1nry9qklhxwqpbqvhms0p25sz49s291rk2a8vf23fp4h5p37cxfh"))))
     (build-system gnu-build-system)
     (arguments
      (list
