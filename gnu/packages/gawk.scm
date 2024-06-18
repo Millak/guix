@@ -183,6 +183,7 @@ of fewer features and extensions.")
          (add-after 'unpack 'fix-paths
            (lambda _
              (substitute* "bin/cppawk"
+               (("/bin/sh") (which "sh"))
                (("/bin/bash") (which "bash"))
                (("dirname") (which "dirname"))
                (("mktemp") (which "mktemp"))
@@ -190,13 +191,20 @@ of fewer features and extensions.")
                (("printf ") (string-append (which "printf") " "))
                (("rm -f") (string-append (which "rm") " -f"))
                (("prepro=cpp") (string-append "prepro=" (which "cpp")))
-               (("sed -e") (string-append (which "sed") " -e")))))
+               (("sed -e") (string-append (which "sed") " -e")))
+             (substitute* '("runtests"
+                            "testdir/testawk"
+                            "testdir/testcpp"
+                            "testdir/testdel")
+               (("/bin/sh") (which "sh")))
+             (substitute* "testsuite.awk"
+               (("/usr/bin/awk") (which "awk")))))
          (add-after 'fix-paths 'fix-awk-paths
            (lambda _
              (substitute* "bin/cppawk"
                (("awk=gawk") (string-append "awk=" (which "gawk")))
                (("awk '") (string-append (which "gawk") " '")))))
-         (add-after 'build 'check
+         (add-after 'fix-awk-paths 'check
            (lambda _
              (invoke "./runtests"))))))
     (native-inputs
