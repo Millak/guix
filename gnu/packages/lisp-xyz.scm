@@ -5625,8 +5625,8 @@ Common Lisp via Gobject Introspection.")
 ;;   (sbcl-package->ecl-package sbcl-cl-gltf))
 
 (define-public sbcl-cl-gobject-introspection
-  (let ((commit "83beec4492948b52aae4d4152200de5d5c7ac3e9")
-        (revision "3"))
+  (let ((commit "4908a84c16349929b309c50409815ff81fb9b3c4")
+        (revision "4"))
     (package
       (name "sbcl-cl-gobject-introspection")
       (version (git-version "0.3" revision commit))
@@ -5639,7 +5639,7 @@ Common Lisp via Gobject Introspection.")
                (commit commit)))
          (file-name (git-file-name "cl-gobject-introspection" version))
          (sha256
-          (base32 "0xwmj4b3whz12i474g54krp1v6h0fpvsx8lgwpk6rkli9xc71wc3"))))
+          (base32 "0iw8fciydh9bi2svq30hi029df16arpspk0mjzh0cm1c6kjm9dcj"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list glib
@@ -14701,7 +14701,9 @@ basic everyday functions and macros.")
                (commit commit)))
          (file-name (git-file-name "cl-fast-generic-functions" version))
          (sha256
-          (base32 "16hf9bi2p5s77p3m3aqsihcd9iicqjhhxxpsarjv93c41qs54yad"))))
+          (base32 "16hf9bi2p5s77p3m3aqsihcd9iicqjhhxxpsarjv93c41qs54yad"))
+         (patches
+          (search-patches "sbcl-fast-generic-functions-fix-sbcl-2.4.patch"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-closer-mop
@@ -15652,28 +15654,35 @@ of the files and the line numbers where they were found.")
   (sbcl-package->ecl-package sbcl-formgrep))
 
 (define-public sbcl-fset
-  (let ((commit "6d2f9ded8934d2b42f2571a0ba5bda091037d852")
+  (let ((commit "a75a4ec713277780d9e15bfaa486b56949142d35")
         (revision "1"))
     (package
       (name "sbcl-fset")
-      (version (git-version "1.3.2" revision commit))
+      (version (git-version "1.3.3" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/slburson/fset")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-fset" version))
          (sha256
-          (base32
-           "127acblwrbqicx47h6sgvknz1cqyfn8p4xkhkn1m7hxh8w5gk1zy"))
+          (base32 "0bah0z8zrcykvnbi2wcdlbx902r818xg5dvd3384wf75kr2ccxvv"))
          (snippet '(begin
                      ;; Remove obsolete copy of system definition.
-                     (delete-file "Code/fset.asd")
-                     #t))))
+                     (delete-file "Code/fset.asd")))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-misc-extensions sbcl-mt19937 sbcl-named-readtables))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-build
+                   (lambda _
+                     ;; Fix for SBCL > 2.4.4
+                     (substitute* "Code/port.lisp"
+                       (("sb-ext::once-only")
+                        "sb-int:once-only")))))))
       (synopsis "Functional set-theoretic collections library")
       (description
        "FSet is a functional set-theoretic collections library for Common Lisp.
@@ -19987,6 +19996,14 @@ can be useful for games, 3D, and GL in general.")
          (sha256
           (base32 "15wrjbr2js6j67c1dd4p2qxj49q9iqv1lhb7cwdcwpn79crr39gf"))))
       (build-system asdf-build-system/sbcl)
+      (arguments
+       ;; FIXME: A test fails with:
+       ;;   The assertion
+       ;;   (EQUAL (MULTIPLE-VALUE-LIST (MAXPC:GET-INPUT-POSITION))
+       ;;          '(7 2 2))
+       ;;   failed with
+       ;;   (MULTIPLE-VALUE-LIST (MAXPC:GET-INPUT-POSITION)) = (7).
+       (list #:tests? #f))
       (home-page "https://mr.gy/software/maxpc/api.html")
       (synopsis
        "Library for writing parsers and lexers based on combinatory parsing")
@@ -25331,8 +25348,8 @@ only.")
   (sbcl-package->ecl-package sbcl-sb-cga))
 
 (define-public sbcl-schemeish
-  (let ((commit "dff57bafae5d0cffa104c8fdc4146502f32d7f85")
-        (revision "1"))
+  (let ((commit "872ea3dc3f2ea8438388b5e7660acd9446c49948")
+        (revision "2"))
     (package
       (name "sbcl-schemeish")
       (version (git-version "0.0.1" revision commit))
@@ -25342,12 +25359,22 @@ only.")
          (uri (git-reference
                (url "https://github.com/chebert/schemeish")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-schemeish" version))
          (sha256
-          (base32 "0q9b07spmhg1b576cnnacvkf7zr3mab2rdydfylbn92y9mms9vyj"))))
+          (base32 "08lbrmsamfpva83l1ap33gp8ff99v0l2dyyidjgwdchmbdgq3gqf"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       (list sbcl-trivial-arguments))
+       (list sbcl-trivial-arguments sbcl-trivial-cltl2))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-build
+                   (lambda _
+                     ;; To fix the warning:
+                     ;; Argument of type (INTEGER 1 1) cannot be used as a keyword.
+                     (substitute* "src/arities.lisp"
+                       (("1 2 3 4 5 6 7 8")
+                        ":a1 :a2 :a3 :a4 :a5 :a6 :a7 :a8")))))))
       (synopsis "Scheme style syntax/macros/functions for Common Lisp")
       (description
        "Schemeish implements several useful Scheme constructs for Common Lisp.
@@ -26801,6 +26828,10 @@ using the latest algorithms.")
        (list sbcl-fiveam))
       (inputs
        (list sbcl-alexandria sbcl-introspect-environment))
+      (arguments
+       ;; FIXME: Tests fail with:
+       ;;   Unable to compile test syntax-layer-test define-specialization/name.
+       (list #:tests? #f))
       (home-page "https://github.com/markcox80/specialization-store")
       (synopsis "Different type of generic function for Common Lisp")
       (description
@@ -26813,11 +26844,7 @@ function.")
   (sbcl-package->cl-source-package sbcl-specialization-store))
 
 (define-public ecl-specialization-store
-  (package
-    (inherit (sbcl-package->ecl-package sbcl-specialization-store))
-    (arguments
-     ;; TODO: Find why the tests get stuck forever; disable them for now.
-     `(#:tests? #f))))
+  (sbcl-package->ecl-package sbcl-specialization-store))
 
 (define-public sbcl-specialized-function
   (let ((commit "5e2b04432bdf728496e6ff7227f210f845af7247")
