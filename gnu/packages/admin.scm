@@ -2178,6 +2178,8 @@ commands and their arguments.")
        #:tests? #f))                 ; no test suite
     (native-inputs
      (list bison))
+    (inputs
+     (list libxcrypt))
     (home-page "https://github.com/Duncaen/OpenDoas")
     (synopsis "Portable version of OpenBSD's doas command")
     (description "Doas is a minimal replacement for the venerable sudo.  It was
