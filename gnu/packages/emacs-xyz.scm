@@ -13632,6 +13632,26 @@ lines that match the current text being edited.  This gives you the effect of
 a temporary @code{keep-lines} or @code{occur}.")
     (license license:gpl3+)))
 
+(define-public emacs-zop-to-char
+  (package
+    (name "emacs-zop-to-char")
+    (version "1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thierryvolpiatto/zop-to-char")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14waf3g7b92k3qd5088w4pn0wcspxjfkbswlzf7nnkjliw1yh0kf"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/thierryvolpiatto/zop-to-char")
+    (synopsis "Visual zap-to-char command for Emacs")
+    (description
+     "This package provides a visual zap-to-char command for Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-zoutline
   (package
     (name "emacs-zoutline")
