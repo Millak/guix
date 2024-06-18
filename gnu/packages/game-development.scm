@@ -2764,33 +2764,19 @@ specific knowledge of the hardware they are targeting.")
 (define-public flatzebra
   (package
     (name "flatzebra")
-    (version "0.1.7")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://perso.b2b2c.ca/~sarrazip/dev/"
                            "flatzebra-" version ".tar.gz"))
        (sha256
-        (base32 "1x2dy41c8vrq62bn03b82fpmk7x4rzd7qqiwvq0mgcl5rmasc2c8"))))
+        (base32 "1p1igi757m9a46v29mm7r40x61kdj7j66b9dbn53l5yfhnwa4w93"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-sdl-config
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; XXX: sdl-config in sdl-union is a link to sdl-config from
-             ;; plain sdl package.  As a consequence, the prefix is wrong.
-             ;; Force correct one with "--prefix" argument.
-             (let ((sdl-union (assoc-ref inputs "sdl")))
-               (setenv "SDL_CONFIG"
-                       (string-append sdl-union
-                                      "/bin/sdl-config --prefix="
-                                      sdl-union)))
-             #t)))))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("sdl" ,(sdl-union (list sdl sdl-image sdl-mixer)))))
+     (list sdl2 sdl2-gfx sdl2-image sdl2-mixer sdl2-ttf))
     (home-page "http://perso.b2b2c.ca/~sarrazip/dev/burgerspace.html")
     (synopsis "Generic game engine for 2D double-buffering animation")
     (description
