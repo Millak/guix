@@ -35,6 +35,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages perl)
@@ -267,6 +268,7 @@ After installation, the system administrator should generate keys using
                   bdb
                   e2fsprogs             ;for libcom_err
                   libcap-ng
+                  libxcrypt
                   openldap
                   sqlite))
     (home-page "http://www.h5l.org/")
