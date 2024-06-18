@@ -1053,7 +1053,7 @@ server written in C++ for Unix-like operating systems.")
                                    (invoke guile "--no-auto-compile" test)))
                                 #t
                                 tests))))))
-          (add-after 'install 'install-script
+          (add-after 'build 'install-script
             (lambda _
               (let* ((bash #$(this-package-input "bash-minimal"))
                      (bash (string-append bash "/bin/bash"))
