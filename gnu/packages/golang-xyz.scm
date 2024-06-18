@@ -2343,9 +2343,9 @@ implementing features like:
 @end itemize")
       (license license:expat))))
 
-(define-public go-github-com-masterminds-sprig
+(define-public go-github-com-masterminds-sprig-v3
   (package
-    (name "go-github-com-masterminds-sprig")
+    (name "go-github-com-masterminds-sprig-v3")
     (version "3.1.0")
     (source
      (origin
@@ -2360,7 +2360,7 @@ implementing features like:
     (arguments
      (list
       #:tests? #f ;network tests only
-      #:import-path "github.com/Masterminds/sprig"))
+      #:import-path "github.com/Masterminds/sprig/v3"))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs

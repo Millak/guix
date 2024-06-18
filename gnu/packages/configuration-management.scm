@@ -98,7 +98,7 @@
            go-github-com-google-renameio
            go-github-com-gorilla-css
            go-github-com-lucasb-eyer-go-colorful
-           go-github-com-masterminds-sprig
+           go-github-com-masterminds-sprig-v3
            go-github-com-mattn-go-isatty
            go-github-com-mattn-go-runewidth
            go-github-com-microcosm-cc-bluemonday
