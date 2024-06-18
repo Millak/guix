@@ -5031,7 +5031,7 @@ your preferred text editor.")
 (define-public emacs-org-fc
   (package
     (name "emacs-org-fc")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method git-fetch)
@@ -5040,7 +5040,7 @@ your preferred text editor.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12azynnz3hzbb2643chwbwzxg0q1m555k77jkxfikrmh9wzb2k35"))))
+        (base32 "1pq6l1crjfybn3bd9qp23vddplv0j05l3al0715glr925s0i4cy3"))))
     (build-system emacs-build-system)
     (arguments
      (list
