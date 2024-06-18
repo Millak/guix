@@ -10096,7 +10096,7 @@ on items and player adaptability for character progression.")
          "07gi3lsmbzzsjambgixj6xy79lh22km84z7bnzgwzxdy806lyvwb"))))
     (build-system gnu-build-system)
     (inputs
-     (list glib gtk+-2 vte/gtk+-2 readline guile-1.8))
+     (list glib gtk+-2 vte/gtk+-2 readline guile-1.8 libxcrypt))
     (native-inputs
      (list pkg-config))
     (arguments
