@@ -1459,16 +1459,16 @@ size.")
 (define-public emacs-git-modes
   (package
     (name "emacs-git-modes")
-    (version "1.4.2")
+    (version "1.4.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/magit/git-modes")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0npwjcm04gg1cy19gsha5m6my9xa0din860gv3h32cx8q3nizjjc"))))
+        (base32 "0p7985708fc3nln1qazpdqb0qw0sq12hz5rdkqwvijc5iimdr73i"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
