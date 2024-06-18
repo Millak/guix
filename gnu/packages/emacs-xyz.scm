@@ -22119,7 +22119,7 @@ literate programming tools for exporting, weaving and tangling.")
 (define-public emacs-polymode-ansible
   (package
     (name "emacs-polymode-ansible")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -22128,7 +22128,7 @@ literate programming tools for exporting, weaving and tangling.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fmbxhn8cbfdad37m1jssm1jblia0b4fzdv89lrz0k5wqyzlkz4g"))))
+        (base32 "0980z444419pk7xgic6g5vvi30yibxfimd0rp0zznrshmc9xxra8"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-ansible
