@@ -951,6 +951,7 @@ memory, disks, network and processes.  It's a Python port and continuation of
                           (("\"/bin/sh\"")
                            (string-append "\"" bash "/bin/sh\"")))))))))
     (native-inputs (list bison flex))
+    (inputs (list libxcrypt))
     (home-page "https://www.gnu.org.ua/software/pies/")
     (synopsis "Program invocation and execution supervisor")
     (description
