@@ -963,7 +963,7 @@ Duperemove can also take input from the @command{fdupes} program.")
        #:test-target "test_pytest"
        #:phases
        (modify-phases %standard-phases
-         (add-after 'configure 'wrap-program
+         (add-after 'install 'wrap-program
            ;; Tell 'ranger' where 'w3mimgdisplay' is.
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out  (assoc-ref outputs "out"))
