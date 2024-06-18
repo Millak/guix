@@ -1784,7 +1784,7 @@ and up to 1 Mbit/s downstream.")
             (lambda _
               (setenv "HAVE_ICONV" "1"))))))
     (inputs
-     (list libidn2))
+     (list libidn2 libxcrypt))
     (native-inputs
      (list gettext-minimal
            perl
