@@ -25,6 +25,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages cross-base)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
   #:use-module (guix memoization)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -76,37 +77,41 @@ specified, recurse and return a mingw-w64 with support for winpthreads."
                  ,(string-append triplet "/lib")
                  ,(string-append triplet "/lib64"))))))
       (arguments
-       `(#:configure-flags '(,(string-append "--host=" triplet)
-                             ,@(if with-winpthreads?
-                                   '("--with-libraries=winpthreads")
-                                   '()))
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'setenv
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((xgcc-core (assoc-ref inputs "xgcc-core"))
-                     (mingw-headers (string-append
-                                     (getcwd) "/mingw-w64-headers")))
-                 (setenv "CPP"
-                         (string-append
-                          xgcc-core ,(string-append "/bin/" triplet "-cpp")))
-                 (setenv "CROSS_C_INCLUDE_PATH"
-                         (string-append
-                          mingw-headers
-                          ":" mingw-headers "/include"
-                          ":" mingw-headers "/crt"
-                          ":" mingw-headers "/defaults/include"
-                          ":" mingw-headers "/direct-x/include"))
-                 (when ,with-winpthreads?
-                   (let ((xlibc (assoc-ref inputs "xlibc")))
-                     (setenv "CROSS_LIBRARY_PATH"
-                             (string-append
-                              xlibc "/lib" ":"
-                              xlibc "/" ,triplet "/lib"))))))))
-         #:make-flags (list "DEFS=-DHAVE_CONFIG_H -D__MINGW_HAS_DXSDK=1")
-         #:parallel-build? #f ; parallel builds often fail with empty .a files
-         #:tests? #f ; compiles and includes glibc headers
-         #:strip-binaries? #f))
+       (list #:parallel-build? #f ; parallel builds often fail with empty .a files
+             #:tests? #f ; compiles and includes glibc headers
+             #:strip-binaries? #f
+             #:configure-flags
+             #~(list #$(string-append "--host=" triplet)
+                     #$@(if with-winpthreads?
+                            #~("--with-libraries=winpthreads")
+                            #~()))
+             #:make-flags #~'("DEFS=-DHAVE_CONFIG_H -D__MINGW_HAS_DXSDK=1")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'configure 'setenv
+                   (lambda _
+                     (let ((xgcc-core #+(this-package-native-input
+                                         "xgcc-core"))
+                           (mingw-headers (string-append
+                                           (getcwd) "/mingw-w64-headers")))
+                       (setenv "CPP"
+                               (string-append
+                                xgcc-core "/bin/" #$triplet "-cpp"))
+                       (setenv "CROSS_C_INCLUDE_PATH"
+                               (string-append
+                                mingw-headers
+                                ":" mingw-headers "/include"
+                                ":" mingw-headers "/crt"
+                                ":" mingw-headers "/defaults/include"
+                                ":" mingw-headers "/direct-x/include"))
+                       #$@(if with-winpthreads?
+                              #~((let ((xlibc #+(this-package-native-input
+                                                 "xlibc")))
+                                   (setenv "CROSS_LIBRARY_PATH"
+                                           (string-append
+                                            xlibc "/lib" ":"
+                                            xlibc "/" #$triplet "/lib"))))
+                              #~())))))))
       (home-page "https://mingw-w64.org")
       (synopsis "Minimalist GNU for Windows")
       (description
