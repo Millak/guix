@@ -32,6 +32,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gettext)
@@ -395,7 +396,8 @@ tools, and libraries designed to facilitate SELinux policy analysis.")
            linux-pam
            libsepol
            libselinux
-           libsemanage))
+           libsemanage
+           libxcrypt))
     (native-inputs
      (list gettext-minimal))
     (synopsis "SELinux core utilities")
