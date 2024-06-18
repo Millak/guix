@@ -37,7 +37,8 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages shells))
+  #:use-module (gnu packages shells)
+  #:use-module (gnu packages specifications))
 
 (define-public go-github-com-ipfs-go-block-format
   (package
@@ -296,6 +297,54 @@ throughout its lifetime.")
     (description
      "@code{go-ipld-format} is a set of interfaces that a type needs to implement in
 order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-forest.")
+    (license license:expat)))
+
+(define-public go-github-com-ipld-go-ipld-prime
+  (package
+    (name "go-github-com-ipld-go-ipld-prime")
+    (version "0.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipld/go-ipld-prime")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ycb08h0hvq3mw3sbjkjzp5sfcxmss155jxiv5gjg7myxvzk91ja"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:unpack-path "github.com/ipld/go-ipld-prime/"
+      #:import-path "github.com/ipld/go-ipld-prime/"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-ipld-specfs
+            (lambda* (#:key import-path #:allow-other-keys)
+              (copy-recursively
+               (string-append #$(this-package-native-input
+                                 "specification-ipld")
+                              "/share/ipld/")
+               (string-append "src/" import-path "/ipld")))))))
+    (native-inputs
+     (list go-github-com-frankban-quicktest
+           go-github-com-warpfork-go-testmark
+           specification-ipld))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp-cmp
+           go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid
+           go-github-com-multiformats-go-multicodec
+           go-github-com-multiformats-go-multihash
+           go-github-com-polydawn-refmt
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/ipld/go-ipld-prime")
+    (synopsis "Golang interfaces for the IPLD Data Model")
+    (description
+     "@code{go-ipld-prime} is an implementation of the IPLD spec interfaces, a
+batteries-included codec implementations of IPLD for CBOR and JSON, and tooling for
+basic operations on IPLD objects (traversals, etc).")
     (license license:expat)))
 
 (define-public go-github-com-ipfs-go-ipfs-api
