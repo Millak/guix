@@ -129,14 +129,14 @@ It is developed using Objective Caml and Camlp5.")
      (list lablgtk3 ocaml-lablgtk3-sourceview3))))
 
 (define-public proof-general
-  ;; The latest release is from 2016 and there has been more than 450 commits
+  ;; The latest release is from 2022 and there has been more than 100 commits
   ;; since then.
-  ;; Commit from 2021-11-25.
-  (let ((commit "1b1083e86e0cddc20ff2f1a6b25c7a7eee2edf02")
+  ;; Commit from 2024-04-29.
+  (let ((commit "cb23709ad0c9a9ca0ee48b3ee73c29caea243b98")
         (revision "1"))
     (package
       (name "proof-general")
-      (version (git-version "4.4" revision commit))
+      (version (git-version "4.5" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -145,7 +145,7 @@ It is developed using Objective Caml and Camlp5.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1pnysczhscapgwmvf6ix7f31lf3hnh8h977bfll1m7jlxl9b9c0j"))))
+                  "1spd8rz95s1x91i4lbbb6zabb8014fihx6ai6pgad1nwyr0y9bir"))))
       (build-system gnu-build-system)
       (native-inputs
        `(("emacs" ,emacs-minimal)
@@ -170,6 +170,12 @@ It is developed using Objective Caml and Camlp5.")
                  (substitute* "Makefile"
                    (("\\(setq byte-compile-error-on-warn t\\)")
                     "(setq byte-compile-error-on-warn nil)"))))
+             (add-after 'unpack 'modify-readme-name
+               ;; The README file is called "README.md", but the Make variable
+               ;; "DOC_FILES" still refers to "README".
+               (lambda _
+                 (substitute* "Makefile"
+                   (("README") "README.md"))))
              (add-after 'unpack 'patch-hardcoded-paths
                (lambda _
                  (substitute* "Makefile"
