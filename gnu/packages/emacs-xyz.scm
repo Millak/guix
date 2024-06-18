@@ -19536,7 +19536,7 @@ methods from a given list.")
 (define-public emacs-mini-echo
   (package
     (name "emacs-mini-echo")
-    (version "0.8.0")
+    (version "0.11.1")
     (source
      (origin
        (method git-fetch)
@@ -19544,9 +19544,9 @@ methods from a given list.")
              (url "https://github.com/liuyinz/mini-echo.el")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0q4hvbypnjg5q1szwki2md45r5kkdxrr4zxqh57y7d53idjzhpnf"))))
+        (base32 "1n00jpr6hyv1hwx36whpim6kzrybk236fhzj6dgnm6icarfmfzfa"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-hide-mode-line))
+    (propagated-inputs (list emacs-dash emacs-hide-mode-line))
     (home-page "https://github.com/liuyinz/mini-echo.el")
     (synopsis "Echo buffer status in minibuffer window")
     (description "This package lets you show buffer status in the echo area,
