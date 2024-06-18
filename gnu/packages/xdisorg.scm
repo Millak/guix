@@ -1269,7 +1269,7 @@ X Window System.")
                      (install-file "xtrlock.1"
                                    (string-append out
                                                   "/share/man/man1/"))))))))
-    (inputs (list libx11 libxi libxfixes))
+    (inputs (list libx11 libxcrypt libxi libxfixes))
     (home-page "https://packages.debian.org/sid/xtrlock")
     (synopsis "Minimal X display lock program")
     (description
