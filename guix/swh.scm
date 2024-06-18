@@ -165,10 +165,16 @@
   (define url
     (string-append root (string-join rest "/" 'prefix)))
 
-  ;; Ensure there's a trailing slash or we get a redirect.
-  (if (string-suffix? "/" url)
-      url
-      (string-append url "/")))
+  (define (contains-parameters? url)
+    (match (string-rindex url #\/)
+      (#f #f)
+      (offset (string-index (string-drop url (+ 1 offset)) #\?))))
+
+  ;; Ensure there's a trailing slash or we get a redirect.  Don't do that if
+  ;; URL contains parameters.
+  (cond ((string-suffix? "/" url) url)
+        ((contains-parameters? url) url)
+        (else (string-append url "/"))))
 
 ;; XXX: Work around a bug in Guile 3.0.2 where #:verify-certificate? would
 ;; be ignored (<https://bugs.gnu.org/40486>).
@@ -460,8 +466,11 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   "Return the external ID record for ID, a bytevector, of the given TYPE
 (currently one of: \"bzr-nodeid\", \"hg-nodeid\", \"nar-sha256\",
 \"checksum-sha512\")."
+  ;; Specify "extid_version=1" as explained in
+  ;; <https://gitlab.softwareheritage.org/swh/meta/-/issues/5093>.
   (call (swh-url "/api/1/extid" type
-                 (string-append "hex:" (bytevector->base16-string id)))
+                 (string-append "hex:" (bytevector->base16-string id)
+                                "/?extid_version=1"))
         json->external-id))
 
 (define* (lookup-directory-by-nar-hash hash #:optional (algorithm 'sha256))
