@@ -21035,6 +21035,9 @@ When set to @code{'all}, the DHCP client listens on all the available
 non-loopback interfaces that can be activated.  Otherwise the DHCP
 client listens only on the specified interfaces.
 
+@item @code{config-file} (default: @code{#f})
+The configuration file for the DHCP client.
+
 @item @code{shepherd-requirement} (default: @code{'()})
 @itemx @code{shepherd-provision} (default: @code{'(networking)})
 This option can be used to provide a list of symbols naming Shepherd services

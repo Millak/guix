@@ -91,6 +91,7 @@
             dhcp-client-configuration?
             dhcp-client-configuration-package
             dhcp-client-configuration-interfaces
+            dhcp-client-configuration-config-file
             dhcp-client-configuration-shepherd-provision
             dhcp-client-configuration-shepherd-requirement
 
@@ -319,6 +320,8 @@
                         (default '()))
   (shepherd-provision   dhcp-client-configuration-shepherd-provision
                         (default '(networking)))
+  (config-file dhcp-client-configuration-config-file
+               (default #f))
   (interfaces   dhcp-client-configuration-interfaces
                 (default 'all)))                  ;'all | list of strings
 
@@ -329,6 +332,7 @@
            (requirement (dhcp-client-configuration-shepherd-requirement config))
            (provision (dhcp-client-configuration-shepherd-provision config))
            (interfaces (dhcp-client-configuration-interfaces config))
+           (config-file (dhcp-client-configuration-config-file config))
            (pid-file "/var/run/dhclient.pid"))
        (list (shepherd-service
               (documentation "Set up networking via DHCP.")
@@ -364,6 +368,11 @@
                                        (_
                                         #~'#$interfaces))))
 
+                         (define config-file-args
+                           (if #$config-file
+                               (list "-cf" #$config-file)
+                               '()))
+
                          (false-if-exception (delete-file #$pid-file))
                          (let ((pid (fork+exec-command
                                      ;; By default dhclient uses a
@@ -371,8 +380,10 @@
                                      ;; DDNS, which is incompatable with
                                      ;; non-ISC DHCP servers; thus, pass '-I'.
                                      ;; <https://kb.isc.org/docs/aa-01091>.
-                                     (cons* dhclient "-nw" "-I"
-                                            "-pf" #$pid-file ifaces))))
+                                     `(,dhclient "-nw" "-I"
+                                                 "-pf" ,#$pid-file
+                                                 ,@config-file-args
+                                                 ,@ifaces))))
                            (and (zero? (cdr (waitpid pid)))
                                 (read-pid-file #$pid-file)))))
               (stop #~(make-kill-destructor))))))
