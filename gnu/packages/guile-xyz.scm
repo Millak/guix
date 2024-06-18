@@ -2944,7 +2944,7 @@ See http://minikanren.org/ for more on miniKanren generally.")
               (for-each (lambda (f)
                           (invoke "guile" "--no-auto-compile" "-L" "." "-s" f))
                         (find-files "tests" "^guile-.*\\.scm"))))
-          (add-after 'install 'check-installed
+          (add-after 'check 'check-installed
             (lambda _
               (define-values (scm go) (target-guile-scm+go #$output))
               (for-each
