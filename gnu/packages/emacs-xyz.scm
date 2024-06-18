@@ -17595,10 +17595,10 @@ extensibility.")
     (license license:gpl3+)))
 
 (define-public emacs-autocrypt
-  (let ((commit "a90aa6b644fe8cf72af9e1615a7c50b36b739e7c")) ;version bump
+  (let ((commit "dc0223f11daf526621fda206b38bf06c29759c94")) ;version bump
     (package
       (name "emacs-autocrypt")
-      (version "0.4.1")
+      (version "0.4.2")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -17607,7 +17607,7 @@ extensibility.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "124qf96g2xbz3wz0ihix4l1g4prpa023hx0klf72clx92dhjjgjj"))))
+                  "0p4fmmldsypb5v4h3p1dfi1qdbk4i6w03465b3hb0x0qnj49l695"))))
       (build-system emacs-build-system)
       (home-page "https://git.sr.ht/~pkal/autocrypt")
       (synopsis "Autocrypt implementation for Emacs")
