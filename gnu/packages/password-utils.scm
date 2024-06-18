@@ -574,7 +574,7 @@ random passwords that pass the checks.")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure))))        ;no configure script
-    (inputs (list linux-pam))
+    (inputs (list linux-pam libxcrypt))
     (home-page "https://www.openwall.com/passwdqc/")
     (synopsis
      "Password/passphrase strength checking and policy enforcement toolset")
