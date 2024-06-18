@@ -2343,6 +2343,36 @@ implementing features like:
 @end itemize")
       (license license:expat))))
 
+(define-public go-github-com-masterminds-semver
+  (package
+    (name "go-github-com-masterminds-semver")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Masterminds/semver")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g1wizfdy29d02l9dh8gsb029yr4m4swp13swf0pnh9ryh5f1msz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Masterminds/semver"))
+    (home-page "https://github.com/Masterminds/semver/")
+    (synopsis "@code{semver} helps to work with semantic versions")
+    (description
+     "The semver package provides the ability to work with
+semantic versions.  Specifically it provides the ability to:
+@itemize
+@item Parse semantic versions
+@item Sort semantic versions
+@item Check if a semantic version fits within a set of constraints
+@item Optionally work with a @code{v} prefix
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-masterminds-sprig-v3
   (package
     (name "go-github-com-masterminds-sprig-v3")
