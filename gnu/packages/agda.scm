@@ -102,7 +102,7 @@
                (add-after 'unpack 'set-ld-library-path
                  (lambda _
                    (setenv "LD_LIBRARY_PATH" (string-append (getcwd) "/dist/build"))))
-               (add-after 'compile 'agda-compile
+               (add-after 'build 'agda-compile
                  (lambda* (#:key outputs #:allow-other-keys)
                    (let ((agda-compiler (string-append #$output "/bin/agda")))
                      (for-each (cut invoke agda-compiler <>)
