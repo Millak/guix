@@ -1636,13 +1636,13 @@ objects.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "6.1.0")
+    (version "6.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "03wm12bpfifvjbvf7rixv9yr5ya5c9gy9p0dff862mxi21gr2fvc"))
+        (base32 "0f31wgjg22phcx8fw7p612qp3v2ak7nziisnsnwaqc0wj5fz9ip5"))
        (modules '((guix build utils)))
        (snippet
         '(begin
