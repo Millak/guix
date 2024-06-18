@@ -21447,7 +21447,7 @@ from within Elisp using a DSL similar to CSS selectors.")
 (define-public emacs-envrc
   (package
     (name "emacs-envrc")
-    (version "0.11")
+    (version "0.12")
     (source
      (origin
        (method git-fetch)
@@ -21457,7 +21457,7 @@ from within Elisp using a DSL similar to CSS selectors.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03mjws4fp00g5smivs1iz0r78mmd5sgj1g4xyi8aq21mpv5rd2m0"))))
+         "1kx5p85p2c682j50cah18njdraj07v9dg8imi7p97bkx7n5malxm"))))
     (build-system emacs-build-system)
     (arguments
      (list
