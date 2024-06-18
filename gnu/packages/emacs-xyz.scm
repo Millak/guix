@@ -20384,10 +20384,10 @@ running tests easier.")
     (license license:gpl3+)))
 
 (define-public emacs-org-transclusion
-  (let ((commit "7f4ad67bf1944b814a8763d304d4d27325504eb4")) ;version bump
+  (let ((commit "e6e638710e90198070c9b07ebdaa345a79f74706")) ;version bump
     (package
       (name "emacs-org-transclusion")
-      (version "1.3.2")
+      (version "1.4.0")
       (source
        (origin
          (method git-fetch)
@@ -20396,7 +20396,7 @@ running tests easier.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0dgqbazr22y0kmyw5ki1rkca10j6fy0ps5s9gx247gqlbmqz7088"))))
+          (base32 "18v64vgr93yqx57m92hsj6s6ib315gq06dk3ib34s966iz96yi4a"))))
       (build-system emacs-build-system)
       (arguments
        (list
