@@ -516,7 +516,7 @@ key-value pair databases and a real LDAP database.")
     (native-inputs
      (list autoconf automake libtool))
     (inputs
-     (list libpcap openssl))
+     (list libpcap libxcrypt openssl))
     (synopsis "Implementation of the Point-to-Point Protocol")
     (home-page "https://ppp.samba.org/")
     (description
