@@ -43,7 +43,7 @@ specified, recurse and return a mingw-w64 with support for winpthreads."
     (package
       (name (string-append "mingw-w64" "-" machine
                            (if with-winpthreads? "-winpthreads" "")))
-      (version "11.0.1")
+      (version "12.0.0")
       (source
        (origin
          (method url-fetch)
@@ -51,11 +51,7 @@ specified, recurse and return a mingw-w64 with support for winpthreads."
                "mirror://sourceforge/mingw-w64/mingw-w64/"
                "mingw-w64-release/mingw-w64-v" version ".tar.bz2"))
          (sha256
-          (base32 "047f4m37kxf7g8qj23qplrzfd9cirfkkv8d175sfv2zfd7hbqriz"))
-         (patches
-          (search-patches "mingw-w64-6.0.0-gcc.patch"
-                          "mingw-w64-dlltool-temp-prefix.patch"
-                          "mingw-w64-reproducible-gendef.patch"))))
+          (base32 "0bzdprdrb8jy5dhkl2j2yhnr2nsiv6wk2wzxrzaqsvjbmj58jhfc"))))
       (native-inputs `(("xgcc-core" ,(if xgcc xgcc (cross-gcc triplet)))
                        ("xbinutils" ,(if xbinutils xbinutils
                                          (cross-binutils triplet)))
@@ -84,7 +80,14 @@ specified, recurse and return a mingw-w64 with support for winpthreads."
              #~(list #$(string-append "--host=" triplet)
                      #$@(if with-winpthreads?
                             #~("--with-libraries=winpthreads")
-                            #~()))
+                            #~())
+                     ;; The default msvcrt changed on 12.0.0 to use UCRT as the
+                     ;; default, this could cause problems with programs expecting
+                     ;; MSVCRT as the default.
+                     ;;
+                     ;; XXX: A new target to use UCRT can be introduced as
+                     ;; the MSYS2 project does, e.g: x86_64-w64-ucrt-mingw32.
+                     "--with-default-msvcrt=msvcrt")
              #:make-flags #~'("DEFS=-DHAVE_CONFIG_H -D__MINGW_HAS_DXSDK=1")
              #:phases
              #~(modify-phases %standard-phases
