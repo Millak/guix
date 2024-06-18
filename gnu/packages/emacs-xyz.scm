@@ -36647,14 +36647,14 @@ detected language.")
 (define-public emacs-persist
   (package
     (name "emacs-persist")
-    (version "0.6")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "persist-" version ".tar"))
        (sha256
-        (base32 "0n68dshbbyrs713989bllmm1vypch8766hc8b4y989nmyclixjwp"))))
+        (base32 "1a7lls81q247mbkcnifmsva16cfjjma6yihxmj5zrj8ac774z9j3"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/persist.html")
     (synopsis "Persist variables between Emacs sessions")
