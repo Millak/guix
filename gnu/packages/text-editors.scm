@@ -74,6 +74,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
@@ -984,6 +985,7 @@ editors.")
      (list freetype
            guile-1.8
            libjpeg-turbo
+           libxcrypt
            perl
            python-wrapper
            qtbase-5
