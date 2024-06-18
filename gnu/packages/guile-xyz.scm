@@ -5664,7 +5664,7 @@ including parsing and code generation.")
            (lambda _
              (delete-file-recursively "docs")
              #t))
-         (add-after 'install 'install-info-documentation
+         (add-after 'build 'install-info-documentation
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((share (string-append (assoc-ref outputs "out") "/share"))
                     (doc (string-append share "/doc/" ,name "-" ,version))
