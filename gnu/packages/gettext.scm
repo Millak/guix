@@ -11,7 +11,7 @@
 ;;; Copyright © 2019 Miguel <rosen644835@gmail.com>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
-;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2022, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -237,7 +237,7 @@ from Markdown files.")
 (define-public po4a
   (package
     (name "po4a")
-    (version "0.69")
+    (version "0.73")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mquinson/po4a"
@@ -245,8 +245,7 @@ from Markdown files.")
                                   version "/po4a-" version ".tar.gz"))
               (sha256
                (base32
-                "15llrfdp4ilbrxy65hmmxka86xj0mrbqfiyzv715wrk16vqszm3w"))
-              (patches (search-patches "po4a-partial-texinfo-menu-fix.patch"))))
+                "184f0cv0w3xa301gwm74srn5s6g8qdn3ksip84wpg8xjihnzh63g"))))
     (build-system perl-build-system)
     (arguments
      (list
@@ -292,7 +291,7 @@ from Markdown files.")
            libxslt
            ;; For tests.
            docbook-sgml-4.1
-           docbook-xml-4.1.2
+           docbook-xml-4.5
            perl-test-pod
            (texlive-updmap.cfg)))
     (inputs

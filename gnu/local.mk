@@ -61,7 +61,7 @@
 # Copyright © 2023 Andy Tai <atai@atai.org>
 # Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
 # Copyright © 2023 Bruno Victal <mirai@makinata.eu>
-# Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+# Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 # Copyright © 2023 Herman Rimm <herman@rimm.ee>
 # Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 # Copyright © 2024 David Elsing <david.elsing@posteo.net>
@@ -1953,7 +1953,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/plib-CVE-2011-4620.patch		\
   %D%/packages/patches/plib-CVE-2012-4552.patch		\
   %D%/packages/patches/plotutils-spline-test.patch		\
-  %D%/packages/patches/po4a-partial-texinfo-menu-fix.patch	\
   %D%/packages/patches/polkit-disable-systemd.patch		\
   %D%/packages/patches/portaudio-audacity-compat.patch		\
   %D%/packages/patches/portmidi-modular-build.patch		\
