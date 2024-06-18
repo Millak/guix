@@ -2346,7 +2346,7 @@ implementing features like:
 (define-public go-github-com-masterminds-semver-v3
   (package
     (name "go-github-com-masterminds-semver-v3")
-    (version "3.1.0")
+    (version "3.2.1")
     (source
      (origin
        (method git-fetch)
@@ -2355,11 +2355,14 @@ implementing features like:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g1wizfdy29d02l9dh8gsb029yr4m4swp13swf0pnh9ryh5f1msz"))))
+        (base32 "1h4c647dgq6k5q78j3m98ccdrzd7kbcq4ahdy25j72rbxjmci8al"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.21
       #:import-path "github.com/Masterminds/semver/v3"))
+    (native-inputs
+     (list go-github-com-stretchr-testify-next))
     (home-page "https://github.com/Masterminds/semver/")
     (synopsis "@code{semver} helps to work with semantic versions")
     (description
