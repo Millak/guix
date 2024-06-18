@@ -5140,18 +5140,18 @@ the Font Lock keywords.")
  (define-public emacs-fontaine
    (package
      (name "emacs-fontaine")
-     (version "1.0.0")
+     (version "2.0.0")
      (source (origin
                (method git-fetch)
                (uri (git-reference
-                     (url "https://git.sr.ht/~protesilaos/fontaine")
+                     (url "https://github.com/protesilaos/fontaine")
                      (commit version)))
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "0y2ys1hfz6gdhxh2sdp2v1qd3dpzyj7j451sbd4rb2q15h5hc2na"))))
+                 "1fm6lw1jyy5vv314y2qhzcav9fmpgf333xrlwfdyi86z6z6f2fyy"))))
      (build-system emacs-build-system)
-     (home-page "https://sr.ht/~protesilaos/fontaine")
+     (home-page "https://github.com/protesilaos/fontaine")
      (synopsis "Set Emacs font configurations using presets")
      (description
       "Fontaine lets the user specify presets of font configurations
