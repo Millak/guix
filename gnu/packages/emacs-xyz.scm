@@ -140,6 +140,7 @@
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24510,6 +24511,31 @@ orient yourself in the code, and tell which statements are at a given level.")
       (synopsis "Control Pulseaudio from Emacs")
       (description
        "This package allows controlling Pulseaudio from Emacs.")
+      (license license:gpl3+))))
+
+(define-public emacs-smudge
+  (let ((commit "4a9c5b34e9bc0a694d0faf8c2f83dc244b8b6a2f")
+	(revision "1"))
+    (package
+      (name "emacs-smudge")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+	        (method git-fetch)
+	        (uri (git-reference
+		      (url "https://github.com/danielfm/smudge")
+		      (commit commit)))
+	        (file-name (git-file-name name version))
+	        (sha256
+	         (base32
+		  "1xiqxw87sdk9mgy7fdbmzqaf58dc1grhkigirg1bd0b2q5kbnbwx"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-oauth2 emacs-request emacs-simple-httpd))
+      (home-page "https://github.com/danielfm/smudge")
+      (synopsis "Control the Spotify application from within Emacs")
+      (description
+       "Smudge allows you to control the Spotify application from Emacs,
+either via D-BUS or Spotify Connect if you have a Spotify premium
+subscription.")
       (license license:gpl3+))))
 
 (define-public emacs-pulsar
