@@ -622,7 +622,8 @@ basis for almost any application.")
            ;; The server (lshd) invokes xauth when X11 forwarding is requested.
            ;; This adds 24 MiB (or 27%) to the closure of lsh.
            xauth
-           libxau))             ;also required for x11-forwarding
+           libxau                       ;also required for x11-forwarding
+           libxcrypt))
     (arguments
      '(;; Skip the `configure' test that checks whether /dev/ptmx &
        ;; co. work as expected, because it relies on impurities (for
