@@ -3,6 +3,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Carl Dong <contact@carldong.me>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
+;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,15 +25,16 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages cross-base)
   #:use-module (guix build-system gnu)
+  #:use-module (guix memoization)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:export (make-mingw-w64))
 
-(define* (make-mingw-w64 machine
-                         #:key
-                         xgcc
-                         xbinutils
-                         with-winpthreads?)
+(define* (make-mingw-w64/implementation machine
+                                        #:key
+                                        xgcc
+                                        xbinutils
+                                        with-winpthreads?)
   "Return a mingw-w64 for targeting MACHINE.  If XGCC or XBINUTILS is specified,
 use that gcc or binutils when cross-compiling.  If WITH-WINPTHREADS? is
 specified, recurse and return a mingw-w64 with support for winpthreads."
@@ -118,6 +120,9 @@ runtime dynamic-link libraries (@dfn{DLL}s).
 Mingw-w64 is an advancement of the original mingw.org project and provides
 several new APIs such as DirectX and DDK, and 64-bit support.")
       (license license:fdl1.3+))))
+
+(define make-mingw-w64
+  (memoize make-mingw-w64/implementation))
 
 (define-public mingw-w64-i686
   (make-mingw-w64 "i686"))
