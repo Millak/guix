@@ -697,6 +697,31 @@ Gomega matcher library.")
 framework.")
     (license license:expat)))
 
+(define-public go-github-com-otiai10-mint
+  (package
+    (name "go-github-com-otiai10-mint")
+    (version "1.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/otiai10/mint")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g5zhz4znp68427p2a1yvrxbq90y7caagdd7zsb4iygnhdszfm7w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/otiai10/mint"))
+    (home-page "https://github.com/otiai10/mint")
+    (synopsis "Minimal assertion for Golang testing framework")
+    (description
+     "Mint (@code{mint.Mint}) is wrapper for @code{*testing.T} blending
+testing type to omit repeated @code{t}.")
+    (license license:expat)))
+
 (define-public go-github-com-pkg-profile
   (package
     (name "go-github-com-pkg-profile")
