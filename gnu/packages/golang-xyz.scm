@@ -2343,9 +2343,9 @@ implementing features like:
 @end itemize")
       (license license:expat))))
 
-(define-public go-github-com-masterminds-semver
+(define-public go-github-com-masterminds-semver-v3
   (package
-    (name "go-github-com-masterminds-semver")
+    (name "go-github-com-masterminds-semver-v3")
     (version "3.1.0")
     (source
      (origin
@@ -2359,7 +2359,7 @@ implementing features like:
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/Masterminds/semver"))
+      #:import-path "github.com/Masterminds/semver/v3"))
     (home-page "https://github.com/Masterminds/semver/")
     (synopsis "@code{semver} helps to work with semantic versions")
     (description
@@ -2405,7 +2405,7 @@ semantic versions.  Specifically it provides the ability to:
            go-github-com-huandu-xstrings
            go-github-com-imdario-mergo
            go-github-com-masterminds-goutils
-           go-github-com-masterminds-semver
+           go-github-com-masterminds-semver-v3
            go-github-com-mitchellh-copystructure
            go-github-com-mitchellh-reflectwalk
            go-github-com-spf13-cast
