@@ -325,6 +325,7 @@ tables.  It includes a library and command-line utility.")
     (inputs
      `(("gettext" ,gettext-minimal)
        ("guile" ,guile-1.8)
+       ("libxcrypt" ,libxcrypt)
        ("util-linux" ,util-linux "lib")
        ("parted" ,parted)))
     ;; The build neglects to look for its own headers in its own tree.  A next
