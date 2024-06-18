@@ -1034,6 +1034,33 @@ custom assertions to be used alongside native Go testing.")
     (arguments
      (list #:import-path "github.com/go-playground/assert/v2"))))
 
+(define-public go-github-com-warpfork-go-testmark
+  (package
+    (name "go-github-com-warpfork-go-testmark")
+    (version "0.12.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/warpfork/go-testmark")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06v2x3c5qgbj585a2abksr3hgvgdx61j153rjarqi9cvvzwh1xpr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/warpfork/go-testmark"))
+    (home-page "https://github.com/warpfork/go-testmark")
+    (synopsis "Parser for @code{testmark} format")
+    (description
+     "@code{go-testmark} is a library to parse, patch data and test fixtures from
+Markdown files, using the
+@url{https://github.com/warpfork/go-testmark?tab=readme-ov-file#what-is-the-testmark-format,
+testmark} format, which itself is a subset of Markdown format.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public go-github-com-warpfork-go-wish
   (package
     (name "go-github-com-warpfork-go-wish")
