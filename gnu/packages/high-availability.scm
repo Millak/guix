@@ -32,6 +32,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -101,7 +102,7 @@
       #~(modify-phases %standard-phases
           (delete 'configure))))
     (inputs
-     (list lua openssl pcre2 zlib))
+     (list libxcrypt lua openssl pcre2 zlib))
     (home-page "https://www.haproxy.org/")
     (synopsis "Reliable, high performance TCP/HTTP load balancer")
     (description "HAProxy offers @acronym{HA, high availability}, load
