@@ -19743,20 +19743,20 @@ conflicts.")
     ;; x-hyper-keysym, x-super-keysym, libxml-parse-xml-region
     ;; x-display-pixel-width, x-display-pixel-height
     (arguments
-     `(#:emacs ,emacs
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'regenerate-el-files
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "xelb-gen"
-               (("/usr/bin/env") (which "env")))
-             (invoke "make"
-                     (string-append "PROTO_PATH="
-                                    (assoc-ref inputs "xcb-proto")
-                                    "/share/xcb")
-                     (string-append "EMACS_BIN="
-                                    (assoc-ref inputs "emacs")
-                                    "/bin/emacs -Q")))))))
+     (list
+      #:emacs emacs
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'regenerate-el-files
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (substitute* "xelb-gen"
+                (("/usr/bin/env") (which "env")))
+              (let ((xcb-proto #$(this-package-native-input "xcb-proto"))
+                    (emacs (search-input-file (or native-inputs inputs)
+                                              "/bin/emacs")))
+                (invoke "make"
+                        (format #f "PROTO_PATH=~a/share/xcb" xcb-proto)
+                        (format #f "EMACS_BIN=~a -Q" emacs))))))))
     (native-inputs (list xcb-proto))
     (home-page "https://github.com/ch11ng/xelb")
     (synopsis "X protocol Emacs Lisp binding")
