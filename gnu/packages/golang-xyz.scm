@@ -3438,6 +3438,31 @@ posts the metrics to the Prometheus client registry and just updates the
 registry.")
     (license license:asl2.0)))
 
+(define-public go-github-com-neurosnap-sentences
+  (package
+    (name "go-github-com-neurosnap-sentences")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/neurosnap/sentences")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qkq635x54mqzydxmifh2l0kicacgqcbkw4vli1cnwwcs0x902f2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/neurosnap/sentences"))
+    (home-page "https://github.com/neurosnap/sentences")
+    (synopsis "Multilingual command line sentence tokenizer in Golang")
+    (description
+     "This package provides functionality of converting a blob of text into a
+list of sentences.")
+    (license license:expat)))
+
 (define-public go-github-com-nsqio-go-diskqueue
   (package
     (name "go-github-com-nsqio-go-diskqueue")
@@ -4784,6 +4809,20 @@ go-github-com-tklauser-numcpus source.")))
     (description
      "This package provides a CLI build from the
 go-github-com-orisano-pixelmatch source.")))
+
+(define-public go-sentences
+  (package
+    (inherit go-github-com-neurosnap-sentences)
+    (name "go-sentences")
+    (arguments
+     (list
+      #:import-path "github.com/neurosnap/sentences/cmd/sentences"
+      #:unpack-path "github.com/neurosnap/sentences"
+      #:install-source? #f))
+    (description
+     (string-append (package-description go-github-com-neurosnap-sentences)
+                    "  This package provides an command line interface (CLI)
+tool."))))
 
 (define-public go-tengo
   (package
