@@ -432,6 +432,7 @@ the style of similar games for the Commodore+4.")
              libtiff
              libvorbis
              libx11
+             libxcrypt
              libxext
              pcre
              sdl
