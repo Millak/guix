@@ -411,6 +411,20 @@ computationally intensive or rather cheap, depending on whether
 substitutes are available for their dependencies (@pxref{Substitutes}).
 Some of them require a lot of storage space to hold VM images.
 
+If you encounter an error like:
+
+@example
+Compiling Scheme modules...
+ice-9/eval.scm:142:16: In procedure compile-top-call:
+error: all-system-tests: unbound variable
+hint: Did you forget `(use-modules (gnu tests))'?
+@end example
+
+@noindent
+there may be inconsistencies in the work tree from previous builds.  To
+resolve this, try running @command{make clean-go} followed by
+@command{make}.
+
 Again in case of test failures, please send @email{bug-guix@@gnu.org}
 all the details.
 
