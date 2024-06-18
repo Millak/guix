@@ -1366,13 +1366,13 @@ face properties and allows configuration of faces and colors.")
 (define-public emacs-project
   (package
     (name "emacs-project")
-    (version "0.10.0")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/project-" version ".tar"))
        (sha256
-        (base32 "060iw06c60vjy1bp771zz0n24x4s7kpyvdjs51147v2kz35n08pb"))))
+        (base32 "1973d6z7nx9pp5gadqk8p71v6s5wqja40a0f8zjrn6rrnfarrcd0"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-xref))
     (home-page "https://elpa.gnu.org/packages/project.html")
@@ -23149,6 +23149,7 @@ match and total match information in the mode-line in various search modes.")
                (base32
                 "1ksr1crjl27s481xyr22wlj7i0ss3k5hp68zlzz2cfrl0a5fdsmv"))))
     (build-system emacs-build-system)
+    (propagated-inputs (list emacs-peg))
     (home-page "https://github.com/emarsden/pg-el")
     (synopsis "Emacs Lisp interface for PostgreSQL")
     (description
