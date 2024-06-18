@@ -3748,6 +3748,7 @@ and check if the WLAN key or the master key was transmitted unencrypted.")
        (patches (search-patches "dante-non-darwin.patch"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--with-libc=libc.so.6")))
+    (inputs (list libxcrypt))
     (home-page "https://www.inet.no/dante/")
     (synopsis "SOCKS server and client")
     (description "Dante is a SOCKS client and server implementation.  It can
