@@ -48,6 +48,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
@@ -532,6 +533,7 @@ GTK+, lets you select a desktop session and log in to it.")
                   libjpeg-turbo
                   libpng
                   libx11
+                  libxcrypt
                   libxft
                   libxmu
                   libxrandr
