@@ -1540,6 +1540,8 @@ finite fields.")
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
+    (propagated-inputs
+     (list zlib))                       ;required by libm4ri.la
     (inputs
      (list libpng))
     (synopsis "Arithmetic of dense matrices over F_2")
