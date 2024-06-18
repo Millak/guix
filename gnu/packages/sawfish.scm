@@ -28,6 +28,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gtk)
@@ -172,6 +173,7 @@ backend of Sawfish.")
            gdk-pixbuf-xlib
            gmp
            libsm
+           libxcrypt
            libxft
            libxinerama
            libxrandr
