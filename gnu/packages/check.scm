@@ -4088,7 +4088,7 @@ markers to simplify testing of asynchronous tornado applications.")
           (add-after 'build 'check
             (lambda _
               (invoke "guile" "proba.scm" "run" "tests")))
-          (add-after 'install 'install-wrapped-script
+          (add-after 'check 'install-wrapped-script
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
                      (bin-dir (string-append out "/bin"))
@@ -4100,7 +4100,7 @@ markers to simplify testing of asynchronous tornado applications.")
                   `("GUILE_LOAD_PATH" prefix (,(getenv "GUILE_LOAD_PATH")))
                   `("GUILE_LOAD_COMPILED_PATH" prefix
                     (,(getenv "GUILE_LOAD_COMPILED_PATH")))))))
-          (add-after 'install 'install-manual
+          (add-after 'build-manual 'install-manual
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
                      (info-dir (string-append out "/share/info")))
