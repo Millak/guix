@@ -1240,6 +1240,29 @@ atimes for files.")
 mtime,ctime and btime for files.")
     (license license:expat)))
 
+(define-public go-github-com-dlclark-regexp2
+  (package
+    (name "go-github-com-dlclark-regexp2")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dlclark/regexp2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1irfv89b7lfkn7k3zgx610ssil6k61qs1wjj31kvqpxb3pdx4kry"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dlclark/regexp2"))
+    (home-page "https://github.com/dlclark/regexp2/")
+    (synopsis "Full featured regular expressions for Go")
+    (description
+     "Regexp2 is a feature-rich RegExp engine for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-docopt-docopt-go
   (let ((commit "ee0de3bc6815ee19d4a46c7eb90f829db0e014b1")
         (revision "0"))
