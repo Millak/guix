@@ -5544,7 +5544,7 @@ Lisp developers who want to write macros with convenience.")
 (define-public emacs-noman
   (package
     (name "emacs-noman")
-    (version "0.3")
+    (version "0.6")
     (source
      (origin
        (method git-fetch)
@@ -5553,7 +5553,7 @@ Lisp developers who want to write macros with convenience.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04hvh816a0dvakgn22lxzw8qjmvc8grb5nhg1b5w99j5606ljqcl"))))
+        (base32 "0rh1p9nlhkmhfqmp507rz8hwfgwrdvxx0zba41lxsd2admai90wv"))))
     (build-system emacs-build-system)
     (synopsis "Emacs package for browsing CLI command docs without man pages")
     (description
