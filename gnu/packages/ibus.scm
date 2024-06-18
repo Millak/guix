@@ -317,7 +317,7 @@ may also simplify input method development.")
       '(list "--enable-opencc")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'wrap-program 'wrap-with-additional-paths
+          (add-after 'glib-or-gtk-wrap 'wrap-with-additional-paths
             (lambda _
               ;; Make sure 'ibus-setup-libpinyin' runs with the correct
               ;; PYTHONPATH and GI_TYPELIB_PATH.
