@@ -22606,7 +22606,7 @@ the older (Type 1 fonts only) bundle @code{musixtex-t1fonts} obsolete.")
                         ;; Tarball includes a release date that we ignore.
                         (first (find-files ".." "^musixtnt-.*\\.tar.gz"))
                         "--strip-components=1"))))
-          (add-after 'unpack-prerex-source 'build-msxlint
+          (add-after 'build 'build-msxlint
             (lambda args
               (with-directory-excursion "build"
                 (for-each (lambda (phase)
