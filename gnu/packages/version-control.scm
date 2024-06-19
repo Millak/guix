@@ -2112,7 +2112,7 @@ control to Git repositories.")
              ;; The 'bootstrap' script lacks a shebang, leading to "Exec
              ;; format error" with glibc 2.35.
              (invoke "autoreconf" "-vfi")))
-         (add-after 'install-bin 'wrap-program
+         (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (use-modules (guix build guile-build-system))
              ;; Wrap the 'gitile' command to refer to the right modules.
