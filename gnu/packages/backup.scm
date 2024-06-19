@@ -1055,7 +1055,7 @@ precious backup space.
 (define-public restic-rest-server
   (package
     (name "restic-rest-server")
-    (version "0.11.0")
+    (version "0.12.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1064,7 +1064,7 @@ precious backup space.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nvmxc9x0mlks6yfn66fmwn50k5q83ip4g9vvb0kndzd7hwcyacy"))))
+                "18jk93j91dq4639nml4qnq1fq5j3s67ca3gvfka5aafln8ir8ffk"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1083,7 +1083,7 @@ precious backup space.
                 ;; "rest-server" is a bit too generic.
                 (rename-file "bin/rest-server"
                              "bin/restic-rest-server")))))))
-    (native-inputs (list go-github-com-coreos-go-systemd-activation
+    (native-inputs (list go-github-com-coreos-go-systemd-v22
                          go-github-com-gorilla-handlers
                          go-github-com-minio-sha256-simd
                          go-github-com-miolini-datacounter
