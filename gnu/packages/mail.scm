@@ -1512,7 +1512,23 @@ ing, and tagging large collections of email messages.")
               (let ((notmuch (search-input-file inputs "/bin/notmuch")))
                 (substitute* "notmuch-lib.el"
                   (("\"notmuch\"")
-                   (string-append "\"" notmuch "\"")))))))))
+                   (string-append "\"" notmuch "\""))))))
+          ;; Install desktop files so that mailto URIs can be opened using
+          ;; emacs-notmuch.
+          (add-after 'install 'install-desktop-files
+            (lambda* (#:key inputs #:allow-other-keys)
+              (install-file "notmuch-emacs-mua"
+                            (string-append #$output "/bin"))
+              (let ((applications (string-append #$output "/share/applications")))
+                (install-file "notmuch-emacs-mua.desktop"
+                              applications)
+                (copy-file "notmuch-emacs-mua.desktop"
+                           (string-append applications
+                                          "/notmuch-emacsclient-mua.desktop"))
+                (substitute* (string-append applications
+                                            "/notmuch-emacsclient-mua.desktop")
+                  (("Exec=notmuch-emacs-mua" all)
+                   (string-append all " --client")))))))))
     (synopsis "Run Notmuch within Emacs")
     (description
      "This package provides an Emacs-based interface to the Notmuch mail
