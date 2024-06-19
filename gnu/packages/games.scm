@@ -786,10 +786,13 @@ terminal.")
                "RELEASE=1"))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'werror-begone
+         (add-after 'unpack 'patch-sources
            (lambda _
              (substitute* "Makefile" (("-Werror") ""))
-             #t))
+             ;; glibc 2.38 includes strlcpy and strlcat.
+             (substitute* "src/headers.h"
+               (("static inline void strlcat.*") "")
+               (("static inline void strlcpy.*") ""))))
          (delete 'configure))))         ;no configure script
     (native-inputs
      `(("gettext" ,gettext-minimal)
