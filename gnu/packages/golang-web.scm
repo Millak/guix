@@ -588,7 +588,7 @@ consistent with the HTTP protocol definition.")
 (define-public go-github-com-felixge-httpsnoop
   (package
     (name "go-github-com-felixge-httpsnoop")
-    (version "1.0.1")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
@@ -597,7 +597,7 @@ consistent with the HTTP protocol definition.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ncd8lar5zxiwjhsp315s4hsl4bhnm271h49jhyxc66r5yffgmac"))))
+        (base32 "1xrvg5ndpz4gv9mf9xl6p6gjmvvv8bbzaspcr070qxx72jhlllkk"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/felixge/httpsnoop"))
