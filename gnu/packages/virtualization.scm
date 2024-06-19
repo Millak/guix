@@ -2707,6 +2707,7 @@ DOS or Microsoft Windows.")
            iproute                      ; TODO: patch invocations
            libaio
            libx11
+           libxcrypt                    ; required by Python.h
            yajl
            ncurses
            openssl
