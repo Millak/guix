@@ -3138,7 +3138,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package
     (name "yt-dlp")
-    (version "2023.10.13")
+    (version "2024.05.27")
     (source
      (origin
        (method git-fetch)
@@ -3147,8 +3147,8 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cy8cpqwq6yfsbrnln3qqp9lsjckn20m6w7b890ha7jahyir5m1n"))))
-    (build-system python-build-system)
+        (base32 "13j6vg0kxfw3hppq7gzbz2d72g415071gh5arkwzj902rh0c7777"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? ,(not (%current-target-system))
        #:phases
@@ -3177,14 +3177,6 @@ YouTube.com and many more sites.")
                        "PYTHON=python"
                        "yt-dlp"
                        "completions"))))
-         (add-before 'install 'fix-the-data-directories
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prefix (assoc-ref outputs "out")))
-               (substitute* "setup.py"
-                 (("'etc/")
-                  (string-append "'" prefix "/etc/"))
-                 (("'share/")
-                  (string-append "'" prefix "/share/"))))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -3193,6 +3185,8 @@ YouTube.com and many more sites.")
                   python-certifi
                   python-mutagen
                   python-pycryptodomex
+                  python-requests-next ; TODO Remove this special package
+                  python-urllib3-next  ; TODO Remove this one too
                   python-websockets))
     (native-inputs
      (append
@@ -3200,7 +3194,7 @@ YouTube.com and many more sites.")
        (if (supported-package? pandoc)
          (list pandoc)
          '())
-       (list python-pytest zip)))
+       (list python-hatchling python-pytest zip)))
     (synopsis "Download videos from YouTube.com and other sites")
     (description
      "yt-dlp is a small command-line program to download videos from
