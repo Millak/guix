@@ -704,6 +704,40 @@ to other implementations such a @code{purrr::partial()} the operators in
 etc.")
     (license license:gpl2+)))
 
+(define-public r-cutpointr
+  (package
+    (name "r-cutpointr")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cutpointr" version))
+       (sha256
+        (base32 "1qxnh20hs3bh9v04ls7gwwl7lfc6bwl8c88dn8lkcdqyp3nyr01j"))))
+    (properties `((upstream-name . "cutpointr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-foreach
+                             r-ggplot2
+                             r-gridextra
+                             r-purrr
+                             r-rcpp
+                             r-rlang
+                             r-tibble
+                             r-tidyr
+                             r-tidyselect))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/thie1e/cutpointr")
+    (synopsis "Determine optimal cutpoints for binary classification")
+    (description
+     "This package estimates optimal cutpoints for binary classification metrics.
+It also validates performance using bootstrapping.  Some methods for more
+robust cutpoint estimation are supported, e.g. a parametric method assuming
+normal distributions, bootstrapped cutpoints, and smoothing of the metric
+values per cutpoint using Generalized Additive Models.  Various plotting
+functions are included.")
+    (license license:gpl3)))
+
 (define-public r-datawizard
   (package
     (name "r-datawizard")
