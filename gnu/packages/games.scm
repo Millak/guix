@@ -11304,7 +11304,7 @@ available.")
                             "exec ~a --path=~a glk:zcode~%"
                             scummvm share)))
                 (chmod executable #o755))))
-          (add-after 'install-executable 'install-desktop-file
+          (add-after 'install 'install-desktop-file
             (lambda _
               (let* ((apps (string-append #$output "/share/applications"))
                      (share (string-append #$output "")))
