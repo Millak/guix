@@ -126,7 +126,7 @@ running the opensm daemon.")
                                              "/share/doc")))
                      (mkdir-p doc)
                      (install-file "COPYING" doc))))
-               (add-after 'install-file 'move-perl
+               (add-after 'install 'move-perl
                  ;; Avoid perl in lib closure
                  (lambda* (#:key outputs #:allow-other-keys)
                    (let ((perlout (string-append (assoc-ref outputs "out")
