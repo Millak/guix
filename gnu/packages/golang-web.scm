@@ -2243,7 +2243,7 @@ the Go standard library}.")
 (define-public go-github-com-quic-go-quic-go
   (package
     (name "go-github-com-quic-go-quic-go")
-    (version "0.42.0")
+    (version "0.43.0")
     (source
      (origin
        (method git-fetch)
@@ -2252,7 +2252,7 @@ the Go standard library}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bdr48nbcjajmhx1h11qfl1i7myxqpyqqk5n21007xyqw13qhb8c"))))
+        (base32 "1vqc1mb60flbm5jqf48gzhzm8m0k06klf9szpx6mgw30957qv3fn"))))
     (build-system go-build-system)
     (arguments
      (list
