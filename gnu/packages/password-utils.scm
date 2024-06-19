@@ -1642,7 +1642,7 @@ try every password contained in a file.")
       (native-inputs
        (list pkg-config libxslt libxml2 docbook-xsl docbook-xml))
       (inputs
-       (list openssl))
+       (list libxcrypt openssl))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
