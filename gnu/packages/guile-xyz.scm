@@ -1551,7 +1551,7 @@ messaging library.")
                     (add-after 'build 'chdir-back
                       (lambda _ (chdir "..") #t))
 
-                    (add-after 'install 'install-kernel
+                    (add-after 'chdir-back 'install-kernel
                       (lambda* (#:key inputs outputs #:allow-other-keys)
                         (let* ((out   (assoc-ref outputs "out"))
                                (json  (assoc-ref inputs "guile-json"))
