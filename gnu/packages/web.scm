@@ -6791,7 +6791,7 @@ functions of Tidy.")
                  `("PATH" ":" prefix (,mbed)))))))))
     (inputs
      ;; TODO: package "hiawatha-monitor", an optional dependency of "hiawatha".
-     (list bash-minimal libxslt libxml2 mbedtls-for-hiawatha
+     (list bash-minimal libxcrypt libxslt libxml2 mbedtls-for-hiawatha
            `(,nghttp2 "lib") zlib))
     (home-page "https://www.hiawatha-webserver.org")
     (synopsis "Webserver with focus on security")
