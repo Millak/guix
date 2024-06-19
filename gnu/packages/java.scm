@@ -8822,7 +8822,7 @@ Python generated sources by ANTLR.")))
              #t))
          ;; tests require to have a working antlr4 binary
          (delete 'check)
-         (add-after 'bin-install 'check
+         (add-after 'install 'check
            (lambda _
              (invoke "ant" "compile-tests")
              (invoke "ant" "check" "-Dtest.home=runtime-testsuite/test")
