@@ -2300,6 +2300,39 @@ the Go standard library}.")
 protocol.")
     (license license:expat)))
 
+(define-public go-github-com-quic-go-webtransport-go
+  (package
+    (name "go-github-com-quic-go-webtransport-go")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quic-go/webtransport-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zwr4jg4dg2b14kkypkbs8dpai5b5s44gm5gq0vrs3mmg6vq0v97"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/quic-go/webtransport-go"))
+    (native-inputs
+     (list go-go-uber-org-mock
+           go-github-com-stretchr-testify-next))
+    (propagated-inputs
+     (list go-github-com-quic-go-quic-go
+           go-golang-org-x-exp))
+    (home-page "https://github.com/quic-go/webtransport-go")
+    (synopsis "WebTransport implementation based on quic-go")
+    (description
+     "webtransport-go is an implementation of the @code{WebTransport} protocol, based
+on @@url{https://github.com/quic-go/quic-go,quic-go}.  It currently implements
+@@url{https://www.ietf.org/archive/id/draft-ietf-webtrans-http3-02.html,draft-02}
+of the specification.")
+    (license license:expat)))
+
 (define-public go-github-com-sherclockholmes-webpush-go
   (package
     (name "go-github-com-sherclockholmes-webpush-go")
