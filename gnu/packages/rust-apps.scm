@@ -1512,51 +1512,6 @@ is being designed to work with Podman but is also applicable for other OCI
 container management applications.")
     (license license:asl2.0)))
 
-(define-public nsncd
-  (package
-    (name "nsncd")
-    (version "1.4.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/twosigma/nsncd")
-              (commit (string-append "v" version))))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "03z0fkdp959laa21839y6wz00rg25zvxvr14i1ailj7nkwhysdcx"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* (find-files "." "^Cargo\\.toml$")
-                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
-                   (string-append "\"^" version)))))))
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:cargo-inputs `(("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-atoi" ,rust-atoi-0.4)
-                       ("rust-slog" ,rust-slog-2)
-                       ("rust-slog-async" ,rust-slog-async-2)
-                       ("rust-slog-term" ,rust-slog-term-2)
-                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
-                       ("rust-nix" ,rust-nix-0.21)
-                       ("rust-num-derive" ,rust-num-derive-0.3)
-                       ("rust-num-traits" ,rust-num-traits-0.2)
-                       ("rust-sd-notify" ,rust-sd-notify-0.3)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-static-assertions" ,rust-static-assertions-1))
-      #:cargo-development-inputs `(("rust-criterion" ,rust-criterion-0.3)
-                                   ("rust-temp-env" ,rust-temp-env-0.3))
-      #:install-source? #f))
-    (home-page "https://github.com/twosigma/nsncd")
-    (synopsis "Name service non-caching daemon")
-    (description
-     "Nsncd implements the @acronym{NSCD, name-service caching daemon} protocol
-to provide out-of-process NSS lookups but does not implement caching.  It is
-designed to provide high-performance NSS lookups for programs that are not using
-the system libc, while providing semantics as if NSCD were not being used.")
-    (license license:asl2.0)))
-
 (define-public ripgrep
   (package
     (name "ripgrep")

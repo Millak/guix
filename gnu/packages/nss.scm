@@ -323,6 +323,7 @@ security standards.")
          ;; These tests fail with the current builder network setup
          "--skip=ffi::test_gethostbyaddr_r"
          "--skip=ffi::test_gethostbyname2_r")
+      #:install-source? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-atoi" ,rust-atoi-2)
