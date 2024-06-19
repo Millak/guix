@@ -795,7 +795,7 @@ which are indicated in the file name.")
     (build-system guile-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
-                  (add-after 'install 'move-to-extension-directory
+                  (add-after 'build 'move-to-extension-directory
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
                              (target (string-append
