@@ -2386,17 +2386,18 @@ branch deleted.
 
 @subsubsection Web interface
 
+@cindex mumi, web interface for issues
 A web interface (actually @emph{two} web interfaces!) are available to
 browse issues:
 
 @itemize
 @item
-@url{https://issues.guix.gnu.org} provides a pleasant
-interface@footnote{The web interface at
-@url{https://issues.guix.gnu.org} is powered by Mumi, a nice piece of
-software written in Guile, and you can help!  See
-@url{https://git.savannah.gnu.org/cgit/guix/mumi.git}.} to browse
-bug reports and patches, and to participate in discussions;
+@url{https://issues.guix.gnu.org} provides a pleasant interface powered
+by mumi@footnote{Mumi is a nice piece of software written in Guile, and
+you can help!  See
+@url{https://git.savannah.gnu.org/cgit/guix/mumi.git}.} to browse bug
+reports and patches, and to participate in discussions; mumi also has a
+command-line interface as we will see below;
 @item
 @url{https://bugs.gnu.org/guix} lists bug reports;
 @item
@@ -2407,9 +2408,9 @@ To view discussions related to issue number @var{n}, go to
 @indicateurl{https://issues.guix.gnu.org/@var{n}} or
 @indicateurl{https://bugs.gnu.org/@var{n}}.
 
-@subsubsection Command-line interface
+@subsubsection Command-Line Interface
 
-@cindex mumi CLI
+@cindex mumi command-line interface
 @cindex mumi am
 @cindex mumi compose
 @cindex mumi send-email
@@ -2542,7 +2543,7 @@ so by sending the first patch, polling the server for a response, and
 then sending the remaining patches.  This polling can unfortunately take
 a few minutes.  So, please be patient.
 
-@subsubsection Emacs interface
+@subsubsection Emacs Interface
 
 If you use Emacs, you may find it more convenient to interact with
 issues using @file{debbugs.el}, which you can install with:
