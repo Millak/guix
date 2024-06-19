@@ -40653,7 +40653,7 @@ using mypy.")
         #:tests? #f                     ;there are no tests
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'set-mpv-el-version 'patch-exec-paths
+            (add-after 'unpack 'patch-exec-paths
               (lambda* (#:key inputs #:allow-other-keys)
                 (emacs-substitute-variables "mpv.el"
                   ("mpv-executable"
