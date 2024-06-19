@@ -1376,7 +1376,7 @@ ansi.")
 (define-public go-github-com-gabriel-vasile-mimetype
   (package
     (name "go-github-com-gabriel-vasile-mimetype")
-    (version "1.4.3")
+    (version "1.4.4")
     (source
      (origin
        (method git-fetch)
@@ -1385,7 +1385,7 @@ ansi.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11swnjczhrza0xi8q2wlk056nnbcghm44vqs52zfv6rwqvy6imhj"))))
+        (base32 "199x3zbrs3bca4xc4m66c2fvs4vzywqcfylqx6n14kys0sh1p73b"))))
     (build-system go-build-system)
     (arguments
      (list
