@@ -1082,7 +1082,7 @@ tools.")
                 (lambda ()
                   (apply %configure args))
                 #:unwind? #t)))
-          (add-after 'wrap-program 'glib-or-gtk-wrap
+          (add-after 'install 'glib-or-gtk-wrap
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))
       ;; Test suite?  Which test suite?
       #:tests? #f))
