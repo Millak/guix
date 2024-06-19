@@ -547,6 +547,7 @@ runcexecutor/executor.go"
               ;; Our LD doesn't like the statically linked relocatable things
               ;; that go produces, so install the dynamic version of
               ;; dockerd instead.
+              (setenv "BUILDFLAGS" "-trimpath")
               (invoke "hack/make.sh" "dynbinary")))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
@@ -570,9 +571,7 @@ runcexecutor/executor.go"
                 (install-file "bundles/dynbinary-daemon/dockerd" out-bin)
                 (install-file (string-append "bundles/dynbinary-daemon/dockerd-"
                                              (getenv "VERSION"))
-                              out-bin))))
-          (add-after 'install 'remove-go-references
-            (assoc-ref go:%standard-phases 'remove-go-references)))))
+                              out-bin)))))))
     (inputs
      (list btrfs-progs
            containerd       ; for containerd-shim
