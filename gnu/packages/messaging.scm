@@ -2244,7 +2244,7 @@ is also scriptable and extensible via Guile.")
            (lambda _
              (substitute* "Makefile.am"
                (("'\\^xmpp_'") "'.'"))))
-         (add-after 'install-licence-files 'install-extra-licence-files
+         (add-after 'install 'install-extra-licence-files
            (lambda _
             (let ((license-directory (string-append #$output
                                                     "/share/doc/"
