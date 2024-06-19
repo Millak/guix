@@ -2303,7 +2303,7 @@ parallel computing platforms.  It also supports serial execution.")
                (("=libtool")
                 (string-append "=" (assoc-ref inputs "libtool")
                                "/bin/libtool")))))
-         (add-after 'install-scripts 'make-wrapper
+         (add-after 'install 'make-wrapper
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                ;; 'gvhdl' invokes the C compiler directly, so hard-code its
