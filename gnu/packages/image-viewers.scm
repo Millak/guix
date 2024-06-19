@@ -651,6 +651,8 @@ imaging.  It supports several HDR and LDR image formats, and it can:
                        (package-version (this-package-input "python")))
                     "/site-packages/mcomix/" subdir)))
                 '("images" "messages")))))
+         (add-after 'install 'glib-or-gtk-compile-schemas
+           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
          (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
          (add-after 'wrap 'gi-wrap
