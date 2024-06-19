@@ -752,6 +752,54 @@ directly access various slots (e.g. X, obs, var), or convert the data into
 @code{SingleCellExperiment} and Seurat objects.")
       (license license:expat))))
 
+(define-public r-anpan
+  (let ((commit "286b88dcf5e9e963a595482139aade154ee1dc86")
+        (revision "1"))
+    (package
+      (name "r-anpan")
+      (version (git-version "0.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/biobakery/anpan")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "10nw5v69gn4pxb4g5gd8nh9r1ywd6yczapl3dpdfms0434wcmkxm"))))
+      (properties `((upstream-name . "anpan")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-ape
+                               r-cmdstanr
+                               r-data-table
+                               r-dplyr
+                               r-fastglm
+                               r-furrr
+                               r-future
+                               r-ggdendro
+                               r-ggnewscale
+                               r-ggplot2
+                               r-loo
+                               r-mass
+                               r-patchwork
+                               r-phylogram
+                               r-posterior
+                               r-progressr
+                               r-purrr
+                               r-r-utils
+                               r-stringr
+                               r-tibble
+                               r-tidyselect))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/biobakery/anpan")
+      (synopsis "Quantifying microbial strain-host associations")
+      (description
+       "The goal of anpan is to consolidate statistical methods for strain
+analysis.  This includes automated filtering of metagenomic functional
+profiles, testing genetic elements for association with outcomes, phylogenetic
+association testing, and pathway-level random effects models.")
+      (license license:expat))))
+
 (define-public r-bedtorch
   (let ((commit "f5ff4f83b94f59eac660333c64e4b2f296b35cea")
         (revision "1"))
