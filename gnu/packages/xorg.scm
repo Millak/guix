@@ -6334,7 +6334,7 @@ X11 servers, Windows, or macOS.")
                  ("uim-el-agent" (string-append out "/bin/uim-el-agent"))
                  ("uim-el-helper-agent" (string-append out "/bin/uim-el-helper-agent"))))
              #t))
-         (add-after 'fix-install-path 'make-autoloads
+         (add-after 'install 'make-autoloads
            (lambda* (#:key outputs #:allow-other-keys)
              (emacs-generate-autoloads
               ,name (string-append (assoc-ref outputs "out")
