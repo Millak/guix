@@ -1008,7 +1008,7 @@ of unit files.")))
 (define-public go-github-com-cskr-pubsub
   (package
     (name "go-github-com-cskr-pubsub")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)
@@ -1017,7 +1017,7 @@ of unit files.")))
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18kqfdzkfs7z8266a5q5wldwkcvnhc7yw09b9vr8r0s7svy8d5s6"))))
+        (base32 "0iy85nxrfv6hp4i4mnqayjfx4hci7qyycqbaz4fx8wbd15n9ll66"))))
     (build-system go-build-system)
     (arguments
      (list
