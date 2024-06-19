@@ -3932,7 +3932,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (substitute* "tests/Makefile.am"
                   (("\\bdhtrunnertester\\.(h|cpp)\\b")
                    ""))))
-            (add-after 'unupack 'relax-test-timeouts
+            (add-after 'unpack 'relax-test-timeouts
               (lambda _
                 ;; At least the 'test_send_json' has been seen to fail
                 ;; non-deterministically, but it seems hard to reproducible that
