@@ -2071,7 +2071,8 @@ such as chess or stockfish.")
                   glu
                   gtkglext
                   sqlite
-                  libcanberra))
+                  libcanberra
+                  libxcrypt))           ;required by Python.h
     (native-inputs `(("python-2" ,python-2)
                      ("pkg-config" ,pkg-config)))
     (arguments
