@@ -2363,7 +2363,7 @@ help in debugging failures and optimizing the scheduler to improve speed.")
            (lambda _
              (substitute* "setup.py"
                (("websockets.*<11.0")
-                "websockets<12.0")))))))
+                "websockets<13.0")))))))
     (propagated-inputs
      (list python-httpx python-async-generator python-pytest
            python-websockets))
