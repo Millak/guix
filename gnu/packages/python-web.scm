@@ -3603,6 +3603,32 @@ APIs.")
 than Python’s urllib2 library.")
     (license license:asl2.0)))
 
+(define-public python-requests-next
+  (package
+    (name "python-requests")
+    (version "2.31.0")
+    (source (origin
+             (method url-fetch)
+             (uri (pypi-uri "requests" version))
+             (sha256
+              (base32
+               "1qfidaynsrci4wymrw3srz8v1zy7xxpcna8sxpm91mwqixsmlb4l"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-certifi
+           python-charset-normalizer
+           python-idna
+           python-urllib3))
+    (arguments
+     ;; FIXME: Some tests require network access.
+     '(#:tests? #f))
+    (home-page "http://python-requests.org/")
+    (synopsis "Python HTTP library")
+    (description
+     "Requests is a Python HTTP client library.  It aims to be easier to use
+than Python’s urllib2 library.")
+    (license license:asl2.0)))
+
 (define-public python-requests-kerberos
   (package
     (name "python-requests-kerberos")
