@@ -30748,7 +30748,7 @@ asynchronous communications, the RPC response is fairly good.")
                (let ((perl (assoc-ref inputs "perl")))
                  (substitute* "edbi.el"
                    (("\"perl\"") (string-append "\"" perl "/bin/perl\""))))))
-           (add-after 'wrap 'wrap-edbi-bridge
+           (add-after 'install 'wrap-edbi-bridge
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
                       (bridge (string-append (elpa-directory out)
