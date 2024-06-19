@@ -116,6 +116,7 @@ between computers.")
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
+               (setenv "GO_LDFLAGS" "-trimpath")
                ;; Set configuration path.
                (setenv "CFGPATH" "/etc/nncp.hjson")
                ;; Set output directories.
@@ -142,9 +143,7 @@ between computers.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "contrib/do" "-c" "test"))))
-         (add-after 'install 'remove-go-references
-           (assoc-ref go:%standard-phases 'remove-go-references)))))
+               (invoke "contrib/do" "-c" "test")))))))
     (inputs
      (list go-github-com-davecgh-go-xdr
            go-github-com-dustin-go-humanize
