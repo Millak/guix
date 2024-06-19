@@ -23,7 +23,7 @@
 ;;; Copyright © 2021 Hong Li <hli@mdc-berlin.de>
 ;;; Copyright © 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2022, 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022, 2023, 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2024 Alexis Simon <alexis.simon@runbox.com>
 ;;;
@@ -11533,6 +11533,41 @@ tasks.")
       (description "This is a package for the discovery of communities in
 Pore-C concatemers.")
       (license license:gpl3))))
+
+(define-public r-cmdstanr
+  (let ((commit "a45d4f7d686aa6b57ce25f342a71eea79507f01c")
+        (revision "1"))
+    (package
+      (name "r-cmdstanr")
+      (version (git-version "0.8.1.9000" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stan-dev/cmdstanr")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01vyh3sy704rs7yvaka2hp6vld0mdl7hbrs20dpbwidgm4ksrvsi"))))
+      (properties `((upstream-name . "cmdstanr")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-checkmate
+                               r-data-table
+                               r-jsonlite
+                               r-posterior
+                               r-processx
+                               r-r6
+                               r-rlang
+                               r-withr))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/stan-dev/cmdstanr")
+      (synopsis "R interface to 'CmdStan'")
+      (description
+       "This package provides a lightweight interface to Stan
+<https://mc-stan.org>.  The @code{CmdStanR} interface is an alternative
+to RStan that calls the command line interface for compilation and
+running algorithms instead of interfacing with C++ via Rcpp'.")
+      (license license:bsd-3))))
 
 (define-public r-dnamcrosshyb
   ;; There aren't any releases.
