@@ -1485,6 +1485,8 @@ the Actix ecosystem.")
                        ("rust-socket2" ,rust-socket2-0.5)
                        ("rust-time" ,rust-time-0.3)
                        ("rust-url" ,rust-url-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
     (home-page "https://actix.rs")
     (synopsis "Powerful, pragmatic, and fast web framework for Rust")
     (description
