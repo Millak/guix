@@ -300,7 +300,8 @@ typing @command{sl} instead of @command{ls}.")
                       ""))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
+     `(#:parallel-build? #f             ;y.tab.h fails otherwise
+       #:make-flags
        (list (string-append "CC=" ,(cc-for-target))
              (string-append "prefix=" (assoc-ref %outputs "out")))
        #:phases
