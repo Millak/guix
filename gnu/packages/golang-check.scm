@@ -657,7 +657,7 @@ Gomega matcher library.")
       #:go go-1.21
       #:import-path "github.com/onsi/gomega"))
     (propagated-inputs
-     (list go-github-com-golang-protobuf-proto
+     (list go-github-com-golang-protobuf
            go-golang-org-x-net
            go-golang-org-x-sys
            go-golang-org-x-text

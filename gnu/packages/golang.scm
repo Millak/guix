@@ -6229,23 +6229,32 @@ test results.")
     (home-page "https://github.com/gotestyourself/gotestsum")
     (license license:asl2.0)))
 
-(define-public go-github-com-golang-protobuf-proto
+(define-public go-github-com-golang-protobuf
   (package
-    (name "go-github-com-golang-protobuf-proto")
+    (name "go-github-com-golang-protobuf")
     (version "1.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/golang/protobuf")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/golang/protobuf")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
                 "03f1w2cd4s8a3xhl61x7yjx81kbzlrjpvnnwmbhqnz814yi7h43i"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/golang/protobuf/proto"
-       #:unpack-path "github.com/golang/protobuf"))
+     (list #:import-path "github.com/golang/protobuf"
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; XXX: Workaround for go-build-system's lack of Go modules
+               ;; support.
+               (delete 'build)
+               (replace 'check
+                 (lambda* (#:key tests? import-path #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion (string-append "src/" import-path)
+                       (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-google-golang-org-protobuf))
     (synopsis "Go support for Protocol Buffers")
@@ -7589,7 +7598,7 @@ formatting information, rather than the current locale name.")
          ;; Source-only package
          (delete 'build))))
     (propagated-inputs
-     (list go-github-com-golang-protobuf-proto
+     (list go-github-com-golang-protobuf
            go-github-com-matttproud-golang-protobuf-extensions-pbutil
            go-github-com-prometheus-client-model))
     (synopsis "Prometheus metrics")
@@ -7647,7 +7656,7 @@ system, kernel, and process metrics from the @file{/proc} pseudo file system.")
          (delete 'build))))
     (propagated-inputs
      (list go-github-com-beorn7-perks-quantile
-           go-github-com-golang-protobuf-proto
+           go-github-com-golang-protobuf
            go-github-com-prometheus-client-model
            go-github-com-prometheus-common
            go-github-com-prometheus-procfs

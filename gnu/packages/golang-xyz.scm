@@ -3413,7 +3413,7 @@ Pion}.")
          ;; Source-only package
          (delete 'build))))
     (propagated-inputs
-     (list go-github-com-golang-protobuf-proto))
+     (list go-github-com-golang-protobuf))
     (synopsis "Data model artifacts for Prometheus")
     (description "This package provides data model artifacts for Prometheus.")
     (home-page "https://github.com/prometheus/client_model")

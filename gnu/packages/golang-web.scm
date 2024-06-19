@@ -919,7 +919,7 @@ language.")
       (arguments
        (list #:import-path "github.com/golang/groupcache"))
       (propagated-inputs
-       (list go-github-com-golang-protobuf-proto))
+       (list go-github-com-golang-protobuf))
       (home-page "https://github.com/golang/groupcache")
       (synopsis "Groupcache is a caching and cache-filling library")
       (description

@@ -260,7 +260,7 @@ notification library in Go.")
       #:import-path "github.com/matttproud/golang_protobuf_extensions/v2/pbutil"
       #:unpack-path "github.com/matttproud/golang_protobuf_extensions/v2"))
     (propagated-inputs
-     (list go-github-com-golang-protobuf-proto
+     (list go-github-com-golang-protobuf
            go-google-golang-org-protobuf))
     (synopsis "Streaming Protocol Buffers in Go")
     (description "This package provides various Protocol Buffer
