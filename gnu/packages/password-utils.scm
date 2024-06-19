@@ -352,10 +352,10 @@ Counterpane's Passwordsafe.")
           (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
             (assoc-ref glib-or-gtk:%standard-phases
                        'generate-gdk-pixbuf-loaders-cache-file))
-          (add-after 'wrap 'glib-or-gtk-compile-schemas
+          (add-after 'install 'glib-or-gtk-compile-schemas
             (assoc-ref glib-or-gtk:%standard-phases
                        'glib-or-gtk-compile-schemas))
-          (add-after 'wrap 'glib-or-gtk-wrap
+          (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (inputs (list adwaita-icon-theme
                   libcotp
