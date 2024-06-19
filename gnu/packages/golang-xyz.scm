@@ -957,29 +957,6 @@ submodules:
 @end itemize")
     (license license:asl2.0)))
 
-(define-public go-github-com-coreos-go-systemd-activation
-  (package
-    (name "go-github-com-coreos-go-systemd-activation")
-    (version "0.0.0-20191104093116-d3cd4ed1dbcf")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/coreos/go-systemd")
-                    (commit (go-version->git-ref version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "193mgqn7n4gbb8jb5kyn6ml4lbvh4xs55qpjnisaz7j945ik3kd8"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/coreos/go-systemd/activation"
-       #:unpack-path "github.com/coreos/go-systemd"))
-    (home-page "https://github.com/coreos/go-systemd")
-    (synopsis "Go bindings to systemd socket activation")
-    (description "Go bindings to systemd socket activation; for writing and
-using socket activation from Go.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-cskr-pubsub
   (package
     (name "go-github-com-cskr-pubsub")
