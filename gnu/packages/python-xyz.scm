@@ -37285,7 +37285,7 @@ etc. to check code that uses @code{orjson}.")
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'prepare-python-module 'build-python-module
+          (add-after 'build 'build-python-module
             (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
             (assoc-ref py:%standard-phases 'install)))
