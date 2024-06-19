@@ -1091,7 +1091,7 @@ high a score as possible.")
      (list
       #:make-flags
       #~(list (string-append "PREFIX=" #$output)
-              "USE_HOME_DIR=1" "DYNAMIC_LINKING=1" "RELEASE=1"
+              "USE_HOME_DIR=1" "DYNAMIC_LINKING=1" "RELEASE=1" "WARNINGS=-w"
               "LOCALIZE=1" "LANGUAGES=all")
       #:phases
       #~(modify-phases %standard-phases
