@@ -90,6 +90,7 @@
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dejagnu)
@@ -258,6 +259,7 @@ plans and designs.")
            glib
            gtk+-2
            guile-2.0
+           libxcrypt
            shared-mime-info
            m4
            pcb
