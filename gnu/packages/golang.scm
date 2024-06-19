@@ -2147,7 +2147,7 @@ TrueType font files in your system's user and system font directories.")
               (invoke "go" "install" "-v" "-x"
                       "-ldflags=-s -w"
                       (string-append import-path "cmd/wrap"))))
-          (add-after 'wrap 'wrap-fonts
+          (add-after 'install 'wrap-fonts
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (for-each
                (lambda (program)
