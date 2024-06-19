@@ -60,6 +60,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages bootstrap)           ;glibc-dynamic-linker
   #:use-module (gnu packages check)               ;python-lit
@@ -2424,7 +2425,7 @@ LLVM bitcode files.")
             (lambda _
               (for-each delete-file (find-files #$output "\\.a$")))))))
     (native-inputs (list python python-lit))
-    (inputs (list clang-cling llvm-cling))
+    (inputs (list clang-cling llvm-cling libxcrypt))
     (home-page "https://root.cern/cling/")
     (synopsis "Interactive C++ interpreter")
     (description "Cling is an interactive C++17 standard compliant
