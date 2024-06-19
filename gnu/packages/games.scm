@@ -6906,6 +6906,7 @@ over 100 user-created campaigns.")
      `(("glu" ,glu)
        ;; Kiki builds fine with freeglut 3.0.0 but segfaults on start.
        ("freeglut" ,freeglut-2.8)
+       ("libxcrypt" ,libxcrypt)
        ("sdl-union" ,(sdl-union (list sdl
                                       sdl-mixer
                                       sdl-image)))
