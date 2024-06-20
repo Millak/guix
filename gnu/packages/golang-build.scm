@@ -293,9 +293,17 @@ loading algorithms.")
                   (invoke "go" "test" "-v" "./..."))))))))
     (home-page "https://go.googlesource.com/sync/")
     (synopsis "Additional Go concurrency primitives")
-    (description "This package provides Go concurrency primitives in
-addition to the ones provided by the language and “sync” and “sync/atomic”
-packages.")
+    (description
+     "This package provides Go concurrency primitives in addition to the ones
+provided by the language and @code{sync} and @code{sync/atomic} packages.
+The package provides several Golang submodules:
+@itemize
+@item @code{errgroup} - synchronization, error propagation, and Context
+cancelation for groups of goroutines working on subtasks of a common task
+@item @code{semaphore} - a weighted semaphore implementation
+@item @code{singleflight} - a duplicate function call suppression mechanism
+@item @code{syncmap} - a concurrent map implementation
+@end itemize")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-sys
