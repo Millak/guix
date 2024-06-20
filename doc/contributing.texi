@@ -2946,7 +2946,7 @@ account the submitter's motivation for doing things in a certain way.
 @cindex Reviewed-by, git trailer
 When you deem the proposed change adequate and ready for inclusion
 within Guix, the following well understood/codified
-@samp{Reviewed-by:@tie{}Your@tie{}Name<your-email@@example.com>}
+@samp{Reviewed-by:@tie{}Your@tie{}Name@tie{}<your-email@@example.com>}
 @footnote{The @samp{Reviewed-by} Git trailer is used by other projects
 such as Linux, and is understood by third-party tools such as the
 @samp{b4 am} sub-command, which is able to retrieve the complete
@@ -2958,7 +2958,8 @@ looks good to you:
 @itemize
 @item
 If the @emph{whole} series (containing multiple commits) looks good to
-you, reply with @samp{Reviewed-by:@tie{}Your@tie{}Name<your-email@@example.com>}
+you, reply with
+@samp{Reviewed-by:@tie{}Your@tie{}Name@tie{}<your-email@@example.com>}
 to the cover page if it has one, or to the last patch of the series
 otherwise, adding another @samp{(for the whole series)} comment on the
 line below to explicit this fact.
@@ -2966,8 +2967,8 @@ line below to explicit this fact.
 @item
 If you instead want to mark a @emph{single commit} as reviewed (but not
 the whole series), simply reply with
-@samp{Reviewed-by:@tie{}Your@tie{}Name<your-email@@example.com>} to that
-commit message.
+@samp{Reviewed-by:@tie{}Your@tie{}Name@tie{}<your-email@@example.com>}
+to that commit message.
 @end itemize
 
 If you are not a committer, you can help others find a @emph{series} you
