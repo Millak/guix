@@ -3505,7 +3505,7 @@ will reconstruct the object along its delta-base chain and return it.")
            go-github-com-xeipuuv-gojsonreference
            go-github-com-xeipuuv-gojsonpointer
            go-golang-org-x-net
-           go-golang.org-x-sync-semaphore
+           go-golang-org-x-sync
            go-github-com-ssgelm-cookiejarparser
            go-github-com-rubyist-tracerx
            go-github-com-olekukonko-ts

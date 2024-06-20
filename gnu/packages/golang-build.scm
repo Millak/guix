@@ -293,17 +293,6 @@ addition to the ones provided by the language and “sync” and “sync/atomic�
 packages.")
       (license license:bsd-3))))
 
-(define-public go-golang.org-x-sync-semaphore
-  (package
-    (inherit go-golang-org-x-sync)
-    (name "go-golang.org-x-sync-semaphore")
-    (arguments
-     '(#:import-path "golang.org/x/sync/semaphore"
-       #:unpack-path "golang.org/x/sync"))
-    (home-page "https://godoc.org/golang.org/x/sync/semaphore")
-    (synopsis "Weighted semaphore implementation in Go")
-    (description "Weighted semaphore implementation in Go.")))
-
 (define-public go-golang-org-x-sys
   (let ((commit "ca59edaa5a761e1d0ea91d6c07b063f85ef24f78")
         (revision "0"))
