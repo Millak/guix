@@ -28582,8 +28582,8 @@ even by adding additional statistical @code{compute}ations.")
   (sbcl-package->ecl-package sbcl-trivial-channels))
 
 (define-public sbcl-trivial-clipboard
-  (let ((commit "aee67d6132a46237f61d508ae4bd9ff44032566d")
-        (revision "7"))
+  (let ((commit "50b3d3a25717ac78fb1f0517635c3cb1c31c7667")
+        (revision "8"))
     (package
       (name "sbcl-trivial-clipboard")
       (version (git-version "0.0.0" revision commit))
@@ -28595,7 +28595,7 @@ even by adding additional statistical @code{compute}ations.")
                (commit commit)))
          (file-name (git-file-name "cl-trivial-clipboard" version))
          (sha256
-          (base32 "029qmx523xfk54p99ndgbmdd20s5i32mzpf77xymngrn4c33v9jk"))))
+          (base32 "1agj4nvw4qq7k4vp64y15gq5h5g22zasys48c2bvzqjr0n9d4lj1"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        ;; Pick xsel instead of xclip because its closure size is slightly
