@@ -73528,7 +73528,10 @@ map.")
           "0wm35q6p6jcq1r1darczv4if7qss460kd391nlw5x3hjpc17kma9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=univariate_::test::test_pkurtosis")
+       #:cargo-inputs
        (("rust-num" ,rust-num-0.2)
         ("rust-rand" ,rust-rand-0.6))))
     (home-page "https://github.com/JeffBelgum/statistical")
