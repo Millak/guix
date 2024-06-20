@@ -76956,7 +76956,9 @@ processors, disks, components and networks.")
     (arguments
      `(#:cargo-test-flags
        (list "--release" "--"
-             ;; These files aren't available in the build environment.
+             ;; These tests rely on networking, on UIDs and GIDs not
+             ;; in the build environment, or on unavailable files.
+             "--skip=test::check_all_process_uids_resolvable"
              "--skip=test::check_system_info"
              "--skip=test::check_uid_gid"
              "--skip=test_networks"
