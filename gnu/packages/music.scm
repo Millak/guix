@@ -5389,7 +5389,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "4.2.1")
+    (version "4.3.2")
     (source
      (origin
        (method git-fetch)
@@ -5398,7 +5398,7 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rc5ma1k0cjllfl86apbyj61sh0691lsmqnvqicyn0zi53z8w9v0"))
+        (base32 "1hx0l6d7avyfbh88hwn01h9q51mgd9zix91q2kgg1ax73pqxhfs2"))
        (modules '((guix build utils)))
        (snippet
         '(begin
