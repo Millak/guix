@@ -307,37 +307,37 @@ cancelation for groups of goroutines working on subtasks of a common task
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-sys
-    (package
-      (name "go-golang-org-x-sys")
-      (version "0.21.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://go.googlesource.com/sys")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "000fcyi863sbmamdn3cwfv3s3z9ls5l34xnjavcbgjs591ghki8y"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "golang.org/x/sys"
-        #:phases
-        #~(modify-phases %standard-phases
-            ;; XXX: Workaround for go-build-system's lack of Go modules
-            ;; support.
-            (delete 'build)
-            (replace 'check
-              (lambda* (#:key tests? import-path #:allow-other-keys)
-                (when tests?
-                  (with-directory-excursion (string-append "src/" import-path)
-                    (invoke "go" "test" "-v" "./..."))))))))
-      (home-page "https://go.googlesource.com/sys")
-      (synopsis "Go support for low-level system interaction")
-      (description "This package provides supplemental libraries offering Go
+  (package
+    (name "go-golang-org-x-sys")
+    (version "0.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/sys")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "000fcyi863sbmamdn3cwfv3s3z9ls5l34xnjavcbgjs591ghki8y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "golang.org/x/sys"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (home-page "https://go.googlesource.com/sys")
+    (synopsis "Go support for low-level system interaction")
+    (description "This package provides supplemental libraries offering Go
 support for low-level interaction with the operating system.")
-      (license license:bsd-3)))
+    (license license:bsd-3)))
 
 (define-public go-golang-org-x-term
   (package
