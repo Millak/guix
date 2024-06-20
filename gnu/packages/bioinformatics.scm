@@ -4535,6 +4535,58 @@ thus facilitating the identification of cellular states or disease
 subgroups.")
     (license license:lgpl3)))
 
+(define-public python-muon
+  (package
+    (name "python-muon")
+    (version "0.1.6")
+    (source
+     (origin
+       ;; The tarball from PyPi doesn't include tests.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scverse/muon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1kd3flgy41dc0sc71wfnirh8vk1psxgyjxkbx1zx9yskkh6anbgw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Even providing a random seed, scipy.sparse.rand produces inconsistent
+      ;; results across scipy versions.
+      '(list "-k" "not test_tfidf")
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'build 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs (list python-anndata
+                             python-h5py
+                             python-matplotlib
+                             python-mofapy2
+                             python-mudata
+                             python-numba
+                             python-numpy
+                             python-pandas
+                             python-protobuf
+                             python-pybedtools
+                             python-pysam
+                             python-scanpy
+                             python-scikit-learn
+                             python-seaborn
+                             python-tqdm
+                             python-umap-learn))
+    (native-inputs (list python-flit-core
+                         python-pytest
+                         python-pytest-flake8))
+    (home-page "https://github.com/scverse/muon")
+    (synopsis "Multimodal omics analysis framework")
+    (description "muon is a multimodal omics Python framework.")
+    (license license:bsd-3)))
+
 (define-public python-pyega3
   (deprecated-package "python-pyega3" python-ega-download-client))
 
