@@ -325,12 +325,16 @@ cancelation for groups of goroutines working on subtasks of a common task
       (arguments
        (list
         #:import-path "golang.org/x/sys"
-        ;; Source-only package
-        #:tests? #f
         #:phases
         #~(modify-phases %standard-phases
-            ;; Source-only package
-            (delete 'build))))
+            ;; XXX: Workaround for go-build-system's lack of Go modules
+            ;; support.
+            (delete 'build)
+            (replace 'check
+              (lambda* (#:key tests? import-path #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion (string-append "src/" import-path)
+                    (invoke "go" "test" "-v" "./..."))))))))
       (home-page "https://go.googlesource.com/sys")
       (synopsis "Go support for low-level system interaction")
       (description "This package provides supplemental libraries offering Go
