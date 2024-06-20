@@ -1466,6 +1466,7 @@ that support this feature).")
      `(#:configure-flags
        (list (string-append "--docdir=" (assoc-ref %outputs "out")
                             "/share/doc/" ,name "-" ,version))
+       #:parallel-build? #f             ;fails otherwise
        #:tests? #f ; Tests require a NUMA-enabled system.
        #:phases
        (modify-phases %standard-phases
