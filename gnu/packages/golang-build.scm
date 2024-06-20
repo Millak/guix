@@ -307,20 +307,18 @@ cancelation for groups of goroutines working on subtasks of a common task
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-sys
-  (let ((commit "ca59edaa5a761e1d0ea91d6c07b063f85ef24f78")
-        (revision "0"))
     (package
       (name "go-golang-org-x-sys")
-      (version (git-version "0.8.0" revision commit))
+      (version "0.21.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://go.googlesource.com/sys")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1p81niiin8dwyrjl2xsc95136w3vdw4kmj0w3mlh0vh5v134s4xq"))))
+          (base32 "000fcyi863sbmamdn3cwfv3s3z9ls5l34xnjavcbgjs591ghki8y"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -339,7 +337,7 @@ cancelation for groups of goroutines working on subtasks of a common task
       (synopsis "Go support for low-level system interaction")
       (description "This package provides supplemental libraries offering Go
 support for low-level interaction with the operating system.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public go-golang-org-x-term
   (package
