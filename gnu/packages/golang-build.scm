@@ -79,7 +79,7 @@
 (define-public go-golang-org-x-crypto
   (package
     (name "go-golang-org-x-crypto")
-    (version "0.4.0")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
@@ -89,7 +89,7 @@
        (file-name (string-append "go.googlesource.com-crypto-"
                                  version "-checkout"))
        (sha256
-        (base32 "13i0yz4hvc4qdr438nmzilvl5ns73v3910bakcddny3jbzq72i2m"))))
+        (base32 "08124qkp0l0blq6rw68llfbf84kp99255q0yvxyv27c05b0wkh66"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "golang.org/x/crypto"
@@ -100,7 +100,10 @@
          ;; Source-only package
          (delete 'build))))
     (propagated-inputs
-     (list go-golang-org-x-sys))
+     (list go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text))
     (home-page "https://go.googlesource.com/crypto/")
     (synopsis "Supplementary cryptographic libraries in Go")
     (description "This package provides supplementary cryptographic libraries
