@@ -32127,7 +32127,9 @@ you don't have a key or you don't want to use HTTPS.
 Whether the server should add its configuration to response.
 
 @item @code{raw-content} (default: @code{'()})
-A list of raw lines added to the server block.
+A list of strings or file-like objects to be appended to the server
+block.  Each item is prefixed with indentation and suffixed with a new
+line.  Nested lists are flattened.
 
 @end table
 @end deftp
@@ -32164,11 +32166,13 @@ URI which this location block matches.
 
 @anchor{nginx-location-configuration body}
 @item @code{body}
-Body of the location block, specified as a list of strings.  This can contain
-many
-configuration directives.  For example, to pass requests to a upstream
-server group defined using an @code{nginx-upstream-configuration} block,
-the following directive would be specified in the body @samp{(list "proxy_pass
+Body of the location block, specified as a list of strings or file-like
+objects.  Each item is prefixed with indentation and suffixed with a new
+line.  Nested lists are flattened.
+
+For example, to pass requests to a upstream server group defined using
+an @code{nginx-upstream-configuration} block, the following directive
+would be specified in the body @samp{(list "proxy_pass
 http://upstream-name;")}.
 
 @end table
