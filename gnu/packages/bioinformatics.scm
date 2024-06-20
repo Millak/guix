@@ -4491,6 +4491,50 @@ It is designed to provide functionality to load, process, and store multimodal
 omics data.")
     (license license:bsd-3)))
 
+(define-public python-mofapy2
+  (package
+    (name "python-mofapy2")
+    (version "0.7.1")
+    (source
+     (origin
+       ;; The tarball from PyPi doesn't include tests.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bioFAM/mofapy2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ahhnqk6gjrhyq286mrd5n7mxcv8l6040ffsawbjx9maqx8wbam0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; cupy is an optional dependency, which
+      ;; itself has nonfree dependencies (CUDA)
+      '(list "--ignore=mofapy2/notebooks/test_cupy.py")))
+    (propagated-inputs (list python-anndata
+                             python-h5py
+                             python-numpy
+                             python-pandas
+                             python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-poetry-core
+                         python-pytest))
+    (home-page "https://biofam.github.io/MOFA2/")
+    (synopsis "Multi-omics factor analysis")
+    (description "MOFA is a factor analysis model that provides a general
+framework for the integration of multi-omic data sets in an unsupervised
+fashion.  Intuitively, MOFA can be viewed as a versatile and statistically
+rigorous generalization of principal component analysis to multi-omics data.
+Given several data matrices with measurements of multiple -omics data types on
+the same or on overlapping sets of samples, MOFA infers an interpretable
+low-dimensional representation in terms of a few latent factors.  These learnt
+factors represent the driving sources of variation across data modalities,
+thus facilitating the identification of cellular states or disease
+subgroups.")
+    (license license:lgpl3)))
+
 (define-public python-pyega3
   (deprecated-package "python-pyega3" python-ega-download-client))
 
