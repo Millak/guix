@@ -1039,7 +1039,7 @@ programmer to write text-based user interfaces.")
            go-github-com-gdamore-tcell
            go-github-com-rivo-uniseg
            go-github-com-saracen-walker
-           go-golang.org-x-sync-errgroup
+           go-golang-org-x-sync
            go-golang-org-x-term
            go-golang-org-x-crypto))
     (home-page "https://github.com/junegunn/fzf")

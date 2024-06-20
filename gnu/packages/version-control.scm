@@ -3850,7 +3850,7 @@ If several repos are related, it helps to see their status together.")
            go-github-com-saracen-walker
            go-github-com-urfave-cli-v2
            go-golang-org-x-net
-           go-golang.org-x-sync-errgroup))
+           go-golang-org-x-sync))
     (synopsis "Manage remote repository clones")
     (description
      "@code{ghq} provides a way to organize remote repository clones, like

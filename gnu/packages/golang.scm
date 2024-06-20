@@ -6207,7 +6207,7 @@ test when a comparison fails.")
      '(#:import-path "gotest.tools/gotestsum"))
     (native-inputs
      (list go-github-com-fatih-color
-           go-golang.org-x-sync-errgroup
+           go-golang-org-x-sync
            go-github-com-pkg-errors
            go-github-com-sirupsen-logrus
            go-github-com-spf13-pflag
@@ -7626,7 +7626,7 @@ Prometheus metrics.")
        ;; The tests require Go modules, which are not yet supported in Guix's
        ;; Go build system.
        #:tests? #f))
-    (propagated-inputs (list go-golang.org-x-sync-errgroup))
+    (propagated-inputs (list go-golang-org-x-sync))
     (synopsis "Go library for reading @file{/proc}")
     (description "The @code{procfs} Go package provides functions to retrieve
 system, kernel, and process metrics from the @file{/proc} pseudo file system.")
