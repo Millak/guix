@@ -66,6 +66,7 @@
 ;;; Copyright © 2023 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4260,6 +4261,37 @@ everyone's screenshots nowadays.")
       (description "This package provides a simple, configurable system
 information tool.")
       (license license:expat))))
+
+(define-public fastfetch
+  (package
+    (name "fastfetch")
+    (version "2.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fastfetch-cli/fastfetch")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "112dvfx7gvp6n20i1lkd0jbh897jf7bxjxq96bj4099j3x313y3m"))))
+    (build-system cmake-build-system)
+    (inputs (list dbus
+                  glib
+                  imagemagick
+                  libxcb
+                  mesa
+                  wayland
+                  zlib)) ;for imagemagick and an #ifdef
+    (native-inputs (list pkg-config))
+    (arguments (list #:tests? #f)) ; no test target
+    (home-page "https://github.com/fastfetch-cli/fastfetch")
+    (synopsis "Display system information in a stylized manner")
+    (description
+     "Fastfetch is a tool for fetching system information and displaying it in
+a stylized way.  Fastfetch displays this information next to a logo of the
+system distribution, akin to many similar tools.")
+    (license license:expat)))
 
 (define-public nnn
   (package
