@@ -281,11 +281,18 @@ loading algorithms.")
           (base32 "07qrhni6f5hh5p95k1yk6s4wsj341q663irvx6rllrxfsymj6a0z"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "golang.org/x/sync"
-         #:tests? #f
-         ;; Source-only package
-         #:phases (modify-phases %standard-phases
-                    (delete 'build))))
+       (list
+        #:import-path "golang.org/x/sync"
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; XXX: Workaround for go-build-system's lack of Go modules
+            ;; support.
+            (delete 'build)
+            (replace 'check
+              (lambda* (#:key tests? import-path #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion (string-append "src/" import-path)
+                    (invoke "go" "test" "-v" "./..."))))))))
       (home-page "https://go.googlesource.com/sync/")
       (synopsis "Additional Go concurrency primitives")
       (description "This package provides Go concurrency primitives in
