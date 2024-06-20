@@ -290,8 +290,8 @@ time to a logfile.")
          (replace 'build
            (lambda* (#:key import-path #:allow-other-keys)
              (with-directory-excursion (string-append "src/" import-path)
-               (invoke "go" "build" "-o" "dstask" "cmd/dstask/main.go")
-               (invoke "go" "build" "-o" "dstask-import"
+               (invoke "go" "build" "-trimpath" "-o" "dstask" "cmd/dstask/main.go")
+               (invoke "go" "build" "-trimpath" "-o" "dstask-import"
                        "cmd/dstask-import/main.go"))))
          (replace 'install
            (lambda* (#:key import-path outputs #:allow-other-keys)
