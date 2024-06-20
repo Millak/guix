@@ -265,20 +265,18 @@ loading algorithms.")
           (base32 "17zhim2m0r8nyy18g2lsawxm4rawix2qbjyn80x9vc6jc8fv05m9")))))))
 
 (define-public go-golang-org-x-sync
-  (let ((commit "8fcdb60fdcc0539c5e357b2308249e4e752147f1")
-        (revision "1"))
     (package
       (name "go-golang-org-x-sync")
-      (version (git-version "0.1.0" revision commit))
+      (version "0.7.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://go.googlesource.com/sync")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "07qrhni6f5hh5p95k1yk6s4wsj341q663irvx6rllrxfsymj6a0z"))))
+          (base32 "03yq3pnjwqxqy1cvbkaa39ca2b9cli1k5wnz76l3a65n9fafai6q"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -298,7 +296,7 @@ loading algorithms.")
       (description "This package provides Go concurrency primitives in
 addition to the ones provided by the language and “sync” and “sync/atomic”
 packages.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public go-golang-org-x-sys
   (let ((commit "ca59edaa5a761e1d0ea91d6c07b063f85ef24f78")
