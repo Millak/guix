@@ -771,7 +771,14 @@ of index files."
            "\n"
            (map emit-nginx-upstream-config upstream-blocks)
            (map emit-nginx-server-config server-blocks)
-           extra-content
+           (match extra-content
+             ((? list? extra-content)
+              (map (lambda (line)
+                     `("    " ,line "\n"))
+                   extra-content))
+             ;; XXX: For compatibility strings and gexp's are inserted
+             ;; directly.
+             (_ extra-content))
            "\n}\n"))))
 
 (define %nginx-accounts

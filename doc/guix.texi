@@ -32073,8 +32073,17 @@ configuration.  Values may themselves be association lists.
 @end lisp
 
 @item @code{extra-content} (default: @code{""})
-Extra content for the @code{http} block.  Should be string or a string
-valued G-expression.
+Additional content to be appended to the @code{http} block.  Can either
+be a value that can be lowered into a string or a list of such values.
+In the former case, it is inserted directly.  In the latter, it is
+prefixed with indentation and suffixed with a newline.  Nested lists are
+flattened into one line.
+
+@lisp
+(extra-content "include /etc/nginx/custom-config.conf;")
+(extra-content `("include /etc/nginx/custom-config.conf;"
+                 ("include " ,%custom-config.conf ";")))
+@end lisp
 
 @end table
 @end deftp
