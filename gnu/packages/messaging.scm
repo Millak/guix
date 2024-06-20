@@ -3300,39 +3300,11 @@ designed for experienced users.")
               (sha256
                (base32
                 "0939fiy7z53izznfhlr7c6vaskbmkbj3ncb09fzx5dmz9cjngy80"))))
-    ;; Using the go-build-system results in the same error message
-    ;; than in the bug 1551[1]. So we fix it by running go build
-    ;; manually in the git repository as-is as this is the solution
-    ;; given to that bug by the matterbridge developers.
-    ;; [1]https://github.com/42wim/matterbridge/issues/1551
-    (build-system gnu-build-system)
+    (build-system go-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (replace 'build
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (setenv "GOCACHE"
-                              (string-append (getcwd) "/go-build"))
-                      (setenv "GOBIN"
-                              (string-append (assoc-ref outputs "out") "/bin"))
-                      (invoke "go" "build" "-v" "-x")))
-                  (replace 'check
-                    (lambda* (#:key outputs tests? #:allow-other-keys)
-                      (when tests?
-                        (setenv "GOCACHE"
-                                (string-append (getcwd) "/go-build"))
-                        (setenv "GOBIN"
-                                (string-append (assoc-ref outputs "out")
-                                               "/bin"))
-                        (invoke "go" "test" "-v" "-x"))))
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (setenv "GOCACHE"
-                              (string-append (getcwd) "/go-build"))
-                      (setenv "GOBIN"
-                              (string-append (assoc-ref outputs "out") "/bin"))
-                      (invoke "go" "install" "-v" "-x"))))))
-    (native-inputs (list go))
+     (list
+      #:go go-1.21
+      #:import-path "github.com/42wim/matterbridge"))
     (synopsis "Bridge together various messaging networks and protocols")
     (description
      "Relays messages between different channels from various
