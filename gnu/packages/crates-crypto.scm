@@ -3861,8 +3861,7 @@ implementation suitable for use with cryptographic private keys.")
        (sha256
         (base32 "1m1c9jypydzabg4yscplmvff7pdcc8gg4cqg081hnlf03hxkmsc4"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1.1))))))
 
 (define-public rust-poly1305-0.8
   (package
