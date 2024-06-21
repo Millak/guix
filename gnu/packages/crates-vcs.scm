@@ -479,7 +479,7 @@ libcurl, which is intended to be used with the @code{git2} crate.")
        (sha256
         (base32 "1grq79ggjp2b10yxl205kjkfqcijmmncnf47az3g1g713irpzgwx"))))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2-1.6 libssh2 openssl zlib))
+    (inputs (list libgit2-1.7 libssh2 openssl zlib))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ; missing git2_testing
