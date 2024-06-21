@@ -61036,14 +61036,14 @@ accessors.")
 (define-public rust-rayon-1
   (package
     (name "rust-rayon")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rayon" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gdk945j52vq3zx5vb4yzc3yyz19bf2vs8kh47pg7r46pk8kx5p4"))))
+        (base32 "1ylgnzwgllajalr4v00y4kj22klq2jbwllm70aha232iah0sc65l"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
