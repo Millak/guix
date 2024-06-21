@@ -20410,7 +20410,8 @@ Instead, enable the @code{derive} feature of the @code{arbitrary} crate.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-derive-arbitrary-0.4
-  (package/inherit rust-derive-arbitrary-1
+  (package
+    (inherit rust-derive-arbitrary-1)
     (name "rust-derive-arbitrary")
     (version "0.4.7")
     (source
@@ -20419,7 +20420,11 @@ Instead, enable the @code{derive} feature of the @code{arbitrary} crate.")
        (uri (crate-uri "derive_arbitrary" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rp0z4k0j5ip0bx6dssg97l4q6bakhf6lm5h1lpr3p3kwjsi585i"))))))
+        (base32 "1rp0z4k0j5ip0bx6dssg97l4q6bakhf6lm5h1lpr3p3kwjsi585i"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-derive-builder-0.13
   (package
