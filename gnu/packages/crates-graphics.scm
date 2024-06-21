@@ -3213,7 +3213,8 @@ in AVIF format (powers the @code{cavif} tool).")
               (sha256
                (base32 "1r3s78781kb9lwysdvpdc80gavly33dcs4inhhp2dawml9g3rjss"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; Needs rav1e-0.6
+       #:cargo-inputs
        (("rust-avif-serialize" ,rust-avif-serialize-0.7)
         ("rust-imgref" ,rust-imgref-1)
         ("rust-loop9" ,rust-loop9-0.1)
