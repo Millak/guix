@@ -8194,15 +8194,17 @@ the buffer.")
 (define-public rust-bitstream-io-2
   (package
     (name "rust-bitstream-io")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bitstream-io" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nkny66c4hagpc6l656jvvlnz212msv6icca0f0jw7hpa6d9ij86"))))
+        (base32 "0vj4f4kg3ls3j41180a7ia65rj2p762mbzimm0bxiw22ds2x24kw"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-core2" ,rust-core2-0.4))))
     (home-page "https://github.com/tuffy/bitstream-io")
     (synopsis "Read/write un-aligned values from big or little-endian streams")
     (description
