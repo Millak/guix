@@ -141,6 +141,7 @@
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Noé Lopez <noelopez@free.fr>
+;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37016,22 +37017,20 @@ a @samp{date} keywords, and optionally, a @samp{filetags} keyword.")
     (license license:bsd-3)))
 
 (define-public emacs-ddskk
-  ;; XXX: Upstream adds code names to their release tags, so version and code
-  ;; name below need to be updated together.
-  (let ((version "17.1")
-        (code-name "Neppu"))
+  (let ((commit "8c47f46e38a29a0f3eabcd524268d20573102467")
+        (revision "0"))
     (package
       (name "emacs-ddskk")
-      (version version)
+      (version (git-version "17.1" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/skk-dev/ddskk")
-               (commit (string-append "ddskk-" version "_" code-name))))
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0xm53rybxki2784gyjkafg6956viyhhcq51kbmnrwc6aw3yzh7aw"))))
+          (base32 "0vfdbab3ncns8wwrna8h6y2w0grkphzr9s65sgxq98lpqmxbbr72"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build gnu-build-system)
@@ -37044,17 +37043,17 @@ a @samp{date} keywords, and optionally, a @samp{filetags} keyword.")
          (modify-phases %standard-phases
            (replace 'configure
              (lambda* (#:key outputs #:allow-other-keys)
-               (make-file-writable "SKK-MK")
                (emacs-substitute-variables "SKK-MK"
                  ("PREFIX" (assoc-ref outputs "out"))
                  ("LISPDIR" '(expand-file-name "/share/emacs/site-lisp" PREFIX))
                  ("SKK_PREFIX" "")
                  ("SKK_INFODIR" '(expand-file-name "info" PREFIX)))
-               (for-each make-file-writable (find-files "./doc"))
                #t))
            (add-after 'unpack 'fix-test
              (lambda _
                (substitute* "Makefile"
+                 (("/bin/rm") (which "rm")))
+               (substitute* "nicola/Makefile"
                  (("/bin/rm") (which "rm"))))))))
       (native-inputs
        (list emacs-minimal ruby))
@@ -37081,13 +37080,12 @@ conversion program}, a Japanese input method on Emacs.")
        ,@(substitute-keyword-arguments (package-arguments emacs-ddskk)
            ((#:phases phases)
             `(modify-phases ,phases
-               (add-after 'unpack 'chdir
+               (add-after 'fix-test 'chdir
                  (lambda _
                    (chdir "nicola")
                    #t))
                (replace 'configure
                  (lambda* (#:key outputs #:allow-other-keys)
-                   (make-file-writable "NICOLA-DDSKK-CFG")
                    (emacs-substitute-sexps "NICOLA-DDSKK-CFG"
                      ("setq NICOLA-DDSKK_PREFIX" ""))
                    #t)))))))
