@@ -647,6 +647,20 @@ portable \"best effort\" constant-time operation and embedded-friendly
 @code{no_std} support.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-base64ct-1.1
+  (package
+    (inherit rust-base64ct-1)
+    (name "rust-base64ct")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "base64ct" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p4was874qc90q2chm2i14m9mn8zmxjis8vaxihd6a2x4aqxkd76"))))
+    (arguments '())))
+
 (define-public rust-blake2-0.10
   (package
     (name "rust-blake2")
