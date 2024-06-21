@@ -3288,16 +3288,17 @@ task}.")
     (name "python-stsci-stimage")
     ;; PyPI version was 0.2.8 but the latest version tag on GiHub was 0.2.7,
     ;; see <https://github.com/spacetelescope/stsci.stimage/issues/38>
-    (version "0.2.8")
+    (version "0.2.9")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stsci_stimage" version))
               (sha256
                (base32
-                "0p188my6djy65a8j6qsc3v0dpr2svqqv90n0pxxzy52vdjiz3w0w"))))
+                "18sqmjiyn76hzkmv3g8549vfygi136gnar6pb0s7wb44j7cvc0in"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:build-backend "setuptools.build_meta"
       #:test-flags #~(list "test_c")
       #:phases
       #~(modify-phases %standard-phases
@@ -3312,7 +3313,10 @@ task}.")
     (propagated-inputs
      (list python-numpy))
     (native-inputs
-     (list python-pytest python-setuptools-scm python-waf))
+     (list python-pytest
+           python-wheel
+           python-setuptools-scm
+           python-waf))
     (home-page "https://stscistimage.readthedocs.io/en/latest/")
     (synopsis "STScI image processing")
     (description
