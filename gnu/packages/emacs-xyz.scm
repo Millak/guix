@@ -37033,28 +37033,27 @@ a @samp{date} keywords, and optionally, a @samp{filetags} keyword.")
           (base32 "0vfdbab3ncns8wwrna8h6y2w0grkphzr9s65sgxq98lpqmxbbr72"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:modules ((guix build gnu-build-system)
-                    (guix build utils)
-                    (guix build emacs-utils))
-         #:imported-modules (,@%gnu-build-system-modules
-                             (guix build emacs-utils))
-         #:test-target "test"
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'configure
-             (lambda* (#:key outputs #:allow-other-keys)
-               (emacs-substitute-variables "SKK-MK"
-                 ("PREFIX" (assoc-ref outputs "out"))
-                 ("LISPDIR" '(expand-file-name "/share/emacs/site-lisp" PREFIX))
-                 ("SKK_PREFIX" "")
-                 ("SKK_INFODIR" '(expand-file-name "info" PREFIX)))
-               #t))
-           (add-after 'unpack 'fix-test
-             (lambda _
-               (substitute* "Makefile"
-                 (("/bin/rm") (which "rm")))
-               (substitute* "nicola/Makefile"
-                 (("/bin/rm") (which "rm"))))))))
+       (list #:modules '((guix build gnu-build-system)
+                         (guix build utils)
+                         (guix build emacs-utils))
+             #:imported-modules `(,@%gnu-build-system-modules
+                                  (guix build emacs-utils))
+             #:test-target "test"
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'configure
+                   (lambda _
+                     (emacs-substitute-variables "SKK-MK"
+                       ("PREFIX" #$output)
+                       ("LISPDIR" '(expand-file-name "/share/emacs/site-lisp" PREFIX))
+                       ("SKK_PREFIX" "")
+                       ("SKK_INFODIR" '(expand-file-name "info" PREFIX)))))
+                 (add-after 'unpack 'fix-test
+                   (lambda _
+                     (substitute* "Makefile"
+                       (("/bin/rm") (which "rm")))
+                     (substitute* "nicola/Makefile"
+                       (("/bin/rm") (which "rm"))))))))
       (native-inputs
        (list emacs-minimal ruby))
       (home-page "https://github.com/skk-dev/ddskk")
@@ -37071,24 +37070,23 @@ conversion program}, a Japanese input method on Emacs.")
     (propagated-inputs
      (list emacs-ddskk))
     (arguments
-     `(#:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (append
-          (list (string-append "PREFIX=" out)
-                (string-append "LISPDIR=" out "/share/emacs/site-lisp"))))
-       #:tests? #f                      ; no tests in this subtree
-       ,@(substitute-keyword-arguments (package-arguments emacs-ddskk)
-           ((#:phases phases)
-            `(modify-phases ,phases
-               (add-after 'fix-test 'chdir
-                 (lambda _
-                   (chdir "nicola")
-                   #t))
-               (replace 'configure
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (emacs-substitute-sexps "NICOLA-DDSKK-CFG"
-                     ("setq NICOLA-DDSKK_PREFIX" ""))
-                   #t)))))))
+     (append
+      (list #:make-flags
+            #~(append
+                 (list (string-append "PREFIX=" #$output)
+                       (string-append "LISPDIR=" #$output "/share/emacs/site-lisp")))
+            ;; no tests in this subtree
+            #:tests? #f)
+      (substitute-keyword-arguments (package-arguments emacs-ddskk)
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             (add-after 'fix-test 'chdir
+               (lambda _
+                 (chdir "nicola")))
+             (replace 'configure
+               (lambda _
+                 (emacs-substitute-sexps "NICOLA-DDSKK-CFG"
+                   ("setq NICOLA-DDSKK_PREFIX" "")))))))))
     (synopsis "Nicola layout for Daredevil SKK")
     (description
      "Daredevil SKK is a version of @acronym{SKK, Simple Kana to Kanji
