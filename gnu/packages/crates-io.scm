@@ -69255,7 +69255,8 @@ for later processing.")
                    (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
+     `(#:skip-build? #t     ; Not all dependencies packaged
+       #:cargo-test-flags
        '("--release" "--"
          ;; Test fails in release tarball.
          "--skip=test_serde_with_macros_dependency")
@@ -69278,18 +69279,20 @@ for later processing.")
        (("rust-expect-test" ,rust-expect-test-1)
         ("rust-fnv" ,rust-fnv-1)
         ("rust-glob" ,rust-glob-0.3)
+        ;("rust-jsonschema" ,rust-jsonschema-0.17)
         ("rust-mime" ,rust-mime-0.3)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-regex" ,rust-regex-1)
         ("rust-rmp-serde" ,rust-rmp-serde-1)
         ("rust-ron" ,rust-ron-0.8)
         ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-schemars" ,rust-schemars-0.8)
+        ("rust-serde" ,rust-serde-1)
         ("rust-serde-xml-rs" ,rust-serde-xml-rs-0.6)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-test" ,rust-serde-test-1)
         ("rust-serde-yaml" ,rust-serde-yaml-0.9)
-        ("rust-version-sync" ,rust-version-sync-0.9)
-        ("rust-xml-rs" ,rust-xml-rs-0.8))))
+        ("rust-version-sync" ,rust-version-sync-0.9))))
     (home-page "https://github.com/jonasbb/serde_with/")
     (synopsis "Custom de/serialization functions for Rust's serde")
     (description "This package provides custom de/serialization functions for
