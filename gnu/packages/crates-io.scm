@@ -28032,6 +28032,20 @@ references by lifting access permissions into the trait system.")
      `(#:cargo-development-inputs
        (("rust-static-assertions" ,rust-static-assertions-1))))))
 
+(define-public rust-funty-1.2.0-yanked
+  (package
+    (inherit rust-funty-1)
+    (name "rust-funty")
+    (version "1.2.0") ; This version was yanked!
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "funty" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07lb1f8yih3g694id3n90anlgxf8m6p98bllsnn6dmb5rfwsniqq"))))
+    (properties '((crate-version-yanked? . #t)))))
+
 (define-public rust-futf-0.1
   (package
     (name "rust-futf")
