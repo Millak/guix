@@ -137,7 +137,65 @@ older systems.
 This Guix-specific package provides hyphenation patterns for all languages
 supported in TeX Live.  It is a strict super-set of code{hyphen-base} package
 and should be preferred to it whenever a package would otherwise depend on
-@code{hyph-utf8}."))))
+@code{hyph-utf8}."))
+    ("scripts"
+     (shortdesc . "TeX Live infrastructure programs")
+     (longdesc . "This package provides core TeX Live scripts such as updmap,
+fmtutil, and tlmgr.  It is automatically installed alongside texlive-bin.")
+     (docfiles "texmf-dist/doc/man/man1/fmtutil-sys.1"
+               "texmf-dist/doc/man/man1/fmtutil-sys.man1.pdf"
+               "texmf-dist/doc/man/man1/fmtutil-user.1"
+               "texmf-dist/doc/man/man1/fmtutil-user.man1.pdf"
+               "texmf-dist/doc/man/man1/fmtutil.1"
+               "texmf-dist/doc/man/man1/fmtutil.man1.pdf"
+               "texmf-dist/doc/man/man1/install-tl.1"
+               "texmf-dist/doc/man/man1/install-tl.man1.pdf"
+               "texmf-dist/doc/man/man1/mktexfmt.1"
+               "texmf-dist/doc/man/man1/mktexfmt.man1.pdf"
+               "texmf-dist/doc/man/man1/mktexlsr.1"
+               "texmf-dist/doc/man/man1/mktexlsr.man1.pdf"
+               "texmf-dist/doc/man/man1/mktexmf.1"
+               "texmf-dist/doc/man/man1/mktexmf.man1.pdf"
+               "texmf-dist/doc/man/man1/mktexpk.1"
+               "texmf-dist/doc/man/man1/mktexpk.man1.pdf"
+               "texmf-dist/doc/man/man1/mktextfm.1"
+               "texmf-dist/doc/man/man1/mktextfm.man1.pdf"
+               "texmf-dist/doc/man/man1/texhash.1"
+               "texmf-dist/doc/man/man1/texhash.man1.pdf"
+               "texmf-dist/doc/man/man1/tlmgr.1"
+               "texmf-dist/doc/man/man1/tlmgr.man1.pdf"
+               "texmf-dist/doc/man/man1/updmap-sys.1"
+               "texmf-dist/doc/man/man1/updmap-sys.man1.pdf"
+               "texmf-dist/doc/man/man1/updmap-user.1"
+               "texmf-dist/doc/man/man1/updmap-user.man1.pdf"
+               "texmf-dist/doc/man/man1/updmap.1"
+               "texmf-dist/doc/man/man1/updmap.man1.pdf"
+               "texmf-dist/doc/man/man5/fmtutil.cnf.5"
+               "texmf-dist/doc/man/man5/fmtutil.cnf.man5.pdf"
+               "texmf-dist/doc/man/man5/updmap.cfg.5"
+               "texmf-dist/doc/man/man5/updmap.cfg.man5.pdf")
+     (runfiles "texmf-dist/dvips/tetex/"
+               "texmf-dist/fonts/enc/dvips/tetex/"
+               "texmf-dist/fonts/map/dvips/tetex/"
+               "texmf-dist/scripts/texlive/fmtutil-sys.sh"
+               "texmf-dist/scripts/texlive/fmtutil-user.sh"
+               "texmf-dist/scripts/texlive/fmtutil.pl"
+               "texmf-dist/scripts/texlive/mktexlsr.pl"
+               "texmf-dist/scripts/texlive/mktexmf"
+               "texmf-dist/scripts/texlive/mktexpk"
+               "texmf-dist/scripts/texlive/mktextfm"
+               "texmf-dist/scripts/texlive/tlmgr.pl"
+               "texmf-dist/scripts/texlive/updmap-sys.sh"
+               "texmf-dist/scripts/texlive/updmap-user.sh"
+               "texmf-dist/scripts/texlive/updmap.pl"
+               "texmf-dist/web2c/fmtutil-hdr.cnf"
+               "texmf-dist/web2c/updmap-hdr.cfg"
+               "texmf-dist/web2c/updmap.cfg"
+               "tlpkg/gpg/"
+               "tlpkg/installer/config.guess"
+               "tlpkg/installer/curl/curl-ca-bundle.crt"
+               "tlpkg/TeXLive/"
+               "tlpkg/texlive.tlpdb"))))
 
 (define (svn-command . args)
   "Execute \"svn\" command with arguments ARGS, provided as strings, and
@@ -537,16 +595,23 @@ of package with UPSTREAM-NAME in VERSION."
   "Return <svn-multi-reference> object for TeX Live package with UPSTREAM-NAME
 at VERSION."
   (let* ((data (assoc-ref database upstream-name))
+         (files (append (or (assoc-ref data 'docfiles) (list))
+                        (or (assoc-ref data 'runfiles) (list))
+                        (or (assoc-ref data 'srcfiles) (list))))
          (locations
-          (files->locations
-           (filter-map (lambda (file)
-                         ;; Ignore any file not starting with the expected
-                         ;; prefix.  Nothing good can come from this.
-                         (and (string-prefix? "texmf-dist/" file)
-                              (string-drop file (string-length "texmf-dist/"))))
-                       (append (or (assoc-ref data 'docfiles) (list))
-                               (or (assoc-ref data 'runfiles) (list))
-                               (or (assoc-ref data 'srcfiles) (list)))))))
+          ;; Drop "texmf-dist/" prefix from files.  Special case
+          ;; TEXLIVE-SCRIPTS, where files are split across "tlpkg/" and
+          ;; "texmf-dist/".
+          (if (equal? upstream-name "scripts")
+              files
+              (files->locations
+               ;; Ignore any file not starting with the expected prefix, such
+               ;; as tlpkg/tlpostcode/...  Nothing good can come from this.
+               (filter-map
+                (lambda (file)
+                  (and (string-prefix? "texmf-dist/" file)
+                       (string-drop file (string-length "texmf-dist/"))))
+                files)))))
     (svn-multi-reference
      (url (texlive-repository-location version "Master/texmf-dist"))
      (locations (sort locations string<))
@@ -660,8 +725,13 @@ VERSION."
 ;;;
 
 (define (package-from-texlive-repository? package)
-  (and (string-prefix? "texlive-" (package-name package))
-       (eq? 'texlive (build-system-name (package-build-system package)))))
+  (let ((name (package-name package)))
+    ;; TEXLIVE-SCRIPTS does use TEXLIVE-BUILD-SYSTEM, but package's structure
+    ;; is sufficiently regular to permit auto-updates.
+    (or (equal? name "texlive-scripts")
+        (and (string-prefix? "texlive-" (package-name package))
+             (eq? 'texlive
+                  (build-system-name (package-build-system package)))))))
 
 (define* (latest-release package #:key version)
   "Return an <upstream-source> for the latest release of PACKAGE.  Optionally
