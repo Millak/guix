@@ -63807,26 +63807,30 @@ backwards compatibility guarantees.")
 (define-public rust-rug-1
   (package
     (name "rust-rug")
-    (version "1.14.0")
+    (version "1.18.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "rug" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "1iw52gyw0hshymqa04g76m7qnrds5vkgc5s8svqx5nv1jz1wrdgm"))))
+         (base32 "1f81id6y3vljys0nvl9mimhm0kh8z0vxnrh2ki1x2838mddklcam"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:cargo-inputs
-        (("rust-az" ,rust-az-1)
-         ("rust-gmp-mpfr-sys" ,rust-gmp-mpfr-sys-1)
-         ("rust-libc" ,rust-libc-0.2)
-         ("rust-serde" ,rust-serde-1))
-        #:cargo-development-inputs
-        (("rust-bincode" ,rust-bincode-1)
-         ("rust-byteorder" ,rust-byteorder-1)
-         ("rust-serde-json" ,rust-serde-json-1)
-         ("rust-serde-test" ,rust-serde-test-1))))
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
+       (("rust-az" ,rust-az-1)
+        ("rust-gmp-mpfr-sys" ,rust-gmp-mpfr-sys-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-test" ,rust-serde-test-1))))
     (inputs
      (list gmp mpc mpfr))
     (home-page "https://gitlab.com/tspiteri/rug")
