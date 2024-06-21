@@ -39968,18 +39968,17 @@ explosion.")
 (define-public rust-loop9-0.1
   (package
     (name "rust-loop9")
-    (version "0.1.3")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "loop9" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0h4rys8001cdq4l2f30k66wmvscm4lb2laxgpia794p5652800x7"))))
+        (base32 "0qphc1c0cbbx43pwm6isnwzwbg6nsxjh7jah04n1sg5h4p0qgbhg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-imgref" ,rust-imgref-1))))
     (home-page "https://lib.rs/loop9")
     (synopsis "Helper function to visit every pixel and its neighbors")
