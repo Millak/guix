@@ -22,6 +22,7 @@
   #:use-module (gcrypt hash)
   #:use-module (guix base32)
   #:use-module (guix build-system)
+  #:use-module (guix build-system texlive)
   #:use-module (guix derivations)
   #:use-module (guix diagnostics)
   #:use-module (guix gexp)
@@ -55,20 +56,6 @@
 ;;; locations in the SVN repository of the Texlive project.
 ;;;
 ;;; Code:
-
-(define texlive-repository "svn://www.tug.org/texlive")
-
-(define* (texlive-repository-location version #:optional location)
-  (format #f
-          "~a/tags/texlive-~a/~a"
-          texlive-repository
-          version
-          (cond
-           ((not location) "")
-           ((string-prefix? "/" location)
-            (string-drop location 1))
-           (else
-            location))))
 
 ;; Generic locations are parts of the tree shared by multiple packages.
 ;; Package definitions should single out files stored there, or all files in
@@ -227,11 +214,10 @@ not succeed."
 (define version->revision
   ;; Return revision, as a number, associated to string VERSION.
   (lambda (version)
-    (let ((output (svn-command "info"
-                               (texlive-repository-location version)
-                               "--show-item 'last-changed-revision'"
-                               "--no-newline")))
-      (string->number output))))
+    (let ((url (string-append %texlive-repository "tags/texlive-" version)))
+      (string->number
+       (svn-command
+        "info" url "--show-item 'last-changed-revision'" "--no-newline")))))
 
 (define (current-day)
   "Return number of days since Epoch."
@@ -244,7 +230,7 @@ not succeed."
   (memoize
    (lambda* (#:key (day (current-day)))
      (let ((output
-            (svn-command "ls" (string-append texlive-repository "/tags") "-v")))
+            (svn-command "ls" (string-append %texlive-repository "tags") "-v")))
        ;; E.g. "70951 karl april 15 18:11 texlive-2024.2/\n\n"
        (and=> (string-match "texlive-([^/]+)/\n*$" output)
               (cut match:substring <> 1))))))
@@ -386,7 +372,8 @@ association list."
                          (list value))))))
               (acons key new (alist-delete key alist)))))
          (database-url
-          (texlive-repository-location version "Master/tlpkg/texlive.tlpdb")))
+          (string-append %texlive-repository "tags/texlive-" version
+                         "/Master/tlpkg/texlive.tlpdb")))
     (call-with-input-string (svn-command "cat" database-url)
       (lambda (port)
         (let loop
@@ -613,7 +600,7 @@ at VERSION."
                        (string-drop file (string-length "texmf-dist/"))))
                 files)))))
     (svn-multi-reference
-     (url (texlive-repository-location version "Master/texmf-dist"))
+     (url (texlive-packages-repository version))
      (locations (sort locations string<))
      (revision (assoc-ref database 'database-revision)))))
 

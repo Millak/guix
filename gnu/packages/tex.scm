@@ -200,7 +200,8 @@
   (origin
     (method svn-fetch)
     (uri (svn-reference
-          (url "svn://www.tug.org/texlive/trunk/Build/source/")
+          (url (string-append %texlive-repository
+                              "tags/texlive-" %texlive-version "/Build/source/"))
           (revision %texlive-revision)))
     (file-name (git-file-name "texlive-source" %texlive-version))
     (sha256
@@ -378,8 +379,8 @@ of user-specified directories similar to how shells look up executables.")
     (source (origin
               (method svn-multi-fetch)
               (uri (svn-multi-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        "texlive-" version "/Master/"))
+                    (url (string-append %texlive-repository
+                                        "tags/texlive-" version "/Master/"))
                     (locations
                      (list "texmf-dist/doc/man/man1/fmtutil-sys.1"
                            "texmf-dist/doc/man/man1/fmtutil-sys.man1.pdf"
