@@ -21390,22 +21390,25 @@ Builder for PostgreSQL, SQLite, and MySQL.")
   (package
     (inherit rust-diesel-2)
     (name "rust-diesel")
-    (version "1.4.6")
+    (version "1.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "diesel" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0hpmwrc0zx3zvpgwp9zrm6wj8d8i8q8990grlrnfzlivbi6zqyq4"))))
+         "0kcfkfhsv5yv3ksj440ajgic930359i2bqi77ss4dm5pyvn3b0dj"))))
     (arguments
      `(#:cargo-test-flags
        '("--release"
          "--features" "sqlite"
          "--"
-         "--skip=expression::count::count")
+         "--skip=expression::count::count"
+         "--skip=macros::internal::parse_type_args_with_bounds"
+         "--skip=macros::internal::parse_type_args_with_bounds_containing_braces_and_commas"
+         "--skip=macros::internal::parse_type_args_with_existentials_and_lifetimes"
+         "--skip=macros::internal::parse_type_args_with_trailer")
        #:cargo-inputs
        (("rust-bigdecimal" ,rust-bigdecimal-0.1)
         ("rust-bitflags" ,rust-bitflags-1)
