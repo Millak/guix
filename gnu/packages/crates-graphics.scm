@@ -2339,7 +2339,7 @@ pixel buffers with width, height and stride.")
         ("rust-rayon" ,rust-rayon-1))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-png" ,rust-png-0.14)
+        ("rust-png" ,rust-png-0.16)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-keyframe-1
