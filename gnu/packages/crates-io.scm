@@ -8290,7 +8290,7 @@ streams in big-endian and little-endian formats.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-funty" ,rust-funty-1)
+       (("rust-funty" ,rust-funty-1.2.0-yanked) ; Specifically ~1.2
         ("rust-radium" ,rust-radium-0.6)
         ("rust-serde" ,rust-serde-1)
         ("rust-tap" ,rust-tap-1)
