@@ -1918,7 +1918,7 @@ realms/domains like Active Directory or IPA.")
 (define-public rename
   (package
     (name "rename")
-    (version "1.10")
+    (version "2.02")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1926,7 +1926,7 @@ realms/domains like Active Directory or IPA.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "137m8s06r4n038ivlr5r1d9a7q9l7shmwpvnyx053r9ndhvbnkh5"))))
+                "1pr0qmsb9gb5xqwpicabnr5jcxdbbvz1mgdqw3d3d0dn12060ysk"))))
     (build-system perl-build-system)
     (arguments
      `(#:phases
