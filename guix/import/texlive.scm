@@ -623,16 +623,23 @@ at VERSION."
        `(package
           (name ,name)
           (version ,(if empty-package? '%texlive-version version))
-          (source ,(and (not meta-package?)
-                        `(texlive-origin
-                          name version
-                          (list ,@(svn-multi-reference-locations reference))
-                          (base32
-                           ,(bytevector->nix-base32-string
-                             (let-values (((port get-hash) (open-sha256-port)))
-                               (write-file source port)
-                               (force-output port)
-                               (get-hash)))))))
+          (source
+           ,(and (not meta-package?)
+                 `(origin
+                    (method svn-multi-fetch)
+                    (uri (svn-multi-reference
+                          (url (texlive-packages-repository version))
+                          (revision ,(svn-multi-reference-revision reference))
+                          (locations
+                           (list ,@(svn-multi-reference-locations reference)))))
+                    (file-name (git-file-name name version))
+                    (sha256
+                     (base32
+                      ,(bytevector->nix-base32-string
+                        (let-values (((port get-hash) (open-sha256-port)))
+                          (write-file source port)
+                          (force-output port)
+                          (get-hash))))))))
           ,@(if (assoc-ref data 'docfiles)
                 '((outputs '("out" "doc")))
                 '())

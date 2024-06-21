@@ -32,7 +32,8 @@
 (test-begin "texlive")
 
 (define %fake-tlpdb
-  '(("12many"
+  '((database-revision . 12345)
+    ("12many"
      . ((name
          . "12many")
         (catalogue
@@ -375,10 +376,15 @@ completely compatible with Plain TeX.")
             (('package
                ('name "texlive-example")
                ('version _)
-               ('source ('texlive-origin
-                         'name 'version
-                         ('list "tex/latex/example/")
-                         ('base32 (? string? hash))))
+               ('source ('origin
+                          ('method 'svn-multi-fetch)
+                          ('uri ('svn-multi-reference
+                                 ('url ('texlive-packages-repository 'version))
+                                 ('revision 12345)
+                                 ('locations ('list "tex/latex/example/"))))
+                          ('file-name ('git-file-name 'name 'version))
+                          ('sha256
+                           ('base32 (? string? hash)))))
                ('build-system 'texlive-build-system)
                ('home-page (? string?))
                ('synopsis (? string?))
@@ -409,15 +415,21 @@ completely compatible with Plain TeX.")
             (('package
                ('name "texlive-texsis")
                ('version _)
-               ('source ('texlive-origin
-                         'name 'version
-                         ('list "bibtex/bst/texsis/"
-                                "doc/man/man1/texsis.1"
-                                "doc/man/man1/texsis.man1.pdf"
-                                "doc/otherformats/texsis/base/"
-                                "tex/texsis/base/"
-                                "tex/texsis/config/")
-                         ('base32 (? string? hash))))
+               ('source ('origin
+                          ('method 'svn-multi-fetch)
+                          ('uri ('svn-multi-reference
+                                 ('url ('texlive-packages-repository 'version))
+                                 ('revision 12345)
+                                 ('locations
+                                  ('list "bibtex/bst/texsis/"
+                                         "doc/man/man1/texsis.1"
+                                         "doc/man/man1/texsis.man1.pdf"
+                                         "doc/otherformats/texsis/base/"
+                                         "tex/texsis/base/"
+                                         "tex/texsis/config/"))))
+                          ('file-name ('git-file-name 'name 'version))
+                          ('sha256
+                           ('base32 (? string? hash)))))
                ('outputs ''("out" "doc"))
                ('build-system 'texlive-build-system)
                ('propagated-inputs
@@ -489,12 +501,17 @@ completely compatible with Plain TeX.")
             (('package
                ('name "texlive-12many")
                ('version _)
-               ('source ('texlive-origin
-                         'name 'version
-                         ('list "doc/latex/12many/"
-                                "source/latex/12many/"
-                                "tex/latex/12many/")
-                         ('base32 (? string? hash))))
+               ('source ('origin
+                          ('method 'svn-multi-fetch)
+                          ('uri ('svn-multi-reference
+                                 ('url ('texlive-packages-repository 'version))
+                                 ('revision 12345)
+                                 ('locations ('list "doc/latex/12many/"
+                                                    "source/latex/12many/"
+                                                    "tex/latex/12many/"))))
+                          ('file-name ('git-file-name 'name 'version))
+                          ('sha256
+                           ('base32 (? string? hash)))))
                ('outputs ''("out" "doc"))
                ('build-system 'texlive-build-system)
                ('home-page "https://ctan.org/pkg/one2many")
@@ -526,11 +543,17 @@ completely compatible with Plain TeX.")
             (('package
                ('name "texlive-chs-physics-report")
                ('version _)
-               ('source ('texlive-origin
-                         'name 'version
-                         ('list "doc/latex/chs-physics-report/"
-                                "tex/latex/chs-physics-report/")
-                         ('base32 (? string? hash))))
+               ('source ('origin
+                          ('method 'svn-multi-fetch)
+                          ('uri ('svn-multi-reference
+                                 ('url ('texlive-packages-repository 'version))
+                                 ('revision 12345)
+                                 ('locations
+                                  ('list "doc/latex/chs-physics-report/"
+                                         "tex/latex/chs-physics-report/"))))
+                          ('file-name ('git-file-name 'name 'version))
+                          ('sha256
+                           ('base32 (? string? hash)))))
                ('outputs ''("out" "doc"))
                ('build-system 'texlive-build-system)
                ('home-page (? string?))
@@ -598,11 +621,16 @@ completely compatible with Plain TeX.")
             (('package
                ('name "texlive-lollipop")
                ('version _)
-               ('source ('texlive-origin
-                         'name 'version
-                         ('list "doc/otherformats/lollipop/"
-                                "tex/lollipop/")
-                         ('base32 (? string? hash))))
+               ('source ('origin
+                          ('method 'svn-multi-fetch)
+                          ('uri ('svn-multi-reference
+                                 ('url ('texlive-packages-repository 'version))
+                                 ('revision 12345)
+                                 ('locations ('list "doc/otherformats/lollipop/"
+                                                    "tex/lollipop/"))))
+                          ('file-name ('git-file-name 'name 'version))
+                          ('sha256
+                           ('base32 (? string? hash)))))
                ('outputs ''("out" "doc"))
                ('build-system 'texlive-build-system)
                ('arguments ('list '#:create-formats ('gexp ('list "lollipop"))))
