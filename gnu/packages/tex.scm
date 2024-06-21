@@ -508,7 +508,7 @@ of user-specified directories similar to how shells look up executables.")
     (synopsis "TeX Live infrastructure programs")
     (description
      "This package provides core TeX Live scripts such as @code{updmap},
-@code{fmtutil}, and @code{tlmgr}.  It is is automatically installed alongside
+@code{fmtutil}, and @code{tlmgr}.  It is automatically installed alongside
 @code{texlive-bin}.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
