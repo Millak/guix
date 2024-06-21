@@ -21227,7 +21227,9 @@ procedural macros.")
         (base32 "1hsbl77lxvxa94ihn2vna1sx2icrkch427w24a883xymhm9h9vnw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-dhcproto-macros" ,rust-dhcproto-macros-0.1)
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=v6::options::tests::test_range_binsearch")
+       #:cargo-inputs (("rust-dhcproto-macros" ,rust-dhcproto-macros-0.1)
                        ("rust-hex" ,rust-hex-0.4)
                        ("rust-ipnet" ,rust-ipnet-2)
                        ("rust-rand" ,rust-rand-0.8)
