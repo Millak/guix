@@ -41881,7 +41881,12 @@ for Rust structs.")
        (uri (crate-uri "memsec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13ir50j549gdz94pds1i7ljnk14d66q5x91s11hncm1pih7jif8c"))))))
+        (base32 "13ir50j549gdz94pds1i7ljnk14d66q5x91s11hncm1pih7jif8c"))))
+    (arguments
+     `(#:cargo-inputs (("rust-getrandom" ,rust-getrandom-0.1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-mach-o-sys" ,rust-mach-o-sys-0.1)
+                       ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-memuse-0.2
   (package
