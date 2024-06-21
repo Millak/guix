@@ -2272,14 +2272,14 @@ filters and decoders for the most common image formats.")
 (define-public rust-imgref-1
   (package
     (name "rust-imgref")
-    (version "1.9.4")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "imgref" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0b3czpz206z4nvpq7yq0v58bwjmqjwjmkr302hbzpp4523glkkxj"))))
+        (base32 "09l18s80crfn7g8ank3v44g43xns4pg7f6hpaz3sfna1bwsxmzj4"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/kornelski/imgref")
     (synopsis "2D slice of a @code{Vec}")
