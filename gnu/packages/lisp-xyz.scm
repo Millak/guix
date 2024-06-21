@@ -15654,44 +15654,30 @@ of the files and the line numbers where they were found.")
   (sbcl-package->ecl-package sbcl-formgrep))
 
 (define-public sbcl-fset
-  (let ((commit "a75a4ec713277780d9e15bfaa486b56949142d35")
-        (revision "1"))
-    (package
-      (name "sbcl-fset")
-      (version (git-version "1.3.3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/slburson/fset")
-               (commit commit)))
-         (file-name (git-file-name "cl-fset" version))
-         (sha256
-          (base32 "0bah0z8zrcykvnbi2wcdlbx902r818xg5dvd3384wf75kr2ccxvv"))
-         (snippet '(begin
-                     ;; Remove obsolete copy of system definition.
-                     (delete-file "Code/fset.asd")))))
-      (build-system asdf-build-system/sbcl)
-      (inputs
-       (list sbcl-misc-extensions sbcl-mt19937 sbcl-named-readtables))
-      (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'fix-build
-                   (lambda _
-                     ;; Fix for SBCL > 2.4.4
-                     (substitute* "Code/port.lisp"
-                       (("sb-ext::once-only")
-                        "sb-int:once-only")))))))
-      (synopsis "Functional set-theoretic collections library")
-      (description
-       "FSet is a functional set-theoretic collections library for Common Lisp.
+  (package
+    (name "sbcl-fset")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/slburson/fset")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-fset" version))
+       (sha256
+        (base32 "16a3g9av8rvhvnhv5vfq2shim7b7i062wzyz6xwjk9sp9q9bqlva"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-misc-extensions sbcl-mt19937 sbcl-named-readtables))
+    (synopsis "Functional set-theoretic collections library")
+    (description
+     "FSet is a functional set-theoretic collections library for Common Lisp.
 Functional means that all update operations return a new collection rather than
 modifying an existing one in place.  Set-theoretic means that collections may
 be nested arbitrarily with no additional programmer effort; for instance, sets
 may contain sets, maps may be keyed by sets, etc.")
-      (home-page "https://common-lisp.net/project/fset/Site/index.html")
-      (license license:llgpl))))
+    (home-page "https://common-lisp.net/project/fset/Site/index.html")
+    (license license:llgpl)))
 
 (define-public cl-fset
   (sbcl-package->cl-source-package sbcl-fset))
