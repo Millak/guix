@@ -29,18 +29,27 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix svn-download)
   #:export (%texlive-build-system-modules
+            %texlive-repository
+            %texlive-revision
+            %texlive-tag
             texlive-build
             texlive-build-system
-            texlive-ref
             texlive-origin
-            %texlive-tag
-            %texlive-revision))
+            texlive-packages-repository
+            texlive-ref))
 
 ;; Commentary:
 ;;
 ;; Standard build procedure for Texlive packages.
 ;;
 ;; Code:
+
+(define %texlive-repository "svn://www.tug.org/texlive/")
+
+(define (texlive-packages-repository version)
+  "Return URL for packages location in TeX Live repository, at VERSION."
+  (string-append
+   %texlive-repository "tags/texlive-" version "/Master/texmf-dist"))
 
 ;; These variables specify the SVN tag and the matching SVN revision.  They
 ;; are taken from https://www.tug.org/svn/texlive/tags/
