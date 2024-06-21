@@ -73,22 +73,53 @@
         "tex/generic/hyphen/"
         "web2c/"))
 
-;; The following packages should propagate their binaries according to the TeX
-;; Live database, but won't because said binaries are already provided by
-;; "texlive-bin".  As a consequence, the importer does not make them propagate
-;; their "-bin" counterpart.
+;; The following packages do not have any auxiliary "-bin" package to
+;; propagate, even if they do have a corresponding ".ARCH" entry in the TeX
+;; Live package database.  They fall into 3 categories:
+;;
+;; 1. Associated entries in NAME.ARCH are already provided by TEXLIVE-BIN.
+;;
+;; 2. Associated entries in NAME.ARCH are symlinks to binaries provided by
+;; TEXLIVE-BIN.
+;;
+;; 3. They fool the (naive) algorithm for "-bin" propagation and generate
+;; false positives.  This generally happens when the package creates multiple
+;; symlinks to a script it bundles.
 (define no-bin-propagation-packages
-  (list "cweb"
-        "latex-bin"
-        "luahbtex"
-        "luatex"
-        "metafont"
-        "pdftex"
-        "pdftosrc"
-        "synctex"
-        "tex"
-        "tie"
-        "web"))
+  (list
+   ;; Category 1.
+   "ctie"
+   "cweb"
+   "luahbtex"
+   "luatex"
+   "metafont"
+   "pdftex"
+   "pdftosrc"
+   "synctex"
+   "tex"
+   "tie"
+   "web"
+   ;; Category 2.
+   "amstex"
+   "csplain"
+   "eplain"
+   "jadetex"
+   "latex-bin"
+   "lollipop"
+   "mex"
+   "mltex"
+   "optex"
+   "platex"
+   "uplatex"
+   "texsis"
+   "xmltex"
+   ;; Category 3.
+   "biber"
+   "context"
+   "cluttex"
+   "esptopdf"
+   "pdfcrop"
+   "texdef"))
 
 ;; Guix introduces two specific packages based on TEXLIVE-BUILD-SYSTEM.  Add
 ;; an entry for them in the package database, so they can be imported, and
@@ -468,8 +499,8 @@ association list."
 (define (list-linked-scripts name package-database)
   "Return a list of script names to symlink from \"bin/\" directory for
 package NAME according to PACKAGE-DATABASE.  Consider as scripts files with
-\".lua\", \".pl\", \".py\", \".rb\", \".sh\", \".tcl\", \".texlua\", \".tlu\"
-extensions, and files without extension."
+\".lua\", \".pl\", \".py\", \".rb\", \".sh\", \".sno\", \".tcl\", \".texlua\",
+\".tlu\" extensions, and files without extension."
   (or (and-let* ((data (assoc-ref package-database name))
                  ;; List scripts candidates.  Bail out if there are none.
                  (runfiles (assoc-ref data 'runfiles))
@@ -480,8 +511,8 @@ extensions, and files without extension."
         (filter-map (lambda (script)
                       (and (any (lambda (ext)
                                   (member (basename script ext) binfiles))
-                                '(".lua" ".pl" ".py" ".rb" ".sh" ".tcl" ".texlua"
-                                  ".tlu"))
+                                '(".lua" ".pl" ".py" ".rb" ".sh" ".sno" ".tcl"
+                                  ".texlua" ".tlu"))
                            (basename script)))
                     ;; Get the right (alphabetic) order.
                     (reverse scripts)))
@@ -550,7 +581,11 @@ of package with UPSTREAM-NAME in VERSION."
                    (if (and (> (length binfiles) (length scripts))
                             (not (member upstream-name
                                          no-bin-propagation-packages)))
-                       (list (string-append upstream-name "-bin"))
+                       ;; LIBKPATHSEA contains the executables for KPATHSEA.
+                       ;; There is no KPATHSEA-BIN.
+                       (list (if (equal? upstream-name "kpathsea")
+                                 "libkpathsea"
+                                 (string-append upstream-name "-bin")))
                        '()))
                   string<?))))))
 
@@ -585,11 +620,12 @@ at VERSION."
          (files (append (or (assoc-ref data 'docfiles) (list))
                         (or (assoc-ref data 'runfiles) (list))
                         (or (assoc-ref data 'srcfiles) (list))))
+         (texlive-scripts? (equal? upstream-name "scripts"))
          (locations
           ;; Drop "texmf-dist/" prefix from files.  Special case
           ;; TEXLIVE-SCRIPTS, where files are split across "tlpkg/" and
           ;; "texmf-dist/".
-          (if (equal? upstream-name "scripts")
+          (if texlive-scripts?
               files
               (files->locations
                ;; Ignore any file not starting with the expected prefix, such
@@ -600,7 +636,10 @@ at VERSION."
                        (string-drop file (string-length "texmf-dist/"))))
                 files)))))
     (svn-multi-reference
-     (url (texlive-packages-repository version))
+     (url (if texlive-scripts?
+              (string-append
+               %texlive-repository "tags/texlive-" version "/Master")
+              (texlive-packages-repository version)))
      (locations (sort locations string<))
      (revision (assoc-ref database 'database-revision)))))
 
@@ -628,7 +667,11 @@ at VERSION."
                  `(origin
                     (method svn-multi-fetch)
                     (uri (svn-multi-reference
-                          (url (texlive-packages-repository version))
+                          (url
+                           ,(if (equal? upstream-name "scripts")
+                                '(string-append %texlive-repository
+                                                "tags/texlive-" version "/Master/")
+                                '(texlive-packages-repository version)))
                           (revision ,(svn-multi-reference-revision reference))
                           (locations
                            (list ,@(svn-multi-reference-locations reference)))))
