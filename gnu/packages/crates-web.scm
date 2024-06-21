@@ -2339,17 +2339,18 @@ transfer coding.")
 (define-public rust-h2-0.4
   (package
     (name "rust-h2")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "h2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1m4rj76zl77jany6p10k4mm1cqwsrlc1dmgmxwp3jy7kwk92vvji"))))
+        (base32 "0sc0ymhiqp4hbz39d405cjbga77wnz2pprbgyc498xs58hlwfvl1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+     `(#:tests? #f      ; Not all files included
+       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
                        ("rust-fnv" ,rust-fnv-1)
                        ("rust-futures-core" ,rust-futures-core-0.3)
                        ("rust-futures-sink" ,rust-futures-sink-0.3)
