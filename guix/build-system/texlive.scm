@@ -30,13 +30,9 @@
   #:use-module (guix svn-download)
   #:export (%texlive-build-system-modules
             %texlive-repository
-            %texlive-revision
-            %texlive-tag
             texlive-build
             texlive-build-system
-            texlive-origin
-            texlive-packages-repository
-            texlive-ref))
+            texlive-packages-repository))
 
 ;; Commentary:
 ;;
@@ -50,38 +46,6 @@
   "Return URL for packages location in TeX Live repository, at VERSION."
   (string-append
    %texlive-repository "tags/texlive-" version "/Master/texmf-dist"))
-
-;; These variables specify the SVN tag and the matching SVN revision.  They
-;; are taken from https://www.tug.org/svn/texlive/tags/
-(define %texlive-tag "texlive-2023.0")
-(define %texlive-revision 66594)
-
-(define (texlive-origin name version locations hash)
-  "Return an <origin> object for a TeX Live package consisting of multiple
-LOCATIONS with a provided HASH.  Use NAME and VERSION to compute a prettier
-name for the checkout directory."
-  (origin
-    (method svn-multi-fetch)
-    (uri (svn-multi-reference
-          (url (string-append "svn://www.tug.org/texlive/tags/"
-                              %texlive-tag "/Master/texmf-dist/"))
-          (locations locations)
-          (revision %texlive-revision)))
-    (file-name (string-append name "-" version "-checkout"))
-    (sha256 hash)))
-
-(define* (texlive-ref component #:optional id)
-  "Return a <svn-reference> object for the package ID, which is part of the
-given Texlive COMPONENT.  If ID is not provided, COMPONENT is used as the top
-level package ID."
-  (svn-reference
-   (url (string-append "svn://www.tug.org/texlive/tags/"
-                       %texlive-tag "/Master/texmf-dist/"
-                       "source/" component
-                       (if id
-                           (string-append "/" id)
-                           "")))
-   (revision %texlive-revision)))
 
 (define %texlive-build-system-modules
   ;; Build-side modules imported by default.
