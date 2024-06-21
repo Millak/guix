@@ -715,7 +715,7 @@ baking tools to produce normal maps.")
 (define-public openshadinglanguage
   (package
     (name "openshadinglanguage")
-    (version "1.13.8.0")
+    (version "1.13.10.0")
     (source
      (origin
        (method git-fetch)
@@ -724,7 +724,7 @@ baking tools to produce normal maps.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ji4bw8z4ylsh0jvir3d40p6xyhr63g588gh3bag7bzsr3flsb02"))))
+        (base32 "1x97w4infifw33r4ii53q3v1ia0p21lbacd7z01vsz4vq7sy0dxn"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
