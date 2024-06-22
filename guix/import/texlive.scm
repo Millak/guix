@@ -213,7 +213,13 @@ fmtutil, and tlmgr.  It is automatically installed alongside texlive-bin.")
                "tlpkg/installer/config.guess"
                "tlpkg/installer/curl/curl-ca-bundle.crt"
                "tlpkg/TeXLive/"
-               "tlpkg/texlive.tlpdb"))))
+               "tlpkg/texlive.tlpdb"))
+    ("source"
+     (shortdesc . "Source code for all TeX Live programs")
+     (longdesc . "This package fetches the source for all TeX Live programs
+provided by the TeX Live repository.  It is meant to be used as a source-only
+package; it should not be installed in a profile.")
+     (runfiles "./"))))
 
 (define (svn-command . args)
   "Execute \"svn\" command with arguments ARGS, provided as strings, and
@@ -620,12 +626,11 @@ at VERSION."
          (files (append (or (assoc-ref data 'docfiles) (list))
                         (or (assoc-ref data 'runfiles) (list))
                         (or (assoc-ref data 'srcfiles) (list))))
-         (texlive-scripts? (equal? upstream-name "scripts"))
          (locations
           ;; Drop "texmf-dist/" prefix from files.  Special case
-          ;; TEXLIVE-SCRIPTS, where files are split across "tlpkg/" and
-          ;; "texmf-dist/".
-          (if texlive-scripts?
+          ;; TEXLIVE-SCRIPTS and TEXLIVE-SOURCE, where files are not always
+          ;; exported from "texmf-dist/".
+          (if (member upstream-name '("scripts" "source"))
               files
               (files->locations
                ;; Ignore any file not starting with the expected prefix, such
@@ -636,10 +641,15 @@ at VERSION."
                        (string-drop file (string-length "texmf-dist/"))))
                 files)))))
     (svn-multi-reference
-     (url (if texlive-scripts?
-              (string-append
-               %texlive-repository "tags/texlive-" version "/Master")
-              (texlive-packages-repository version)))
+     (url (match upstream-name
+            ("scripts"
+             (string-append
+              %texlive-repository "tags/texlive-" version "/Master"))
+            ("source"
+             (string-append %texlive-repository
+                            "tags/texlive-" version "/Build/source"))
+            (_
+             (texlive-packages-repository version))))
      (locations (sort locations string<))
      (revision (assoc-ref database 'database-revision)))))
 
@@ -668,10 +678,17 @@ at VERSION."
                     (method svn-multi-fetch)
                     (uri (svn-multi-reference
                           (url
-                           ,(if (equal? upstream-name "scripts")
-                                '(string-append %texlive-repository
-                                                "tags/texlive-" version "/Master/")
-                                '(texlive-packages-repository version)))
+                           ,(match upstream-name
+                              ("scripts"
+                               '(string-append
+                                 %texlive-repository "tags/texlive-" version
+                                 "/Master"))
+                              ("source"
+                               '(string-append
+                                 %texlive-repository "tags/texlive-" version
+                                 "/Build/source"))
+                              (_
+                               '(texlive-packages-repository version))))
                           (revision ,(svn-multi-reference-revision reference))
                           (locations
                            (list ,@(svn-multi-reference-locations reference)))))
@@ -763,9 +780,10 @@ VERSION."
 
 (define (package-from-texlive-repository? package)
   (let ((name (package-name package)))
-    ;; TEXLIVE-SCRIPTS does use TEXLIVE-BUILD-SYSTEM, but package's structure
-    ;; is sufficiently regular to permit auto-updates.
-    (or (equal? name "texlive-scripts")
+    ;; TEXLIVE-SCRIPTS and TEXLIVE-SOURCE do not use TEXLIVE-BUILD-SYSTEM, but
+    ;; package's structure is sufficiently regular to benefit from
+    ;; auto-updates.
+    (or (member name '("texlive-scripts" "texlive-source"))
         (and (string-prefix? "texlive-" (package-name package))
              (eq? 'texlive
                   (build-system-name (package-build-system package)))))))
