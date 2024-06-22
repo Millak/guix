@@ -44088,7 +44088,7 @@ Services,,, shepherd, The GNU Shepherd Manual}, for details.
 When true, this is the delay in seconds before restarting a failed
 service.
 
-@item @code{start}
+@item @code{start} (default: @code{#~(const #t)})
 @itemx @code{stop} (default: @code{#~(const #f)})
 The @code{start} and @code{stop} fields refer to the Shepherd's
 facilities to start and stop processes (@pxref{Service De- and
@@ -44106,6 +44106,30 @@ This is a list of @code{shepherd-action} objects (see below) defining
 @example
 herd @var{action} @var{service} [@var{arguments}@dots{}]
 @end example
+
+@item @code{free-form} (default: @code{#f})
+When set, this field replaces the @code{start}, @code{stop}, and
+@code{actions} fields.  It is meant to be used when the service
+definition comes from some other source, typically the service
+collection provided by the Shepherd proper (@pxref{Service Collection,,,
+shepherd, The GNU Shepherd Manual}).
+
+@cindex REPL service, for shepherd
+For example, the snippet below defines a service for the Shepherd's
+built-in @acronym{REPL, read-eval-print loop} service (@pxref{REPL
+Service,,, shepherd, The GNU Shepherd Manual}):
+
+@lisp
+(shepherd-service
+  (provision '(repl))
+  (modules '((shepherd service repl)))
+  (free-form #~(repl-service)))
+@end lisp
+
+In this case, the service object is returned by the @code{repl-service}
+procedure of the Shepherd, so all the @code{free-form} G-expression does
+is call that procedure.  Note that the @code{provision} field must be
+consistent with the actual service provision.
 
 @item @code{auto-start?} (default: @code{#t})
 Whether this service should be started automatically by the Shepherd.  If it

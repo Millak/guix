@@ -60,6 +60,7 @@
             shepherd-service-respawn?
             shepherd-service-start
             shepherd-service-stop
+            shepherd-service-free-form
             shepherd-service-auto-start?
             shepherd-service-modules
 
@@ -217,7 +218,10 @@ DEFAULT is given, use it as the service's default value."
                  (default #f))
   (respawn-delay shepherd-service-respawn-delay
                  (default #f))
-  (start         shepherd-service-start)               ;g-expression (procedure)
+  (free-form     shepherd-service-free-form            ;#f | g-expression (service)
+                 (default #f))
+  (start         shepherd-service-start                ;g-expression (procedure)
+                 (default #~(const #t)))
   (stop          shepherd-service-stop                 ;g-expression (procedure)
                  (default #~(const #f)))
   (actions       shepherd-service-actions              ;list of <shepherd-action>
@@ -298,8 +302,8 @@ stored."
                                provisions)
                    ".scm")))
 
-(define (shepherd-service-file service)
-  "Return a file defining SERVICE."
+(define (shepherd-service-file/regular service)
+  "Return a file defining SERVICE, a service whose 'free-form' field is #f."
   (scheme-file (shepherd-service-file-name service)
                (with-imported-modules %default-imported-modules
                  #~(begin
@@ -331,6 +335,21 @@ stored."
                                   (($ <shepherd-action> name proc doc)
                                    #~(#$name #$doc #$proc)))
                                 (shepherd-service-actions service))))))))
+
+(define (shepherd-service-file/free-form service)
+  "Return a file defining SERVICE, a service whose 'free-form' field is set."
+  (scheme-file (shepherd-service-file-name service)
+               (with-imported-modules %default-imported-modules
+                 #~(begin
+                     (use-modules #$@(shepherd-service-modules service))
+
+                     #$(shepherd-service-free-form service)))))
+
+(define (shepherd-service-file service)
+  "Return a file defining SERVICE."
+  (if (shepherd-service-free-form service)
+      (shepherd-service-file/free-form service)
+      (shepherd-service-file/regular service)))
 
 (define (scm->go file shepherd)
   "Compile FILE, which contains code to be loaded by shepherd's config file,
