@@ -1489,13 +1489,13 @@ surface (i.e., gridding) with a hint of machine learning.")
 (define-public python-cartopy
   (package
     (name "python-cartopy")
-    (version "0.22.0")
+    (version "0.23.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cartopy" version))
        (sha256
-        (base32 "0jdv92az0b7qxdvalh29kasw3knsl570cz7q3vql67ck400zj05k"))))
+        (base32 "0xknmq73pvkm3k718zrsx8p4r83dbskwqna9v4qvmwh1ayrkf7r3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1506,8 +1506,16 @@ surface (i.e., gridding) with a hint of machine learning.")
         "-m" "not natural_earth and not network"
         "-k"
         (string-append
-         ;; This one too but it's not marked as such.
-         "not test_gridliner_labels_bbox_style"
+         ;; These ones too but are not marked as such.
+         "not test_feature_artist_draw"
+         " and not test_feature_artist_draw_facecolor_list"
+         " and not test_feature_artist_draw_cmap"
+         " and not test_feature_artist_draw_styled_feature"
+         " and not test_feature_artist_draw_styler"
+         " and not test_gridliner_constrained_adjust_datalim"
+         " and not test_gridliner_remove"
+         " and not test_gridliner_title_adjust"
+         " and not test_gridliner_labels_bbox_style"
          ;; Accuracy problems
          " and not test_single_spole"
          " and not test_single_npole"
