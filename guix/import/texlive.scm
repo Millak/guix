@@ -794,11 +794,12 @@ include a VERSION string to fetch a specific version."
   (let* ((version (or version (latest-texlive-tag)))
          (database (tlpdb/cached version))
          (upstream-name (package-upstream-name* package)))
-    (upstream-source
-     (package upstream-name)
-     (version version)
-     (urls (texlive->svn-multi-reference upstream-name version database))
-     (inputs (list-upstream-inputs upstream-name version database)))))
+    (and (assoc-ref database upstream-name)
+         (upstream-source
+          (package upstream-name)
+          (version version)
+          (urls (texlive->svn-multi-reference upstream-name version database))
+          (inputs (list-upstream-inputs upstream-name version database))))))
 
 (define %texlive-updater
   ;; The TeX Live updater.  It is restricted to TeX Live releases (2023.0,
