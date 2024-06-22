@@ -191,6 +191,9 @@
      (shortdesc . "x86_64-linux files of pax")
      (binfiles
       "bin/x86_64-linux/pdfannotextractor"))
+    ("r_und_s"
+     (name . "r_und_s")
+     (runfiles "texmf-dist/tex/latex/r_und_s/r_und_s.sty"))
     ("stricttex"
      . ((name
          . "stricttex")
@@ -941,6 +944,38 @@ completely compatible with Plain TeX.")
                ('version _)
                ('source _)
                ('outputs _)
+               ('build-system 'texlive-build-system)
+               ('home-page _)
+               ('synopsis _)
+               ('description _)
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, with upstream-name property"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "r_und_s"
+                                             #:version "0"
+                                             #:database %fake-tlpdb)))
+          (match result
+            (('package
+               ('name "texlive-r-und-s")
+               ('version _)
+               ('source _)
+               ('properties _)
                ('build-system 'texlive-build-system)
                ('home-page _)
                ('synopsis _)
