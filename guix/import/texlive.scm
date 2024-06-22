@@ -703,6 +703,10 @@ at VERSION."
           ,@(if (assoc-ref data 'docfiles)
                 '((outputs '("out" "doc")))
                 '())
+          ,@(if (string= upstream-name
+                         (string-drop name (string-length "texlive-")))
+                '()
+                `((properties '((upstream-name . ,upstream-name)))))
           ;; Build system.
           ;;
           ;; Use trivial build system only when the package contains no files,
