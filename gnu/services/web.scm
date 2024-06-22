@@ -302,13 +302,15 @@
             agate-configuration?
             agate-configuration-package
             agate-configuration-content
-            agate-configuration-cert
-            agate-configuration-key
+            agate-configuration-certs
             agate-configuration-addr
             agate-configuration-hostname
             agate-configuration-lang
-            agate-configuration-silent
+            agate-configuration-only-tls13
             agate-configuration-serve-secret
+            agate-configuration-central-conf
+            agate-configuration-ed25519
+            agate-configuration-skip-port-check
             agate-configuration-log-ip
             agate-configuration-user
             agate-configuration-group
@@ -2184,20 +2186,24 @@ root=/srv/gemini
             (default agate))
   (content  agate-configuration-content
             (default "/srv/gemini"))
-  (cert     agate-configuration-cert
-            (default #f))
-  (key      agate-configuration-key
-            (default #f))
+  (certs     agate-configuration-certs
+             (default "/srv/gemini-certs"))
   (addr     agate-configuration-addr
             (default '("0.0.0.0:1965" "[::]:1965")))
   (hostname agate-configuration-hostname
-            (default #f))
+            (default '()))
   (lang     agate-configuration-lang
             (default #f))
-  (silent?  agate-configuration-silent
-            (default #f))
+  (only-tls13? agate-configuration-only-tls13
+               (default #f))
   (serve-secret? agate-configuration-serve-secret
                  (default #f))
+  (central-conf? agate-configuration-central-conf
+                 (default #f))
+  (ed25519? agate-configuration-ed25519
+            (default #f))
+  (skip-port-check? agate-configuration-skip-port-check
+                    (default #f))
   (log-ip?  agate-configuration-log-ip
             (default #t))
   (user     agate-configuration-user
@@ -2209,8 +2215,10 @@ root=/srv/gemini
 
 (define agate-shepherd-service
   (match-lambda
-    (($ <agate-configuration> package content cert key addr
-                              hostname lang silent? serve-secret?
+    (($ <agate-configuration> package content certs addr
+                              hostname lang only-tls13?
+                              serve-secret? central-conf?
+                              ed25519? skip-port-check?
                               log-ip? user group log-file)
      (list (shepherd-service
             (provision '(agate))
@@ -2220,17 +2228,21 @@ root=/srv/gemini
                      #~(make-forkexec-constructor
                         (list #$agate
                               "--content" #$content
-                              "--cert" #$cert
-                              "--key" #$key
-                              "--addr" #$@addr
+                              "--certs" #$certs
+                              #$@(append-map
+                                  (lambda x (append '("--addr") x))
+                                  addr)
+                              #$@(append-map
+                                  (lambda x (append '("--hostname") x))
+                                  hostname)
                               #$@(if lang
                                      (list "--lang" lang)
                                      '())
-                              #$@(if hostname
-                                     (list "--hostname" hostname)
-                                     '())
-                              #$@(if silent? '("--silent") '())
                               #$@(if serve-secret? '("--serve-secret") '())
+                              #$@(if only-tls13? '("--only-tls13") '())
+                              #$@(if central-conf? '("--central-conf") '())
+                              #$@(if ed25519? '("--ed25519") '())
+                              #$@(if skip-port-check? '("--skip-port-check") '())
                               #$@(if log-ip? '("--log-ip") '()))
                         #:user #$user #:group #$group
                         #:log-file #$log-file)))
