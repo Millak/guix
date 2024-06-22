@@ -1503,7 +1503,7 @@ software engineering.")
 (define-public unison
   (package
     (name "unison")
-    (version "2.53.3")
+    (version "2.53.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1512,7 +1512,7 @@ software engineering.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05ihxk1yynw08586i06w19xab9r24h9hr6v9bknqm98qrlshm92w"))))
+                "1fy4c1wb6xn9gxdabs25yajbzik3amifyr7nzd4d9vn6r3gll9sw"))))
     (build-system dune-build-system)
     (propagated-inputs (list lablgtk3 zlib))
     (native-inputs (list ghostscript (texlive-updmap.cfg '()) hevea lynx which))
