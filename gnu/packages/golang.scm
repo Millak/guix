@@ -9122,28 +9122,6 @@ kubernetes-sigs/yaml is a permanent fork of
 @url{https://github.com/ghodss/yaml,ghodss/yaml}.")
     (license (list license:expat license:bsd-3))))
 
-(define-public go-github-com-mitchellh-colorstring
-  (package
-    (name "go-github-com-mitchellh-colorstring")
-    (version "0.0.0-20190213212951-d06e56a500db")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/mitchellh/colorstring")
-                    (commit (go-version->git-ref version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1d2mi5ziszfzdgaz8dg4b6sxa63nw1jnsvffacqxky6yz9m623kn"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/mitchellh/colorstring"))
-    (home-page "https://github.com/mitchellh/colorstring")
-    (synopsis "Functions to colorize strings for terminal output")
-    (description
-     "Colorstring provides functions for colorizing strings for terminal output.")
-    (license license:expat)))
-
 (define-public go-github-com-google-go-jsonnet
   (package
     (name "go-github-com-google-go-jsonnet")
