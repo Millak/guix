@@ -1878,15 +1878,28 @@ running Emacs with the @option{--no-site-file} option (@pxref{Init
 File,,, emacs, The GNU Emacs Manual}).
 
 @quotation Note
-Emacs can now compile packages natively.  Under the default
-configuration, this means that Emacs packages will now be
-just-in-time (JIT) compiled as you use them, and the results
-stored in a subdirectory of your @code{user-emacs-directory}.
+Most Emacs variants are now capable of doing native compilation.
+The approach taken by Guix Emacs however differs greatly
+from the approach taken upstream.
 
-Furthermore, the build system for Emacs packages transparently
-supports native compilation, but note, that
-@code{emacs-minimal}---the default Emacs for building
-packages---has been configured without native compilation.
+Upstream Emacs compiles packages just-in-time and typically places
+shared object files  in a special folder within your
+@code{user-emacs-directory}.
+These shared objects within said folder are organized in a
+flat hierarchy, and their file names contain two hashes to
+verify the original file name and contents of the source code.
+
+Guix Emacs on the other hand prefers to compile packages ahead-of-time.
+Shared objects retain much of the original file name and no hashes
+are added to verify the original file name or the contents of the file.
+Crucially, this allows Guix Emacs and packages built against it
+to be grafted (@pxref{Security Updates, grafts}), but at the same time,
+Guix Emacs lacks the hash-based verification of source code baked
+into upstream Emacs.  As this naming schema is trivial to exploit,
+we disable just-in-time compilation.
+
+Further note, that @code{emacs-minimal}---the default Emacs
+for building packages---has been configured without native compilation.
 To natively compile your emacs packages ahead of time, use a
 transformation like @option{--with-input=emacs-minimal=emacs}.
 @end quotation
