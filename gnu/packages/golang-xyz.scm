@@ -2605,6 +2605,60 @@ command line flags, config files, and default struct values.")
 @url{https://github.com/judwhite/go-svc/raw/master/svc/svc_windows_test.go,here}.")
       (license license:expat))))
 
+(define-public go-github-com-msteinert-pam
+  (package
+    (name "go-github-com-msteinert-pam")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/msteinert/pam")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qnr0zxyxny85andq3cbj90clmz2609j8z9mp0zvdyxiwryfhyhj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; To run the full suite, the tests must be run as the root user.
+      #:tests? #f
+      #:go go-1.20
+      #:import-path "github.com/msteinert/pam"))
+    (propagated-inputs
+     (list go-golang-org-x-term
+           ;; For header files, otherwise it needs to be added as an input in
+           ;; final package to prevent build failure:
+           ;; ../../../github.com/msteinert/pam/transaction.go:7:10: fatal
+           ;; error: security/pam_appl.h: No such file or directory
+           linux-pam))
+    (home-page "https://github.com/msteinert/pam")
+    (synopsis "Golang wrapper module for the PAM API")
+    (description
+     "This package provides a wrapper for the @acronym{Pluggable
+Authentication Modules, PAM} application API.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-msteinert-pam-v2
+  (package
+    (inherit go-github-com-msteinert-pam)
+    (name "go-github-com-msteinert-pam-v2")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/msteinert/pam")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h02dcx00vgcsxgl5sly82dbixk8cimjb10q5p405bf4fz8z7q6k"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-msteinert-pam)
+       ((#:import-path _ "github.com/msteinert/pam")
+        "github.com/msteinert/pam/v2")))))
+
 (define-public go-github-com-multiformats-go-base32
   (package
     (name "go-github-com-multiformats-go-base32")
@@ -2690,60 +2744,6 @@ command line flags, config files, and default struct values.")
      "Implementation of @url{https://github.com/multiformats/multibase,
 multibase} (self identifying base encodings) in Go.")
     (license license:expat)))
-
-(define-public go-github-com-msteinert-pam
-  (package
-    (name "go-github-com-msteinert-pam")
-    (version "1.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/msteinert/pam")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1qnr0zxyxny85andq3cbj90clmz2609j8z9mp0zvdyxiwryfhyhj"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      ;; To run the full suite, the tests must be run as the root user.
-      #:tests? #f
-      #:go go-1.20
-      #:import-path "github.com/msteinert/pam"))
-    (propagated-inputs
-     (list go-golang-org-x-term
-           ;; For header files, otherwise it needs to be added as an input in
-           ;; final package to prevent build failure:
-           ;; ../../../github.com/msteinert/pam/transaction.go:7:10: fatal
-           ;; error: security/pam_appl.h: No such file or directory
-           linux-pam))
-    (home-page "https://github.com/msteinert/pam")
-    (synopsis "Golang wrapper module for the PAM API")
-    (description
-     "This package provides a wrapper for the @acronym{Pluggable
-Authentication Modules, PAM} application API.")
-    (license license:bsd-2)))
-
-(define-public go-github-com-msteinert-pam-v2
-  (package
-    (inherit go-github-com-msteinert-pam)
-    (name "go-github-com-msteinert-pam-v2")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/msteinert/pam")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1h02dcx00vgcsxgl5sly82dbixk8cimjb10q5p405bf4fz8z7q6k"))))
-    (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-msteinert-pam)
-       ((#:import-path _ "github.com/msteinert/pam")
-        "github.com/msteinert/pam/v2")))))
 
 (define-public go-github-com-multiformats-go-multicodec
   (package
