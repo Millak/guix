@@ -2375,15 +2375,15 @@ associated with an address.")
 (define-public python-maxminddb
   (package
     (name "python-maxminddb")
-    (version "2.2.0")
+    (version "2.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "maxminddb" version))
        (sha256
         (base32
-         "1rc4a403r3b4vhmhb03gidd0fmsbvfpbf3qfcw25h4db9zn0fxz3"))))
-    (build-system python-build-system)
+         "0r7jcqzr3hy9jims0ygjdhndysbs02hsaybx9f4vq2k2w8r2v13x"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f)) ;; Tests require a copy of the maxmind database
     (inputs
