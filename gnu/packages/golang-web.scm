@@ -1391,6 +1391,32 @@ router.")
 clients that speak the Gemini protocol.")
     (license license:isc)))
 
+(define-public go-github-com-makeworld-the-better-one-go-gemini-socks5
+  (package
+    (name "go-github-com-makeworld-the-better-one-go-gemini-socks5")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/makew0rld/go-gemini-socks5")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r8iljs12nhyn3nk5dzsji9hi88fivashbrcb5d42x5rvzry15px"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/makeworld-the-better-one/go-gemini-socks5"))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/makeworld-the-better-one/go-gemini-socks5")
+    (synopsis "SOCKS5 proxy for go-gemini")
+    (description
+     "This package provides SOCKS5 proxy for
+@@url{https://github.com/makeworld-the-better-one/go-gemini,go-gemini}.")
+    (license license:expat)))
+
 (define-public go-github-com-microcosm-cc-bluemonday
   (package
     (name "go-github-com-microcosm-cc-bluemonday")
