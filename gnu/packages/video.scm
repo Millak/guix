@@ -2332,13 +2332,13 @@ It is usually a complement to @code{ffmpeg-normalize}.")
 (define-public ffmpeg-normalize
   (package
     (name "ffmpeg-normalize")
-    (version "1.27.7")
+    (version "1.28.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "ffmpeg-normalize" version))
               (sha256
                (base32
-                "0idqqgsr3p840vx2x3idn851qwghjdbm6v4yrq2kprppyfvglni7"))))
+                "129jicvifh5bpxrn62mpfanv5z2266bryxd6cd5xhhi4vfwcinx5"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
