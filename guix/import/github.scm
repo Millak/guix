@@ -327,7 +327,7 @@ Optionally include a VERSION string to fetch a specific version."
 
   (let* ((original-uri (origin-uri (package-source pkg)))
          (source-uri (github-uri original-uri))
-         (name (package-name pkg))
+         (name (package-upstream-name pkg))
          (newest-version version-tag
                          (latest-released-version source-uri name
                                                   #:version version)))
