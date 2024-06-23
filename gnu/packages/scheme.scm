@@ -1085,7 +1085,7 @@ The core is 12 builtin special forms and 33 builtin functions.")
 (define-public gauche
   (package
     (name "gauche")
-    (version "0.9.12")
+    (version "0.9.15")
     (home-page "https://practical-scheme.net/gauche/index.html")
     (source
      (origin
@@ -1095,7 +1095,7 @@ The core is 12 builtin special forms and 33 builtin functions.")
              (string-replace-substring version "." "_")
              "/Gauche-" version ".tgz"))
        (sha256
-        (base32 "05xnym1phg8i14bacip5d0d3v0gc1nn5mgayd5hnda873f969bml"))))
+        (base32 "10zpbbikkcpdzk6c52wkckiyhn7nhnqjv2djdzyjr0n8qxxy4hrn"))))
     (build-system gnu-build-system)
     (inputs
      (list libatomic-ops slib zlib))
