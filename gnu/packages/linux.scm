@@ -190,6 +190,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vim)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xiph)
@@ -10129,30 +10130,37 @@ modification of BPF objects on the system.")
 (define-public bpftrace
   (package
     (name "bpftrace")
-    (version "0.18.1")
+    (version "0.21.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/iovisor/bpftrace")
+             (url "https://github.com/bpftrace/bpftrace")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j8ba2j98d3j8lilgx3z2n162r26ryg7zw5ldwd9m36xnjp40347"))
-       (patches (search-patches "bpftrace-disable-bfd-disasm.patch"))))
+        (base32 "06yg3w80kdq0i003w2gvn0czbh8z9d3rfgmglp37dkir7g3dc6iz"))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list bison flex))
-    (inputs
-     (list bcc clang-toolchain-9 elfutils libbpf cereal))
-    (arguments
-     `(#:tests? #f ;Tests require googletest sources.
-       #:configure-flags
-       '("-DBUILD_TESTING=OFF"
-         ;; FIXME: libbfd misses some link dependencies, when fixed, remove
-         ;; the associated patch.
-         "-DHAVE_BFD_DISASM=OFF")))
-    (home-page "https://github.com/iovisor/bpftrace")
+    (arguments (list #:configure-flags #~(list "-DBUILD_TESTING=ON")
+                     ;; Only run the unit tests suite, as the other ones
+                     ;; (runtime_tests, tools-parsing-test) require to run as
+                     ;; 'root'.
+                     #:test-target "bpftrace_test"
+                     #:phases #~(modify-phases %standard-phases
+                                  (add-after 'unpack 'patch-paths
+                                    (lambda _
+                                      (with-directory-excursion "tests"
+                                        (substitute* (find-files ".")
+                                          (("/bin/sh")
+                                           (which "sh")))
+                                        (substitute* '("child.cpp"
+                                                       "runtime/call"
+                                                       "procmon.cpp")
+                                          (("/bin/ls")
+                                           (which "ls")))))))))
+    (native-inputs (list bison dwarves flex googletest xxd))
+    (inputs (list bcc clang-15 elfutils libbpf libiberty cereal))
+    (home-page "https://github.com/bpftrace/bpftrace")
     (synopsis "High-level tracing language for Linux eBPF")
     (description
      "bpftrace is a high-level tracing language for Linux enhanced Berkeley
