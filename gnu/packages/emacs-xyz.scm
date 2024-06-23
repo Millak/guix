@@ -97,7 +97,7 @@
 ;;; Copyright © 2021, 2022 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Eugene Klimov <lipklim@mailbox.org>
-;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
@@ -17139,7 +17139,7 @@ passive voice.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.7.4")
+    (version "9.7.5")
     (source
      (origin
        (method git-fetch)
@@ -17148,7 +17148,7 @@ passive voice.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00crs2q4yvmv2jgzmcfyl2g6m7g42zpggyssmcj8anwrsp748z9b"))))
+        (base32 "1a2l5y2f5jciv90nfa9rybfw37zqibwl3jaxcd0z15h3alfiyb2d"))))
     (build-system emacs-build-system)
     (arguments
      (list
