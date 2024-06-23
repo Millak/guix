@@ -251,16 +251,14 @@ user-group instead~%"))
          (configuration-field-error #f 'group value))))
 
 (define (mpd-log-file-sanitizer value)
-  (match value
-    (%unset-value
-     ;; XXX: While leaving the 'sys_log' option out of the mpd.conf file is
-     ;; supposed to cause logging to happen via systemd (elogind provides a
-     ;; compatible interface), this doesn't work (nothing gets logged); use
-     ;; syslog instead.
-     "syslog")
-    ((? string?)
-     value)
-    (_ (configuration-field-error #f 'log-file value))))
+  ;; XXX: While leaving the 'sys_log' option out of the mpd.conf file is
+  ;; supposed to cause logging to happen via systemd (elogind provides a
+  ;; compatible interface), this doesn't work (nothing gets logged); use
+  ;; syslog instead.
+  (let ((value (maybe-value value "syslog")))
+    (if (string? value)
+        value
+        (configuration-field-error #f 'log-file value))))
 
 ;;;
 
