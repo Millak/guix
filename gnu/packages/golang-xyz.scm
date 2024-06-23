@@ -1300,31 +1300,6 @@ Alphanum Algorithm} developed by Dave Koelle in Go.")
 defined output to the standard output.")
     (license license:expat)))
 
-(define-public go-github-com-k0kubun-go-ansi
-  (package
-    (name "go-github-com-k0kubun-go-ansi")
-    (version "0.0.0-20180517002512-3bf9e2903213")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/k0kubun/go-ansi")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "117afax4l268rbswf02icbgxncmd1pk2abkz7cv26iyszi8l26dq"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/k0kubun/go-ansi"))
-    (home-page "https://github.com/k0kubun/go-ansi")
-    (synopsis "Windows-portable ANSI escape sequence utility for Golang")
-    (description
-     "This library converts ANSI escape sequences to Windows API calls on
-Windows environment.  You can easily use this feature by replacing fmt with
-ansi.")
-    (license license:expat)))
-
 (define-public go-github-com-gabriel-vasile-mimetype
   (package
     (name "go-github-com-gabriel-vasile-mimetype")
@@ -1966,6 +1941,31 @@ the C++ ABI defined at https://codesourcery.com/cxx-abi/ and the
 @url{https://rust-lang.github.io/rfcs/2603-rust-symbol-name-mangling-v0.html,Rust
 ABI}.")
     (license license:bsd-3)))
+
+(define-public go-github-com-k0kubun-go-ansi
+  (package
+    (name "go-github-com-k0kubun-go-ansi")
+    (version "0.0.0-20180517002512-3bf9e2903213")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/k0kubun/go-ansi")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "117afax4l268rbswf02icbgxncmd1pk2abkz7cv26iyszi8l26dq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/k0kubun/go-ansi"))
+    (home-page "https://github.com/k0kubun/go-ansi")
+    (synopsis "Windows-portable ANSI escape sequence utility for Golang")
+    (description
+     "This library converts ANSI escape sequences to Windows API calls on
+Windows environment.  You can easily use this feature by replacing fmt with
+ansi.")
+    (license license:expat)))
 
 (define-public go-github-com-k0kubun-pp
   (package
