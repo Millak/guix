@@ -351,21 +351,29 @@ reports to LOG."
 reports to LOG."
   (call-with-temporary-directory
    (lambda (temp)
-     (and (every (lambda (location)
-                   (let ((dir (string-append temp "/" (dirname location))))
-                     (mkdir-p dir))
-                   (parameterize ((current-output-port log))
-                     (build:svn-fetch (string-append (svn-multi-reference-url ref)
-                                                     "/" location)
-                                      (svn-multi-reference-revision ref)
-                                      (if (string-suffix? "/" location)
-                                          (string-append temp "/" location)
-                                          (string-append temp "/" (dirname location)))
-                                      #:recursive?
-                                      (svn-multi-reference-recursive? ref)
-                                      #:user-name (svn-multi-reference-user-name ref)
-                                      #:password (svn-multi-reference-password ref))))
-                 (svn-multi-reference-locations ref))
-          (add-to-store store name #t "sha256" temp)))))
+     ;; When "svn" is called, TEMP already exists.  As a consequence, "svn"
+     ;; refuses to export files there, assuming it would overwrite a previous
+     ;; export.  It can be an issue if locations includes files at SVN URL.
+     ;; To circumvent this, export in a fresh sub-directory.
+     (let ((output (string-append temp "/svn")))
+       (mkdir-p output)
+       (and (every (lambda (location)
+                     (unless (string-suffix? "/" location)
+                       (mkdir-p (string-append output "/" (dirname location))))
+                     (parameterize ((current-output-port log))
+                       (build:svn-fetch
+                        (string-append (svn-multi-reference-url ref)
+                                       "/"
+                                       location)
+                        (svn-multi-reference-revision ref)
+                        (if (string-suffix? "/" location)
+                            (string-append output "/" location)
+                            (string-append output "/" (dirname location)))
+                        #:recursive?
+                        (svn-multi-reference-recursive? ref)
+                        #:user-name (svn-multi-reference-user-name ref)
+                        #:password (svn-multi-reference-password ref))))
+                   (svn-multi-reference-locations ref))
+            (add-to-store store name #t "sha256" output))))))
 
 ;;; svn-download.scm ends here
