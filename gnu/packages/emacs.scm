@@ -24,7 +24,7 @@
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Declan Tsien <declantsien@riseup.net>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -101,6 +101,7 @@
   (package
     (name "emacs-minimal")
     (version "29.3")
+    (replacement emacs-minimal/fixed)
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/emacs/emacs-"
@@ -333,6 +334,18 @@ languages.")
             (variable "TREE_SITTER_GRAMMAR_PATH")
             (files '("lib/tree-sitter")))))
     (properties `((upstream-name . "emacs")))))
+
+(define emacs-minimal/fixed
+  (package
+    (inherit emacs-minimal)
+    (version "29.4")
+    (source
+     (origin (inherit (package-source emacs-minimal))
+             (uri (string-append "mirror://gnu/emacs/emacs-"
+                                 version ".tar.xz"))
+             (sha256
+              (base32
+               "0dd2mh6maa7dc5f49qdzj7bi4hda4wfm1cvvgq560djcz537k2ds"))))))
 
 (define-public emacs-no-x
   (package/inherit emacs-minimal
