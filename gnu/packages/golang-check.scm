@@ -604,6 +604,51 @@ Many times certain facilities are not available, or tests must run
 differently.")
     (license license:expat)))
 
+(define-public go-github-com-marvinjwendt-testza
+  (package
+    (name "go-github-com-marvinjwendt-testza")
+    (version "0.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MarvinJWendt/testza")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mqvs9142wx3a352yj0zxcm8f3mclyqzzxjlpn1rsb3vrskgs8v9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/MarvinJWendt/testza"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; An error that should be nil is not nil.  Error message: "creating
+          ;; snapshot failed: <...> permission denied
+          (add-before 'check 'writable-test-file
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/"
+                                                       import-path
+                                                       "/testdata/snapshots")
+                (for-each make-file-writable
+                          (list "TestSnapshotCreate_file_content.testza"
+                                "TestSnapshotCreate_file_content_string.testza"))))))))
+    (propagated-inputs
+     (list go-atomicgo-dev-assert
+           go-github-com-sergi-go-diff
+           go-github-com-davecgh-go-spew
+           go-github-com-klauspost-cpuid-v2
+           go-github-com-pterm-pterm))
+    (home-page "https://github.com/MarvinJWendt/testza")
+    (synopsis "Full-featured test framework for Golang")
+    (description
+     "Package testza is a full-featured testing framework for Go.  It
+integrates with the default test runner, so you can use it with the standard
+@code{go test} tool.  Testza contains easy to use methods, like assertions,
+output capturing, mocking, and much more.")
+    (license license:expat)))
+
 (define-public go-github-com-onsi-ginkgo
   (package
     (name "go-github-com-onsi-ginkgo")
