@@ -111,6 +111,37 @@ and games, live charts, algorithm visualizations and other updatable output of
 any kind.")
     (license license:expat)))
 
+(define-public go-atomicgo-dev-keyboard
+  (package
+    (name "go-atomicgo-dev-keyboard")
+    (version "0.2.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atomicgo/keyboard")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0axhs1ji87szirv91vvwy0l0h5f468pllp8zap2dpcy05krmi9jf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Cycle: go-github-com-pterm-pterm -> go-github-com-marvinjwendt-testza
+      ;; -> go-atomicgo-dev-keyboard -> go-github-com-pterm-pterm
+      #:tests? #f
+      #:import-path "atomicgo.dev/keyboard"))
+    (propagated-inputs
+     (list go-github-com-containerd-console))
+    (home-page "https://atomicgo.dev/keyboard")
+    (synopsis "Read keyboard events in CLI applications")
+    (description
+     "This package provides a functionality to read key presses from the keyboard,
+while in a terminal application, which may be combined to check for ctrl+c,
+alt+4, ctrl-shift, alt+ctrl+right, etc.  It can also be used to
+simulate (mock) keypresses for CI testing.")
+    (license license:expat)))
+
 (define-public go-atomicgo-dev-schedule
   (package
     (name "go-atomicgo-dev-schedule")
