@@ -818,14 +818,14 @@ a complete panorama and stitch any series of overlapping pictures.")
 (define-public rawtherapee
   (package
     (name "rawtherapee")
-    (version "5.9")
+    (version "5.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://rawtherapee.com/shared/source/"
                                   "rawtherapee-" version ".tar.xz"))
               (sha256
                (base32
-                "08s81mxnrj183bss2rb0hac1qyn7bmcnk3x2ymg1cp0q5322ibwf"))))
+                "1nnjxc6xyfn1biys5hynsd21rny5r7zl5qvr2hhlmfjdslybb6d7"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -848,6 +848,7 @@ a complete panorama and stitch any series of overlapping pictures.")
      (list pkg-config))
     (inputs
      (list expat
+           exiv2
            fftwf
            glib
            glibmm
