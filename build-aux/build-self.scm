@@ -241,8 +241,12 @@ interface (FFI) of Guile.")
 
 (define* (build-program source version
                         #:optional (guile-version (effective-version))
-                        #:key (pull-version 0) (channel-metadata #f))
-  "Return a program that computes the derivation to build Guix from SOURCE."
+                        #:key (pull-version 0) (channel-metadata #f)
+                        built-in-builders)
+  "Return a program that computes the derivation to build Guix from SOURCE.
+If BUILT-IN-BUILDERS is provided, it should be a list of
+strings and this will be used instead of the builtin builders provided by the
+build daemon, from within the generated build program."
   (define select?
     ;; Select every module but (guix config) and non-Guix modules.
     ;; Also exclude (guix channels): it is autoloaded by (guix describe), but
@@ -331,11 +335,16 @@ interface (FFI) of Guile.")
                          ;; case, attempt to open a new connection.
                          (let* ((proto (string->number protocol-version))
                                 (store (if (integer? proto)
-                                           (port->connection (duplicate-port
-                                                              (current-input-port)
-                                                              "w+0")
-                                                             #:version proto)
-                                           (open-connection)))
+                                           (port->connection
+                                            (duplicate-port
+                                             (current-input-port)
+                                             "w+0")
+                                            #:version proto
+                                            #:built-in-builders
+                                            '#$built-in-builders)
+                                           (open-connection
+                                            #:built-in-builders
+                                            '#$built-in-builders)))
                                 (sock  (socket AF_UNIX SOCK_STREAM 0)))
                            ;; Connect to BUILD-OUTPUT and send it the raw
                            ;; build output.
@@ -406,7 +415,7 @@ Display a spinner when nothing happens."
                 (guile-version (if (> pull-version 0)
                                    "3.0"
                                    (effective-version)))
-
+                built-in-builders
                 #:allow-other-keys
                 #:rest rest)
   "Return a derivation that unpacks SOURCE into STORE and compiles Scheme
@@ -415,7 +424,9 @@ files."
   ;; SOURCE.
   (mlet %store-monad ((build  (build-program source version guile-version
                                              #:channel-metadata channel-metadata
-                                             #:pull-version pull-version))
+                                             #:pull-version pull-version
+                                             #:built-in-builders
+                                             built-in-builders))
                       (system (if system (return system) (current-system)))
                       (home -> (getenv "HOME"))
 

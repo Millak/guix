@@ -704,11 +704,15 @@ that unconditionally resumes the continuation."
               store))))
 
 (define* (build-from-source instance
-                            #:key core verbose? (dependencies '()) system)
+                            #:key core verbose? (dependencies '()) system
+                            built-in-builders)
   "Return a derivation to build Guix from INSTANCE, using the self-build
 script contained therein.  When CORE is true, build package modules under
 SOURCE using CORE, an instance of Guix.  By default, build for the current
-system, or SYSTEM if specified."
+system, or SYSTEM if specified.  If BUILT-IN-BUILDERS is
+provided, it should be a list of strings and this will be used instead of the
+builtin builders provided by the build daemon for store connections used
+during this process."
   (define name
     (symbol->string
      (channel-name (channel-instance-channel instance))))
@@ -750,20 +754,28 @@ system, or SYSTEM if specified."
                   #:verbose? verbose? #:version commit
                   #:system system
                   #:channel-metadata (channel-instance->sexp instance)
-                  #:pull-version %pull-version))))
+                  #:pull-version %pull-version
+                  #:built-in-builders
+                  built-in-builders))))
 
       ;; Build a set of modules that extend Guix using the standard method.
       (standard-module-derivation name source core dependencies)))
 
 (define* (build-channel-instance instance system
-                                 #:optional core (dependencies '()))
+                                 #:optional core (dependencies '())
+                                 #:key built-in-builders)
   "Return, as a monadic value, the derivation for INSTANCE, a channel
 instance, for SYSTEM.  DEPENDENCIES is a list of extensions providing Guile
-modules that INSTANCE depends on."
+modules that INSTANCE depends on.  If BUILT-IN-BUILDERS is
+provided, it should be a list of strings and this will be used instead of the
+builtin builders provided by the build daemon for store connections used
+during this process."
   (build-from-source instance
                      #:core core
                      #:dependencies dependencies
-                     #:system system))
+                     #:system system
+                     #:built-in-builders
+                     built-in-builders))
 
 (define (resolve-dependencies instances)
   "Return a procedure that, given one of the elements of INSTANCES, returns
@@ -793,9 +805,13 @@ list of instances it depends on."
   (lambda (instance)
     (vhash-foldq* cons '() instance edges)))
 
-(define* (channel-instance-derivations instances #:key system)
+(define* (channel-instance-derivations instances #:key system
+                                       built-in-builders)
   "Return the list of derivations to build INSTANCES, in the same order as
-INSTANCES.  Build for the current system by default, or SYSTEM if specified."
+INSTANCES.  Build for the current system by default, or SYSTEM if specified.
+If BUILT-IN-BUILDERS is provided, it should be a list of
+strings and this will be used instead of the builtin builders provided by the
+build daemon for store connections used during this process."
   (define core-instance
     ;; The 'guix' channel is treated specially: it's an implicit dependency of
     ;; all the other channels.
@@ -809,11 +825,15 @@ INSTANCES.  Build for the current system by default, or SYSTEM if specified."
   (define (instance->derivation instance)
     (mlet %store-monad ((system (if system (return system) (current-system))))
       (mcached (if (eq? instance core-instance)
-                   (build-channel-instance instance system)
+                   (build-channel-instance instance system
+                                           #:built-in-builders
+                                           built-in-builders)
                    (mlet %store-monad ((core (instance->derivation core-instance))
                                        (deps (mapm %store-monad instance->derivation
                                                    (edges instance))))
-                     (build-channel-instance instance system core deps)))
+                     (build-channel-instance instance system core deps
+                                             #:built-in-builders
+                                             built-in-builders)))
                instance
                system)))
 
@@ -915,10 +935,13 @@ derivation."
                     intro))))))
             '()))))
 
-(define* (channel-instances->manifest instances #:key system)
+(define* (channel-instances->manifest instances #:key system
+                                      built-in-builders)
   "Return a profile manifest with entries for all of INSTANCES, a list of
 channel instances.  By default, build for the current system, or SYSTEM if
-specified."
+specified.  If BUILT-IN-BUILDERS is provided, it should be a
+list of strings and this will be used instead of the builtin builders provided
+by the build daemon for store connections used during this process."
   (define (instance->entry instance drv)
     (let ((commit  (channel-instance-commit instance))
           (channel (channel-instance-channel instance)))
@@ -934,8 +957,11 @@ specified."
         (properties
          `((source ,(channel-instance->sexp instance)))))))
 
-  (mlet* %store-monad ((derivations (channel-instance-derivations instances
-                                                                  #:system system))
+  (mlet* %store-monad ((derivations (channel-instance-derivations
+                                     instances
+                                     #:system system
+                                     #:built-in-builders
+                                     built-in-builders))
                        (entries ->  (map instance->entry instances derivations)))
     (return (manifest entries))))
 
@@ -990,10 +1016,17 @@ be used as a profile hook."
   ;; The default channel profile hooks.
   (cons package-cache-file %default-profile-hooks))
 
-(define (channel-instances->derivation instances)
+(define* (channel-instances->derivation instances
+                                        #:key built-in-builders)
   "Return the derivation of the profile containing INSTANCES, a list of
-channel instances."
-  (mlet %store-monad ((manifest (channel-instances->manifest instances)))
+channel instances.  If BUILT-IN-BUILDERS is provided, it
+should be a list of strings and this will be used instead of the builtin
+builders provided by the build daemon for store connections used during this
+process."
+  (mlet %store-monad ((manifest (channel-instances->manifest
+                                 instances
+                                 #:built-in-builders
+                                 built-in-builders)))
     ;; Emit a profile in format version so that, if INSTANCES denotes an old
     ;; Guix, it can still read that profile, for instance for the purposes of
     ;; 'guix describe'.
