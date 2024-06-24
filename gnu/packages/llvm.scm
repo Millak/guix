@@ -550,7 +550,7 @@ output), and Binutils.")
     ("15.0.7" . "12sggw15sxq1krh1mfk3c1f07h895jlxbcifpwk3pznh4m1rjfy2")
     ("16.0.6" . "0jxmapg7shwkl88m4mqgfjv4ziqdmnppxhjz6vz51ycp2x4nmjky")
     ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")
-    ("18.1.7" . "1c77pcqsfgvnxa3zq2i7giz86d6cdzl1scphi2dmcq3n73bzy4m8")))
+    ("18.1.8" . "1l9wm0g9jrpdf309kxjx7xrzf13h81kz8bbp0md14nrz38qll9la")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"))
@@ -558,7 +558,7 @@ output), and Binutils.")
     ("16.0.6" . ("clang-16.0-libc-search-path.patch"))
     ("17.0.6" . ("clang-17.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))
-    ("18.1.7" . ("clang-18.0-libc-search-path.patch"
+    ("18.1.8" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))))
 
 (define (llvm-monorepo version)
@@ -1454,7 +1454,7 @@ Library.")
 (define-public llvm-18
   (package
     (inherit llvm-15)
-    (version "18.1.7")
+    (version "18.1.8")
     (source (llvm-monorepo version))))
 
 (define-public clang-runtime-18
@@ -1470,7 +1470,7 @@ Library.")
                     (package-version llvm-18)))
      (sha256
       (base32
-       "0f1g9mlz4jmrws9sd81j1b8q5i2frvln6gp5vrvbdlzks5mlpj95")))))
+       "1wd7y1a0db4y51swlq6dmm9hrv8pvmv158yi9f10dlayv7y7g275")))))
 
 (define-public libomp-18
   (package
