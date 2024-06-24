@@ -2179,6 +2179,24 @@ supported, and no external C (cgo) code is used, which should make the library
 very eas to use.")
     (license license:expat)))
 
+(define-public go-github-com-klauspost-cpuid-v2
+  (package
+    (inherit go-github-com-klauspost-cpuid )
+    (name "go-github-com-klauspost-cpuid-v2")
+    (version "2.2.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/klauspost/cpuid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fys5v9vslar483arj7wy4id5kg1c7vqv4437kgjnwvki69j9mxf"))))
+    (arguments
+     (list
+      #:import-path "github.com/klauspost/cpuid/v2"))))
+
 (define-public go-github-com-lestrrat-go-envload
   (package
     (name "go-github-com-lestrrat-go-envload")
