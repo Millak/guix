@@ -566,7 +566,7 @@ the daemon.  Use 'open-connection' for that."
 
 (define* (open-connection #:optional (uri (%daemon-socket-uri))
                           #:key port (reserve-space? #t) cpu-affinity
-                          non-blocking?)
+                          non-blocking? built-in-builders)
   "Connect to the daemon at URI (a string), or, if PORT is not #f, use it as
 the I/O port over which to communicate to a build daemon.
 
@@ -575,8 +575,10 @@ space on the file system so that the garbage collector can still operate,
 should the disk become full.  When CPU-AFFINITY is true, it must be an integer
 corresponding to an OS-level CPU number to which the daemon's worker process
 for this connection will be pinned.  If NON-BLOCKING?, use a non-blocking
-socket when using the file, unix or guix URI schemes.  Return a server
-object."
+socket when using the file, unix or guix URI schemes.  If
+BUILT-IN-BUILDERS is provided, it should be a list of strings
+and this will be used instead of the builtin builders provided by the build
+daemon.  Return a server object."
   (define (handshake-error)
     (raise (condition
             (&store-connection-error (file (or port uri))
@@ -610,8 +612,10 @@ object."
               (write-int cpu-affinity port)))
           (when (>= (protocol-minor v) 11)
             (write-int (if reserve-space? 1 0) port))
-          (letrec* ((built-in-builders
-                     (delay (%built-in-builders conn)))
+          (letrec* ((actual-built-in-builders
+                     (if built-in-builders
+                         (delay built-in-builders)
+                         (delay (%built-in-builders conn))))
                     (caches
                      (make-vector
                       (atomic-box-ref %store-connection-caches)
@@ -624,15 +628,19 @@ object."
                                              (make-hash-table 100)
                                              (make-hash-table 100)
                                              caches
-                                             built-in-builders)))
+                                             actual-built-in-builders)))
             (let loop ((done? (process-stderr conn)))
               (or done? (process-stderr conn)))
             conn))))))
 
 (define* (port->connection port
-                           #:key (version %protocol-version))
+                           #:key (version %protocol-version)
+                           built-in-builders)
   "Assimilate PORT, an input/output port, and return a connection to the
-daemon, assuming the given protocol VERSION.
+daemon, assuming the given protocol VERSION.  If
+BUILT-IN-BUILDERS is provided, it should be a list of strings
+and this will be used instead of the builtin builders provided by the build
+daemon.
 
 Warning: this procedure assumes that the initial handshake with the daemon has
 already taken place on PORT and that we're just continuing on this established
@@ -649,7 +657,9 @@ connection.  Use with care."
                               (make-vector
                                (atomic-box-ref %store-connection-caches)
                                vlist-null)
-                              (delay (%built-in-builders connection))))
+                              (if built-in-builders
+                                  (delay built-in-builders)
+                                  (delay (%built-in-builders connection)))))
 
     connection))
 
