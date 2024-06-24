@@ -9548,9 +9548,20 @@ of C, Java, or Ada programs.")
            #~(modify-phases %standard-phases
              (add-before 'build 'set-env
                (lambda _
-                 (setenv "CC" "gcc"))))))
+                 (setenv "CC" "gcc")))
+             (add-after 'install 'wrap-programs
+               (lambda _
+                 (let ((ocamlpath
+                         `(,(string-append #$output "/lib/ocaml/site-lib")
+                           ,@(search-path-as-string->list
+                               (getenv "OCAMLPATH")))))
+                   (for-each
+                     (lambda (program)
+                       (wrap-program (string-append #$output "/bin/" program)
+                         `("OCAMLPATH" ":" prefix ,ocamlpath)))
+                     '("frama-c" "frama-c-gui"))))))))
     (inputs
-     (list gmp zlib))
+     (list bash-minimal gmp zlib))
     (propagated-inputs (list
                          graphviz
                          lablgtk3
