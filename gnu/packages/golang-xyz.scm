@@ -85,6 +85,32 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-atomicgo-dev-cursor
+  (package
+    (name "go-atomicgo-dev-cursor")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atomicgo/cursor")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ds85nyd3dnjr961x9g5kflx1qdb92vn7n6wc4jbk0fjjzbrnh5s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "atomicgo.dev/cursor"))
+    (home-page "https://atomicgo.dev/cursor")
+    (synopsis "Moving terminal cursor in Golang")
+    (description
+     "Package cursor contains cross-platform methods to move the terminal cursor in
+different directions.  This package can be used to create interactive CLI tools
+and games, live charts, algorithm visualizations and other updatable output of
+any kind.")
+    (license license:expat)))
+
 (define-public go-bazil-org-fuse
   (package
     (name "go-bazil-org-fuse")
