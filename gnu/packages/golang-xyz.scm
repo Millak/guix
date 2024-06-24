@@ -3950,6 +3950,44 @@ Pion}.")
     (home-page "https://github.com/prometheus/client_model")
     (license license:asl2.0)))
 
+(define-public go-github-com-pterm-pterm
+  (package
+    (name "go-github-com-pterm-pterm")
+    (version "0.12.79")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pterm/pterm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xvc4ywc2998r8vsi3zpp49z04kc79q60bsvxv88cjvamxfjxrvk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Cycle: go-github-com-pterm-pterm -> go-github-com-marvinjwendt-testza
+      ;; -> go-github-com-pterm-pterm
+      #:tests? #f
+      #:go go-1.21
+      #:import-path "github.com/pterm/pterm"))
+    (propagated-inputs
+     (list go-atomicgo-dev-cursor
+           go-atomicgo-dev-keyboard
+           go-atomicgo-dev-schedule
+           go-github-com-gookit-color
+           go-github-com-lithammer-fuzzysearch
+           go-github-com-mattn-go-runewidth
+           go-golang-org-x-term
+           go-golang-org-x-text))
+    (home-page "https://github.com/pterm/pterm")
+    (synopsis "Configurable consol outputs in Golang")
+    (description
+     "Package pterm is a modern go module to beautify console output.  It can be used
+without configuration, but if desired, everything can be customized down to the
+smallest detail.")
+    (license license:expat)))
+
 (define-public go-github-com-rcrowley-go-metrics
   (let ((commit "cac0b30c2563378d434b5af411844adff8e32960")
         (revision "2"))
