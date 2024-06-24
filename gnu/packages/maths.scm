@@ -9544,11 +9544,11 @@ of C, Java, or Ada programs.")
                 "14vlvynp3yfmnkixm676c1ip0jlkiqjzmrp9f9c990zzs2wb7yyj"))))
     (build-system dune-build-system)
     (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (add-before 'build 'set-env
-            (lambda _
-              (setenv "CC" "gcc"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+             (add-before 'build 'set-env
+               (lambda _
+                 (setenv "CC" "gcc"))))))
     (inputs
      (list gmp zlib))
     (propagated-inputs (list
