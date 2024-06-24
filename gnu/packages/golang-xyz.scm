@@ -2152,6 +2152,33 @@ word-splitting rules.")
       (home-page "https://github.com/kballard/go-shellquote")
       (license license:expat))))
 
+(define-public go-github-com-klauspost-cpuid
+  (package
+    (name "go-github-com-klauspost-cpuid")
+    (version "1.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/klauspost/cpuid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s510210wdj5dkamii1qrk7v87k4qpdcrrjzflp5ha9iscw6b06l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/klauspost/cpuid"))
+    (home-page "https://github.com/klauspost/cpuid")
+    (synopsis "CPU feature identification for Go")
+    (description
+     "@code{cpuid} provides information about the CPU running the current
+program.  CPU features are detected on startup, and kept for fast access
+through the life of the application.  Currently x86 / x64 (AMD64) is
+supported, and no external C (cgo) code is used, which should make the library
+very eas to use.")
+    (license license:expat)))
+
 (define-public go-github-com-lestrrat-go-envload
   (package
     (name "go-github-com-lestrrat-go-envload")
