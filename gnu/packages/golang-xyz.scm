@@ -111,6 +111,31 @@ and games, live charts, algorithm visualizations and other updatable output of
 any kind.")
     (license license:expat)))
 
+(define-public go-atomicgo-dev-schedule
+  (package
+    (name "go-atomicgo-dev-schedule")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atomicgo/schedule")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13zrmf9jagqjvjjckyqlvr889y2gxf22iz42l6j2zmgy9klbn6vl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "atomicgo.dev/schedule"))
+    (home-page "https://atomicgo.dev/schedule")
+    (synopsis "Easily schedule non-blocking tasks in Golang")
+    (description
+     "This package provides a simple scheduler which, can run a function at a
+given time, in a given duration, or repeatedly at a given interval.")
+    (license license:expat)))
+
 (define-public go-bazil-org-fuse
   (package
     (name "go-bazil-org-fuse")
