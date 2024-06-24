@@ -9534,14 +9534,14 @@ of C, Java, or Ada programs.")
 (define-public frama-c
   (package
     (name "frama-c")
-    (version "28.1")
+    (version "29.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://frama-c.com/download/frama-c-"
-                                  version "-Nickel.tar.gz"))
+                                  version "-Copper.tar.gz"))
               (sha256
                (base32
-                "14zmwghwhcryvri7k91vc1yampvxvhg36vwjxf64d8kx7dsbq802"))))
+                "14vlvynp3yfmnkixm676c1ip0jlkiqjzmrp9f9c990zzs2wb7yyj"))))
     (build-system dune-build-system)
     (arguments
       `(#:phases
