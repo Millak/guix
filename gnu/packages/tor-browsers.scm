@@ -42,6 +42,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages browser-extensions)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cups)
