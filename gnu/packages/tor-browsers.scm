@@ -243,6 +243,7 @@ Browser.")
      (list go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
            tor-client
            alsa-lib
+           bash-minimal                 ;for wrap-program
            bzip2
            cups
            dbus-glib
