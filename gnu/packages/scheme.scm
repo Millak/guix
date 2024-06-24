@@ -1116,24 +1116,20 @@ The core is 12 builtin special forms and 33 builtin functions.")
                             "ext/tls/test.scm"
                             "lib/gauche/package/util.scm"
                             "libsrc/gauche/process.scm")
-               (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          (add-after 'build 'build-doc
            (lambda _
              (with-directory-excursion "doc"
-               (invoke "make" "info"))
-             #t))
+               (invoke "make" "info"))))
          (add-before 'check 'patch-network-tests
            ;; Remove net checks.
            (lambda _
              (delete-file "test/net.scm")
-             (invoke "touch" "test/net.scm")
-             #t))
+             (invoke "touch" "test/net.scm")))
          (add-after 'install 'install-docs
            (lambda _
              (with-directory-excursion "doc"
-               (invoke "make" "install"))
-             #t)))))
+               (invoke "make" "install")))))))
     (synopsis "Scheme scripting engine")
     (description "Gauche is a R7RS Scheme scripting engine aiming at being a
 handy tool that helps programmers and system administrators to write small to
