@@ -1500,6 +1500,43 @@ scanner API made public.")
 for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
     (license license:expat)))
 
+(define-public go-github-com-errata-ai-ini
+  (package
+    (name "go-github-com-errata-ai-ini")
+    (version "1.63.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/errata-ai/ini")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zs9dwxh8mzxm1zfck4ghs7hma1lz5ajh98kmyh888rn3npvrnm5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/errata-ai/ini"))
+    (home-page "https://github.com/errata-ai/ini")
+    (synopsis "INI file read and write functionality in Golang")
+    (description
+     "This Package provides a functionality of INI file read and write,
+implementing features:
+@itemize
+@item load from multiple data sources(file, @code{[]byte}, @code{io.Reader}
+and @code{io.ReadCloser}) with overwrites
+@item read with recursion values
+@item read with parent-child sections
+@item read with auto-increment key names
+@item read with multiple-line values
+@item read with tons of helper methods
+@item read and convert values to Go types
+@item read and WRITE comments of sections and keys
+@item manipulate sections, keys and comments with ease
+@item keep sections and keys in order as you parse and save
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-github-com-errata-ai-regexp2
   (package
     (inherit go-github-com-dlclark-regexp2)
