@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Fakhri Sajadi <f.sajadi@pantherx.org>
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -371,7 +372,7 @@ the operating system LXQt is running on.")
     ;; XXX: This is a workaround so libkscreen can find the backends as we
     ;; dont have a way specify them. We may want to  patch like Nix does.
     (propagated-inputs
-     (list libkscreen))
+     (list libkscreen-5))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases

@@ -1189,6 +1189,45 @@ Workspaces which tries to be as magic and automatic as possible for users with
 basic needs and easy to configure for those who want special setups.")
     (license license:gpl2+)))
 
+;; use by lxqt-config
+(define-public libkscreen-5
+  (package
+    (inherit libkscreen)
+    (name "libkscreen")
+    (version "5.27.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/plasma/" version "/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32 "1ary7qavz8vkzbvjx2mxv09h61hxa7i4f7rfgbykldbc83ripdc6"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" (getcwd))
+                     (setenv "QT_QPA_PLATFORM" "offscreen")
+                     (setenv "WAYLAND_DISPLAY" "libkscreen-test-wayland-backend-0")
+                     (invoke "ctest" "-E"
+                             (string-append "(kscreen-testedid"
+                                            "|kscreen-testqscreenbackend"
+                                            "|kscreen-testkwaylandbackend"
+                                            "|kscreen-testkwaylandconfig"
+                                            "|kscreen-testkwaylanddpms)"))))))))
+    (native-inputs
+     (list extra-cmake-modules
+           pkg-config
+           qttools-5
+           ;; For testing.
+           dbus))
+    (inputs
+     (list kconfig-5 kwayland-5 libxrandr plasma-wayland-protocols
+           qtbase-5 qtwayland-5 wayland qtx11extras))))
+
 (define-public libksysguard
   (package
     (name "libksysguard")
