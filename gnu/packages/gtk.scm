@@ -1171,19 +1171,29 @@ application suites.")
                 '("-Dgtk_doc=false")
                 '("-Dgtk_doc=true"))
          "-Dman-pages=true")
-      #:test-options '(list "--setup=x11" ;defaults to wayland
-                            ;; Use the same test options as upstream uses for
-                            ;; their CI.
-                            "--suite=gtk"
-                            "--no-suite=failing"
-                            "--no-suite=flaky"
-                            "--no-suite=headless" ; requires mutter…
-                            "--no-suite=gsk-compare-broadway"
-                            ;; These seem to fail on aarch64, and Debian has
-                            ;; also disabled these, see:
-                            ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1050075
-                            "--no-suite=wayland_failing"
-                            "--no-suite=wayland_gles_failing")
+      #:test-options #~(list "--setup=x11" ;defaults to wayland
+                             ;; Use the same test options as upstream uses for
+                             ;; their CI.
+                             "--suite=gtk"
+                             "--no-suite=failing"
+                             "--no-suite=flaky"
+                             "--no-suite=headless" ; requires mutter…
+                             "--no-suite=gsk-compare-broadway"
+                             ;; These seem to fail on aarch64, and Debian has
+                             ;; also disabled these, see:
+                             ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1050075
+                             "--no-suite=wayland_failing"
+
+                             ;; The correct name of the test that fails on
+                             ;; AArch64 is 'wayland_gles2_failing':
+                             ;; <https://gitlab.gnome.org/GNOME/gtk/-/commit/b916c4dac1075572>.
+                             ;; The second arm of the 'if' is kept to avoid a
+                             ;; rebuild on other architectures.  TODO: Remove
+                             ;; on the next rebuild cycle.
+                             #$(if (and (not (%current-target-system))
+                                        (string=? (%current-system) "aarch64-linux"))
+                                   "--no-suite=wayland_gles2_failing"
+                                   "--no-suite=wayland_gles_failing"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
