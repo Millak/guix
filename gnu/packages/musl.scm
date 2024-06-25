@@ -2,6 +2,7 @@
 ;;; Copyright © 2016 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018–2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +22,7 @@
 (define-module (gnu packages musl)
   #:use-module (guix download)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages))
@@ -38,7 +40,9 @@
                 "1r3mgky9d19b2285s274qxzlgs7sncx8plm01vd691sdx2xii8d9"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f))                    ; musl has no tests
+     (list #:tests? #f                      ; musl has no tests
+           #:configure-flags
+           #~(list (string-append "--syslibdir=" #$output "/lib"))))
     (synopsis "Small C standard library")
     (description "musl is a simple and lightweight C standard library.  It
 strives to be correct in the sense of standards-conformance and safety.")
