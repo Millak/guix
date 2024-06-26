@@ -5416,6 +5416,7 @@ including @i{fix-its} for automatic refactoring.")
               (sha256
                (base32
                 "1lgk547pvg31zzqra7gn9gsszm5wrwxiw06crbr5n2kqfavk9r22"))))
+    (outputs '("out" "debug"))
     (build-system qt-build-system)
     (arguments
      (list
