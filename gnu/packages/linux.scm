@@ -10039,8 +10039,7 @@ headers.")
            flex
            (@ (gnu packages compression) zip)))
     (inputs
-     (list bash-minimal                 ;for wrap-program
-           clang-15
+     (list clang-15
            elfutils
            luajit
            libbpf
