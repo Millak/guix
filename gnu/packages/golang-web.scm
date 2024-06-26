@@ -437,6 +437,31 @@ for Go")
     (description "This package provides a CSS parser and inliner.")
     (license license:expat)))
 
+(define-public go-github-com-azure-go-ntlmssp
+  (package
+    (name "go-github-com-azure-go-ntlmssp")
+    (version "0.0.0-20211209120228-48547f28849e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Azure/go-ntlmssp")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0im28kp9p6ncdmh7qq5qwl85nmiwmp8jka2qgrjiqzc5n36q56np"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Azure/go-ntlmssp"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/Azure/go-ntlmssp")
+    (synopsis "NTLM negotiation in Go")
+    (description
+     "This package provides NTLM/Negotiate authentication over HTTP.")
+    (license license:expat)))
+
 (define-public go-github-com-bep-golibsass
   (package
     (name "go-github-com-bep-golibsass")
