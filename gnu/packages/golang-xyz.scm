@@ -525,7 +525,7 @@ optimized for sparse nodes of
 (define-public go-github-com-audriusbutkevicius-recli
   (package
     (name "go-github-com-audriusbutkevicius-recli")
-    (version "0.0.5")
+    (version "0.0.6")
     (source
      (origin
        (method git-fetch)
@@ -534,7 +534,7 @@ optimized for sparse nodes of
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m1xna1kb78pkmr1lfmvvnpk9j7c4x71j3a7c6vj7zpzc4srpsmf"))))
+        (base32 "0mxrpn8p6ylf5qjzsqrk96nky5vgagjkkpd5jwpm6sa977qb0v3i"))))
     (build-system go-build-system)
     (arguments
      (list
