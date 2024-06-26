@@ -213,32 +213,6 @@ notification area icon for Syncthing.  Supported Syncthing features:
 (define-public qsyncthingtray
   (deprecated-package "qsyncthingtray" syncthing-gtk))
 
-(define-public go-github-com-audriusbutkevicius-recli
-  (package
-    (name "go-github-com-audriusbutkevicius-recli")
-    (version "0.0.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/AudriusButkevicius/recli")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1m1xna1kb78pkmr1lfmvvnpk9j7c4x71j3a7c6vj7zpzc4srpsmf"))))
-    (build-system go-build-system)
-    (inputs
-     (list go-github-com-pkg-errors go-github-com-urfave-cli))
-    (arguments
-     `(#:import-path "github.com/AudriusButkevicius/recli"))
-    (synopsis "Reflection-based CLI generator")
-    (description "For a given struct, @code{recli} builds a set of
-@code{urfave/cli} commands which allows you to modify it from the command line.
-It is useful for generating command line clients for your application
-configuration that is stored in a Go struct.")
-    (home-page "https://github.com/AudriusButkevicius/recli")
-    (license mpl2.0)))
-
 (define-public go-github-com-calmh-du
   (package
     (name "go-github-com-calmh-du")

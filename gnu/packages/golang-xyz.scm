@@ -522,6 +522,35 @@ optimized for sparse nodes of
 @url{http://en.wikipedia.org/wiki/Radix_tree,radix tree}.")
     (license license:expat)))
 
+(define-public go-github-com-audriusbutkevicius-recli
+  (package
+    (name "go-github-com-audriusbutkevicius-recli")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AudriusButkevicius/recli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m1xna1kb78pkmr1lfmvvnpk9j7c4x71j3a7c6vj7zpzc4srpsmf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/AudriusButkevicius/recli"))
+    (native-inputs
+     (list go-github-com-pkg-errors
+           go-github-com-urfave-cli))
+    (home-page "https://github.com/AudriusButkevicius/recli")
+    (synopsis "Reflection-based CLI generator")
+    (description
+     "For a given struct, @code{recli} builds a set of @code{urfave/cli}
+commands which allows you to modify it from the command line.  It is useful
+for generating command line clients for your application configuration that is
+stored in a Go struct.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-benbjohnson-clock
   (package
     (name "go-github-com-benbjohnson-clock")
