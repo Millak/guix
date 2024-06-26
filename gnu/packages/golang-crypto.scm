@@ -457,7 +457,7 @@ for values.")
 (define-public go-github-com-go-asn1-ber-asn1-ber
   (package
     (name "go-github-com-go-asn1-ber-asn1-ber")
-    (version "1.5.3")
+    (version "1.5.7")
     (source
      (origin
        (method git-fetch)
@@ -466,7 +466,7 @@ for values.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15ygmfmdwwjda9xdq58rx6gnmsfc14m1qqhcj7cn7rm0mx4wk2vb"))))
+        (base32 "0xa1s1q2is9fr02pvrc9sq8zfq9ba6gk64yg1ncglppp30f50q52"))))
     (build-system go-build-system)
     (arguments
      (list
