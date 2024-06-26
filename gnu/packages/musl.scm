@@ -25,7 +25,8 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (gnu packages))
+  #:use-module (gnu packages)
+  #:use-module (gnu packages bash))
 
 (define-public musl
   (package
@@ -42,7 +43,9 @@
     (arguments
      (list #:tests? #f                      ; musl has no tests
            #:configure-flags
-           #~(list (string-append "--syslibdir=" #$output "/lib"))))
+           #~(list "--enable-wrapper=all"
+                   (string-append "--syslibdir=" #$output "/lib"))))
+    (inputs (list bash-minimal))
     (synopsis "Small C standard library")
     (description "musl is a simple and lightweight C standard library.  It
 strives to be correct in the sense of standards-conformance and safety.")
