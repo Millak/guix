@@ -440,7 +440,7 @@ for Go")
 (define-public go-github-com-azure-go-ntlmssp
   (package
     (name "go-github-com-azure-go-ntlmssp")
-    (version "0.0.0-20211209120228-48547f28849e")
+    (version "0.0.0-20221128193559-754e69321358")
     (source
      (origin
        (method git-fetch)
@@ -449,10 +449,12 @@ for Go")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0im28kp9p6ncdmh7qq5qwl85nmiwmp8jka2qgrjiqzc5n36q56np"))))
+        (base32 "0dg20fwylf5lpsc5fgnnzw7jxz0885bg97lla1b5wrlhjas6lidn"))))
     (build-system go-build-system)
     (arguments
      (list
+      ;; See <https://github.com/Azure/go-ntlmssp/issues/40>.
+      #:tests? #f
       #:import-path "github.com/Azure/go-ntlmssp"))
     (propagated-inputs
      (list go-golang-org-x-crypto))
