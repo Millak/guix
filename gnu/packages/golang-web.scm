@@ -805,8 +805,18 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f ; test suite requires internet access
-      #:import-path "github.com/go-ldap/ldap/v3"))
+      #:import-path "github.com/go-ldap/ldap/v3"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          ;; FAIL <...> LDAP Result Code 200 "Network Error":
+                          ;; dial tcp: lookup ldap.itd.umich.edu on <...>
+                          (list "ldap_test.go"))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-azure-go-ntlmssp
            go-github-com-go-asn1-ber-asn1-ber
