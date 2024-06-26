@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
@@ -11,16 +12,15 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Jack Hill <jackhill@jackhill.us>
-;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -453,6 +453,30 @@ zero round-trip encryption, and other advanced features.")
 providing bidirectional mapping values to their names, plus enum convenience
 for values.")
     (license license:bsd-3)))
+
+(define-public go-github-com-go-asn1-ber-asn1-ber
+  (package
+    (name "go-github-com-go-asn1-ber-asn1-ber")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-asn1-ber/asn1-ber")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15ygmfmdwwjda9xdq58rx6gnmsfc14m1qqhcj7cn7rm0mx4wk2vb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-asn1-ber/asn1-ber"))
+    (home-page "https://github.com/go-asn1-ber/asn1-ber")
+    (synopsis "ASN.1 BER encoding and decoding in Go")
+    (description
+     "This package provides ASN.1 BER encoding and decoding in the
+Go language.")
+    (license license:expat)))
 
 (define-public go-github-com-golang-jwt-jwt
   (package

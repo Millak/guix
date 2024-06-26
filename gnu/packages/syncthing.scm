@@ -491,28 +491,6 @@ message streaming.")
     (home-page "https://github.com/matttproud/golang_protobuf_extensions")
     (license asl2.0)))
 
-(define-public go-github-com-go-asn1-ber-asn1-ber
-  (package
-    (name "go-github-com-go-asn1-ber-asn1-ber")
-    (version "1.5.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/go-asn1-ber/asn1-ber")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "15ygmfmdwwjda9xdq58rx6gnmsfc14m1qqhcj7cn7rm0mx4wk2vb"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/go-asn1-ber/asn1-ber"))
-    (synopsis "ASN.1 BER encoding and decoding in Go")
-    (description "This package provides ASN.1 BER encoding and decoding in the
-Go language.")
-    (home-page "https://github.com/go-asn1-ber/asn1-ber")
-    (license expat)))
-
 (define-public go-github-com-go-ldap-ldap
   (package
     (name "go-github-com-go-ldap-ldap")
