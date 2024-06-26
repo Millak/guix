@@ -981,6 +981,10 @@ safety and thread safety guarantees.")
                    (("\\[build\\]")
                     "[build]\noptimized-compiler-builtins = false")))))))))))
 
+(define-public rust-1.78
+  (rust-bootstrapped-package
+   rust-1.77 "1.78.0" "1afmj5g3bz7439w4i8zjhd68zvh0gqg7ymr8h5rz49ybllilhm7z"))
+
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
   (map (lambda (str)
