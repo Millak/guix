@@ -1971,10 +1971,6 @@ them for PACKAGE."
      (description "Validate package descriptions")
      (check       check-description-style))
    (lint-checker
-     (name        'synopsis)
-     (description "Validate package synopses")
-     (check       check-synopsis-style))
-   (lint-checker
      (name        'inputs-should-be-native)
      (description "Identify inputs that should be native inputs")
      (check       check-inputs-should-be-native))
@@ -2038,7 +2034,10 @@ or a list thereof")
 
 (define %network-dependent-checkers
   (list
-
+   (lint-checker
+     (name        'synopsis)
+     (description "Validate package synopses")
+     (check       check-synopsis-style))
    (lint-checker
      (name        'gnu-description)
      (description "Validate synopsis & description of GNU packages")
