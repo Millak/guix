@@ -1281,7 +1281,7 @@ JSON data to the machine.")
 (define-public go-github-com-jackpal-gateway
   (package
     (name "go-github-com-jackpal-gateway")
-    (version "1.0.6")
+    (version "1.0.15")
     (source
      (origin
        (method git-fetch)
@@ -1290,15 +1290,21 @@ JSON data to the machine.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yms2dw4dnz4cvj9vhwh6193d50jhvn5awsp2g3a4lcc3sjrgd6m"))))
+        (base32 "0dlspnbdz63b3kpavibd2764hdy53mx1v3vrqi721dsjy77r9ig3"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.21
       #:import-path "github.com/jackpal/gateway"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-net))
     (home-page "https://github.com/jackpal/gateway")
     (synopsis "Discover the address of a LAN gateway")
-    (description "@code{gateway} is a Go library for discovering the IP
-address of the default LAN gateway.")
+    (description
+     "@code{gateway} is a Go library for discovering the IP address of the
+default LAN gateway.")
     (license license:bsd-3)))
 
 (define-public go-github-com-jackpal-go-nat-pmp
