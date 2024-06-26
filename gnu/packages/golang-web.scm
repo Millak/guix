@@ -190,6 +190,30 @@ result and details about the health status of each component.")
 the parse trees produced by the html package.")
     (license license:bsd-2)))
 
+(define-public go-github-com-audriusbutkevicius-pfilter
+  (package
+    (name "go-github-com-audriusbutkevicius-pfilter")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AudriusButkevicius/pfilter")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xzhwyd0w21bhvzl5pinn22hp0y6h44rh3s2ppql69rafc6zd3c6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/AudriusButkevicius/pfilter"))
+    (home-page "https://github.com/AudriusButkevicius/pfilter")
+    (synopsis "Filter packets into multiple virtual connections")
+    (description
+     "Pfilter is a Go package for filtering packets into multiple virtual
+connections from a single physical connection.")
+    (license license:expat)))
+
 (define-public go-github-com-aws-sdk
   (package
     (name "go-github-com-aws-sdk")
