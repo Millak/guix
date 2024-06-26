@@ -1044,11 +1044,12 @@ language.")
        (sha256
         (base32 "0iryq0z48yi7crfbd8jxyn7lh1gsglpiglvjgnf23bz6xfisssav"))))
     (build-system go-build-system)
-    (propagated-inputs
-     `(("github.com/gorilla/securecookie" ,go-github-com-gorilla-securecookie)
-       ("github.com/pkg/errors" ,go-github-com-pkg-errors)))
     (arguments
-     '(#:import-path "github.com/gorilla/csrf"))
+     (list
+      #:import-path "github.com/gorilla/csrf"))
+    (propagated-inputs
+     (list go-github-com-gorilla-securecookie
+           go-github-com-pkg-errors))
     (home-page "https://github.com/gorilla/csrf")
     (synopsis "Cross Site Request Forgery (CSRF) prevention middleware")
     (description
