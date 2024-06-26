@@ -1033,7 +1033,7 @@ language.")
 (define-public go-github-com-gorilla-csrf
   (package
     (name "go-github-com-gorilla-csrf")
-    (version "1.7.0")
+    (version "1.7.2")
     (source
      (origin
        (method git-fetch)
@@ -1042,7 +1042,7 @@ language.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0iryq0z48yi7crfbd8jxyn7lh1gsglpiglvjgnf23bz6xfisssav"))))
+        (base32 "01d56sr9yggn6gs4lf5bnj15q6bkwvsim8kzj8m4arv1ccj7918j"))))
     (build-system go-build-system)
     (arguments
      (list
