@@ -523,28 +523,28 @@ Manager,NTLM}/Negotiate authentication over HTTP.")
     (license license:expat)))
 
 (define-public go-github-com-ccding-go-stun
-    (package
-      (name "go-github-com-ccding-go-stun")
-      (version "0.1.4")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/ccding/go-stun")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0wjhckyg42kp04njhj7gni84cyk0s7m17n13kqf6r7mjzx8a83pw"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "github.com/ccding/go-stun"))
-      (home-page "https://github.com/ccding/go-stun")
-      (synopsis "STUN client implementation")
-      (description
-       "Go-stun is a go implementation of the STUN client (RFC 3489
+  (package
+    (name "go-github-com-ccding-go-stun")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ccding/go-stun")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wjhckyg42kp04njhj7gni84cyk0s7m17n13kqf6r7mjzx8a83pw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ccding/go-stun"))
+    (home-page "https://github.com/ccding/go-stun")
+    (synopsis "STUN client implementation")
+    (description
+     "Go-stun is a go implementation of the STUN client (RFC 3489
 and RFC 5389).")
-      (license license:asl2.0)))
+    (license license:asl2.0)))
 
 (define-public go-github-com-cenkalti-backoff-v4
   (package
