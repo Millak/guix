@@ -280,28 +280,6 @@ structs in the Go programming language.")
     (home-page "https://github.com/d4l3k/messagediff")
     (license expat)))
 
-(define-public go-github-com-jackpal-gateway
-  (package
-    (name "go-github-com-jackpal-gateway")
-    (version "1.0.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jackpal/gateway")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1yms2dw4dnz4cvj9vhwh6193d50jhvn5awsp2g3a4lcc3sjrgd6m"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/jackpal/gateway"))
-    (synopsis "Discover the address of a LAN gateway")
-    (description "@code{gateway} is a Go library for discovering the IP
-address of the default LAN gateway.")
-    (home-page "https://github.com/jackpal/gateway")
-    (license bsd-3)))
-
 (define-public go-github-com-oschwald-geoip2-golang
   (package
     (name "go-github-com-oschwald-geoip2-golang")
