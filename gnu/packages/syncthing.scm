@@ -509,30 +509,6 @@ hashes.")
       (home-page "https://github.com/chmduquesne/rollinghash")
       (license expat))))
 
-(define-public go-github-com-petermattis-goid
-  (let ((commit "b0b1615b78e5ee59739545bb38426383b2cda4c9")
-        (revision "1"))
-    (package
-      (name "go-github-com-petermattis-goid")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/petermattis/goid")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0ghfxn045r0bbn2vszw897lxzmhnm4k59aypjvpxl0pbzsw9ab2c"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/petermattis/goid"))
-      (synopsis "Identify the running goroutine")
-      (description "This package offers a method of programmatically retrieving
-the current goroutine's ID.")
-      (home-page "https://github.com/petermattis/goid")
-      (license asl2.0))))
-
 (define-public go-github-com-syncthing-notify
   (let ((commit "69c7a957d3e261f9744f46b3dd4d608d8480ad90")
         (revision "5"))

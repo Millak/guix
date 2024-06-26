@@ -732,6 +732,32 @@ Go application.")
 original value once the test has been run.")
     (license license:expat)))
 
+(define-public go-github-com-petermattis-goid
+  (let ((commit "b0b1615b78e5ee59739545bb38426383b2cda4c9")
+        (revision "1"))
+    (package
+      (name "go-github-com-petermattis-goid")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/petermattis/goid")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ghfxn045r0bbn2vszw897lxzmhnm4k59aypjvpxl0pbzsw9ab2c"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/petermattis/goid"))
+      (home-page "https://github.com/petermattis/goid")
+      (synopsis "Identify the running goroutine")
+      (description
+       "This package offers a method of programmatically retrieving the
+current goroutine's ID.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-stretchr-testify
   (package
     (name "go-github-com-stretchr-testify")
