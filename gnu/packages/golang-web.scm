@@ -789,6 +789,33 @@ Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-ldap-ldap
+  (package
+    (name "go-github-com-go-ldap-ldap")
+    (version "3.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-ldap/ldap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xf2jrwhgr06jy4liba48hrz4b7j27r7m9dnl7fj95vazsx2n5br"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; test suite requires internet access
+      #:import-path "github.com/go-ldap/ldap/v3"))
+    (propagated-inputs
+     (list go-github-com-go-asn1-ber-asn1-ber
+           go-github-com-azure-go-ntlmssp))
+    (home-page "https://github.com/go-ldap/ldap")
+    (synopsis "LDAP v3 functionality for Go")
+    (description "This package provides basic LDAP v3 functionality in the Go
+language.")
+    (license license:expat)))
+
 (define-public go-github-com-go-telegram-bot-api-telegram-bot-api
   (package
     (name "go-github-com-go-telegram-bot-api-telegram-bot-api")
