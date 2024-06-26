@@ -474,8 +474,8 @@ for values.")
     (home-page "https://github.com/go-asn1-ber/asn1-ber")
     (synopsis "ASN.1 BER encoding and decoding in Go")
     (description
-     "This package provides ASN.1 BER encoding and decoding in the
-Go language.")
+     "This package provides @acronym{Abstract Syntax Notation One, ASN.1} BER
+encoding and decoding in the Go language.")
     (license license:expat)))
 
 (define-public go-github-com-golang-jwt-jwt
