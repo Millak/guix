@@ -39,6 +39,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 regex)
+  #:use-module (ice-9 string-fun)
   #:use-module (system foreign)
   #:autoload   (system repl repl) (start-repl)
   #:use-module (srfi srfi-1)
@@ -1187,6 +1188,39 @@ corresponds to the symbols listed in FLAGS."
                                 (string-append "," options)
                                 "")))))
 
+  (define (read-cifs-credential-file file)
+    ;; Read password, user and domain options from file
+    ;;
+    ;; XXX: As of version 7.0, mount.cifs strips all lines of leading
+    ;; whitespace, parses those starting with "pass", "user" and "dom" into
+    ;; "pass=", "user=" and "domain=" options respectively and ignores
+    ;; everything else.  To simplify the implementation, we pass those lines
+    ;; as is.  As a consequence, the "password2" option can be specified in a
+    ;; credential file with the expected semantics (see:
+    ;; https://issues.guix.gnu.org/71594#3).
+    (with-input-from-file file
+      (lambda ()
+        (let loop
+            ((next-line (read-line))
+             (lines '()))
+          (match next-line
+            ((? eof-object?)
+             lines)
+            ((= string-trim line)
+             (loop (read-line)
+                   (cond
+                    ((string-prefix? "pass" line)
+                     ;; mount.cifs escapes commas in the password by doubling
+                     ;; them
+                     (cons (string-replace-substring line "," ",,")
+                           lines))
+                    ((or (string-prefix? "user" line)
+                         (string-prefix? "dom" line))
+                     (cons line lines))
+                    ;; Ignore all other lines.
+                    (else
+                     lines)))))))))
+
   (define (mount-cifs source mount-point type flags options)
     ;; Source is of form "//<server-ip-or-host>/<service>"
     (let* ((regex-match (string-match "//([^/]+)/(.+)" source))
@@ -1195,6 +1229,9 @@ corresponds to the symbols listed in FLAGS."
            ;; Match ",guest,", ",guest$", "^guest,", or "^guest$," not
            ;; e.g. user=foo,pass=notaguest
            (guest? (string-match "(^|,)(guest)($|,)" options))
+           (credential-file (and=> (string-match "(^|,)(credentials|cred)=([^,]+)(,|$)"
+                                                 options)
+                                   (cut match:substring <> 3)))
            ;; Perform DNS resolution now instead of attempting kernel dns
            ;; resolver upcalling. /sbin/request-key does not exist and the
            ;; kernel hardcodes the path.
@@ -1219,6 +1256,11 @@ corresponds to the symbols listed in FLAGS."
                                 ;; ignores it. Also, avoiding excess commas
                                 ;; when deleting is a pain.
                                 (string-append "," options)
+                                "")
+                            (if credential-file
+                                ;; The "credentials" option is ignored too.
+                                (string-join (read-cifs-credential-file credential-file)
+                                             "," 'prefix)
                                 "")))))
 
   (let* ((type    (file-system-type fs))
