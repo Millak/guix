@@ -732,10 +732,9 @@ Go application.")
 original value once the test has been run.")
     (license license:expat)))
 
-<<<<<<< HEAD
 (define-public go-github-com-petermattis-goid
-  (let ((commit "b0b1615b78e5ee59739545bb38426383b2cda4c9")
-        (revision "1"))
+  (let ((commit "bb94eb51e7a772d09cef11768f3248ac25adf9f9")
+        (revision "2"))
     (package
       (name "go-github-com-petermattis-goid")
       (version (git-version "0.0.0" revision commit))
@@ -747,7 +746,7 @@ original value once the test has been run.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ghfxn045r0bbn2vszw897lxzmhnm4k59aypjvpxl0pbzsw9ab2c"))))
+          (base32 "0hr94frr0rhac4mb9r7ixdgr6hm63rxh6z43rhn2wn7fdy8csw11"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -758,7 +757,7 @@ original value once the test has been run.")
        "This package offers a method of programmatically retrieving the
 current goroutine's ID.")
       (license license:asl2.0))))
-=======
+
 (define-public go-github-com-sasha-s-go-deadlock
   (package
     (name "go-github-com-sasha-s-go-deadlock")
@@ -783,7 +782,6 @@ current goroutine's ID.")
     (description
      "This package provides tools for detecting deadlocks at run-time in Go.")
     (license license:asl2.0)))
->>>>>>> 23b9baa200 (gnu: go-github-com-sasha-s-go-deadlock: Move to golang-check.)
 
 (define-public go-github-com-stretchr-testify
   (package
