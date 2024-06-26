@@ -761,7 +761,7 @@ current goroutine's ID.")
 (define-public go-github-com-sasha-s-go-deadlock
   (package
     (name "go-github-com-sasha-s-go-deadlock")
-    (version "0.2.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -770,7 +770,7 @@ current goroutine's ID.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13p7b7pakd9k1c2k0fs1hfim3c8mivz679977ai6zb01s4aw7gyg"))))
+        (base32 "0arb35idnyz4n118xz7p2snazqi35gk1975h1xfk0y4riiks58yz"))))
     (build-system go-build-system)
     (arguments
      (list
