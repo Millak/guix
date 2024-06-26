@@ -461,7 +461,8 @@ for Go")
     (home-page "https://github.com/Azure/go-ntlmssp")
     (synopsis "NTLM negotiation in Go")
     (description
-     "This package provides NTLM/Negotiate authentication over HTTP.")
+     "This package provides @acronym{NT (New Technology) LAN
+Manager,NTLM}/Negotiate authentication over HTTP.")
     (license license:expat)))
 
 (define-public go-github-com-bep-golibsass
