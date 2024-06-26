@@ -193,20 +193,34 @@ the parse trees produced by the html package.")
 (define-public go-github-com-audriusbutkevicius-pfilter
   (package
     (name "go-github-com-audriusbutkevicius-pfilter")
-    (version "0.0.5")
+    (version "0.0.11")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/AudriusButkevicius/pfilter")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xzhwyd0w21bhvzl5pinn22hp0y6h44rh3s2ppql69rafc6zd3c6"))))
+        (base32 "03kwi1hnhcz9qdblmhpaqg2063k2ch29hc5dr8cl2z7q5rp81m9i"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/AudriusButkevicius/pfilter"))
+      #:go go-1.21
+      #:import-path "github.com/AudriusButkevicius/pfilter"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          ;; Remove tests requiring setting up local
+                          ;; connection.
+                          (list "quic_test.go"))))))))
+    (propagated-inputs
+     (list go-github-com-pkg-errors
+           go-github-com-quic-go-quic-go
+           go-golang-org-x-net))
     (home-page "https://github.com/AudriusButkevicius/pfilter")
     (synopsis "Filter packets into multiple virtual connections")
     (description
