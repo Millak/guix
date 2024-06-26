@@ -1,9 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2017, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
-;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
@@ -732,6 +732,7 @@ Go application.")
 original value once the test has been run.")
     (license license:expat)))
 
+<<<<<<< HEAD
 (define-public go-github-com-petermattis-goid
   (let ((commit "b0b1615b78e5ee59739545bb38426383b2cda4c9")
         (revision "1"))
@@ -757,6 +758,32 @@ original value once the test has been run.")
        "This package offers a method of programmatically retrieving the
 current goroutine's ID.")
       (license license:asl2.0))))
+=======
+(define-public go-github-com-sasha-s-go-deadlock
+  (package
+    (name "go-github-com-sasha-s-go-deadlock")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sasha-s/go-deadlock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13p7b7pakd9k1c2k0fs1hfim3c8mivz679977ai6zb01s4aw7gyg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sasha-s/go-deadlock"))
+    (propagated-inputs
+     (list go-github-com-petermattis-goid))
+    (home-page "https://github.com/sasha-s/go-deadlock")
+    (synopsis "Deadlock detection in go")
+    (description
+     "This package provides tools for detecting deadlocks at run-time in Go.")
+    (license license:asl2.0)))
+>>>>>>> 23b9baa200 (gnu: go-github-com-sasha-s-go-deadlock: Move to golang-check.)
 
 (define-public go-github-com-stretchr-testify
   (package
