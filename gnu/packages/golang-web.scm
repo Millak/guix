@@ -792,7 +792,7 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
 (define-public go-github-com-go-ldap-ldap
   (package
     (name "go-github-com-go-ldap-ldap")
-    (version "3.4.1")
+    (version "3.4.8")
     (source
      (origin
        (method git-fetch)
@@ -801,15 +801,16 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xf2jrwhgr06jy4liba48hrz4b7j27r7m9dnl7fj95vazsx2n5br"))))
+        (base32 "0fbmhlc8ss5vn6zz0iiifvy4pm0mwaf13qpz70k83mmnv9vrv16x"))))
     (build-system go-build-system)
     (arguments
      (list
       #:tests? #f ; test suite requires internet access
       #:import-path "github.com/go-ldap/ldap/v3"))
     (propagated-inputs
-     (list go-github-com-go-asn1-ber-asn1-ber
-           go-github-com-azure-go-ntlmssp))
+     (list go-github-com-azure-go-ntlmssp
+           go-github-com-go-asn1-ber-asn1-ber
+           go-github-com-google-uuid))
     (home-page "https://github.com/go-ldap/ldap")
     (synopsis "LDAP v3 functionality for Go")
     (description "This package provides basic LDAP v3 functionality in the Go
