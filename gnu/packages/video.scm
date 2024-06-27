@@ -2962,7 +2962,8 @@ To load this plugin, specify the following option when starting mpv:
      (origin
        (inherit (package-source libvpx))
        (patches (search-patches "libvpx-CVE-2016-2818.patch"
-                                "libvpx-CVE-2023-5217.patch"))))))
+                                "libvpx-CVE-2023-5217.patch"
+                                "libvpx-CVE-2023-44488.patch"))))))
 
 (define-public orfondl
   (package
