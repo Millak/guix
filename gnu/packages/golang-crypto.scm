@@ -322,8 +322,8 @@ xxHash algorithm (XXH64).")
     (license license:expat)))
 
 (define-public go-github-com-chmduquesne-rollinghash
-  (let ((commit "a60f8e7142b536ea61bb5d84014171189eeaaa81")
-        (revision "0"))
+  (let ((commit "9a5199be7309f50c496efc87d29bd08788605ae7")
+        (revision "1"))
     (package
       (name "go-github-com-chmduquesne-rollinghash")
       (version (git-version "4.0.0" revision commit))
@@ -335,7 +335,7 @@ xxHash algorithm (XXH64).")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0fpaqq4zb0wikgbhn7vwqqj1h865f5xy195vkhivsp922p7qwsjr"))))
+          (base32 "1gkdgsgrmwagwyp4lmd4k11mbwi8f1yw9c9rhnkmav87gy1k84jr"))))
       (build-system go-build-system)
       (arguments
        (list
