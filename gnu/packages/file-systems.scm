@@ -534,6 +534,11 @@ significantly increases the risk of irreversible data loss!")
       #~(modify-phases %standard-phases
           ;; after 'check phase, should maybe unmount leftover mounts as in
           ;; https://github.com/rfjakob/gocryptfs/blob/a55b3cc15a6d9bce116a90f33df4bc99d9dd6a10/test.bash#L28
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key import-path #:allow-other-keys)
+              (let* ((fusermount3 "/run/setuid-programs/fusermount3"))
+                (substitute* (format #f "src/~a/mount.go" import-path)
+                  (("/bin/fusermount") fusermount3)))))
           (replace 'build
             (lambda arguments
               (for-each
@@ -559,6 +564,8 @@ significantly increases the risk of irreversible data loss!")
                     go-golang-org-x-term
                     openssl
                     pkg-config))
+    (inputs (list
+             fuse))
     (home-page "https://github.com/rfjakob/gocryptfs")
     (synopsis "Encrypted overlay filesystem")
     (description
