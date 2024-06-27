@@ -1832,7 +1832,7 @@ which produce colorized output using github.com/fatih/color.")
 (define-public go-github-com-oschwald-geoip2-golang
   (package
     (name "go-github-com-oschwald-geoip2-golang")
-    (version "1.4.0")
+    (version "1.11.0")
     (source
      (origin
        (method git-fetch)
@@ -1841,11 +1841,12 @@ which produce colorized output using github.com/fatih/color.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jj4rbdpy87rbl79czg5hs5dyn6xlbnk0bnvyzi71dsxan57nixw"))))
+        (base32 "0670cv1b9c2p0lx63rlwl7kplbvzr79apbw13109v0pv4qlapmhx"))))
     (build-system go-build-system)
     (arguments
      (list
       #:tests? #f ; Requires some unpackaged software and test data
+      #:go go-1.21
       #:import-path "github.com/oschwald/geoip2-golang"))
     (propagated-inputs
      (list go-github-com-oschwald-maxminddb-golang))
