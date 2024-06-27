@@ -308,31 +308,6 @@ inherent errors.")
       (home-page "https://github.com/vitrun/qart")
       (license bsd-3))))
 
-(define-public go-github-com-chmduquesne-rollinghash
-  (let ((commit "a60f8e7142b536ea61bb5d84014171189eeaaa81")
-        (revision "0"))
-    (package
-      (name "go-github-com-chmduquesne-rollinghash")
-      (version (git-version "4.0.0" revision commit))
-      (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/chmduquesne/rollinghash")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32
-            "0fpaqq4zb0wikgbhn7vwqqj1h865f5xy195vkhivsp922p7qwsjr"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/chmduquesne/rollinghash/"))
-      (synopsis "Rolling hashes in Go")
-      (description "This package provides a Go implementation of several rolling
-hashes.")
-      (home-page "https://github.com/chmduquesne/rollinghash")
-      (license expat))))
-
 (define-public go-github-com-syncthing-notify
   (let ((commit "69c7a957d3e261f9744f46b3dd4d608d8480ad90")
         (revision "5"))
