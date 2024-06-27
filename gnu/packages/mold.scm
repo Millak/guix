@@ -35,7 +35,7 @@
 (define-public mold
   (package
     (name "mold")
-    (version "2.32.0")
+    (version "2.32.1")
     (source
      (origin
        (method git-fetch)
@@ -44,7 +44,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wl7mp7r5hxmvfpmrq32ffjpgn8z8pk775y423nr56gvrb39vj6i"))
+        (base32 "1raddkjazb05bkqv7n3k97k0hk2wgvl03hpbx3xq8gpg1rbviam4"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
