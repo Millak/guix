@@ -280,35 +280,6 @@ structs in the Go programming language.")
     (home-page "https://github.com/d4l3k/messagediff")
     (license expat)))
 
-(define-public go-github-com-thejerf-suture
-  (package
-    (name "go-github-com-thejerf-suture")
-    (version "3.0.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/thejerf/suture")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "03bdrl78jfwk0kw40lj63ga9cxhgccgss8yi9lp5j0m0ml7921gh"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/thejerf/suture"))
-    (synopsis "Supervisor trees for Go")
-    (description "Suture provides Erlang-ish supervisor trees for Go.
-\"Supervisor trees\" -> \"sutree\" -> \"suture\" -> holds your code together
-when it's trying to die.
-
-It is intended to deal gracefully with the real failure cases that can occur
-with supervision trees (such as burning all your CPU time endlessly restarting
-dead services), while also making no unnecessary demands on the \"service\"
-code, and providing hooks to perform adequate logging with in a production
-environment")
-    (home-page "https://github.com/thejerf/suture")
-    (license expat)))
-
 (define-public go-github-com-vitrun-qart
   (let ((commit "bf64b92db6b05651d6c25a3dabf2d543b360c0aa")
         (revision "0"))
