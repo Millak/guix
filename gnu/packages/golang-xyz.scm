@@ -774,6 +774,33 @@ indicator to any terminal application.")
 similar to Go's standard library @code{json} and @code{xml} package.")
     (license license:expat)))
 
+;; XXX: This repository has been archived by the owner on Feb 21, 2018. It is
+;; now read-only.
+(define-public go-github-com-calmh-xdr
+  (package
+    (name "go-github-com-calmh-xdr")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/calmh/xdr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "072wqdncz3nd4a3zkhvzzx1y3in1lm29wfvl0d8wrnqs5pyqh0mh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/calmh/xdr"))
+    (home-page "https://github.com/calmh/xdr")
+    (synopsis "XDR marshalling and unmarshalling")
+    (description
+     "XDR is an External Data Representation (XDR)
+marshalling and unmarshalling library in Go.  It uses code generation and not
+reflection.")
+    (license license:expat)))
+
 (define-public go-github-com-cheggaaa-pb
   (package
     (name "go-github-com-cheggaaa-pb")

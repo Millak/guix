@@ -213,29 +213,6 @@ notification area icon for Syncthing.  Supported Syncthing features:
 (define-public qsyncthingtray
   (deprecated-package "qsyncthingtray" syncthing-gtk))
 
-(define-public go-github-com-calmh-xdr
-  (package
-    (name "go-github-com-calmh-xdr")
-    (version "1.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/calmh/xdr")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "072wqdncz3nd4a3zkhvzzx1y3in1lm29wfvl0d8wrnqs5pyqh0mh"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/calmh/xdr"))
-    (synopsis "XDR marshalling and unmarshalling")
-    (description "XDR is an External Data Representation (XDR)
-marshalling and unmarshalling library in Go.  It uses code generation and not
-reflection.")
-    (home-page "https://github.com/calmh/xdr")
-    (license expat)))
-
 (define-public go-github-com-vitrun-qart
   (let ((commit "bf64b92db6b05651d6c25a3dabf2d543b360c0aa")
         (revision "0"))
