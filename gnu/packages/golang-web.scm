@@ -1829,6 +1829,34 @@ which produce colorized output using github.com/fatih/color.")
     (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-oschwald-maxminddb-golang
+  (package
+    (name "go-github-com-oschwald-maxminddb-golang")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oschwald/maxminddb-golang")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "100wd5qv00pkcm6cb8c4x5gavc9jnn7drh6xrqh85hzci4rils66"))))
+    (build-system go-build-system)
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (arguments
+     (list
+      #:tests? #f ; Requires some unpackaged software and test data
+      #:import-path "github.com/oschwald/maxminddb-golang"))
+    (home-page "https://github.com/oschwald/maxminddb-golang")
+    (synopsis "MaxMind DB Reader for Go")
+    (description
+     "This is a Go reader for the MaxMind DB format.  Although this can be
+used to read GeoLite2 and GeoIP2 databases, @code{geoip2} provides a
+higher-level API for doing so.")
+    (license license:isc)))
+
 (define-public go-github-com-pion-dtls
   (package
     (name "go-github-com-pion-dtls")
