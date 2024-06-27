@@ -1040,6 +1040,30 @@ submodules:
 metrics to Graphite.")
     (license license:bsd-2)))
 
+(define-public go-github-com-d4l3k-messagediff
+  (package
+    (name "go-github-com-d4l3k-messagediff")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/d4l3k/messagediff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "104hl8x57ciaz7mzafg1vp9qggxcyfm8hsv9bmlihbz9ml3nyr8v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/d4l3k/messagediff"))
+    (home-page "https://github.com/d4l3k/messagediff")
+    (synopsis "Diff arbitrary Go structs")
+    (description
+     "Messagediff is a library for calculating diffs of arbitrary
+structs in the Go programming language.")
+    (license license:expat)))
+
 (define-public go-github-com-danwakefield-fnmatch
   (let ((commit "cbb64ac3d964b81592e64f957ad53df015803288")
         (revision "0"))

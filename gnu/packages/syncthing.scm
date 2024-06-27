@@ -258,28 +258,6 @@ reflection.")
     (home-page "https://github.com/calmh/xdr")
     (license expat)))
 
-(define-public go-github-com-d4l3k-messagediff
-  (package
-    (name "go-github-com-d4l3k-messagediff")
-    (version "1.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/d4l3k/messagediff")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "104hl8x57ciaz7mzafg1vp9qggxcyfm8hsv9bmlihbz9ml3nyr8v"))))
-    (build-system go-build-system)
-    (arguments
-      `(#:import-path "github.com/d4l3k/messagediff"))
-    (synopsis "Diff arbitrary Go structs")
-    (description "Messagediff is a library for calculating diffs of arbitrary
-structs in the Go programming language.")
-    (home-page "https://github.com/d4l3k/messagediff")
-    (license expat)))
-
 (define-public go-github-com-vitrun-qart
   (let ((commit "bf64b92db6b05651d6c25a3dabf2d543b360c0aa")
         (revision "0"))
