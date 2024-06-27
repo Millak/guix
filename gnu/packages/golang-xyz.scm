@@ -3528,7 +3528,7 @@ storage system.")
 (define-public go-github-com-thejerf-suture
   (package
     (name "go-github-com-thejerf-suture")
-    (version "3.0.2")
+    (version "3.0.3")
     (source
      (origin
        (method git-fetch)
@@ -3537,7 +3537,7 @@ storage system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03bdrl78jfwk0kw40lj63ga9cxhgccgss8yi9lp5j0m0ml7921gh"))))
+        (base32 "166hbjc1gn7skvq9vcp5h1xkavw9zw6dwx63vhih8fzm3nbbp0ic"))))
     (build-system go-build-system)
     (arguments
      (list
