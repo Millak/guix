@@ -3555,6 +3555,21 @@ code, and providing hooks to perform adequate logging with in a production
 environment")
     (license license:expat)))
 
+(define-public go-github-com-thejerf-suture-v4
+  (package
+    (inherit go-github-com-thejerf-suture)
+    (name "go-github-com-thejerf-suture-v4")
+    (version "4.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thejerf/suture")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15qi7v2a1kbf70yi3w6y26wbwj0sm8hv9f6xjrb4rl6nv9l8j88c"))))))
+
 (define-public go-github-com-tidwall-gjson
   (package
     (name "go-github-com-tidwall-gjson")
