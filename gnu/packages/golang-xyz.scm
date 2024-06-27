@@ -1380,6 +1380,34 @@ Alphanum Algorithm} developed by Dave Koelle in Go.")
 defined output to the standard output.")
     (license license:expat)))
 
+;; XXX: This repository has been archived by the owner on Nov 9, 2017. It is
+;; now read-only.
+(define-public go-github-com-flynn-archive-go-shlex
+  (let ((commit "3f9db97f856818214da2e1057f8ad84803971cff")
+        (revision "0"))
+    (package
+      (name "go-github-com-flynn-archive-go-shlex")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/flynn-archive/go-shlex")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1j743lysygkpa2s2gii2xr32j7bxgc15zv4113b0q9jhn676ysia"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/flynn-archive/go-shlex"))
+      (synopsis "Go lexer")
+      (description
+       "Shlex is a simple lexer for go that supports shell-style
+quoting, commenting, and escaping.")
+      (home-page "https://github.com/flynn-archive/go-shlex")
+      (license license:asl2.0))))
+
 (define-public go-github-com-gabriel-vasile-mimetype
   (package
     (name "go-github-com-gabriel-vasile-mimetype")
