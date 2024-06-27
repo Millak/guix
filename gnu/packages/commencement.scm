@@ -3651,6 +3651,9 @@ is the GNU Compiler Collection.")
 (define-public gcc-toolchain-13
   (make-gcc-toolchain gcc-13))
 
+(define-public gcc-toolchain-14
+  (make-gcc-toolchain gcc-14))
+
 ;; The default GCC
 (define-public gcc-toolchain
   gcc-toolchain-11)
