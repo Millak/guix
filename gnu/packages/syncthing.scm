@@ -280,31 +280,6 @@ structs in the Go programming language.")
     (home-page "https://github.com/d4l3k/messagediff")
     (license expat)))
 
-(define-public go-github-com-oschwald-geoip2-golang
-  (package
-    (name "go-github-com-oschwald-geoip2-golang")
-    (version "1.4.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/oschwald/geoip2-golang")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1jj4rbdpy87rbl79czg5hs5dyn6xlbnk0bnvyzi71dsxan57nixw"))))
-    (build-system go-build-system)
-    (propagated-inputs
-     (list go-github-com-oschwald-maxminddb-golang go-golang-org-x-sys))
-    (arguments
-     `(#:import-path "github.com/oschwald/geoip2-golang"
-       #:tests? #f)) ; Requires some unpackaged software and test data
-    (synopsis "MaxMind GeoIP2 reader")
-    (description "This package provides a library for reading MaxMind
-GeoLite2 and GeoIP2 databases in Go.")
-    (home-page "https://github.com/oschwald/geoip2-golang")
-    (license isc)))
-
 (define-public go-github-com-thejerf-suture
   (package
     (name "go-github-com-thejerf-suture")

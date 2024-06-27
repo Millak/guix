@@ -1829,6 +1829,33 @@ which produce colorized output using github.com/fatih/color.")
     (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-oschwald-geoip2-golang
+  (package
+    (name "go-github-com-oschwald-geoip2-golang")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oschwald/geoip2-golang")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jj4rbdpy87rbl79czg5hs5dyn6xlbnk0bnvyzi71dsxan57nixw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; Requires some unpackaged software and test data
+      #:import-path "github.com/oschwald/geoip2-golang"))
+    (propagated-inputs
+     (list go-github-com-oschwald-maxminddb-golang))
+    (home-page "https://github.com/oschwald/geoip2-golang")
+    (synopsis "MaxMind GeoIP2 reader")
+    (description
+     "This package provides a library for reading MaxMind GeoLite2 and GeoIP2
+databases in Go.")
+    (license license:isc)))
+
 (define-public go-github-com-oschwald-maxminddb-golang
   (package
     (name "go-github-com-oschwald-maxminddb-golang")
