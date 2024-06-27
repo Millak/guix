@@ -339,7 +339,18 @@ xxHash algorithm (XXH64).")
       (build-system go-build-system)
       (arguments
        (list
-        #:import-path "github.com/chmduquesne/rollinghash/"))
+        #:import-path "github.com/chmduquesne/rollinghash/"
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; XXX: Run all tests, workaround for go-build-system's lack of Go
+            ;; modules support.
+            (replace 'check
+              (lambda* (#:key tests? import-path #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion (string-append "src/" import-path)
+                    (invoke "go" "test" "-v" "./..."))))))))
+      (propagated-inputs
+       (list go-code-cloudfoundry-org-bytefmt))
       (home-page "https://github.com/chmduquesne/rollinghash")
       (synopsis "Rolling hashes in Go")
       (description
