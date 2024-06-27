@@ -1846,8 +1846,25 @@ which produce colorized output using github.com/fatih/color.")
     (arguments
      (list
       #:go go-1.21
-      #:tests? #f ; Requires some unpackaged software and test data
-      #:import-path "github.com/oschwald/maxminddb-golang"))
+      #:import-path "github.com/oschwald/maxminddb-golang"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Remove most of the tests requiring test-data from submodule
+          ;; <https://github.com/maxmind/MaxMind-DB>, there is a documented
+          ;; process on how to generate it, consider to pack and activate
+          ;; tests in the next update cycle.
+          (add-after 'unpack 'remove-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          (list "decoder_test.go"
+                                "deserializer_test.go"
+                                "example_test.go"
+                                "reader_test.go"
+                                "traverse_test.go"
+                                "verifier_test.go"))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://github.com/oschwald/maxminddb-golang")
