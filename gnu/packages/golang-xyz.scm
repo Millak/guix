@@ -3856,6 +3856,34 @@ supported by the time package
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-vitrun-qart
+  (let ((commit "bf64b92db6b05651d6c25a3dabf2d543b360c0aa")
+        (revision "0"))
+    (package
+      (name "go-github-com-vitrun-qart")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vitrun/qart")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1xk7qki703xmay9ghi3kq2bjf1iw9dz8wik55739d6i7sn77vvkc"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/vitrun/qart"))
+      (home-page "https://github.com/vitrun/qart")
+      (synopsis "Create QR codes with an embedded image")
+      (description
+       "This package provides a library for embedding human-meaningful
+graphics in QR codes.  However, instead of scribbling on redundant pieces and
+relying on error correction to preserve the meaning, @code{qart} engineers the
+encoded values to create the picture in a code with no inherent errors.")
+      (license license:bsd-3))))
+
 (define-public go-github-com-vividcortex-ewma
   (package
     (name "go-github-com-vividcortex-ewma")
