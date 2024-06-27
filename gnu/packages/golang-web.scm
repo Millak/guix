@@ -1832,7 +1832,7 @@ which produce colorized output using github.com/fatih/color.")
 (define-public go-github-com-oschwald-maxminddb-golang
   (package
     (name "go-github-com-oschwald-maxminddb-golang")
-    (version "1.4.0")
+    (version "1.13.0")
     (source
      (origin
        (method git-fetch)
@@ -1841,14 +1841,15 @@ which produce colorized output using github.com/fatih/color.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "100wd5qv00pkcm6cb8c4x5gavc9jnn7drh6xrqh85hzci4rils66"))))
+        (base32 "1p0c10r6850znvarc9h3y0jlwika9qmq0ys7rmg2aj8x2cffz3z6"))))
     (build-system go-build-system)
-    (propagated-inputs
-     (list go-golang-org-x-sys))
     (arguments
      (list
+      #:go go-1.21
       #:tests? #f ; Requires some unpackaged software and test data
       #:import-path "github.com/oschwald/maxminddb-golang"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
     (home-page "https://github.com/oschwald/maxminddb-golang")
     (synopsis "MaxMind DB Reader for Go")
     (description
