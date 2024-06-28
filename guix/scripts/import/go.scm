@@ -51,7 +51,7 @@ can be specified after the arobas (@) character.\n"))
   -h, --help             display this help and exit"))
   (display (G_ "
   -r, --recursive        generate package expressions for all Go modules
-that are not yet in Guix"))
+                         that are not yet in Guix"))
   (display (G_ "
   -p, --goproxy=GOPROXY  specify which goproxy server to use"))
   (display (G_ "
