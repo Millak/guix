@@ -3529,7 +3529,8 @@ September 2004}")
               "--with-openblas=1"
               (string-append "--with-openblas-dir="
                              #$(this-package-input "openblas"))
-              "--with-superlu=1")
+              "--with-superlu=1"
+              "--with-debugging=0")
       #:make-flags
       ;; Honor (parallel-job-count) for build.  Do not use --with-make-np,
       ;; whose value is dumped to $out/lib/petsc/conf/petscvariables.
