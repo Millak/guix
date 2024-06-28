@@ -19,6 +19,7 @@
 
 (define-module (gnu home services gnupg)
   #:use-module (guix gexp)
+  #:use-module (guix modules)
   #:use-module ((guix records) #:select (match-record))
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
@@ -142,6 +143,17 @@ agent, with support for handling OpenSSH material."))))
          . "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"))
       '()))
 
+(define gpg-agent-activation
+  (with-imported-modules (source-module-closure
+                          '((gnu build activation)))
+    #~(begin
+        (use-modules (gnu build activation))
+
+        ;; Make sure ~/.gnupg is #o700.
+        (let* ((home (getenv "HOME"))
+               (dot-ssh (string-append home "/.gnupg")))
+          (mkdir-p/perms dot-ssh (getpw (getuid)) #o700)))))
+
 (define home-gpg-agent-service-type
   (service-type
    (name 'home-gpg-agent)
@@ -150,6 +162,8 @@ agent, with support for handling OpenSSH material."))))
                              home-gpg-agent-files)
           (service-extension home-shepherd-service-type
                              home-gpg-agent-shepherd-services)
+          (service-extension home-activation-service-type
+                             (const gpg-agent-activation))
           (service-extension home-environment-variables-service-type
                              home-gpg-agent-environment-variables)))
    (default-value (home-gpg-agent-configuration))
