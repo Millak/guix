@@ -1,0 +1,40 @@
+This patch fixes an issue in virt-manager 4.1.0 where it errors and returns a
+stack trace. Namely, Gdk.Cursor.new_from_name yields a "constructor returned
+NULL" error, which causes a "'NoneType' object has no attribute 'conn'" error
+later.
+
+See the upstream bug report for more information:
+
+https://github.com/virt-manager/virt-manager/issues/479
+
+Patch copied from upstream source repository:
+
+https://github.com/virt-manager/virt-manager/commit/cc4a39ea94f42bc92765eb3bb56e2b7f9198be67
+
+From cc4a39ea94f42bc92765eb3bb56e2b7f9198be67 Mon Sep 17 00:00:00 2001
+From: Cole Robinson <crobinso@redhat.com>
+Date: Thu, 19 Jan 2023 11:13:56 -0500
+Subject: [PATCH] asyncjob: Fix backtrace when no cursor theme installed
+
+Fixes: https://github.com/virt-manager/virt-manager/issues/479
+
+Signed-off-by: Cole Robinson <crobinso@redhat.com>
+---
+ virtManager/asyncjob.py | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/virtManager/asyncjob.py b/virtManager/asyncjob.py
+index 32d9c0a16..46692acea 100644
+--- a/virtManager/asyncjob.py
++++ b/virtManager/asyncjob.py
+@@ -265,9 +265,7 @@ def run(self):
+             self.topwin.present()
+ 
+         if not self.cancel_cb and self.show_progress:
+-            gdk_window = self.topwin.get_window()
+-            gdk_window.set_cursor(
+-                Gdk.Cursor.new_from_name(gdk_window.get_display(), "progress"))
++            self._set_cursor("progress")
+         self._bg_thread.start()
+ 
+ 

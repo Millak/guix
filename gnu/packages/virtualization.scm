@@ -33,6 +33,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1663,7 +1664,8 @@ virtualization library.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "18lhlnd3gmyzhbnjc16gdyzhjcd33prlxnca4xlidiidngbq21lm"))))
+                "18lhlnd3gmyzhbnjc16gdyzhjcd33prlxnca4xlidiidngbq21lm"))
+              (patches (search-patches "virt-manager-fix-gtk-cursor-theme-backtace.patch"))))
     (build-system python-build-system)
     (arguments
      (list #:use-setuptools? #f      ; uses custom distutils 'install' command
