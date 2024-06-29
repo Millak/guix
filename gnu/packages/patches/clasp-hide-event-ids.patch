@@ -1,0 +1,41 @@
+From a4c4e4f3c410834c3e56f644841f5bcbb084225c Mon Sep 17 00:00:00 2001
+From: Liliana Marie Prikler <liliana.prikler@ist.tugraz.at>
+Date: Fri, 28 Jun 2024 11:15:16 +0200
+Subject: [PATCH] clasp: Hide Event_t<T>::id_s.
+
+This patch helps build clingo with non-local clasp while keeping the
+event system working as intended.
+---
+ clasp/util/misc_types.h | 2 ++
+ src/CMakeLists.txt      | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/clasp/util/misc_types.h b/clasp/util/misc_types.h
+index 3677873..09c2075 100644
+--- a/clasp/util/misc_types.h
++++ b/clasp/util/misc_types.h
+@@ -432,7 +432,9 @@ struct Event_t : Event {
+ 	Event_t(Subsystem sys, Verbosity verb) : Event(sys, id_s, verb) {}
+ 	static const uint32 id_s;
+ };
++#if _BUILDING_CLASP_
+ template <class T> const uint32 Event_t<T>::id_s = Event::nextId();
++#endif
+ 
+ template <class ToType, class EvType> const ToType* event_cast(const EvType& ev) { return ev.id == ToType::id_s ? static_cast<const ToType*>(&ev) : 0; }
+ 
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 8439d12..4f55990 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -123,6 +123,7 @@ source_group("${ide_header}\\mt" FILES ${header_mt})
+ endif()
+ 
+ add_library(libclasp ${header} ${header_util} ${header_cli} ${header_mt} ${src})
++target_compile_definitions(libclasp PRIVATE _BUILDING_CLASP_)
+ if (CLASP_BUILD_WITH_THREADS)
+ 	target_link_libraries(libclasp PUBLIC Threads::Threads)
+ 	target_compile_options(libclasp PRIVATE
+-- 
+2.45.1
+

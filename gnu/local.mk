@@ -1064,6 +1064,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/clang-runtime-3.7-fix-build-with-python3.patch	\
   %D%/packages/patches/clang-runtime-3.9-libsanitizer-mode-field.patch	\
   %D%/packages/patches/clang-runtime-3.8-libsanitizer-mode-field.patch	\
+  %D%/packages/patches/clasp-hide-event-ids.patch		\
   %D%/packages/patches/classpath-aarch64-support.patch		\
   %D%/packages/patches/classpath-miscompilation.patch		\
   %D%/packages/patches/cling-use-shared-library.patch		\
