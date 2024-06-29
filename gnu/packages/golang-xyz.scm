@@ -2702,9 +2702,9 @@ the @code{cpan} module @code{Parse::CommandLine}.")
 other directories.  It is optimized for filewalking.")
     (license license:expat)))
 
-(define-public go-github-com-matttproud-golang-protobuf-extensions-pbutil
+(define-public go-github-com-matttproud-golang-protobuf-extensions-v2
   (package
-    (name "go-github-com-matttproud-golang-protobuf-extensions-pbutil")
+    (name "go-github-com-matttproud-golang-protobuf-extensions-v2")
     (version "2.0.0")
     (source
      (origin
@@ -2720,8 +2720,17 @@ other directories.  It is optimized for filewalking.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/matttproud/golang_protobuf_extensions/v2/pbutil"
-      #:unpack-path "github.com/matttproud/golang_protobuf_extensions/v2"))
+      #:import-path "github.com/matttproud/golang_protobuf_extensions/v2"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Activate when go-build-system supports submodules.
+          (delete 'build)
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-golang-protobuf
            go-google-golang-org-protobuf))

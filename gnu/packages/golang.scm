@@ -7599,7 +7599,7 @@ formatting information, rather than the current locale name.")
          (delete 'build))))
     (propagated-inputs
      (list go-github-com-golang-protobuf
-           go-github-com-matttproud-golang-protobuf-extensions-pbutil
+           go-github-com-matttproud-golang-protobuf-extensions-v2
            go-github-com-prometheus-client-model))
     (synopsis "Prometheus metrics")
     (description "This package provides tools for reading and writing
