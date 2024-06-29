@@ -32,39 +32,44 @@
 (define-public libunibreak
   (package
     (name "libunibreak")
-    (version "5.0")
+    (version "6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/adah1972/libunibreak")
                     (commit (string-append "libunibreak_"
-                              (string-replace-substring version "." "_")))))
+                                           (string-replace-substring version "." "_")))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r5dndhwsiy65lmavz3vdgal9nl8g97hbmdjg6zyq3zh5hs87vwf"))))
+                "0mhkbji89cyjg4g1rviyprchxzpv8pmlmqw4m10cvgfjwmpmwa7k"))))
     (build-system gnu-build-system)
     (native-inputs
-      (list autoconf-wrapper
-            automake
-            libtool
-            ucd))
+     (list autoconf-wrapper
+           automake
+           libtool
+           ucd))
     (arguments
      `(#:parallel-tests? #f  ; parallel tests cause non-deterministic
-                             ; build failures
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (for-each (lambda (file)
-                         (copy-file
-                           (search-input-file inputs
-                             (string-append "/share/ucd/auxiliary/"
-                                            file))
-                           (string-append "src/" file)))
-                       '("LineBreakTest.txt"
-                         "WordBreakTest.txt"
-                         "GraphemeBreakTest.txt")))))))
+       ;; see https://github.com/adah1972/libunibreak/issues/41
+       ;; There is currently no plan to implement full Unicode 15.1 support for
+       ;; line breaking, mostly because tailoring for Brahmic scripts, as
+       ;; described in LB28a of UAX #14-51, is problematic within the current
+       ;; framework.
+       ;; #:phases
+       ;; (modify-phases %standard-phases
+       ;;   (add-before 'check 'pre-check
+       ;;     (lambda* (#:key inputs #:allow-other-keys)
+       ;;       (for-each (lambda (file)
+       ;;                   (copy-file
+       ;;                     (search-input-file inputs
+       ;;                       (string-append "/share/ucd/auxiliary/"
+       ;;                                      file))
+       ;;                     (string-append "src/" file)))
+       ;;                 '("LineBreakTest.txt"
+       ;;                   "WordBreakTest.txt"
+       ;;                   "GraphemeBreakTest.txt")))))
+       ))
     (home-page "https://vimgadgets.sourceforge.net/libunibreak/")
     (synopsis "Unicode line breaking and word breaking algorithms")
     (description
