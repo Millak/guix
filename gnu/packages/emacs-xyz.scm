@@ -37919,16 +37919,16 @@ displayed for sharing.")
 (define-public emacs-orglink
   (package
     (name "emacs-orglink")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/tarsius/orglink")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jkk6jiqmsns1pb0almaihyz6c3lim0r6l4x75qp7448p46q2him"))))
+        (base32 "00lxfn78768kwp1sxcafzpycarqi7a9zsy4p22cjbp9vi6l8qx7j"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
