@@ -30753,7 +30753,7 @@ interface to attach and interact with the processes.")
 (define-public emacs-dtrt-indent
   (package
     (name "emacs-dtrt-indent")
-    (version "1.17")
+    (version "1.18")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -30762,7 +30762,7 @@ interface to attach and interact with the processes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mjdqzl5mbasix8awav2qp9367waycmbcjy07s53nhv2xpqam9la"))))
+                "1sw0wabk68ixqip7kmkdvhw9rxz266cj8rs4hz3zlbcf7q6pjq6r"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/jscheid/dtrt-indent")
     (synopsis "Minor mode that guesses the indentation offset")
