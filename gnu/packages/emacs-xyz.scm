@@ -142,6 +142,8 @@
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Noé Lopez <noelopez@free.fr>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2024 Daniel Szmulewicz <daniel.szmulewicz@gmail.com>
+
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1859,6 +1861,34 @@ consistent with other popular, vertically aligned completion UIs while
 leveraging built-in functionality.")
     (license (list license:gpl3+
                    license:fdl1.3+)))) ; GFDLv1.3+ for the manual
+
+(define-public emacs-meyvn
+  (let ((commit "f2b809da1d1bf66f1a215a0e5c64f95d10118b76")) ;version bump
+    (package
+      (name "emacs-meyvn")
+      (version "1.3")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/danielsz/meyvn-el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zcckiqk046lbc059jxkh94sjicpvpsf1xkgi8i73rds2xxjyvpk"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-cider
+                               emacs-dash
+                               emacs-geiser
+                               emacs-parseclj
+                               emacs-parseedn
+                               emacs-projectile
+                               emacs-s))
+      (home-page "https://github.com/danielsz/meyvn-el")
+      (synopsis "Emacs client for the Meyvn build tool")
+      (description
+       "This package provides an Emacs client for the @url{https://meyvn.org, Meyvn} build tool.")
+      (license license:gpl3+))))
 
 (define-public emacs-fzf
   (let ((commit "21912ebc7e1084aa88c9d8b7715e782a3978ed23")
