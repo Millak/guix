@@ -39647,27 +39647,25 @@ by leveraging @code{emacs-consult} APIs.")
     (license license:expat)))
 
 (define-public emacs-context-transient
-  (let ((commit "16b8e16645ebcdc44d2777ba16ac85e1d3ee468b")
-        (revision "0"))
-    (package
-      (name "emacs-context-transient")
-      (version (git-version "1.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/licht1stein/context-transient.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "147yv3ih9il6a4k2cw1kcqgdpls83jf7aspjf8km650ry0apycc6"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/licht1stein/context-transient.el")
-      (synopsis "Context specific transients")
-      (description "This package makes it easy to define and call
+  (package
+    (name "emacs-context-transient")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/licht1stein/context-transient.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1slj9js7c4cggdidr7miri9gf9xm7ij4hmd7y99km7bqmg57837l"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/licht1stein/context-transient.el")
+    (synopsis "Context specific transients")
+    (description "This package makes it easy to define and call
 context-specific @code{emacs-transient} menus for current project, git repo,
 buffer or any other condition.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-purs-mode
   ;; XXX: Upstream set no tag nor any Version keyword.  Using 0 as the base
