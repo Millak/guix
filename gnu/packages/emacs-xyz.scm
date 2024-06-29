@@ -28259,7 +28259,7 @@ accept and reject GitHub pull requests.")
 (define-public emacs-deadgrep
   (package
     (name "emacs-deadgrep")
-    (version "0.12")
+    (version "0.13")
     (source
      (origin
        (method git-fetch)
@@ -28269,7 +28269,7 @@ accept and reject GitHub pull requests.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0bwf8gsqw7hsmacqd34piwgv066ijfclmxaigkvhvpac0lpsmi79"))))
+         "1ry9qvvxwhh3gkb0kkwiwpx37jpdzgky1h2zkwpzjpkv5jm022dr"))))
     (build-system emacs-build-system)
     (arguments
      (list
