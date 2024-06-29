@@ -221,6 +221,30 @@ time, as otherwise the internal gzip library will likely be faster.")
 (define-public go-github-com-nwaples-rardecode
   (package
     (name "go-github-com-nwaples-rardecode")
+    (version "1.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nwaples/rardecode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s00b8a9gppka3yxkxh7z5wy0ahygl8wbb0fbyx2r0rj879a1c2z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nwaples/rardecode"))
+    (home-page "https://github.com/nwaples/rardecode")
+    (synopsis "Reading RAR archives in Go")
+    (description
+     "This package provides a library for reading RAR archives with Golang.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-nwaples-rardecode-v2
+  (package
+    (inherit  go-github-com-nwaples-rardecode)
+    (name "go-github-com-nwaples-rardecode-v2")
     (version "2.0.0-beta.2")
     (source
      (origin
@@ -231,15 +255,9 @@ time, as otherwise the internal gzip library will likely be faster.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1344mxfdgs5fps6mqxk6352arrfszi33kmq394rgmqpf4394f1y7"))))
-    (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/nwaples/rardecode"))
-    (home-page "https://github.com/nwaples/rardecode")
-    (synopsis "Reading RAR archives in Go")
-    (description
-     "This package provides a library for reading RAR archives with Golang.")
-    (license license:bsd-2)))
+      #:import-path "github.com/nwaples/rardecode/v2"))))
 
 (define-public go-github-com-pierrec-lz4
   (package
