@@ -67,14 +67,14 @@
 (define-public asymptote
   (package
     (name "asymptote")
-    (version "2.89")
+    (version "2.90")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asymptote/"
                            version "/asymptote-" version ".src.tgz"))
        (sha256
-        (base32 "0nvzlnabxjn74ybv3jns9vsr33prlvlg3i20hskz31agxss64kpn"))
+        (base32 "0h3kf0jajn67izpg6h1bi50qrsdslr7mnacp4j7lmx4bh3xmcscc"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled RapidJSON.
@@ -108,7 +108,8 @@
                   texlive-ocgx2
                   texlive-parskip
                   texlive-pdftexcmds
-                  texlive-texinfo))))
+                  texlive-texinfo
+                  texlive-type1cm))))
     (inputs
      (list bash-minimal
            eigen
