@@ -235,6 +235,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/debug.scm			\
   %D%/packages/dejagnu.scm			\
   %D%/packages/dezyne.scm			\
+  %D%/packages/decker.scm			\
   %D%/packages/dhall.scm			\
   %D%/packages/dico.scm				\
   %D%/packages/dictionaries.scm			\
