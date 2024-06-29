@@ -13510,17 +13510,17 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.34.2")
+    (version "1.46.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/valos/Komikku/")
+             (url "https://codeberg.org/valos/Komikku/")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "044m3z7h1hi2avx4z6qgjzhgn1fkf1iclxhr4j7pb6flbqvwnxhs"))))
+         "1ggg4hgd1kyc69b06kcgvvjwmz72xgjakva19gs3nrszr4cinank"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -13546,7 +13546,9 @@ profiler via Sysprof, debugging support, and more.")
             (lambda* (#:key outputs #:allow-other-keys)
               (wrap-program (search-input-file outputs "bin/komikku")
                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
+                `("GDK_PIXBUF_MODULE_FILE" =
+                  (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
     (inputs
      (list bash-minimal
            gtk
@@ -13572,7 +13574,8 @@ profiler via Sysprof, debugging support, and more.")
            python-rarfile
            python-requests
            python-unidecode
-           webkitgtk))
+           webkitgtk
+           webp-pixbuf-loader))
     (native-inputs
      (list blueprint-compiler
            desktop-file-utils
@@ -13580,7 +13583,7 @@ profiler via Sysprof, debugging support, and more.")
            `(,glib "bin")
            gobject-introspection
            pkg-config))
-    (home-page "https://gitlab.com/valos/Komikku")
+    (home-page "https://apps.gnome.org/Komikku")
     (synopsis "Manga reader for GNOME")
     (description "Komikku is an online/offline manga reader for GNOME,
 developed with the aim of being used with the Librem 5 phone.")
