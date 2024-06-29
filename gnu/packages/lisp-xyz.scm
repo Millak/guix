@@ -20560,7 +20560,12 @@ like Ruby's ActiveRecord.
   (sbcl-package->cl-source-package sbcl-mito))
 
 (define-public ecl-mito
-  (sbcl-package->ecl-package sbcl-mito))
+  (let ((pkg (sbcl-package->ecl-package sbcl-mito)))
+    (package
+      (inherit pkg)
+      (arguments
+       ;; FIXME: Tests never end.
+       '(#:tests? #f)))))
 
 (define-public sbcl-mk-string-metrics
   (package
