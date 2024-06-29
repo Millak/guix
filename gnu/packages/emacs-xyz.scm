@@ -33026,6 +33026,37 @@ all of your projects, then override or add variables on a per-project basis.")
      "Casual Dired is an opinionated Transient-based porcelain for Emacs Dired.")
     (license license:gpl3+)))
 
+(define-public emacs-casual-lib
+  (package
+    (name "emacs-casual-lib")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kickingvegas/casual-lib")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0dn6jz8bbz17326g0jd1hvz80xxmbl7dwifb2nnw7nl6q6adbkmf"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #t
+           #:test-command #~(list "make" "tests")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'move-source-files
+                 (lambda _
+                   (let ((el-files (find-files "./lisp" ".*\\.el$")))
+                     (for-each (lambda (f) (copy-file f (basename f)))
+                               el-files)))))))
+    (native-inputs (list python-minimal))
+    (home-page "https://github.com/kickingvegas/casual-lib")
+    (synopsis "Library package for the Emacs Casual porcelains")
+    (description
+     "Casual Lib is a library package used to support the Casual porcelains.")
+    (license license:gpl3+)))
+
 (define-public emacs-calibredb
   (package
     (name "emacs-calibredb")
