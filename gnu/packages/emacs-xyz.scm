@@ -1916,7 +1916,7 @@ files left by ArchLinux's pacman.")
 (define-public emacs-minions
   (package
     (name "emacs-minions")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1925,7 +1925,7 @@ files left by ArchLinux's pacman.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ralw9znj749ii046l0dfa3aacm05g1ix59rfsjafhky8fiwz37m"))))
+        (base32 "1m51amzflq3l8x02azwjri721zf6aj0q4sld266j7fcyp24wwk1g"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat emacs-dash))
