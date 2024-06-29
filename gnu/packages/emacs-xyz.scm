@@ -10521,7 +10521,7 @@ in HTML mode.")
   ;; Update together with sbcl-slime-swank.
   (package
     (name "emacs-slime")
-    (version "2.29.1")
+    (version "2.30")
     (source
      (origin
        (method git-fetch)
@@ -10530,7 +10530,7 @@ in HTML mode.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fcasqsdfwsphkfx1vd3r5mr89vgvzb9g2dbw82mc9lijg1mr1ki"))))
+        (base32 "1z9mi663cs5gks1fz5yy9dycx47sbs6fdr47z05yc1nl8znqib99"))))
     (build-system emacs-build-system)
     (arguments
      (list
