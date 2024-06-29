@@ -69,6 +69,7 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages specifications))
@@ -2876,7 +2877,7 @@ semantic versions.  Specifically it provides the ability to:
 (define-public go-github-com-masterminds-sprig-v3
   (package
     (name "go-github-com-masterminds-sprig-v3")
-    (version "3.1.0")
+    (version "3.2.3")
     (source
      (origin
        (method git-fetch)
@@ -2885,7 +2886,7 @@ semantic versions.  Specifically it provides the ability to:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wwi8n2adjc5jlga25lqq0hrz4jcgd5vpll68y2dfji034caaq18"))))
+        (base32 "1gkwalx8j8h1jdhk6dz8bq8zp7vivxvcivr83dcq0h6nrn4xjqnl"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -2908,6 +2909,7 @@ semantic versions.  Specifically it provides the ability to:
            go-github-com-masterminds-semver-v3
            go-github-com-mitchellh-copystructure
            go-github-com-mitchellh-reflectwalk
+           go-github-com-shopspring-decimal
            go-github-com-spf13-cast
            go-golang-org-x-crypto))
     (home-page "https://github.com/Masterminds/sprig/")
