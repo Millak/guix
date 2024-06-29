@@ -12741,7 +12741,7 @@ between symbols.")
 (define-public emacs-hl-todo
   (package
     (name "emacs-hl-todo")
-    (version "3.6.0")
+    (version "3.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12750,7 +12750,7 @@ between symbols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rq16zrdmq9j2jrsg136r5qbqvsgd2bkgpb2wmxca91kfx86r2qq"))))
+                "0am37ndwz8gkfs0d1va86q84yjdvvf0wag8fns3q87i5yhssi7vp"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
