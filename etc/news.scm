@@ -23,6 +23,7 @@
 ;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
 ;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;; Copyright © 2024 Vivien Kraus <vivien@planete-kraus.eu>
+;; Copyright © 2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -30,6 +31,20 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "a46908620fac09bd8ccd0f587a27e86035d3b1d7")
+        (title
+         (en "@code{stumpwm:lib} removed")
+         (fr "@code{stumpwm:lib} supprimé"))
+        (body
+         (en "The @code{lib} output of the @code{stumpwm} package has been
+removed.  If you have some personal package definitions depending on
+@code{stumpwm:lib}, they should be updated to depend on @code{stumpwm}
+instead.")
+         (fr "La sortie @code{lib} du paquet @code{stumpwm} a été supprimée.
+Si vous avez des définitions de paquets personnels dépendantes de
+@code{stumpwm:lib}, elle doivent être modifiées pour dépendre de
+@code{stumpwm} à la place.")))
 
  (entry (commit "6fad0fd1c32db2cb25447b694f08d5c7836536ad")
         (title
