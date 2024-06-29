@@ -69,6 +69,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6738,3 +6739,56 @@ for details on how to change this.")
 broadcasters including SVT Play, Sveriges Radio, TV4 Play, along with many
 others.")
     (license license:expat)))
+
+(define-public syncplay
+  (package
+    (name "syncplay")
+    (version "1.7.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Syncplay/syncplay")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08bgndszja4n2kql2qmzl6qrzawxvcwmywsc69lq0dzjnpdk96la"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%python-build-system-modules
+                           (guix build qt-utils)
+                           (guix build utils))
+      #:modules '((guix build python-build-system)
+                  (guix build qt-utils)
+                  (guix build utils))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'check)
+                   (replace 'install
+                     (lambda _
+                       (invoke "make" "install" "DESTDIR="
+                               (string-append "PREFIX="
+                                              #$output))))
+                   (add-after 'install 'wrap-qt
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (wrap-qt-program "syncplay"
+                                        #:output #$output
+                                        #:inputs inputs
+                                        #:qt-major-version "6"))))))
+    (native-inputs (list python-pyside-6))
+    (inputs (list bash-minimal
+                  python-certifi
+                  python-idna
+                  python-service-identity
+                  python-twisted
+                  qtwayland))
+    (home-page "https://syncplay.pl")
+    (synopsis "Client/server to synchronize media playback on many computers")
+    (description
+     "Syncplay is a solution to synchronize video playback across multiple
+instances of media players over the Internet.  When one person pauses/unpauses
+playback or skips to a position in the video, this is replicated across all
+media players connected to the same server and in the same \"room\" (viewing
+session).  A built-in text chat for discussing the synced media is also
+included for convenience.")
+    (license license:asl2.0)))
