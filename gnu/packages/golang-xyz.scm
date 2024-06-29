@@ -2702,6 +2702,36 @@ the @code{cpan} module @code{Parse::CommandLine}.")
 other directories.  It is optimized for filewalking.")
     (license license:expat)))
 
+(define-public go-github-com-matttproud-golang-protobuf-extensions-pbutil
+  (package
+    (name "go-github-com-matttproud-golang-protobuf-extensions-pbutil")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/matttproud/golang_protobuf_extensions")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0jw4vjycwx0a82yvixmp25805krdyqd960y8lnyggllb6br0vh41"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/matttproud/golang_protobuf_extensions/v2/pbutil"
+      #:unpack-path "github.com/matttproud/golang_protobuf_extensions/v2"))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/matttproud/golang_protobuf_extensions")
+    (synopsis "Streaming Protocol Buffers in Go")
+    (description
+     "This package provides various Protocol Buffer extensions for the Go
+language, namely support for record length-delimited message streaming.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-mgutz-ansi
   (let ((commit "9520e82c474b0a04dd04f8a40959027271bab992")
         (revision "0"))

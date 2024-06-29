@@ -238,33 +238,3 @@ notification area icon for Syncthing.  Supported Syncthing features:
 notification library in Go.")
       (home-page "https://github.com/syncthing/notify")
       (license expat))))
-
-(define-public go-github-com-matttproud-golang-protobuf-extensions-pbutil
-  (package
-    (name "go-github-com-matttproud-golang-protobuf-extensions-pbutil")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/matttproud/golang_protobuf_extensions")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0jw4vjycwx0a82yvixmp25805krdyqd960y8lnyggllb6br0vh41"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/matttproud/golang_protobuf_extensions/v2/pbutil"
-      #:unpack-path "github.com/matttproud/golang_protobuf_extensions/v2"))
-    (propagated-inputs
-     (list go-github-com-golang-protobuf
-           go-google-golang-org-protobuf))
-    (synopsis "Streaming Protocol Buffers in Go")
-    (description "This package provides various Protocol Buffer
-extensions for the Go language, namely support for record length-delimited
-message streaming.")
-    (home-page "https://github.com/matttproud/golang_protobuf_extensions")
-    (license asl2.0)))
