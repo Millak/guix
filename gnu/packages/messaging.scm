@@ -42,6 +42,7 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1387,7 +1388,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
@@ -1395,7 +1396,7 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "01jbggjqsbqrzd76bq4h8ccnijsw3m3mav838mnk20kls8agq5d6"))))
+        (base32 "1zvxyvql695bwbic17z86vrh2j1qkwvab1irqjkvza4szbklr29i"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
