@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -375,6 +375,11 @@ until LLVM/Clang 14."
                                  (string-append
                                   "add_subdirectory(${LLVM_THIRD_PARTY_DIR}/uni\
 ttest third-party/unittest)\n" line))))))
+                        '())
+                  ;; The build daemon goes OOM on i686-linux on this phase.
+                  ,@(if (and (version>=? version "15")
+                             (target-x86-32?))
+                        '((delete 'make-dynamic-linker-cache))
                         '())
                   ;; Awkwardly, multiple phases added after the same phase,
                   ;; e.g. unpack, get applied in the reverse order.  In other
