@@ -566,12 +566,12 @@ editor (with wide ints)" )
         #~(cons "--with-wide-int" #$flags))))))
 
 (define-public emacs-next-minimal
-  (let ((commit "170c6557922dad7e6e9bc0d6dadf6c080108fd42")
-        (revision "2"))
+  (let ((commit "4e22ef870c4b650f29c4441ac51b6a2ac506ea57")
+        (revision "1"))
    (package
     (inherit emacs-minimal)
     (name "emacs-next-minimal")
-    (version (git-version "30.0.50" revision commit))
+    (version (git-version "30.0.60" revision commit))
     (source
      (origin
        (method git-fetch)
@@ -580,7 +580,7 @@ editor (with wide ints)" )
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04carva3b6h9fnlzazrsxsj41hcnjc26kxjij07l159azi40l6sk"))
+        (base32 "1zl9ffj3ph4msr1r4qw09x1wljpv2lbr7ypqd0p3q89m2qpvfn80"))
        (patches
         (search-patches "emacs-next-exec-path.patch"
                         "emacs-fix-scheme-indent-function.patch"
@@ -598,7 +598,28 @@ editor (with wide ints)" )
                                   (string-drop (package-name emacs)
                                                (string-length "emacs"))))))
     (version version)
-    (source source)))
+    (source source)
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'validate-comp-integrity
+              (lambda* (#:key outputs #:allow-other-keys)
+                #$(cond
+                   ((%current-target-system)
+                    #~(display
+                       "Cannot validate native compilation on cross builds.\n"))
+                   ((member (%current-system) '("armhf-linux" "i686-linux"))
+                    #~(display "Integrity test is broken on 32 bit systems.\n"))
+                   (else
+                    #~(invoke
+                       (string-append (assoc-ref outputs "out") "/bin/emacs")
+                       "--batch"
+                       "--load"
+                       #$(local-file
+                          (search-auxiliary-file
+                           "emacs/comp-integrity-next.el"))
+                       "-f" "ert-run-tests-batch-and-exit")))))))))))
 
 (define-public emacs-next (emacs->emacs-next emacs))
 (define-public emacs-next-pgtk (emacs->emacs-next emacs-pgtk))
