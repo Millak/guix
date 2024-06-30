@@ -8391,7 +8391,7 @@ translated into a human-readable text format using the @code{jellyfish dump}
 command, or queried for specific k-mers with @code{jellyfish query}.")
     (home-page "http://www.genome.umd.edu/jellyfish.html")
     ;; JELLYFISH seems to be 64-bit only.
-    (supported-systems '("x86_64-linux" "aarch64-linux" "mips64el-linux"))
+    (supported-systems %64bit-supported-systems)
     ;; One of these licenses may be picked
     (license (list license:gpl3+ license:bsd-3))))
 
