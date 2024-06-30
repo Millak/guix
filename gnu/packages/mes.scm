@@ -154,15 +154,14 @@ parsers to allow execution with Guile as extension languages.")))
 (define-public mes
   (package
     (name "mes")
-    (version "0.26.1")
+    (version "0.26.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/mes/"
                                   "mes-" version ".tar.gz"))
-              (patches (search-patches "mes-0.26.1-fixups.patch"))
               (sha256
                (base32
-                "1x7wq9cj8pybdl736mn8z48zcwgvyvi9mr9mr9vv9jxzii90sdz1"))))
+                "120a7ljnyi9127inaarlqv6cl98cmk72s3gmyad7cjrwy6cvzf1g"))))
     (supported-systems '("armhf-linux" "i686-linux"
                          "x86_64-linux" "riscv64-linux"))
     (propagated-inputs (list mescc-tools nyacc-1.00.2))
