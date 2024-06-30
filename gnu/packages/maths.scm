@@ -5204,8 +5204,7 @@ parts of it.")
 (define-public openblas-ilp64
   (package/inherit openblas
     (name "openblas-ilp64")
-    (supported-systems '("x86_64-linux" "aarch64-linux" "mips64el-linux"
-                         "powerpc64le-linux"))
+    (supported-systems %64bit-supported-systems)
     (arguments
      (substitute-keyword-arguments (package-arguments openblas)
        ((#:make-flags flags #~'())
