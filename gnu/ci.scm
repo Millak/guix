@@ -177,6 +177,13 @@ SYSTEM."
     "or1k-elf"
     "xtensa-ath9k-elf"))
 
+(define %unsupported-platform-triplets
+  ;; These systems are kept around for nostalgia or for tinkering, but regular
+  ;; CI is disabled for them to reduce the load on CI infrastructure.
+  '("mips64el-linux-gnu"
+    "powerpc-linux-gnu"
+    "powerpc64-linux-gnu"))
+
 (define (cross-jobs store system)
   "Return a list of cross-compilation jobs for SYSTEM."
   (define (from-32-to-64? target)
@@ -200,6 +207,7 @@ SYSTEM."
   (define (pointless? target)
     ;; Return #t if it makes no sense to cross-build to TARGET from SYSTEM.
     (or (member target %bare-platform-triplets)
+        (member target %unsupported-platform-triplets)
         (match system
           ((or "x86_64-linux" "i686-linux")
            (if (string-contains target "mingw")
