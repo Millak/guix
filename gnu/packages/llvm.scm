@@ -1434,7 +1434,15 @@ Library.")
   (package
     (inherit llvm-15)
     (version "17.0.6")
-    (source (llvm-monorepo version))))
+    (source (llvm-monorepo version))
+    (arguments
+     (substitute-keyword-arguments (package-arguments llvm-15)
+       ;; The build daemon goes OOM on i686-linux on this phase.
+       ((#:phases phases #~'%standard-phases)
+        (if (target-x86-32?)
+            #~(modify-phases #$phases
+                (delete 'make-dynamic-linker-cache))
+            phases))))))
 
 (define-public clang-runtime-17
   (clang-runtime-from-llvm llvm-17))
