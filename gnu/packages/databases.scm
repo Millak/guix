@@ -2845,7 +2845,7 @@ more efficient access and storage of column subsets) and log-structured merge
 trees (LSM), for sustained throughput under random insert workloads.")
     (license license:gpl3) ; or GPL-2
     ;; configure.ac: WiredTiger requires a 64-bit build.
-    (supported-systems '("x86_64-linux" "mips64el-linux" "aarch64-linux"))))
+    (supported-systems (delete "riscv64-linux" %64bit-supported-systems))))
 
 (define-public wiredtiger-3
   (package
