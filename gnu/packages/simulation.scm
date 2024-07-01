@@ -1180,29 +1180,29 @@ command-line utility for mesh optimisation.")
     (name "python-dolfin-adjoint")
     (version "2019.1.0")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/dolfin-adjoint/pyadjoint")
-              (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32
-           "0xhy76a5f33hz94wc9g2mc5qmwkxfccbbc6yxl7psm130afp8lhn"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;; One of the migration tests attempts to call openmpi
-            ;; recursively and fails.  See
-            ;; https://bitbucket.org/mpi4py/mpi4py/issues/95.  Run the
-            ;; test sequentially instead.
-            (with-directory-excursion "tests/migration/optimal_control_mms"
-              (substitute* "test_optimal_control_mms.py"
-                (("\\\"mpirun\\\", \\\"-n\\\", \\\"2\\\", ") "")))
-            ;; Result files are regenerated in the check phase.
-            (delete-file-recursively
-             "tests/migration/viscoelasticity/test-results")
-            #t))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dolfin-adjoint/pyadjoint")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0xhy76a5f33hz94wc9g2mc5qmwkxfccbbc6yxl7psm130afp8lhn"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; One of the migration tests attempts to call openmpi
+           ;; recursively and fails.  See
+           ;; https://bitbucket.org/mpi4py/mpi4py/issues/95.  Run the
+           ;; test sequentially instead.
+           (with-directory-excursion "tests/migration/optimal_control_mms"
+             (substitute* "test_optimal_control_mms.py"
+               (("\\\"mpirun\\\", \\\"-n\\\", \\\"2\\\", ") "")))
+           ;; Result files are regenerated in the check phase.
+           (delete-file-recursively
+            "tests/migration/viscoelasticity/test-results")
+           #t))))
     (build-system python-build-system)
     (inputs
      (list fenics openmpi pybind11))
@@ -1219,7 +1219,7 @@ command-line utility for mesh optimisation.")
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'build 'mpi-setup
-                    ,%openmpi-setup)
+           ,%openmpi-setup)
          (add-after 'install 'install-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((doc (string-append (assoc-ref outputs "out")
