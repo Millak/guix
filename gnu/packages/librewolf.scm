@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2023 Tomas Volf <wolf@wolfsden.cz>
 ;;; Copyright © 2023 Ian Eure <ian@retrospec.tv>
+;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -261,7 +262,10 @@
                               "--disable-crashreporter"
                               "--allow-addon-sideload"
                               "--with-unsigned-addon-scopes=app,system"
-                              "--disable-eme"
+
+                              ;; switch only available on x86, whereas EME
+                              ;; is not supported on other targets
+                              ,@(if #$(target-x86?) '("--disable-eme") '())
 
                               ;; Build details
                               "--disable-debug"
