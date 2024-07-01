@@ -262,6 +262,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages password-utils)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages animation)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages screen)
   #:use-module (gnu packages xdisorg)
@@ -35435,11 +35436,11 @@ service, and connect it with Emacs via inter-process communication.")
       (license license:gpl3+))))
 
 (define-public emacs-telega
-  (let ((commit "009e5ce9d393aa049bb3b1182306db4b5b85833b")
-        (revision "1"))
+  (let ((commit "58b4963b292ceb723d665df100b519eb5a99c676")
+        (revision "0"))
     (package
       (name "emacs-telega")
-      (version (git-version "0.8.290" revision commit))
+      (version (git-version "0.8.291" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -35447,7 +35448,7 @@ service, and connect it with Emacs via inter-process communication.")
                (url "https://github.com/zevlg/telega.el")
                (commit commit)))
          (sha256
-          (base32 "06k2qkxzq3l3cdqr70zrxrnm3q6qp9nw3zgm3p65nmx86ky1q72f"))
+          (base32 "1q3ydbm0jhrsyvvdn0mpmxvskq0l53jkh40a5hlx7i3qkinbhbry"))
          (file-name (git-file-name "emacs-telega" version))
          (patches
           (search-patches "emacs-telega-path-placeholder.patch"
@@ -35466,7 +35467,11 @@ service, and connect it with Emacs via inter-process communication.")
               (lambda* (#:key inputs #:allow-other-keys)
                 ;; Hard-code paths to `ffplay` and `ffmpeg`.
                 (let* ((ffplay-bin (search-input-file inputs "/bin/ffplay"))
-                       (ffmpeg-bin (search-input-file inputs "/bin/ffmpeg")))
+                       (ffmpeg-bin (search-input-file inputs "/bin/ffmpeg"))
+                       (tgs2png-bin (search-input-file inputs "/bin/tgs2png")))
+                  (substitute* '("telega.el" "telega-sticker.el" "telega-customize.el")
+                    (("\\(executable-find \"tgs2png\"\\)")
+                     (string-append "\"" tgs2png-bin "\"")))
                   (substitute* '("telega-ffplay.el" "telega-vvnote.el")
                     (("(shell-command-to-string\|concat) \"(ffmpeg\|ffprobe)"
                       all func cmd)
@@ -35489,7 +35494,7 @@ service, and connect it with Emacs via inter-process communication.")
                    (string-append (elpa-directory (assoc-ref outputs "out"))
                                   "/etc"))))))))
       (inputs
-       (list emacs-telega-server ffmpeg))
+       (list emacs-telega-server ffmpeg tgs2png))
       (native-inputs '())
       (propagated-inputs
        (list emacs-visual-fill-column emacs-company
