@@ -2499,13 +2499,13 @@ can be described by @acronym{WCS, World Coordinate System} translations.")
     (name "python-photutils")
     ;; PyPI version for source archive is missing minor 0, See
     ;; <https://github.com/astropy/photutils/issues/1727>
-    (version "1.12")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "0y4kcj6qjnzwjswc0c2iimh11b0jz6b9ianbh58w4gnb4y71lr6r"))))
+        (base32 "1lhpcxh2adknzlmrddqd712yzpwdlqlw9jn49ajj4kz5z7822dns"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2548,7 +2548,7 @@ setup(ext_modules=get_extensions())")))))
            python-shapely
            python-tqdm))
     (native-inputs
-     (list python-cython
+     (list python-cython-3
            python-extension-helpers
            python-pytest-astropy
            python-pytest-xdist
