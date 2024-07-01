@@ -4147,13 +4147,13 @@ milliarcsecond).")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.14.0")
+    (version "1.15.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jwst" version))
               (sha256
                (base32
-                "0knl2x0z3djsln8mi3a4bkxjz49iwmnr1v6wwsk13zvpkfq21vv4"))
+                "1nl5fixakqvjhg9q5biivwaqpi6lzx9w4fq0n6imwccag2gv1va3"))
               (modules '((guix build utils)))
               (snippet
                '(begin
