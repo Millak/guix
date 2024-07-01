@@ -5579,22 +5579,22 @@ linear algebra routines needed for structured matrices (or operators).")
 (define-public python-gpytorch
   (package
     (name "python-gpytorch")
-    (version "1.11")
+    (version "1.12")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gpytorch" version))
               (sha256
                (base32
-                "0q17bml53vixk3cwj3p893809927hz81fprwsmxpxqv5i4mvgyvj"))))
+                "1pwsccll1hrgkifdmlxzcn6cvnwvyq2cimqzbfgihr13yw51cb6w"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
-           ;; The error message in test_t_matmul_matrix suggests the error may
-           ;; be due to a bug in gpytorch.  test_deprecated_methods fails with
-           ;; an AssertionError.
-           #~(list "-k" (string-append "not test_deprecated_methods"
-                                       " and not test_t_matmul_matrix"))))
-    (propagated-inputs (list python-linear-operator python-scikit-learn))
+           ;; test_deprecated_methods fails with an AssertionError.
+           #~(list "-k" (string-append "not test_deprecated_methods"))))
+    (propagated-inputs (list python-linear-operator
+                             python-mpmath
+                             python-scikit-learn
+                             python-scipy))
     (native-inputs (list python-coverage
                          python-flake8
                          python-flake8-print
