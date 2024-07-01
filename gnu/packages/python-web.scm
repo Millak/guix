@@ -49,7 +49,7 @@
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
-;;; Copyright © 2022, 2023 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022–2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
@@ -3759,13 +3759,13 @@ portions of your testing code.")
 (define-public python-requests-toolbelt
   (package
     (name "python-requests-toolbelt")
-    (version "0.9.1")
+    (version "1.0.0")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "requests-toolbelt" version))
              (sha256
               (base32
-               "1h3gm88dcjbd7gm229a7x5qkkhnsqsjz0m0l2xyavm2ab3a8k04n"))))
+               "1ijvip427ki177ycrblcn1mfgsq7ixzpvqqfvidjn0a7s2is10bn"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -3775,9 +3775,14 @@ portions of your testing code.")
                       (delete-file "tests/test_x509_adapter.py")
                       ;; Fails due to networking (socket.gaierror: [Errno -2]
                       ;; Name or service not known).
-                      (delete-file "tests/test_multipart_encoder.py"))))))
+                      (delete-file "tests/test_multipart_encoder.py")
+                      ;; Those tests are not compatible with urllib3 2.0,
+                      ;; according to
+                      ;; https://github.com/requests/toolbelt/pull/356
+                      (delete-file "tests/test_sessions.py")
+                      )))))
     (native-inputs
-     (list python-betamax python-mock python-pytest))
+     (list python-betamax python-pyopenssl python-pytest python-trustme))
     (propagated-inputs
      (list python-requests))
     (synopsis "Extensions to python-requests")
