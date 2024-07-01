@@ -4832,13 +4832,13 @@ install an implementation package such as asdf-astropy.")
 (define-public python-asdf-zarr
   (package
     (name "python-asdf-zarr")
-    (version "0.0.3")
+    (version "0.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf_zarr" version))
        (sha256
-        (base32 "0ax7c9xarh6fi2yxm1z2p90mc3d57q23a7wc8av30xg8ririrl4s"))))
+        (base32 "0xddz4hnsypyvqxhi43alaqh2vl1ripcl4p63qn6dk2v90lra8c0"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-asdf python-fsspec python-zarr))
