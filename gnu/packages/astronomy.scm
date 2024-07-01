@@ -2218,15 +2218,15 @@ files and provide related services.")
   (package
     (name "python-czml3")
     (version "1.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/poliastro/czml3")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1vm9ajpnwxncvsl1ix3jarqyi14b0703g12wsr8b0agkrjlpmvmx"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/poliastro/czml3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vm9ajpnwxncvsl1ix3jarqyi14b0703g12wsr8b0agkrjlpmvmx"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-attrs
