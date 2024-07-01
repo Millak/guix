@@ -179,7 +179,7 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
 (define-public feh
   (package
     (name "feh")
-    (version "3.10.2")
+    (version "3.10.3")
     (home-page "https://feh.finalrewind.org/")
     (source (origin
               (method url-fetch)
@@ -187,7 +187,7 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0sc9dqcqz33pkc9x4m5i9lpq8avq5mhk3x0cdy3rhlsww9ysg52z"))))
+                "1j79850gwrjamgc22cv1hiynia4w5lc8qbhww3qpl8bhjxwy49jl"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
