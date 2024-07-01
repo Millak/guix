@@ -153,7 +153,7 @@
                      (when mdadm
                        (substitute* "grub-core/osdep/linux/getroot.c"
                          (("argv\\[0\\] = \"mdadm\"")
-                          (string-append "argv[0] = \"" mdadm "/sbin/mdadm\"")))))
+                          (string-append "argv[0] = \"" mdadm "\"")))))
 
                    ;; Make the font visible.
                    (copy-file #+unifont "unifont.bdf.gz")
