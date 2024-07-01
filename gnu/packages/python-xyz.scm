@@ -5047,13 +5047,13 @@ and is not compatible with JSON.")
 (define-public python-extension-helpers
 (package
   (name "python-extension-helpers")
-  (version "1.0.0")
+  (version "1.1.1")
   (source
     (origin
       (method url-fetch)
       (uri (pypi-uri "extension-helpers" version))
       (sha256
-        (base32 "1rjha07ds633fb81hn3i2yzk3v2flbi6qa091ix4mkvrgk3gl6ya"))))
+        (base32 "001zd6gfs9yrwjny1fxzycxx0kcasshlyl6rh1kgzm13ll2d6pgr"))))
   (build-system pyproject-build-system)
   ;; FIXME: pytest failed to load test suit, find out why.
   ;;  - _pytest.pathlib.ImportPathMismatchError: ('extension_helpers.conftes
