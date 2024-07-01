@@ -1187,8 +1187,7 @@ command-line utility for mesh optimisation.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0xhy76a5f33hz94wc9g2mc5qmwkxfccbbc6yxl7psm130afp8lhn"))
+        (base32 "0xhy76a5f33hz94wc9g2mc5qmwkxfccbbc6yxl7psm130afp8lhn"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1201,39 +1200,33 @@ command-line utility for mesh optimisation.")
                (("\\\"mpirun\\\", \\\"-n\\\", \\\"2\\\", ") "")))
            ;; Result files are regenerated in the check phase.
            (delete-file-recursively
-            "tests/migration/viscoelasticity/test-results")
-           #t))))
-    (build-system python-build-system)
+            "tests/migration/viscoelasticity/test-results")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'mpi-setup
-           ,%openmpi-setup)
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((doc (string-append (assoc-ref outputs "out")
-                                        "/share/doc/" ,name "-"
-                                        ,version))
-                    (examples (string-append doc "/examples")))
-               (mkdir-p examples)
-               (copy-recursively "examples" examples))
-             #t))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (setenv "HOME" (getcwd))
-               (and (invoke "py.test" "-v" "tests/fenics_adjoint"
-                            "-k" "not test_read_checkpoint")
-                    (invoke "py.test" "-v" "tests/migration")
-                    (invoke "py.test" "-v" "tests/pyadjoint")))
-             #t))
-         ;; Remove 'sanity-check, because it tries to import
-         ;; firedrake_adjoint after importing fenics_adjoint.
-         ;; Both load a module named 'backend' and firedrake_adjoint
-         ;; fails with an ImportError if it sees that the backend module
-         ;; has already been loaded.
-         (delete 'sanity-check))))
+     (list
+      #:test-flags
+      #~(list "tests/fenics_adjoint"
+              "tests/migration"
+              "tests/pyadjoint"
+              "-k" "not test_read_checkpoint")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'mpi-setup #$%openmpi-setup)
+          (add-before 'check 'set-environment-variables
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-after 'install 'install-doc
+            (lambda _
+              (let* ((doc (string-append #$output "/share/doc/" #$name "-" #$version))
+                     (examples (string-append doc "/examples")))
+                (mkdir-p examples)
+                (copy-recursively "examples" examples))))
+          ;; Remove 'sanity-check, because it tries to import
+          ;; firedrake_adjoint after importing fenics_adjoint.
+          ;; Both load a module named 'backend' and firedrake_adjoint
+          ;; fails with an ImportError if it sees that the backend module
+          ;; has already been loaded.
+          (delete 'sanity-check))))
     (inputs
      (list fenics openmpi pybind11))
     (native-inputs
