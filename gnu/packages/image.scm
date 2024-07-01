@@ -1974,7 +1974,7 @@ medical image data, e.g. magnetic resonance image (MRI) and functional MRI
 (define-public mini
   (package
     (name "mini")
-    (version "0.9.14")
+    (version "0.9.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1983,7 +1983,7 @@ medical image data, e.g. magnetic resonance image (MRI) and functional MRI
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01wn7h9rjz9h6cr11dd62jsb3315d1h6c33pdmwi2l7d8a4n3h8d"))))
+                "088rz9d639lhr8sbk9z67jy981ffd7swlc8ld0qr09v51hryhwya"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
