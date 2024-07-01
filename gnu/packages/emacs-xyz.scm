@@ -35388,11 +35388,11 @@ other @code{helm-type-file} sources such as @code{helm-locate}.")
     (license license:gpl3+)))
 
 (define-public emacs-telega-server
-  (let ((commit "009e5ce9d393aa049bb3b1182306db4b5b85833b")
+  (let ((commit "879a8c7afc8967942613b6b898d9ea8c1f3641bf")
         (revision "0"))
     (package
       (name "emacs-telega-server")
-      (version (git-version "0.8.290" revision commit))
+      (version (git-version "0.8.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -35400,11 +35400,8 @@ other @code{helm-type-file} sources such as @code{helm-locate}.")
                (url "https://github.com/zevlg/telega.el")
                (commit commit)))
          (sha256
-          (base32 "06k2qkxzq3l3cdqr70zrxrnm3q6qp9nw3zgm3p65nmx86ky1q72f"))
-         (file-name (git-file-name "emacs-telega" version))
-         (patches
-          (search-patches "emacs-telega-path-placeholder.patch"
-                          "emacs-telega-test-env.patch"))))
+          (base32 "1ic14hzzgjxpky1r3mz4v72si9hw8cw72420a9lnpdaiw99l8q7h"))
+         (file-name (git-file-name "emacs-telega" version))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -35438,54 +35435,70 @@ service, and connect it with Emacs via inter-process communication.")
       (license license:gpl3+))))
 
 (define-public emacs-telega
-  (package
-    (inherit emacs-telega-server)
-    (name "emacs-telega")
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:emacs (if (target-64bit?)
-                  emacs-minimal
-                  ;; Require wide-int support for 32-bit platform.
-                  emacs-wide-int)
-      #:include #~(cons "^etc\\/" %default-include)
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-sources
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Hard-code paths to `ffplay` and `ffmpeg`.
-              (let* ((ffplay-bin (search-input-file inputs "/bin/ffplay"))
-                     (ffmpeg-bin (search-input-file inputs "/bin/ffmpeg")))
-                (substitute* '("telega-ffplay.el" "telega-vvnote.el")
-                  (("(shell-command-to-string\|concat) \"(ffmpeg\|ffprobe)"
-                    all func cmd)
-                   (string-append func " \""
-                                  (search-input-file
-                                   inputs (string-append "/bin/" cmd))))
-                  (("\\(executable-find \"ffplay\"\\)")
-                   (string-append "(and (file-executable-p \"" ffplay-bin "\")"
-                                  "\"" ffplay-bin "\")"))
-                  (("\\(executable-find \"ffmpeg\"\\)")
-                   (string-append "(and (file-executable-p \"" ffmpeg-bin "\")"
-                                  "\"" ffmpeg-bin "\")"))))))
-          (add-after 'unpack 'configure
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (substitute* "telega-customize.el"
-                (("@TELEGA_SERVER_BIN@")
-                 (search-input-file inputs "/bin/telega-server")))
-              (substitute* "telega-core.el"
-                (("@TELEGA_SHARE@")
-                 (string-append (elpa-directory (assoc-ref outputs "out"))
-                                "/etc"))))))))
-    (inputs
-     (list emacs-telega-server ffmpeg))
-    (native-inputs '())
-    (propagated-inputs
-     (list emacs-visual-fill-column emacs-company
-           emacs-rainbow-identifiers))
-    (synopsis "GNU Emacs client for the Telegram messenger")
-    (description "Telega is a full-featured, unofficial GNU Emacs-based client
-for the Telegram messaging platform.")))
+  (let ((commit "009e5ce9d393aa049bb3b1182306db4b5b85833b")
+        (revision "1"))
+    (package
+      (name "emacs-telega")
+      (version (git-version "0.8.290" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/zevlg/telega.el")
+               (commit commit)))
+         (sha256
+          (base32 "06k2qkxzq3l3cdqr70zrxrnm3q6qp9nw3zgm3p65nmx86ky1q72f"))
+         (file-name (git-file-name "emacs-telega" version))
+         (patches
+          (search-patches "emacs-telega-path-placeholder.patch"
+                          "emacs-telega-test-env.patch"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:emacs (if (target-64bit?)
+                    emacs-minimal
+                    ;; Require wide-int support for 32-bit platform.
+                    emacs-wide-int)
+        #:include #~(cons "^etc\\/" %default-include)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-sources
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Hard-code paths to `ffplay` and `ffmpeg`.
+                (let* ((ffplay-bin (search-input-file inputs "/bin/ffplay"))
+                       (ffmpeg-bin (search-input-file inputs "/bin/ffmpeg")))
+                  (substitute* '("telega-ffplay.el" "telega-vvnote.el")
+                    (("(shell-command-to-string\|concat) \"(ffmpeg\|ffprobe)"
+                      all func cmd)
+                     (string-append func " \""
+                                    (search-input-file
+                                     inputs (string-append "/bin/" cmd))))
+                    (("\\(executable-find \"ffplay\"\\)")
+                     (string-append "(and (file-executable-p \"" ffplay-bin "\")"
+                                    "\"" ffplay-bin "\")"))
+                    (("\\(executable-find \"ffmpeg\"\\)")
+                     (string-append "(and (file-executable-p \"" ffmpeg-bin "\")"
+                                    "\"" ffmpeg-bin "\")"))))))
+            (add-after 'unpack 'configure
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (substitute* "telega-customize.el"
+                  (("@TELEGA_SERVER_BIN@")
+                   (search-input-file inputs "/bin/telega-server")))
+                (substitute* "telega-core.el"
+                  (("@TELEGA_SHARE@")
+                   (string-append (elpa-directory (assoc-ref outputs "out"))
+                                  "/etc"))))))))
+      (inputs
+       (list emacs-telega-server ffmpeg))
+      (native-inputs '())
+      (propagated-inputs
+       (list emacs-visual-fill-column emacs-company
+             emacs-rainbow-identifiers))
+      (home-page "https://zevlg.github.io/telega.el/")
+      (synopsis "GNU Emacs client for the Telegram messenger")
+      (description "Telega is a full-featured, unofficial GNU Emacs-based client
+for the Telegram messaging platform.")
+      (license license:gpl3+))))
 
 (define-public emacs-telega-contrib
   (package
