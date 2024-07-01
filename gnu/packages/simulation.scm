@@ -1204,17 +1204,6 @@ command-line utility for mesh optimisation.")
             "tests/migration/viscoelasticity/test-results")
            #t))))
     (build-system python-build-system)
-    (inputs
-     (list fenics openmpi pybind11))
-    (native-inputs
-     (list pkg-config
-           python-coverage
-           python-decorator
-           python-flake8
-           python-pkgconfig
-           python-pytest))
-    (propagated-inputs
-     `(("scipy" ,python-scipy)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1245,17 +1234,28 @@ command-line utility for mesh optimisation.")
          ;; fails with an ImportError if it sees that the backend module
          ;; has already been loaded.
          (delete 'sanity-check))))
+    (inputs
+     (list fenics openmpi pybind11))
+    (native-inputs
+     (list pkg-config
+           python-coverage
+           python-decorator
+           python-flake8
+           python-pkgconfig
+           python-pytest))
+    (propagated-inputs
+     (list python-scipy))
     (home-page "https://www.dolfin-adjoint.org")
     (synopsis "Automatic differentiation library")
-    (description "@code{python-dolfin-adjoint} is a solver of
-differential equations associated with a governing system and a
-functional of interest.  Working from the forward model the solver
-automatically derives the discrete adjoint and tangent linear models.
-These additional models are key ingredients in many algorithms such as
-data assimilation, optimal control, sensitivity analysis, design
-optimisation and error estimation.  The dolfin-adjoint project
-provides the necessary tools and data structures for cases where the
-forward model is implemented in @code{fenics} or
+    (description
+     "@code{python-dolfin-adjoint} is a solver of differential equations
+associated with a governing system and a functional of interest.  Working from
+the forward model the solver automatically derives the discrete adjoint and
+tangent linear models.  These additional models are key ingredients in many
+algorithms such as data assimilation, optimal control, sensitivity analysis,
+design optimisation and error estimation.  The dolfin-adjoint project provides
+the necessary tools and data structures for cases where the forward model is
+implemented in @code{fenics} or
 @url{https://firedrakeproject.org,firedrake}.")
     (license license:lgpl3)))
 
