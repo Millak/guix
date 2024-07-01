@@ -2217,7 +2217,7 @@ files and provide related services.")
 (define-public python-czml3
   (package
     (name "python-czml3")
-    (version "0.7.0")
+    (version "1.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2226,7 +2226,7 @@ files and provide related services.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pbwcsmc9nw591rck586ca9hwwhmm54rjjmp8gflhzq8b7f48lkc"))))
+                "1vm9ajpnwxncvsl1ix3jarqyi14b0703g12wsr8b0agkrjlpmvmx"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-attrs
