@@ -1566,7 +1566,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
 (define-public stellarium
   (package
     (name "stellarium")
-    (version "24.1")
+    (version "24.2")
     (source
      (origin
        (method git-fetch)
@@ -1575,7 +1575,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15r8vg1xb4q8vwy10dfs4543bg6r3463sgrpkqk6fpxx46d8axxp"))))
+        (base32 "01iq1cxbhr3xknzpk4spflxj3msf9wk19b4lqlifi1pwaz18pb5n"))))
     (build-system cmake-build-system)
     ;; TODO: Complete documentation build and split into dedicated outputs.
     (arguments
