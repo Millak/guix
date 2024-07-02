@@ -35575,14 +35575,14 @@ Kolmogorov-Smirnov, ANOVA) are also supported.")
 (define-public r-spatstat-utils
   (package
     (name "r-spatstat-utils")
-    (version "3.0-4")
+    (version "3.0-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat.utils" version))
        (sha256
         (base32
-         "1i1w1ys29s22jfjvliqnbw3zi6zar8bxxz3r8za182p2w0wqwhax"))))
+         "15pm4fpc3fvqkh9kh4i0pgalxbxfp9y3blsyaw37s07v41gnd67b"))))
     (properties
      `((upstream-name . "spatstat.utils")))
     (build-system r-build-system)
