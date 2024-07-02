@@ -5952,14 +5952,14 @@ showing the progress is useful e.g. bootstrap.")
 (define-public r-minqa
   (package
     (name "r-minqa")
-    (version "1.2.6")
+    (version "1.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "minqa" version))
        (sha256
         (base32
-         "0421b4ysslaqmdgwlz080abis8m4xkcvjq7lx1wywbsz1s2vi9si"))))
+         "1qigwpcj8mz1fgq4ikq64pkqfwgw50bd928xbc4xaq6q3sflbwvn"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
