@@ -4122,18 +4122,17 @@ Analysis Approach Using R.  Chapman-Hall, 2019,
 (define-public r-vegan
   (package
     (name "r-vegan")
-    (version "2.6-4")
+    (version "2.6-6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vegan" version))
        (sha256
         (base32
-         "01hxlb5sy0d28ajq993fqs4z0qjcyl610d0ahjyjpbkrpszd92jx"))))
+         "0q0bp7xxmab1gcqk8wwm81sdvhccdvz5vqyn0grbwfb619q5wakx"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr ; needed for vignettes
-           gfortran))
+     (list gfortran r-knitr))
     (propagated-inputs
      (list r-cluster r-lattice r-mass r-mgcv r-permute))
     (home-page "https://cran.r-project.org/web/packages/vegan")
