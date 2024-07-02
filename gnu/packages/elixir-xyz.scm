@@ -24,6 +24,8 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages base)
   #:use-module (gnu packages)
+  #:use-module (guix build mix-build-system)
+  #:use-module (guix build utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system mix)
   #:use-module (guix download)
@@ -56,20 +58,44 @@ for higher-level combinators through composition.")
 (define-public elixir-makeup
   (package
     (name "elixir-makeup")
-    (version "1.1.0")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "19jpprryixi452jwhws3bbks6ki3wni9kgzah3srg22a3x8fsi8a"))))
+        (base32 "1b3civqrznn3dxqa3iybwbpgj8dj6f7q1zlgr8gd5jzvh5mmdqfc"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-nimble-parsec))
-    (arguments (list #:tests? #f)) ; no tests
+    (arguments
+     `(#:tests? #f ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'make-reproducible
+           (lambda _
+             (substitute* "lib/makeup/token/utils.ex"
+               (("@precedence Hierarchy.hierarchy_to_precedence\\(@hierarchy\\)")
+                ""))
+             (substitute* "lib/makeup/token/utils.ex"
+               (("@token_to_class_map Hierarchy.style_to_class_map\\(@hierarchy\\)")
+                ""))
+             (substitute* "lib/makeup/token/utils.ex"
+               (("@standard_token_types Map.keys\\(@token_to_class_map\\)")
+                ""))
+             (substitute* "lib/makeup/token/utils.ex"
+               (("@precedence")
+                "Hierarchy.hierarchy_to_precedence(@hierarchy)"))
+             (substitute* "lib/makeup/token/utils.ex"
+               (("@token_to_class_map")
+                "Hierarchy.style_to_class_map(@hierarchy)"))
+             (substitute* "lib/makeup/token/utils.ex"
+               (("@standard_token_types")
+                "Map.keys(token_to_class_map())")))))))
     (synopsis "Syntax highlighter for source code")
     (description
-     "Makeup is a generic syntax highlighter in the style of Pygments suitable for use in code hosting,
-forums, wikis or other applications that need to prettify source code.")
+     "Makeup is a generic syntax highlighter in the style of Pygments suitable
+for use in code hosting, forums, wikis or other applications that need to prettify
+source code.")
     (home-page "https://hexdocs.pm/makeup/")
     (license license:bsd-2)))
 
