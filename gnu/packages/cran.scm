@@ -102,6 +102,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages statistics)
@@ -24088,6 +24089,41 @@ classes.")
     (description
      "This package provides simple bindings to Unidata's udunits library.")
     (license license:gpl2)))
+
+(define-public r-clarabel
+  (package
+    (name "r-clarabel")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "clarabel" version))
+       (sha256
+        (base32 "1g66y8s4v7qzm92dhnsmng28sm4lf6wggb4kc6arvp75z0i315jh"))))
+    (properties `((upstream-name . "clarabel")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-variables-for-rust
+            (lambda _
+              (setenv "CC" #$(cc-for-target)))))))
+    (native-inputs (list r-knitr rust `(,rust "cargo")))
+    (home-page "https://oxfordcontrol.github.io/clarabel-r/")
+    (synopsis "Interior point conic optimization solver")
+    (description
+     "This package provides a versatile interior point solver that solves
+@dfn{linear programs} (LPs), @dfn{quadratic programs} (QPs), @dfn{second-order
+cone programs} (SOCPs), @dfn{semidefinite programs} (SDPs), and problems with
+exponential and power cone constraints (@url{https://clarabel.org/stable/}).
+For quadratic objectives, unlike interior point solvers based on the standard
+@dfn{homogeneous self-dual embedding} (HSDE) model, Clarabel handles quadratic
+objective without requiring any epigraphical reformulation of its objective
+function.  It can therefore be significantly faster than other HSDE-based
+solvers for problems with quadratic objective functions.  Infeasible problems
+are detected using using a homogeneous embedding technique.")
+    (license license:asl2.0)))
 
 (define-public r-classint
   (package
