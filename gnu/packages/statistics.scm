@@ -7095,18 +7095,18 @@ mediation and estimating power.")
 (define-public r-clubsandwich
   (package
     (name "r-clubsandwich")
-    (version "0.5.10")
+    (version "0.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clubSandwich" version))
        (sha256
         (base32
-         "0qx4qq0k01q06hrs348n417pf338dyfbcy2vsi0y3ap6y1rb7w6s"))))
+         "1y9iy86w2440y22279is7vgi9m9v876p5954nhq5lg9ghpzbwzdq"))))
     (properties `((upstream-name . "clubSandwich")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-sandwich))
+     (list r-lifecycle r-sandwich))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/jepusto/clubSandwich")
     (synopsis "Cluster-Robust (Sandwich) Variance Estimators with Small-Sample
