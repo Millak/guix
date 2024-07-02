@@ -847,15 +847,7 @@ access to test session metadata.")
        (uri (pypi-uri "pytest_openfiles" version))
        (sha256
         (base32 "14x9f1l9a5ghf527i5qfcfa003mkrky1dhx2hfwq5nma9v1n0lgz"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make the installed plugin discoverable by Pytest.
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv"))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-setuptools-scm python-pytest))
     (propagated-inputs
