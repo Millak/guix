@@ -3259,13 +3259,13 @@ level p-values.")
 (define-public r-swagger
   (package
     (name "r-swagger")
-    (version "3.33.1")
+    (version "5.17.14.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "swagger" version))
               (sha256
                (base32
-                "1ldgmy5vjzd11z5yl5a518wkw6y0l469b2zf0lp12hk19jq6k0sj"))))
+                "0ykmz3j1n06w1injcnlkb3xv79vwiyv94j74m950rfrbv97dda58"))))
     (properties `((upstream-name . "swagger")))
     (build-system r-build-system)
     (home-page "https://github.com/rstudio/swagger")
