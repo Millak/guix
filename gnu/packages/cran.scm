@@ -1294,13 +1294,13 @@ such as counts or binary matrices.")
 (define-public r-googlevis
   (package
     (name "r-googlevis")
-    (version "0.7.1")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "googleVis" version))
        (sha256
-        (base32 "067jcwbq0a06wbpaa46ngjs3hkpvz8q6v8019f15yr58kq2k2n9k"))))
+        (base32 "0swcf2vl3mvp2bsd7nra917pajyh27j2k3vmmrb6n8g55mazyisn"))))
     (properties `((upstream-name . "googleVis")))
     (build-system r-build-system)
     (propagated-inputs (list r-jsonlite))
