@@ -2381,6 +2381,89 @@ of dates.")
 @url{Helioviewer API, https://api.helioviewer.org/docs/v2/}.")
     (license license:bsd-2)))
 
+(define-public python-kanon
+  (package
+    (name "python-kanon")
+    (version "0.6.6")
+    (source
+     (origin
+       (method git-fetch)               ; no release in PyPI
+       (uri (git-reference
+             (url "https://github.com/ALFA-project-erc/kanon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sg9yrsas5xmhbw6mhfyxsxh9i060af6v02whr9fqgv687fiyrhc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list ;"--numprocesses" "auto"
+              ;; XXX: This tests failing a lot.
+              "-k" (string-append "not test_attribute_forwardin"
+                                  " and not test_declination"
+                                  " and not test_init_basedquantity"
+                                  " and not test_ptolemy_viz"
+                                  " and not test_ptolemy_viz"
+                                  " and not test_quantity"
+                                  " and not test_read"
+                                  " and not test_shifting"
+                                  " and not test_sun_true_position"
+                                  " and not test_sun_true_position")
+              "--ignore=kanon/tables/__init__.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; See <https://github.com/ALFA-project-erc/kanon/issues/149>.
+          (delete 'sanity-check)
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("version = \"0.0.0\"") (string-append "version = \"" #$version "\""))
+                ;; RuntimeError: Unable to detect version control
+                ;; system. Checked: Git. Not installed: Mercurial, Darcs,
+                ;; Subversion, Bazaar, Fossil, Pijul.  See
+                ;; <https://github.com/blacklanternsecurity/bbot/issues/1257>.
+                (("enable = true") "enable = false"))))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list git-minimal
+           python-poetry-core
+           python-poetry-dynamic-versioning
+           python-pytest-astropy
+           python-pytest-xdist
+           python-requests-mock))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-pandas-1
+           python-requests
+           python-scipy
+           ;; Optional
+           python-ipykernel
+           python-papermill))
+    (home-page "https://dishas.obspm.fr")
+    (synopsis "History of astronomy")
+    (description "This package provides a history of astronomy library.
+Current Features:
+@itemize
+@item define standard positional numeral systems with standard arithmetics
+(BasedReal)
+@item set your own precision contexts and algorithms on arithmetical
+operations (PrecisionContext)
+@item keep track of all operations
+@item build or import ancient astronomical tables
+@item perform arithmetical and statistical operations
+@item support for BasedReal values
+@item define new calendar types
+@item date conversions
+@item collection of mathematical models used for all kinds of geocentric
+astronomical tables
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-mpl-animators
   (package
     (name "python-mpl-animators")
