@@ -7224,13 +7224,13 @@ you to rapidly iterate while developing a package.")
 (define-public r-pki
   (package
     (name "r-pki")
-    (version "0.1-12")
+    (version "0.1-14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PKI" version))
        (sha256
-        (base32 "0nidg6l9nrmpyimi502fydy22r247w9i4ngb2xdbxjvfhr17m0xd"))))
+        (base32 "0rkr3gf5aqkrxi134kwggsyj151nwcwndy8d8q2vfy5rfwcyh960"))))
     (properties `((upstream-name . "PKI")))
     (build-system r-build-system)
     (inputs (list openssl zlib))
