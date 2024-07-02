@@ -25918,14 +25918,14 @@ graphics using Vega.")
 (define-public r-gbm
   (package
     (name "r-gbm")
-    (version "2.1.9")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gbm" version))
        (sha256
         (base32
-         "1r5d8mkg4z14l3743h39r35r0qqjx5p40ixdkcc5iyjab0fzm24x"))))
+         "1x64a0cq9ys49i3z4df0grk506n55i7yj1ljysf9g60cq6xd56h2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice r-survival))
