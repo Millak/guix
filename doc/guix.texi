@@ -23,7 +23,7 @@
 
 @copying
 Copyright @copyright{} 2012-2024 Ludovic Courtès@*
-Copyright @copyright{} 2013, 2014, 2016 Andreas Enge@*
+Copyright @copyright{} 2013, 2014, 2016, 2024 Andreas Enge@*
 Copyright @copyright{} 2013 Nikita Karetnikov@*
 Copyright @copyright{} 2014, 2015, 2016 Alex Kost@*
 Copyright @copyright{} 2015, 2016 Mathieu Lirzin@*
@@ -39737,10 +39737,10 @@ coordinator.  Possible record types are described below.
 The systems for which this agent should fetch builds.  The agent process
 will use the current system it's running on as the default.
 
-@item @code{max-parallel-builds} (default: @code{1})
+@item @code{max-parallel-builds} (default: @code{#f})
 The number of builds to perform in parallel.
 
-@item @code{max-parallel-uploads} (default: @code{1})
+@item @code{max-parallel-uploads} (default: @code{#f})
 The number of uploads to perform in parallel.
 
 @item @code{max-allocated-builds} (default: @code{#f})

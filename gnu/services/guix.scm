@@ -194,10 +194,10 @@
                        (default #f))
   (max-parallel-builds
    guix-build-coordinator-agent-configuration-max-parallel-builds
-   (default 1))
+   (default #f))
   (max-parallel-uploads
    guix-build-coordinator-agent-configuration-max-parallel-uploads
-   (default 1))
+   (default #f))
   (max-allocated-builds
    guix-build-coordinator-agent-configuration-max-allocated-builds
    (default #f))
@@ -443,8 +443,10 @@
                           #~(#$(string-append "--name=" agent-name)
                              #$(string-append "--dynamic-auth-token-file="
                                               token-file))))
-                    #$(simple-format #f "--max-parallel-builds=~A"
-                                     max-parallel-builds)
+                    #$@(if max-parallel-builds
+                           #~(#$(simple-format #f "--max-parallel-builds=~A"
+                                               max-parallel-builds))
+                           #~())
                     #$@(if max-parallel-uploads
                            #~(#$(simple-format #f "--max-parallel-uploads=~A"
                                                max-parallel-uploads))
