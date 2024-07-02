@@ -17983,6 +17983,31 @@ files in Emacs.  Files of this type (e.g., @file{BUILD.gn} or @file{*.gni})
 are common in Chromium-derived projects.")
     (license license:bsd-3)))
 
+(define-public emacs-gnosis
+  (package
+    (name "emacs-gnosis")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.thanosapollo.org/gnosis")
+             (commit version)))
+       (sha256
+        (base32
+         "19mzyg4hg6mplv3s2kb8xiaw06zkbj7a3gvfvy51cwvb8k979ap6"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat emacs-emacsql))
+    (home-page "https://thanosapollo.org/projects/gnosis")
+    (synopsis "Spaced repetition system for GNU Emacs")
+    (description
+     "Gnosis is a spaced repetition system for note-taking and self-testing
+where notes are formatted as Question/Answer/Explanation. Notes are reviewed
+at spaced intervals based on the success or failure in recalling the answer to
+each question.")
+    (license license:gpl3+)))
+
 (define-public emacs-drag-stuff
   (package
     (name "emacs-drag-stuff")
