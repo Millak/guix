@@ -12284,16 +12284,16 @@ chaotic time series analysis.")
 (define-public r-fresh
   (package
     (name "r-fresh")
-    (version "0.2.0")
+    (version "0.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "fresh" version))
               (sha256
                (base32
-                "1787mm6w2s5x9scxy7r9cb77rgpmy4ngwkn4z8g3gs48mrab4bd9"))))
+                "19ki4hxlqzshdmy981gcvbn8wxqa893p5rs55l0q7iipkcmhf9jq"))))
     (properties `((upstream-name . "fresh")))
     (build-system r-build-system)
-    (propagated-inputs (list r-htmltools r-rstudioapi r-sass r-shiny))
+    (propagated-inputs (list r-bslib r-htmltools r-rstudioapi r-sass r-shiny))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/dreamRs/fresh")
     (synopsis "Create custom Bootstrap themes to use in Shiny")
