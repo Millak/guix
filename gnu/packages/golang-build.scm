@@ -58,7 +58,7 @@
 (define-public go-github-com-yuin-goldmark
   (package
     (name "go-github-com-yuin-goldmark")
-    (version "1.2.1")
+    (version "1.7.4")
     (source
      (origin
        (method git-fetch)
@@ -67,7 +67,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12rsnsf65drcp0jfw2jl9w589vsn3pxdk1zh3v9q908iigngrcmy"))))
+        (base32 "01807xs8501cyhkrrgg6k9ghl9jrw6dp0ry9knygck48canckxs2"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/yuin/goldmark"))
