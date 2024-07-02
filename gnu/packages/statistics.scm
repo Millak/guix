@@ -3674,17 +3674,17 @@ worker processes and collect and return the results on the master.")
 (define-public r-sparsem
   (package
     (name "r-sparsem")
-    (version "1.81")
+    (version "1.84")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "SparseM" version))
               (sha256
                (base32
-                "0csbqd9wm6r4162mday1iaigzf9wv2rp1zq8hnihys6f38w8z0xx"))))
+                "05pxj16l1d9smlsn9h3pxcnd49s8l7f6088xvn808pa1f3h9dybn"))))
     (properties
      `((upstream-name . "SparseM")))
     (native-inputs
-     (list gfortran))
+     (list gfortran r-knitr))
     (build-system r-build-system)
     (home-page "http://www.econ.uiuc.edu/~roger/research/sparse/sparse.html")
     (synopsis "Sparse linear algebra")
