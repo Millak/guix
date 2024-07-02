@@ -38790,13 +38790,13 @@ work for a wide range of data sets.")
 (define-public r-mlr3verse
   (package
     (name "r-mlr3verse")
-    (version "0.2.8")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3verse" version))
        (sha256
-        (base32 "0ld4vch1qdq3gh8vhj38s2wz7acn5z7f8hxmnwnrq22g44gckd8s"))))
+        (base32 "1azkpmkki8c02vpz98ixsx17civk86dq7c8wwnvm9jlg3spr8hhd"))))
     (properties `((upstream-name . "mlr3verse")))
     (build-system r-build-system)
     (propagated-inputs (list r-bbotk
