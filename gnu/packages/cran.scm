@@ -38587,13 +38587,13 @@ the performance of optimized feature sets with nested resampling.")
 (define-public r-mlr3hyperband
   (package
     (name "r-mlr3hyperband")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3hyperband" version))
        (sha256
-        (base32 "1x6vfhadxlb4c9q61d5qv957mkyfwdwchzbg3flfd0j28b4bck1p"))))
+        (base32 "1sr9bccy1zmbj83i6nlwkfmi98b40bl1l9q4lzl8n0knnavnzcj7"))))
     (properties `((upstream-name . "mlr3hyperband")))
     (build-system r-build-system)
     (propagated-inputs (list r-bbotk
