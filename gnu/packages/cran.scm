@@ -7193,22 +7193,23 @@ is configured appropriately so R can use them.")
 (define-public r-pkgload
   (package
     (name "r-pkgload")
-    (version "1.3.4")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgload" version))
        (sha256
         (base32
-         "1ki6k7l7dpb6bncvvcndrv5764jb1adrzs5iaxicakfsija4pc30"))))
+         "0jbmlvii40q6ymdhislmgby6dpf9585xl9d5cf8g4nn2kig8ir09"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
-           r-crayon
            r-desc
            r-fs
            r-glue
+           r-lifecycle
            r-pkgbuild
+           r-processx
            r-rlang
            r-rprojroot
            r-withr))
