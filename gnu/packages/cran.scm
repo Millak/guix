@@ -14972,14 +14972,14 @@ run basic analyses on pupillometry experiments.")
 (define-public r-gbrd
   (package
     (name "r-gbrd")
-    (version "0.4-11")
+    (version "0.4.12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gbRd" version))
        (sha256
         (base32
-         "06x97rw5i6v6cgjxkfhxnw4dn7lghn5q6ra7ri5ag1x9dkfzcl82"))))
+         "0f13hg6nckl4aflwd49g4x2adxjfgah2yga70z1m8jszhhm1vka8"))))
     (properties `((upstream-name . "gbRd")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/gbRd/")
