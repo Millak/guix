@@ -2256,13 +2256,13 @@ degree elevation and curve fitting.")
 (define-public r-biglm
   (package
     (name "r-biglm")
-    (version "0.9-2.1")
+    (version "0.9-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "biglm" version))
        (sha256
-        (base32 "0iy9xr2bq42wlizgwlz7w5kh9206yqkw9h2cr6mcsmizgjg3rkvd"))))
+        (base32 "0n0dkazq74s3lml0ds9l38kzgapckjrvwyi62qb1y14cqlylhpc0"))))
     (properties `((upstream-name . "biglm")))
     (build-system r-build-system)
     (propagated-inputs (list r-dbi))
