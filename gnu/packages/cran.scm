@@ -12306,14 +12306,14 @@ flexdashboard.")
 (define-public r-urca
   (package
     (name "r-urca")
-    (version "1.3-3")
+    (version "1.3-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "urca" version))
        (sha256
         (base32
-         "1wg9f691pif59xds43gnnw77mmzc9xpnhhvaksk2b0szffvaifj3"))))
+         "05nb1an5a8r0w6gca6cf40nws2v4hxhznz8kyfm7q7hz0kjnqggy"))))
     (build-system r-build-system)
     (propagated-inputs (list r-nlme))
     (native-inputs (list gfortran))
