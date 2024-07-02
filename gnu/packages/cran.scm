@@ -5310,14 +5310,14 @@ speed increase from creating dummy variables through @code{model.matrix()}.")
 (define-public r-fastmap
   (package
     (name "r-fastmap")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fastmap" version))
        (sha256
         (base32
-         "0wvibiy16i30nzg5k80md68lpz7g6iwbl02j4fyqmbhns2fq08rn"))))
+         "0ilj7gcbnha6l61sqzk6wrj6l08mxyay49957izha7axj6i09nmi"))))
     (properties `((upstream-name . "fastmap")))
     (build-system r-build-system)
     (home-page "https://r-lib.github.io/fastmap/")
