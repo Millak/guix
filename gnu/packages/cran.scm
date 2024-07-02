@@ -787,16 +787,16 @@ wrangling backend for the packages in the @code{easystats} ecosystem.")
 (define-public r-dbscan
   (package
     (name "r-dbscan")
-    (version "1.1-12")
+    (version "1.2-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbscan" version))
        (sha256
-        (base32 "1snfcf5jy3chh5nmvn7ashhlyv35nkajlfrlk9kzpy4jnfyv3y2n"))))
+        (base32 "0rv2h5i539ivkgwblfapjpfl09hgxvidkk6x1wmgc6hp30nbl2bj"))))
     (properties `((upstream-name . "dbscan")))
     (build-system r-build-system)
-    (propagated-inputs (list r-rcpp))
+    (propagated-inputs (list r-generics r-rcpp))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/mhahsler/dbscan")
     (synopsis "Density-based spatial clustering of applications with noise")
