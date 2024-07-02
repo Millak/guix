@@ -25101,14 +25101,14 @@ handle missing genotypes at some SNPs.")
 (define-public r-r2html
   (package
     (name "r-r2html")
-    (version "2.3.3")
+    (version "2.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "R2HTML" version))
        (sha256
         (base32
-         "12qg9rp1j26h2f48dfg5k9jds26ycacv3f3ymk686ks43hd1hzja"))))
+         "1a8yy9xf5gdh3s2rzmv5b28hhdqc5g34hygcrxn8drs0i2j97vdr"))))
     (properties `((upstream-name . "R2HTML")))
     (build-system r-build-system)
     (home-page "https://github.com/nalimilan/R2HTML")
