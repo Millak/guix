@@ -193,13 +193,13 @@ inline docs.")
 (define-public elixir-castore
   (package
     (name "elixir-castore")
-    (version "1.0.4")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "1y44amb8falsmrfzpkmf7qp6215g9kdl76g91dpna4af2jwc264l"))))
+        (base32 "1xaw8n8g7qfygf8z8sz7f7pwmdl4lxshi9lj2b6j386jn2j8axys"))))
     (build-system mix-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (synopsis "Up-to-date CA certificate store")
