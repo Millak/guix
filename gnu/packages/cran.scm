@@ -40848,17 +40848,17 @@ package.")
 (define-public r-qs
   (package
     (name "r-qs")
-    (version "0.26.1")
+    (version "0.26.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qs" version))
        (sha256
         (base32
-         "0qmgnc4igy8mjzarm30cgi4z75hh8f01kvcs6n6s63cy4qk30vs6"))))
+         "1qqy6aada9jkq0z6bmzb5vhb18cdxvy7b6nwjd8saqaidqgs80c8"))))
     (properties `((upstream-name . "qs")))
     (build-system r-build-system)
-    (inputs (list lz4 (list zstd "lib")))
+    (inputs (list lz4 zlib (list zstd "lib")))
     (propagated-inputs
      (list r-bh r-rapiserialize r-rcpp r-stringfish))
     (native-inputs
