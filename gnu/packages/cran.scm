@@ -39762,20 +39762,19 @@ functionalities in strex.")
 (define-public r-readods
   (package
     (name "r-readods")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "readODS" version))
        (sha256
         (base32
-         "1f87bnvjxalr0gp651axpyq4abzirxq7l3mirbak0c4b4l2phb1n"))))
+         "14849i7c48ilx212kp5zh33fkvps7j2b89kpy007wk5kzpw0y4hy"))))
     (properties `((upstream-name . "readODS")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cellranger
-           r-cpp11
-           r-readr
+           r-minty
            r-stringi
            r-tibble
            r-vctrs
