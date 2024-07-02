@@ -233,13 +233,13 @@ JSON API.")
 (define-public elixir-credo
   (package
     (name "elixir-credo")
-    (version "1.7.1")
+    (version "1.7.7")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "18jqi9s9r1587njzdxycvmmbma30cay9iamni4f3ih54jmh1r1z9"))))
+        (base32 "0bigri1xh29ims5gwh94pns6jys6h82pn6zhj0zxrb5ar6b79j4b"))))
     (build-system mix-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (propagated-inputs (list elixir-bunt elixir-file-system elixir-jason))
@@ -247,7 +247,7 @@ JSON API.")
     (synopsis "Static code analysis tool")
     (description
      "Credo is a static code analysis tool for the Elixir language with a focus on
-teaching and code consistency. Credo can show you refactoring opportunities in
+teaching and code consistency.  Credo can show you refactoring opportunities in
 your code, complex code fragments, warn you about common mistakes, show
 inconsistencies in your naming scheme and - if needed - help you enforce a
 desired coding style.")
