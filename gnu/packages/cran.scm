@@ -3933,13 +3933,13 @@ high-dimensional data.")
 (define-public r-mc2d
   (package
     (name "r-mc2d")
-    (version "0.2.0")
+    (version "0.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mc2d" version))
               (sha256
                (base32
-                "07h2gvmdfqjydikxksbqhikihg46fv6xyn8vk5kyni6x75gp9abk"))))
+                "06kva55vm2cldd95caw5hfx0xjadyhgkqi0y9pyz7hs3zg0zq9xy"))))
     (properties `((upstream-name . "mc2d")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-ggpubr r-mvtnorm))
