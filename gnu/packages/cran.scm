@@ -18098,33 +18098,16 @@ detection, parallelism through BLAS and parallel user templates.")
 (define-public r-sjstats
   (package
     (name "r-sjstats")
-    (version "0.18.2")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sjstats" version))
        (sha256
-        (base32 "0a1y6bqyvgs0avzasr8g6vwcxcnj4d9g0rfz2qiznwadpjzqw66h"))))
+        (base32 "07qv32gnrhrl21zgj1xp1gqdqjn6ax1nf40s11nmpag8r0xgvqnk"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-bayestestr
-           r-broom
-           r-datawizard
-           r-dplyr
-           r-effectsize
-           r-emmeans
-           r-insight
-           r-lme4
-           r-magrittr
-           r-mass
-           r-modelr
-           r-parameters
-           r-performance
-           r-purrr
-           r-rlang
-           r-sjlabelled
-           r-sjmisc
-           r-tidyr))
+     (list r-datawizard r-effectsize r-insight r-parameters r-performance))
     (home-page "https://github.com/strengejacke/sjstats")
     (synopsis "Functions for common statistical computations")
     (description
