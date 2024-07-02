@@ -1765,6 +1765,46 @@ different units.")
 scatter plots, histograms and heatmaps in the terminal using braille dots.")
     (license license:expat)))
 
+(define-public python-poetry-dynamic-versioning
+  (package
+    (name "python-poetry-dynamic-versioning")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "poetry_dynamic_versioning" version))
+       (sha256
+        (base32 "19v9jrawbx1nwnwrd6giyzwfq50y2mjzkrsx0ga2sbx2a2yphlbj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/test_integration.py"
+              ;; E RuntimeError: Unable to detect version control system. Not
+              ;; installed: Git, Mercurial, Darcs, Subversion, Bazaar, Fossil,
+              ;; Pijul.
+              "-k"
+              (string-append
+               "not test__get_version__defaults"
+               " and not test__get_version__format_jinja"
+               " and not test__get_version__format_jinja_with_enforced_style"
+               " and not test__get_version__format_jinja_imports_with_module_only"
+               " and not test__get_version__format_jinja_imports_with_module_and_item"))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (propagated-inputs
+     (list poetry
+           python-dunamai
+           python-jinja2
+           python-tomlkit))
+    (home-page "https://github.com/mtkennerly/poetry-dynamic-versioning")
+    (synopsis "Poetry plugin enabling VCS tags dynamic versioning")
+    (description
+     "This package provides a build backend that patches Poetry Core to enable
+the versioning system in PEP 517 build frontends.")
+    (license license:expat)))
+
 (define-public python-portpicker
   (package
     (name "python-portpicker")
