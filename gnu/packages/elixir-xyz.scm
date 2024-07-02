@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Pierre-Henry Fröhring <phfrohring@deeplinks.com>
+;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,13 +37,13 @@
 (define-public elixir-nimble-parsec
   (package
     (name "elixir-nimble-parsec")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "0rxiw6jzz77v0j460wmzcprhdgn71g1hrz3mcc6djn7bnb0f70i6"))))
+        (base32 "0a6gs7950gpkdax18x167g8v6dy4sbbx47cchglq7cqgh5i5hmlw"))))
     (build-system mix-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (synopsis "Text-based parser combinators")
