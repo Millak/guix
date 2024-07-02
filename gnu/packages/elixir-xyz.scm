@@ -153,13 +153,13 @@ https://github.com/synrc/fs.")
 (define-public elixir-bunt
   (package
     (name "elixir-bunt")
-    (version "0.2.1")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "19bp6xh052ql3ha0v3r8999cvja5d2p6cph02mxphfaj4jsbyc53"))))
+        (base32 "1ddnkg6w3iqzb8z18b7sr7jlmmbn9rf77w4nh1mzmxm512m8cpyw"))))
     (build-system mix-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (synopsis "256 color ANSI coloring in the terminal")
