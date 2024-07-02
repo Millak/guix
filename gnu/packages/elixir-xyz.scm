@@ -257,13 +257,13 @@ desired coding style.")
 (define-public elixir-erlex
   (package
     (name "elixir-erlex")
-    (version "0.2.6")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "0x8c1j62y748ldvlh46sxzv5514rpzm809vxn594vd7y25by5lif"))))
+        (base32 "1c7gcm9nhf7m3pq0776sav744ak1sph63shcpzvc6i58s5wmzn9y"))))
     (build-system mix-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (synopsis
