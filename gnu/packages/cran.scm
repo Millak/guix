@@ -4563,13 +4563,13 @@ that.")
 (define-public r-deming
   (package
     (name "r-deming")
-    (version "1.4")
+    (version "1.4-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "deming" version))
        (sha256
-        (base32 "1yx3qrbik6jpqgsi0gqgc7y2cra13qlisg2gq8rvnv57nvcvb421"))))
+        (base32 "1jipary7wqb9gmj4mfrz4ym5ir44q2rhknxx6ah1f5lpkcsjm6c6"))))
     (properties `((upstream-name . "deming")))
     (build-system r-build-system)
     (propagated-inputs (list r-boot))
