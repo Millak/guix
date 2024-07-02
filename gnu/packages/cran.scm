@@ -15360,17 +15360,18 @@ vice versa), or to deal with multiple declared missing values.")
 (define-public r-sjmisc
   (package
     (name "r-sjmisc")
-    (version "2.8.9")
+    (version "2.8.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sjmisc" version))
        (sha256
         (base32
-         "1gzkq95ckxr0vhrzggflzli9hs7zr8c0yym9zn1wf74yrr0mgc3q"))))
+         "12y5aa820h95dbak9zd2rbg1hc0636b2dpg0mn9mkb76a4ssnr1d"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dplyr
+     (list r-datawizard
+           r-dplyr
            r-insight
            r-magrittr
            r-purrr
