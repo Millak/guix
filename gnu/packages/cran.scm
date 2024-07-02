@@ -41590,14 +41590,14 @@ services, including Simple Storage Service (S3).")
 (define-public r-paws-compute
   (package
     (name "r-paws-compute")
-    (version "0.5.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.compute" version))
        (sha256
         (base32
-         "1vsxwzqgk0004nmfy79pd0zc208fczay95p7h16mzqgds9586ma1"))))
+         "0s1d7gj7lb6fra4l6h3c74v3hsp701qbiqirnk0q0qm7ild5399r"))))
     (properties `((upstream-name . "paws.compute")))
     (build-system r-build-system)
     (propagated-inputs
