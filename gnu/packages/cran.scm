@@ -1731,13 +1731,13 @@ datum to another.")
 (define-public r-rocit
   (package
     (name "r-rocit")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ROCit" version))
        (sha256
-        (base32 "0sd6ckh7k8aqwhzzp3qff6g7d03klbr0mbp403pib3823c8pqa55"))))
+        (base32 "17s7wi248vj6wbcxb6z0fdsw8bijjxva4sldlqcz4m73ccnrdikf"))))
     (properties `((upstream-name . "ROCit")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
