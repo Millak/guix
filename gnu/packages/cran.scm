@@ -10735,13 +10735,13 @@ VCF data and familiar R software.")
 (define-public r-rvcg
   (package
     (name "r-rvcg")
-    (version "0.22.2")
+    (version "0.23")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Rvcg" version))
               (sha256
                (base32
-                "077p4c16nqi6ayxv1i31cr6sw9fwnxpmfkmrrhzh02khpi2c2jg5"))))
+                "0jdhl769r99g0x9kaf1cymzjd96z2pdnha7wyy221q3w3iy81whz"))))
     (properties `((upstream-name . "Rvcg")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcpparmadillo r-rcppeigen))
