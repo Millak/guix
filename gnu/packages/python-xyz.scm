@@ -23442,6 +23442,47 @@ system.")
     ;; Can be used with either license.
     (license (list license:asl2.0 license:gpl2+))))
 
+(define-public python-dunamai
+  (package
+    (name "python-dunamai")
+    (version "1.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dunamai" version))
+       (sha256
+        (base32 "1i35i8ym6n8mpgrq31hivrvfciy12gv26jwlzimmkx9jy2spz0h5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" "not test__version__from_git__shallow")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; These steps are taked from NixOS package definition:
+          ;; nixpkgs/pkgs/development/python-modules/dunamai/default.nix
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "PATH" (string-append #$output "/bin:" (getenv "PATH")))
+              (setenv "HOME" "/tmp")
+              (invoke "git" "config" "--global" "user.email" "nobody@example.com")
+              (invoke "git" "config" "--global" "user.name" "Nobody"))))))
+    (propagated-inputs
+     (list python-packaging))
+    (native-inputs
+     (list git-minimal
+           python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/mtkennerly/dunamai")
+    (synopsis "Dynamic version generation")
+    (description
+     "Dunamai is Python library and command line tool for producing dynamic,
+standards-compliant version strings, derived from tags in your version control
+system.  This facilitates uniquely identifying nightly or per-commit builds in
+continuous integration and releasing new versions of your software simply by
+creating a tag.")
+    (license license:expat)))
+
 (define-public python-pbkdf2
   (package
     (name "python-pbkdf2")
