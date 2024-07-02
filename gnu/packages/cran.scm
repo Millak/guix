@@ -23254,21 +23254,24 @@ marginal histograms/boxplots/density plots to ggplot2 scatterplots.")
 (define-public r-ggpattern
   (package
     (name "r-ggpattern")
-    (version "1.0.1")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggpattern" version))
        (sha256
-        (base32 "1b9bfxlg64gr39bz58fp6jmg4nziwk8rk94rzpjsqhfhpwi2lrgr"))))
+        (base32 "1xlh1y6q10iqk1mbwdrr1vqmgmim3z27znbb5sbwgmm9yfxzj37s"))))
     (properties `((upstream-name . "ggpattern")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2
+     (list r-cli
+           r-ggplot2
            r-glue
            r-gridpattern
+           r-lifecycle
            r-rlang
-           r-scales))
+           r-scales
+           r-vctrs))
     (native-inputs (list r-knitr r-ragg r-rmarkdown))
     (home-page "https://github.com/coolbutuseless/ggpattern")
     (synopsis "Ggplot2 pattern geoms")
