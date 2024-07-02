@@ -13053,14 +13053,14 @@ plots) for multivariate and time series-like data.")
 (define-public r-signal
   (package
     (name "r-signal")
-    (version "1.8-0")
+    (version "1.8-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "signal" version))
        (sha256
         (base32
-         "1126p631zm0wc4h9ghqai5yb9vklpz676fygb0d0aavs2raaijw9"))))
+         "1c7fw5akdm8f44zgdafsgz2fpn6kfwifaw29yakl7zykq89vq8m3"))))
     (build-system r-build-system)
     (propagated-inputs (list r-mass))
     (native-inputs (list gfortran))
