@@ -611,13 +611,13 @@ queues, stacks, deques, dicts and ordered dicts.")
 (define-public r-correlation
   (package
     (name "r-correlation")
-    (version "0.8.4")
+    (version "0.8.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "correlation" version))
               (sha256
                (base32
-                "07fz7wmvrcd6b023jhj3bsrvg4w6i7f1v99jslm0gj84vzmnqzbs"))))
+                "0b5vq7lvvwcv0sw54548ncn85nq6i78dpm44dfvrl23vg65pff0y"))))
     (properties `((upstream-name . "correlation")))
     (build-system r-build-system)
     (propagated-inputs (list r-bayestestr r-datawizard r-insight r-parameters))
