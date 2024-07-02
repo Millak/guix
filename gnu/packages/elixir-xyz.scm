@@ -211,20 +211,20 @@ an up-to-date CA certificate store file for Elixir applications.")
 (define-public elixir-excoveralls
   (package
     (name "elixir-excoveralls")
-    (version "0.18.0")
+    (version "0.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "02x69ll5scvraky0k5gacvnnmldv5k04kgk02x087d9w3y8vn28i"))))
+        (base32 "138bls6hfk87mid2zfwsidk7j06yfich2iihyach7ckb2kdpjpyn"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-castore elixir-jason))
     (arguments (list #:tests? #f)) ; no tests
     (synopsis "Coverage report tool with coveralls.io integration")
     (description
      "Library that reports test coverage statistics, with the option to
-post to coveralls.io service. It uses Erlang's cover to generate coverage
+post to coveralls.io service.  It uses Erlang's cover to generate coverage
 information, and posts the test coverage results to coveralls.io through the
 JSON API.")
     (home-page "https://hexdocs.pm/excoveralls/")
