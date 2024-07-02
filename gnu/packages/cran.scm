@@ -4148,23 +4148,23 @@ data types as well.")
 (define-public r-tglkmeans
   (package
     (name "r-tglkmeans")
-    (version "0.5.4")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tglkmeans" version))
        (sha256
-        (base32 "1plg03k9r4sp8ck5qcj8shblr8378bynyyc7yqwcqv856vkl9icd"))))
+        (base32 "0hdnxgkxpgb8jm9aygv3wlhd42blm5nz906vlpl72blgcyc77hhh"))))
     (properties `((upstream-name . "tglkmeans")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
                              r-dofuture
+                             r-dorng
                              r-dplyr
                              r-future
                              r-ggplot2
                              r-magrittr
                              r-matrix
-                             r-metacell
                              r-plyr
                              r-purrr
                              r-rcpp
