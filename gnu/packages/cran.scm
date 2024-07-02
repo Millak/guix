@@ -31329,13 +31329,13 @@ It also provides a small number of bug fixes to the original code.")
 (define-public r-torch
   (package
     (name "r-torch")
-    (version "0.12.0")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "torch" version))
        (sha256
-        (base32 "024c8szg3xa2zrl5406jx3bmazbjwp2f07ja7m61ja0dr3z7lvbq"))))
+        (base32 "1vy855ahji98np2q5j5fag2zcnv4ki5mysxwg3y5kdns6mifd5ns"))))
     (properties `((upstream-name . "torch")))
     (build-system r-build-system)
     (arguments
