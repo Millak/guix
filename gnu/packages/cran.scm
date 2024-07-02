@@ -11993,14 +11993,14 @@ documents.")
 (define-public r-leaps
   (package
     (name "r-leaps")
-    (version "3.1")
+    (version "3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leaps" version))
        (sha256
         (base32
-         "1dn3yl1p03n0iynd1vsdkrr0fhmvgrmfkv37y7n371765h83lz1x"))))
+         "1bbgm6l12gj1y28ks21awxphpmp07hb0ffiyrw7dqp3fcyxvxmm0"))))
     (build-system r-build-system)
     (native-inputs (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/leaps/")
