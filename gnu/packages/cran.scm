@@ -20092,17 +20092,17 @@ can be made by using glyphs.")
 (define-public r-waveslim
   (package
     (name "r-waveslim")
-    (version "1.8.4")
+    (version "1.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "waveslim" version))
        (sha256
         (base32
-         "1510xpkgrhdw394m5anxccdczjikcxazyd09ix2z73i15akyx3j0"))))
+         "0xd7006skrsvkwj4pkxqbfsbs58rfcpfcfk1lf0gsd2y0wisi60y"))))
     (build-system r-build-system)
-    (native-inputs
-     (list gfortran))
+    (propagated-inputs
+     (list r-multitaper))
     (home-page "http://waveslim.blogspot.com")
     (synopsis "Basic wavelet routines for signal processing")
     (description
