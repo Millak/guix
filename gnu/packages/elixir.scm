@@ -174,7 +174,7 @@ being successfully used in web development and the embedded software domain.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/hexpm/hex.git")
+             (url "https://github.com/hexpm/hex")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -201,9 +201,14 @@ being successfully used in web development and the embedded software domain.")
           (replace 'install
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (define X.Y #$(version-major+minor (package-version elixir)))
-              (define out (string-append (assoc-ref outputs "out") "/lib/elixir/" X.Y "/hex"))
+              (define out (string-append (assoc-ref outputs "out")
+                                         "/lib/elixir/" X.Y "/hex"))
               (mkdir-p out)
-              (copy-recursively "_build/prod/lib/hex" out))))))
+              (let* ((prod-dir "_build/prod/lib/hex")
+                     (prod-dir-mix (string-append prod-dir "/.mix")))
+                (and (directory-exists? prod-dir-mix)
+                     (delete-file-recursively prod-dir-mix))
+              (copy-recursively "_build/prod/lib/hex" out)))))))
     (synopsis "Package manager for the Erlang VM")
     (description
      "This project provides tasks that integrate with Mix, Elixir's build
