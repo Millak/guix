@@ -324,7 +324,6 @@ the result to OUTPUT."
               "--variable" (string-append "master=" source)
               "--variable" (string-append "po=" po)
               "--variable" (string-append "pot=" (string-append (tmpnam) ".pot"))
-              (string-append "--srcdir=" #$source)
               "--destdir=."
               #+(file-append documentation-po "/po4a.cfg")))
 
