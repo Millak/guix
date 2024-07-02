@@ -8034,13 +8034,13 @@ way.")
 (define-public r-restrserve
   (package
     (name "r-restrserve")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RestRserve" version))
        (sha256
-        (base32 "0jbzalk17jg4qm99005q69pyk76c0wjvdwzjp25npzcvlbsxa194"))))
+        (base32 "0d5ppgasaqpgvdi1spxlhp4ywpafbphlhkqfcfvgxrdm6y9igl2c"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate
