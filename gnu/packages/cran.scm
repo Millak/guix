@@ -38762,13 +38762,13 @@ performing ordinal regression.")
 (define-public r-mlr3tuningspaces
   (package
     (name "r-mlr3tuningspaces")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3tuningspaces" version))
        (sha256
-        (base32 "1snrd7xq388mvqh0ydaxvx8k9iwp40g06c3irp0m718jw3wsz5vm"))))
+        (base32 "0zcmhzrr9b3blg49dx3zmxnm5qh87k0rlka0vk2jp59ifd2yggrr"))))
     (properties `((upstream-name . "mlr3tuningspaces")))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate
