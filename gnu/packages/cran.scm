@@ -3024,6 +3024,25 @@ axis, or summary graphics on a continuous axis such as a boxplot or a density
 distribution.")
     (license license:expat)))
 
+(define-public r-gparotation
+  (package
+    (name "r-gparotation")
+    (version "2024.3-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "GPArotation" version))
+       (sha256
+        (base32 "1njl4qg5jgmx14r41q1kzfmhf4zga3yjkig0h7ar35bq56pmgxl8"))))
+    (properties `((upstream-name . "GPArotation")))
+    (build-system r-build-system)
+    (home-page "https://optimizer.r-forge.r-project.org/GPArotation_www/")
+    (synopsis "Gradient projection factor rotation")
+    (description
+     "This package provides gradient projection algorithms for factor
+rotation.  For details see @code{?GPArotation}.")
+    (license license:gpl2+)))
+
 (define-public r-gprofiler
   (package
     (name "r-gprofiler")
