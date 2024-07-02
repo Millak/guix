@@ -113,10 +113,9 @@ source code.")
     (arguments (list #:tests? #f)) ; no tests
     (synopsis "JSON parser and generator")
     (description
-     "Parser and generator are written in pure Elixir and optimized for speed. They
-are at least twice as fast as other Elixir/Erlang libraries (e.g.
-Poison). The performance is comparable to jiffy, which is implemented in C as
-a NIF.")
+     "Parser and generator are written in pure Elixir and optimized for speed.  They
+are at least twice as fast as other Elixir/Erlang libraries (e.g. Poison).  The
+performance is comparable to jiffy, which is implemented in C as a NIF.")
     (home-page "https://hexdocs.pm/jason/")
     (license license:asl2.0)))
 
