@@ -13964,14 +13964,14 @@ it.")
 (define-public r-rgexf
   (package
     (name "r-rgexf")
-    (version "0.16.2")
+    (version "0.16.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rgexf" version))
        (sha256
         (base32
-         "00c2zka1n3k7p1l0mlchr063s6x58p9r3fb64d4wgl4rvsq55q3f"))
+         "1c1rqgr7qsj61gp2frm197k396xfdspvmmwr56izwb09225cbp6d"))
        ;; Delete minified JavaScript files
        (snippet
         '(for-each delete-file
