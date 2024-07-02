@@ -41733,14 +41733,14 @@ internally managed by a zoolog thesaurus.")
 (define-public r-filehash
   (package
     (name "r-filehash")
-    (version "2.4-5")
+    (version "2.4-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "filehash" version))
        (sha256
         (base32
-         "0b52bnsqp65s3r4aw9mvfwfnjmsrqq8ndcadwig547nn9mwy47iv"))))
+         "1cc1xq6vpk5cmsr4w5i6nvkx36grd38dds4lys4gmijlldml92sm"))))
     (properties `((upstream-name . "filehash")))
     (build-system r-build-system)
     (propagated-inputs (list r-digest))
