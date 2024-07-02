@@ -32284,14 +32284,14 @@ Raftery, Appl.Statistics, 1989); it includes inference and basic methods.")
 (define-public r-forecast
   (package
     (name "r-forecast")
-    (version "8.22.0")
+    (version "8.23.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "forecast" version))
        (sha256
         (base32
-         "09s5fdyzc6f5l8dy7ynjmd6l5fk3wvz59q0kfv2fd9da5c1mqd8w"))))
+         "100qi8cgr5dz3qskrgrsjn77m7szs5rfpgqfdwlgp67l708x9hzz"))))
     (properties `((upstream-name . "forecast")))
     (build-system r-build-system)
     (propagated-inputs
@@ -32307,6 +32307,7 @@ Raftery, Appl.Statistics, 1989); it includes inference and basic methods.")
            r-timedate
            r-tseries
            r-urca
+           r-withr
            r-zoo))
     (native-inputs
      (list r-knitr))           ; needed for vignettes
