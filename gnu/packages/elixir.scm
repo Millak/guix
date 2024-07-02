@@ -136,7 +136,7 @@
                   ;; program, for example `iex -S mix`, so we should not wrap
                   ;; mix into shell script.
                   (substitute* (string-append out "/bin/mix")
-                    (("Mix.start\\(\\)")
+                    (("Mix.CLI.main\\(\\)")
                      (format #f "\
 ~~w[GUIX_ELIXIR_LIBS ERL_LIBS]
 |> Enum.map(&System.get_env/1)
@@ -144,7 +144,7 @@
 |> Enum.join(\":\")
 |> case do \"\" -> :ok; erl_libs -> System.put_env(\"ERL_LIBS\", erl_libs) end
 System.put_env(\"MIX_REBAR3\", System.get_env(\"MIX_REBAR3\", \"~a\"))
-Mix.start()"
+Mix.CLI.main()"
                              (search-input-file inputs "/bin/rebar3"))))
                   (for-each
                    (lambda (program)
