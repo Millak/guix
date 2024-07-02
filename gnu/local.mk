@@ -1201,6 +1201,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/duc-fix-test-sh.patch                    \
   %D%/packages/patches/dune-common-skip-failing-tests.patch	\
   %D%/packages/patches/durden-shadow-arcan.patch		\
+  %D%/packages/patches/dvdbackup-with-libdvdread-6.1.0+.patch	\
   %D%/packages/patches/dvd+rw-tools-add-include.patch 		\
   %D%/packages/patches/dwarves-threading-reproducibility.patch	\
   %D%/packages/patches/efivar-fix-fprint-format.patch		\
