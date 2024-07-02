@@ -31376,14 +31376,14 @@ also supports low-level tensor operations and GPU acceleration.")
 (define-public r-additivitytests
   (package
     (name "r-additivitytests")
-    (version "1.1-4.1")
+    (version "1.1-4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "additivityTests" version))
        (sha256
         (base32
-         "00kzfv86z6kk0gvbz9mg3p6xi5fb8cn74rhslr17rdpd02md0884"))))
+         "07fms1mf71ycq6w2k3hmgl6q3sc5x4qkm7d0diymbbgpbpxggwh8"))))
     (properties
      `((upstream-name . "additivityTests")))
     (build-system r-build-system)
