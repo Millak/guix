@@ -6535,6 +6535,26 @@ named elements: the @code{status}, the @code{headers}, and the @code{body}.")
 work well on small screens.")
     (license license:gpl3)))
 
+(define-public r-minty
+  (package
+    (name "r-minty")
+    (version "0.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "minty" version))
+       (sha256
+        (base32 "1kbs4f36s5bnjpc5wcqawbk154n9wjpf549hsjj4xdcg7ihcdgfg"))))
+    (properties `((upstream-name . "minty")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cpp11 r-tzdb))
+    (home-page "https://gesistsa.github.io/minty/")
+    (synopsis "Minimal type guesser")
+    (description
+     "This is a port of the type guesser from the @code{readr} package, the
+so-called readr first edition parsing engine, now superseded by vroom.")
+    (license license:expat)))
+
 (define-public r-feather
   (package
     (name "r-feather")
