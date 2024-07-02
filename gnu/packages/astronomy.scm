@@ -57,6 +57,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages jupyter)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
@@ -4640,6 +4641,73 @@ observed with the Hubble Space Telescope (HST).  Passbands for standard
 photometric systems are available, and users can incorporate their own filters,
 spectra, and data.")
       (license license:bsd-3))))
+
+(define-public python-sbpy
+  (package
+    (name "python-sbpy")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sbpy" version))
+       (sha256
+        (base32 "18f3056fgzpvjj43m845wl9znl4dqxs8f8qv3gpay7kik4l8a1fc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; See <https://github.com/NASA-Planetary-Science/sbpy/issues/397>.
+      #~(list "--ignore=sbpy/spectroscopy/tests/test_specgrad.py"
+              ;; See <https://github.com/NASA-Planetary-Science/sbpy/issues/398>
+              "-k" (string-append "not test_from_fluxd"
+                                  " and not test_bandpass"
+                                  " and not test_spectral_density_vega_bp"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home-env
+            (lambda _
+              ;; Tests require HOME to be set.
+              ;;  No such file or directory: '/homeless-shelter/.astropy'
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-ads
+           python-astropy
+           python-astroquery
+           python-ginga
+           python-numpy
+           python-photutils
+           python-pyyaml
+           python-scipy
+           python-synphot))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-pytest-doctestplus
+           python-pytest-remotedata
+           python-pytest-xdist
+           python-setuptools-scm))
+    (home-page "https://sbpy.org")
+    (synopsis "Python module for small-body planetary astronomy")
+    (description
+     "@code{sbpy} is a package for small-body planetary astronomy.  It is
+meant to supplement functionality provided by @code{astropy} with functions
+and methods that are frequently used in the context of planetary astronomy
+with a clear focus on asteroids and comets.
+Features:
+@itemize
+@item observation planning tools tailored to moving objects
+@item photometry models for resolved and unresolved observations
+@item wrappers and tools for astrometry and orbit fitting
+@item spectroscopy analysis tools and models for reflected solar light and
+emission from gas
+@item cometary gas and dust coma simulation and analysis tools
+@item asteroid thermal models for flux estimation and size/albedo estimation
+@item image enhancement tools for comet comae and PSF subtraction tools
+@item lightcurve and shape analysis tools
+@item access tools for various databases for orbital and physical data, as
+well as ephemerides services
+@end itemize")
+    (license license:bsd-3)))
 
 (define-public python-sep
   (package/inherit libsep
