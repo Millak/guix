@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Pierre-Henry Fröhring <contact@phfrohring.com>
+;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,13 +103,17 @@ See: https://hexdocs.pm/mix/1.15.7/Mix.html#module-environment-variables"
   "Builds the Mix project."
   (for-each (lambda (mix-env)
               (setenv "MIX_ENV" mix-env)
-              (invoke "mix" "compile" "--no-deps-check"))
+              (invoke "mix" "compile" "--no-deps-check"
+                      "--no-prune-code-paths"))
             mix-environments))
 
 (define* (check #:key (tests? #t) #:allow-other-keys)
   "Test the Mix project."
   (if tests?
-      (invoke "mix" "test" "--no-deps-check")
+      (begin
+        (setenv "MIX_ENV" "test")
+        (invoke "mix" "do" "compile" "--no-deps-check" "--no-prune-code-paths" "+"
+                "test" "--no-deps-check"))
       (format #t "tests? = ~a~%" tests?)))
 
 (define* (remove-mix-dirs . _)
