@@ -13686,14 +13686,14 @@ dependency on Java.")
 (define-public r-rio
   (package
     (name "r-rio")
-    (version "1.0.1")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rio" version))
        (sha256
         (base32
-         "1vkvajlmp8kgmkadamy0xm885whfkwacq2jxcrshz1w8amy16k3m"))))
+         "0llvdd4vdxpvjvbya3b6kh04h0k48ijy4dkjl77ynvhlh9wyzw9y"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-curl
@@ -13702,8 +13702,8 @@ dependency on Java.")
            r-haven
            r-lifecycle
            r-r-utils
+           r-readr
            r-readxl
-           r-stringi
            r-tibble
            r-writexl))
     (native-inputs
