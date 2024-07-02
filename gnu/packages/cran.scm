@@ -37703,12 +37703,12 @@ genome scans.")
 (define-public r-qtl2
   (package
     (name "r-qtl2")
-    (version "0.34")
+    (version "0.36")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "qtl2" version))
               (sha256
-               (base32 "1h3wim850b2xk09z9vgnyfp20k7vg94zf7szcrlw5nf1w9gn4wzy"))))
+               (base32 "0sy4j3f1dw7w7qcp3lsc5mmd8kwa5qaxcl8c4236a8zbzkvvnp5j"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table
