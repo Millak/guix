@@ -631,6 +631,26 @@ correlations, multilevel correlations, polychoric correlations, biweight
 correlations, distance correlations and more.")
     (license license:gpl3)))
 
+(define-public r-countrycode
+  (package
+    (name "r-countrycode")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "countrycode" version))
+       (sha256
+        (base32 "1dix4prcavwbi7l7ifw1frvpmqqdcrvk4c45xl7ckg6068713nzr"))))
+    (properties `((upstream-name . "countrycode")))
+    (build-system r-build-system)
+    (home-page "https://vincentarelbundock.github.io/countrycode/")
+    (synopsis "Convert country names and country codes")
+    (description
+     "This package lets you standardize country names, convert them into one
+of 40 different coding schemes, convert between coding schemes, and assign
+region descriptors.")
+    (license license:gpl3)))
+
 (define-public r-cplm
   (package
     (name "r-cplm")
