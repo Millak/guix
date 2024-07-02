@@ -89,6 +89,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
@@ -676,6 +677,31 @@ Point Spread Function} from FITS images processed with SExtractor, and
 measures the quality of images.  The generated PSF models can be used for
 model-fitting photometry or morphological analyses.")
     (license license:gpl3+)))
+
+(define-public python-ads
+  (package
+    (name "python-ads")
+    (version "0.12.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ads" version))
+       (sha256
+        (base32 "18aizbsmhwz99flz8n101mi0n0lk3m3qqzfvmxrmjwqvydfypjml"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-httpretty))
+    (propagated-inputs
+     (list python-mock
+           python-requests
+           python-six
+           python-werkzeug))
+    (home-page "http://www.github.com/andycasey/ads/")
+    (synopsis "Python client to NASA's Astrophysics Data System")
+    (description
+     "This package provdies a Python Module to Interact with NASA's
+@acronym{Astrophysics Data System,ADS} that Doesn't Suck™.")
+    (license license:expat)))
 
 (define-public python-aplpy
   (package
