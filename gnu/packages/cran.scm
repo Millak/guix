@@ -26622,14 +26622,14 @@ on, for a performance vs accuracy trade-off.")
 (define-public r-rsparse
   (package
     (name "r-rsparse")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsparse" version))
        (sha256
         (base32
-         "15kdllm2lh6xdlv4j0ljyj5pczhx26s9d8cac7953zbb0sd45chz"))))
+         "0a40mhbzlakjsf6wj00p8pqr6slhn7gxsgq2rycp3yg478ajwqyp"))))
     (properties `((upstream-name . "rsparse")))
     (build-system r-build-system)
     (propagated-inputs
