@@ -42259,27 +42259,27 @@ present in the @code{testthat} package.")
 (define-public r-zoltr
   (package
     (name "r-zoltr")
-    (version "0.5.1")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "zoltr" version))
        (sha256
         (base32
-         "12zh7y3pwidclscgvd0b0iaqq9j5y8mc8xd6pz4vs0jy5qs3ahar"))))
+         "0j1zyclfhl1njwyg7x4jg4vqaphiikplqa8b4ch9hrzlvjjw7zk8"))))
     (properties `((upstream-name . "zoltr")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64url
+           r-data-table
            r-dplyr
            r-httr
            r-jsonlite
+           r-lubridate
            r-magrittr
            r-mmwrweek
-           r-mockery
            r-readr
-           r-rlang
-           r-webmockr))
+           r-rlang))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/reichlab/zoltr")
     (synopsis "Interface to the Zoltar forecast repository API")
