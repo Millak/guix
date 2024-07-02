@@ -20297,8 +20297,8 @@ one if it fails.")
 
 (define-public emacs-jabber
   ;; No releases available.
-  (let ((commit "af0315e174fa6446d5c4dd3e6465d48912950e58")
-        (revision "0"))
+  (let ((commit "e766d84b81d5df6abc30fcbbb94f7c8640ea54e2")
+        (revision "1"))
     (package
       (name "emacs-jabber")
       (version (git-version "0.8.92" revision commit))
@@ -20310,7 +20310,7 @@ one if it fails.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "08q0hbm4pvp8sf261w1ihqa93sg8blfybfkhq7wrnvgs6kasgwvq"))))
+                  "0b6msdyvhjr4v4j8hl6kmcjks88iq001w1fhjgfvg8ii9n77n6xn"))))
       (build-system emacs-build-system)
       (arguments
        (list
