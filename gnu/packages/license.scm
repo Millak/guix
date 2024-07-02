@@ -172,13 +172,13 @@ belonging to various licenses.")
 (define-public reuse
   (package
     (name "reuse")
-    (version "3.0.1")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reuse" version))
        (sha256
-        (base32 "0vqawznn8zhh5m3hv51xjhkz0v4vbmsiz2z1smg52k4nmlly832r"))))
+        (base32 "19ijdwbr47pa0ba30s40b53qb0chyq27akj0484aj9s5p1i85svk"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Change directory before running the test suite to avoid having both
