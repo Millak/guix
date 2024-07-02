@@ -1507,13 +1507,13 @@ There is also a Shiny app as a user interface in this package.")
 (define-public r-highr
   (package
     (name "r-highr")
-    (version "0.10")
+    (version "0.11")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "highr" version))
               (sha256
                (base32
-                "0yrlpjs8qzq1d7iy4gypnf4x1gvxq6vaghkdh1kfv433yqgvqmgc"))))
+                "19z0gwdy46z6gb46b3fs2ljxa2cn0bpvx7aam0jk75h180l183g9"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-xfun))
