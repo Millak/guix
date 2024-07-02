@@ -4806,15 +4806,16 @@ sliding semi-landmarks and semi-automated surface landmark placement.")
 (define-public r-hgnchelper
   (package
     (name "r-hgnchelper")
-    (version "0.8.1")
+    (version "0.8.14")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "HGNChelper" version))
               (sha256
                (base32
-                "0qwkk5658j4j6w2wgvxkp38cyvscjp93d3zc7gb97vcihqx0ngxa"))))
+                "0rhqpzq6z57wzydwcz0ry61al68l3mll79s5hz8by7hy61izj5k5"))))
     (properties `((upstream-name . "HGNChelper")))
     (build-system r-build-system)
+    (propagated-inputs (list r-splitstackshape))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/waldronlab/HGNChelper")
     (synopsis
