@@ -333,14 +333,14 @@ multiple and joint correspondence analysis.")
 (define-public r-cachem
   (package
     (name "r-cachem")
-    (version "1.0.8")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cachem" version))
        (sha256
         (base32
-         "1hj5gw040pdrl3iwvwbgyrs91jcar0pwr3kmf23wwpb1zqcsk77a"))))
+         "089f963h59z4n0sj3isjq2h7zw2485qw38jv8zdnbn755by3j22m"))))
     (properties `((upstream-name . "cachem")))
     (build-system r-build-system)
     (propagated-inputs
