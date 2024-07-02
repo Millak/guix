@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2020, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz
 ;;;
 ;;; This file is part of GNU Guix.
@@ -258,5 +258,25 @@
                        (string-trim-right str))))
          ;; COMMIT should be the ID of the commit object, not that of the tag.
          (string=? commit head))))))
+
+(test-assert "update-cached-checkout, untracked files removed"
+  (call-with-temporary-directory
+   (lambda (cache)
+     (with-temporary-git-repository directory
+         '((add "a.txt" "A")
+           (add ".gitignore" ".~\n")
+           (commit "First commit"))
+       (let ((directory commit relation
+                        (update-cached-checkout directory
+                                                #:ref '()
+                                                #:cache-directory cache)))
+         (close-port
+          (open-output-file (in-vicinity cache "stale-untracked-file")))
+         (let ((directory2 commit2 relation2
+                           (update-cached-checkout directory
+                                                   #:ref '()
+                                                   #:cache-directory cache)))
+           (not (file-exists?
+                 (in-vicinity cache "stale-untracked-file")))))))))
 
 (test-end "git")

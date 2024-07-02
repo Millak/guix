@@ -298,6 +298,25 @@ corresponding Git object."
       (('tag    . tag)
        (tag->commit repository tag)))))
 
+(define (delete-untracked-files repository)
+  "Delete untracked files from the work directory of REPOSITORY."
+  (let ((workdir (repository-working-directory repository))
+        (status (status-list-new repository
+                                 (make-status-options
+                                  STATUS-SHOW-WORKDIR-ONLY
+                                  (logior
+                                   STATUS-FLAG-INCLUDE-UNTRACKED
+                                   STATUS-FLAG-INCLUDE-IGNORED)))))
+    (for-each (lambda (entry)
+                (let ((status (status-entry-status entry)))
+                  (when (or (memq 'wt-new status)
+                            (memq 'ignored status))
+                    (let* ((diff (status-entry-index-to-workdir entry))
+                           (new  (diff-delta-new-file diff)))
+                      (delete-file-recursively
+                       (in-vicinity workdir (diff-file-path new)))))))
+              (status-list->status-entries status))))
+
 (define (switch-to-ref repository ref)
   "Switch to REPOSITORY's branch, commit or tag specified by REF.  Return the
 OID (roughly the commit hash) corresponding to REF."
@@ -305,6 +324,11 @@ OID (roughly the commit hash) corresponding to REF."
     (resolve-reference repository ref))
 
   (reset repository obj RESET_HARD)
+
+  ;; There might still be untracked files in REPOSITORY due to an interrupted
+  ;; checkout for example; delete them.
+  (delete-untracked-files repository)
+
   (object-id obj))
 
 (define (call-with-repository directory proc)
