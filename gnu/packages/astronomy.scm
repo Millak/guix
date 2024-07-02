@@ -3523,30 +3523,36 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
   (package
     (name "python-stpipe")
     (version "0.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "stpipe" version))
-              (sha256
-               (base32
-                "0iipbz5ydxxxk44q8ab0ylk7jpxjfhag4vgkhvpj67zs4s45sd8a"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Replace reference to external configobj.
-                  (substitute* (find-files "." "\\.py$")
-                    (("from astropy.extern import configobj") "import configobj")
-                    (("from astropy.extern.configobj import validate") "import validate")
-                    (("from astropy.extern.configobj.configobj import ") "from configobj import ")
-                    (("from astropy.extern.configobj.validate import ") "from validate import "))))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stpipe" version))
+       (sha256
+        (base32 "0iipbz5ydxxxk44q8ab0ylk7jpxjfhag4vgkhvpj67zs4s45sd8a"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Replace reference to external configobj.
+           (substitute* (find-files "." "\\.py$")
+             (("from astropy.extern import configobj") "import configobj")
+             (("from astropy.extern.configobj import validate") "import validate")
+             (("from astropy.extern.configobj.configobj import ") "from configobj import ")
+             (("from astropy.extern.configobj.validate import ") "from validate import "))))))
     (arguments
      (list
       ;; See https://github.com/spacetelescope/stpipe/issues/114
       #:test-flags #~(list "-k" "not test_roman_datamodel")))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-asdf python-astropy python-crds python-stdatamodels))
-    (native-inputs (list python-pytest python-pytest-doctestplus
-                         python-pytest-openfiles python-setuptools-scm))
+     (list python-asdf
+           python-astropy
+           python-crds
+           python-stdatamodels))
+    (native-inputs
+     (list python-pytest
+           python-pytest-doctestplus
+           python-pytest-openfiles
+           python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stpipe")
     (synopsis "Framework for calibration pipeline software")
     (description
