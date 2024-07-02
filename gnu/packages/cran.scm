@@ -9863,6 +9863,29 @@ functions of a stable variate, as well as generalized regression models for
 the parameters of a stable distribution.")
     (license license:gpl2+)))
 
+(define-public r-stabm
+  (package
+    (name "r-stabm")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "stabm" version))
+       (sha256
+        (base32 "1vslidq2pzpwhsrsklghaqsdjjf4w4wqs2dng0p68zhrv5vlivhq"))))
+    (properties `((upstream-name . "stabm")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate r-matrix))
+    (native-inputs (list r-knitr))
+    (home-page "https://bommert.github.io/stabm/")
+    (synopsis "Stability measures for feature selection")
+    (description
+     "This package provides an implementation of many measures for the
+assessment of the stability of feature selection.  Both simple measures and
+measures which take into account the similarities between features are
+available.")
+    (license license:lgpl3)))
+
 (define-public r-statip
   (package
     (name "r-statip")
