@@ -18286,13 +18286,13 @@ efficient computation even with very large data sets.")
 (define-public r-sjplot
   (package
     (name "r-sjplot")
-    (version "2.8.15")
+    (version "2.8.16")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sjPlot" version))
        (sha256
-        (base32 "10lvn8dnckpjjpapmf0d2zwjkzjvs4iiswd3rmijzviz4ichhxjs"))))
+        (base32 "093nmn1gq8i4kr5nhwby883rxpdiyb959shqvfnvplwcnnv762ji"))))
     (properties `((upstream-name . "sjPlot")))
     (build-system r-build-system)
     (propagated-inputs
