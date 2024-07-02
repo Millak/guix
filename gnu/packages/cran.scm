@@ -25798,18 +25798,17 @@ proteomics applications).")
 (define-public r-pamr
   (package
     (name "r-pamr")
-    (version "1.56.2")
+    (version "1.57")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pamr" version))
        (sha256
         (base32
-         "0n7wpgzdadngj44ddsg3171wap4qhiaap75ndr6g768r3mv6q119"))))
+         "0gdgaspan6j4qw98357mdk7rs6r1abzzfrp63jzf99gi41v8z5h1"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cluster r-survival))
-    (native-inputs (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/pamr/")
     (synopsis "Prediction Analysis for Microarrays")
     (description
