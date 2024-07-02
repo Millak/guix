@@ -38618,13 +38618,13 @@ black-box optimization in bbotk.")
 (define-public r-mlr3mbo
   (package
     (name "r-mlr3mbo")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3mbo" version))
        (sha256
-        (base32 "0jdj5dx6jb7n0g950h0j8jhafdj5mcalv5vxfiyf07myr6mjipri"))))
+        (base32 "0qdd0g8qnfrafkqw79mhb652chf7lqmkcyra6afxamy7jardjr0g"))))
     (properties `((upstream-name . "mlr3mbo")))
     (build-system r-build-system)
     (propagated-inputs (list r-bbotk
