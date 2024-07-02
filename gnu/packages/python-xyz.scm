@@ -5045,33 +5045,51 @@ and is not compatible with JSON.")
     (license license:expat)))
 
 (define-public python-extension-helpers
-(package
-  (name "python-extension-helpers")
-  (version "1.1.1")
-  (source
-    (origin
-      (method url-fetch)
-      (uri (pypi-uri "extension-helpers" version))
-      (sha256
-        (base32 "001zd6gfs9yrwjny1fxzycxx0kcasshlyl6rh1kgzm13ll2d6pgr"))))
-  (build-system pyproject-build-system)
-  ;; FIXME: pytest failed to load test suit, find out why.
-  ;;  - _pytest.pathlib.ImportPathMismatchError: ('extension_helpers.conftes
-  (arguments (list #:tests? #f))
-  (native-inputs
-    (list python-coverage
-          python-pytest
-          python-pytest-astropy
-          python-pytest-cov
-          python-setuptools-scm))
-  (home-page "https://extension-helpers.readthedocs.io")
-  (synopsis "Astropy ecosystem utilities for building and installing packages")
-  (description
-    "The extension-helpers package includes convenience helpers to assist with
+  (package
+    (name "python-extension-helpers")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch) ; no tests in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/astropy/extension-helpers")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lkhypg21ydx03z03dppbf05zff40dyl0kn6nichzfdfpqnr5055"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; It tries to install it via pip: E ModuleNotFoundError: No module named
+      ;; 'helpers_test_package_fd9cc3a9_11fa_4a1a_b80e_c5b043949604'
+      #:test-flags #~(list "-k" "not test_only_pyproject[True]")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; LookupError: setuptools-scm was unable to detect version for
+          ;; /tmp/guix-build-python-extension-helpers-1.1.1.drv-0/source.
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-v" test-flags))))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-pytest-cov
+           python-setuptools-scm
+           python-tomli))
+    (home-page "https://extension-helpers.readthedocs.io")
+    (synopsis "Astropy ecosystem utilities for building and installing packages")
+    (description
+     "The extension-helpers package includes convenience helpers to assist with
 building Python packages with compiled C/Cython extensions.  It is developed by
 the Astropy project but is intended to be general and usable by any Python
 package.")
-  (license license:bsd-3)))
+    (license license:bsd-3)))
 
 (define-public python-extras
   (package
