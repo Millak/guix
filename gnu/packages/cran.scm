@@ -17667,16 +17667,16 @@ estimation problem.")
 (define-public r-quickjsr
   (package
     (name "r-quickjsr")
-    (version "1.1.3")
+    (version "1.2.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "QuickJSR" version))
               (sha256
                (base32
-                "0ccp7dx2jhlarfn48jc0mhci5kkj0r3ibh6rjnxswvp3yg2x2bgd"))))
+                "1vb8b591imq737zin77sh3icld87pqk5mssmn7ddzj45cn22z12i"))))
     (properties `((upstream-name . "QuickJSR")))
     (build-system r-build-system)
-    (propagated-inputs (list r-jsonlite r-r6 r-rcpp))
+    (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/package=QuickJSR")
     (synopsis "Interface for the QuickJS lightweight JavaScript engine")
     (description
