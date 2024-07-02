@@ -6075,21 +6075,18 @@ expected shortfall risk are also included.")
 (define-public r-nloptr
   (package
     (name "r-nloptr")
-    (version "2.0.3")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nloptr" version))
        (sha256
         (base32
-         "1mqnjswm0dl6vqc8b2s5k3n1mhanaha3l33vh68dh6zx8q9aq9kv"))))
+         "1snqvav2pxjhssn1nld49mjj89cn2zv7gjn2y8ch22gbzmfzbnjc"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr ; for building vignettes
-           pkg-config gfortran))
-    (inputs
-     (list nlopt))
-    (propagated-inputs (list r-testthat))
+     (list gfortran pkg-config r-knitr))
+    (inputs (list nlopt))
     (home-page "https://cran.r-project.org/web/packages/nloptr")
     (synopsis "R interface to NLopt")
     (description
