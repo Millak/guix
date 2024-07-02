@@ -792,6 +792,13 @@ rebar3.")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
+          ;; By default LFE compiler itself is not deterministic. We fix it
+          ;; here. For more details see: https://github.com/lfe/lfe/issues/492.
+          (add-after 'unpack 'make-deterministic
+           (lambda _
+             (substitute* "src/lfe_env.erl"
+                 (("maps:fold\\(F, A, D\\)")
+                  "lists:sort(maps:fold(F, A, D))"))))
           ;; The following is inspired by rebar-build-system.scm
           (add-before 'check 'erlang-depends
             (lambda* (#:key inputs #:allow-other-keys)
