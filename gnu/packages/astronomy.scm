@@ -3522,13 +3522,13 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
 (define-public python-stpipe
   (package
     (name "python-stpipe")
-    (version "0.5.2")
+    (version "0.6.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stpipe" version))
               (sha256
                (base32
-                "0r29m143ll1j9irixazrkqggzg9xbkcw7fl9xmi69zpxbh5mjgz0"))
+                "0iipbz5ydxxxk44q8ab0ylk7jpxjfhag4vgkhvpj67zs4s45sd8a"))
               (modules '((guix build utils)))
               (snippet
                '(begin
