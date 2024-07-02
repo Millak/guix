@@ -277,13 +277,13 @@ things like Dialyzer errors and Observer.")
 (define-public elixir-dialyxir
   (package
     (name "elixir-dialyxir")
-    (version "1.4.1")
+    (version "1.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "00cqwhd1wabwds44jz94rvvr8z8cp12884d3lp69fqkrszb9bdw4"))))
+        (base32 "11m9hxs5byidqyxpzv34m1hwd69jcqqv2h81qfz0cl2wrmsznb5z"))))
     (build-system mix-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (propagated-inputs (list elixir-erlex))
