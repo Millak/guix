@@ -384,13 +384,13 @@ evaluation.")
 (define-public r-castor
   (package
     (name "r-castor")
-    (version "1.8.0")
+    (version "1.8.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "castor" version))
               (sha256
                (base32
-                "0caw206hndfzypj33w6npvppdc5hhq1q71wriqd0ck9f238rfi3c"))))
+                "1850i35qsxw7dkkblixnp4h5zhwg0ysx8rzns5h0kr9lwmil6biw"))))
     (properties `((upstream-name . "castor")))
     (build-system r-build-system)
     (propagated-inputs (list r-jsonlite r-matrix r-naturalsort r-rcpp
