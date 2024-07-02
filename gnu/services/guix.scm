@@ -66,6 +66,7 @@
             guix-build-coordinator-agent-configuration-max-1min-load-average
             guix-build-coordinator-agent-configuration-derivation-substitute-urls
             guix-build-coordinator-agent-configuration-non-derivation-substitute-urls
+            guix-build-coordinator-agent-configuration-extra-options
 
             guix-build-coordinator-agent-password-auth
             guix-build-coordinator-agent-password-auth?
@@ -209,7 +210,10 @@
    (default #f))
   (non-derivation-substitute-urls
    guix-build-coordinator-agent-configuration-non-derivation-substitute-urls
-   (default #f)))
+   (default #f))
+  (extra-options
+   guix-build-coordinator-agent-configuration-extra-options
+   (default '())))
 
 (define-record-type* <guix-build-coordinator-agent-password-auth>
   guix-build-coordinator-agent-password-auth
@@ -410,6 +414,7 @@
              max-parallel-builds max-parallel-uploads
              max-allocated-builds max-1min-load-average
              derivation-substitute-urls non-derivation-substitute-urls
+             extra-options
              systems)
     (list
      (shepherd-service
@@ -469,6 +474,7 @@
                                  "--non-derivation-substitute-urls="
                                  (string-join non-derivation-substitute-urls " ")))
                            #~())
+                    #$@extra-options
                     #$@(map (lambda (system)
                               (string-append "--system=" system))
                             (or systems '())))

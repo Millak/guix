@@ -39763,6 +39763,8 @@ derivations aren't already available.
 URLs from which to attempt to fetch substitutes for build inputs, if the
 input store items aren't already available.
 
+@item @code{extra-options} (default: @var{'()})
+Extra command line options for @code{guix-build-coordinator-agent}.
 @end table
 @end deftp
 
