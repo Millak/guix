@@ -5327,74 +5327,70 @@ of Hidden Markov Models.")
 
 ;; Keep this in sync with the r-torch package.
 (define-public liblantern
-  ;; There has been no release or tagged commit for r-torch 0.12.0.  The
-  ;; selected commit corresponds to the 0.12.0 release.
-  (let ((commit "4d83bd087be581f7db321c27f55897ff021d2537")
-        (revision "1"))
-    (package
-      (name "liblantern")
-      (version (git-version "0.11.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/mlverse/torch")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1xxc6vr7sr2mg0va0hc2fs4f6v5b78mx43dp2shzzbcgw90mgpvk"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        #:tests? #false                 ;no test target
-        #:phases
-        (let ((python-version (version-major+minor (package-version python))))
-          #~(modify-phases %standard-phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "src/lantern")))
-              (add-after 'chdir 'do-not-download-binaries
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (substitute* "CMakeLists.txt"
-                    (("find_package\\(Torch.*") "set(TORCH_CXX_FLAGS \"-ltorch\")\n")
-                    (("retrieve_lib\\(.*") ""))
-                  (let ((site-packages (string-append "/lib/python"
-                                                      #$python-version
-                                                      "/site-packages")))
-                    (setenv "LIBRARY_PATH"
-                            (string-append
-                             (search-input-directory
-                              inputs (string-append site-packages "/torch/lib"))
-                             ":" (or (getenv "LIBRARY_PATH") "")))
-                    (setenv "CPLUS_INCLUDE_PATH"
-                            (string-append
-                             (search-input-directory
-                              inputs (string-append
-                                      site-packages "/torch/include/torch/csrc/api/include/"))
-                             ":"
-                             (search-input-directory
-                              inputs (string-append site-packages "/torch/include/"))
-                             ":"
-                             (or (getenv "CPLUS_INCLUDE_PATH") "")))
-                    (setenv "C_INCLUDE_PATH"
-                            (string-append
-                             (search-input-directory
-                              inputs (string-append site-packages "/torch/include/"))
-                             ":"
-                             (or (getenv "C_INCLUDE_PATH") ""))))))
-              (replace 'install
-                (lambda _
-                  (install-file
-                   "../build/liblantern.so"
-                   (string-append #$output "/lib"))
-                  (copy-recursively
-                   "../lantern/include"
-                   (string-append #$output "/include"))))))))
-      (inputs (list python-pytorch-for-r-torch))
-      (home-page "https://github.com/mlverse/torch/")
-      (synopsis "C API to libtorch")
-      (description
-       "Lantern provides a C API to the libtorch machine learning library.")
-      (license license:expat))))
+  (package
+    (name "liblantern")
+    (version "0.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mlverse/torch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yy5xpn9mi5qm7k4w7040d6frpixm9ifs46v1cn9b6bpc1qs1a02"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #false                 ;no test target
+      #:phases
+      (let ((python-version (version-major+minor (package-version python))))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "src/lantern")))
+            (add-after 'chdir 'do-not-download-binaries
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "CMakeLists.txt"
+                  (("find_package\\(Torch.*") "set(TORCH_CXX_FLAGS \"-ltorch\")\n")
+                  (("retrieve_lib\\(.*") ""))
+                (let ((site-packages (string-append "/lib/python"
+                                                    #$python-version
+                                                    "/site-packages")))
+                  (setenv "LIBRARY_PATH"
+                          (string-append
+                           (search-input-directory
+                            inputs (string-append site-packages "/torch/lib"))
+                           ":" (or (getenv "LIBRARY_PATH") "")))
+                  (setenv "CPLUS_INCLUDE_PATH"
+                          (string-append
+                           (search-input-directory
+                            inputs (string-append
+                                    site-packages "/torch/include/torch/csrc/api/include/"))
+                           ":"
+                           (search-input-directory
+                            inputs (string-append site-packages "/torch/include/"))
+                           ":"
+                           (or (getenv "CPLUS_INCLUDE_PATH") "")))
+                  (setenv "C_INCLUDE_PATH"
+                          (string-append
+                           (search-input-directory
+                            inputs (string-append site-packages "/torch/include/"))
+                           ":"
+                           (or (getenv "C_INCLUDE_PATH") ""))))))
+            (replace 'install
+              (lambda _
+                (install-file
+                 "../build/liblantern.so"
+                 (string-append #$output "/lib"))
+                (copy-recursively
+                 "../lantern/include"
+                 (string-append #$output "/include"))))))))
+    (inputs (list python-pytorch-for-r-torch))
+    (home-page "https://github.com/mlverse/torch/")
+    (synopsis "C API to libtorch")
+    (description
+     "Lantern provides a C API to the libtorch machine learning library.")
+    (license license:expat)))
 
 (define-public python-lap
   (package
