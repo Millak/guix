@@ -618,9 +618,6 @@ being rootless and not requiring any daemon to be running.")
                              #$go-github-com-go-md2man "/bin/go-md2man"))
       #:tests? #f                  ; /sys/fs/cgroup not set up in guix sandbox
       #:test-target "test-unit"
-      #:imported-modules
-      (source-module-closure `(,@%gnu-build-system-modules
-                               (guix build go-build-system)))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
@@ -632,6 +629,12 @@ being rootless and not requiring any daemon to be running.")
               ;; Make <4.4 causing CC not to be propagated into $(shell ...)
               ;; calls.  Can be removed once we update to >4.3.
               (setenv "CC" #$(cc-for-target))))
+          ;; Add -trimpath to build flags to avoid keeping references to go
+          ;; packages.
+          (add-after 'set-env 'patch-buildflags
+            (lambda _
+              (substitute* "Makefile"
+                (("BUILDFLAGS :=") "BUILDFLAGS := -trimpath "))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -659,8 +662,6 @@ being rootless and not requiring any daemon to be running.")
                    ,(string-append #$gcc            "/bin") ; cpp
                    ,(string-append #$passt          "/bin")
                    "/run/setuid-programs")))))
-          (add-after 'install 'remove-go-references
-            (@@ (guix build go-build-system) remove-go-references))
           (add-after 'install 'install-completions
             (lambda _
               (invoke "make" "install.completions"
