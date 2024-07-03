@@ -1932,18 +1932,18 @@ https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110554.")
 (define-public r-genelendatabase
   (package
     (name "r-genelendatabase")
-    (version "1.39.0")
+    (version "1.40.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "geneLenDataBase" version 'experiment))
        (sha256
-        (base32 "0rdd5nq34xd85r4i4b84ibih31mq99ljvgkm7zdv4gfggrdvi6gb"))))
+        (base32 "0c8f0sqgrg7rc2vs9id9xzbwwv3zhy6ylqiisji20rw9ipzgv7k8"))))
     (properties
      `((upstream-name . "geneLenDataBase")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-genomicfeatures r-rtracklayer))
+     (list r-genomicfeatures r-rtracklayer r-txdbmaker))
     (home-page "https://bioconductor.org/packages/geneLenDataBase/")
     (synopsis "Lengths of mRNA transcripts for a number of genomes")
     (description
