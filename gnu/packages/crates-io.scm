@@ -43,6 +43,7 @@
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
+;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -84660,7 +84661,7 @@ and XXH3 algorithms.")
 (define-public rust-typed-arena-2
   (package
     (name "rust-typed-arena")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
@@ -84669,7 +84670,7 @@ and XXH3 algorithms.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1bnhphrksp9krxhsfhfimrxvkbah2pa6rf9ygmpw5lalbm6wi186"))))
+         "0shj0jpmglhgw2f1i4b33ycdzwd1z205pbs1rd5wx7ks2qhaxxka"))))
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/SimonSapin/rust-typed-arena")
