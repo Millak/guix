@@ -9,6 +9,7 @@
 ;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1736,6 +1737,34 @@ the Actix ecosystem.")
      (list pkg-config))
     (inputs
      (list openssl))))
+
+(define-public rust-ammonia-4
+  (package
+    (name "rust-ammonia")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ammonia" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nd432yg1cl9kj4i9c37a9hvwffayqh6zsvb4fmh31g5bsp9xf8s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("html5ever" ,rust-html5ever-0.27)
+                       ("maplit" ,rust-maplit-1)
+                       ("tendril" ,rust-tendril-0.4)
+                       ("url" ,rust-url-2)
+                       ("once_cell" ,rust-once-cell-1))
+       #:cargo-development-inputs (("version-sync" ,rust-version-sync-0.9)
+                                   ("env_logger" ,rust-env-logger-0.10))))
+    (home-page "https://github.com/rust-ammonia/ammonia")
+    (synopsis "Repair and secure untrusted HTML")
+    (description "Ammonia is a whitelist-based HTML sanitization library.
+It is designed to prevent cross-site scripting, layout breaking,
+and clickjacking caused by untrusted user-provided HTML
+being mixed into a larger web page.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-async-h1-2
   (package
