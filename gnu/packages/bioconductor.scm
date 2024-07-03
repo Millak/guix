@@ -21751,13 +21751,13 @@ routines.")
 (define-public r-s4arrays
   (package
     (name "r-s4arrays")
-    (version "1.4.0")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "S4Arrays" version))
               (sha256
                (base32
-                "1k7nxvlj7cjkhm0i30a93x9ll66mpci19l93qjs2540fvbp9n86y"))))
+                "0wdzp1q6hyks4afm217yl2n770jsqaqxix71imni1r0qbxdfkdwl"))))
     (properties `((upstream-name . "S4Arrays")))
     (build-system r-build-system)
     (propagated-inputs
