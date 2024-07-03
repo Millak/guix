@@ -1762,7 +1762,7 @@ following:
                              go-github-com-multiformats-go-multibase
                              go-github-com-multiformats-go-varint
                              go-github-com-multiformats-go-multihash
-                             go-golang-org-x-exp-2023))))
+                             go-golang-org-x-exp))))
 
 (define-public go-github-com-multiformats-go-multiaddr-dns
   (package

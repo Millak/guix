@@ -845,7 +845,7 @@ written in Go.")
                   go-go-uber-org-multierr
                   go-go-uber-org-zap
                   go-golang-org-x-crypto
-                  go-golang-org-x-exp-2023
+                  go-golang-org-x-exp
                   go-golang-org-x-mod
                   go-golang-org-x-sync
                   go-golang-org-x-sys
