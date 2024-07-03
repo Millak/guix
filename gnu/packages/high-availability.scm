@@ -226,7 +226,6 @@ applications.")
            go-golang-org-x-time))
     (arguments
      (list
-      #:go go-1.20
       #:import-path "github.com/nats-io/nats-server"
       #:install-source? #f))
     (home-page "https://github.com/nats-io/nats-server")

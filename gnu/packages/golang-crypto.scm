@@ -575,7 +575,6 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
         (base32 "0px12zhdmzqjj5zlcr136rcsilpmi4chiz6arxv49q372j4nhmia"))))
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/golang-jwt/jwt/v5"))))
 
 (define-public go-github-com-google-go-tpm
@@ -973,8 +972,7 @@ Architecture Processors\" by J. Guilford et al.")
         (base32 "0ydh94083888xl2r4d1grzgqf3c818mkmdpj008jkh6h7m56wc4w"))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.21
-           #:import-path "github.com/multiformats/go-multihash"
+     (list #:import-path "github.com/multiformats/go-multihash"
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'copy-multibase-specs
@@ -1107,8 +1105,7 @@ official package.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/quic-go/qtls-go1-20"
-      #:go go-1.20))
+      #:import-path "github.com/quic-go/qtls-go1-20"))
     (propagated-inputs
      (list go-golang-org-x-crypto
            go-golang-org-x-sys))
@@ -1134,7 +1131,6 @@ QUIC.  For Go 1.20.")
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/refraction-networking/utls"
-       #:go ,go-1.20
        #:tests? #f))                    ;requires internet access
     (propagated-inputs
      (list go-github-com-andybalholm-brotli

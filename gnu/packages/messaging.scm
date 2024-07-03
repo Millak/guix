@@ -3306,7 +3306,6 @@ designed for experienced users.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/42wim/matterbridge"))
     (synopsis "Bridge together various messaging networks and protocols")
     (description

@@ -159,7 +159,6 @@ simulate (mock) keypresses for CI testing.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:import-path "atomicgo.dev/schedule"))
     (home-page "https://atomicgo.dev/schedule")
     (synopsis "Easily schedule non-blocking tasks in Golang")
@@ -186,7 +185,6 @@ given time, in a given duration, or repeatedly at a given interval.")
      (list
       ;; Tests require root access to mount file system.
       #:tests? #f
-      #:go go-1.19
       #:import-path "bazil.org/fuse"))
     (propagated-inputs
      (list go-github-com-tv42-httpunix go-golang-org-x-sys))
@@ -217,7 +215,6 @@ use the C library from the project called FUSE.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.20
       #:import-path "code.cloudfoundry.org/bytefmt"))
     (native-inputs
      (list go-github-com-onsi-gomega
@@ -274,7 +271,6 @@ a human-readable byte format.")
     ;; they may be sourced from sqlite package.
     (arguments
      (list
-      #:go go-1.21
       #:import-path "git.sr.ht/~emersion/go-sqlite3-fts5"
       #:phases
       #~(modify-phases %standard-phases
@@ -510,7 +506,6 @@ syntax highlighted HTML, ANSI-coloured text, etc.")
         (base32 "1qgr4gywjks869sc85wb8nby612b8wvsa1dwpsbanjsljq7wq7mp"))))
     (arguments
      (list
-      #:go go-1.19
       #:import-path "github.com/alecthomas/chroma/v2"
       #:phases
       #~(modify-phases %standard-phases
@@ -630,7 +625,6 @@ be stripped.")
      (list
       ;; One test failed when set to go-1.18 o lower, see
       ;; <https://github.com/alecthomas/kong/issues/437>
-      #:go go-1.19
       #:import-path "github.com/alecthomas/kong"))
     (native-inputs
      (list go-github-com-alecthomas-assert-v2))
@@ -658,8 +652,8 @@ with as little developer effort as possible.")
         (base32 "0k2vsd58rgwyylyn5zja6z6k1sg4m39g2fhd88lvja60ca51bh98"))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.18
-           #:import-path "github.com/alecthomas/participle/v2"))
+     (list
+      #:import-path "github.com/alecthomas/participle/v2"))
     (native-inputs
      (list go-github-com-alecthomas-assert-v2))
     (home-page "https://github.com/alecthomas/participle")
@@ -687,7 +681,6 @@ structs.  The approach is similar to how other marshallers work in Golang,
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/alecthomas/repr"))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -842,8 +835,7 @@ stored in a Go struct.")
         (base32 "1p7n09pywqra21l981fbkma9vzsyf31pbvw6xg5r4hp8h8scf955"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/benbjohnson/clock"
-       #:go ,go-1.21))
+     `(#:import-path "github.com/benbjohnson/clock"))
     (home-page "https://github.com/benbjohnson/clock")
     (synopsis "Small library for mocking time in Go")
     (description
@@ -1306,7 +1298,6 @@ submodules:
     (arguments
      (list
       #:tests? #t ; Tests require network interface access
-      #:go go-1.18
       #:import-path "github.com/cskr/pubsub"))
     (home-page "https://github.com/cskr/pubsub")
     (synopsis "Simple pubsub package for go")
@@ -1453,7 +1444,6 @@ gist (https://gist.github.com/kballard/272720).")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.20
       #:import-path "github.com/dave/jennifer"))
     (home-page "https://github.com/dave/jennifer")
     (synopsis "Code generator for Go")
@@ -1676,8 +1666,7 @@ Implements string conversion functionality for unit prefixes.
                       "s := strconv.QuoteRune(rune(c))"))))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/dustin/gojson"
-       #:go ,go-1.21))
+     `(#:import-path "github.com/dustin/gojson"))
     (home-page "https://github.com/dustin/gojson")
     (synopsis "Extended Golang's @code{encoding/json} module with the public scanner API")
     (description
@@ -1787,7 +1776,6 @@ more similar API to regexp."))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/expr-lang/expr"))
     (home-page "https://expr-lang.org/")
     (synopsis "Expression language and expression evaluation for Go")
@@ -1958,7 +1946,6 @@ Representation,CBOR} (@url{https://www.rfc-editor.org/rfc/rfc8949.html,RFC
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.20
       #:import-path "github.com/gabriel-vasile/mimetype"
       #:phases #~(modify-phases %standard-phases
                    (add-before 'check 'add-supported-mimes-md
@@ -2009,7 +1996,6 @@ Differentiation between text and binary files}.
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/go-logr/logr"
       #:phases
       #~(modify-phases %standard-phases
@@ -2125,7 +2111,6 @@ the library more lightweight.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/goccy/go-yaml"
       #:phases
       #~(modify-phases %standard-phases
@@ -2175,7 +2160,6 @@ the library more lightweight.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/gookit/color"
       #:phases
       #~(modify-phases %standard-phases
@@ -2424,7 +2408,6 @@ Groupcache.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/hashicorp/golang-lru/v2"))))
 
 (define-public go-github-com-hashicorp-hcl
@@ -2645,7 +2628,6 @@ and stop units of work, which may receive @code{Close} signals from many clients
       ;;     segment_test.go:145: Actual: 2, Expected: 1
       ;;     segment_test.go:146: ===
       #:tests? #f
-      #:go go-1.21
       #:import-path "github.com/jdkato/twine"
       #:phases
       #~(modify-phases %standard-phases
@@ -3044,7 +3026,6 @@ Printf/Sprintf etc.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.19
       #:import-path "github.com/logrusorgru/aurora/v3"))
     (native-inputs
      (list go-github-com-stretchr-testify))))
@@ -3100,7 +3081,6 @@ implementing features like:
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/Masterminds/semver/v3"))
     (native-inputs
      (list go-github-com-stretchr-testify-next))
@@ -3343,7 +3323,6 @@ the @code{cpan} module @code{Parse::CommandLine}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.19
       #:import-path "github.com/mattn/go-sqlite3"))
     (home-page "https://github.com/mattn/go-sqlite3")
     (synopsis "Sqlite3 driver for Go")
@@ -3612,7 +3591,6 @@ command line flags, config files, and default struct values.")
      (list
       ;; To run the full suite, the tests must be run as the root user.
       #:tests? #f
-      #:go go-1.20
       #:import-path "github.com/msteinert/pam"))
     (propagated-inputs
      (list go-golang-org-x-term
@@ -3710,7 +3688,6 @@ Authentication Modules, PAM} application API.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/multiformats/go-multibase"
       #:phases
       #~(modify-phases %standard-phases
@@ -3750,7 +3727,6 @@ multibase} (self identifying base encodings) in Go.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.19
       #:import-path "github.com/multiformats/go-multicodec"
       #:phases
       #~(modify-phases %standard-phases
@@ -3809,7 +3785,6 @@ varints.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.20
       #:import-path "github.com/nats-io/nats.go"))
     (propagated-inputs (list go-golang-org-x-text
                          go-github-com-nats-io-nuid
@@ -3892,7 +3867,6 @@ registry.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/neurosnap/sentences"))
     (home-page "https://github.com/neurosnap/sentences")
     (synopsis "Multilingual command line sentence tokenizer in Golang")
@@ -4042,7 +4016,6 @@ included in this package.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/otiai10/copy"
       #:phases
       #~(modify-phases %standard-phases
@@ -4214,7 +4187,6 @@ Pion}.")
       ;; Cycle: go-github-com-pterm-pterm -> go-github-com-marvinjwendt-testza
       ;; -> go-github-com-pterm-pterm
       #:tests? #f
-      #:go go-1.21
       #:import-path "github.com/pterm/pterm"))
     (propagated-inputs
      (list go-atomicgo-dev-cursor
@@ -4381,7 +4353,6 @@ synchronizing plain text:
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/shirou/gopsutil"
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'remove-v3
@@ -4425,7 +4396,6 @@ sensors).")
         (base32 "1xlfcx6giqaxdah2m02q2i8ynwlzar953wr8wqx1j3004xdgaivd"))))
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/shirou/gopsutil"
       #:phases
       #~(modify-phases %standard-phases
@@ -4501,7 +4471,6 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
       ;; Package's tests appear to be hardcoded to the author's gitconfig
       ;; and require network access.
       #:tests? #f
-      #:go go-1.21
       #:import-path "github.com/Songmu/gitconfig"))
     (propagated-inputs
      (list go-github-com-goccy-go-yaml))
@@ -4576,7 +4545,6 @@ well as a program to generate applications and command files.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/syndtr/goleveldb"
       #:phases
       #~(modify-phases %standard-phases
@@ -4761,7 +4729,6 @@ document.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/tklauser/go-sysconf"
       #:phases #~(modify-phases %standard-phases
                    (add-before 'check 'remove-failing-tests
@@ -4798,7 +4765,6 @@ document.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/tklauser/numcpus"
       #:phases #~(modify-phases %standard-phases
                    (add-before 'check 'remove-failing-tests
@@ -5100,7 +5066,6 @@ CPU quota.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.20
       #:import-path "go.uber.org/dig"))
     (native-inputs
      (list go-github-com-stretchr-testify-next))
@@ -5127,7 +5092,6 @@ object dependencies graph during the process startup.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.20
       #:import-path "go.uber.org/fx"))
     (native-inputs
      (list go-github-com-stretchr-testify-next))
@@ -5186,7 +5150,6 @@ applications out of reusable, composable modules.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.19
       #:import-path "go.uber.org/zap"
       #:phases
       #~(modify-phases %standard-phases
@@ -5318,7 +5281,6 @@ values.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.19
       #:install-source? #f
       #:import-path "github.com/alecthomas/chroma/cmd/chroma"))
     (native-inputs
@@ -5357,7 +5319,6 @@ correctly.")))
     (name "go-numcpus")
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/tklauser/numcpus/cmd/numcpus"
       #:unpack-path "github.com/tklauser/numcpus"
       #:install-source? #f))

@@ -1956,7 +1956,6 @@ memory-efficient.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/oniony/TMSU"
       #:unpack-path "github.com/oniony/TMSU"
       #:install-source? #f

@@ -56,7 +56,6 @@
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/ipfs/go-block-format"))
     (propagated-inputs
      (list go-github-com-multiformats-go-multihash
@@ -88,7 +87,6 @@ corresponding to the block.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/ipfs/go-cid"))
     (propagated-inputs
      (list go-github-com-multiformats-go-multihash
@@ -117,7 +115,6 @@ used in @code{go-ipfs} and related packages to refer to a typed hunk of data.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/ipfs/go-cidutil"))
     (propagated-inputs
      (list go-github-com-ipfs-go-cid
@@ -237,7 +234,6 @@ throughout its lifetime.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/ipfs/go-detect-race"))
     (home-page "https://github.com/ipfs/go-detect-race")
     (synopsis "Detect if compiled with race")
@@ -262,7 +258,6 @@ throughout its lifetime.")
                              go-github-com-multiformats-go-multihash))
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/ipfs/go-ipfs-util"))
     (home-page "https://github.com/ipfs/go-ipfs-util")
     (synopsis "Common utilities used by @code{go-ipfs} and related packages")
@@ -286,7 +281,6 @@ throughout its lifetime.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/ipfs/go-ipld-cbor"))
     (propagated-inputs
      (list go-github-com-ipfs-go-block-format
@@ -360,7 +354,6 @@ IPLD graph as detailed below.  Objects are demonstrated here using both
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/ipfs/go-ipld-format"))
     (propagated-inputs
      (list go-github-com-multiformats-go-multihash
@@ -389,7 +382,6 @@ order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-fore
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:unpack-path "github.com/ipld/go-ipld-prime/"
       #:import-path "github.com/ipld/go-ipld-prime/"
       #:phases
@@ -489,7 +481,6 @@ basic operations on IPLD objects (traversals, etc).")
            go-go-uber-org-zap))
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/ipfs/go-log/v2"))
     (home-page "https://github.com/ipfs/go-log")
     (synopsis "Logging library used by @code{go-ipfs}")
@@ -520,7 +511,6 @@ their levels to be controlled individually.")
            go-go-uber-org-zap))
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/ipfs/go-log"))))
 
 (define-public go-github-com-whyrusleeping-cbor-gen
@@ -753,7 +743,6 @@ written in Go.")
      (list
       #:unpack-path "github.com/ipfs/kubo"
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
-      #:go go-1.21
       #:phases
       #~(modify-phases %standard-phases
           ;; https://github.com/ipfs/kubo/blob/master/docs/command-completion.md

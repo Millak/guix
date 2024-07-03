@@ -48,7 +48,6 @@
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/twpayne/chezmoi"
       #:install-source? #f
       #:phases

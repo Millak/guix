@@ -3825,7 +3825,6 @@ If several repos are related, it helps to see their status together.")
     (arguments
      (list
       #:install-source? #f
-      #:go go-1.21
       #:import-path "github.com/x-motemen/ghq"
       #:phases
       #~(modify-phases %standard-phases

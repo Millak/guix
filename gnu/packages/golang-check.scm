@@ -78,7 +78,6 @@
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "atomicgo.dev/assert"))
     (home-page "https://atomicgo.dev/assert")
     (synopsis "Go package with tons of assertions")
@@ -104,8 +103,8 @@ value and call @code{t.Fatal()} if the assertion fails.")
         (base32 "05jak1v9s2wrwrn6ar0s4388f7qg15q0qfmhfcswgl88720196z3"))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.18
-           #:import-path "github.com/alecthomas/assert/v2"))
+     (list
+      #:import-path "github.com/alecthomas/assert/v2"))
     (propagated-inputs
      (list go-github-com-alecthomas-repr
            go-github-com-hexops-gotextdiff))
@@ -620,7 +619,6 @@ differently.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/MarvinJWendt/testza"
       #:phases
       #~(modify-phases %standard-phases
@@ -696,7 +694,6 @@ Gomega matcher library.")
         (base32 "1w5dldjjcz2kpyxml4zd9yah7galfpmhcpc2l4zc5pr3skpwpibv"))))
     (arguments
      (list
-      #:go go-1.20
       #:import-path "github.com/onsi/ginkgo/v2"))
     (propagated-inputs
      (list go-github-com-go-logr-logr
@@ -726,7 +723,6 @@ Gomega matcher library.")
       ;; Unless we disable the tests, we have a circular dependency on
       ;; ginkgo/v2.
       #:tests? #f
-      #:go go-1.21
       #:import-path "github.com/onsi/gomega"))
     (propagated-inputs
      (list go-github-com-golang-protobuf
@@ -758,7 +754,6 @@ framework.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/otiai10/mint"))
     (home-page "https://github.com/otiai10/mint")
     (synopsis "Minimal assertion for Golang testing framework")
@@ -1229,7 +1224,6 @@ custom assertions to be used alongside native Go testing.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/warpfork/go-testmark"))
     (home-page "https://github.com/warpfork/go-testmark")
     (synopsis "Parser for @code{testmark} format")
@@ -1258,7 +1252,6 @@ testmark} format, which itself is a subset of Markdown format.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/warpfork/go-wish"))
     (home-page "https://github.com/warpfork/go-wish")
     (synopsis "Test assertions for Golang")
@@ -1314,7 +1307,6 @@ the end of a test.")
       ;; XXX: The project contains subdirectory which complicate it's testing
       ;; and it does not produce any binary.
       #:tests? #f
-      #:go go-1.20
       #:import-path "go.uber.org/mock"
       #:phases
       #~(modify-phases %standard-phases
@@ -1377,7 +1369,6 @@ advanced Go linter.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:import-path "pgregory.net/rapid"))
     (home-page "https://pgregory.net/rapid/")
     (synopsis "Go property-based testing library")
@@ -1410,7 +1401,6 @@ thoroughly
     (name "ginkgo")
     (arguments
      (list
-       #:go go-1.20
        #:import-path "github.com/onsi/ginkgo/ginkgo"
        #:unpack-path "github.com/onsi/ginkgo"
        #:install-source? #f))
@@ -1424,8 +1414,7 @@ tool."))))
     (inherit go-honnef-co-go-tools)
     (name "go-keyify")
     (arguments
-     `(#:go ,go-1.20
-       #:import-path "honnef.co/go/tools/cmd/keyify"
+     `(#:import-path "honnef.co/go/tools/cmd/keyify"
        #:unpack-path "honnef.co/go/tools"
        #:install-source? #f))
     (synopsis "Transform an unkeyed struct literal into a keyed one in Go")
@@ -1439,7 +1428,6 @@ tool."))))
     (arguments
      (list
       #:install-source? #f
-      #:go go-1.19
       #:import-path "github.com/google/pprof"))
     (description
      (string-append (package-description go-github-com-google-pprof)
@@ -1451,8 +1439,7 @@ tool."))))
     (inherit go-honnef-co-go-tools)
     (name "go-staticcheck")
     (arguments
-     `(#:go ,go-1.20
-       #:import-path "honnef.co/go/tools/cmd/staticcheck"
+     `(#:import-path "honnef.co/go/tools/cmd/staticcheck"
        #:unpack-path "honnef.co/go/tools"
        #:install-source? #f))
     (synopsis "Staticcheck advanced Go linter")
@@ -1466,8 +1453,7 @@ simplifications, and enforces style rules.")))
     (inherit go-honnef-co-go-tools)
     (name "go-structlayout")
     (arguments
-     `(#:go ,go-1.20
-       #:import-path "honnef.co/go/tools/cmd/structlayout"
+     `(#:import-path "honnef.co/go/tools/cmd/structlayout"
        #:unpack-path "honnef.co/go/tools"
        #:install-source? #f))
     (synopsis "Display the layout (field sizes and padding) of structs in Go")
@@ -1481,8 +1467,7 @@ flag.")))
     (inherit go-honnef-co-go-tools)
     (name "go-structlayout-optimize")
     (arguments
-     `(#:go ,go-1.20
-       #:import-path "honnef.co/go/tools/cmd/structlayout-optimize"
+     `(#:import-path "honnef.co/go/tools/cmd/structlayout-optimize"
        #:unpack-path "honnef.co/go/tools"
        #:install-source? #f))
     (synopsis "Reorder struct fields to minimize the amount of padding in Go")
@@ -1495,8 +1480,7 @@ into @code{go-structlayout-pretty}.")))
     (inherit go-honnef-co-go-tools)
     (name "go-structlayout-pretty")
     (arguments
-     `(#:go ,go-1.20
-       #:import-path "honnef.co/go/tools/cmd/structlayout-pretty"
+     `(#:import-path "honnef.co/go/tools/cmd/structlayout-pretty"
        #:unpack-path "honnef.co/go/tools"
        #:install-source? #f))
     (synopsis "Format the output of go-structlayout with ASCII art in Go")

@@ -6147,7 +6147,6 @@ file or files to several hosts.")
     (arguments
      (list #:import-path "github.com/digitalocean/doctl/cmd/doctl"
            #:unpack-path "github.com/digitalocean/doctl"
-           #:go go-1.19
            #:build-flags
            #~(list (string-append "-ldflags=-X github.com/digitalocean/doctl.Label=release"
                                   " -X github.com/digitalocean/doctl.Major="

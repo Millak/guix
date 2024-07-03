@@ -985,7 +985,10 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                     (list go-1.21)
                     (package-native-inputs go-1.21)))))
 
-(define-public go go-1.17)
+;;
+;; Default Golang version used in guix/build-system/go.scm to build packages.
+;;
+(define-public go go-1.21)
 
 (define make-go-std
   (mlambdaq (go)
@@ -2227,7 +2230,6 @@ Go.")
     (arguments
      `(#:unpack-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
        #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird/cmd/lyrebird"
-       #:go ,go-1.20
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'substitutions
@@ -2880,7 +2882,6 @@ web framework
                 "0zff0qpqfzwa4xazppiq7jvpncnmx52m23qi4ih754b7rzhbk0iz"))))
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/go-playground/validator/v10"))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs
@@ -3168,7 +3169,6 @@ command-line parsers.")
     (build-system go-build-system)
     (arguments
      `(#:import-path "golang.org/x/vuln"
-       #:go ,go-1.19
        #:install-source? #f
        #:phases ,#~(modify-phases %standard-phases
                      (add-after 'unpack 'remove-go-mod-tidy
@@ -6277,8 +6277,7 @@ data serialization format.")
                 "1xf18kzz96hgfy1vlbnydrizzpxkqj2iamfdbj3dx5a1zz5mi8n0"))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.21
-           #:import-path "google.golang.org/protobuf"
+     (list #:import-path "google.golang.org/protobuf"
            #:phases
            #~(modify-phases %standard-phases
                ;; XXX: Workaround for go-build-system's lack of Go modules
@@ -8043,8 +8042,7 @@ Gemini clients and servers.")
                              fixed-version))))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "mvdan.cc/gofumpt"
-       #:go ,go-1.19))
+     `(#:import-path "mvdan.cc/gofumpt"))
     (native-inputs (list go-gopkg-in-errgo-fmt-errors))
     (propagated-inputs (list go-github-com-pkg-diff
                              go-github-com-kr-text
@@ -8093,8 +8091,7 @@ That is, @code{gofumpt} is happy with a subset of the formats that
                 "0wynf0b32azxljncw5fh9bwkxpdflvf9q1z16wyj432566yjh12c"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "mvdan.cc/unparam"
-       #:go ,go-1.19))
+     `(#:import-path "mvdan.cc/unparam"))
     (inputs (list go-golang-org-x-sys go-golang-org-x-mod
                   go-github-com-pkg-diff go-golang-org-x-tools
                   go-github-com-rogpeppe-go-internal))
@@ -8479,7 +8476,6 @@ dependencies and a simple API.")
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/Arceliar/ironwood"
-           #:go go-1.21
            #:tests? #f
            #:phases
            #~(modify-phases %standard-phases
@@ -8888,8 +8884,7 @@ ordered, mutable data structure.")
         (base32 "0pdy8f7bkm65gx4vknwcvfa619hknflqxkdlvmf427k2mzm91gmh"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/peterbourgon/diskv"
-       #:go ,go-1.18))
+     `(#:import-path "github.com/peterbourgon/diskv"))
     (propagated-inputs (list go-github-com-google-btree))
     (home-page "https://github.com/peterbourgon/diskv")
     (synopsis "Disk-backed key-value store")

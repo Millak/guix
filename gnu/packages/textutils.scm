@@ -1581,7 +1581,6 @@ JSON for post-processing
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.19
       #:install-source? #f
       #:import-path "github.com/johnkerl/miller/cmd/mlr"
       #:unpack-path "github.com/johnkerl/miller"

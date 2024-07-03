@@ -206,7 +206,6 @@ the parse trees produced by the html package.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/AudriusButkevicius/pfilter"
       #:phases
       #~(modify-phases %standard-phases
@@ -561,8 +560,8 @@ and RFC 5389).")
         (base32 "1pwr7fzxgngb073q98qrz1f90bkk3pljynif6jl5a6q6kcsn7xf1"))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.21
-           #:import-path "github.com/cenkalti/backoff/v4"))
+     (list
+      #:import-path "github.com/cenkalti/backoff/v4"))
     (home-page "https://github.com/cenkalti/backoff")
     (synopsis "The exponential backoff algorithm in Go")
     (description "This is a Go port of the exponential backoff algorithm from
@@ -1403,7 +1402,6 @@ JSON data to the machine.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/jackpal/gateway"))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -1758,7 +1756,6 @@ following:
         (base32 "1rn02yn7494r7ayn585bbsddprbn8wdccxs4n2k5dmll4dyd39mp"))))
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/multiformats/go-multiaddr"))
     (native-inputs (list go-github-com-stretchr-testify))
     (propagated-inputs (list go-github-com-ipfs-go-cid
@@ -1783,7 +1780,6 @@ following:
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/multiformats/go-multiaddr-dns"
       #:unpack-path "github.com/multiformats/go-multiaddr-dns"))
     (propagated-inputs
@@ -1811,7 +1807,6 @@ following:
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/multiformats/go-multiaddr-fmt"))
     (propagated-inputs
      (list go-github-com-multiformats-go-multiaddr-0.12))
@@ -1875,7 +1870,6 @@ conversion to and from @command{net.Addr}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.20
       #:import-path "github.com/multiformats/go-multistream"))
     (propagated-inputs
      (list go-github-com-multiformats-go-varint))
@@ -1954,7 +1948,6 @@ which produce colorized output using github.com/fatih/color.")
     (arguments
      (list
       #:tests? #f ; Requires some unpackaged software and test data
-      #:go go-1.21
       #:import-path "github.com/oschwald/geoip2-golang"))
     (propagated-inputs
      (list go-github-com-oschwald-maxminddb-golang))
@@ -1981,7 +1974,6 @@ databases in Go.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/oschwald/maxminddb-golang"
       #:phases
       #~(modify-phases %standard-phases
@@ -2059,7 +2051,6 @@ in Golang.")
         (base32 "10nn9349f7snqkzncda5m013fgnzicrcxi6pb6ghc0vb6rhqkf30"))))
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/pion/dtls/v2"))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -2136,7 +2127,6 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
     (arguments
      (list
       #:tests? #f ;Tests require network access.
-      #:go go-1.21
       #:import-path "github.com/pion/ice/v2"))
     (propagated-inputs
      (list go-github-com-google-uuid
@@ -2166,7 +2156,6 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
     (arguments
      (list
       #:tests? #f ;Tests require network access.
-      #:go go-1.21
       #:import-path "github.com/pion/ice/v3"))
     (propagated-inputs
      (list go-github-com-google-uuid
@@ -2199,7 +2188,6 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
       ;; packaging, see
       ;; <https://github.com/pion/.goassets/blob/master/.github/workflows/test.reusable.yml>.
       #:tests? #f
-      #:go go-1.21
       #:unpack-path "github.com/pion/mdns"
       #:import-path "github.com/pion/mdns"))
     (native-inputs
@@ -2253,7 +2241,6 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/pion/rtp"))
     (propagated-inputs
      (list go-github-com-pion-randutil))
@@ -2280,7 +2267,6 @@ packetizer and depacketizer.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/pion/stun"))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -2315,7 +2301,6 @@ packetizer and depacketizer.")
         (base32 "0zli55ls5izpr6cw0wj0gy44872xn9rk20i8ay9cfk7j2rb60y60"))))
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/pion/stun/v2"))
     (propagated-inputs
      (list go-github-com-pion-dtls-v2
@@ -2509,7 +2494,6 @@ it like any library.  The quickest way to get started is to look at the
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/pires/go-proxyproto"))
     (home-page "https://github.com/pires/go-proxyproto")
     (synopsis "Implementation of the PROXY protocol")
@@ -2618,7 +2602,6 @@ to jQuery to the Go language.")
      (list
       ;; Tests require ginkgo v2.
       #:tests? #f
-      #:go go-1.20
       #:import-path "github.com/quic-go/qpack"))
     (propagated-inputs
      (list go-github-com-onsi-ginkgo
@@ -2650,7 +2633,6 @@ the Go standard library}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/quic-go/quic-go"
       #:phases
       #~(modify-phases %standard-phases
@@ -2710,7 +2692,6 @@ protocol.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/quic-go/webtransport-go"))
     (native-inputs
      (list go-go-uber-org-mock

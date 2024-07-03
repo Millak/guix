@@ -114,7 +114,6 @@
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:install-source? #f
       #:import-path "github.com/xalanq/cf-tool"
       #:phases
