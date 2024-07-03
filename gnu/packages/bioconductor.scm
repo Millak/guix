@@ -12333,13 +12333,13 @@ dependencies between GO terms can be implemented and applied.")
 (define-public r-txdbmaker
   (package
     (name "r-txdbmaker")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "txdbmaker" version))
        (sha256
-        (base32 "099x6v4crp953jcgqipj0001kxg7gv5h0r4mmvh1cg7j69w0zd5m"))))
+        (base32 "1nl7lr0x0kicd44gvwrdslcnnlmqaf57rgp1gb22yvz3lfzjziqi"))))
     (properties `((upstream-name . "txdbmaker")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationdbi
