@@ -32101,17 +32101,47 @@ provided for each type.")
     (description "This package provides a wav encoding and decoding library.")
     (license license:asl2.0)))
 
-(define-public rust-html5ever-0.26
+(define-public rust-html5ever-0.27
   (package
     (name "rust-html5ever")
-    (version "0.26.0")
+    (version "0.27.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "html5ever" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1dx3lhfwngi21wa79cpjv5rd4wn5vmklr50wrwbryidq92mqr9my"))))
+                "1m24sbpk572f5qhhkj4kkxvsd64rn968s0vxwvqlds76w2pp2dy1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-mac" ,rust-mac-0.1)
+        ("rust-markup5ever" ,rust-markup5ever-0.12)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-typed-arena" ,rust-typed-arena-2))))
+    (home-page "https://github.com/servo/html5ever")
+    (synopsis "High-performance browser-grade HTML5 parser")
+    (description
+     "This package provides a high-performance browser-grade HTML5 parser.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-html5ever-0.26
+  (package
+    (inherit rust-html5ever-0.27)
+    (name "rust-html5ever")
+    (version "0.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "html5ever" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dx3lhfwngi21wa79cpjv5rd4wn5vmklr50wrwbryidq92mqr9my"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -32123,12 +32153,7 @@ provided for each type.")
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-typed-arena" ,rust-typed-arena-1))))
-    (home-page "https://github.com/servo/html5ever")
-    (synopsis "High-performance browser-grade HTML5 parser")
-    (description
-     "This package provides a high-performance browser-grade HTML5 parser.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-typed-arena" ,rust-typed-arena-1))))))
 
 (define-public rust-html5ever-0.25
   (package
