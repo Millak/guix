@@ -373,6 +373,31 @@ Golang.")
 substitution.")
     (license license:expat)))
 
+(define-public go-github-com-abadojack-whatlanggo
+  (package
+    (name "go-github-com-abadojack-whatlanggo")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/abadojack/whatlanggo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pidd5dqvcnqjjka12h0clj3mmq0j3bpanf9153schsx85xz7mzx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/abadojack/whatlanggo"))
+    (home-page "https://github.com/abadojack/whatlanggo")
+    (synopsis "Natural language detection library for Golang")
+    (description
+     "This package provides functionality for detecting natural languages and
+scripts (writing systems).  Languages are represented by a defined list of
+constants, while scripts are represented by RangeTable.")
+    (license license:expat)))
+
 (define-public go-github-com-adrg-strutil
   (package
     (name "go-github-com-adrg-strutil")
