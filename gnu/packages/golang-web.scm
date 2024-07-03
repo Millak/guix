@@ -876,6 +876,43 @@ language.")
      "This package provides Golang bindings for the Telegram Bot API.")
     (license license:expat)))
 
+
+(define-public go-github-com-go-webauthn-x
+  (package
+    (name "go-github-com-go-webauthn-x")
+    (version "0.1.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-webauthn/x")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h2ylzzh5xismgkz0gar3k8lwdwqqc2np4z5gmi1b5chh6qwy1bs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:import-path "github.com/go-webauthn/x"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Source only package.
+          (delete 'build))))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/go-webauthn/x")
+    (synopsis "Low level packages for WebAuthn")
+    (description
+     "This package implements a low level functionality for
+@url{https://github.com/go-webauthn/webauthn,WebAuthn} library.  It was forked
+from CloudFlare's github.com/cloudflare/cfssl/revoke.")
+    (license (list
+              ;; For the CloudFlare's part: revoke/LICENSE.
+              license:bsd-2
+              ;; For the WebAuthn's fork: LICENSE.
+              license:bsd-3))))
+
 (define-public go-github-com-goccy-go-json
   (package
     (name "go-github-com-goccy-go-json")
