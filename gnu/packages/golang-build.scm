@@ -484,7 +484,7 @@ time.")
 (define-public go-golang-org-x-tools
   (package
     (name "go-golang-org-x-tools")
-    (version "0.5.0")
+    (version "0.22.0")
     (source
      (origin
        (method git-fetch)
@@ -493,7 +493,7 @@ time.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08kx2nndq3sr6xai7403mbsqvz5shxmp2icylfr2fmwagr59cb2n"))
+        (base32 "1jn73k6qiwa70cafdmyzczsimwqyzgl9wh9vmdjs96svf5nfzb5a"))
        (modules '((guix build utils)))
        (snippet
         '(begin
