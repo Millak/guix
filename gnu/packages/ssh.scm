@@ -510,7 +510,7 @@ responsive, especially over Wi-Fi, cellular, and long-distance links.")
 (define-public dropbear
   (package
     (name "dropbear")
-    (version "2022.83")
+    (version "2024.85")
     (source
      (origin
        (method url-fetch)
@@ -518,7 +518,7 @@ responsive, especially over Wi-Fi, cellular, and long-distance links.")
              "https://matt.ucc.asn.au/dropbear/releases/"
              "dropbear-" version ".tar.bz2"))
        (sha256
-        (base32 "0fs495ks354qcfj4k5bwg6m50vbl8az03gjymmqm2jy9zcgi4nmw"))
+        (base32 "00m5dmajx0za1zmya4qdz763hxy4cmfk7bpba778k7d66g23dc46"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -536,7 +536,7 @@ responsive, especially over Wi-Fi, cellular, and long-distance links.")
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'enable-x11-forwarding
                      (lambda _
-                       (substitute* "default_options.h"
+                       (substitute* "src/default_options.h"
                          (("#define DROPBEAR_X11FWD 0")
                           "#define DROPBEAR_X11FWD 1")))))))
     (inputs (list libtomcrypt libtommath zlib))
