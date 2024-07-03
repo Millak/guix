@@ -738,6 +738,11 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "matt@excalamus.com")
   documentation)
 
+(define-member (person "Laurent Gatto"
+                       "laurent.gatto@gmail.com")
+  r)
+
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
