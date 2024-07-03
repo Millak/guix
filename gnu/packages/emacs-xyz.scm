@@ -35182,6 +35182,28 @@ when the command was not found in Eshell.  The suggestions are found after the
 commands that bear resemblance to the input command.")
     (license license:gpl3+)))
 
+(define-public emacs-eshell-git-prompt
+  (let ((commit "dfcf9cd93add6763e2c46603b0323274d4c22906"))
+    (package
+      (name "emacs-eshell-git-prompt")
+      (version "0.1.3")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/xuchunyang/eshell-git-prompt")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "13b7nr0819pgzyvh0szi0zjyazgpxmsbqcz65cccyhh2pq48zb7j"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-dash))
+      (home-page "https://github.com/xuchunyang/eshell-git-prompt")
+      (synopsis "Themes for Emacs Shell (Eshell) prompt.")
+      (description "This package provides a variety of themes for Emacs Shell (Eshell) prompt.")
+      (license license:gpl3+))))
+
 (define-public emacs-unfill
   (package
     (name "emacs-unfill")
