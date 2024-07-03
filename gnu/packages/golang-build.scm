@@ -70,10 +70,21 @@
         (base32 "01807xs8501cyhkrrgg6k9ghl9jrw6dp0ry9knygck48canckxs2"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/yuin/goldmark"))
+     (list
+      #:import-path "github.com/yuin/goldmark"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (home-page "https://github.com/yuin/goldmark/")
     (synopsis "Markdown parser")
-    (description "This package provides a markdown parser.")
+    (description
+     "This package provides a markdown parser.")
     (license license:expat)))
 
 (define-public go-golang-org-x-crypto
