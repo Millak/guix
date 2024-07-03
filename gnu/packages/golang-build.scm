@@ -426,7 +426,7 @@ terminals, as commonly found on Unix systems.")
 (define-public go-golang-org-x-text
   (package
     (name "go-golang-org-x-text")
-    (version "0.3.2")
+    (version "0.16.0")
     (source
      (origin
        (method git-fetch)
@@ -436,7 +436,7 @@ terminals, as commonly found on Unix systems.")
        (file-name (string-append "go.googlesource.com-text-"
                                  version "-checkout"))
        (sha256
-        (base32 "0flv9idw0jm5nm8lx25xqanbkqgfiym6619w575p7nrdh0riqwqh"))))
+        (base32 "0pmn0i1xbpwvzl4cdgmjqcsk9vckhqrq6699fnr9mkglh4xj3p7a"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "golang.org/x/text"
