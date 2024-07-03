@@ -7,6 +7,7 @@
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
+;;; Copyright © 2024 Jean-Pierre De Jesus DIAZ <jean@foundation.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -392,12 +393,15 @@ configure network interfaces in Linux containers.")
      (list
       #:make-flags `(list ,(string-append "GIT_VERSION=v" version))
       #:test-target "test"
-      #:imported-modules
-      (source-module-closure `(,@%gnu-build-system-modules
-                               (guix build go-build-system)))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
+          ;; Add -trimpath flag to avoid keeping references to go package
+          ;; in the store.
+          (add-after 'unpack 'patch-go-reference
+            (lambda _
+              (substitute* "Makefile"
+                (("go build") "go build -trimpath"))))
           (add-before 'build 'setenv
             (lambda _
               ;; For golang toolchain.
@@ -408,9 +412,7 @@ configure network interfaces in Linux containers.")
               (invoke "rm" "-r" "test")))
           (replace 'install
             (lambda _
-              (install-file "bin/gvproxy" (string-append #$output "/bin"))))
-          (add-after 'install 'remove-go-references
-            (@@ (guix build go-build-system) remove-go-references)))))
+              (install-file "bin/gvproxy" (string-append #$output "/bin")))))))
     (native-inputs (list go-1.20))
     (home-page "https://github.com/containers/gvisor-tap-vsock")
     (synopsis "Network stack for virtualization based on gVisor")
