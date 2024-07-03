@@ -1912,6 +1912,36 @@ quoting, commenting, and escaping.")
       (home-page "https://github.com/flynn-archive/go-shlex")
       (license license:asl2.0))))
 
+(define-public go-github-com-fxamacker-cbor-v2
+  (package
+    (name "go-github-com-fxamacker-cbor-v2")
+    (version "2.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fxamacker/cbor")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "039lk7n5155gy2sh55i1darcvxhv9fim2xmnvmx0xi9ihnrnczln"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fxamacker/cbor/v2"))
+    (propagated-inputs
+     (list go-github-com-x448-float16))
+    (home-page "https://github.com/fxamacker/cbor")
+    (synopsis "CBOR Codec in Golang")
+    (description
+     "This package implements functionality for encoding and decoding
+@acronym{Concise Binary Object
+Representation,CBOR} (@url{https://www.rfc-editor.org/rfc/rfc8949.html,RFC
+8949}) and CBOR Sequences, with CBOR tags, Golang struct tags (@code{toarray},
+@code{keyasint}, @code{omitempty}), @code{float64/32/16}, and
+@code{big.Intp}.")
+    (license license:expat)))
+
 (define-public go-github-com-gabriel-vasile-mimetype
   (package
     (name "go-github-com-gabriel-vasile-mimetype")
