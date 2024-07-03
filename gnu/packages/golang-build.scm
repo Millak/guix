@@ -209,13 +209,32 @@ compile does not support generics.")
         (base32 "0d7zwdsg06km24vhx6dzk1w26wpi3yhx9jfkf9jnsp5chv5pzlw3"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "golang.org/x/image"
-       ;; Source-only package
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build))))
-    (home-page "https://go.googlesource.com/image")
+     (list
+      #:import-path "golang.org/x/image"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: go-build-system can't install/build submodules.
+          (delete 'build)
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/example"))))
+          (add-before 'check 'remove-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          ;; tiff/reader_test.go:557:14: too many errors
+                          (list "tiff/reader_test.go"
+                                "tiff/writer_test.go")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (home-page "https://pkg.go.dev/golang.org/x/image")
     (synopsis "Supplemental Go image libraries")
     (description
      "This package provides supplemental Go libraries for image processing.")
