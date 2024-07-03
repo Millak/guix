@@ -124,7 +124,7 @@ for the Go language.")
 (define-public go-golang-org-x-exp
   (package
     (name "go-golang-org-x-exp")
-    (version "0.0.0-20221004215720-b9f4876ce741")
+    (version "0.0.0-20240613232115-7f521ea00fb8")
     (source
      (origin
        (method git-fetch)
@@ -133,7 +133,20 @@ for the Go language.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "030b929xyg8dpp6f4qbyg63msi6zgzj9sqmvnyphfcrjkqf7nr41"))))
+        (base32 "0ccjgv19w5p9sbcq12czmfnkjwv3b7hfljifwax6r9wk4dx0fcn7"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Submodules with their own go.mod files and packed as separated
+           ;; packages:
+           ;;
+           ;; - golang.org/x/exp/event
+           ;; - golang.org/x/exp/jsonrpc2
+           ;; - golang.org/x/exp/shiny
+           ;; - golang.org/x/exp/sumbdb
+           ;; - golang.org/x/exp/typeparams
+           (for-each delete-file-recursively
+                     (list "event" "jsonrpc2" "shiny" "sumdb" "typeparams"))))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "golang.org/x/exp"
