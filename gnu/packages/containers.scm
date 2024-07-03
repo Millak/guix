@@ -474,12 +474,10 @@ Its main purpose is to support the key usage by @code{docker-init}:
               (string-append "PREFIX=" #$output)
               (string-append "HELPER_BINARIES_DIR=" #$output "/_guix")
               (string-append "GOMD2MAN="
-                             #$go-github-com-go-md2man "/bin/go-md2man"))
+                             #$go-github-com-go-md2man "/bin/go-md2man")
+              (string-append "BUILDFLAGS=-trimpath"))
       #:tests? #f                  ; /sys/fs/cgroup not set up in guix sandbox
       #:test-target "test"
-      #:imported-modules
-      (source-module-closure `(,@%gnu-build-system-modules
-                               (guix build go-build-system)))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
@@ -531,17 +529,6 @@ Its main purpose is to support the key usage by @code{docker-init}:
                    ,(string-append #$passt          "/bin")
                    ,(string-append #$procps         "/bin") ; ps
                    "/run/setuid-programs")))))
-          (add-after 'install 'remove-go-references
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((go (assoc-ref inputs "go")))
-                (for-each
-                 (lambda (file)
-                   (when (executable-file? file)
-                     ((@@ (guix build go-build-system) remove-store-reference)
-                      file go)))
-                 (append (find-files (string-append #$output "/bin"))
-                         (find-files (string-append #$output "/libexec"))
-                         (find-files (string-append #$output "/lib")))))))
           (add-after 'install 'install-completions
             (lambda _
               (invoke "make" "install.completions"
