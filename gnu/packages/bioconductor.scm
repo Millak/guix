@@ -3243,13 +3243,13 @@ applications can enrich this metadata with context-specific properties.")
 (define-public r-alabaster-matrix
   (package
     (name "r-alabaster-matrix")
-    (version "1.4.0")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "alabaster.matrix" version))
        (sha256
-        (base32 "00k0lylyhz6glqhd463bbmmldqhv5i7an9nw95md7x2m43c9gzyk"))))
+        (base32 "1b32qs2baq9s492a332vh1hpyxq62z16xj2w17m8wh8a4mcabry8"))))
     (properties `((upstream-name . "alabaster.matrix")))
     (build-system r-build-system)
     (propagated-inputs (list r-alabaster-base
