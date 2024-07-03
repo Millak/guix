@@ -207,19 +207,19 @@ compile does not support generics.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0d7zwdsg06km24vhx6dzk1w26wpi3yhx9jfkf9jnsp5chv5pzlw3"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "golang.org/x/image"
-         ;; Source-only package
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'build))))
-      (home-page "https://go.googlesource.com/image")
-      (synopsis "Supplemental Go image libraries")
-      (description "This package provides supplemental Go libraries for image
-processing.")
-      (license license:bsd-3)))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "golang.org/x/image"
+       ;; Source-only package
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'build))))
+    (home-page "https://go.googlesource.com/image")
+    (synopsis "Supplemental Go image libraries")
+    (description
+     "This package provides supplemental Go libraries for image processing.")
+    (license license:bsd-3)))
 
 (define-public go-golang-org-x-mod
   (let ((commit "7c05a442b7c1d1a107879b4a090bb5a38d3774a1")
