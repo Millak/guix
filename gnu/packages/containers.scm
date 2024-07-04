@@ -174,6 +174,14 @@ runtime (like runc or crun) for a single container.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
+               ;; This script creates desktop files but when the store path for
+               ;; distrobox changes it leaves the stale path on the desktop
+               ;; file, so remove the path to use the profile's current
+               ;; distrobox.
+               (add-after 'unpack 'patch-distrobox-generate-entry
+                 (lambda _
+                   (substitute* "distrobox-generate-entry"
+                     (("\\$\\{distrobox_path\\}/distrobox") "distrobox"))))
                ;; Use WRAP-SCRIPT to wrap all of the scripts of distrobox,
                ;; excluding the host side ones.
                (add-after 'install 'wrap-scripts
