@@ -34886,43 +34886,45 @@ contrast and few colors.")
       (license license:gpl3+))))
 
 (define-public emacs-doom-themes
-  (package
-    (name "emacs-doom-themes")
-    (version "2.3.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/hlissner/emacs-doom-themes")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "120pcas0l1m6w551qxfcl2fx0aysjqp91nn47zdxrr8rs01654wr"))))
-    (build-system emacs-build-system)
-    (native-inputs
-     (list emacs-ert-runner))
-    (arguments
-     (list #:tests? #t
-           #:test-command #~(list "ert-runner")
-           #:modules '((guix build emacs-build-system)
-                       (guix build utils)
-                       (guix build emacs-utils)
-                       (srfi srfi-1))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'move-themes
-                 (lambda _
-                   ;; Move the source files to the top level, which is in the
-                   ;; EMACSLOADPATH.
-                   (for-each (lambda (f)
-                               (rename-file f (basename f)))
-                             (append
-                                 (find-files "./themes" ".*\\.el$")
-                                 (find-files "./extensions" ".*\\.el$"))))))))
-    (synopsis "Wide collection of color themes for Emacs")
-    (description "Emacs-doom-themes contains numerous popular color themes for
+  (let ((commit "188ab05eefe2bdc46b4464aadb4a52ff9cb42f7f")
+        (revision "0"))
+    (package
+      (name "emacs-doom-themes")
+      (version (git-version "2.3.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/doomemacs/themes")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "08avm5jfp887r2l77s6i0zn72wlv4kp47b2vzv3kywf3d0gkpgp8"))))
+      (build-system emacs-build-system)
+      (native-inputs
+       (list emacs-ert-runner))
+      (arguments
+       (list #:tests? #t
+             #:test-command #~(list "ert-runner")
+             #:modules '((guix build emacs-build-system)
+                         (guix build utils)
+                         (guix build emacs-utils)
+                         (srfi srfi-1))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'move-themes
+                   (lambda _
+                     ;; Move the source files to the top level, which is in the
+                     ;; EMACSLOADPATH.
+                     (for-each (lambda (f)
+                                 (rename-file f (basename f)))
+                               (append
+                                (find-files "./themes" ".*\\.el$")
+                                (find-files "./extensions" ".*\\.el$"))))))))
+      (synopsis "Wide collection of color themes for Emacs")
+      (description "Emacs-doom-themes contains numerous popular color themes for
 Emacs that integrate with major modes like Org-mode.")
-    (home-page "https://github.com/hlissner/emacs-doom-themes")
-    (license license:expat)))
+      (home-page "https://github.com/doomemacs/themes")
+      (license license:expat))))
 
 (define-public emacs-modus-themes
   (package
