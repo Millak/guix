@@ -876,6 +876,77 @@ language.")
      "This package provides Golang bindings for the Telegram Bot API.")
     (license license:expat)))
 
+(define-public go-github-com-go-webauthn-webauthn
+  (package
+    (name "go-github-com-go-webauthn-webauthn")
+    (version "0.10.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-webauthn/webauthn")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jbx3cd8cr4aaqq9s1x4sd1rlcs3lmam5aavpl08s5rj18m7rivf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:import-path "github.com/go-webauthn/webauthn"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          (list
+                           ;; It tryes to access outbound network:
+                           ;;
+                           ;; Get "https://mds.fidoalliance.org": dial tcp:
+                           ;; lookup mds.fidoalliance.org on [::1]:53: read udp
+                           ;; [::1]:52300->[::1]:53: read: connection refused
+                           ;;
+                           ;; Post "https://mds3.fido.tools/getEndpoints": dial
+                           ;; tcp: lookup mds3.fido.tools on [::1]:53: read udp
+                           ;; [::1]:46703->[::1]:53: read: connection refused
+                           "metadata/metadata_test.go"
+                           ;; Get "https://mds.fidoalliance.org": dial tcp:
+                           ;; lookup mds.fidoalliance.org on [::1]:53: read udp
+                           ;; [::1]:37459->[::1]:53: read: connection refused
+                           "protocol/attestation_androidkey_test.go"
+                           "protocol/attestation_apple_test.go"
+                           "protocol/attestation_packed_test.go"
+                           "protocol/attestation_safetynet_test.go"
+                           "protocol/attestation_test.go"
+                           "protocol/attestation_tpm_test.go"
+                           "protocol/attestation_u2f_test.go")))))
+          ;; XXX: Run all tests, workaround for go-build-system's lack of Go
+          ;; modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-fxamacker-cbor-v2
+           go-github-com-go-webauthn-x
+           go-github-com-golang-jwt-jwt-v5
+           go-github-com-google-go-tpm
+           go-github-com-google-uuid
+           go-github-com-mitchellh-mapstructure))
+    (home-page "https://github.com/go-webauthn/webauthn")
+    (synopsis "Webauthn/FIDO2 library for Golang")
+    (description
+     "This library is meant to handle @url{https://www.w3.org/TR/webauthn,Web
+Authentication} for Go apps that wish to implement a passwordless solution for
+users.  This library conforms as much as possible to the guidelines and
+implementation procedures outlined by the document.  It's a successor of not
+maintained https://github.com/duo-labs/webauthn library.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-go-webauthn-x
   (package
