@@ -11566,24 +11566,24 @@ views can be printed as PDF or PostScript files, or exported to HTML.")
         (base32 "1laj5xwfz2bz29scga2ahhnhlgll4a0n21wwy8mlr4jsl81g0jsa"))))
     (build-system meson-build-system)
     (arguments
-     `(#:imported-modules (,@%meson-build-system-modules
-                           (guix build python-build-system))
-       #:modules ((guix build meson-build-system)
-                  ((guix build python-build-system) #:prefix python:)
-                  (guix build utils))
-       #:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-gtk-update-icon-cache
-           (lambda _
-             (setenv "DESTDIR" "/")))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key outputs #:allow-other-keys)
-             (wrap-program (search-input-file outputs "bin/lollypop")
-               `("GI_TYPELIB_PATH" ":" prefix
-                 (,(getenv "GI_TYPELIB_PATH"))))))
-         (add-after 'install 'wrap-python
-           (assoc-ref python:%standard-phases 'wrap)))))
+     (list #:imported-modules `(,@%meson-build-system-modules
+                                (guix build python-build-system))
+           #:modules '((guix build meson-build-system)
+                       ((guix build python-build-system) #:prefix python:)
+                       (guix build utils))
+           #:glib-or-gtk? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-gtk-update-icon-cache
+                 (lambda _
+                   (setenv "DESTDIR" "/")))
+               (add-after 'install 'wrap-program
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (wrap-program (search-input-file outputs "bin/lollypop")
+                     (list "GI_TYPELIB_PATH" ":" 'prefix
+                           (list (getenv "GI_TYPELIB_PATH"))))))
+               (add-after 'install 'wrap-python
+                 (assoc-ref python:%standard-phases 'wrap)))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ; For glib-compile-resources
