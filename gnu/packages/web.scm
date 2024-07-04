@@ -340,36 +340,37 @@ and its related documentation.")
   (package
     (name "miniflux")
     (version "2.1.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/miniflux/v2")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1m1rcxcjswni3adgjkn3hvb59cbfdh9cl22d5qqwn0lxs8mgqhfl"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/miniflux/v2")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m1rcxcjswni3adgjkn3hvb59cbfdh9cl22d5qqwn0lxs8mgqhfl"))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.22
-           #:install-source? #f
-           #:import-path "miniflux.app/v2"
-           #:build-flags
-           #~(list (string-append
-                    "-ldflags= -X miniflux.app/v2/internal/version.Version="
-                    #$version))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'install-manpage
-                 (lambda* (#:key import-path #:allow-other-keys)
-                   (let ((man1 (string-append #$output "/share/man/man1/"))
-                         (page (format #f "src/~a/miniflux.1" import-path)))
-                     (install-file page man1))))
-               (add-after 'install-manpage 'rename-binary
-                 (lambda _
-                   (let ((bindir (string-append #$output "/bin/")))
-                     (rename-file (string-append bindir "v2")
-                                  (string-append bindir "miniflux"))))))))
+     (list
+      #:go go-1.22
+      #:install-source? #f
+      #:import-path "miniflux.app/v2"
+      #:build-flags
+      #~(list (string-append
+               "-ldflags= -X miniflux.app/v2/internal/version.Version="
+               #$version))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-manpage
+            (lambda* (#:key import-path #:allow-other-keys)
+              (let ((man1 (string-append #$output "/share/man/man1/"))
+                    (page (format #f "src/~a/miniflux.1" import-path)))
+                (install-file page man1))))
+          (add-after 'install-manpage 'rename-binary
+            (lambda _
+              (let ((bindir (string-append #$output "/bin/")))
+                (rename-file (string-append bindir "v2")
+                             (string-append bindir "miniflux"))))))))
     (inputs
      (list go-github-com-abadojack-whatlanggo
            go-github-com-andybalholm-brotli
@@ -400,7 +401,7 @@ and its related documentation.")
 @item Use only modern vanilla Javascript (ES6 and Fetch API)
 @item Single binary compiled statically without dependency
 @item The number of features is voluntarily limited
-@end itemize\n")
+@end itemize")
     (license license:asl2.0)))
 
 (define-public mod-wsgi
