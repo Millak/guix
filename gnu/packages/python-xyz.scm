@@ -33800,6 +33800,38 @@ instructions up to AVX-512 and SHA (including 3dnow!+, XOP, FMA3, FMA4, TBM
 and BMI2).")
       (license license:bsd-2))))
 
+(define-public python-itanium-demangler
+  (package
+    (name "python-itanium-demangler")
+    (version "1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             ;; PyPI only provides wheels and no source code.
+             (url "https://github.com/whitequark/python-itanium_demangler")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q47aqm5z3db6pasdzw05d6236vnb8hnapfy88fcmn9dr5ym98r3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests"
+                  (invoke "python" "-m" "unittest"))))))))
+    (home-page "https://github.com/whitequark/python-itanium_demangler/")
+    (synopsis "Pure Python Itanium C++ ABI demangler")
+    (description
+"This Python module provides an implementation of the Itanium C++ ABI symbol
+mangling language.  The demangler generates an abstract syntax tree from
+mangled symbols, which can be used for directly extracting type information.")
+    (license license:bsd-0)))
+
 (define-public python-peachpy
   ;; There is no tag in this repo.
   (let ((commit "913d74c35a6b1d330e90bfc055208ce5b06b35a0")
