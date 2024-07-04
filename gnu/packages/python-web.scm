@@ -7455,11 +7455,19 @@ Encoding for HTTP.")
          " and not test_subp_combined_stderr_stdout"
          " and not test_handle_part"))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-references
-           (lambda _
-             (substitute* "tests/unittests/cmd/test_clean.py"
-               (("#!/bin/sh") (string-append "#!" (which "sh")))))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-references
+            (lambda _
+              (substitute* "tests/unittests/cmd/test_clean.py"
+                (("#!/bin/sh") (string-append "#!" (which "sh"))))))
+          (add-after 'install 'move-files
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (for-each (lambda (dir)
+                          (let ((source (string-append (site-packages inputs outputs) "/" dir))
+                                (target (string-append #$output "/" (basename dir))))
+                            (copy-recursively source target)
+                            (delete-file-recursively source)))
+                        (list "etc" "lib" "usr/lib" "usr/share")))))))
     (propagated-inputs
      (list python-configobj
            python-jinja2
