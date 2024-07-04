@@ -742,6 +742,9 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "laurent.gatto@gmail.com")
   r)
 
+(define-member (person "Nicolas Goaziou"
+                       "guix@nicolasgoaziou.fr")
+  tex)
 
 
 (define (find-team name)
