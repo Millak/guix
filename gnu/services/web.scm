@@ -830,7 +830,7 @@ of index files."
              #~(lambda _
                  (invoke #$nginx-binary "-c" #$config-file #$@args)
                  (match '#$args
-                   (("-s" . _) #f)
+                   (("-s" . _) #t)
                    (_
                     ;; When FILE is true, we cannot be sure that PID-FILE will
                     ;; be created, so assume it won't show up.  When FILE is
