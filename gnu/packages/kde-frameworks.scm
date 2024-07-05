@@ -3267,7 +3267,7 @@ It supports rich text as well as plain text.")
 (define-public kwallet
   (package
     (name "kwallet")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3276,16 +3276,16 @@ It supports rich text as well as plain text.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1cji8bvy5m77zljyrrgipsw8pxcds1sgikxlq3sdfxymcsw2wr36"))))
+                "1p9a5lwn4lpalxs6nj8fbcmmngcbgaj6s9n9vz56j26rlfzypdpd"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
-       #~(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? ;; Seems to require network.
-               (invoke "ctest" "-E"
-                       "(fdo_secrets_test)")))))))
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests? ;; Seems to require network.
+                     (invoke "ctest" "-E"
+                             "(fdo_secrets_test)")))))))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -3306,8 +3306,8 @@ It supports rich text as well as plain text.")
            libgcrypt
            phonon
            qgpgme
-           qca
-           qtbase-5))
+           qca-qt6
+           qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Safe desktop-wide storage for passwords")
     (description "This framework contains an interface to KWallet, a safe
