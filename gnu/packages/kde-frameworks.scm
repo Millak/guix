@@ -661,7 +661,7 @@ propagate their changes to their respective configuration files.")
 (define-public kcoreaddons
   (package
     (name "kcoreaddons")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -670,15 +670,13 @@ propagate their changes to their respective configuration files.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1wv3s3xsiii96k17nzs2fb0ih2lyg52krf58v44nlk9wfi4wmnqx"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules qttools-5 shared-mime-info))
-    ;; TODO: FAM: File alteration notification http://oss.sgi.com/projects/fam
-    (inputs
-     (list qtbase-5))
+                "0mn7qmfcics12w979q7gis3yn1w79fhzrxl30pv5y5x1qax97fxq"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules qttools shared-mime-info))
+    (inputs (list qtdeclarative))
     (arguments
      (list
+      #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'blacklist-failing-test
