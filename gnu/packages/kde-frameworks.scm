@@ -1374,7 +1374,7 @@ which are used in DBus communication.")
 (define-public prison
   (package
     (name "prison")
-    (version "5.114.0")
+    (version "6.3.0")
     (source
      (origin
        (method url-fetch)
@@ -1382,12 +1382,12 @@ which are used in DBus communication.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1wbr1lryxmrx65ilq1bhqsdhhikrih977nhpb02fq0cqnvv7v9i7"))))
+        (base32 "0imwniw2lpsjipzyx9vmwwdy370sg5zynh9gk9g1w1c7axr0g63n"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list libdmtx qrencode qtbase-5)) ;; TODO: rethink: nix propagates this
+     (list libdmtx zxing-cpp qrencode qtbase qtdeclarative qtmultimedia))
     (home-page "https://api.kde.org/frameworks/prison/html/index.html")
     (synopsis "Barcode generation abstraction layer")
     (description "Prison is a Qt-based barcode abstraction layer/library and
