@@ -3229,7 +3229,7 @@ library.")
 (define-public ktextwidgets
   (package
     (name "ktextwidgets")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3238,12 +3238,12 @@ library.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0w1wwyd3fy351rmkhf3i55is5031j2zxvswm0b1sb3pd159v888v"))))
+                "0piqskblzi79wmza9z9qh0hc9vsihp5jdxsv7kspymdswspbb7wy"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list ki18n sonnet))
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
      (list kauth
            kcodecs
@@ -3255,8 +3255,8 @@ library.")
            kservice
            kwidgetsaddons
            kwindowsystem
-           qtbase-5
-           qtspeech-5))
+           qtspeech))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Text editing widgets")
     (description "KTextWidgets provides widgets for displaying and editing text.
