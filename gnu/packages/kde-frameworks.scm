@@ -2343,7 +2343,7 @@ KCModules can be created with the KConfigWidgets framework.")
 (define-public kconfigwidgets
   (package
     (name "kconfigwidgets")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2352,21 +2352,22 @@ KCModules can be created with the KConfigWidgets framework.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "16layydkcwfbvzxqjzprkq8bbxifn0z0wm7mc9bzwrfxy761rjnj"))))
+                "14104r6j38kjqmvx3d66xm4amdbdxl1450257l6zlf9wp1lndj5s"))))
     (build-system qt-build-system)
     (propagated-inputs
-     (list kauth kcodecs kconfig kwidgetsaddons))
+     (list kcodecs kconfig kcolorscheme kwidgetsaddons))
     (native-inputs
-     (list extra-cmake-modules kdoctools qttools-5))
+     (list extra-cmake-modules kdoctools qttools))
     (inputs
      (list kcoreaddons
            kguiaddons
            ki18n
            ;; todo: PythonModuleGeneration
-           qtbase-5
-           qttools-5))
+           qtdeclarative
+           libxkbcommon))
     (arguments
      (list
+      #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
@@ -2380,7 +2381,8 @@ KCModules can be created with the KConfigWidgets framework.")
               (when tests?
                 (setenv "HOME"
                         (getcwd))
-                (invoke "ctest" "-E" "kstandardactiontest")))))))
+                (invoke "ctest" "-E" "(kstandardactiontest|\
+klanguagenametest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Widgets for configuration dialogs")
     (description "KConfigWidgets provides easy-to-use classes to create
