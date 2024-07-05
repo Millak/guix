@@ -304,7 +304,7 @@ Phonon-VLC is a backend based on the VLC multimedia library.")
 (define-public attica
   (package
     (name "attica")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -313,8 +313,11 @@ Phonon-VLC is a backend based on the VLC multimedia library.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0gkdsm1vyyyxxyl4rni9s2bdz5w6zphzjl58fddjl899da06hqfq"))))
+                "1varrhc08799avraaln5sa844mwcz4h519x36n25sb80788kmbxb"))))
     (build-system cmake-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs (list qtbase))
     (arguments
      (list
       #:phases
@@ -324,10 +327,6 @@ Phonon-VLC is a backend based on the VLC multimedia library.")
               ;; These tests require network access.
               (substitute* "autotests/CMakeLists.txt"
                 ((".*providertest.cpp") "")))))))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list qtbase-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Open Collaboration Service client library")
     (description "Attica is a Qt library that implements the Open
