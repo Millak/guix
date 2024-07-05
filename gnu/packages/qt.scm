@@ -4350,6 +4350,29 @@ This package provides the Python bindings.")))
 securely.  It will not store any data unencrypted unless explicitly requested.")
     (license license:bsd-3)))
 
+(define-public qtkeychain-qt6
+  (package
+    (inherit qtkeychain)
+    (name "qtkeychain-qt6")
+    (native-inputs
+     (modify-inputs (package-native-inputs qtkeychain)
+       (replace "qttools" qttools)))
+    (inputs
+     (modify-inputs (package-inputs qtkeychain)
+       (replace "qtbase" qtbase)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments qtkeychain)
+       ((#:configure-flags flags #~(list))
+        #~(cons "-DBUILD_WITH_QT6=ON" #$flags))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'set-qt-trans-dir
+              (lambda _
+                (lambda _
+                  (substitute* "CMakeLists.txt"
+                    (("\\$\\{qt_translations_dir\\}")
+                     "${CMAKE_INSTALL_PREFIX}/share/qt6/translations")))))))))))
+
 (define-public qtsolutions
   (let ((commit "9568abd142d581b67b86a5f63d823a34b0612702")
         (revision "53"))
