@@ -143,7 +143,7 @@
 (define-public appstream
   (package
     (name "appstream")
-    (version "0.16.4")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
@@ -152,9 +152,7 @@
                        "appstream/releases/"
                        "AppStream-" version ".tar.xz"))
        (sha256
-        (base32 "1val1b3dggn9g33q2r9q7wsl75a64x4lcvswvkcjjbvakkbj5xyl"))
-       (patches
-        (search-patches "appstream-force-reload-stemmer.patch"))))
+        (base32 "195snvg2jw5ywqxz02xfb570yhxvaqp9d4w5a2lpay2fck7zddjs"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -166,9 +164,9 @@
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((libstemmer.h (search-input-file inputs
                                                      "include/libstemmer.h")))
-              (substitute* "meson.build"
-                (("/usr/include")
-                 (dirname libstemmer.h))))))
+                (substitute* "meson.build"
+                  (("/usr/include")
+                   (dirname libstemmer.h))))))
           (add-before 'check 'check-setup
             (lambda _
               (setenv "HOME" (getcwd)))))))
@@ -184,7 +182,8 @@
            itstool
            libxslt
            pkg-config
-           python-wrapper))
+           python-wrapper
+           gi-docgen))
     (inputs
      (list curl libsoup-minimal-2 libstemmer libxmlb libxml2 libyaml lmdb))
     (propagated-inputs
@@ -213,7 +212,8 @@ application-centers for distributions.")
     (arguments
      (substitute-keyword-arguments (package-arguments appstream)
        ((#:configure-flags flags #~'())
-        #~(append '("-Dqt=true") #$flags))))))
+        #~(append '("-Dqt=true" "-Dqt-versions=5") #$flags))))))
+
 
 (define-public farstream
   (package
