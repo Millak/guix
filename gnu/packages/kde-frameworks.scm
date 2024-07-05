@@ -1061,7 +1061,7 @@ pixel units.")
 (define-public ksyntaxhighlighting
   (package
     (name "ksyntaxhighlighting")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1070,27 +1070,25 @@ pixel units.")
                     "syntax-highlighting-" version ".tar.xz"))
               (sha256
                (base32
-                "1skblg2m0sar63qrgkjsg0w9scixggm5qj7lp4gzjn4hwq6m3n63"))))
+                "117r5nsggqnlkd8mg9l2aa00q2ns891xadxl6vxgbgk9r4shlc1q"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list extra-cmake-modules perl qttools-5
-           ;; Optional, for compile-time validation of syntax definition files:
-           qtxmlpatterns))
+     (list extra-cmake-modules perl qttools))
     (inputs
-     (list qtbase-5))
+     (list qtbase qtdeclarative))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-source-shebangs 'unpatch-source-shebang
-           (lambda _
-             ;; revert the patch-shebang phase on scripts which are
-             ;; in fact test data
-             (substitute* '("autotests/input/highlight.sh"
-                            "autotests/folding/highlight.sh.fold")
-               (((which "sh")) " /bin/sh")) ;; space in front!
-             (substitute* '("autotests/input/highlight.pl"
-                            "autotests/folding/highlight.pl.fold")
-               (((which "perl")) "/usr/bin/perl")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'patch-source-shebangs 'unpatch-source-shebang
+                 (lambda _
+                   ;; revert the patch-shebang phase on scripts which are
+                   ;; in fact test data
+                   (substitute* '("autotests/input/highlight.sh"
+                                  "autotests/folding/highlight.sh.fold")
+                     (((which "sh")) " /bin/sh")) ;; space in front!
+                   (substitute* '("autotests/input/highlight.pl"
+                                  "autotests/folding/highlight.pl.fold")
+                     (((which "perl")) "/usr/bin/perl")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Syntax highlighting engine for Kate syntax definitions")
     (description "This is a stand-alone implementation of the Kate syntax
