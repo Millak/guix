@@ -2614,7 +2614,7 @@ window does not need focus for them to be activated.")
 (define-public kiconthemes
   (package
     (name "kiconthemes")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2623,32 +2623,31 @@ window does not need focus for them to be activated.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0ndiqmcs1ybj4acc6k3p9jwq09slqc4nj12ifqvlxrfj3ak6sb28"))))
+                "00y3gjrplxk29l0f11yf7d9cszzf7ggady87pwj7j87qr6pr8lwl"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5 shared-mime-info))
+     (list extra-cmake-modules qttools shared-mime-info))
     (inputs
-     (list karchive
+     (list libxkbcommon
+           karchive
            kauth
            kcodecs
+           kcolorscheme
            kcoreaddons
            kconfig
            kconfigwidgets
            ki18n
            kitemviews
            kwidgetsaddons
-           qtbase-5
-           qtdeclarative-5
-           qtsvg-5))
+           qtbase
+           qtdeclarative
+           qtsvg
+           breeze-icons))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
                (add-before 'check 'check-setup
                  (lambda* (#:key inputs #:allow-other-keys)
-                   (setenv "XDG_DATA_DIRS"
-                           (string-append #$(this-package-native-input
-                                             "shared-mime-info")
-                                          "/share"))
                    (setenv "HOME" (getcwd))
                    ;; make Qt render "offscreen", required for tests
                    (setenv "QT_QPA_PLATFORM" "offscreen"))))))
