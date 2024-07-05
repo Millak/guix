@@ -533,6 +533,7 @@ the same, being completely separated from the Internet.")
               "--with-http_sub_module"
               "--with-pcre-jit"
               "--with-debug"
+              "--with-compat"
               "--with-stream"
               "--with-stream_ssl_module"
               "--with-http_stub_status_module"
