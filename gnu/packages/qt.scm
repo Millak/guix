@@ -5207,6 +5207,16 @@ services using the XML based SOAP protocol and without the need for a dedicated
 web server.")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public kdsoap-qt6
+  (package
+    (inherit kdsoap)
+    (name "kdsoap-qt6")
+    (arguments (substitute-keyword-arguments (package-arguments kdsoap)
+                 ((#:configure-flags flags #~(list))
+                  #~(cons "-DKDSoap_QT6=true" #$flags))))
+    (inputs (modify-inputs (package-inputs kdsoap)
+              (replace "qtbase" qtbase)))))
+
 (define-public libaccounts-qt
   (package
     (name "libaccounts-qt")
