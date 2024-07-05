@@ -189,7 +189,7 @@ common build settings used in software produced by the KDE community.")
 (define-public kquickcharts
   (package
     (name "kquickcharts")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/frameworks/"
@@ -197,20 +197,11 @@ common build settings used in software produced by the KDE community.")
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1f91x92qdzxp31z7ixx9jn41hq9f3w9hjia94pab9vsnaz8prbd1"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (system "Xvfb :1 -screen 0 640x480x24 &")
-                              (setenv "DISPLAY" ":1")
-                              (setenv "QT_QPA_PLATFORM" "offscreen")
-                              (invoke "ctest")))))))
-    (inputs (list qtbase-5 qtdeclarative-5 qtquickcontrols2-5
-                  xorg-server-for-tests))
+                "1iwgxlzplpb1ngc2q3jv5v5a2dq3l9wc6kizfvrb6j5zvwm543i5"))))
+    (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules glslang pkg-config))
+    (inputs (list qtdeclarative qtshadertools))
     (home-page "https://api.kde.org/frameworks/kquickcharts/html/index.html")
     (synopsis "QtQuick plugin providing high-performance charts")
     (description
