@@ -484,8 +484,24 @@ syntax highlighted HTML, ANSI-coloured text, etc.")
        (sha256
         (base32 "1qgr4gywjks869sc85wb8nby612b8wvsa1dwpsbanjsljq7wq7mp"))))
     (arguments
-     (list #:go go-1.19
-           #:import-path "github.com/alecthomas/chroma/v2"))
+     (list
+      #:go go-1.19
+      #:import-path "github.com/alecthomas/chroma/v2"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-testdata-and-cmd-files
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "lexers/testdata/python2/test_complex_file1.actual"
+                                ;; Executible is packed as separate package.
+                                "cmd")))))
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-dlclark-regexp2))
     (native-inputs
