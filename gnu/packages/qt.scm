@@ -5210,7 +5210,7 @@ web server.")
 (define-public libaccounts-qt
   (package
     (name "libaccounts-qt")
-    (version "1.16")
+    (version "1.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5219,7 +5219,7 @@ web server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vmpjvysm0ld8dqnx8msa15hlhrkny02cqycsh4k2azrnijg0xjz"))))
+                "0859nsksgfrj6ynj74awj1fr6slwcjavs989xc7mbgpvi87n1xlq"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;TODO
