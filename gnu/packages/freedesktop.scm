@@ -214,6 +214,19 @@ application-centers for distributions.")
        ((#:configure-flags flags #~'())
         #~(append '("-Dqt=true" "-Dqt-versions=5") #$flags))))))
 
+(define-public appstream-qt6
+  (package/inherit appstream
+    (name "appstream-qt6")
+    (native-inputs
+     (modify-inputs (package-native-inputs appstream)
+       (prepend qttools)))
+    (inputs
+     (modify-inputs (package-inputs appstream)
+       (prepend qtbase)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments appstream)
+       ((#:configure-flags flags #~'())
+        #~(append '("-Dqt=true" "-Dqt-versions=6") #$flags))))))
 
 (define-public farstream
   (package
