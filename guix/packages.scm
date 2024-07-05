@@ -160,6 +160,11 @@
             %cuirass-supported-systems
             supported-package?
 
+            &unsupported-cross-compilation-target-error
+            unsupported-cross-compilation-target-error?
+            unsupported-cross-compilation-target-error-build-system
+            unsupported-cross-compilation-target-error-target
+
             &package-error
             package-error?
             package-error-package
@@ -833,6 +838,11 @@ exist, return #f instead."
   (lookup-package-native-input this-package name))
 
 ;; Error conditions.
+
+(define-condition-type &unsupported-cross-compilation-target-error &error
+  unsupported-cross-compilation-target-error?
+  (build-system unsupported-cross-compilation-target-error-build-system)
+  (target unsupported-cross-compilation-target-error-target))
 
 (define-condition-type &package-error &error
   package-error?

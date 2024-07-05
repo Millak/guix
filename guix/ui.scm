@@ -763,6 +763,13 @@ evaluating the tests and bodies of CLAUSES."
                        (location->string loc)
                        (package-full-name package)
                        (package-unsupported-target-error-target c))))
+             ((unsupported-cross-compilation-target-error? c)
+              (let ((build-system
+                      (unsupported-cross-compilation-target-error-build-system c))
+                    (target (unsupported-cross-compilation-target-error-target c)))
+                (leave (G_ "the `~a' build system: does not support target `~a'~%")
+                       (build-system-name build-system)
+                       target)))
              ((gexp-input-error? c)
               (let ((input (gexp-error-invalid-input c)))
                 (leave (G_ "~s: invalid G-expression input~%")
