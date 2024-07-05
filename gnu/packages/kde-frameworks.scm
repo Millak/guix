@@ -1742,7 +1742,7 @@ application crashes.")
 (define-public kdoctools
   (package
     (name "kdoctools")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1751,20 +1751,21 @@ application crashes.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "15s58r2zvdckw30x9q9ir8h1i8q2ncfgjn9h4jnmylwm79z3z27v"))))
+                "0jl5qxjscjdpf0jpl35ymdqhks3ynk8jxlwv6xdqml6vp4aysl2b"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list docbook-xml-4.5
            docbook-xsl
+           gettext-minimal
            karchive
            ki18n
            libxml2
            libxslt
            perl
            perl-uri
-           qtbase-5))
+           qtbase))
     (arguments
      (list
       #:phases
@@ -1772,24 +1773,15 @@ application crashes.")
           (add-after 'unpack 'cmake-find-docbook
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* (find-files "cmake" "\\.cmake$")
-                (("CMAKE_SYSTEM_PREFIX_PATH")
-                 "CMAKE_PREFIX_PATH"))
+                (("CMAKE_SYSTEM_PREFIX_PATH") "CMAKE_PREFIX_PATH"))
               (substitute* "cmake/FindDocBookXML4.cmake"
                 (("^.*xml/docbook/schema/dtd.*$")
                  "xml/dtd/docbook\n"))
               (substitute* "cmake/FindDocBookXSL.cmake"
                 (("^.*xml/docbook/stylesheet.*$")
                  (string-append "xml/xsl/docbook-xsl-"
-                                #$(package-version docbook-xsl)
-                                "\n")))))
-          (add-after 'install 'add-symlinks
-            ;; Some package(s) (e.g. kdelibs4support) refer to this locale by a
-            ;; different spelling.
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((xsl (string-append (assoc-ref outputs "out")
-                                        "/share/kf5/kdoctools/customization/xsl/")))
-                (symlink (string-append xsl "pt_br.xml")
-                         (string-append xsl "pt-BR.xml"))))))))
+                                #$(package-version (this-package-input "docbook-xsl"))
+                                "\n"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Create documentation from DocBook")
     (description "Provides tools to generate documentation in various format
