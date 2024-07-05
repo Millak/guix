@@ -1460,7 +1460,7 @@ feel.")
 (define-public solid
   (package
     (name "solid")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1469,20 +1469,16 @@ feel.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1slxlj5jhp8g745l328932934633nl81sq3n8fd73h655hymsk4s"))))
+                "1nckgnr2834ppjjm3nq5xcasw7f3rvr95g8d37yh3vmwk6arj8dq"))))
     (build-system cmake-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (setenv "DBUS_FATAL_WARNINGS" "0")
-                              (invoke "dbus-launch" "ctest")))))))
     (native-inputs
-     (list bison dbus extra-cmake-modules flex qttools-5))
-    (inputs
-     (list qtbase-5 qtdeclarative-5 eudev))
+     (list bison dbus extra-cmake-modules flex qttools))
     ;; TODO: Add runtime-only dependency MediaPlayerInfo
+    (inputs
+     (list `(,util-linux "lib") ;; Optional, for libmount
+           libxkbcommon
+           vulkan-headers
+           qtbase qtdeclarative eudev))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Desktop hardware abstraction")
     (description "Solid is a device integration framework.  It provides a way of
