@@ -201,6 +201,13 @@ QAction and QAbstractButton that lets you integrate those two component
 easily with PolicyKit.")
     (license lgpl2.0+)))
 
+(define-public polkit-qt6
+  (package
+    (inherit polkit-qt)
+    (name "polkit-qt6")
+    (inputs (modify-inputs (package-inputs polkit-qt)
+              (replace "qtbase" qtbase)))))
+
 (define-public polkit-gnome
   (package
     (name "polkit-gnome")
