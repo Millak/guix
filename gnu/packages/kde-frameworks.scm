@@ -1947,7 +1947,7 @@ asynchronous jobs.")
 (define-public knotifications
   (package
     (name "knotifications")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1956,31 +1956,16 @@ asynchronous jobs.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0cjd5ml9hyzprjgmrc132cmp7g9hnl0h5swlxw2ifqnxxyfkg72b"))))
+                "0xvqri0ykx9qb6q2gjpxri71jvghzwy6p332vj8drzlm6wd3rvfc"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list extra-cmake-modules dbus pkg-config qttools-5))
+     (list extra-cmake-modules pkg-config qttools))
+    (propagated-inputs (list qtdeclarative))
     (inputs
-     (list kcodecs
-           kconfig
+     (list kconfig
            kcoreaddons
-           kwindowsystem
            libcanberra
-           libdbusmenu-qt
-           phonon
-           qtdeclarative-5
-           qtbase-5
-           qtspeech-5
-           qtx11extras))
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (setenv "HOME"
-                                      (getcwd))
-                              (setenv "DBUS_FATAL_WARNINGS" "0")
-                              (invoke "dbus-launch" "ctest")))))))
+           qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Desktop notifications")
     (description "KNotification is used to notify the user of an event.  It
