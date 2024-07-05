@@ -1682,7 +1682,7 @@ utilities.")
 (define-public kcompletion
   (package
     (name "kcompletion")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1691,12 +1691,13 @@ utilities.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0qvdxqlh1dklkbmqfjg5gc3dkdicgzn6q5lgvyf8cv46dinj6mwc"))))
+                "0bkixs49w56d6s2yi5nkk6q2rg86wc81phrqa0508p98pp37l0iz"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
-     (list kconfig kwidgetsaddons qtbase-5))
+     (list kcodecs kconfig kwidgetsaddons))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Powerful autocompletion framework and widgets")
     (description "This framework helps implement autocompletion in Qt-based
