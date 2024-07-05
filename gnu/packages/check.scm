@@ -73,6 +73,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -3396,8 +3397,8 @@ provides a simple way to achieve this.")
     (license license:gpl2)))
 
 (define-public rapidcheck
-  (let ((commit "a5724ea5b0b00147109b0605c377f1e54c353ba2")
-        (revision "0"))
+  (let ((commit "ff6af6fc683159deb51c543b065eba14dfcf329b")
+        (revision "1"))
     (package
       (name "rapidcheck")
       (version (git-version "0.0.0" revision commit))
@@ -3410,24 +3411,33 @@ provides a simple way to achieve this.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0f2dmsym8ibnwkaidxmgp73mg0sdniwsyn6ppskh74246h29bbcy"))))
+          (base32 "1s2qva1amhs887jcdj12ppxk9kkfvy25xy7vzhkwb7rljr3gj713"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(begin
+              (make-file-writable "ext/CMakeLists.txt")
+              (call-with-output-file "ext/CMakeLists.txt"
+                (lambda (out)
+                  (display "find_package(Catch2 REQUIRED GLOBAL)\n" out)
+                  (display "find_package(GTest GLOBAL)\n" out)
+                  (display "find_package(Boost GLOBAL)\n" out)))
+              (substitute* "extras/boost/test/CMakeLists.txt"
+                (("^([ ]*)boost" all spaces)
+                 (string-append spaces "Boost::boost")))))))
       (arguments
        (list
-        #:tests? #f                     ;require fetching submodules
-        #:configure-flags #~(list "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'install 'install-extra-headers
-              (lambda _
-                (with-directory-excursion "../source/extras"
-                  (for-each
-                   (lambda (dir)
-                     (let ((dir (string-append dir "/include/rapidcheck/"))
-                           (dest (string-append #$output
-                                                "/include/rapidcheck")))
-                       (copy-recursively dir dest)))
-                   '("boost" "boost_test" "catch" "gmock" "gtest"))))))))
+        #:configure-flags #~(list "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
+                                  "-DRC_ENABLE_BOOST=on"
+                                  "-DRC_ENABLE_CATCH=on"
+                                  "-DRC_ENABLE_DOCTEST=on"
+                                  "-DRC_ENABLE_GTEST=on"
+                                  "-DRC_ENABLE_TESTS=on")))
       (build-system cmake-build-system)
+      (inputs (list boost
+                    catch2
+                    doctest
+                    googletest))
+      (native-inputs (list catch2 googletest))
       (home-page "https://github.com/emil-e/rapidcheck")
       (synopsis "Property based testing framework for C++")
       (description "Rapidcheck is a property based testing framework for C++.
