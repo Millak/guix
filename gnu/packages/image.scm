@@ -35,7 +35,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022-2023 Bruno Victal <mirai@makinata.eu>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
@@ -2457,7 +2457,7 @@ This package can be used to create @code{favicon.ico} files for web sites.")
 (define-public libavif
   (package
     (name "libavif")
-    (version "0.11.1")
+    (version "1.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2466,7 +2466,7 @@ This package can be used to create @code{favicon.ico} files for web sites.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02zmb62g0yx6rfz4w1isyzfrckv5i7dzyz26rp2mspbx9w6v8j4r"))))
+                "0k72q7yvfdn92wkslyifw14319nm981a8r3kd84i4ylxmrkgi0zm"))))
     (build-system cmake-build-system)
     (arguments
      (list
