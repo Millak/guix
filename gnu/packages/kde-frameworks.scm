@@ -705,7 +705,7 @@ many more.")
 (define-public kdbusaddons
   (package
     (name "kdbusaddons")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -714,30 +714,18 @@ many more.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0pzzznyxhi48z5hhdsdxz3vaaihrdshpx65ha2v2nn2gh3ww7ikm"))))
-    (build-system cmake-build-system)
+                "00i08baairndj5w6x3rhfxcws0xjd59wn2h08am3ll89xycqjbby"))))
+    (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules dbus qttools-5))
-    (inputs
-     (list qtbase-5 qtx11extras kinit-bootstrap))
-    ;; kinit-bootstrap: kinit package which does not depend on kdbusaddons.
+     (list extra-cmake-modules dbus qttools))
+    (inputs (list libxkbcommon))
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:phases
            #~(modify-phases %standard-phases
-               (add-before 'configure 'patch-source
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; look for the kdeinit5 executable in kinit's store directory,
-                   ;; instead of the current application's directory:
-                   (substitute* "src/kdeinitinterface.cpp"
-                     (("<< QCoreApplication::applicationDirPath..")
-                      (string-append
-                       "<< QString::fromUtf8(\"/"
-                       (dirname (search-input-file inputs "bin/kdeinit5"))
-                       "\")" )))))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
-                     (setenv "DBUS_FATAL_WARNINGS" "0")
                      (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Convenience classes for DBus")
