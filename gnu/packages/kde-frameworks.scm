@@ -946,35 +946,28 @@ or user activity.")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
 (define-public kirigami
-  ;; Kirigami is listed as tier 1 framework, but optionally includes
-  ;; plasma-framework which is tier 3.
   (package
     (name "kirigami")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://kde/stable/frameworks/"
                     (version-major+minor version) "/"
-                    "kirigami2-" version ".tar.xz"))
+                    "kirigami-" version ".tar.xz"))
               (sha256
                (base32
-                "1bd232gs4394fa3aq31mjqrn8f3vjsghx7817szi7ryvnn6fnqkw"))))
-    (properties `((upstream-name . "kirigami2")))
+                "0nrrnbf7hmis6sbqilmqf6wgjyvg5zwzlkcgzq0kbh1pbfhgmjyv"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
      (list kwindowsystem
-           ;; TODO: Find a way to activate this optional include without
-           ;; introducing a recursive dependency.
-           ;;("plasma-frameworks" ,plasma-framework) ;; Tier 3!
-           qtbase-5
-           qtdeclarative-5
-           qtquickcontrols2-5
-           qtsvg-5
-           ;; Run-time dependency
-           qtgraphicaleffects))
+           qtshadertools
+           qtbase
+           qtdeclarative
+           qtsvg
+           libxkbcommon))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "QtQuick components for mobile user interfaces")
     (description "Kirigami is a set of high level QtQuick components looking
