@@ -33,6 +33,8 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:export (%go-build-system-modules
             go-build
             go-build-system
@@ -101,7 +103,13 @@ commit hash and its date rather than a proper release tag."
                (_ arch))
              (match os
                ((or "mingw32" "cygwin") "windows")
-               (_ os))))))
+               (_ os))))
+      (_
+       (raise
+        (condition
+         (&unsupported-cross-compilation-target-error
+          (build-system go-build-system)
+          (target target)))))))
 
 (define %go-build-system-modules
   ;; Build-side modules imported and used by default.
