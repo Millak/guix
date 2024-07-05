@@ -848,7 +848,7 @@ other special events for a geographical region.")
 (define-public ki18n
   (package
     (name "ki18n")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -857,23 +857,25 @@ other special events for a geographical region.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1yg03awcx5ay6lgbgwv91i0ankrm94z9m0wky4v03gnwnvw8pa0v"))))
+                "10kjjl6af3kbp0zs4pny6wrl5a7ld05fp5hkj31zww10p8g395ad"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     (list gettext-minimal python))
+     (list gettext-minimal))
     (native-inputs
-     (list extra-cmake-modules))
+     (list extra-cmake-modules python-minimal tzdata-for-tests))
     (inputs
-     (list qtbase-5 qtdeclarative-5 qtscript iso-codes))
+     (list qtbase qtdeclarative iso-codes))
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (setenv "HOME"
-                                      (getcwd))
-                              (invoke "ctest" "-E"
-                               "(kcountrytest|kcountrysubdivisiontest)")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME"
+                        (getcwd))
+                (invoke "ctest" "-E"
+                        "(kcountrytest|kcountrysubdivisiontest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE Gettext-based UI text internationalization")
     (description "KI18n provides functionality for internationalizing user
