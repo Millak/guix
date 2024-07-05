@@ -2104,7 +2104,7 @@ gallons).")
 (define-public syndication
   (package
     (name "syndication")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2113,12 +2113,12 @@ gallons).")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "13rjb1zm9yd8vbm9h7avqih5v0rr2srqwglm29l7mcnankqlh4n7"))))
+                "1m68g7cm1cqkysb1yxnqnq9fcvjjp1kjl1s0j203jpp3kg05gw6d"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list kcodecs qtbase-5))
+     (list kcodecs qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "RSS/Atom parser library")
     (description "@code{syndication} supports RSS (0.9/1.0, 0.91..2.0) and
