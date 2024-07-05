@@ -1216,7 +1216,7 @@ configuration pages, message boxes, and password requests.")
 (define-public kwindowsystem
   (package
     (name "kwindowsystem")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1225,19 +1225,24 @@ configuration pages, message boxes, and password requests.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "03xbsf1pmswd2kpn3pdszp4vndclsh7j02fp22npxaxllmfr4va9"))))
+                "1fdax3c2q3fm56pvr99z0rwf1nwz7jmksblj9d42gg1l55ckrqs0"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules
            pkg-config
+           wayland; for wayland-scanner
            dbus ; for the tests
-           openbox ; for the tests
-           qttools-5
+           openbox ; for the test
+           qttools
            xorg-server-for-tests)) ; for the tests
     (inputs
-     (list libxrender
-           qtbase-5
-           qtx11extras
+     (list qtbase
+           qtdeclarative
+           qtwayland
+           wayland-protocols
+           plasma-wayland-protocols
+           libxkbcommon
+           wayland
            xcb-util-keysyms
            xcb-util-wm))
     (arguments
@@ -1248,7 +1253,7 @@ configuration pages, message boxes, and password requests.")
             (lambda* (#:key tests? #:allow-other-keys)
               ;; The test suite requires a running window anager
               (when tests?
-                (setenv "XDG_RUNTIME_DIR" "/tmp")
+                (setenv "XDG_RUNTIME_DIR" (getcwd))
                 (system "Xvfb :1 -ac -screen 0 640x480x24 &")
                 (setenv "DISPLAY" ":1")
                 (sleep 5) ;; Give Xvfb a few moments to get on it's feet
