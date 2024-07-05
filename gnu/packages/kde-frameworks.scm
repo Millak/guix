@@ -1101,14 +1101,14 @@ integration with a custom editor as well as a ready-to-use
 (define-public plasma-wayland-protocols
   (package
     (name "plasma-wayland-protocols")
-    (version "1.12.0")
+    (version "1.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/" name "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "17jg1nvpq0718wv3nc54kd7pcn4riz2p2pcvay1kr4fbg79bz0ql"))))
+                "0znm2nhpmfq2vakyapmq454mmgqr5frc91k2d2nfdxjz5wspwiyx"))))
     (build-system cmake-build-system)
     (native-inputs (list extra-cmake-modules))
     (arguments '(#:tests? #f))          ;no tests
