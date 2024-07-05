@@ -5327,6 +5327,20 @@ abstraction layer that allows the session user to manage packages in
 a secure way.")
     (license license:lgpl2.1+)))
 
+(define-public packagekit-qt6
+  (package
+    (inherit packagekit-qt5)
+    (name "packagekit-qt6")
+    (arguments (substitute-keyword-arguments (package-arguments packagekit-qt5)
+                 ((#:configure-flags flags #~'())
+                  #~(cons "-DBUILD_WITH_QT6=ON" #$flags))))
+    (inputs (modify-inputs (package-inputs packagekit-qt5)
+              (replace "qtbase" qtbase)))
+    (synopsis "Qt6 bindings for PackageKit")
+    (description "Provides Qt6 bindings to PackageKit which is a DBUS
+abstraction layer that allows the session user to manage packages in
+a secure way.")))
+
 (define-public signond
   (package
     (name "signond")
