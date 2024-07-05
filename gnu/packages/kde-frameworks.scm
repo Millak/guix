@@ -1182,7 +1182,7 @@ represented by a QPoint or a QSize.")
 (define-public kwidgetsaddons
   (package
     (name "kwidgetsaddons")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1191,23 +1191,25 @@ represented by a QPoint or a QSize.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1cc8lsk9v0cp2wiy1q26mlkf8np0yj01sq8a7w13ga5s6hv4sh2n"))))
+                "0k44s7j80qapnwsjr1y7igpzxddy065gw3xm7i1av9m0p46rygqf"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5 xorg-server-for-tests))
-    (inputs
-     (list qtbase-5))
+     (list extra-cmake-modules qttools))
     (arguments
      (list
+      #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
               (when tests?
-                (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache")
+                ;; hideLaterShouldHideAfterDelay function time: 300000ms, total time: 300009ms
                 (invoke "ctest" "-E"
-                        "(ksqueezedtextlabelautotest|\
-kwidgetsaddons-kcolumnresizertest)")))))))
+                        "(ktooltipwidgettest)"
+                        "-j"
+                        (if parallel-tests?
+                            (number->string (parallel-job-count))
+                            "1"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Large set of desktop widgets")
     (description "Provided are action classes that can be added to toolbars or
