@@ -5180,7 +5180,7 @@ and import their menus over DBus.")
 (define-public kdsoap
   (package
     (name "kdsoap")
-    (version "2.0.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
@@ -5188,18 +5188,18 @@ and import their menus over DBus.")
                            "kdsoap-" version "/kdsoap-" version ".tar.gz"))
        (sha256
         (base32
-         "1vh4rzb09kks1ilay1y60q7gf64gwzdwsca60hmx1xx69w8672fi"))))
+         "0mpkg9iyvzb6mxvhbi6zc052ids2r2nzpmjbljgpq6a2hja13vyr"))))
     (build-system qt-build-system)
-    (inputs `(("qtbase" ,qtbase-5)))
+    (inputs (list qtbase-5))
     (arguments
-     '(#:configure-flags '("-DKDSoap_TESTS=true")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "ctest" "-E" ;; These tests try connect to the internet.
-                       "(kdsoap-webcalls|kdsoap-webcalls_wsdl|kdsoap-test_calc)")))))))
+     (list #:configure-flags #~(list "-DKDSoap_TESTS=true")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E" ;; These tests try connect to the internet.
+                             "(kdsoap-test_webcalls|kdsoap-test_webcalls_wsdl|kdsoap-test_calc)")))))))
     (home-page "https://www.kdab.com/development-resources/qt-tools/kd-soap/")
     (synopsis "Qt SOAP component")
     (description "KD SOAP is a tool for creating client applications for web
