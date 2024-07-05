@@ -3094,7 +3094,7 @@ typed.")
 (define-public kservice
   (package
     (name "kservice")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3103,37 +3103,43 @@ typed.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0jdvlplnsb9w628wh3ip6awxvhgyc097zh7ls9614ymkbnpc9xca"))))
+                "0m7ym2hzsw1aylrinqmq88912mi89j0wyffb1lxjkwp0q5i4smm0"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kconfig kcoreaddons kdoctools))
     (native-inputs
      (list bison extra-cmake-modules flex shared-mime-info))
     (inputs
-     (list kcrash kdbusaddons kdoctools ki18n qtbase-5))
+     (list kcrash kdbusaddons kdoctools ki18n qtbase qtdeclarative))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           ;; Adopted from NixOS' patches "qdiriterator-follow-symlinks" and
-           ;; "no-canonicalize-path".
-           (lambda _
-             (substitute* "src/sycoca/kbuildsycoca.cpp"
-               ;; make QDirIterator follow symlinks
-               (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)" _ a b)
-                (string-append a " | QDirIterator::FollowSymlinks" b)))
-             (substitute* "src/sycoca/vfolder_menu.cpp"
-               ;; Normalize path, but don't resolve symlinks (taken from
-               ;; NixOS)
-               (("^\\s*QString resolved = QDir\\(dir\\)\\.canonicalPath\\(\\);")
-                "QString resolved = QDir::cleanPath(dir);"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (setenv "QT_QPA_PLATFORM" "offscreen")
-               ;; Disable failing tests.
-               (invoke "ctest" "-E" "(kautostarttest|ksycocatest|kapplicationtradertest)")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            ;; Adopted from NixOS' patches "qdiriterator-follow-symlinks" and
+            ;; "no-canonicalize-path".
+            (lambda _
+              (substitute* "src/sycoca/kbuildsycoca.cpp"
+                ;; make QDirIterator follow symlinks
+                (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)" _ a b)
+                 (string-append a " | QDirIterator::FollowSymlinks" b)))
+              (substitute* "src/sycoca/vfolder_menu.cpp"
+                ;; Normalize path, but don't resolve symlinks (taken from
+                ;; NixOS)
+                (("^\\s*QString resolved = QDir\\(dir\\)\\.canonicalPath\\(\\);")
+                 "QString resolved = QDir::cleanPath(dir);"))))
+          (add-before 'check 'check-setup
+            (lambda _
+              (with-output-to-file "autotests/BLACKLIST"
+                (lambda _
+                  (for-each
+                   (lambda (name) (display (string-append "[" name "]\n*\n")))
+                   (list "extraFileInFutureShouldRebuildSycocaOnce"
+                         "testNonReadableSycoca"))))
+              (setenv "XDG_RUNTIME_DIR" (getcwd))
+              (setenv "HOME" (getcwd))
+              ;; Make Qt render "offscreen", required for tests
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Plugin framework for desktop services")
     (description "KService provides a plugin framework for handling desktop
