@@ -593,7 +593,7 @@ which can be used to add custom colors to the popup menu.")
 (define-public kconfig
   (package
     (name "kconfig")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -602,23 +602,31 @@ which can be used to add custom colors to the popup menu.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0hghdh4p6cq9ckp4g5jdgd8w47pdsxxvzimrdfjrs71lmy8ydiy2"))))
-    (build-system cmake-build-system)
+                "0ybr5l0b9wvzkh3546s3dnv2di0vf3rcf0f6jzbyqlaigfprm04d"))))
+    (build-system qt-build-system)
     (native-inputs
-     (list dbus extra-cmake-modules inetutils qttools-5
-           xorg-server-for-tests))
-    (inputs
-     (list qtbase-5 qtdeclarative-5))
+     (list dbus extra-cmake-modules inetutils qttools))
+    (propagated-inputs (list qtdeclarative))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? ;; kconfigcore-kconfigtest fails inconsistently!!
-               (setenv "HOME" (getcwd))
-               (setenv "QT_QPA_PLATFORM" "offscreen")
-               (invoke "ctest" "-E" "(kconfigcore-kconfigtest|\
-kconfiggui-kstandardshortcutwatchertest)")))))))
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-output-to-file "autotests/BLACKLIST"
+                  (lambda _
+                    (for-each
+                     (lambda (name)
+                       (display (string-append "[" name "]\n*\n")))
+                     (list "testNotifyIllegalObjectPath"
+                           "testLocalDeletion"
+                           "testNotify"
+                           "testSignal"
+                           "testDataUpdated"))))
+                (setenv "HOME" (getcwd))
+                (setenv "QT_QPA_PLATFORM" "offscreen")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Kconfiguration settings framework for Qt")
     (description "KConfig provides an advanced configuration system.
