@@ -38864,6 +38864,7 @@ barplots, boxplots, histograms, ROC curves, and precision-recall curves.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports r-checkmate r-data-table r-mlr3misc r-r6))
+    (native-inputs (list r-knitr))
     (home-page "https://paradox.mlr-org.com/")
     (synopsis "Define and work with parameter spaces for complex algorithms")
     (description "With this package it is possible to define parameter spaces,
