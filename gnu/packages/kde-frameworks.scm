@@ -3316,7 +3316,7 @@ the passwords on KDE work spaces.")
 (define-public kxmlgui
   (package
     (name "kxmlgui")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3325,16 +3325,17 @@ the passwords on KDE work spaces.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0gvjf32ssc0r0bdpb1912ldsr5rjls8vrscwy5gm9g5gw504hmmr"))))
+                "0plrww25q417vldf59ybiwkg3clygm7wrjy4a28wry1jxfrgswr2"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kconfig kconfigwidgets))
     (native-inputs
-     (list extra-cmake-modules qttools-5 xorg-server-for-tests))
+     (list extra-cmake-modules qttools))
     (inputs
      (list attica
            kauth
            kcodecs
+           kcolorscheme
            kcoreaddons
            kglobalaccel
            kguiaddons
@@ -3344,17 +3345,24 @@ the passwords on KDE work spaces.")
            ktextwidgets
            kwidgetsaddons
            kwindowsystem
-           qtbase-5
+           qtbase
+           qtdeclarative
            sonnet))
     (arguments
      (list #:phases
-       #~(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (setenv "QT_QPA_PLATFORM" "offscreen") ;; These tests fail
-               (invoke "ctest" "-E" "(ktoolbar_unittest|kxmlgui_unittest)")))))))
+           #~(modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (with-output-to-file "autotests/BLACKLIST"
+                     (lambda _
+                       (for-each
+                        (lambda (name)
+                          (display (string-append "[" name "]\n*\n")))
+                        (list "testSpecificApplicationLanguageQLocale"
+                              "testToolButtonStyleNoXmlGui"
+                              "testToolButtonStyleXmlGui"))))
+                   (setenv "HOME" (getcwd))
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Framework for managing menu and toolbar actions")
     (description "KXMLGUI provides a framework for managing menu and toolbar
