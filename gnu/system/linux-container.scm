@@ -7,6 +7,7 @@
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2024 Leo Nikkilä <hello@lnikki.la>
+;;; Copyright © 2024 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -151,26 +152,28 @@ containerized OS.  EXTRA-FILE-SYSTEMS is a list of file systems to add to OS."
       (swap-devices '()) ; disable swap
       (services
        (append services-to-add
-               (filter-map (lambda (s)
-                             (cond ((memq (service-kind s) services-to-drop)
-                                    #f)
-                                   ((eq? nscd-service-type (service-kind s))
-                                    (service nscd-service-type
-                                             (nscd-configuration
-                                              (inherit (service-value s))
-                                              (caches %nscd-container-caches))))
-                                   ((eq? guix-service-type (service-kind s))
-                                    ;; Pass '--disable-chroot' so that
-                                    ;; guix-daemon can build thing even in
-                                    ;; Docker without '--privileged'.
-                                    (service guix-service-type
-                                             (guix-configuration
-                                              (inherit (service-value s))
-                                              (extra-options
-                                               (cons "--disable-chroot"
-                                                     (guix-configuration-extra-options
-                                                      (service-value s)))))))
-                                   (else s)))
+               (filter-map
+                 (lambda (s)
+                   (let ((kind (service-kind s))
+                         (value (service-value s)))
+                        (cond ((memq kind services-to-drop)
+                               #f)
+                              ((eq? nscd-service-type kind)
+                               (service nscd-service-type
+                                        (nscd-configuration
+                                         (inherit value)
+                                         (caches %nscd-container-caches))))
+                              ((and (eq? guix-service-type kind)
+                                    (eq? (guix-configuration-chroot? value)
+                                         'default))
+                               ;; If chroot? is 'default, it should become #f
+                               ;; so that guix-daemon can build things even in
+                               ;; Docker without '--privileged'.
+                               (service guix-service-type
+                                        (guix-configuration
+                                         (inherit value)
+                                         (chroot? #f))))
+                              (else s))))
                            (operating-system-user-services os))))
       (file-systems (append (map mapping->fs
                                  (if shared-network?

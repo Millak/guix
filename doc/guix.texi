@@ -19940,6 +19940,13 @@ Name of the group for build user accounts.
 @item @code{build-accounts} (default: @code{10})
 Number of build user accounts to create.
 
+@item @code{chroot?} (default: @code{'default})
+The value should be one of @code{#t} or @code{#f}, in which
+case chroot is enabled or disabled, respectively;
+or it should be @code{'default}, which amounts to @code{#f} in
+Docker containers (so that they can be run in non-privileged mode)
+or @code{#t} otherwise.
+
 @item @code{authorize-key?} (default: @code{#t})
 @cindex substitutes, authorization thereof
 Whether to authorize the substitute keys listed in

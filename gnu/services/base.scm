@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -224,6 +225,7 @@
             guix-configuration-build-group
             guix-configuration-build-accounts
             guix-configuration-build-machines
+            guix-configuration-chroot?
             guix-configuration-authorize-key?
             guix-configuration-authorized-keys
             guix-configuration-use-substitutes?
@@ -1924,6 +1926,8 @@ archive' public keys, with GUIX."
                     (default "guixbuild"))
   (build-accounts   guix-configuration-build-accounts ;integer
                     (default 10))
+  (chroot?          guix-configuration-chroot? ;Boolean | 'default
+                    (default 'default))
   (authorize-key?   guix-configuration-authorize-key? ;Boolean
                     (default #t))
   (authorized-keys  guix-configuration-authorized-keys ;list of gexps
@@ -2025,7 +2029,7 @@ proxy of 'guix-daemon'...~%")
           glibc-utf8-locales)))
 
   (match-record config <guix-configuration>
-    (guix build-group build-accounts authorize-key? authorized-keys
+    (guix build-group build-accounts chroot? authorize-key? authorized-keys
           use-substitutes? substitute-urls max-silent-time timeout
           log-compression discover? extra-options log-file
           http-proxy tmpdir chroot-directories environment
@@ -2095,6 +2099,9 @@ proxy of 'guix-daemon'...~%")
                           "--substitute-urls" #$(string-join substitute-urls)
                           #$@extra-options
 
+                          #$@(if chroot?
+                                 '()
+                                 '("--disable-chroot"))
                           ;; Add CHROOT-DIRECTORIES and all their dependencies
                           ;; (if these are store items) to the chroot.
                           (append-map
