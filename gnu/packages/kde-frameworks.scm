@@ -2241,7 +2241,7 @@ by which applications, and what documents have been linked to which activity.")
 (define-public kbookmarks
   (package
     (name "kbookmarks")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2250,12 +2250,12 @@ by which applications, and what documents have been linked to which activity.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "06lnsyjhh80mdcqjww40glinmrjydbmkhv27a267vf34r7kam9rc"))))
+                "18gydjkjl9iwz5579xqw940d5w8by8ki7qli392w5c46mfm9sy7h"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kwidgetsaddons))
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
      (list kauth
            kcodecs
@@ -2263,16 +2263,19 @@ by which applications, and what documents have been linked to which activity.")
            kconfigwidgets
            kcoreaddons
            kiconthemes
+           kcolorscheme
            kxmlgui
-           qtbase-5))
+           qtdeclarative
+           qtbase))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _
-             (setenv "HOME" (getcwd))
-             ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "HOME" (getcwd))
+              ;; make Qt render "offscreen", required for tests
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Bookmarks management library")
     (description "KBookmarks lets you access and manipulate bookmarks stored
