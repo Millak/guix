@@ -961,7 +961,7 @@ of applications that follow the Kirigami Human Interface Guidelines.")
 (define-public kitemmodels
   (package
     (name "kitemmodels")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -970,12 +970,12 @@ of applications that follow the Kirigami Human Interface Guidelines.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1bfmcrbcbrvp2rcaf32vzvarqwp41gn6s4xpf56hnxbwf9kgk1fl"))))
+                "1fmcas5n3ylgzjlmwhcnqpsm46p50zia4xzvnf5iz74icbxq9adk"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
-    (inputs
-     (list qtbase-5 qtdeclarative-5))
+    (inputs (list qtdeclarative))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Set of item models extending the Qt model-view framework")
     (description "KItemModels provides the following models:
