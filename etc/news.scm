@@ -32,6 +32,38 @@
 
 (channel-news
  (version 0)
+ (entry (commit "26638b8e8129aa755586d017677b4cf076bafda6")
+        (title
+         (en "The containerd service is separated from @code{docker-service-type}")
+         (ru "Сервис containerd отделен от @code{docker-service-type}"))
+        (body
+         (en "containerd service has been decoupled from the
+@code{docker-service-type}.  Moving forward, users are required to specify
+containerd settings manually for their configurations.  The
+@code{containerd-service-type} service need to be added to a system
+configuration, otherwise a message about not any service provides
+@code{containerd} will be displayed during @code{guix system reconfigure}.
+
+Run @command{info \"(guix) Miscellaneous Services\"} for more info.")
+         (ru "Сервис containerd был отделен от @code{docker-service-type}.
+Впредь пользователям потребуется указывать параметры containerd вручную для
+своих конфигураций.  Сервис @code{containerd-service-type} должен быть
+добавлен в конфигурацию системы, в противном случае будет отображено сообщение
+о том, что ни один сервис не предоставляет поддержку для @code{containerd} во
+время выполнения команды @code{guix system reconfigure}.
+
+Смотрите @command{info \"(guix.ru) Разнообразные службы\"} для получения более
+детальных сведений.")
+         (de "Es gibt einen eigenen containerd-Dienst losgelöst von
+@code{docker-service-type}.  In Zukunft müssen Nutzer dort manuelle
+Einstellungen für containerd vornehmen.  Der Dienst
+@code{containerd-service-type} muss zur Systemkonfiguration hinzugefügt
+werden, sonst wird durch @code{guix system reconfigure} eine Meldung
+gezeigt, dass kein Dienst @code{containerd} zur Verfügung stellt.
+
+Siehe @command{info \"(guix.de) Verschiedene Dienste\"} für genauere
+Informationen.")))
+
  (entry (commit "ee7e5e00bf2b9257e67d785b37efddb008c5da37")
         (title
          (en "Plasma updated to version 6.1.2")
