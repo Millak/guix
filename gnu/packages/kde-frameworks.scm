@@ -1278,7 +1278,7 @@ lower level classes for interaction with the X Windowing System.")
 (define-public modemmanager-qt
   (package
     (name "modemmanager-qt")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1287,7 +1287,7 @@ lower level classes for interaction with the X Windowing System.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "16jqhmcpsffl9a7c0bb4hwjy3bw5rakdsnc5n6y8djc6237jl9pi"))))
+                "1ky77v27nbil5vcig07yyk3jahv673qr7pn41dsb7f588sbh5www"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules dbus pkg-config))
@@ -1295,7 +1295,7 @@ lower level classes for interaction with the X Windowing System.")
      ;; Headers contain #include <ModemManager/ModemManager.h>
      (list modem-manager))
     (inputs
-     (list qtbase-5))
+     (list qtbase))
     (arguments
      (list #:phases #~(modify-phases %standard-phases
                         (replace 'check
