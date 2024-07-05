@@ -1517,7 +1517,7 @@ ASpell and HUNSPELL.")
 (define-public threadweaver
   (package
     (name "threadweaver")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1526,12 +1526,10 @@ ASpell and HUNSPELL.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1y07g58w6z3i11y3djg3aaxanhp9hzaciq61l4dn1gqwghn09xgh"))))
+                "04yrywhjhlyf1ha3w6rmaszyb28j91lc9j55frxrdmhqk67iy841"))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list qtbase-5))
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Helper for multithreaded programming")
     (description "ThreadWeaver is a helper for multithreaded programming.  It
