@@ -473,7 +473,7 @@ syntax highlighted HTML, ANSI-coloured text, etc.")
   (package
     (inherit go-github-com-alecthomas-chroma)
     (name "go-github-com-alecthomas-chroma-v2")
-    (version "2.12.0")
+    (version "2.14.0")
     (source
      (origin
        (method git-fetch)
@@ -482,7 +482,7 @@ syntax highlighted HTML, ANSI-coloured text, etc.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j9zz77ppi4r4ncnanzj84h7bsg0qdqrhgd5kkjiv09afm31jx83"))))
+        (base32 "1qgr4gywjks869sc85wb8nby612b8wvsa1dwpsbanjsljq7wq7mp"))))
     (arguments
      (list #:go go-1.19
            #:import-path "github.com/alecthomas/chroma/v2"))
