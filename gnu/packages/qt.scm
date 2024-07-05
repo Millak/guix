@@ -140,7 +140,7 @@
 (define-public qcoro-qt5
   (package
     (name "qcoro-qt5")
-    (version "0.9.0")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -149,11 +149,14 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pk5ybk6zv7m0wnkl6m3m8sjybmfk6wcn22mmgj942hrc3yrdzci"))))
+        (base32 "0inhjc9zknc64q6gajkljfpm2287arg1j0848ia3rhqcbc53k28b"))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "-DUSE_QT_VERSION=5")))
+           #~(list (string-append "-DUSE_QT_VERSION="
+                                  #$(version-major
+                                     (package-version
+                                      (this-package-input "qtbase")))))))
     (native-inputs (list dbus))         ;for tests
     (inputs (list qtbase-5 qtdeclarative-5 qtwebsockets-5))
     (home-page "https://qcoro.dvratil.cz/")
