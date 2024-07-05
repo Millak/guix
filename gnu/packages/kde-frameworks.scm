@@ -2581,7 +2581,7 @@ emoticons coming from different providers.")
 (define-public kglobalaccel
   (package
     (name "kglobalaccel")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2590,20 +2590,18 @@ emoticons coming from different providers.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "19mmav055fnzyl760fyhf0pdvaidd5i1h04l2hcnpin4p1jnpfap"))))
+                "1wcx0b3vi5xm5hhyylkdrcq8i46m49lw1j53m2i2f4nv7750d0n0"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules pkg-config qttools-5))
+     (list extra-cmake-modules pkg-config qttools))
     (inputs
      (list kconfig
            kcrash
            kcoreaddons
            kdbusaddons
            kwindowsystem
-           qtbase-5
-           qtx11extras
-           qtdeclarative-5
-           xcb-util-keysyms))
+           qtdeclarative))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Global desktop keyboard shortcuts")
     (description "KGlobalAccel allows you to have global accelerators that are
