@@ -1314,7 +1314,7 @@ messages.")
 (define-public networkmanager-qt
   (package
     (name "networkmanager-qt")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1323,16 +1323,16 @@ messages.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "10anjsnrzawrfjlznjvvl2sbxrajl2ddnq2kgl314b5dk7z3yk4n"))))
+                "1q1r3s136bpg2gnrwhakww9yzd42ccymvisrpqv3l0wgywxnma8c"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules dbus pkg-config))
+    (inputs (list qtbase))
     (propagated-inputs
      ;; Headers contain #include <NetworkManager.h> and
      ;;                 #include <libnm/NetworkManager.h>
-     (list network-manager))
-    (inputs
-     (list qtbase-5))
+     (list network-manager
+           qtdeclarative))
     (arguments
      (list #:phases #~(modify-phases %standard-phases
                         (replace 'check
