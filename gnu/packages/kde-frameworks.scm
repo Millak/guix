@@ -2043,7 +2043,7 @@ were traditional plugins.")
 (define-public kpty
   (package
     (name "kpty")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2052,21 +2052,20 @@ were traditional plugins.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0fm7bfp89kvg1a64q8piiyal71p6vjnqcm13zak6r9fbfwcm0gs9"))))
+                "19m01phaca84n736sdh1d002vbfbhf7lzb8cf1wqrhaak0wrp933"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list kcoreaddons ki18n
-           ;; TODO: utempter, for managing UTMP entries
-           qtbase-5))
+     ;; TODO: utempter, for managing UTMP entries
+     (list kcoreaddons ki18n qtbase))
     (arguments
      (list #:tests? #f ; FIXME: 1/1 tests fail.
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'patch-tests
                           (lambda _
                             (substitute* "autotests/kptyprocesstest.cpp"
-                              (("/bin/bash")
+                              (("/bin/sh")
                                (which "bash"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Interfacing with pseudo terminal devices")
