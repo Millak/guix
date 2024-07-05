@@ -7067,7 +7067,7 @@ evaluates expressions using the standard order of operations.")
 (define-public xaos
   (package
     (name "xaos")
-    (version "4.2.1")
+    (version "4.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7076,53 +7076,53 @@ evaluates expressions using the standard order of operations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0maw5am6rrkyjrprfg113zjq37mqj0iaznkg4h2927ff7wrprc94"))))
+                "0a5n3g1xcsd8k65q5skm4xsdllr3mmkahh4vi59db1l0jv81v06q"))))
     (build-system gnu-build-system)
     (native-inputs `(("gettext" ,gettext-minimal)
-                     ("qtbase" ,qtbase-5)
-                     ("qttools-5" ,qttools-5)))
+                     ("qtbase" ,qtbase)
+                     ("qttools" ,qttools)))
     (inputs (list libx11 zlib libpng gsl))
     ;; The upstream project file ("XaoS.pro") and the Makefile it generates are
     ;; not enough for this package to install properly.  These phases fix that.
     (arguments
-     `(#:tests? #f ;no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'make-qt-deterministic
-           (lambda _
-             ;; Make Qt deterministic.
-             (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")
-             #t))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "XaoS.pro"
-                 ;; The DESTDIR is originally set to install the xaos binary to
-                 ;; the "bin" folder inside the build directory.  Setting make
-                 ;; flags doesn't seem to change this.
-                 (("DESTDIR.*$")
-                  (string-append "DESTDIR=" out "/bin"))
-                 ;; Set the correct path to the lrelease binary.
-                 (("lrelease-qt5") "lrelease"))
-               (substitute* "src/include/config.h"
-                 (("/usr/share/XaoS")
-                  (string-append out "/share/XaoS")))
-               (invoke "qmake"))))
-         (add-after 'install 'install-data
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share")))
-               (mkdir-p share)
-               (for-each
-                (lambda (folder)
-                  (copy-recursively folder
-                                    (string-append share "/XaoS/" folder)))
-                '("catalogs" "examples" "tutorial"))
-               (install-file "xdg/xaos.png"
-                             (string-append share "/pixmaps"))
-               (install-file "xdg/xaos.desktop"
-                             (string-append share "/applications")))
-             #t)))))
+     (list #:tests? #f ;no "check" target
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'make-qt-deterministic
+                 (lambda _
+                   ;; Make Qt deterministic.
+                   (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")))
+               (replace 'configure
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (substitute* "XaoS.pro"
+                       ;; The DESTDIR is originally set to install the xaos binary to
+                       ;; the "bin" folder inside the build directory.  Setting make
+                       ;; flags doesn't seem to change this.
+                       (("DESTDIR.*$")
+                        (string-append "DESTDIR=" out "/bin"))
+                       (("/usr/local")
+                        out)
+                       ;; Set the correct path to the lrelease binary.
+                       (("lrelease-qt6") "lrelease"))
+                     (substitute* "src/include/config.h"
+                       (("/usr/share/XaoS")
+                        (string-append out "/share/XaoS")))
+                     (invoke "qmake"))))
+               (add-after 'install 'install-data
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (share (string-append out "/share")))
+                     (mkdir-p share)
+                     (for-each
+                      (lambda (folder)
+                        (copy-recursively folder
+                                          (string-append share "/XaoS/" folder)))
+                      '("catalogs" "examples" "tutorial"))
+                     (install-file "xdg/xaos.png"
+                                   (string-append share "/pixmaps"))
+                     (install-file "xdg/io.github.xaos_project.XaoS.desktop"
+                                   (string-append share "/applications"))))))))
     (synopsis "Real-time fractal zoomer")
     (description "GNU XaoS is a graphical program that generates fractal
 patterns and allows you to zoom in and out of them infinitely in a fluid,
