@@ -1681,7 +1681,7 @@ integrated it into your application's other widgets.")
 (define-public kcontacts
   (package
     (name "kcontacts")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1692,24 +1692,22 @@ integrated it into your application's other widgets.")
                (search-patches "kcontacts-incorrect-country-name.patch"))
               (sha256
                (base32
-                "0lyqvbs216p5zpssaf4pyccph7nbwkbvhpmhbi32y2rm23cmxlwf"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules xorg-server-for-tests)) ; for the tests
-    (inputs
-     (list qtbase-5))
+                "01xi60ykp7lhmwr7890byij893pfxn35qwbz4bmzmiydjwbmp6r2"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules
+                         ;; for test
+                         iso-codes))
+    (inputs (list qtdeclarative))
     (propagated-inputs
-     (list ;; As required by KF5ContactsConfig.cmake.
-      iso-codes kcodecs kconfig kcoreaddons qtdeclarative-5 ki18n))
+     (list ;; As required by KF6ContactsConfig.cmake.
+      kcodecs kconfig kcoreaddons ki18n))
     (arguments
      (list
+      #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'check-setup
-            (lambda _
-              (setenv "HOME" (getcwd))
-              (system "Xvfb +extension GLX :1 -screen 0 640x480x24 &")
-              (setenv "DISPLAY" ":1"))))))
+            (lambda _ (setenv "HOME" (getcwd)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "API for contacts/address book data following the vCard standard")
     (description "This library provides a vCard data model, vCard
