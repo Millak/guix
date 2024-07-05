@@ -380,7 +380,7 @@ Bluetooth stack.  It is used by the KDE Bluetooth stack, BlueDevil.")
 (define-public breeze-icons
   (package
     (name "breeze-icons")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/frameworks/"
@@ -388,7 +388,7 @@ Bluetooth stack.  It is used by the KDE Bluetooth stack, BlueDevil.")
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0z5cpv10jyjdwjfkm7nj6hyp4vj29apm476hvbpb4gan27jyb91y"))))
+                "09p6fjja5yqf1zvfjdik997clnhbyd1xx4gnqhyz3nypy9w669k7"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules
@@ -396,7 +396,7 @@ Bluetooth stack.  It is used by the KDE Bluetooth stack, BlueDevil.")
            `(,gtk+ "bin")
            python
            python-lxml))                ;for 24x24 icon generation
-    (inputs (list qtbase-5))
+    (inputs (list qtbase))
     (arguments
      (list #:phases #~(modify-phases %standard-phases
                         (add-after 'install 'update-cache
@@ -408,9 +408,9 @@ Bluetooth stack.  It is used by the KDE Bluetooth stack, BlueDevil.")
                                     (string-append #$output
                                                    "/share/icons/breeze-dark")))))))
     (home-page "https://community.kde.org/Frameworks")
-    (synopsis "Default KDE Plasma 5 icon theme")
+    (synopsis "Default KDE Plasma icon theme")
     (description "Breeze provides a freedesktop.org compatible icon theme.
-It is the default icon theme for the KDE Plasma 5 desktop.")
+It is the default icon theme for the KDE Plasma desktop.")
     ;; The license file mentions lgpl3+. The license files in the source
     ;; directories are lgpl3, while the top directory contains the lgpl2.1.
     ;; text.
