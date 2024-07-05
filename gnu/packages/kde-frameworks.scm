@@ -1011,7 +1011,7 @@ model to observers
 (define-public kitemviews
   (package
     (name "kitemviews")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1020,12 +1020,11 @@ model to observers
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "00vl2ck0pq0sqcxvhlr2pimgr27hd9v7y9dz6w4arb5smi5q1ixg"))))
+                "0byllbqxk2q4svxh1pim8jm6n2qimh5gp9h0m0s1hqqiaqapsrfq"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5))
-    (inputs
-     (list qtbase-5))
+     (list extra-cmake-modules qttools))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Set of item views extending the Qt model-view framework")
     (description "KItemViews includes a set of views, which can be used with
