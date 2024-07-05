@@ -30,6 +30,8 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix packages)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:export (%meson-build-system-modules
             meson-build-system
             make-cross-file))
@@ -50,7 +52,12 @@ for TRIPLET."
                      ((target-linux? triplet) "linux")
                      ((target-mingw? triplet) "windows")
                      ((target-avr? triplet) "none")
-                     (#t (error "meson: unknown operating system"))))
+                     (else
+                      (raise
+                       (condition
+                        (&unsupported-cross-compilation-target-error
+                         (build-system meson-build-system)
+                         (target triplet)))))))
     (cpu_family . ,(cond ((target-x86-32? triplet) "x86")
                          ((target-x86-64? triplet) "x86_64")
                          ((target-arm32? triplet) "arm")
@@ -62,7 +69,12 @@ for TRIPLET."
                               "ppc64"
                               "ppc"))
                          ((target-riscv64? triplet) "riscv64")
-                         (#t (error "meson: unknown architecture"))))
+                         (else
+                          (raise
+                           (condition
+                            (&unsupported-cross-compilation-target-error
+                             (build-system meson-build-system)
+                             (target triplet)))))))
     (cpu . ,(cond ((target-x86-32? triplet) ; i386, ..., i686
                    (substring triplet 0 4))
                   ((target-x86-64? triplet) "x86_64")
