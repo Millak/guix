@@ -5248,6 +5248,15 @@ handles the authentication process of an account and securely stores the
 credentials and service-specific settings.")
     (license license:lgpl2.1+)))
 
+(define-public libaccounts-qt6
+  (package
+    (inherit libaccounts-qt)
+    (name "libaccounts-qt6")
+    (native-inputs (modify-inputs (package-native-inputs libaccounts-qt)
+                     (replace "qtbase" qtbase)
+                     (replace "qttools" qttools)))
+    (synopsis "Qt6 bindings for libaccounts-glib")))
+
 (define-public libsignon-glib
   (package
     (name "libsignon-glib")
