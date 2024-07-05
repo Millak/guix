@@ -103,7 +103,7 @@
 (define-public extra-cmake-modules
   (package
     (name "extra-cmake-modules")
-    (version "6.0.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -112,7 +112,7 @@
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "030dyw4krnq8hcp0dsqb15zxb7x7r8c33lbdgmmia5xpkpqjp693"))))
+                "067qb9w8dj5z094yklc9b1jx5k29my5zf1gzkr05liswm7xzhs0k"))))
     (build-system cmake-build-system)
     (native-inputs
      ;; Add test dependency, except on armhf where building it is too
@@ -160,12 +160,12 @@
                  "set(ECM_MKSPECS_INSTALL_DIR lib/qt${QT_MAJOR_VERSION}/mkspecs/modules"))))
           ;; Work around for the failed test KDEFetchTranslations.
           ;; It complains that the cmake project name is not
-          ;; "frameworks/extra-cmake-modules".
+          ;; ".*/extra-cmake-modules".
           ;; TODO: Fix it upstream.
           (add-after 'unpack 'fix-test
             (lambda _
               (substitute* "tests/KDEFetchTranslations/CMakeLists.txt"
-                (("frameworks/extra-cmake-modules") "extra-cmake-modules"))))
+                (("\\.\\*/extra-cmake-modules") "extra-cmake-modules"))))
           ;; install and check phase are swapped to prevent install from failing
           ;; after testsuire has run
           (add-after 'install 'check-post-install
