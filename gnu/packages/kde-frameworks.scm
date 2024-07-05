@@ -495,7 +495,7 @@ GZip format, via a subclass of QIODevice.")
 (define-public kcalendarcore
   (package
     (name "kcalendarcore")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -504,24 +504,17 @@ GZip format, via a subclass of QIODevice.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0aimda01zqw4fz5ldvz4vh767bi10r00kvm62n89nxhsq46wlk7p"))))
+                "1yqk2s52h6z9jlh2lg96agk273msrah6rxw10wr2cpnb0jv7dpyd"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules perl tzdata-for-tests))
-    (inputs
-     (list libical qtbase-5))
+    (inputs (list libical qtbase))
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-test
-            (lambda _
-              ;; Reported as https://bugs.kde.org/show_bug.cgi?id=484306
-              (substitute* "autotests/CMakeLists.txt"
-                (("testdateserialization")
-                 ""))))
           (add-before 'check 'check-setup
-            (lambda* (#:key inputs #:allow-other-keys) ;;; XXX: failing test
+            (lambda* (#:key inputs #:allow-other-keys)
               (setenv "QT_QPA_PLATFORM" "offscreen")
               (setenv "TZ" "Europe/Prague")
               (setenv "TZDIR"
