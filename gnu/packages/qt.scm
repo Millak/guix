@@ -165,6 +165,16 @@
 of C++20 coroutines in connection with certain asynchronous Qt actions.")
     (license license:expat)))
 
+(define-public qcoro-qt6
+  (package
+    (inherit qcoro-qt5)
+    (name "qcoro-qt6")
+    (inputs (modify-inputs (package-inputs qcoro-qt5)
+              (replace "qtbase" qtbase)
+              (replace "qtdeclarative" qtdeclarative)
+              (replace "qtwebsockets" qtwebsockets)
+              (append libxkbcommon)))))
+
 (define-public qmdnsengine
   ;; Used as submodule in https://github.com/moonlight-stream/moonlight-qt
   (let ((commit "b7a5a9f225d5e14b39f9fd1f905c4f505cf2ee99")
