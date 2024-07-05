@@ -73,7 +73,9 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 optargs)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26))
+  #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35))
 
 ;; This is the hash for the empty file, and the reason it's relevant is not
 ;; the most obvious.
@@ -1309,6 +1311,13 @@ exec -a \"$0\" \"~a\" \"$@\""
 
 (define make-rust-sysroot/implementation
   (mlambda (target base-rust)
+    (unless (platform-rust-target (lookup-platform-by-target target))
+      (raise
+       (condition
+        (&package-unsupported-target-error
+         (package base-rust)
+         (target target)))))
+
     (package
       (inherit base-rust)
       (name (string-append "rust-sysroot-for-" target))
