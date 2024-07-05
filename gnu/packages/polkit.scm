@@ -171,30 +171,29 @@ for unprivileged applications.")
 (define-public polkit-qt
   (package
     (name "polkit-qt")
-    (version "1-0.114.0")
+    (version "0.200.0")
     (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "mirror://kde/stable/polkit-qt-1/"
-                   "polkit-qt-" version ".tar.xz"))
-             (sha256
-              (base32
-               "0zlhwgkqn8g0rkjc7c5n7fbhyyl4jcv0rg5zlbzrb0l88ljg5c1f"))))
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/polkit-qt-1/"
+                    name "-1-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1yvp2s72fgpn5kf1a2ldy0givlmz0z4i1fsh6ylpcard0qf62fsx"))))
     (build-system cmake-build-system)
     (inputs
-     (list polkit))
-    (propagated-inputs
-     (list qtbase-5))
+     (list qtbase-5 polkit))
     (native-inputs
      (list pkg-config))
     (arguments
-     `(#:configure-flags (list (string-append "-DCMAKE_INSTALL_RPATH="
-                                              (assoc-ref %outputs "out")
-                                              "/lib:"
-                                              (assoc-ref %outputs "out")
-                                              "/lib64"))
-       #:tests? #f)) ; there is a test subdirectory, but no test target
+     (list #:configure-flags
+           #~(list (string-append
+                    "-DQT_MAJOR_VERSION="
+                    #$(version-major
+                       (package-version (this-package-input "qtbase")))))
+           #:tests? #f)) ; there is a test subdirectory, but no test target
     (home-page "https://api.kde.org/kdesupport-api/polkit-qt-1-apidocs/")
+    (properties `((upstream-name . "polkit-qt-1")))
     (synopsis "Qt frontend to the polkit library")
     (description "Polkit-qt is a library that lets developers use the
 PolicyKit API through a Qt-styled API.  It is mainly a wrapper around
