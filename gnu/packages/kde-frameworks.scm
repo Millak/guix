@@ -1634,7 +1634,7 @@ with other frameworks.")
 (define-public kauth
   (package
     (name "kauth")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1643,12 +1643,13 @@ with other frameworks.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1rkf9mc9718wn8pzd3d3wcg3lsn0vkr9a2cqnz86rbg3cf2qdbir"))))
+                "1d9kmxbb3rx4nx1yq0crywirmnnp8qvhs2pdng7s49pqdy0kdkzb"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list dbus extra-cmake-modules qttools-5))
+     (list dbus extra-cmake-modules qttools))
+    (propagated-inputs (list kcoreaddons))
     (inputs
-     (list kcoreaddons polkit-qt qtbase-5))
+     (list kwindowsystem polkit-qt6 qtbase))
     (arguments
      (list
       #:phases
@@ -1657,7 +1658,9 @@ with other frameworks.")
             (lambda _
               ;; Make packages using kauth put their policy files and helpers
               ;; into their own prefix.
-              (substitute* "KF5AuthConfig.cmake.in"
+              (substitute* #$(string-append "KF" (version-major
+                                                  (package-version this-package))
+                                            "AuthConfig.cmake.in")
                 (("@KAUTH_POLICY_FILES_INSTALL_DIR@")
                  "${KDE_INSTALL_DATADIR}/polkit-1/actions")
                 (("@KAUTH_HELPER_INSTALL_DIR@")
