@@ -5387,6 +5387,31 @@ a secure way.")))
 authentication on behalf of its clients.")
     (license license:lgpl2.1+)))
 
+;; fork for support qt6
+(define-public signond-qt6
+  (let ((commit "c8ad98249af541514ff7a81634d3295e712f1a39")
+        (revision "0"))
+    (package
+      (inherit signond)
+      (name "signond-qt6")
+      (version (git-version "8.61" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/nicolasfella/signond")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "13cgdf6hhi2z3c8sax79dwi7450n8h228kpyl2w5lx0xglb2savq"))))
+      (native-inputs (modify-inputs (package-native-inputs signond)
+                       (delete "qtbase")
+                       (replace "qttools" qttools)))
+      (arguments
+       (substitute-keyword-arguments (package-arguments signond)
+         ((#:qtbase _ #f)
+          qtbase))))))
+
 (define-public signon-plugin-oauth2
   (package
     (name "signon-plugin-oauth2")
