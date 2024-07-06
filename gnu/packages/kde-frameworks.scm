@@ -1181,51 +1181,29 @@ protocols used in KDE Plasma.")
 (define-public kwayland
   (package
     (name "kwayland")
-    (version "5.114.0")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/"
-                    name "-" version ".tar.xz"))
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/kwayland" "-"
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "1lzmlbv5vl656cigjj07hbc0gj6g1i2xqanvnhxj360109kzilf1"))))
+                "15dmbcqhajqc100k95y6nh0w2br8xwql4mlq8grh4r6cdgn378n6"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules pkg-config))
+     (list extra-cmake-modules pkg-config
+           ;; for wayland-scanner
+           wayland))
     (inputs
      (list libxkbcommon
            plasma-wayland-protocols
-           qtbase-5
-           qtwayland-5
+           qtwayland
            wayland
            wayland-protocols))
     (arguments
-     (list
-      ;; Tests spawn Wayland sessions that cannot run in parallel.
-      #:parallel-tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-XDG_RUNTIME_DIR
-            (lambda _
-              (setenv "XDG_RUNTIME_DIR" (getcwd))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "ctest" "-E"
-                        (string-append
-                         "("
-                         (string-join
-                          ;; XXX: maybe is upstream bug
-                          '("kwayland-testWaylandRegistry"
-                            "kwayland-testPlasmaShell"
-                            "kwayland-testPlasmaWindowModel"
-                            ;; The 'kwayland-testXdgForeign' may fail on
-                            ;; powerpc64le with a 'Subprocess aborted' error.
-                            "kwayland-testXdgForeign") "|")
-                         ")"))))))))
-    (home-page "https://community.kde.org/Frameworks")
+     (list #:qtbase qtbase))
+    (home-page "https://invent.kde.org/plasma/kwayland")
     (synopsis "Qt-style API to interact with the wayland client and server")
     (description "As the names suggest they implement a Client respectively a
 Server API for the Wayland protocol.  The API is Qt-styled removing the needs to
