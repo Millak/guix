@@ -1604,29 +1604,28 @@ kwebengineviewer.")
 (define-public kmime
   (package
     (name "kmime")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmime-" version ".tar.xz"))
        (sha256
-        (base32 "1i38g0s98d24882kxyjay965nz3d3fjhb3mv1p4sllm2lnffrq2d"))))
+        (base32 "19dnp955vii3vi1jaxgbsyabbb35iaqvhz9nnz392r3wz7f3hbyq"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules))
+     (list extra-cmake-modules tzdata-for-tests))
     (inputs
-     (list kcodecs ki18n qtbase-5))
+     (list kcodecs ki18n))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-test-case
-           (lambda _
-             ;; This is curious: autotests/CMakeLists.txt sets LC_TIME=C, but
-             ;; the Qt locale returns different. See kmime commit 3a9651d26a.
-             (substitute* "autotests/dateformattertest.cpp"
-               (("(Today|Yesterday) 12:34:56" line day)
-                (string-append day " 12:34 PM"))))))))
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-test-case
+                 (lambda* (#:key inputs tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "TZDIR" (search-input-directory
+                                      inputs "share/zoneinfo"))))))))
     (home-page "https://api.kde.org/stable/kdepimlibs-apidocs/")
     (synopsis "Library for handling MIME data")
     (description "This library provides an API for handling MIME
