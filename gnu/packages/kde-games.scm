@@ -713,15 +713,16 @@ This package is part of the KDE games module.")
 (define-public kdiamond
   (package
     (name "kdiamond")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/kdiamond-" version ".tar.xz"))
-      (sha256
-       (base32 "038lpp387m45zcy49rgmisiz5ajrvxwxnf424wllrjkihxy1siyn"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kdiamond-" version ".tar.xz"))
+       (sha256
+        (base32 "1ql8psh6lyahrdiqj0qji1dsyz8jl260msp76k804jk0477gjw8h"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -737,8 +738,7 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtbase-5
-           qtdeclarative-5))
+           qtdeclarative))
     (home-page "https://apps.kde.org/kdiamond/")
     (synopsis "Three-in-a-row game")
     (description "KDiamond is a three-in-a-row game like Bejeweled.  It
