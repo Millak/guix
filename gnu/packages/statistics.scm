@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2417,13 +2418,13 @@ conformal prediction methods intervals.")
 (define-public python-emcee
   (package
     (name "python-emcee")
-    (version "3.1.4")
+    (version "3.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "emcee" version))
        (sha256
-        (base32 "1vbz67cwzig28dlndkm6g246p1vcvj6yy2w65z8cdyffigf1j3lf"))))
+        (base32 "0zb3ihja3hyj6zjbhkpxhyyppnv58q2jjg0yd1lwmydqdaplvbqi"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy))
     (native-inputs (list python-coverage
