@@ -1560,15 +1560,16 @@ This package is part of the KDE games module.")
 (define-public kjumpingcube
   (package
     (name "kjumpingcube")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/kjumpingcube-" version ".tar.xz"))
-      (sha256
-       (base32 "09bh57vzjnn56dnhpp4szx72wyskc5g714vlyp6c27vr27xry8fi"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kjumpingcube-" version ".tar.xz"))
+       (sha256
+        (base32 "1ihll2x7inc76752xwj3dfs2653i9c5prfllh2p8vfc1ss0raa34"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1582,9 +1583,8 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtbase-5
-           qtdeclarative-5
-           qtsvg-5))
+           qtdeclarative
+           qtsvg))
     (home-page "https://apps.kde.org/kjumpingcube/")
     (synopsis "Simple tactical game for number-crunchers")
     (description "KJumpingcube is a simple tactical game for one or two
