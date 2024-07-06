@@ -40,6 +40,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages cups)
   #:use-module (gnu packages display-managers)
   #:use-module (gnu packages file-systems)
   #:use-module (gnu packages firmware)
@@ -2849,6 +2850,43 @@ hardware management, and a high degree of customizability.")
     (description
      "This package provides wallpapers for the KDE desktop.")
     (license license:lgpl3+)))
+
+(define-public print-manager
+  (package
+    (name "print-manager")
+    (version "6.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/plasma/" version
+                           "/print-manager-" version ".tar.xz"))
+       (sha256
+        (base32 "19gmqd48wjg9q8h57xdsa1d4nhvbp3h169v519pgw06lrrhia5hl"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list cups
+           kcmutils
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kdbusaddons
+           kiconthemes
+           kirigami
+           ki18n
+           kio
+           knotifications
+           kwidgetsaddons
+           kwindowsystem
+           libplasma
+           qtdeclarative))
+    (arguments (list #:qtbase qtbase))
+    (home-page "https://invent.kde.org/plasma/print-manager")
+    (synopsis "Manage print jobs and printers")
+    (description
+     "This package provides printing management for KDE.")
+    (license license:gpl2+)))
 
 (define-public polkit-kde-agent
   (package
