@@ -1000,14 +1000,14 @@ This package is part of the KDE games module.")
 (define-public palapeli
   (package
     (name "palapeli")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/palapeli-" version ".tar.xz"))
        (sha256
-        (base32 "19xh03rhb48m4bbdmpga4aqij6agqg047ghl92p98z1phg5lxzrv"))))
+        (base32 "1436rbfrppjb73k8p9amzwa6hhjns3hjli279r8fqscjimil0vv4"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -1018,8 +1018,7 @@ This package is part of the KDE games module.")
            kconfigwidgets
            kcoreaddons
            kcrash
-           kcrash
-           ki18n
+           kdbusaddons
            ki18n
            kio
            kitemviews
@@ -1028,10 +1027,10 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtbase-5
-           qtdeclarative-5
-           qtsvg-5
+           qtdeclarative
+           qtsvg
            shared-mime-info))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/palapeli/")
     (synopsis "Jigsaw puzzle game")
     (description "Palapeli is a jigsaw puzzle game.  Unlike other games in
