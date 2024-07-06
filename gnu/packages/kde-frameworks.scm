@@ -3036,7 +3036,7 @@ to easily extend the contacts collection.")
 (define-public krunner
   (package
     (name "krunner")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3045,53 +3045,28 @@ to easily extend the contacts collection.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1rjs9b87bi4f6pdm9fwnha2sj2mrq260l80iz2jq1zah83p546sw"))))
+                "09g464v1v7c14m39ic3qpny10l4dnazr7fax76irs3dwr54zx9kc"))))
     (build-system qt-build-system)
     (propagated-inputs
-     (list plasma-framework))
+     (list kcoreaddons))
     (native-inputs
      (list extra-cmake-modules
            ;; For tests.
            dbus))
     (inputs
-     (list kactivities
-           kauth
-           kbookmarks
-           kcodecs
-           kcompletion
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kio
-           kitemviews
+     (list kconfig
+           kitemmodels
            ki18n
-           kjobwidgets
-           kpackage
-           kservice
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
-           qtdeclarative-5
-           solid
-           threadweaver))
+           qtdeclarative))
     (arguments
      (list
+      #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-paths-for-test
-            ;; This test tries to access paths like /home, /usr/bin and /bin/ls
-            ;; which don't exist in the build-container. Change to existing paths.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "autotests/runnercontexttest.cpp"
-                (("/home\"") "/tmp\"") ;; single path-part
-                (("//usr/bin\"") (string-append (getcwd) "\"")) ;; multiple path-parts
-                (("/bin/ls")
-                 (search-input-file inputs "/bin/ls")))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (setenv "HOME" (getcwd))
-                (setenv "QT_QPA_PLATFORM" "offscreen")
                 (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Framework for Plasma runners")
