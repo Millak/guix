@@ -3167,6 +3167,29 @@ types or handled by application specific code.")
     ;; triple licensed
     (license (list license:gpl2+ license:gpl3+ license:lgpl2.1+))))
 
+(define-public kstatusnotifieritem
+  (package
+    (name "kstatusnotifieritem")
+    (version "6.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1n4c761xgr9xbcwkw5q3l3v38wmanyvpf284y141ms6vs0rjw7yf"))))
+    (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
+    (native-inputs (list extra-cmake-modules qttools))
+    (inputs (list kwindowsystem libxkbcommon))
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "Implementation of Status Notifier Items")
+    (description "This package provides a Implementation of Status Notifier
+Items.")
+    (license (list license:cc0 license:lgpl2.0+))))
+
 (define-public ktexteditor
   (package
     (name "ktexteditor")
