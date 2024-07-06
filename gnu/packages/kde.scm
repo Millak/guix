@@ -1287,7 +1287,7 @@ different notification systems.")
 (define-public kdeconnect
   (package
     (name "kdeconnect")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
@@ -1296,13 +1296,18 @@ different notification systems.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1gcmqqj752h3lmcpvc7cm6k6bpb158ha7i5ysp0kqvf8cmpi5ydz"))))
+         "0jh5rx6amg7mxgy0n0hv23wj3qqmb37212996ssm41bvxnmjgn03"))))
     (build-system qt-build-system)
     (arguments
-     (list #:configure-flags #~'("-DBUILD_TESTING=ON"
-                                 "-DKDE_INSTALL_LIBEXECDIR=libexec"
-                                 ;; So kdeconnect.so isn't installed to lib/plugins
-                                 "-DPLUGIN_INSTALL_DIR=lib/qt5/plugins")
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DBUILD_TESTING=ON"
+                   (string-append "-DQtWaylandScanner_EXECUTABLE="
+                                  #$(this-package-native-input "qtwayland")
+                                  "/lib/qt6/libexec/qtwaylandscanner")
+                   "-DKDE_INSTALL_LIBEXECDIR=libexec"
+                   ;; So kdeconnect.so isn't installed to lib/plugins
+                   "-DPLUGIN_INSTALL_DIR=lib/qt6/plugins")
            #:tests? #f)) ; tests fail hard in our build environment
     (native-inputs
      (list extra-cmake-modules
@@ -1310,9 +1315,11 @@ different notification systems.")
            libxtst
            pkg-config
            python-wrapper
-           wayland-protocols))
+           wayland-protocols
+           qtwayland))
     (inputs
-     (list kcmutils
+     (list dbus
+           kcmutils
            kconfigwidgets
            kdbusaddons
            kguiaddons
@@ -1320,24 +1327,22 @@ different notification systems.")
            kiconthemes
            kio
            kirigami
+           kirigami-addons
            knotifications
            kpackage
            kpeople
-           kpeoplevcard
+           kstatusnotifieritem
            kwayland
            libfakekey
+           openssl
            plasma-wayland-protocols
            pulseaudio-qt
-           qca
+           qca-qt6
            qqc2-desktop-style
-           qtbase-5
-           qtdeclarative-5
-           qtgraphicaleffects
-           qtmultimedia-5
-           qtquickcontrols-5
-           qtquickcontrols2-5
-           qtx11extras
-           qtwayland-5
+           qtbase
+           qtdeclarative
+           qtmultimedia
+           qtwayland
            wayland
            modemmanager-qt
            libxkbcommon))
