@@ -1459,7 +1459,7 @@ C++ with a C API.  It contains a LU and LLt solver, and a few other things.")
 (define-public primesieve
   (package
     (name "primesieve")
-    (version "11.1")
+    (version "12.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1468,7 +1468,7 @@ C++ with a C API.  It contains a LU and LLt solver, and a few other things.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ja3kxvpya7bwrib40hnyahsiiiavf65ppk7i7afvc093b7gg9bg"))))
+                "1lxvs1jgch0zgpa5axx6zlvgab4rmm3lqpbah75072xpj8ndhhld"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DBUILD_STATIC_LIBS=off"
