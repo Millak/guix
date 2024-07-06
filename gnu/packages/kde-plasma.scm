@@ -39,7 +39,9 @@
   #:use-module (gnu packages authentication)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages display-managers)
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages firmware)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -2446,27 +2448,59 @@ Desktop.")
 (define-public plasma-vault
   (package
     (name "plasma-vault")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1p5m5rlamb50cbd1qlx81m003sv8vdijkpy5airmy1pf6xmvl6hq"))))
+                "1y8f2n6g018gy1dxxhgsq6d341asxhjxingd9vizf89y85h6vacn"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list kio
                   ki18n
                   kconfigwidgets
                   kconfig
-                  kactivities
+                  plasma-activities
                   kdbusaddons
                   kiconthemes
-                  networkmanager-qt
+                  kitemmodels
                   libksysguard
-                  plasma-framework
-                  qtdeclarative-5))
+                  networkmanager-qt
+                  libplasma
+                  qtdeclarative
+
+                  cryfs
+                  fuse-2
+                  gocryptfs
+                  encfs))
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((fusermount (search-input-file inputs "/bin/fusermount"))
+                    (gocryptfs (search-input-file inputs "/bin/gocryptfs"))
+                    (cryfs (search-input-file inputs "/bin/cryfs"))
+                    (encfs (search-input-file inputs "/bin/encfs"))
+                    (encfsctl (search-input-file inputs "/bin/encfsctl")))
+                (substitute* "kded/engine/fusebackend_p.cpp"
+                  (("\"fusermount\"")
+                   (string-append "\"" fusermount "\"")))
+                (substitute* "kded/engine/backends/gocryptfs/gocryptfsbackend.cpp"
+                  (("\"gocryptfs\"")
+                   (string-append "\"" gocryptfs "\"")))
+                (substitute* "kded/engine/backends/cryfs/cryfsbackend.cpp"
+                  (("\"cryfs\"")
+                   (string-append "\"" cryfs "\"")))
+                (substitute* "kded/engine/backends/encfs/encfsbackend.cpp"
+                  (("\"encfs\"")
+                   (string-append "\"" encfs "\""))
+                  (("\"encfsctl\"")
+                   (string-append "\"" encfsctl "\"")))))))))
     (home-page "https://invent.kde.org/plasma/plasma-vault")
     (synopsis "Plasma applet and services for creating encrypted vaults")
     (description "Provides Plasma applet and services for creating encrypted
