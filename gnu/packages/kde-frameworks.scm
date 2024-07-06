@@ -3396,6 +3396,69 @@ setUrl, setUserAgent and call.")
     ;; dual licensed
     (license (list license:bsd-2 license:lgpl2.1+))))
 
+(define-public libplasma
+  (package
+    (name "libplasma")
+    (version "6.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0ji1cd8nc744lqg6m8qnbn923x57ljy5fcaxbq0fzh7qwij42qc0"))))
+    (build-system qt-build-system)
+    (propagated-inputs
+     (list kpackage kwindowsystem))
+    (native-inputs
+     (list extra-cmake-modules kdoctools pkg-config
+           gettext-minimal
+           ;; for wayland-scanner
+           wayland))
+    (inputs (list
+             karchive
+             kconfigwidgets
+             kglobalaccel
+             kguiaddons
+             kiconthemes
+             kirigami
+             kio
+             ki18n
+             kcmutils
+             ksvg
+             kglobalaccel
+             knotifications
+             plasma-wayland-protocols
+             plasma-activities
+             qtdeclarative
+             qtsvg
+             qtwayland
+             wayland
+             libxkbcommon))
+    (arguments
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" (getcwd))
+                     (invoke "ctest" "-E"
+                             (string-append "(plasma-dialogstatetest"
+                                            "|plasma-iconitemtest"
+                                            "|plasma-dialogqmltest"
+                                            "|plasma-themetest"
+                                            "|iconitemhidpitest"
+                                            "|bug485688test"
+                                            "|dialognativetest)"))))))))
+    (home-page "https://invent.kde.org/plasma/libplasma")
+    (synopsis "Libraries, components and tools of Plasma workspaces")
+    (description "The plasma framework provides QML components, libplasma and
+script engines.")
+    ;; dual licensed
+    (license (list license:gpl2+ license:lgpl2.1+))))
+
 (define-public plasma-framework
   (package
     (name "plasma-framework")
