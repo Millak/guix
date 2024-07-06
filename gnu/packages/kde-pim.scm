@@ -238,14 +238,14 @@ to list and filter contacts.")
 (define-public akonadi-mime
   (package
     (name "akonadi-mime")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akonadi-mime-" version ".tar.xz"))
        (sha256
-        (base32 "1r33v2q49s7l90id4jqg0lar9p1j5k0cbnzsaqdksavzpzkcklh5"))))
+        (base32 "1y6h53jfy77g7198cp5rfv0zabvfjg6fsw95wp4khcjvmm0qhzqm"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules libxslt ;; xslt for generating interface descriptions
@@ -262,21 +262,22 @@ to list and filter contacts.")
            kitemmodels
            kmime
            kwidgetsaddons
-           kxmlgui
-           qtbase-5))
+           kxmlgui))
     (home-page "https://api.kde.org/kdepim/akonadi/html/index.html")
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'copy-desktop-file-early
-           (lambda _
-             (let ((plugins-dir "/tmp/.local/share/akonadi/plugins/serializer"))
-               (mkdir-p plugins-dir)
-               (copy-file "serializers/akonadi_serializer_mail.desktop"
-                          (string-append plugins-dir "/akonadi_serializer_mail.desktop")))))
-         (add-before 'check 'check-setup
-           (lambda _
-             (setenv "HOME" "/tmp"))))))
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-desktop-file-early
+            (lambda _
+              (let ((plugins-dir "/tmp/.local/share/akonadi/plugins/serializer"))
+                (mkdir-p plugins-dir)
+                (copy-file "serializers/akonadi_serializer_mail.desktop"
+                           (string-append plugins-dir "/akonadi_serializer_mail.desktop")))))
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (synopsis "Akonadi MIME handling library")
     (description "Akonadi Mime is a library that effectively bridges the
 type-agnostic API of the Akonadi client libraries and the domain-specific
