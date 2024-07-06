@@ -1566,6 +1566,31 @@ on top of Baloo.")
     (home-page "https://invent.kde.org/plasma/milou")
     (license (list license:gpl2+))))
 
+(define-public qqc2-breeze-style
+  (package
+    (name "qqc2-breeze-style")
+    (version "6.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1n8yqiyvn5cyvxl7mp33x2jbkxzzqfzd1wvgdzybqx1hw3m3lh1j"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs (list qtdeclarative
+                  kiconthemes kguiaddons kconfig kirigami kcoreaddons
+                  kcolorscheme kquickcharts))
+    (home-page "https://invent.kde.org/plasma/qqc2-breeze-style")
+    (synopsis "Breeze inspired Qt Quick Controls Style")
+    (description "This package provides Breeze inspired Qt Quick Controls Style.")
+    (license (list license:lgpl2.0+ license:gpl2+))))
+
 (define-public oxygen-sounds
   (package
     (name "oxygen-sounds")
