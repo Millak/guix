@@ -790,15 +790,16 @@ This package is part of the KDE games module.")
 (define-public kblackbox
   (package
     (name "kblackbox")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/kblackbox-" version ".tar.xz"))
-      (sha256
-       (base32 "0h7byd7g52yvmz3gxrzp2frs4iifm0r6lq8fjz2nxbl1rkw9ljbp"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kblackbox-" version ".tar.xz"))
+       (sha256
+        (base32 "0andcfwrq8nhb75diif3pm2a1y6lrmkdncaszjhyan1v9mycdi8r"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -812,9 +813,8 @@ This package is part of the KDE games module.")
            ktextwidgets
            kxmlgui
            libkdegames
-           qtbase-5
-           qtdeclarative-5
-           qtsvg-5))
+           qtdeclarative
+           qtsvg))
     (home-page "https://apps.kde.org/kblackbox/")
     (synopsis "Find atoms in a grid by shooting electrons")
     (description "KBlackbox is a game of hide and seek played on a grid of
