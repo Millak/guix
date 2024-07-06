@@ -2513,32 +2513,35 @@ vaults.")
 (define-public plasma-systemmonitor
   (package
     (name "plasma-systemmonitor")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1qr8krc7d1hzxv0gx0ii0rxk9bm62rgh157mr8x785qqbd11nq8l"))))
+                "1v329hfr0jjqbkbidkbb52i235c4g4ix2x3mngyfvjf3ykvxd1xs"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list ki18n
                   kconfig
+                  kcrash
                   kdeclarative
                   kservice
                   kiconthemes
                   kglobalaccel
                   kio
                   kdbusaddons
+                  kpackage
                   kirigami
+                  kirigami-addons
                   knewstuff
                   ksystemstats
                   kitemmodels
                   libksysguard
                   qqc2-desktop-style
-                  qtdeclarative-5
-                  qtquickcontrols2-5))
+                  qtdeclarative))
+    (arguments (list #:qtbase qtbase))
     (synopsis "System sensors, process information and other system resources
 monitor")
     (description "This package provides an interface for monitoring system
