@@ -41,6 +41,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gstreamer)
+  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
@@ -144,18 +145,18 @@ This package is part of the KDE multimedia module.")
 (define-public elisa
   (package
     (name "elisa")
-    (version "23.08.5")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/elisa-" version ".tar.xz"))
        (sha256
-        (base32 "1hml0bmp1cfqc9x9q2a1lz2f6ab7ygblf6xz0qlwjxripvqw8b47"))))
+        (base32 "03hvkn4l4k0jbww5q72spk9nbgfxi8k7zk5z2mlc63c0j7q7w5y0"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config dbus kdoctools
-           xorg-server-for-tests))
+           xorg-server-for-tests python-minimal))
     (inputs
      (list kconfig
            baloo
@@ -170,25 +171,22 @@ This package is part of the KDE multimedia module.")
            kiconthemes
            kio
            kirigami
-           kmediaplayer
+           kirigami-addons
+           qqc2-desktop-style
            kparts
            kpackage
            kwidgetsaddons
            kxmlgui
            breeze-icons ; default icon set
            phonon
-           qtbase-5
-           qtdeclarative-5
-           qtgraphicaleffects ; not listed as dependency
-           qtmultimedia-5
-           qtquickcontrols-5
-           qtquickcontrols2-5
-           qtsvg-5
-           qtx11extras
+           qtsvg
+           qtdeclarative
+           qtmultimedia
            ;; TODO: upnpqt https://gitlab.com/homeautomationqt/upnp-player-qt
            vlc))
     (arguments
-     `(#:tests? #f ;; many tests fail
+     `(#:qtbase ,qtbase
+       #:tests? #f ;; many tests fail
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'start-xorg-server
