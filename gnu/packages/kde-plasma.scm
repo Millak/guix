@@ -43,6 +43,7 @@
   #:use-module (gnu packages firmware)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gdb)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gl)
@@ -69,6 +70,7 @@
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages package-management) ; flatpak
   #:use-module (gnu packages unicode)
   #:use-module (gnu packages video)
@@ -281,7 +283,7 @@ games, and tools.")
 (define-public drkonqi
   (package
     (name "drkonqi")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -289,21 +291,43 @@ games, and tools.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1li1j85yvg2nj392rl1jmdqx3mzmrdj0lf72j37xd8r2bi0ic9z8"))))
+                "19965cim06lfmkaansmrx814axfz7fxsmgfl52x2q3ar5vrmn05a"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "ctest" "-E" "connectiontest")))))))
-    (native-inputs (list extra-cmake-modules))
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DCMAKE_DISABLE_FIND_PACKAGE_Systemd=TRUE"
+                   "-DWITH_GDB12=TRUE"
+                   "-DWITH_PYTHON_VENDORING=FALSE")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-gdb-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((gdb (search-input-file inputs "/bin/gdb")))
+                     (substitute* "src/data/debuggers/internal/gdbrc"
+                       (("TryExec=gdb")
+                        (string-append "TryExec=" gdb "\n"
+                                       "CodeName=gdb"))
+                       (("(Exec|ExecWithSymbolResolution)=gdb" _ letters)
+                        (string-append letters "=" gdb))))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E" "(connectiontest|preambletest)"))))
+               (add-after 'install 'wrap-program
+                 (lambda _
+                   (wrap-program (string-append #$output
+                                                "/libexec/drkonqi")
+                     `("GUIX_PYTHONPATH" ":" prefix
+                       (,(getenv "GUIX_PYTHONPATH")))))))))
+    (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list ki18n
                   kcoreaddons
                   kconfig
                   kservice
                   kdeclarative
                   kjobwidgets
+                  kstatusnotifieritem
                   kio
                   kcrash
                   kcompletion
@@ -312,9 +336,20 @@ games, and tools.")
                   knotifications
                   kidletime
                   kwindowsystem
+                  qtdeclarative
+                  kuserfeedback
+
+                  python-minimal
+                  python-pygdbmi
+                  python-chai
+                  python-psutil
+                  python-sentry-sdk
+                  gdb
+                  ;; qml module runtime dependency
                   ksyntaxhighlighting
-                  qtdeclarative-5
-                  kuserfeedback))
+                  kcmutils
+                  kitemmodels
+                  kirigami))
     (synopsis "Crash handler for KDE software")
     (description "This package provides an automatic handler for crashed apps.")
     (home-page "https://invent.kde.org/plasma/drkonqi")
