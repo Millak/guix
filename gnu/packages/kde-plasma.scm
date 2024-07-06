@@ -403,19 +403,20 @@ applications.")
 (define-public kdecoration
   (package
     (name "kdecoration")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/kdecoration-" version ".tar.xz"))
               (sha256
                (base32
-                "153j3w00zwj6gx9ndq46vkfwx3ayig80j0jsqbkajk8zsncs89pg"))))
+                "1gmyxp3gk47rci4xdlgsdbp9wa2zx2790pqv1z4y7zmwg395vs41"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list kcoreaddons ki18n qtbase-5))
+     (list kcoreaddons ki18n))
     (home-page "https://invent.kde.org/plasma/kdecoration")
     (synopsis "Plugin based library to create window decorations")
     (description "KDecoration is a library to create window decorations.
