@@ -490,30 +490,30 @@ a full-featured client for BitTorrent.")
 (define-public libktorrent
   (package
     (name "libktorrent")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1m6gyk1bids7qr9wfh6gcfq73ac9j5b2bljvfvfsw9f1ky1cmwab"))))
+        (base32 "1gr31v09jz5kdvhrpln9abncnnih7db35j3af73m3vlg6izw9z98"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list boost
            gmp
-           karchive
            kcrash
            ki18n
            kio
            libgcrypt
-           qca
-           qtbase-5
+           qca-qt6
            solid))
+    (propagated-inputs (list karchive qt5compat))
     (home-page "https://invent.kde.org/network/libktorrent")
-    (synopsis "BitTorrent protocol library for C++ / Qt 5 / KDE Frameworks")
+    (synopsis "BitTorrent protocol library for C++ / Qt 6 / KDE Frameworks")
     (description "The KTorrent library supports connectivity to HTTP and UDP
 trackers, mainline DHT and the new generation Micro Transport
 Protocol (uTP).  In addition, it provides many powerful BitTorrent network
