@@ -336,19 +336,20 @@ your computer.")
 (define-public kate
   (package
     (name "kate")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kate-" version ".tar.xz"))
        (sha256
-        (base32 "0yyhh21pvzsaz7swmghdchzsfk089axhqkjwjv1m8j4q3q3rhv86"))))
+        (base32 "085hbl6xzzihnhy8pjwdjdsrww6l1h70m4sf2s1b5c1xsnvhhkvp"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
-     (list kactivities
+     (list breeze-icons ;; default icon set
+           plasma-activities
            kconfig
            kcrash
            kdbusaddons
@@ -362,30 +363,29 @@ your computer.")
            kjobwidgets
            kparts
            ktexteditor
+           ktextwidgets
            ksyntaxhighlighting
            kwallet
-           plasma-framework
            kwindowsystem
            kxmlgui
-           breeze-icons ;; default icon set
-           qtbase-5
-           qtscript
-           qtx11extras))
+           libplasma
+           libxkbcommon))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; This test requires a 'bin' diretory under '/usr'.
-             (substitute* "addons/externaltools/autotests/externaltooltest.cpp"
-               (("QStringLiteral[(]\"/usr\"[)]")
-                (format #f "QStringLiteral(\"~a\")"
-                        (dirname (dirname (which "ls"))))))))
-         (add-before 'check 'check-setup
-           (lambda _
-             ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             (setenv "HOME" (getcwd)))))))
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-tests
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; This test requires a 'bin' diretory under '/usr'.
+                   (substitute* "addons/externaltools/autotests/externaltooltest.cpp"
+                     (("QStringLiteral[(]\"/usr\"[)]")
+                      (format #f "QStringLiteral(\"~a\")"
+                              (dirname (dirname (which "ls"))))))))
+               (add-before 'check 'check-setup
+                 (lambda _
+                   ;; make Qt render "offscreen", required for tests
+                   (setenv "QT_QPA_PLATFORM" "offscreen")
+                   (setenv "HOME" (getcwd)))))))
     (home-page "https://kate-editor.org/")
     (synopsis "Multi-document, multi-view text editor")
     (description "Kate is a powerful text editor that can open multiple files
