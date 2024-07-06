@@ -1414,14 +1414,14 @@ to perform data analysis.")
 (define-public kdf
   (package
     (name "kdf")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kdf-" version ".tar.xz"))
               (sha256
                (base32
-                "11ndcbfkq5fhb1lfij0mmm43fw49sh0z3nw644sll0smcwic76aa"))))
+                "1gp0r0dj58zq5rflw7yb42znjwvbq3aa0xqz5dfbxf7m3widri6g"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -1434,15 +1434,17 @@ to perform data analysis.")
            kio
            knotifications
            kwidgetsaddons
+           kstatusnotifieritem
            kxmlgui
-           qtbase-5))
+           qt5compat))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://kde.org/applications/system/kdk")
     (synopsis "View Disk Usage")
     (description "KDiskFree displays the available file devices (hard drive
 partitions, floppy and CD drives, etc.) along with information on their
 capacity, free space, type and mount point.  It also allows you to mount and
 unmount drives and view them in a file manager.")
-(license license:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public ktimer
   (package
