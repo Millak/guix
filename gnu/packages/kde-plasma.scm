@@ -43,6 +43,7 @@
   #:use-module (gnu packages display-managers)
   #:use-module (gnu packages file-systems)
   #:use-module (gnu packages firmware)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gdb)
@@ -2084,7 +2085,7 @@ activities effectively, without being distracting.")
 (define-public plasma-integration
   (package
     (name "plasma-integration")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -2092,10 +2093,12 @@ activities effectively, without being distracting.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ahzckvc69wk2rx73sl40h0in1y7ny0vm0i7lbrrcggv1v36dwp3"))))
+                "0108pzfjwd84ysysq705k8ccy4hi9mmx412ll3d751dc50lj6np1"))))
     (build-system qt-build-system)
     (arguments
-     (list #:tests? #f                  ;TODO: Failing tests
+     (list #:qtbase qtbase
+           #:configure-flags #~(list "-DBUILD_QT5=OFF")
+           #:tests? #f                  ;TODO: Failing tests
            #:phases #~(modify-phases %standard-phases
                         (replace 'check
                           (lambda* (#:key tests? #:allow-other-keys)
@@ -2109,20 +2112,27 @@ activities effectively, without being distracting.")
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list breeze
                   kconfig
-                  kio
-                  ki18n
-                  kwidgetsaddons
                   kconfigwidgets
+                  kguiaddons
+                  ki18n
                   kiconthemes
+                  kio
                   knotifications
+                  kstatusnotifieritem
+                  kwayland
+                  kwidgetsaddons
+                  kxmlgui
                   libxcb
                   libxcursor
+                  libxkbcommon
                   plasma-wayland-protocols
-                  qtdeclarative-5
-                  qtquickcontrols2-5
-                  qtwayland-5
-                  qtx11extras
-                  wayland))
+                  qtdeclarative
+                  qtwayland
+                  wayland
+                  xdg-desktop-portal-kde
+                  font-google-noto-sans-cjk
+                  font-google-noto-emoji
+                  font-hack))
     (home-page "https://invent.kde.org/plasma/plasma-integration")
     (synopsis
      "Qt Platform Theme integration plugins for the Plasma workspaces")
