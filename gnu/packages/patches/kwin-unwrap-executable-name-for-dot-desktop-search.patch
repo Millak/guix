@@ -14,12 +14,11 @@ new file mode 100644
 index 0000000..726065d
 --- /dev/null
 +++ b/src/guix_utils.h
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,23 @@
 +#ifndef GUIX_UTILS_H
 +#define GUIX_UTILS_H
 +
 +// kwin
-+#include <kwinglobals.h>
 +
 +namespace KWin
 +{
