@@ -261,18 +261,18 @@ browser for easy news reading.")
 (define-public gwenview
   (package
     (name "gwenview")
-    (version "23.08.5")
+    (version "24.05.2")
     (source
      (origin
         (method url-fetch)
         (uri (string-append "mirror://kde/stable/release-service/" version
                             "/src/gwenview-" version ".tar.xz"))
         (sha256
-         (base32 "0f4h2vf8nkz1jcrxw98n52divvdmxh434659m1pd4l5pag0d3z54"))
-        (patches (search-patches "gwenview-kimageannotator.patch"))))
+         (base32 "0ybsra2c5dhagd8w81sccz3d9rfsj2mdnwrc4jcnkffjjk4ys09g"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
@@ -294,9 +294,10 @@ browser for easy news reading.")
      (list baloo
            cfitsio
            exiv2
-           kactivities
+           plasma-activities
            kcolorpicker
            kguiaddons
+           ki18n
            kiconthemes
            kimageannotator
            kio
@@ -308,12 +309,12 @@ browser for easy news reading.")
            libkdcraw
            libpng
            libtiff
+           libxkbcommon
            phonon
            purpose
-           qtimageformats-5
-           qtsvg-5
-           qtwayland-5
-           qtx11extras
+           qtimageformats
+           qtsvg
+           qtwayland
            wayland
            wayland-protocols
            zlib))
