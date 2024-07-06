@@ -796,15 +796,16 @@ the computer and 3D Printers.")
 (define-public kmag
   (package
     (name "kmag")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/kmag-" version ".tar.xz"))
-      (sha256
-       (base32 "13ar37yv3gk5451cdqrgbm91jm50qw4559sx25fv95g2i9wa7z74"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kmag-" version ".tar.xz"))
+       (sha256
+        (base32 "0sbm9jr0spywgvm136swgbdqrw23dsf2msbj8x9sv4j004nx7sww"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -812,8 +813,7 @@ the computer and 3D Printers.")
            kio
            kxmlgui
            breeze-icons ;; default icon set
-           ;; TODO: QAccessibilityClient - libqaccessibilityclien
-           qtbase-5))
+           libqaccessibilityclient))
     (home-page "https://apps.kde.org/kmag/")
     (synopsis "Screen magnifier tool")
     (description "You can use KMagnifier to magnify a part of the screen just
