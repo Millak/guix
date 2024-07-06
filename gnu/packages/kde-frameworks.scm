@@ -2999,7 +2999,7 @@ widgets with a user-interface defined in terms of actions.")
 (define-public kpeople
   (package
     (name "kpeople")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3008,7 +3008,7 @@ widgets with a user-interface defined in terms of actions.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "04v0s3amn6lbb16qvp1r6figckva6xk8z7djk8jda8fbnx8dx2r1"))))
+                "0gihf93jjy3qc02h9qjnxjp67jb38rahx5f1k1hm9pxcasg9fzwn"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -3018,11 +3018,12 @@ widgets with a user-interface defined in terms of actions.")
            kitemviews
            ki18n
            kservice
+           kcontacts
            kwidgetsaddons
-           qtbase-5
-           qtdeclarative-5))
+           qtdeclarative))
     (arguments
-     `(#:tests? #f)) ; FIXME: 1/3 tests fail.
+     (list #:qtbase qtbase
+           #:tests? #f))                    ; FIXME: 1/3 tests fail.
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Provides access to all contacts and aggregates them by person")
     (description "KPeople offers unified access to our contacts from different
