@@ -1710,19 +1710,20 @@ Mobipocket e-books in Dolphin and other KDE apps.")
 (define-public libkexiv2
   (package
     (name "libkexiv2")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "16cb7cab4pyarwwn2byyvanwlakcgq5h203hkysp44flszq515cl"))))
+        (base32 "04z36kvj9nwr9i8xs6hi0lqmxz7lqyhs9c1cngcb7p7lw9hmynch"))))
     (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list exiv2 qtbase-5))
+     (list exiv2 qtbase))
     (home-page "https://invent.kde.org/graphics/libkexiv2")
     (synopsis "Manipulate the metadata of images")
     (description "Libkexiv2 wraps the Exiv2 library, allowing to manipulate
