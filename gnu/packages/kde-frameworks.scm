@@ -2829,7 +2829,7 @@ KIO enabled infrastructure.")
 (define-public knewstuff
   (package
     (name "knewstuff")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2838,41 +2838,31 @@ KIO enabled infrastructure.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "15xmx7rnnrsz2cj044aviyr4hi9h8r0nnva9qzcjcq2hkkgj7wjj"))))
+                "1mv7v4r902q2mgr377mg5c2y6aapg32p385ildcm3jwl5sr1cvd1"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     (list attica kservice kxmlgui))
+     (list attica
+           kcoreaddons))
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
      (list karchive
-           kauth
-           kbookmarks
-           kcodecs
-           kcompletion
            kconfig
-           kconfigwidgets
-           kcoreaddons
-           kio
-           kitemviews
+           kirigami
            ki18n
-           kiconthemes
-           kjobwidgets
            kpackage
-           ktextwidgets
            kwidgetsaddons
-           qtbase-5
-           qtdeclarative-5
-           solid
-           sonnet))
+           qtbase
+           qtdeclarative
+           syndication))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _ ; XDG_DATA_DIRS isn't set
-             (setenv "HOME" (getcwd))
-             ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda _ ; XDG_DATA_DIRS isn't set
+                   (setenv "HOME" (getcwd))
+                   ;; make Qt render "offscreen", required for tests
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Framework for downloading and sharing additional application data")
     (description "The KNewStuff library implements collaborative data sharing
