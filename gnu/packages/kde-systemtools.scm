@@ -193,20 +193,19 @@ document meta data file.")
 (define-public konsole
   (package
     (name "konsole")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konsole-" version ".tar.xz"))
        (sha256
-        (base32 "1k68y1i3g3bsz1dz81jhkx1q2fb13rbm5ywh632bcyln0c6l0vz0"))))
+        (base32 "1549a5cpg6g6djbln38nlngl1xcfn7p9bjsscbwl27jkz8dyy18x"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools zlib))
     (inputs
      (list kbookmarks
-           kcompletion
            kconfig
            kconfigwidgets
            kcoreaddons
@@ -215,7 +214,6 @@ document meta data file.")
            kguiaddons
            ki18n
            kiconthemes
-           kinit
            kio
            knewstuff
            kglobalaccel
@@ -229,12 +227,12 @@ document meta data file.")
            kwindowsystem
            kxmlgui
            breeze-icons ;; default icon set
-           qtbase-5
-           qtscript
-           qtmultimedia-5
+           qt5compat
+           qtmultimedia
            icu4c))
     (arguments
-     `(#:tests? #f)) ;; TODO: 2/15 tests fail even with HOME, offscreen, SHELL, debus
+     (list #:qtbase qtbase
+           #:tests? #f)) ;; TODO: 2/15 tests fail even with HOME, offscreen, SHELL, debus
     (home-page "https://www.kde.org/")
     (synopsis "Terminal emulator similar for KDE")
     (description "Konsole is a terminal emulator, similar to xterm, built on
