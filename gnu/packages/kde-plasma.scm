@@ -2885,14 +2885,14 @@ of a Plasma shell.")
 (define-public system-settings
   (package
     (name "system-settings")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/systemsettings-" version ".tar.xz"))
               (sha256
                (base32
-                "0vkcmb4sch97sq5xd8rj8z42qdcxy5ys758q6dl69kbv9hadl7bw"))))
+                "1dj6ic2i2pm01xyc1nl4k7v5r3rq1lwb638sfkbjch5g1gndsylh"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kauth
@@ -2910,27 +2910,15 @@ of a Plasma shell.")
                   kdbusaddons
                   kconfig
                   kpackage
-                  kactivities
-                  kactivities-stats
+                  plasma-activities
+                  plasma-activities-stats
                   kguiaddons
                   kirigami
                   knotifications
                   krunner
                   plasma-workspace
-                  qtdeclarative-5
-                  ;; qml's indirect dependency
-                  ;; XXX: make them propagated dependency runtime qml module
-                  qtquickcontrols-5
-                  qtquickcontrols2-5
-                  kirigami-addons
-                  qtgraphicaleffects
-                  kdeclarative
-                  kuserfeedback
-                  knewstuff
-                  plasma-pa
-                  bluez-qt
-                  kwin
-                  bluedevil))
+                  qtdeclarative))
+    (arguments (list #:qtbase qtbase))
     (synopsis "Control center to configure Plasma Desktop")
     (description "This package provides configuration UI for Plasma Desktop.")
     (home-page "https://invent.kde.org/plasma/systemsettings")
