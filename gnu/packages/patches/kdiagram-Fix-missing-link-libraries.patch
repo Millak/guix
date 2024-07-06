@@ -16,8 +16,8 @@ index be2a6fc..b13befb 100644
 @@ -1,3 +1,3 @@
  add_executable(BarsSimple  main.cpp)
  
--target_link_libraries(BarsSimple KChart Qt5::Widgets)
-+target_link_libraries(BarsSimple KChart Qt5::Widgets Qt5::Svg)
+-target_link_libraries(BarsSimple KChart6 Qt::Widgets)
++target_link_libraries(BarsSimple KChart6 Qt::Widgets Qt::Svg)
 -- 
 2.21.1
 

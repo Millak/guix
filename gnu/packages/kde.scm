@@ -524,21 +524,22 @@ for some KDevelop language plugins (Ruby, PHP, CSS...).")
 (define-public kdiagram
   (package
     (name "kdiagram")
-    (version "2.8.0")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/kdiagram/" version
                            "/kdiagram-" version ".tar.xz"))
        (sha256
-        (base32 "07s3kwv0mqvb64x8nz4w1yb3hbk28yzkw4qg1jibai7as4xsv7ap"))
+        (base32 "0vcw339v6nl1haznp58spimanfhw143cindbym1q3ccxrp1b0na6"))
        (patches (search-patches
                  "kdiagram-Fix-missing-link-libraries.patch"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
-     (list qtbase-5 qtsvg-5))
+     (list qtsvg))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/graphics/kdiagram")
     (synopsis "Libraries for creating business diagrams")
     (description "This package provides libraries for integrating business
