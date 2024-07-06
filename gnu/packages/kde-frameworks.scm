@@ -3247,6 +3247,30 @@ It supports rich text as well as plain text.")
     ;; dual licensed
     (license (list license:lgpl2.0+ license:lgpl2.1+))))
 
+(define-public ktexttemplate
+  (package
+    (name "ktexttemplate")
+    (version "6.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/ktexttemplate-"
+                    version ".tar.xz"))
+              (sha256
+               (base32
+                "17df96rmmyni2adv97p77y349vyvirs0svzs6dzzmclzb2f8hlck"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs (list qtdeclarative))
+    (arguments (list #:qtbase qtbase))
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "KDE's Text Template")
+    (description "KTextTemplate is to make it easier for application developers
+to separate the structure of documents from the data they contain.")
+    (license (list license:lgpl2.1+))))
+
 (define-public kwallet
   (package
     (name "kwallet")
