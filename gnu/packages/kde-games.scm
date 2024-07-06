@@ -130,15 +130,16 @@ This package is part of the KDE games module.")
 (define-public kolf
   (package
     (name "kolf")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kolf-" version ".tar.xz"))
        (sha256
-        (base32 "0wbdpclc6nimjzs2pqbzaxnqn516hci1yk1dgig0jgdy1jv2nyhv"))))
+        (base32 "0i0rh3dw90j8p46dhfmmcl6nah080ilmhy9d1m9jwlb6xd03zg66"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -153,8 +154,7 @@ This package is part of the KDE games module.")
            kxmlgui
            ktextwidgets
            libkdegames
-           qtbase-5
-           qtdeclarative-5))
+           qtdeclarative))
     (home-page "https://apps.kde.org/kolf/")
     (synopsis "Miniature golf game")
     (description "Kolf is a miniature golf game for one to ten players.  The
