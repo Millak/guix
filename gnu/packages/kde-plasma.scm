@@ -2565,15 +2565,16 @@ hardware management, and a high degree of customizability.")
 (define-public polkit-kde-agent
   (package
     (name "polkit-kde-agent")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-1-" version ".tar.xz"))
               (sha256
                (base32
-                "0p6gnv59mnb5y6riiifyg98sk8zycchv8bkf7x1332qa7zqhcjcc"))))
+                "1mr0fmmnvd92msrp0y1fib2hyjif4lycg74ycpiqylnxhvm6v4c8"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules))
     (inputs (list ki18n
                   kwindowsystem
@@ -2582,7 +2583,8 @@ hardware management, and a high degree of customizability.")
                   kcoreaddons
                   kcrash
                   kiconthemes
-                  polkit-qt))
+                  polkit-qt6
+                  qtdeclarative))
     (synopsis "Polkit authentication UI for Plasma")
     (description
      "This package contains a daemon providing a Polkit authentication
