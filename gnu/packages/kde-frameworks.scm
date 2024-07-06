@@ -1075,6 +1075,44 @@ data being plotted.  KPlotWidget automatically converts everything to screen
 pixel units.")
     (license license:lgpl2.1+)))
 
+(define-public ksvg
+  (package
+    (name "ksvg")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "15n7schzmwq4z0yiw0l1js45mml5wq3syb5vc7j9hs88j1jdcp6q"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules qttools))
+    (inputs
+     (list
+      qtdeclarative
+      qtsvg
+      karchive
+      kconfig
+      kcolorscheme
+      kcoreaddons
+      kguiaddons
+      kirigami))
+    (arguments
+     (list #:qtbase qtbase
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'check-setup
+                          (lambda _
+                            (setenv "HOME" (getcwd)))))))
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "Components for handling SVGs")
+    (description "A library for rendering SVG-based themes with stylesheet
+re-coloring and on-disk caching.")
+    (license license:lgpl2.1+)))
+
 (define-public ksyntaxhighlighting
   (package
     (name "ksyntaxhighlighting")
