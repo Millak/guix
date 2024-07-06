@@ -344,6 +344,7 @@ annotating features.")
      ;; 1/3 tests failed and 1/327 assertions failed.  It seems
      ;; that individual tests can't be skipped.
      (list
+      #:qtbase qtbase
       #:configure-flags #~(list "-DBUILD_TESTING=off")
       #:tests? #f
       #:phases
@@ -362,11 +363,11 @@ annotating features.")
                   `("LADSPA_PATH" ":" =
                     (,(string-append ladspa "/lib/ladspa")))
                   `("QT_QPA_PLATFORM_PLUGIN_PATH" ":" =
-                    (,(string-append qtbase "/lib/qt5/plugins/platforms")))
+                    (,(string-append qtbase "/lib/qt6/plugins/platforms")))
                   `("MLT_PREFIX" ":" =
                     (,#$(this-package-input "mlt"))))))))))
     (native-inputs
-     (list extra-cmake-modules kdoctools pkg-config qttools-5))
+     (list extra-cmake-modules kdoctools pkg-config qttools))
     (inputs
      (list bash-minimal
            breeze                       ; make dark them available easily
@@ -387,18 +388,15 @@ annotating features.")
            knotifyconfig
            kparts
            kplotting
+           ktextwidgets
            ladspa
            mlt
            purpose
-           qtbase-5
-           qtdeclarative-5
-           qtgraphicaleffects
-           qtmultimedia-5
-           qtnetworkauth-5
-           qtquickcontrols-5
-           qtquickcontrols2-5
-           qtscript
-           qtsvg-5
+           qtbase
+           qtdeclarative
+           qtmultimedia
+           qtnetworkauth
+           qtsvg
            shared-mime-info))
     (home-page "https://kdenlive.org")
     (synopsis "Non-linear video editor")
