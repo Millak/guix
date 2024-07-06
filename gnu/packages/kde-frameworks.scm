@@ -3187,7 +3187,7 @@ Items.")
 (define-public ktexteditor
   (package
     (name "ktexteditor")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3196,7 +3196,7 @@ Items.")
                     "ktexteditor-" version ".tar.xz"))
               (sha256
                (base32
-                "06amzk6290imi2gj3v1k3f56zdlad7zbz4wwlf34v4iibj9mfgw8"))))
+                "0xip50g976s9h6196nlgpzc1wvmyl051iyjyfjri610axgxbz7cp"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kparts
@@ -3207,52 +3207,27 @@ Items.")
      (list editorconfig-core-c
            karchive
            kauth
-           kbookmarks
-           kcodecs
            kcompletion
-           kconfig
            kconfigwidgets
-           kcoreaddons
+           kcolorscheme
            kguiaddons
-           kiconthemes
-           kio
            kitemviews
            ki18n
-           kjobwidgets
-           kparts
-           kservice
            ktextwidgets
            kwidgetsaddons
            kxmlgui
-           libgit2
-           perl
-           qtbase-5
-           qtdeclarative-5
-           qtscript
-           qtxmlpatterns
-           solid
+           qtbase
+           qtdeclarative
+           qtspeech
            sonnet))
     (arguments
      (list #:phases
-       #~(modify-phases %standard-phases
-         (add-after 'unpack 'setup
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "XDG_DATA_DIRS" ; FIXME build phase doesn't find parts.desktop
-                     (string-append #$(this-package-input "kparts") "/share"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? ;; Maybe locale issues with tests?
-               (setenv "QT_QPA_PLATFORM" "offscreen")
-               (invoke "ctest" "-E" "(kateview_test|movingrange_test)"))))
-         (add-after 'install 'add-symlinks
-           ;; Some package(s) (e.g. plasma-sdk) refer to these service types
-           ;; by the wrong name.  I would prefer to patch those packages, but
-           ;; I cannot find the files!
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((kst5 (string-append #$output
-                                        "/share/kservicetypes5/")))
-               (symlink (string-append kst5 "ktexteditorplugin.desktop")
-                        (string-append kst5 "ktexteditor-plugin.desktop"))))))))
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests? ;; Maybe locale issues with tests?
+                     (setenv "QT_QPA_PLATFORM" "offscreen")
+                     (invoke "ctest" "-E" "(kateview_test|movingrange_test)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Full text editor component")
     (description "KTextEditor provides a powerful text editor component that you
