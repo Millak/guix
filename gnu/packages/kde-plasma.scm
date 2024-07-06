@@ -1820,14 +1820,14 @@ active window on Plasma Desktop.")
 (define-public plasma-browser-integration
   (package
     (name "plasma-browser-integration")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0c30pdlhl452bjpdc7mwxl01hqabahyc0j1cc54liy0hla9vir9y"))))
+                "07wsbq3p55k9jha341zpxgk6v4iaj3j4agp45h32m2881fjrwb80"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config))
     ;; TODO: Figure out how to integrate this package into web browsers
@@ -1842,17 +1842,19 @@ active window on Plasma Desktop.")
                   knotifications
                   kitemmodels
                   krunner
-                  kactivities
+                  plasma-activities
                   purpose
                   kfilemetadata
                   kjobwidgets
-                  qtdeclarative-5))
+                  kstatusnotifieritem
+                  qtdeclarative))
     (propagated-inputs (list plasma-workspace))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/plasma/plasma-browser-integration")
     (synopsis "Integrate browsers into the Plasma Desktop")
     (description
      "This package aims to provide better integration of web browsers with
-the KDE Plasma 5 desktop.")
+the KDE Plasma 6 desktop.")
     (license license:gpl3+)))
 
 (define-public plasma-desktop
