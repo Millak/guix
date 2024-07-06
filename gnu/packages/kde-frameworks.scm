@@ -3489,7 +3489,7 @@ script engines.")
 (define-public purpose
   (package
     (name "purpose")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3498,20 +3498,26 @@ script engines.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1lj67f0x4gvbh9by3c3crbbwwnx7b9ifjna9ggziya4m6zj0m4z1"))))
+                "05zcwrg65z7vm1jvgfajama2mrz70gn08kdsxd5fzkxx8rk6yadz"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list extra-cmake-modules))
+     (list extra-cmake-modules gettext-minimal))
     (inputs
-     (list ;;TODO: ("kaccounts" ,kaccounts)
-           kconfig
-           kcoreaddons
-           knotifications
-           ki18n
-           kio
-           kirigami
-           qtbase-5
-           qtdeclarative-5))
+     (list
+      ;;TODO: kaccounts
+      kconfig
+      kcoreaddons
+      knotifications
+      ki18n
+      kio
+      kirigami
+      kwidgetsaddons
+      kitemviews
+      kcompletion
+      kservice
+      qtbase
+      qtdeclarative
+      prison))
     (arguments
      (list #:tests? #f ;; seem to require network; don't find QTQuick components
            #:configure-flags #~'("-DBUILD_TESTING=OFF"))) ; not run anyway
