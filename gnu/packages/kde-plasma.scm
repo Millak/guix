@@ -515,17 +515,18 @@ KDE Frameworks 5 to better interact with the system.")
 (define-public kdeplasma-addons
   (package
     (name "kdeplasma-addons")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0l7g4lx6y10xfabfcgvh7zb7h08clj0g9yx8ajyg7rzwfa43visi"))))
+                "1q8jhj9b9sj7bdkr0bvk4grjjrylq86svwvr96knnpicxbjf633c"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
+     (list #:qtbase qtbase
+           #:phases #~(modify-phases %standard-phases
                         (replace 'check
                           (lambda* (#:key tests? inputs #:allow-other-keys)
 
@@ -537,23 +538,29 @@ KDE Frameworks 5 to better interact with the system.")
                                       "(converterrunnertest)")))))))
     (native-inputs (list extra-cmake-modules tzdata-for-tests))
     (inputs (list karchive
+                  kauth
                   kconfig
                   kcoreaddons
                   kdeclarative
+                  kdbusaddons
                   kholidays
                   ki18n
                   kio
                   kcmutils
+                  kglobalaccel
+                  kxmlgui
                   knotifications
                   krunner
                   kservice
                   kunitconversion
                   knewstuff
-                  plasma-framework
+                  libplasma
+                  plasma5support
                   purpose
                   sonnet
-                  ;; qtwebengine-5 ; Optional for online dictionary
-                  qtdeclarative-5))
+                  qt5compat
+                  ;; qtwebengine ; Optional for online dictionary
+                  qtdeclarative))
     (synopsis "Add-ons to improve your Plasma experience")
     (description
      "This package provides multiple addons for the Plasma Desktop.")
