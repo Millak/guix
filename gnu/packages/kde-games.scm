@@ -94,15 +94,16 @@ This package is part of the KDE games module.")
 (define-public picmi
   (package
     (name "picmi")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/picmi-" version ".tar.xz"))
-      (sha256
-       (base32 "1x1iv6a840jwldfpx44wvh1vki1jz1hixzvzhdfx2mhw05v91fjx"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/picmi-" version ".tar.xz"))
+       (sha256
+        (base32 "0xx3bwib7p1g0xzykpsln07606rms8awrh1myr46lx65r1xffw05"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -115,9 +116,8 @@ This package is part of the KDE games module.")
            knewstuff
            kxmlgui
            libkdegames
-           qtbase-5
-           qtdeclarative-5
-           qtsvg-5))
+           qtdeclarative
+           qtsvg))
     (home-page "https://apps.kde.org/picmi/")
     (synopsis "Number logic game")
     (description "Picmi is a number logic game in which cells in a grid have
