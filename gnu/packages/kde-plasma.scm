@@ -463,7 +463,7 @@ manager which re-parents a Client window to a window decoration frame.")
 (define-public kde-cli-tools
   (package
     (name "kde-cli-tools")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -471,10 +471,11 @@ manager which re-parents a Client window to a window decoration frame.")
               (patches (search-patches "kde-cli-tools-delay-mime-db.patch"))
               (sha256
                (base32
-                "1br1i8ba4n7d2yl618ph4glsaasn3rxy4kjp48f12l9l2pk29nxa"))))
+                "06vms60wrddj9b8bagk5xhwjff4pi81vxs0zja8mk5fscv0750bi"))))
     (build-system qt-build-system)
     (arguments
-     (list #:tests? #f ;TODO: Failing 1 test
+     (list #:qtbase qtbase
+           #:tests? #f ;TODO: Failing 1 test
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'set-writable-location
@@ -485,13 +486,7 @@ GenericDataLocation.")
                       (string-append "\"" (getcwd) "/\"")))))
                (add-before 'check 'setup-env
                  (lambda* _
-                   (setenv "HOME" (getcwd))))
-               (add-after 'install 'symlink-kdesu
-                 (lambda _
-                   ;; XXX: nixpkgs say kdesu need kdeinit5 in PATH, but i can't
-                   ;; found in source, need check
-                   (symlink (string-append #$output "/libexec/kf5/kdesu")
-                            (string-append #$output "/bin/kdesu")))))))
+                   (setenv "HOME" (getcwd)))))))
     (native-inputs (list extra-cmake-modules pkg-config shared-mime-info))
     (inputs (list kconfig
                   kdesu
@@ -502,11 +497,11 @@ GenericDataLocation.")
                   kio
                   kservice
                   kwindowsystem
-                  kactivities
+                  plasma-activities
                   kparts
                   plasma-workspace
-                  qtx11extras
-                  qtsvg-5))
+                  qtsvg
+                  libxkbcommon))
     (synopsis "CLI tools for interacting with KDE")
     (description "This package provides command-line tools based on
 KDE Frameworks 5 to better interact with the system.")
