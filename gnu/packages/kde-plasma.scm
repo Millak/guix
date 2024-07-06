@@ -908,22 +908,22 @@ an elegant and intuitive experience for your tasks and plasmoids.")
 (define-public layer-shell-qt
   (package
     (name "layer-shell-qt")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/layer-shell-qt-" version ".tar.xz"))
               (sha256
                (base32
-                "08glqqh7jmqrli4n7j04lz3w3c6192w8p7ki51ksmwivnxylxi17"))))
+                "02gmfvvzjdhgsqwqr9ga43bjkbz0hnv1sz08zq19m5l3qy66ds0p"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
      (list libxkbcommon
-           qtbase-5
-           qtdeclarative-5
-           qtwayland-5
+           qtdeclarative
+           qtwayland
            wayland
            wayland-protocols))
     (home-page "https://invent.kde.org/plasma/layer-shell-qt")
