@@ -1849,7 +1849,7 @@ activities effectively, without being distracting.")
 (define-public plasma-disks
   (package
     (name "plasma-disks")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1857,13 +1857,27 @@ activities effectively, without being distracting.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0jwjv20ra1mhwl2cm7x2jz8pasmkc58fd57qxhzzf84l4sgbda9v"))))
+                "1rk8356fpy2vgfi79kz2xlkz032jb3cd9y6rsp9f875bik5j25hz"))))
     (build-system qt-build-system)
+    (arguments (list
+                #:qtbase qtbase
+                #:phases
+                #~(modify-phases %standard-phases
+                    (add-after 'unpack 'set-smartctl-path
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (substitute* "src/helper.cpp"
+                          (("\"smartctl\"")
+                           (string-append
+                            "\""
+                            (search-input-file
+                             inputs "/sbin/smartctl")
+                            "\""))))))))
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcoreaddons
                   kdbusaddons
                   knotifications
                   ki18n
+                  kcmutils
                   solid
                   kservice
                   kio
