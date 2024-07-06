@@ -249,17 +249,22 @@ This package is part of the KDE base applications module.")
 (define-public krfb
   (package
     (name "krfb")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krfb-" version ".tar.xz"))
        (sha256
-        (base32 "0qbrvf2wa3af1z1dpq3pqkngfbrfdgqfz8xs1qpdpyb7jxnphry7"))))
+        (base32 "11mp4vkadcrf20wdlwncsmyqdk9cj2ys85jjz0iaik9dfivgqcci"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase
+                     #:configure-flags
+                     #~(list (string-append "-DQtWaylandScanner_EXECUTABLE="
+                                            #$(this-package-native-input "qtwayland")
+                                            "/lib/qt6/libexec/qtwaylandscanner"))))
     (native-inputs
-     (list extra-cmake-modules pkg-config kdoctools))
+     (list extra-cmake-modules pkg-config kdoctools qtwayland))
     (inputs
      (list kcompletion
            kconfig
@@ -270,6 +275,7 @@ This package is part of the KDE base applications module.")
            ki18n
            knotifications
            kpipewire
+           kstatusnotifieritem
            kwallet
            kwayland
            kwidgetsaddons
@@ -281,11 +287,10 @@ This package is part of the KDE base applications module.")
            breeze-icons ;; default icon set
            pipewire
            plasma-wayland-protocols
-           qtbase-5
-           qtwayland-5
-           qtx11extras
+           qtwayland
            wayland
            xcb-util-image
+           libxkbcommon
            zlib))
     (home-page "https://apps.kde.org/krfb/")
     (synopsis "Desktop Sharing utility")
