@@ -3,7 +3,7 @@
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -105,14 +105,14 @@ The main features of Dolphin are:
 (define-public dolphin-plugins
   (package
     (name "dolphin-plugins")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-plugins-" version ".tar.xz"))
        (sha256
-        (base32 "0h1b559icj5g3xrx5697a9rncpdcmsjg774c6m36ild56bwc048v"))))
+        (base32 "08xyjjwkcr08ncc4xrj65c44iya4byvf1xhnwjg21i7zxls51zir"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -121,10 +121,12 @@ The main features of Dolphin are:
            ki18n
            kio
            ktexteditor
+           ktextwidgets
            ksyntaxhighlighting
            kxmlgui
            breeze-icons ;; default icon set
-           qtbase-5))
+           qt5compat))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://www.kde.org/")
     (synopsis "VCS-Plugins for Dolphin")
     (description "This package contains plugins that offer integration in
