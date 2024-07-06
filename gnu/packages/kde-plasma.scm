@@ -980,17 +980,18 @@ an elegant and intuitive experience for your tasks and plasmoids.")
 (define-public kscreenlocker
   (package
     (name "kscreenlocker")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/kscreenlocker-" version ".tar.xz"))
               (sha256
                (base32
-                "11y3ksd29p8hdn8chaf8vscnc7fbh8xkjdsbakrb056p1r8kn0f2"))))
+                "1nk23jbi4n22hhffriqxx2845b4kfn676y910dv85c2b1mkipcxs"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f ;TODO: make tests pass
+           #:qtbase qtbase
            #:phases #~(modify-phases %standard-phases
                         (add-before 'check 'check-setup
                           (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -1005,31 +1006,30 @@ an elegant and intuitive experience for your tasks and plasmoids.")
                                   (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
                                   (invoke "dbus-launch" "ctest"))))))))
     (native-inputs (list extra-cmake-modules pkg-config
+                         ;; for WaylandScanner
+                         wayland
                          ;; For tests.
                          dbus xorg-server-for-tests))
     (inputs (list kcmutils
                   kconfig
                   kcrash
-                  kdeclarative
                   kglobalaccel
                   ki18n
                   kio
                   kidletime
                   knotifications
-                  ktextwidgets
                   kwayland
                   kwindowsystem
                   kxmlgui
+                  ksvg
                   layer-shell-qt
                   libkscreen
-                  libseccomp ;for sandboxing the look'n'feel package
-                  libxcursor ;missing in CMakeList.txt
+                  libplasma
                   libxi ;XInput, required for grabbing XInput2 devices
                   linux-pam
+                  libxkbcommon
                   elogind ;optional loginctl support
-                  qtbase-5
-                  qtdeclarative-5
-                  qtx11extras
+                  qtdeclarative
                   solid
                   wayland
                   xcb-util-keysyms))
