@@ -113,21 +113,22 @@
 (define-public baloo-widgets
   (package
     (name "baloo-widgets")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/baloo-widgets-" version ".tar.xz"))
        (sha256
-        (base32 "01k8kmzr2vgd567v4js080cnyl2i43zh6zz25ml76z77lywlfzz6"))))
+        (base32 "06238jvb44118bapgkk1yg6mn1kgmn8xx3ayfxy36bx0pl7nii5p"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list baloo kconfig ki18n kio qtbase-5))
+     (list baloo kconfig ki18n kio))
     (arguments
-     `(#:tests? #f)) ;; tests fail
+     (list #:configure-flags #~(list "-DBUILD_WITH_QT6=ON")
+           #:qtbase qtbase))
     (home-page "https://community.kde.org/Baloo")
     (synopsis "Wigets for use with Baloo")
     (description "Baloo is a framework for searching and managing metadata.
