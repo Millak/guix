@@ -3608,7 +3608,7 @@ need.")
 (define-public ktextaddons
   (package
     (name "ktextaddons")
-    (version "1.5.3")
+    (version "1.5.4")
     (source
      (origin
        (method url-fetch)
@@ -3616,10 +3616,12 @@ need.")
              "mirror://kde/stable/" name "/" name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1p0p17dnh96zmzfb91wri7bryr90pvwb07r95n6xdad8py5dnlla"))))
+         "083v4x5f46h609g8zar6x22mp1ps85ikzbr08qbfj9abx010df34"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda _
@@ -3631,7 +3633,7 @@ need.")
                            "(grammalecteresultwidgettest|grammalecteconfigwidgettest||grammalecteresultjobtest|languagetoolconfigwidgettest|translator-translatorwidgettest|translator-translatorengineloadertest)"))))))
     (native-inputs
      (list extra-cmake-modules
-           qttools-5))
+           qttools))
     (inputs
      (list karchive
            kconfigwidgets
@@ -3640,8 +3642,7 @@ need.")
            kio
            ksyntaxhighlighting
            kxmlgui
-           qtbase-5
-           qtkeychain
+           qtkeychain-qt6
            sonnet))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Various text handling addons")
