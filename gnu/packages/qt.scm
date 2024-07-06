@@ -4331,17 +4331,17 @@ This package provides the Python bindings.")))
 (define-public qtkeychain
   (package
     (name "qtkeychain")
-    (version "0.13.2")
+    (version "0.14.3")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/frankosterfeld/qtkeychain/")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1zk6r2vc1q48qs7mw2h47bpgrfbb9r7lf9cwq4sb1a4nls87zznk"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/frankosterfeld/qtkeychain/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1li40ka0g8v2f1q01gpabpx264wmk5zrv2961sg3byj70kf9fmgv"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config qttools-5))
@@ -4354,12 +4354,12 @@ This package provides the Python bindings.")))
          (add-before 'configure 'set-qt-trans-dir
            (lambda _
              (substitute* "CMakeLists.txt"
-              (("\\$\\{qt_translations_dir\\}")
-               "${CMAKE_INSTALL_PREFIX}/share/qt5/translations")))))))
+               (("\\$\\{qt_translations_dir\\}")
+                "${CMAKE_INSTALL_PREFIX}/share/qt5/translations")))))))
     (home-page "https://github.com/frankosterfeld/qtkeychain")
     (synopsis "Qt API to store passwords")
     (description
-      "QtKeychain is a Qt library to store passwords and other secret data
+     "QtKeychain is a Qt library to store passwords and other secret data
 securely.  It will not store any data unencrypted unless explicitly requested.")
     (license license:bsd-3)))
 
