@@ -826,15 +826,16 @@ This package is part of the KDE games module.")
 (define-public knetwalk
   (package
     (name "knetwalk")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/knetwalk-" version ".tar.xz"))
-      (sha256
-       (base32 "1xqqwsbm3f8bmid7afbnacxlg1hih644f0nw0i87pr746m1sskgz"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/knetwalk-" version ".tar.xz"))
+       (sha256
+        (base32 "1p6d27l2j6h5kqyjpws4s0ilvzhrhbd3lwd7776z1lmidqixvwfq"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -849,8 +850,7 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtbase-5
-           qtdeclarative-5))
+           qtdeclarative))
     (home-page "https://apps.kde.org/knetwalk/")
     (synopsis "Turn the board pieces to get all computers connected")
     (description "KNetWalk is a small game where you have to build up a
