@@ -1110,23 +1110,26 @@ easier to do so.")
 (define-public kitinerary
   (package
     (name "kitinerary")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kitinerary-" version ".tar.xz"))
               (sha256
                (base32
-                "0fcqix7hgmv7qcfxzmqy61kg7dqi5zas5vqfs7pfycgcxma0g869"))))
+                "1c7dd85n1amyi9hdzfjlchcj156kfy64rw915bymcbvdy6y3m6ji"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
+     (list #:qtbase qtbase
+           #:phases #~(modify-phases %standard-phases
                         (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
+                          (lambda* (#:key inputs tests? #:allow-other-keys)
                             (when tests?
+                              (setenv "TZDIR"
+                                      (search-input-directory inputs "share/zoneinfo"))
                               (invoke "dbus-launch" "ctest" "-E"
-                               "(jsonlddocumenttest|mergeutiltest|locationutiltest|knowledgedbtest|airportdbtest|extractorscriptenginetest|pkpassextractortest|postprocessortest|calendarhandlertest|extractortest)")))))))
-    (native-inputs (list dbus extra-cmake-modules))
+                                      "(jsonlddocumenttest|mergeutiltest|locationutiltest|knowledgedbtest|airportdbtest|extractorscriptenginetest|pkpassextractortest|postprocessortest|calendarhandlertest|extractortest)")))))))
+    (native-inputs (list dbus extra-cmake-modules tzdata-for-tests))
     (inputs (list kpkpass
                   kcalendarcore
                   karchive
@@ -1138,10 +1141,7 @@ easier to do so.")
                   shared-mime-info
                   openssl
                   poppler
-                  qtbase-5
-                  qtdeclarative-5
-                  qtlocation
-                  qtquickcontrols2-5
+                  qtdeclarative
                   libxml2
                   zlib
                   zxing-cpp))
