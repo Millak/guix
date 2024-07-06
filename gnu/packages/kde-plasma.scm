@@ -802,19 +802,20 @@ KDE Plasma Workspaces.")
 (define-public ksshaskpass
   (package
     (name "ksshaskpass")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/ksshaskpass-" version ".tar.xz"))
               (sha256
                (base32
-                "0vmydvj4c9c93y9wyyjs2hr9m0hygssk1asl4idbj7mcy6n7acg1"))))
+                "13kfvai8gcv8gbkw2ydixlbik1a113h4ais9wlna3jlnb1y0rya9"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
-     (list kcoreaddons ki18n kwallet kwidgetsaddons qtbase-5))
+     (list kcoreaddons ki18n kwallet kwidgetsaddons))
     (home-page "https://invent.kde.org/plasma/ksshaskpass")
     (synopsis "Front-end for ssh-add using kwallet")
     (description "Ksshaskpass is a front-end for @code{ssh-add} which stores the
