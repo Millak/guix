@@ -1249,14 +1249,14 @@ This package is part of the KDE games module.")
 (define-public kspaceduel
   (package
     (name "kspaceduel")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kspaceduel-" version ".tar.xz"))
        (sha256
-        (base32 "1mpry73vvi332wxyw2wymh3lsrj2amblg50dym9ni1lj2af657ia"))))
+        (base32 "04sjx32b4jgz9hwjmfyjcxlrd6jwg355sr6knr8vdxhjg18k2wa0"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -1270,9 +1270,9 @@ This package is part of the KDE games module.")
            ki18n
            kxmlgui
            libkdegames
-           qtbase-5
-           qtdeclarative-5
-           qtsvg-5))
+           qtdeclarative
+           qtsvg))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/kspaceduel/")
     (synopsis "Two player game with shooting spaceships flying around a sun")
     (description "KSpaceduel is a space battle game for one or two players,
