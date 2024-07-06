@@ -3585,7 +3585,7 @@ applications.")
 (define-public kde-frameworkintegration
   (package
     (name "kde-frameworkintegration")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3594,12 +3594,13 @@ applications.")
                     "frameworkintegration-" version ".tar.xz"))
               (sha256
                (base32
-                "1dqgzhhh8gnvl8jsvh2i6pjn935d61avh63b4z9kpllhvp9a2lnd"))))
+                "0zscmn1hvv0y7j5r22r6cdmqznkv7h0s6v7a4wmpjgrpnd8haw4l"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
-    ;; TODO: Optional packages not yet in Guix: packagekitqt5, AppStreamQt
-    (inputs (list kconfig
+    (inputs (list packagekit-qt6
+                  appstream-qt6
+                  kconfig
                   kconfigwidgets
                   kcoreaddons
                   ki18n
@@ -3609,18 +3610,17 @@ applications.")
                   knotifications
                   kpackage
                   kwidgetsaddons
-                  qtbase-5
-                  qtx11extras))
+                  qtbase))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _
-             (setenv "HOME" (getcwd))
-             ;; Make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda _
+                   (setenv "HOME" (getcwd))
+                   ;; Make Qt render "offscreen", required for tests
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
-    (synopsis "KDE Frameworks 5 workspace and cross-framework integration plugins")
+    (synopsis "KDE Frameworks 6 workspace and cross-framework integration plugins")
     (description "Framework Integration is a set of plugins responsible for
 better integration of Qt applications when running on a KDE Plasma
 workspace.")
