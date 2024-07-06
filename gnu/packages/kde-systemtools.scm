@@ -304,20 +304,22 @@ This package is part of the KDE networking module.")
 (define-public ksystemlog
   (package
     (name "ksystemlog")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ksystemlog-" version ".tar.xz"))
        (sha256
-        (base32 "15c1h1dlcgbx2adhjzry2zwia0alym7vc251zymyzhl2xjacvqlm"))))
+        (base32 "1zlzyq5sv8mn4g0ycyrppr4fkr67vym79va7rfa7kbvvjgpwh6gi"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
      ;; Not including Journald since this is not used in guix
-     (list karchive
+     (list breeze-icons ;; default icon set
+           karchive
            kcompletion
            kconfig
            kcoreaddons
@@ -327,9 +329,7 @@ This package is part of the KDE networking module.")
            kitemviews
            ktextwidgets
            kwidgetsaddons
-           kxmlgui
-           breeze-icons ;; default icon set
-           qtbase-5))
+           kxmlgui))
     (home-page "https://apps.kde.org/ksystemlog/")
     (synopsis "System log viewer")
     (description "This program is developed for being used by beginner users,
