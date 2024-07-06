@@ -1463,14 +1463,14 @@ e-mail client programs into KMail and KDE PIM.")
 (define-public kmailtransport
   (package
     (name "kmailtransport")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmailtransport-" version ".tar.xz"))
        (sha256
-        (base32 "14vmm9vla8i477jq40z73lc4klx6mm03y2xnljvx1v4inm3cpw2c"))))
+        (base32 "0ck6mr1zapk0ac96ffnps7pw5pzvb3d5v8lyjvv8acy3435j684z"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -1492,10 +1492,11 @@ e-mail client programs into KMail and KDE PIM.")
            ktextwidgets
            kwallet
            libkgapi
-           qtbase-5
-           qtkeychain))
+           qtkeychain-qt6))
     (arguments
-     `(#:tests? #f)) ;; TODO - 3/3 tests fail, require drkonqi
+     (list
+      #:qtbase qtbase
+      #:tests? #f)) ;; 1/2 tests fail, require network.
     (home-page "https://api.kde.org/kdepim/kmailtransport/html/index.html")
     (synopsis "Mail transport service library")
     (description "This library provides an API and support code for managing
