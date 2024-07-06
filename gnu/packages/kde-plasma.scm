@@ -2547,20 +2547,21 @@ sensors, process information and other system resources.")
 (define-public plasma-workspace
   (package
     (name "plasma-workspace")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0pyf5vc466mfgicxpp76igdz58lpa0n7x2cl2hhaq4zmrlfr8hh6"))))
+                "16k55b08q42nc89slp49ivqssx6rs21zlzshwmjqx1na5nwikw27"))))
     (build-system qt-build-system)
-    (native-inputs (list extra-cmake-modules kdoctools pkg-config qtsvg-5
-                         qttools-5
-                         xorg-server-for-tests))
+    (native-inputs (list extra-cmake-modules kdoctools pkg-config qtsvg
+                         qttools
+                         xorg-server-for-tests
+                         python-minimal))
     (inputs (list appmenu-gtk-module
-                  appstream-qt
+                  appstream-qt6
                   baloo
                   breeze
                   breeze-icons
@@ -2568,9 +2569,12 @@ sensors, process information and other system resources.")
                   fontconfig
                   icu4c
                   iso-codes
-                  kactivities
-                  kactivities-stats
+                  plasma-activities
+                  plasma-activities-stats
                   karchive
+                  kauth
+                  ksvg
+                  kstatusnotifieritem
                   kcmutils
                   kcoreaddons
                   kcrash
@@ -2579,17 +2583,21 @@ sensors, process information and other system resources.")
                   kded
                   kdesu
                   kglobalaccel
+                  kglobalacceld
                   kguiaddons
                   kholidays
                   ki18n
                   kiconthemes
                   kidletime
-                  kinit
                   kio
+                  xdotool
+                  qqc2-desktop-style
+                  qcoro-qt6
+                  kirigami-addons
                   kio-extras
-                  kio-fuse
                   kitemmodels
                   kirigami
+                  kirigami-addons
                   knewstuff
                   knotifications
                   knotifyconfig
@@ -2613,6 +2621,7 @@ sensors, process information and other system resources.")
                   libqalculate
                   gmp
                   mpfr
+                  eudev
                   libsm
                   libxft
                   libxkbcommon
@@ -2621,17 +2630,17 @@ sensors, process information and other system resources.")
                   networkmanager-qt
                   phonon
                   pipewire
-                  plasma-framework
+                  libplasma
+                  plasma5support
                   plasma-workspace-wallpapers
                   plasma-wayland-protocols
                   prison
-                  qtbase-5
-                  qtdeclarative-5
-                  qtquickcontrols2-5
-                  qttools-5
-                  qtwayland-5
-                  qtgraphicaleffects
-                  qtx11extras
+                  qt5compat
+                  qtsvg
+                  qtshadertools
+                  qtdeclarative
+                  qttools
+                  qtwayland
                   wayland
                   wayland-protocols
                   xcb-util
@@ -2640,7 +2649,7 @@ sensors, process information and other system resources.")
                   xrdb
                   xmessage
                   xsetroot
-                  polkit-qt
+                  polkit-qt6
                   ucd
 
                   libxcursor
@@ -2649,43 +2658,35 @@ sensors, process information and other system resources.")
                   zlib
 
                   ;; qml dependency
-                  qtquickcontrols-5
                   plasma-nm
                   plasma-pa
                   kscreen))
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list
+              ;; libkmpris/autotests/CMakeLists.txt find it from
+              ;; KDE_INSTALL_FULL_LIBEXECDIR, But we are install to itself prefix.
+              ;; so we set it.
+              (string-append "-Dkglobalacceld_PATH="
+                             #$(this-package-input "kglobalacceld")
+                             "/libexec/kglobalacceld"))
+           #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-wallpaper
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "lookandfeel/sddm-theme/theme.conf.cmake"
-                     (("background=..KDE_INSTALL_FULL_WALLPAPERDIR.")
-                      (string-append "background="
-                                     #$(this-package-input "breeze")
-                                     "/share/wallpapers")))))
                (add-after 'unpack 'patch-workspace-bins
                  (lambda* (#:key inputs #:allow-other-keys)
                    (let ((xmessage (search-input-file inputs "/bin/xmessage"))
                          (xsetroot (search-input-file inputs "/bin/xsetroot"))
                          (xrdb (search-input-file inputs "/bin/xrdb"))
-                         (kinit #$(this-package-input "kinit"))
                          (qttools #$(this-package-input "qttools")))
                      (substitute* "startkde/startplasma.cpp"
-                       (("xmessage") xmessage)
+                       (("xmessage") xmessage))
+                     (substitute* "kcms/krdb/krdb.cpp"
                        (("xsetroot") xsetroot))
                      (substitute* (list "kcms/fonts/fontinit.cpp"
                                         "kcms/fonts/fonts.cpp"
                                         "kcms/krdb/krdb.cpp")
                        (("xrdb") xrdb))
-                     (substitute* "startkde/plasma-session/startup.cpp"
-                       (("CMAKE_INSTALL_FULL_LIBEXECDIR_KF5..")
-                        (string-append "\"" kinit
-                                       "/libexec/kf5")))
-                     (substitute* (list
-                                   "startkde/startplasma-wayland.cpp"
-                                   "startkde/startplasma-x11.cpp")
-                       (("kdeinit5_shutdown")
-                        (string-append kinit "/bin/kdeinit5_shutdown")))
                      ;; QT_INSTALL_BINS refers to qtbase, but qdbus is in
                      ;; qttools.
                      (substitute* "CMakeLists.txt"
@@ -2704,19 +2705,22 @@ sensors, process information and other system resources.")
                      (setenv "QT_QPA_PLATFORM" "offscreen")
                      (setenv "QT_PLUGIN_PATH"
                              (string-append #$output
-                                            "/lib/qt5/plugins:"
+                                            "/lib/qt6/plugins:"
                                             (getenv "QT_PLUGIN_PATH")))
-                     (setenv "QML2_IMPORT_PATH"
+                     (setenv "QML_IMPORT_PATH"
                              (string-append #$output
-                                            "/lib/qt5/qml:"
-                                            (getenv "QML2_IMPORT_PATH")))
+                                            "/lib/qt6/qml:"
+                                            (getenv "QML_IMPORT_PATH")))
                      (invoke "dbus-launch" "ctest"
                              "--output-on-failure"
                              "--rerun-failed"
                              "-E"
-                             "(appstreamtest|tasksmodeltest|shelltest|\
-testimagefinder|systemtraymodeltest|testimagelistmodel|\
-testpackageimagelistmodel|testimageproxymodel|testslidemodel|testdesktop)")))))))
+                             "(appstreamtest|tasktoolstest|tasksmodeltest|\
+fetchinitialplayertest|mprisdeclarativetest|mediakeystest|shelltest|\
+locationsrunnertest|testimagefinder|testimagelistmodel|\
+testpackageimagelistmodel|testimageproxymodel|testslidemodel|testimagefrontend|\
+dbusservicewatchertest|klippertest|keystatetest|lockedtest|tst_triangleFilter|\
+testimagebackend)")))))))
     (home-page "https://invent.kde.org/plasma/plasma-workspace")
     (synopsis "Plasma workspace components")
     (description
