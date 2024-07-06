@@ -1979,24 +1979,22 @@ unnecessary network operations.")
 (define-public kpimtextedit
   (package
     (name "kpimtextedit")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kpimtextedit-" version ".tar.xz"))
        (sha256
-        (base32 "1rrs19bwl8qvasridysbbgsgdy9hyjlpi26hw77hli5ixkflj85b"))))
+        (base32 "1m91hnjiksji60ybvmvlcgayqrcplxfdj7qxknxwayiijvqiq22a"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
-     (list grantlee
-           kcodecs
+     (list kcodecs
            kconfigwidgets
            kcoreaddons
-           kdesignerplugin
-           kemoticons
+           ktextaddons
            ki18n
            kiconthemes
            kio
@@ -2004,11 +2002,11 @@ unnecessary network operations.")
            ktextwidgets
            kwidgetsaddons
            kxmlgui
-           qtbase-5
-           qtspeech-5
+           qtspeech
            sonnet))
     (arguments
-     `(#:tests? #f)) ;; TODO - test suite hangs
+     (list #:qtbase qtbase
+           #:tests? #f)) ;; TODO - test suite hangs
     (home-page "https://api.kde.org/kdepim/kpimtextedit/html/index.html")
     (synopsis "Library providing a textedit with PIM-specific features")
     (description "This package provides a textedit with PIM-specific features.
