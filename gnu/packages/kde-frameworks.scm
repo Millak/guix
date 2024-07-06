@@ -2255,6 +2255,31 @@ with other frameworks.")
     ;; triple licensed
     (license (list license:gpl2+ license:lgpl2.0+ license:lgpl2.1+))))
 
+(define-public plasma-activities-stats
+  (package
+    (name "plasma-activities-stats")
+    (version "6.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/plasma-activities-stats-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0yca3yb85hvl33ny09xvm67c3wih4nafrbfdgpf7fsrxy1jc75iq"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list boost plasma-activities kconfig qtbase qtdeclarative))
+    (home-page "https://invent.kde.org/plasma/plasma-activities-stats")
+    (synopsis "Access usage statistics collected by the activity manager")
+    (description "The KActivitiesStats library provides a querying mechanism for
+the data that the activity manager collects---which documents have been opened
+by which applications, and what documents have been linked to which activity.")
+    ;; triple licensed
+    (license (list license:lgpl2.0+ license:lgpl2.1+ license:lgpl3+))))
+
 (define-public kactivities-stats
   (package
     (name "kactivities-stats")
