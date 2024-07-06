@@ -752,14 +752,14 @@ expression library, that is used in Krita.")
 (define-public kolourpaint
   (package
     (name "kolourpaint")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
         (method url-fetch)
         (uri (string-append "mirror://kde/stable/release-service/" version
                             "/src/kolourpaint-" version ".tar.xz"))
         (sha256
-         (base32 "1ab9v6ksb185f6jfhhk578qazhmy8hx6s8vjr9xyh7k3jilayj9v"))))
+         (base32 "1fi1y74s2lnrxdnr9ym4b1ilj9qi019gaavfv0sq1xg8ppbpgcbr"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -771,6 +771,7 @@ expression library, that is used in Krita.")
            ktextwidgets
            kwidgetsaddons
            kxmlgui))
+    (arguments (list #:qtbase qtbase))
     (home-page "http://kolourpaint.org/")
     (synopsis "Paint program for KDE")
     (description "KolourPaint is a paint program for KDE.  It is useful for
