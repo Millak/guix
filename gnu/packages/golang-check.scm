@@ -92,7 +92,7 @@ value and call @code{t.Fatal()} if the assertion fails.")
 (define-public go-github-com-alecthomas-assert-v2
   (package
     (name "go-github-com-alecthomas-assert-v2")
-    (version "2.5.0")
+    (version "2.10.0")
     (source
      (origin
        (method git-fetch)
@@ -101,7 +101,7 @@ value and call @code{t.Fatal()} if the assertion fails.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ai26ncfcwzg47rqaigs5v1fzfz6i8p11ki75ni5429xkjs77riz"))))
+        (base32 "05jak1v9s2wrwrn6ar0s4388f7qg15q0qfmhfcswgl88720196z3"))))
     (build-system go-build-system)
     (arguments
      (list #:go go-1.18
