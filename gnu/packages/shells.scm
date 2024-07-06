@@ -24,6 +24,7 @@
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Tanguy Le Carrour <tanguy@bioneland.org>
+;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -547,18 +548,18 @@ ksh, and tcsh.")
 (define-public xonsh
   (package
     (name "xonsh")
-    (version "0.15.1")
+    (version "0.17.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "xonsh" version))
         (sha256
           (base32
-           "0427mimr4k75myg5mnig564kq7xbb5f5hws2ly3gxxl6g8mk79il"))
+           "17jhhxwm1nbh7yq72y7d4n880x46817iami7lvcj3ywdbzrfg6r9"))
         (modules '((guix build utils)))
         (snippet
          #~(begin
-             (substitute* "setup.py"
+             (substitute* "pyproject.toml"
                (("\"xonsh\\.ply\\.ply\",") ""))
              ;; Use our properly packaged PLY instead.
              (substitute* (list "setup.py"
@@ -566,6 +567,7 @@ ksh, and tcsh.")
                                 "xonsh/lexer.py"
                                 "xonsh/parsers/base.py"
                                 "xonsh/parsers/completion_context.py"
+                                "xonsh/parsers/v310.py"
                                 "xonsh/xonfig.py")
                (("from xonsh\\.ply\\.(.*) import" _ module)
                 (format #f "from ~a import" module))
