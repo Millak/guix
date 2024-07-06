@@ -1448,7 +1448,7 @@ libpulse.")
 (define-public qqc2-desktop-style
   (package
     (name "qqc2-desktop-style")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1457,20 +1457,26 @@ libpulse.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1y5g91vybjvhwmzpfwrc70q5j7jxf5b972f9fh2vzb930jir6c8g"))))
-    (build-system cmake-build-system)
+                "1c5wy4a8x2lslc3dkqpn7k479jfpam63c93sqgyd4iingyxnjzly"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "dbus-launch" "ctest"
+                                 "--rerun-failed" "--output-on-failure")))))))
     (native-inputs
-     (list extra-cmake-modules pkg-config))
+     (list extra-cmake-modules dbus pkg-config qttools))
     (inputs
      (list kauth
-           kconfigwidgets ; optional
+           kconfig ; optional
            kcoreaddons
            kiconthemes ; optional
            kirigami
-           qtbase-5
-           qtdeclarative-5
-           qtquickcontrols2-5
-           qtx11extras ; optional
+           qtdeclarative
            sonnet)) ; optional
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "QtQuickControls2 style that integrates with the desktop")
