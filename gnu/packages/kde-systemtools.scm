@@ -381,17 +381,18 @@ This package is part of the KDE administration module.")
 (define-public spectacle
   (package
     (name "spectacle")
-    (version "23.04.3")
+    (version "24.02.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/spectacle-" version ".tar.xz"))
        (sha256
-        (base32 "1fyklcvz0zndxabflkka75rham6768rp01as7m5dv0ic4lipkf9m"))))
+        (base32 "0li1fhhvqk5y1j0jpazhjw1qh5mnwzn4dkl85bmlsn5hbqszf621"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
@@ -414,18 +415,18 @@ This package is part of the KDE administration module.")
            kwidgetsaddons
            kwindowsystem
            kxmlgui
-           libxcb
            purpose
-           qtdeclarative-5
-           qtquickcontrols2-5
-           qtwayland-5
-           qtx11extras
+           layer-shell-qt
+           qtdeclarative
+           qtmultimedia
+           qtwayland
            wayland
            wayland-protocols
            plasma-wayland-protocols
            xcb-util
            xcb-util-cursor
-           xcb-util-image))
+           xcb-util-image
+           libxkbcommon))
     (home-page "https://apps.kde.org/spectacle/")
     (synopsis "Screenshot capture utility for KDE")
     (description "Spectacle is a screenshot taking utility for the KDE.")
