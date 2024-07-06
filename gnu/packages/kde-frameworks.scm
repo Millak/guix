@@ -3945,7 +3945,7 @@ offers abstract functionality to deal with scripts.")
 (define-public kdav
   (package
     (name "kdav")
-    (version "5.114.0")
+    (version "6.3.0")
     (source
      (origin
        (method url-fetch)
@@ -3953,20 +3953,23 @@ offers abstract functionality to deal with scripts.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "11959fxz24snk2l31kw8w96wah0s2fjimimrxh6xhppiy5qp2fp2"))))
+        (base32 "1f99nw6jsrka5hpp4ad13mgwprmzivv2h46vg2arjlr5x0csk4mh"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
+    (propagated-inputs (list kcoreaddons))
     (inputs
-     (list kcoreaddons ki18n kio qtbase-5 qtxmlpatterns))
+     (list ki18n kio))
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                               ;; Seems to require network.
-                              (invoke "ctest" "-E"
-                                      "(kdav-davcollectionsmultifetchjobtest|\
+     (list
+      #:qtbase qtbase
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         ;; Seems to require network.
+                         (invoke "ctest" "-E"
+                                 "(kdav-davcollectionsmultifetchjobtest|\
 kdav-davitemfetchjob)")))))))
     (home-page "https://invent.kde.org/frameworks/kdav")
     (synopsis "DAV protocol implementation with KJobs")
