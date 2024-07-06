@@ -435,15 +435,16 @@ This package is part of the KDE networking module.")
 (define-public ktorrent
   (package
     (name "ktorrent")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ktorrent-" version ".tar.xz"))
        (sha256
-        (base32 "17q6ivnbh4zxqnbm1bdzz3hri1434sq2rs9y57lvn4bb2xdwn1z5"))))
+        (base32 "1m96ch4rfrjnrw9rd7ad3ipc0hvhxl2awb7aqfnk4dd1g8hhjkq0"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -457,6 +458,7 @@ This package is part of the KDE networking module.")
            kcrash
            kdbusaddons
            kdnssd
+           kglobalaccel
            ki18n
            kiconthemes
            kio
@@ -464,18 +466,16 @@ This package is part of the KDE networking module.")
            knotifyconfig
            kparts
            kplotting
-           kross
+           kstatusnotifieritem
            kwidgetsaddons
            kwindowsystem
            kxmlgui
            libgcrypt
            libktorrent
-           ;; TODO: LibKWorkspace -> plasma-workspace?
            breeze-icons ; default icon set
            phonon
-           qtbase-5
-           qtscript
-           qtwebengine-5
+           qt5compat
+           qtwebengine
            solid
            syndication
            taglib))
