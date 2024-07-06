@@ -3509,22 +3509,6 @@ components so that all the plugins can receive all the information they
 need.")
     (license license:lgpl2.1+)))
 
-;; This version of kdbusaddons does not use kinit as an input, and is used to
-;; build kinit-bootstrap, as well as bootstrap versions of all kinit
-;; dependencies which also rely on kdbusaddons.
-(define kdbusaddons-bootstrap
-  (package
-    (inherit kdbusaddons)
-    (source (origin
-              (inherit (package-source kdbusaddons))
-              (patches '())))
-    (inputs (modify-inputs (package-inputs kdbusaddons) (delete "kinit")))
-    (arguments
-     (substitute-keyword-arguments (package-arguments kdbusaddons)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-           (delete 'patch-source)))))))
-
 (define-public ktextaddons
   (package
     (name "ktextaddons")
