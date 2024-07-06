@@ -2002,7 +2002,7 @@ covers feedback and persistent events.")
 (define-public kpackage
   (package
     (name "kpackage")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2011,55 +2011,43 @@ covers feedback and persistent events.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0v165az3k5lfszxy0kl2464573y0dcq92fyfiklwnkkcjsvba69d"))))
+                "0k8ba4s5g7i57nlz3y1qs1gaagxjdv4arzna0ymfmhciw04nh7c1"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
+    (propagated-inputs (list kcoreaddons))
     (inputs
      (list karchive
            kconfig
-           kcoreaddons
            kdoctools
            ki18n
-           qtbase-5))
+           qtbase))
     (arguments
      (list
+      ;; The `plasma-querytest' test is known to fail when tests are run in parallel:
+      ;; <https://sources.debian.org/src/kpackage/5.115.0-2/debian/changelog/#L109>
+      #:parallel-tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
             (lambda _
               (substitute* "src/kpackage/package.cpp"
-                (("externalPaths.false.")
-                 "externalPaths(true)"))
-              ;; Make QDirIterator follow symlinks
+                (("bool externalPaths = false;")
+                 "bool externalPaths = true;"))
               (substitute* '("src/kpackage/packageloader.cpp")
-                (("^\\s*(const QDirIterator::IteratorFlags flags = QDirIterator::Subdirectories)(;)"
-                  _ a b)
-                 (string-append a " | QDirIterator::FollowSymlinks" b))
-                (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)"
-                  _ a b)
-                 (string-append a " | QDirIterator::FollowSymlinks" b)))))
-          (add-after 'unpack 'patch-tests
-            (lambda _
-              ;; /bin/ls doesn't exist in the build-container use /etc/passwd
-              (substitute* "autotests/packagestructuretest.cpp"
-                (("(addDirectoryDefinition\\(\")bin(\".*\")bin(\".*\")bin\""
-                  _ a b c)
-                 (string-append a "etc" b "etc" c "etc\""))
-                (("filePath\\(\"bin\", QStringLiteral\\(\"ls\"))")
-                 "filePath(\"etc\", QStringLiteral(\"passwd\"))")
-                (("\"/bin/ls\"")
-                 "\"/etc/passwd\""))))
-          (add-after 'unpack 'disable-problematic-tests
-            (lambda _
-              ;; The 'plasma-query' test fails non-deterministically, as
-              ;; reported e.g. in <https://bugs.gentoo.org/919151>.
-              (substitute* "autotests/CMakeLists.txt"
-                ((".*querytest.*")
-                 ""))))
+                (("QDirIterator::Subdirectories")
+                 "QDirIterator::Subdirectories | QDirIterator::FollowSymlinks"))))
           (add-before 'check 'check-setup
-            (lambda _
-              (setenv "HOME" (getcwd)))))))
+            (lambda _ (setenv "HOME" (getcwd))))
+          (replace 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
+              ;; sometime plasmoidpackagetest will fail.
+              (invoke "ctest" "--rerun-failed" "--output-on-failure"
+                      "-j" (if parallel-tests?
+                               (number->string (parallel-job-count))
+                               "1")
+                      "-E" "plasmoidpackagetest"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Installation and loading of additional content as packages")
     (description "The Package framework lets the user install and load packages
