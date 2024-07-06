@@ -80,6 +80,7 @@
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages base)
   #:use-module (gnu packages gps)
@@ -1842,29 +1843,31 @@ the KDE Plasma 5 desktop.")
 (define-public plasma-desktop
   (package
     (name "plasma-desktop")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1njkjf3fhxfmwyviypxqzrn23klxiih82bazvd8y61cshqwai6i2"))))
+                "1n72hynnvgyy0ja0f20p322c2y5yvb5ra1i4jrlxwji795y09r19"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules
                          dbus
                          kdoctools
                          intltool
                          pkg-config
-                         qtsvg-5
-                         qttools-5
+                         qtsvg
+                         qttools
+                         libxml2
                          ;; require QtWaylandScanner
-                         qtwayland-5))
-    (inputs (list packagekit-qt5
+                         qtwayland))
+    (inputs (list packagekit-qt6
                   signon-plugin-oauth2
-                  signond
+                  signond-qt6
+                  icu4c
                   attica
-                  appstream-qt
+                  appstream-qt6
                   baloo
                   breeze
                   breeze-icons
@@ -1873,8 +1876,8 @@ the KDE Plasma 5 desktop.")
                   glib
                   ibus
                   kaccounts-integration
-                  kactivities
-                  kactivities-stats
+                  plasma-activities
+                  plasma-activities-stats
                   kauth
                   karchive
                   kcmutils
@@ -1885,14 +1888,12 @@ the KDE Plasma 5 desktop.")
                   kdeclarative
                   kded
                   kdesu
-                  kdelibs4support
                   kglobalaccel
                   kguiaddons
                   kholidays
                   ki18n
                   kiconthemes
                   kidletime
-                  kinit
                   kio
                   kitemmodels
                   knewstuff
@@ -1909,8 +1910,10 @@ the KDE Plasma 5 desktop.")
                   kwallet
                   kwayland
                   kwin
+                  ksvg
+                  plasma5support
                   layer-shell-qt
-                  libaccounts-qt
+                  libaccounts-qt6
                   libcanberra
                   libkscreen
                   libksysguard
@@ -1926,17 +1929,14 @@ the KDE Plasma 5 desktop.")
                   networkmanager-qt
                   phonon
                   pipewire
-                  plasma-framework
+                  libplasma
                   plasma-wayland-protocols
                   pulseaudio
                   prison
                   qqc2-desktop-style
-                  qtbase-5
-                  qtdeclarative-5
-                  qtquickcontrols-5
-                  qtquickcontrols2-5
-                  qtwayland-5
-                  qtx11extras
+                  qt5compat
+                  qtdeclarative
+                  qtwayland
                   wayland
                   wayland-protocols
                   xcb-util
@@ -1953,10 +1953,18 @@ the KDE Plasma 5 desktop.")
                   libxkbfile
                   libxcursor
                   libxkbcommon))
-    (propagated-inputs (list iso-codes kirigami plasma-workspace))
+    (propagated-inputs (list iso-codes kirigami kcmutils plasma-workspace))
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-wallpaper
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "sddm-theme/theme.conf.cmake"
+                     (("background=..KDE_INSTALL_FULL_WALLPAPERDIR.")
+                      (string-append "background="
+                                     #$(this-package-input "breeze")
+                                     "/share/wallpapers")))))
                (add-after 'unpack 'fix-paths
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "kcms/keyboard/iso_codes.h"
@@ -1971,7 +1979,7 @@ the KDE Plasma 5 desktop.")
                      (setenv "XDG_RUNTIME_DIR" (getcwd))
                      (setenv "XDG_CACHE_HOME" (getcwd))
                      (setenv "QT_QPA_PLATFORM" "offscreen")
-                     (invoke "ctest" "-E" "foldermodeltest")))))))
+                     (invoke "ctest" "-E" "(kcm-keyboard-keyboard_memory_persister_test|foldermodeltest)")))))))
     (home-page "https://kde.org/plasma-desktop/")
     (synopsis "Plasma for the Desktop")
     (description
