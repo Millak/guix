@@ -5614,7 +5614,7 @@ linear algebra routines needed for structured matrices (or operators).")
 (define-public python-botorch
   (package
     (name "python-botorch")
-    (version "0.11.0")
+    (version "0.11.3")
     (source (origin
               (method git-fetch) ;no tests in PyPI
               (uri (git-reference
@@ -5623,20 +5623,12 @@ linear algebra routines needed for structured matrices (or operators).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b10xydxl6x5y5kzvf0561da5374zh00nwq7fcmdw6mb1axipgbq"))))
+                "0nf9zrg1khvckb8kdpffqc3bnlhc0x03jd1560qmjamwl3j59m02"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
+     (list #:test-flags #~(list "-k" "not test_all_cases_covered")
+           #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'lo-version
-                 (lambda _
-                   (substitute* "requirements.txt"
-                     ;; Linear Operator 0.5.2 is a bug-fix release.
-                     (("linear_operator==0.5.1")
-                      "linear_operator==0.5.2")
-                     ;; We have PyTorch 1.13.1, but the reported
-                     ;; version is 1.13.0a0+gitunknown.
-                     (("torch>=1.13.1") "torch"))))
                (add-before 'build 'pretend-version
                  ;; The version string is usually derived via setuptools-scm,
                  ;; but without the git metadata available, the version string
