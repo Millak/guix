@@ -2826,25 +2826,28 @@ UI for Plasma")
 (define-public powerdevil
   (package
     (name "powerdevil")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "151qhpf5j33jk3jhhxsr4zaf0z3f8xlnw8inmzf2a8lficiq9060"))))
+                "052hv22ps90sm44wrdf5f4x2iz633nypl75xjwv257pn6ravia6l"))))
     (build-system qt-build-system)
-    (native-inputs (list extra-cmake-modules qttools-5 pkg-config))
+    (native-inputs (list extra-cmake-modules qttools pkg-config))
     (inputs (list bluez-qt
                   glib
                   kauth
-                  kactivities
+                  plasma-activities
                   kcmutils
                   kscreen
                   kidletime
                   kconfig
                   kdbusaddons
+                  kxmlgui
+                  kitemmodels
+                  layer-shell-qt
                   solid
                   ki18n
                   kcrash
@@ -2861,7 +2864,12 @@ UI for Plasma")
                   network-manager
                   plasma-workspace
                   eudev
-                  qtx11extras))
+                  libxkbcommon))
+    (arguments (list #:qtbase qtbase
+                     #:phases #~(modify-phases %standard-phases
+                                  (add-before 'check 'setenv
+                                    (lambda _
+                                      (setenv "HOME" (getcwd)))))))
     (synopsis "Manage power consumption")
     (description "This package provides the power consumption settings
 of a Plasma shell.")
