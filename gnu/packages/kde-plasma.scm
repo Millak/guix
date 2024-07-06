@@ -2134,7 +2134,7 @@ customizable platform for mobile devices.")
 (define-public plasma-pa
   (package
     (name "plasma-pa")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -2142,20 +2142,29 @@ customizable platform for mobile devices.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1vg28v5n648y94m6amcwmr0n7dw4a2kfx16kny7jb9bkmxrgnwsc"))))
+                "0rj4dffgzinxj5b1wgjz2mmc73c51bx845g9vvx17k7xdcry117x"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase
+                     ;; test require selenium-webdriver-at-spi-run
+                     #:tests? #f))
     (native-inputs (list extra-cmake-modules kdoctools pkg-config))
     (inputs (list glib
                   kcoreaddons
+                  kconfig
                   kcmutils
                   kdeclarative
                   kglobalaccel
+                  kstatusnotifieritem
                   knotifications
                   kwindowsystem
                   kirigami
+                  ksvg
+                  kdbusaddons
+                  pulseaudio-qt
                   ki18n
-                  qtdeclarative-5))
-    (propagated-inputs (list libcanberra pulseaudio plasma-framework))
+                  qtdeclarative))
+    (propagated-inputs (list libcanberra pulseaudio
+                             libplasma))
     (home-page "https://invent.kde.org/plasma/plasma-pa")
     (synopsis "Plasma applet for audio volume management using PulseAudio")
     (description
