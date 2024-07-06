@@ -2730,7 +2730,7 @@ consumption.")
 (define-public kio
   (package
     (name "kio")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2739,7 +2739,7 @@ consumption.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0nwmxbfhvfw69q07vxvflri7rkdczyc89xv4ll3nrzrhgf15kb2z"))
+                "0j04kbbmjlbv2qhra5src6zxx1m8imix9hb0kih0b5h64jrszq9r"))
               (patches (search-patches "kio-search-smbd-on-PATH.patch"))))
     (build-system cmake-build-system)
     (propagated-inputs
@@ -2752,12 +2752,10 @@ consumption.")
            kjobwidgets
            kservice
            kwindowsystem
-           kxmlgui
            solid))
     (native-inputs
-     (list extra-cmake-modules dbus kdoctools qttools-5))
-    (inputs (list mit-krb5
-                  karchive
+     (list extra-cmake-modules dbus kdoctools qttools))
+    (inputs (list karchive
                   kauth
                   kcodecs
                   kconfigwidgets
@@ -2767,16 +2765,14 @@ consumption.")
                   kguiaddons
                   kiconthemes
                   ki18n
-                  knotifications
-                  ktextwidgets
                   kwallet
                   kwidgetsaddons
                   libxml2
                   libxslt
-                  qtbase-5
-                  qtdeclarative-5
-                  qtscript
-                  qtx11extras
+                  qt5compat
+                  qtbase
+                  qtdeclarative
+                  libxkbcommon
                   sonnet
                   `(,util-linux "lib")  ; libmount
                   zlib))
@@ -2801,37 +2797,36 @@ consumption.")
                 (invoke "dbus-launch" "ctest"
                         "--rerun-failed" "--output-on-failure"
                         "-E"
-                        ;; The following tests fail or are flaky (see:
-                        ;; https://bugs.kde.org/show_bug.cgi?id=440721).
-                        (string-append "(kiocore-jobtest"
-                                       "|kiocore-kmountpointtest"
-                                       "|kiowidgets-kdirlistertest"
-                                       "|kiocore-kfileitemtest"
-                                       "|kiocore-ktcpsockettest"
-                                       "|kiocore-mimetypefinderjobtest"
-                                       "|kiocore-krecentdocumenttest"
-                                       "|kiocore-http_jobtest"
-                                       "|kiogui-openurljobtest"
-                                       "|kioslave-httpheaderdispositiontest"
-                                       "|applicationlauncherjob_forkingtest"
-                                       "|applicationlauncherjob_scopetest"
-                                       "|applicationlauncherjob_servicetest"
-                                       "|commandlauncherjob_forkingtest"
-                                       "|commandlauncherjob_scopetest"
-                                       "|commandlauncherjob_servicetest"
-                                       "|kiowidgets-kdirmodeltest"
-                                       "|kiowidgets-kurifiltertest-colon-separator"
-                                       "|kiofilewidgets-kfilewidgettest"
-                                       "|kiowidgets-kurifiltertest-space-separator"
-                                       "|kioworker-httpheaderdispositiontest)")))))
-          (add-after 'install 'add-symlinks
-            ;; Some package(s) (e.g. bluedevil) refer to these service types by
-            ;; the wrong name.  I would prefer to patch those packages, but I
-            ;; cannot find the files!
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((kst5 (string-append #$output "/share/kservicetypes5/")))
-                (symlink (string-append kst5 "kfileitemactionplugin.desktop")
-                         (string-append kst5 "kfileitemaction-plugin.desktop"))))))))
+
+                        (string-append
+                         "(kiogui-favicontest"
+                         "|kiocore-filefiltertest"
+                         "|kpasswdservertest"
+                         "|kiowidgets-kfileitemactionstest"
+                         "|kiofilewidgets-kfileplacesmodeltest"
+                         ;; The following tests fail or are flaky (see:
+                         ;; https://bugs.kde.org/show_bug.cgi?id=440721).
+                         "|kiocore-jobtest"
+                         "|kiocore-kmountpointtest"
+                         "|kiowidgets-kdirlistertest"
+                         "|kiocore-kfileitemtest"
+                         "|kiocore-ktcpsockettest"
+                         "|kiocore-mimetypefinderjobtest"
+                         "|kiocore-krecentdocumenttest"
+                         "|kiocore-http_jobtest"
+                         "|kiogui-openurljobtest"
+                         "|kioslave-httpheaderdispositiontest"
+                         "|applicationlauncherjob_forkingtest"
+                         "|applicationlauncherjob_scopetest"
+                         "|applicationlauncherjob_servicetest"
+                         "|commandlauncherjob_forkingtest"
+                         "|commandlauncherjob_scopetest"
+                         "|commandlauncherjob_servicetest"
+                         "|kiowidgets-kdirmodeltest"
+                         "|kiowidgets-kurifiltertest-colon-separator"
+                         "|kiofilewidgets-kfilewidgettest"
+                         "|kiowidgets-kurifiltertest-space-separator"
+                         "|kioworker-httpheaderdispositiontest)"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Network transparent access to files and data")
     (description "This framework implements a lot of file management functions.
