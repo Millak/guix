@@ -45,15 +45,16 @@
 (define-public ktuberling
   (package
     (name "ktuberling")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/ktuberling-" version ".tar.xz"))
-      (sha256
-       (base32 "0zk7wijp425657s2j7xq7mhybgyddpam88ih8i0sbpcs0sliyz7k"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/ktuberling-" version ".tar.xz"))
+       (sha256
+        (base32 "15fizh4f1y6j475c91myw87fg8h5d0wi79niby19wgwwbhphzb2r"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools perl))
     (inputs
@@ -67,11 +68,10 @@
            kwidgetsaddons
            kxmlgui
            libkdegames
-           python-wrapper
-           qtbase-5
-           qtmultimedia-5
-           qtdeclarative-5
-           qtsvg-5))
+                                        ;python-wrapper
+           qtmultimedia
+           qtdeclarative
+           qtsvg))
     (home-page "https://apps.kde.org/ktuberling/")
     (synopsis "Stamp drawing toy")
     (description "KTuberling is a drawing toy intended for small children and
