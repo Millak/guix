@@ -826,19 +826,20 @@ artists to web-designers to people with low vision.")
 (define-public kmousetool
   (package
     (name "kmousetool")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmousetool-" version ".tar.xz"))
        (sha256
-        (base32 "1prh9xdzwx0mx93g9cbjy55hxwcci90hvrv2ckj4dqdnv5fv4h21"))))
+        (base32 "1vhabwsi1iiliakyqdaxjlzx9n7ln08szrr1l6hyi7abvzaarp8p"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
-     (list kauth
+     (list breeze-icons ;; default icon set
+           kauth
            kcoreaddons
            kconfigwidgets
            kdbusaddons
@@ -847,11 +848,12 @@ artists to web-designers to people with low vision.")
            knotifications
            kxmlgui
            kwindowsystem
+           kstatusnotifieritem
            libxtst
            libxt
            phonon
-           breeze-icons ;; default icon set
-           qtbase-5))
+           qtmultimedia))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/kmousetool/")
     (synopsis "Automatic mouse click and mouse manipulation tool for the
 disabled")
