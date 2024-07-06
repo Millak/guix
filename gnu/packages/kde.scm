@@ -11,7 +11,7 @@
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
@@ -1674,19 +1674,20 @@ PO template files.")
 (define-public kdegraphics-mobipocket
   (package
     (name "kdegraphics-mobipocket")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "13hn6dh5d4vsblvg6wyyvbmcyl0yyqr8srilik86wilp58qbsrdv"))))
+        (base32 "1hcglnbw2ck864glgd4aag54826aycmncmizfqlpncfzwdayq204"))))
     (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list kio qtbase-5))
+     (list kio qtbase qt5compat))
     (home-page "https://apps.kde.org/en/kdegraphics_mobipocket")
     (synopsis "KDE thumbnailer for Mobipocket files")
     (description "This package provides a KDE plugin that shows thumbnails of
