@@ -54,14 +54,14 @@
 (define-public akonadi
   (package
     (name "akonadi")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/akonadi-" version ".tar.xz"))
               (sha256
                (base32
-                "0jpp91d5rlblq6r981wxizmsv512kc43lfk8y29bdky6j4idflrb"))
+                "0ygxj2hhslg5frarwhmdqqhvd37kzcgm60krs979f378dkj6cyc8"))
               (patches (search-patches "akonadi-paths.patch"
                                        "akonadi-timestamps.patch"
                                        "akonadi-not-relocatable.patch"))))
@@ -69,12 +69,12 @@
     (native-inputs
      (list dbus
            extra-cmake-modules
-           qttools-5
+           qttools
            shared-mime-info
            pkg-config))
     (inputs
      (list boost
-           libaccounts-qt
+           libaccounts-qt6
            kconfig
            kconfigwidgets
            kcoreaddons
@@ -92,11 +92,11 @@
            ;; Do NOT add mysql or postgresql to the inputs. Otherwise the binaries
            ;; and wrapped files will refer to them, even if the user choices none
            ;; of these.  Executables are searched on $PATH then.
-           signond
-           qtbase-5))
+           signond))
     (propagated-inputs (list sqlite kaccounts-integration))
     (arguments
-     (list #:tests? #f
+     (list #:qtbase qtbase
+           #:tests? #f
            #:configure-flags #~'("-DDATABASE_BACKEND=SQLITE") ;lightweight
            #:modules `((ice-9 textual-ports)
                        ,@%qt-build-system-modules)
