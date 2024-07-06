@@ -1506,19 +1506,20 @@ mail transport.")
 (define-public kmbox
   (package
     (name "kmbox")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmbox-" version ".tar.xz"))
        (sha256
-        (base32 "05hdfjwp6ay2j16rxp55k3fywwf7kxiig4dv9fh51iysglmzzn76"))))
+        (base32 "0g2pg80n37miinfv69mz6hpvdhhbprdvgbkvzafspaj9bram9xrr"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list kcodecs kmime qtbase-5))
+     (list kcodecs kmime))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://api.kde.org/kdepim/kmbox/html/index.html")
     (synopsis "Library for handling mbox mailboxes")
     (description "This is a library for handling mailboxes in mbox format,
