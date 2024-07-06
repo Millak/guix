@@ -42,26 +42,27 @@
   #:use-module (gnu packages vnc)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages icu4c)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages xdisorg))
 
 (define-public dolphin
   (package
     (name "dolphin")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-" version ".tar.xz"))
        (sha256
-        (base32 "0bys24i2a3a65ahq5p3q1zr2px8jqip1gjn5m7rngq4hcddb1ji8"))))
+        (base32 "0rrmbzrywv19z93b9291r863dm7panz65cf10lzgjqzlsx7hm1az"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools ruby ruby-test-unit))
     (inputs
      (list baloo
            baloo-widgets
-           kactivities
+           plasma-activities
            kbookmarks
            kcmutils
            kcompletion
@@ -71,7 +72,6 @@
            kdbusaddons
            ki18n
            kiconthemes
-           kinit
            kio
            knewstuff
            knotifications
@@ -81,11 +81,11 @@
            kwindowsystem
            breeze-icons ;; default icon set
            phonon
-           qtbase-5
-           qtx11extras
-           solid))
+           solid
+           libxkbcommon))
     (arguments
-     `(#:tests? #f)) ;; TODO: 4/15 tests fail even with offscreen
+     (list #:qtbase qtbase
+           #:tests? #f)) ;; TODO: 4/15 tests fail even with offscreen
     (home-page "https://apps.kde.org/dolphin/")
     (synopsis "File manager for KDE")
     (description "Dolphin is a file manager for KDE focusing on usability.
