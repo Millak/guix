@@ -288,19 +288,20 @@ with emails through Akonadi easier.")
 (define-public akonadi-notes
   (package
     (name "akonadi-notes")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akonadi-notes-" version ".tar.xz"))
        (sha256
-        (base32 "0s5a414cdcz37srys2w3c2z5c63ha9ivsqj0srnfwwv0pxix266v"))))
+        (base32 "0cb1nbjlsx3lhz27ggrhmgrbgljhwrh7pssmx4jkljhahi57vwxa"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list akonadi kcodecs ki18n kmime qtbase-5))
+     (list akonadi kcodecs ki18n kmime))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://api.kde.org/kdepim/akonadi/html/index.html")
     (synopsis "Akonadi notes access library")
     (description "Akonadi Notes is a library that effectively bridges the
