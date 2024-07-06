@@ -80,6 +80,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
@@ -573,7 +574,7 @@ ksh, and tcsh.")
                 (format #f "from ~a import" module))
                (("from xonsh\\.ply import") "import"))
              #t))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list ;; TODO Try running run the test suite.
            ;; See 'requirements-tests.txt' in the source distribution for more
