@@ -1186,7 +1186,7 @@ multi-floor indoor maps.")
 (define-public kpmcore
   (package
     (name "kpmcore")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1194,7 +1194,7 @@ multi-floor indoor maps.")
                     "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0cz0pz84sxa7lvkq8v25775z7x7g6pz9sq7c90pfv8h9qsz8q1l9"))))
+                "1nrmfxs8hbba8b3ml4g9qaf0klzcm8ar052npv5lm0whx6zld1lf"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
@@ -1203,9 +1203,9 @@ multi-floor indoor maps.")
            kcoreaddons
            ki18n
            kwidgetsaddons
-           polkit-qt
-           qtbase-5
-           qca
+           polkit-qt6
+           qtbase
+           qca-qt6
            `(,util-linux "lib")))
     (arguments
      (list
