@@ -1085,24 +1085,25 @@ test and recovery certificates.")
 (define-public kimap
   (package
     (name "kimap")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kimap-" version ".tar.xz"))
        (sha256
-        (base32 "08s2891f2cnf5f7q034lmqv3vnh3v61l7bsyssdx711jfbswg9ik"))))
+        (base32 "1q4nxd31sjml31qicgpinf81rd8id71wm3kgx0v9byv7d0kysyqn"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list cyrus-sasl
            kcoreaddons
+           kcodecs
            ki18n
            kio
-           kmime
-           qtbase-5))
+           kmime))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://api.kde.org/kdepim/kimap/html/index.html")
     (synopsis "Library for handling IMAP")
     (description "This library provides a job-based API for interacting with
