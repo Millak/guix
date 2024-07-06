@@ -1948,27 +1948,29 @@ pass files.")
 (define-public libgravatar
   (package
     (name "libgravatar")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libgravatar-" version ".tar.xz"))
        (sha256
-        (base32 "03zhnpb114y6a6vhiv9c1fiqsinjmk52j1k9w2r04ibxp35m3xj7"))))
+        (base32 "0xk6i1rndhh58p20hx6473hc29njg03qcy7ymdvflr5lgr7qavwy"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kconfig
                   ki18n
                   kio
+                  kconfigwidgets
                   kpimcommon
                   kpimtextedit
                   ktextaddons
                   ktextwidgets
                   kwidgetsaddons
-                  qtbase-5))
+                  qtbase))
     (arguments
-     `(#:tests? #f)) ;; 2/7 tests fail (due to network issues?)
+     (list #:qtbase qtbase
+           #:tests? #f)) ;; 2/7 tests fail (due to network issues?)
     (home-page "https://invent.kde.org/pim/libgravatar")
     (synopsis "Online avatar lookup library")
     (description "This library retrieves avatar images based on a
