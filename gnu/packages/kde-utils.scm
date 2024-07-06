@@ -866,14 +866,14 @@ whom pressing buttons hurts.")
 (define-public kmouth
   (package
     (name "kmouth")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmouth-" version ".tar.xz"))
        (sha256
-        (base32 "0qyzq4cvcsacb7hr6n79i3rzyjr0m3c8lrf8fwbzdivswpk8wss3"))))
+        (base32 "1gd51vwa9xdxxi6idzgzfb9dapirp5xc9alf3d9xnliwxqfxiv3x"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -888,8 +888,8 @@ whom pressing buttons hurts.")
            kwidgetsaddons
            kxmlgui
            breeze-icons ;; default icon set
-           qtbase-5
-           qtspeech-5))
+           qtspeech))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/kmouth/")
     (synopsis "Type-and-say frontend for speech synthesizers")
     (description "KMouth is a program which enables persons that cannot speak
