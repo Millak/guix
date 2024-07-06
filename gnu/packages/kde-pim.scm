@@ -2093,17 +2093,17 @@ and allows one to view/extract message formatted text in Rich Text Format.")
 (define-public libkdepim
   (package
     (name "libkdepim")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkdepim-" version ".tar.xz"))
        (sha256
-        (base32 "1i5c4qqd4ghlfjvxniy8sbfqh0fsrz4sadvh0n2d207s9rsl274v"))))
+        (base32 "1k22qjxfm8msj8ipyz2p5qq0hx9q6p3qw42cp3bnbhiaamanmlq3"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
      (list akonadi
            akonadi-contacts
@@ -2119,7 +2119,6 @@ and allows one to view/extract message formatted text in Rich Text Format.")
            kcontacts
            kcoreaddons
            kdbusaddons
-           kdesignerplugin
            ki18n
            kiconthemes
            kio
@@ -2129,8 +2128,8 @@ and allows one to view/extract message formatted text in Rich Text Format.")
            kldap
            kmime
            kwallet
-           kwidgetsaddons
-           qtbase-5))
+           kwidgetsaddons))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/pim/libkdepim")
     (synopsis "Libraries for common KDE PIM apps")
     (description "This package provided libraries for common KDE PIM apps.")
