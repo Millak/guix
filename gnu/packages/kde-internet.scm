@@ -387,7 +387,7 @@ This package is part of the KDE networking module.")
         (base32 "0xw9ks43llm4lnnswv1h81gmr8mr6191bblmd21c1a5a6vvr935h"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules pkg-config kdoctools))
     (inputs
      (list breeze-icons ; default icon set
            kbookmarks
@@ -408,11 +408,14 @@ This package is part of the KDE networking module.")
            kxmlgui
            plasma-activities
            libssh
-           libvnc))
-    (arguments ;; FIXEME: libvnc can't be found for some reason.
-     (list #:configure-flags #~(list
-                                "-DWITH_VNC=NO"
-                                "-DQT_MAJOR_VERSION=6")
+           libvnc
+           ;; XXX: libvnc's Libs.private, remove when we use pkgconf
+           lzo
+           libjpeg-turbo
+           libgcrypt
+           gnutls))
+    (arguments
+     (list #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
            #:qtbase qtbase))
     (home-page "https://apps.kde.org/krdc/")
     (synopsis "Remote desktop client")
