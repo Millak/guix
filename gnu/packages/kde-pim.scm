@@ -1162,21 +1162,22 @@ model and itinerary extraction code.")
 (define-public kldap
   (package
     (name "kldap")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kldap-" version ".tar.xz"))
        (sha256
-        (base32 "0hp5j02kwh91xf0n6zqzgam7g50r54hzbkli5i7c0rxdb1g28ihm"))))
+        (base32 "1nhr18h7f4qm196jjg5aqyky7v7w8n7iy07kzdk638381sarcmyz"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
-     (list ki18n kio kwidgetsaddons qtbase-5 qtkeychain))
+     (list ki18n kio kwidgetsaddons qtkeychain-qt6))
     (propagated-inputs
      (list cyrus-sasl openldap))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://api.kde.org/kdepim/kldap/html/index.html")
     (synopsis "Library for accessing LDAP")
     (description "This is a library for accessing LDAP with a convenient Qt
