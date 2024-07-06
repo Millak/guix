@@ -6737,7 +6737,7 @@ stripped.")
 (define-public go-github-com-alecthomas-repr
   (package
     (name "go-github-com-alecthomas-repr")
-    (version "0.3.0")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6746,7 +6746,7 @@ stripped.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zq30b36vvg4kzxkff64gjwvcjaw0d13dqzfjfai66hkh3ijdzwl"))))
+                "0ikvl78dighkn87bxk6gki4wcz9f138n7kbqkagj5vbdb690yjkl"))))
     (build-system go-build-system)
     (arguments
      `(#:go ,go-1.18
