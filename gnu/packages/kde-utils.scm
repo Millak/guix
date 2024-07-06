@@ -1080,41 +1080,6 @@ redone.")
     (license ;; GPL for programs, LGPL for libraries, FDL for documentation
      (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
 
-(define-public print-manager
-  (package
-    (name "print-manager")
-    (version "23.04.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/print-manager-" version ".tar.xz"))
-       (sha256
-        (base32 "1fnbkx2xk3pr3cwcji1xbswcf5b7h8r4kag8i3lv28cnjw3ahs52"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list cups
-           kcmutils
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kdbusaddons
-           kiconthemes
-           ki18n
-           kio
-           knotifications
-           kwidgetsaddons
-           kwindowsystem
-           plasma-framework
-           qtdeclarative-5))
-    (home-page "https://invent.kde.org/utilities/print-manager")
-    (synopsis "Manage print jobs and printers")
-    (description
-     "This package provides printing management for KDE.")
-    (license license:gpl2+)))
-
 (define-public rsibreak
   (package
     (name "rsibreak")
