@@ -1049,14 +1049,14 @@ test and recovery certificates.")
 (define-public kidentitymanagement
   (package
     (name "kidentitymanagement")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kidentitymanagement-" version ".tar.xz"))
        (sha256
-        (base32 "03bfz0x35wiynla39iysxa5g3rckmy9nj2z1f439v9sblcqbvz3p"))))
+        (base32 "026i17j6spl0937klzf9ch26cmj7rrp617yrdq7917cwp9i7ah04"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -1065,19 +1065,20 @@ test and recovery certificates.")
            kcompletion
            kconfig
            kcoreaddons
-           kemoticons
            kiconthemes
            kio
            kpimtextedit
            ktextwidgets
+           ktextaddons
            kxmlgui
-           qtbase-5))
+           kirigami-addons))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" "/tmp/dummy-home")))))) ;; FIXME: what is this?
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-home
+                 (lambda _
+                   (setenv "HOME" "/tmp/dummy-home")))))) ;; FIXME: what is this?
     (home-page "https://kontact.kde.org/")
     (synopsis "Library for shared identities between mail applications")
     (description "This library provides an API for managing user identities.")
