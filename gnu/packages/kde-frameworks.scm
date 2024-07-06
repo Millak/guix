@@ -1904,8 +1904,10 @@ by applications to write metadata.")
          "1f1y4r5rb971v2g34fgjbr14g0mdms5h66yl5k0p1zf50kr2wnic"))))
     (build-system qt-build-system)
     (arguments
-     (list #:configure-flags #~'("-DBUILD_SHARED_LIBS=ON"
-                                 "-DBUILD_TESTS=ON")
+     (list #:qtbase qtbase
+           #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                     "-DBUILD_TESTS=ON"
+                                     "-DBUILD_WITH_QT6=ON")
            #:phases
            #~(modify-phases %standard-phases
                (replace 'check
@@ -1916,9 +1918,9 @@ by applications to write metadata.")
                    (setenv "DISPLAY" ":1")
                    (invoke "ctest" "--test-dir" "tests"))))))
     (native-inputs
-     (list qttools-5 xorg-server-for-tests))
+     (list qttools xorg-server-for-tests))
     (inputs
-     (list googletest qtsvg-5 kcolorpicker))
+     (list googletest qtsvg kcolorpicker))
     (home-page "https://github.com/ksnip/kImageAnnotator")
     (synopsis "Image annotating library")
     (description "This library provides tools to annotate images.")
