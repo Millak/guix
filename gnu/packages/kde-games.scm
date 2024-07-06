@@ -672,15 +672,16 @@ This package is part of the KDE games module.")
 (define-public kgoldrunner
   (package
     (name "kgoldrunner")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/kgoldrunner-" version ".tar.xz"))
-      (sha256
-       (base32 "0acavby9lwbqbx577a3az9lcahchngcs15571va2ndnq1r16paxf"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kgoldrunner-" version ".tar.xz"))
+       (sha256
+        (base32 "10v280785ds03h6ra384hhck422dwy8zz57x4wpcq87azzf0mi4c"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -693,8 +694,8 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtbase-5
-           qtdeclarative-5))
+           qtbase
+           qtdeclarative))
     (home-page "https://apps.kde.org/kgoldrunner/")
     (synopsis "Action and puzzle solving game")
     (description "KGoldrunner is an action game where the hero runs through a
