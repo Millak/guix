@@ -517,28 +517,28 @@ KDE Frameworks 5 to better interact with the system.")
 (define-public kgamma
   (package
     (name "kgamma")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
-                                  version "/" name "5-"
+                                  version "/" name "-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0v5fynydjha9wx9j59ysw8vxx2h2gm55q27gnnhgyv0wxva8hpnl"))))
+                "0qr6crka2a71izg54vz0y7ahsfxr7xh1j3bb53c7pfhs3dq8wgfb"))))
     (build-system qt-build-system)
-    (native-inputs (list extra-cmake-modules))
+    (arguments (list #:qtbase qtbase))
+    (native-inputs (list extra-cmake-modules kdoctools))
     (inputs (list kauth
                   kcoreaddons
                   kconfig
                   kconfigwidgets
-                  kdoctools
+                  kcmutils
                   ki18n))
     (synopsis "Adjust monitor gamma settings")
     (description
      "This package provides a tool to adjust your monitor gamma settings.")
     (home-page "https://invent.kde.org/plasma/kgamma5")
-    (properties '((upstream-name . "kgamma5")))
     (license license:gpl2+)))
 
 (define-public khotkeys
