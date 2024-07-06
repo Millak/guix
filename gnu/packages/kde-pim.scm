@@ -183,21 +183,20 @@ collection and item views.")
 (define-public akonadi-contacts
   (package
     (name "akonadi-contacts")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akonadi-contacts-" version ".tar.xz"))
        (sha256
-        (base32 "10vlzj56ps1pysf7g6i14v8wp2wkxh53055r2v4iq4cpq3mzayc6"))))
+        (base32 "1207dgilr5y4b3g3fk2ywyvb6mryq2xrpkhi6cyhgn8k84q201fn"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list akonadi
            boost
-           grantlee
            grantleetheme
            kauth
            kcmutils
@@ -215,14 +214,17 @@ collection and item views.")
            kmime
            kservice
            ktextwidgets
+           ktexttemplate
+           ktextaddons
+           ktexteditor
            kwidgetsaddons
            kxmlgui
-           libkleo
            prison
            kio
-           qtbase-5
            solid
            sonnet))
+    (arguments
+     (list #:qtbase qtbase))
     (home-page "https://api.kde.org/kdepim/akonadi/html/index.html")
     (synopsis "Akonadi contacts access library")
     (description "Akonadi Contacts is a library that effectively bridges the
