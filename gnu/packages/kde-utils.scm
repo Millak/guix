@@ -45,6 +45,7 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages xdisorg)
@@ -589,25 +590,25 @@ conversions between European currencies.")
 (define-public keysmith
   (package
     (name "keysmith")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/keysmith-" version ".tar.xz"))
               (sha256
                (base32
-                "1rfp516adliyc57nx4ha1rp8v2z340ygsvblh5sqmsdsg2ivjklj"))))
+                "1n34sda27hpl53gayglrjyz8la8g25z8mrvaymwhcp8fzpids911"))))
     (build-system qt-build-system)
-    (native-inputs (list extra-cmake-modules pkg-config))
+    (native-inputs (list extra-cmake-modules pkg-config python-minimal))
     (inputs (list kdbusaddons
                   kirigami
                   ki18n
                   kwindowsystem
                   libsodium
-                  qtdeclarative-5
-                  qtgraphicaleffects
-                  qtquickcontrols2-5
-                  qtsvg-5))
+                  qqc2-desktop-style
+                  qtsvg
+                  qtdeclarative))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/utilities/keysmith")
     (synopsis "OTP client for Plasma Mobile and Desktop")
     (description
