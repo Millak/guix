@@ -553,7 +553,7 @@ KDSoap.")
 (define-public kio-extras
   (package
     (name "kio-extras")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -561,7 +561,7 @@ KDSoap.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ygxfq62idpgf1dlic1245y5gf0fnkrpbqxd230xmxi7a35za8qd"))))
+                "0h720wcgsdx9h5vlr4flxrd3djmhwvlwkrf0yzwsf4amcb9wds8r"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -571,21 +571,24 @@ KDSoap.")
                               (setenv "HOME" (getcwd))
                               (setenv "TMPDIR" (getcwd))
                               (invoke "ctest" "-E" "(thumbnailtest|testkioarchive)")))))))
-    (native-inputs (list extra-cmake-modules dbus kdoctools pkg-config qttools-5))
-    ;; TODO: libappimage, kdsoap-ws-discovery-client
+    (native-inputs (list extra-cmake-modules dbus kdoctools pkg-config qttools))
+    ;; TODO: libappimage
     (inputs (list gperf
                   imath
-                  kactivities
-                  kactivities-stats
+                  plasma-activities
+                  plasma-activities-stats
                   karchive
                   kbookmarks
+                  kcmutils
                   kconfig
                   kconfigwidgets
                   kcoreaddons
                   kdnssd
                   kdbusaddons
-                  kdsoap
+                  kdsoap-qt6
+                  kdsoap-ws-discovery-client
                   kguiaddons
+                  ktextwidgets
                   ki18n
                   kio
                   ksyntaxhighlighting
@@ -597,8 +600,10 @@ KDSoap.")
                   libtirpc
                   openexr
                   phonon
-                  qtbase-5
-                  qtsvg-5
+                  qtbase
+                  qt5compat
+                  qcoro-qt6
+                  qtsvg
                   samba
                   shared-mime-info
                   solid
