@@ -2959,7 +2959,7 @@ notifications which can be embedded in your application.")
 (define-public kparts
   (package
     (name "kparts")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2968,38 +2968,32 @@ notifications which can be embedded in your application.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1rrf765p554r7l8j23gx5zxdq6wimh0v91qdkwz7ilm2qr16vd5v"))))
+                "0004ln6fby8jgx6j27qlhmlagxy7c70akn0kayfqi6glfdk2gz22"))))
     (build-system qt-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'disable-partloader-test
-                    (lambda _
-                      (substitute* "autotests/CMakeLists.txt"
-                        ;; XXX: PartLoaderTest wants to create a .desktop file
-                        ;; in the common locations and test that MIME types work.
-                        ;; The setup required for this is extensive, skip for now.
-                        (("partloadertest\\.cpp") "")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-partloader-test
+                 (lambda _
+                   (substitute* "autotests/CMakeLists.txt"
+                     ;; XXX: PartLoaderTest wants to create a .desktop file
+                     ;; in the common locations and test that MIME types work.
+                     ;; The setup required for this is extensive, skip for now.
+                     (("partloadertest\\.cpp") "")))))))
     (propagated-inputs
-     (list kio ktextwidgets kxmlgui))
+     (list kio kservice kxmlgui))
     (native-inputs
      (list extra-cmake-modules shared-mime-info))
     (inputs
-     (list kauth
-           kbookmarks
-           kcodecs
-           kcompletion
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kiconthemes
-           kitemviews
-           ki18n
-           kjobwidgets
-           kservice
-           kwidgetsaddons
-           qtbase-5
-           solid
-           sonnet))
+     (list
+      kcompletion
+      kconfig
+      kcoreaddons
+      kitemviews
+      ki18n
+      kjobwidgets
+      kwidgetsaddons
+      qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Plugin framework for user interface components")
     (description "This library implements the framework for KDE parts, which are
