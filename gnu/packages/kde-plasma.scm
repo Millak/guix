@@ -923,7 +923,7 @@ call it if it is not associated to a terminal.")
 (define-public ksystemstats
   (package
     (name "ksystemstats")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -931,10 +931,11 @@ call it if it is not associated to a terminal.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1fx5b566xx32q7gxi8qnnx6vny7ip5r65zi2znnx3azmwsc8jgvw"))))
+                "0fv96n03j6q2ainhw922abwwq1qrc8djqwk2cg6cjlnlkvvx9m1i"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
+     (list #:qtbase qtbase
+           #:phases #~(modify-phases %standard-phases
                         (replace 'check
                           (lambda* (#:key tests? #:allow-other-keys)
                             (when tests?
