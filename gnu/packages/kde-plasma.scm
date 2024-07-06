@@ -662,61 +662,64 @@ are pressed.")
 (define-public kinfocenter
   (package
     (name "kinfocenter")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "15hm828ifrrzsbkvknqwf0l3qxr45pdi49z823cw421z45r8ivkj"))))
+                "0g5hvsgj7v1zc5kavq6kr44rnf2gzk719wsaypdj8cqy8nijph31"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'fix-systemsettings-symlink
-                          (lambda* (#:key inputs #:allow-other-keys)
-                            (let ((replace (lambda (file cmd)
-                                             (substitute* file
-                                               (((string-append
-                                                  "\""
-                                                  cmd
-                                                  "\""))
-                                                (string-append
-                                                 "\""
-                                                 (search-input-file
-                                                  inputs
-                                                  (string-append "/bin/" cmd))
-                                                 "\""))))))
-                              (substitute* "CMakeLists.txt"
-                                (("\\$\\{KDE_INSTALL_FULL_BINDIR\\}/systemsettings5")
-                                 (search-input-file inputs
-                                                    "/bin/.systemsettings5-real")))
-                              (substitute* "Modules/kwinsupportinfo/kcm_kwinsupportinfo.json.in"
-                                (("@QtBinariesDir@/qdbus")
-                                 (search-input-file inputs "/bin/qdbus")))
-                              (substitute* "Modules/kwinsupportinfo/main.cpp"
-                                (("QLibraryInfo::location\\(QLibraryInfo::BinariesPath\\) \\+ QStringLiteral\\(\"/qdbus\"\\)")
-                                 (string-append "QStringLiteral(\"" (search-input-file inputs "/bin/qdbus") "\")")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((replace (lambda (file cmd)
+                               (substitute* file
+                                 (((string-append
+                                    "\""
+                                    cmd
+                                    "\""))
+                                  (string-append
+                                   "\""
+                                   (search-input-file
+                                    inputs
+                                    (string-append "/bin/" cmd))
+                                   "\""))))))
+                (substitute* "CMakeLists.txt"
+                  (("\\$\\{KDE_INSTALL_FULL_BINDIR\\}/systemsettings")
+                   (search-input-file inputs
+                                      "/bin/.systemsettings-real")))
+                (substitute* "kcms/kwinsupportinfo/kcm_kwinsupportinfo.json.in"
+                  (("@QtBinariesDir@/qdbus")
+                   (search-input-file inputs "/bin/qdbus")))
+                (substitute* "kcms/kwinsupportinfo/main.cpp"
+                  (("QLibraryInfo::path\\(QLibraryInfo::BinariesPath\\) \\+ QStringLiteral\\(\"/qdbus\"\\)")
+                   (string-append "QStringLiteral(\"" (search-input-file inputs "/bin/qdbus") "\")")))
 
-                              (replace '("Modules/cpu/kcm_cpu.json"
-                                         "Modules/cpu/main.cpp") "lscpu")
-                              (replace '("Modules/opencl/kcm_opencl.json"
-                                         "Modules/opencl/main.cpp") "clinfo")
-                              (replace '("Modules/vulkan/kcm_vulkan.json"
-                                         "Modules/vulkan/main.cpp") "vulkaninfo")
-                              (replace '("Modules/glx/kcm_glx.json"
-                                         "Modules/glx/main.cpp") "glxinfo")
-                              (replace '("Modules/wayland/kcm_wayland.json"
-                                         "Modules/wayland/main.cpp") "wayland-info")
-                              (replace '("Modules/egl/kcm_egl.json"
-                                         "Modules/egl/main.cpp") "eglinfo")
-                              (replace '("Modules/xserver/kcm_xserver.json"
-                                         "Modules/xserver/main.cpp") "xdpyinfo")))))))
-    (native-inputs (list aha extra-cmake-modules kdoctools pkg-config))
+                (replace '("kcms/cpu/kcm_cpu.json"
+                           "kcms/cpu/main.cpp") "lscpu")
+                (replace '("kcms/opencl/kcm_opencl.json"
+                           "kcms/opencl/main.cpp") "clinfo")
+                (replace '("kcms/vulkan/kcm_vulkan.json"
+                           "kcms/vulkan/main.cpp") "vulkaninfo")
+                (replace '("kcms/glx/kcm_glx.json"
+                           "kcms/glx/main.cpp") "glxinfo")
+                (replace '("kcms/wayland/kcm_wayland.json"
+                           "kcms/wayland/main.cpp") "wayland-info")
+                (replace '("kcms/egl/kcm_egl.json"
+                           "kcms/egl/main.cpp") "eglinfo")
+                (replace '("kcms/xserver/kcm_xserver.json"
+                           "kcms/xserver/main.cpp") "xdpyinfo")))))))
+    (native-inputs (list aha extra-cmake-modules kdoctools pkg-config qttools))
     ;; * vulkaninfo
     ;; Wayland KCM
     (inputs (list dmidecode
                   ;; fwupdmgr ;; Packaged on master branch already
+                  kauth
                   kconfig
                   kconfigwidgets
                   kcoreaddons
@@ -732,14 +735,14 @@ are pressed.")
                   kwayland
                   mesa-utils
                   pciutils
-                  plasma-framework
-                  qtbase-5
+                  libplasma
+                  qttools
+                  qtbase
                   solid
                   util-linux
                   vulkan-tools
                   wayland-utils
                   xdpyinfo
-                  qttools-5
                   clinfo))
     (propagated-inputs (list system-settings))
     (home-page "https://invent.kde.org/plasma/kinfocenter")
