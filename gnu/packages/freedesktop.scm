@@ -3137,16 +3137,22 @@ interfaces.")
 (define-public xdg-desktop-portal-kde
   (package
     (name "xdg-desktop-portal-kde")
-    (version "5.27.6")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0wzp21l521d9z9mnfgiapzljqpg5qc5ghyzndpr8cz54c2bf9mdf"))))
+                "0dksk5zs4w79n9l8wspwdgzx2fj1xafsjjk4d6bv2hrhhly7bnxr"))))
     (build-system qt-build-system)
-    (native-inputs (list extra-cmake-modules pkg-config))
+    (arguments (list
+                #:tests? #f ;; colorschemetest test fail, because require dbus.
+                #:qtbase qtbase))
+    (native-inputs (list extra-cmake-modules pkg-config
+                         ;; require by test.
+                         python-minimal
+                         python-pygobject))
     (inputs (list cups
                   kcoreaddons
                   kconfig
@@ -3155,20 +3161,22 @@ interfaces.")
                   kio
                   kirigami
                   knotifications
-                  plasma-framework
+                  libplasma
                   plasma-wayland-protocols
+                  kstatusnotifieritem
                   kwayland
                   kwidgetsaddons
                   kwindowsystem
                   kiconthemes
-                  qtdeclarative-5
-                  qtwayland-5
+                  qtdeclarative
+                  qtwayland
                   wayland
                   kglobalaccel
                   kguiaddons
                   libxkbcommon
-                  kio-fuse
                   wayland-protocols))
+    (propagated-inputs
+     (list xdg-desktop-portal))
     (synopsis "Backend implementation for xdg-desktop-portal using Qt/KF5")
     (description "This package provides a backend implementation
 for xdg-desktop-portal that is using Qt/KF5.")
