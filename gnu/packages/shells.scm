@@ -47,6 +47,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-graphics)
@@ -66,11 +67,14 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages scheme)
+  #:use-module (gnu packages terminals)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xdisorg)
@@ -576,10 +580,36 @@ ksh, and tcsh.")
              #t))))
     (build-system pyproject-build-system)
     (arguments
-     (list ;; TODO Try running run the test suite.
-           ;; See 'requirements-tests.txt' in the source distribution for more
-           ;; information.
-           #:tests? #f
+     ;; Some tests are failing for reasons like not accessing parent directory
+     ;; with os.getcwd(), not activating virtual environments, not finding
+     ;; some commands (man, echo), and not running subprocesses.
+     (list #:test-flags
+           #~(list "-k"
+                   (string-append
+                    "not "
+                    (string-join
+                     (list "test_aliases_print"
+                           "test_argv0"
+                           "test_bash_and_is_alias_is_only_functional_alias"
+                           "test_bash_completer"
+                           "test_bash_completer_empty_prefix"
+                           "test_complete_command"
+                           "test_complete_dots"
+                           "test_dirty_working_directory"
+                           "test_equal_sign_arg"
+                           "test_man_completion"
+                           "test_parser_show"
+                           "test_printfile"
+                           "test_printname"
+                           "test_quote_handling"
+                           "test_script"
+                           "test_skipper_command"
+                           "test_sourcefile"
+                           "test_spec_modifier_alias_output_format"
+                           "test_vc_get_branch"
+                           "test_xonsh_activator"
+                           "test_xonsh_lexer")
+                     " and not ")))
            #:phases
            #~(modify-phases %standard-phases
                (replace 'install
@@ -588,9 +618,21 @@ ksh, and tcsh.")
                      (invoke "python" "-m" "compileall"
                              "--invalidation-mode=unchecked-hash" out)
                      (invoke "python" "setup.py" "install" "--root=/"
-                             (string-append "--prefix=" out))))))))
+                             (string-append "--prefix=" out)))))
+               ;; Some tests run os.mkdir().
+               (add-before 'check 'writable-home
+                 (lambda _
+                   (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-setuptools                      ;needed at build time
+     (list git-minimal
+           python-pyte
+           python-pytest
+           python-pytest-mock
+           python-pytest-rerunfailures
+           python-pytest-subprocess
+           python-pytest-timeout
+           python-requests
+           python-setuptools                      ;needed at build time
            python-wheel))
     (inputs
      (list python-distro
