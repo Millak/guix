@@ -7851,9 +7851,9 @@ systems can import this package to enable running programs as services without
 modifying them.")
     (license license:zlib)))
 
-(define-public go-github-com-goccy-yaml
+(define-public go-github-com-goccy-go-yaml
   (package
-    (name "go-github-com-goccy-yaml")
+    (name "go-github-com-goccy-go-yaml")
     (version "1.11.3")
     (home-page "https://github.com/goccy/go-yaml")
     (source

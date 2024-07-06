@@ -4363,7 +4363,7 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
       #:go go-1.21
       #:import-path "github.com/Songmu/gitconfig"))
     (propagated-inputs
-     (list go-github-com-goccy-yaml))
+     (list go-github-com-goccy-go-yaml))
     (home-page "https://github.com/songmu/gitconfig")
     (synopsis "Go library to get configuration values from gitconfig")
     (description

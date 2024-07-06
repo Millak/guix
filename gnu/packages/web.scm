@@ -5449,7 +5449,7 @@ you'd expect.")
            go-github-com-elliotchance-orderedmap
            go-github-com-fatih-color
            go-github-com-goccy-go-json
-           go-github-com-goccy-yaml
+           go-github-com-goccy-go-yaml
            go-github-com-jinzhu-copier
            go-github-com-magiconair-properties
            go-github-com-pelletier-go-toml-v2
