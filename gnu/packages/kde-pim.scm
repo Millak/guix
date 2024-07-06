@@ -575,14 +575,14 @@ one of the APIs mentioned above.")
 (define-public kaccounts-integration
   (package
     (name "kaccounts-integration")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1mn64xw5r2magy5y0qmg5r907jz1y8jar0qqkc6s1zjjr3s3knac"))))
+                "0dbv1yv6qq0rgjlczmky7fmwa3rspyssd6grdbgzyy3k0v35m1fi"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcmutils
@@ -592,9 +592,10 @@ one of the APIs mentioned above.")
                   kdeclarative
                   kwallet
                   kio
-                  libaccounts-qt
-                  qcoro-qt5
-                  signond))
+                  libaccounts-qt6
+                  qcoro-qt6
+                  signond-qt6))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/network/kaccounts-integration")
     (synopsis "Online account management system")
     (description "The Kaccounts Integration library provides online account
