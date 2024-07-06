@@ -699,23 +699,24 @@ with support for QR scanning.")
 (define-public kontrast
   (package
     (name "kontrast")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kontrast-" version ".tar.xz"))
               (sha256
                (base32
-                "08qwvc2b5bj3012lvwxainbw7d34mkbwwznj3661ydsnfjyxxs92"))))
+                "0rn7nw686d773hx6dg1zvld89r0l9gg4fps3ipyhlwi8gwcm1dwl"))))
     (build-system qt-build-system)
-    (native-inputs (list extra-cmake-modules kdoctools))
+    (arguments (list #:qtbase qtbase))
+    (native-inputs (list extra-cmake-modules kdoctools python-minimal))
     (inputs (list kirigami
                   ki18n
                   kcoreaddons
-                  qtdeclarative-5
-                  qtgraphicaleffects
-                  qtquickcontrols2-5
-                  qtsvg-5))
+                  qtdeclarative
+                  futuresql
+                  qcoro-qt6
+                  qtsvg))
     (home-page "https://apps.kde.org/kontrast/")
     (synopsis "Color contrast checker")
     (description
