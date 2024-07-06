@@ -1888,18 +1888,18 @@ pass files.")
 (define-public kpimcommon
   (package
     (name "kpimcommon")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/pimcommon-" version ".tar.xz"))
        (sha256
-        (base32 "1v2nv83h9p1ajbcwfdk8b7lrr84r8c855lysknzvzkpm5z012z3l"))))
+        (base32 "0k7zakx1dd39997a9a3d6qmlzdc5alw5gny0xh7bncv0fpilvgyh"))))
     (properties `((upstream-name . "pimcommon")))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
      (list karchive
            akonadi
@@ -1907,9 +1907,8 @@ pass files.")
            akonadi-mime
            akonadi-search
            boost
-           grantlee
            grantleetheme
-           ;; TODO: ("kaccounts" ,kaccounts)
+           kaccounts-integration
            kcalendarcore
            kcmutils
            kcodecs
@@ -1917,10 +1916,8 @@ pass files.")
            kconfigwidgets
            kcontacts
            kcoreaddons
-           kdesignerplugin
            ki18n
            kiconthemes
-           kimap
            kio
            kirigami ;; run-time dependency
            kitemmodels
@@ -1930,19 +1927,18 @@ pass files.")
            kmime
            knewstuff
            kpimtextedit
-           ktextaddons
            ktextwidgets
+           ktexttemplate
            kwallet
            kwidgetsaddons
            kwindowsystem
            kxmlgui
-           libkdepim
            libxslt
            purpose
-           qtbase-5
-           qtwebengine-5))
+           qtwebengine))
+    (propagated-inputs (list kimap ktextaddons libkdepim))
     (arguments
-     `(#:tests? #f)) ;; TODO tests hang
+     (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/pim/pimcommon")
     (synopsis "Common libraries for KDE PIM")
     (description "This package provides common libraries for KDE PIM.")
