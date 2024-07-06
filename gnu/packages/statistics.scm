@@ -411,7 +411,8 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
            pkg-config
            texinfo                      ; for building HTML manuals
            (texlive-updmap.cfg
-            (list texlive-fancyvrb
+            (list texlive-etoolbox
+                  texlive-fancyvrb
                   texlive-inconsolata
                   texlive-upquote
                   texlive-xkeyval))
