@@ -587,6 +587,33 @@ structs.  The approach is similar to how other marshallers work in Golang,
 \"unmarshalling\" an instance of a grammar into a struct.")
     (license license:expat)))
 
+(define-public go-github-com-alecthomas-repr
+  (package
+    (name "go-github-com-alecthomas-repr")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alecthomas/repr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ikvl78dighkn87bxk6gki4wcz9f138n7kbqkagj5vbdb690yjkl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/alecthomas/repr"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/alecthomas/repr/")
+    (synopsis "Represent Go values in an almost direct form")
+    (description
+     "This package attempts to represent Go values in a form that can be used
+almost directly in Go source code.")
+    (license license:expat)))
+
 (define-public go-github-com-alecthomas-template
   ;; No release, see <https://github.com/alecthomas/template/issues/7>.
   (let ((commit "a0175ee3bccc567396460bf5acd36800cb10c49c")

@@ -6734,31 +6734,6 @@ other files).  If stdout is not a terminal, colour formatting will be
 stripped.")
     (license license:expat)))
 
-(define-public go-github-com-alecthomas-repr
-  (package
-    (name "go-github-com-alecthomas-repr")
-    (version "0.4.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/alecthomas/repr")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ikvl78dighkn87bxk6gki4wcz9f138n7kbqkagj5vbdb690yjkl"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:go ,go-1.18
-       #:import-path "github.com/alecthomas/repr"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (home-page "https://github.com/alecthomas/repr/")
-    (synopsis "Represent Go values in an almost direct form")
-    (description "This package attempts to represent Go values in a form that
-can be used almost directly in Go source code.")
-    (license license:expat)))
-
 (define-public go-github-com-muesli-reflow-wordwrap
   (package
     (name "go-github-com-muesli-reflow-wordwrap")
