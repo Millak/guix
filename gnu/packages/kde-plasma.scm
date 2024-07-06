@@ -768,7 +768,7 @@ PipeWire in Qt projects.")
 (define-public kscreen
   (package
     (name "kscreen")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -776,12 +776,12 @@ PipeWire in Qt projects.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "03qa2qrwdjgb6va7akhwpdvzky608sq2lnwj3b1f310mn3hmbmrq"))))
+                "0p5x7413xs7i0lahvpqn3w69n6vyhcccxisn8hff0nmcd9llm1bz"))))
     (build-system cmake-build-system)
     (arguments
      ;; TODO: All tests fail
      (list #:tests? #f))
-    (native-inputs (list extra-cmake-modules qttools-5 pkg-config))
+    (native-inputs (list extra-cmake-modules qttools pkg-config))
     (inputs (list kconfig
                   kdbusaddons
                   kdeclarative
@@ -795,12 +795,13 @@ PipeWire in Qt projects.")
                   layer-shell-qt
                   libkscreen
                   libxi
+                  libxkbcommon
+                  ksvg
                   plasma-wayland-protocols
-                  qtsensors-5
-                  qtbase-5
-                  qtx11extras
-                  xcb-util))
-    (propagated-inputs (list plasma-framework))
+                  qtsensors
+                  qtbase
+                  xcb-util
+                  libplasma))
     (home-page "https://invent.kde.org/plasma/kscreen")
     (synopsis "Screen management software")
     (description "This package provides the screen management software for
