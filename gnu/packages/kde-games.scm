@@ -376,15 +376,16 @@ This package is part of the KDE games module.")
 (define-public kbreakout
   (package
     (name "kbreakout")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/kbreakout-" version ".tar.xz"))
-      (sha256
-       (base32 "08fq0s1c71ag6jzyxz6spc5ylmzpbqpyqi9lqjk0x7y7brkfk9fq"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kbreakout-" version ".tar.xz"))
+       (sha256
+        (base32 "0qnsvmhil1ybs94g533r26sqrfkqb06jh6gk4siqdd32dyyn7x3q"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -398,8 +399,7 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtbase-5
-           qtdeclarative-5))
+           qtdeclarative))
     (home-page "https://apps.kde.org/kbreakout/")
     (synopsis "Breakout like game")
     (description "KBreakout is similar to the classics breakout and xboing,
