@@ -576,8 +576,7 @@ ksh, and tcsh.")
                                 "xonsh/xonfig.py")
                (("from xonsh\\.ply\\.(.*) import" _ module)
                 (format #f "from ~a import" module))
-               (("from xonsh\\.ply import") "import"))
-             #t))))
+               (("from xonsh\\.ply import") "import"))))))
     (build-system pyproject-build-system)
     (arguments
      ;; Some tests are failing for reasons like not accessing parent directory
@@ -613,12 +612,11 @@ ksh, and tcsh.")
            #:phases
            #~(modify-phases %standard-phases
                (replace 'install
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out")))
-                     (invoke "python" "-m" "compileall"
-                             "--invalidation-mode=unchecked-hash" out)
-                     (invoke "python" "setup.py" "install" "--root=/"
-                             (string-append "--prefix=" out)))))
+                 (lambda _
+                   (invoke "python" "-m" "compileall"
+                           "--invalidation-mode=unchecked-hash" #$output)
+                   (invoke "python" "setup.py" "install" "--root=/"
+                           (string-append "--prefix=" #$output))))
                ;; Some tests run os.mkdir().
                (add-before 'check 'writable-home
                  (lambda _
