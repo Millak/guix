@@ -945,19 +945,20 @@ This package is part of the KDE games module.")
 (define-public ksirk
   (package
     (name "ksirk")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/ksirk-" version ".tar.xz"))
+                           "/src/ksirk-" version ".tar.xz"))
        (sha256
-        (base32 "1sp5mhnf8r3fvifz0kw74436j5kwsmiw66myygb4rsggb8amh5x4"))))
+        (base32 "0ki9z8p4flrs7msihya8ykxs3p4w10v3ivmgf43ldygjjndyhql9"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
      (list kcrash
+           kdbusaddons
            ki18n
            kiconthemes
            kio
@@ -966,11 +967,13 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            phonon
-           qca
-           qtbase-5
-           qtdeclarative-5
-           qtsvg-5
+           qca-qt6
+           qt5compat
+           qtdeclarative
+           qtmultimedia
+           qtsvg
            zlib))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/ksirk/")
     (synopsis "Computerized version of the well known strategy board game
 'Risk'")
