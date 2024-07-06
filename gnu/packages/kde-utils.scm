@@ -507,7 +507,7 @@ drive, USB stick, etc
 (define-public kcharselect
   (package
     (name "kcharselect")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -515,8 +515,9 @@ drive, USB stick, etc
                                   ".tar.xz"))
               (sha256
                (base32
-                "05z80j8bwrj1zfpy376gsx30bv7bxsa3lyvrqsz197w1g8vp5gix"))))
+                "0yzw3jqcxkqi3ricsxcj1g8lhwxqjx0vwa91h4jb7ig1gsp6h3hi"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules))
     (inputs (list kbookmarks kcoreaddons kcrash ki18n kwidgetsaddons kxmlgui))
     (home-page "https://apps.kde.org/kcharselect/")
