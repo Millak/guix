@@ -197,6 +197,26 @@ fonts have been designed to work well in user interface (UI) environments as
 well as other mediums.")
     (license license:silofl1.1)))
 
+(define-public font-lilex
+  (package
+    (name "font-lilex")
+    (version "2.510")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/mishamyrt/Lilex/releases/download/"
+                    version
+                    "/Lilex.zip"))
+              (sha256
+               (base32
+                "0dq54qk4q1ymdqnp0skxdxzhx475g2gihzs8ijx0nffa29fwzn9g"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/mishamyrt/Lilex")
+    (synopsis "IBM Plex typeface with extended character sets and ligatures")
+    (description "Lilex is a modern programming font containing a set of
+ligatures for common programming multi-character combinations.")
+    (license license:silofl1.1)))
+
 (define-public font-inconsolata
   (package
     (name "font-inconsolata")
