@@ -1480,19 +1480,19 @@ timers for each task can be started, stopped, changed, or looped.")
 (define-public kcachegrind
   (package
     (name "kcachegrind")
-    (version "23.08.4")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kcachegrind-" version ".tar.xz"))
               (sha256
                (base32
-                "011bsb9yxrjmazqs1s6fvzvga4mlhjpdvkifbxblqavwp3ipmwbw"))))
+                "1j0i8sigf21b3w4r0cahrdm046pcinsldqhcms2bhv14v9lirc19"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list extra-cmake-modules perl python qttools-5 kdoctools))
+     (list extra-cmake-modules perl python qttools kdoctools))
     (inputs
-     (list qtbase-5 karchive ki18n kio kdbusaddons))
+     (list qtbase karchive ki18n kio kxmlgui kdbusaddons))
     ;; Note: The 'hotshot2calltree' and 'pprof2calltree' scripts depend on
     ;; Python and PHP, respectively.  These are optional and we ignore them
     ;; for now.
