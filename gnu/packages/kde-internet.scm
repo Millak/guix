@@ -377,38 +377,43 @@ This package is part of the KDE networking module.")
 (define-public krdc
   (package
     (name "krdc")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krdc-" version ".tar.xz"))
        (sha256
-        (base32 "0jva74n11fpm4ix4sbi0y1xnbly97lnap7dfj0bliw5s2d0sdjr0"))))
+        (base32 "0xw9ks43llm4lnnswv1h81gmr8mr6191bblmd21c1a5a6vvr935h"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
-     (list kbookmarks
+     (list breeze-icons ; default icon set
+           kbookmarks
            freerdp
            kcmutils
            kcompletion
            kconfig
            kdnssd
            ki18n
+           kio
            kiconthemes
            knotifications
            knotifyconfig
+           kstatusnotifieritem
            kwallet
            kwidgetsaddons
            kwindowsystem
            kxmlgui
+           plasma-activities
            libssh
-           libvnc
-           breeze-icons ; default icon set
-           qtbase-5))
+           libvnc))
     (arguments ;; FIXEME: libvnc can't be found for some reason.
-     (list #:configure-flags #~(list "-DWITH_VNC=NO")))
+     (list #:configure-flags #~(list
+                                "-DWITH_VNC=NO"
+                                "-DQT_MAJOR_VERSION=6")
+           #:qtbase qtbase))
     (home-page "https://apps.kde.org/krdc/")
     (synopsis "Remote desktop client")
     (description "KRDC is a client application that allows you to view or even
