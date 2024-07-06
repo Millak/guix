@@ -444,19 +444,20 @@ including input methods previous bundled inside Fcitx 4:
        (sha256
         (base32 "1pnwrj6kgha91djfvd2439nbhrmjargpw8ashhb91y5h3cdz7vhz"))))
     (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-DUSE_QT6=ON")))
     (inputs
      (list fcitx5
            fcitx5-qt
-           qtbase-5
-           qtx11extras
-           qtdeclarative-5
-           qtquickcontrols2-5
+           qtbase
+           qtdeclarative
+           ksvg
+           kcmutils
            ki18n
            kpackage
            kdeclarative
            kiconthemes
            kcoreaddons
-           plasma-framework
+           libplasma
            kitemviews
            kwidgetsaddons
            kwindowsystem
