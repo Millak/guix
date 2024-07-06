@@ -5101,6 +5101,40 @@ values.")
 ;;; Executables:
 ;;;
 
+(define-public go-chroma
+  (package
+    (name "go-chroma")
+    (version "2.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alecthomas/chroma")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1qgr4gywjks869sc85wb8nby612b8wvsa1dwpsbanjsljq7wq7mp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.19
+      #:install-source? #f
+      #:import-path "github.com/alecthomas/chroma/cmd/chroma"))
+    (native-inputs
+     (list go-github-com-alecthomas-assert-v2
+           go-github-com-alecthomas-chroma-v2
+           go-github-com-alecthomas-kong
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty))
+    (home-page "https://github.com/alecthomas/chroma")
+    (synopsis "General purpose syntax highlighter in pure Golang")
+    (description
+     (string-append (package-description go-github-com-alecthomas-chroma-v2)
+                    "  This package provides an command line interface (CLI)
+tool."))
+    (license license:asl2.0)))
+
 (define-public go-hclogvet
   (package
     (inherit go-github-com-hashicorp-go-hclog)
