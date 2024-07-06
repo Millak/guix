@@ -122,26 +122,16 @@
 (define-public breeze
   (package
     (name "breeze")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1wfclkg4d3wraz19kwpm87vwp9327s5y8n1a42qgrdh980qwzzdz"))))
+                "1kvx8ynb5m66m1zdrfk5bzpjs879sl8m1ap914199i21v58dqmnl"))))
     (build-system qt-build-system)
-    ;; TODO: Warning at /gnu/store/…-kpackage-5.34.0/…/KF5PackageMacros.cmake:
-    ;;   warnings during generation of metainfo for org.kde.breezedark.desktop:
-    ;;   Package type "Plasma/LookAndFeel" not found
-    ;; TODO: Check whether is makes sence splitting into several outputs, like
-    ;; Debian does:
-    ;; - breeze-cursor-theme
-    ;; - "out", "devel"
-    ;; - kde-style-breeze - Widget style
-    ;; - kde-style-breeze-qt4 - propably not useful
-    ;; - kwin-style-breeze
-    ;; - qml-module-qtquick-controls-styles-breeze - QtQuick style
+    ;; TODO: Check whether is makes sence splitting into several outputs.
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
@@ -153,13 +143,12 @@
            kguiaddons
            ki18n
            kirigami
-           kiconthemes ; for optional kde-frameworkintegration
+           kiconthemes
            kpackage
-           kwayland ; optional
            kwindowsystem
-           qtbase-5
-           qtdeclarative-5 ; optional
-           qtx11extras))
+           kcolorscheme))
+    (arguments (list #:qtbase qtbase
+                     #:configure-flags #~(list "-DBUILD_QT5=OFF")))
     (home-page "https://invent.kde.org/plasma/breeze")
     (synopsis "Default KDE Plasma theme")
     (description "Artwork, styles and assets for the Breeze visual style for
