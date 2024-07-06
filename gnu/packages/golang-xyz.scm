@@ -587,6 +587,37 @@ be stripped.")
     (native-inputs
      (list go-github-com-stretchr-testify))))
 
+(define-public go-github-com-alecthomas-kong
+  (package
+    (name "go-github-com-alecthomas-kong")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alecthomas/kong")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a9arf30h84ll8k612jh50c3vjmvdfj6i7dbvfnw3dalm6dn2aan"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; One test failed when set to go-1.18 o lower, see
+      ;; <https://github.com/alecthomas/kong/issues/437>
+      #:go go-1.19
+      #:import-path "github.com/alecthomas/kong"))
+    (native-inputs
+     (list go-github-com-alecthomas-assert-v2))
+    (propagated-inputs
+     (list go-github-com-alecthomas-repr))
+    (home-page "https://github.com/alecthomas/kong")
+    (synopsis "Command-line parser for Golang")
+    (description
+     "Package kong aims to support arbitrarily complex command-line structures
+with as little developer effort as possible.")
+    (license license:expat)))
+
 (define-public go-github-com-alecthomas-participle-v2
   (package
     (name "go-github-com-alecthomas-participle-v2")
