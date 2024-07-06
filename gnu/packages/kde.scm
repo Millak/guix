@@ -1160,21 +1160,21 @@ opening hours expressions.")
 (define-public kosmindoormap
   (package
     (name "kosmindoormap")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1winrgc3698wjpil0hblw7bgbgaxgjh6h3dsl1kwc77w14f6vql3"))))
+                "1inch8vnh96lbklrj9w6d7vyqnbaig8f0kgfr5k7i5983vqpsvlm"))))
     (build-system cmake-build-system)
-    (native-inputs (list bison extra-cmake-modules flex))
+    (native-inputs (list bison extra-cmake-modules flex python-minimal))
     (inputs (list ki18n
                   kopeninghours
                   kpublictransport
-                  qtbase-5
-                  qtdeclarative-5
+                  qtbase
+                  qtdeclarative
                   zlib))
     (home-page "https://invent.kde.org/libraries/kosmindoormap")
     (synopsis "Indoor map renderer")
