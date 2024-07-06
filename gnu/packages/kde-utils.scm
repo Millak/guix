@@ -212,9 +212,9 @@ well as CD-ROM images.")
       (license license:gpl2+))))
 
 (define-public fielding
-  (let ((commit "6b3c5d67b308e9e7e2043dc6072bfd265ec9f3e1")
+  (let ((commit "4ee9aea59718851125edcac71e2e4fdc5a592ed9")
         ;; no releases yet
-        (revision "1"))
+        (revision "2"))
     (package
       (name "fielding")
       (version (git-version "0.1-pre" revision commit))
@@ -226,18 +226,19 @@ well as CD-ROM images.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1l16am7il7kprmy8irpzj04rb8wbfr84y49wp4i74hspp9xkfick"))))
+                  "04gzp4bch4k2cvjk0mjcrmjpi986j5bqz3l4xcqykfwbgd08kas2"))))
       (build-system qt-build-system)
       (native-inputs (list extra-cmake-modules))
       (inputs (list kirigami
+                    kirigami-addons
                     kcoreaddons
                     kconfig
                     ki18n
                     kdbusaddons
                     ksyntaxhighlighting
-                    qtdeclarative-5
-                    qtquickcontrols2-5
-                    qtsvg-5))
+                    qtdeclarative
+                    qtsvg))
+      (arguments (list #:qtbase qtbase))
       (home-page "https://invent.kde.org/utilities/fielding")
       (synopsis "REST API testing tool")
       (description
