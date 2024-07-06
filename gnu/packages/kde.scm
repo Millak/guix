@@ -1537,15 +1537,16 @@ Python, PHP, and Perl.")
 (define-public libkdegames
   (package
     (name "libkdegames")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/libkdegames-" version ".tar.xz"))
-      (sha256
-       (base32 "1sicpfsrkxn5d0fdy71h7033rpkb94r5hjvv5ab7qbmzb1qa4awq"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/libkdegames-" version ".tar.xz"))
+       (sha256
+        (base32 "1sqhlhanb5vfbxp6g01rkgaj5v9gi1cxfgsmw39s0cikjfvidwpa"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
@@ -1562,7 +1563,6 @@ Python, PHP, and Perl.")
            kguiaddons
            ki18n
            kiconthemes
-           ;("kio" ,kio)
            kitemviews
            kjobwidgets
            knewstuff
@@ -1572,9 +1572,8 @@ Python, PHP, and Perl.")
            kxmlgui
            libsndfile
            openal
-           qtbase-5
-           qtdeclarative-5
-           qtsvg-5))
+           qtdeclarative
+           qtsvg))
     (home-page "https://apps.kde.org/categories/games/")
     (synopsis "Runtime library for kdegames")
     (description "Runtime library for kdegames")
