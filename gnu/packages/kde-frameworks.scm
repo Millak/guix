@@ -1840,7 +1840,7 @@ from DocBook files.")
 (define-public kfilemetadata
   (package
     (name "kfilemetadata")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1849,7 +1849,7 @@ from DocBook files.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "15va29chlsrxii02w1ax718hp1b14ym59lcfyzh7w30zlf681560"))))
+                "1230gl5jf4wizvxhfl0l4393vzgfzj0im139kjlss0qshrwf725x"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1858,28 +1858,26 @@ from DocBook files.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;; FIXME: Test can't find audio/x-speex mimeinfo
-                ;; (but it can find audio/x-speex+ogg).
-                (invoke "ctest" "-E"
-                        "(usermetadatawritertest|embeddedimagedatatest|\
-taglibextractortest)")))))))
+                (invoke "ctest" "-E" "(exiv2extractortest|usermetadatawritertest)")))))))
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs
      (list attr
            ebook-tools
+           kcodecs
+           libplasma
            karchive
            kconfig
            kcoreaddons
            kdegraphics-mobipocket
            ki18n
-           qtmultimedia-5
-           qtbase-5
+           qtmultimedia
+           qtbase
            ;; Required run-time packages
            catdoc
            ;; Optional run-time packages
            exiv2
            ffmpeg
-           poppler-qt5
+           poppler-qt6
            taglib))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Extract metadata from different fileformats")
