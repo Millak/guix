@@ -2328,7 +2328,7 @@ using the XBEL format.")
 (define-public kcmutils
   (package
     (name "kcmutils")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2337,49 +2337,36 @@ using the XBEL format.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1pblf3c60m0gn3vhdprw28f8y54kij02jwz91r2vnmng8d1xkrp9"))))
+                "0h4fjav5r2hc8520yh5hwvxw982rad3sf9n1vjffbj93wj6b164r"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     (list kconfigwidgets kservice))
-    (native-inputs
-     (list extra-cmake-modules))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch
-            (lambda _
-              (substitute* "src/kpluginselector.cpp"
-                ;; make QDirIterator follow symlinks
-                (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)"
-                  _ a b)
-                 (string-append a
-                                " | QDirIterator::FollowSymlinks" b)))
-              (substitute* "src/kcmoduleloader.cpp"
-                ;; print plugin name when loading fails
-                (("^\\s*(qWarning\\(\\) << \"Error loading) (plugin:\")( << loader\\.errorString\\(\\);)"
-                  _ a b c)
-                 (string-append a
-                                " KCM plugin\" << mod.service()->library() << \":\""
-                                c)))))
-          (add-before 'check 'check-setup
-            (lambda _
-              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
-    (inputs
-     (list kauth
-           kcodecs
-           kconfig
+     (list kconfigwidgets
            kcoreaddons
-           kdeclarative
+           qtdeclarative))
+    (native-inputs
+     (list extra-cmake-modules
+           gettext-minimal
+           qttools
+           ;; required by kcmloadtest test
+           kirigami))
+    (inputs
+     (list kio
+           kcompletion
            kguiaddons
            kiconthemes
            kitemviews
            ki18n
-           kpackage
+           kcolorscheme
            kwidgetsaddons
            kxmlgui
-           qtbase-5
-           qtdeclarative-5))
+           qtbase))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Utilities for KDE System Settings modules")
     (description "KCMUtils provides various classes to work with KCModules.
