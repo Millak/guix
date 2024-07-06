@@ -2440,7 +2440,7 @@ their settings.")
 (define-public kdeclarative
   (package
     (name "kdeclarative")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2449,48 +2449,19 @@ their settings.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0w98pj8acxb4m9645963rzq5vja1fbih5czz24mf9zdqlg2dkz8g"))))
+                "1kkdlkavd3v60sihxvlqxw2fmv1szf04llffhm0db7kmhz286zc0"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     (list kconfig kpackage qtdeclarative-5))
+     (list kconfig qtdeclarative))
     (native-inputs
-     (list dbus extra-cmake-modules pkg-config xorg-server-for-tests))
+     (list extra-cmake-modules))
     (inputs
-     (list kauth
-           kcoreaddons
-           kglobalaccel
+     (list kglobalaccel
            kguiaddons
-           kiconthemes
-           kio
            ki18n
-           kjobwidgets
-           knotifications
-           kservice
            kwidgetsaddons
-           kwindowsystem
-           libepoxy
-           qtbase-5
-           qtdeclarative-5
-           solid))
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'check 'start-xorg-server
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; The test suite requires a running X server, setting
-                   ;; QT_QPA_PLATFORM=offscreen does not suffice.
-                   (system "Xvfb :1 -screen 0 640x480x24 &")
-                   (setenv "DISPLAY" ":1")))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (setenv "HOME"
-                             (getcwd))
-                     (setenv "XDG_RUNTIME_DIR"
-                             (getcwd))
-                     (setenv "QT_QPA_PLATFORM" "offscreen")
-                     (setenv "DBUS_FATAL_WARNINGS" "0")
-                     (invoke "dbus-launch" "ctest")))))))
+           qtshadertools
+           qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Integration of QML and KDE work spaces")
     (description "KDeclarative provides integration of QML and KDE work spaces.
