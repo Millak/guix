@@ -387,25 +387,27 @@ concept.")
 (define-public kde-gtk-config
   (package
     (name "kde-gtk-config")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/kde-gtk-config-" version ".tar.xz"))
               (sha256
                (base32
-                "13qwj3gdfvs0l6k01n8hf25kzrsksi3qi0b1rzpshcj1ix31wamf"))))
+                "099n4dyyqirjm8ixgl3ifiral3jb2ivg74gzfv2xmfgj0cjwszza"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-gsettings-schemas-path
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "cmake/modules/FindGSettingSchemas.cmake"
-                     (("\\$\\{PC_GLIB2_PREFIX\\}")
-                      (assoc-ref inputs "gsettings-desktop-schemas"))))))))
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-gsettings-schemas-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "cmake/modules/FindGSettingSchemas.cmake"
+                (("\\$\\{PC_GLIB2_PREFIX\\}")
+                 (assoc-ref inputs "gsettings-desktop-schemas"))))))))
     (native-inputs
-     (list extra-cmake-modules pkg-config qtsvg-5 sassc))
+     (list extra-cmake-modules pkg-config qtsvg sassc))
     (inputs
      (list gsettings-desktop-schemas
            gtk+
