@@ -579,9 +579,10 @@ Internet).")
         (base32
          "1px40rasvz0r5db9av125q9mlyjz4xdnckg2767i3fndj3ic0vql"))))
     (build-system qt-build-system)
-    (propagated-inputs (list qtbase-5))
     (arguments
-     (list #:configure-flags #~'("-DBUILD_TESTS=ON")))
+     (list #:qtbase qtbase
+           #:configure-flags #~(list "-DBUILD_TESTS=ON"
+                                     "-DBUILD_WITH_QT6=ON")))
     (home-page "https://github.com/ksnip/kColorPicker")
     (synopsis "Color Picker with popup menu")
     (description
