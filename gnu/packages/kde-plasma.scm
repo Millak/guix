@@ -222,7 +222,7 @@ Breeze is the default theme for the KDE Plasma desktop.")
 (define-public discover
   (package
     (name "discover")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -234,10 +234,11 @@ Breeze is the default theme for the KDE Plasma desktop.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "0025g1whq8z1s5915jhq83xsiz4klzqpayfzqkar8c6gni5s3v59"))))
+                "16awva2q379z3rpiqlj7dby03k19d9c3d45y0vz5yd8lpavb9a3f"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:phases
            #~(modify-phases %standard-phases
                (add-before 'configure 'set-LDFLAGS
                  (lambda _
@@ -248,10 +249,13 @@ Breeze is the default theme for the KDE Plasma desktop.")
                    (when tests?
                      (invoke "ctest" "-E" "knsbackendtest")))))))
     (native-inputs (list extra-cmake-modules pkg-config))
-    (inputs (list appstream-qt
+    (inputs (list appstream-qt6
                   attica
                   fwupd ; optional
                   flatpak ; optional
+                  kauth
+                  kiconthemes
+                  kstatusnotifieritem
                   kcoreaddons
                   kconfig
                   kcrash
@@ -260,6 +264,7 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   karchive
                   kxmlgui
                   kirigami
+                  kirigami-addons
                   kuserfeedback
                   knewstuff
                   knotifications
@@ -267,11 +272,10 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   kdeclarative
                   kcmutils
                   kidletime
-                  packagekit-qt5
+                  packagekit-qt6
                   purpose
-                  qtdeclarative-5
-                  qtgraphicaleffects
-                  qtquickcontrols2-5))
+                  qtdeclarative
+                  qcoro-qt6))
     ;; -- The following features have been disabled:
     ;; * Ostree, Library to manage ostree repository. Required to build the rpm-ostree backend
     ;; * RpmOstree, rpm-ostree binary to manage the system. Required to build the rpm-ostree backend
