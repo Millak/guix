@@ -2848,6 +2848,31 @@ encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
 replacement for native @code{net/http} module.")
     (license license:expat)))
 
+(define-public go-github-com-whyrusleeping-chunker
+  (package
+    (name "go-github-com-whyrusleeping-chunker")
+    (version "0.0.0-20181014151217-fe64bd25879f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/whyrusleeping/chunker")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13q4flp9iwwyi0izqar786h42713rf3m22qlvg0masbmdi69qjr2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/whyrusleeping/chunker"))
+    (home-page "https://github.com/whyrusleeping/chunker")
+    (synopsis "Implementation of Content Defined Chunking in Golang")
+    (description
+     "Package chunker implements @acronym{Content Defined Chunking,CDC} based
+on a rolling Rabin Checksum.  This package provides a modified fork of
+https://github.com/restic/restic project.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-whyrusleeping-json-filter
   (let ((commit "ff25329a9528f01c5175414f16cc0a6a162a5b8b")
         (revision "0"))
