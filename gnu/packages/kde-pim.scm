@@ -1530,27 +1530,24 @@ using a Qt/KMime C++ API.")
 (define-public kmessagelib
   (package
     (name "kmessagelib")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/messagelib-" version ".tar.xz"))
        (sha256
-        (base32 "0aqac0p46cwnr3qxjk0ivalfwjcgwy52s088wnk6ckp77m7r65is"))))
+        (base32 "1m7mah1zqfn9r3jw1lg303kg023lgl77r6if5g4ifv3lsih52pgl"))))
     (properties `((upstream-name . "messagelib")))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules gnupg libxml2))
     (inputs
-     (list akonadi
-           akonadi-contacts
-           akonadi-mime
+     (list akonadi-contacts
            akonadi-notes
            akonadi-search
            boost
-           gpgme
-           grantlee
+           gpgme-1.23
            grantleetheme
            karchive
            kcalendarcore
@@ -1563,7 +1560,6 @@ using a Qt/KMime C++ API.")
            kguiaddons
            ki18n
            kiconthemes
-           kidentitymanagement
            kimap
            kio
            kitemmodels
@@ -1572,40 +1568,43 @@ using a Qt/KMime C++ API.")
            kldap
            kmailtransport
            kmbox
-           kmime
            knewstuff
            knotifications
-           kpimcommon
-           kpimtextedit
            kservice
            ksyntaxhighlighting
-           ktextaddons
            ktextwidgets
+           ktexttemplate
            kwallet
            kwidgetsaddons
            kwindowsystem
            kxmlgui
            libgravatar
-           libkdepim
-           libkleo
-           qca
-           qgpgme
-           qtbase-5
-           qtdeclarative-5
-           qtwebchannel-5
-           qtwebengine-5
+           qca-qt6
+           qgpgme-qt6-1.23
+           qtdeclarative
+           qtwebchannel
+           qtwebengine
            sonnet))
+    (propagated-inputs
+     (list akonadi
+           akonadi-mime
+           kidentitymanagement
+           kmime
+           kpimcommon
+           kpimtextedit
+           ktextaddons
+           libkdepim
+           libkleo))
     (arguments
-     `(#:tests? #f     ;TODO many test fail for quite different reasons
-       #:phases (modify-phases %standard-phases
-                  (add-after 'set-paths 'extend-CPLUS_INCLUDE_PATH
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; FIXME: One of the compilation steps fail to find
-                      ;; <QPrinter> without this hack.
-                      (setenv "CPLUS_INCLUDE_PATH"
-                              (string-append (assoc-ref inputs "qtbase")
-                                             "/include/qt5/QtPrintSupport:"
-                                             (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))
+     (list #:qtbase qtbase
+           #:tests? #f     ;TODO many test fail for quite different reasons
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'add-miss-PrintSupport
+                 (lambda _
+                   (substitute* "webengineviewer/src/CMakeLists.txt"
+                     (("KF6::ConfigCore")
+                      "KF6::ConfigCore\n    Qt::PrintSupport")))))))
     (home-page "https://invent.kde.org/pim/messagelib")
     (synopsis "KDE PIM messaging libraries")
     (description "This package provides several libraries for messages,
