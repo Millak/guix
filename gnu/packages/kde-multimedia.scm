@@ -60,14 +60,14 @@
 (define-public audiocd-kio
   (package
     (name "audiocd-kio")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/audiocd-kio-" version ".tar.xz"))
        (sha256
-        (base32 "0kl0j5qy54q88cbclwqj0rn8hj3gzjhzk7bimjgw5w0xy3cw6kql"))))
+        (base32 "1ldw51wly4shk4c9a0lc6j8ax176bb9f1l5r5x6rcgwz1vncd3g4"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -81,8 +81,8 @@
            libkcddb
            libkcompactdisc
            libvorbis
-           phonon
-           qtbase-5))
+           phonon))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/kio_audiocd/")
     (synopsis "Transparent audio CD integration for applications using the KDE
 Platform")
