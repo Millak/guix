@@ -1091,14 +1091,14 @@ control of your private keys, no previous conversation is compromised.")
 (define-public znc
   (package
     (name "znc")
-    (version "1.8.2")
+    (version "1.9.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://znc.in/releases/archive/znc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "03fyi0j44zcanj1rsdx93hkdskwfvhbywjiwd17f9q1a7yp8l8zz"))))
+                "0g2gi7207lydmm7zdq52ivw0vhvbnmhsybi89q5m3bcsw60cz9z8"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -1114,14 +1114,14 @@ control of your private keys, no previous conversation is compromised.")
              (let ((source (assoc-ref inputs "googletest-source"))
                    (target "third_party/googletest"))
                (mkdir-p target)
-               (copy-recursively source target)
-               #t))))))
+               (copy-recursively source target)))))))
     (native-inputs
      `(("boost" ,boost)
        ("gettext" ,gettext-minimal)
        ("googletest-source" ,(package-source googletest))
        ("pkg-config" ,pkg-config)))
     (inputs
+     ;; FIXME: Package cctz and remove the bundled copy from the source tarball.
      (list cyrus-sasl
            icu4c
            openssl
