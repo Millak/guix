@@ -931,31 +931,33 @@ cryptography to the contents of the clipboard.")
 (define-public khealthcertificate
   (package
     (name "khealthcertificate")
-    (version "23.01.0")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma-mobile/" version
-                                  "/khealthcertificate-" version ".tar.xz"))
+              (uri (string-append "mirror://kde/stable/release-service/" version
+                                  "/src/khealthcertificate-" version ".tar.xz"))
               (sha256
                (base32
-                "193agd3jg029vcq1h5hdg3gw6zgqcmszl6ffcrid0ajbbiic4pbm"))))
+                "0600rz72dd3x7wwj82cyixnch3v0m4gva5kgf3y6rzjzlqjdpx57"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key inputs tests? #:allow-other-keys)
-                   (when tests?
-                     (setenv "TZDIR"
-                             (search-input-directory inputs "share/zoneinfo"))
-                     (invoke "ctest" "-E"
-                             "(icaovdsparsertest|eudgcparsertest)")))))))
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs tests? #:allow-other-keys)
+              (when tests?
+                (setenv "TZDIR"
+                        (search-input-directory inputs "share/zoneinfo"))
+                (invoke "ctest" "-E"
+                        "(icaovdsparsertest|eudgcparsertest)")))))))
     (native-inputs (list extra-cmake-modules pkg-config tzdata-for-tests))
     (inputs (list karchive
                   kcodecs
                   ki18n
                   openssl
-                  qtdeclarative-5
+                  qtdeclarative
                   zlib))
     (home-page "https://api.kde.org/khealthcertificate/html/index.html")
     (synopsis "Digital vaccination and recovery certificate library")
