@@ -1790,6 +1790,32 @@ KF5/Qt5 to KF6/Qt6")
 is controllable via voice or TV remote.")
     (license license:gpl2+)))
 
+(define-public mpvqt
+  (package
+    (name "mpvqt")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/mpvqt/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1fafyn3a8hgg1g3nfka6hyynlmqdygaxz0fhp4ckxwz54nlx4cci"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (inputs
+     (list qtdeclarative))
+    (propagated-inputs
+     (list mpv))
+    (arguments
+     (list #:qtbase qtbase))
+    (home-page "https://invent.kde.org/libraries/mpvqt")
+    (synopsis "A libmpv wrapper for QtQuick2 and QML")
+    (description "This package provides a libmpv wrapper for QtQuick2 and QML.")
+    (license license:lgpl2.1+)))
+
 (define-public plasmatube
   (package
     (name "plasmatube")
