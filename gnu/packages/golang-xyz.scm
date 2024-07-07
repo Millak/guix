@@ -4846,6 +4846,32 @@ encoded values to create the picture in a code with no inherent errors.")
 weighted moving averages}.")
     (license license:expat)))
 
+(define-public go-github-com-whyrusleeping-base32
+  (package
+    (name "go-github-com-whyrusleeping-base32")
+    (version "0.0.0-20170828182744-c30ac30633cc")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/whyrusleeping/base32")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "060jj8j9rnm3m47vv7jfz9ddybch3ryvn1p9vhc63bqn73knalhf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/whyrusleeping/base32"))
+    (home-page "https://github.com/whyrusleeping/base32")
+    (synopsis "BASE32 encoding package from go with NoPadding option")
+    (description
+     "This package provides a base32 encoding package from go with NoPadding
+option.")
+    ;; No license provided, see
+    ;; <https://github.com/whyrusleeping/base32/issues/5>
+    (license  license:public-domain)))
+
 (define-public go-github-com-whyrusleeping-go-keyspace
   (package
     (name "go-github-com-whyrusleeping-go-keyspace")
