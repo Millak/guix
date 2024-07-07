@@ -2271,3 +2271,30 @@ KDE using certificate-based crypto.")
 is a Sieve parser and interpreter library for KDE.")
     (license ;; GPL for programs, LGPL for libraries
      (list license:gpl2+ license:lgpl2.0+))))
+(define-public mimetreeparser
+  (package
+    (name "mimetreeparser")
+    (version "24.05.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/mimetreeparser-" version ".tar.xz"))
+       (sha256
+        (base32 "132slwaqlaxnbvkpqb9w4ak4mpkrvw6ln81nbka91c3ngcamfac9"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list kcalendarcore kcodecs libkleo kwidgetsaddons qtdeclarative))
+    (propagated-inputs (list ki18n kmime kmbox))
+    (arguments
+     (list #:tests? #f ;; FIXME: 7/9 tests fail.
+           #:qtbase qtbase))
+    (home-page "https://kontact.kde.org")
+    (synopsis "Parser for MIME trees")
+    (description "This package provides a parser for a MIME tree and is based
+on KMime.  The goal is given a MIME tree to extract a list of parts and a list
+of attachments, check the validity of the signatures and decrypt any encrypted
+part.")
+    (license license:lgpl2.0+)))
