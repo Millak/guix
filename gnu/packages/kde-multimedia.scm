@@ -241,14 +241,14 @@ This package is part of the KDE multimedia module.")
 (define-public juk
   (package
     (name "juk")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/juk-" version ".tar.xz"))
        (sha256
-        (base32 "1q0r0iv4nn6jd0g8db54r7xdw7kdw1ja0z1ggxl1sy0k60m9c4q3"))))
+        (base32 "1yk6c0lagj47m5i7s73rsrk61fs1cjbf0dhhvbyasy4avlxsfgxa"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -265,6 +265,7 @@ This package is part of the KDE multimedia module.")
            kio
            knotifications
            ktextwidgets
+           kstatusnotifieritem
            kwallet
            kwidgetsaddons
            kwindowsystem
@@ -272,9 +273,10 @@ This package is part of the KDE multimedia module.")
            breeze-icons ; default icon set
            phonon
            phonon-backend-vlc
-           qtbase-5
-           qtsvg-5
+           qtbase
+           qtsvg
            taglib))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/juk/")
     (synopsis "Music jukebox / music player")
     (description "JuK is a powerful music player capable of managing a large
