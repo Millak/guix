@@ -655,7 +655,8 @@ KAccounts system.")
                 "1w56glv8m1rlk86v78h69d21ydxb6i61g1dk6mcizjr5rvi4liy0"))))
     (build-system qt-build-system)
     (arguments
-     (list #:tests? #f ;All 2 tests fail
+     (list #:qtbase qtbase
+           #:tests? #f ;All 2 tests fail
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'wrap-script
@@ -706,15 +707,10 @@ KAccounts system.")
                   kiconthemes
                   libkdepim
                   libkleo
-                  qtbase-5
-                  qtdeclarative-5
-                  qtquickcontrols2-5
-                  qtsvg-5
-                  qtquickcontrols-5
-                  qtgraphicaleffects
-                  qtlocation
+                  qtdeclarative
+                  qtsvg
                   qqc2-desktop-style
-                  qtwebengine-5))
+                  qtwebengine))
     (home-page "https://apps.kde.org/kalendar/")
     (synopsis "Calendar application")
     (description
