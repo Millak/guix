@@ -117,6 +117,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages nss)
+  #:use-module (gnu packages password-utils)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -1122,7 +1123,8 @@ control of your private keys, no previous conversation is compromised.")
        ("pkg-config" ,pkg-config)))
     (inputs
      ;; FIXME: Package cctz and remove the bundled copy from the source tarball.
-     (list cyrus-sasl
+     (list argon2
+           cyrus-sasl
            icu4c
            openssl
            perl
