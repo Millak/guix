@@ -802,14 +802,14 @@ functions for accessing calendar data using the kcalcore API.")
 (define-public kdepim-runtime
   (package
     (name "kdepim-runtime")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdepim-runtime-" version ".tar.xz"))
        (sha256
-        (base32 "1wvwibq6zzjlhh8yqrlqras0m8i01ynlwj9z6l3f0g0hyyz5nkw4"))))
+        (base32 "1jymvmiqbyl8qcff835sp6kw8w4lg4clm7p5cscfmcx6b9bg4w7l"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules dbus kdoctools libxslt shared-mime-info))
@@ -821,7 +821,6 @@ functions for accessing calendar data using the kcalcore API.")
            akonadi-notes
            boost
            cyrus-sasl
-           grantlee
            grantleetheme
            kcalendarcore
            kcalutils
@@ -840,44 +839,43 @@ functions for accessing calendar data using the kcalcore API.")
            kldap
            kmbox
            kmime
+           kxmlgui
            knotifications
            knotifyconfig
            kpimcommon
            kpimtextedit
-           kross
            ktextwidgets
            kwallet
            kwindowsystem
            libkdepim
            libkgapi
            ;; TODO: libkolab
-           qca
-           qtbase-5
-           qtdeclarative-5
-           qtkeychain
-           qtnetworkauth-5
-           qtspeech-5
-           qtwebchannel-5
-           qtwebengine-5
-           qtxmlpatterns))
+           qca-qt6
+           qtdeclarative
+           qtkeychain-qt6
+           qtnetworkauth
+           qtspeech
+           qtwebchannel
+           qtwebengine))
     (arguments
-      ;; TODO: 5/45 tests fail for quite different reasons, even with
-      ;; "offscreen" and dbus
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'set-paths 'extend-CPLUS_INCLUDE_PATH
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; FIXME: <Akonadi/KMime/SpecialMailCollections> is not
-                      ;; found during one of the compilation steps without
-                      ;; this hack.
-                      (setenv "CPLUS_INCLUDE_PATH"
-                              (string-append
-                               (assoc-ref inputs "akonadi-mime") "/include/KF5:"
-                               (or (getenv "CPLUS_INCLUDE_PATH") "")))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        ;; FIXME: Atleast some appear to require network.
-                        (invoke "dbus-launch" "ctest" "-E" "\
+     ;; TODO: 5/45 tests fail for quite different reasons, even with
+     ;; "offscreen" and dbus
+     (list #:qtbase qtbase
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'set-paths 'extend-CPLUS_INCLUDE_PATH
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            ;; FIXME: <Akonadi/KMime/SpecialMailCollections> is not
+                            ;; found during one of the compilation steps without
+                            ;; this hack.
+                            (setenv "CPLUS_INCLUDE_PATH"
+                                    (string-append
+                                     (assoc-ref inputs "akonadi-mime") "/include/KF6:"
+                                     (or (getenv "CPLUS_INCLUDE_PATH") "")))))
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              ;; FIXME: Atleast some appear to require network.
+                              (invoke "dbus-launch" "ctest" "-E" "\
 (akonadi-sqlite-synctest|akonadi-sqlite-pop3test|storecompacttest\
 |akonadi-sqlite-ewstest|ewsmoveitemrequest_ut|ewsdeleteitemrequest_ut\
 |ewsgetitemrequest_ut|ewsunsubscriberequest_ut|ewssettings_ut\
