@@ -820,7 +820,7 @@ due to its architecture which automatically parallelises the image workflows.")
        (uri (string-append "https://gmic.eu/files/source/gmic_"
                            version ".tar.gz"))
        (sha256
-        (base32 "1c2j1prsnsks5cglk0vrwaclifk6mlxmrc88wqc96xi7cmwwjmf3"))))
+        (base32 "0akrrpkwkc8d7f2r3nqr36cjd926zk221yppi1bmv4yvydx0hvyz"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
