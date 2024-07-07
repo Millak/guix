@@ -700,14 +700,14 @@ Its features include:
 (define-public libkcompactdisc
   (package
     (name "libkcompactdisc")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcompactdisc-" version ".tar.xz"))
        (sha256
-        (base32 "0gl21mhfz3vj89x0r8y79yiijcag1xfdnyfrjqzkx9i8yd2k45b1"))))
+        (base32 "1lh6vn5aqwlvnb7q29nwxqzb4i4ymd1gs0y1k0vf5czhywrr9gqm"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -716,8 +716,10 @@ Its features include:
            kcoreaddons
            ki18n
            phonon
-           qtbase-5
            solid))
+    (arguments (list
+                #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
+                #:qtbase qtbase))
     (home-page "https://invent.kde.org/multimedia/libkcompactdisc")
     (synopsis "KDE library for playing & ripping CDs")
     (description "The KDE Compact Disc library provides an API for
