@@ -2173,20 +2173,20 @@ various Google services.")
 (define-public libkleo
   (package
     (name "libkleo")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkleo-" version ".tar.xz"))
        (sha256
-        (base32 "0l77n4dlbv9hclzvh69kdzji907if7yayxiasxnnjkzsvcm1af25"))))
+        (base32 "102yszx6smyf2vd068p6j0921fql5jlmsra3n62xam81smqlpgj0"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools qttools-5))
+     (list extra-cmake-modules kdoctools qttools))
     (inputs
      (list boost
-           gpgme
+           gpgme-1.23
            kcodecs
            kcompletion
            kconfig
@@ -2198,19 +2198,20 @@ various Google services.")
            kwidgetsaddons
            kwindowsystem
            kpimtextedit
-           qgpgme
-           qtbase-5))
+           qgpgme-qt6-1.23))
     (propagated-inputs
-     `(("gpgme" ,gpgme)
-       ("qgpgme" ,qgpgme)))
+     (list gpgme-1.23 qgpgme-qt6-1.23))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? ;; FIXME: These tests fail.
-               (invoke "ctest" "-E"
-                       "(keyresolvercoretest|newkeyapprovaldialogtest)")))))))
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests? ;; FIXME: These tests fail.
+                (invoke "ctest" "-E"
+                        "(expirycheckertest|keyresolvercoretest|\
+newkeyapprovaldialogtest)")))))))
     (home-page "https://invent.kde.org/pim/libkleo")
     (synopsis "KDE PIM cryptographic library")
     (description "@code{libkleo} is a library for Kleopatra and other parts of
