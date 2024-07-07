@@ -2192,6 +2192,80 @@ KDE using certificate-based crypto.")
 is a Sieve parser and interpreter library for KDE.")
     (license ;; GPL for programs, LGPL for libraries
      (list license:gpl2+ license:lgpl2.0+))))
+
+(define-public merkuro
+  (package
+    (name "merkuro")
+    (version "24.05.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/" name "-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "0n6na806g4xlx66ay0vk3iw9xs1h48ya7l0zpa3nqikr1by79lfh"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "dbus-launch" "ctest")))))))
+    (native-inputs (list dbus extra-cmake-modules))
+    (inputs (list akonadi
+                  akonadi-contacts
+                  akonadi-mime
+                  breeze-icons
+                  gpgme
+                  grantleetheme
+                  kio
+                  kirigami
+                  kirigami-addons
+                  kdbusaddons
+                  ki18n
+                  kimap
+                  kcalendarcore
+                  kcalendarsupport
+                  kconfigwidgets
+                  kwindowsystem
+                  kcoreaddons
+                  kcontacts
+                  kitemmodels
+                  kmailcommon
+                  kmailtransport
+                  kmessagelib
+                  kmime
+                  kidentitymanagement
+                  kpimcommon
+                  kpimtextedit
+                  ktextaddons
+                  ktextwidgets
+                  akonadi-calendar
+                  akonadi-mime
+                  keventviews
+                  kcalutils
+                  kxmlgui
+                  kiconthemes
+                  libkdepim
+                  libkleo
+                  mimetreeparser
+                  qtdeclarative
+                  qtsvg
+                  qqc2-desktop-style
+                  qtwebengine))
+    (home-page "https://apps.kde.org/kalendar/")
+    (synopsis "Calendar application")
+    (description
+     "Merkuro is a calendar application using Akonadi to sync with
+external services.
+
+NOTE: plsase add akonadi and kdepim-runtime to system package.")
+    (license license:gpl3+)))
+
 (define-public mimetreeparser
   (package
     (name "mimetreeparser")
