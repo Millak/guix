@@ -2873,6 +2873,33 @@ replacement for native @code{net/http} module.")
 @command{map[string]interface{}}.")
       (license license:expat))))
 
+(define-public go-github-com-whyrusleeping-multiaddr-filter
+  (package
+    (name "go-github-com-whyrusleeping-multiaddr-filter")
+    (version "0.0.0-20160516205228-e903e4adabd7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/whyrusleeping/multiaddr-filter")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ksd8vnp207dvphmhrazwldj8if900fnyc1pqa9pfvj04qp92640"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; (*testing.common).Fatalf format %s has arg val of wrong type bool
+      #:tests? #f
+      #:import-path "github.com/whyrusleeping/multiaddr-filter"))
+    (home-page "https://github.com/whyrusleeping/multiaddr-filter")
+    (synopsis "Parsing ip filters and masks in the multiaddr format")
+    (description
+     "This module creates very simple
+@url{https://github.com/jbenet/go-multiaddr,multiaddr} formatted cidr
+netmasks.")
+    (license license:expat)))
+
 (define-public go-github-com-xeipuuv-gojsonpointer
   (let ((commit "4e3ac2762d5f479393488629ee9370b50873b3a6")
         (revision "0"))
