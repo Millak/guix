@@ -99,14 +99,14 @@ This package is part of the KDE multimedia module.")
 (define-public dragon
   (package
     (name "dragon")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dragon-" version ".tar.xz"))
        (sha256
-        (base32 "0mliddp0nyxz91wzy8md0p0i45mlhffip4zqjl4db55x4p6wh4y8"))))
+        (base32 "1waq80b5lxmk6q31yzs24mrz3nwm1y2rvz21bfhsgh2xw4fqmfsy"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -128,8 +128,8 @@ This package is part of the KDE multimedia module.")
            breeze-icons ; default icon set
            phonon
            phonon-backend-vlc
-           qtbase-5
            solid))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/dragonplayer/")
     (synopsis "Simple video player")
     (description "Dragon Player is a multimedia player where the focus is on
