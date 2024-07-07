@@ -2848,6 +2848,43 @@ encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
 replacement for native @code{net/http} module.")
     (license license:expat)))
 
+(define-public go-github-com-whyrusleeping-cbor
+  (package
+    (name "go-github-com-whyrusleeping-cbor")
+    (version "0.0.0-20171005072247-63513f603b11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/whyrusleeping/cbor")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v3kgzk8grz17my2vhv12qi9dgpx3z86hy9ff1c4qw83mg8hm67s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/whyrusleeping/cbor"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  ;; No test vectors were provided with git checkout:
+                  ;; var errpath string = "../test-vectors/appendix_a.json"
+                  (substitute* "go/cbor_test.go"
+                    (("TestDecodeVectors") "offTestDecodeVectors"))
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (home-page "https://github.com/whyrusleeping/cbor")
+    (synopsis "Concise Binary Object Representation in Golang")
+    (description
+     "@acronym{Concise Binary Object Representation,CBOR} is a superset of
+JSON's schema that's faster and more compact.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-whyrusleeping-chunker
   (package
     (name "go-github-com-whyrusleeping-chunker")
