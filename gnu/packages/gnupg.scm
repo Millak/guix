@@ -466,6 +466,19 @@ and every application benefits from this.")
     (properties '((ftp-server . "ftp.gnupg.org")
                   (ftp-directory . "/gcrypt/gpgme")))))
 
+(define-public gpgme-1.23
+  (hidden-package
+   (package
+     (inherit gpgme)
+     (name "gpgme")
+     (version "1.23.2")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "mirror://gnupg/gpgme/gpgme-" version ".tar.bz2"))
+        (sha256
+         (base32 "092jrqdmdggjhl0swpvci8cscdcx0hbbr897an0vdk1wyfqyi6cl")))))))
+
 (define-public qgpgme
   (package
     (inherit gpgme)
