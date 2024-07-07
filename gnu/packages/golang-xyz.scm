@@ -2042,7 +2042,13 @@ the library more lightweight.")
           (add-after 'unpack 'remove-benchmarks
             (lambda* (#:key import-path #:allow-other-keys)
               (delete-file-recursively
-               (string-append "src/" import-path "/benchmarks")))))))
+               (string-append "src/" import-path "/benchmarks"))))
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (native-inputs
      (list go-github-com-go-playground-validator-v10
            go-github-com-google-go-cmp-cmp))
