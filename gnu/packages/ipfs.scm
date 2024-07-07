@@ -688,6 +688,7 @@ written in Go.")
                              "vendor/github.com/docker"
                              "vendor/github.com/dustin"
                              "vendor/github.com/elgris"
+                             "vendor/github.com/facebookgo"
                              "vendor/github.com/felixge"
                              "vendor/github.com/flynn"
                              "vendor/github.com/francoispqt"
@@ -711,7 +712,9 @@ written in Go.")
                              "vendor/github.com/ipfs/go-detect-race"
                              "vendor/github.com/ipfs/go-ipfs-delay"
                              "vendor/github.com/ipfs/go-ipfs-util"
+                             "vendor/github.com/ipfs/go-ipld-cbor"
                              "vendor/github.com/ipfs/go-ipld-format"
+                             "vendor/github.com/ipfs/go-ipld-git"
                              "vendor/github.com/ipfs/go-log"
                              "vendor/github.com/ipld/go-ipld-prime"
                              "vendor/github.com/jackpal"
@@ -740,7 +743,7 @@ written in Go.")
                              "vendor/github.com/stretchr"
                              "vendor/github.com/syndtr"
                              "vendor/github.com/tidwall"
-                             "vendor/github.com/whyrusleeping/go-sysinfo"
+                             "vendor/github.com/whyrusleeping"
                              "vendor/go.uber.org"
                              "vendor/golang.org"
                              "vendor/gopkg.in"
@@ -781,7 +784,7 @@ written in Go.")
                   go-github-com-coreos-go-systemd-v22
                   go-github-com-dustin-go-humanize
                   go-github-com-elgris-jsondiff
-                  ;;go-github-com-facebookgo-atomicfile
+                  go-github-com-facebookgo-atomicfile
                   go-github-com-fsnotify-fsnotify
                   go-github-com-google-uuid
                   go-github-com-hashicorp-go-multierror
@@ -790,15 +793,16 @@ written in Go.")
                   go-github-com-ipfs-go-cid
                   go-github-com-ipfs-go-cidutil
                   go-github-com-ipfs-go-datastore
+                  go-github-com-ipfs-go-detect-race
                   ;;go-github-com-ipfs-go-ds-badger
                   ;;go-github-com-ipfs-go-ds-flatfs
                   ;;go-github-com-ipfs-go-ds-leveldb
                   ;;go-github-com-ipfs-go-ds-measure
                   ;;go-github-com-ipfs-go-fs-lock
                   ;;go-github-com-ipfs-go-ipfs-cmds
-                  ;;go-github-com-ipfs-go-ipld-cbor
+                  go-github-com-ipfs-go-ipld-cbor
                   go-github-com-ipfs-go-ipld-format
-                  ;;go-github-com-ipfs-go-ipld-git
+                  go-github-com-ipfs-go-ipld-git
                   ;;go-github-com-ipfs-go-ipld-legacy
                   go-github-com-ipfs-go-log
                   go-github-com-ipfs-go-log-v2
@@ -826,7 +830,6 @@ written in Go.")
                   ;;go-github-com-libp2p-go-libp2p-routing-helpers
                   ;;go-github-com-libp2p-go-libp2p-testing
                   ;;go-github-com-libp2p-go-socket-activation
-                  go-github-com-ipfs-go-ipfs-util
                   go-github-com-mitchellh-go-homedir
                   go-github-com-multiformats-go-multiaddr-0.12
                   go-github-com-multiformats-go-multiaddr-dns
@@ -835,13 +838,13 @@ written in Go.")
                   go-github-com-multiformats-go-multihash
                   go-github-com-opentracing-opentracing-go
                   go-github-com-pbnjay-memory
-                  go-github-com-pkg-errors
                   go-github-com-prometheus-client-golang
                   go-github-com-stretchr-testify
                   go-github-com-syndtr-goleveldb
+                  go-github-com-tidwall-gjson
                   go-github-com-tidwall-sjson
                   go-github-com-whyrusleeping-go-sysinfo
-                  ;;go-github-com-whyrusleeping-multiaddr-filter
+                  go-github-com-whyrusleeping-multiaddr-filter
                   ;;go-go-opencensus-io
                   ;;go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
                   ;;go-go-opentelemetry-io-contrib-propagators-autoprop
@@ -858,7 +861,6 @@ written in Go.")
                   go-golang-org-x-sync
                   go-golang-org-x-sys
                   go-google-golang-org-protobuf
-                  go-gopkg-in-yaml-v3
 
                   ;;
                   ;; A list of indirect dependencies required for the vendored
@@ -883,6 +885,10 @@ written in Go.")
                   go-github-com-multiformats-go-multiaddr-fmt ; github.com/libp2p/go-libp2p
                   go-github-com-multiformats-go-multistream   ; github.com/libp2p/go-libp2p
                   go-github-com-quic-go-quic-go               ; github.com/libp2p/go-libp2p
+                  go-github-com-whyrusleeping-base32          ; github.com/ipfs/boxo
+                  go-github-com-whyrusleeping-cbor            ; github.com/ipld/go-car
+                  go-github-com-whyrusleeping-chunker         ; github.com/ipfs/boxo
+                  go-github-com-whyrusleeping-go-keyspace     ; github.com/libp2p/go-libp2p-kad-dht
                   go-golang-org-x-oauth2                      ; github.com/ipfs/boxo
                   go-golang-org-x-term                        ; github.com/ipfs/go-ipfs-cmds
                   go-golang-org-x-xerrors                     ; github.com/whyrusleeping/cbor-gen
