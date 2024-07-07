@@ -167,21 +167,23 @@ Other notable features include:
 (define-public kget
   (package
     (name "kget")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kget-" version ".tar.xz"))
        (sha256
-        (base32 "1n9wnm1si4g4rv8zaqpr8m3c2aav0mj8i7z96m78dk1apippx77r"))))
+        (base32 "0xm3a3bxk4gb1yxpq3icg1wh5sqpmxqlr9n8j1gffszzd6c9x8mn"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
     (inputs
      (list boost
            gmp
-           gpgme
+           ;; TODO: enable when we qgpgme support qt6.
+           ;; gpgme
+           ;; qgpgme
            kcmutils
            kcompletion
            kconfig
@@ -189,7 +191,6 @@ Other notable features include:
            kcoreaddons
            kcrash
            kdbusaddons
-           kdelibs4support ;; KLocale
            ki18n
            kiconthemes
            kio
@@ -198,6 +199,7 @@ Other notable features include:
            knotifyconfig
            kparts
            kservice
+           kstatusnotifieritem
            ktextwidgets
            kwallet
            kwidgetsaddons
@@ -205,20 +207,11 @@ Other notable features include:
            kxmlgui
            libgcrypt
            libktorrent
-           ;; TODO: libmms
-           ;; TODO: LibKWorkspace - plasma-workspace?
+           libmms
            breeze-icons ; default icon set
-           qca
-           qgpgme
-           qtbase-5))
+           qca-qt6))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? ;; FIXME: two tests fails.
-               (invoke "ctest" "-E" "(schedulertest|filedeletertest)"))
-             #t)))))
+     (list #:qtbase qtbase))
     (home-page "https://www.kde.org/")
     (synopsis "Versatile and user-friendly download manager")
     (description "KGet is an advanced download manager with support for
