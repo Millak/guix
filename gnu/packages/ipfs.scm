@@ -302,6 +302,48 @@ throughout its lifetime.")
      "An implementation of a @url{https://cbor.io/, CBOR} encoded merkledag object.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipld-git
+  (package
+    (name "go-github-com-ipfs-go-ipld-git")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipld-git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v52qzgmx7qym0qzkzkry2kfj58f9hh7c8qycg74sqbd9zb1ynjj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: It requires .git/objects, check if it's applicable to generate
+      ;; git repo during check phase with make-test-repo.sh.
+      #:tests? #f
+      #:import-path "github.com/ipfs/go-ipld-git"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-test-data-files
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          (list "testdata.tar.gz"
+                                "codecov.yml"
+                                "make-test-repo.sh"))))))))
+    (propagated-inputs
+     (list go-github-com-multiformats-go-multihash
+           go-github-com-ipld-go-ipld-prime
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-block-format))
+    (home-page "https://github.com/ipfs/go-ipld-git")
+    (synopsis "IPLD handlers for git objects")
+    (description
+     "This is an IPLD codec which handles git objects.  Objects are transformed into
+IPLD graph as detailed below.  Objects are demonstrated here using both
+@url{https://ipld.io/docs/schemas/,IPLD Schemas} and example JSON forms.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipld-format
   (package
     (name "go-github-com-ipfs-go-ipld-format")
