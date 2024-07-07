@@ -725,21 +725,20 @@ external services.")
 (define-public kcalendarsupport
   (package
     (name "kcalendarsupport")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/calendarsupport-" version ".tar.xz"))
        (sha256
-        (base32 "1zk6kv5nhcd7a5llzh31890xpqdg522ahjdgbwsm7pcp62y0nbsj"))))
+        (base32 "0qih5p810h1860diqb9yszrv0arf63bd32x7rfizw6mhpkh20ryq"))))
     (properties `((upstream-name . "calendarsupport")))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
      (list akonadi
-           akonadi-calendar
            akonadi-mime
            akonadi-notes
            boost
@@ -751,15 +750,14 @@ external services.")
            kholidays
            ki18n
            kiconthemes
-           kidentitymanagement
            kio
            kitemmodels
-           kmime
            kpimcommon
            kpimtextedit
            ktextwidgets
-           kxmlgui
-           qtbase-5))
+           kxmlgui))
+    (propagated-inputs (list akonadi-calendar kidentitymanagement kmime))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://api.kde.org/kdepim/calendarsupport/html/index.html")
     (synopsis "Calendar Support library for KDE PIM")
     (description "The Calendar Support library provides helper utilities for
