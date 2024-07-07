@@ -295,7 +295,7 @@ This package is part of the KDE multimedia module.")
 (define-public kid3
   (package
     (name "kid3")
-    (version "3.9.4")
+    (version "3.9.5")
     (source
      (origin
        (method git-fetch)
@@ -304,29 +304,32 @@ This package is part of the KDE multimedia module.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j454nzwx0v7iwcixyjcx71shzh3ag4ydggs8d68alrfj9f4ajap"))))
+        (base32 "09pva85ffamjdr6m446jcvxjw8qyy7anmj1gz0fvn9ns3d1jgg46"))))
     (build-system qt-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list (string-append "-DDOCBOOK_XSL_DIR="
-                             #$(this-package-native-input "docbook-xsl")))
+      #~(list
+         "-DBUILD_WITH_QT6=ON"
+         (string-append "-DDOCBOOK_XSL_DIR="
+                        #$(this-package-native-input "docbook-xsl")))
+      #:qtbase qtbase
       #:phases
-      `(modify-phases %standard-phases
-         ;; FIXME: Documentation build scripts use unix pipes, which will fail
-         ;; in the build environment.
-         (add-after 'unpack 'skip-docs
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("add_subdirectory\\(doc\\)") "")))))))
+      #~(modify-phases %standard-phases
+          ;; FIXME: Documentation build scripts use unix pipes, which will fail
+          ;; in the build environment.
+          (add-after 'unpack 'skip-docs
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(doc\\)") "")))))))
     (native-inputs
      (list docbook-xsl
            extra-cmake-modules
            ffmpeg-4
            kdoctools
            libxslt
-           python-wrapper
-           qttools-5))
+           python-minimal-wrapper
+           qttools))
     (inputs
      (list chromaprint
            flac
@@ -338,9 +341,8 @@ This package is part of the KDE multimedia module.")
            kwidgetsaddons
            kxmlgui
            libvorbis
-           qtbase-5
-           qtdeclarative-5
-           qtmultimedia-5
+           qtdeclarative
+           qtmultimedia
            readline
            taglib
            zlib))
