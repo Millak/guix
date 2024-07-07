@@ -1348,34 +1348,29 @@ manager from KDE.")
 (define-public kmailcommon
   (package
     (name "kmailcommon")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/mailcommon-" version ".tar.xz"))
        (sha256
-        (base32 "165a0qf6i2862dpsw4wvgnxi4wv7hnc9s63fsf9jp6kbwwfw9nqv"))))
+        (base32 "0s23g08q5nx11vdpwxkqgzcs9xb6nycwsndfl6vpcnlbx10zsbfr"))))
     (properties `((upstream-name . "mailcommon")))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules dbus gnupg qttools-5))
+     (list extra-cmake-modules dbus gnupg qttools))
     (inputs
-     (list akonadi
-           akonadi-contacts
-           akonadi-mime
+     (list akonadi-contacts
            boost
            gpgme
-           grantlee
            grantleetheme
            karchive
            kcodecs
-           kcompletion
            kconfig
            kconfigwidgets
            kcontacts
            kdbusaddons
-           kdesignerplugin
            kguiaddons
            ki18n
            kiconthemes
@@ -1387,9 +1382,7 @@ manager from KDE.")
            kldap
            kmailimporter
            kmailtransport
-           kmessagelib
            kmime
-           kpimcommon
            kpimtextedit
            ksyntaxhighlighting
            ktextaddons
@@ -1398,16 +1391,22 @@ manager from KDE.")
            kwidgetsaddons
            kwindowsystem
            kxmlgui
-           libkdepim
            libkleo
            libxslt
            phonon
            qgpgme
-           qtwebchannel-5
-           qtwebengine-5
-           qtbase-5))
+           qtwebchannel
+           qtwebengine))
+    (propagated-inputs (list akonadi
+                             akonadi-mime
+                             kcompletion
+                             kmessagelib
+                             kpimcommon
+                             libkdepim))
     (arguments
-     `(#:tests? #f))  ;; TODO: 12/62 tests fail
+     (list
+      #:qtbase qtbase
+      #:tests? #f))  ;; TODO: 12/62 tests fail
     (home-page "https://invent.kde.org/pim/mailcommon")
     (synopsis "KDE email utility library")
     (description "The mail common library provides utility functions for
