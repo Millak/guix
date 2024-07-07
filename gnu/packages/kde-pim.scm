@@ -1418,14 +1418,14 @@ dealing with email.")
 (define-public kmailimporter
   (package
     (name "kmailimporter")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/mailimporter-" version ".tar.xz"))
        (sha256
-        (base32 "18shpxz7rg64g2mxdhdjhxhn893m0930v76cdnij339ycbcq5ypc"))))
+        (base32 "0hjwz70ys2bi6l8c2anzc7mhcapcqsximrxh813sp36hqwsix52g"))))
     (properties `((upstream-name . "mailimporter")))
     (build-system qt-build-system)
     (native-inputs
@@ -1434,10 +1434,8 @@ dealing with email.")
      (list akonadi
            akonadi-contacts
            akonadi-mime
-           grantlee
            grantleetheme
            boost
-           karchive
            kcompletion
            kconfig
            kconfigwidgets
@@ -1454,8 +1452,9 @@ dealing with email.")
            ktextaddons
            ktextwidgets
            kxmlgui
-           libkdepim
-           qtbase-5))
+           libkdepim))
+    (propagated-inputs (list karchive))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/pim/mailimporter")
     (synopsis "KDE mail importer library")
     (description "This package provides libraries for importing mails other
