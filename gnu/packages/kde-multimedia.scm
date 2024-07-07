@@ -667,14 +667,14 @@ Its features include:
 (define-public libkcddb
   (package
     (name "libkcddb")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcddb-" version ".tar.xz"))
        (sha256
-        (base32 "1s10g6m6c3h14gzxvp2s0v51jxzsrh23xfn7gl51a0r50srbbz52"))))
+        (base32 "0b2khcfm3jnc4iar0ljsq0z3dr3ak6jyaqnbgwj3yk2j05j0yc9n"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -685,10 +685,12 @@ Its features include:
            kio
            kcmutils
            kwidgetsaddons
-           libmusicbrainz
-           qtbase-5))
+           libmusicbrainz))
     (arguments
-     `(#:tests? #f)) ; Most tests require network
+     (list
+      #:qtbase qtbase
+      #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
+      #:tests? #f)) ; Most tests require network
     (home-page "https://invent.kde.org/multimedia/libkcddb")
     (synopsis "CDDB library for KDE Platform (runtime)")
     (description "A library for retrieving and sending cddb information.")
