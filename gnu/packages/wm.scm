@@ -73,6 +73,7 @@
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2024 bigbug <bigbookofbug@proton.me>
 ;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2024 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -145,6 +146,7 @@
   #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages music)
@@ -3909,4 +3911,26 @@ configuration."))))
      "@command{yambar} is a lightweight and configurable status panel (bar,
 for short) for X11 and Wayland, that goes to great lengths to be both CPU and
 battery efficient---polling is only done when absolutely necessary.")
+    (license license:expat)))
+
+(define-public wf-config
+  (package
+    (name "wf-config")
+    (version "0.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/WayfireWM/" name "/"))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256 (base32
+                       "07x6dapv2xyg0cn44dd2faw5gpk7mwfpbkpld9kyiaa9d44362z1"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list glm libxml2 wlroots libevdev))
+    (home-page "https://github.com/WayfireWM/wf-config")
+    (synopsis "Library for managing configuration files for Wayfire")
+    (description "The package provides a library for managing the
+configuration files of Wayifre.  It can set key and mouse bindings,
+configure input, and customize Wayfire plugins.")
     (license license:expat)))
