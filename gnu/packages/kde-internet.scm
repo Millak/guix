@@ -226,17 +226,17 @@ This package is part of the KDE networking module.")
 (define-public konversation
   (package
     (name "konversation")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konversation-" version ".tar.xz"))
        (sha256
-        (base32 "1ip0jlz71fad5l0ppbc6w914hqk7h626s12ssbb9p1c2yvlr1j1v"))))
+        (base32 "1migcrl2d3i4iadijhpap0mm2cd7irp3g2962flll41mv5nhzwsl"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules kdoctools qttools))
     (inputs
      (list karchive
            kbookmarks
@@ -245,7 +245,6 @@ This package is part of the KDE networking module.")
            kcoreaddons
            kcrash
            kdbusaddons
-           kemoticons
            kglobalaccel
            ki18n
            kiconthemes
@@ -256,16 +255,19 @@ This package is part of the KDE networking module.")
            knotifications
            knotifyconfig
            kparts
+           kstatusnotifieritem
+           ktextwidgets
            kwallet
            kwidgetsaddons
            kwindowsystem
            breeze-icons ; default icon set
            phonon
-           qtbase-5
-           qca
-           qtmultimedia-5
+           qca-qt6
+           qtmultimedia
+           qt5compat
            solid
            sonnet))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/konversation/")
     (synopsis "Graphical Internet Relay Chat (IRC) client for KDE")
     (description "Konversation is a graphical Internet Relay Chat client (IRC)
