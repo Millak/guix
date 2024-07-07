@@ -5097,7 +5097,7 @@ remote SMTP server.")
              go-github-com-creack-pty
              go-github-com-arran4-golang-ical
              go-github-com-protonmail-go-crypto
-             go-github-com-syndtr-goleveldb-leveldb
+             go-github-com-syndtr-goleveldb
              go-git-sr-ht-sircmpwn-getopt
              go-git-sr-ht-rockorager-tcell-term
              python

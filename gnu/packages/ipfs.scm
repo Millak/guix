@@ -736,7 +736,7 @@ written in Go.")
                   go-github-com-pkg-errors
                   go-github-com-prometheus-client-golang
                   go-github-com-stretchr-testify
-                  go-github-com-syndtr-goleveldb-leveldb
+                  go-github-com-syndtr-goleveldb
                   go-github-com-tidwall-sjson
                   go-github-com-whyrusleeping-go-sysinfo
                   ;;go-github-com-whyrusleeping-multiaddr-filter

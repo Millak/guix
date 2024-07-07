@@ -4470,9 +4470,9 @@ well as a program to generate applications and command files.")
       (home-page "https://github.com/stathat/go")
       (license license:expat))))
 
-(define-public go-github-com-syndtr-goleveldb-leveldb
+(define-public go-github-com-syndtr-goleveldb
   (package
-    (name "go-github-com-syndtr-goleveldb-leveldb")
+    (name "go-github-com-syndtr-goleveldb")
     (version "1.0.0")
     (source
      (origin
@@ -4487,8 +4487,16 @@ well as a program to generate applications and command files.")
     (arguments
      (list
       #:go go-1.21
-      #:import-path "github.com/syndtr/goleveldb/leveldb"
-      #:unpack-path "github.com/syndtr/goleveldb"))
+      #:import-path "github.com/syndtr/goleveldb"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-onsi-gomega
            go-github-com-onsi-ginkgo
