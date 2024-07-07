@@ -270,6 +270,38 @@ throughout its lifetime.")
      "Common utilities used by @code{go-ipfs} and other related Go packages.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipld-cbor
+  (package
+    (name "go-github-com-ipfs-go-ipld-cbor")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipld-cbor")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yxk4sbf1fk9aaizzpz3h30049wqvaz0s3jnbdd5akhj7wg89h21"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/ipfs/go-ipld-cbor"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-ipfs-util
+           go-github-com-ipfs-go-ipld-format
+           go-github-com-multiformats-go-multihash
+           go-github-com-polydawn-refmt
+           go-github-com-whyrusleeping-cbor-gen))
+    (home-page "https://github.com/ipfs/go-ipld-cbor")
+    (synopsis "A cbor implementation of the @code{go-ipld-format}")
+    (description
+     "An implementation of a @url{https://cbor.io/, CBOR} encoded merkledag object.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipld-format
   (package
     (name "go-github-com-ipfs-go-ipld-format")
