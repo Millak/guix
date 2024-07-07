@@ -136,44 +136,46 @@ programs.")
 (define-public akonadi-calendar
   (package
     (name "akonadi-calendar")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akonadi-calendar-" version ".tar.xz"))
        (sha256
-        (base32 "166xm57jcy7d2dv2pfy4lllzic4giin31szxz7xq3a7ixsd6g7cs"))))
+        (base32 "0nwl3jn7qqhs19ydxidjzh7vdll5s17pw4xaazmd3g7fg6mngnzh"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list akonadi
-           akonadi-contacts
+     (list akonadi-contacts
            akonadi-mime
            boost
-           grantlee
            grantleetheme
-           kcalendarcore
            kcalutils
            kcodecs
            kcontacts
            kdbusaddons
-           ki18n
            kiconthemes
-           kidentitymanagement
            kio
            kitemmodels
            kmailtransport
            kmime
+           kmessagelib
            knotifications
            kpimtextedit
            ksmtp
            ktextwidgets
-           kwallet
-           qtbase-5))
+           kxmlgui
+           kwallet))
+    (propagated-inputs (list akonadi
+                             kcalendarcore
+                             ki18n
+                             kwidgetsaddons
+                             kidentitymanagement))
     (arguments
-     `(#:tests? #f))  ;; TODO: 1/1 test fails
+     (list #:qtbase qtbase
+           #:tests? #f))  ;; TODO: 1/1 test fails
     (home-page "https://api.kde.org/kdepim/akonadi/html/index.html")
     (synopsis "Library providing calendar helpers for Akonadi items")
     (description "This library manages calendar specific actions for
