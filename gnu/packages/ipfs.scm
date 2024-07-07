@@ -449,6 +449,34 @@ their levels to be controlled individually.")
       #:go go-1.21
       #:import-path "github.com/ipfs/go-log"))))
 
+(define-public go-github-com-whyrusleeping-cbor-gen
+  (package
+    (name "go-github-com-whyrusleeping-cbor-gen")
+    (version "v0.0.0-20230818171029-f91ae536ca25")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/whyrusleeping/cbor-gen")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08by7pqh4fcwf2va01iif75yqkfssi6d48334404mmv9jmhzim60"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/whyrusleeping/cbor-gen"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-cid
+           go-github-com-google-go-cmp-cmp
+           go-golang-org-x-xerrors))
+    (home-page "https://github.com/whyrusleeping/cbor-gen")
+    (synopsis "Codegen for CBOR codecs on the specified types")
+    (description
+     "Basic utilities to generate fast path @url{https://cbor.io/, CBOR} codecs for
+types.")
+    (license license:expat)))
+
 (define-public gx
   (package
     (name "gx")
