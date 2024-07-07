@@ -4846,6 +4846,31 @@ encoded values to create the picture in a code with no inherent errors.")
 weighted moving averages}.")
     (license license:expat)))
 
+(define-public go-github-com-whyrusleeping-go-keyspace
+  (package
+    (name "go-github-com-whyrusleeping-go-keyspace")
+    (version "0.0.0-20160322163242-5b898ac5add1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/whyrusleeping/go-keyspace")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fkk7i7qxwbz1g621mm6a6inb69lr57cyc9ayyfiwhnjwfz78rbb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/whyrusleeping/go-keyspace"))
+    (home-page "https://github.com/whyrusleeping/go-keyspace")
+    (synopsis "Comparing key metrics within a given keyspace")
+    (description
+     "This is a package extracted from @code{go-ipfs}.  Its purpose to be used
+to compare a set of keys based on a given metric.  The primary metric used is
+XOR, as in kademlia.")
+    (license license:expat)))
+
 (define-public go-github-com-whyrusleeping-go-sysinfo
   (package
     (name "go-github-com-whyrusleeping-go-sysinfo")
