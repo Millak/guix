@@ -901,24 +901,21 @@ package.")
 (define-public keventviews
   (package
     (name "keventviews")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/eventviews-" version ".tar.xz"))
        (sha256
-        (base32 "1nh8a7jy0sjsyi41pxhxwjkq6fr4yy9rqgcjjbj01dnx1ykz3d7l"))))
+        (base32 "0kqkd8dqh8plmxngajr8266nad2sm7qf711h2jpiav753p0xas5z"))))
     (properties `((upstream-name . "eventviews")))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
-     (list akonadi
-           akonadi-calendar
-           akonadi-contacts
+     (list akonadi-contacts
            boost
-           kcalendarcore
            kcalendarsupport
            kcalutils
            kcodecs
@@ -939,8 +936,12 @@ package.")
            kservice
            ktextwidgets
            kxmlgui
-           libkdepim
-           qtbase-5))
+           libkdepim))
+    (propagated-inputs (list akonadi
+                             akonadi-calendar
+                             kcalendarcore
+                             kcalendarsupport))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/pim/eventviews")
     (synopsis "KDE PIM library for creating events")
     (description "This library provides an event creator for KDE PIM.")
