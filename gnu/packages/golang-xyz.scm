@@ -1772,6 +1772,41 @@ designed to deliver dynamic configurations with unparalleled accuracy, safety,
 and speed.")
     (license license:expat)))
 
+(define-public go-github-com-facebookgo-atomicfile
+  (package
+    (name "go-github-com-facebookgo-atomicfile")
+    (version "0.0.0-20151019160806-2de1f203e7d5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/facebookarchive/atomicfile")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vsx6r6y601jxvjqc8msbpr5v1037dfxxdd8h1q3s8wm6xhvj2v6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/facebookgo/atomicfile"))
+    (home-page "https://github.com/facebookgo/atomicfile")
+    (synopsis "Atomically written/replaced file")
+    (description
+     "Package atomicfile provides the ability to write a file with an eventual
+rename on Close (using @code{os.Rename}).  This allows for a file to always be
+in a consistent state and never represent an in-progress write.")
+    ;; patents
+    ;;
+    ;; Additional Grant of Patent Rights Version 2
+    ;; <...>
+    ;; Facebook, Inc. ("Facebook") hereby grants to each recipient of the
+    ;; Software ("you") a perpetual, worldwide, royalty-free, non-exclusive,
+    ;; irrevocable (subject to the termination provision below) license under
+    ;; any Necessary Claims, to make, have made, use, sell, offer to sell,
+    ;; import, and otherwise transfer the Software.
+    ;; <...>
+    (license license:bsd-3)))
+
 (define-public go-github-com-facette-natsort
   (package
     (name "go-github-com-facette-natsort")
