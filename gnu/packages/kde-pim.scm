@@ -768,19 +768,19 @@ calendaring applications.")
 (define-public kcalutils
   (package
     (name "kcalutils")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kcalutils-" version ".tar.xz"))
        (sha256
-        (base32 "1j7f5ai25zcxggw3dvky624asxim5bkd6a35rcdzkjhj1qwk3vll"))))
+        (base32 "1hiygvhw9nmqsz7pca6za9as06m8l0wsv78ski6gcjwzpi7qh0vq"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules libxml2)) ;; xmllint required for tests
     (inputs
-     (list grantlee
+     (list breeze-icons ; default icon set, required for tests
            kcalendarcore
            kcodecs
            kconfig
@@ -791,11 +791,11 @@ calendaring applications.")
            kidentitymanagement
            kpimtextedit
            ktextwidgets
-           kwidgetsaddons
-           breeze-icons ; default icon set, required for tests
-           qtbase-5))
+           ktexttemplate
+           kwidgetsaddons))
     (arguments
-     `(#:tests? #f)) ;; TODO: seem to pull in some wrong theme
+     (list #:qtbase qtbase
+           #:tests? #f)) ;; TODO: seem to pull in some wrong theme
     (home-page "https://api.kde.org/kdepim/kcalutils/html/index.html")
     (synopsis "Library with utility functions for the handling of calendar
 data")
