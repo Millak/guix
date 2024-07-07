@@ -2221,7 +2221,7 @@ KDE using certificate-based crypto.")
 (define-public libksieve
   (package
     (name "libksieve")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
@@ -2229,7 +2229,7 @@ KDE using certificate-based crypto.")
                            "/src/libksieve-" version ".tar.xz"))
        (sha256
         (base32
-		"066z33v30h568bmdcsl4v478p3xhiwsmq7pr7kziilrhy3a2m7p6"))))
+	 "1zsc84ylrylby28ypdg47kmf911dmi5hi6745wvjsrxcwnpqag37"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -2237,6 +2237,7 @@ KDE using certificate-based crypto.")
      (list akonadi
            cyrus-sasl
            grantleetheme
+           kconfigwidgets
            karchive
            ki18n
            kiconthemes
@@ -2254,21 +2255,21 @@ KDE using certificate-based crypto.")
            kwallet
            kwindowsystem
            libkdepim
-           qtbase-5
-           qtdeclarative-5
-           qtwebchannel-5
-           qtwebengine-5))
+           qtdeclarative
+           qtwebchannel
+           qtwebengine))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'substitute
-           (lambda _
-             ;; Disable a failing test
-             ;; sieveeditorhelphtmlwidgettest fails with `sigtrap`
-             (substitute*
-                 "src/ksieveui/editor/webengine/autotests/CMakeLists.txt"
-               (("^\\s*(add_test|ecm_mark_as_test|set_tests_properties)\\W" line)
-                (string-append "# " line))))))))
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'substitute
+                 (lambda _
+                   ;; Disable a failing test
+                   ;; sieveeditorhelphtmlwidgettest fails with `sigtrap`
+                   (substitute*
+                       "src/ksieveui/editor/webengine/autotests/CMakeLists.txt"
+                     (("^\\s*(add_test|ecm_mark_as_test|set_tests_properties)\\W" line)
+                      (string-append "# " line))))))))
     (home-page "https://invent.kde.org/pim/libksieve")
     (synopsis "KDE Sieve library")
     (description "Sieve is a language that can be used filter emails.  KSieve
