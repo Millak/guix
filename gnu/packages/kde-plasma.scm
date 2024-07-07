@@ -1819,27 +1819,31 @@ is controllable via voice or TV remote.")
 (define-public plasmatube
   (package
     (name "plasmatube")
-    (version "23.01.0")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma-mobile/"
-                                  version "/" name "-" version ".tar.xz"))
+                     (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/plasmatube-" version ".tar.xz"))
               (sha256
                (base32
-                "06hwa1m6gaacjmcyssa63vw43cgx096x9aj87rv1z9k9qsv2qgfj"))))
-    (build-system cmake-build-system)
-    (native-inputs (list extra-cmake-modules pkg-config))
+                "0dkn1ysgvhwrfdffpwbgzblc0jbb94h5r4cp23gnnk38iy4fsrim"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config python-minimal))
     (inputs
      (list kconfig
+           kcoreaddons
+           kdbusaddons
            kirigami
+           kirigami-addons
            ki18n
-           qtbase-5
-           qtdeclarative-5
-           qtmultimedia-5
-           qtquickcontrols2-5
-           qtsvg-5
-           mpv
-           youtube-dl))
+           kwindowsystem
+           qtdeclarative
+           qtmultimedia
+           qtsvg
+           qtkeychain-qt6
+           mpvqt
+           yt-dlp))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/plasmatube/")
     (synopsis "Kirigami YouTube video player")
     (description "This package provides YouTube video player based
