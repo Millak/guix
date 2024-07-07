@@ -37502,6 +37502,48 @@ write text fast, and for various text generation, statistics, and modeling tasks
                (base32
                 "0mikjfvq26kh8asnn9v55z41pap4c5ypymqnwwi4xkavc3mzyda2"))))))
 
+(define-public python-xmp-toolkit
+  (package
+    (name "python-xmp-toolkit")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-xmp-toolkit" version))
+       (sha256
+        (base32 "12x6lyaxjpbl8ll3cj97039kwvsha2nkx2v8v8irfbi2p0dl721s"))
+        (patches (search-patches
+                   "python-xmp-toolkit-add-missing-error-codes.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append "not test_can_put_xmp and "
+                                  "not test_exempi_bad_combinations and "
+                                  "not test_formats and "
+                                  "not test_get_xmp and "
+                                  "not test_open_file_with_options"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure-environment
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              (let ((exempi #$(this-package-input "exempi")))
+                (setenv "LD_LIBRARY_PATH"
+                        (string-append exempi "/lib"))))))))
+    (inputs (list exempi))
+    (propagated-inputs (list python-pytz))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/python-xmp-toolkit/python-xmp-toolkit")
+    (synopsis "Python XMP Toolkit for working with metadata.")
+    (description "Python XMP Toolkit is a library for working with XMP
+metadata, as well as reading/writing XMP metadata stored in many different
+file formats.
+
+Python XMP Toolkit is wrapping Exempi (using ctypes), a C/C++ XMP library
+based on Adobe XMP Toolkit, ensuring that future updates to the XMP standard
+are easily incorporated into the library with a minimum amount of work.")
+      (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
