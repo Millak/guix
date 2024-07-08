@@ -4133,6 +4133,67 @@ various actions and information that match the text appear as the text is being
 typed.")
     (license license:lgpl2.1+)))
 
+(define-public krunner-5
+  (package
+    (inherit krunner)
+    (name "krunner")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0h889a4bj7vqhvy9hkqxd9v437zly73phyav10gv5b2l8fgb4zxq"))))
+    (propagated-inputs
+     (list plasma-framework))
+    (native-inputs
+     (list extra-cmake-modules
+           ;; For tests.
+           dbus))
+    (inputs
+     (list kactivities
+           kauth-5
+           kbookmarks-5
+           kcodecs-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kio-5
+           kitemviews-5
+           ki18n-5
+           kjobwidgets-5
+           kpackage-5
+           kservice-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           kxmlgui-5
+           qtdeclarative-5
+           solid-5
+           threadweaver-5))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths-for-test
+            ;; This test tries to access paths like /home, /usr/bin and /bin/ls
+            ;; which don't exist in the build-container. Change to existing paths.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "autotests/runnercontexttest.cpp"
+                (("/home\"") "/tmp\"") ;; single path-part
+                (("//usr/bin\"") (string-append (getcwd) "\"")) ;; multiple path-parts
+                (("/bin/ls")
+                 (search-input-file inputs "/bin/ls")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" (getcwd))
+                (setenv "QT_QPA_PLATFORM" "offscreen")
+                (invoke "dbus-launch" "ctest")))))))))
+
 (define-public kservice
   (package
     (name "kservice")
