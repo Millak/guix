@@ -3635,6 +3635,109 @@ the data accessible in all applications using the KDE file dialog or any other
 KIO enabled infrastructure.")
     (license license:lgpl2.1+)))
 
+(define-public kio-5
+  (package
+    (inherit kio)
+    (name "kio")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0nhins85cqlr3xz4xi0g54rshagphin3pjjx2qxs0fcwcpb1kdzg"))
+              (patches (search-patches "kio-search-smbd-on-PATH.patch"))))
+    (propagated-inputs
+     (list acl
+           kbookmarks-5
+           kconfig-5
+           kcompletion-5
+           kcoreaddons-5
+           kitemviews-5
+           kjobwidgets-5
+           kservice-5
+           kwindowsystem-5
+           kxmlgui-5
+           solid-5))
+    (native-inputs
+     (list extra-cmake-modules dbus kdoctools-5 qttools-5))
+    (inputs (list mit-krb5
+                  karchive-5
+                  kauth-5
+                  kcodecs-5
+                  kconfigwidgets-5
+                  kcrash-5
+                  kdbusaddons-5
+                  kded-5
+                  kguiaddons-5
+                  kiconthemes-5
+                  ki18n-5
+                  knotifications-5
+                  ktextwidgets-5
+                  kwallet-5
+                  kwidgetsaddons-5
+                  libxml2
+                  libxslt
+                  qtbase-5
+                  qtdeclarative-5
+                  qtscript
+                  qtx11extras
+                  sonnet-5
+                  `(,util-linux "lib")  ; libmount
+                  zlib))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              ;; Better error message (taken from NixOS)
+              (substitute* "src/kiod/kiod_main.cpp"
+                (("(^\\s*qCWarning(KIOD_CATEGORY) << \
+\"Error loading plugin:\")( << loader.errorString();)" _ a b)
+                 (string-append a "<< name" b)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" (getcwd))
+                (setenv "XDG_RUNTIME_DIR" (getcwd))
+                (setenv "QT_QPA_PLATFORM" "offscreen")
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (invoke "dbus-launch" "ctest"
+                        "--rerun-failed" "--output-on-failure"
+                        "-E"
+                        ;; The following tests fail or are flaky (see:
+                        ;; https://bugs.kde.org/show_bug.cgi?id=440721).
+                        (string-append "(kiocore-jobtest"
+                                       "|kiocore-kmountpointtest"
+                                       "|kiowidgets-kdirlistertest"
+                                       "|kiocore-kfileitemtest"
+                                       "|kiocore-ktcpsockettest"
+                                       "|kiocore-mimetypefinderjobtest"
+                                       "|kiocore-krecentdocumenttest"
+                                       "|kiocore-http_jobtest"
+                                       "|kiogui-openurljobtest"
+                                       "|kioslave-httpheaderdispositiontest"
+                                       "|applicationlauncherjob_forkingtest"
+                                       "|applicationlauncherjob_scopetest"
+                                       "|applicationlauncherjob_servicetest"
+                                       "|commandlauncherjob_forkingtest"
+                                       "|commandlauncherjob_scopetest"
+                                       "|commandlauncherjob_servicetest"
+                                       "|kiowidgets-kdirmodeltest"
+                                       "|kiowidgets-kurifiltertest-colon-separator"
+                                       "|kiofilewidgets-kfilewidgettest"
+                                       "|kiowidgets-kurifiltertest-space-separator"
+                                       "|kioworker-httpheaderdispositiontest)")))))
+          (add-after 'install 'add-symlinks
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((kst5 (string-append #$output "/share/kservicetypes5/")))
+                (symlink (string-append kst5 "kfileitemactionplugin.desktop")
+                         (string-append kst5 "kfileitemaction-plugin.desktop"))))))))))
+
 (define-public knewstuff
   (package
     (name "knewstuff")
