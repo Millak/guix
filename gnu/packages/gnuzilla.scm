@@ -532,9 +532,9 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "115.12.0")
-(define %icecat-version (string-append %icecat-base-version "-guix0-preview1"))
-(define %icecat-build-id "20240611000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-base-version "115.13.0")
+(define %icecat-version (string-append %icecat-base-version "-guix1"))
+(define %icecat-build-id "20240709000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -554,12 +554,12 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "1vx88wc10fjkvqdqf3ab65qk3km7z0mlyf9plxjhabxvl0jid7mm"))))
+              "0p2x1prwa1yn2d3i7vgjc4gg64x4si43l68aav9881hhjwc0v8iz"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
-         (upstream-icecat-base-version "115.12.0")
-         (gnuzilla-commit "f200ffe88821f66234591096bcbe87b0c11f8da0")
+         (upstream-icecat-base-version "115.13.0")
+         (gnuzilla-commit "445980b18666c8214e5c62db3ae7108d5694242f")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -571,7 +571,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "154rjpn4vr2hqyrfbpwp6dvkzsv1cwisdf82v7dsda55012qaxg7"))))
+              "12jdlr86kr26h2ml5j8pjsjc8lpjxw05hqpirvlgj317xv0amyz1"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -1142,11 +1142,7 @@ variable defined below.  It requires guile-json to be installed."
 software, which does not recommend non-free plugins and addons.  It also
 features built-in privacy-protecting features.  This package also includes the
 @command{geckodriver} command, which can be useful for automated web
-testing.
-
-WARNING: IceCat 115 has not yet been released by the upstream IceCat project.
-This is a preview release, and does not currently meet the privacy-respecting
-standards of the IceCat project.")
+testing.")
     (license license:mpl2.0)     ;and others, see toolkit/content/license.html
     (properties
      `((ftp-directory . "/gnu/gnuzilla")
