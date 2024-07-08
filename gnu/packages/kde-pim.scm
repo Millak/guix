@@ -434,14 +434,14 @@ information.")
 (define-public kincidenceeditor
   (package
     (name "kincidenceeditor")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/incidenceeditor-" version ".tar.xz"))
        (sha256
-        (base32 "1pqfl7gqz7ibpns2gpwqpvzhsba7xj4ilhi4ax1vn3m086iyh3a0"))))
+        (base32 "1kwqr6h2b5jlxkd52g4kdnk78v3xpzqy3d2rl582j7fkhnnsfk40"))))
     (properties `((upstream-name . "incidenceeditor")))
     (build-system qt-build-system)
     (native-inputs
@@ -452,13 +452,13 @@ information.")
            akonadi-contacts
            akonadi-mime
            boost
-           grantlee
            grantleetheme
            kcalendarcore
            kcalendarsupport
            kcalutils
            kcodecs
            kcontacts
+           kconfigwidgets
            kdbusaddons
            kdiagram
            keventviews
@@ -475,18 +475,20 @@ information.")
            kpimtextedit
            ktextaddons
            ktextwidgets
+           kxmlgui
            kwallet
-           libkdepim
-           qtbase-5))
+           libkdepim))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "dbus-launch" "ctest" ;; FIXME: tests fails.
-                       "-E"
-					   "(akonadi-sqlite-incidencedatetimetest|ktimezonecomboboxtest|testindividualmaildialog)")))))))
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "dbus-launch" "ctest" ;; FIXME: tests fails.
+                        "-E"
+		        "(akonadi-sqlite-incidencedatetimetest|ktimezonecomboboxtest|testindividualmaildialog)")))))))
     (home-page "https://invent.kde.org/pim/incidenceeditor")
     (synopsis "KDE PIM library for editing incidences")
     (description "This library provides an incidence editor for KDE PIM.")
