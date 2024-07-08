@@ -281,7 +281,7 @@ and memory usage or network traffic.")
         (base32 "08b922gyg4591b399pw0y9zl3gr2627dw20c33abqpl30iq1fmd9"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem
+     (list kwindowsystem-5
            liblxqt
            libqtxdg
            qtbase-5
