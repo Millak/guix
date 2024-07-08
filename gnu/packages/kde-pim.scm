@@ -49,6 +49,7 @@
   #:use-module (gnu packages search)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml))
 
 (define-public akonadi
@@ -1639,14 +1640,14 @@ Features:
 (define-public kontactinterface
   (package
     (name "kontactinterface")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kontactinterface-" version ".tar.xz"))
        (sha256
-        (base32 "16fg24hz9vx912cffc94x5zx4jv3k72mbxgp5ck50lydypx6rfns"))))
+        (base32 "05g9mw29pi5z536pmxhavdispq5whgkx56iqqsdz8dy9rgjlm1bc"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -1657,8 +1658,8 @@ Features:
            kparts
            kwindowsystem
            kxmlgui
-           qtbase-5
-           qtx11extras))
+           libxkbcommon))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://api.kde.org/kdepim/kontactinterface/html/index.html")
     (synopsis "Kontact interface library")
     (description "This library provides the glue necessary for
