@@ -3925,6 +3925,42 @@ notifications which can be embedded in your application.")
 widgets with a user-interface defined in terms of actions.")
     (license license:lgpl2.1+)))
 
+(define-public kparts-5
+  (package
+    (inherit kparts)
+    (name "kparts")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0czrlqh5cxnj1mlbz839c7hifhnpzl476d92lv4hxji50wnjlfqr"))))
+    (propagated-inputs
+     (list kio-5 ktextwidgets-5 kxmlgui-5))
+    (native-inputs
+     (list extra-cmake-modules shared-mime-info))
+    (inputs
+     (list kauth-5
+           kbookmarks-5
+           kcodecs-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kiconthemes-5
+           kitemviews-5
+           ki18n-5
+           kjobwidgets-5
+           kservice-5
+           kwidgetsaddons-5
+           qtbase-5
+           solid-5
+           sonnet-5))))
+
 (define-public kpeople
   (package
     (name "kpeople")
