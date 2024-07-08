@@ -3739,6 +3739,50 @@ types or handled by application specific code.")
     ;; triple licensed
     (license (list license:gpl2+ license:gpl3+ license:lgpl2.1+))))
 
+(define-public kservice-5
+  (package
+    (inherit kservice)
+    (name "kservice")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0sd8yj9a1ja97c515g9shjqyzdz0jd7rn3r06g5659nh2z1w5dsj"))))
+    (propagated-inputs
+     (list kconfig-5 kcoreaddons-5 kdoctools-5))
+    (native-inputs
+     (list bison extra-cmake-modules flex shared-mime-info))
+    (inputs
+     (list kcrash-5 kdbusaddons-5 kdoctools-5 ki18n-5 qtbase-5))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch
+                 ;; Adopted from NixOS' patches "qdiriterator-follow-symlinks" and
+                 ;; "no-canonicalize-path".
+                 (lambda _
+                   (substitute* "src/sycoca/kbuildsycoca.cpp"
+                     ;; make QDirIterator follow symlinks
+                     (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)" _ a b)
+                      (string-append a " | QDirIterator::FollowSymlinks" b)))
+                   (substitute* "src/sycoca/vfolder_menu.cpp"
+                     ;; Normalize path, but don't resolve symlinks (taken from
+                     ;; NixOS)
+                     (("^\\s*QString resolved = QDir\\(dir\\)\\.canonicalPath\\(\\);")
+                      "QString resolved = QDir::cleanPath(dir);"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" (getcwd))
+                     (setenv "QT_QPA_PLATFORM" "offscreen")
+                     ;; Disable failing tests.
+                     (invoke "ctest" "-E" "(kautostarttest|ksycocatest|kapplicationtradertest)")))))))))
+
 (define-public kstatusnotifieritem
   (package
     (name "kstatusnotifieritem")
