@@ -680,7 +680,7 @@ allows for launching applications or shutting down the system.")
     (build-system cmake-build-system)
     (inputs
      (list eudev
-           kwindowsystem
+           kwindowsystem-5
            liblxqt
            qtxdg-tools
            procps
