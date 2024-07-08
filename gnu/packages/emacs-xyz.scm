@@ -23271,8 +23271,8 @@ object has been freed.")
   (license license:unlicense)))
 
 (define-public emacs-emacsql
-  (let ((commit "29194a63ede3ee24c7457c2fde03b0f1320ca4b1")
-        (revision "1"))
+  (let ((commit "efddd69c5e69214dbbe921fbf90f938501414894")
+        (revision "2"))
     (package
       (name "emacs-emacsql")
       (version (git-version "3.1.1" revision commit))
@@ -23284,7 +23284,7 @@ object has been freed.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "14yj53xxqi3009bdj39k2fqwyc896yp2m7gdkgyv47wlkh1xwzxh"))))
+          (base32 "1abwc7kzlmk6z68glnya6kxffrrqrhgpwrpzqpjc1l179gg1i1rg"))))
       (build-system emacs-build-system)
       (arguments
        (list
