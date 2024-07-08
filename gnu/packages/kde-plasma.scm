@@ -1308,7 +1308,7 @@ you login.")
 (define-public kwayland-integration
   (package
     (name "kwayland-integration")
-    (version "5.27.7")
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1316,7 +1316,7 @@ you login.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1fvf64vx5m3h5v8h697ixkcifhva6a14wlz75kv6759ji9l9fy8y"))))
+                "16wlnsavxbm54am6am29667scilvdksgbaskwqdkaazqqjxn298a"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -1336,12 +1336,13 @@ you login.")
                                                    "/lib/qt5/plugins:"
                                                    (getenv "QT_PLUGIN_PATH"))))))))
     (native-inputs (list extra-cmake-modules wayland-protocols pkg-config))
-    (inputs (list kguiaddons
-                  kidletime
-                  kwindowsystem
-                  kwayland
+    (inputs (list kguiaddons-5
+                  kidletime-5
+                  kwindowsystem-5
+                  kwayland-5
                   libxkbcommon
                   wayland
+                  plasma-wayland-protocols
                   qtbase-5
                   qtwayland-5))
     (synopsis "KWayland runtime integration plugins")
