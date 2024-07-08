@@ -1063,13 +1063,32 @@ with the @code{klee} package.")
       (base32 "1nma6dqi8chjb97llsa8mzyskgsg4dx56lm8j514j5wmr8vkafz6"))))
    (arguments
     (list
+     #:phases
+     #~(modify-phases %standard-phases
+                      (add-after 'unpack 'patch
+                        (lambda _
+                          (substitute* "CMakeLists.txt"
+                            (("\\$\\{KLEE_UCLIBC_PATH\\}/lib/libc\\.a")
+                             "${KLEE_UCLIBC_PATH}"))))
+                      (add-after 'install 'wrap-hooks
+                        (lambda* (#:key inputs outputs #:allow-other-keys)
+                          (let* ((out (assoc-ref outputs "out"))
+                                 (bin (string-append out "/bin"))
+                                 (lib (string-append out "/lib")))
+                            ;; Ensure that KLEE finds runtime libraries (e.g. uclibc).
+                            (wrap-program (string-append bin "/klee")
+                              `("KLEE_RUNTIME_LIBRARY_PATH" =
+                                (,(string-append lib "/klee/runtime/"))))))))
      #:configure-flags
      #~(list (string-append "-DLLVMCC="
                             (search-input-file %build-inputs "/bin/clang"))
              (string-append "-DLLVMCXX="
-                            (search-input-file %build-inputs "/bin/clang++")))))
+                            (search-input-file %build-inputs "/bin/clang++"))
+             (string-append "-DKLEE_UCLIBC_PATH="
+                            (search-input-file %build-inputs "/lib/klee/libc.a"))
+             "-DENABLE_POSIX_RUNTIME=ON")))
    (native-inputs (list clang-13 llvm-13 python-lit))
-   (inputs (list gperftools sqlite z3))
+   (inputs (list bash-minimal klee-uclibc gperftools sqlite z3))
    (build-system cmake-build-system)
    (home-page "https://klee-se.org/")
    (synopsis "Symbolic execution engine")
