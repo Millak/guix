@@ -462,7 +462,7 @@ according to the Desktop Notifications Specification.")
         (base32 "014jpyw4sgr63kjqdmksi6fsaz7pm5gkzr17f5rkaadx640ij4m0"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem
+     (list kwindowsystem-5
            liblxqt
            libqtxdg
            qtbase-5
