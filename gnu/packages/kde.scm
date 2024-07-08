@@ -1404,27 +1404,26 @@ communicate with each other.  Here's a few things KDE Connect can do:
                          python-wrapper
                          qttools-5))
     (inputs
-     (list breeze ;for dark themes
+     (list breeze-qt5 ;for dark themes
            breeze-icons ;for icons
            gsl
-           karchive
-           kcompletion
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kcrash
-           kdoctools
-           ki18n
-           kiconthemes
-           kio
-           knewstuff
-           kparts
-           kservice
-           ksyntaxhighlighting
-           ktextwidgets
-           kuserfeedback
-           kwidgetsaddons
-           kxmlgui
+           karchive-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kcrash-5
+           kdoctools-5
+           ki18n-5
+           kiconthemes-5
+           kio-5
+           knewstuff-5
+           kparts-5
+           kservice-5
+           ksyntaxhighlighting-5
+           ktextwidgets-5
+           kwidgetsaddons-5
+           kxmlgui-5
            qtbase-5
            qtsvg-5
            shared-mime-info
