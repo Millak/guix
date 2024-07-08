@@ -23327,23 +23327,33 @@ efficient as possible on all supported Python versions.")
 Mustache templating language renderer.")
     (license license:expat)))
 
+;; XXX: Try to inherit from duckdb and build from source with all extentions.
 (define-public python-duckdb
   (package
     (name "python-duckdb")
-    (version "0.8.1")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "duckdb" version))
               (sha256
                (base32
-                "1sgfmii5xlkbx3hzyjxg80gl2ni1rxpabahl4gww9by2mgs3fkd5"))))
+                "0lyl6di1c7j31i2mk384j711kzyyf9rjd3nqx5mbgmf7gfvmk852"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "--ignore=tests/slow/test_h2oai_arrow.py"
-             ;; Don't install anything, thank you.
-             "-k" "not test_install_non_existent_extension")
+      '(list "--numprocesses" "auto"
+             "--ignore=tests/slow/test_h2oai_arrow.py"
+             ;; Do not relay on mypy.
+             "--ignore=tests/stubs/test_stubs.py"
+             "-k" (string-append
+                   ;; Don't install anything, thank you.
+                   "not test_install_non_existent_extension"
+                   ;; See <https://github.com/duckdb/duckdb/issues/11961>.
+                   " and not test_fetchmany"
+                   ;; See <https://github.com/duckdb/duckdb/issues/10702>.
+                   " and not test_connection_interrupt"
+                   " and not test_query_interruption"))
       #:phases
       #~(modify-phases %standard-phases
           ;; Tests need this
@@ -23362,17 +23372,19 @@ Mustache templating language renderer.")
                                "pyfilesystem.hpp"
                                "pybind11/conversions/pyconnection_default.hpp")
                   (("const_name") "_"))))))))
+    (propagated-inputs
+     (list python-adbc-driver-manager))
     (native-inputs
      (list pybind11
            python-fsspec
            python-google-cloud-storage
-           python-mypy
            python-numpy
            python-pandas
            python-psutil
            python-pyarrow
            python-pytest
            python-pytest-runner
+           python-pytest-xdist
            python-setuptools-scm))
     (home-page "https://www.duckdb.org")
     (synopsis "DuckDB embedded database")
