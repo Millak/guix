@@ -3357,6 +3357,49 @@ window does not need focus for them to be activated.")
 in applications using the KDE Frameworks.")
     (license license:lgpl2.1+)))
 
+(define-public kiconthemes-5
+  (package
+    (inherit kiconthemes)
+    (name "kiconthemes")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0q859zbjys7lajwpgl78ji4dif7cxdxirqb8b6f7k7bk53ignvly"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list extra-cmake-modules qttools-5 shared-mime-info))
+    (inputs
+     (list karchive-5
+           kauth-5
+           kcodecs-5
+           kcoreaddons-5
+           kconfig-5
+           kconfigwidgets-5
+           ki18n-5
+           kitemviews-5
+           kwidgetsaddons-5
+           qtbase-5
+           qtdeclarative-5
+           qtsvg-5))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (setenv "XDG_DATA_DIRS"
+                           (string-append #$(this-package-native-input
+                                             "shared-mime-info")
+                                          "/share"))
+                   (setenv "HOME" (getcwd))
+                   ;; make Qt render "offscreen", required for tests
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))))
+
 (define-public kinit
   (package
     (name "kinit")
