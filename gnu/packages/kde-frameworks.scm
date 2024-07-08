@@ -2470,6 +2470,45 @@ asynchronous jobs.")
 covers feedback and persistent events.")
     (license license:lgpl2.1+)))
 
+(define-public knotifications-5
+  (package
+    (inherit knotifications)
+    (name "knotifications")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0jxld7f82psa48r0n9qv1cks6w1vd6krjnyb4mw68vgm38030na8"))))
+    (native-inputs
+     (list extra-cmake-modules dbus pkg-config qttools-5))
+    (inputs
+     (list kcodecs-5
+           kconfig-5
+           kcoreaddons-5
+           kwindowsystem-5
+           libcanberra
+           libdbusmenu-qt
+           phonon
+           qtdeclarative-5
+           qtbase-5
+           qtspeech-5
+           qtx11extras))
+    (propagated-inputs '())
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "HOME"
+                                      (getcwd))
+                              (setenv "DBUS_FATAL_WARNINGS" "0")
+                              (invoke "dbus-launch" "ctest")))))))))
+
 (define-public kpackage
   (package
     (name "kpackage")
