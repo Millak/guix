@@ -1015,7 +1015,7 @@ infrastructure.")
 (define-public kgraphviewer
   (package
     (name "kgraphviewer")
-    (version "2.4.3")
+    (version "2.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1023,15 +1023,17 @@ infrastructure.")
                     version "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1h6pgg89gvxl8gw7wmkabyqqrzad5pxyv5lsmn1fl4ir8lcc5q2l"))))
+                "0s9b3q7wvrbz52d500mcaflkrfjwhbzh5bsf5gxzgxjdzdiywaw7"))))
     (build-system cmake-build-system)
     (inputs
-     (list qtbase-5
+     (list qtbase
            boost
            graphviz
+           ki18n
            kiconthemes
            kparts
-           qtsvg-5))
+           qtsvg
+           qt5compat))
     (native-inputs
      (list pkg-config extra-cmake-modules kdoctools))
     (home-page "https://apps.kde.org/kgraphviewer/")
