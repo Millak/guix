@@ -3730,6 +3730,34 @@ framework as the user interface, which integrates well with Vertico or
 Selectrum.")
     (license license:gpl3+)))
 
+(define-public emacs-empv
+  (let ((commit "8cc9b0a425b6989d30f91bf90e9b09bd00581f07")
+        (revision "1"))
+    (package
+      (name "emacs-empv")
+      (version (git-version "4.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/isamert/empv.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "06dphwj9vi39dbpif3kzp6azs80klh13s9l22a6ddz91kmds2myy"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-compat emacs-s))
+      (home-page "https://github.com/isamert/empv.el")
+      (synopsis
+       "Emacs multimedia player, media library manager, YouTube frontend")
+      (description
+       "This package is an Emacs multimedia player based on mpv.  It offers
+a comprehensive interface to mpv, including convenient features such as an
+embedded radio manager, YouTube integration, and a local music and video
+library manager.")
+      (license license:gpl3+))))
+
 (define-public emacs-marginalia-emprise
   (package
     (name "emacs-marginalia-emprise")
