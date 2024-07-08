@@ -1980,7 +1980,7 @@ decode RAW picture files.")
 (define-public kactivities
   (package
     (name "kactivities")
-    (version "5.114.0")
+    (version "5.116.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1989,29 +1989,28 @@ decode RAW picture files.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "10pyynqz8c22la9aqms080iqlisj3irbi1kwnn3s0vg5dsjxr1p3"))))
+                "0zbjs4sysfaf6zsdnfmkbpxsc2bg5ncnhkzfn1dyhrsqk68lwz3s"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list boost
-           kauth
-           kbookmarks
-           kcodecs
-           kcompletion
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kio
-           kitemviews
-           kjobwidgets
-           kservice
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
-           qtbase-5
+           kauth-5
+           kbookmarks-5
+           kcodecs-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kio-5
+           kitemviews-5
+           kjobwidgets-5
+           kservice-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           kxmlgui-5
            qtdeclarative-5
-           solid))
+           solid-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Core components for the KDE Activity concept")
     (description "KActivities provides the infrastructure needed to manage a
