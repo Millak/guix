@@ -227,7 +227,7 @@ applications.")
                 "DESTINATION \"share/polkit-1/actions"))
              #t)))))
     (inputs
-     (list kwindowsystem
+     (list kwindowsystem-5
            libqtxdg
            libxscrnsaver
            polkit-qt
