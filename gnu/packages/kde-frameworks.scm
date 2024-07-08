@@ -3458,7 +3458,7 @@ in applications using the KDE Frameworks.")
 (define-public kinit
   (package
     (name "kinit")
-    (version "5.114.0")
+    (version "5.116.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3467,7 +3467,7 @@ in applications using the KDE Frameworks.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0b6z9gq05vz20hm5y9ai3sbqq3gxwm3a3z88dkvi7dywk7vbqcph"))
+                "0b5w7pk7wbyzix2jvn3yk89f9r620wrx55v3cgvj4p83c73ar974"))
               ;; Use the store paths for other packages and dynamically loaded
               ;; libs
               (patches (search-patches "kinit-kdeinit-extra_libs.patch"))))
@@ -3491,29 +3491,29 @@ in applications using the KDE Frameworks.")
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
-     (list kauth
-           kbookmarks
-           kcodecs
-           kcompletion
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kcrash
-           kdbusaddons
-           kdoctools
-           kio
-           kitemviews
-           ki18n
-           kjobwidgets
-           kparts
-           kservice
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
+     (list kauth-5
+           kbookmarks-5
+           kcodecs-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kcrash-5
+           kdbusaddons-5
+           kdoctools-5
+           kio-5
+           kitemviews-5
+           ki18n-5
+           kjobwidgets-5
+           kparts-5
+           kservice-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           kxmlgui-5
            libcap ; to install start_kdeinit with CAP_SYS_RESOURCE
            plasma-framework
            qtbase-5
-           solid))
+           solid-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Library to speed up start of applications on KDE workspaces")
     (description "Kdeinit is a process launcher similar to init used for booting
@@ -3523,6 +3523,9 @@ applications makes starting KDE applications faster and reduces memory
 consumption.")
     ;; dual licensed
     (license (list license:lgpl2.0+ license:lgpl2.1+))))
+
+(define kinit-bootstrap
+  ((package-input-rewriting `((,kdbusaddons-5 . ,kdbusaddons-5-bootstrap))) kinit))
 
 (define-public kio
   (package
