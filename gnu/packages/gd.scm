@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2016, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2016, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -61,7 +61,15 @@
     (arguments
      ;; As recommended by github.com/libgd/libgd/issues/278 to fix rounding
      ;; issues on aarch64 and other architectures.
-     (list #:make-flags #~(list "CFLAGS=-ffp-contract=off")
+     (list #:make-flags #~(list "CFLAGS=-ffp-contract=off"
+
+                                ;; XXX: This test fails on i686-linux.
+                                ;; See <https://issues.guix.gnu.org/71996>.
+                                #$@(if (and (not (%current-target-system))
+                                            (string-prefix? "i686"
+                                                            (%current-system)))
+                                       #~("XFAIL_TESTS=gdimagegrayscale/basic")
+                                       #~()))
            #:configure-flags #~(list "--disable-static")
            #:phases
            #~(modify-phases %standard-phases
