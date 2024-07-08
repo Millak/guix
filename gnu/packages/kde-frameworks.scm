@@ -914,6 +914,58 @@ as well as an API to create KDED modules.")
     ;; the lgpl2.1. Some source files are under non-copyleft licenses.
     (license license:lgpl2.1+)))
 
+(define-public kdbusaddons-5
+  (package
+    (inherit kdbusaddons)
+    (name "kdbusaddons")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0mlfphk8knbvpyns3ixd8da9zjvsms29mv5z2xgif9y20i5kmdq3"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list extra-cmake-modules dbus qttools-5))
+    (inputs
+     (list qtbase-5 qtx11extras kinit-bootstrap))
+    ;; kinit-bootstrap: kinit package which does not depend on kdbusaddons.
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'patch-source
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; look for the kdeinit5 executable in kinit's store directory,
+                   ;; instead of the current application's directory:
+                   (substitute* "src/kdeinitinterface.cpp"
+                     (("<< QCoreApplication::applicationDirPath..")
+                      (string-append
+                       "<< QString::fromUtf8(\"/"
+                       (dirname (search-input-file inputs "bin/kdeinit5"))
+                       "\")" )))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "DBUS_FATAL_WARNINGS" "0")
+                     (invoke "dbus-launch" "ctest")))))))))
+
+(define kdbusaddons-5-bootstrap
+  (package
+    (inherit kdbusaddons-5)
+    (source (origin
+              (inherit (package-source kdbusaddons-5))
+              (patches '())))
+    (inputs (modify-inputs (package-inputs kdbusaddons-5) (delete "kinit")))
+    (arguments
+     (substitute-keyword-arguments (package-arguments kdbusaddons-5)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'patch-source)))))))
+
 (define-public kdnssd
   (package
     (name "kdnssd")
