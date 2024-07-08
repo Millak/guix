@@ -1498,6 +1498,53 @@ are adjusted to be what a Qt developer expects - two arguments of int are
 represented by a QPoint or a QSize.")
     (license license:lgpl2.1+)))
 
+(define-public kwayland-5
+  (package
+    (inherit kwayland)
+    (name "kwayland")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1n5fq0gppx6rzgzkkskd077jygzj7cindb7zwr35yvbg5l69gdc8"))))
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (inputs
+     (list libxkbcommon
+           plasma-wayland-protocols
+           qtwayland-5
+           wayland
+           wayland-protocols))
+    (arguments
+     (list
+      ;; Tests spawn Wayland sessions that cannot run in parallel.
+      #:parallel-tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-XDG_RUNTIME_DIR
+            (lambda _
+              (setenv "XDG_RUNTIME_DIR" (getcwd))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest" "-E"
+                        (string-append
+                         "("
+                         (string-join
+                          ;; XXX: maybe is upstream bug
+                          '("kwayland-testWaylandRegistry"
+                            "kwayland-testPlasmaShell"
+                            "kwayland-testPlasmaWindowModel"
+                            ;; The 'kwayland-testXdgForeign' may fail on
+                            ;; powerpc64le with a 'Subprocess aborted' error.
+                            "kwayland-testXdgForeign") "|")
+                         ")"))))))))))
+
 (define-public kwidgetsaddons
   (package
     (name "kwidgetsaddons")
