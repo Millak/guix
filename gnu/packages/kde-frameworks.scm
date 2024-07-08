@@ -3157,6 +3157,61 @@ that offer bindings to some of the Frameworks.")
     ;; dual licensed
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public kdeclarative-5
+  (package
+    (inherit kdeclarative)
+    (name "kdeclarative")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0py5x9ia8p7ngk1q3nqwqi1b9zv6jdxc23qam8xyqbfjqcm9qzwy"))))
+    (propagated-inputs
+     (list kconfig-5 kpackage-5 qtdeclarative-5))
+    (native-inputs
+     (list dbus extra-cmake-modules pkg-config xorg-server-for-tests))
+    (inputs
+     (list kauth-5
+           kcoreaddons-5
+           kglobalaccel-5
+           kguiaddons-5
+           kiconthemes-5
+           kio-5
+           ki18n-5
+           kjobwidgets-5
+           knotifications-5
+           kservice-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           libepoxy
+           qtbase-5
+           qtdeclarative-5
+           solid-5))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'start-xorg-server
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; The test suite requires a running X server, setting
+                   ;; QT_QPA_PLATFORM=offscreen does not suffice.
+                   (system "Xvfb :1 -screen 0 640x480x24 &")
+                   (setenv "DISPLAY" ":1")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME"
+                             (getcwd))
+                     (setenv "XDG_RUNTIME_DIR"
+                             (getcwd))
+                     (setenv "QT_QPA_PLATFORM" "offscreen")
+                     (setenv "DBUS_FATAL_WARNINGS" "0")
+                     (invoke "dbus-launch" "ctest")))))))))
+
 (define-public kded
   (package
     (name "kded")
