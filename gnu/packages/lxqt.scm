@@ -549,7 +549,7 @@ of other programs.")
         (base32 "051lb4kx29rx3ls3whlrbi83r9z9pdiqwyb1wbni56aqilv0svh0"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem
+     (list kwindowsystem-5
            liblxqt
            libqtxdg
            pcre
