@@ -54,42 +54,44 @@
 (define-public ark
   (package
     (name "ark")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/ark-" version ".tar.xz"))
               (sha256
                (base32
-                "081swq9f87yxg4dxdl5i4hszhr0q4ph402in397zfa5vpyspzy41"))
+                "1q0fyx65gp0d1vj4jxiaswdfzi15hbfi537f3i8y277b621qp3rs"))
               ;; The libarchive package in Guix does not support
               ;; xar; disable related tests.
               (patches (search-patches "ark-skip-xar-test.patch"))))
     (build-system qt-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'start-xserver
-           ;; adddialogtest requires DISPLAY.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xorg-server (assoc-ref inputs "xorg-server")))
-               (setenv "HOME" (getcwd))
-               (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
-               (setenv "DISPLAY" ":1"))))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lrzip (assoc-ref inputs "lrzip"))
-                    (lzop  (assoc-ref inputs "lzop"))
-                    (p7zip (assoc-ref inputs "p7zip"))
-                    (unzip (assoc-ref inputs "unzip"))
-                    (zip   (assoc-ref inputs "zip"))
-                    (zstd  (assoc-ref inputs "zstd")))
-               (wrap-program (string-append out "/bin/ark")
-                 `("PATH" suffix
-                   ,(map (lambda (p)
-                           (string-append p "/bin"))
-                         (list lrzip lzop p7zip unzip zip zstd))))))))))
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xserver
+            ;; adddialogtest requires DISPLAY.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((xorg-server (assoc-ref inputs "xorg-server")))
+                (setenv "HOME" (getcwd))
+                (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
+                (setenv "DISPLAY" ":1"))))
+          (add-after 'install 'wrap-executable
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (lrzip (assoc-ref inputs "lrzip"))
+                     (lzop  (assoc-ref inputs "lzop"))
+                     (p7zip (assoc-ref inputs "p7zip"))
+                     (unzip (assoc-ref inputs "unzip"))
+                     (zip   (assoc-ref inputs "zip"))
+                     (zstd  (assoc-ref inputs "zstd")))
+                (wrap-program (string-append out "/bin/ark")
+                  `("PATH" suffix
+                    ,(map (lambda (p)
+                            (string-append p "/bin"))
+                          (list lrzip lzop p7zip unzip zip zstd))))))))))
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools xorg-server))
     (inputs
@@ -99,7 +101,6 @@
            kconfig
            kcrash
            kdbusaddons
-           khtml
            ki18n
            kiconthemes
            kio
@@ -108,9 +109,9 @@
            kpty
            kservice
            kwidgetsaddons
+           kfilemetadata
            libarchive
            libzip
-           qtbase-5
            zlib
            ;; Command line tools used by Ark.
            lrzip
