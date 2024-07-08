@@ -737,7 +737,7 @@ for the LXQt desktop environment.")
         (base32 "0pqz2pkzwq3af70s90p9x3a8rvlpl2jjb4mnjwgs1wz30cb7jrii"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem
+     (list kwindowsystem-5
            liblxqt
            libqtxdg
            qtbase-5
