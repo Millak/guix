@@ -1459,6 +1459,34 @@ dates and times, or MIME types, as well as platform-aware dialogs for
 configuration pages, message boxes, and password requests.")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public kwidgetsaddons-5
+  (package
+    (inherit kwidgetsaddons)
+    (name "kwidgetsaddons")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0rcm27wra9s7kzlk67y0f57l0rnh5vb9c2w39h6yjq37y5af1qd8"))))
+    (native-inputs
+     (list extra-cmake-modules qttools-5 xorg-server-for-tests))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache")
+                (invoke "ctest" "-E"
+                        "(ksqueezedtextlabelautotest|\
+kwidgetsaddons-kcolumnresizertest)")))))))))
+
 (define-public kwindowsystem
   (package
     (name "kwindowsystem")
