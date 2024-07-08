@@ -4079,6 +4079,43 @@ desktop-wide storage for passwords and the kwalletd daemon used to safely store
 the passwords on KDE work spaces.")
     (license license:lgpl2.1+)))
 
+(define-public kwallet-5
+  (package
+    (inherit kwallet)
+    (name "kwallet")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "12s4rnybadpcjmw3dvdn68vm369h1yk7yp7mv736mj1brdg8pkhy"))))
+    (native-inputs
+     (list extra-cmake-modules kdoctools-5))
+    (inputs
+     (list gpgme
+           kauth-5
+           kcodecs-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kdbusaddons-5
+           kdoctools-5
+           kiconthemes-5
+           ki18n-5
+           knotifications-5
+           kservice-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           libgcrypt
+           phonon
+           qgpgme
+           qca
+           qtbase-5))))
+
 (define-public kxmlgui
   (package
     (name "kxmlgui")
