@@ -812,6 +812,44 @@ manipulations such as macro replacement, accessing user information and
 many more.")
     (license (list license:lgpl2.0+ license:lgpl2.1+))))
 
+(define-public kcoreaddons-5
+  (package
+    (inherit kcoreaddons)
+    (name "kcoreaddons")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0x1inzglgpz2z2w25bp46hzjv74gp3vyd3i911xczz7wd30b9yyy"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list extra-cmake-modules qttools-5 shared-mime-info))
+    (inputs
+     (list qtbase-5))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'blacklist-failing-test
+            (lambda _
+              ;; Blacklist failing tests.
+              (with-output-to-file "autotests/BLACKLIST"
+                (lambda _
+                  ;; FIXME: Make it pass.  Test failure caused by stout/stderr
+                  ;; being interleaved.
+                  (display "[test_channels]\n*\n")
+                  ;; FIXME
+                  (display "[test_inheritance]\n*\n")))))
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (setenv "TMPDIR" (getcwd)))))))))
+
 (define-public kdbusaddons
   (package
     (name "kdbusaddons")
