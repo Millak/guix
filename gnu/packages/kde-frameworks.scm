@@ -535,6 +535,25 @@ GZip format, via a subclass of QIODevice.")
     (license (list license:lgpl2.1 license:lgpl2.1+
                    license:lgpl3+ license:bsd-2))))
 
+(define-public karchive-5
+  (package
+    (inherit karchive)
+    (name "karchive")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/frameworks/"
+                                  (version-major+minor version)
+                                  "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "02m3vvw58qsgmaps184xwy97bg4pgjl4i1gjwzn66h5qf34y6qqn"))))
+    (native-inputs
+     (list extra-cmake-modules pkg-config qttools-5))
+    (inputs
+     (list bzip2 qtbase-5 xz zlib `(,zstd "lib")))
+    (synopsis "Qt 5 addon providing access to numerous types of archives")))
+
 (define-public kcalendarcore
   (package
     (name "kcalendarcore")
