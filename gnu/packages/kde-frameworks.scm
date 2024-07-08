@@ -768,6 +768,37 @@ propagate their changes to their respective configuration files.")
                    license:lgpl3+ license:gpl1 ; licende:mit-olif
                    license:bsd-2 license:bsd-3))))
 
+(define-public kconfig-5
+  (package
+    (inherit kconfig)
+    (name "kconfig")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "03j7cw0c05rpxrnblrc5ziq7vy1v193l5gj9bix1dakkj9hf6p9c"))))
+    (native-inputs
+     (list dbus extra-cmake-modules inetutils qttools-5
+           xorg-server-for-tests))
+    (inputs
+     (list qtdeclarative-5))
+    (propagated-inputs '())
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests? ;; kconfigcore-kconfigtest fails inconsistently!!
+                     (setenv "HOME" (getcwd))
+                     (setenv "QT_QPA_PLATFORM" "offscreen")
+                     (invoke "ctest" "-E" "(kconfigcore-kconfigtest|\
+kconfiggui-kstandardshortcutwatchertest)")))))))))
+
 (define-public kcoreaddons
   (package
     (name "kcoreaddons")
