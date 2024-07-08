@@ -4234,6 +4234,49 @@ descriptions for integrating actions from plugins.")
     ;; dual licensed
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public kxmlgui-5
+  (package
+    (inherit kxmlgui)
+    (name "kxmlgui")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0h3s3jcmn4pzcfxs4hywrgk92dd5hfx9hzyy14f03c0dafi6crb3"))))
+    (propagated-inputs
+     (list kconfig-5 kconfigwidgets-5))
+    (native-inputs
+     (list extra-cmake-modules qttools-5 xorg-server-for-tests))
+    (inputs
+     (list attica-5
+           kauth-5
+           kcodecs-5
+           kcoreaddons-5
+           kglobalaccel-5
+           kguiaddons-5
+           kiconthemes-5
+           kitemviews-5
+           ki18n-5
+           ktextwidgets-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           qtbase-5
+           sonnet-5))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" (getcwd))
+                     (setenv "QT_QPA_PLATFORM" "offscreen") ;; These tests fail
+                     (invoke "ctest" "-E" "(ktoolbar_unittest|kxmlgui_unittest)")))))))))
+
 (define-public kxmlrpcclient
   (package
     (name "kxmlrpcclient")
