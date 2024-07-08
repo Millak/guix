@@ -870,17 +870,18 @@ package.")
 (define-public kgpg
   (package
     (name "kgpg")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kgpg-" version ".tar.xz"))
        (sha256
-        (base32 "1ihxw1s4sq7cp5pm6rddcmvqk0v5gfg4v38b6yg8hyjg655x63jz"))))
+        (base32 "10zhxkhjsbn2pfhq40ym8qp39adfqhdvcg1rm9hvf8k1c91lzpxk"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
@@ -900,8 +901,8 @@ package.")
      (list akonadi
            akonadi-contacts
            boost
-           gpgme
-           grantlee
+           breeze-icons ;; default icon set
+           gpgme-1.23
            grantleetheme
            karchive
            kcodecs
@@ -916,12 +917,11 @@ package.")
            kjobwidgets
            knotifications
            kservice
+           kstatusnotifieritem
            ktextwidgets
            kwidgetsaddons
            kwindowsystem
-           kxmlgui
-           breeze-icons ;; default icon set
-           qtbase-5))
+           kxmlgui))
     (home-page "https://apps.kde.org/kgpg/")
     (synopsis "Graphical front end for GNU Privacy Guard")
     (description "Kgpg manages cryptographic keys for the GNU Privacy Guard,
