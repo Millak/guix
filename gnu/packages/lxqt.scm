@@ -1041,7 +1041,7 @@ QTermWidget.")
         (base32 "0xc004h7i2hnl3jj4p8v6wkqav2v07k1mzdvys3ya171z4ffmc9j"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem libqtxdg qtbase-5 qtsvg-5 qtx11extras))
+     (list kwindowsystem-5 libqtxdg qtbase-5 qtsvg-5 qtx11extras))
     (native-inputs
      (list pkg-config perl qttools-5))
     (arguments
