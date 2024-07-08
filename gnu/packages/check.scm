@@ -88,6 +88,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -989,6 +990,63 @@ similar to unit tests.")
 macros for defining tests, grouping them into suites, and providing a test
 runner.  It is quite unopinionated with most of its features being optional.")
    (license license:isc)))
+
+(define-public klee-uclibc
+  (let ((commit "955d502cc1f0688e82348304b053ad787056c754"))
+    (package
+      (name "klee-uclibc")
+      (version (git-version "20230612" "0" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/klee/klee-uclibc")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12fnr5mq80cxwvv09gi844mi31jgi8067swagxnlxlhxj4mi125j"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ;upstream uClibc tests do not work in the fork
+         #:strip-directories '() ;only ships a static library, so don't strip anything.
+         #:phases (modify-phases %standard-phases
+                    ;; Disable locales as these would have to be downloaded and
+                    ;; shouldn't really be needed for symbolic execution either.
+                    (add-after 'unpack 'patch-config
+                      (lambda _
+                        (substitute* "klee-premade-configs/x86_64/config"
+                          (("UCLIBC_DOWNLOAD_PREGENERATED_LOCALE_DATA=y")
+                           "UCLIBC_DOWNLOAD_PREGENERATED_LOCALE_DATA=n")
+                          (("UCLIBC_PREGENERATED_LOCALE_DATA=y")
+                           "UCLIBC_PREGENERATED_LOCALE_DATA=n")
+                          (("UCLIBC_HAS_LOCALE=y")
+                           "UCLIBC_HAS_LOCALE=n")
+                          (("UCLIBC_HAS_XLOCALE=y")
+                           "UCLIBC_HAS_XLOCALE=n"))))
+
+                    ;; Upstream uses a custom non-GNU configure script written
+                    ;; in Python, replace the default configure phase accordingly.
+                    (replace 'configure
+                      (lambda _
+                        (invoke "./configure" "--make-llvm-lib"
+                                "--enable-release")))
+
+                    ;; Custom install phase to only install the libc.a file manually.
+                    ;; This is the only file which is used/needed by KLEE itself.
+                    (replace 'install
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        (install-file "lib/libc.a"
+                                      (string-append (assoc-ref outputs "out")
+                                                     "/lib/klee")))))))
+      ;; ncurses is only needed for the `make menuconfig` interface.
+      (native-inputs (list clang-13 llvm-13 python ncurses))
+      (synopsis "Variant of uClibc tailored to symbolic execution")
+      (description
+       "Modified version of uClibc for symbolic execution of
+Unix userland software.  This library can only be used in conjunction
+with the @code{klee} package.")
+      (home-page "https://klee-se.org/")
+      (license license:lgpl2.1))))
 
 (define-public klee
   (package
