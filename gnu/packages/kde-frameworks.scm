@@ -4031,6 +4031,38 @@ It supports rich text as well as plain text.")
     ;; dual licensed
     (license (list license:lgpl2.0+ license:lgpl2.1+))))
 
+(define-public ktextwidgets-5
+  (package
+    (inherit ktextwidgets)
+    (name "ktextwidgets")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0lkm27g1dc6vmyjz7jaiqh2z1cfgvzlnk58wcs2bkny05i87x01l"))))
+    (propagated-inputs
+     (list ki18n-5 sonnet-5))
+    (native-inputs
+     (list extra-cmake-modules qttools-5))
+    (inputs
+     (list kauth-5
+           kcodecs-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kiconthemes-5
+           kservice-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           qtbase-5
+           qtspeech-5))))
+
 (define-public ktexttemplate
   (package
     (name "ktexttemplate")
