@@ -509,7 +509,7 @@ of other programs.")
            qtbase-5
            qtsvg-5
            qtx11extras
-           solid
+           solid-5
            xcb-util
            xcb-util-image
            xkeyboard-config))
@@ -518,7 +518,7 @@ of other programs.")
     (propagated-inputs
      ;; Propagating KWINDOWSYSTEM so that the list of opened applications
      ;; shows up in lxqt-panel's taskbar plugin.
-     (list kwindowsystem lxmenu-data))
+     (list kwindowsystem-5 lxmenu-data))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
