@@ -1794,6 +1794,32 @@ querying and interacting with hardware independently of the underlying operating
 system.")
     (license license:lgpl2.1+)))
 
+(define-public solid-5
+  (package
+    (inherit solid)
+    (name "solid")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "04359x7rhhl68xcrspxywxywb900dvlkna5fb442npwiqaxdxhy6"))))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "DBUS_FATAL_WARNINGS" "0")
+                              (invoke "dbus-launch" "ctest")))))))
+    (native-inputs
+     (list bison dbus extra-cmake-modules flex qttools-5))
+    (inputs
+     (list qtbase-5 qtdeclarative-5 eudev))))
+
 (define-public sonnet
   (package
     (name "sonnet")
