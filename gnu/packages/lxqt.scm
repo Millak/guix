@@ -1097,7 +1097,7 @@ like @command{tar} and @command{zip}.")
            (base32 "087641idpg7n8yhh5biis4wv52ayw3rddirwqb34bf5fwj664pw9"))))
       (build-system cmake-build-system)
       (inputs
-        (list kwindowsystem
+        (list kwindowsystem-5
               qtbase-5
               qtsvg-5
               liblxqt
