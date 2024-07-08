@@ -1549,6 +1549,34 @@ lower level classes for interaction with the X Windowing System.")
     ;; the lgpl2.1. Some source files are under non-copyleft licenses.
     (license license:lgpl2.1+)))
 
+(define-public kwindowsystem-5
+  (package
+    (inherit kwindowsystem)
+    (name "kwindowsystem")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0d2kxcpcvpzv07ldd1kb5gjclhmn6gcn5ms0bd8f5g9gflrpdjby"))))
+    (native-inputs
+     (list extra-cmake-modules
+           pkg-config
+           dbus ; for the tests
+           openbox ; for the tests
+           qttools-5
+           xorg-server-for-tests)) ; for the tests
+    (inputs
+     (list libxrender
+           qtbase-5
+           qtx11extras
+           xcb-util-keysyms
+           xcb-util-wm))))
+
 (define-public modemmanager-qt
   (package
     (name "modemmanager-qt")
