@@ -3311,6 +3311,33 @@ independent of the focused window.  Unlike regular shortcuts, the application's
 window does not need focus for them to be activated.")
     (license license:lgpl2.1+)))
 
+(define-public kglobalaccel-5
+  (package
+    (inherit kglobalaccel)
+    (name "kglobalaccel")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0rlqclaq4szzqa2kz7c9ad81rm0b2byr806l5v0xz968h8jampzn"))))
+    (native-inputs
+     (list extra-cmake-modules pkg-config qttools-5))
+    (inputs
+     (list kconfig-5
+           kcrash-5
+           kcoreaddons-5
+           kdbusaddons-5
+           kwindowsystem-5
+           qtx11extras
+           qtdeclarative-5
+           xcb-util-keysyms))
+    (arguments '())))
+
 (define-public kiconthemes
   (package
     (name "kiconthemes")
