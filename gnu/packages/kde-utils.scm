@@ -774,17 +774,17 @@ the computer and 3D Printers.")
                           (lambda* (#:key tests? #:allow-other-keys)
                             (when tests?
                               (invoke "dbus-launch" "ctest" "-E"
-                               "(Test.KDED.DBusTabletService|Test.KDED.TabletHandler|Test.KDED.XInputAdaptor|Test.KDED.XsetWacomAdaptor)")))))))
-    (native-inputs (list dbus extra-cmake-modules kdoctools pkg-config))
-    (inputs (list kcoreaddons
-                  ki18n
-                  kglobalaccel
-                  kconfig
-                  kxmlgui
-                  kwidgetsaddons
-                  kwindowsystem
-                  knotifications
-                  kdbusaddons
+                                      "(Test.KDED.DBusTabletService|Test.KDED.TabletHandler|Test.KDED.XInputAdaptor|Test.KDED.XsetWacomAdaptor)")))))))
+    (native-inputs (list dbus extra-cmake-modules kdoctools-5 pkg-config))
+    (inputs (list kcoreaddons-5
+                  ki18n-5
+                  kglobalaccel-5
+                  kconfig-5
+                  kxmlgui-5
+                  kwidgetsaddons-5
+                  kwindowsystem-5
+                  knotifications-5
+                  kdbusaddons-5
                   qtx11extras
                   qtdeclarative-5
                   libwacom
