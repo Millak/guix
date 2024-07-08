@@ -1216,6 +1216,32 @@ and feeling well on both mobile and desktop devices.  They ease the creation
 of applications that follow the Kirigami Human Interface Guidelines.")
     (license license:lgpl2.1+)))
 
+(define-public kirigami-5
+  (package
+    (inherit kirigami)
+    (name "kirigami")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    "kirigami2-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1q69b1qd2qs9hpwgw0y0ig93ag41l50dghribsnqhi0c9aklsn4b"))))
+    (native-inputs
+     (list extra-cmake-modules qttools-5))
+    (inputs
+     (list kwindowsystem-5
+           qtbase-5
+           qtdeclarative-5
+           qtquickcontrols2-5
+           qtsvg-5
+           ;; Run-time dependency
+           qtgraphicaleffects))
+    (properties `((upstream-name . "kirigami2")))))
+
 (define-public kitemmodels
   (package
     (name "kitemmodels")
