@@ -211,16 +211,16 @@ Breeze is the default theme for the KDE Plasma desktop.")
 (define-public calindori
   (package
     (name "calindori")
-    (version "23.01.0")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma-mobile/" version
-                                  "/calindori-" version ".tar.xz"))
+              (uri (string-append "mirror://kde/stable/release-service/" version
+                                  "/src/calindori-" version ".tar.xz"))
               (sha256
                (base32
-                "0jhrxsh6gd20qpq68n2lspfkgq3bam46j6m10jnm3zckb190pfhl"))))
+                "1x3890naijhiyh6ppf3bs5hc3hgcljf0va4kd2gj0s3fdddrqh7i"))))
     (build-system qt-build-system)
-    (native-inputs (list extra-cmake-modules))
+    (native-inputs (list extra-cmake-modules python-minimal))
     (inputs (list kconfig
                   kcoreaddons
                   kdbusaddons
@@ -229,11 +229,9 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   kcalendarcore
                   knotifications
                   kpeople
-                  qtbase-5
-                  qtdeclarative-5
-                  qtquickcontrols2-5
-                  qtsvg-5
-                  qtgraphicaleffects))
+                  qtdeclarative
+                  qtsvg))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/plasma-mobile/calindori")
     (synopsis "Calendar for Plasma Mobile")
     (description
