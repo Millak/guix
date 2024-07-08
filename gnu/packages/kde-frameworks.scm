@@ -1219,6 +1219,24 @@ item models.  It includes views for categorizing lists and to add search filters
 to flat and hierarchical lists.")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public kitemviews-5
+  (package
+    (inherit kitemviews)
+    (name "kitemviews")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1sq1kvqb9g0gzlyfyix9xsjq6wl2i1s3mfqkpdc0rdns13sgn3kc"))))
+    (native-inputs
+     (list extra-cmake-modules qttools-5))
+    (arguments '())))
+
 (define-public kplotting
   (package
     (name "kplotting")
