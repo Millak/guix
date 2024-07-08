@@ -2500,6 +2500,69 @@ of non binary content such as scripted extensions or graphic assets, as if they
 were traditional plugins.")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public kpackage-5
+  (package
+    (inherit kpackage)
+    (name "kpackage")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1gpixfkyaflmzk8lkxnknydm4x6w5339yrgs2n9g229bqy2v21ap"))))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list karchive-5
+           kconfig-5
+           kcoreaddons-5
+           kdoctools-5
+           ki18n-5
+           qtbase-5))
+    (propagated-inputs '())
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "src/kpackage/package.cpp"
+                (("externalPaths.false.")
+                 "externalPaths(true)"))
+              ;; Make QDirIterator follow symlinks
+              (substitute* '("src/kpackage/packageloader.cpp")
+                (("^\\s*(const QDirIterator::IteratorFlags flags = QDirIterator::Subdirectories)(;)"
+                  _ a b)
+                 (string-append a " | QDirIterator::FollowSymlinks" b))
+                (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)"
+                  _ a b)
+                 (string-append a " | QDirIterator::FollowSymlinks" b)))))
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; /bin/ls doesn't exist in the build-container use /etc/passwd
+              (substitute* "autotests/packagestructuretest.cpp"
+                (("(addDirectoryDefinition\\(\")bin(\".*\")bin(\".*\")bin\""
+                  _ a b c)
+                 (string-append a "etc" b "etc" c "etc\""))
+                (("filePath\\(\"bin\", QStringLiteral\\(\"ls\"))")
+                 "filePath(\"etc\", QStringLiteral(\"passwd\"))")
+                (("\"/bin/ls\"")
+                 "\"/etc/passwd\""))))
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; The 'plasma-query' test fails non-deterministically, as
+              ;; reported e.g. in <https://bugs.gentoo.org/919151>.
+              (substitute* "autotests/CMakeLists.txt"
+                ((".*querytest.*")
+                 ""))))
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "HOME" (getcwd)))))))))
+
 (define-public kpty
   (package
     (name "kpty")
