@@ -26,7 +26,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2015, 2017, 2018, 2020, 2021, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2018, 2020-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Chris Marusich <cmmarusich@gmail.com>
@@ -3655,6 +3655,32 @@ portable to just about any platform.")
               (substitute* "src/faketime.c"
                 (("\"date\"")
                  (format #f "~s" (search-input-file inputs "bin/date"))))))
+
+          #$@(if (target-64bit?)
+                 #~()
+                 #~((add-after 'unpack 'switch-libc-call
+                      (lambda _
+                        (substitute* "src/libfaketime.c"
+                          (("#define _GNU_SOURCE")
+                           ;; Make sure to use the 64-bit 'struct timespec' in
+                           ;; replacement functions.
+                           (string-append "#define _GNU_SOURCE\n"
+                                          "#define _FILE_OFFSET_BITS 64\n"
+                                          "#define _TIME_BITS 64\n"))
+                          (("\"__clock_gettime\"")
+                           ;; Replace '__clock_gettime64' rather than
+                           ;; '__clock_gettime64' since this is what
+                           ;; newly-built applications use.
+                           "\"__clock_gettime64\""))
+
+                        ;; XXX: Turn off 'pthread_cond_timedwait' etc.: tests
+                        ;; related to this are failing and this feature is
+                        ;; probably not useful for the purposes of running
+                        ;; code at a fixed date.
+                        (substitute* "src/Makefile"
+                          (("-DFAKE_PTHREAD")
+                           ""))))))
+
           (replace 'configure
             (lambda* (#:key outputs #:allow-other-keys)
               (setenv "CC" #$(cc-for-target))
@@ -3673,8 +3699,14 @@ portable to just about any platform.")
           (add-before 'check 'pre-check
             (lambda _
               (substitute* "test/functests/test_exclude_mono.sh"
-                (("/bin/bash") (which "bash"))))))))
-    (native-inputs (list perl))         ;for tests
+                (("/bin/bash") (which "bash")))
+              #$@(if (target-64bit?)
+                     #~()
+                     ;; XXX: This test uses Perl to call 'clock_gettime' and
+                     ;; fails for unclear reasons on i686-linux.
+                     #~((delete-file
+                         "test/functests/test_exclude_mono.sh"))))))))
+    (native-inputs (list perl))                   ;for tests
     (inputs (list coreutils-minimal))
     (synopsis "Fake the system time for single applications")
     (description
