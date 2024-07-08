@@ -1027,33 +1027,33 @@ either be created or generated from a image.")
 (define-public okteta
   (package
     (name "okteta")
-    (version "0.26.12")
+    (version "0.26.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/okteta/" version
                            "/src/okteta-" version ".tar.xz"))
        (sha256
-        (base32 "18bj8gd9kvdk85ypykl668safiyqn5qskgrsb214wxxaprl6phj9"))))
+        (base32 "0qvwryk8m2ixxn9f6xgjiy3nv0vffapkgx8qw9315306yw750cq5"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools qttools-5 shared-mime-info))
+     (list extra-cmake-modules kdoctools-5 qttools-5 shared-mime-info))
     (inputs
-     (list kbookmarks
-           kcmutils
-           kcodecs
-           kcrash
-           kcompletion
-           kconfigwidgets
-           kdbusaddons
-           ki18n
-           kiconthemes
-           kio
-           knewstuff
-           kparts
-           kservice
-           kwidgetsaddons
-           kxmlgui
+     (list kbookmarks-5
+           kcmutils-5
+           kcodecs-5
+           kcrash-5
+           kcompletion-5
+           kconfigwidgets-5
+           kdbusaddons-5
+           ki18n-5
+           kiconthemes-5
+           kio-5
+           knewstuff-5
+           kparts-5
+           kservice-5
+           kwidgetsaddons-5
+           kxmlgui-5
            breeze-icons ;; default icon set
            qca
            qtbase-5
