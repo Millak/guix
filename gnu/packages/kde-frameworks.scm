@@ -4034,6 +4034,42 @@ notifications which can be embedded in your application.")
     ;; dual licensed
     (license (list license:lgpl2.0+ license:lgpl2.1+))))
 
+(define-public knotifyconfig-5
+  (package
+    (inherit knotifyconfig)
+    (name "knotifyconfig")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0zwrcdl565nlzf6q2zljq6xn8929frrhqr8jlmb6kcv5i93yals0"))))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list kauth-5
+           kbookmarks-5
+           kcodecs-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kio-5
+           kitemviews-5
+           ki18n-5
+           kjobwidgets-5
+           knotifications-5
+           kservice-5
+           kwidgetsaddons-5
+           kxmlgui-5
+           phonon
+           qtbase-5
+           solid-5))))
+
 (define-public kparts
   (package
     (name "kparts")
