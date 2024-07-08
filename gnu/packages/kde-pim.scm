@@ -1166,14 +1166,14 @@ and retrieving certificates from LDAP servers.")
 (define-public kmail
   (package
     (name "kmail")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmail-" version ".tar.xz"))
        (sha256
-        (base32 "16gz0i7na1pkyly9jnvavyffkawxf5irr92rd50w68p01b82dhc6"))))
+        (base32 "0g30a36pd86brxq3ln709jnq9xdyqm8jiwwbv8kh70mcdbpjcpk2"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules dbus kdoctools))
@@ -1183,8 +1183,7 @@ and retrieving certificates from LDAP servers.")
            akonadi-mime
            akonadi-search
            boost
-           gpgme
-           grantlee
+           gpgme-1.23
            grantleetheme
            kbookmarks
            kcalendarcore
@@ -1217,6 +1216,7 @@ and retrieving certificates from LDAP servers.")
            kpimcommon
            kpimtextedit
            kservice
+           kstatusnotifieritem
            ksyntaxhighlighting
            ktextaddons
            ktextwidgets
@@ -1231,21 +1231,23 @@ and retrieving certificates from LDAP servers.")
            libkleo
            libksieve
            breeze-icons ; default icon set, required for tests
-           qgpgme
-           qtbase-5
-           qtdeclarative-5
-           qtkeychain
-           qtwebchannel-5
-           qtwebengine-5
+           qgpgme-qt6-1.23
+           qtdeclarative
+           qtkeychain-qt6
+           qtwebchannel
+           qtwebengine
            sonnet))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "dbus-launch" "ctest" "-E" ;; FIXME: Many failing tests.
-                       "(akonadi-sqlite-kmcomposerwintest|\
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "dbus-launch" "ctest" "-E" ;; FIXME: Many failing tests.
+                        "(akonadi-sqlite-kmcomposerwintest|\
+akonadi-sqlite-archivemailwidgettest|\
 akonadi-sqlite-tagselectdialogtest|\
 akonadi-sqlite-kmcommandstest|\
 sendlateragent-sendlaterutiltest|\
