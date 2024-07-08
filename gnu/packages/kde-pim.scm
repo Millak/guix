@@ -429,7 +429,7 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
      "This package provides a tool for managing itinerary and boarding pass
 information.")
     (license ;GPL for programs, LGPL for libraries
-             (list license:gpl2+ license:lgpl2.0+))))
+     (list license:gpl2+ license:lgpl2.0+))))
 
 (define-public kincidenceeditor
   (package
