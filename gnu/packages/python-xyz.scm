@@ -23342,18 +23342,18 @@ Mustache templating language renderer.")
     (arguments
      (list
       #:test-flags
-      '(list "--numprocesses" "auto"
-             "--ignore=tests/slow/test_h2oai_arrow.py"
-             ;; Do not relay on mypy.
-             "--ignore=tests/stubs/test_stubs.py"
-             "-k" (string-append
-                   ;; Don't install anything, thank you.
-                   "not test_install_non_existent_extension"
-                   ;; See <https://github.com/duckdb/duckdb/issues/11961>.
-                   " and not test_fetchmany"
-                   ;; See <https://github.com/duckdb/duckdb/issues/10702>.
-                   " and not test_connection_interrupt"
-                   " and not test_query_interruption"))
+      #~(list "--numprocesses" "auto"
+              "--ignore=tests/slow/test_h2oai_arrow.py"
+              ;; Do not relay on mypy.
+              "--ignore=tests/stubs/test_stubs.py"
+              "-k" (string-append
+                    ;; Don't install anything, thank you.
+                    "not test_install_non_existent_extension"
+                    ;; See <https://github.com/duckdb/duckdb/issues/11961>.
+                    " and not test_fetchmany"
+                    ;; See <https://github.com/duckdb/duckdb/issues/10702>.
+                    " and not test_connection_interrupt"
+                    " and not test_query_interruption"))
       #:phases
       #~(modify-phases %standard-phases
           ;; Tests need this
