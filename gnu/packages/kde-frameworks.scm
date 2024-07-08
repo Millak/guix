@@ -3055,6 +3055,46 @@ their settings.")
     ;; dual licensed
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public kconfigwidgets-5
+  (package
+    (inherit kconfigwidgets)
+    (name "kconfigwidgets")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1f65ayyyadiajf7xgf7369rly2yzigh6gqlb0nkgg8cp2bq9fmp4"))))
+    (propagated-inputs
+     (list kauth-5 kcodecs-5 kconfig-5 kwidgetsaddons-5))
+    (native-inputs
+     (list extra-cmake-modules kdoctools-5 qttools-5))
+    (inputs
+     (list kcoreaddons-5
+           kguiaddons-5
+           ;; todo: PythonModuleGeneration
+           ki18n-5))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "src/khelpclient.cpp"
+                ;; make QDirIterator follow symlinks
+                (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)" _ a b)
+                 (string-append a " | QDirIterator::FollowSymlinks" b)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME"
+                        (getcwd))
+                (invoke "ctest" "-E" "kstandardactiontest")))))))))
+
 (define-public kdeclarative
   (package
     (name "kdeclarative")
