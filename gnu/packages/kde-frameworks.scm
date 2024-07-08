@@ -3121,6 +3121,31 @@ started on demand.")
     ;; dual licensed
     (license (list license:lgpl2.0+ license:lgpl2.1+))))
 
+(define-public kded-5
+  (package
+    (inherit kded)
+    (name "kded")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0gd0dy748zw12xksk7xmv1xkra2g9s3av4d0i1d7dbb6z1ap5djw"))))
+    (native-inputs
+     (list extra-cmake-modules kdoctools-5))
+    (inputs
+     (list kconfig-5
+           kcoreaddons-5
+           kcrash-5
+           kdbusaddons-5
+           kdoctools-5
+           kservice-5
+           qtbase-5))))
+
 (define-public kdesignerplugin
   (package
     (name "kdesignerplugin")
