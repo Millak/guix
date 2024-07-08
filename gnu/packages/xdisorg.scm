@@ -396,7 +396,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
            qtdeclarative-5
            qtwayland-5
            wayland
-           knotifications))
+           knotifications-5))
     (native-inputs
      (list extra-cmake-modules qttools-5))
     (synopsis "Clipboard manager with advanced features")
