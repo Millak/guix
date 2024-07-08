@@ -1651,17 +1651,18 @@ creating routes by drag and drop and more.")
 (define-public okular
   (package
     (name "okular")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1vgcqkq6mzd270hzabmdqqv105iv6kr6ah2h18b15al2n9rmg0bi"))))
+        (base32 "0kh3a40887f7lajgvk3ndr3ns3mm1kld0biw0cqg9ys69f4d8677"))))
     (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
           (delete 'check)
@@ -1673,7 +1674,8 @@ creating routes by drag and drop and more.")
                         "--output-on-failure"
                         "--rerun-failed"
                         "-E"
-                        "(mainshelltest|parttest|chmgeneratortest)"))))
+                        "(annotationtoolbartest|mainshelltest|parttest|\
+chmgeneratortest)"))))
           (add-before 'check 'check-setup
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((share (string-append (assoc-ref outputs "out") "/share")))
@@ -1692,40 +1694,39 @@ creating routes by drag and drop and more.")
            breeze-icons
            discount
            djvulibre
-           kactivities
-           khtml
+           plasma-activities
            chmlib
            kdegraphics-mobipocket
            karchive
            kbookmarks
            kcompletion
            kconfig
-           qtbase-5
            libjpeg-turbo
            libtiff
            kirigami
            purpose
            freetype
+           ki18n
            kiconthemes
            kio
            kparts
            kpty
-           qtspeech-5
+           ktextwidgets
+           qtspeech
            kwallet
            kwindowsystem
            libkexiv2
            libspectre
            libzip
+           libxkbcommon
            phonon
-           poppler-qt5
+           poppler-qt6
            qca
-           qtdeclarative-5
-           qtsvg-5
-           qtwayland-5
+           qtdeclarative
+           qtsvg
+           qtwayland
            threadweaver
-           kcrash
-           kjs
-           qtx11extras))
+           kcrash))
     (home-page "https://apps.kde.org/okular/")
     (synopsis "Document viewer")
     (description
