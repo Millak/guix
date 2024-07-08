@@ -993,6 +993,25 @@ such as printers, to be discovered without any user intervention or centralized
 infrastructure.")
     (license license:lgpl2.1+)))
 
+(define-public kdnssd-5
+  (package
+    (inherit kdnssd)
+    (name "kdnssd")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1z2xyir6xvyyq3j48wmra3zka6hlpjr2rnfc4gbijl0aazv6srrm"))))
+    (native-inputs
+     (list extra-cmake-modules qttools-5))
+    (inputs
+     (list avahi qtbase-5))))
+
 (define-public kgraphviewer
   (package
     (name "kgraphviewer")
