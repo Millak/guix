@@ -166,6 +166,22 @@
 the Plasma Desktop.  Breeze is the default theme for the KDE Plasma desktop.")
     (license license:gpl2+)))
 
+(define-public breeze-qt5
+  (package
+    (inherit breeze)
+    (name "breeze-qt5")
+    (inputs
+     (list kcmutils-5 ; optional
+           kconfigwidgets-5
+           kcoreaddons-5
+           kguiaddons-5
+           ki18n-5
+           kirigami-5
+           kiconthemes-5
+           kpackage-5
+           kwindowsystem-5))
+    (arguments (list #:configure-flags #~(list "-DBUILD_QT6=OFF")))))
+
 (define-public breeze-gtk
   (package
     (name "breeze-gtk")
