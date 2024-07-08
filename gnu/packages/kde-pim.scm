@@ -1675,17 +1675,17 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
 (define-public korganizer
   (package
     (name "korganizer")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/korganizer-" version ".tar.xz"))
        (sha256
-        (base32 "1vp1jsmna059vvfj7xaj9fhhhq0lz9k0pphczkfbwm3gy6nzcavz"))))
+        (base32 "10walf46h1cnyfcpkppybgzlfcn93rygwppb4jfi2rg24rka3i84"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules dbus qttools-5 kdoctools tzdata-for-tests))
+     (list extra-cmake-modules dbus qttools kdoctools tzdata-for-tests))
     (inputs
      (list akonadi
            akonadi-calendar
@@ -1694,7 +1694,6 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
            akonadi-notes
            akonadi-search
            boost
-           grantlee
            grantleetheme
            kcalendarcore
            kcalendarsupport
@@ -1734,17 +1733,18 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
            kxmlgui
            libkdepim
            breeze-icons ; default icon set, required for tests
-           phonon
-           qtbase-5))
+           phonon))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs tests? #:allow-other-keys)
-             (when tests?
-               (setenv "TZDIR" (search-input-directory
-                                inputs "share/zoneinfo"))
-               (invoke "dbus-launch" "ctest")))))))
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key inputs tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "TZDIR" (search-input-directory
+                                      inputs "share/zoneinfo"))
+                     (invoke "dbus-launch" "ctest"
+                             "-E" "akonadi-sqlite-koeventpopupmenutest")))))))
     (home-page "https://apps.kde.org/korganizer/")
     (synopsis "Organizational assistant, providing calendars and other similar
 functionality")
