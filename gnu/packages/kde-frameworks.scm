@@ -368,6 +368,22 @@ The REST API is defined here:
 http://freedesktop.org/wiki/Specifications/open-collaboration-services/")
     (license (list license:lgpl2.1+ license:lgpl3+))))
 
+(define-public attica-5
+  (package
+    (inherit attica)
+    (name "attica")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1shzs985fimd15w2d9cxpcbq7by33v05hb00rp79k6cqvp20f4b8"))))
+    (inputs (list qtbase-5))))
+
 (define-public bluez-qt
   (package
     (name "bluez-qt")
