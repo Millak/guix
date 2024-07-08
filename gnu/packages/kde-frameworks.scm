@@ -2189,6 +2189,58 @@ application crashes.")
 from DocBook files.")
     (license license:lgpl2.1+)))
 
+(define-public kdoctools-5
+  (package
+    (inherit kdoctools)
+    (name "kdoctools")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1cvb39ggc79fpfa84rshm6vl10h0avn2rf6qxaxb41r9887ad81n"))))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list docbook-xml-4.5
+           docbook-xsl
+           karchive-5
+           ki18n-5
+           libxml2
+           libxslt
+           perl
+           perl-uri
+           qtbase-5))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'cmake-find-docbook
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "cmake" "\\.cmake$")
+                (("CMAKE_SYSTEM_PREFIX_PATH")
+                 "CMAKE_PREFIX_PATH"))
+              (substitute* "cmake/FindDocBookXML4.cmake"
+                (("^.*xml/docbook/schema/dtd.*$")
+                 "xml/dtd/docbook\n"))
+              (substitute* "cmake/FindDocBookXSL.cmake"
+                (("^.*xml/docbook/stylesheet.*$")
+                 (string-append "xml/xsl/docbook-xsl-"
+                                #$(package-version docbook-xsl)
+                                "\n")))))
+          (add-after 'install 'add-symlinks
+            ;; Some package(s) (e.g. kdelibs4support) refer to this locale by a
+            ;; different spelling.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((xsl (string-append (assoc-ref outputs "out")
+                                        "/share/kf5/kdoctools/customization/xsl/")))
+                (symlink (string-append xsl "pt_br.xml")
+                         (string-append xsl "pt-BR.xml"))))))))))
+
 (define-public kfilemetadata
   (package
     (name "kfilemetadata")
