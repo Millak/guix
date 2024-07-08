@@ -4431,6 +4431,76 @@ library.")
     ;; triple licensed
     (license (list license:gpl2+ license:lgpl2.0+ license:lgpl2.1+))))
 
+(define-public ktexteditor-5
+  (package
+    (inherit ktexteditor)
+    (name "ktexteditor")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    "ktexteditor-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0rph5nwp7d02xicjxrqpbz3kjb9kqqa40pp1w81fnq8jgln3hhh5"))))
+    (propagated-inputs
+     (list kparts-5
+           ksyntaxhighlighting-5))
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (inputs
+     (list editorconfig-core-c
+           karchive-5
+           kauth-5
+           kbookmarks-5
+           kcodecs-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kguiaddons-5
+           kiconthemes-5
+           kio-5
+           kitemviews-5
+           ki18n-5
+           kjobwidgets-5
+           kparts-5
+           kservice-5
+           ktextwidgets-5
+           kwidgetsaddons-5
+           kxmlgui-5
+           libgit2
+           perl
+           qtbase-5
+           qtdeclarative-5
+           qtscript
+           qtxmlpatterns
+           solid-5
+           sonnet-5))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'setup
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (setenv "XDG_DATA_DIRS" ; FIXME build phase doesn't find parts.desktop
+                           (string-append #$(this-package-input "kparts") "/share"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests? ;; Maybe locale issues with tests?
+                     (setenv "QT_QPA_PLATFORM" "offscreen")
+                     (invoke "ctest" "-E" "(kateview_test|movingrange_test)"))))
+               (add-after 'install 'add-symlinks
+                 ;; Some package(s) (e.g. plasma-sdk) refer to these service types
+                 ;; by the wrong name.  I would prefer to patch those packages, but
+                 ;; I cannot find the files!
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((kst5 (string-append #$output
+                                              "/share/kservicetypes5/")))
+                     (symlink (string-append kst5 "ktexteditorplugin.desktop")
+                              (string-append kst5 "ktexteditor-plugin.desktop"))))))))))
+
 (define-public ktextwidgets
   (package
     (name "ktextwidgets")
