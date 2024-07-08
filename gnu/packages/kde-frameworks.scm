@@ -3164,6 +3164,62 @@ using the XBEL format.")
 KCModules can be created with the KConfigWidgets framework.")
     (license license:lgpl2.1+)))
 
+(define-public kcmutils-5
+  (package
+    (inherit kcmutils)
+    (name "kcmutils")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "06aw308wv3fyl1g60n1i2hxx74f0isdsfwwzidsjk79danyqsa4i"))))
+    (propagated-inputs
+     (list kconfigwidgets-5 kservice-5))
+    (native-inputs
+     (list extra-cmake-modules))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "src/kpluginselector.cpp"
+                ;; make QDirIterator follow symlinks
+                (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)"
+                  _ a b)
+                 (string-append a
+                                " | QDirIterator::FollowSymlinks" b)))
+              (substitute* "src/kcmoduleloader.cpp"
+                ;; print plugin name when loading fails
+                (("^\\s*(qWarning\\(\\) << \"Error loading) (plugin:\")( << loader\\.errorString\\(\\);)"
+                  _ a b c)
+                 (string-append a
+                                " KCM plugin\" << mod.service()->library() << \":\""
+                                c)))))
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (inputs
+     (list kauth-5
+           kcodecs-5
+           kconfig-5
+           kcoreaddons-5
+           kdeclarative-5
+           kguiaddons-5
+           kiconthemes-5
+           kitemviews-5
+           ki18n-5
+           kpackage-5
+           kwidgetsaddons-5
+           kxmlgui-5
+           qtbase-5
+           qtdeclarative-5))))
+
 (define-public kconfigwidgets
   (package
     (name "kconfigwidgets")
