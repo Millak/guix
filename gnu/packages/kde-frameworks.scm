@@ -1787,6 +1787,27 @@ actions that need to be performed as a privileged user to small set of helper
 utilities.")
     (license license:lgpl2.1+)))
 
+(define-public kauth-5
+  (package
+    (inherit kauth)
+    (name "kauth")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1x0zd6lqv855jkihxpzhxs732qiva31kzjah9hf2j6xaq0dfxqdc"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list dbus extra-cmake-modules qttools-5))
+    (inputs
+     (list kcoreaddons-5 polkit-qt qtbase-5))
+    (propagated-inputs '())))
+
 (define-public kcompletion
   (package
     (name "kcompletion")
