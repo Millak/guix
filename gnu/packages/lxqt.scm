@@ -316,7 +316,7 @@ LXQt and the system it's running on.")
         (base32 "1p9959rvj5kh1svv2p9dsfnf008xvrhllcccrsxnk4s8vzjhdqjp"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem
+     (list kwindowsystem-5
            liblxqt
            libqtxdg
            polkit-qt
