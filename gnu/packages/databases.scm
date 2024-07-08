@@ -614,6 +614,38 @@ the API, and provides features such as:
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-adbc-driver-manager
+  (package
+    (name "python-adbc-driver-manager")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "adbc_driver_manager" version))
+       (sha256
+        (base32 "00i3zg6rbzdz767j9w22ajw8rxwbhkrmzwwlmx11q56cvnig0cm3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; TODO: Pack arrow-adbc/c/driver/sqlite for tests.
+      #:tests? #f
+      #:build-backend "setuptools.build_meta"))
+    (propagated-inputs
+     (list python-typing-extensions))
+    (native-inputs
+     (list python-cython-3
+           python-pytest))
+    (home-page "https://arrow.apache.org/adbc/")
+    (synopsis "Generic entrypoint for ADBC drivers in Python")
+    (description
+     "This package contains bindings for the ADBC Driver Manager, as well as a
+@url{https://peps.python.org/pep-0249/,DBAPI 2.0/PEP 249-compatible} interface
+on top.  This can be used to load ADBC drivers at runtime and use them from
+Python.  Backend-specific packages like @code{adbc_driver_postgresql} wrap
+this package in a more convenient interface, and should be preferred where
+they exist.")
+    (license license:asl2.0)))
+
 (define-public python-prisma
   (package
     (name "python-prisma")
