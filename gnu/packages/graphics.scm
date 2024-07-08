@@ -2360,8 +2360,8 @@ Automated palette selection is supported.")
        (list extra-cmake-modules pkg-config))
       (inputs
        (list giflib
-             karchive
-             kdnssd
+             karchive-5
+             kdnssd-5
              libmicrohttpd
              libsodium
              libvpx
