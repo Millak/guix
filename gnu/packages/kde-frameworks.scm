@@ -4659,7 +4659,7 @@ script engines.")
 (define-public plasma-framework
   (package
     (name "plasma-framework")
-    (version "5.114.0")
+    (version "5.116.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4668,36 +4668,36 @@ script engines.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "058hl76q35bw3rzmv348azk1lmhkpgmfrxr3jd9s1hphijr8sgcx"))))
+                "0kwza2n9vbzf9p9dq7j448ynlfgg65918fvxw1n209zmlm6jr4vy"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     (list kpackage kservice))
+     (list kpackage-5 kservice-5))
     (native-inputs
-     (list extra-cmake-modules kdoctools pkg-config))
+     (list extra-cmake-modules kdoctools-5 pkg-config))
     (inputs (list kactivities
-                  karchive
-                  kauth
-                  kbookmarks
-                  kcodecs
-                  kcompletion
-                  kconfig
-                  kconfigwidgets
-                  kcoreaddons
-                  kdbusaddons
-                  kdeclarative
-                  kglobalaccel
-                  kguiaddons
-                  kiconthemes
-                  kirigami
-                  kitemviews
-                  kio
-                  ki18n
-                  kjobwidgets
-                  knotifications
-                  kwayland
-                  kwidgetsaddons
-                  kwindowsystem
-                  kxmlgui
+                  karchive-5
+                  kauth-5
+                  kbookmarks-5
+                  kcodecs-5
+                  kcompletion-5
+                  kconfig-5
+                  kconfigwidgets-5
+                  kcoreaddons-5
+                  kdbusaddons-5
+                  kdeclarative-5
+                  kglobalaccel-5
+                  kguiaddons-5
+                  kiconthemes-5
+                  kirigami-5
+                  kitemviews-5
+                  kio-5
+                  ki18n-5
+                  kjobwidgets-5
+                  knotifications-5
+                  kwayland-5
+                  kwidgetsaddons-5
+                  kwindowsystem-5
+                  kxmlgui-5
                   ;; XXX: "undefined reference to `glGetString'" errors occur without libglvnd,
                   libglvnd
                   phonon
@@ -4706,7 +4706,7 @@ script engines.")
                   qtquickcontrols2-5
                   qtsvg-5
                   qtx11extras
-                  solid))
+                  solid-5))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
