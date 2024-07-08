@@ -1084,27 +1084,27 @@ cards.")
 (define-public kompare
   (package
     (name "kompare")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kompare-" version ".tar.xz"))
               (sha256
                (base32
-                "058rr0n5r9czxqs6ixacx0bm8hglwjmhfpf5xf1zr0fjgcirlrwy"))))
+                "13kvxa3l5hp9fi6ijy8vyzzm4ackrf09k6rm0nicb5z1s3iyyvxh"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules kdoctools-5))
     (inputs
      (list libkomparediff2
-           kcodecs
-           kconfig
-           kcoreaddons
-           kiconthemes
-           kjobwidgets
-           kparts
-           ktexteditor
-           kwidgetsaddons))
+           kcodecs-5
+           kconfig-5
+           kcoreaddons-5
+           kiconthemes-5
+           kjobwidgets-5
+           kparts-5
+           ktexteditor-5
+           kwidgetsaddons-5))
     (home-page "https://apps.kde.org/kompare/")
     (synopsis "Graphical file differences tool")
     (description
