@@ -2956,6 +2956,34 @@ by which applications, and what documents have been linked to which activity.")
 using the XBEL format.")
     (license license:lgpl2.1+)))
 
+(define-public kbookmarks-5
+  (package
+    (inherit kbookmarks)
+    (name "kbookmarks")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "01cg6qsfjr59ncrxwmiid36cpzynjwxgfydgk23j29bk9gjml2jl"))))
+    (propagated-inputs
+     (list kwidgetsaddons-5))
+    (native-inputs
+     (list extra-cmake-modules qttools-5))
+    (inputs
+     (list kauth-5
+           kcodecs-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kiconthemes-5
+           kxmlgui-5
+           qtbase-5))))
+
 (define-public kcmutils
   (package
     (name "kcmutils")
