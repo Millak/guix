@@ -965,7 +965,7 @@ window manager OpenBox.")
         (base32 "126zkj9jvjwxrh2fcm9h0c2iq9m5rm5hbkh155swijn2i8airxgx"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem
+     (list kwindowsystem-5
            libxrender
            liblxqt
            libqtxdg
