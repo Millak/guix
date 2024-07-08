@@ -1977,14 +1977,14 @@ standard protocols for e-mail transmission.")
 (define-public ktnef
   (package
     (name "ktnef")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ktnef-" version ".tar.xz"))
        (sha256
-        (base32 "00dkcmywjxzq5v2kp4klw50c3w74lmh16kbcwn8qd97kky3pd5ik"))))
+        (base32 "1v113fihnsn6iilk01rm8g68pm1gf1gdsvar2fiwhqsg48all588"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -1995,8 +1995,8 @@ standard protocols for e-mail transmission.")
            kconfig
            kcontacts
            kcoreaddons
-           ki18n
-           qtbase-5))
+           ki18n))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://api.kde.org/kdepim/ktnef/html/index.html")
     (synopsis "Library for handling mail attachments using TNEF format")
     (description "Ktnef is a library for handling data in the TNEF
