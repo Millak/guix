@@ -8,7 +8,7 @@
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
 ;;; Copyright © 2020 Christopher Lam <christopher.lck@gmail.com>
-;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,14 +66,14 @@
   ;; directory.
   (package
     (name "gnucash")
-    (version "5.6")
+    (version "5.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
                            version "/gnucash-" version ".tar.bz2"))
        (sha256
-        (base32 "1l8vy8dj48hz385ldwnx3bpdsqyc8lsigwm1gjgygwshcdi2rd5l"))))
+        (base32 "14r5nmml40icxbjfz4giis6kiplvjna17j1fd6c4b78bf3xj7j52"))))
     (outputs '("out" "doc" "debug" "python"))
     (build-system cmake-build-system)
     (arguments
@@ -219,7 +219,7 @@ installed as well as Yelp, the Gnome help browser.")
                "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
                version "/gnucash-docs-" version revision ".tar.gz"))
          (sha256
-          (base32 "00izzaswwp78ix0zdr8618lk2c21had4im04yrggqx4h34ldmnca"))))
+          (base32 "0gssmbwwiafp4g9v5waz5935bkgyzbna76ryz5lhc294b3n49wxq"))))
       (build-system cmake-build-system)
       ;; These are native-inputs because they are only required for building the
       ;; documentation.
