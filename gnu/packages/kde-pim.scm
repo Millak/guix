@@ -1575,14 +1575,14 @@ information in non-ASCII character sets.")
 (define-public knotes
   (package
     (name "knotes")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/knotes-" version ".tar.xz"))
        (sha256
-        (base32 "0f2a9xy2w909y792hwwnmsqvxx91azn6f0j0xl2mlmav00a4w6za"))))
+        (base32 "14nm2s86hqvvg0wyg8q5dd273dpppqw692h3mzya5mfg3j7acvaf"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools libxslt))
@@ -1593,7 +1593,7 @@ information in non-ASCII character sets.")
            akonadi-notes
            akonadi-search
            boost
-           grantlee
+           breeze-icons ; default icon set, required for tests
            grantleetheme
            kcalendarcore
            kcalutils
@@ -1618,16 +1618,16 @@ information in non-ASCII character sets.")
            kparts
            kpimcommon
            kpimtextedit
+           kstatusnotifieritem
            ktextaddons
            ktextwidgets
+           ktexttemplate
            kwidgetsaddons
            kwindowsystem
            kxmlgui
            kxmlgui
-           libkdepim
-           breeze-icons ; default icon set, required for tests
-           qtbase-5
-           qtx11extras))
+           libkdepim))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/knotes/")
     (synopsis "Note-taking utility")
     (description "KNotes lets you write the computer equivalent of sticky
