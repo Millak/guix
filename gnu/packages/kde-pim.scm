@@ -1113,21 +1113,21 @@ protocol for querying and modifying directory services running over TCP/IP.")
 (define-public kleopatra
   (package
     (name "kleopatra")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kleopatra-" version ".tar.xz"))
        (sha256
-        (base32 "0lcl20yihsa8dq0s24akp5z0290vh9nxjjjdwqk88nz8vmsr29i0"))))
+        (base32 "1jm0x73g2mfk6fc2m3smray8c9wddkk785aizxvq0yi4v52wydxb"))))
     (build-system qt-build-system)
     (native-inputs
      (list dbus extra-cmake-modules gnupg ;; TODO: Remove after gpgme uses fixed path
            kdoctools))
     (inputs
      (list boost
-           gpgme
+           gpgme-1.23
            kcmutils
            kcodecs
            kconfig
@@ -1136,26 +1136,29 @@ protocol for querying and modifying directory services running over TCP/IP.")
            kcrash
            kdbusaddons
            ki18n
+           kio
            kiconthemes
            kitemmodels
            kmime
            knotifications
            ktextwidgets
+           kstatusnotifieritem
            kwidgetsaddons
            kwindowsystem
            kxmlgui
            libassuan
            libkleo
+           mimetreeparser
            breeze-icons ;; default icon set
-           qgpgme
-           qtbase-5))
+           qgpgme-qt6-1.23))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "dbus-launch" "ctest")))))))
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "dbus-launch" "ctest")))))))
     (home-page "https://apps.kde.org/kleopatra/")
     (synopsis "Certificate Manager and Unified Crypto GUI")
     (description "Kleopatra is a certificate manager and a universal crypto
