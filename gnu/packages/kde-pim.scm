@@ -498,14 +498,14 @@ information.")
 (define-public kaddressbook
   (package
     (name "kaddressbook")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kaddressbook-" version ".tar.xz"))
        (sha256
-        (base32 "0zjbri91dh9vnwi6jqkbmyq667yzn8g4kw5v47qn8id2629zj6jq"))))
+        (base32 "1g5qkg3m7djqrq28ypv998yp45kzldd3jss37ygdnbqwr5i4wjb8"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -515,8 +515,7 @@ information.")
            akonadi-mime
            akonadi-search
            boost
-           gpgme
-           grantlee
+           gpgme-1.23
            grantleetheme
            kcalendarcore
            kcmutils
@@ -541,8 +540,8 @@ information.")
            libkleo
            breeze-icons ; default icon set, required for tests
            prison
-           qgpgme
-           qtbase-5))
+           qgpgme-qt6-1.23))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://kontact.kde.org/components/kaddressbook/")
     (synopsis "Address Book application to manage your contacts")
     (description "KAddressBook stores all the personal details of your family,
