@@ -579,15 +579,15 @@ LXQt.")
         (base32 "17d1wh50pjjzqyxv3w7b4qlc1ym1p16yvbhyah9bzl2825irz9ar"))))
     (build-system cmake-build-system)
     (inputs
-     (list kidletime
-           kwindowsystem
+     (list kidletime-5
+           kwindowsystem-5
            liblxqt
            libqtxdg
            lxqt-globalkeys
            qtbase-5
            qtsvg-5
            qtx11extras
-           solid))
+           solid-5))
     (native-inputs
      (list lxqt-build-tools qttools-5))
     (arguments '(#:tests? #f))          ; no tests
