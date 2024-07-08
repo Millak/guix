@@ -1268,7 +1268,8 @@ supplies a generic doubly-linked list and some string functions.")
                 (search-patches "freeimage-unbundle.patch"
                                 "freeimage-libtiff-compat.patch"
                                 "freeimage-CVE-2020-21428.patch"
-                                "freeimage-CVE-2020-22524.patch")
+                                "freeimage-CVE-2020-22524.patch"
+                                "freeimage-libraw-0.21-compat.patch")
                 ;; Take one patch from Arch Linux that adds LibRaw 0.20 compatibility.
                 (list (origin
                         (method url-fetch)
