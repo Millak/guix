@@ -87,6 +87,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -419,7 +420,7 @@ It is the default icon theme for the KDE Plasma desktop.")
 (define-public kapidox
   (package
     (name "kapidox")
-    (version "5.114.0")
+    (version "6.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -428,7 +429,7 @@ It is the default icon theme for the KDE Plasma desktop.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0xxw3lvipyax8r1af3ypwjj6waarbp2z9n11fjb4kvyigsypglmb"))))
+                "0knp680462dr9ib2b4dgz18659i1a33d6gmvnqh3k4mm659rrlr1"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f ; test need network
@@ -439,9 +440,9 @@ It is the default icon theme for the KDE Plasma desktop.")
      ;; TODO: check if doxygen has to be installed, the readme does not
      ;; mention it. The openSuse .rpm lists doxygen, graphviz, graphviz-gd,
      ;; and python-xml.
-     (list python python-jinja2 python-pyyaml))
+     (list python python-jinja2 python-pyyaml python-requests))
     (inputs
-     (list qtbase-5))
+     (list qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE Doxygen Tools")
     (description "This framework contains scripts and data for building API
