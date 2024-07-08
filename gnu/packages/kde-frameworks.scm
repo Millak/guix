@@ -3931,6 +3931,46 @@ for applications.  It uses libattica to support the Open Collaboration Services
 specification.")
     (license license:lgpl2.1+)))
 
+(define-public knewstuff-5
+  (package
+    (inherit knewstuff)
+    (name "knewstuff")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "02n7429ldkyyzbk9rbr9h4ss80zhc3vnir29q2yksyhcyqkkjc42"))))
+    (propagated-inputs
+     (list attica-5 kservice-5 kxmlgui-5))
+    (native-inputs
+     (list extra-cmake-modules qttools-5))
+    (inputs
+     (list karchive-5
+           kauth-5
+           kbookmarks-5
+           kcodecs-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kio-5
+           kitemviews-5
+           ki18n-5
+           kiconthemes-5
+           kjobwidgets-5
+           kpackage-5
+           ktextwidgets-5
+           kwidgetsaddons-5
+           qtbase-5
+           qtdeclarative-5
+           solid-5
+           sonnet-5))))
+
 (define-public knotifyconfig
   (package
     (name "knotifyconfig")
