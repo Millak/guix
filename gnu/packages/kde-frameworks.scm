@@ -2100,6 +2100,26 @@ localized country name to ISO 3166-1 alpha 2 code mapping and vice verca.
 application crashes.")
     (license license:lgpl2.1+)))
 
+(define-public kcrash-5
+  (package
+    (inherit kcrash)
+    (name "kcrash")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0rg8g50y44gq3hjl5fc36siyyq3czd2zrf4c70fspk33svwldlw1"))))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list kcoreaddons-5 kwindowsystem-5 qtx11extras))
+    (arguments '())))
+
 (define-public kdoctools
   (package
     (name "kdoctools")
