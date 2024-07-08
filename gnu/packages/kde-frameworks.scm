@@ -4411,49 +4411,6 @@ descriptions for integrating actions from plugins.")
                      (setenv "QT_QPA_PLATFORM" "offscreen") ;; These tests fail
                      (invoke "ctest" "-E" "(ktoolbar_unittest|kxmlgui_unittest)")))))))))
 
-(define-public kxmlrpcclient
-  (package
-    (name "kxmlrpcclient")
-    (version "5.114.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/portingAids/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1fgjai3vj3yk67ynhd7blilyrdhdn5nvma3v3j1sbdg98pr7qzar"))))
-    (build-system cmake-build-system)
-    (propagated-inputs
-     (list kio))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list kauth
-           kbookmarks
-           kcodecs
-           kcompletion
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kitemviews
-           ki18n
-           kjobwidgets
-           kservice
-           kwidgetsaddons
-           kxmlgui
-           qtbase-5
-           solid))
-    (home-page "https://community.kde.org/Frameworks")
-    (synopsis "XML-RPC client")
-    (description "This library contains simple XML-RPC Client support.  It is a
-complete client and is easy to use.  Only one interface is exposed,
-kxmlrpcclient/client.h and from that interface, you only need to use 3 methods:
-setUrl, setUserAgent and call.")
-    ;; dual licensed
-    (license (list license:bsd-2 license:lgpl2.1+))))
-
 (define-public libplasma
   (package
     (name "libplasma")
