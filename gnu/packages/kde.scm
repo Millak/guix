@@ -1594,7 +1594,7 @@ Python, PHP, and Perl.")
 (define-public marble-qt
   (package
     (name "marble-qt")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method git-fetch)
@@ -1604,7 +1604,7 @@ Python, PHP, and Perl.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "02qv2mfga4jm5br9dr8g6kcqr93q2ssq06m383kh83lkvickxzc9"))))
+         "126zm2r637zd8xg0mrqh3g0phlph440ayyzrx8hfvb03drx6y70z"))))
     (build-system qt-build-system)
     (arguments
      ;; FIXME: libmarblewidget-qt5.so.28 not found.  Also enable the
@@ -1615,18 +1615,19 @@ Python, PHP, and Perl.")
                    "-DBUILD_TOUCH=YES"
                    "-DBUILD_MARBLE_TESTS=FALSE")))
     (native-inputs
-     (list extra-cmake-modules kdoctools qttools-5))
+     (list extra-cmake-modules kdoctools-5 qttools-5
+           osmctools))
     ;; One optional dependency missing: libwlocate.
     (inputs
      (list gpsd
-           kcoreaddons
-           kcrash
-           ki18n
-           kio
-           knewstuff
-           kparts
-           krunner
-           kwallet
+           kcoreaddons-5
+           kcrash-5
+           ki18n-5
+           kio-5
+           knewstuff-5
+           kparts-5
+           krunner-5
+           kwallet-5
            perl
            phonon
            protobuf
