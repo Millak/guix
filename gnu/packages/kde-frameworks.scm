@@ -1062,6 +1062,27 @@ translated text.  This includes argument capturing, customizable markup, and
 translation scripting.")
     (license license:lgpl2.1+)))
 
+(define-public ki18n-5
+  (package
+    (inherit ki18n)
+    (name "ki18n")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1kbb3rq85hbw1h5bd1w9cmdgz8bdg47w9b133ha41qlhh1i50clk"))))
+    (propagated-inputs
+     (list gettext-minimal python))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list qtbase-5 qtdeclarative-5 qtscript iso-codes))))
+
 (define-public kidletime
   (package
     (name "kidletime")
