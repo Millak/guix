@@ -310,7 +310,7 @@ your computer.")
 (define-public isoimagewriter
   (package
     (name "isoimagewriter")
-    (version "1.0.0")
+    (version "24.05.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -319,7 +319,7 @@ your computer.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1iphp2krgadc175570iiyaxbnjgpc1xilc71gkcbn5n0yd7qmkbv"))))
+                "1v8ggdgij503m3bm1w24840al5by7y62p8yrmhlk4g0hjacmkys7"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kauth
@@ -330,6 +330,7 @@ your computer.")
                   kcrash
                   solid
                   kwidgetsaddons))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/utilities/isoimagewriter")
     (synopsis "Write hybrid ISO files onto USB disks")
     (description
