@@ -35,12 +35,17 @@
  (entry (commit "a46908620fac09bd8ccd0f587a27e86035d3b1d7")
         (title
          (en "@code{stumpwm:lib} removed")
+         (de "@code{stumpwm:lib} wurde entfernt")
          (fr "@code{stumpwm:lib} supprimé"))
         (body
          (en "The @code{lib} output of the @code{stumpwm} package has been
 removed.  If you have some personal package definitions depending on
 @code{stumpwm:lib}, they should be updated to depend on @code{stumpwm}
 instead.")
+         (de "Die Ausgabe @code{lib} des Pakets @code{stumpwm} gibt es nicht
+mehr.  Wenn Sie eigene Paketdefinitionen haben, die von @code{stumpwm:lib}
+abhängen, müssen sie angepasst werden, um stattdessen von @code{stumpwm}
+abzuhängen.")
          (fr "La sortie @code{lib} du paquet @code{stumpwm} a été supprimée.
 Si vous avez des définitions de paquets personnels dépendantes de
 @code{stumpwm:lib}, elle doivent être modifiées pour dépendre de
