@@ -29284,10 +29284,10 @@ and comments.")
       (license license:gpl3+))))
 
 (define-public emacs-yeetube
-  (let ((commit "c9721a295f4fd30a44e94b3424151fa8a14d22ae")) ;version bump
+  (let ((commit "5c0a3efd2fb5cc25a6a90741ad198e31fdb15640")) ;version bump
     (package
       (name "emacs-yeetube")
-      (version "2.1.6")
+      (version "2.1.7")
       (source
        (origin
          (method git-fetch)
@@ -29296,7 +29296,7 @@ and comments.")
                (commit commit)))
          (sha256
           (base32
-           "0lrcs0n30h800sm6py4av44a3fcfgasmj223mnl76q34syyrgz6k"))
+           "0a3pm8cz6yl5s2xnbnjvdwm8mf5hyman419xl4fyyfgwy6vrxp70"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
@@ -29318,13 +29318,12 @@ and comments.")
       (inputs (list mpv torsocks yt-dlp))
       (propagated-inputs (list emacs-compat))
       (home-page "https://thanosapollo.org/projects/yeetube/")
-      (synopsis "Youtube and Invidious front-end for Emacs")
+      (synopsis "Youtube front-end for Emacs")
       (description
-       "This package offers an Emacs interface that allows you to search YouTube
-or an Invidious instance for a specific query.  The search results are shown
-as links in an Org mode buffer.  The videos can be opened to a user-defined
+       "This package provides the ability to scrape YouTube, with the results
+displayed in a tabulated list format.  The videos can be opened with a user-defined
 video player (by default @command{mpv}) or downloaded using @command{yt-dlp}.
-This package also includes a @code{yt-dlp} front-end.")
+This package also includes a minimal @code{yt-dlp} wrapper.")
       (license license:gpl3+))))
 
 (define-public emacs-org-web-tools
