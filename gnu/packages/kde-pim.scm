@@ -550,40 +550,6 @@ NextCloud, Kolab, Google Contacts, Microsoft Exchange (EWS) or any standard
 CalDAV server.")
     (license (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
 
-(define-public kblog
-  (package
-    (name "kblog")
-    (version "20.04.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/kblog-" version ".tar.xz"))
-       (sha256
-        (base32 "1d5r9ivc1xmhkrz780xga87p84h7dnxjl981qap16gy37sxahcjr"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list kcalendarcore
-           kcoreaddons
-           ki18n
-           kio
-           kxmlrpcclient
-           qtbase-5
-           syndication))
-    ;; Note: Some tests take up to 90 sec.
-    (home-page "https://invent.kde.org/pim/kblog")
-    (synopsis "Client-side support library for web application remote blogging
-APIs")
-    (description "KBlog is a library for calling functions on Blogger 1.0,
-MetaWeblog, MovableType and GData compatible blogs.  It calls the APIs using
-KXmlRpcClient and Syndication.  It supports asynchronous sending and fetching
-of posts and, if supported on the server, multimedia files.  Almost every
-modern blogging web application that provides an XML data interface supports
-one of the APIs mentioned above.")
-    (license license:lgpl2.0+)))
-
 (define-public kaccounts-integration
   (package
     (name "kaccounts-integration")
