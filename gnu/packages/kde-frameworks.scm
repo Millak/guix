@@ -1794,6 +1794,28 @@ applications.  It supports several different plugins, including HSpell, Enchant,
 ASpell and HUNSPELL.")
     (license license:lgpl2.1+)))
 
+(define-public sonnet-5
+  (package
+    (inherit sonnet)
+    (name "sonnet")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0jja3wxk4h62ik5pkf0i5v9012d0qjaljyaab2a9g0j2wy070hcq"))))
+    (arguments '())
+    (native-inputs
+     (list extra-cmake-modules pkg-config qttools-5))
+    (inputs
+     (list aspell
+           hunspell
+           qtdeclarative-5))))
+
 (define-public threadweaver
   (package
     (name "threadweaver")
