@@ -648,7 +648,7 @@ Qt with LXQt.")
         (base32 "1916cl12v09x4iqrgvp2dwchy50wa97a0y68q4rdigarpdrp3x7j"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem
+     (list kwindowsystem-5
            liblxqt
            libqtxdg
            lxqt-globalkeys
