@@ -1126,43 +1126,43 @@ remind you to take a break now and then.")
 (define-public smb4k
   (package
     (name "smb4k")
-    (version "3.1.3")
+    (version "3.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://sourceforge.net/projects/smb4k/files/"
                            version "/smb4k-" version ".tar.xz"))
        (sha256
-        (base32 "0prw0aq16nz9ns4d50mc6fbaw9pbcyh8p698izylhd4i0nr1dd9d"))))
+        (base32 "1d53yl02wrfl6wl2h4a30qiirs44qmfkfsr1kjv69fqhbqp2cszs"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules kdoctools-5))
     (inputs
-     (list kauth
-           kconfig
-           kconfigwidgets
-           kcompletion
-           kcoreaddons
-           kcrash
-           kdbusaddons
-           kdnssd
-           ki18n
-           kiconthemes
-           kio
-           kjobwidgets
-           knotifications
-           knotifyconfig
-           ktextwidgets
-           kwallet
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
+     (list kauth-5
+           kconfig-5
+           kconfigwidgets-5
+           kcompletion-5
+           kcoreaddons-5
+           kcrash-5
+           kdbusaddons-5
+           kdnssd-5
+           ki18n-5
+           kiconthemes-5
+           kio-5
+           kjobwidgets-5
+           knotifications-5
+           knotifyconfig-5
+           ktextwidgets-5
+           kwallet-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           kxmlgui-5
            samba
            breeze-icons ;; default icon set
            plasma-framework
            qtbase-5
            qtdeclarative-5
-           solid))
+           solid-5))
     (home-page "https://apps.kde.org/smb4k/")
     (synopsis "Samba (SMB) share advanced browser")
     (description "Smb4K is an network neighborhood browser for the KDE
