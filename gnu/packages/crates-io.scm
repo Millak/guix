@@ -40706,6 +40706,23 @@ high-performance zlib library.")
      "This package provides a memory-safe zlib implementation written in Rust.")
     (license license:zlib)))
 
+(define-public rust-libz-rs-sys-0.1
+  (package
+    (inherit rust-libz-rs-sys-0.3)
+    (name "rust-libz-rs-sys")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libz-rs-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a1vx9gpyc6aizq7d1v76lribxchqkfxc3295a4z7q0b4lil8g6d"))))
+    (arguments
+     `(#:tests? #f      ; zlib-ng isn't packaged.
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-zlib-rs" ,rust-zlib-rs-0.1))))))
+
 (define-public rust-lifeguard-0.6
   (package
     (name "rust-lifeguard")
