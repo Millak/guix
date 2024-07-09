@@ -678,6 +678,27 @@ hours.")
 language and very flexible regarding to new or unknown keyboard layouts.")
     (license license:gpl3+)))
 
+(define-public kqtquickcharts
+  (package
+    (name "kqtquickcharts")
+    (version "24.05.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kqtquickcharts-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0b0nqg77lzfw6accfsr4yg9fgq78skryd1qwkqf1zijhq4h65708"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list qtdeclarative-5))
+    (home-page "https://invent.kde.org/libraries/kqtquickcharts")
+    (synopsis "QtQuick plugin to render beautiful and interactive charts")
+    (description
+     "This package provides a QtQuick plugin to render beautiful and interactive
+charts.")
+    (license (list license:lgpl2.0+ license:gpl2+))))
+
 (define-public ktouch
   (package
     (name "ktouch")
