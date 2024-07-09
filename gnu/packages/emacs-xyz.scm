@@ -1269,6 +1269,25 @@ out of the box.")
 is based off of Slim mode.")
     (license license:gpl3+)))
 
+(define-public emacs-sed-mode
+  (package
+    (name "emacs-sed-mode")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/sed-mode-" version
+                           ".tar"))
+       (sha256
+        (base32 "0zhga0xsffdcinh10di046n6wbx35gi1zknnqzgm9wvnm2iqxlyn"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/sed-mode.html")
+    (synopsis "Major mode to edit sed scripts")
+    (description
+     "The Sed major mode provides basic support for sed scripts.  The
+functionalities supported are font-locking and auto-indentation.")
+    (license license:gpl3+)))
+
 (define-public emacs-spaceline-all-the-icons
   (package
     (name "emacs-spaceline-all-the-icons")
