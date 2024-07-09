@@ -35375,8 +35375,31 @@ at compile time so the leftmost non-space character is in the first column.")
      "This package provides macros for use with the @code{rust-indoc}
 package.  It is obsolete for indoc versions > 1.")))
 
+(define-public rust-infer-0.15
+  (package
+    (name "rust-infer")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "infer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16d1b83h5m87h6kq4z8kwjrzll5dq6rijg2iz437m008m4nn4cyb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #false  ;missing files
+       #:cargo-inputs (("rust-cfb" ,rust-cfb-0.7))))
+    (home-page "https://github.com/bojand/infer")
+    (synopsis "Infer file types based on its magic number signature")
+    (description
+     "This crate infers a file types based on its magic number
+signature.")
+    (license license:expat)))
+
 (define-public rust-infer-0.2
   (package
+    (inherit rust-infer-0.15)
     (name "rust-infer")
     (version "0.2.3")
     (source
@@ -35386,14 +35409,7 @@ package.  It is obsolete for indoc versions > 1.")))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1b4ziqcv0d1wga5yfqf620dkgzijsdw3ylnzq61bfaxla2d85sb4"))))
-    (build-system cargo-build-system)
-    (arguments `(#:tests? #false))      ;missing files
-    (home-page "https://github.com/bojand/infer")
-    (synopsis "Infer file types based on its magic number signature")
-    (description
-     "This crate infers a file types based on its magic number
-signature.")
-    (license license:expat)))
+    (arguments `(#:tests? #false))))
 
 (define-public rust-inferno-0.11
   (package
