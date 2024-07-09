@@ -3766,7 +3766,16 @@ Selectrum.")
           (base32
            "06dphwj9vi39dbpif3kzp6azs80klh13s9l22a6ddz91kmds2myy"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-compat emacs-s))
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'set-default-binaries
+                       (lambda* (#:key inputs #:allow-other-keys)
+                         (emacs-substitute-variables "empv.el"
+                           ("empv-fd-binary" (search-input-file inputs "/bin/fd"))
+                           ("empv-mpv-binary" (search-input-file inputs "/bin/mpv"))))))))
+      (inputs (list fd mpv))
+      (propagated-inputs (list emacs-compat emacs-consult emacs-s))
       (home-page "https://github.com/isamert/empv.el")
       (synopsis
        "Emacs multimedia player, media library manager, YouTube frontend")
