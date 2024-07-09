@@ -5184,6 +5184,37 @@ components so that all the plugins can receive all the information they
 need.")
     (license license:lgpl2.1+)))
 
+(define-public purpose-5
+  (package
+    (inherit purpose)
+    (name "purpose")
+    (version "5.116.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/frameworks/"
+                    (version-major+minor version) "/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1g0xip1khclinx3vb835krdsj66jllgbx1fka8d9f55n68d6rmk2"))))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list
+      kconfig-5
+      kcoreaddons-5
+      knotifications-5
+      ki18n-5
+      kio-5
+      kirigami-5
+      qtbase-5
+      qtdeclarative-5))
+    (arguments
+     (list #:tests? #f ;; seem to require network; don't find QTQuick components
+           ;; not run anyway
+           #:configure-flags #~'("-DBUILD_TESTING=OFF")))))
+
 (define-public ktextaddons
   (package
     (name "ktextaddons")
