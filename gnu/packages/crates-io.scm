@@ -39327,6 +39327,24 @@ deflate, zlib, and gzip data.")
 for raw deflate, zlib, and gzip data.")
     (license license:asl2.0)))
 
+(define-public rust-libdeflater-0.12
+  (package
+    (inherit rust-libdeflater-1)
+    (name "rust-libdeflater")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflater" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0cbrdvwhilvmk919izkp5bqgwfa7b8nj2ar9gp67nb345wl667k7"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libdeflate-sys" ,rust-libdeflate-sys-0.12))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-flate2" ,rust-flate2-1))))))
+
 (define-public rust-libdeflater-0.11
   (package
     (inherit rust-libdeflater-1)
