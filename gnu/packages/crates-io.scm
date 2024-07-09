@@ -73436,6 +73436,46 @@ functionality and without weak references.")
      "This package provides a Rust-friendly interface to lm-sensors.")
     (license license:miros)))
 
+(define-public rust-sevenz-rust-0.5
+  (package
+    (name "rust-sevenz-rust")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sevenz-rust" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0na67bs0ff01vicwwlc26sbh9jh4wpqn7988k31cixn5s231wfi3"))
+       (snippet
+        #~(begin (delete-file "tests/resources/decompress_x86.exe")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Not all files included.
+                            "--skip=decompress_lzma2_bcj_x86_file")
+       #:cargo-inputs (("rust-aes" ,rust-aes-0.8)
+                       ("rust-bit-set" ,rust-bit-set-0.5)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-bzip2" ,rust-bzip2-0.4)
+                       ("rust-cbc" ,rust-cbc-0.1)
+                       ("rust-crc" ,rust-crc-3)
+                       ("rust-filetime-creation" ,rust-filetime-creation-0.1)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-lzma-rust" ,rust-lzma-rust-0.1)
+                       ("rust-nt-time" ,rust-nt-time-0.6)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-zstd" ,rust-zstd-0.13))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/dyz1990/sevenz-rust")
+    (synopsis "7z decompressor/compressor")
+    (description
+     "This package provides a 7z decompressor/compressor written in pure rust.")
+    (license license:asl2.0)))
+
 (define-public rust-shadow-rs-0.26
   (package
     (name "rust-shadow-rs")
