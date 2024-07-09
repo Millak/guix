@@ -367,40 +367,39 @@ variety of formats.")
         (base32 "11r6nda3djj9p918sx9bpipc1byg5mvgib4vyf0kpdpnh9bnhvcj"))))
     (build-system qt-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-absolute-library-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Set absolute paths for dlopened libraries. We can’t use k3b’s
-             ;; runpath as they are loaded by the Qt library.
-             (let ((libcdio-paranoia (assoc-ref inputs "libcdio-paranoia"))
-                   (libdvdcss (assoc-ref inputs "libdvdcss")))
-               (substitute* "libk3b/tools/k3bcdparanoialib.cpp"
-                 (("\"(cdio_cdda|cdio_paranoia)\"" _ library)
-                  (string-append "\"" libcdio-paranoia "/lib/" library "\"")))
-               (substitute* "libk3b/tools/k3blibdvdcss.cpp"
-                 (("\"(dvdcss)\"" _ library)
-                  (string-append "\"" libdvdcss "/lib/" library "\""))))
-             #t))
-         (add-before 'configure 'fix-cmake-taglib
-           (lambda _
-             ;; Use the CMake variables provided by FindTaglib from
-             ;; extra-cmake-modules, instead of bundled FindTaglib.cmake:
-             (substitute*
-                 '("plugins/decoder/mp3/CMakeLists.txt"
-                   "plugins/decoder/flac/CMakeLists.txt"
-                   "plugins/project/audiometainforenamer/CMakeLists.txt")
-               (("TAGLIB_INCLUDES") "Taglib_INCLUDE_DIRS")
-               (("TAGLIB_LIBRARIES") "Taglib_LIBRARIES"))))
-         (add-after 'qt-wrap 'wrap-path
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Set paths to backend programs.
-             (wrap-program (string-append (assoc-ref outputs "out") "/bin/k3b")
-               `("PATH" ":" prefix
-                 ,(map (lambda (input)
-                         (string-append (assoc-ref inputs input) "/bin"))
-                       '("cdrdao" "cdrtools" "dvd+rw-tools" "libburn" "sox"))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-absolute-library-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Set absolute paths for dlopened libraries. We can’t use k3b’s
+              ;; runpath as they are loaded by the Qt library.
+              (let ((libcdio-paranoia (assoc-ref inputs "libcdio-paranoia"))
+                    (libdvdcss (assoc-ref inputs "libdvdcss")))
+                (substitute* "libk3b/tools/k3bcdparanoialib.cpp"
+                  (("\"(cdio_cdda|cdio_paranoia)\"" _ library)
+                   (string-append "\"" libcdio-paranoia "/lib/" library "\"")))
+                (substitute* "libk3b/tools/k3blibdvdcss.cpp"
+                  (("\"(dvdcss)\"" _ library)
+                   (string-append "\"" libdvdcss "/lib/" library "\""))))))
+          (add-before 'configure 'fix-cmake-taglib
+            (lambda _
+              ;; Use the CMake variables provided by FindTaglib from
+              ;; extra-cmake-modules, instead of bundled FindTaglib.cmake:
+              (substitute*
+                  '("plugins/decoder/mp3/CMakeLists.txt"
+                    "plugins/decoder/flac/CMakeLists.txt"
+                    "plugins/project/audiometainforenamer/CMakeLists.txt")
+                (("TAGLIB_INCLUDES") "Taglib_INCLUDE_DIRS")
+                (("TAGLIB_LIBRARIES") "Taglib_LIBRARIES"))))
+          (add-after 'qt-wrap 'wrap-path
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Set paths to backend programs.
+              (wrap-program (string-append (assoc-ref outputs "out") "/bin/k3b")
+                `("PATH" ":" prefix
+                  ,(map (lambda (input)
+                          (string-append (assoc-ref inputs input) "/bin"))
+                        '("cdrdao" "cdrtools" "dvd+rw-tools" "libburn" "sox")))))))))
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools-5))
     (inputs
