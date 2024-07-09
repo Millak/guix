@@ -33133,6 +33133,33 @@ You might want to use this to globally set dir-local variables that apply to
 all of your projects, then override or add variables on a per-project basis.")
       (license license:gpl3+))))
 
+(define-public emacs-casual-avy
+  (package
+    (name "emacs-casual-avy")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kickingvegas/casual-avy")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n369d7yk6wr5b1145zxviiri1n2f8pzfmzchcnii34zwa2y7x2y"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "lisp"))))))
+    (propagated-inputs (list emacs-casual-lib emacs-avy))
+    (home-page "https://github.com/kickingvegas/casual-avy")
+    (synopsis "Transient-based porcelain for avy")
+    (description
+     "Casual Avy is an opinionated Transient-based porcelain for Emacs Avy.")
+    (license license:gpl3+)))
+
 (define-public emacs-casual-dired
   (package
     (name "emacs-casual-dired")
