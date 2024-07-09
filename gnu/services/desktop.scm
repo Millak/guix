@@ -1785,6 +1785,21 @@ rules."
            "powerdevil"
            "plasma-firewall"))))
 
+(define (plasma-dbus-service config)
+  "Return the list of KDE Plasma dependencies that provide D-Bus services."
+  (let ((plasma-plasma (plasma-package config)))
+    (map (lambda (name)
+           ((package-direct-input-selector name) plasma-plasma))
+         '("plasma-desktop"
+           "plasma-workspace"
+           "kactivitymanagerd"
+           "plasma-disks"
+           "kinfocenter"
+           "libksysguard"
+           "ktexteditor"
+           "powerdevil"
+           "plasma-firewall"))))
+
 ;; see https://bugs.kde.org/show_bug.cgi?id=456210
 ;; if `kde' no exits, fallback to `other', and then unlock lockscreen not work,
 ;; so add it.
@@ -1799,6 +1814,8 @@ rules."
    (extensions
     (list (service-extension polkit-service-type
                              plasma-polkit-settings)
+          (service-extension dbus-root-service-type
+                             plasma-dbus-service)
           (service-extension pam-root-service-type
                              plasma-pam-services)
           (service-extension profile-service-type

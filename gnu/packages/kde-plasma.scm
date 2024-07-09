@@ -2909,7 +2909,15 @@ fetchinitialplayertest|mprisdeclarativetest|mediakeystest|shelltest|\
 locationsrunnertest|testimagefinder|testimagelistmodel|\
 testpackageimagelistmodel|testimageproxymodel|testslidemodel|testimagefrontend|\
 dbusservicewatchertest|klippertest|keystatetest|lockedtest|tst_triangleFilter|\
-testimagebackend)")))))))
+testimagebackend)"))))
+               ;; share/dbus-1/system-services have same name file
+               ;; when dbus-root-service-type merge it, wail report
+               ;; "file exists".
+               (add-after 'install 'remove-dbus-service
+                 (lambda _
+                   (delete-file
+                    (string-append
+                     #$output "/share/dbus-1/services/org.kde.fontinst.service")))))))
     (home-page "https://invent.kde.org/plasma/plasma-workspace")
     (synopsis "Plasma workspace components")
     (description
