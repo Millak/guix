@@ -1860,6 +1860,94 @@ is being designed to work with Podman but is also applicable for other OCI
 container management applications.")
     (license license:asl2.0)))
 
+(define-public ouch
+  (package
+    (name "ouch")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ouch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0r5wi3bmks4m7izyyqgvwdxz4qp60b2yy9c5igdq49hkz0m9dzp6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-atty" ,rust-atty-0.2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-bzip2" ,rust-bzip2-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+                       ("rust-filetime-creation" ,rust-filetime-creation-0.1)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-fs-err" ,rust-fs-err-2)
+                       ("rust-gzp" ,rust-gzp-0.11)
+                       ("rust-ignore" ,rust-ignore-0.4)
+                       ("rust-is-executable" ,rust-is-executable-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
+                       ("rust-lz4-flex" ,rust-lz4-flex-0.11)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-same-file" ,rust-same-file-1)
+                       ("rust-sevenz-rust" ,rust-sevenz-rust-0.5)
+                       ("rust-snap" ,rust-snap-1)
+                       ("rust-tar" ,rust-tar-0.4)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-unrar" ,rust-unrar-0.5)
+                       ("rust-xz2" ,rust-xz2-0.1)
+                       ("rust-zip" ,rust-zip-0.6)
+                       ("rust-zstd" ,rust-zstd-0.13))
+       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2)
+                                   ("rust-infer" ,rust-infer-0.15)
+                                   ("rust-insta" ,rust-insta-1)
+                                   ("rust-parse-display" ,rust-parse-display-0.8)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-test-strategy" ,rust-test-strategy-0.3))
+      #:phases
+      (modify-phases %standard-phases
+        (add-before 'build 'pre-build
+          (lambda _
+            (setenv "OUCH_ARTIFACTS_FOLDER" "target")))
+        (add-after 'install 'install-extras
+          (lambda* (#:key outputs #:allow-other-keys)
+            (let* ((out (assoc-ref outputs "out"))
+                   (share (string-append out "/share"))
+                   (bash-completions-dir
+                    (string-append out "/etc/bash-completion.d"))
+                   (zsh-completions-dir
+                    (string-append share "/zsh/site-functions"))
+                   (fish-completions-dir
+                    (string-append share "/fish/vendor_completions.d"))
+                   (elvish-completions-dir
+                    (string-append share "/elvish/lib"))
+                   (man1 (string-append share "/man/man1")))
+              (mkdir-p bash-completions-dir)
+              (mkdir-p elvish-completions-dir)
+              (copy-file "target/ouch.bash"
+                         (string-append bash-completions-dir "/ouch"))
+              (install-file "target/_ouch"
+                            (string-append zsh-completions-dir "/_ouch"))
+              (install-file "target/ouch.fish"
+                            fish-completions-dir)
+              (copy-file "target/ouch.elv"
+                         (string-append elvish-completions-dir "/ouch"))
+              (for-each (lambda (manpage)
+                          (install-file manpage man1))
+                        (find-files "target" "\\.1$"))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib") zlib))
+    (home-page "https://github.com/ouch-org/ouch")
+    (synopsis "Compression and decompression utility")
+    (description
+     "This package provides a command-line utility for easily compressing and
+decompressing files and directories.")
+    (license license:expat)))
+
 (define-public ripgrep
   (package
     (name "ripgrep")
