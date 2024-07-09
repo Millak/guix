@@ -5535,42 +5535,6 @@ support.")
                    license:bsd-2 license:bsd-3
                    (license:non-copyleft "file://src/kjs/dtoa.cpp")))))
 
-(define-public kmediaplayer
-  (package
-    (name "kmediaplayer")
-    (version "5.114.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "mirror://kde/stable/frameworks/"
-             (version-major+minor version) "/portingAids/"
-             name "-" version ".tar.xz"))
-       (sha256
-        (base32 "092yvzvrkvr8xxncw7h5ghfd2bggzxsqfj67c2vhymhfw4i0c54x"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules kdoctools qttools-5))
-    (inputs
-     (list kcompletion
-           kcoreaddons
-           ki18n
-           kiconthemes
-           kio
-           kparts
-           kwidgetsaddons
-           kxmlgui
-           qtbase-5))
-    (home-page "https://community.kde.org/Frameworks")
-    (synopsis "KDE Frameworks 5 plugin interface for media player features")
-    (description "KMediaPlayer builds on the KParts framework to provide a
-common interface for KParts that can play media files.
-
-This framework is a porting aid.  It is not recommended for new projects, and
-existing projects that use it are advised to port away from it, and use plain
-KParts instead.")
-    (license license:expat)))
-
 (define-public kross
   (package
     (name "kross")
