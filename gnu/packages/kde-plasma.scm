@@ -1432,6 +1432,7 @@ KDE Frameworks components.")
                           "kwin-testInputMethod"
                           "kwin-testPlasmaWindow" ;; require plasma-workspace qml module.
                           "kwin-testButtonRebind"
+                          "kwin-testDecorationInput"
                           "kwin-testPointerInput"
                           "kwin-testXdgShellWindow"
                           "kwin-testXdgShellWindow-waylandonly"
