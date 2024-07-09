@@ -33214,6 +33214,33 @@ all of your projects, then override or add variables on a per-project basis.")
      "Casual Dired is an opinionated Transient-based porcelain for Emacs Dired.")
     (license license:gpl3+)))
 
+(define-public emacs-casual-info
+  (package
+    (name "emacs-casual-info")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kickingvegas/casual-info")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a74njjp7vqvl4jnmrzqjpgpvgy66p11a47hx51mydyxayp4nwmr"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "lisp"))))))
+    (propagated-inputs (list emacs-casual-lib))
+    (home-page "https://github.com/kickingvegas/casual-info")
+    (synopsis "Transient-based porcelain for info reader")
+    (description
+     "Casual Info is an opinionated Transient-based porcelain for Emacs Info reader.")
+    (license license:gpl3+)))
+
 (define-public emacs-casual-lib
   (package
     (name "emacs-casual-lib")
