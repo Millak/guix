@@ -269,7 +269,7 @@ window managers, that don't provide Qt integration by themselves.")
 (define-public kddockwidgets
   (package
     (name "kddockwidgets")
-    (version "2.0.0")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -278,17 +278,18 @@ window managers, that don't provide Qt integration by themselves.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fcmfz9my3219r0kh2y8yfvq372pd65z4s6hm0js7j8qb47lr02p"))))
+                "0s4s0y8kvkyf15d5kzcd5wik7n1jj9mxrmc60irlacfy93hmdaw0"))))
     (build-system cmake-build-system)
-    (arguments (list #:configure-flags #~(list "-DKDDockWidgets_TESTS=ON")))
+    (arguments (list #:configure-flags #~(list
+                                          "-DKDDockWidgets_QT6=ON"
+                                          "-DKDDockWidgets_TESTS=ON")))
     (inputs
      (list fmt
            nlohmann-json
-           qtbase-5
-           qtdeclarative-5
-           qtquickcontrols2-5
-           qtx11extras
-           spdlog))
+           qtbase
+           qtdeclarative
+           spdlog
+           libxkbcommon))
     (home-page "https://github.com/KDAB/KDDockWidgets")
     (synopsis "KDAB's Dock Widget Framework for Qt")
     (description "KDDockWidgets is a Qt dock widget library suitable for
