@@ -42497,6 +42497,27 @@ Server Protocol.")
      "This package provides a codec for LZMA, LZMA2 and XZ written in pure Rust.")
     (license license:expat)))
 
+(define-public rust-lzma-rust-0.1
+  (package
+    (name "rust-lzma-rust")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lzma-rust" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12dj3w2pnvx014pzjl8pc115rldgk6cbc7w6lwg24y2d3xfwzvfm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Only doc tests, which all fail.
+       #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1))))
+    (home-page "https://github.com/dyz1990/sevenz-rust/tree/main/lzma-rust")
+    (synopsis "Codec LZMA/LZMA2")
+    (description
+     "This package provides LZMA/LZMA2 codec ported from tukaani xz for java'.")
+    (license license:asl2.0)))
+
 (define-public rust-lzma-sys-0.1
   (package
     (name "rust-lzma-sys")
