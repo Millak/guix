@@ -2170,6 +2170,13 @@ uses a job-based interface to queue tasks and execute them in an efficient way."
 decode RAW picture files.")
     (license (list license:gpl2+ license:bsd-3))))
 
+(define-public libkdcraw-qt5
+  (package
+    (inherit libkdcraw)
+    (name "libkdcraw-qt5")
+    (inputs (modify-inputs (package-inputs libkdcraw)
+              (replace "qtbase" qtbase-5)))))
+
 ;; Tier 2
 ;;
 ;; Tier 2 frameworks additionally depend on tier 1 frameworks, but still have
