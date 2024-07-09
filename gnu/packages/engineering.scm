@@ -1787,6 +1787,7 @@ analyzer (FFT) and frequency sweep plot.")
     (version "5.0.1")
     (source (origin
               (method git-fetch)
+              (patches (search-patches "capstone-fix-python-constants.patch"))
               (uri (git-reference
                     (url "https://github.com/capstone-engine/capstone")
                     (commit version)))
@@ -1798,7 +1799,7 @@ analyzer (FFT) and frequency sweep plot.")
     (arguments
      `(#:tests? #f
        #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                          "CC=gcc")
+                          (string-append "CC=" ,(cc-for-target)))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ; no configure script
