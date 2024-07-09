@@ -941,14 +941,14 @@ to save the times and resume them later.")
 (define-public krusader
   (package
     (name "krusader")
-    (version "2.8.0")
+    (version "2.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/krusader/" version
                            "/krusader-" version ".tar.xz"))
        (sha256
-        (base32 "16n2y861ka8jhackf7hd9b0b0argifc1p0a114dvrc0qjddg0k4f"))))
+        (base32 "10w2y66kapd0ii8lr37jjwgg2a623ds05bv416j1payh352j1grp"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases
@@ -960,29 +960,29 @@ to save the times and resume them later.")
                      (("#  include <kcompletion_version\\.h>") "")
                      (("#  include <karchive_version\\.h>") "")))))))
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules kdoctools-5))
     (inputs
-     (list karchive
-           kbookmarks
-           kcodecs
-           kcompletion
-           kconfig
-           kcoreaddons
-           kguiaddons
-           ki18n
-           kiconthemes
-           kio
-           kitemviews
-           knotifications
-           kparts
-           ktextwidgets
-           kwallet
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
+     (list karchive-5
+           kbookmarks-5
+           kcodecs-5
+           kcompletion-5
+           kconfig-5
+           kcoreaddons-5
+           kguiaddons-5
+           ki18n-5
+           kiconthemes-5
+           kio-5
+           kitemviews-5
+           knotifications-5
+           kparts-5
+           ktextwidgets-5
+           kwallet-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           kxmlgui-5
            breeze-icons ;; default icon set
            qtbase-5
-           solid
+           solid-5
            zlib))
     (home-page "https://krusader.org/")
     (synopsis "Twin-panel (commander-style) file manager")
