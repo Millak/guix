@@ -918,16 +918,16 @@ sentences to be re-spoken.")
         (base32 "0xn4z9y2yl57a5skwp4cjsn1456kiwnwvhrddc0qsihgdyif3fbm"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules kdoctools-5))
     (inputs
-     (list kauth
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kcrash
-           ki18n
-           kwidgetsaddons
-           kxmlgui
+     (list kauth-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kcrash-5
+           ki18n-5
+           kwidgetsaddons-5
+           kxmlgui-5
            breeze-icons ;; default icon set
            qtbase-5))
     (home-page "https://apps.kde.org/kronometer/")
