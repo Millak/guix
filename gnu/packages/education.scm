@@ -702,31 +702,32 @@ charts.")
 (define-public ktouch
   (package
     (name "ktouch")
-    (version "21.12.2")
+    (version "24.05.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "mirror://kde/stable/release-service/"
-                            version "/src/ktouch-" version ".tar.xz"))
-        (sha256
-         (base32 "1rq2n8395sb17rqd295axv2pbwzhqs8ikjqx5ryn4lv1713alabl"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/"
+                           version "/src/ktouch-" version ".tar.xz"))
+       (sha256
+        (base32 "1636s1brigmd7wbmjlfgz2qlrrp592rrk9nylh9bi0j1nf3xa8c5"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools pkg-config))
+     (list extra-cmake-modules kdoctools-5 pkg-config))
     (inputs
-     (list kcmutils
-           kcompletion
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kdeclarative
-           ki18n
-           kiconthemes
-           kitemviews
-           ktextwidgets
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
+     (list kcmutils-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kdeclarative-5
+           ki18n-5
+           kiconthemes-5
+           kitemviews-5
+           ktextwidgets-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           kxmlgui-5
+           kqtquickcharts
            libxcb
            libxkbfile
            qtbase-5
