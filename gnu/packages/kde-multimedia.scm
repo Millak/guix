@@ -486,14 +486,13 @@ the available CD drives.")
            v4l-utils ; libdvbv5
            vlc))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-code
-           (lambda _
-             (substitute* "src/dvb/dvbdevice_linux.cpp"
-               (("\\s*qPrintable\\(transponder\\.getTransmissionType\\(\\)\\)\\);")
-                "transponder.getTransmissionType());"))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-code
+                 (lambda _
+                   (substitute* "src/dvb/dvbdevice_linux.cpp"
+                     (("\\s*qPrintable\\(transponder\\.getTransmissionType\\(\\)\\)\\);")
+                      "transponder.getTransmissionType());")))))))
     (home-page "https://apps.kde.org/kaffeine/")
     (synopsis "Versatile media player for KDE")
     (description "Kaffeine is a media player for KDE.  While it supports
