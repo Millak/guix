@@ -32180,6 +32180,44 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
      `(#:cargo-inputs
        (("rust-crc32fast" ,rust-crc32fast-1))))))
 
+(define-public rust-gzp-0.11
+  (package
+    (name "rust-gzp")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gzp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bvvz969c9kpyp7h6ry9mzhk7lb4hj4hpd810n0i26jjk4c5vip7"))
+       (snippet
+        #~(begin (use-modules ((guix build utils)))
+                 ;; Switch the default from zlib-ng to zlib.
+                 (substitute* "Cargo.toml"
+                   (("\"deflate_zlib_ng\"") "\"deflate_zlib\""))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-core-affinity" ,rust-core-affinity-0.8)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-flume" ,rust-flume-0.10)
+                       ("rust-libdeflater" ,rust-libdeflater-0.12)
+                       ("rust-libz-sys" ,rust-libz-sys-1)
+                       ("rust-num-cpus" ,rust-num-cpus-1)
+                       ("rust-snap" ,rust-snap-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list zlib))
+    (home-page "https://github.com/sstadick/gzp")
+    (synopsis "Parallel compression library")
+    (description "This package provides a library for parallel compression.")
+    (license (list license:unlicense license:expat))))
+
 (define-public rust-half-2
   (package
     (name "rust-half")
