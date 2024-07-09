@@ -29,6 +29,7 @@
   #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module (guix build-system go)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
@@ -147,7 +148,9 @@ with @url{https://github.com/ipld/cid, CIDs}.")
               "0qk6fshgdmhp8dip2ksm13j6nywi41m9mn0czkvmw6b697z85l2r"))))
       (build-system go-build-system)
       (arguments
-       `(#:go ,go-1.16
+       `(#:go ,@(if (supported-package? go-1.16)
+                    `(,go-1.16)
+                    `(,gccgo-11))
          #:unpack-path "github.com/ipfs/go-ipfs-cmdkit"
          #:import-path "github.com/ipfs/go-ipfs-cmdkit/files"))
       (home-page "https://github.com/ipfs/go-ipfs-cmdkit")
