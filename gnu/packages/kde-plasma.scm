@@ -2466,19 +2466,24 @@ PulseAudio.")
 (define-public plasma-pass
   (package
     (name "plasma-pass")
-    (version "1.2.1")
+    (version "1.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/" name "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0x1yj9wsz2hb5333g645wjasxd83gd2phpwg80h24vfpqdhz62qj"))))
+                "1klpqcc2wsf3myvzhy9l0sv2iws458iad2mwg3z0cy2d11an8wia"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
-    (inputs (list ki18n kitemmodels kwindowsystem oath-toolkit
-                  qgpgme qtdeclarative-5))
-    (propagated-inputs (list plasma-framework))
+    (inputs (list ki18n kitemmodels kwindowsystem kio
+                  libplasma
+                  oath-toolkit
+                  plasma5support
+                  qgpgme-qt6-1.23
+                  qtdeclarative))
+    (arguments (list #:qtbase qtbase
+                     #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
     (home-page "https://invent.kde.org/plasma/plasma-pass")
     (synopsis "Plasma applet for the Pass password manager")
     (description
