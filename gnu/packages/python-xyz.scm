@@ -2382,6 +2382,42 @@ EasyGUI is NOT event-driven.  Instead, all GUI interactions are invoked by
 simple function calls.")
     (license license:bsd-3)))
 
+(define-public python-echo
+  (package
+    (name "python-echo")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "echo" version))
+       (sha256
+        (base32 "1hr2kgjmf5gcjbg1mry03ca1dayfwy8mi8as42jfg0apsa3bfvvj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xorg-server
+            (lambda _
+              ;; The test suite requires a running X server.
+              (system "Xvfb :99 -screen 0 1024x768x24 &")
+              (setenv "DISPLAY" ":99.0"))))))
+    (propagated-inputs
+     (list python-numpy
+           python-qtpy
+           python-pyqt-6))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools-scm
+           xorg-server-for-tests))
+    (home-page "https://github.com/glue-viz/echo")
+    (synopsis "Callback Properties in Python")
+    (description
+     "Echo is a small library for attaching callback functions to property
+state changes.")
+    (license license:expat)))
+
 (define-public python-pymd4c
   (package
     (name "python-pymd4c")
