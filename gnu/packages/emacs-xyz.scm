@@ -33160,6 +33160,33 @@ all of your projects, then override or add variables on a per-project basis.")
      "Casual Avy is an opinionated Transient-based porcelain for Emacs Avy.")
     (license license:gpl3+)))
 
+(define-public emacs-casual-calc
+  (package
+    (name "emacs-casual-calc")
+    (version "1.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kickingvegas/casual-calc")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qdi6p3aybg0zwscf35l2dx51q7h4rz2g7r4xf7ml520dag7h5cw"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "lisp"))))))
+    (propagated-inputs (list emacs-casual-lib))
+    (home-page "https://github.com/kickingvegas/casual-calc")
+    (synopsis "Transient-based porcelain for calc")
+    (description
+     "Casual Calc is an opinionated Transient-based porcelain for Emacs Calc.")
+    (license license:gpl3+)))
+
 (define-public emacs-casual-dired
   (package
     (name "emacs-casual-dired")
