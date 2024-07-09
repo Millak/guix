@@ -23342,8 +23342,7 @@ Mustache templating language renderer.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto"
-              "--ignore=tests/slow/test_h2oai_arrow.py"
+      #~(list "--ignore=tests/slow/test_h2oai_arrow.py"
               ;; Do not relay on mypy.
               "--ignore=tests/stubs/test_stubs.py"
               "-k" (string-append
@@ -23384,7 +23383,6 @@ Mustache templating language renderer.")
            python-pyarrow
            python-pytest
            python-pytest-runner
-           python-pytest-xdist
            python-setuptools-scm))
     (home-page "https://www.duckdb.org")
     (synopsis "DuckDB embedded database")
