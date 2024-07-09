@@ -32,6 +32,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cdrom)
@@ -597,36 +598,37 @@ This package is part of the KDE multimedia module.")
 (define-public kwave
   (package
     (name "kwave")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/kwave-" version ".tar.xz"))
+                           "/src/kwave-" version ".tar.xz"))
        (sha256
-        (base32 "0s9w8jgwblljwfji2a19bqs3nx6sr2qzz35kwbi0ahwncy69k4jx"))))
+        (base32 "1g3gaxmchsf9c7zvx608wl41qs001vr1zm0cgnaim753446vb08f"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules (librsvg-for-system) pkg-config kdoctools))
+     (list extra-cmake-modules (librsvg-for-system) pkg-config kdoctools-5
+           tzdata-for-tests))
     (inputs
      (list alsa-lib
            audiofile
            flac
            id3lib
-           karchive
-           kcompletion
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kcrash
-           kdbusaddons
-           ki18n
-           kiconthemes
-           kio
-           kservice
-           ktextwidgets
-           kwidgetsaddons
-           kxmlgui
+           karchive-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kcrash-5
+           kdbusaddons-5
+           ki18n-5
+           kiconthemes-5
+           kio-5
+           kservice-5
+           ktextwidgets-5
+           kwidgetsaddons-5
+           kxmlgui-5
            libmad
            libsamplerate
            libvorbis
@@ -636,6 +638,15 @@ This package is part of the KDE multimedia module.")
            qtbase-5
            qtmultimedia-5
            zlib))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-TZDATA
+            (lambda* (#:key inputs tests? #:allow-other-keys)
+              (setenv "TZDIR"
+                      (search-input-directory inputs
+                                              "share/zoneinfo")))))))
     (home-page "https://apps.kde.org/kwave/")
     (synopsis "Sound editor for KDE")
     (description "Kwave is a sound editor designed for the KDE Desktop
