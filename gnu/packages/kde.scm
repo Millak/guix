@@ -781,7 +781,7 @@ painting, image manipulating and icon editing.")
 (define-public krita
   (package
     (name "krita")
-    (version "5.2.1")
+    (version "5.2.3")
     (source
      (origin
        (method url-fetch)
@@ -789,7 +789,7 @@ painting, image manipulating and icon editing.")
              "mirror://kde/stable/krita/" version "/krita-" version
              ".tar.gz"))
        (sha256
-        (base32 "1kzmn89b1vrasba7z8hp8izyrrskgc7ggnz82zqyyy1v5d8mnri7"))
+        (base32 "1h2whbccgr2xhln4zx708hksg4284dhgjz10cnnkfgiwp7nlcsj6"))
        (patches (search-patches "krita-bump-sip-abi-version-to-12.8.patch"))))
     (build-system qt-build-system)
     (arguments
@@ -811,7 +811,13 @@ painting, image manipulating and icon editing.")
                         (("set\\(CMAKE_AUTOMOC OFF\\)")
                          "set(CMAKE_AUTOMOC OFF)
 set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -fPIC\" )
-set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\" ) ")))))))
+set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\" ) "))))
+                  (add-after 'install 'wrap-bin
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (python-path (getenv "GUIX_PYTHONPATH")))
+                        (wrap-program (string-append out "/bin/krita")
+                          `("GUIX_PYTHONPATH" ":" prefix (,python-path)))))))))
     (native-inputs
      (list curl
            eigen
@@ -837,26 +843,26 @@ set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\" ) ")))))))
            harfbuzz
            imath
            immer
-           karchive
-           kcompletion
-           kconfig
-           kcoreaddons
-           kcrash
-           kguiaddons
-           ki18n
-           kiconthemes
-           kio
-           kitemviews
+           karchive-5
+           kcompletion-5
+           kconfig-5
+           kcoreaddons-5
+           kcrash-5
+           kguiaddons-5
+           ki18n-5
+           kiconthemes-5
+           kio-5
+           kitemviews-5
            kseexpr
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
+           kwidgetsaddons-5
+           kwindowsystem-5
+           kxmlgui-5
            lager
            lcms
            libheif
            libjpeg-turbo
            libjxl
-           libkdcraw
+           libkdcraw-qt5
            libmypaint
            libpng
            ;; libraqm
