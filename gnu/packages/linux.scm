@@ -7171,7 +7171,7 @@ not as a replacement for it.")
 (define-public hotspot
   (package
     (name "hotspot")
-    (version "1.5.0")
+    (version "1.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7183,7 +7183,7 @@ not as a replacement for it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17m96h0iahfjhbsa9flmsmbczvliy34vqvayzyh8bhldd8yh768l"))))
+                "04k2rvf2lgi8hp7dzqzn65fcd2lsiylwr04d44q75j0wvgbjjv1v"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -7191,7 +7191,9 @@ not as a replacement for it.")
       ;; installed to a custom prefix and the build fails with "file cannot
       ;; create directory: /polkit-1/actions.  Maybe need administrative"
       ;; (see: https://bugs.kde.org/show_bug.cgi?id=363678).
-      #:configure-flags #~(list "-DINSTALL_KAUTH_HELPER=OFF")
+      #:configure-flags #~(list "-DINSTALL_KAUTH_HELPER=OFF"
+                                "-DQT6_BUILD=ON")
+      #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-perfparser
@@ -7262,6 +7264,7 @@ not as a replacement for it.")
             kcoreaddons
             kddockwidgets
             kgraphviewer
+            ki18n
             kio
             kiconthemes
             kitemmodels
@@ -7272,12 +7275,8 @@ not as a replacement for it.")
             kwindowsystem
             libxkbcommon
             perf
-            qcustomplot
-            qtbase-5
-            qtdeclarative-5
-            qtquickcontrols2-5
-            qtsvg-5
-            qtx11extras
+            qtdeclarative
+            qtsvg
             solid
             threadweaver
             `(,zstd "lib"))
