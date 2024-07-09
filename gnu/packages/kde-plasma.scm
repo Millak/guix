@@ -54,6 +54,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages hardware)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages iso-codes)
@@ -3044,6 +3045,7 @@ UI for Plasma")
                   network-manager
                   plasma-workspace
                   eudev
+                  ddcutil
                   libxkbcommon))
     (arguments (list #:qtbase qtbase
                      #:phases #~(modify-phases %standard-phases
