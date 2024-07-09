@@ -1014,9 +1014,9 @@ great on your desktop.")
         (base32 "1q6blvcqz6hxdfrkdi0fplmz7rmk3im56kpp68r0yrivhx3hn8sc"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools pkg-config))
+     (list extra-cmake-modules kdoctools-5 pkg-config))
     (inputs
-     (list ktexteditor imagemagick qtbase-5 qtx11extras))
+     (list ktexteditor-5 imagemagick qtbase-5 qtx11extras))
     (home-page "https://apps.kde.org/kxstitch/")
     (synopsis "Create and print cross stitch patterns")
     (description
