@@ -27465,6 +27465,30 @@ representation.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-redox-syscall" ,rust-redox-syscall-0.1))))))
 
+(define-public rust-filetime-creation-0.1
+  (package
+    (name "rust-filetime-creation")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "filetime_creation" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10vk0zwwr91qypkkrhshvlw2zgjfyxhy29d5p15b8wrv5493n9sd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/czy-29/filetime_creation")
+    (synopsis "Enhanced version of filetime")
+    (description
+     "This package provides an enhanced version of filetime, which can set file
+creation time on Windows before Rust 1.75.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-filetreelist-0.5
   (package
     (name "rust-filetreelist")
