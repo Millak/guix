@@ -26425,6 +26425,27 @@ perform regression test for packages that provide font-lock rules.")
 It follows DrRacket concepts where applicable.")
       (license license:gpl2+))))
 
+(define-public emacs-ob-racket
+  (package
+    (name "emacs-ob-racket")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hasu/emacs-ob-racket")
+                    (commit version)))
+              (sha256
+               (base32
+                "0bqhxi1nikxwc0gyqsnxc7ya2s41vc06w39s24qz64kja8zqzzya"))
+              (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/hasu/emacs-ob-racket")
+    (synopsis "Org Babel support for Racket")
+    (description
+     "This package adds spport for working with Racket code blocks with
+Org Babel in Org mode.")
+    (license license:gpl3+)))
+
 (define-public emacs-grep-context
   (let ((commit "5a4e3efdf775755c1bbefcfe4b461c1166d81d7d")
         (revision "1"))
