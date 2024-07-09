@@ -508,31 +508,31 @@ autoloading of subtitle files for use while playing video.")
 (define-public kamoso
   (package
     (name "kamoso")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kamoso-" version ".tar.xz"))
        (sha256
-        (base32 "1f06331qigf5wi6lgir5ij8h1fsdn54v32fyw2mgf0hg05xndrcl"))))
+        (base32 "1i2w2cmlfr9q4p405kycy2xqp8q5d6f1j3pwr5sbdhis3rm7vm4l"))))
     (build-system qt-build-system)
     (native-inputs
      `(("extra-cmake-modules" ,extra-cmake-modules)
        ("glib:bin" ,glib "bin")
-       ("kdoctools" ,kdoctools)
+       ("kdoctools" ,kdoctools-5)
        ("pkg-config" ,pkg-config)))
     (inputs
      (list gstreamer
            gst-plugins-base
-           kconfig
-           ki18n
-           kio
-           kirigami
-           knotifications
-           kparts
+           kconfig-5
+           ki18n-5
+           kio-5
+           kirigami-5
+           knotifications-5
+           kparts-5
            breeze-icons ; default icon set
-           purpose
+           purpose-5
            qtbase-5
            qtdeclarative-5
            qtgraphicaleffects
