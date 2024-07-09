@@ -5535,48 +5535,6 @@ support.")
                    license:bsd-2 license:bsd-3
                    (license:non-copyleft "file://src/kjs/dtoa.cpp")))))
 
-(define-public kross
-  (package
-    (name "kross")
-    (version "5.114.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "mirror://kde/stable/frameworks/"
-             (version-major+minor version) "/portingAids/"
-             name "-" version ".tar.xz"))
-       (sha256
-        (base32 "0bbpi63lxbb4ylx2jd172a2bqyxkd606n7w8zrvcjy466lkv3sz4"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules kdoctools qttools-5))
-    (inputs
-     (list kcompletion
-           kcoreaddons
-           ki18n
-           kiconthemes
-           kparts
-           kwidgetsaddons
-           kxmlgui
-           qtbase-5
-           qtscript))
-    (home-page "https://community.kde.org/Frameworks")
-    (synopsis "KDE Frameworks 5 solution for application scripting")
-    (description "Kross is a scripting bridge for the KDE Development Platform
-used to embed scripting functionality into an application.  It supports
-QtScript as a scripting interpreter backend.
-
-Kross provides an abstract API to provide scripting functionality in a
-interpreter-independent way.  The application that uses Kross should not need
-to know anything about the scripting language being used.  The core of Kross
-provides the framework to deal transparently with interpreter-backends and
-offers abstract functionality to deal with scripts.")
-    ;; Most files are distributed under LGPL2+, but the package includes code
-    ;; under a variety of licenses.
-    (license (list license:lgpl2.0+ license:lgpl2.1+
-                   license:lgpl2.0 license:gpl3+))))
-
 (define-public kdav
   (package
     (name "kdav")
