@@ -518,10 +518,11 @@ autoloading of subtitle files for use while playing video.")
         (base32 "1i2w2cmlfr9q4p405kycy2xqp8q5d6f1j3pwr5sbdhis3rm7vm4l"))))
     (build-system qt-build-system)
     (native-inputs
-     `(("extra-cmake-modules" ,extra-cmake-modules)
-       ("glib:bin" ,glib "bin")
-       ("kdoctools" ,kdoctools-5)
-       ("pkg-config" ,pkg-config)))
+     (list
+      extra-cmake-modules
+      `(,glib "bin")
+      kdoctools-5
+      pkg-config))
     (inputs
      (list gstreamer
            gst-plugins-base
