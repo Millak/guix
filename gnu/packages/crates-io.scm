@@ -95827,6 +95827,27 @@ implementation that works everywhere, even WASM!")
      "This package provides a memory-safe zlib implementation written in Rust.")
     (license license:zlib)))
 
+(define-public rust-zlib-rs-0.1
+  (package
+    (inherit rust-zlib-rs-0.3)
+    (name "rust-zlib-rs")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zlib-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18a49npwcrpbvsxs3dzk51kizd81qffnaxjqfn4fqq37vki0a8f5"))))
+    (arguments
+     `(#:tests? #f      ; zlib-ng isn't packaged.
+       #:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-libz-sys" ,rust-libz-sys-1)
+                       ("rust-quickcheck" ,rust-quickcheck-1))
+       #:cargo-development-inputs (("rust-crc32fast" ,rust-crc32fast-1)
+                                   ("rust-libloading" ,rust-libloading-0.8)
+                                   ("rust-libz-ng-sys" ,rust-libz-ng-sys-1))))))
+
 (define-public rust-zopfli-0.8
   (package
     (name "rust-zopfli")
