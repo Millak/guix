@@ -139,6 +139,33 @@ Windows Credential Manager.")
        (("rust-cargo-credential" ,rust-cargo-credential-0.3)
         ("rust-windows-sys" ,rust-windows-sys-0.48))))))
 
+(define-public rust-cfb-0.7
+  (package
+    (name "rust-cfb")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cfb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03y6p3dlm7gfds19bq4ba971za16rjbn7q2v0vqcri52l2kjv3yk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-2)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rand-pcg" ,rust-rand-pcg-0.3)
+                                   ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/mdsteele/rust-cfb")
+    (synopsis "Read/write Compound File Binary files")
+    (description
+     "This package provides Read/write functionality for Compound File Binary
+(structured storage) files.")
+    (license license:expat)))
+
 (define-public rust-clipboard-win-5
   (package
     (name "rust-clipboard-win")
