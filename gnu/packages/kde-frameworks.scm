@@ -5535,30 +5535,6 @@ support.")
                    license:bsd-2 license:bsd-3
                    (license:non-copyleft "file://src/kjs/dtoa.cpp")))))
 
-(define-public kjsembed
-  (package
-    (name "kjsembed")
-    (version "5.114.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "mirror://kde/stable/frameworks/"
-             (version-major+minor version) "/portingAids/"
-             name "-" version ".tar.xz"))
-       (sha256
-        (base32 "1xglisxv7nfsbj9lgpvc4c5ql4f6m7n71vf7vih5ff3aqybrkgxa"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules kdoctools qttools-5))
-    (inputs
-     (list ki18n kjs qtbase-5 qtsvg-5))
-    (home-page "https://community.kde.org/Frameworks")
-    (synopsis "KDE Frameworks 5 embedded Javascript engine for Qt")
-    (description "KJSEmbed provides a method of binding Javascript objects to
-QObjects, so you can script your applications.")
-    (license license:lgpl2.1+)))
-
 (define-public kmediaplayer
   (package
     (name "kmediaplayer")
