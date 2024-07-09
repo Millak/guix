@@ -553,39 +553,39 @@ camera.  Use it to take pictures and make videos to share.")
 (define-public kmix
   (package
     (name "kmix")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/" version
-                          "/src/kmix-" version ".tar.xz"))
-      (sha256
-       (base32 "09pfsa6y1phm6z24da60s47gc18w4cvv7r8sxh5qfww7b0dnhixj"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kmix-" version ".tar.xz"))
+       (sha256
+        (base32 "1ha0sil2vbpvgys7jkhav7j5g7drg57ypr8c9i3c8ndqwpsyxk3g"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools pkg-config))
+     (list extra-cmake-modules kdoctools-5 pkg-config))
     (inputs
      (list alsa-lib
            glib
-           kconfigwidgets
-           kcompletion
-           kconfig
-           kconfigwidgets
-           kcrash
-           kdbusaddons
-           kglobalaccel
-           ki18n
-           kiconthemes
-           knotifications
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
+           kconfigwidgets-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcrash-5
+           kdbusaddons-5
+           kglobalaccel-5
+           ki18n-5
+           kiconthemes-5
+           knotifications-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           kxmlgui-5
            libcanberra
            breeze-icons ; default icon set
            plasma-framework
            pulseaudio
            qtbase-5
-           solid))
+           solid-5))
     (home-page "https://apps.kde.org/kmix/")
     (synopsis "Volume control and mixer")
     (description "KMix is an audio device mixer, used to adjust volume, select
