@@ -72380,16 +72380,15 @@ by dynamically growing the stack.")
 (define-public rust-serde-test-1
   (package
     (name "rust-serde-test")
-    (version "1.0.171")
+    (version "1.0.176")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde_test" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0fjsdcxx1ig10qf73dqwgyy7ksjwmmi3657aaybyqj8l9qphlj5n"))))
+         "1ar0sqlahx33l0qzw7alk61dp14ma52q42vy9z8i51j9w6n4jbss"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
