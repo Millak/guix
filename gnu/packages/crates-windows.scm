@@ -560,6 +560,33 @@ IOCP and Async I/O abstractions.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-nt-time-0.6
+  (package
+    (name "rust-nt-time")
+    (version "0.6.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nt-time" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02sikab4va5gv2ja5rjd7fp1g1dh6l1pryjlsprxh0hcq247fmkf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Not all files included.
+       #:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-zip" ,rust-zip-2))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-clap" ,rust-clap-4)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/sorairolake/nt-time")
+    (synopsis "Windows file time library")
+    (description "This package provides a Windows file time library.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-output-vt100-0.1
   (package
     (name "rust-output-vt100")
