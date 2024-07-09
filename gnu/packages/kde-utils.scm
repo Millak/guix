@@ -1086,32 +1086,32 @@ redone.")
 (define-public rsibreak
   (package
     (name "rsibreak")
-    (version "0.12.14")
+    (version "0.12.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde//stable/rsibreak/0.12/"
                            "rsibreak-" version ".tar.xz"))
        (sha256
-        (base32 "0yjv5awngi2hk6xzlwzmj92i6qppnfc0inqdp16rd8gzfpw7xqqw"))))
+        (base32 "0kfbbhyzilvar3vns68pd8vkd17f07g8q9g83xxwl06zl3k6672j"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules kdoctools-5))
     (inputs
-     (list kauth
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kcrash
-           kdbusaddons
-           ki18n
-           kiconthemes
-           kidletime
-           knotifications
-           knotifyconfig
-           ktextwidgets
-           kwindowsystem
-           kxmlgui
+     (list kauth-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kcrash-5
+           kdbusaddons-5
+           ki18n-5
+           kiconthemes-5
+           kidletime-5
+           knotifications-5
+           knotifyconfig-5
+           ktextwidgets-5
+           kwindowsystem-5
+           kxmlgui-5
            breeze-icons ;; default icon set
            qtbase-5))
     (home-page "https://apps.kde.org/rsibreak/")
