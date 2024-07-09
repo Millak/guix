@@ -357,14 +357,14 @@ variety of formats.")
 (define-public k3b
   (package
     (name "k3b")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/k3b-" version ".tar.xz"))
        (sha256
-        (base32 "1kr1hw4pws87zzwyrwrg2ysdn11qf0qhwi1vc9b0k8jkjmmdplmb"))))
+        (base32 "11r6nda3djj9p918sx9bpipc1byg5mvgib4vyf0kpdpnh9bnhvcj"))))
     (build-system qt-build-system)
     (arguments
      `(#:phases
@@ -402,7 +402,7 @@ variety of formats.")
                        '("cdrdao" "cdrtools" "dvd+rw-tools" "libburn" "sox"))))
              #t)))))
     (native-inputs
-     (list extra-cmake-modules pkg-config kdoctools))
+     (list extra-cmake-modules pkg-config kdoctools-5))
     (inputs
      (list bash-minimal
            cdrdao
@@ -410,28 +410,28 @@ variety of formats.")
            dvd+rw-tools
            ffmpeg
            flac
-           karchive
-           kcmutils
-           kconfig
-           kcoreaddons
-           kfilemetadata
-           ki18n
-           kiconthemes
-           kio
-           kjobwidgets
-           knewstuff
-           knotifications
-           knotifyconfig
-           kservice
-           kwidgetsaddons
-           kxmlgui
+           karchive-5
+           kcmutils-5
+           kconfig-5
+           kcoreaddons-5
+           kfilemetadata-5
+           ki18n-5
+           kiconthemes-5
+           kio-5
+           kjobwidgets-5
+           knewstuff-5
+           knotifications-5
+           knotifyconfig-5
+           kservice-5
+           kwidgetsaddons-5
+           kxmlgui-5
            lame
            libburn
            libcdio-paranoia
            libdvdcss
            libdvdread
            ;; TODO: LibFuzzer
-           libkcddb
+           libkcddb-qt5
            libmad
            libmpcdec
            ;;("libmusicbrainz" ,libmusicbrainz) ; wants old version 2
@@ -439,9 +439,8 @@ variety of formats.")
            libsndfile
            libvorbis
            breeze-icons ; default icon set
-           qtbase-5
            shared-mime-info
-           solid
+           solid-5
            sox
            taglib
            zlib))
