@@ -468,21 +468,21 @@ the available CD drives.")
         (base32 "10dnhr9v2jlki44i3gmjagky66ybixmv6f29z5imk9clgddrlyfr"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules pkg-config kdoctools))
+     (list extra-cmake-modules pkg-config kdoctools-5))
     (inputs
      (list eudev
-           kcoreaddons
-           kdbusaddons
-           ki18n
-           kio
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
+           kcoreaddons-5
+           kdbusaddons-5
+           ki18n-5
+           kio-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           kxmlgui-5
            libxscrnsaver
            breeze-icons ; default icon set
            qtbase-5
            qtx11extras
-           solid
+           solid-5
            v4l-utils ; libdvbv5
            vlc))
     (arguments
@@ -492,7 +492,7 @@ the available CD drives.")
            (lambda _
              (substitute* "src/dvb/dvbdevice_linux.cpp"
                (("\\s*qPrintable\\(transponder\\.getTransmissionType\\(\\)\\)\\);")
-                 "transponder.getTransmissionType());"))
+                "transponder.getTransmissionType());"))
              #t)))))
     (home-page "https://apps.kde.org/kaffeine/")
     (synopsis "Versatile media player for KDE")
