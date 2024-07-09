@@ -39259,6 +39259,20 @@ exposed as non-streaming buffer operations.  It contains bindings for raw
 deflate, zlib, and gzip data.")
     (license license:asl2.0)))
 
+(define-public rust-libdeflate-sys-0.12
+  (package
+    (inherit rust-libdeflate-sys-1)
+    (name "rust-libdeflate-sys")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflate-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "11a7nn3p73vw3cnra36vz7mz60wx9jzhzwwji1hbmql5gy0v1xz1"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
+
 (define-public rust-libdeflate-sys-0.11
   (package
     (inherit rust-libdeflate-sys-1)
