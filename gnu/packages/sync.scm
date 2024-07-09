@@ -190,12 +190,12 @@
            dbus
            desktop-file-utils
            glib
-           karchive
-           kconfig
-           kcoreaddons
-           kio
+           karchive-5
+           kconfig-5
+           kcoreaddons-5
+           kio-5
            kjs
-           kwidgetsaddons
+           kwidgetsaddons-5
            libcloudproviders
            libzip
            openssl
