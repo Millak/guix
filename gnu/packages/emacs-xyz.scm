@@ -31245,6 +31245,14 @@ the standard @code{Dockerfile} file format.")
               (for-each (lambda (f)
                           (install-file f "."))
                         (find-files "clients/" "\\.el$"))))
+          (add-after 'unpack 'enable-plists
+            (lambda _
+              (substitute* "lsp-protocol.el"
+               ;; This is faster, and it's officially recommended,
+               ;; and it's required by emacs-lsp-booster.
+               ;; See also:
+               ;; <https://emacs-lsp.github.io/lsp-mode/page/performance/>.
+               (("\\(getenv \"LSP_USE_PLISTS\"\\)") "t"))))
           (add-before 'move-clients-libraries 'fix-patch-el-files
             ;; /bin/ksh is only used on macOS, which we don't support, so we
             ;; don't want to add it as input.
