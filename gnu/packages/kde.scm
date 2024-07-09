@@ -1810,6 +1810,34 @@ Mobipocket e-books in Dolphin and other KDE apps.")
 picture metadata as EXIF/IPTC and XMP.")
     (license license:gpl2+)))
 
+(define-public kio-zeroconf
+  (package
+    (name "kio-zeroconf")
+    (version "24.05.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kio-zeroconf-" version ".tar.xz"))
+       (sha256
+        (base32 "058w37n7s8lbc8mjqjpqarhg8b2796x2yssrxnppib12dld9x4wb"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list kdbusaddons kdnssd ki18n kio))
+    (arguments (list #:qtbase qtbase
+                     #:configure-flags
+                     #~(list "-DQT_MAJOR_VERSION=6")))
+    (home-page "https://apps.kde.org/kio_zeroconf/")
+    (synopsis "DNS-SD Service Discovery Monitor")
+    (description "Adds an entry to Dolphin's Network page to show local
+services such as printers which advertise themselves with DNSSD (called Avahi
+or Bonjour by other projects).")
+    (license ;; GPL for programs, LGPL for libraries, FDL for documentation
+     (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
+
+
 (define-public kuserfeedback
   ;; FIXME: Try to reduce data collection and ensure transmission i disabled by default.
   ;; FIXME: Check https://www.reddit.com/r/kde/comments/f7ojg9 for insights
