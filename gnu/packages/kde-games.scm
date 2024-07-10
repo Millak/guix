@@ -177,17 +177,18 @@ This package is part of the KDE games module.")
 (define-public libkmahjongg
   (package
     (name "libkmahjongg")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/"
-                          version "/src/libkmahjongg-" version ".tar.xz"))
-      (sha256
-       (base32 "1a0c0q34h5yxwx76y6934ibn6hm1ip1hc2xvl11q1kaazq0alca3"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/"
+                           version "/src/libkmahjongg-" version ".tar.xz"))
+       (sha256
+        (base32 "1bjsrnkwkv4w94q5q4nhfy11jfrvxsl2v2kjv6dcm47z0k9y9v63"))))
     (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-tileset-dir
@@ -195,13 +196,13 @@ This package is part of the KDE games module.")
               ;; Add "$out/share" to XDG_DATA_DIRS so that the default tileset
               ;; is always available.
               (substitute* "src/kmahjonggtileset.cpp"
-                (("_inited = true;")
+                (("d->buildElementIdTable\\(\\);")
                  (format #f "QByteArray x = qgetenv(\"XDG_DATA_DIRS\");
 if (!x.isEmpty()) {
   QString datadirs = QString::fromLocal8Bit(x) + QLatin1String(\":~a\");
   qputenv(\"XDG_DATA_DIRS\", datadirs.toLocal8Bit());
 }
-_inited = true;"
+d->buildElementIdTable();"
                          (string-append
                           (assoc-ref outputs "out") "/share")))))))))
     (native-inputs
@@ -209,14 +210,12 @@ _inited = true;"
     (inputs
      (list kauth
            kcompletion
-           ;("kconfig" ,kconfig)
            kcodecs
            kconfigwidgets
            kcoreaddons
            ki18n
            kwidgetsaddons
-           qtbase-5
-           qtsvg-5))
+           qtsvg))
     (home-page "https://games.kde.org/")
     (synopsis "Shared library for kmahjongg and kshisen")
     (description "Shared library and common files for kmahjongg, kshisen and
