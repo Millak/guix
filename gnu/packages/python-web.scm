@@ -3606,13 +3606,13 @@ than Python’s urllib2 library.")
 (define-public python-requests-next
   (package
     (name "python-requests")
-    (version "2.31.0")
+    (version "2.32.3")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "requests" version))
              (sha256
               (base32
-               "1qfidaynsrci4wymrw3srz8v1zy7xxpcna8sxpm91mwqixsmlb4l"))))
+               "0q5742pnibwy74169kacin3dmqg9jzmzk7qab5aq5caffcbm8djm"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-certifi
