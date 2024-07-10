@@ -1949,6 +1949,7 @@ standard C++ library.")
     (native-inputs
      (list clang-6 llvm-6 libcxxabi-6))))
 
+;; WARNING: This package is a dependency of mesa.
 (define-public libclc
   (package
     (name "libclc")
