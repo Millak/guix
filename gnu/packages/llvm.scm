@@ -1953,7 +1953,7 @@ standard C++ library.")
 (define-public libclc
   (package
     (name "libclc")
-    (version (package-version llvm-15))
+    (version (package-version llvm-18))
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
@@ -1977,7 +1977,7 @@ standard C++ library.")
     (propagated-inputs
      (list spirv-llvm-translator spirv-tools))
     (native-inputs
-     (list clang-15 llvm-15 python))
+     (list clang-18 llvm-18 python))
     (home-page "https://libclc.llvm.org")
     (synopsis "Libraries for the OpenCL programming language")
     (description
