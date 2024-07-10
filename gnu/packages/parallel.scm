@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015-2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
@@ -554,7 +554,7 @@ obtain information about the CPU being used: supported instruction set,
 processor name, cache information, and topology information.")
       ;; On aarch64-linux, there is a bug reported upstream:
       ;; https://github.com/pytorch/cpuinfo/issues/14
-      (supported-systems '("armv7-linux" "i686-linux" "x86_64-linux"))
+      (supported-systems '("armhf-linux" "i686-linux" "x86_64-linux"))
       (license license:bsd-2))))
 
 (define-public clog
