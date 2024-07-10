@@ -559,6 +559,26 @@ string formatting and autoresizing, option and config file parsing, type
 checking casts and more.")
     (license license:lgpl2.1+)))
 
+(define-public libcsptr
+  (package
+   (name "libcsptr")
+   (version "2.0.3")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/Snaipe/libcsptr")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32 "056yg1irxi90ccgf646jxzngbsm946ckyzn8ykl92h6d2mnr141a"))))
+   (build-system gnu-build-system)
+   (native-inputs (list autoconf automake libtool))
+   (home-page "https://snai.pe/c/c-smart-pointers/")
+   (synopsis "Smart pointers for GNU C")
+   (description "This package is an attempt at bringing smart pointers
+like C++'s unique_ptr and shared_ptr to C through GCC's cleanup attribute.")
+   (license license:expat)))
+
 (define-public libwuya
   ;; This commit is the one before "wuy_pool.h" was removed from libwuya,
   ;; which libleak currently requires.
