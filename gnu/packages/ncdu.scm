@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,14 +36,14 @@
   ;; yet, so we'll keep both for just a little longer.
   (package
     (name "ncdu")
-    (version "1.19")
+    (version "1.20")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0zdidd4rhik5j0qdrdg1yh9094jlw496q07vqx90gphc30ck0dih"))))
+                "0wlmpq8gzcl1fim8jba3g0q0bbn4jcrbkns2n95kfwmy3a2bpqjz"))))
     (build-system gnu-build-system)
     (inputs (list ncurses))
     (synopsis "Ncurses-based disk usage analyzer")
