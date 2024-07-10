@@ -2670,7 +2670,7 @@ voice formats.")
            qtcharts
            qtdeclarative-5
            qtgamepad
-           qtlocation
+           qtlocation-5
            qtmultimedia-5
            qtquickcontrols2-5
            qtserialport-5
@@ -3260,7 +3260,7 @@ memory contents between them.")
                    (substitute* "lib/CMakeLists.txt"
                      (("(DESTINATION \")/etc/udev/" _ directive)
                       (string-append directive #$output "/lib/udev/"))))))))
-    (inputs (list libusb qtbase-5 qtlocation qtserialport-5 yaml-cpp))
+    (inputs (list libusb qtbase-5 qtlocation-5 qtserialport-5 yaml-cpp))
     (native-inputs (list qttools-5))
     (home-page "https://dm3mat.darc.de/qdmr/")
     (synopsis "GUI application and command line tool to program DMR radios")

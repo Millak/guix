@@ -203,7 +203,7 @@ coordinates as well as partial support for adjustments in global coordinate syst
                      (string-append "PREFIX="
                                     (assoc-ref outputs "out"))))))))
     (inputs
-     (list qtbase-5 qtlocation qtsvg-5))
+     (list qtbase-5 qtlocation-5 qtsvg-5))
     (native-inputs
      (list qttools-5))
     (home-page "https://www.gpxsee.org")

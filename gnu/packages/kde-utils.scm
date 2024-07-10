@@ -681,7 +681,7 @@ with support for QR scanning.")
                     qtgraphicaleffects
                     qtdeclarative-5
                     qtgamepad
-                    qtlocation))
+                    qtlocation-5))
       (propagated-inputs (list gstreamer))
       (home-page "https://apps.kde.org/kirogi/")
       (synopsis "Ground control application for drones")

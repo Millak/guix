@@ -415,7 +415,7 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
                   prison
                   qtdeclarative-5
                   qtgraphicaleffects
-                  qtlocation
+                  qtlocation-5
                   qtmultimedia-5
                   qtquickcontrols2-5
                   qqc2-desktop-style

@@ -1643,7 +1643,7 @@ Python, PHP, and Perl.")
            protobuf
            qtbase-5
            qtdeclarative-5
-           qtlocation
+           qtlocation-5
            qtserialport
            qtsvg-5
            qtwebchannel-5

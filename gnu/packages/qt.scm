@@ -2275,7 +2275,7 @@ native APIs where it makes sense.")))
 Server Protocol (LSP) for Qt.")
     (license (package-license qtbase))))
 
-(define-public qtlocation
+(define-public qtlocation-5
   (package
     (inherit qtsvg-5)
     (name "qtlocation")
@@ -3962,7 +3962,7 @@ module provides support functions to the automatically generated code.")
        ("qtbase" ,qtbase-5)
        ("qtconnectivity" ,qtconnectivity)
        ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtlocation" ,qtlocation)
+       ("qtlocation" ,qtlocation-5)
        ("qtmultimedia-5" ,qtmultimedia-5)
        ("qtsensors" ,qtsensors-5)
        ("qtserialport" ,qtserialport-5)
@@ -4822,7 +4822,7 @@ color-related widgets.")
      (list qtbase-5
            qtdatavis3d
            qtdeclarative-5
-           qtlocation
+           qtlocation-5
            qtmultimedia-5
            qtquickcontrols-5
            qtquickcontrols2-5

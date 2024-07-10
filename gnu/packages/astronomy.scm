@@ -1608,7 +1608,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            openssl
            qtbase-5
            qtcharts
-           qtlocation
+           qtlocation-5
            qtmultimedia-5
            qtpositioning
            qtscript

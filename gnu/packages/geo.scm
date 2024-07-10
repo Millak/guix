@@ -2515,7 +2515,7 @@ data.")
            proj
            qtbase-5
            qtdeclarative-5
-           qtlocation
+           qtlocation-5
            qtwebchannel-5
            qtwebengine-5
            quazip
@@ -2751,7 +2751,7 @@ track your position right from your laptop.")
            proj
            qtbase-5
            qtimageformats-5
-           qtlocation
+           qtlocation-5
            qtsensors-5
            zlib))
     (native-inputs
@@ -3213,7 +3213,7 @@ SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
            qtbase-5
            qtdeclarative-5
            qtkeychain
-           qtlocation
+           qtlocation-5
            qtmultimedia-5
            qtserialport-5
            qtsvg-5
