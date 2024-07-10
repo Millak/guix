@@ -301,44 +301,45 @@ This package is part of the KDE games module.")
 (define-public kajongg
   (package
     (name "kajongg")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/"
-                          version "/src/kajongg-" version ".tar.xz"))
-      (sha256
-       (base32 "16v87x0qikfk9jpp8dfxnb7mnjzzi0qlkp5lbn2xypkfhqaz99fi"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/"
+                           version "/src/kajongg-" version ".tar.xz"))
+       (sha256
+        (base32 "0xwnin738zj6kh607asmwdq7n6jva9wk240c9rc53ja98nw4crpv"))))
     (build-system qt-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/mjresource.py"
-               (("'share', 'kmahjongglib'" all)
-                (string-append "'" (assoc-ref inputs "libkmahjongg")
-                               "/share', 'kmahjongglib'")))
-             (substitute* "src/sound.py"
-               (("oggBinary = 'ogg123'")
-                (format #f "oggBinary = '~a'"
-                        (search-input-file inputs "bin/ogg123"))))
-             (substitute* "src/common.py"
-               (("interpreterName = 'python3'")
-                (format #f "interpreterName = '~a'"
-                        (search-input-file inputs "bin/python3"))))))
-         (add-after 'qt-wrap 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (program)
-                           (wrap-program program
-                             `("GUIX_PYTHONPATH" ":" prefix
-                               (,(getenv "GUIX_PYTHONPATH")))))
-                         (list (string-append out "/bin/kajongg")
-                               (string-append out "/bin/kajonggserver")))))))))
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/mjresource.py"
+                (("'share', 'kmahjongglib'" all)
+                 (string-append "'" (assoc-ref inputs "libkmahjongg")
+                                "/share', 'kmahjongglib'")))
+              (substitute* "src/sound.py"
+                (("oggBinary = 'ogg123'")
+                 (format #f "oggBinary = '~a'"
+                         (search-input-file inputs "bin/ogg123"))))
+              (substitute* "src/common.py"
+                (("interpreterName = 'python3'")
+                 (format #f "interpreterName = '~a'"
+                         (search-input-file inputs "bin/python3"))))))
+          (add-after 'qt-wrap 'wrap
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (for-each (lambda (program)
+                            (wrap-program program
+                              `("GUIX_PYTHONPATH" ":" prefix
+                                (,(getenv "GUIX_PYTHONPATH")))))
+                          (list (string-append out "/bin/kajongg")
+                                (string-append out "/bin/kajonggserver")))))))))
     (native-inputs
      (list extra-cmake-modules
-           ;("perl" ,perl)
            kdoctools))
     (inputs
      (list bash-minimal
@@ -352,8 +353,7 @@ This package is part of the KDE games module.")
            python-twisted
            python-qtpy
            python-zope-interface
-           qtbase-5
-           qtsvg-5
+           qtsvg
            vorbis-tools))
     (home-page "https://apps.kde.org/kajongg/")
     (synopsis "Classical Mah Jongg game for 4 players")
