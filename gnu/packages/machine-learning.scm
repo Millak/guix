@@ -4217,8 +4217,8 @@ instead it provides low-level performance primitives for accelerating
 high-level machine learning frameworks, such as TensorFlow Lite,
 TensorFlow.js, PyTorch, and MediaPipe.")
       (supported-systems
-       '("armv7-linux" "aarch64-linux" "riscv64-linux"
-         "i686-linux" "x86_64-linux" "i686-mingw" "x86_64-mingw"))
+       '("armhf-linux" "aarch64-linux" "riscv64-linux"
+         "i686-linux" "x86_64-linux"))
       (license license:bsd-3))))
 
 ;; Warning: This package requires AVX2 or AVX-512 instructions.
