@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -4098,7 +4098,7 @@ and Darknet.")
 inference.  It contains the implementation of common neural network operators
 on quantized 8-bit tensors.")
       (supported-systems
-       '("armv7-linux" "aarch64-linux" "i686-linux" "x86_64-linux"))
+       '("armhf-linux" "aarch64-linux" "i686-linux" "x86_64-linux"))
       (license license:bsd-3))))
 
 (define-public xnnpack
