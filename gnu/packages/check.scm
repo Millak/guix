@@ -2755,6 +2755,7 @@ seamlessly into your existing Python unit testing work flow.")
 programs, something like CSmith, a random generator of C programs.")
     (license license:mpl2.0)))
 
+;; WARNING: This package is a dependency of mesa.
 (define-public python-lit
   (package
     (name "python-lit")

@@ -321,19 +321,24 @@ also known as DXTn or DXTC) for Mesa.")
            libxxf86vm
            xorgproto))
     (inputs
-     (list elfutils                  ;libelf required for r600 when using llvm
-           expat
-           (force libva-without-mesa)
-           libxml2
-           libxrandr
-           libxvmc
-           llvm-for-mesa
-           vulkan-loader
-           wayland
-           wayland-protocols
-           `(,zstd "lib")))
+     (append
+       (if (target-aarch64?)
+           (list clang-18
+                 llvm-18)
+           (list llvm-for-mesa))
+       (list elfutils                   ;libelf required for r600 when using llvm
+             expat
+             (force libva-without-mesa)
+             libxml2
+             libxrandr
+             libxvmc
+             vulkan-loader
+             wayland
+             wayland-protocols
+             `(,zstd "lib"))))
     (native-inputs
-     (cons* bison
+     (append
+      (list bison
             flex
             gettext-minimal
             glslang
@@ -341,13 +346,16 @@ also known as DXTn or DXTC) for Mesa.")
             python-libxml2              ;for OpenGL ES 1.1 and 2.0 support
             python-mako
             python-wrapper
-            (@ (gnu packages base) which)
-            (if (%current-target-system)
-              (list cmake-minimal-cross
-                    pkg-config-for-build
-                    wayland
-                    wayland-protocols)
-              '())))
+            (@ (gnu packages base) which))
+      (if (target-aarch64?)
+          (list libclc)
+          '())
+      (if (%current-target-system)
+          (list cmake-minimal-cross
+                pkg-config-for-build
+                wayland
+                wayland-protocols)
+          '())))
     (outputs '("out" "bin"))
     (arguments
      (list
@@ -465,6 +473,10 @@ svga,swrast,virgl,zink")))
                   ;; https://gitlab.freedesktop.org/mesa/mesa/-/issues/4091).
                   `((substitute* "src/util/meson.build"
                       ((".*'tests/u_debug_stack_test.cpp',.*") ""))))
+                 ("aarch64-linux"
+                  ;; Disable some of the llvmpipe tests.
+                  `((substitute* "src/gallium/drivers/llvmpipe/meson.build"
+                      (("'lp_test_format', ") ""))))
                  ("armhf-linux"
                   ;; Disable some of the llvmpipe tests.
                   `((substitute* "src/gallium/drivers/llvmpipe/meson.build"
@@ -587,8 +599,10 @@ from software emulation to complete hardware acceleration for modern GPUs.")
      (modify-inputs (package-inputs mesa)
        (prepend libclc)))
     (native-inputs
-     (modify-inputs (package-native-inputs mesa)
-       (prepend clang-15)))))
+     (if (target-aarch64?)
+         (package-native-inputs mesa)
+         (modify-inputs (package-native-inputs mesa)
+           (prepend clang-15))))))
 
 (define-public mesa-opencl-icd
   (package/inherit mesa-opencl

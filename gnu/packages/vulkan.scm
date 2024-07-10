@@ -154,6 +154,7 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
 SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
     (license license:asl2.0)))
 
+;; WARNING: This package is a dependency of mesa.
 (define-public spirv-llvm-translator
   (package
     (name "spirv-llvm-translator")
