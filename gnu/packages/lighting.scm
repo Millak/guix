@@ -39,7 +39,7 @@
 (define-public ola
   (package
     (name "ola")
-    (version "0.10.8")
+    (version "0.10.9")
     (source
      (origin
        (method git-fetch)
@@ -47,7 +47,7 @@
              (url "https://github.com/OpenLightingProject/ola")
              (commit version)))
        (sha256
-        (base32 "17dwmjdw87hv314gv5b1rmh5jglz8a0rzw7wj26xn74xw2jvxa6l"))
+        (base32 "0mbf5dc309pqg9ckqgk2kh9p3mf9vqsjkxnwjzqw7yzzf17ij3zk"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
