@@ -2619,8 +2619,18 @@ also contains functionality to support data models and executable content.")
                    (add-after 'install 'delete-installed-tests
                      (lambda _
                        (delete-file-recursively
-                        (string-append #$output "/tests")))))))
-    (inputs (list perl qtbase))
+                        (string-append #$output "/tests"))))
+                   (delete 'check)               ;move after the install phase
+                   (add-after 'install 'check
+                     (assoc-ref %standard-phases 'check))
+                   (add-before 'check 'check-setup
+                     (lambda _
+                       (setenv "QML_IMPORT_PATH"
+                               (string-append #$output "/lib/qt6/qml:"
+                                              (getenv "QML_IMPORT_PATH")))
+                       ;; Make Qt render "offscreen", required for tests.
+                       (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (inputs (list perl qtbase qtdeclarative qtserialport libxkbcommon))
     (home-page (package-home-page qtbase))
     (synopsis "QML and C++ positioning information API")
     (description "The Qt Positioning API provides positioning information via
