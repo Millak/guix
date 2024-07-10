@@ -45,6 +45,7 @@
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages search)
   #:use-module (gnu packages sqlite)
@@ -379,18 +380,29 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
 (define-public itinerary
   (package
     (name "itinerary")
-    (version "23.04.3")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "132x68wc4pallxgkvridfsimfq5m2g47fj9lcgz1kq4gdsidzf6i"))))
+                "1p05v9r1ipi465nmka8n2gs7npc6wdgfxzj7523plnja9kfa8bmb"))))
     (build-system qt-build-system)
+
     (arguments
-     `(#:tests? #f)) ;Fails 20/27
-    (native-inputs (list extra-cmake-modules))
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'stop-require-qmlmodule
+                 (lambda _
+                   ;; HACK: ecm_find_qmlmodule cann't find qmlmodule on other
+                   ;; prefix, so we remove it require.
+                   (substitute* "CMakeLists.txt"
+                     (("24.02 REQUIRED")
+                      "24.02")))))
+           #:tests? #f)) ;Fails 20/27
+    (native-inputs (list extra-cmake-modules python-minimal))
     (inputs (list karchive
                   kdbusaddons
                   ki18n
@@ -413,11 +425,10 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
                   kunitconversion
                   kwindowsystem
                   prison
-                  qtdeclarative-5
-                  qtgraphicaleffects
-                  qtlocation-5
-                  qtmultimedia-5
-                  qtquickcontrols2-5
+                  qtdeclarative
+                  qtpositioning
+                  qtlocation
+                  qtmultimedia
                   qqc2-desktop-style
                   shared-mime-info
                   solid
