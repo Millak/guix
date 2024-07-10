@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2021, 2023 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2023-2024 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,24 +99,24 @@
 (define-public visidata
   (package
     (name "visidata")
-    (version "2.8")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "visidata" version))
        (sha256
         (base32
-         "1jfhrk0xvzzqfzs0khbig2dc94718qki8zys1f1a9553vjncvmi6"))))
+         "0nn0fwm0172gn5ffil310k7hmxqrrc1dn6xfz7jxsj0vikq8vhrq"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "pytest"))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests? (invoke "pytest")))))))
     (inputs
      (list python-dateutil
+           python-importlib-metadata
            python-requests
            python-lxml
            python-openpyxl
