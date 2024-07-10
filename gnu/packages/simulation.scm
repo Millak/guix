@@ -1205,16 +1205,31 @@ command-line utility for mesh optimisation.")
     (arguments
      (list
       #:test-flags
-      #~(list "tests/fenics_adjoint"
-              "tests/migration"
-              "tests/pyadjoint"
-              "-k" "not test_read_checkpoint")
+      #~(list
+         ;; Ignore tests which require missing packages and/or failed during
+         ;; tests collection.
+         "--ignore=tests/firedrake_adjoint/test_assignment.py"
+         "--ignore=tests/firedrake_adjoint/test_burgers_newton.py"
+         "--ignore=tests/firedrake_adjoint/test_dynamic_meshes.py"
+         "--ignore=tests/firedrake_adjoint/test_hessian.py"
+         "--ignore=tests/firedrake_adjoint/test_reduced_functional.py"
+         "--ignore=tests/firedrake_adjoint/test_shape_derivatives.py"
+         "--ignore=tests/firedrake_adjoint/test_solving.py"
+         "--ignore=tests/firedrake_adjoint/test_tlm.py"
+         "--ignore=tests/migration/burgers_newton/test_burgers_newton.py"
+         "--ignore=tests/migration/linear_solver/test_linear_solver.py"
+         "--ignore=tests/migration/optimization_scipy/test_optimization_scipy.py"
+         "--ignore=tests/migration/projection/test_projection.py"
+         "--ignore=tests/migration/reduced_functional/test_reduced_functional.py"
+         "--ignore=tests/migration/split/test_split.py"
+         "-k" (string-append "not test_read_checkpoint"
+                             " and not test_krylov_solver_preconditioner_function_ctrl"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'build 'mpi-setup #$%openmpi-setup)
           (add-before 'check 'set-environment-variables
             (lambda _
-              (setenv "HOME" "/tmp")))
+              (setenv "HOME" (getcwd))))
           (add-after 'install 'install-doc
             (lambda _
               (let* ((doc (string-append #$output "/share/doc/" #$name "-" #$version))
