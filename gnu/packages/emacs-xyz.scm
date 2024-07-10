@@ -17850,7 +17850,7 @@ you to deal with multiple log levels.")
 (define-public emacs-denote
   (package
     (name "emacs-denote")
-    (version "2.3.5")
+    (version "3.0.6")
     (source
      (origin
        (method git-fetch)
@@ -17859,7 +17859,7 @@ you to deal with multiple log levels.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11rdmwdjaqzzrhnyidk02z2gd98qih8pnrc1vvbxvai50w8bdg2m"))))
+        (base32 "0m5cdzk1mjcg5wrmgrgk165pwwgq3wjfcxzqs0xhrz6l033rsfwq"))))
     (build-system emacs-build-system)
     (native-inputs (list texinfo))
     (home-page "https://protesilaos.com/emacs/denote/")
