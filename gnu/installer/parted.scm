@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2020, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
@@ -1187,7 +1187,13 @@ list and return the updated list."
 
 (define (create-ext4-file-system partition)
   "Create an ext4 file-system for PARTITION file-name."
-   ((run-command-in-installer) "mkfs.ext4" "-F" partition))
+  ;; Enable the 'large_dir' feature so users can have a store of several TiBs.
+  ;; Failing to do that, the directory index (enabled by 'dir_index') can fill
+  ;; up and adding new files would fail with ENOSPC despite there being plenty
+  ;; of free space and inodes:
+  ;; <https://blog.merovius.de/posts/2013-10-20-ext4-mysterious-no-space-left-on/>.
+  ((run-command-in-installer) "mkfs.ext4" "-F" partition
+   "-O" "large_dir"))
 
 (define (create-fat16-file-system partition)
   "Create a fat16 file-system for PARTITION file-name."
