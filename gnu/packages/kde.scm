@@ -645,27 +645,29 @@ the functionality of the KDE resource and network access abstractions.")
 (define-public kio-fuse
   (package
     (name "kio-fuse")
-    (version "5.0.1")
+    (version "5.1.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://kde/stable/" name "/" version "/"
-                                  name "-" version ".tar.xz"))
+              (uri (string-append "mirror://kde/stable/kio-fuse/kio-fuse-"
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "1pb62h45c06dq3rml91xbf8j5y2c1l8z8j8lycchxrlgys5rlrv6"))))
+                "0jz9952dd20sw0c25pyn2l86nmc1s5l42gxk4js1jnkx4a0la43x"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (setenv "HOME" (getcwd))
-                              (setenv "XDG_RUNTIME_DIR" (getcwd))
-                              (setenv "QT_QPA_PLATFORM" "offscreen")
-                              (invoke "dbus-launch" "ctest" "-E"
-                               "(fileopstest-cache|fileopstest-filejob)")))))))
+     (list
+      #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (setenv "HOME" (getcwd))
+                         (setenv "XDG_RUNTIME_DIR" (getcwd))
+                         (setenv "QT_QPA_PLATFORM" "offscreen")
+                         (invoke "dbus-launch" "ctest" "-E"
+                                 "(fileopstest-cache|fileopstest-filejob)")))))))
     (native-inputs (list dbus extra-cmake-modules pkg-config))
-    (inputs (list fuse kio kcoreaddons qtbase-5))
+    (inputs (list fuse kio kcoreaddons qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "FUSE Interface for KIO")
     (description "This package provides FUSE Interface for KIO.")
