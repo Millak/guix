@@ -1140,7 +1140,7 @@ other special events for a geographical region.")
                 (setenv "HOME"
                         (getcwd))
                 (invoke "ctest" "-E"
-                        "(kcountrytest|kcountrysubdivisiontest)")))))))
+                        "(kcatalogtest|kcountrytest|kcountrysubdivisiontest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE Gettext-based UI text internationalization")
     (description "KI18n provides functionality for internationalizing user
