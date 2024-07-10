@@ -264,19 +264,17 @@ This package is part of the KDE games module.")
 (define-public kshisen
   (package
     (name "kshisen")
-    (version "23.04.3")
+    (version "24.05.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kde/stable/release-service/"
-                          version "/src/kshisen-" version ".tar.xz"))
-      (sha256
-       (base32 "0bfk6nbwl35sfqxhf7cdv3n61ybi5962i2lvg7m1vlpp21q0diz8"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/"
+                           version "/src/kshisen-" version ".tar.xz"))
+       (sha256
+        (base32 "1bx28jlvmwfh5rrvwd2kiq1c5r83s9lr49kl3x1rm5w7w5hlxyf1"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules
-           ;("perl" ,perl)
-           ;("pkg-config" ,pkg-config)
            kdoctools))
     (inputs
      (list kauth
@@ -289,8 +287,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            libkmahjongg
-           qtbase-5
-           qtdeclarative-5))
+           qtdeclarative))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/kshisen/")
     (synopsis "Shisen-Sho solitaire game")
     (description "KShisen is a solitaire-like game played using the standard
