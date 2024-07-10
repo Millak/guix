@@ -2300,6 +2300,32 @@ Server Protocol (LSP) for Qt.")
     (description "The Qt Location module provides an interface for location,
 positioning and geolocation plugins.")))
 
+(define-public qtlocation
+  (package
+    (inherit qtsvg)
+    (name "qtlocation")
+    (version "6.6.3")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "1l81z3zq1zg015l6qxx4yzssdspw689m9bpzxp23yshaych2kd6p"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments qtsvg)
+       ((#:tests? _ #f) #f)             ; TODO: Enable the tests
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'pre-check
+              (lambda _
+                (setenv "HOME" "/tmp")))))))
+    (native-inputs (list perl))
+    (inputs (list icu4c openssl qtbase zlib qtdeclarative qtpositioning
+                  libxkbcommon))
+    (synopsis "Qt Location and Positioning modules")
+    (description "The Qt Location module provides an interface for location,
+positioning and geolocation plugins.")))
+
 (define-public qtlottie
   (package
     (name "qtlottie")
