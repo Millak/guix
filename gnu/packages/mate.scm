@@ -415,14 +415,14 @@ configuration program to choose applications starting on login.")
 (define-public libmatemixer
   (package
     (name "libmatemixer")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "libmatemixer-" version ".tar.xz"))
        (sha256
-        (base32 "1wcz4ppg696m31f5x7rkyvxxdriik2vprsr83b4wbs97bdhcr6ws"))))
+        (base32 "1ix0f3c40b535wsvbc9d4q7c6inf5d9ync4m7j76hq3z74ibjwsx"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool gobject-introspection))
