@@ -33791,6 +33791,32 @@ instructions up to AVX-512 and SHA (including 3dnow!+, XOP, FMA3, FMA4, TBM
 and BMI2).")
       (license license:bsd-2))))
 
+(define-public python-cle
+  (package
+    (name "python-cle")
+    ;; Must be the same version as python-angr.
+    (version "9.2.46")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cle" version))
+       (sha256
+        (base32 "0mswv9gd2p2ws7zfsshqv5ybbj27wkdwakdcknq4vsrx9ry9k4yc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f))
+    (propagated-inputs (list python-pefile python-pyelftools python-pyvex
+                             python-sortedcontainers))
+    (native-inputs (list python-cffi))
+    (home-page "https://github.com/angr/cle")
+    (synopsis "Python loader for binaries and their associated libraries")
+    (description
+     "CLE loads binaries and their associated libraries, resolves
+imports and provides an abstraction of process memory the same way as if
+it was loader by the operating system's loader.")
+    (license license:bsd-2)))
+
 (define-public python-pyvex
   (package
     (name "python-pyvex")
@@ -33813,7 +33839,7 @@ and BMI2).")
                          (with-directory-excursion "tests"
                            (invoke "python" "-m" "unittest")))))
 
-                   (add-before 'build 'set-cc-native
+                   (add-before 'build 'set-cc
                      (lambda _
                        (setenv "CC" #$(cc-for-target))
                        (setenv "CC_NATIVE" "gcc"))))))
