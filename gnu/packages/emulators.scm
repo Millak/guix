@@ -67,6 +67,7 @@
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages digest)
+  #:use-module (gnu packages engineering)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fltk)
@@ -2643,6 +2644,33 @@ assembler framework.  It supports a wide-range of different architectures
 and offers an intuitive architecture-neutral API for interacting with
 assembly for these architectures.")
     (license license:gpl2)))
+
+(define-public python-archinfo
+  (package
+    (name "python-archinfo")
+    ;; Must be the same version as python-angr.
+    (version "9.2.46")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "archinfo" version))
+       (sha256
+        (base32 "037xfq3wcf8ngayxz9623l4646m780v2102mfbygpzbkkjha1966"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-capstone python-keystone-engine))
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (with-directory-excursion "tests"
+                          (invoke "python" "-m" "unittest"))))))))
+    (home-page "https://github.com/angr/archinfo")
+    (synopsis "Extract architecture-specific information from binaries")
+    (description
+     "Collection of classes that contain architecture-specific information
+information.  Useful for cross-architecture tools (such as @code{python-pyvex}).")
+    (license license:bsd-2)))
 
 (define-public emu8051
   (let ((commit "5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8")
