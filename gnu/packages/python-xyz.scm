@@ -33791,6 +33791,34 @@ instructions up to AVX-512 and SHA (including 3dnow!+, XOP, FMA3, FMA4, TBM
 and BMI2).")
       (license license:bsd-2))))
 
+(define-public python-ailment
+  (package
+    (name "python-ailment")
+    ;; Must be the same version as python-angr.
+    (version "9.2.46")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ailment" version))
+       (sha256
+        (base32 "073fcssbjis1ckwv2w0dcz2dfl6715bj4d4qdhspajj911mvng2f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    ;; Many tests are skipped due to cyclic dependencies.
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (with-directory-excursion "tests"
+                          (invoke "python" "-m" "unittest"))))))))
+    (home-page "https://github.com/angr/ailment")
+    (synopsis "The angr intermediate language")
+    (description
+     "This Python module implements an @acronym{IL, Intermediate Language},
+also known as @acronym{IR, Intermediate Representation}, used by the angr
+binary analysis platform.")
+    (license license:bsd-2)))
+
 (define-public python-cle
   (package
     (name "python-cle")
