@@ -26317,8 +26317,9 @@ source bytes using the UTF-8 encoding and then rewrites Python 3.6 style
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "pytest"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/python/typed_ast")
     (synopsis "Fork of Python @code{ast} modules with type comment support")
