@@ -468,14 +468,14 @@ MATE desktop environment.")
 (define-public mate-menus
   (package
     (name "mate-menus")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "mate-menus-" version ".tar.xz"))
        (sha256
-        (base32 "130xvpszl1p3407b8annbvj8p0sa9jazxya02z9cfl5nwnd5k3a5"))))
+        (base32 "13ahf1cy9mzasswhnkx8qqmj5ii54338z0k994fss2kggmfcfh6g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
