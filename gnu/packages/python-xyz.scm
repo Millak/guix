@@ -33790,6 +33790,29 @@ instructions up to AVX-512 and SHA (including 3dnow!+, XOP, FMA3, FMA4, TBM
 and BMI2).")
       (license license:bsd-2))))
 
+(define-public python-mulpyplexer
+  (package
+    (name "python-mulpyplexer")
+    (version "0.09")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mulpyplexer" version))
+       (sha256
+        (base32 "0c5xzci1djy1yi9hxxh8g67l6ms8r7ad7ja20pv8hfbdysdrwkhl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "python" "mulpyplexer.py")))))))
+    (home-page "https://github.com/zardus/mulpyplexer/")
+    (synopsis "Multiplexes interactions with lists of Python objects")
+    (description "This module provides utilities for multiplexing
+interactions with lists of Python objects.")
+    (license license:bsd-2)))
+
 (define-public python-itanium-demangler
   (package
     (name "python-itanium-demangler")
