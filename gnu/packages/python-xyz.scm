@@ -200,6 +200,7 @@
   #:use-module (gnu packages docker)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages emulators)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fonts)
@@ -33789,6 +33790,42 @@ It currently provides descriptions for most user-mode x86, x86_64, and k1om
 instructions up to AVX-512 and SHA (including 3dnow!+, XOP, FMA3, FMA4, TBM
 and BMI2).")
       (license license:bsd-2))))
+
+(define-public python-pyvex
+  (package
+    (name "python-pyvex")
+    ;; Must be the same version as python-angr.
+    (version "9.2.46")
+    (source
+     (origin
+       (method url-fetch)
+       (patches (search-patches "python-pyvex-remove-angr-dependency.patch"))
+       (uri (pypi-uri "pyvex" version))
+       (sha256
+        (base32 "1v64rn7gxy6fg065bgsy38z6r494k5ri5r6sn4g08hjj32ihx1ka"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (with-directory-excursion "tests"
+                           (invoke "python" "-m" "unittest")))))
+
+                   (add-before 'build 'set-cc-native
+                     (lambda _
+                       (setenv "CC" #$(cc-for-target))
+                       (setenv "CC_NATIVE" "gcc"))))))
+    (propagated-inputs (list python-archinfo python-bitstring python-cffi))
+    (home-page "https://github.com/angr/pyvex")
+    (synopsis "Python interface to libVEX and VEX IR")
+    (description
+     "This package provides a Python interface the libVEX and VEX IR.
+VEX is the intermediate representation (also known as intermediate
+language) used by the Valgrind analysis tool.  As such, VEX is designed
+to enable all kinds of binary analysis tasks.")
+    (license license:bsd-2)))
 
 (define-public python-claripy
   (package
