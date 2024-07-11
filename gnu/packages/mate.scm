@@ -653,6 +653,7 @@ mate-volume-control, a MATE volume control application and applet.")
      (list pkg-config intltool itstool xtrans gobject-introspection))
     (inputs
      (list dconf
+           dconf-editor
            cairo
            dbus-glib
            gtk-layer-shell
@@ -1576,6 +1577,7 @@ menu specification.")
                    caja
                    dbus
                    dconf
+                   dconf-editor
                    engrampa
                    eom
                    font-abattis-cantarell
