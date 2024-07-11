@@ -1,0 +1,258 @@
+Backport of an upstream patch which fixes a test failure with our
+packaged version of the Z3 SMT solver.
+
+Taken from: https://github.com/pysmt/pysmt/commit/f522e8cd8f3e75ff85f5eae29b427e18a6701859
+
+diff --git a/pysmt/formula.py b/pysmt/formula.py
+index ea4b46c..6cb9cbf 100644
+--- a/pysmt/formula.py
++++ b/pysmt/formula.py
+@@ -252,11 +252,7 @@ class FormulaManager(object):
+ 
+         if base.is_constant():
+             val = base.constant_value() ** exponent.constant_value()
+-            if base.is_constant(types.REAL):
+-                return self.Real(val)
+-            else:
+-                assert base.is_constant(types.INT)
+-                return self.Int(val)
++            return self.Real(val)
+         return self.create_node(node_type=op.POW, args=(base, exponent))
+ 
+     def Div(self, left, right):
+diff --git a/pysmt/logics.py b/pysmt/logics.py
+index ef88dd6..9dc45b1 100644
+--- a/pysmt/logics.py
++++ b/pysmt/logics.py
+@@ -495,6 +495,12 @@ QF_NRA = Logic(name="QF_NRA",
+                real_arithmetic=True,
+                linear=False)
+ 
++QF_NIRA = Logic(name="QF_NIRA",
++                description="""Quantifier-free integer and real arithmetic.""",
++                quantifier_free=True,
++                integer_arithmetic=True,
++                real_arithmetic=True,
++                linear=False)
+ 
+ QF_RDL = Logic(name="QF_RDL",
+                description=\
+@@ -619,41 +625,41 @@ QF_AUFBVLIRA = Logic(name="QF_AUFBVLIRA",
+ AUTO = Logic(name="Auto",
+              description="Special logic used to indicate that the logic to be used depends on the formula.")
+ 
+-SMTLIB2_LOGICS = frozenset([ AUFLIA,
+-                             AUFLIRA,
+-                             AUFNIRA,
+-                             ALIA,
+-                             LRA,
+-                             LIA,
+-                             NIA,
+-                             NRA,
+-                             UFLRA,
+-                             UFNIA,
+-                             UFLIRA,
+-                             QF_ABV,
+-                             QF_AUFBV,
+-                             QF_AUFLIA,
+-                             QF_ALIA,
+-                             QF_AX,
+-                             QF_BV,
+-                             QF_IDL,
+-                             QF_LIA,
+-                             QF_LRA,
+-                             QF_NIA,
+-                             QF_NRA,
+-                             QF_RDL,
+-                             QF_UF,
+-                             QF_UFBV ,
+-                             QF_UFIDL,
+-                             QF_UFLIA,
+-                             QF_UFLRA,
+-                             QF_UFNRA,
+-                             QF_UFNIA,
+-                             QF_UFLIRA,
+-                             QF_SLIA
+-                         ])
+-
+-LOGICS = SMTLIB2_LOGICS | frozenset([ QF_BOOL, BOOL, QF_AUFBVLIRA])
++SMTLIB2_LOGICS = frozenset([AUFLIA,
++                            AUFLIRA,
++                            AUFNIRA,
++                            ALIA,
++                            LRA,
++                            LIA,
++                            NIA,
++                            NRA,
++                            UFLRA,
++                            UFNIA,
++                            UFLIRA,
++                            QF_ABV,
++                            QF_AUFBV,
++                            QF_AUFLIA,
++                            QF_ALIA,
++                            QF_AX,
++                            QF_BV,
++                            QF_IDL,
++                            QF_LIA,
++                            QF_LRA,
++                            QF_NIA,
++                            QF_NRA,
++                            QF_RDL,
++                            QF_UF,
++                            QF_UFBV,
++                            QF_UFIDL,
++                            QF_UFLIA,
++                            QF_UFLRA,
++                            QF_UFNRA,
++                            QF_UFNIA,
++                            QF_UFLIRA,
++                            QF_SLIA
++                            ])
++
++LOGICS = SMTLIB2_LOGICS | frozenset([QF_BOOL, BOOL, QF_AUFBVLIRA, QF_NIRA])
+ 
+ QF_LOGICS = frozenset(_l for _l in LOGICS if _l.quantifier_free)
+ 
+@@ -668,8 +674,8 @@ PYSMT_LOGICS = frozenset([QF_BOOL, QF_IDL, QF_LIA, QF_LRA, QF_RDL, QF_UF, QF_UFI
+                           QF_BV, QF_UFBV,
+                           QF_ABV, QF_AUFBV, QF_AUFLIA, QF_ALIA, QF_AX,
+                           QF_AUFBVLIRA,
+-                          QF_NRA, QF_NIA, UFBV, BV,
+-                      ])
++                          QF_NRA, QF_NIA, QF_NIRA, UFBV, BV,
++                          ])
+ 
+ # PySMT Logics includes additional features:
+ #  - constant arrays: QF_AUFBV  becomes QF_AUFBV*
+@@ -697,7 +703,6 @@ for l in PYSMT_LOGICS:
+         ext_logics.add(nl)
+ 
+ 
+-
+ LOGICS = LOGICS | frozenset(ext_logics)
+ PYSMT_LOGICS = PYSMT_LOGICS | frozenset(ext_logics)
+ 
+diff --git a/pysmt/solvers/z3.py b/pysmt/solvers/z3.py
+index 3fb42b9..210b771 100644
+--- a/pysmt/solvers/z3.py
++++ b/pysmt/solvers/z3.py
+@@ -595,6 +595,8 @@ class Z3Converter(Converter, DagWalker):
+                                              None, None,
+                                              0, None,
+                                              expr.ast)
++        print("Z3: SMTLIB")
++        print(s)
+         stream_in = StringIO(s)
+         r = parser.get_script(stream_in).get_last_formula(self.mgr)
+         key = (askey(expr), None)
+diff --git a/pysmt/test/examples.py b/pysmt/test/examples.py
+index 73455ee..b653185 100644
+--- a/pysmt/test/examples.py
++++ b/pysmt/test/examples.py
+@@ -898,12 +898,12 @@ def get_full_example_formulae(environment=None):
+                     logic=pysmt.logics.QF_NRA
+                 ),
+ 
+-            Example(hr="((p ^ 2) = 0)",
+-                    expr=Equals(Pow(p, Int(2)), Int(0)),
++            Example(hr="((p ^ 2) = 0.0)",
++                    expr=Equals(Pow(p, Int(2)), Real(0)),
+                     is_valid=False,
+                     is_sat=True,
+-                    logic=pysmt.logics.QF_NIA
+-                ),
++                    logic=pysmt.logics.QF_NIRA
++                    ),
+ 
+             Example(hr="((r ^ 2.0) = 0.0)",
+                     expr=Equals(Pow(r, Real(2)), Real(0)),
+diff --git a/pysmt/test/test_back.py b/pysmt/test/test_back.py
+index bceb45b..7a0ad63 100644
+--- a/pysmt/test/test_back.py
++++ b/pysmt/test/test_back.py
+@@ -55,10 +55,10 @@ class TestBasic(TestCase):
+         res = msat.converter.back(term)
+         self.assertFalse(f == res)
+ 
+-    def do_back(self, solver_name, z3_string_buffer=False):
++    def do_back(self, solver_name, via_smtlib=False):
+         for formula, _, _, logic in get_example_formulae():
+             if logic.quantifier_free:
+-                if logic.theory.custom_type and z3_string_buffer:
++                if logic.theory.custom_type and via_smtlib:
+                     # Printing of declare-sort from Z3 is not conformant
+                     # with the SMT-LIB. We might consider extending our
+                     # parser.
+@@ -67,7 +67,7 @@ class TestBasic(TestCase):
+                     s = Solver(name=solver_name, logic=logic)
+                     term = s.converter.convert(formula)
+                     if solver_name == "z3":
+-                        if z3_string_buffer:
++                        if via_smtlib:
+                             res = s.converter.back_via_smtlib(term)
+                         else:
+                             res = s.converter.back(term)
+@@ -84,8 +84,8 @@ class TestBasic(TestCase):
+ 
+     @skipIfSolverNotAvailable("z3")
+     def test_z3_back_formulae(self):
+-        self.do_back("z3", z3_string_buffer=False)
+-        self.do_back("z3", z3_string_buffer=True)
++        self.do_back("z3", via_smtlib=True)
++        self.do_back("z3", via_smtlib=False)
+ 
+ 
+ if __name__ == '__main__':
+diff --git a/pysmt/type_checker.py b/pysmt/type_checker.py
+index b700fcf..7ce05aa 100644
+--- a/pysmt/type_checker.py
++++ b/pysmt/type_checker.py
+@@ -33,6 +33,8 @@ class SimpleTypeChecker(walkers.DagWalker):
+ 
+     def __init__(self, env=None):
+         walkers.DagWalker.__init__(self, env=env)
++        # Return None if the type cannot be computed rather than
++        # raising an exception.
+         self.be_nice = False
+ 
+     def _get_key(self, formula, **kwargs):
+@@ -42,7 +44,7 @@ class SimpleTypeChecker(walkers.DagWalker):
+         """ Returns the pysmt.types type of the formula """
+         res = self.walk(formula)
+         if not self.be_nice and res is None:
+-            raise PysmtTypeError("The formula '%s' is not well-formed" \
++            raise PysmtTypeError("The formula '%s' is not well-formed"
+                                  % str(formula))
+         return res
+ 
+@@ -114,7 +116,7 @@ class SimpleTypeChecker(walkers.DagWalker):
+ 
+     def walk_bv_comp(self, formula, args, **kwargs):
+         # We check that all children are BV and the same size
+-        a,b = args
++        a, b = args
+         if a != b or (not a.is_bv_type()):
+             return None
+         return BVType(1)
+@@ -187,7 +189,7 @@ class SimpleTypeChecker(walkers.DagWalker):
+         if args[0].is_bool_type():
+             raise PysmtTypeError("The formula '%s' is not well-formed."
+                                  "Equality operator is not supported for Boolean"
+-                                 " terms. Use Iff instead." \
++                                 " terms. Use Iff instead."
+                                  % str(formula))
+         elif args[0].is_bv_type():
+             return self.walk_bv_to_bool(formula, args)
+@@ -324,10 +326,7 @@ class SimpleTypeChecker(walkers.DagWalker):
+     def walk_pow(self, formula, args, **kwargs):
+         if args[0] != args[1]:
+             return None
+-        # Exponent must be positive for INT
+-        if args[0].is_int_type() and formula.arg(1).constant_value() < 0 :
+-            return None
+-        return args[0]
++        return REAL
+ 
+ # EOC SimpleTypeChecker
+ 

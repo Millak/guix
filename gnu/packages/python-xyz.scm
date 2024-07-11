@@ -33790,6 +33790,39 @@ instructions up to AVX-512 and SHA (including 3dnow!+, XOP, FMA3, FMA4, TBM
 and BMI2).")
       (license license:bsd-2))))
 
+(define-public python-pysmt
+  (package
+    (name "python-pysmt")
+    (version "0.9.5")
+    (source
+     (origin
+       ;; Fetching from Git as pypi release doesn't include all test files.
+       (method git-fetch)
+       (patches (search-patches "python-pysmt-fix-pow-return-type.patch"
+                 "python-pysmt-fix-smtlib-serialization-test.patch"))
+       (uri (git-reference
+             (url "https://github.com/pysmt/pysmt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hrxv23y5ip4ijfx5pvbwc2fq4zg9jz42wc9zqgqm0g0mjc9ckvh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'set-pysmt-solver
+                    (lambda _
+                      (setenv "PYSMT_SOLVER" "z3"))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list z3))
+    (home-page "https://github.com/pysmt/pysmt")
+    (synopsis
+     "Solver-agnostic library for SMT formula manipulation and solving")
+    (description
+     "This Python module provides a solver-agnostic abstraction for
+working with @acronym{SMT, Satisfiability Modulo Theory} formulas.  For example,
+it allows manipulation and solving such formulas.")
+    (license license:asl2.0)))
+
 (define-public python-rpyc
   (package
     (name "python-rpyc")
