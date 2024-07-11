@@ -1520,6 +1520,33 @@ used to bring up authentication dialogs.")
                (rename-file old new)))))))
     (properties `((hidden? . #t)))))
 
+
+(define-public mozo
+  (package
+    (name "mozo")
+    (version "1.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://mate/" (version-major+minor version) "/"
+                           "mozo-" version ".tar.xz"))
+       (sha256
+        (base32 "0929yk7g7103d18p400ysi19pqrxl3dyzg4l0mnw7a3azm7ri67y"))))
+    (build-system glib-or-gtk-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list gettext-minimal
+           mate-menus
+           python
+           python-pygobject))
+    (home-page "https://mate-desktop.org/")
+    (synopsis "Menu editor for MATE")
+    (description "Mozo is a menu editor for MATE using the freedesktop.org
+menu specification.")
+    (license (list license:lgpl2.1+))))
+
+
 (define-public mate
   (package
     (name "mate")
@@ -1578,6 +1605,7 @@ used to bring up authentication dialogs.")
                    mate-polkit
                    mate-system-monitor
                    mate-utils
+                   mozo
                    pluma
                    pinentry-gnome3
                    pulseaudio
