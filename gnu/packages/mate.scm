@@ -223,14 +223,14 @@ themes for both gtk+-2 and gtk+-3.")
 (define-public mate-desktop
   (package
     (name "mate-desktop")
-    (version "1.26.1")
+    (version "1.28.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "mate-desktop-" version ".tar.xz"))
        (sha256
-        (base32 "04d2h1y5v225xzwsrf57cy281fr1k3rx70akjdhbs6mc4y56dl8j"))))
+        (base32 "18jajrj5bs98gnx4qjwqa1v48k9bm0c9rbmqw70r3cql41wlpfrj"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config
