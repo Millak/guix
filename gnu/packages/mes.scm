@@ -257,7 +257,7 @@ get_machine.")
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"
                          "armhf-linux" "aarch64-linux"
-                         "riscv32-linux" "riscv64-linux"))
+                         "riscv64-linux"))
     (arguments
      `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
                           ,(string-append "CC=" (cc-for-target)))
