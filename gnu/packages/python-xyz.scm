@@ -26299,6 +26299,7 @@ source bytes using the UTF-8 encoding and then rewrites Python 3.6 style
 @code{f} strings.")
     (license license:expat)))
 
+;; TODO: https://github.com/python/typed_ast/issues/179
 (define-public python-typed-ast
   (package
     (name "python-typed-ast")
