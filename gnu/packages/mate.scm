@@ -1068,14 +1068,14 @@ sessions, panels, menus, file management, and preferences.")
 (define-public mate-calc
   (package
     (name "mate-calc")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "mate-calc-" version ".tar.xz"))
        (sha256
-        (base32 "0mddfh9ixhh60nfgx5kcprcl9liavwqyina11q3pnpfs3n02df3y"))))
+        (base32 "1x98wsjssmbkxqvl95xgp5r99cdq5adxl5pq9bkv2r183rfi4jw0"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list gettext-minimal intltool pkg-config yelp-tools))
