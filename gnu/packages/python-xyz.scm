@@ -24701,6 +24701,13 @@ manipulation, or @code{stdout}.")
        (sha256
         (base32 "02pqfwwx83lgb8nj9p0s6vyi1s7wjgbx9k0bzlyz8qapszzdsr37"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/Hundemeier/sacn")
     (synopsis
