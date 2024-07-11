@@ -51,6 +51,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -846,47 +847,55 @@ icons on the MATE desktop.  It works on local and remote file systems.")
 (define-public caja-extensions
   (package
     (name "caja-extensions")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://mate/" (version-major+minor version) "/"
-                           "caja-extensions-" version ".tar.xz"))
+       (uri (string-append "mirror://mate/"
+                           (version-major+minor version)
+                           "/"
+                           "caja-extensions-"
+                           version
+                           ".tar.xz"))
        (sha256
-        (base32 "086mw7650n8blnr2wkg9xdb6lhwqamcbkk5575i2s90hzbiik72q"))))
+        (base32 "0x9ikq8biaq08wzj0qqpmy8k5w7axqimigfgf7i5z0s00xg6r66j"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags (list "--enable-sendto"
                                ;; TODO: package "gupnp" to enable 'upnp', package
                                ;; "gksu" to enable 'gksu'.
-                               (string-append "--with-sendto-plugins=removable-devices,"
-                                              "caja-burn,emailclient,pidgin,gajim")
+                               (string-append
+                                "--with-sendto-plugins=removable-devices,"
+                                "caja-burn,emailclient,pidgin,gajim")
                                "--enable-image-converter"
-                               "--enable-open-terminal" "--enable-share"
-                               "--enable-wallpaper" "--enable-xattr-tags"
+                               "--enable-open-terminal"
+                               "--enable-share"
+                               "--enable-wallpaper"
+                               "--enable-xattr-tags"
+                               "--enable-av=yes"
+
                                (string-append "--with-cajadir="
                                               (assoc-ref %outputs "out")
                                               "/lib/caja/extensions-2.0/"))))
-    (native-inputs
-     `(("intltool" ,intltool)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
-       ("libxml2" ,libxml2)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     (list attr
-           brasero
-           caja
-           dbus
-           dbus-glib
-           gajim ;runtime only?
-           gtk+
-           graphicsmagick
-           mate-desktop
-           pidgin ;runtime only?
-           startup-notification))
+    (native-inputs `(("intltool" ,intltool)
+                     ("gettext" ,gettext-minimal)
+                     ("glib:bin" ,glib "bin")
+                     ("gobject-introspection" ,gobject-introspection)
+                     ("gtk-doc" ,gtk-doc)
+                     ("libxml2" ,libxml2)
+                     ("pkg-config" ,pkg-config)))
+    (inputs (list attr
+                  brasero
+                  caja
+                  dbus
+                  dbus-glib
+                  gajim ;runtime only?
+                  gst-plugins-base
+                  gtk+
+                  graphicsmagick
+                  mate-desktop
+                  pidgin ;runtime only?
+                  startup-notification))
     (home-page "https://mate-desktop.org/")
     (synopsis "Extensions for the File manager Caja")
     (description
