@@ -153,6 +153,7 @@
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2024 TakeV <takev@disroot.org>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024 Rick Huijzer <ikbenrickhuyzer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24688,6 +24689,28 @@ manipulation, or @code{stdout}.")
      6555.  Provided with a single file and dead-simple API to allow easy vendoring
      and integration into other projects.")
       (license license:asl2.0))))
+
+(define-public python-sacn
+  (package
+    (name "python-sacn")
+    (version "1.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sacn" version))
+       (sha256
+        (base32 "02pqfwwx83lgb8nj9p0s6vyi1s7wjgbx9k0bzlyz8qapszzdsr37"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/Hundemeier/sacn")
+    (synopsis
+     "Python library for sending and receiving sACN data")
+    (description
+     "This package provides a Python library for sending and receiving
+     sACN (Streaming Architecture for Control Networks) data, a standard
+     protocol used for controlling lighting and other devices over
+     a network.")
+    (license license:expat)))
 
 (define-public python-bagit
   (package
