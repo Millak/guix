@@ -33790,6 +33790,46 @@ instructions up to AVX-512 and SHA (including 3dnow!+, XOP, FMA3, FMA4, TBM
 and BMI2).")
       (license license:bsd-2))))
 
+(define-public python-claripy
+  (package
+    (name "python-claripy")
+    ;; Must be the same version as python-angr.
+    (version "9.2.46")
+    (source
+     (origin
+       ;; Fetching from Git as pypi release doesn't include all test files.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/angr/claripy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nmawpi1596d9plafrp2db36cjsidy2fagkzkja51jwlx2m1ngai"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   (substitute* "setup.cfg"
+                     ;; Relax the z3 version constraint.
+                     ;; See https://github.com/angr/claripy/commit/d1fe2df
+                     (("z3-solver==4.10.2.0")
+                      ""))))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (with-directory-excursion "tests"
+                          (invoke "python" "-m" "unittest"))))))))
+    (propagated-inputs (list python-cachetools python-decorator python-pysmt
+                             z3))
+    (home-page "https://github.com/angr/claripy")
+    (synopsis "Abstraction layer for constraint solvers")
+    (description
+     "This Python module provides an abstraction layer for interacting
+with constraint solvers.  Specifically, it is intended to be used with
+SMT solvers and is built on top of the Z3 solver.")
+    (license license:bsd-2)))
+
 (define-public python-pysmt
   (package
     (name "python-pysmt")
