@@ -1335,14 +1335,14 @@ can be used as backgrounds in the MATE Desktop environment.")
 (define-public engrampa
   (package
     (name "engrampa")
-    (version "1.26.1")
+    (version "1.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "engrampa-" version ".tar.xz"))
        (sha256
-        (base32 "0jkci8gaxrx978laqj9ayx62r05czajqmry915iymsd4lw3l28ph"))))
+        (base32 "0siqhm6vh0lwx0qh7v4asn4m15ac9g93hm97iymfw24brydlqp4w"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags (list "--disable-schemas-compile"
