@@ -253,16 +253,14 @@ desktop and the mate-about program.")
 (define-public libmateweather
   (package
     (name "libmateweather")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "libmateweather-" version ".tar.xz"))
        (sha256
-        (base32 "0fpgc2l46024j2sqqsvclg9c6x33hyjk2zbg5h74v7cf9c7rj062"))
-       (patches
-        (list (search-patch "libmateweather-use-TZDIR.patch")))))
+        (base32 "1dfj68q3x9camd7h94pcwv8a5969cv5d4p979gcbk4xknpg76hsm"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
