@@ -74,9 +74,11 @@
                                   version "/source/boost_"
                                   (version-with-underscores version) ".tar.bz2"))
               (patches
-               (list (boost-patch
-                      "0001-unordered-fix-copy-assign.patch" version
-                      "09j61m5xh7099k5na9i43x5rra51znf7vm2nyh89yqpizcll9q66")))
+                (append
+                 (search-patches "boost-fix-duplicate-definitions-bug.patch")
+                 (list (boost-patch
+                        "0001-unordered-fix-copy-assign.patch" version
+                        "09j61m5xh7099k5na9i43x5rra51znf7vm2nyh89yqpizcll9q66"))))
               (patch-flags '("-p2"))
               (sha256
                (base32
@@ -203,6 +205,24 @@
 across a broad spectrum of applications.")
     (license (license:x11-style "https://www.boost.org/LICENSE_1_0.txt"
                                 "Some components have other similar licences."))))
+
+(define-public boost-for-source-highlight
+  (hidden-package (package (inherit boost)
+    (name "boost")
+    (version "1.83.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://boostorg.jfrog.io/artifactory/main/release/"
+                                  version "/source/boost_"
+                                  (version-with-underscores version) ".tar.bz2"))
+              (patches
+                 (list (boost-patch
+                        "0001-unordered-fix-copy-assign.patch" version
+                        "09j61m5xh7099k5na9i43x5rra51znf7vm2nyh89yqpizcll9q66")))
+              (patch-flags '("-p2"))
+              (sha256
+               (base32
+                "13iviiwk1srpw9dmiwabkxv56v0pl0zggjp8zxy1419k5zzfsy34")))))))
 
 ;; Sadly, this is needed for irods.  It won't link with 1.69 or later.
 (define-public boost-for-irods
