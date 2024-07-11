@@ -5,6 +5,7 @@
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
