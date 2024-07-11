@@ -1287,14 +1287,14 @@ can be used as backgrounds in the MATE Desktop environment.")
 (define-public eom
   (package
     (name "eom")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "eom-" version ".tar.xz"))
        (sha256
-        (base32 "0q4r9f3dcb6w6fia06sm9h3lzpq86gj13clzw1i6qzjg94li49dm"))))
+        (base32 "1g1sspnj7r077bfaywj6qhq4gvc2y7jylrf8b1r8q6jsk6rcl0cs"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list gettext-minimal
