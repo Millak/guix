@@ -182,8 +182,11 @@ dependencies, so it should be self-contained."
   ;; that Guix targets.
   (setenv "GOARCH" (or goarch
                        (getenv "GOHOSTARCH")))
-  (setenv "GOOS" (or goos
-                     (getenv "GOHOSTOS")))
+  (setenv "GOOS" (cond ((and goos
+                             (string=? "mingw" goos))
+                        "windows")
+                       (goos goos)
+                       (else (getenv "GOHOSTOS"))))
   (match goarch
     ("arm"
      (setenv "GOARM" "7"))
