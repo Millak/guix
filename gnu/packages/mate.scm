@@ -137,7 +137,7 @@ actions.")
 (define-public mate-icon-theme
   (package
     (name "mate-icon-theme")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
@@ -145,7 +145,7 @@ actions.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0nha555fhhn0j5wmzmdc7bh93ckzwwdm8mwmzma5whkzslv09xa1"))))
+         "0fkdk9pqgplmdlsikjb1fp804zcblgpf87cj892zfpfac280gmll"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool icon-naming-utils))
