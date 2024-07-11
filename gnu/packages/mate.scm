@@ -684,7 +684,7 @@ infamous 'Wanda the Fish'.")
 (define-public atril
   (package
     (name "atril")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
@@ -692,7 +692,7 @@ infamous 'Wanda the Fish'.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "194inkvgsj49pp0f46xfl1mq7kniah15kgviss5a20cprcx62fm5"))))
+         "0qji6nsf0r3rp5x7mah8pafx42dyqcygqsv7cgmc8wcvdrgp5m6f"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags (list (string-append "--with-openjpeg="
@@ -763,6 +763,7 @@ infamous 'Wanda the Fish'.")
            libgxps
            libjpeg-turbo
            libxml2
+           mate-desktop
            python-dogtail
            shared-mime-info
            gdk-pixbuf
@@ -777,6 +778,7 @@ infamous 'Wanda the Fish'.")
            ;;   Build libkpathsea as a shared library for DVI support.
            ;; ("libkpathsea" ,texlive-bin)
            poppler
+           startup-notification
            webkitgtk-for-gtk3))
     (home-page "https://mate-desktop.org")
     (synopsis "Document viewer for Mate")
