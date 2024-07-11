@@ -2622,6 +2622,28 @@ cache visualization.  Developed at FEE CTU for computer architecture classes.")
 stack-machine, written in ANSI C.  Graphical output is implemented using SDL2.")
       (license license:expat))))
 
+(define-public python-keystone-engine
+  (package
+    (name "python-keystone-engine")
+    (version "0.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "keystone-engine" version))
+       (sha256
+        (base32 "1xahdr6bh3dw5swrc2r8kqa8ljhqlb7k2kxv5mrw5rhcmcnzcyig"))))
+    (native-inputs (list cmake))
+    (build-system pyproject-build-system)
+    (home-page "https://www.keystone-engine.org")
+    (synopsis
+     "Lightweight multi-platform, multi-architecture assembler framework")
+    (description
+     "Keystone is a lightweight multi-platform, multi-architecture
+assembler framework.  It supports a wide-range of different architectures
+and offers an intuitive architecture-neutral API for interacting with
+assembly for these architectures.")
+    (license license:gpl2)))
+
 (define-public emu8051
   (let ((commit "5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8")
         (revision "1"))
