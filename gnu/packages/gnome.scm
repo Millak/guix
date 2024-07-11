@@ -7257,6 +7257,10 @@ almost all of them.")
           (replace 'check
             (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
               (when tests?
+                (setenv "XDG_RUNTIME_DIR" (string-append (getcwd)
+                                                         "/runtime-dir"))
+                (mkdir (getenv "XDG_RUNTIME_DIR"))
+                (chmod (getenv "XDG_RUNTIME_DIR") #o700)
                 (setenv "MESON_TESTTHREADS"
                         (if parallel-tests?
                             (number->string (parallel-job-count))

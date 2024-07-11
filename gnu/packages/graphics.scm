@@ -1350,7 +1350,17 @@ with strong support for multi-part, multi-channel use cases.")
     (arguments
      (list #:tests? #f ; half the tests require online data or use redirection
            #:configure-flags #~(list "-DUSE_EXTERNAL_PUGIXML=1"
-                                     "-DOIIO_BUILD_TESTS=false")))
+                                     "-DOIIO_BUILD_TESTS=false")
+           #:phases
+           #~(modify-phases %standard-phases
+               ; Work around a CMake Zlib-detection bug:
+               ; https://issues.guix.gnu.org/72046
+               ; https://gitlab.kitware.com/cmake/cmake/-/issues/25200
+               (add-after 'configure 'fix-zlib-version
+                 (lambda _
+                   (substitute* "include/imageio_pvt.h"
+                     (("#define ZLIB_VERSION \"1\\.3\"")
+                      "")))))))
     (native-inputs
      (list pkg-config))
     (inputs
