@@ -61,6 +61,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages containers)
   #:use-module (gnu packages cross-base)
@@ -113,6 +114,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt))
 
 (define-public vice
@@ -2296,106 +2298,24 @@ graphic filters.  Some of its features include:
     (license license:gpl2+)
     (supported-systems (list "x86_64-linux"))))
 
-;; python-pwntools requires a -rc release of unicorn
 (define-public unicorn
-  (let ((unless-x86
-          (lambda (code)
-            (if (member (%current-system) '("x86_64-linux" "i686-linux"))
-              '()
-              code))))
-    (package
-      (name "unicorn")
-      (version "1.0.2-rc4")
-      ;; NOTE: unicorn ships a bundled QEMU, but with a lot of custom modifications.
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/unicorn-engine/unicorn")
-               (commit version)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "17nyccgk7hpc4hab24yn57f1xnmr7kq4px98zbp2bkwcrxny8gwy"))))
-      (outputs '("out" "python"))
-      ;; The main library is not written in Python, but the build process has
-      ;; little in common with any defined build system, so we might as well
-      ;; build on top of python-build-system and make use of all
-      ;; the Python-specific phases that can be reused.
-      (build-system python-build-system)
-      (arguments
-       `(#:modules ((srfi srfi-26)
-                    (guix build python-build-system)
-                    (guix build utils))
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'build 'build-library
-             (lambda* (#:key inputs #:allow-other-keys)
-               (invoke "make"
-                       "-j" (number->string (parallel-job-count))
-                       "UNICORN_STATIC=no"
-                       "CC=gcc")))
-           (add-after 'build-library 'install-library
-             (lambda* (#:key outputs #:allow-other-keys)
-               (invoke "make" "install"
-                       "UNICORN_STATIC=no"
-                       (string-append
-                        "PREFIX="
-                        (assoc-ref outputs "out")))))
-           (add-before 'build 'prepare-bindings
-             (lambda* (#:key outputs #:allow-other-keys)
-               (chdir "bindings/python")
-               ;; Set this environment variable so that the Python bindings
-               ;; don't build their own copy of the shared object, but use
-               ;; a dummy value such that the bindings test suite uses the
-               ;; same mechanism for loading the library as any other user.
-               (setenv "LIBUNICORN_PATH" "1")
-               (substitute* "unicorn/unicorn.py"
-                 (("_path_list = \\[.*")
-                  (string-append
-                   "_path_list = [\""
-                   (assoc-ref outputs "out")
-                   ;; eat the rest of the list
-                   "/lib\"] + 0*[")))
-               #t))
-           (add-before 'check 'check-library
-             (lambda* (#:key outputs #:allow-other-keys)
-               (for-each
-                 (lambda (suite)
-                   (with-directory-excursion
-                     (string-append "../../tests/" suite)
-                     (invoke "make" "test" "CC=gcc"
-                             ,@(unless-x86
-                                '("AS=i686-unknown-linux-gnu-as"
-                                  "OBJCOPY=i686-unknown-linux-gnu-objcopy")))))
-                 '("unit" "regress"))
-               #t))
-           (add-after 'install 'install-samples
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((python-samples (find-files "." "sample_.*"))
-                      (c-samples (find-files "../../samples" ".*\\.c"))
-                      (python-docdir
-                        (string-append (assoc-ref outputs "python")
-                                       "/share/doc/unicorn/samples"))
-                      (c-docdir
-                        (string-append (assoc-ref outputs "out")
-                                       "/share/doc/unicorn/samples")))
-                 (for-each (cut install-file <> c-docdir) c-samples)
-                 (for-each (cut install-file <> python-docdir) python-samples)
-                 #t))))))
-      (native-inputs
-       ;; NOTE: cross-binutils needs to be wrapped with unless-x86, as otherwise
-       ;; the linker provided by the package will be used, circumventing the ld-wrapper.
-       `(,@(unless-x86
-            `(("assembler-for-tests" ,(cross-binutils "i686-unknown-linux-gnu"))))
-         ("cmocka" ,cmocka)
-         ("hexdump-for-tests" ,util-linux)))
-      (home-page "https://www.unicorn-engine.org")
-      (synopsis "Unicorn CPU emulator framework")
-      (description
-       "Unicorn is a lightweight, multi-platform, multi-architecture CPU emulator
-framework based on QEMU.")
-      (license license:gpl2+))))
+  (package
+    (name "unicorn")
+    (version "2.0.1.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri name version))
+       (sha256
+        (base32 "0mlfs8qfi0clyncfkbxp6in0cpl747510i6bqymwid43xcirbikz"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list cmake pkg-config))
+    (home-page "https://www.unicorn-engine.org")
+    (synopsis "Generic CPU emulator framework")
+    (description
+     "Uniforn is a lightweight, multi-platform, multi-architecture CPU
+emulator framework based on QEMU.")
+    (license license:gpl2+)))
 
 (define-public ppsspp
   (package
