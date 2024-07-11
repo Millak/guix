@@ -426,17 +426,7 @@ the Net to search for documents which are not on the local system.")
     (build-system qt-build-system)
     (arguments
       (list
-       #:tests? #f                    ;no tests
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'wrap 'wrap-qt-process-path
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let* ((bin (string-append #$output "/bin/zeal"))
-                      (qt-process-path
-                        (search-input-file inputs
-                          "/lib/qt5/libexec/QtWebEngineProcess")))
-                 (wrap-program bin
-                   `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
+       #:tests? #f))                    ;no tests
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
