@@ -788,7 +788,7 @@ hypertext navigation, and table-of-contents bookmarks.")
 (define-public caja
   (package
     (name "caja")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
@@ -796,7 +796,7 @@ hypertext navigation, and table-of-contents bookmarks.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "01scw5wk4fgps8fk9l7ic2q6p1wplxzsv678wbv010m301pnxz9h"))))
+         "0ylm46wgg7linppid6pdfaixhdb8zgyrxl3lxz17x0am2k718c0y"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags '("--disable-update-mimedb")
