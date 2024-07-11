@@ -1387,14 +1387,14 @@ can be used as backgrounds in the MATE Desktop environment.")
 (define-public pluma
   (package
     (name "pluma")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1wcl74pbmgwcrlm5vfmv1g8klxni1qnj0kgnb5k113hisziyqnar"))))
+        (base32 "1m51cmcl6z68bx37zhi72wfl58kq9bg7xcih1sjr6l1li6axz2ma"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(; Tests can not succeed.
@@ -1423,10 +1423,12 @@ can be used as backgrounds in the MATE Desktop environment.")
            libpeas
            libxml2
            libice
+           mate-desktop
            packagekit
            pango
            python
-           scrollkeeper))
+           scrollkeeper
+           startup-notification))
     (home-page "https://mate-desktop.org/")
     (synopsis "Text Editor for MATE")
     (description
