@@ -168,7 +168,7 @@ of parts of the Windows API.")
 (define-public xrdp
   (package
     (name "xrdp")
-    (version "0.9.23.1")
+    (version "0.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -176,7 +176,7 @@ of parts of the Windows API.")
                     version "/xrdp-" version ".tar.gz"))
               (sha256
                (base32
-                "1jpmwywzb6law2hrzm94qy2hgivs7izc2ci0w2h9yxn2j1mizdwg"))))
+                "1nakn842p759xxd9713335ms3h8dmr33xbmylnbk2j03m4dhvlnx"))))
     (build-system gnu-build-system)
     (inputs (list check
                   fuse-2
@@ -196,6 +196,7 @@ of parts of the Windows API.")
                   python
                   python-libxml2))
     (native-inputs (list bison
+                         cmocka
                          flex
                          gettext-minimal
                          intltool
