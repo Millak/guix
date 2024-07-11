@@ -33790,6 +33790,47 @@ instructions up to AVX-512 and SHA (including 3dnow!+, XOP, FMA3, FMA4, TBM
 and BMI2).")
       (license license:bsd-2))))
 
+(define-public python-rpyc
+  (package
+    (name "python-rpyc")
+    (version "5.3.1")
+    (source
+     (origin
+       ;; Fetching from Git as pypi release doesn't include all test files.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tomerfiliba-org/rpyc")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15mnp9qkyw3mmxmr5y4kf3xkvxyp00n892vqaqwznr7al35apgnr"))
+       (snippet '(begin
+                   ;; Disable deploy tests, these rely on OpenSSH and require
+                   ;; configuring the SSH client manually to accept the host key.
+                   (delete-file "tests/test_deploy.py")
+                   ;; Disable tests requiring network access.  These tests
+                   ;; presently fail with the error "Network is unreachable".
+                   (delete-file "tests/test_registry.py")))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (with-directory-excursion "tests"
+                          (invoke "python" "-m" "unittest"))))))))
+    (propagated-inputs (list python-hatchling python-plumbum))
+    (home-page "https://github.com/tomerfiliba-org/rpyc")
+    (synopsis
+     "Remote Python Call (RPyC) is a symmetric distributed computing library")
+    (description
+     "This Python module enables remote procedure calls, clustering, and
+distributed-computing.  For this purpose, it makes use of object-proxying, a technique
+that employs python's dynamic nature, to overcome the physical boundaries between
+processes and computers, so that remote objects can be manipulated as if they
+were local.")
+    (license license:expat)))
+
 (define-public python-nampa
   (package
     (name "python-nampa")
