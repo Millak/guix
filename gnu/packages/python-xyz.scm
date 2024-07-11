@@ -33790,6 +33790,26 @@ instructions up to AVX-512 and SHA (including 3dnow!+, XOP, FMA3, FMA4, TBM
 and BMI2).")
       (license license:bsd-2))))
 
+(define-public python-nampa
+  (package
+    (name "python-nampa")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nampa" version))
+       (sha256
+        (base32 "0k6cq2gflpkm40qhgqbbcjmq5lq589c15bmk567qyh3d08062hvd"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-future))
+    (home-page "https://github.com/thebabush/nampa")
+    (synopsis "Python implementation of IDA Pro's FLIRT technology")
+    (description
+     "This Python module implements the @acronym{FLIRT, Fast Library Identification
+and Recognition Technology}.  This technology is useful for identifying
+common library subroutines in disassembled binaries.")
+    (license license:lgpl3)))
+
 (define-public python-mulpyplexer
   (package
     (name "python-mulpyplexer")
