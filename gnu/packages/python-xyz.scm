@@ -34070,6 +34070,103 @@ mangling language.  The demangler generates an abstract syntax tree from
 mangled symbols, which can be used for directly extracting type information.")
     (license license:bsd-0)))
 
+(define-public python-angr
+  (package
+    (name "python-angr")
+    (version "9.2.46")
+    (source
+     (origin
+       ;; Fetching from Git as pypi release doesn't include all test files.
+       (method git-fetch)
+       (patches (search-patches "python-angr-addition-type-error.patch"
+                                "python-angr-check-exec-deps.patch"))
+       (uri (git-reference
+             (url "https://github.com/angr/angr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18y9wyf7va7gvp9zd6lhw82j9a2x2ajsvbawh96xnxzml0jwlwjm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-tests
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (let ((coreutils (assoc-ref inputs "coreutils")))
+                         (substitute* "tests/test_vault.py"
+                           (("/bin/false")
+                            (which "false")))
+                         (substitute* "tests/common.py"
+                           (("\\[\"cc\"\\]")
+                            "[\"gcc\"]")))))
+                   (replace 'check
+                     (lambda* (#:key inputs tests? #:allow-other-keys)
+                       (when tests?
+                         (copy-recursively #$(this-package-native-input "binaries")
+                                           "../binaries")
+                         (with-directory-excursion "tests"
+                           ;; test_mips32_missing_offset_in_instructions fails
+                           ;; with capstone 5 and passes with capstone 4. Might
+                           ;; be a capstone regressions, needs investigation.
+                           ;;
+                           ;; test_concrete_memset is a non-deterministic benchmark.
+                           (invoke "pytest" "-vv" "-x" "--dist" "loadfile"
+                                   "-k" "not test_mips32_missing_offset_in_instructions and not test_concrete_memset"
+                                   "-n" (number->string (parallel-job-count)))))))
+                   (add-before 'build 'set-cc
+                     (lambda _
+                       (setenv "CC" "gcc"))))))
+    (propagated-inputs (list python-ailment
+                             python-archinfo
+                             python-cachetools
+                             python-cffi
+                             python-claripy
+                             python-cle
+                             python-colorama
+                             python-cppheaderparser
+                             python-dpkt
+                             python-gitpython
+                             python-mulpyplexer
+                             python-nampa
+                             python-networkx
+                             python-protobuf
+                             python-psutil
+                             python-itanium-demangler
+                             python-pycparser
+                             python-pyvex
+                             python-progressbar2
+                             python-rpyc
+                             python-sortedcontainers
+                             python-sqlalchemy
+                             python-sympy
+                             unicorn))
+    (native-inputs `(("python-pytest" ,python-pytest)
+                     ("python-pytest-xdist" ,python-pytest-xdist)
+                     ("binaries"
+                      ;; This repository ships several binaries used only for testing
+                      ;; purpose.  The binaries are not executed and not part of the
+                      ;; angr distribution, they are only used to test angr's binary
+                      ;; analysis capabilities.  In the context of the GNU FSDG, these
+                      ;; files should be considered non-functional data.
+                      ,(origin
+                         (method git-fetch)
+                         (uri (git-reference (url
+                                              "https://github.com/angr/binaries")
+                                             (commit (string-append "v"
+                                                                    version))))
+                         (file-name (git-file-name "angr-binaries" version))
+                         (sha256 (base32
+                                  "1f286b2239zavxzwg1184hj1zs380cr9qr549mvy3vywvm8bsmgr"))))))
+    (home-page "https://github.com/angr/angr")
+    (synopsis "Multi-architecture binary analysis toolkit")
+    (description
+     "This package provides a versatile binary analysis platform with the
+ability to perform dynamic symbolic execution as well as various
+static analyses directly on binaries.  As such, it can be used for all
+kinds of reverse engineering, vulnerability discovery, exploit
+generation, and software testing purposes.")
+    (license license:bsd-2)))
+
 (define-public python-peachpy
   ;; There is no tag in this repo.
   (let ((commit "913d74c35a6b1d330e90bfc055208ce5b06b35a0")

@@ -1,0 +1,18 @@
+This fixes failures of the test_ln_gcc_O2 and other related tests
+in the angr test suite.  The patch has been proposed upstream.
+
+Taken form: https://github.com/angr/angr/pull/4443
+
+diff --git a/angr/analyses/reassembler.py b/angr/analyses/reassembler.py
+index 7a2399a60..b09b3a8cb 100644
+--- a/angr/analyses/reassembler.py
++++ b/angr/analyses/reassembler.py
+@@ -730,7 +730,7 @@ class Instruction:
+             elif operand.type == capstone.CS_OP_MEM:
+                 operand_offsets.append(capstone_instr.disp_offset)
+             else:
+-                operand_offsets.append(None)
++                operand_offsets.append(0)
+ 
+         if self.addr is not None:
+             self._initialize(capstone_instr.operands, operand_offsets)
