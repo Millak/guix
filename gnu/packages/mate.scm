@@ -505,14 +505,14 @@ assorted menu related utility programs.")
 (define-public mate-applets
   (package
     (name "mate-applets")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "mate-applets-" version ".tar.xz"))
        (sha256
-        (base32 "1hn22xxmkm3s1477war7w7lb7yh77b3251y1why37p3nncfzdf1s"))))
+        (base32 "11k66nfgs403r70isc8ccss994hv9c793zr8r2fzn9nksmmyysqv"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config
@@ -530,7 +530,7 @@ assorted menu related utility programs.")
            glib
            gucharmap
            gtk+
-           gtksourceview-3
+           gtksourceview-4
            libgtop
            libmateweather
            libnl
@@ -538,6 +538,7 @@ assorted menu related utility programs.")
            libx11
            libxml2
            libwnck
+           mate-desktop
            mate-panel
            pango
            polkit ; either polkit or setuid
