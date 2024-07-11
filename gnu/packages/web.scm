@@ -361,6 +361,12 @@ and its related documentation.")
                #$version))
       #:phases
       #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./...")))))
           (add-after 'install 'install-manpage
             (lambda* (#:key import-path #:allow-other-keys)
               (let ((man1 (string-append #$output "/share/man/man1/"))
