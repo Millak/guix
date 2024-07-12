@@ -5627,6 +5627,8 @@ designed to clean up raw terminal output by stripping escape sequences,
 optionally preserving color.")
     (license license:expat)))
 
+;; XXX: This repository has been archived by the owner on Dec 1, 2021. It is
+;; now read-only.
 (define-public go-github-com-pkg-errors
   (package
     (name "go-github-com-pkg-errors")
@@ -5643,15 +5645,11 @@ optionally preserving color.")
     (build-system go-build-system)
     (arguments
      (list
-       #:import-path "github.com/pkg/errors"
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key inputs #:allow-other-keys #:rest args)
-               (unless
-                 ;; The tests fail when run with gccgo.
-                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
-                 (apply (assoc-ref %standard-phases 'check) args)))))))
+      ;; Tests fail with a newer version of Golang (1.21) due to some API
+      ;; changes in how the module path is calculated which is not reflected
+      ;; in tests.
+      #:tests? #f
+      #:import-path "github.com/pkg/errors"))
     (synopsis "Go error handling primitives")
     (description "This package provides @code{error}, which offers simple
 error handling primitives in Go.")
