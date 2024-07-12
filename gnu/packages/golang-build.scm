@@ -322,25 +322,6 @@ loading algorithms.")
       (description "This package provides supplemental Go networking libraries.")
       (license license:bsd-3))))
 
-;; XXX: Not in use by any other packages, consider to remove or merge with
-;; go-golang-org-x-net.
-(define-public go-golang-org-x-net-0.17
-  (let ((commit "b225e7ca6dde1ef5a5ae5ce922861bda011cfabd")
-        (revision "0"))
-    (package
-      (inherit go-golang-org-x-net)
-      (name "go-golang-org-x-net")
-      (version (git-version "0.17.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://go.googlesource.com/net")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "17zhim2m0r8nyy18g2lsawxm4rawix2qbjyn80x9vc6jc8fv05m9")))))))
-
 (define-public go-golang-org-x-sync
   (package
     (name "go-golang-org-x-sync")
