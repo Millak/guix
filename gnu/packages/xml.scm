@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,6 +77,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
@@ -1953,3 +1955,41 @@ XML data to JSON and other formats.")
     (description "This package provides a Python library to convert XML to
 @code{OrderedDict}.")
     (license license:expat)))
+
+(define-public xml-namespace-xsd
+  (package
+    (name "xml-namespace-xsd")
+    (version "2009-01")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.w3.org/"
+                           (string-replace-substring version "-" "/")
+                           "/xml.xsd"))
+       (sha256
+        (base32 "0agqmxbhk2q9xa38m02z7ggbb124z6avnqyhz8k43iicqhv1fw6c"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("xml.xsd" "/xml/dtd/namespace/xml.xsd")
+                         ("catalog.xml" "/xml/dtd/namespace/catalog.xml"))
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'install 'create-catalog
+                     (lambda _
+                       (invoke "xmlcatalog"
+                               "--noout"
+                               "--create"
+                               "--add"
+                               "uri"
+                               "http://www.w3.org/2001/xml.xsd"
+                               "xml.xsd"
+                               "catalog.xml"))))))
+    (native-inputs (list libxml2))
+    (home-page "https://www.w3.org/XML/1998/namespace")
+    (synopsis "XML Schema for XML namespace")
+    (description
+     "This package provides an XML Schema and its catalog.  The schema constrains the
+syntax of @code{xml:lang}, @code{xml:spec}, @code{xml:base}, and @code{xml:id} in the
+schema language defined by the XML Schema Recommendation Second Edition of 28 October
+2004.")
+    (license license:w3c)))
