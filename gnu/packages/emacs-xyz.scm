@@ -1963,6 +1963,28 @@ purpose finder.")
 files left by ArchLinux's pacman.")
     (license license:expat)))
 
+(define-public emacs-palimpsest
+  (package
+    (name "emacs-palimpsest")
+    (version "1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danielsz/Palimpsest")
+             (commit "f474b3ad706373d9953abdc401d683a2a023d28e")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wzxl1zcbm3svspjpjzvx92is1k9sz7g0a99r8q066j2364la0zh"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/danielsz/Palimpsest")
+    (synopsis "Remove text without permanently deleting it")
+    (description
+     "This minor mode for Emacs provides several strategies to remove text
+without permanently deleting it.  Namely, it can send selected test to the
+bottom, or top, of the buffer, or to a trash file.")
+    (license license:gpl3+)))
+
 (define-public emacs-minions
   (package
     (name "emacs-minions")
