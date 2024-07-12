@@ -88,6 +88,32 @@
      "This package provides a markdown parser.")
     (license license:expat)))
 
+(define-public go-github-com-yuin-goldmark-emoji
+  (package
+    (name "go-github-com-yuin-goldmark-emoji")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yuin/goldmark-emoji")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mx8rkxd3ksvgi41jvf365x9mf00sxiqq4wm75x4sasd2lgcbrl4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/yuin/goldmark-emoji"))
+    (propagated-inputs
+     (list go-github-com-yuin-goldmark))
+    (home-page "https://github.com/yuin/goldmark-emoji")
+    (synopsis "Emoji extension for the goldmark markdown parser")
+    (description
+     "This package provides an emoji is a extension for the
+@url{http://github.com/yuin/goldmark,goldmark}.")
+    (license license:expat)))
+
 (define-public go-golang-org-x-crypto
   (package
     (name "go-golang-org-x-crypto")
