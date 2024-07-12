@@ -642,3 +642,35 @@ commonly needed services in distributed and parallel computing systems.")
    (home-page "https://pmix.org/")
    ;; The provided license is kind of BSD-style but specific.
    (license (license:fsf-free "https://github.com/openpmix/openpmix?tab=License-1-ov-file#License-1-ov-file"))))
+
+(define-public prrte
+  (package
+   (name "prrte")
+   (version "3.0.6")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://github.com/openpmix/prrte/releases/download/v"
+                  version "/prrte-" version ".tar.bz2"))
+            (sha256
+             (base32
+              "0wiy0vk37v4db1jgxza8bci0cczcvj34dalzsrlz05dk45zb7dl3"))))
+   (build-system gnu-build-system)
+   (arguments
+    (list #:configure-flags #~(list (string-append "--with-hwloc="
+                                                   (assoc-ref %build-inputs "hwloc"))
+                                    (string-append "--with-pmix=" #$(this-package-input "openpmix")))))
+   (inputs (list libevent
+                 `(,hwloc "lib")
+                 openpmix))
+   (native-inputs (list perl))
+   (synopsis "PMIx Reference RunTime Environment (PRRTE)")
+   (description
+    "The PMIx Reference RunTime Environment is a runtime environment
+containing the reference implementation and capable of operating
+within a host SMS. The reference RTE therefore provides an easy way of
+exploring PMIx capabilities and testing PMIx-based applications
+outside of a PMIx-enabled environment.")
+   (home-page "https://openpmix.github.io/")
+   ;; The provided license is kind of BSD-style but specific.
+   (license (license:fsf-free "https://github.com/openpmix/prrte?tab=License-1-ov-file#License-1-ov-file"))))
