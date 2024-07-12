@@ -1360,6 +1360,13 @@ with strong support for multi-part, multi-channel use cases.")
                  (lambda _
                    (substitute* "include/imageio_pvt.h"
                      (("#define ZLIB_VERSION \"1\\.3\"")
+                      ""))))
+               (add-after 'install 'fix-OpenImageIOConfig
+                 (lambda _
+                   (substitute* (string-append
+                                 #$output
+                                 "/lib/cmake/OpenImageIO/OpenImageIOConfig.cmake")
+                     (("#define ZLIB_VERSION \"1\\.3\"")
                       "")))))))
     (native-inputs
      (list pkg-config))
