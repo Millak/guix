@@ -786,7 +786,7 @@ decompose request handling into many smaller layers.")
 (define-public go-github-com-go-jose-go-jose-v3
   (package
     (name "go-github-com-go-jose-go-jose-v3")
-    (version "3.0.0")
+    (version "3.0.3")
     (source
      (origin
        (method git-fetch)
@@ -795,7 +795,7 @@ decompose request handling into many smaller layers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fnw0p49wc9gmd2xcji2x9jf97dgg9igagd5m6bmq3nw9jjfqdc5"))))
+        (base32 "0kbkplhzqv9ai28r4smhdsxxwh20d96srr3am37pwwnh48ivwch8"))))
     (build-system go-build-system)
     (arguments
      '( #:import-path "github.com/go-jose/go-jose/v3"))
