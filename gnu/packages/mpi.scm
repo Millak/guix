@@ -188,7 +188,7 @@ bind processes, and much more.")
   ;; The latest stable series of hwloc.
   hwloc-2)
 
-(define-public openmpi
+(define-public openmpi-4
   (package
     (name "openmpi")
     (version "4.1.6")
@@ -311,6 +311,8 @@ best MPI library available.  Open MPI offers advantages for system and
 software vendors, application developers and computer science researchers.")
     ;; See file://LICENSE
     (license license:bsd-2)))
+
+(define-public openmpi openmpi-4)
 
 (define-public openmpi-5
   (package
