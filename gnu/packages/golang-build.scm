@@ -40,7 +40,8 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
-  #:use-module (gnu packages))
+  #:use-module (gnu packages)
+  #:use-module (gnu packages gcc))
 
 ;;; Commentary:
 ;;;
@@ -587,21 +588,62 @@ time.")
            (delete-file-recursively "gopls")))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "golang.org/x/tools"
-       ;; Source-only package
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; Source-only package
-         (delete 'build))))
+     (list
+      #:import-path "golang.org/x/tools"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v"
+                          ;; TODO: They contain final project executable builds,
+                          ;; would be packed separately.
+                          ;; - cmd
+                          ;; - godoc
+
+                          ;; FIXME: Figure out why they are failing:
+                          ;; "./internal/..."
+                          ;; "./present/..."
+                          ;; "./refactor/eg/..."
+                          ;; "./go/ssa/..."
+                          ;; "./go/packages/..."
+                          ;; "./go/analysis/..."
+
+                          "./blog/..."  ;
+                          "./container/..."
+                          "./copyright/..."
+                          "./cover/..."
+                          "./go/ast/..."
+                          "./go/buildutil/..."
+                          "./go/callgraph/..."
+                          "./go/cfg/..."
+                          "./go/expect/..."
+                          "./go/gccgoexportdata/..."
+                          "./go/gcexportdata/..."
+                          "./go/internal/..."
+                          "./go/loader/..."
+                          "./go/types/..."
+                          "./imports/..."
+                          "./playground/..."
+                          "./refactor/importgraph/..."
+                          "./refactor/rename/..."
+                          "./refactor/satisfy/..."
+                          "./txtar/..."))))))))
+    (native-inputs
+     (list gccgo-14))
     (propagated-inputs
      (list go-github-com-yuin-goldmark
            go-golang-org-x-mod
            go-golang-org-x-net
-           go-golang-org-x-sys))
+           go-golang-org-x-sync))
     (home-page "https://go.googlesource.com/tools/")
     (synopsis "Tools that support the Go programming language")
-    (description "This package provides miscellaneous tools that support the
+    (description
+     "This package provides miscellaneous tools that support the
 Go programming language.")
     (license license:bsd-3)))
 
