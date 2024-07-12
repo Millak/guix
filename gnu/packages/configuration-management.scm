@@ -100,10 +100,7 @@
            go-github-com-mattn-go-isatty
            go-github-com-mattn-go-runewidth
            go-github-com-microcosm-cc-bluemonday
-           go-github-com-muesli-reflow-ansi
-           go-github-com-muesli-reflow-indent
-           go-github-com-muesli-reflow-padding
-           go-github-com-muesli-reflow-wordwrap
+           go-github-com-muesli-reflow
            go-github-com-muesli-termenv
            go-github-com-olekukonko-tablewriter
            go-github-com-pelletier-go-toml

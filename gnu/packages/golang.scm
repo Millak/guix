@@ -6706,62 +6706,41 @@ matching and globbing with support for \"doublestar\" patterns.")
      (list
       #:import-path "github.com/bmatcuk/doublestar/v4"))))
 
-(define-public go-github-com-muesli-reflow-wordwrap
+(define-public go-github-com-muesli-reflow
   (package
-    (name "go-github-com-muesli-reflow-wordwrap")
+    (name "go-github-com-muesli-reflow")
     (version "0.3.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/muesli/reflow")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "go-github-com-muesli-reflow" version))
-              (sha256
-               (base32
-                "09zcz2cqdwgj1ilya5pqwndryk6lansn87x63fcm8j1xn74vd2ry"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/muesli/reflow")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "go-github-com-muesli-reflow" version))
+       (sha256
+        (base32 "09zcz2cqdwgj1ilya5pqwndryk6lansn87x63fcm8j1xn74vd2ry"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/muesli/reflow/wordwrap"
-       #:unpack-path "github.com/muesli/reflow"))
-    (native-inputs
+     (list
+      #:import-path "github.com/muesli/reflow"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
      (list go-github-com-mattn-go-runewidth))
     (home-page "https://github.com/muesli/reflow/")
     (synopsis "Collection of methods helping to transform blocks of text")
-    (description "This package provides a collection of ANSI-aware methods and
-io.Writers helping you to transform blocks of text.")
+    (description
+     "This package provides a collection of ANSI-aware methods and io.Writers
+helping you to transform blocks of text.")
     (license license:expat)))
-
-(define-public go-github-com-muesli-reflow-ansi
-  (package
-    (inherit go-github-com-muesli-reflow-wordwrap)
-    (name "go-github-com-muesli-reflow-ansi")
-    (arguments
-     `(#:import-path "github.com/muesli/reflow/ansi"
-       #:unpack-path "github.com/muesli/reflow"))))
-
-(define-public go-github-com-muesli-reflow-indent
-  (package
-    (inherit go-github-com-muesli-reflow-wordwrap)
-    (name "go-github-com-muesli-reflow-indent")
-    (arguments
-     `(#:import-path "github.com/muesli/reflow/indent"
-       #:unpack-path "github.com/muesli/reflow"))))
-
-(define-public go-github-com-muesli-reflow-padding
-  (package
-    (inherit go-github-com-muesli-reflow-wordwrap)
-    (name "go-github-com-muesli-reflow-padding")
-    (arguments
-     `(#:import-path "github.com/muesli/reflow/padding"
-       #:unpack-path "github.com/muesli/reflow"))))
-
-(define-public go-github-com-muesli-reflow-truncate
-  (package
-    (inherit go-github-com-muesli-reflow-wordwrap)
-    (name "go-github-com-muesli-reflow-truncate")
-    (arguments
-     `(#:import-path "github.com/muesli/reflow/truncate"
-       #:unpack-path "github.com/muesli/reflow"))))
 
 (define-public go-github-com-muesli-termenv
   (package
@@ -6895,10 +6874,7 @@ size of the terminal.")
            go-github-com-chris-ramon-douceur
            go-github-com-aymerick-douceur
            go-github-com-gorilla-css
-           go-github-com-muesli-reflow-ansi
-           go-github-com-muesli-reflow-wordwrap
-           go-github-com-muesli-reflow-indent
-           go-github-com-muesli-reflow-padding
+           go-github-com-muesli-reflow
            go-github-com-mattn-go-runewidth
            go-github-com-muesli-termenv
            go-github-com-google-goterm
@@ -8420,11 +8396,9 @@ parser.")
      `(("github.com/mattn/go-isatty" ,go-github-com-mattn-go-isatty)
        ("github.com/muesli/termenv" ,go-github-com-muesli-termenv)
        ("github.com/mattn/go-runewidth" ,go-github-com-mattn-go-runewidth)
-       ("go-github-com-muesli-reflow-indent" ,go-github-com-muesli-reflow-indent)
-       ("go-github-com-muesli-reflow-ansi" ,go-github-com-muesli-reflow-ansi)
+       ("go-github-com-muesli-reflow" ,go-github-com-muesli-reflow)
        ("go-github-com-lucasb-eyer-go-colorful" ,go-github-com-lucasb-eyer-go-colorful)
        ("github.com/containerd/console" ,go-github-com-containerd-console)
-       ("go-github-com-muesli-reflow-truncate" ,go-github-com-muesli-reflow-truncate)
        ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
        ("go-golang-org-x-sys" ,go-golang-org-x-sys)
        ("go-golang-org-x-term" ,go-golang-org-x-term)
