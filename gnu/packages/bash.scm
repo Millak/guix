@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,6 +50,7 @@
   #:use-module (guix gexp)
   #:use-module (guix monads)
   #:use-module (guix store)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:autoload   (guix gnupg) (gnupg-verify*)
@@ -525,3 +527,33 @@ you to call routines in shared libraries from within Bash.")
 which replaces the default GNU Readline.  It adds syntax highlighting, auto
 suggestions, vim modes, and more to Bash interactive sessions.")
     (license license:bsd-3)))
+
+(define-public bash-unit
+  (package
+    (name "bash-unit")
+    (version "2.3.2")
+    (home-page "https://github.com/pgrange/bash_unit")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gb6vfr5m84bn1gbv7w3jr06fspylj1i3yqkvgxq0n3bncvs35wz"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan '(("bash_unit" "bin/"))
+       #:phases (modify-phases %standard-phases
+                  (add-before 'install 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "./bash_unit" "tests/test_core.sh")))))))
+    (inputs (list bash-minimal))
+    (synopsis "Bash unit testing framework")
+    (description
+     "@command{bash_unit} allows you to write unit tests, run them and, in case
+of failure, display the stack trace with source file and line number indications
+to locate the problem.")
+    (license license:gpl3+)))
