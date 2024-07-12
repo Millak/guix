@@ -291,20 +291,18 @@ loading algorithms.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-net
-  (let ((commit "8e0e7d8d38f2b6d21d742845570dde2902d06a1d")
-        (revision "0"))
     (package
       (name "go-golang-org-x-net")
-      (version (git-version "0.5.0" revision commit))
+      (version "0.27.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://go.googlesource.com/net")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1fidlcn3vcz42v2lc0rpmqh3bz08bcklj6jvnmz2vvgc481ci5hy"))))
+          (base32 "0fc6d968yiv2l67z9jg7ssvas1hd1jniqh4m7mmlay0q5gk4vf8s"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -320,7 +318,7 @@ loading algorithms.")
       (home-page "https://go.googlesource.com/net")
       (synopsis "Go supplemental networking libraries")
       (description "This package provides supplemental Go networking libraries.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public go-golang-org-x-sync
   (package
