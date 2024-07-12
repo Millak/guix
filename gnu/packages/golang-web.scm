@@ -3145,6 +3145,8 @@ programming language.")
 programming language, which supports draft-04, draft-06 and draft-07.")
       (license license:asl2.0))))
 
+;; XXX: This repository has been archived by the owner on Feb 27, 2023. It is
+;; now read-only and it is DEPRECATED.
 (define-public go-gopkg-in-square-go-jose-v2
   (package
     (name "go-gopkg-in-square-go-jose-v2")
@@ -3160,7 +3162,12 @@ programming language, which supports draft-04, draft-06 and draft-07.")
         (base32 "1b1nhqxfmhzwrfk7pkvp2w3z3d0pf5ir00vizmy2d4xdbnldn70r"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "gopkg.in/square/go-jose.v2"))
+     (list
+      ;; XXX: We strongly encourage users of square/go-jose to migrate to v3
+      ;; of go-jose/go-jose. No support, security fixes or updates will be
+      ;; delivered to the v1/v2 branches in the Square repository.
+      #:tests? #f
+      #:import-path "gopkg.in/square/go-jose.v2"))
     (propagated-inputs
      (list go-golang-org-x-crypto))
     (native-inputs
