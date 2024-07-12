@@ -102,19 +102,78 @@
         (base32 "1cnglyy3fhvnnynazfdrikkwcxv3rlxamvfxink2z241lncvwkxy"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "golang.org/x/crypto"
-       ;; Source-only package
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; Source-only package
-         (delete 'build))))
+     (list
+      #:import-path "golang.org/x/crypto"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-test-files
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          (list
+                           ;; Network access requried: go mod download -json
+                           ;; github.com/google/wycheproof@v0.0.0-20191219022705-2196000605e4.
+                           "internal/wycheproof/aead_test.go"
+                           "internal/wycheproof/aes_cbc_test.go"
+                           "internal/wycheproof/dsa_test.go"
+                           "internal/wycheproof/ecdh_stdlib_test.go"
+                           "internal/wycheproof/ecdh_test.go"
+                           "internal/wycheproof/ecdsa_test.go"
+                           "internal/wycheproof/eddsa_test.go"
+                           "internal/wycheproof/hkdf_test.go"
+                           "internal/wycheproof/hmac_test.go"
+                           "internal/wycheproof/rsa_oaep_decrypt_test.go"
+                           "internal/wycheproof/rsa_pss_test.go"
+                           "internal/wycheproof/rsa_signature_test.go"
+                           "internal/wycheproof/wycheproof_test.go")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v"
+                          ;; acme - cycle with go-golang-org-x-net
+                          "./argon2/..."
+                          "./bcrypt/..."
+                          "./blake2b/..."
+                          "./blake2s/..."
+                          "./blowfish/..."
+                          "./bn256/..."
+                          "./cast5/..."
+                          "./chacha20/..."
+                          "./chacha20poly1305/..."
+                          "./cryptobyte/..."
+                          "./curve25519/..."
+                          "./ed25519/..."
+                          "./hkdf/..."
+                          "./internal/..."
+                          "./md4/..."
+                          "./nacl/..."
+                          "./ocsp/..."
+                          "./openpgp/..."
+                          "./otr/..."
+                          "./pbkdf2/..."
+                          "./pkcs12/..."
+                          "./poly1305/..."
+                          "./ripemd160/..."
+                          "./salsa20/..."
+                          "./scrypt/..."
+                          "./sha3/..."
+                          "./ssh/..."
+                          "./tea/..."
+                          "./twofish/..."
+                          "./x509roots/..."
+                          "./xtea/..."
+                          "./xts/..."))))))))
     (propagated-inputs
      (list go-golang-org-x-sys go-golang-org-x-term))
     (home-page "https://go.googlesource.com/crypto/")
     (synopsis "Supplementary cryptographic libraries in Go")
-    (description "This package provides supplementary cryptographic libraries
-for the Go language.")
+    (description
+     "This package provides supplementary cryptographic libraries for the Go
+language.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-exp
