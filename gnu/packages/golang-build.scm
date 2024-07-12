@@ -241,36 +241,36 @@ compile does not support generics.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-mod
-    (package
-      (name "go-golang-org-x-mod")
-      (version "0.19.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/golang/mod")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "02wilb8q2bp6qhqcrbjxq1pjy3y5k8p11pxlg481609zx4rjiszc"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "golang.org/x/mod/"
-         #:tests? #f
-         #:phases (modify-phases %standard-phases
-                    ;; Source-only package
-                    (delete 'build))))
-      (home-page "https://golang.org/x/mod")
-      (synopsis "Tools to work directly with Go module mechanics")
-      (description
-       "This repository holds packages for writing tools that work directly
+  (package
+    (name "go-golang-org-x-mod")
+    (version "0.19.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/mod")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02wilb8q2bp6qhqcrbjxq1pjy3y5k8p11pxlg481609zx4rjiszc"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "golang.org/x/mod/"
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  ;; Source-only package
+                  (delete 'build))))
+    (home-page "https://golang.org/x/mod")
+    (synopsis "Tools to work directly with Go module mechanics")
+    (description
+     "This repository holds packages for writing tools that work directly
 with Go module mechanics.  That is, it is for direct manipulation of Go
 modules themselves.
 
 The specific case of loading packages should still be done by invoking the
 @command{go} command, which remains the single point of truth for package
 loading algorithms.")
-      (license license:bsd-3)))
+    (license license:bsd-3)))
 
 (define-public go-golang-org-x-net
   (let ((commit "8e0e7d8d38f2b6d21d742845570dde2902d06a1d")
