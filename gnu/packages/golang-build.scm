@@ -491,21 +491,44 @@ terminals, as commonly found on Unix systems.")
        (uri (git-reference
              (url "https://go.googlesource.com/text")
              (commit (string-append "v" version))))
-       (file-name (string-append "go.googlesource.com-text-"
-                                 version "-checkout"))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "0pmn0i1xbpwvzl4cdgmjqcsk9vckhqrq6699fnr9mkglh4xj3p7a"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "golang.org/x/text"
-       ;; Source-only package
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build))))
+     (list
+      #:import-path "golang.org/x/text"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v"
+                          "./cases/..."
+                          ;; cmd - cycle with go-golang-org-x-tools
+                          "./collate/..."
+                          "./currency/..."
+                          "./date/..."
+                          "./encoding/..."
+                          "./feature/..."
+                          "./internal/..."
+                          "./language/..."
+                          ;; message - cycle with go-golang-org-x-tools
+                          "./number/..."
+                          "./runes/..."
+                          "./search/..."
+                          "./secure/..."
+                          "./transform/..."
+                          "./unicode/..."
+                          "./width/..."))))))))
     (home-page "https://go.googlesource.com/text")
     (synopsis "Supplemental Go text processing libraries")
-    (description "This package provides supplemental Go libraries for text
+    (description
+     "This package provides supplemental Go libraries for text
 processing.")
     (license license:bsd-3)))
 
