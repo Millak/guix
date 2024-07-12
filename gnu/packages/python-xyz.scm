@@ -2071,7 +2071,7 @@ task of adding retry behavior to just about anything.")
 (define-public python-pytelegrambotapi
   (package
     (name "python-pytelegrambotapi")
-    (version "3.7.4")
+    (version "4.21.0")
     (source
      (origin
        (method git-fetch)
@@ -2080,8 +2080,8 @@ task of adding retry behavior to just about anything.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r7g5zs0fk3g2dxvbpl0pi730x7r2kalrhn30fs0pvc15a59fmxz"))))
-    (build-system python-build-system)
+        (base32 "14df0mll9q8x4fka4lihmz4vdlgrvc4i13bspxnig2qz1b3k4ivv"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -2094,7 +2094,7 @@ task of adding retry behavior to just about anything.")
     (propagated-inputs
      (list python-requests))
     (native-inputs
-     (list python-pytest))
+     (list python-hatchling python-pytest))
     (home-page "https://github.com/eternnoir/pyTelegramBotAPI")
     (synopsis "Python Telegram bot api")
     (description "This package provides a simple, but extensible Python
