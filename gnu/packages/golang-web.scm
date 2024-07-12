@@ -812,6 +812,24 @@ Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-jose-go-jose-v4
+  (package
+    (inherit go-github-com-go-jose-go-jose-v3)
+    (name "go-github-com-go-jose-go-jose-v4")
+    (version "4.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-jose/go-jose")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bf444687q5rdxjgk41bkryhzhx49f6600b7i51m572xdl0r28a9"))))
+    (arguments
+     (list
+      #:import-path "github.com/go-jose/go-jose/v4"))))
+
 (define-public go-github-com-go-ldap-ldap
   (package
     (name "go-github-com-go-ldap-ldap")
