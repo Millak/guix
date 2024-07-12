@@ -229,6 +229,7 @@ when jobs finish.")
                   `(,hwloc-2 "lib")
                   json-c
                   linux-pam
+                  openpmix
                   munge
                   numactl
                   readline))
@@ -244,6 +245,14 @@ when jobs finish.")
                                   (ungexp (this-package-input "hwloc") "lib"))
                    (string-append "--with-json=" #$(this-package-input "json-c"))
                    (string-append "--with-munge=" #$(this-package-input "munge"))
+
+                   ;; Use PMIx bundled with Open MPI (this is required for Open MPI 5.x).
+                   ;; Note: Older versions that inherit from this package lack the
+                   ;; 'openpmix' dependency.
+                   #$(let ((openmpix (this-package-input "openpmix")))
+                       (if openmpix
+                           #~(string-append "--with-pmix=" #$openmpix)
+                           "--without-pmix"))
 
                    ;; 32-bit support is marked as deprecated and needs to be
                    ;; explicitly enabled.
@@ -317,7 +326,12 @@ by managing a queue of pending work.")
               (patches '())                       ;drop 'salloc' patch
               (sha256
                (base32
-                "1sjln54idc9rhg8f2nvm38sgs6fncncyzslas8ixy65pqz2hphbf"))))))
+                "1sjln54idc9rhg8f2nvm38sgs6fncncyzslas8ixy65pqz2hphbf"))))
+
+    ;; This and older versions of slurm have PMIx support but they seem to
+    ;; require an older version of openpmix.  Disable PMIx support.
+    (inputs (modify-inputs (package-inputs slurm-22.05)
+              (delete "openpmix")))))
 
 (define-public slurm-20.11
   (package
