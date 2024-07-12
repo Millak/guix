@@ -6745,7 +6745,7 @@ helping you to transform blocks of text.")
 (define-public go-github-com-muesli-termenv
   (package
     (name "go-github-com-muesli-termenv")
-    (version "0.8.1")
+    (version "0.15.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6754,15 +6754,16 @@ helping you to transform blocks of text.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m24ljq1nq7z933fcvg99fw0fhxj9rb5ll4rlay7z2f2p59mrbdp"))))
+                "19yhli6k79aqpra4djp0cl4q76mqxbc1f7in20y0dzhnjb7yz42p"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/muesli/termenv"))
-    (native-inputs
-     (list go-github-com-google-goterm
+    (propagated-inputs
+     (list go-github-com-aymanbagabas-go-osc52-v2
            go-github-com-lucasb-eyer-go-colorful
            go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-runewidth))
+           go-github-com-mattn-go-runewidth
+           go-golang-org-x-sys))
     (home-page "https://github.com/muesli/termenv/")
     (synopsis "Advanced styling options on the terminal")
     (description "termenv lets you safely use advanced styling options on the
