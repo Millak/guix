@@ -35,6 +35,7 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fabric-management)
   #:use-module (gnu packages gcc)
@@ -143,7 +144,7 @@ bind processes, and much more.")
 (define-public hwloc-2
   (package
     (inherit hwloc-1)
-    (version "2.10.0")
+    (version "2.11.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.open-mpi.org/release/hwloc/v"
@@ -151,11 +152,12 @@ bind processes, and much more.")
                                   "/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "14hkmq2hrs4j5f0sf32aazgbhgbdvj7lwapy35jvwbyyr5hds183"))))
+                "1ikhg35pll9zs628n2nii3ranz9j850hykqqcrgy2p12mpzzpk84"))))
 
-    ;; libnuma is no longer needed.
+    (native-inputs (modify-inputs (package-native-inputs hwloc-1)
+                     (append bash)))              ;for completion tests
     (inputs (modify-inputs (package-inputs hwloc-1)
-              (delete "numactl")))
+              (delete "numactl")))               ;libnuma is no longer needed.
     (arguments
      (substitute-keyword-arguments (package-arguments hwloc-1)
        ((#:phases phases)
