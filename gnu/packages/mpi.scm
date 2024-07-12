@@ -8,6 +8,7 @@
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024 Romain Garbage <romain.garbage@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages valgrind)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
@@ -309,6 +311,63 @@ best MPI library available.  Open MPI offers advantages for system and
 software vendors, application developers and computer science researchers.")
     ;; See file://LICENSE
     (license license:bsd-2)))
+
+(define-public openmpi-5
+  (package
+    (inherit openmpi)
+    (version "5.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.open-mpi.org/software/ompi/v"
+                           (version-major+minor version)
+                           "/downloads/openmpi-" version ".tar.bz2"))
+       (sha256
+        (base32 "02x9xmpggw77mdpikjjx83j6i4v3gkqbncda73lk5axk0vr841cr"))))
+
+    (inputs (modify-inputs (package-inputs openmpi)
+              ;; As of Open MPI 5.0.X, PMIx is used to communicate
+              ;; with SLURM, so SLURM'S PMI is no longer needed.
+              (delete "slurm")
+              (append ucx)              ;for Infiniband support
+              (append openpmix)         ;for PMI support (launching via "srun")
+              (append prrte)))          ;for PMI support (launching via "srun")
+    (native-inputs (modify-inputs (package-native-inputs openmpi)
+                     (append python)))
+
+    (outputs '("out" "debug"))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openmpi)
+       ((#:configure-flags _)
+        #~(list "--enable-mpi-ext=affinity" ;cr doesn't work
+                "--with-sge"
+
+                #$@(if (package? (this-package-input "valgrind"))
+                       #~("--enable-memchecker"
+                          "--with-valgrind")
+                       #~("--without-valgrind"))
+
+                "--with-hwloc=external"
+                "--with-libevent"
+
+                ;; This replaces --enable-mpirun-prefix-by-default wich is deprecated
+                ;; since 5.x.
+                "--enable-prte-prefix-by-default"
+
+                ;; Enable support for the 'Process Management Interface for Exascale'
+                ;; (PMIx) used e.g. by Slurm for the management communication and
+                ;; coordination of MPI processes.
+                (string-append "--with-pmix=" #$(this-package-input "openpmix"))
+                (string-append "--with-prrte=" #$(this-package-input "prrte"))
+
+                ;; Since 5.x, Infiniband support is provided by ucx.
+                ;; See https://docs.open-mpi.org/en/main/release-notes/networks.html#miscellaneous-network-notes
+                (string-append "--with-ucx=" #$(this-package-input "ucx"))))
+
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'remove-absolute)
+            (delete 'scrub-timestamps)))))))
 
 (define-public openmpi-c++
   (package/inherit openmpi
