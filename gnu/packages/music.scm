@@ -1690,7 +1690,8 @@ and auto-mapping slices to MIDI note numbers.")
                   texlive-fontinst
                   texlive-lh
                   texlive-lm
-                  texlive-metapost))
+                  texlive-metapost
+                  texlive-t1utils))
            zip))
     (home-page "https://lilypond.org")
     (synopsis "Music typesetting")
