@@ -2738,7 +2738,7 @@ support.")
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
     (name "go-github-com-sourcegraph-jsonrpc2")
-    (version "0.1.0")
+    (version "0.2.0")
     (home-page "https://github.com/sourcegraph/jsonrpc2")
     (source
      (origin
@@ -2748,14 +2748,12 @@ support.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dk0w32k96vxrwnmm24wqx337dn8ylch65qwrbc3wh7whw2xx71q"))))
+        (base32 "1id35b4mhif9gy1b70mv0x7xkmpm2p8xydix8six10yjyhvm1wjh"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/sourcegraph/jsonrpc2"))
     (propagated-inputs
-     (list go-github-com-daviddengcn-go-colortext
-           go-github-com-gorilla-websocket
-           go-github-com-motemen-go-colorine))
+     (list go-github-com-gorilla-websocket))
     (synopsis "Provides a client and server implementation of JSON-RPC 2.0")
     (description
      "Package jsonrpc2 provides a Go implementation of JSON-RPC 2.0.")
