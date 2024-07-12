@@ -5276,7 +5276,7 @@ representation suitable for computing diffs.")
 (define-public go-github-com-go-sql-driver-mysql
   (package
     (name "go-github-com-go-sql-driver-mysql")
-    (version "1.5.0")
+    (version "1.8.1")
     (source
      (origin
        (method git-fetch)
@@ -5286,11 +5286,13 @@ representation suitable for computing diffs.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11x0m9yf3kdnf6981182r824psgxwfaqhn3x3in4yiidp0w0hk3v"))))
+         "0ihdqg411gkv454fwx8w5nbndgkm5dz5phfliksxgmhggyxxm7sn"))))
     (build-system go-build-system)
     (arguments
      '(#:tests? #f ;; tests require a network connection
        #:import-path "github.com/go-sql-driver/mysql"))
+    (propagated-inputs
+     (list go-filippo-io-edwards25519))
     (home-page "https://github.com/go-sql-driver/mysql")
     (synopsis "MySQL driver for golang")
     (description
