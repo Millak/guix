@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024 Romain Garbage <romain.garbage@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freeipmi)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
@@ -612,3 +614,31 @@ debug information.
        "This header-only C++ library provides a portable interface to
 single-instruction multiple-data (SIMD) intrinsics.")
       (license license:expat))))
+
+(define-public openpmix
+  (package
+   (name "openpmix")
+   (version "4.2.8")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://github.com/openpmix/openpmix/releases/download/v"
+                  version "/pmix-" version ".tar.bz2"))
+            (sha256
+             (base32
+              "1j9xlhqrrmgjdkwakamn78y5gj756adi53hn25zksgr3is3l5d09"))))
+   (build-system gnu-build-system)
+   (arguments
+    (list #:configure-flags
+          #~(list (string-append "--with-hwloc="
+                                 (ungexp (this-package-input "hwloc") "lib")))))
+   (inputs (list libevent `(,hwloc "lib")))
+   (native-inputs (list perl python))
+   (synopsis "PMIx library")
+   (description
+    "PMIx is an application programming interface standard that provides
+libraries and programming models with portable and well-defined access to
+commonly needed services in distributed and parallel computing systems.")
+   (home-page "https://pmix.org/")
+   ;; The provided license is kind of BSD-style but specific.
+   (license (license:fsf-free "https://github.com/openpmix/openpmix?tab=License-1-ov-file#License-1-ov-file"))))
