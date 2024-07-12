@@ -99,7 +99,7 @@
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
-;;; Copyright © 2021, 2023 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2023-2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
@@ -2113,13 +2113,14 @@ implementation for the Telegram Bot API.")
         (base32 "1s7x0v872h8aks8xp01wmv6hzisxqjrh1svbbcycir0980h76krl"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+              (when tests?
+                (add-installed-pythonpath inputs outputs)
+                (invoke "python" "-m" "pytest")))))))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/borntyping/python-colorlog")
