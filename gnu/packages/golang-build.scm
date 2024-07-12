@@ -533,32 +533,33 @@ processing.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-time
-    (package
-      (name "go-golang-org-x-time")
-      (version "0.5.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://go.googlesource.com/time")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1dahq0p6zn2pd408q6hsv1jl12nqrwd1gkl3r3dysk2q0z16192v"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "golang.org/x/time"
+  (package
+    (name "go-golang-org-x-time")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/time")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dahq0p6zn2pd408q6hsv1jl12nqrwd1gkl3r3dysk2q0z16192v"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "golang.org/x/time"
+       ;; Source-only package
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
          ;; Source-only package
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-         ;; Source-only package
-           (delete 'build))))
-      (home-page "https://godoc.org/golang.org/x/time/rate")
-      (synopsis "Supplemental Go time libraries")
-      (description "This package provides supplemental Go libraries related to
+         (delete 'build))))
+    (home-page "https://godoc.org/golang.org/x/time/rate")
+    (synopsis "Supplemental Go time libraries")
+    (description
+     "This package provides supplemental Go libraries related to
 time.")
-      (license license:bsd-3)))
+    (license license:bsd-3)))
 
 (define-public go-golang-org-x-tools
   (package
