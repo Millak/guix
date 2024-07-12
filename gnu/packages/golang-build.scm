@@ -248,18 +248,36 @@ compile does not support generics.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/golang/mod")
+             (url "https://go.googlesource.com/mod")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "02wilb8q2bp6qhqcrbjxq1pjy3y5k8p11pxlg481609zx4rjiszc"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "golang.org/x/mod/"
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  ;; Source-only package
-                  (delete 'build))))
+     (list
+      #:import-path "golang.org/x/mod"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-test-files
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          (list
+                           ;; Break cycle: go-golang-org-x-mod ->
+                           ;; go-golang-org-x-tools -> go-golang-org-x-mod.
+                           "zip/zip_test.go"
+                           ;; Trying to access
+                           ;; <http://ct.googleapis.com/logs/argon2020/ct/v1/get-sth>.
+                           "sumdb/tlog/ct_test.go")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (home-page "https://golang.org/x/mod")
     (synopsis "Tools to work directly with Go module mechanics")
     (description
