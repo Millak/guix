@@ -1975,7 +1975,7 @@ delivery.")
 (define-public exim
   (package
     (name "exim")
-    (version "4.97.1")
+    (version "4.98")
     (source
      (origin
        (method url-fetch)
@@ -1989,7 +1989,7 @@ delivery.")
                     (string-append "https://ftp.exim.org/pub/exim/exim4/old/"
                                    file-name))))
        (sha256
-        (base32 "1afzxyffjqm2xm5v6b731hbfm1fi4q35ja45a29kaycsa1bj0y5x"))))
+        (base32 "1xsjb2hqasxsqsmrcv98c2dvfgcsiy0j0g229fx974lzfy511g0f"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
