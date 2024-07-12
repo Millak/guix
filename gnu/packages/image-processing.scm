@@ -276,7 +276,18 @@ of external libraries that provide additional functionality.")
     (build-system cmake-build-system)
     (arguments
      ;; XXX: GPU tests are failing.
-     (list #:configure-flags #~(list "-DOCIO_BUILD_GPU_TESTS=false")))
+     (list #:configure-flags #~(list "-DOCIO_BUILD_GPU_TESTS=false")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'fix-OpenColorIOConfig
+                          (lambda _
+                            ;; Work around a CMake Zlib-detection bug:
+                            ;; https://gitlab.kitware.com/cmake/cmake/-/issues/25200
+                            ;; make OpenColorIOConfig.cmake is a normal cmake file
+                            (substitute*
+                                (string-append #$output
+                                               "/lib/cmake/OpenColorIO/OpenColorIOConfig.cmake")
+                              (("\\.#define ZLIB_VERSION \"1\\.3\"")
+                               "")))))))
     (native-inputs
      ;; XXX: OCIO has unit tests for OpenShadingLanguage, but they fail.
      ;; They also require OIIO, but OCIO is an optional dependency to it.
