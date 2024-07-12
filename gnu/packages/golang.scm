@@ -6841,7 +6841,7 @@ size of the terminal.")
 (define-public go-github-com-charmbracelet-glamour
   (package
     (name "go-github-com-charmbracelet-glamour")
-    (version "0.2.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6850,40 +6850,56 @@ size of the terminal.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1idq8d13rp1hx2a1xak31fwl9fmi09p2x4ymvzl7aj850saw5w0z"))))
+                "073kyx94r9f0hpjv5c3x9pfdd3dbpyqcy7jhx4yxz0ps25j1a41p"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/charmbracelet/glamour"
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-tests
-                 (lambda _
-                   ;; Some tests fail due to different number of '^[0m' symbols at
-                   ;; the beginning and the end of paragraphs.  To fix that we
-                   ;; re-generate 'readme.test' so the test output will match the
-                   ;; 'readme.test' contents.
-                   (chmod "src/github.com/charmbracelet/glamour/testdata/readme.test"
-                          #o644)
-                   (substitute* "src/github.com/charmbracelet/glamour/glamour_test.go"
-                     (("	generate = false")
-                      "	generate = true")))))))
-    (native-inputs
-     (list go-github-com-alecthomas-chroma
-           go-github-com-danwakefield-fnmatch
-           go-github-com-dlclark-regexp2
+     (list
+      #:import-path "github.com/charmbracelet/glamour"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; Some tests fail due to different number of '^[0m' symbols at
+              ;; the beginning and the end of paragraphs.  To fix that we
+              ;; re-generate 'readme.test' so the test output will match the
+              ;; 'readme.test' contents.
+              (chmod "src/github.com/charmbracelet/glamour/testdata/readme.test"
+                     #o644)
+              (substitute* "src/github.com/charmbracelet/glamour/glamour_test.go"
+                (("	generate = false")
+                 "	generate = true"))))
+          ;; FIXME: Pattern embedded: cannot embed directory embedded:
+          ;; contains no embeddable files.
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module which is sourced during setup environment phase, but
+          ;; easy resolved after coping to expected directory "vendor" within
+          ;; the current package, see details in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-before 'build 'copy-input-to-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (mkdir "vendor")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-input "go-github-com-alecthomas-chroma-v2")
+                  "/src/github.com")
+                 "vendor/github.com"))))
+          (add-before 'install 'remove-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "vendor")))))))
+    (propagated-inputs
+     (list go-github-com-alecthomas-chroma-v2
            go-github-com-microcosm-cc-bluemonday
-           go-github-com-chris-ramon-douceur
-           go-github-com-aymerick-douceur
-           go-github-com-gorilla-css
            go-github-com-muesli-reflow
-           go-github-com-mattn-go-runewidth
            go-github-com-muesli-termenv
-           go-github-com-google-goterm
-           go-github-com-lucasb-eyer-go-colorful
-           go-github-com-mattn-go-isatty
            go-github-com-olekukonko-tablewriter
            go-github-com-yuin-goldmark
-           go-golang-org-x-net))
+           go-github-com-yuin-goldmark-emoji))
     (home-page "https://github.com/charmbracelet/glamour/")
     (synopsis "Write handsome command-line tools with glamour")
     (description "@code{glamour} lets you render markdown documents and
