@@ -291,34 +291,35 @@ loading algorithms.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-net
-    (package
-      (name "go-golang-org-x-net")
-      (version "0.27.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://go.googlesource.com/net")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0fc6d968yiv2l67z9jg7ssvas1hd1jniqh4m7mmlay0q5gk4vf8s"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "golang.org/x/net"
-        ;; Source-only package
-        #:tests? #f
-        #:phases
-        #~(modify-phases %standard-phases
-            ;; Source-only package
-            (delete 'build))))
-      (propagated-inputs
-       (list go-golang-org-x-sys go-golang-org-x-term go-golang-org-x-text))
-      (home-page "https://go.googlesource.com/net")
-      (synopsis "Go supplemental networking libraries")
-      (description "This package provides supplemental Go networking libraries.")
-      (license license:bsd-3)))
+  (package
+    (name "go-golang-org-x-net")
+    (version "0.27.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/net")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fc6d968yiv2l67z9jg7ssvas1hd1jniqh4m7mmlay0q5gk4vf8s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "golang.org/x/net"
+      ;; Source-only package
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Source-only package
+          (delete 'build))))
+    (propagated-inputs
+     (list go-golang-org-x-sys go-golang-org-x-term go-golang-org-x-text))
+    (home-page "https://go.googlesource.com/net")
+    (synopsis "Go supplemental networking libraries")
+    (description
+     "This package provides supplemental Go networking libraries.")
+    (license license:bsd-3)))
 
 (define-public go-golang-org-x-sync
   (package
