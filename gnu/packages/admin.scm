@@ -1572,7 +1572,9 @@ connection alive.")
                                     version "/dhcp-" version ".tar.gz"))
                 (sha256
                  (base32
-                  "1ivkvhhvqxap6c51cli7pa6xn76ngxri1zbl45ishz4ranxidi0a"))))
+                  "1ivkvhhvqxap6c51cli7pa6xn76ngxri1zbl45ishz4ranxidi0a"))
+                (patches (search-patches
+                           "dhclient-script-resolvconf-support.patch"))))
       (build-system gnu-build-system)
       (arguments
        `(#:parallel-build? #f
@@ -1666,12 +1668,13 @@ connection alive.")
              (lambda* (#:key inputs outputs #:allow-other-keys)
                ;; Install the dhclient script for GNU/Linux and make sure
                ;; if finds all the programs it needs.
-               (let* ((out       (assoc-ref outputs "out"))
-                      (libexec   (string-append out "/libexec"))
-                      (coreutils (assoc-ref inputs "coreutils*"))
-                      (inetutils (assoc-ref inputs "inetutils"))
-                      (grep      (assoc-ref inputs "grep*"))
-                      (sed       (assoc-ref inputs "sed*"))
+               (let* ((out        (assoc-ref outputs "out"))
+                      (libexec    (string-append out "/libexec"))
+                      (coreutils  (assoc-ref inputs "coreutils*"))
+                      (inetutils  (assoc-ref inputs "inetutils"))
+                      (grep       (assoc-ref inputs "grep*"))
+                      (resolvconf (assoc-ref inputs "resolvconf*"))
+                      (sed        (assoc-ref inputs "sed*"))
                       (debianutils (assoc-ref inputs "debianutils")))
                  (substitute* "client/scripts/linux"
                    (("/sbin/ip")
@@ -1687,7 +1690,8 @@ connection alive.")
                      ,(map (lambda (dir)
                              (string-append dir "/bin:"
                                             dir "/sbin"))
-                           (list inetutils coreutils grep sed debianutils))))))))))
+                           (list inetutils coreutils grep sed resolvconf
+                                 debianutils))))))))))
 
       (native-inputs
        (list config perl file))
@@ -1716,6 +1720,7 @@ connection alive.")
 
                 ("coreutils*" ,coreutils)
                 ("grep*" ,grep)
+                ("resolvconf*" ,openresolv)
                 ("sed*" ,sed)))
 
       (home-page "https://www.isc.org/dhcp/")
