@@ -2083,14 +2083,14 @@ task of adding retry behavior to just about anything.")
         (base32 "0r7g5zs0fk3g2dxvbpl0pi730x7r2kalrhn30fs0pvc15a59fmxz"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "tests"
-                 (invoke "py.test")))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests"
+                  (invoke "py.test"))))))))
     (propagated-inputs
      (list python-requests))
     (native-inputs
