@@ -241,20 +241,18 @@ compile does not support generics.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-mod
-  (let ((commit "7c05a442b7c1d1a107879b4a090bb5a38d3774a1")
-        (revision "0"))
     (package
       (name "go-golang-org-x-mod")
-      (version (git-version "0.7.0" revision commit))
+      (version "0.19.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/golang/mod")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "14r24fq3kn84k2y2jvvg8hwpy52a3q429pimrdwl5zwknbr2awmh"))))
+          (base32 "02wilb8q2bp6qhqcrbjxq1pjy3y5k8p11pxlg481609zx4rjiszc"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path "golang.org/x/mod/"
@@ -272,7 +270,7 @@ modules themselves.
 The specific case of loading packages should still be done by invoking the
 @command{go} command, which remains the single point of truth for package
 loading algorithms.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public go-golang-org-x-net
   (let ((commit "8e0e7d8d38f2b6d21d742845570dde2902d06a1d")
