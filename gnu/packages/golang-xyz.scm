@@ -820,6 +820,30 @@ for generating command line clients for your application configuration that is
 stored in a Go struct.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-aymanbagabas-go-osc52-v2
+  (package
+    (name "go-github-com-aymanbagabas-go-osc52-v2")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aymanbagabas/go-osc52")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y4y49zys7fi5wpicpdmjqnk0mb6569zg546km02yck2349jl538"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aymanbagabas/go-osc52/v2"))
+    (home-page "https://github.com/aymanbagabas/go-osc52")
+    (synopsis "Terminal ANSI OSC52 wrapper")
+    (description
+     "OSC52 is a terminal escape sequence that allows copying text to the
+clipboard.")
+    (license license:expat)))
+
 (define-public go-github-com-benbjohnson-clock
   (package
     (name "go-github-com-benbjohnson-clock")
