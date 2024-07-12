@@ -4,14 +4,15 @@
 # Marek Felšöci <marek@felsoci.sk>, 2021, 2022, 2023, 2024.
 # Rostislav Svoboda <Rostislav.Svoboda@gmail.com>, 2022.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2023, 2024.
+# Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2024.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-05-31 06:49+0000\n"
-"Last-Translator: Marek Felšöci <marek@felsoci.sk>\n"
+"PO-Revision-Date: 2024-06-09 20:36+0000\n"
+"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>\n"
 "Language-Team: Slovak <https://translate.fedoraproject.org/projects/guix/guix/sk/>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
@@ -7240,6 +7241,17 @@ msgid ""
 "      --max-layers=N\n"
 "                         Number of image layers"
 msgstr ""
+"\n"
+"      --image-tag=NÁZOV\n"
+"                         Použiť daný NÁZOV pre úložisko obrazov Dockera\n"
+"\n"
+"      -A, --entry-point-argument=PRÍKAZ/PARAMETER\n"
+"                         Hodnota, či hodnoty, ENTRYPOINT parametrov Dockera.\n"
+"                         Uznajú sa aj viaceré inštancie, ale toto platí len\n"
+"                         v spojení s voľbou --entry-point\n"
+"\n"
+"      --max-layers=Č\n"
+"                         Počet vrstiev obrazu"
 
 #: guix/scripts/pack.scm:1371
 msgid ""
@@ -7475,21 +7487,19 @@ msgid "computing ~h package derivations for ~a...~%"
 msgstr "výpočet odvodenín balíkov v počte ~h pre ~a...~%"
 
 #: guix/scripts/weather.scm:197
-#, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
+#, scheme-format
 msgid "could not read '~a': ~a~%"
-msgstr "nepodarilo sa načítať „~a“: ~a~%"
+msgstr "nepodarilo sa prečítať „~a“: ~a~%"
 
 #: guix/scripts/weather.scm:199
 #, scheme-format
 msgid "'~a' is unreadable, cannot determine whether substitutes are authorized~%"
-msgstr ""
+msgstr "nemožno prečítať „~a“, nedá sa teda zistiť, či sú povolené náhrady~%"
 
 #: guix/scripts/weather.scm:205
-#, fuzzy, scheme-format
-#| msgid "updating substitutes from '~a'... ~5,1f%"
+#, scheme-format
 msgid "substitutes from '~a' are unauthorized~%"
-msgstr "aktualizujú sa náhrady z „~a“... ~5,1f%"
+msgstr "náhrady z „~a“ nie sú povolené~%"
 
 #: guix/scripts/weather.scm:210
 #, scheme-format
@@ -7509,6 +7519,20 @@ msgid ""
 "See \"Getting Substitutes from Other Servers\" in the manual for more\n"
 "information."
 msgstr ""
+"Pre povolenie stiahnutia všetkých náhrad z @uref{~a}\n"
+"je nutné vykonať nasledovné príkazy ako správca:\n"
+"\n"
+"@example\n"
+"guix archive --authorize <<EOF\n"
+"~a\n"
+"EOF\n"
+"@end example\n"
+"\n"
+"Ďalšou možnosťou je pridať v systéme Guix horeuvedené kľúče do\n"
+"poľa @code{authorized-keys} v @code{guix-configuration}.\n"
+"\n"
+"Viac sa dozviete v príručke v časti „Získavanie náhrad z iných\n"
+"serverov“."
 
 #. TRANSLATORS: it is quite possible zero store items are
 #. looked for.
@@ -7620,16 +7644,12 @@ msgstr ""
 "                         vyhľadať náhrady za balíky uvedené v BALÍKOSPISE"
 
 #: guix/scripts/weather.scm:390
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -e, --expression=EXPR  build the package or derivation EXPR evaluates to"
 msgid ""
 "\n"
 "  -e, --expression=EXPR  build the object EXPR evaluates to"
 msgstr ""
 "\n"
-"  -e, --expression=VÝRAZ  zostaviť balík alebo odvodeninu, ktorá je výsledkom vyhodnotenia VÝRAZU"
+"  -e, --expression=VÝRAZ  zostaviť výsledok vyhodnotenia VÝRAZU"
 
 #: guix/scripts/weather.scm:392
 msgid ""
@@ -7677,10 +7697,9 @@ msgid "report on the availability of pre-built package binaries"
 msgstr "zistiť dostupnosť pred-zostavených binárnych súborov balíkov"
 
 #: guix/scripts/weather.scm:645
-#, fuzzy, scheme-format
-#| msgid "unsupported substitute URI scheme: ~a~%"
+#, scheme-format
 msgid "using default substitute URLs~%"
-msgstr "nepodporované pravidlo nahrádzania prepojení: ~a~%"
+msgstr "používajú sa predvolené zdroje náhrad~%"
 
 #: guix/scripts/describe.scm:54 guix/scripts/processes.scm:291
 msgid "The available formats are:\n"
@@ -9404,10 +9423,9 @@ msgid "timeout while connecting to SSH server at '~a'"
 msgstr "čas pripojenia vypršal pri pripájaní na server SSH na „~a“"
 
 #: guix/ssh.scm:178
-#, fuzzy, scheme-format
-#| msgid "SSH authentication failed for '~a': ~a~%"
+#, scheme-format
 msgid "SSH authentication failed for '~a@~a': ~a~%"
-msgstr "overenie SSH zlyhalo pre „~a“: ~a~%"
+msgstr "zlyhalo overenie SSH pre „~a@~a“: ~a~%"
 
 #: guix/ssh.scm:183
 #, scheme-format
@@ -9516,10 +9534,9 @@ msgid "revision ~a of ~a could not be fetched from Software Heritage~%"
 msgstr "nepodarilo sa získať úpravu ~a pre ~a zo Software Heritage~%"
 
 #: guix/git.scm:459
-#, fuzzy, scheme-format
-#| msgid "Updating channel '~a' from Git repository at '~a'...~%"
+#, scheme-format
 msgid "compressing cached Git repository at '~a'...~%"
-msgstr "Aktualizuje sa kanál „~a“ z Git repozitára na „~a“...~%"
+msgstr "stláča sa Git repozitár na „~a“ prítomný vo vyrovnávacej pamäti...~%"
 
 #: guix/git.scm:777
 #, scheme-format
@@ -10145,20 +10162,17 @@ msgid "--no-cwd cannot be used without '--container'~%"
 msgstr "nedá sa použiť „--no-cwd“ bez „--container“~%"
 
 #: guix/scripts/environment.scm:1130
-#, fuzzy, scheme-format
-#| msgid "'--emulate-fhs' cannot be used without '--container~%'"
+#, scheme-format
 msgid "'--emulate-fhs' cannot be used without '--container'~%"
 msgstr "nedá sa použiť „--emulate-fhs“ bez „--container“~%"
 
 #: guix/scripts/environment.scm:1132
-#, fuzzy, scheme-format
-#| msgid "'--nesting' cannot be used without '--container~%'"
+#, scheme-format
 msgid "'--nesting' cannot be used without '--container'~%"
-msgstr "nedá sa použiť „--nesting“ bez „--container~%“"
+msgstr "nedá sa použiť „--nesting“ bez „--container“~%"
 
 #: guix/scripts/environment.scm:1134
-#, fuzzy, scheme-format
-#| msgid "'--symlink' cannot be used without '--container~%'"
+#, scheme-format
 msgid "'--symlink' cannot be used without '--container'~%"
 msgstr "nedá sa použiť „--symlink“ bez „--container“~%"
 
@@ -10377,20 +10391,18 @@ msgstr ""
 "      --branch=VETVA    použiť vrchol danej VETVY"
 
 #: guix/scripts/time-machine.scm:162
-#, fuzzy, scheme-format
-#| msgid "cannot fetch commit ~a from ~a: ~a"
+#, scheme-format
 msgid "cannot travel past commit `~a' from May 1st, 2019"
-msgstr "nedá sa získať úprava ~a z ~a: ~a"
+msgstr "nie je možné sa vrátiť ďalej do minulosti ako na úpravu „~a“ z 1. mája 2019"
 
 #: guix/scripts/time-machine.scm:172
 msgid "run commands from a different revision"
 msgstr "spustiť príkazy z inej úpravy"
 
 #: guix/scripts/time-machine.scm:200
-#, fuzzy, scheme-format
-#| msgid "no arguments specified, nothing to do~%"
+#, scheme-format
 msgid "no command specified; nothing to do~%"
-msgstr "neboli zadané žiadne parametre, nie je čo robiť~%"
+msgstr "nebol zadaný žiadny príkaz, nie je čo robiť~%"
 
 #: guix/scripts/import/cpan.scm:42
 msgid ""
@@ -10409,19 +10421,14 @@ msgstr ""
 "Nahrať a previesť crates.io balík s NÁZVOM-BALÍKA.\n"
 
 #: guix/scripts/import/crate.scm:51
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --prein-file=FILE\n"
-#| "                         Embed the provided prein script"
 msgid ""
 "\n"
 "      --recursive-dev-dependencies\n"
 "                         include dev-dependencies recursively"
 msgstr ""
 "\n"
-"      --prein-file=SÚBOR\n"
-"                         Vložiť poskytnutý pred-inštalačný skript"
+"      --recursive-dev-dependencies\n"
+"                         rekurzívne zahrnúť zostavovacie závislosti"
 
 #: guix/scripts/import/crate.scm:54
 msgid ""
@@ -10430,6 +10437,10 @@ msgid ""
 "                         allow importing yanked crates if no alternative\n"
 "                         satisfying the version requirement exists"
 msgstr ""
+"\n"
+"      --allow-yanked\n"
+"                         povoliť načítanie predtým odstránených knižníc, ak nemožno\n"
+"                         iným spôsobom uspokojiť požiadavku na verziu"
 
 #: guix/scripts/import/egg.scm:43
 msgid ""
@@ -10843,16 +10854,14 @@ msgid "~a: missing URL~%"
 msgstr "~a: chýbajúce prepojenie~%"
 
 #: guix/scripts/perform-download.scm:101
-#, fuzzy, scheme-format
-#| msgid "~a: missing URL~%"
+#, scheme-format
 msgid "~a: missing Git URL~%"
-msgstr "~a: chýbajúce prepojenie~%"
+msgstr "~a: chýbajúce Git prepojenie~%"
 
 #: guix/scripts/perform-download.scm:103
-#, fuzzy, scheme-format
-#| msgid "~a: missing URL~%"
+#, scheme-format
 msgid "~a: missing Git commit~%"
-msgstr "~a: chýbajúce prepojenie~%"
+msgstr "~a: chýbajúce číslo úpravy v Gite~%"
 
 #: guix/scripts/perform-download.scm:123
 #, scheme-format
@@ -10864,10 +10873,9 @@ msgid "perform download described by fixed-output derivations"
 msgstr "vykonať sťahovanie popísané odvodeninami s pevným výstupom"
 
 #: guix/scripts/perform-download.scm:153
-#, fuzzy, scheme-format
-#| msgid "~a: unknown diff mode~%"
+#, scheme-format
 msgid "~a: unknown builtin builder"
-msgstr "~a: neznámy spôsob zobrazenia rozdielov~%"
+msgstr "~a: neznámy vstavaný zostavovač"
 
 #: guix/scripts/perform-download.scm:159
 #, scheme-format
@@ -10936,19 +10944,14 @@ msgstr ""
 "  -m, --manifest=SÚBOR    vybrať všetky balíky z balíkospisu v SÚBORE"
 
 #: guix/scripts/refresh.scm:171
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --with-version=PACKAGE=VERSION\n"
-#| "                         use the given upstream VERSION of PACKAGE"
 msgid ""
 "\n"
 "      --target-version=VERSION\n"
 "                         update the package or packages to VERSION"
 msgstr ""
 "\n"
-"      --with-version=BALÍK=VERZIA\n"
-"                         použiť danú VERZIU od poskytovateľa pre BALÍK"
+"      --target-version=VERZIA\n"
+"                         aktualizovať balík, či balíky, na VERZIU"
 
 #: guix/scripts/refresh.scm:174
 msgid ""
@@ -11455,10 +11458,9 @@ msgid "'--styling' option has no effect in whole-file mode~%"
 msgstr "voľba „--styling“ nemá pri použití na celý obsah súboru žiadny účinok~%"
 
 #: guix/scripts/style.scm:629
-#, fuzzy, scheme-format
-#| msgid "no arguments specified, nothing to do~%"
+#, scheme-format
 msgid "no files specified, nothing to do~%"
-msgstr "neboli zadané žiadne parametre, nie je čo robiť~%"
+msgstr "neboli zadané žiadne súbory, nie je čo robiť~%"
 
 #: guix/scripts/system/reconfigure.scm:320
 #, scheme-format
