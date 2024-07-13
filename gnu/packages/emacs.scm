@@ -100,15 +100,18 @@
 (define-public emacs-minimal
   (package
     (name "emacs-minimal")
-    (version "29.3")
-    (replacement emacs-minimal/fixed)
+    (version "29.4")
+    ;; Note: When using (replacement …), ensure that comp-native-version-dir
+    ;; stays the same across grafts.
+    ;; Run `make check-system TESTS=emacs-native-comp' to ensure that grafts
+    ;; can meaningfully be applied.
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/emacs/emacs-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1822swrk4ifmkd4h9l0h37zifcpa1w3sy3vsgyffsrp6mk9hak63"))
+                "0dd2mh6maa7dc5f49qdzj7bi4hda4wfm1cvvgq560djcz537k2ds"))
               (patches (search-patches "emacs-disable-jit-compilation.patch"
                                        "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
@@ -334,18 +337,6 @@ languages.")
             (variable "TREE_SITTER_GRAMMAR_PATH")
             (files '("lib/tree-sitter")))))
     (properties `((upstream-name . "emacs")))))
-
-(define emacs-minimal/fixed
-  (package
-    (inherit emacs-minimal)
-    (version "29.4")
-    (source
-     (origin (inherit (package-source emacs-minimal))
-             (uri (string-append "mirror://gnu/emacs/emacs-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "0dd2mh6maa7dc5f49qdzj7bi4hda4wfm1cvvgq560djcz537k2ds"))))))
 
 (define-public emacs-no-x
   (package/inherit emacs-minimal
