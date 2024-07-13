@@ -1842,9 +1842,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/pokerth-boost.patch			\
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
   %D%/packages/patches/procps-strtod-test.patch                 \
-  %D%/packages/patches/prusa-slicer-boost-fixes.patch		\
   %D%/packages/patches/prusa-slicer-fix-tests.patch		\
-  %D%/packages/patches/prusa-slicer-with-cereal-1.3.1.patch	\
   %D%/packages/patches/prusa-wxwidgets-makefile-fix.patch	\
   %D%/packages/patches/pthreadpool-system-libraries.patch	\
   %D%/packages/patches/python-3.12-fix-tests.patch		\
