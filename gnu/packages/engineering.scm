@@ -3876,6 +3876,53 @@ perform various useful functions such as:
 visualization, matrix manipulation.")
     (license (list license:gpl3 license:mpl2.0))))
 
+(define-public prusa-libbgcode
+  ;; Use the latest commit since there are no proper releases nor tags, see
+  ;; <https://github.com/prusa3d/libbgcode/issues/31>.
+  (let ((commit "8ae75bd0eea622f0e34cae311b3bd065b55eae9b")
+        (revision "0"))
+    (package
+      (name "prusa-libbgcode")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/prusa3d/libbgcode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0fjx2ijz9zqpqs486lcrrrhqvmfzrpb8j6v57l0jiynavwv3kznw"))))
+      (native-inputs (list catch2))
+      (propagated-inputs (list zlib boost heatshrink))
+      (build-system cmake-build-system)
+      (home-page "https://github.com/prusa3d/libbgcode")
+      (synopsis "Prusa Block and Binary G-code reader/writer/converter")
+      (description
+       "Binary G-code is a new standard for encoding and compressing ASCII G-code
+files.  G-code files are easy to read and interpret, but their downside is that the
+data is not saved efficiently, and the file size is often very large.  Compression of
+the file is problematic because the printers usually run on limited hardware and they
+may not have enough memory and/or CPU power to decompress it.
+
+Block and Binary G-Code is a new G-code file format featuring the following
+improvements over the legacy G-code:
+@itemize
+@item Block structure with distinct blocks for metadata vs. G-code.
+@item Faster navigation.
+@item Coding and compression for smaller file size.
+@item Checksum for data validity.
+@item Extensibility through new (custom) blocks.  For example, a file signature block
+may be welcome by corporate customers.
+@end itemize
+
+The binary G-code format is flexible and the encoding and compression of individual
+blocks is variable.  @code{libbgcode} library contains the routines to convert ASCII
+G-codes to binary and vice versa.")
+      ;; See
+      ;; <https://github.com/prusa3d/libbgcode/blob/main/pyproject.toml>
+      (license license:agpl3+))))
+
 (define-public prusa-slicer
   (package
     (name "prusa-slicer")
