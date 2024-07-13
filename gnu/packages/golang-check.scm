@@ -1323,7 +1323,7 @@ built-in @code{testing} package, but can be used in other contexts too.")
 (define-public go-honnef-co-go-tools
   (package
     (name "go-honnef-co-go-tools")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch)
@@ -1333,7 +1333,7 @@ built-in @code{testing} package, but can be used in other contexts too.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0qikkhanmc0vrpgvs0c44y853n88m8qqsk08zry6mvm8f41pgjhi"))))
+         "1n58skq2a0vhsgdfdkyqi00d3vv13kiw9b4mxx6xfyb6ysrdy7d1"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "honnef.co/go/tools"
@@ -1343,7 +1343,7 @@ built-in @code{testing} package, but can be used in other contexts too.")
                   (delete 'build))))
     (propagated-inputs
      (list go-github-com-burntsushi-toml
-           go-golang-org-x-exp
+           go-golang-org-x-exp-typeparams
            go-golang-org-x-mod
            go-golang-org-x-tools))
     (home-page "https://staticcheck.dev/")
