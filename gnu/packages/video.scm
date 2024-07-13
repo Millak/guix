@@ -2711,7 +2711,7 @@ projects while introducing many more.")
 (define-public smplayer
   (package
     (name "smplayer")
-    (version "22.7.0")
+    (version "23.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2719,12 +2719,16 @@ projects while introducing many more.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0qs9vz440bdvnyghi7f4frsan7n9xiy3afw9lhmf5m8xxa37325c"))))
+               (base32 "0yrm57rib910h9m4avhg6mkmkzy9xjb3f185c5zr6jls100az8h1"))))
     (build-system qt-build-system)
     (native-inputs
      (list qttools-5))
     (inputs
-     (list bash-minimal qtbase-5 zlib mpv))
+     (list bash-minimal
+           qtbase-5
+           qtdeclarative-5
+           zlib
+           mpv))
     (arguments
      (list #:tests? #false              ; no tests
            #:make-flags #~(list (string-append "PREFIX=" #$output)
