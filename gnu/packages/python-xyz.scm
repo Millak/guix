@@ -18414,20 +18414,11 @@ with a new public API, and RPython support.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0fp5x94hyckjfap2pb1rj551a3q70vrljxark7hj9kdhr7prbggi"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "-m" "pytest" "-k"
-                        (string-append   ; skip some failed tests
-                         "not test_sys_executable"
-                         " and not test_circular_macro_require"
-                         " and not test_macro_require"
-                         " and not test_requires_pollutes_core"))))))))
+     ;; This test expects the hy executable to be called 'hy', but in Guix
+     ;; it's .hy-real.
+     (list #:test-flags #~(list "-k" "not test_sys_executable")))
     (native-inputs
      (list python-pytest-next python-wheel))
     (propagated-inputs
