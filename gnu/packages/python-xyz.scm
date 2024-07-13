@@ -18404,7 +18404,7 @@ with a new public API, and RPython support.")
 (define-public python-hy
   (package
     (name "python-hy")
-    (version "0.28.0")
+    (version "0.29.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -18413,23 +18413,12 @@ with a new public API, and RPython support.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fs9ydqlbhmp4l3lf8ap8bksbpmlscm6gz7zf9bv2kmcldkjlzsw"))))
+        (base32 "0fp5x94hyckjfap2pb1rj551a3q70vrljxark7hj9kdhr7prbggi"))))
     (build-system python-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; Hy includes a script that writes a version.py file that Hy uses to
-          ;; report its version. That script uses information from the git
-          ;; repository or the HY_VERSION environment variable. Therefore,
-          ;; these phases set HY_VERSION and then remove the support scripts
-          ;; which get installed in the root of the output.
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "HY_VERSION" #$version)))
-          (add-after 'install 'remove-installed-build-scripts
-            (lambda _
-              (delete-file-recursively (string-append #$output "/get_version"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
