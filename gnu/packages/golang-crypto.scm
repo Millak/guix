@@ -119,7 +119,7 @@ can be ignored.")
 (define-public go-filippo-io-age
   (package
     (name "go-filippo-io-age")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -128,10 +128,41 @@ can be ignored.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k1dv1jkr72qpk5g363mhrg9hnf5c9qgv4l16l13m4yh08jp271d"))))
+        (base32 "1dms32lxqgjipmlisng7dmy1sdw0qscj43x9lmpadyzbzc64lhrv"))))
     (build-system go-build-system)
-    (arguments `(#:import-path "filippo.io/age"))
-    (inputs
+    (arguments
+     (list
+      #:import-path "filippo.io/age"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: src/c2sp.org/CCTV/age/age.go:13:12: pattern testdata:
+          ;; cannot embed directory testdata: contains no embeddable files
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module which is sourced during setup environment phase, but
+          ;; easy resolved after coping to expected directory "vendor" within
+          ;; the current package, see details in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-before 'build 'copy-input-to-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (mkdir "vendor")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-native-input "go-c2sp-org-cctv-age")
+                  "/src/c2sp.org")
+                 "vendor/c2sp.org"))))
+          (add-before 'install 'remove-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "vendor")))))))
+    (native-inputs
+     (list go-c2sp-org-cctv-age
+           go-github-com-rogpeppe-go-internal))
+    (propagated-inputs
      (list go-golang-org-x-sys
            go-golang-org-x-term
            go-golang-org-x-crypto
