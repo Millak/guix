@@ -3160,34 +3160,31 @@ command-line parsers.")
     ;; XXX: Newer version of govulncheck requires golang.org/x/telemetry,
     ;; which needs to be discussed if it may be included in Guix.
     (version "0.0.0-20230110180137-6ad3e3d07815")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://go.googlesource.com/vuln")
-                    (commit (go-version->git-ref version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1fhz27ni8bs872rgvqq700qacak9v45zy0fh2hilq21sk6dks72r"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/vuln")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fhz27ni8bs872rgvqq700qacak9v45zy0fh2hilq21sk6dks72r"))))
     (build-system go-build-system)
     (arguments
-     `(#:tests? #f ; it tires to download modules from the network
-       #:install-source? #f
-       #:import-path "golang.org/x/vuln/cmd/govulncheck"
-       #:unpack-path "golang.org/x/vuln"))
-    (native-inputs (list coreutils-minimal))
-    (inputs (list go-golang-org-x-sys
-                  go-github-com-google-renameio
-                  go-github-com-burntsushi-toml
-                  go-mvdan-cc-unparam
-                  go-honnef-co-go-tools
-                  go-golang-org-x-tools
-                  go-golang-org-x-sync
-                  go-golang-org-x-mod
-                  go-golang-org-x-exp
-                  go-github-com-google-go-cmp-cmp
-                  go-github-com-google-go-cmdtest
-                  go-github-com-client9-misspell))
+     (list
+      #:tests? #f ; it tires to download modules from the network
+      #:install-source? #f
+      #:import-path "golang.org/x/vuln/cmd/govulncheck"
+      #:unpack-path "golang.org/x/vuln"))
+    (native-inputs
+     (list coreutils-minimal))
+    (propagated-inputs
+     (list go-github-com-google-go-cmdtest
+           go-github-com-google-go-cmp-cmp
+           go-golang-org-x-exp
+           go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-golang-org-x-tools))
     (home-page "https://golang.org/x/vuln")
     (synopsis "Go Vulnerability Management")
     (description
