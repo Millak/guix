@@ -40,6 +40,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -573,6 +574,45 @@ container format.  With typical files, XZ Utils create 30 % smaller output
 than gzip and 15 % smaller output than bzip2.")
    (license (list license:gpl2+ license:lgpl2.1+)) ; bits of both
    (home-page "https://tukaani.org/xz/")))
+
+(define-public heatshrink
+  (package
+    (name "heatshrink")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atomicobject/heatshrink/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sdhvk27yz8kahw18j8pddbpkgl78v8rh8fx6wspc3acj7w7yvrn"))
+       ;; Add CMake build script, wanted by prusa-slicer and libbgcode, which are the
+       ;; only users of this library (see
+       ;; <https://github.com/NixOS/nixpkgs/pull/269758/commits/fa36136ceed0e2c58e0c9e21492a7e60c3a64470>.)
+       (patches (search-patches "heatshrink-add-cmake.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; XXX: No tests available with CMake (see
+      ;; <https://github.com/atomicobject/heatshrink/pull/77>.)
+      #:tests? #f))
+    (home-page "https://github.com/atomicobject/heatshrink/")
+    (synopsis "Data compression library for embedded/real-time systems")
+    (description
+     "A data compression/decompression library for embedded/real-time systems.
+
+Among its features are:
+@itemize
+@item Low memory usage (as low as 50 bytes.)  It is useful for some cases with less
+than 50 bytes, and useful for many general cases with less than 300 bytes.
+@item Incremental, bounded CPU use.  It can be used to chew on input data in
+arbitrarily tiny bites.  This is a useful property in hard real-time environments.
+@item Can use either static or dynamic memory allocation.
+@end itemize
+")
+    (license license:isc)))
 
 (define-public lhasa
   (package
