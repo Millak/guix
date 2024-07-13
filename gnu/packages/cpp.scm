@@ -314,23 +314,21 @@ use by the C++ Core Guidelines maintained by the Standard C++ Foundation.")
     (name "c2ffi")
     ;; As per the c2ffi README: the first three elements are encoding the
     ;; required Clang/LLVM version, and the last one is the c2ffi revision.
-    (version "16.0.0.0")
+    (version "18.1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/rpav/c2ffi")
-             ;; Upstream is not tagging releases consistently.
-             ;; (commit (string-append "v" version))
-             (commit "097cbe61ca02dc79ea60859aa056975131a9d985")))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mqhw4838chl495gaj9z0731ahkmqb4f3wlc1qalk82fdsaniyd5"))
+        (base32 "03hw650wjrc4jb4ra8bwc4rnprr0fpnf3wlxzacfjysvl25jb0j6"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* "CMakeLists.txt"
            ;; Guix seems to be packaging LLVM libs separately thus -lLLVM
-           ;; won't work, every used library must be specified explicitly.
+           ;; won't work.  Instead every library used must be listed.
            (("c2ffi PUBLIC clang-cpp LLVM")
             "c2ffi PUBLIC clang-cpp LLVMCore LLVMSupport LLVMMCParser \
 LLVMOption LLVMBitReader LLVMProfileData")))))
@@ -346,9 +344,9 @@ LLVMOption LLVMBitReader LLVMProfileData")))))
              (when tests?
                (invoke "./bin/c2ffi" "--help")))))))
     (native-inputs
-     (list clang-16)) ; CMakeLists.txt invokes `clang -print-resource-dir`
+     (list clang-18)) ; CMakeLists.txt invokes `clang -print-resource-dir`
     (inputs
-     (list clang-16)) ; Compiled with gcc, but links against libclang-cpp.so
+     (list clang-18)) ; Compiled with gcc, but links against libclang-cpp.so
     (home-page "https://github.com/rpav/c2ffi")
     (synopsis "Clang-based FFI wrapper generator")
     (description
