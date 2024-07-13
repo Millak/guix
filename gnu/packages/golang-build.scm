@@ -160,6 +160,40 @@ for the Go language.")
 @code{old} directory) packages.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-exp-typeparams
+  (package
+    (name "go-golang-org-x-exp-typeparams")
+    (version "0.0.0-20240707233637-46b078467d37")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/exp")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17pwikql9x1bm5ci0kk4mlad7smkph0cgq1pi2b43gnhjz8m96l0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "golang.org/x/exp/typeparams"
+      #:unpack-path "golang.org/x/exp"))
+    (home-page "https://pkg.go.dev/golang.org/x/exp/typeparams")
+    (synopsis "Golang common utilities for writing tools")
+    (description
+     "Package typeparams contains common utilities for writing tools that
+interact with generic Go code, as introduced with Go 1.18.
+
+Many of the types and functions in this package are proxies for the new APIs
+introduced in the standard library with Go 1.18.  For example, the
+typeparams.Union type is an alias for @code{go/types.Union}, and the
+@code{ForTypeSpec} function returns the value of the
+@code{go/ast.TypeSpec.TypeParams} field.  At Go versions older than 1.18 these
+helpers are implemented as stubs, allowing users of this package to write code
+that handles generic constructs inline,even if the Go version being used to
+compile does not support generics.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-image
   (let ((commit "58c23975cae11f062d4b3b0c143fe248faac195d")
         (revision "1"))
