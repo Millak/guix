@@ -1667,14 +1667,14 @@ to integrate other virtualization mechanisms if needed.")
 (define-public libvirt-glib
   (package
     (name "libvirt-glib")
-    (version "4.0.0")
+    (version "5.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://libvirt.org/libvirt/glib/"
                                   "libvirt-glib-" version ".tar.xz"))
               (sha256
                (base32
-                "1gdcvqz88qkp402zra9csc6391f2xki1270x683n6ixakl3gf8w4"))))
+                "12rv5wxa92iigqlb3ncza6m6995j8739nac7bmbs65i4713c7zlv"))))
     (build-system meson-build-system)
     (inputs
      (list openssl cyrus-sasl lvm2 ; for libdevmapper
