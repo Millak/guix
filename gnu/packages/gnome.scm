@@ -10022,7 +10022,7 @@ files.")
 (define-public baobab
   (package
     (name "baobab")
-    (version "44.0")
+    (version "46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -10031,7 +10031,7 @@ files.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1h5zl7pvpp8yryi7j0cjzy1k89vlphdmfv0jr1l4bmr3j6xn6nw4"))))
+                "0z73fad2c6qqv65d4q41kmfng65chp7ynywz02jp2mnhh9ffykff"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
