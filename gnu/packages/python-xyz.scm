@@ -19566,13 +19566,13 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
 (define-public python-celery
   (package
     (name "python-celery")
-    (version "5.3.6")
+    (version "5.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "celery" version))
        (sha256
-        (base32 "1fdacw13ij94s59l6lspl09iv6fc8h1p6399jz1h00kwfcfwf347"))))
+        (base32 "01p7lyydhqk7fna5zn49qxj3yk0xah63725dmkajjc4d1qa1jjjh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -19594,6 +19594,7 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
      (list python-case
            python-dnspython
            python-flaky
+           python-google-cloud-storage
            python-iniconfig
            python-moto
            python-msgpack
