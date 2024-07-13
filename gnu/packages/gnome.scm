@@ -10740,7 +10740,7 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
 (define-public gnome-calendar
   (package
     (name "gnome-calendar")
-    (version "44.1")
+    (version "46.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10748,7 +10748,7 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0zmpyd5qgryrxflgcapfp6jxph3z31qycs148r715gbhnqwbg89h"))))
+                "15q8c70mis5inllrw9k6nlscazicajvmx98bd4h7nnxxi9xzyqcq"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -10759,11 +10759,18 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
            (lambda _
              (substitute* "meson.build"
                (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false")))))))
+                "gtk_update_icon_cache: false"))))
+         (add-before 'check 'pre-check
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+             (setenv "TZDIR"
+                     (search-input-directory
+                      (or native-inputs inputs) "share/zoneinfo"))
+             (setenv "TZ" "UTC"))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ; For glib-compile-schemas
-           pkg-config))
+           pkg-config
+           tzdata-for-tests))
     (inputs
      (list evolution-data-server
            geoclue
