@@ -1336,11 +1336,17 @@ built-in @code{testing} package, but can be used in other contexts too.")
          "1n58skq2a0vhsgdfdkyqi00d3vv13kiw9b4mxx6xfyb6ysrdy7d1"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "honnef.co/go/tools"
-       #:tests? #f
-       ;; Source-only package
-       #:phases (modify-phases %standard-phases
-                  (delete 'build))))
+     (list
+      #:import-path "honnef.co/go/tools"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-burntsushi-toml
            go-golang-org-x-exp-typeparams
