@@ -3157,7 +3157,9 @@ command-line parsers.")
 (define-public govulncheck
   (package
     (name "govulncheck")
-    (version "0.0.0-20221229164908-ebf31f7dc3ef")
+    ;; XXX: Newer version of govulncheck requires golang.org/x/telemetry,
+    ;; which needs to be discussed if it may be included in Guix.
+    (version "0.0.0-20230110180137-6ad3e3d07815")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3166,23 +3168,13 @@ command-line parsers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w055g90k7anrrcvfrsqklxzl9pl0vqdiwpayj9f0brwys9xhj7d"))))
+                "1fhz27ni8bs872rgvqq700qacak9v45zy0fh2hilq21sk6dks72r"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "golang.org/x/vuln"
+     `(#:tests? #f ; it tires to download modules from the network
        #:install-source? #f
-       #:phases ,#~(modify-phases %standard-phases
-                     (add-after 'unpack 'remove-go-mod-tidy
-                       (lambda _
-                         (substitute* "src/golang.org/x/vuln/checks.bash"
-                           (("go mod tidy")
-                            #$(file-append coreutils-minimal "/bin/true")))))
-                     (replace 'build
-                       (lambda arguments
-                         (apply (assoc-ref %standard-phases
-                                           'build)
-                                `(,@arguments #:import-path
-                                  "golang.org/x/vuln/cmd/govulncheck")))))))
+       #:import-path "golang.org/x/vuln/cmd/govulncheck"
+       #:unpack-path "golang.org/x/vuln"))
     (native-inputs (list coreutils-minimal))
     (inputs (list go-golang-org-x-sys
                   go-github-com-google-renameio
