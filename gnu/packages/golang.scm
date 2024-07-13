@@ -8075,7 +8075,7 @@ That is, @code{gofumpt} is happy with a subset of the formats that
 (define-public unparam
   (package
     (name "unparam")
-    (version "0.0.0-20221223090309-7455f1af531d")
+    (version "0.0.0-20240528143540-8a5130ca722f")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8084,12 +8084,16 @@ That is, @code{gofumpt} is happy with a subset of the formats that
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wynf0b32azxljncw5fh9bwkxpdflvf9q1z16wyj432566yjh12c"))))
+                "0qrwszcmb5slbzkq3acw57b896z22zwkv6cf6ldxwlc6p179g009"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "mvdan.cc/unparam"))
-    (inputs (list go-golang-org-x-sys go-golang-org-x-mod
-                  go-github-com-pkg-diff go-golang-org-x-tools
+     `(;; FIXME: <...>-go-1.21.5/lib/go/src/runtime/cgo/cgo.go:33:8: could not
+       ;; import C (no metadata for C)
+       ;; <...>-go-1.21.5/lib/go/src/net/cgo_linux.go:12:8: could not import C
+       ;; (no metadata for C)
+       #:tests? #f
+       #:import-path "mvdan.cc/unparam"))
+    (inputs (list go-github-com-pkg-diff go-golang-org-x-tools
                   go-github-com-rogpeppe-go-internal))
     (home-page "https://mvdan.cc/unparam/")
     (synopsis "Find unused parameters in Go")
