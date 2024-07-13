@@ -3219,38 +3219,41 @@ the @url{https://vuln.go.dev,Go Vulnerability Database}.")
     ;; XXX: Starting from 0.14.0 gppls needs golang.org/x/telemetry, which
     ;; needs to be discussed if it may be included in Guix.
     (version "0.13.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://go.googlesource.com/tools")
-                    (commit (string-append "gopls/v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1qym2c0xvv6vcgwh0kz8sw094r88lzrl08xpvmg08lrqi00ma6kx"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/tools")
+             (commit (string-append "gopls/v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qym2c0xvv6vcgwh0kz8sw094r88lzrl08xpvmg08lrqi00ma6kx"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "golang.org/x/tools/gopls"
-       #:unpack-path "golang.org/x/tools"
-       #:install-source? #f
-       #:phases (modify-phases %standard-phases
-                  (add-before 'unpack 'override-tools
-                    (lambda _
-                      (delete-file-recursively "src/golang.org/x/tools"))))))
-    (propagated-inputs (list go-github-com-google-go-cmp-cmp
-                             go-github-com-jba-printsrc
-                             go-github-com-jba-templatecheck
-                             go-github-com-sergi-go-diff
-                             go-golang-org-x-mod
-                             go-golang-org-x-sync
-                             go-golang-org-x-sys
-                             go-golang-org-x-text
-                             go-golang-org-x-tools
-                             go-golang-org-x-vuln
-                             go-gopkg-in-yaml-v3
-                             go-honnef-co-go-tools
-                             go-mvdan-cc-gofumpt
-                             go-mvdan-cc-xurls))
+     (list
+      #:install-source? #f
+      #:import-path "golang.org/x/tools/gopls"
+      #:unpack-path "golang.org/x/tools"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'unpack 'override-tools
+            (lambda _
+              (delete-file-recursively "src/golang.org/x/tools"))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp-cmp
+           go-github-com-jba-printsrc
+           go-github-com-jba-templatecheck
+           go-github-com-sergi-go-diff
+           go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           go-golang-org-x-tools
+           go-golang-org-x-vuln
+           go-gopkg-in-yaml-v3
+           go-honnef-co-go-tools
+           go-mvdan-cc-gofumpt
+           go-mvdan-cc-xurls))
     (home-page "https://golang.org/x/tools/gopls")
     (synopsis "Official language server for the Go language")
     (description
