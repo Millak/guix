@@ -3768,19 +3768,20 @@ portions of your testing code.")
                "1ijvip427ki177ycrblcn1mfgsq7ixzpvqqfvidjn0a7s2is10bn"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'delete-problematic-tests
-                    (lambda _
-                      ;; Fails because of expired certificate.
-                      (delete-file "tests/test_x509_adapter.py")
-                      ;; Fails due to networking (socket.gaierror: [Errno -2]
-                      ;; Name or service not known).
-                      (delete-file "tests/test_multipart_encoder.py")
-                      ;; Those tests are not compatible with urllib3 2.0,
-                      ;; according to
-                      ;; https://github.com/requests/toolbelt/pull/356
-                      (delete-file "tests/test_sessions.py")
-                      )))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-problematic-tests
+            (lambda _
+              ;; Fails because of expired certificate.
+              (delete-file "tests/test_x509_adapter.py")
+              ;; Fails due to networking (socket.gaierror: [Errno -2]
+              ;; Name or service not known).
+              (delete-file "tests/test_multipart_encoder.py")
+              ;; Those tests are not compatible with urllib3 2.0,
+              ;; according to
+              ;; https://github.com/requests/toolbelt/pull/356
+              (delete-file "tests/test_sessions.py"))))))
     (native-inputs
      (list python-betamax python-pyopenssl python-pytest python-trustme))
     (propagated-inputs
