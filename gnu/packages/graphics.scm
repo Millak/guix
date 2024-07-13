@@ -775,7 +775,7 @@ materials, lights, displacement, and pattern generation.")
 (define-public cgal
   (package
     (name "cgal")
-    (version "5.2.2")
+    (version "5.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -783,7 +783,7 @@ materials, lights, displacement, and pattern generation.")
                     "/CGAL-" version ".tar.xz"))
               (sha256
                (base32
-                "0yjzq12ivizp23y7zqm30x20psv9gzwbcdrhyd3f7h0ds94m1c40"))))
+                "0dsqvnyd2ic50pr28gfz34bpnyx3i2csf1rikmc661hywdz5xcfd"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
