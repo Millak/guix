@@ -995,6 +995,21 @@ desktop computers.  It provides a simple API for creating windows, contexts
 and surfaces, receiving input and events.")
     (license license:zlib)))
 
+(define-public glfw-3.4
+  (package
+    (inherit glfw)
+    (version "3.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/glfw/glfw"
+                                  "/releases/download/" version
+                                  "/glfw-" version ".zip"))
+              (sha256
+               (base32
+                "1sd396kkn53myp61kxrd18h7b1q4ix173hhxhvl0iz8j4x5h1v5m"))))
+    (native-inputs (modify-inputs (package-native-inputs glfw)
+                     (prepend pkg-config)))))
+
 (define-public nanovg-for-extempore
   (let ((version "0.7.1")
         (revision "0")
