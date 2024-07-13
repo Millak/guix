@@ -4061,6 +4061,66 @@ and JACK.")
     (home-page "https://obsproject.com")
     (license license:gpl2+)))
 
+(define-public obs-advanced-masks
+  (package
+    (name "obs-advanced-masks")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/FiniteSingularity/obs-advanced-masks")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vhilhzdfv0wa8hqz8ffavr272w3d5b75vvldf8rfy9pm5c8xn9n"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils))
+      #:tests? #f ;no tests
+      #:configure-flags
+      #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
+                             #$(this-package-input "obs") "/lib")
+              "-DBUILD_OUT_OF_TREE=On"
+              "-Wno-dev")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'move-shaders
+            (lambda _
+              (mkdir-p
+               (string-append
+                #$output
+                "/share/obs/obs-plugins/obs-advanced-masks"))
+              (rename-file
+               (string-append
+                #$output
+                "/data/obs-plugins/obs-advanced-masks/shaders")
+               (string-append
+                #$output
+                "/share/obs/obs-plugins/obs-advanced-masks/shaders")))))))
+    (inputs (list obs qtbase-5))
+    (home-page "https://github.com/FiniteSingularity/obs-advanced-masks")
+    (synopsis "Advanced masking plugin for OBS")
+    (description "OBS Advanced Masks is a project designed to expand the
+masking functionalities within OBS Studio.  This plug-in provides filters for
+users to create intricate and customized masks for their OBS Scenes and
+Sources.
+
+@itemize
+@item Advanced Masks provides both Alpha Masking and Adjustment Masking.
+@item Shape masks allow for dynamically generated Rectangle, Circle,
+Elliptical, Regular Polygon, Star, and Heart shaped masks, with many
+adjustable parameters.
+@item Source Masks allow an existing OBS source to be used as a mask, using
+any combination of the red, green, blue, or alpha channels from said source.
+@item Image Masks include all of the same functionality as Source Masks, but
+applied via a static image (.png, .jpeg, etc).
+@item Gradient Masks allow a fading mask using a user-specified gradient.
+@end itemize\n")
+    (license license:gpl2)))
+
 (define-public obs-looking-glass
   (package
     (name "obs-looking-glass")
