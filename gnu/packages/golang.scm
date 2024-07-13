@@ -3216,7 +3216,9 @@ the @url{https://vuln.go.dev,Go Vulnerability Database}.")
 (define-public gopls
   (package
     (name "gopls")
-    (version "0.12.0")
+    ;; XXX: Starting from 0.14.0 gppls needs golang.org/x/telemetry, which
+    ;; needs to be discussed if it may be included in Guix.
+    (version "0.13.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3225,7 +3227,7 @@ the @url{https://vuln.go.dev,Go Vulnerability Database}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04bq7rh6d6mgxm0lsi8y9v1x7cgx4nvjlsyvxl89r6rcqh3n1lfb"))))
+                "1qym2c0xvv6vcgwh0kz8sw094r88lzrl08xpvmg08lrqi00ma6kx"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "golang.org/x/tools/gopls"
@@ -3243,13 +3245,11 @@ the @url{https://vuln.go.dev,Go Vulnerability Database}.")
                              go-golang-org-x-sync
                              go-golang-org-x-sys
                              go-golang-org-x-text
+                             go-golang-org-x-tools
+                             go-golang-org-x-vuln
                              go-gopkg-in-yaml-v3
                              go-honnef-co-go-tools
-                             go-github-com-burntsushi-toml
-                             go-github-com-google-safehtml
-                             go-golang-org-x-exp
                              go-mvdan-cc-gofumpt
-                             go-golang-org-x-vuln
                              go-mvdan-cc-xurls))
     (home-page "https://golang.org/x/tools/gopls")
     (synopsis "Official language server for the Go language")
