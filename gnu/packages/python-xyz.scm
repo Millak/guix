@@ -14100,26 +14100,19 @@ replacement for dictionaries where immutability is desired.")
 (define-public python-emoji
   (package
     (name "python-emoji")
-    (version "1.6.1")
+    (version "2.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "emoji" version))
        (sha256
-        (base32 "0923mpixwq6hdpkgvi4r46alfvf608iq975rb8lnqpq29j71mmjk"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest")))))))
-    (native-inputs
-     (list python-pytest))
+        (base32 "1svk94pad8gcvjwd329zmfrw09wakwh6qjvnhf6sa6k92y44i82a"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-typing-extensions))
     (home-page "https://github.com/carpedm20/emoji/")
     (synopsis "Emoji terminal output for Python")
-    (description "This package provides Emoji terminal output for Python.  The
+    (description
+     "This package provides Emoji terminal output for Python.  The
 entire set of Emoji codes as defined by the Unicode Consortium is supported in
 addition to a bunch of aliases.")
     (license license:bsd-3)))
