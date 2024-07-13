@@ -52,6 +52,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
@@ -1136,6 +1137,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
            libwebp
            libwpg
            libwps
+           libxcrypt
            libxrandr
            libxrender
            libxslt
