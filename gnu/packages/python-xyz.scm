@@ -18407,7 +18407,7 @@ with a new public API, and RPython support.")
     (version "0.29.0")
     (source
      (origin
-       (method git-fetch)               ; no tests in PyPI release
+       (method git-fetch) ;no tests in PyPI release
        (uri (git-reference
              (url "https://github.com/hylang/hy")
              (commit version)))
@@ -18416,13 +18416,12 @@ with a new public API, and RPython support.")
         (base32 "0fp5x94hyckjfap2pb1rj551a3q70vrljxark7hj9kdhr7prbggi"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; This test expects the hy executable to be called 'hy', but in Guix
-     ;; it's .hy-real.
-     (list #:test-flags #~(list "-k" "not test_sys_executable")))
-    (native-inputs
-     (list python-pytest-next python-wheel))
-    (propagated-inputs
-     (list python-funcparserlib))
+     (list
+      ;; This test expects the hy executable to be called 'hy', but in Guix
+      ;; it's .hy-real.
+      #:test-flags #~(list "-k" "not test_sys_executable")))
+    (native-inputs (list python-pytest-next python-wheel))
+    (propagated-inputs (list python-funcparserlib))
     (home-page "https://docs.hylang.org/en/stable/")
     (synopsis "Lisp frontend to Python")
     (description
