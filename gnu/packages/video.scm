@@ -2711,7 +2711,7 @@ projects while introducing many more.")
 (define-public smplayer
   (package
     (name "smplayer")
-    (version "22.2.0")
+    (version "22.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2719,7 +2719,7 @@ projects while introducing many more.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0mcvpm86n9l0nwavnaa1n2jfalgrzdfh92sdjnwx1iga89m4k55s"))))
+               (base32 "0qs9vz440bdvnyghi7f4frsan7n9xiy3afw9lhmf5m8xxa37325c"))))
     (build-system qt-build-system)
     (native-inputs
      (list qttools-5))
