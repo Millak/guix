@@ -3154,9 +3154,9 @@ command-line parsers.")
     (home-page "https://github.com/tj/docopt")
     (license license:expat)))
 
-(define-public govulncheck
+(define-public go-golang-org-x-vuln
   (package
-    (name "govulncheck")
+    (name "go-golang-org-x-vuln")
     ;; XXX: Newer version of govulncheck requires golang.org/x/telemetry,
     ;; which needs to be discussed if it may be included in Guix.
     (version "0.0.0-20230110180137-6ad3e3d07815")
@@ -3173,11 +3173,19 @@ command-line parsers.")
     (arguments
      (list
       #:tests? #f ; it tires to download modules from the network
-      #:install-source? #f
-      #:import-path "golang.org/x/vuln/cmd/govulncheck"
-      #:unpack-path "golang.org/x/vuln"))
-    (native-inputs
-     (list coreutils-minimal))
+      #:import-path "golang.org/x/vuln"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v"
+                          "./doc/..."
+                          "./internal/..."
+                          "./scan/..."))))))))
     (propagated-inputs
      (list go-github-com-google-go-cmdtest
            go-github-com-google-go-cmp-cmp
@@ -3192,19 +3200,18 @@ command-line parsers.")
 the @url{https://vuln.go.dev,Go Vulnerability Database}.")
     (license license:bsd-3)))
 
-(define-public go-golang-org-x-vuln
+(define-public govulncheck
   (package
-    (inherit govulncheck)
-    (name "go-golang-org-x-vuln")
+    (inherit go-golang-org-x-vuln)
+    (name "govulncheck")
     (arguments
-     `(#:import-path "golang.org/x/vuln"
-       #:tests? #f
-       #:install-source? #t
-       #:phases (modify-phases %standard-phases
-                  (delete 'build))))
-    (propagated-inputs (package-inputs govulncheck))
-    (native-inputs '())
-    (inputs '())))
+     (list
+      #:tests? #f
+      #:install-source? #f
+      #:import-path "golang.org/x/vuln/cmd/govulncheck"
+      #:unpack-path "golang.org/x/vuln"))
+    (native-inputs
+     (list coreutils-minimal))))
 
 (define-public gopls
   (package
