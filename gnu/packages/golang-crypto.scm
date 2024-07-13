@@ -67,6 +67,55 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-c2sp-org-cctv-age
+  (package
+    (name "go-c2sp-org-cctv-age")
+    (version "0.0.0-20240306222714-3ec4d716e805")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/C2SP/CCTV")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00bk05ca94lm3b029ycwj0krmg2gfjv1c3pc7dvq9gmwwzr564v5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Sub folders containing different projects with their own
+            ;; licenses.
+            (for-each delete-file-recursively
+                      (list "ML-KEM" "RFC6979" "ed25519" "jq255"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "c2sp.org/CCTV/age"
+      #:unpack-path "c2sp.org/CCTV"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://c2sp.org/CCTV/age")
+    (synopsis "Community Cryptography Test Vectors")
+    (description
+     "This package provides a large set of test vectors for the age file
+encryption format, as well as a framework to easily generate them.
+
+The test suite can be applied to any age implementation, regardless of the
+language it's implemented in, and the level of abstraction of its
+interface.  For the simplest, most universal integration, the implementation
+can just attempt to decrypt the test files, check the operation only succeeds
+if expect is success, and compare the decrypted payload.  Test vectors
+involving unimplemented features (such as passphrase encryption or armoring)
+can be ignored.")
+    ;; age/internal/LICENSE: Redistribution and use in source and binary
+    ;; forms, with or without modification, are permitted provided that the
+    ;; following conditions are met
+    ;;
+    ;; age/README: The vectors in the testdata folder are available under the
+    ;; terms of the Zero-Clause BSD (reproduced below), CC0 1.0, or Unlicense
+    ;; license, to your choice.
+    (license license:cc0)))
+
 (define-public go-filippo-io-age
   (package
     (name "go-filippo-io-age")
