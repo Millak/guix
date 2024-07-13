@@ -7420,7 +7420,7 @@ of running programs and invoke methods on those interfaces.")
 (define-public d-spy
   (package
     (name "d-spy")
-    (version "1.6.0")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7428,7 +7428,7 @@ of running programs and invoke methods on those interfaces.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1zca9yn12a8phy2lzcsc7wak10r0j53m8d0fs1q69d1va48a5l52"))))
+                "0lsyw2h91z8wdmxpbqc77jwiafddh1w19s4yb7d521alqswi4n2m"))))
     (build-system meson-build-system)
     (arguments
      (list
