@@ -1979,7 +1979,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "42")
+    (version "43")
     (source
      (origin
        (method url-fetch)
@@ -1990,7 +1990,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                             "old-releases/" version
                             "/ngspice-" version ".tar.gz")))
        (sha256
-        (base32 "02p5ar1cqwn70dw5xzx5v3qhm1p1xgb1xpzs1ljklcxjda2f6zvk"))))
+        (base32 "169nn6bw5628m2k8cy77yd1vs22plj83grisq58j07sk11pnmp8l"))))
     (build-system gnu-build-system)
     (arguments
      `(;; No tests for libngspice exist.
@@ -1998,15 +1998,6 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-timestamps
-           (lambda _
-             (substitute* "configure"
-               (("`date`") "Thu Jan  1 00:00:01 UTC 1970"))))
-         (add-after 'unpack 'delete-program-manuals
-           (lambda _
-             (substitute* "man/man1/Makefile.in"
-               (("^man_MANS = ngspice\\.1 ngnutmeg\\.1 ngsconvert\\.1 ngmultidec\\.1")
-                "man_MANS = "))))
          (add-after 'install 'delete-scripts
            (lambda* (#:key outputs #:allow-other-keys)
              (delete-file-recursively
@@ -2044,12 +2035,6 @@ an embedded event driven algorithm.")
                (delete "--with-ngshared" ,flags)))
        ((#:phases phases)
         `(modify-phases ,phases
-           (add-after 'unpack 'delete-include-files
-             (lambda _
-               (substitute* "src/Makefile.in"
-                 (("^SUBDIRS = misc maths frontend spicelib include/ngspice")
-                  "SUBDIRS = misc maths frontend spicelib"))))
-           (delete 'delete-program-manuals)
            (delete 'delete-scripts)))))
     (inputs
      (list libngspice readline))))
