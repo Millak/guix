@@ -3500,7 +3500,13 @@ provides a simple way to achieve this.")
                   (display "find_package(Boost GLOBAL)\n" out)))
               (substitute* "extras/boost/test/CMakeLists.txt"
                 (("^([ ]*)boost" all spaces)
-                 (string-append spaces "Boost::boost")))))))
+                 (string-append spaces "Boost::boost")))
+              ;; Disable tests failing on Apple M1 and Hetzner CAX41 (aarch64).
+              ;; Upstream issue: https://github.com/emil-e/rapidcheck/issues/328
+              (substitute* "test/gen/NumericTests.cpp"
+                (("forEachType<SignedProperties.*") ""))
+              (substitute* "test/shrink/ShrinkTests.cpp"
+                (("forEachType<SignedIntegralProperties.*") ""))))))
       (arguments
        (list
         #:configure-flags #~(list "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
