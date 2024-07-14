@@ -2024,6 +2024,7 @@ an embedded event driven algorithm.")
     (name "ngspice")
     (arguments
      (substitute-keyword-arguments (package-arguments libngspice)
+       ((#:tests? _ #f) #t)
        ((#:configure-flags flags)
         #~(cons "--with-readline=yes"
                 (delete "--with-ngshared"
@@ -2031,6 +2032,7 @@ an embedded event driven algorithm.")
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'delete-scripts)))))
+    (native-inputs (list perl))
     (inputs (list libngspice readline))))
 
 (define trilinos-serial-xyce
