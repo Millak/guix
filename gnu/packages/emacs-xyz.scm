@@ -2773,6 +2773,32 @@ different tools.  It highlights errors and warnings inline in the buffer, and
 provides an optional IDE-like error list.")
     (license license:gpl3+)))                     ;+GFDLv1.3+ for the manual
 
+(define-public emacs-flycheck-clj-kondo
+  (let ((commit "e38c67ba9db1ea1cbe1b61ab39b506c05efdcdbf")
+        (revision "1"))
+    (package
+      (name "emacs-flycheck-clj-kondo")
+      (version (git-version "0.0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/borkdude/flycheck-clj-kondo.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1pxlb8axgmc8cw4id40z576kd041qb1irq8rkjn6xbda585ix58f"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-flycheck))
+      (home-page "https://github.com/borkdude/flycheck-clj-kondo")
+      (synopsis "Add clj-kondo linter to flycheck")
+      (description
+       "This package integrates clj-kondo with Emacs via flycheck.  To use it, add to
+your init.el: (require flycheck-clj-kondo) Make sure the clj-kondo binary is on
+your path.  For installation instructions, see
+https://github.com/borkdude/clj-kondo.")
+      (license license:gpl3+))))
+
 (define-public emacs-fb2-reader
   (let ((commit "9836db284749e0cef4c43c2cb5358c82ae9b8589")) ; version bump
     (package
