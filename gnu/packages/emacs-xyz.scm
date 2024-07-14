@@ -2805,7 +2805,7 @@ provides an optional IDE-like error list.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/borkdude/flycheck-clj-kondo.git")
+               (url "https://github.com/borkdude/flycheck-clj-kondo")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -2813,12 +2813,9 @@ provides an optional IDE-like error list.")
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-flycheck))
       (home-page "https://github.com/borkdude/flycheck-clj-kondo")
-      (synopsis "Add clj-kondo linter to flycheck")
+      (synopsis "Add Clj-kondo linter to Flycheck")
       (description
-       "This package integrates clj-kondo with Emacs via flycheck.  To use it, add to
-your init.el: (require flycheck-clj-kondo) Make sure the clj-kondo binary is on
-your path.  For installation instructions, see
-https://github.com/borkdude/clj-kondo.")
+       "This package integrates Clj-kondo with Emacs via Flycheck.")
       (license license:gpl3+))))
 
 (define-public emacs-fb2-reader
