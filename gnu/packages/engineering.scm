@@ -1983,35 +1983,28 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
     (source
      (origin
        (method url-fetch)
-       (uri (list
-             (string-append "mirror://sourceforge/ngspice/ng-spice-rework/"
-                            version "/ngspice-" version ".tar.gz")
-             (string-append "mirror://sourceforge/ngspice/ng-spice-rework/"
-                            "old-releases/" version
-                            "/ngspice-" version ".tar.gz")))
+       (uri (list (string-append
+                   "mirror://sourceforge/ngspice/ng-spice-rework/" version
+                   "/ngspice-" version ".tar.gz")
+                  (string-append
+                   "mirror://sourceforge/ngspice/ng-spice-rework/"
+                   "old-releases/" version "/ngspice-" version ".tar.gz")))
        (sha256
         (base32 "169nn6bw5628m2k8cy77yd1vs22plj83grisq58j07sk11pnmp8l"))))
     (build-system gnu-build-system)
     (arguments
-     `(;; No tests for libngspice exist.
-       ;; The transient tests for ngspice fail.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'delete-scripts
-           (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file-recursively
-              (string-append (assoc-ref outputs "out")
-                             "/share/ngspice/scripts")))))
-       #:configure-flags
-       (list "--enable-openmp"
-             "--enable-ciderlib"
-             "--enable-xspice"
-             "--with-ngshared")))
-    (native-inputs
-     (list bison flex))
-    (inputs
-     (list libxaw openmpi))
+     (list
+      #:tests? #f ;there are no tests for libngspice
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'delete-scripts
+                     (lambda _
+                       (delete-file-recursively
+                        (string-append #$output
+                                       "/share/ngspice/scripts")))))
+      #:configure-flags #~(list "--enable-openmp" "--enable-ciderlib"
+                                "--enable-xspice" "--with-ngshared")))
+    (native-inputs (list bison flex))
+    (inputs (list libxaw openmpi))
     (home-page "https://ngspice.sourceforge.net/")
     (synopsis "Mixed-level/mixed-signal circuit simulator")
     (description
@@ -2019,25 +2012,26 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
 @code{Spice3f5}, a circuit simulator, and @code{Xspice}, an extension that
 provides code modeling support and simulation of digital components through
 an embedded event driven algorithm.")
-    (license (list license:lgpl2.0+ ; code in frontend/numparam
-                   (license:non-copyleft "file:///COPYING") ; spice3 bsd-style
-                   license:bsd-3 ; ciderlib
-                   license:public-domain)))) ; xspice
+    (license (list license:lgpl2.0+ ;code in frontend/numparam
+                   (license:non-copyleft "file:///COPYING") ;spice3 bsd-style
+                   license:bsd-3 ;ciderlib
+                   license:public-domain)))) ;xspice
 
 (define-public ngspice
   ;; The ngspice executables (see libngpsice above.)
-  (package (inherit libngspice)
+  (package
+    (inherit libngspice)
     (name "ngspice")
     (arguments
      (substitute-keyword-arguments (package-arguments libngspice)
        ((#:configure-flags flags)
-        `(cons "--with-readline=yes"
-               (delete "--with-ngshared" ,flags)))
+        #~(cons "--with-readline=yes"
+                (delete "--with-ngshared"
+                        #$flags)))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'delete-scripts)))))
-    (inputs
-     (list libngspice readline))))
+        #~(modify-phases #$phases
+            (delete 'delete-scripts)))))
+    (inputs (list libngspice readline))))
 
 (define trilinos-serial-xyce
   ;; Note: This is a Trilinos containing only the packages Xyce needs, so we
