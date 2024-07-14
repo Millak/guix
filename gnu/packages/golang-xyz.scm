@@ -710,6 +710,10 @@ almost directly in Go source code.")
       (build-system go-build-system)
       (arguments
        (list
+        ;; XXX: Failing on a newer Golang version: FAIL: TestJSEscaping
+        ;; (0.00s) exec_test.go:757: JS escaping [unprintable ﷿] got
+        ;; [unprintable ﷿] want [unprintable \uFDFF]
+        #:go go-1.17
         #:import-path "github.com/alecthomas/template"))
       (home-page "https://github.com/alecthomas/template")
       (synopsis "Fork of Go's text/template adding newline elision")
