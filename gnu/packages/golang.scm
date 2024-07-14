@@ -1738,20 +1738,18 @@ retry strategies, such as fixed delay, backoff delay, and random delay.")
     (license license:expat)))
 
 (define-public go-github-com-dhowett-go-plist
-  (let ((commit "1454fab16a0642638feb0ae98c41f79eccb2a20a")
-        (revision "1"))
     (package
       (name "go-github-com-dhowett-go-plist")
-      (version (git-version "0.0.0" revision commit))
+      (version "1.0.1")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/DHowett/go-plist")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "01c9wmhny2rxywcjipq1xa0xw4qm7yd001239grwxcja3b4n45v8"))))
+                  "1gcrxkmdj87xq01458asgxvvijrkih74ydbzfmir1p16xr9z0x39"))))
       (build-system go-build-system)
       (arguments `(#:import-path "howett.net/plist"))
       (inputs
@@ -1762,7 +1760,7 @@ retry strategies, such as fixed delay, backoff delay, and random delay.")
       (description "This list transcoder supports encoding/decoding property
 lists (Apple XML, Apple Binary, OpenStep, and GNUStep) from/to arbitrary Go
 types.")
-      (license license:giftware))))
+      (license license:giftware)))
 
 (define-public go-github-com-blanu-dust
   (package
