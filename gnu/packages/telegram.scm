@@ -505,8 +505,8 @@ Telegram project, for its use in telegram desktop client.")
            hime
            hunspell
            jemalloc
-           kcoreaddons
-           kimageformats
+           kcoreaddons-5
+           kimageformats-5
            libdispatch
            libexpected
            libjpeg-turbo
