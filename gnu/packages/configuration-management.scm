@@ -24,6 +24,7 @@
   #:use-module (guix git-download)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages version-control)
@@ -79,48 +80,63 @@
                           "secretkeepassxc.txt"
                           "secretlastpass.txt"
                           "secretonepassword.txt"
-                          "secretpass.txt")))))))
+                          "secretpass.txt"))))
+          ;; FIXME: Pattern embedded: cannot embed directory embedded:
+          ;; contains no embeddable files.
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module which is sourced during setup environment phase, but
+          ;; easy resolved after coping to expected directory "vendor" within
+          ;; the current package, see details in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-before 'build 'copy-input-to-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (mkdir "vendor")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-native-input "go-github-com-charmbracelet-glamour")
+                  "/src/github.com")
+                 "vendor/github.com")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-native-input "go-github-com-alecthomas-chroma-v2")
+                  "/src/github.com")
+                 "vendor/github.com"))))
+          (add-before 'install 'remove-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "vendor")))))))
     (native-inputs
-     (list go-github-com-alecthomas-chroma
-           go-github-com-aymerick-douceur
+     (list go-github-com-alecthomas-chroma-v2
            go-github-com-bmatcuk-doublestar-v2
            go-github-com-charmbracelet-glamour
-           go-github-com-chris-ramon-douceur
            go-github-com-coreos-go-semver
-           go-github-com-danwakefield-fnmatch
-           go-github-com-dlclark-regexp2
-           go-github-com-godbus-dbus
            go-github-com-google-go-github-v33
-           go-github-com-google-go-querystring
-           go-github-com-google-goterm
            go-github-com-google-renameio
-           go-github-com-gorilla-css
-           go-github-com-lucasb-eyer-go-colorful
            go-github-com-masterminds-sprig-v3
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-runewidth
-           go-github-com-microcosm-cc-bluemonday
-           go-github-com-muesli-reflow
-           go-github-com-muesli-termenv
-           go-github-com-olekukonko-tablewriter
            go-github-com-pelletier-go-toml
            go-github-com-pkg-diff
            go-github-com-rogpeppe-go-internal
            go-github-com-sergi-go-diff
            go-github-com-spf13-cobra
            go-github-com-spf13-viper
+           go-github-com-stretchr-testify
            go-github-com-twpayne-go-shell
            go-github-com-twpayne-go-vfs
            go-github-com-twpayne-go-vfsafero
-           go-github-com-twpayne-go-xdg
-           go-github-com-yuin-goldmark
+           go-github-com-twpayne-go-xdg-v3
            go-github-com-zalando-go-keyring
            go-github-go-git
            go-go-etcd-io-bbolt
-           go-golang-org-x-net
            go-golang-org-x-oauth2
+           go-golang-org-x-sys
            go-golang-org-x-term
-           go-gopkg-in-errgo-fmt-errors))
+           go-gopkg-in-yaml-v2
+           go-howett-net-plist))
     (home-page "https://www.chezmoi.io/")
     (synopsis "Personal configuration files manager")
     (description "This package helps to manage personal configuration files
