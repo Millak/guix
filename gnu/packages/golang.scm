@@ -7622,7 +7622,7 @@ server tools for Prometheus metrics.")
     (arguments
      `(#:tests? #f ;XXX: Fix dbus tests
        #:import-path "github.com/zalando/go-keyring"))
-    (native-inputs
+    (propagated-inputs
      (list go-github-com-godbus-dbus dbus))
     (home-page "https://github.com/zalando/go-keyring/")
     (synopsis "Library for working with system keyring")
