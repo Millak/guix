@@ -15129,6 +15129,28 @@ suggestion is taken.")
 customizable 256 color support to @code{term} and @code{ansi-term}.")
     (license license:gpl3+)))
 
+(define-public emacs-centaur-tabs
+  (package
+    (name "emacs-centaur-tabs")
+    (version "3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ema2159/centaur-tabs")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z7b3s29xb0n25bfbbm1wrcap9dvig5zi5fcnvlyrl9si9565948"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-all-the-icons emacs-powerline))
+    (home-page "https://github.com/ema2159/centaur-tabs")
+    (synopsis "Modern looking tabs plugin for Emacs")
+    (description
+     "This projects aims to become an aesthetic, functional and
+efficient tabs plugin for Emacs with a lot of customization options.")
+    (license license:gpl3+)))
+
 (define-public emacs-mocker
   (package
     (name "emacs-mocker")
