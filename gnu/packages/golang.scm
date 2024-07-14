@@ -7344,9 +7344,9 @@ and @code{ioutil} packages that is easy to test.")
 @code{go-github-com-twpayne-go-vfs} and @code{go-github-com-spf13-afero}.")
     (license license:expat)))
 
-(define-public go-github-com-twpayne-go-xdg
+(define-public go-github-com-twpayne-go-xdg-v3
   (package
-    (name "go-github-com-twpayne-go-xdg")
+    (name "go-github-com-twpayne-go-xdg-v3")
     (version "3.1.0")
     (source (origin
               (method git-fetch)
