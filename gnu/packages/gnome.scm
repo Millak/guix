@@ -2225,7 +2225,7 @@ commonly used macros.")
 (define-public gnome-contacts
   (package
     (name "gnome-contacts")
-    (version "44.0")
+    (version "46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-contacts/"
@@ -2233,7 +2233,7 @@ commonly used macros.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1vbvvv8954j4znczqa41j892rvj36k21ah5f5lwgcsphq4xidlbx"))))
+                "1pvhcdngaibl4lc1cmqpnsyr6v9pqbfa4mvyrjdpzix16plb9bkh"))))
     (build-system meson-build-system)
     (arguments
      (list
