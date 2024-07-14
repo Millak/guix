@@ -1158,7 +1158,7 @@ official package.")
 (define-public go-github-com-quic-go-qtls-go1-20
   (package
     (name "go-github-com-quic-go-qtls-go1-20")
-    (version "0.3.4")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -1167,10 +1167,12 @@ official package.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fl3yv1w8cygag3lav45vvzb4k9i72p92x13wcq0xn13wxirzirn"))))
+        (base32 "069rknxpg7d0dmxc4akq2mw7wm5bi0420nshykf2iclvmbcg9ajh"))))
     (build-system go-build-system)
     (arguments
      (list
+      ;; XXX: panic: qtls.ClientSessionState doesn't match, with Golang 1.20+.
+      #:go go-1.20
       #:import-path "github.com/quic-go/qtls-go1-20"))
     (propagated-inputs
      (list go-golang-org-x-crypto
