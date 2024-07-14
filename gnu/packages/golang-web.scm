@@ -1072,8 +1072,11 @@ processes.")
      `(#:tests? #f ;application/octet-stream instead of text/plain
        #:import-path "github.com/google/go-github/v26/github"
        #:unpack-path "github.com/google/go-github/v26"))
-    (native-inputs
-     (list go-github-com-google-go-querystring go-golang-org-x-crypto))
+    (propagated-inputs
+     (list go-github-com-google-go-querystring
+           go-golang-org-x-crypto
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync))
     (home-page "https://github.com/google/go-github/")
     (synopsis "Client library for accessing the GitHub API v3")
     (description "@code{go-github} is a Go client library for accessing the
