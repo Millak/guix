@@ -1737,9 +1737,9 @@ retry strategies, such as fixed delay, backoff delay, and random delay.")
     (description "Set is the set collection for the Go language.")
     (license license:expat)))
 
-(define-public go-github-com-dhowett-go-plist
+(define-public go-howett-net-plist
   (package
-    (name "go-github-com-dhowett-go-plist")
+    (name "go-howett-net-plist")
     (version "1.0.1")
     (source
      (origin
