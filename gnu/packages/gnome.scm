@@ -14375,7 +14375,7 @@ you to mark favorite talks and highlights conflicts between favorited talks.")
 (define-public gnome-connections
   (package
     (name "gnome-connections")
-    (version "44.1")
+    (version "46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -14383,7 +14383,7 @@ you to mark favorite talks and highlights conflicts between favorited talks.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0sv238bq0dhi68ksr3bcl4q44i3ishk5i10c2325qz879f92sshk"))
+                "1lr5imma2l2gh7z74y2f9c6k3k9pk85cvdr8vg0vs2wkwxlfl77v"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
@@ -14407,7 +14407,7 @@ you to mark favorite talks and highlights conflicts between favorited talks.")
                 (("\\(new OnboardingDialog \\(main_window\\)\\).present \\(\\);")
                  "// Skip the onboarding dialog")))))))
     (inputs
-     (list gtk+ gtk-frdp gtk-vnc libhandy libsecret libxml2))
+     (list gtk+ gtk-frdp-for-gnome-connections gtk-vnc libhandy libsecret libxml2))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
