@@ -39989,19 +39989,19 @@ by leveraging @code{emacs-consult} APIs.")
          (method git-fetch)
          (uri (git-reference
                (url "https://gitlab.com/OlMon/consult-projectile")
-               (commit "400439c56d17bca7888f7d143d8a11f84900a406")))
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "1abd2dw3zpiln9pd7l3j78wl3lwapcmf1ilijv3vin9g0wqb7hmn"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-consult emacs-projectile))
       (home-page "https://gitlab.com/OlMon/consult-projectile")
-      (synopsis "Consult integration for projectile")
+      (synopsis "Consult integration for Projectile")
       (description
-       "This package provides a multiview for displaying open buffers, files and
-directories accociated with a project.  When no project is open in the current
-buffer display a list of known project and select a file from the selected
-project.  Additionally seperate single source function are available.")
+       "This package provides a multiview for displaying open buffers, files
+and directories associated with a project.  When no project is open in the
+current buffer, it displays a list of known projects.  One can then pick
+a file from the selected project.")
       (license license:gpl3+))))
 
 (define-public emacs-context-transient
