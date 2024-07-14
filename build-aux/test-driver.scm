@@ -3,10 +3,11 @@ exec guile --no-auto-compile -e main -s "$0" "$@"
 !#
 ;;;; test-driver.scm - Guile test driver for Automake testsuite harness
 
-(define script-version "2026-03-19.13") ;UTC
+(define script-version "2026-03-19.14") ;UTC
 
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify it
 ;;; under the terms of the GNU General Public License as published by
@@ -35,7 +36,8 @@ exec guile --no-auto-compile -e main -s "$0" "$@"
              (srfi srfi-1)
              (srfi srfi-19)
              (srfi srfi-26)
-             (srfi srfi-64))
+             (srfi srfi-64)
+             (srfi srfi-71))
 
 (define (show-help)
   (display "Usage:
@@ -114,15 +116,18 @@ case is shown.\n"))
                           (out-port (current-output-port))
                           (trs-port (%make-void-port "w"))
                           select exclude)
-  "Return a custom SRFI-64 test runner.  TEST-NAME is a string specifying the
-file name of the current the test.  COLOR? specifies whether to use colors.
-When BRIEF? is true, the individual test cases results are masked and only the
-summary is shown.  ERRORS-ONLY? reduces the amount of test case metadata
-logged to only that of the failed test cases.  OUT-PORT and TRS-PORT must be
-output ports.  OUT-PORT defaults to the current output port, while TRS-PORT
-defaults to a void port, which means no TRS output is logged.  SELECT and
-EXCLUDE may take a regular expression to select or exclude individual test
-cases based on their names."
+  "Return a custom SRFI-64 test runner and a `finalize' procedure as multiple
+values.  TEST-NAME is a string specifying the file name of the current the
+test.  COLOR?  specifies whether to use colors.  When BRIEF? is true, the
+individual test cases results are masked and only the summary is shown.
+ERRORS-ONLY?  reduces the amount of test case metadata logged to only that of
+the failed test cases.  OUT-PORT and TRS-PORT must be output ports.  OUT-PORT
+defaults to the current output port, while TRS-PORT defaults to a void port,
+which means no TRS output is logged.  SELECT and EXCLUDE may take a regular
+expression to select or exclude individual test cases based on their names.
+
+After the tests are finished running, the `finalize' procedure should be
+called to do the final reporting."
 
   (define test-cases-start-time (make-hash-table))
 
@@ -180,8 +185,8 @@ cases based on their names."
               (result->string (test-result-kind* runner))
               (test-runner-test-name runner) time-elapsed-seconds)))
 
-  (define (test-on-group-end-gnu runner)
-    ;; Procedure called by a 'test-end', including at the end of a test-group.
+  (define (finalize runner)
+    "Procedure to call after all tests finish to do the final reporting."
     (let ((fail (or (positive? (test-runner-fail-count runner))
                     (positive? (test-runner-xpass-count runner))))
           (skip (or (positive? (test-runner-skip-count runner))
@@ -198,15 +203,14 @@ cases based on their names."
         (format out-port "~A: ~A~%"
                 (result->string (if fail 'fail (if skip 'skip 'pass))
                                 #:colorize? color?)
-                test-name))
-      #f))
+                test-name))))
 
   (let ((runner (test-runner-null)))
     (test-runner-on-test-begin! runner test-on-test-begin-gnu)
     (test-runner-on-test-end! runner test-on-test-end-gnu)
-    (test-runner-on-group-end! runner test-on-group-end-gnu)
     (test-runner-on-bad-end-name! runner test-on-bad-end-name-simple)
-    runner))
+    (values runner
+            (λ () (finalize runner)))))
 
 
 ;;;
@@ -252,17 +256,19 @@ cases based on their names."
           (redirect-port log (current-output-port))
           (redirect-port log (current-warning-port))
           (redirect-port log (current-error-port)))
-        (test-with-runner
-            (test-runner-gnu test-name
-                             #:color? color-tests
-                             #:brief? (option->boolean opts 'brief)
-                             #:errors-only? (option->boolean opts 'errors-only)
-                             #:show-duration? (option->boolean
-                                               opts 'show-duration)
-                             #:out-port out #:trs-port trs)
-          (test-apply test-specifier
+        (let ((runner
+               finalize (test-runner-gnu
+                         test-name
+                         #:color? color-tests
+                         #:brief? (option->boolean opts 'brief)
+                         #:errors-only? (option->boolean opts 'errors-only)
+                         #:show-duration? (option->boolean
+                                           opts 'show-duration)
+                         #:out-port out #:trs-port trs)))
+          (test-apply runner test-specifier
                       (lambda _
-                        (load-from-path test-name))))
+                        (load-from-path test-name)))
+          (finalize))
         (and=> log close-port)
         (and=> trs close-port)
         (close-port out))))
