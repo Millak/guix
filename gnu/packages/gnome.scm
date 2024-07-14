@@ -4642,7 +4642,7 @@ targeting the GNOME stack simple.")
 (define-public vte
   (package
     (name "vte")
-    (version "0.72.4")
+    (version "0.76.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/vte/"
@@ -4650,13 +4650,12 @@ targeting the GNOME stack simple.")
                                   "vte-" version ".tar.xz"))
               (sha256
                (base32
-                "0p4apgwi8v7ccid2bif6zdffk09jl90yy66awhff9jairakbckf7"))))
+                "0q2xgmxzzpc1268n1c88k8p1gjshakzss50j0b87ydvg0m6fjy7n"))))
     (build-system meson-build-system)
     (arguments
-     (list #:configure-flags #~(list "-Dvapi=true"
-                                     "-D_systemd=false"
-                                     "-Dgtk4=true"
-                                     "-Dgtk3=false")))
+     (list #:configure-flags #~(list "-Dgtk3=false"
+                                     "-Dvapi=true"
+                                     "-D_systemd=false")))
     (native-inputs
      (list pkg-config
            gettext-minimal
@@ -4666,6 +4665,7 @@ targeting the GNOME stack simple.")
            gperf
            python
            libxml2))
+    (inputs (list lz4))
     (propagated-inputs
      (list gtk                          ; required by vte-2.91.pc
            gnutls                       ; ditto
@@ -4684,7 +4684,7 @@ editors, IDEs, etc.")
     (name "vte-with-gtk+3")
     (arguments (substitute-keyword-arguments (package-arguments vte)
                  ((#:configure-flags flags #~'())
-                  #~(list "-Dvapi=true" "-D_systemd=false"))))
+                  #~(cons "-Dgtk4=false" (delete "-Dgtk3=false" #$flags)))))
     (propagated-inputs (modify-inputs (package-propagated-inputs vte)
                          (replace "gtk" gtk+)))))
 
