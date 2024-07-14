@@ -1738,29 +1738,31 @@ retry strategies, such as fixed delay, backoff delay, and random delay.")
     (license license:expat)))
 
 (define-public go-github-com-dhowett-go-plist
-    (package
-      (name "go-github-com-dhowett-go-plist")
-      (version "1.0.1")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/DHowett/go-plist")
-                      (commit (string-append "v" version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1gcrxkmdj87xq01458asgxvvijrkih74ydbzfmir1p16xr9z0x39"))))
-      (build-system go-build-system)
-      (arguments `(#:import-path "howett.net/plist"))
-      (inputs
-       (list go-github-com-jessevdk-go-flags go-github-com-kr-pretty
-             go-gopkg-in-check-v1 go-gopkg-in-yaml-v2))
-      (home-page "https://github.com/DHowett/go-plist")
-      (synopsis "Apple property list transcoder")
-      (description "This list transcoder supports encoding/decoding property
-lists (Apple XML, Apple Binary, OpenStep, and GNUStep) from/to arbitrary Go
-types.")
-      (license license:giftware)))
+  (package
+    (name "go-github-com-dhowett-go-plist")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DHowett/go-plist")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gcrxkmdj87xq01458asgxvvijrkih74ydbzfmir1p16xr9z0x39"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "howett.net/plist"))
+    (propagated-inputs
+     (list go-github-com-jessevdk-go-flags
+           go-gopkg-in-check-v1))
+    (home-page "https://github.com/DHowett/go-plist")
+    (synopsis "Apple property list transcoder")
+    (description
+     "This list transcoder supports encoding/decoding property lists (Apple
+XML, Apple Binary, OpenStep, and GNUStep) from/to arbitrary Go types.")
+    (license license:giftware)))
 
 (define-public go-github-com-blanu-dust
   (package
