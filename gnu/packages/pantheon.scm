@@ -398,7 +398,7 @@ desktop environment (originally from elementary OS).")
                   libgee
                   libhandy
                   pcre2
-                  vte))
+                  vte/gtk+-3))
     (synopsis "Terminal emulator from elementaryOS")
     (description "pantheon-terminal is a lightweight, beautiful and simple
 terminal.  It comes with sane defaults, browser-class tabs, sudo paste

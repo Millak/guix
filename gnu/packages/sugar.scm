@@ -1187,7 +1187,7 @@ not hesitate to feast on the goat.")
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs
        (list gtk+
-             vte
+             vte/gtk+-3
              sugar-toolkit-gtk3))
       (inputs
        (list gettext-minimal))

@@ -422,7 +422,7 @@ share smart cards from client system to local or remote virtual machines.")
            libvirt-glib
            libxml2
            spice-gtk
-           vte))
+           vte/gtk+-3))
     (synopsis "Graphical console client for virtual machines")
     (description "Graphical console client for virtual machines using SPICE or
 VNC.")

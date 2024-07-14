@@ -1291,7 +1291,7 @@ in particular in the GNOME desktop.")
           libxrandr
           libxtst
           libxxf86vm
-          vte
+          vte/gtk+-3
           xorgproto))
    (synopsis "Color profile manager for the GNOME desktop")
    (description "GNOME Color Manager is a session framework that makes
@@ -4654,7 +4654,9 @@ targeting the GNOME stack simple.")
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "-Dvapi=true"
-                                     "-D_systemd=false")))
+                                     "-D_systemd=false"
+                                     "-Dgtk4=true"
+                                     "-Dgtk3=false")))
     (native-inputs
      (list pkg-config
            gettext-minimal
@@ -4665,9 +4667,9 @@ targeting the GNOME stack simple.")
            python
            libxml2))
     (propagated-inputs
-     (list gtk+ ; required by vte-2.91.pc
-           gnutls ; ditto
-           pcre2))               ; ditto
+     (list gtk                          ; required by vte-2.91.pc
+           gnutls                       ; ditto
+           pcre2))                      ; ditto
     (home-page "https://www.gnome.org/")
     (synopsis "Virtual Terminal Emulator")
     (description
@@ -4677,14 +4679,14 @@ gnome-terminal, but can also be used to embed a console/terminal in games,
 editors, IDEs, etc.")
     (license license:lgpl2.1+)))
 
-(define-public vte-with-gtk-4
+(define-public vte/gtk+-3
   (package/inherit vte
-    (name "vte-with-gtk4")
+    (name "vte-with-gtk+3")
     (arguments (substitute-keyword-arguments (package-arguments vte)
                  ((#:configure-flags flags #~'())
-                  #~(cons* "-Dgtk4=true" "-Dgtk3=false" #$flags))))
+                  #~(list "-Dvapi=true" "-D_systemd=false"))))
     (propagated-inputs (modify-inputs (package-propagated-inputs vte)
-                         (replace "gtk+" gtk)))))
+                         (replace "gtk" gtk+)))))
 
 ;; Stable version for gtk2, required by gnurobots and lxterminal as of 2020-07.
 (define-public vte/gtk+-2
@@ -4759,7 +4761,7 @@ editors, IDEs, etc.")
            spice
            spice-gtk
            telepathy-glib
-           vte))
+           vte/gtk+-3))
     (home-page "https://wiki.gnome.org/Apps/Vinagre")
     (synopsis "Remote desktop viewer for GNOME")
     (description "Vinagre is a remote display client supporting the VNC, SPICE
@@ -5548,7 +5550,7 @@ more fun.")
                          desktop-file-utils))
     (inputs (list gtk
                   libadwaita
-                  vte-with-gtk-4
+                  vte
                   libgtop
                   gsettings-desktop-schemas))
     (home-page "https://gitlab.gnome.org/GNOME/console")
@@ -5611,7 +5613,7 @@ org.gnome.ShellSearchProvider2.xml"))))))
            nautilus                     ;for extension
            `(,util-linux "lib")
            vala
-           vte))
+           vte/gtk+-3))
     (home-page "https://wiki.gnome.org/Apps/Terminal")
     (synopsis "Terminal emulator")
     (description
@@ -12309,7 +12311,7 @@ advanced image management tool")
        ("python-notify2" ,python-notify2)
        ("python-pycairo" ,python-pycairo)
        ("python-pygobject" ,python-pygobject)
-       ("vte" ,vte)))
+       ("vte" ,vte/gtk+-3)))
     (propagated-inputs
      (list python-configobj))
     (arguments
@@ -12830,7 +12832,7 @@ integrate seamlessly with the GNOME desktop.")
            qemu-minimal                 ;for qemu-img
            sparql-query
            tracker
-           vte
+           vte/gtk+-3
            webkitgtk-for-gtk3))
     (propagated-inputs
      ;; Propagating spice-gtk is necessary so that the gnome-desktop-service
@@ -13649,7 +13651,7 @@ libraries.  Applications do not need to be recompiled--or even restarted.")
            python-pygobject
            sysprof
            template-glib
-           vte-with-gtk-4
+           vte
            webkitgtk))
     (propagated-inputs
      (list gtksourceview))              ;needed for settings

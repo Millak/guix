@@ -324,7 +324,7 @@ the MATE desktop environment.")
            libx11
            mate-desktop
            pango
-           vte))
+           vte/gtk+-3))
     (home-page "https://mate-desktop.org/")
     (synopsis "MATE Terminal Emulator")
     (description

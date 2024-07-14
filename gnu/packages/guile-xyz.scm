@@ -4849,7 +4849,7 @@ processing filters.")
        ("webkitgtk" ,webkitgtk-for-gtk3)
        ("gtksourceview" ,gtksourceview-4)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("vte" ,vte)
+       ("vte" ,vte/gtk+-3)
        ;; Gstreamer
        ("gstreamer" ,gstreamer)
        ("gst-plugins-base" ,gst-plugins-base)

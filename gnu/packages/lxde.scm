@@ -198,7 +198,7 @@ toolkit.  It allows users to monitor and control of running processes.")
                 "1124pghrhnx6q4391ri8nvi6bsmvbj1dx81an08mird8jf2b2rii"))))
     (build-system gnu-build-system)
     (arguments (list #:configure-flags #~(list "--enable-gtk3")))
-    (inputs (list gtk+ vte))
+    (inputs (list gtk+ vte/gtk+-3))
     (native-inputs (list intltool pkg-config))
     (synopsis "LXDE terminal emulator")
     (description "LXTerminal is a VTE-based terminal emulator.  It supports
