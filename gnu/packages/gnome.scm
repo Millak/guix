@@ -14355,6 +14355,23 @@ you to mark favorite talks and highlights conflicts between favorited talks.")
 @acronym{RDP, Remote Desktop Protocol} sessions.")
     (license license:gpl3+)))
 
+(define gtk-frdp-for-gnome-connections
+  (let ((commit "6cfdc840159bb349310c3b81cd2df949f1522760")
+        (revision "1"))
+    (package
+      (inherit gtk-frdp)
+      (version (git-version "45.90" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.gnome.org/GNOME/gtk-frdp")
+               (commit commit)))
+         (file-name (git-file-name "gtk-frdp" version))
+         (sha256
+          (base32
+           "1xgilpa2zkcnyi9hvj8yw1db19pz5d1xgvm1pm79mjs4ls8pdn0n")))))))
+
 (define-public gnome-connections
   (package
     (name "gnome-connections")
