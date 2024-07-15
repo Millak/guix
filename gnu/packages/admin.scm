@@ -2716,7 +2716,7 @@ environment variable is set and output is to tty.")
 (define-public lr
   (package
     (name "lr")
-    (version "1.5.1")
+    (version "1.6")
     (source
      (origin
        (method git-fetch)
@@ -2725,7 +2725,7 @@ environment variable is set and output is to tty.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wv2acm4r5y5gg6f64v2hiwpg1f3lnr4fy1a9zssw77fmdc7ys3j"))))
+        (base32 "0qixmvxikyz02348xc0a718m9b1pzcazvf36rjbdk6ayn66g9hsd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
