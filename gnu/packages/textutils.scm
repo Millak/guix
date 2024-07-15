@@ -1484,9 +1484,6 @@ community around it also has a list of style guides implemented with Vale in
 @url{https://github.com/errata-ai/styles, their styles repo}.")
     (license license:expat)))
 
-(define-public go-github-com-errata-ai-vale
-  (deprecated-package "go-github-com-errata-ai-vale" vale))
-
 (define-public utf-8-lineseparator
   (package
     (name "utf-8-lineseparator")
