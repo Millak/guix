@@ -6385,9 +6385,6 @@ based on murmurhash.")
     (home-page "https://github.com/bits-and-blooms/bitset")
     (license license:bsd-2)))
 
-(define-public go-github-com-willf-bloom
-  (deprecated-package "go-github-com-willf-bloom" go-github-com-bits-and-blooms-bloom))
-
 (define-public go-golang-org-rainycape-unidecode
   (let ((commit "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c")
         (revision "1"))
