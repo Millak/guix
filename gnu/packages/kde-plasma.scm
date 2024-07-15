@@ -1800,52 +1800,6 @@ on top of Baloo.")
 KF5/Qt5 to KF6/Qt6")
     (license (list license:lgpl2.0+))))
 
-(define-public plasma-bigscreen
-  (package
-    (name "plasma-bigscreen")
-    (version "5.27.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma/" version
-                                  "/" name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0b2w0d5w1s2jm7al1nqdc1qh9fmrj8fw93wjbb2bsa9fabz2i81b"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'fix-startplasma
-                          (lambda* (#:key inputs #:allow-other-keys)
-                            (substitute* "bin/plasma-bigscreen-wayland.in"
-                              (("^startplasma-wayland")
-                               (search-input-file inputs
-                                                  "/bin/startplasma-wayland")))
-                              (substitute* "bin/plasma-bigscreen-x11"
-                                (("startplasma-x11")
-                                 (search-input-file inputs
-                                                    "/bin/startplasma-x11"))))))))
-    (native-inputs (list extra-cmake-modules))
-    (inputs (list kactivities
-                  kactivities-stats
-                  plasma-framework
-                  ki18n
-                  kirigami
-                  kdeclarative
-                  kcmutils
-                  knotifications
-                  kio
-                  kwayland
-                  kwindowsystem
-                  plasma-workspace
-                  qtbase-5
-                  qtmultimedia-5))
-    (home-page "https://invent.kde.org/plasma/plasma-bigscreen")
-    (synopsis "Plasma shell for TVs")
-    (description
-     "This package provides a big launcher designed for large screens.  It
-is controllable via voice or TV remote.")
-    (license license:gpl2+)))
-
 (define-public mpvqt
   (package
     (name "mpvqt")
