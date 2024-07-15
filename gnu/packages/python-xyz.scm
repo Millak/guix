@@ -14117,6 +14117,23 @@ entire set of Emoji codes as defined by the Unicode Consortium is supported in
 addition to a bunch of aliases.")
     (license license:bsd-3)))
 
+;; TODO: Remove this package when upgrading python-gh-md-to-html to the
+;; latest version. The latest gh-md-to-html does not build successfully from
+;; the PyPI distribution. Let's resolve #72102 while keeping gh-md-to-html at
+;; version 1.21.2 from failing.
+;; https://issues.guix.gnu.org/72102
+;; https://github.com/phseiff/github-flavored-markdown-to-html/issues/73
+(define-public python-emoji-for-gh-md-to-html
+  (package
+    (inherit python-emoji)
+    (version "1.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "emoji" version))
+       (sha256
+        (base32 "0923mpixwq6hdpkgvi4r46alfvf608iq975rb8lnqpq29j71mmjk"))))))
+
 (define-public python-sarge
   (package
     (name "python-sarge")
