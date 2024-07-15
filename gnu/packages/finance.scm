@@ -1690,7 +1690,8 @@ trezord as a regular user instead of needing to it run as root.")
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/trezor/trezord-go"))
+     `(#:go ,go-1.18
+       #:import-path "github.com/trezor/trezord-go"))
     (native-inputs
      (list go-github-com-gorilla-csrf
            go-github-com-gorilla-handlers
