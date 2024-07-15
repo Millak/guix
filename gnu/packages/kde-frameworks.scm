@@ -3665,7 +3665,7 @@ with su and ssh respectively.")
 (define-public kemoticons
   (package
     (name "kemoticons")
-    (version "5.114.0")
+    (version "5.116.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3674,14 +3674,14 @@ with su and ssh respectively.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0w87prkhdmba7y8ylbycdpwdzd2djmp7hvv5ljb9s4aqqhnn3vw4"))))
+                "0lv8cb7h7v4fbf8vyrsf9kygnhjxznf5sj92nv5is5gy0wdk8qxc"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     (list kservice))
+     (list kservice-5))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list karchive kconfig kcoreaddons qtbase-5))
+     (list karchive-5 kconfig-5 kcoreaddons-5 qtbase-5))
     (arguments
      (list #:phases #~(modify-phases %standard-phases
                         (add-before 'check 'check-setup
