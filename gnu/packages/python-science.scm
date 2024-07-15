@@ -779,6 +779,37 @@ volume computations for simple domains like regular polygons, disks,
 spheres, cubes, etc.")
     (license license:gpl3+)))
 
+(define-public python-mpl-scatter-density
+  (package
+    (name "python-mpl-scatter-density")
+    (version "0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mpl-scatter-density" version))
+       (sha256
+        (base32 "083n4xkwjmxvij9i1xhfnxz8vk39ay0baam4nf0khvcihw47bkna"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; See <https://github.com/astrofrog/mpl-scatter-density/issues/42>.
+      #:test-flags #~(list "-k" "not test_default_dpi")))
+    (propagated-inputs
+     (list python-fast-histogram
+           python-matplotlib
+           python-numpy))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-mpl
+           python-setuptools-scm))
+    (home-page "https://github.com/astrofrog/mpl-scatter-density")
+    (synopsis "Matplotlib helpers to make density scatter plots")
+    (description
+     "This package provides functionality to make it easy to make scatter
+density maps, both for interactive and non-interactive use.")
+    (license license:bsd-2)))
+
 (define-public python-pyamg
   (package
     (name "python-pyamg")
