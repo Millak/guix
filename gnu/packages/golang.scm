@@ -9026,7 +9026,7 @@ text-only mail clients to display them.")
 (define-public go-github-com-jhillyerd-enmime
   (package
     (name "go-github-com-jhillyerd-enmime")
-    (version "0.9.4")
+    (version "1.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9035,22 +9035,19 @@ text-only mail clients to display them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "124dqm598phbmalyx2gmxk201z9kq4ckvvdq8rc0akjlp24nxqbb"))))
+                "03pir9wq9ha2i2ifj819yv5i0lvrgdn904ksbzgc3k8bqc497ydn"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/jhillyerd/enmime"))
-    (propagated-inputs (list go-golang-org-x-text
-                             go-golang-org-x-net
-                             go-github-com-stretchr-testify
-                             go-github-com-ssor-bom
-                             go-github-com-rivo-uniseg
-                             go-github-com-pkg-errors
-                             go-github-com-olekukonko-tablewriter
-                             go-github-com-mattn-go-runewidth
-                             go-github-com-gogs-chardet
-                             go-github-com-jaytaylor-html2text
-                             go-github-com-go-test-deep
-                             go-github-com-cention-sany-utf7))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs (list
+                        go-github-com-cention-sany-utf7
+                        go-github-com-go-test-deep
+                        go-github-com-gogs-chardet
+                        go-github-com-jaytaylor-html2text
+                        go-github-com-pkg-errors
+                        go-golang-org-x-text))
     (home-page "https://github.com/jhillyerd/enmime")
     (synopsis "MIME encoder and decoder for Go")
     (description
