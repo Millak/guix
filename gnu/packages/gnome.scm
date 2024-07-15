@@ -9293,6 +9293,28 @@ usage and information about running processes.")
 devices using the GNOME desktop.")
     (license license:lgpl2.1+)))
 
+(define-public tecla
+  (package
+    (name "tecla")
+    (version "46.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "03qvb526zywhh9059adwm8iz682rckbwm4c9fl4qnnkshsmiw22a"))))
+    (build-system meson-build-system)
+    (arguments (list #:glib-or-gtk? #t))
+    (inputs (list gtk libadwaita))
+    (native-inputs (list `(,glib "bin") gnu-gettext pkg-config))
+    (home-page "https://gitlab.gnome.org/GNOME/tecla")
+    (synopsis "Keyboard layout viewer")
+    (description "Tecla is a keyboard layout viewer based on GTK 4 and
+Libadwaita.")
+    (license license:gpl2+)))
+
 (define-public gnome-control-center
   (package
     (name "gnome-control-center")
