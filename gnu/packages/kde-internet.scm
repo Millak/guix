@@ -70,32 +70,32 @@
         (base32 "0zm4nkpmvd181xlkis7ydzx54p3vn0zgpdzgh54f1hsjy6ahsq16"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools pkg-config))
+     (list extra-cmake-modules kdoctools-5 pkg-config))
     (inputs
-     (list attica
-           kcmutils
-           kconfigwidgets
-           kcoreaddons
+     (list attica-5
+           kcmutils-5
+           kconfigwidgets-5
+           kcoreaddons-5
            kemoticons
-           kglobalaccel
-           kguiaddons
-           ki18n
-           kio
-           knotifications
-           knotifyconfig
-           kparts
-           ktextwidgets
-           kwallet
-           kwidgetsaddons
-           kxmlgui
+           kglobalaccel-5
+           kguiaddons-5
+           ki18n-5
+           kio-5
+           knotifications-5
+           knotifyconfig-5
+           kparts-5
+           ktextwidgets-5
+           kwallet-5
+           kwidgetsaddons-5
+           kxmlgui-5
            ;; TODO: telepathy
            breeze-icons ; default icon set
-           purpose
+           purpose-5
            qca
            qoauth
            qtbase-5
            qtnetworkauth-5
-           sonnet))
+           sonnet-5))
     (home-page "https://kde.org/applications/internet/org.kde.choqok")
     (synopsis "Micro-Blogging Client")
     (description "Choqok is a fast, efficient and simple to use micro-blogging
