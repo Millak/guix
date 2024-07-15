@@ -792,12 +792,15 @@ written in Go.")
                              "vendor/github.com/ipfs/go-ipld-cbor"
                              "vendor/github.com/ipfs/go-ipld-format"
                              "vendor/github.com/ipfs/go-ipld-git"
+                             "vendor/github.com/ipfs/go-ipld-legacy"
                              "vendor/github.com/ipfs/go-log"
+                             "vendor/github.com/ipld/go-codec-dagpb"
                              "vendor/github.com/ipld/go-ipld-prime"
                              "vendor/github.com/jackpal"
                              "vendor/github.com/jbenet"
                              "vendor/github.com/julienschmidt"
                              "vendor/github.com/klauspost"
+                             "vendor/github.com/libp2p/go-socket-activation"
                              "vendor/github.com/mattn"
                              "vendor/github.com/mgutz"
                              "vendor/github.com/miekg"
@@ -879,7 +882,7 @@ written in Go.")
                   go-github-com-ipfs-go-ipld-cbor
                   go-github-com-ipfs-go-ipld-format
                   go-github-com-ipfs-go-ipld-git
-                  ;;go-github-com-ipfs-go-ipld-legacy
+                  go-github-com-ipfs-go-ipld-legacy
                   go-github-com-ipfs-go-log
                   go-github-com-ipfs-go-log-v2
                   ;;go-github-com-ipfs-go-metrics-interface
@@ -889,7 +892,7 @@ written in Go.")
                   ;;go-github-com-ipfs-shipyard-nopfs-ipfs
                   ;;go-github-com-ipld-go-car
                   ;;go-github-com-ipld-go-car-v2
-                  ;;go-github-com-ipld-go-codec-dagpb
+                  go-github-com-ipld-go-codec-dagpb
                   go-github-com-ipld-go-ipld-prime
                   go-github-com-jbenet-go-random
                   go-github-com-jbenet-go-temp-err-catcher
@@ -905,7 +908,7 @@ written in Go.")
                   ;;go-github-com-libp2p-go-libp2p-record
                   ;;go-github-com-libp2p-go-libp2p-routing-helpers
                   ;;go-github-com-libp2p-go-libp2p-testing
-                  ;;go-github-com-libp2p-go-socket-activation
+                  go-github-com-libp2p-go-socket-activation
                   go-github-com-mitchellh-go-homedir
                   go-github-com-multiformats-go-multiaddr-0.12
                   go-github-com-multiformats-go-multiaddr-dns
