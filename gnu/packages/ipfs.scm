@@ -396,6 +396,34 @@ order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-fore
 and @code{go-ipld-format} legacy interface.")
     (license (list license:expat license:asl2.0))))
 
+(define-public go-github-com-ipld-go-codec-dagpb
+  (package
+    (name "go-github-com-ipld-go-codec-dagpb")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipld/go-codec-dagpb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jbrwbgr222wsi95gdflbj350csja6k8vphdq7c9bm50ipr8bvkq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/ipld/go-codec-dagpb"))
+    (propagated-inputs (list go-github-com-ipfs-go-cid
+                             go-github-com-ipld-go-ipld-prime
+                             go-google-golang-org-protobuf))
+    (home-page "https://github.com/ipld/go-codec-dagpb/")
+    (synopsis "Implementation of the DAG-PB spec for Go")
+    (description
+     "An implementation of the @url{https://ipld.io/, IPLD DAG-PB} spec for
+@code{go-ipld-prime}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public go-github-com-ipld-go-ipld-prime
   (package
     (name "go-github-com-ipld-go-ipld-prime")
