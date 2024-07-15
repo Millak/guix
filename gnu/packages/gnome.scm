@@ -8212,7 +8212,7 @@ window manager.")
 (define-public gnome-online-accounts
   (package
     (name "gnome-online-accounts")
-    (version "3.48.1")
+    (version "3.50.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8220,7 +8220,7 @@ window manager.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "12kza6wss01kcka1zc2bck4hwgc55vzwwdxabk75qndzhh8cg81y"))))
+                "1552diiga117z661izr84ald05bvl61fwx7bc51i8mqw2xysc577"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -8241,15 +8241,16 @@ window manager.")
            vala))
     (propagated-inputs
      (list glib                         ; required by goa-1.0.pc
-           gtk+))                       ; required by goa-backend-1.0.pc
+           gtk libadwaita))             ; required by goa-backend-1.0.pc
     (inputs
      (list docbook-xsl
-           gcr-3
+           dbus
+           gcr
            json-glib
            libsecret
            mit-krb5
            rest-next
-           webkitgtk-for-gtk3))
+           webkitgtk))
     (synopsis "Single sign-on framework for GNOME")
     (home-page "https://wiki.gnome.org/Projects/GnomeOnlineAccounts")
     (description
