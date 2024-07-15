@@ -8625,9 +8625,6 @@ aware of your profiles and configuration in ~/.aws/config.")
       (home-page "https://github.com/gsterjov/go-libsecret")
       (license license:expat))))
 
-(define-public go-github-com-go-libsecret
-  (deprecated-package "go-github-com-go-libsecret" go-github-com-gsterjov-go-libsecret))
-
 (define-public go-github-com-mtibben-androiddnsfix
   (let ((commit "ff02804463540c36e3a148dcf4b009d003cf2a31")
         (revision "0"))
