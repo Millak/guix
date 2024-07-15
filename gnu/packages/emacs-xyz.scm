@@ -294,6 +294,31 @@
 ;;; Emacs hacking.
 ;;;
 
+(define-public emacs-0x0
+  (let ((commit "04f95142b25d8bb701f239539176df6617dcd982")
+        (revision "0"))
+    (package
+      (name "emacs-0x0")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~willvaughn/emacs-0x0")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0vj9vrfkgm7plp5mvq22fm9sln11j9763g3wd2w6c82rlsk6dhva"))))
+      (build-system emacs-build-system)
+      (home-page "https://git.sr.ht/~willvaughn/emacs-0x0")
+      (synopsis
+       "Integration with @url{https://0x0.st, 0x0.st} and self-hosted services
+from Emacs")
+      (description
+       "Emacs 0x0 is a pastebin integration tool.  It can upload the current
+buffer, a file on your disk, or a string from the kill ring.")
+      (license license:gpl3+))))
+
 (define-public emacs-ac-ispell
   (let ((commit "22bace7387e9012002a6a444922f75f9913077b0")
         (revision "1"))
