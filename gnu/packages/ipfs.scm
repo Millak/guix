@@ -366,6 +366,36 @@ IPLD graph as detailed below.  Objects are demonstrated here using both
 order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-forest.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipld-legacy
+  (package
+    (name "go-github-com-ipfs-go-ipld-legacy")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipld-legacy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sc2zc3lyxy30fzynwdpfrl8jhh1ynwixn1crrv8hzn93yix6550"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/ipfs/go-ipld-legacy"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs (list go-github-com-ipfs-go-block-format
+                             go-github-com-ipfs-go-cid
+                             go-github-com-ipfs-go-ipld-format
+                             go-github-com-ipld-go-ipld-prime))
+    (home-page "https://github.com/ipfs/go-ipld-legacy")
+    (synopsis "Translation layer for IPLD legacy code")
+    (description
+     "@code{go-ipld-format} is a translation layer between @code{go-ipld-prime} nodes
+and @code{go-ipld-format} legacy interface.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public go-github-com-ipld-go-ipld-prime
   (package
     (name "go-github-com-ipld-go-ipld-prime")
