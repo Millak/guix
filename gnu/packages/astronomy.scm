@@ -1147,6 +1147,51 @@ zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
        (prepend python-pyqt)))
     (synopsis "Qt5 image viewer build based on python-ginga library")))
 
+(define-public python-glue-core
+  (package
+    (name "python-glue-core")
+    (version "1.21.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "glue_core" version))
+       (sha256
+        (base32 "1xms896ds70sbym1cr5lrbjl4i8vixy3mcc6qsg1b3ppvky76vmn"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list ;; python-astrodendro ; optional, not packed
+           python-astropy
+           python-dill
+           python-echo
+           python-fast-histogram
+           python-ipython
+           python-matplotlib
+           python-mpl-scatter-density
+           python-numpy
+           python-openpyxl
+           python-pandas
+           ;; python-pyavm ; optional, not packed
+           python-scikit-image
+           python-scipy
+           python-setuptools
+           python-shapely
+           python-spectral-cube
+           python-xlrd))
+    (native-inputs
+     (list python-h5py
+           python-objgraph
+           python-pytest
+           python-pytest-cov
+           python-pytest-mpl
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "http://glueviz.org")
+    (synopsis "Multidimensional data visualization project")
+    (description
+     "Glue is a python project to link visualizations of scientific datasets
+across many files.")
+    (license license:bsd-3)))
+
 (define-public wcslib
   (package
     (name "wcslib")
