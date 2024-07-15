@@ -66,6 +66,7 @@
 ;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,6 +97,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
@@ -3677,6 +3679,8 @@ than Python’s urllib2 library.")
               (base32
                "0q5742pnibwy74169kacin3dmqg9jzmzk7qab5aq5caffcbm8djm"))))
     (build-system python-build-system)
+    (native-inputs
+     (list nss-certs-for-test))
     (propagated-inputs
      (list python-certifi
            python-charset-normalizer
