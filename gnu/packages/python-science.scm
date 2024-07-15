@@ -1551,17 +1551,20 @@ higher scores.")
             (lambda _
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs (list python-numpy))
-    (native-inputs (list python-hypothesis python-pytest))
+    (native-inputs
+     (list python-hypothesis
+           python-pytest
+           python-setuptools-scm))
     (home-page "https://github.com/astrofrog/fast-histogram")
     (synopsis "Fast simple 1D and 2D histograms")
     (description
      "The fast-histogram mini-package aims to provide simple and fast
-histogram functions for regular bins that don't compromise on performance. It
+histogram functions for regular bins that don't compromise on performance.  It
 doesn't do anything complicated - it just implements a simple histogram
-algorithm in C and keeps it simple. The aim is to have functions that are fast
-but also robust and reliable. The result is a 1D histogram function here that
-is 7-15x faster than @code{numpy.histogram}, and a 2D histogram function that
-is 20-25x faster than @code{numpy.histogram2d}.")
+algorithm in C and keeps it simple.  The aim is to have functions that are
+fast but also robust and reliable.  The result is a 1D histogram function here
+that is 7-15x faster than @code{numpy.histogram}, and a 2D histogram function
+that is 20-25x faster than @code{numpy.histogram2d}.")
     (license license:bsd-3)))
 
 (define-public python-fastcluster
