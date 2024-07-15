@@ -5493,7 +5493,7 @@ http://community.kde.org/Frameworks/Porting_Notes should help with this.")
 (define-public khtml
   (package
     (name "khtml")
-    (version "5.114.0")
+    (version "5.116.0")
     (source
      (origin
        (method url-fetch)
@@ -5502,34 +5502,34 @@ http://community.kde.org/Frameworks/Porting_Notes should help with this.")
              (version-major+minor version) "/portingAids/"
              name "-" version ".tar.xz"))
        (sha256
-        (base32 "1mf84zs9hjvmi74f8rgqzrfkqjq597f9k64dn1bqcj13v0w10vry"))))
+        (base32 "13nc5dcj536xyd87prla30mpbzsyjnylb34a979qn7qvpr0zn8c9"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules perl))
     (inputs
      (list giflib
            gperf
-           karchive
-           kcodecs
-           kglobalaccel
-           ki18n
-           kiconthemes
-           kio
+           karchive-5
+           kcodecs-5
+           kglobalaccel-5
+           ki18n-5
+           kiconthemes-5
+           kio-5
            kjs
-           knotifications
-           kparts
-           ktextwidgets
-           kwallet
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
+           knotifications-5
+           kparts-5
+           ktextwidgets-5
+           kwallet-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           kxmlgui-5
            libjpeg-turbo
            libpng
            openssl
            phonon
            qtbase-5
            qtx11extras
-           sonnet))
+           sonnet-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE Frameworks 5 HTML widget and component")
     (description "KHTML is a web rendering engine, based on the KParts
