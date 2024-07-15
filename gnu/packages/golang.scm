@@ -8516,9 +8516,6 @@ be useful for other network applications.")
     (home-page "https://github.com/mtibben/percent")
     (license license:expat)))
 
-(define-public go-github-com-percent
-  (deprecated-package "go-github-com-percent" go-github-com-mtibben-percent))
-
 (define-public aws-vault
   (package
     (name "aws-vault")
