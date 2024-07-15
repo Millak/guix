@@ -633,7 +633,7 @@ and stop increasing when a certain threshold is met.")
   (package
     (inherit go-github-com-coreos-go-oidc)
     (name "go-github-com-coreos-go-oidc-v3")
-    (version "3.6.0")
+    (version "3.11.0")
     (source
      (origin
        (method git-fetch)
@@ -642,13 +642,23 @@ and stop increasing when a certain threshold is met.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sbm6n3lp48lymn0g921afhq2j6inb38w3wy5rhyx9h8gpzhnxx9"))))
+        (base32 "00nbv15pjfcfxdy0i4k366ricdm2cylhpwak3hmjlgh6lrzxypl9"))))
     (arguments
-     (list ;; no Go files in [...]/src/github.com/coreos/go-oidc/v3.
-      #:import-path "github.com/coreos/go-oidc/v3/oidc"
-      #:unpack-path "github.com/coreos/go-oidc/v3"))
+     (list
+      #:import-path "github.com/coreos/go-oidc/v3"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
-     (list go-github-com-go-jose-go-jose-v3
+     (list go-github-com-go-jose-go-jose-v4
+           go-golang-org-x-net
            go-golang-org-x-oauth2))))
 
 (define-public go-github-com-emicklei-go-restful
