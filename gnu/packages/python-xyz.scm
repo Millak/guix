@@ -2164,7 +2164,7 @@ of a loop structure or other iterative computation.")
     (arguments (list #:tests? #false))  ;there are none
     (propagated-inputs
      (list python-beautifulsoup4
-           python-emoji
+           python-emoji-for-gh-md-to-html
            python-pillow
            python-requests
            python-shellescape
