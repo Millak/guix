@@ -2728,7 +2728,7 @@ environment variable is set and output is to tty.")
         (base32 "0qixmvxikyz02348xc0a718m9b1pzcazvf36rjbdk6ayn66g9hsd"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
+     `(#:tests? #f ; There are no tests.
        #:make-flags (list (string-append "CC=" ,(cc-for-target))
                           (string-append "PREFIX=" %output))
        #:phases (modify-phases %standard-phases
