@@ -5325,9 +5325,6 @@ It stores colors in RGB and provides methods for converting these to
 various color spaces.")
     (license license:expat)))
 
-(define-public go-golang-org-colorful
-  (deprecated-package "go-golang-org-colorful" go-github-com-lucasb-eyer-go-colorful))
-
 (define-public go-github-com-gdamore-encoding
   (package
     (name "go-github-com-gdamore-encoding")
