@@ -1375,6 +1375,7 @@ advanced Go linter.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.18
       #:import-path "pgregory.net/rapid"))
     (home-page "https://pgregory.net/rapid/")
     (synopsis "Go property-based testing library")
