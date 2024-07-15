@@ -2366,7 +2366,7 @@ The gnome-about program helps find which version of GNOME is installed.")
 (define-public gnome-disk-utility
   (package
     (name "gnome-disk-utility")
-    (version "44.0")
+    (version "46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2374,7 +2374,7 @@ The gnome-about program helps find which version of GNOME is installed.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1vx3wyvidjyzr4141p3zrvgx88rp7vwj6n3sf7c3gnvci6bi00q2"))))
+                "0zcm0qfq40d0y84lm49d3jqhb4ji9qxf9grfmkqp2rvdiha4jij6"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind=libelogind")
