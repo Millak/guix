@@ -3165,32 +3165,6 @@ by which applications, and what documents have been linked to which activity.")
     ;; triple licensed
     (license (list license:lgpl2.0+ license:lgpl2.1+ license:lgpl3+))))
 
-(define-public kactivities-stats
-  (package
-    (name "kactivities-stats")
-    (version "5.114.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1zhrs2p3c831rwx7ww87i82k5i236vfywdxv7zhz93k3vffyqby7"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list boost kactivities kconfig qtbase-5 qtdeclarative-5))
-    (home-page "https://community.kde.org/Frameworks")
-    (synopsis "Access usage statistics collected by the activity manager")
-    (description "The KActivitiesStats library provides a querying mechanism for
-the data that the activity manager collects---which documents have been opened
-by which applications, and what documents have been linked to which activity.")
-    ;; triple licensed
-    (license (list license:lgpl2.0+ license:lgpl2.1+ license:lgpl3+))))
-
 (define-public kbookmarks
   (package
     (name "kbookmarks")
