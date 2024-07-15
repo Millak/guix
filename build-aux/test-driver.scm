@@ -106,6 +106,12 @@ case is shown.\n"))
   (or (test-result-ref runner 'result-kind)
       'skip))
 
+(define (current-test-full-name runner)
+  "Get full name (test group path + name) of current test."
+  (format #f "~{~a~^/~}: ~a"
+          (test-runner-group-path runner)
+          (test-runner-test-name runner)))
+
 
 ;;;
 ;;; SRFI 64 custom test runner.
@@ -134,7 +140,7 @@ called to do the final reporting."
   (define (test-on-test-begin-gnu runner)
     ;; Procedure called at the start of an individual test case, before the
     ;; test expression (and expected value) are evaluated.
-    (let ((test-case-name (test-runner-test-name runner))
+    (let ((test-case-name (current-test-full-name runner))
           (start-time     (current-time time-monotonic)))
       (hash-set! test-cases-start-time test-case-name start-time)))
 
@@ -151,7 +157,7 @@ called to do the final reporting."
     (let* ((results (test-result-alist runner))
            (result? (cut assq <> results))
            (result  (cut assq-ref results <>))
-           (test-case-name (test-runner-test-name runner))
+           (test-case-name (current-test-full-name runner))
            (start (hash-ref test-cases-start-time test-case-name))
            (end (current-time time-monotonic))
            (time-elapsed (time-difference end start))
@@ -165,7 +171,7 @@ called to do the final reporting."
                 (and show-duration? time-elapsed-seconds)))
 
       (unless (and errors-only? (not (test-failed? runner)))
-        (format #t "test-name: ~A~%" (test-runner-test-name runner))
+        (format #t "test-name: ~A~%" test-case-name)
         (format #t "location: ~A~%"
                 (string-append (result 'source-file) ":"
                                (number->string (result 'source-line))))
@@ -183,7 +189,7 @@ called to do the final reporting."
 
       (format trs-port ":test-result: ~A ~A [~,3fs]~%"
               (result->string (test-result-kind* runner))
-              (test-runner-test-name runner) time-elapsed-seconds)))
+              test-case-name time-elapsed-seconds)))
 
   (define (finalize runner)
     "Procedure to call after all tests finish to do the final reporting."
@@ -229,13 +235,11 @@ called to do the final reporting."
 ;;;
 (define (test-match-name* regexp)
   "Return a test specifier that matches a test name against REGEXP."
-  (lambda (runner)
-    (string-match regexp (test-runner-test-name runner))))
+  (compose (cut string-match regexp <>) current-test-full-name))
 
 (define (test-match-name*/negated regexp)
   "Return a negated test specifier version of test-match-name*."
-  (lambda (runner)
-    (not (string-match regexp (test-runner-test-name runner)))))
+  (compose not (test-match-name* regexp)))
 
 
 ;;;
