@@ -6348,9 +6348,6 @@ efficient space usage.")
     (home-page "https://github.com/bits-and-blooms/bitset")
     (license license:bsd-3)))
 
-(define-public go-github-com-willf-bitset
-  (deprecated-package "go-github-com-willf-bitset" go-github-com-bits-and-blooms-bitset))
-
 (define-public go-github-com-bits-and-blooms-bloom
   (package
     (name "go-github-com-bits-and-blooms-bloom")
