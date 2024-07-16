@@ -253,7 +253,8 @@ inferior."
                       result)
        (inferior-eval '(begin
                          (define %store-table (make-hash-table))
-                         (define (cached-store-connection store-id version)
+                         (define (cached-store-connection store-id version
+                                                          built-in-builders)
                            ;; Cache connections to store ID.  This ensures that
                            ;; the caches within <store-connection> (in
                            ;; particular the object cache) are reused across
@@ -268,9 +269,19 @@ inferior."
                                ;; risk of talking to the wrong daemon or having
                                ;; our build result reclaimed (XXX).
                                (let ((store (if (defined? 'port->connection)
-                                                (port->connection %bridge-socket
-                                                                  #:version
-                                                                  version)
+                                                ;; #:built-in-builders was
+                                                ;; added in 2024
+                                                (catch 'keyword-argument-error
+                                                  (lambda ()
+                                                    (port->connection %bridge-socket
+                                                                      #:version
+                                                                      version
+                                                                      #:built-in-builders
+                                                                      built-in-builders))
+                                                  (lambda _
+                                                    (port->connection %bridge-socket
+                                                                      #:version
+                                                                      version)))
                                                 (open-connection))))
                                  (hashv-set! %store-table store-id store)
                                  store))))
@@ -690,11 +701,13 @@ thus be the code of a one-argument procedure that accepts a store."
          ;; The address of STORE itself is not a good identifier because it
          ;; keeps changing through the use of "functional caches".  The
          ;; address of its socket port makes more sense.
-         (store-id (object-address (store-connection-socket store))))
+         (store-id (object-address (store-connection-socket store)))
+         (store-built-in-builders (built-in-builders store)))
     (ensure-store-bridge! inferior)
     (send-inferior-request
      `(let ((proc  ,code)
-            (store (cached-store-connection ,store-id ,proto)))
+            (store (cached-store-connection ,store-id ,proto
+                                            ',store-built-in-builders)))
         ;; Serialize '&store-protocol-error' conditions.  The exception
         ;; serialization mechanism that 'read-repl-response' expects is
         ;; unsuitable for SRFI-35 error conditions, hence this special case.
