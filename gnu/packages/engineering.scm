@@ -2661,6 +2661,31 @@ Newton-Raphson power flow solvers in the C++ library lightsim2grid, and the
 @code{PowerModels.jl} library.")
     (license license:bsd-3)))
 
+(define-public python-pandapipes
+  (package
+    (name "python-pandapipes")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pandapipes" version ".zip"))
+       (sha256
+        (base32 "06yqqd25hxa6q49qcbpy0njwxkqzfhbff4frrrxd84391njgvdhq"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-nbmake
+                         python-pytest
+                         python-pytest-xdist
+                         unzip))
+    (propagated-inputs (list python-matplotlib
+                             python-pandapower
+                             python-shapely))
+    (home-page "http://www.pandapipes.org")
+    (synopsis "Simulation of multi energy grids")
+    (description
+     "This package provides a pipeflow calculation tool that complements
+@code{pandapower} in the simulation of multi energy grids.")
+    (license license:bsd-3)))
+
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
