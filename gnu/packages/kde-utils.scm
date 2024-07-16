@@ -670,12 +670,12 @@ with support for QR scanning.")
                                 (("gstreamer-video-1.0")
                                  "")))))))
       (native-inputs (list extra-cmake-modules pkg-config))
-      (inputs (list kconfigwidgets
-                    kcoreaddons
-                    ki18n
-                    kirigami
-                    kcrash
-                    kdnssd
+      (inputs (list kconfigwidgets-5
+                    kcoreaddons-5
+                    ki18n-5
+                    kirigami-5
+                    kcrash-5
+                    kdnssd-5
                     qtquickcontrols2-5
                     qtgraphicaleffects
                     qtdeclarative-5
@@ -696,7 +696,7 @@ with support for QR scanning.")
 @item Support for Parrot (Anafi, Bebop 2) and Ryze Tello drones
 @end itemize")
       (license ;GPL for programs, LGPL for libraries
-               (list license:gpl2+ license:lgpl2.0)))))
+       (list license:gpl2+ license:lgpl2.0)))))
 
 (define-public kontrast
   (package
