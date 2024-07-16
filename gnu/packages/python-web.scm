@@ -6114,7 +6114,7 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
         (base32
          "1s7670qw36x90bgmazmgib170i5gnpyb2ypxzlla7y0mpasniag0"))))
     (outputs '("out" "doc"))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
