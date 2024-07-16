@@ -1083,6 +1083,7 @@ an exception in such cases but perform the nearest sane action."
      ((string-prefix? "f2fs" type) check-f2fs-file-system)
      ((string-prefix? "ntfs" type) check-ntfs-file-system)
      ((string-prefix? "nfs" type) (const 'pass))
+     ((string-prefix? "cifs" type) (const 'pass))
      ((string-prefix? "xfs" type) check-xfs-file-system)
      (else #f)))
 
