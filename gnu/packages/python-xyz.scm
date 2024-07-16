@@ -10011,6 +10011,28 @@ Storage or Compound Document, Microsoft Office).  It is an improved version of
 the OleFileIO module from PIL, the Python Image Library.")
     (license license:bsd-3)))
 
+(define-public python-property-cached
+  (package
+    (name "python-property-cached")
+    (version "1.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "property-cached" version ".zip"))
+       (sha256
+        (base32 "0wxv5sdx1p7ils36j6j6hfscz8v2vzbq212i8y8r0lrnxpqlx71y"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; AssertionError.
+      #:test-flags #~(list "-k" "not test_threads_ttl_expiry")))
+    (native-inputs (list python-freezegun python-pytest unzip))
+    (home-page "https://github.com/althonos/property-cached/")
+    (synopsis "Decorator for caching properties in classes")
+    (description "This package provides a decorator for caching properties in
+classes.  It is forked from @code{cached-property}.")
+    (license license:bsd-3)))
+
 (define-public python-pypdf3
   (package
     (name "python-pypdf3")
