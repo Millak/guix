@@ -1798,6 +1798,7 @@ rules."
            "libksysguard"
            "ktexteditor"
            "powerdevil"
+           "kwallet"
            "plasma-firewall"))))
 
 ;; see https://bugs.kde.org/show_bug.cgi?id=456210
