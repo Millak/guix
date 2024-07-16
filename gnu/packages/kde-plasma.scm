@@ -1708,6 +1708,7 @@ on top of Baloo.")
                              libkscreen
                              krdp
                              ksystemstats
+                             kwallet
                              kwallet-pam
                              kwin
                              plasma-workspace-wallpapers
