@@ -16001,17 +16001,14 @@ Python code formatter \"black\".")
 (define-public python-geojson
   (package
     (name "python-geojson")
-    (version "2.5.0")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "geojson" version))
        (sha256
-        (base32 "12k5bzqskvq3gqzkryarhdjl0df47y5k9cf8r3clasi2wjnbfjvf"))))
-    (build-system python-build-system)
-    (arguments
-     ;; https://github.com/jazzband/geojson/issues/175
-     `(#:tests? #f))
+        (base32 "1b5df7skx3906046j12yjv8gdbcy17q9y3lbqbpmi83yf90gm9sq"))))
+    (build-system pyproject-build-system)
     (home-page "https://github.com/jazzband/geojson")
     (synopsis "Python bindings and utilities for GeoJSON")
     (description
