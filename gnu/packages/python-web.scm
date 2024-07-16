@@ -6997,15 +6997,24 @@ changed the process is restarted.")
 (define-public python-pyowm
   (package
     (name "python-pyowm")
-    (version "3.2.0")
+    (version "3.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyowm" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/csparpa/pyowm")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1pm8w6phr4m3xayndfndid366vhf1fpvdgjsp2zicxarmgc0pm53"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-geojson python-pysocks python-requests))
+        (base32
+         "1ha4pp96y3jk33qnyir5851cnj4dc06q6wqn1b0w54l3fsds28vi"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-flags #~(list "tests/unit")))
+    (native-inputs (list python-pytest))
+    (propagated-inputs
+     (list python-geojson-for-pyowm
+           python-pysocks
+           python-requests))
     (home-page "https://github.com/csparpa/pyowm")
     (synopsis "Python wrapper around OpenWeatherMap web APIs")
     (description
