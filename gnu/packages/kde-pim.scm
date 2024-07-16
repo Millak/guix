@@ -1166,6 +1166,7 @@ and retrieving certificates from LDAP servers.")
            boost
            gpgme-1.23
            grantleetheme
+           kaddressbook
            kbookmarks
            kcalendarcore
            kcalutils
@@ -1186,6 +1187,7 @@ and retrieving certificates from LDAP servers.")
            kitemviews
            kjobwidgets
            kldap
+           kmail-account-wizard
            kmailcommon
            kmailtransport
            kmessagelib
@@ -1223,6 +1225,19 @@ and retrieving certificates from LDAP servers.")
       #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (find-program-directory name)
+                (dirname (search-input-file
+                          inputs (string-append "/bin/" name))))
+              (wrap-program (string-append #$output "/bin/kmail")
+                `("XDG_DATA_DIRS" ":" prefix
+                  (,(getenv "XDG_DATA_DIRS")))
+                `("PATH" ":" prefix
+                  ,(map find-program-directory
+                        (list "kaddressbook"
+                              "akonadictl"
+                              "accountwizard"))))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
