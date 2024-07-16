@@ -383,6 +383,19 @@
                (close-port file)
                result)))))))))
 
+(test-equal "lock-file + unlock-file"
+  'hello
+  (call-with-temporary-directory
+   (lambda (directory)
+     (let* ((file (in-vicinity directory "lock"))
+            (out (lock-file file #:wait? #f)))
+       (display "hello" out)
+       (unlock-file out)
+       (let* ((in (lock-file file "r0"))
+              (content (read in)))
+         (unlock-file in)
+         content)))))
+
 (test-equal "set-thread-name"
   "Syscall Test"
   (let ((name (thread-name)))
