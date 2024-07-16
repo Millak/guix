@@ -144,10 +144,10 @@ well as CD-ROM images.")
                   "00jccpwvksyp2vr3fjxajs8d9d30rspg4zj6rnj8dai96alp303k"))))
       (build-system qt-build-system)
       (native-inputs (list extra-cmake-modules pkg-config))
-      (inputs (list ki18n
-                    kxmlgui
-                    kconfigwidgets
-                    ktexteditor
+      (inputs (list ki18n-5
+                    kxmlgui-5
+                    kconfigwidgets-5
+                    ktexteditor-5
                     libatcore
                     qt3d-5
                     qtbase-5
