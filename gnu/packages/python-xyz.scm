@@ -16017,6 +16017,21 @@ Python code formatter \"black\".")
 structures.")
     (license license:bsd-3)))
 
+;; pyowm only accepts a version less than version 3.
+(define-public python-geojson-for-pyowm
+  (package
+    (inherit python-geojson)
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "geojson" version))
+       (sha256
+        (base32 "12k5bzqskvq3gqzkryarhdjl0df47y5k9cf8r3clasi2wjnbfjvf"))))
+    (arguments
+     ;; https://github.com/jazzband/geojson/issues/175
+     (list #:tests? #f))))
+
 (define-public wfetch
   (let ((commit "e1cfa37814aebc9eb56ce994ebe877b6a6f9a715")
         (revision "1"))
