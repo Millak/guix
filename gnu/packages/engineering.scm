@@ -2627,6 +2627,40 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
 measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
     (license license:expat)))
 
+(define-public python-pandapower
+  (package
+    (name "python-pandapower")
+    (version "2.14.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pandapower" version ".zip"))
+       (sha256
+        (base32 "0c5vgiq795kd5q4wcy2x7s3l7x9xdj2nqyfx188dmhgqckrym161"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pyproj python-pytest unzip))
+    (propagated-inputs (list python-deepdiff
+                             python-geojson
+                             python-networkx
+                             python-numpy
+                             python-packaging
+                             python-pandas
+                             python-scipy
+                             python-tqdm
+                             python-typing-extensions))
+    (home-page "https://www.pandapower.org/")
+    (synopsis "Power system modelling and analysis")
+    (description "@code{pandapower} is an easy to use network calculation
+program aimed to automate the analysis and optimization of power systems.
+It uses the data analysis library @code{pandas} and is compatible with the
+commonly used @code{MATPOWER} / @code{PYPOWER} case format.  @code{pandapower}
+allows using different solvers including an improved Newton-Raphson power flow
+implementation, all @code{PYPOWER} solvers, the C++ library solvers for fast
+steady-state distribution power system analysis of @code{PowerGridModel}, the
+Newton-Raphson power flow solvers in the C++ library lightsim2grid, and the
+@code{PowerModels.jl} library.")
+    (license license:bsd-3)))
+
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
