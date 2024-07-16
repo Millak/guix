@@ -2723,6 +2723,42 @@ Newton-Raphson power flow solvers in the C++ library lightsim2grid, and the
 Microwave engineering.")
     (license license:bsd-3)))
 
+(define-public python-lcapy
+  (package
+    (name "python-lcapy")
+    (version "1.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lcapy" version))
+       (sha256
+        (base32 "13swd2nd2s20hixy4as924sr223flcvcy9zw3qlzsrcvhppzb84n"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; This test fails by FileNotFoundError (a schematic file), possibly
+      ;; because it's not included in PyPI.
+      #:test-flags #~(list "-k" "not test_circuitgraph")))
+    (propagated-inputs (list python-ipython
+                             python-matplotlib
+                             python-networkx
+                             python-numpy
+                             python-property-cached
+                             python-scipy
+                             python-setuptools
+                             python-sympy
+                             python-wheel))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/mph-/lcapy")
+    (synopsis "Symbolic linear circuit analysis")
+    (description "Lcapy is a Python package for linear circuit analysis.  It
+uses SymPy for symbolic mathematics.
+
+Lcapy can symbolically analyse circuits described with netlists or by
+series/parallel combinations of components.  It can also manipulate
+ontinuous-time and discret-time expressions.")
+    (license license:lgpl2.1+)))
+
 (define-public openscad
   (package
     (name "openscad")
