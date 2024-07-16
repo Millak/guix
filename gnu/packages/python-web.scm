@@ -6164,6 +6164,7 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
                    ,(map (lambda (output)
                            (string-append output sitedir))
                          (list python out))))))))))
+    (inputs (list bash-minimal))
     (native-inputs
      (list binutils ;; for ctypes.util.find_library()
            python-aiohttp
