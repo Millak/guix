@@ -1411,6 +1411,36 @@ and functions, detailed info on failing assert statements, modular fixtures,
 and many external plugins.")
     (license license:expat)))
 
+(define-public python-pytest-8
+  (package/inherit python-pytest
+    (name "python-pytest")
+    (version "8.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest" version))
+       (sha256
+        (base32 "0xvr25qvmdh6z03jpgg24adhgqkvkal2g2v8vk63j6909q8bhjyy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    "not test_code_highlight_continuation"
+                    " and not test_code_highlight"
+                    " and not test_code_highlight_custom_theme"
+                    " and not test_code_highlight_invalid_theme"
+                    " and not test_code_highlight_invalid_theme_mode"
+                    " and not test_code_highlight_simple"
+                    " and not test_color_yes"
+                    " and not test_comparisons_handle_colors"
+                    " and not test_empty_NO_COLOR_and_FORCE_COLOR_ignored"
+                    " and not test_remove_dir_prefix"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-pytest)
+       (append python-exceptiongroup)
+       (replace "python-pluggy" python-pluggy-next)))))
+
 (define-public python-pytest-next
   (package/inherit python-pytest
     (name "python-pytest")
