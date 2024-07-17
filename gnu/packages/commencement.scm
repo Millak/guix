@@ -59,10 +59,13 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix platform)
-  #:use-module ((guix store) #:select (%store-monad))
+  #:use-module ((guix store) #:select (%store-monad
+                                       store-lift
+                                       built-in-builders))
   #:use-module (guix monads)
   #:use-module (guix download)
-  #:use-module ((guix git-download) #:select (git-reference git-file-name))
+  #:use-module ((guix git-download)
+                #:select (git-fetch git-reference git-file-name))
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:)
@@ -94,37 +97,53 @@
 ;;;
 ;;; Code:
 
+(define built-in-builders*
+  (store-lift built-in-builders))
+
 (define* (git-fetch-from-tarball tarball)
   "Return an <origin> method equivalent to 'git-fetch', except that it fetches
 the checkout from TARBALL, a tarball containing said checkout.
 
   The purpose of this procedure is to work around bootstrapping issues:
 'git-fetch' depends on Git, which is much higher in the dependency graph."
-  (lambda* (url hash-algo hash
+  (lambda* (ref hash-algo hash
                 #:optional name
                 #:key (system (%current-system))
                 (guile %bootstrap-guile))
-    (mlet %store-monad ((guile (package->derivation guile system)))
-      (gexp->derivation
-       (or name "git-checkout")
-       (with-imported-modules '((guix build utils))
-         #~(begin
-             (use-modules (guix build utils)
-                          (ice-9 ftw)
-                          (ice-9 match))
-             (setenv "PATH"
-                     #+(file-append %bootstrap-coreutils&co "/bin"))
-             (invoke "tar" "xf" #$tarball)
-             (match (scandir ".")
-               (("." ".." directory)
-                (copy-recursively directory #$output)))))
-       #:recursive? #t
-       #:hash-algo hash-algo
-       #:hash hash
-       #:system system
-       #:guile-for-build guile
-       #:graft? #f
-       #:local-build? #t))))
+    (mlet %store-monad ((builtins (built-in-builders*)))
+      ;; Use the 'git-download' built-in builder when it's available: it's the
+      ;; preferred and most reliable method.
+      (if (member "git-download" builtins)
+          (git-fetch ref hash-algo hash name #:system system)
+
+          ;; This method is kept for compatibility with daemons that lack
+          ;; 'git-download' to work around bootstrapping issues.
+          (mlet %store-monad ((guile (package->derivation guile system)))
+            (gexp->derivation
+             (or name "git-checkout")
+             (with-imported-modules '((guix build utils))
+               #~(begin
+                   (use-modules (guix build utils)
+                                (ice-9 ftw)
+                                (ice-9 match))
+                   (setenv "PATH"
+                           #+(file-append %bootstrap-coreutils&co "/bin"))
+
+                   ;; FIXME: This assumes that TARBALL, an origin, was
+                   ;; successfully downloaded under its given hash; however
+                   ;; that hash is bound to change over time since it's a
+                   ;; generated tarball.
+                   (invoke "tar" "xf" #$tarball)
+                   (match (scandir ".")
+                     (("." ".." directory)
+                      (copy-recursively directory #$output)))))
+             #:recursive? #t
+             #:hash-algo hash-algo
+             #:hash hash
+             #:system system
+             #:guile-for-build guile
+             #:graft? #f
+             #:local-build? #t))))))
 
 (define bootar
   (package
