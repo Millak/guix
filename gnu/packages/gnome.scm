@@ -10283,7 +10283,7 @@ associations for GNOME.")
 (define-public gnome-weather
   (package
     (name "gnome-weather")
-    (version "44.0")
+    (version "46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10291,7 +10291,7 @@ associations for GNOME.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1brvjawwc69a49697mp0dq4glpvvvcsnx4i8ysfnjhahg2n3h3bb"))))
+                "17fllgkvsbsklnazxap4rg2bg2cf5xwgqkgyy8a2wrygbiq2cf0m"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -10306,7 +10306,9 @@ associations for GNOME.")
                                 "/bin/gnome-weather")))))
           (add-after 'unpack 'disable-gtk-update-icon-cache
             (lambda _
-              (setenv "DESTDIR" "/")))
+              (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false"))))
           (add-after 'install 'fix-desktop-file
             ;; FIXME: "gapplication launch org.gnome.Weather" fails for some
             ;; reason.  See https://issues.guix.gnu.org/issue/39324.
@@ -10323,7 +10325,8 @@ associations for GNOME.")
                 `("GI_TYPELIB_PATH" ":" prefix
                   (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
-     (list gettext-minimal
+     (list desktop-file-utils
+           gettext-minimal
            `(,glib "bin")
            gobject-introspection
            pkg-config))
