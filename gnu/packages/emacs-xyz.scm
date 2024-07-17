@@ -1681,10 +1681,8 @@ before interacting with non-free LLMs.")
     (license license:gpl3+)))
 
 (define-public emacs-magit
-    ;; Use this unreleased commit to benefit from a recent improvements with
-    ;; regard to adding git trailers such as "Reviewed-by".
-  (let ((commit "dda332b2a41569f5fd8c0c2c3c2dab902d48ceb4")
-        (revision "7"))
+  (let ((commit "538cb2f90b5fdd04fcaacd537834f4f3c8c0720f")
+        (revision "8"))
     (package
       (name "emacs-magit")
       (version (git-version "3.3.0" revision commit))
@@ -1696,7 +1694,7 @@ before interacting with non-free LLMs.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "14vqfykfzddpfka7s3pmlh3yvbfd1rpjhab4g9dinz9hn48dwb06"))))
+          (base32 "1vzqy82ai8w0k283bij45k49pq4v3xy4yyy5gd24ba713y03327f"))))
       (build-system emacs-build-system)
       (arguments
        (list
