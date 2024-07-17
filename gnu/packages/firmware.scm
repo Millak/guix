@@ -882,6 +882,9 @@ Executables included are:
 @item @code{VfrCompile}: Parse preprocessed UEFI and Framework VFR files.
 @item @code{VolInfo}: Display the contents of a firmware volume.
 @end itemize")
+    ;; See BaseTools/Source/C/GNUmakefile
+    (supported-systems '("x86_64-linux" "i686-linux" "armhf-linux"
+                         "aarch64-linux" "riscv64-linux"))
     (license license:bsd-2)))
 
 (define* (make-ovmf-firmware arch)
