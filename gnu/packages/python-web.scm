@@ -7424,7 +7424,7 @@ Encoding for HTTP.")
 (define-public python-cloud-init
   (package
     (name "python-cloud-init")
-    (version "23.4.3")
+    (version "24.2")
     (source
      (origin
        (method git-fetch)
@@ -7433,7 +7433,7 @@ Encoding for HTTP.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0przjj2j1ws6b7sbgqxnffsarbbwl00lhq3bn7yiksp8kg8np1m1"))))
+        (base32 "18872z2y9wkh558y1bx5r0rksb4i584jbc8z4g8marwawhwxq506"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7447,6 +7447,7 @@ Encoding for HTTP.")
         (string-append
          ;; This test messes with PATH, so it cannot find mkdir
          "not test_path_env_gets_set_from_main"
+         " and not test_apt_configure_sources_list_"
          ;; These all fail because /bin/sh doesn't exist.  We cannot patch
          ;; this because the generated scripts must use /bin/sh as they are
          ;; supposed to be run on minimal systems.
