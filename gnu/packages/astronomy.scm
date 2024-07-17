@@ -2952,19 +2952,19 @@ orbits described in TLE files.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "5.1.4")
+    (version "5.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "0c41h0ml8wh1jfjpny824jpjnaw6rrm6vklvjk2h1sw2iza71syb"))))
+        (base32 "1jdkkcv247chsj08wrxxv0m577ji5cg7mxx5pw7q0ahmnq93xk2p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list
-         "-n" "auto"
+         "--numprocesses" "auto"
          "-k" (string-append
                ;; XXX: Failed: DID NOT RAISE <class 'ModuleNotFoundError'>
                ;; It struggles to find python-opencsv package info with
