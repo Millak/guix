@@ -740,18 +740,18 @@ Main features:
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "3.2.0")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "1wj556g15gwp6ir5hg083l15sifdsf23giqkx0jbn4lgdwjffbgr"))))
+        (base32 "0pwy8p3idz40a1z07d0lvvd0mwwya8g52wrp72frgpagjkvj3ska"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto" "-p" "no:legacypath")
+      #~(list "-p" "no:legacypath")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-pypojrect-toml
@@ -767,7 +767,9 @@ Main features:
      (list python-fsspec
            python-packaging
            python-psutil
-           python-pytest
+           ;; 3.3.0+ requries newer version of pytest, see
+           ;; <https://github.com/asdf-format/asdf/issues/1804>.
+           python-pytest-8
            python-pytest-doctestplus
            python-pytest-remotedata
            python-pytest-xdist
