@@ -312,7 +312,8 @@ will name the threaded machine type unless THREADS? is provided as #f."
                                  `(,this-package "doc"))
                            (list stex-bootstrap
                                  (texlive-updmap.cfg
-                                  (list texlive-enumitem))))
+                                  (list texlive-enumitem
+                                        texlive-etoolbox))))
                      ,chez-nanopass-bootstrap
                      ,zuo))
     (native-search-paths
