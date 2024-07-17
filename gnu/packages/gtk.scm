@@ -618,7 +618,7 @@ printing and other features typical of a source code editor.")
 (define-public gtksourceview
   (package
     (name "gtksourceview")
-    (version "5.8.0")
+    (version "5.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gtksourceview/"
@@ -626,7 +626,7 @@ printing and other features typical of a source code editor.")
                                   "gtksourceview-" version ".tar.xz"))
               (sha256
                (base32
-                "0cw9h4aa84a48b3kd3rv0bb2mk7q1vz9hwkppxpqh8gg1p1d838i"))))
+                "07rcnhwqyiqs9icld3965g41wd3n9a808y7agjpasnjwk2njmj44"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
