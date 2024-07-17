@@ -2745,7 +2745,6 @@ Microwave engineering.")
                              python-numpy
                              python-property-cached
                              python-scipy
-                             python-setuptools
                              python-sympy
                              python-wheel))
     (native-inputs (list python-pytest))
