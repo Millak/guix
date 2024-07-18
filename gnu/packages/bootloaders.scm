@@ -286,10 +286,7 @@ menu to select one of the installed operating systems.")
        (delete "help2man" "texinfo" "parted" "qemu" "xorriso")))
     (arguments
      (substitute-keyword-arguments (package-arguments grub)
-       ((#:configure-flags _ #~'())
-        #~(list "PYTHON=true"))
-       ((#:tests? _ #t)
-        #f)
+       ((#:tests? _ #t) #f)
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (replace 'patch-stuff
