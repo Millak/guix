@@ -116,7 +116,7 @@ Copyright @copyright{} 2022 Antero Mejr@*
 Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
 Copyright @copyright{} 2023 Tanguy Le Carrour@*
-Copyright @copyright{} 2023 Zheng Junjie@*
+Copyright @copyright{} 2023, 2024 Zheng Junjie@*
 Copyright @copyright{} 2023 Brian Cully@*
 Copyright @copyright{} 2023 Felix Lechner@*
 Copyright @copyright{} 2023 Foundation Devices, Inc.@*
@@ -23315,6 +23315,11 @@ The available fields are:
 @table @asis
 @item @code{sddm} (default: @code{sddm})
 The SDDM package to use.
+
+@quotation Note
+sddm has Qt6 enabled by default. If you want to still use a Qt5 theme,
+you need to set it to @code{sddm-qt5}.
+@end quotation
 
 @item @code{display-server} (default: "x11")
 Select display server to use for the greeter.  Valid values are
