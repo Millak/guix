@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2017, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 Andy Patterson <ajpatter@uwaterloo.ca>
@@ -222,8 +222,11 @@
                         "share/qemu/opensbi-riscv64-generic-fw_dynamic.bin"))
               (seabios (search-input-file %build-inputs
                                           "share/qemu/bios.bin"))
-              (ipxe (search-input-file %build-inputs
-                                       "share/qemu/pxe-virtio.rom"))
+              (ipxe
+                #$@(if (this-package-input "ipxe-qemu")
+                       #~((search-input-file %build-inputs
+                                             "share/qemu/pxe-virtio.rom"))
+                       #~((string-append #$output "/share/qemu"))))
               (out #$output))
           (list (string-append "--cc=" gcc)
                 ;; Some architectures insist on using HOST_CC.
@@ -256,8 +259,11 @@
               (let* ((seabios (dirname (search-input-file
                                         inputs "share/qemu/bios.bin")))
                      (seabios-firmwares (find-files seabios "\\.bin$"))
-                     (ipxe (dirname (search-input-file
-                                     inputs "share/qemu/pxe-virtio.rom")))
+                     (ipxe
+                       #$@(if (this-package-input "ipxe-qemu")
+                              #~((dirname (search-input-file
+                                            inputs "share/qemu/pxe-virtio.rom")))
+                              #~((string-append #$output "/share/qemu"))))
                      (ipxe-firmwares (find-files ipxe "\\.rom$"))
                      (openbios (search-input-file
                                 inputs "share/qemu/openbios-ppc"))
@@ -286,6 +292,28 @@
                                     "\"~a\",~%" file))
                           allowed-differences)
                 (close-port allowed-differences-whitelist))))
+          ;; If the ipxe firmware isn't available, remove it from the list
+          ;; of files expected to be available and remove some of the tests.
+          #$@(if (not (this-package-input "ipxe-qemu"))
+                 #~((add-after 'unpack 'dont-require-ipxe-firmware
+                      (lambda _
+                        (substitute* "pc-bios/meson.build"
+                          ((".*(pxe|efi)-.*") ""))
+                        (substitute* "tests/qtest/meson.build"
+                          ((".*qom-test.*") "")
+                          ((".*qos-test.*") "")
+                          ((".*test-hmp.*") "")
+                          ((".*'pxe-test':.*") "")
+                          ((",? ?'boot-serial-test',?") "")
+                          ((",? ?'endianness-test',?") "")
+                          ((",? ?'prom-env-test',?") "")
+                          ((",? ?'pxe-test',?") "")
+                          ((",? ?'test-filter-mirror',?") "")
+                          ((",? ?'test-filter-redirector',?") "")
+                          ((",? ?'test-netfilter',?") "")
+                          ;; Fix the slow_qtests array after the substitutions
+                          (("  : .*") "")))))
+                 #~())
           (add-after 'unpack 'extend-test-time-outs
             (lambda _
               ;; These tests can time out on heavily-loaded and/or slow storage.
@@ -450,41 +478,44 @@ exec smbd $@")))
                 (rename-file (string-append out "/share/doc/qemu")
                              (string-append qemu-doc "/html"))))))))
     (inputs
-     (list alsa-lib
-           bash-minimal
-           dtc
-           glib
-           gtk+
-           ipxe-qemu
-           libaio
-           libcacard                    ;smartcard support
-           attr libcap-ng               ;VirtFS support
-           libdrm
-           libepoxy
-           libjpeg-turbo
-           libpng
-           libseccomp
-           libslirp
-           liburing
-           libusb                       ;USB pass-through support
-           mesa
-           ncurses
-           openbios-qemu-ppc
-           opensbi-qemu
-           ;; ("pciutils" ,pciutils)
-           pixman
-           pulseaudio
-           sdl2
-           seabios-qemu
-           spice
-           usbredir
-           util-linux
-           vde2
-           virglrenderer
+     (append
+       (if (supported-package? ipxe-qemu)
+           (list ipxe-qemu)
+           '())
+       (list alsa-lib
+             bash-minimal
+             dtc
+             glib
+             gtk+
+             libaio
+             libcacard                  ;smartcard support
+             attr libcap-ng             ;VirtFS support
+             libdrm
+             libepoxy
+             libjpeg-turbo
+             libpng
+             libseccomp
+             libslirp
+             liburing
+             libusb                     ;USB pass-through support
+             mesa
+             ncurses
+             openbios-qemu-ppc
+             opensbi-qemu
+             ;; pciutils
+             pixman
+             pulseaudio
+             sdl2
+             seabios-qemu
+             spice
+             usbredir
+             util-linux
+             vde2
+             virglrenderer
 
-           ;; Formats to support for .qcow2 (and possibly other) compression.
-           zlib
-           `(,zstd "lib")))
+             ;; Formats to support for .qcow2 (and possibly other) compression.
+             zlib
+             `(,zstd "lib"))))
     (native-inputs
      ;; Note: acpica is here only to pretty-print firmware differences with IASL
      ;; (see the replace-firmwares phase above).
