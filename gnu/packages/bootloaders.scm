@@ -53,6 +53,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
   #:use-module (gnu packages mtools)
   #:use-module (gnu packages ncurses)
@@ -132,7 +133,17 @@
            ;; Counterintuitively, this *disables* a spurious Python dependency by
            ;; calling the ‘true’ binary instead.  Python is only needed during
            ;; bootstrapping (for genptl.py), not when building from a release.
-           #~(list "PYTHON=true")
+           #~(append
+               (list "PYTHON=true")
+                    ;; This needs to be compiled with clang for powerpc64le.
+                    (if #$(and=> (%current-target-system)
+                                 target-ppc64le?)
+                        (list "TARGET_CC=powerpc64le-linux-gnu-clang")
+                        '())
+                    (if #$(and (target-ppc64le? (%current-system))
+                               (not (%current-target-system)))
+                        (list "CC=clang")
+                        '()))
 
            ;; GRUB fails to load modules stripped with --strip-unneeded.
            #:strip-flags
@@ -185,6 +196,13 @@
                    (substitute* "Makefile.in"
                      (("grub_cmd_date grub_cmd_set_date grub_cmd_sleep")
                       "grub_cmd_date grub_cmd_sleep"))))
+               #$@(if (target-ppc64le?)
+                      #~((add-before 'check 'skip-tests
+                           (lambda _
+                             (substitute* "Makefile.in"
+                               ((" grub_cmd_date ") " ")
+                               ((" pseries_test ") " ")))))
+                      #~())
                (add-before 'check 'disable-pixel-perfect-test
                  (lambda _
                    ;; This test compares many screenshots rendered with an older
@@ -203,6 +221,15 @@
                    ;; Console-setup's ckbcomp is invoked by grub-kbdcomp.  It
                    ;; is required for generating alternative keyboard layouts.
                    console-setup)
+
+             ;; 64-bit PowerPC hardware boots in big-endian mode and then for
+             ;; powerpc64le it switches to little-endian mode.  Therefore we
+             ;; need a compiler which can generate both big-endian and
+             ;; little-endian binaries for the bootloader and the utilities
+             ;; and building with clang is the easiest option.
+             (if (target-ppc64le?)
+                 (list clang)
+                 '())
 
              ;; Depend on LVM2 for libdevmapper, used by 'grub-probe' and
              ;; 'grub-install' to recognize mapped devices (LUKS, etc.)
