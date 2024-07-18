@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2019, 2021-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -104,7 +104,9 @@ depends on."
     (lambda (file)
       "Return the module name (a list of symbols) corresponding to FILE."
       (map string->symbol
-           (string-tokenize (string-drop-right file 4) not-slash)))))
+           (match (string-tokenize (string-drop-right file 4) not-slash)
+             (("." . rest) rest)                  ;strip the leading "."
+             (lst lst))))))
 
 (define (module-name->file-name module)
   "Return the file name for MODULE."

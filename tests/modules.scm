@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,5 +64,13 @@
                 (missing-dependency-module c)))
        (source-module-closure '((baz)) (list directory)
                               #:select? (const #t))))))
+
+(test-equal "file-name->module-name"
+  '(guix foo)
+  (file-name->module-name "guix/foo.scm"))
+
+(test-equal "file-name->module-name, leading dot"
+  '(guix foo)
+  (file-name->module-name "./guix/foo.scm"))
 
 (test-end)
