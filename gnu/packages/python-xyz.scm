@@ -34541,6 +34541,34 @@ needed and registers the function with its annotations.")
 symbolic expressions in pure Python using the technique of logical unification.")
     (license license:bsd-3)))
 
+(define-public python-looseversion
+  (package
+    (name "python-looseversion")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "looseversion" version))
+       (sha256
+        (base32 "17k625ws83lwksa7yyy4mn0i39lmxgrzxihn22l335dvyvrnbppb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; No tests provided.
+      #:tests? #f))
+    (native-inputs
+     (list python-hatchling))
+    (home-page "https://github.com/effigies/looseversion")
+    (synopsis "Version numbering for anarchists and software realists")
+    (description
+     "This package provides a drop-in replacement for the original
+@code{LooseVersion}.  It implements an identical interface and comparison
+logic to @code{LooseVersion}.  The only major change is that a
+@code{looseversion.LooseVersion} is comparable to a
+@code{distutils.version.LooseVersion}, which means tools should not need to
+worry whether all dependencies that use LooseVersion have migrated.")
+    (license license:psfl)))
+
 (define-public python-cons
   (package
     (name "python-cons")
