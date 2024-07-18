@@ -24,6 +24,7 @@
 ;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;; Copyright © 2024 Vivien Kraus <vivien@planete-kraus.eu>
 ;; Copyright © 2024 Guillaume Le Vaillant <glv@posteo.net>
+;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -31,6 +32,36 @@
 
 (channel-news
  (version 0)
+ (entry (commit "ee7e5e00bf2b9257e67d785b37efddb008c5da37")
+        (title
+         (en "Plasma updated to version 6.1.2")
+         (de "Plasma auf Version 6.1.2 aktualisiert")
+         (fr "Plasma passe à la version 6.1.2")
+         (zh "Plasma 更新到 6.1.2 版本"))
+        (body
+         (en "Plasma updated to 6.1.2, KDE Frameworks updated to 6.3.0, and
+other KDE package updates.
+
+With Plasma updates, SDDM has QT6 enabled by default. If you want to still use a
+Qt5 theme, you need to set the field @code{sddm} in @code{sddm-configuration} to
+@code{sddm-qt5}.")
+         (de "Plasma wurde auf 6.1.2 aktualisiert, KDE Frameworks wurde
+auf 6.3.0 aktualisiert und andere KDE-Pakete wurden aktualisiert.
+
+Mit der Aktualisierung von Plasma ist in SDDM die Version qt6
+vorgegeben.  Wenn Sie ein Qt5-Thema benutzen möchten, müssen Sie
+in der @code{sddm-configuration} das Feld @code{sddm} auf
+@code{sddm-qt5} setzen.")
+         (fr "Plasma passe à la version 6.1.2, KDE Frameworks à la 6.3.0, et
+  d’autres logiciels KDE sont mis à jour.
+
+  Avec ces mises à jour de Plasma, sddm utilise Qt 6 par défaut.  Pour
+  utiliser un thème Qt 5, il faut mettre le champ @code{sddm} de
+  @code{sddm-configuration} à @code{sddm-qt5}.")
+         (zh "Plasma 更新到 6.1.2, KDE Frameworks 更新到 6.3.0, 及其他 KDE 软件包更新。
+
+随着 Plasma 更新, SDDM 默认启用 Qt6, 如果您还想使用 Qt5 主题, 需要将 @code{sddm-configuration} 中的
+@code{sddm} 字段设置为 @code{sddm-qt5}.")))
 
  (entry (commit "a46908620fac09bd8ccd0f587a27e86035d3b1d7")
         (title
