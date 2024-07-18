@@ -42,7 +42,7 @@
 (define-public book-sparc
   (package
     (name "book-sparc")
-    (version "2.0.0")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -50,7 +50,7 @@
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0bn3a3m0kcjybyaz1a7pj8n48jh1cg4szwi9px3zjhhm5818wi7z"))
+                "1ns2vs5yb9z1hj9gq5y55qz7c9azzhr866b665s8fq50q5m4yhbc"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet
@@ -78,6 +78,7 @@
      (list font-liberation
            texlive-acronym
            texlive-adjustbox
+           texlive-biblatex
            texlive-bibtex
            texlive-bibtexperllibs
            texlive-bigfoot
