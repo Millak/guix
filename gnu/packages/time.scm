@@ -644,7 +644,6 @@ calls.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.17
       #:install-source? #f
       #:import-path "github.com/oz/tz"))
     (inputs

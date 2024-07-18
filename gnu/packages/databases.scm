@@ -5503,7 +5503,6 @@ compatible with SQLite using a graphical user interface.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:install-source? #f
       #:import-path "github.com/lighttiger2505/sqls"))
     (native-inputs

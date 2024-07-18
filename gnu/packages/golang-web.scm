@@ -206,7 +206,6 @@ the parse trees produced by the html package.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/AudriusButkevicius/pfilter"
       #:phases
       #~(modify-phases %standard-phases
@@ -561,8 +560,8 @@ and RFC 5389).")
         (base32 "1pwr7fzxgngb073q98qrz1f90bkk3pljynif6jl5a6q6kcsn7xf1"))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.21
-           #:import-path "github.com/cenkalti/backoff/v4"))
+     (list
+      #:import-path "github.com/cenkalti/backoff/v4"))
     (home-page "https://github.com/cenkalti/backoff")
     (synopsis "The exponential backoff algorithm in Go")
     (description "This is a Go port of the exponential backoff algorithm from
@@ -787,7 +786,7 @@ decompose request handling into many smaller layers.")
 (define-public go-github-com-go-jose-go-jose-v3
   (package
     (name "go-github-com-go-jose-go-jose-v3")
-    (version "3.0.0")
+    (version "3.0.3")
     (source
      (origin
        (method git-fetch)
@@ -796,7 +795,7 @@ decompose request handling into many smaller layers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fnw0p49wc9gmd2xcji2x9jf97dgg9igagd5m6bmq3nw9jjfqdc5"))))
+        (base32 "0kbkplhzqv9ai28r4smhdsxxwh20d96srr3am37pwwnh48ivwch8"))))
     (build-system go-build-system)
     (arguments
      '( #:import-path "github.com/go-jose/go-jose/v3"))
@@ -812,6 +811,24 @@ decompose request handling into many smaller layers.")
 Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
+
+(define-public go-github-com-go-jose-go-jose-v4
+  (package
+    (inherit go-github-com-go-jose-go-jose-v3)
+    (name "go-github-com-go-jose-go-jose-v4")
+    (version "4.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-jose/go-jose")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bf444687q5rdxjgk41bkryhzhx49f6600b7i51m572xdl0r28a9"))))
+    (arguments
+     (list
+      #:import-path "github.com/go-jose/go-jose/v4"))))
 
 (define-public go-github-com-go-ldap-ldap
   (package
@@ -1055,8 +1072,11 @@ processes.")
      `(#:tests? #f ;application/octet-stream instead of text/plain
        #:import-path "github.com/google/go-github/v26/github"
        #:unpack-path "github.com/google/go-github/v26"))
-    (native-inputs
-     (list go-github-com-google-go-querystring go-golang-org-x-crypto))
+    (propagated-inputs
+     (list go-github-com-google-go-querystring
+           go-golang-org-x-crypto
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync))
     (home-page "https://github.com/google/go-github/")
     (synopsis "Client library for accessing the GitHub API v3")
     (description "@code{go-github} is a Go client library for accessing the
@@ -1403,7 +1423,6 @@ JSON data to the machine.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/jackpal/gateway"))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -1758,14 +1777,13 @@ following:
         (base32 "1rn02yn7494r7ayn585bbsddprbn8wdccxs4n2k5dmll4dyd39mp"))))
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/multiformats/go-multiaddr"))
     (native-inputs (list go-github-com-stretchr-testify))
     (propagated-inputs (list go-github-com-ipfs-go-cid
                              go-github-com-multiformats-go-multibase
                              go-github-com-multiformats-go-varint
                              go-github-com-multiformats-go-multihash
-                             go-golang-org-x-exp-2023))))
+                             go-golang-org-x-exp))))
 
 (define-public go-github-com-multiformats-go-multiaddr-dns
   (package
@@ -1783,7 +1801,6 @@ following:
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/multiformats/go-multiaddr-dns"
       #:unpack-path "github.com/multiformats/go-multiaddr-dns"))
     (propagated-inputs
@@ -1811,7 +1828,6 @@ following:
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/multiformats/go-multiaddr-fmt"))
     (propagated-inputs
      (list go-github-com-multiformats-go-multiaddr-0.12))
@@ -1875,7 +1891,6 @@ conversion to and from @command{net.Addr}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.20
       #:import-path "github.com/multiformats/go-multistream"))
     (propagated-inputs
      (list go-github-com-multiformats-go-varint))
@@ -1954,7 +1969,6 @@ which produce colorized output using github.com/fatih/color.")
     (arguments
      (list
       #:tests? #f ; Requires some unpackaged software and test data
-      #:go go-1.21
       #:import-path "github.com/oschwald/geoip2-golang"))
     (propagated-inputs
      (list go-github-com-oschwald-maxminddb-golang))
@@ -1981,7 +1995,6 @@ databases in Go.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/oschwald/maxminddb-golang"
       #:phases
       #~(modify-phases %standard-phases
@@ -2059,7 +2072,6 @@ in Golang.")
         (base32 "10nn9349f7snqkzncda5m013fgnzicrcxi6pb6ghc0vb6rhqkf30"))))
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/pion/dtls/v2"))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -2136,7 +2148,6 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
     (arguments
      (list
       #:tests? #f ;Tests require network access.
-      #:go go-1.21
       #:import-path "github.com/pion/ice/v2"))
     (propagated-inputs
      (list go-github-com-google-uuid
@@ -2166,7 +2177,6 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
     (arguments
      (list
       #:tests? #f ;Tests require network access.
-      #:go go-1.21
       #:import-path "github.com/pion/ice/v3"))
     (propagated-inputs
      (list go-github-com-google-uuid
@@ -2199,7 +2209,6 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
       ;; packaging, see
       ;; <https://github.com/pion/.goassets/blob/master/.github/workflows/test.reusable.yml>.
       #:tests? #f
-      #:go go-1.21
       #:unpack-path "github.com/pion/mdns"
       #:import-path "github.com/pion/mdns"))
     (native-inputs
@@ -2253,7 +2262,6 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/pion/rtp"))
     (propagated-inputs
      (list go-github-com-pion-randutil))
@@ -2280,7 +2288,6 @@ packetizer and depacketizer.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/pion/stun"))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -2315,7 +2322,6 @@ packetizer and depacketizer.")
         (base32 "0zli55ls5izpr6cw0wj0gy44872xn9rk20i8ay9cfk7j2rb60y60"))))
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/pion/stun/v2"))
     (propagated-inputs
      (list go-github-com-pion-dtls-v2
@@ -2509,7 +2515,6 @@ it like any library.  The quickest way to get started is to look at the
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/pires/go-proxyproto"))
     (home-page "https://github.com/pires/go-proxyproto")
     (synopsis "Implementation of the PROXY protocol")
@@ -2618,7 +2623,6 @@ to jQuery to the Go language.")
      (list
       ;; Tests require ginkgo v2.
       #:tests? #f
-      #:go go-1.20
       #:import-path "github.com/quic-go/qpack"))
     (propagated-inputs
      (list go-github-com-onsi-ginkgo
@@ -2650,7 +2654,6 @@ the Go standard library}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/quic-go/quic-go"
       #:phases
       #~(modify-phases %standard-phases
@@ -2710,7 +2713,6 @@ protocol.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/quic-go/webtransport-go"))
     (native-inputs
      (list go-go-uber-org-mock
@@ -2757,7 +2759,7 @@ support.")
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
     (name "go-github-com-sourcegraph-jsonrpc2")
-    (version "0.1.0")
+    (version "0.2.0")
     (home-page "https://github.com/sourcegraph/jsonrpc2")
     (source
      (origin
@@ -2767,14 +2769,12 @@ support.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dk0w32k96vxrwnmm24wqx337dn8ylch65qwrbc3wh7whw2xx71q"))))
+        (base32 "1id35b4mhif9gy1b70mv0x7xkmpm2p8xydix8six10yjyhvm1wjh"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/sourcegraph/jsonrpc2"))
     (propagated-inputs
-     (list go-github-com-daviddengcn-go-colortext
-           go-github-com-gorilla-websocket
-           go-github-com-motemen-go-colorine))
+     (list go-github-com-gorilla-websocket))
     (synopsis "Provides a client and server implementation of JSON-RPC 2.0")
     (description
      "Package jsonrpc2 provides a Go implementation of JSON-RPC 2.0.")
@@ -3164,6 +3164,8 @@ programming language.")
 programming language, which supports draft-04, draft-06 and draft-07.")
       (license license:asl2.0))))
 
+;; XXX: This repository has been archived by the owner on Feb 27, 2023. It is
+;; now read-only and it is DEPRECATED.
 (define-public go-gopkg-in-square-go-jose-v2
   (package
     (name "go-gopkg-in-square-go-jose-v2")
@@ -3179,7 +3181,12 @@ programming language, which supports draft-04, draft-06 and draft-07.")
         (base32 "1b1nhqxfmhzwrfk7pkvp2w3z3d0pf5ir00vizmy2d4xdbnldn70r"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "gopkg.in/square/go-jose.v2"))
+     (list
+      ;; XXX: We strongly encourage users of square/go-jose to migrate to v3
+      ;; of go-jose/go-jose. No support, security fixes or updates will be
+      ;; delivered to the v1/v2 branches in the Square repository.
+      #:tests? #f
+      #:import-path "gopkg.in/square/go-jose.v2"))
     (propagated-inputs
      (list go-golang-org-x-crypto))
     (native-inputs

@@ -63,10 +63,63 @@
 ;;;
 ;;; Code:
 
+;;;
+;;; Libraries:
+;;;
+
+(define-public go-c2sp-org-cctv-age
+  (package
+    (name "go-c2sp-org-cctv-age")
+    (version "0.0.0-20240306222714-3ec4d716e805")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/C2SP/CCTV")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00bk05ca94lm3b029ycwj0krmg2gfjv1c3pc7dvq9gmwwzr564v5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Sub folders containing different projects with their own
+            ;; licenses.
+            (for-each delete-file-recursively
+                      (list "ML-KEM" "RFC6979" "ed25519" "jq255"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "c2sp.org/CCTV/age"
+      #:unpack-path "c2sp.org/CCTV"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://c2sp.org/CCTV/age")
+    (synopsis "Community Cryptography Test Vectors")
+    (description
+     "This package provides a large set of test vectors for the age file
+encryption format, as well as a framework to easily generate them.
+
+The test suite can be applied to any age implementation, regardless of the
+language it's implemented in, and the level of abstraction of its
+interface.  For the simplest, most universal integration, the implementation
+can just attempt to decrypt the test files, check the operation only succeeds
+if expect is success, and compare the decrypted payload.  Test vectors
+involving unimplemented features (such as passphrase encryption or armoring)
+can be ignored.")
+    ;; age/internal/LICENSE: Redistribution and use in source and binary
+    ;; forms, with or without modification, are permitted provided that the
+    ;; following conditions are met
+    ;;
+    ;; age/README: The vectors in the testdata folder are available under the
+    ;; terms of the Zero-Clause BSD (reproduced below), CC0 1.0, or Unlicense
+    ;; license, to your choice.
+    (license license:cc0)))
+
 (define-public go-filippo-io-age
   (package
     (name "go-filippo-io-age")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -75,10 +128,41 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k1dv1jkr72qpk5g363mhrg9hnf5c9qgv4l16l13m4yh08jp271d"))))
+        (base32 "1dms32lxqgjipmlisng7dmy1sdw0qscj43x9lmpadyzbzc64lhrv"))))
     (build-system go-build-system)
-    (arguments `(#:import-path "filippo.io/age"))
-    (inputs
+    (arguments
+     (list
+      #:import-path "filippo.io/age"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: src/c2sp.org/CCTV/age/age.go:13:12: pattern testdata:
+          ;; cannot embed directory testdata: contains no embeddable files
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module which is sourced during setup environment phase, but
+          ;; easy resolved after coping to expected directory "vendor" within
+          ;; the current package, see details in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-before 'build 'copy-input-to-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (mkdir "vendor")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-native-input "go-c2sp-org-cctv-age")
+                  "/src/c2sp.org")
+                 "vendor/c2sp.org"))))
+          (add-before 'install 'remove-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "vendor")))))))
+    (native-inputs
+     (list go-c2sp-org-cctv-age
+           go-github-com-rogpeppe-go-internal))
+    (propagated-inputs
      (list go-golang-org-x-sys
            go-golang-org-x-term
            go-golang-org-x-crypto
@@ -91,24 +175,6 @@
 It features small explicit keys, no configuration options, and Unix-style
 composability.")
     (license license:bsd-3)))
-
-(define-public age
-  (package
-    (inherit go-filippo-io-age)
-    (name "age")
-    (arguments
-     `(#:import-path "filippo.io/age/cmd/age"
-       #:unpack-path "filippo.io/age"
-       #:install-source? #f))))
-
-(define-public age-keygen
-  (package
-    (inherit go-filippo-io-age)
-    (name "age-keygen")
-    (arguments
-     `(#:import-path "filippo.io/age/cmd/age-keygen"
-       #:unpack-path "filippo.io/age"
-       #:install-source? #f))))
 
 (define-public go-filippo-io-edwards25519
   (package
@@ -575,7 +641,6 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
         (base32 "0px12zhdmzqjj5zlcr136rcsilpmi4chiz6arxv49q372j4nhmia"))))
     (arguments
      (list
-      #:go go-1.18
       #:import-path "github.com/golang-jwt/jwt/v5"))))
 
 (define-public go-github-com-google-go-tpm
@@ -973,8 +1038,7 @@ Architecture Processors\" by J. Guilford et al.")
         (base32 "0ydh94083888xl2r4d1grzgqf3c818mkmdpj008jkh6h7m56wc4w"))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.21
-           #:import-path "github.com/multiformats/go-multihash"
+     (list #:import-path "github.com/multiformats/go-multihash"
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'copy-multibase-specs
@@ -1094,7 +1158,7 @@ official package.")
 (define-public go-github-com-quic-go-qtls-go1-20
   (package
     (name "go-github-com-quic-go-qtls-go1-20")
-    (version "0.3.4")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -1103,12 +1167,13 @@ official package.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fl3yv1w8cygag3lav45vvzb4k9i72p92x13wcq0xn13wxirzirn"))))
+        (base32 "069rknxpg7d0dmxc4akq2mw7wm5bi0420nshykf2iclvmbcg9ajh"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/quic-go/qtls-go1-20"
-      #:go go-1.20))
+      ;; XXX: panic: qtls.ClientSessionState doesn't match, with Golang 1.20+.
+      #:go go-1.20
+      #:import-path "github.com/quic-go/qtls-go1-20"))
     (propagated-inputs
      (list go-golang-org-x-crypto
            go-golang-org-x-sys))
@@ -1134,7 +1199,6 @@ QUIC.  For Go 1.20.")
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/refraction-networking/utls"
-       #:go ,go-1.20
        #:tests? #f))                    ;requires internet access
     (propagated-inputs
      (list go-github-com-andybalholm-brotli
@@ -1367,6 +1431,43 @@ performance for large inputs and outputs.")
     (description "GoPtLib is a library for writing Tor pluggable transports in
 Go.")
     (license license:cc0)))
+
+;;;
+;;; Executables:
+;;;
+
+(define-public age
+  (package
+    (inherit go-filippo-io-age)
+    (name "age")
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "filippo.io/age/cmd/age"
+      #:unpack-path "filippo.io/age"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-test-data-files
+            ;; FIXME: testdata/output_file.txt:49: unknown command "ttyin"
+            ;; age: error: input and output file are the same: "inputcopy"
+            ;; age: error: input and output file are the same: "./inputcopy"
+            ;; age: error: input and output file are the same: "keycopy"
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          (list "testdata/scrypt.txt"
+                                "testdata/output_file.txt"
+                                "testdata/encrypted_keys.txt"
+                                "testdata/terminal.txt"))))))))))
+
+(define-public age-keygen
+  (package
+    (inherit go-filippo-io-age)
+    (name "age-keygen")
+    (arguments
+     `(#:import-path "filippo.io/age/cmd/age-keygen"
+       #:unpack-path "filippo.io/age"
+       #:install-source? #f))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

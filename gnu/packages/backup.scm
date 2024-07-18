@@ -952,7 +952,11 @@ is like a time machine for your data.")
                (search-patches "restic-0.9.6-fix-tests-for-go1.15.patch"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/restic/restic"
+     `(;; XXX: Tests failed on a newer version of Golang, newer version of
+       ;; restic does not provide vendor folder any longer which means - a
+       ;; long way of packaging missing inputs.
+       #:go ,go-1.17
+       #:import-path "github.com/restic/restic"
       ;; We don't need to install the source code for end-user applications.
        #:install-source? #f
        #:phases

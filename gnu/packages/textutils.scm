@@ -1484,9 +1484,6 @@ community around it also has a list of style guides implemented with Vale in
 @url{https://github.com/errata-ai/styles, their styles repo}.")
     (license license:expat)))
 
-(define-public go-github-com-errata-ai-vale
-  (deprecated-package "go-github-com-errata-ai-vale" vale))
-
 (define-public utf-8-lineseparator
   (package
     (name "utf-8-lineseparator")
@@ -1562,9 +1559,6 @@ JSON for post-processing
 @end itemize")
     (license license:expat)))
 
-(define-public go-github-com-aswinkarthik-csvdiff
-  (deprecated-package "go-github-com-aswinkarthik-csvdiff" csvdiff))
-
 (define-public miller
   (package
     (name "miller")
@@ -1581,7 +1575,6 @@ JSON for post-processing
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.19
       #:install-source? #f
       #:import-path "github.com/johnkerl/miller/cmd/mlr"
       #:unpack-path "github.com/johnkerl/miller"

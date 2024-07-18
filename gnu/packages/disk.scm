@@ -1308,7 +1308,6 @@ on your file system and offers to remove it.  @command{rmlint} can find:
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
       #:install-source? #f
       #:import-path "github.com/gokcehan/lf"))
     (native-inputs

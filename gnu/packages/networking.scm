@@ -4627,7 +4627,6 @@ QUIC protocol.")
            ;; TODO: figure out how tests are run
            #:tests? #f
            #:install-source? #f
-           #:go go-1.21
            #:phases
            #~(modify-phases %standard-phases
                (replace 'build
@@ -4722,7 +4721,6 @@ IPv6 Internet connectivity - it also works over IPv4.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.20
       #:import-path "github.com/slackhq/nebula"
       #:install-source? #f
       #:phases
@@ -4828,8 +4826,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
                 "1kbcr6580a9pi0a3wssnfr3mnxqq2k9w1fg4khikn82lqaljab2f"))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.21
-           #:install-source? #f
+     (list #:install-source? #f
            #:import-path "github.com/macronut/phantomsocks"
            #:build-flags #~'("-tags" #$(if (target-linux?)
                                            "rawsocket"

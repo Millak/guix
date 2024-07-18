@@ -1108,7 +1108,6 @@ what.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.19
       #:install-source? #f
       #:import-path "git.sr.ht/~emersion/soju"
       #:phases

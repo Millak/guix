@@ -2975,8 +2975,7 @@ To load this plugin, specify the following option when starting mpv:
                           (delete-file "orfondl")))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.19
-           #:install-source? #f
+     (list #:install-source? #f
            #:import-path "github.com/badlogic/orfondl"
            #:phases
            #~(modify-phases %standard-phases
