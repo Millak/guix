@@ -52,14 +52,15 @@
   (match-record
       config <power-profiles-daemon-configuration>
       (power-profiles-daemon)
-    (list (shepherd-service
-           (provision '(power-profiles-daemon))
-           (requirement '(dbus-system))
-           (documentation "Run the power-profiles-daemon.")
-           (start #~(make-forkexec-constructor
-                     (list #$(file-append power-profiles-daemon
-                                          "/libexec/power-profiles-daemon"))))
-           (stop #~(make-kill-destructor))))))
+    (list
+     (shepherd-service
+      (provision '(power-profiles-daemon))
+      (requirement '(user-processes dbus-system))
+      (documentation "Run the Power Profiles Daemon.")
+      (start #~(make-forkexec-constructor
+                (list #$(file-append power-profiles-daemon
+                                     "/libexec/power-profiles-daemon"))))
+      (stop #~(make-kill-destructor))))))
 
 (define %power-profiles-daemon-activation
   #~(begin
@@ -83,7 +84,7 @@
                   (service-extension activation-service-type
                                      (const %power-profiles-daemon-activation))))
      (default-value (power-profiles-daemon-configuration))
-     (description "Run the power-profiles-daemon"))))
+     (description "Run the Power Profiles Daemon"))))
 
 
 
