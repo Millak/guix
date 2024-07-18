@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2014, 2016-2023 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2014, 2016-2024 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 #
@@ -160,6 +160,10 @@ export GUIX_PACKAGE_PATH
 # foo.tar.gz
 guix build -d -S foo
 guix build -d -S foo | grep -e 'foo\.tar\.gz'
+
+# Make sure '-s' has an effect together with '-S'.
+test "$(guix build -Sd coreutils -s x86_64-linux)" \
+     != "$(guix build -Sd coreutils -s aarch64-linux)"
 
 # 'baz' has a replacement so we should be getting the replacement's source.
 (unset GUIX_BUILD_OPTIONS;

@@ -678,9 +678,9 @@ build."
                         (package-name p))
                '())
               (s
-               (list (package-source-derivation store s)))))
+               (list (package-source-derivation store s system)))))
            (proc
-            (map (cut package-source-derivation store <>)
+            (map (cut package-source-derivation store <> system)
                  (proc p))))))
       ((? derivation? drv)
        (list drv))
