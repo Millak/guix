@@ -1400,19 +1400,19 @@ in the terminal or with an external viewer.")
 (define-public gnuplot
   (package
     (name "gnuplot")
-    (version "5.4.9")
+    (version "6.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gnuplot/gnuplot/"
                                   version "/gnuplot-"
                                   version ".tar.gz"))
        (sha256
-        (base32 "15vabi30s4ln4vi82csx4nvfms3ik8704rk0prcm9h1xylhs0a53"))))
+        (base32 "16ipf7m2c2v1cldp3kwxbjj6db6bzy0rkrpp4kzhh61a3866cnp8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config (texlive-updmap.cfg)))
     (inputs
-     (list cairo gd lua pango readline))
+     (list cairo gd libcerf lua pango readline))
     (arguments
      (list #:configure-flags
            #~(list "--with-qt=no"
