@@ -628,6 +628,9 @@ daemon as described in
 types.")
     (license license:expat)))
 
+;; XXX: No updates for 4 years, and depends on dated Golang modules which
+;; require go-1.16 to compile, see
+;; <https://github.com/whyrusleeping/gx/issues/247>.
 (define-public gx
   (package
     (name "gx")
@@ -686,6 +689,9 @@ powerful and simple.")
      '(#:unpack-path "github.com/whyrusleeping/gx"
        #:import-path "github.com/whyrusleeping/gx/gxutil"))))
 
+;; XXX: No updates for 4 years, and depends on dated Golang modules which
+;; require go-1.16 to compile, see
+;; <https://github.com/whyrusleeping/gx-go/issues/65>.
 (define-public gx-go
   (package
     (name "gx-go")
