@@ -31,6 +31,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system scons)
+  #:use-module (guix build-system qt)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -51,6 +52,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml))
 
 (define-public gpsbabel
@@ -179,33 +181,31 @@ coordinates as well as partial support for adjustments in global coordinate syst
 (define-public gpxsee
   (package
     (name "gpxsee")
-    (version "11.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/tumic0/GPXSee")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1klpjiqsvpvhlg5hsfjaszsyqr817hig9r7y7w4cp0kyn8z5fzfj"))))
-    (build-system gnu-build-system)
+    (version "13.22")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tumic0/GPXSee")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15m5rqky2fwsq5n6x531350x39wwhpv1hz56m1yfaxj7acxhb2p5"))))
+    (build-system qt-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           ;; Use lrelease to convert TS translation files into QM files.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (for-each (lambda (file)
-                         (invoke "lrelease" file))
-                       (find-files "lang" "\\.ts"))
-             (invoke "qmake"
-                     (string-append "PREFIX="
-                                    (assoc-ref outputs "out"))))))))
-    (inputs
-     (list qtbase-5 qtlocation-5 qtsvg-5))
-    (native-inputs
-     (list qttools-5))
+     (list
+      #:qtbase qtbase
+      #:tests? #f                     ; no tests
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'configure
+                     ;; Use lrelease to convert TS translation files into QM files.
+                     (lambda _
+                       (apply invoke "lrelease"
+                              (find-files "lang" "\\.ts"))
+                       (invoke "qmake"
+                               (string-append "PREFIX=" #$output)))))))
+    (inputs (list libxkbcommon qtbase qtpositioning qtserialport qtsvg))
+    (native-inputs (list qttools))
     (home-page "https://www.gpxsee.org")
     (synopsis "GPS log file viewer and analyzer")
     (description
