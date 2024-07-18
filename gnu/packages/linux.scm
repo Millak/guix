@@ -2409,7 +2409,7 @@ partitions.  Write functionality is also provided but check the README.")
 (define-public dwarves
   (package
     (name "dwarves")
-    (version "1.26")
+    (version "1.27")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2418,7 +2418,7 @@ partitions.  Write functionality is also provided but check the README.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xfq0r3whc3dk922ss8i5vwyfcqhgc95dy27mm69j5niy7i5kzrd"))
+                "0qwc3772az1h3c78pyswawyvyq9spj5s1prj7ckfij9nazp3a007"))
               (patches
                (search-patches "dwarves-threading-reproducibility.patch"))))
     (build-system cmake-build-system)
