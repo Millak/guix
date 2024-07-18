@@ -5118,13 +5118,13 @@ orbit around the Earth.")
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
-    (version "0.8.7")
+    (version "0.8.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tweakwcs" version))
        (sha256
-        (base32 "0cch4z5zmmi1s02n1wdwss8p7qhrzyiajkaik0gga510kgdsvx48"))))
+        (base32 "148as0x1szk1wv13bwk947qs3rw5xj2286ccdbhzfzarng58a386"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-astropy
