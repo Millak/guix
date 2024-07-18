@@ -33,14 +33,14 @@
 (define-public chicken
   (package
     (name "chicken")
-    (version "5.3.0")
+    (version "5.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://code.call-cc.org/releases/"
                                   version "/chicken-" version ".tar.gz"))
               (sha256
                (base32
-                "0xhdvcdwlv9vbhxh7k0fzd32ybhc7fn83y9fj48dhzp1z7c9kbf3"))))
+                "0pzcrnzkjw2sa44vy59wbygvlc3nva8zisprkdnvyrqi3jk4lp9w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
