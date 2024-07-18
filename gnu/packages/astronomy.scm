@@ -1192,6 +1192,83 @@ zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
 across many files.")
     (license license:bsd-3)))
 
+(define-public python-sncosmo
+  (package
+    (name "python-sncosmo")
+    (version "2.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sncosmo" version))
+       (sha256
+        (base32 "0nmhrvaw22zxpmykl70a91mc88pxmw0x5fdxjiz3hdzkdbqrg0x9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Disable tests requireing remote access to download test data.
+      #~(list
+         "-k" (string-append "not test_megacampsf_bandpass"
+                             " and not test_builtins_remote_aa"
+                             " and not test_builtins_remote_nm"
+                             " and not test_builtins_remote_um"
+                             " and not test_builtins_remote_wfc3"
+                             " and not test_builtins_megacampsf"
+                             " and not test_builtins_timeseries_ascii"
+                             " and not test_builtins_timeseries_fits"
+                             " and not test_builtins_salt2model"
+                             " and not test_builtins_salt3model"
+                             " and not test_builtins_2011fe"
+                             " and not test_builtins_mlcs2k2"
+                             " and not test_builtins_snemo"
+                             " and not test_builtins_sugar"
+                             " and not test_builtins_magsys_fits"
+                             " and not test_builtins_magsys_csp"
+                             " and not test_builtins_magsys_ab_b12"
+                             " and not test_builtins_magsys_jla"
+                             " and not test_csp_magsystem"
+                             " and not test_compositemagsystem_band_error"
+                             " and not test_G10"
+                             " and not test_C11"
+                             " and not test_salt2source_timeseries_vs_snfit"
+                             " and not test_salt2source_rcov_vs_snfit"
+                             " and not test_bandflux"
+                             " and not test_bandflux_multi"
+                             " and not test_bandflux_zpsys"
+                             " and not test_bandfluxcov"
+                             " and not test_bandmag"
+                             " and not test_sugarsource"))
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.cfg"
+               ;; pyyaml>=6.0.1
+               (("6.0.1") "6.0"))))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-astropy
+           python-extinction
+           python-looseversion
+           python-numpy
+           python-pyyaml
+           python-scipy))
+    (native-inputs
+     (list ;; python-iminuit ; not packed, optional
+           python-cython
+           python-pytest
+           python-pytest-astropy
+           python-pytest-cov))
+    (home-page "https://sncosmo.readthedocs.org")
+    (synopsis "Package for supernova cosmology based on astropy")
+    (description
+     "SNCosmo is a Python library for supernova cosmology analysis.  It aims
+to make such analysis both as flexible and clear as possible.")
+    (license license:bsd-3)))
+
 (define-public wcslib
   (package
     (name "wcslib")
