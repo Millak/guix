@@ -178,8 +178,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "1a34b9b725e731a6d5f602d104f09a1c68afa6a4")
-        (revision 22))
+        (commit "843b85c42745d65c93d6af81cd3a9d835ff1f51c")
+        (revision 23))
     (package
       (name "guix")
 
@@ -195,7 +195,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "0fz7n9pl0g3cw3zvx9m5c51ly5m9ga71v85mf4jqp7x8j5g21lhy"))
+                  "080idxx8i0dkwsvbx3yw20fs16v0vfzc7vc30zbvc96nvw36ryqb"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
