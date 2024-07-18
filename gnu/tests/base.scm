@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2020, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
@@ -200,14 +200,17 @@ info --version")
           (test-assert "shepherd services"
             (let ((services (marionette-eval
                              '(begin
-                                (use-modules (gnu services herd))
+                                (use-modules (gnu services herd)
+                                             (srfi srfi-1))
 
-                                (map (compose car live-service-provision)
-                                     (current-services)))
+                                (append-map live-service-provision
+                                            (current-services)))
                              marionette)))
               (lset= eq?
                      (pk 'services services)
-                     '(root #$@(operating-system-shepherd-service-names os)))))
+                     '(root
+                       shepherd
+                       #$@(operating-system-shepherd-service-names os)))))
 
           (test-equal "libc honors /etc/localtime"
             -7200          ;CEST = GMT+2
