@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -733,7 +734,7 @@ error reporting, better tracing, profiling, and a debugger.")
 (define-public rr
   (package
     (name "rr")
-    (version "5.7.0")
+    (version "5.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -741,7 +742,7 @@ error reporting, better tracing, profiling, and a debugger.")
                     (commit version)))
               (sha256
                (base32
-                "0y50gynh3bb28vsxspn0g71b0m1mmqdgs63pbq08sv7vps35nllz"))
+                "16w6vvvgww4i2f0jk5zlrr6606fj8kps21fnw0pshyw88l141rqn"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
