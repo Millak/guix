@@ -331,6 +331,34 @@ decompressing data.  The package is completely written in Go and doesn't have
 any dependency on any C code.")
     (license license:bsd-3)))
 
+(define-public go-github-com-xi2-xz
+  (package
+    (name "go-github-com-xi2-xz")
+    (version "0.0.0-20171230120015-48954b6210f8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xi2/xz")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "178r0fa2dpzxf0sabs7dn0c8fa7vs87zlxk6spkn374ls9pir7nq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xi2/xz"))
+    (home-page "https://github.com/xi2/xz")
+    (synopsis "Native Golang XZ decompression package")
+    (description
+     "This package implements a native XZ decompression in Golang.")
+    ;; This package is a modified version of XZ Embedded
+    ;; <http://tukaani.org/xz/embedded.html>: 0BSD
+    ;;
+    ;; The contents of the testdata directory are modified versions of the
+    ;; test files from XZ Utils <http://tukaani.org/xz/>: 0BSD
+    (license license:public-domain)))
+
 ;;;
 ;;; Executables:
 ;;;
