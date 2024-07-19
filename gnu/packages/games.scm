@@ -2317,11 +2317,11 @@ in one tile.")
     (inputs
      (list gtk libadwaita librsvg))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin") ; for desktop-file-validate and appstream-util
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list gettext-minimal
+           `(,glib "bin")       ; for desktop-file-validate and appstream-util
+           itstool
+           pkg-config
+           vala))
     (home-page "https://wiki.gnome.org/Apps/Chess")
     (synopsis "Chess board for GNOME")
     (description "GNOME Chess provides a 2D board for playing chess games
