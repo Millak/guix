@@ -531,6 +531,14 @@ which will be used as a snippet in origin."
      (git-version "0.19.0" revision commit)
      #:commit commit)))
 
+(define-public tree-sitter-prisma
+  (tree-sitter-grammar
+   "prisma" "Prisma"
+   "19zb3dkwp2kpyivygqxk8yph0jpl7hn9zzcry15mshn2n0rs9sih"
+   "1.4.0"
+   #:repository-url "https://github.com/victorhqc/tree-sitter-prisma"
+   #:license license:expat))
+
 (define-public tree-sitter-python
   (tree-sitter-grammar
    "python" "Python"
