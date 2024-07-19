@@ -26442,6 +26442,26 @@ inline CSS directives, and it can be rendered both with and without word
 wrap.")
     (license license:expat)))
 
+(define-public r-gggenes
+  (package
+    (name "r-gggenes")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gggenes" version))
+       (sha256
+        (base32 "08s0fhk2kz3ks64nfmdbd8p3swkn62cbw7dpbqgk9ydpmh5gpjbj"))))
+    (properties `((upstream-name . "gggenes")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggfittext r-ggplot2 r-rlang))
+    (native-inputs (list r-knitr))
+    (home-page "https://wilkox.org/gggenes/")
+    (synopsis "Draw gene arrow maps in ggplot2")
+    (description
+     "This package provides a ggplot2 extension for drawing gene arrow maps.")
+    (license license:gpl2)))
+
 (define-public r-ggghost
   (package
     (name "r-ggghost")
