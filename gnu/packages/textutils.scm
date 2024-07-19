@@ -1428,7 +1428,9 @@ of a Unix terminal to HTML code.")
 (define-public vale
   (package
     (name "vale")
-    (version "2.4.0")
+    ;; Newer versions requires <github.com/smacker/go-tree-sitter> which is
+    ;; quite a large project to pack.
+    (version "3.4.2")
     (source
      (origin
        (method git-fetch)
@@ -1436,43 +1438,93 @@ of a Unix terminal to HTML code.")
              (url "https://github.com/errata-ai/vale")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0d07fwha2220m8j24h527xl0gnl3svvyaywflgk5292d6g49ach2"))
+        (base32 "15f8ggh7hpfmfpszl9qkdfz19kds6gg6x5dgcqy0v6jrcsdbgpgp"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
-       ;; Remove some available vendor modules.
-       ;; TODO: Pack all of them and remove vendor directory completely.
        (snippet
-        '(for-each
-          delete-file-recursively
-          (list "vendor/github.com/fatih/color"
-                "vendor/github.com/mitchellh/mapstructure"
-                "vendor/github.com/gobwas/glob"
-                "vendor/github.com/mitchellh/go-homedir"
-                "vendor/github.com/olekukonko/tablewriter"
-                "vendor/github.com/spf13/afero"
-                "vendor/github.com/urfave/cli"
-                "vendor/github.com/yuin/goldmark"
-                "vendor/golang.org/x/net/html"
-                "vendor/gopkg.in/ini.v1"
-                "vendor/gopkg.in/yaml.v2")))))
+        #~(begin
+            ;; Module name has been changed upstream.
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/antonmedv/expr") "github.com/expr-lang/expr"))))))
     (build-system go-build-system)
     (arguments
-     (list #:install-source? #f
-           #:import-path "github.com/errata-ai/vale"))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/errata-ai/vale/cmd/vale"
+      #:unpack-path "github.com/errata-ai/vale"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Disable tests requring network access: Get
+          ;; "https://raw.githubusercontent.com/errata-ai/styles/master/library.json":
+          ;; dial tcp: lookup raw.githubusercontent.com on [::1]:53:
+          ;; read udp [::1]:52621->[::1]:53: read: connection refused.
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  (("TestLibrary") "OffTestLibrary")
+                  (("TestLocalComplete") "OffTestLocalComplete")
+                  (("TestLocalDir") "OffTestLocalDir")
+                  (("TestLocalOnlyStyles") "OffTestLocalOnlyStyles")
+                  (("TestLocalZip") "OffTestLocalZip")
+                  (("TestNoPkgFound") "OffTestNoPkgFound")
+                  (("TestV3Pkg") "OffTestV3Pkg")))))
+          ;; FIXME: Pattern embedded: cannot embed directory embedded:
+          ;; contains no embeddable files.
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module which is sourced during setup environment phase, but
+          ;; easy resolved after coping to expected directory "vendor" within
+          ;; the current package, see details in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-before 'build 'copy-input-to-vendor-directory
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (mkdir "vendor")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-native-input "go-github-com-jdkato-twine")
+                  "/src/github.com")
+                 "vendor/github.com"))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (replace 'check
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" unpack-path)
+                  (setenv "HOME" "/tmp")
+                  (invoke "go" "test" "-v" "./...")))))
+          (add-before 'install 'remove-vendor-directory
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (delete-file-recursively "vendor")))))))
     (native-inputs
-     (list go-github-com-fatih-color
-           go-github-com-mitchellh-mapstructure
+     (list go-github-com-masterminds-sprig-v3
+           go-github-com-adrg-strutil
+           go-github-com-adrg-xdg
+           go-github-com-bmatcuk-doublestar-v4
+           go-github-com-d5-tengo-v2
+           go-github-com-errata-ai-ini
+           go-github-com-errata-ai-regexp2
+           go-github-com-expr-lang-expr
            go-github-com-gobwas-glob
-           ;; go-github-com-jdkato-prose
-           ;; go-github-com-jdkato-regexp
-           go-github-com-mitchellh-go-homedir
+           go-github-com-jdkato-twine
+           go-github-com-karrick-godirwalk
+           go-github-com-mholt-archiver-v3
+           go-github-com-mitchellh-mapstructure
+           go-github-com-niklasfasching-go-org
            go-github-com-olekukonko-tablewriter
-           ;; go-github-com-remeh-sizedwaitgroup
-           go-github-com-spf13-afero
-           go-github-com-urfave-cli
+           go-github-com-otiai10-copy
+           go-github-com-pterm-pterm
+           go-github-com-remeh-sizedwaitgroup
+           go-github-com-spf13-pflag
            go-github-com-yuin-goldmark
+           go-golang-org-x-exp
            go-golang-org-x-net
-           go-gopkg-in-ini-v1
+           go-golang-org-x-sys
            go-gopkg-in-yaml-v2))
     (home-page "https://github.com/errata-ai/vale")
     (synopsis "Fully customizable syntax-aware linter that focuses on your style")
