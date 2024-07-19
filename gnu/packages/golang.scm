@@ -5929,46 +5929,6 @@ filters for Go.")
 @code{mbox} files.")
     (license license:expat)))
 
-(define-public go-github-com-google-go-cmp
-  (package
-    (name "go-github-com-google-go-cmp")
-    (version "0.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/google/go-cmp")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1n1j4hi50bl05pyys4i7y417k9g6k1blslj27z327qny7kkdl2ma"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/google/go-cmp/cmp"
-      #:unpack-path "github.com/google/go-cmp"
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? import-path inputs #:allow-other-keys)
-              (when tests?
-                ;; The tests fail when run with gccgo.
-                (let ((gccgo? (false-if-exception
-                               (search-input-file inputs "/bin/gccgo"))))
-                  (if gccgo?
-                      (format #t "skipping tests with gccgo compiler~%")
-                      ;; XXX: Workaround for go-build-system's lack of Go
-                      ;; modules support.
-                      (with-directory-excursion (string-append "src/" import-path)
-                        (invoke "go" "test" "-v" "./..."))))))))))
-    (synopsis "Determine equality of values in Go")
-    (home-page "https://github.com/google/go-cmp")
-    (description
-     "This package is intended to be a more powerful and safer
-alternative to @code{reflect.DeepEqual} for comparing whether two values are
-semantically equal.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-google-uuid
   (package
     (name "go-github-com-google-uuid")
