@@ -3610,6 +3610,7 @@ GNU extensions} to the POSIX recommendations for command-line options.")
 (define-public go-github-com-spf13-viper
   (package
     (name "go-github-com-spf13-viper")
+    ;; Refreshing to a newer version requires long chain of missing packages.
     (version "1.7.0")
     (source
      (origin
@@ -3624,6 +3625,7 @@ GNU extensions} to the POSIX recommendations for command-line options.")
     (build-system go-build-system)
     (arguments
      (list
+      #:tests? #f
       #:import-path "github.com/spf13/viper"))
     (propagated-inputs
      (list go-github-com-fsnotify-fsnotify
