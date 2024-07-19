@@ -2526,7 +2526,7 @@ from DocBook files.")
 (define-public kfilemetadata
   (package
     (name "kfilemetadata")
-    (version "6.3.0")
+    (version "6.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2535,7 +2535,7 @@ from DocBook files.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1230gl5jf4wizvxhfl0l4393vzgfzj0im139kjlss0qshrwf725x"))))
+                "1vf5qj4777wqpbgpinygm8rdcy867hvl5a1a9bqmwk5yahq47zs5"))))
     (build-system cmake-build-system)
     (arguments
      (list
