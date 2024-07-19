@@ -322,6 +322,7 @@ without requiring the source code to be rewritten.")
                "07p3g0v2ba2vlfbfidqzlgbhnzdx46wh2rgc5gszq1mjyx5bks6r"))))))
 
 (define-public guile-3.0
+  ;; This is the latest Guile stable version.
   (package
     (inherit guile-2.2)
     (name "guile")
@@ -437,18 +438,7 @@ without requiring the source code to be rewritten.")
             (files '("lib/guile/3.0/site-ccache"
                      "share/guile/site/3.0")))))))
 
-(define-public guile-3.0-latest
-  ;; This is the latest Guile stable version.
-  (package
-    (inherit guile-3.0)
-    (version "3.0.10")
-    (source (origin
-              (inherit (package-source guile-3.0))
-              (uri (string-append "mirror://gnu/guile/guile-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "1233wzcbiqhp5qr3ggag14s5d4i7cn0spxyl8qs369nmgx8nhwdx"))))))
+(define-public guile-3.0-latest guile-3.0)
 
 ;;; The symbol guile-3.0/fixed should be used when guile-3.0 needs fixes
 ;;; (security or else) and this deprecation could be removed.

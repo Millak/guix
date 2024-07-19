@@ -3537,7 +3537,7 @@ from @code{tree-il}.")
     (native-inputs
      (list autoconf automake pkg-config texinfo))
     (inputs
-     (list guile-3.0-latest))
+     (list guile-next))
     (synopsis "WebAssembly compiler backend for Guile")
     (description "Guile Hoot is a WebAssembly compiler backend for GNU Guile
 and standalone WASM toolchain.")
