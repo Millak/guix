@@ -3903,6 +3903,61 @@ registry.")
 list of sentences.")
     (license license:expat)))
 
+(define-public go-github-com-niklasfasching-go-org
+  (package
+    (name "go-github-com-niklasfasching-go-org")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/niklasfasching/go-org")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "100ay19a7my2m1za1ih0wvqxf5mq77byas1f23mx69qsbp391w04"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/niklasfasching/go-org"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: Pattern embedded: cannot embed directory embedded:
+          ;; contains no embeddable files.
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module which is sourced during setup environment phase, but
+          ;; easy resolved after coping to expected directory "vendor" within
+          ;; the current package, see details in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-before 'build 'copy-input-to-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (mkdir "vendor")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-input "go-github-com-alecthomas-chroma-v2")
+                  "/src/github.com")
+                 "vendor/github.com"))))
+          (add-before 'install 'remove-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "vendor")))))))
+    (propagated-inputs
+     (list go-golang-org-x-net
+           go-github-com-pmezard-go-difflib
+           go-github-com-alecthomas-chroma-v2))
+    (home-page "https://github.com/niklasfasching/go-org")
+    (synopsis "Org mode parser and render for Golang")
+    (description
+     "This package provides a library and CLI program to parse the
+@code{org-mode} file format alongside a static site generator with HTML &
+pretty printed rendering in Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-nsqio-go-diskqueue
   (package
     (name "go-github-com-nsqio-go-diskqueue")
