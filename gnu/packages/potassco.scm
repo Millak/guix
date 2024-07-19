@@ -430,6 +430,27 @@ Python code.")))
 as a theory to clingo from Python code.  It also supports running clingo-dl
 directly from the python command line.")))
 
+(define-public python-clingox
+  (package
+    (name "python-clingox")
+    (version "1.2.1")
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/potassco/python-clingox")
+                   (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "0ji0sdqlv0byxmdipwk60afsb82r0rr1j73r7j2508hsfk94m2i8"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-clingo))
+    (home-page "https://potassco.org/clingo")
+    (synopsis "Auxiliary functions for Clingo")
+    (description "This package provides additional functions to go along with
+the Python bindings for Clingo.")
+    (license license:expat)))
+
 (define-public python-asprin
   (let ((revision "1")
         (commit "bc5a0cf7d9ba346cf91cba66282b5946dbf1331c"))
