@@ -11,7 +11,7 @@
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 Sebastian Schott <sschott@mailbox.org>
@@ -2378,7 +2378,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "3.10")
+    (version "4.0")
     (source
      (origin
        (method git-fetch)
@@ -2387,7 +2387,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0lp9slfwaq3wp4x6xpsiazam5lv6dz57m20adzlzzk0anb1ascr0"))
+       (sha256 (base32 "0x6s7fm5gn0q2274b2nja8hj84cvmxp4rr9x4xw050sxj74880jh"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively
@@ -2396,10 +2396,11 @@ mining.")
                       "external/src/curl"
                       "external/src/libuv"
                       "external/src/libzmq"
-                      "external/src/rapidjson")))))
+                      "external/src/rapidjson"
+                      "external/src/robin-hood-hashing")))))
     (build-system cmake-build-system)
     (inputs
-     (list cppzmq curl gss libuv rapidjson zeromq))
+     (list cppzmq curl gss libuv rapidjson robin-hood-hashing zeromq))
     (arguments
      (list ; FIXME: Linking fails when LTO is activated.
            #:configure-flags #~(list "-DWITH_LTO=OFF")
@@ -2410,7 +2411,7 @@ mining.")
                    (when tests?
                      (mkdir-p "tests")
                      (chdir "tests")
-                     (invoke "cmake" "../../source/tests")
+                     (invoke "cmake" "-DWITH_LTO=OFF" "../../source/tests")
                      (invoke "make" "-j" (number->string (parallel-job-count)))
                      (invoke "gzip" "-d" "sidechain_dump.dat.gz")
                      (invoke "gzip" "-d" "sidechain_dump_mini.dat.gz")
