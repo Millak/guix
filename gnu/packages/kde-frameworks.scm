@@ -969,7 +969,7 @@ as well as an API to create KDED modules.")
 (define-public kdnssd
   (package
     (name "kdnssd")
-    (version "6.3.0")
+    (version "6.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -978,7 +978,7 @@ as well as an API to create KDED modules.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0akip5sb8jva760lprxd3qbzlx9ql3vgdxdl1rblp5qsvv94h7b7"))))
+                "04ncb1ahxglj00azk0imgqsjjkl6zxbsgjh0176xxviv3fj3kihb"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules qttools))
