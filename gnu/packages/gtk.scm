@@ -3071,7 +3071,7 @@ Unix desktop environment under X11 as well as Wayland.")
 (define-public libpanel
   (package
     (name "libpanel")
-    (version "1.2.0")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -3080,7 +3080,7 @@ Unix desktop environment under X11 as well as Wayland.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wal073anl6iviyljyr8pw0m7av4ik6azpmrwzxw4snp95ib27aq"))))
+        (base32 "09lgzjydnahi14xn5rchb91d6m3idzgb68xm3lklwnkdda7dz0w8"))))
     (build-system meson-build-system)
     (arguments
      (list
