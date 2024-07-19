@@ -430,6 +430,43 @@ Python code.")))
 as a theory to clingo from Python code.  It also supports running clingo-dl
 directly from the python command line.")))
 
+(define-public python-asprin
+  (let ((revision "1")
+        (commit "bc5a0cf7d9ba346cf91cba66282b5946dbf1331c"))
+    (package
+     (name "python-asprin")
+     (version (git-version "3.1.1" revision commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/asprin")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rf8yjdlpkvzp9917fvhfrrzag47vvfm7j2k5g44w1ggqyrz8fps"))))
+     (build-system pyproject-build-system)
+     (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-source
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "asprin/src/solver/metasp/reify.py"
+                 (("\"clingo\"")
+                  (string-append "\""
+                                 (search-input-file inputs "bin/clingo")
+                                 "\""))))))))
+     (inputs (list clingo))
+     (propagated-inputs (list python-clingo))
+     (home-page "https://potassco.org/")
+     (synopsis "Optimization in Answer Set Programming")
+     (description "@command{asprin} is a general framework for optimization in
+@acronym{ASP, Answer Set Programming}, that allows for computing optimal
+stable models of logic programs by means of preferences.  Some preference types
+are already predefined, but more can be added as logic programs.")
+     (license license:expat))))
+
 (define-public python-clorm
   (package
     (name "python-clorm")
