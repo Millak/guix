@@ -3864,7 +3864,7 @@ with image data, text data, and sequence data.")
            python-pyux
            python-sphinx
            python-requests))
-    (home-page "https://github.com/keras-team/keras")
+    (home-page "https://keras.io/")
     (synopsis "High-level deep learning framework")
     (description "Keras is a high-level neural networks API, written in Python
 and capable of running on top of TensorFlow.  It was developed with a focus on
