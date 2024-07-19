@@ -13513,15 +13513,15 @@ GObject introspection bindings.")
 (define-public sysprof
   (package
     (name "sysprof")
-    (version "3.48.0")
+    (version "46.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnome/sources/sysprof/"
-                           (version-major+minor version) "/"
+                           (version-major version) "/"
                            "sysprof-" version ".tar.xz"))
        (sha256
-        (base32 "0s11jwkvdbnq2jyz26mwy47wcxfsbawg53zlackvabygcqd0in87"))))
+        (base32 "0xnil6ian02mlgdq9s5rwd4l5vp6ywyp4nm08q4lwgmbxdspxakk"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -13546,6 +13546,8 @@ GObject introspection bindings.")
            json-glib
            libadwaita
            libdazzle
+           libdex
+           libpanel
            libunwind
            polkit))
     (native-inputs
