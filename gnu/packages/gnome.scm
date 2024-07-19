@@ -13558,6 +13558,7 @@ GObject introspection bindings.")
            json-glib
            libadwaita
            libdazzle
+           libdex
            libpanel
            libunwind
            polkit))
