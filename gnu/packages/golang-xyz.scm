@@ -2644,33 +2644,33 @@ and stop units of work, which may receive @code{Close} signals from many clients
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hbpxcrcsbi975lklrhzyzk0fzn79pxicvfyf2sckmd2n6jb4ayy"))))
+        (base32 "1hbpxcrcsbi975lklrhzyzk0fzn79pxicvfyf2sckmd2n6jb4ayy"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module name has been changed upstream.
+            (substitute* (find-files "." "\\.go$")
+              (("gopkg.in/neurosnap/sentences.v1")
+               "github.com/neurosnap/sentences"))))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; FIXME: Adjust tests sute or check with upstram:
-      ;; === Failed
-      ;; === FAIL: nlp/segment TestGoldenRules (0.00s)
-      ;;     segment_test.go:143: 25. Double quotations inside sentence
-      ;;     segment_test.go:144: Actual: [She turned to him, "This is great." she said.]
-      ;;     segment_test.go:145: Actual: 2, Expected: 1
-      ;;     segment_test.go:146: ===
-      #:tests? #f
       #:import-path "github.com/jdkato/twine"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-module-import-path
-            (lambda* (#:key import-path #:allow-other-keys)
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\.go$")
-                  (("gopkg.in/neurosnap/sentences.v1")
-                   "github.com/neurosnap/sentences")))))
-          (replace 'build
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (invoke "go" "build" "-v" "-x" "-ldflags=-s -w" "-trimpath" "./...")))))))
-    (native-inputs
-     (list gotestsum))
+                (substitute* "nlp/segment/segment_test.go"
+                  (("TestGoldenRules") "OffTestGoldenRules")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-montanaflynn-stats
            go-github-com-neurosnap-sentences
