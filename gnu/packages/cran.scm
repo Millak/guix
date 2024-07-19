@@ -31863,6 +31863,42 @@ Mardia, K.V. (2016).  Statistical shape analysis, with Applications in R (2nd
 Edition), John Wiley and Sons.")
     (license license:gpl2)))
 
+(define-public r-shapviz
+  (package
+    (name "r-shapviz")
+    (version "0.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "shapviz" version))
+       (sha256
+        (base32 "01zq6kr5na40xgypif6sv2pjynhva9v0npx779k7fxck1db68z80"))))
+    (properties `((upstream-name . "shapviz")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggfittext
+                             r-gggenes
+                             r-ggplot2
+                             r-ggrepel
+                             r-patchwork
+                             r-rlang
+                             r-xgboost))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/ModelOriented/shapviz")
+    (synopsis "SHAP visualizations")
+    (description
+     "This package provides visualizations for SHAP (SHapley Additive
+exPlanations) such as waterfall plots, force plots, various types of
+importance plots, dependence plots, and interaction plots.  These plots act on
+a @code{shapviz} object created from a matrix of SHAP values and a
+corresponding feature dataset.  Wrappers for the R packages @code{xgboost},
+@code{lightgbm}, @code{fastshap}, @code{shapr}, @code{h2o}, @code{treeshap},
+@code{DALEX}, and @code{kernelshap} are added for convenience.  By separating
+visualization and computation, it is possible to display factor variables in
+graphs, even if the SHAP values are calculated by a model that requires
+numerical features.  The plots are inspired by those provided by the
+@code{shap} package in Python, but there is no dependency on it.")
+    (license license:gpl2+)))
+
 (define-public r-animation
   (package
     (name "r-animation")
