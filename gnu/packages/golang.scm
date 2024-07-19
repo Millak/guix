@@ -5950,11 +5950,17 @@ filters for Go.")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
-            (lambda* (#:key inputs #:allow-other-keys #:rest args)
-              (unless
-                  ;; The tests fail when run with gccgo.
-                  (false-if-exception (search-input-file inputs "/bin/gccgo"))
-                (apply (assoc-ref %standard-phases 'check) args)))))))
+            (lambda* (#:key tests? import-path inputs #:allow-other-keys)
+              (when tests?
+                ;; The tests fail when run with gccgo.
+                (let ((gccgo? (false-if-exception
+                               (search-input-file inputs "/bin/gccgo"))))
+                  (if gccgo?
+                      (format #t "skipping tests with gccgo compiler~%")
+                      ;; XXX: Workaround for go-build-system's lack of Go
+                      ;; modules support.
+                      (with-directory-excursion (string-append "src/" import-path)
+                        (invoke "go" "test" "-v" "./..."))))))))))
     (synopsis "Determine equality of values in Go")
     (home-page "https://github.com/google/go-cmp")
     (description
