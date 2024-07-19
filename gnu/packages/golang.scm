@@ -4781,7 +4781,7 @@ cross-compilation.")
 (define-public go-github-com-mitchellh-mapstructure
   (package
     (name "go-github-com-mitchellh-mapstructure")
-    (version "1.1.2") ;; NOTE: Updating to 1.3.1 breaks tests on viper-1.7.0
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -4791,7 +4791,7 @@ cross-compilation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03bpv28jz9zhn4947saqwi328ydj7f6g6pf1m2d4m5zdh5jlfkrr"))))
+         "10f2v143lkip8h46shd99k5yavfqpgqmd7a6y42v7szc0lcn3mff"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/mitchellh/mapstructure"))
