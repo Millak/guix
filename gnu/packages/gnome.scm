@@ -7215,7 +7215,7 @@ USB transfers with your high-level application or system daemon.")
 (define-public simple-scan
   (package
     (name "simple-scan")
-    (version "44.0")
+    (version "46.0")
     (source
      (origin
        (method url-fetch)
@@ -7223,7 +7223,7 @@ USB transfers with your high-level application or system daemon.")
                            (version-major version) "/"
                            "simple-scan-" version ".tar.xz"))
        (sha256
-        (base32 "15cfv56jcmjncwyf3w4ra0c77xwy0hkdzhpcx93zfizl8vyp1f1r"))))
+        (base32 "1aghnkvjdyj73kv55nd9gl5b1xjkpcxjn4j3a6z67r9g2j86avn1"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t))
@@ -7236,13 +7236,13 @@ USB transfers with your high-level application or system daemon.")
            vala
            libxml2))
     (inputs
-     (list gtk+
+     (list gtk
            zlib
            cairo
            colord
            gdk-pixbuf
            gusb
-           libhandy
+           libadwaita
            sane-backends))
     (home-page "https://gitlab.gnome.org/GNOME/simple-scan")
     (synopsis "Document and image scanner")
