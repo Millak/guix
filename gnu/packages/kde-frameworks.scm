@@ -1424,7 +1424,7 @@ pixel units.")
 (define-public ksvg
   (package
     (name "ksvg")
-    (version "6.3.1")
+    (version "6.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1433,7 +1433,7 @@ pixel units.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "15n7schzmwq4z0yiw0l1js45mml5wq3syb5vc7j9hs88j1jdcp6q"))))
+                "0c35v0r4nbh6frb1sqcpfdkdhp1vx402sqjr4vzyf9hmqd7wg49k"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules qttools))
