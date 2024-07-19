@@ -1230,7 +1230,7 @@ or user activity.")
 (define-public kirigami
   (package
     (name "kirigami")
-    (version "6.3.0")
+    (version "6.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1239,7 +1239,7 @@ or user activity.")
                     "kirigami-" version ".tar.xz"))
               (sha256
                (base32
-                "0nrrnbf7hmis6sbqilmqf6wgjyvg5zwzlkcgzq0kbh1pbfhgmjyv"))))
+                "0dwc329lm9wczcilqjmc293bp0qdyaaa7yymgfsyxl3jrvchr8pc"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules qttools))
