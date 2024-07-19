@@ -2154,7 +2154,7 @@ the library more lightweight.")
                   (invoke "go" "test" "-v" "./..."))))))))
     (native-inputs
      (list go-github-com-go-playground-validator-v10
-           go-github-com-google-go-cmp-cmp))
+           go-github-com-google-go-cmp))
     (propagated-inputs
      (list go-github-com-fatih-color
            go-golang-org-x-xerrors))

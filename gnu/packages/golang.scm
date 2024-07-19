@@ -3188,7 +3188,7 @@ command-line parsers.")
                           "./scan/..."))))))))
     (propagated-inputs
      (list go-github-com-google-go-cmdtest
-           go-github-com-google-go-cmp-cmp
+           go-github-com-google-go-cmp
            go-golang-org-x-exp
            go-golang-org-x-mod
            go-golang-org-x-sync
@@ -3240,7 +3240,7 @@ the @url{https://vuln.go.dev,Go Vulnerability Database}.")
             (lambda _
               (delete-file-recursively "src/golang.org/x/tools"))))))
     (native-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-github-com-jba-printsrc
            go-github-com-jba-templatecheck
            go-github-com-sergi-go-diff
@@ -5929,9 +5929,9 @@ filters for Go.")
 @code{mbox} files.")
     (license license:expat)))
 
-(define-public go-github-com-google-go-cmp-cmp
+(define-public go-github-com-google-go-cmp
   (package
-    (name "go-github-com-google-go-cmp-cmp")
+    (name "go-github-com-google-go-cmp")
     (version "0.6.0")
     (source
      (origin
@@ -6118,7 +6118,7 @@ create or replace a file or symbolic link.")
 (define-public go-gotest-tools-internal-format
   (package (inherit (go-gotest-tools-package "internal/format"))
     (native-inputs
-     (list go-github-com-pkg-errors go-github-com-google-go-cmp-cmp))
+     (list go-github-com-pkg-errors go-github-com-google-go-cmp))
     (synopsis "Formats messages for use with gotest-tools")
     (description "This package provides a way to format messages for use
 with gotest-tools.")))
@@ -6143,7 +6143,7 @@ with gotest-tools.")))
                   (false-if-exception (search-input-file inputs "/bin/gccgo"))
                   (apply (assoc-ref %standard-phases 'check) args))))))))
     (native-inputs
-     (list go-github-com-pkg-errors go-github-com-google-go-cmp-cmp))
+     (list go-github-com-pkg-errors go-github-com-google-go-cmp))
     (synopsis "Source code AST formatters for gotest-tools")
     (description "This package provides source code AST formatters for
 gotest-tools.")))
@@ -6156,7 +6156,7 @@ gotest-tools.")))
        #:import-path "gotest.tools/assert"
        #:unpack-path "gotest.tools"))
     (propagated-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-github-com-pkg-errors
            go-github-com-spf13-pflag
            go-golang-org-x-tools))
@@ -6191,14 +6191,14 @@ test when a comparison fails.")
            go-github-com-jonboulle-clockwork
            go-golang-org-x-crypto
            go-gotest-tools-assert
-           go-github-com-google-go-cmp-cmp
+           go-github-com-google-go-cmp
            ;; TODO: This would be better as a propagated-input of
            ;; go-gotest-tools-assert, but that does not work for
            ;; some reason.
            go-gotest-tools-internal-format
            go-gotest-tools-internal-difflib
            go-gotest-tools-internal-source
-           go-github-com-google-go-cmp-cmp))
+           go-github-com-google-go-cmp))
     (synopsis "Go test runner with output optimized for humans")
     (description "This package provides a @code{go test} runner with output
 optimized for humans, JUnit XML for CI integration, and a summary of the
@@ -6278,7 +6278,7 @@ data serialization format.")
                    (when tests?
                      (with-directory-excursion (string-append "src/" import-path)
                        (invoke "go" "test" "-v" "./..."))))))))
-    (propagated-inputs (list go-github-com-google-go-cmp-cmp))
+    (propagated-inputs (list go-github-com-google-go-cmp))
     (home-page "https://google.golang.org/protobuf")
     (synopsis "Go library for Protocol Buffers")
     (description
@@ -7632,7 +7632,7 @@ deleting secrets from the system keyring.")
      '(#:unpack-path "github.com/zclconf/go-cty"
        #:import-path "github.com/zclconf/go-cty/cty"))
     (native-inputs
-     (list go-github-com-google-go-cmp-cmp))
+     (list go-github-com-google-go-cmp))
     (propagated-inputs
      (list go-golang-org-x-text
            go-github-com-vmihailenco-msgpack-v4
@@ -8032,7 +8032,7 @@ Gemini clients and servers.")
                              go-golang-org-x-sync
                              go-golang-org-x-mod
                              go-github-com-rogpeppe-go-internal
-                             go-github-com-google-go-cmp-cmp
+                             go-github-com-google-go-cmp
                              go-github-com-frankban-quicktest))
     (home-page "https://mvdan.cc/gofumpt/")
     (synopsis "Formats Go files with a stricter ruleset than gofmt")

@@ -606,7 +606,7 @@ and @code{go-ipld-format} legacy interface.")
            go-github-com-warpfork-go-testmark
            specification-ipld))
     (propagated-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-github-com-ipfs-go-block-format
            go-github-com-ipfs-go-cid
            go-github-com-multiformats-go-multicodec
@@ -799,7 +799,7 @@ daemon as described in
       #:import-path "github.com/whyrusleeping/cbor-gen"))
     (propagated-inputs
      (list go-github-com-ipfs-go-cid
-           go-github-com-google-go-cmp-cmp
+           go-github-com-google-go-cmp
            go-golang-org-x-xerrors))
     (home-page "https://github.com/whyrusleeping/cbor-gen")
     (synopsis "Codegen for CBOR codecs on the specified types")

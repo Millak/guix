@@ -301,7 +301,7 @@ workloads.  This kind of profiling is also known as wall-clock profiling.")
     (arguments
      '(#:import-path "github.com/frankban/quicktest"))
     (propagated-inputs
-     (list go-github-com-google-go-cmp-cmp go-github-com-kr-pretty))
+     (list go-github-com-google-go-cmp go-github-com-kr-pretty))
     (home-page "https://github.com/frankban/quicktest")
     (synopsis "Quick helpers for testing Go applications")
     (description
@@ -376,7 +376,7 @@ when comparing complex types like structures and maps.")
       (arguments
        '(#:import-path "github.com/google/go-cmdtest"))
       (propagated-inputs
-       (list go-github-com-google-renameio go-github-com-google-go-cmp-cmp))
+       (list go-github-com-google-renameio go-github-com-google-go-cmp))
       (home-page "https://github.com/google/go-cmdtest")
       (synopsis "Testing for your CLI")
       (description

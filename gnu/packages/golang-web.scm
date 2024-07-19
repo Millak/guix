@@ -300,7 +300,7 @@ connections from a single physical connection.")
      '(#:import-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
      (list go-github-com-aws-smithy-go
-           go-github-com-google-go-cmp-cmp
+           go-github-com-google-go-cmp
            go-github-com-jmespath-go-jmespath))
     (home-page "https://github.com/aws/aws-sdk-go-v2")
     (synopsis "AWS SDK for Go v2")
@@ -317,7 +317,7 @@ connections from a single physical connection.")
      '(#:import-path "github.com/aws/aws-sdk-go-v2/config"
        #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-github-com-aws-smithy-go))))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
@@ -402,7 +402,7 @@ connections from a single physical connection.")
     (arguments
      '(#:import-path "github.com/aws/smithy-go"))
     (propagated-inputs
-     (list go-github-com-jmespath-go-jmespath go-github-com-google-go-cmp-cmp))
+     (list go-github-com-jmespath-go-jmespath go-github-com-google-go-cmp))
     (home-page "https://github.com/aws/smithy-go")
     (synopsis "@url{https://smithy.io/2.0/index.html,Smithy} code generators
 for Go")
@@ -812,7 +812,7 @@ decompose request handling into many smaller layers.")
     (propagated-inputs
      (list go-golang-org-x-crypto))
     (native-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-github-com-stretchr-testify))
     (home-page "https://github.com/go-jose/go-jose")
     (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")
@@ -1673,7 +1673,7 @@ router.")
         (base32 "196rxfg7w8s3zn87gra1mxh1l8iav6kdmg909gkbnc9cxip65zc0"))))
     (build-system go-build-system)
     (propagated-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-golang-org-x-net
            go-golang-org-x-text))
     (arguments
@@ -3287,7 +3287,7 @@ programming language, which supports draft-04, draft-06 and draft-07.")
     (propagated-inputs
      (list go-golang-org-x-crypto))
     (native-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-github-com-stretchr-testify))
     (home-page "https://gopkg.in/square/go-jose.v2")
     (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")

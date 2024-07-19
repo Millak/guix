@@ -5506,7 +5506,7 @@ compatible with SQLite using a graphical user interface.")
       #:install-source? #f
       #:import-path "github.com/lighttiger2505/sqls"))
     (native-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-github-com-go-sql-driver-mysql
            go-github-com-k0kubun-pp
            go-github-com-lib-pq
