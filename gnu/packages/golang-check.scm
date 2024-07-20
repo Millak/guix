@@ -1065,22 +1065,19 @@ under test) much simpler.")
     (license license:asl2.0)))
 
 (define-public go-golang-org-sql-mock
-  (let ((commit "e98392b8111b45f8126e00af035a0dd95dc12e8b")
-        (version "1.3.3")
-        (revision "1"))
     (package
       (name "go-golang-org-sql-mock")
-      (version (git-version version revision commit))
+      (version "1.5.2")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/DATA-DOG/go-sqlmock")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "033vv29g2wf6fd757ajfmha30bqin3b07377037zkl051mk6mghs"))
+           "1vpvdx9hwmx9gm27aq5r5219xpaxz0gy4q1iqskk4saz05bspn0f"))
          (modules '((guix build utils)))
          (snippet '(delete-file-recursively "examples"))))
       (build-system go-build-system)
@@ -1090,7 +1087,7 @@ under test) much simpler.")
       (description "This library simulates SQL-driver behavior in tests
 without requiring a real database connection.")
       (home-page "https://github.com/DATA-DOG/go-sqlmock")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-golang-org-x-lint
   (let ((commit "83fdc39ff7b56453e3793356bcff3070b9b96445")
