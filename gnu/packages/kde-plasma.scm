@@ -2155,7 +2155,7 @@ activities effectively, without being distracting.")
 (define-public plasma-integration
   (package
     (name "plasma-integration")
-    (version "6.1.2")
+    (version "6.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -2163,7 +2163,7 @@ activities effectively, without being distracting.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0108pzfjwd84ysysq705k8ccy4hi9mmx412ll3d751dc50lj6np1"))))
+                "0nz5wczzpk28rmhsvilw94s30763zp04a9jn7i5lszazbdwp7vx3"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
