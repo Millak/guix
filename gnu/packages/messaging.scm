@@ -2431,19 +2431,18 @@ QMatrixClient project.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "10iidyxjk3w6cljw2r62i5azx84nw3p8hw97d8vy7r5gh1nrrrcn"))))
-    (arguments
-     `(#:configure-flags
-       (list
-        ;; Disable example binaries (not installed)
-        "-DBUILD_LIB_EXAMPLES=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'disable-network-tests
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("add_test\\((BasicConnectivity|ClientAPI|Devices|MediaAPI|Encryption|Pushrules)")
-                "# add_test")))))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list  "-DBUILD_LIB_EXAMPLES=OFF") ; disable example binaries (not installed)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'disable-network-tests
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_test\\((BasicConnectivity|ClientAPI|Devices|MediaAPI|Encryption|Pushrules)")
+                 "# add_test")))))))
     (inputs
      (list boost
            coeurl
