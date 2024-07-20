@@ -313,7 +313,7 @@ games, and tools.")
 (define-public drkonqi
   (package
     (name "drkonqi")
-    (version "6.1.2")
+    (version "6.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -321,7 +321,7 @@ games, and tools.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "19965cim06lfmkaansmrx814axfz7fxsmgfl52x2q3ar5vrmn05a"))))
+                "1b90m22x5fzcwfns14rz5p7lj367wsa4sq1w7vkxvq2g8jgak8bv"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
