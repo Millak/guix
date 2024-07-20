@@ -3170,14 +3170,14 @@ interfaces.")
 (define-public xdg-desktop-portal-kde
   (package
     (name "xdg-desktop-portal-kde")
-    (version "6.1.2")
+    (version "6.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0dksk5zs4w79n9l8wspwdgzx2fj1xafsjjk4d6bv2hrhhly7bnxr"))))
+                "1iiwl45gfj04hdzdk159chyj3f09sn92d09ah1zvx1ap0rxzwk42"))))
     (build-system qt-build-system)
     (arguments (list
                 #:tests? #f ;; colorschemetest test fail, because require dbus.
