@@ -682,7 +682,7 @@ Gomega matcher library.")
   (package
     (inherit go-github-com-onsi-ginkgo)
     (name "go-github-com-onsi-ginkgo-v2")
-    (version "2.18.0")
+    (version "2.19.0")
     (source
      (origin
        (method git-fetch)
@@ -691,7 +691,7 @@ Gomega matcher library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w5dldjjcz2kpyxml4zd9yah7galfpmhcpc2l4zc5pr3skpwpibv"))))
+        (base32 "0dwnkcysb5d9dyg8p84hhx5a3sj85g3bwgki1pgay4i8glz7xa7q"))))
     (arguments
      (list
       #:import-path "github.com/onsi/ginkgo/v2"))
