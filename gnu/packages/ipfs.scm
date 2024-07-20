@@ -684,6 +684,36 @@ their levels to be controlled individually.")
      (list
       #:import-path "github.com/ipfs/go-log"))))
 
+(define-public go-github-com-ipfs-go-metrics-interface
+  (package
+    (name "go-github-com-ipfs-go-metrics-interface")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-metrics-interface")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09xc71175sfnqlizkbw066jagnbag9ihvs240z6g6dm2yx3w5xgy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-metrics-interface"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-datastore
+           go-github-com-multiformats-go-base32
+           go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/ipfs/go-metrics-interface")
+    ;; XXX: The project neither has no a proper description, nor a README, see
+    ;; <https://github.com/ipfs/go-metrics-interface/issues/1>.
+    (synopsis "Metrics interface for IPFS")
+    (description
+     "Metrics interface for IPFS (Kubo).")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-socket-activation
   (package
     (name "go-github-com-libp2p-go-socket-activation")
