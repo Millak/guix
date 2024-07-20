@@ -708,14 +708,14 @@ functionality")
 (define-public kinfocenter
   (package
     (name "kinfocenter")
-    (version "6.1.2")
+    (version "6.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0g5hvsgj7v1zc5kavq6kr44rnf2gzk719wsaypdj8cqy8nijph31"))))
+                "0f2pqjzkgxa2sylcr560nw1ly998yvzyvpjpvb1q1af5jyzvxi39"))))
     (build-system cmake-build-system)
     (arguments
      (list
