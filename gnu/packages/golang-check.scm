@@ -286,7 +286,7 @@ workloads.  This kind of profiling is also known as wall-clock profiling.")
 (define-public go-github-com-frankban-quicktest
   (package
     (name "go-github-com-frankban-quicktest")
-    (version "1.11.1")
+    (version "1.14.6")
     (source
      (origin
        (method git-fetch)
@@ -295,11 +295,11 @@ workloads.  This kind of profiling is also known as wall-clock profiling.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0b1b44b2hli2p969gqz30z8v9z6ahlklpqzi17nwk1lsjz9yv938"))))
+        (base32 "0gnh9v4cg39pw8y356299zhh5jmq2p4cf9945lfiqsjsk7h6ld70"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/frankban/quicktest"))
+     (list
+      #:import-path "github.com/frankban/quicktest"))
     (propagated-inputs
      (list go-github-com-google-go-cmp go-github-com-kr-pretty))
     (home-page "https://github.com/frankban/quicktest")
