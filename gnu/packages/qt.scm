@@ -5214,6 +5214,32 @@ protocol.  The DBusMenu protocol makes it possible for applications to export
 and import their menus over DBus.")
     (license license:lgpl2.1+)))
 
+(define-public kdsingleapplication
+  (package
+    (name "kdsingleapplication")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KDAB/KDSingleApplication")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w7wg9w4mifrkpn7hhw1nnnwh1vhnf8i4wgfxvh44nacwslbwsb2"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:configure-flags
+      #~(list "-DKDSingleApplication_QT6=true" "-DKDSingleApplication_TESTS=true")))
+    (inputs (list libxkbcommon vulkan-headers))
+    (home-page "https://github.com/KDAB/KDSingleApplication")
+    (synopsis "Qt helper class for single-instance policy applications")
+    (description "KD SingleApplication is a helper class for single-instance
+policy applications.")
+    (license (list license:bsd-3 license:expat))))
+
 (define-public kdsoap
   (package
     (name "kdsoap")
