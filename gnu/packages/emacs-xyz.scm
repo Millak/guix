@@ -12504,6 +12504,26 @@ list of candidates.")
 completion using Consult.")
       (license license:gpl3+))))
 
+(define-public emacs-consult-denote
+  (package
+    (name "emacs-consult-denote")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/consult-denote-"
+                           version ".tar"))
+       (sha256
+        (base32 "0yhf9fifas87rs4wdapszbpx1xqyq44izjq7vzpyvdlh5a5fhhx1"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-consult emacs-denote))
+    (home-page "https://github.com/protesilaos/consult-denote")
+    (synopsis "Consult interface for Denote")
+    (description
+     "Consult Denote provides commands to interact with Emacs Denote using
+a Completing Read interface.")
+    (license license:gpl3+)))
+
 (define-public emacs-consult-dir
   (package
     (name "emacs-consult-dir")
