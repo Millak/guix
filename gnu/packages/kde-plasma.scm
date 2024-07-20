@@ -2651,7 +2651,7 @@ sensors, process information and other system resources.")
 (define-public plasma-welcome
   (package
     (name "plasma-welcome")
-    (version "6.1.2")
+    (version "6.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -2660,7 +2660,7 @@ sensors, process information and other system resources.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "19d0p1nsg9jjpv9d8948hnpb75gnrjj4xv6r0i4dzbg4mz25vb32"))))
+                "075l6j83p7zzx0hfska9bd1v44pr76xdym6p6m0z8adfvrl3ava1"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
