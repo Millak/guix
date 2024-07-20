@@ -4702,7 +4702,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
 (define-public nebula
   (package
     (name "nebula")
-    (version "1.8.2")
+    (version "1.9.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4711,7 +4711,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ly1axgmskrkmxhzymqis6gxf2wd7rvhycm94wfb8k0hirndvg5m"))
+                "08zzbx2v713zd9p7i4kd1bvcw47xb0092p5apba1x5wg6fpxw5zr"))
               ;; Remove windows-related binary blobs and files
               (snippet
                #~(begin
