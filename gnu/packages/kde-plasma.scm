@@ -2612,14 +2612,14 @@ vaults.")
 (define-public plasma-systemmonitor
   (package
     (name "plasma-systemmonitor")
-    (version "6.1.2")
+    (version "6.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1v329hfr0jjqbkbidkbb52i235c4g4ix2x3mngyfvjf3ykvxd1xs"))))
+                "1yfqnby1b6231m918rvpd4lc9wq9w21sfdr5cln3skc4gbyy50pz"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list ki18n
