@@ -996,7 +996,7 @@ functions for writing tests in Go.")
     (arguments
      '(#:import-path "github.com/smartystreets/goconvey"))
     (propagated-inputs
-     (list go-github.com-jtolds-gls go-github.com-smartystreets-assertions))
+     (list go-github-com-jtolds-gls go-github.com-smartystreets-assertions))
     (home-page "https://github.com/smartystreets/goconvey")
     (synopsis "Go testing tool with both a web and terminal user interface")
     (description "GoConvey is a testing tool for Go. It integrates with go

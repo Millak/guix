@@ -3048,9 +3048,9 @@ termination.")
                       "t.Fatalf(`Killf(\"BO%%s")))))))
     (home-page "https://gopkg.in/tomb.v1")))
 
-(define-public go-github.com-jtolds-gls
+(define-public go-github-com-jtolds-gls
   (package
-    (name "go-github.com-jtolds-gls")
+    (name "go-github-com-jtolds-gls")
     (version "4.20")
     (source (origin
               (method git-fetch)
