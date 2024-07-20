@@ -1251,7 +1251,7 @@ gracefully enhance standard library testing package and behaviors of the
 (define-public go-go-uber-org-goleak
   (package
     (name "go-go-uber-org-goleak")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1260,8 +1260,7 @@ gracefully enhance standard library testing package and behaviors of the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1lpqw7ygffak8qki9i4vw8b99l25l8jrw8iwcplqsclk6fzkl24p"))))
+        (base32 "14rvkxh3znp9jzbdjqdkrly3zfg3rmhgg5845biqqrq17w8jvv5s"))))
     (build-system go-build-system)
     (arguments
      (list
