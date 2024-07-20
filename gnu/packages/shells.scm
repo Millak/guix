@@ -556,30 +556,30 @@ ksh, and tcsh.")
 (define-public xonsh
   (package
     (name "xonsh")
-    (version "0.17.0")
+    (version "0.18.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "xonsh" version))
         (sha256
           (base32
-           "17jhhxwm1nbh7yq72y7d4n880x46817iami7lvcj3ywdbzrfg6r9"))
+           "0fx5ywsckwdxk4l5dmaf12z1b4nfd4zqdx5gapc11hhl9waks1y5"))
         (modules '((guix build utils)))
         (snippet
          #~(begin
              (substitute* "pyproject.toml"
-               (("\"xonsh\\.ply\\.ply\",") ""))
+               (("\"xonsh\\.parsers\\.ply\",") ""))
              ;; Use our properly packaged PLY instead.
              (substitute* (list "setup.py"
-                                "tests/test_lexer.py"
-                                "xonsh/lexer.py"
+                                "tests/parsers/test_lexer.py"
                                 "xonsh/parsers/base.py"
                                 "xonsh/parsers/completion_context.py"
+                                "xonsh/parsers/lexer.py"
                                 "xonsh/parsers/v310.py"
                                 "xonsh/xonfig.py")
-               (("from xonsh\\.ply\\.(.*) import" _ module)
-                (format #f "from ~a import" module))
-               (("from xonsh\\.ply import") "import"))))))
+               (("from xonsh\\.parsers\\.ply") "from ply")
+               (("from xonsh\\.parsers import ply") "import ply"))
+             (delete-file-recursively "xonsh/parsers/ply")))))
     (build-system pyproject-build-system)
     (arguments
      ;; Some tests are failing for reasons like not accessing parent directory
@@ -607,6 +607,7 @@ ksh, and tcsh.")
                            "test_script"
                            "test_skipper_command"
                            "test_sourcefile"
+                           "test_spec_decorator_alias_output_format"
                            "test_spec_modifier_alias_output_format"
                            "test_vc_get_branch"
                            "test_xonsh_activator"
@@ -2018,4 +2019,3 @@ syntax tree.")
     (synopsis "Nushell utility functions")
     (description "This package contains utility functions for nushell.")
     (license license:expat)))
-
