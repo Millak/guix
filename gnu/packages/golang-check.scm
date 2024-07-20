@@ -1361,16 +1361,23 @@ advanced Go linter.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.18
-      #:import-path "pgregory.net/rapid"))
+      #:import-path "pgregory.net/rapid"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Remove test file failing on go-1.21, see
+                ;; <https://github.com/flyingmutant/rapid/issues/68>.
+                (delete-file "strings_example_test.go")))))))
     (home-page "https://pgregory.net/rapid/")
     (synopsis "Go property-based testing library")
     (description
      "@code{Rapid} is a Go library for property-based testing.
 
-Rapid checks that properties you define hold for a large number of automatically
-generated test cases.  If a failure is found, rapid automatically minimizes the
-failing test case before presenting it.
+Rapid checks that properties you define hold for a large number of
+automatically generated test cases.  If a failure is found, rapid
+automatically minimizes the failing test case before presenting it.
 
 Features:
 @itemize
