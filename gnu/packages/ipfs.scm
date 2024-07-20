@@ -980,6 +980,7 @@ written in Go.")
                              "vendor/github.com/ipfs/go-ipld-git"
                              "vendor/github.com/ipfs/go-ipld-legacy"
                              "vendor/github.com/ipfs/go-log"
+                             "vendor/github.com/ipfs/go-metrics-interface"
                              "vendor/github.com/ipld/go-codec-dagpb"
                              "vendor/github.com/ipld/go-ipld-prime"
                              "vendor/github.com/jackpal"
@@ -1071,7 +1072,7 @@ written in Go.")
                   go-github-com-ipfs-go-ipld-legacy
                   go-github-com-ipfs-go-log
                   go-github-com-ipfs-go-log-v2
-                  ;;go-github-com-ipfs-go-metrics-interface
+                  go-github-com-ipfs-go-metrics-interface
                   ;;go-github-com-ipfs-go-metrics-prometheus
                   ;;go-github-com-ipfs-go-unixfsnode
                   ;;go-github-com-ipfs-shipyard-nopfs
