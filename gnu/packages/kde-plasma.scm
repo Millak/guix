@@ -417,7 +417,7 @@ concept.")
 (define-public krdp
   (package
     (name "krdp")
-    (version "6.1.2")
+    (version "6.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -425,7 +425,7 @@ concept.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0xp1zi51fpw9zcyry6g8qrm7k94pbi6kw3d8dakdnq5qrkcsvc8g"))))
+                "1snk8srpa8ljccglrnd6sihffy678zfjn9wk5p3lhvz7kkxbk5wp"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
                      #:phases
