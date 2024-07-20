@@ -97,6 +97,43 @@ by a @acronym{Content Identifiers,CID}. The CID contains the multihash
 corresponding to the block.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipfs-blockstore
+  (package
+    (name "go-github-com-ipfs-go-ipfs-blockstore")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-blockstore")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a3a0fm8k8njdlq2w795qff01piadjfp6r5r2hww69fxqsplln9l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ipfs-blockstore"))
+    (propagated-inputs
+     (list go-github-com-hashicorp-golang-lru
+           go-github-com-ipfs-bbloom
+           go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-ipfs-ds-help
+           go-github-com-ipfs-go-ipfs-util
+           go-github-com-ipfs-go-ipld-format
+           go-github-com-ipfs-go-log
+           go-github-com-ipfs-go-metrics-interface
+           go-github-com-multiformats-go-multihash
+           go-go-uber-org-atomic))
+    (home-page "https://github.com/ipfs/go-ipfs-blockstore")
+    (synopsis "Caching wrapper over a IPFS datastore")
+    (description
+     "@code{go-ipfs-blockstore} implements a thin wrapper over an IPFS datastore,
+giving a clean interface for getting and putting block objects.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-blocksutil
   ;; Use the latest commit from the "master" branch to fix the build with
   ;; go-1.21, see <https://github.com/ipfs/go-ipfs-blocksutil/issues/25>.
