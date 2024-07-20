@@ -277,10 +277,32 @@ language.")
     (arguments
      (list
       #:import-path "golang.org/x/exp"
-      ;; Source-only package
-      #:tests? #f
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'build))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Benchmark requires other modules to pass tests, delete them.
+                (delete-file-recursively "slog/benchmarks")
+               (substitute* (find-files "." "\\_test.go$")
+                 ;; Disable failing tests: error running `go mod init`: go:
+                 ;; modules disabled by GO111MODULE=off; see 'go help modules'
+                 ;; , exit status 1
+                 (("TestFailure") "OffTestFailure")
+                 (("TestRelease_gitRepo_uncommittedChanges")
+                  "OffTestRelease_gitRepo_uncommittedChanges")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-golang-org-x-mod
+           go-golang-org-x-tools))
     (home-page "https://golang.org/x/exp")
     (synopsis "Experimental and deprecated Go packages")
     (description
