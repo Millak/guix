@@ -1656,7 +1656,7 @@ on top of Baloo.")
 (define-public ocean-sound-theme
   (package
     (name "ocean-sound-theme")
-    (version "6.1.2")
+    (version "6.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1664,7 +1664,7 @@ on top of Baloo.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0ysgx7bg5njgfv3rxdz5bzqh0iki1qb0pwqk4dmnwc3hx3c89ynb"))))
+                "064s4ms3ga2985181gzzi4ky20g53c3djz1dblmjnq3i908npy86"))))
     (build-system cmake-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list qtbase))
