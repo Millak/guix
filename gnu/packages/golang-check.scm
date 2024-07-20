@@ -312,7 +312,7 @@ tests.")
 (define-public go-github-com-go-test-deep
   (package
     (name "go-github-com-go-test-deep")
-    (version "1.0.8")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -321,7 +321,7 @@ tests.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mmw2w3by7y24jjpjwmf2gfl08c65jihn3si9m0sswmagmdsk8q0"))))
+        (base32 "1vjzmd4gc3zr9hlpzhhq4g1d0k6rbhply10vdl49gvir4dzmzzrl"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/go-test/deep"))
