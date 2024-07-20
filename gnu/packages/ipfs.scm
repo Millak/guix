@@ -41,6 +41,31 @@
   #:use-module (gnu packages shells)
   #:use-module (gnu packages specifications))
 
+(define-public go-github-com-ipfs-bbloom
+  (package
+    (name "go-github-com-ipfs-bbloom")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/bbloom")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dcdn7nlysynl7yrbivv8m7j83jq7pabhcff8mvfjdk583rgnkp2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/bbloom"))
+    (home-page "https://github.com/ipfs/bbloom")
+    (synopsis "Fast bit set Bloom filter")
+    (description
+     "This package implements a fast bloom filter with real @code{bitset} and
+JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
+    (license (list license:expat             ; bbloom.go
+                   license:public-domain)))) ; siphash.go
+
 (define-public go-github-com-ipfs-go-block-format
   (package
     (name "go-github-com-ipfs-go-block-format")
