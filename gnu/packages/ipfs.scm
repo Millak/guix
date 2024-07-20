@@ -239,6 +239,35 @@ that are shared between @command{go-ipfs/commands} and its rewrite
 objects.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipfs-ds-help
+  (package
+    (name "go-github-com-ipfs-go-ipfs-ds-help")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-ds-help")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xmn9pdyrcim9ahqs9pkh0c9ac71gilb3pb48kcagq8zxf22i4bj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ipfs-ds-help"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-datastore
+           go-github-com-multiformats-go-base32
+           go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/ipfs/go-ipfs-ds-help")
+    (synopsis "Utilities for parsing and creating datastore keys")
+    (description
+     "@code{go-ipfs-ds-help} provides utilities for parsing and creating datastore
+keys used by @code{go-ipfs} (Kubo).")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-datastore
   (package
     (name "go-github-com-ipfs-go-datastore")
