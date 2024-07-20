@@ -782,6 +782,10 @@ error reporting, better tracing, profiling, and a debugger.")
      (list pkg-config ninja which))
     (inputs
      (list gdb capnproto python python-pexpect zlib))
+
+    ;; List of supported systems according to 'src/preload/raw_syscall.S'.
+    (supported-systems '("x86_64-linux" "i686-linux" "aarch64-linux"))
+
     (home-page "https://rr-project.org/")
     (synopsis "Record and replay debugging framework")
     (description
