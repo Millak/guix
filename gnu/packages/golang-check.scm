@@ -1065,29 +1065,34 @@ under test) much simpler.")
     (license license:asl2.0)))
 
 (define-public go-golang-org-sql-mock
-    (package
-      (name "go-golang-org-sql-mock")
-      (version "1.5.2")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/DATA-DOG/go-sqlmock")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1vpvdx9hwmx9gm27aq5r5219xpaxz0gy4q1iqskk4saz05bspn0f"))
-         (modules '((guix build utils)))
-         (snippet '(delete-file-recursively "examples"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/DATA-DOG/go-sqlmock"))
-      (synopsis "Mock library implementing @code{sql/driver}")
-      (description "This library simulates SQL-driver behavior in tests
-without requiring a real database connection.")
-      (home-page "https://github.com/DATA-DOG/go-sqlmock")
-      (license license:expat)))
+  (package
+    (name "go-golang-org-sql-mock")
+    (version "1.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DATA-DOG/go-sqlmock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vpvdx9hwmx9gm27aq5r5219xpaxz0gy4q1iqskk4saz05bspn0f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/DATA-DOG/go-sqlmock"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))
+    (home-page "https://github.com/DATA-DOG/go-sqlmock")
+    (synopsis "Mock library implementing @code{sql/driver}")
+    (description
+     "This library simulates SQL-driver behavior in tests without requiring a
+real database connection.")
+    (license license:expat)))
 
 (define-public go-golang-org-x-lint
   (let ((commit "83fdc39ff7b56453e3793356bcff3070b9b96445")
