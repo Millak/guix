@@ -273,6 +273,32 @@ throughout its lifetime.")
     (description "Check if the race detector is running.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipfs-exchange-interface
+  (package
+    (name "go-github-com-ipfs-go-ipfs-exchange-interface")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-exchange-interface")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h5jizhjq4yz9sikqc6yhv5gsb8fgv67v0qjzagyhfznfx8kwv1d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ipfs-exchange-interface"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid))
+    (home-page "https://github.com/ipfs/go-ipfs-exchange-interface")
+    (synopsis "The IPFS Exchange interface")
+    (description
+     "@code{go-ipfs-exchange-interface} defines the IPFS exchange interface.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-util
   (package
     (name "go-github-com-ipfs-go-ipfs-util")
