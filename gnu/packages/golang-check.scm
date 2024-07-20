@@ -926,7 +926,7 @@ Features include:
 (define-public go-github-com-tdewolff-test
   (package
     (name "go-github-com-tdewolff-test")
-    (version "1.0.9")
+    (version "1.0.10")
     (source
      (origin
        (method git-fetch)
@@ -935,11 +935,11 @@ Features include:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "10myz3zdkqmx37cvj507h7l2ncb0rq9shqvz9ggq1swijbsvazff"))))
+        (base32 "1ihlcnygwdgxq068b29d3n9n1gdbb2j03sc0al1qk5i5dkvgziyx"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/tdewolff/test"))
+     (list
+      #:import-path "github.com/tdewolff/test"))
     (home-page "https://github.com/tdewolff/test")
     (synopsis "Go test helper functions")
     (description
