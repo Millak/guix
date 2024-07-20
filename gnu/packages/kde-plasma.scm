@@ -800,7 +800,7 @@ computer's hardware.")
 (define-public kmenuedit
   (package
     (name "kmenuedit")
-    (version "6.1.2")
+    (version "6.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -808,7 +808,7 @@ computer's hardware.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "0wypmw265n8ni6i0hgb60fmaa5m5v759kwwh9pybc3hw81wb8m4l"))))
+                "11adzhl76ii7zd7ag2hh1xay92az2k465dlxizagml6aal7gn1lh"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules kdoctools))
