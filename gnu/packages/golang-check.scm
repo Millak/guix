@@ -1036,7 +1036,7 @@ under test) much simpler.")
 (define-public go-go-etcd-io-gofail
   (package
     (name "go-go-etcd-io-gofail")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1045,7 +1045,7 @@ under test) much simpler.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jh0qjgfb2irshwj7an3lj0w9bv6c5gbnkdhisgpdr7x7hk682m1"))))
+        (base32 "0wxjaq1v5w0wjyv84af5cazrmv369i1416ar0dx8r9ag1szcfvpc"))))
     (build-system go-build-system)
     (arguments
      (list
