@@ -262,28 +262,30 @@ language.")
         (base32 "0ccjgv19w5p9sbcq12czmfnkjwv3b7hfljifwax6r9wk4dx0fcn7"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Submodules with their own go.mod files and packed as separated
-           ;; packages:
-           ;;
-           ;; - golang.org/x/exp/event
-           ;; - golang.org/x/exp/jsonrpc2
-           ;; - golang.org/x/exp/shiny
-           ;; - golang.org/x/exp/sumbdb
-           ;; - golang.org/x/exp/typeparams
-           (for-each delete-file-recursively
-                     (list "event" "jsonrpc2" "shiny" "sumdb" "typeparams"))))))
+        #~(begin
+            ;; Submodules with their own go.mod files and packed as separated
+            ;; packages:
+            ;;
+            ;; - golang.org/x/exp/event
+            ;; - golang.org/x/exp/jsonrpc2
+            ;; - golang.org/x/exp/shiny
+            ;; - golang.org/x/exp/sumbdb
+            ;; - golang.org/x/exp/typeparams
+            (for-each delete-file-recursively
+                      (list "event" "jsonrpc2" "shiny" "sumdb" "typeparams"))))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "golang.org/x/exp"
-       ;; Source-only package
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (delete 'build))))
+     (list
+      #:import-path "golang.org/x/exp"
+      ;; Source-only package
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'build))))
     (home-page "https://golang.org/x/exp")
     (synopsis "Experimental and deprecated Go packages")
-    (description "This subrepository holds experimental and deprecated (in the
-@code{old} directory) packages.")
+    (description
+     "This subrepository holds experimental and deprecated (in the @code{old}
+directory) packages.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-exp-typeparams
