@@ -878,7 +878,7 @@ current goroutine's ID.")
 (define-public go-github-com-stretchr-testify
   (package
     (name "go-github-com-stretchr-testify")
-    (version "1.7.0")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -888,7 +888,7 @@ current goroutine's ID.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ixgjsvafr3513pz3r6pmgk074s2dxkll0dadvl25gkf30rkmh10"))))
+         "12cnhk96h8b3ddlb7jfvwwavzc0j1c2iva92pszl9rv6r571ckzg"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/stretchr/testify"))
@@ -922,21 +922,6 @@ Features include:
                     (delete 'build))))
       (propagated-inputs
        (list go-gopkg-in-yaml-v3)))))
-
-(define-public go-github-com-stretchr-testify-next
-  (package
-    (inherit go-github-com-stretchr-testify)
-    (name "go-github-com-stretchr-testify")
-    (version "1.9.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/stretchr/testify")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "12cnhk96h8b3ddlb7jfvwwavzc0j1c2iva92pszl9rv6r571ckzg"))))))
 
 (define-public go-github-com-tdewolff-test
   (package
@@ -1280,7 +1265,7 @@ gracefully enhance standard library testing package and behaviors of the
      (list
       #:import-path "go.uber.org/goleak"))
     (native-inputs
-     (list go-github-com-stretchr-testify-next))
+     (list go-github-com-stretchr-testify))
     (home-page "https://pkg.go.dev/go.uber.org/goleak")
     (synopsis "Goroutine leak detector")
     (description

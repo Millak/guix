@@ -3111,7 +3111,7 @@ implementing features like:
      (list
       #:import-path "github.com/Masterminds/semver/v3"))
     (native-inputs
-     (list go-github-com-stretchr-testify-next))
+     (list go-github-com-stretchr-testify))
     (home-page "https://github.com/Masterminds/semver/")
     (synopsis "@code{semver} helps to work with semantic versions")
     (description
@@ -5158,7 +5158,7 @@ CPU quota.")
      (list
       #:import-path "go.uber.org/dig"))
     (native-inputs
-     (list go-github-com-stretchr-testify-next))
+     (list go-github-com-stretchr-testify))
     (home-page "https://pkg.go.dev/go.uber.org/dig")
     (synopsis "Reflection based dependency injection toolkit for Golang")
     (description
@@ -5184,7 +5184,7 @@ object dependencies graph during the process startup.")
      (list
       #:import-path "go.uber.org/fx"))
     (native-inputs
-     (list go-github-com-stretchr-testify-next))
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-go-uber-org-dig
            go-go-uber-org-goleak
@@ -5252,7 +5252,7 @@ applications out of reusable, composable modules.")
                (string-append "src/" import-path
                               "/stacktrace_ext_test.go")))))))
     (native-inputs
-     (list go-github-com-stretchr-testify-next
+     (list go-github-com-stretchr-testify
            go-go-uber-org-goleak
            go-golang-org-x-lint
            go-honnef-co-go-tools))

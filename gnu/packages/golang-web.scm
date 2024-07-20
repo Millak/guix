@@ -2786,7 +2786,7 @@ protocol.")
       #:import-path "github.com/quic-go/webtransport-go"))
     (native-inputs
      (list go-go-uber-org-mock
-           go-github-com-stretchr-testify-next))
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-quic-go-quic-go
            go-golang-org-x-exp))
