@@ -1661,7 +1661,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
 (define-public emacs-llm
   (package
     (name "emacs-llm")
-    (version "0.16.1")
+    (version "0.17.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1669,7 +1669,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256 (base32
-                       "0gxxs7ddkka836m3cq03s5qcay3sdsrfhanmgxybbc4byh6n0zh2"))))
+                       "1sds3gb5accmpkajc60cbly2imkvvb7a3afi8qdb67p5vkk5xvc2"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-plz))
     (home-page "https://github.com/ahyatt/llm")
