@@ -2,7 +2,7 @@
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 HiPhish <hiphish@posteo.de>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
@@ -80,6 +80,10 @@
           (replace 'check
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (when tests?
+                ;; We need to extend the timeout on some architectures.
+                ;; 64 is the default in extra_test.go.
+                (setenv "GOLDMARK_TEST_TIMEOUT_MULTIPLIER"
+                        (number->string (* 64 5)))
                 (with-directory-excursion (string-append "src/" import-path)
                   (invoke "go" "test" "-v" "./..."))))))))
     (home-page "https://github.com/yuin/goldmark/")
