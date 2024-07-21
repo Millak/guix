@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2018, 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
-;;; Copyright © 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 HiPhish <hiphish@posteo.de>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
@@ -58,6 +58,42 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-golang-protobuf
+  (package
+    (name "go-github-com-golang-protobuf")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/protobuf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03f1w2cd4s8a3xhl61x7yjx81kbzlrjpvnnwmbhqnz814yi7h43i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/golang/protobuf"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-google-golang-org-protobuf))
+    (home-page "https://github.com/golang/protobuf")
+    (synopsis "Go support for Protocol Buffers")
+    (description
+     "This package provides Go support for the Protocol Buffers data
+serialization format.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-google-go-cmp
   (package
     (name "go-github-com-google-go-cmp")
