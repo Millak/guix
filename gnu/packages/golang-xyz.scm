@@ -5467,6 +5467,21 @@ tool."))))
                     "\nThis package provides an command line interface (CLI)
 tool."))))
 
+(define-public go-tomlv
+  (package
+    (inherit go-github-com-burntsushi-toml)
+    (name "go-tomlv")
+    (arguments
+     (list
+      #:install-source? #f
+      #:tests? #f ; no tests.
+      #:import-path "github.com/BurntSushi/toml/cmd/tomlv"
+      #:unpack-path "github.com/BurntSushi/toml"))
+    (description
+     (string-append (package-description go-github-com-burntsushi-toml)
+                    " This package provides an command line interface (CLI)
+tool."))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
