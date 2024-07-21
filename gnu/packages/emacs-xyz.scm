@@ -290,10 +290,6 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
 
-;;;
-;;; Emacs hacking.
-;;;
-
 (define-public emacs-0x0
   (let ((commit "04f95142b25d8bb701f239539176df6617dcd982")
         (revision "0"))
@@ -3540,11 +3536,6 @@ or unexpected behavior inside an elisp configuration file (typically
 @file{init.el} or @file{.emacs}).")
       (license license:gpl3+))))
 
-
-;;;
-;;; Web browsing.
-;;;
-
 (define-public emacs-w3m
   ;; Emacs-w3m follows a "rolling release" model.
   (package
@@ -3696,11 +3687,6 @@ incrementally confined in Isearch manner.")
 to prevent advertisers from tracking you when you open URLs (or listen to
 podcasts) in Emacs.")
       (license (list license:gpl3+)))))
-
-
-;;;
-;;; Multimedia.
-;;;
 
 (define emacs-emms-print-metadata
   (package
@@ -3930,11 +3916,6 @@ playback status, artist name and title for Emprise using Marginalia.")
 toggle custom-defined channels.  An external media player like mpv or VLC is
 required.")
       (license license:gpl3+))))
-
-
-;;;
-;;; Miscellaneous.
-;;;
 
 (define-public emacs-ace-link
   (package
