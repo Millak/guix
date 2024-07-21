@@ -15190,6 +15190,41 @@ customizable 256 color support to @code{term} and @code{ansi-term}.")
 efficient tabs plugin for Emacs with a lot of customization options.")
     (license license:gpl3+)))
 
+(define-public emacs-org-remark
+  (package
+    (name "emacs-org-remark")
+    (version "1.2.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nobiot/org-remark")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1b6nmd64jzy6a7fz4x5p276sl36xa72y3ajbl72vr5ndqp94rlz1"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-org))
+    (home-page "https://nobiot.github.io/org-remark/")
+    (synopsis "Highlight & annotate text using Org mode")
+    (description "Org-remark lets you highlight and annotate text files,
+websites, EPUB books and Info documentation using Org mode.
+
+Features:
+
+@itemize
+@item Highlight and annotate any text file.  The highlights and notes are kept
+in an Org file as the plain text database.  This lets you easily manage your
+marginal notes and use the built-in Org facilities on them – e.g. create a
+sparse tree based on the category of the notes
+@item Create your your own highlighter pens with different colors, type (e.g.
+underline, squiggle, etc. optionally with Org’s category for search and filter
+on your highlights and notes)
+@item Have the same highlighting and annotating functionality for websites
+(when browsing with EWW), EPUB books with @code{nov.el}, Info documentation
+@end itemize")
+    (license license:gpl3+)))
+
 (define-public emacs-mocker
   (package
     (name "emacs-mocker")
