@@ -22941,32 +22941,34 @@ the pipeline, featuring the support for running @code{emacsclient}.")
     (license license:gpl3+)))
 
 (define-public emacs-jupyter
-  (package
-    (name "emacs-jupyter")
-    (version "1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nnicandro/emacs-jupyter")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rf8d83bzc05v0w7zpqwcd89cdvrxwzpyf55vmmzj5j755bgxvhs"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-company ;optional
-           emacs-markdown-mode ;optional
-           emacs-simple-httpd
-           emacs-websocket
-           emacs-zmq))
-    (home-page "https://github.com/nnicandro/emacs-jupyter")
-    (synopsis "Emacs interface to communicate with Jupyter kernels")
-    (description "This package provides an Emacs interface to communicate with
+  (let ((commit "f97f4b5d8c83e0b901020f835183dde8a2bf649e")
+        (revision "1"))
+    (package
+      (name "emacs-jupyter")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/nnicandro/emacs-jupyter")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0jmhh9ncnf4ai8rr2g474n6dv9m7v983s2w0smy0h7l07sp43klq"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-company              ;optional
+             emacs-markdown-mode        ;optional
+             emacs-simple-httpd
+             emacs-websocket
+             emacs-zmq))
+      (home-page "https://github.com/nnicandro/emacs-jupyter")
+      (synopsis "Emacs interface to communicate with Jupyter kernels")
+      (description "This package provides an Emacs interface to communicate with
 Jupyter kernels.  It provides REPL and Org mode source code block frontends to
 Jupyter kernels and kernel interactions integrated with Emacs' built-in
 features.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-hcl-mode
   (package
