@@ -829,16 +829,16 @@ computer's hardware.")
 (define-public kongress
   (package
     (name "kongress")
-    (version "23.01.0")
+    (version "24.05.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma-mobile/" version
-                                  "/kongress-" version ".tar.xz"))
+              (uri (string-append "mirror://kde/stable/release-service/" version
+                                  "/src/kongress-" version ".tar.xz"))
               (sha256
                (base32
-                "0yma1b44sjnvhsw31r5bndrpj2sjgwgchpzc8bf9380l6an9k4r5"))))
+                "1bg7fsa4va59cg84r9vjiycl7g4b130m6m6sis9pc6w44jkcbjg2"))))
     (build-system qt-build-system)
-    (native-inputs (list extra-cmake-modules))
+    (native-inputs (list extra-cmake-modules python-minimal))
     ;; NOTE: Reporting bugs is linked to web browser, better not link it and let
     ;; it reslove through xdg-open in the run time
     (inputs (list kirigami
@@ -853,11 +853,9 @@ computer's hardware.")
                   knotifications
                   kxmlgui
                   kiconthemes
-                  qtbase-5
-                  qtdeclarative-5
-                  qtquickcontrols2-5
-                  qtgraphicaleffects
-                  qtsvg-5))
+                  qtdeclarative
+                  qtsvg))
+    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/kongress/")
     (synopsis "Companion application for conferences")
     (description "This application provides list of upcoming conferences with
