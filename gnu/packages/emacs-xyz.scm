@@ -9638,7 +9638,7 @@ correct movement and editing than you would otherwise have.")
 (define-public emacs-compat
   (package
     (name "emacs-compat")
-    (version "29.1.4.5")
+    (version "30.0.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9646,7 +9646,7 @@ correct movement and editing than you would otherwise have.")
                     (commit version)))
               (sha256
                (base32
-                "1bq2nk052g5ydl6qgiiiflnamzn1lgikv6yc8ijfzwksg06wq959"))))
+                "0rw4j8caiyah7k6pml8bwxd9zs6q7mlqq3lvrm013vimw2js3d12"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/compat.html")
     (synopsis "Emacs Lisp Compatibility Library")
