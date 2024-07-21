@@ -34923,7 +34923,7 @@ contains a track position, playback will start at the specified position.")
 (define-public emacs-org-jira
   (package
     (name "emacs-org-jira")
-    (version "4.4.1")
+    (version "4.4.2")
     (source
      (origin
        (method git-fetch)
@@ -34933,7 +34933,7 @@ contains a track position, playback will start at the specified position.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1pkqyvziwp2573hnr8s41chsbm40564f76i3l8ynjr7955nccsms"))))
+         "1mg7p9y4d4m6b6qkjvdz6lqby3kvvdb7qcjqgkrf75rzv0rsn1h2"))))
     (build-system emacs-build-system)
     (arguments
      (list
