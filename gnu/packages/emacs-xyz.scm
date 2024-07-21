@@ -20018,7 +20018,7 @@ It should enable you to implement low-level X11 applications.")
 (define-public emacs-exwm
   (package
     (name "emacs-exwm")
-    (version "0.30")
+    (version "0.31")
     (synopsis "Emacs X window manager")
     (source
      (origin
@@ -20026,7 +20026,7 @@ It should enable you to implement low-level X11 applications.")
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "exwm-" version ".tar"))
        (sha256
-        (base32 "1yscxs0knfb7wz7x6g9nixb6rpn5898q9dpsvk37ayda7nw75b2i"))))
+        (base32 "1i1k8w641n2fd6xifl92pvvq0s0b820lq76d1cyc7iyaqs44w9qq"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-xelb))
