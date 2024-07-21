@@ -6,7 +6,7 @@
 ;;; Copyright © 2019 Jens Mølgaard <jens@zete.tk>
 ;;; Copyright © 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -177,7 +177,7 @@ It aims to be fully compliant with DLNA and UPnP-AV standards.")
 (define-public gerbera
   (package
     (name "gerbera")
-    (version "1.12.1")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -186,7 +186,7 @@ It aims to be fully compliant with DLNA and UPnP-AV standards.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jz3jpg6ja9vi5zykcdh410r07ysrn6g0kzyj0v7d3689jxp94lg"))))
+        (base32 "1pqqjwza9fs59n2x685yvfb0sdwigknfxc4ihh3phpqyg99427kk"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -197,6 +197,7 @@ It aims to be fully compliant with DLNA and UPnP-AV standards.")
     (inputs
      (list curl
            duktape
+           exiv2
            ffmpeg
            file
            fmt
