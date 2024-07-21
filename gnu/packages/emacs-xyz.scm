@@ -33270,7 +33270,7 @@ all of your projects, then override or add variables on a per-project basis.")
 (define-public emacs-casual-avy
   (package
     (name "emacs-casual-avy")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -33279,7 +33279,7 @@ all of your projects, then override or add variables on a per-project basis.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n369d7yk6wr5b1145zxviiri1n2f8pzfmzchcnii34zwa2y7x2y"))))
+        (base32 "120dnixi8if8v4s4xr0lilpbkikk93v5icf16fydsd143q8x81gg"))))
     (build-system emacs-build-system)
     (arguments
      (list
