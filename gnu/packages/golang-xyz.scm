@@ -4235,7 +4235,7 @@ Pion}.")
 (define-public go-github-com-prometheus-client-model
   (package
     (name "go-github-com-prometheus-client-model")
-    (version "0.5.0")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -4244,7 +4244,7 @@ Pion}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pl9i969jx5vkhm8vd5vb8yrifv37aw6h8mjg04820pw0ygfbigy"))))
+        (base32 "0g1q2szzwp4rwkvayi2mnq2nwj6hj4ja7j43vwyi1iaz6d9z505c"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/prometheus/client_model"
