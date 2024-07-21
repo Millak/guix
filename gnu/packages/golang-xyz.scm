@@ -1062,7 +1062,16 @@ indicator to any terminal application.")
         (base32 "1vk0s7pcn80hkx0lcyws509gqs42c8y1rppv05zxiqj0yn2zrjnx"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/BurntSushi/toml"))
+     (list
+      #:import-path "github.com/BurntSushi/toml"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (home-page "https://github.com/BurntSushi/toml")
     (synopsis "Toml parser and encoder for Go")
     (description
