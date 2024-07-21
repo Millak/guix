@@ -3850,41 +3850,39 @@ Selectrum.")
     (license license:gpl3+)))
 
 (define-public emacs-empv
-  (let ((commit "8cc9b0a425b6989d30f91bf90e9b09bd00581f07")
-        (revision "1"))
-    (package
-      (name "emacs-empv")
-      (version (git-version "4.3.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/isamert/empv.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "06dphwj9vi39dbpif3kzp6azs80klh13s9l22a6ddz91kmds2myy"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:phases #~(modify-phases %standard-phases
-                     (add-after 'unpack 'set-default-binaries
-                       (lambda* (#:key inputs #:allow-other-keys)
-                         (emacs-substitute-variables "empv.el"
-                           ("empv-fd-binary" (search-input-file inputs "/bin/fd"))
-                           ("empv-mpv-binary" (search-input-file inputs "/bin/mpv"))))))))
-      (inputs (list fd mpv))
-      (propagated-inputs (list emacs-compat emacs-consult emacs-s))
-      (home-page "https://github.com/isamert/empv.el")
-      (synopsis
-       "Emacs multimedia player, media library manager, YouTube frontend")
-      (description
-       "This package is an Emacs multimedia player based on mpv.  It offers
+  (package
+    (name "emacs-empv")
+    (version "4.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/isamert/empv.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1x756842bwyzp8qqlkcnisbsvpb1i8dc7ajq32ra4l3zfk8vqbh1"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'set-default-binaries
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (emacs-substitute-variables "empv.el"
+                         ("empv-fd-binary" (search-input-file inputs "/bin/fd"))
+                         ("empv-mpv-binary" (search-input-file inputs "/bin/mpv"))))))))
+    (inputs (list fd mpv))
+    (propagated-inputs (list emacs-compat emacs-consult emacs-s))
+    (home-page "https://github.com/isamert/empv.el")
+    (synopsis
+     "Emacs multimedia player, media library manager, YouTube frontend")
+    (description
+     "This package is an Emacs multimedia player based on mpv.  It offers
 a comprehensive interface to mpv, including convenient features such as an
 embedded radio manager, YouTube integration, and a local music and video
 library manager.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-marginalia-emprise
   (package
