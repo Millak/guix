@@ -11,11 +11,13 @@
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 hackeryarn <artemchernyak@gmail.com>
+;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -764,6 +766,55 @@ Go programming language.")
       (description "This package holds the transition packages for the new Go
 1.13 error values.")
       (license license:bsd-3))))
+
+(define-public go-google-golang-org-protobuf
+  (package
+    (name "go-google-golang-org-protobuf")
+    (version "1.31.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/protobuf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xf18kzz96hgfy1vlbnydrizzpxkqj2iamfdbj3dx5a1zz5mi8n0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "google.golang.org/protobuf"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; XXX Failing on i686-linux:
+                  ;; panic: unaligned 64-bit atomic operation
+                  (("TestDynamicTypesExtensionNotFound")
+                   "OffTestDynamicTypesExtensionNotFound")
+                  (("TestDynamicTypesFilesChangeAfterCreation")
+                   "OffTestDynamicTypesFilesChangeAfterCreation")
+                  (("TestDynamicTypesFindExtensionByNameOrNumber")
+                   "OffTestDynamicTypesFindExtensionByNameOrNumber")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs (list go-github-com-google-go-cmp))
+    (home-page "https://google.golang.org/protobuf")
+    (synopsis "Go library for Protocol Buffers")
+    (description
+     "The protobuf package provides a Go implementation of Protocol Buffers, a
+language and platform neutral, extensible mechanism for serializing structured
+data.  It is a successor to @code{go-github-com-golang-protobuf} with an
+improved and cleaner API.")
+    (license license:bsd-3)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

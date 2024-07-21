@@ -6200,56 +6200,6 @@ data serialization format.")
     (home-page "https://github.com/golang/protobuf")
     (license license:bsd-3)))
 
-(define-public go-google-golang-org-protobuf
-  (package
-    (name "go-google-golang-org-protobuf")
-    (version "1.31.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://go.googlesource.com/protobuf")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1xf18kzz96hgfy1vlbnydrizzpxkqj2iamfdbj3dx5a1zz5mi8n0"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "google.golang.org/protobuf"
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'disable-failing-tests
-                 (lambda* (#:key tests? unpack-path #:allow-other-keys)
-                   (with-directory-excursion (string-append "src/" unpack-path)
-                     (substitute* (find-files "." "\\_test.go$")
-                       ;; XXX Failing on i686-linux:
-                       ;; panic: unaligned 64-bit atomic operation
-                       (("TestDynamicTypesExtensionNotFound")
-                        "OffTestDynamicTypesExtensionNotFound")
-                       (("TestDynamicTypesFilesChangeAfterCreation")
-                        "OffTestDynamicTypesFilesChangeAfterCreation")
-                       (("TestDynamicTypesFindExtensionByNameOrNumber")
-                        "OffTestDynamicTypesFindExtensionByNameOrNumber")))))
-               ;; XXX: Workaround for go-build-system's lack of Go modules
-               ;; support.
-               (delete 'build)
-               (replace 'check
-                 (lambda* (#:key tests? import-path #:allow-other-keys)
-                   (when tests?
-                     (with-directory-excursion (string-append "src/" import-path)
-                       (invoke "go" "test" "-v" "./..."))))))))
-    (propagated-inputs (list go-github-com-google-go-cmp))
-    (home-page "https://google.golang.org/protobuf")
-    (synopsis "Go library for Protocol Buffers")
-    (description
-     "The protobuf package provides a Go implementation of Protocol Buffers, a
-language and platform neutral, extensible mechanism for serializing structured
-data.
-
-This package is a successor to @code{go-github-com-golang-protobuf} with an
-improved and cleaner API.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-macronut-go-tproxy
   (package
     (name "go-github-com-macronut-go-tproxy")
