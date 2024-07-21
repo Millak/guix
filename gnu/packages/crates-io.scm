@@ -24794,6 +24794,30 @@ abbreviation for Extended Unique Identifier.")
     (description "This package provides evdev interface for Linux.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-evdev-sys-0.2
+  (package
+    (name "rust-evdev-sys")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "evdev-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vgax74wjsm22nrx6ikh8m7bj3nggf83s961i5qd85bvahmx9shl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (home-page "https://github.com/ndesh26/evdev-rs")
+    (synopsis "Raw bindings to libevdev")
+    (description
+     "This package provides Raw bindings to libevdev.  High level Rust
+bindings are available in the @code{evdev} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-event-listener-4
   (package
     (name "rust-event-listener")
