@@ -9649,7 +9649,7 @@ correct movement and editing than you would otherwise have.")
                 "0rw4j8caiyah7k6pml8bwxd9zs6q7mlqq3lvrm013vimw2js3d12"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/compat.html")
-    (synopsis "Emacs Lisp Compatibility Library")
+    (synopsis "Emacs Lisp compatibility library")
     (description
      "To allow for the usage of Emacs functions and macros that are defined
 in newer versions of Emacs, @code{compat.el} provides definitions that
