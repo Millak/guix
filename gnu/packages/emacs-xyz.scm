@@ -19976,14 +19976,14 @@ conflicts.")
 (define-public emacs-xelb
   (package
     (name "emacs-xelb")
-    (version "0.19")
+    (version "0.20")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/xelb-"
                                   version ".tar"))
               (sha256
                (base32
-                "1jgpb1ym7p2dfkk45zrv6w1jqgw66sb76jvjfjsqbrkx5605x2hk"))))
+                "12ikrnvik1n1fdc6ixx53d0z84v269wi463380k0i5zb6q8ncwpk"))))
     (build-system emacs-build-system)
     ;; The following functions and variables needed by emacs-xelb are
     ;; not included in emacs-minimal:
@@ -19995,7 +19995,7 @@ conflicts.")
       #:emacs emacs
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'regenerate-el-files
+          (add-after 'expand-load-path 'regenerate-el-files
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (substitute* "xelb-gen"
                 (("/usr/bin/env") (which "env")))
@@ -20006,6 +20006,7 @@ conflicts.")
                         (format #f "PROTO_PATH=~a/share/xcb" xcb-proto)
                         (format #f "EMACS_BIN=~a -Q" emacs))))))))
     (native-inputs (list xcb-proto))
+    (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/ch11ng/xelb")
     (synopsis "X protocol Emacs Lisp binding")
     (description "@code{emacs-xelb} is a pure Emacs Lisp implementation of the
