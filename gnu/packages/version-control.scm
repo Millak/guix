@@ -3284,17 +3284,17 @@ by rclone usable with git-annex.")
 (define-public fossil
   (package
     (name "fossil")
-    (version "2.20")
+    (version "2.23")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://www.fossil-scm.org/home/tarball/"
-             "210e89a0597f225f49722b096cf5563bf193e920e02a9bd38503a906deacd416"
+             "47362306a7dd7c6fc3cab77cebe5d25469b0a9448479d9718eb5c49c8337b29"
              "/fossil-src-" version ".tar.gz"))
        ;; XXX: Currently the above hash must be manually updated.
        (sha256
-        (base32 "08g7img88n2nwcdkpzmg4aqbp2iy40nllgas53502dspm97ym4h8"))
+        (base32 "1r1kabvmlhc0qgyq8g9zhq8i0123x9dba9b71j4xc71k14kfqjm9"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "compat"))))
@@ -3304,7 +3304,8 @@ by rclone usable with git-annex.")
            which                        ;for tests only
            ed))                         ;ditto
     (inputs
-     (list openssl zlib sqlite))
+     ;; Need sqlite >= 3.43.0.
+     (list openssl zlib sqlite-next))
     (arguments
      `(#:configure-flags (list "--with-openssl=auto"
                                "--disable-internal-sqlite")
