@@ -33343,7 +33343,7 @@ all of your projects, then override or add variables on a per-project basis.")
             (lambda _ (chdir "lisp"))))))
     (propagated-inputs (list emacs-casual-lib))
     (home-page "https://github.com/kickingvegas/casual-dired")
-    (synopsis "Transient-based porcelain for dired")
+    (synopsis "Transient-based porcelain for Dired")
     (description
      "Casual Dired is an opinionated Transient-based porcelain for Emacs Dired.")
     (license license:gpl3+)))
