@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2020-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
@@ -112,7 +112,12 @@
        (uri (crate-uri "aardvark-dns" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ldqv9v3v9a1m2kka660d5v15y2zasy5z7m4fh5hif74r089cx6x"))))
+        (base32 "0ldqv9v3v9a1m2kka660d5v15y2zasy5z7m4fh5hif74r089cx6x"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* (find-files "." "^Cargo\\.toml$")
+                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -139,20 +144,20 @@
 (define-public agate
   (package
     (name "agate")
-    (version "3.2.4")
+    (version "3.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "agate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1wvbhzm4k3hdy8x7aq8rj3galhgfizdwf5fi419hzvg3kmvbawh1"))))
+        (base32 "0ja2lvlcvkcbjn8r9da4k0ppy7pb7xad8j4b0a4fhg0mbp244f9s"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
        #:cargo-inputs
        (("rust-configparser" ,rust-configparser-3)
-        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-env-logger" ,rust-env-logger-0.11)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-getopts" ,rust-getopts-0.2)
         ("rust-glob" ,rust-glob-0.3)
@@ -160,12 +165,10 @@
         ("rust-mime-guess" ,rust-mime-guess-2)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-rcgen" ,rust-rcgen-0.9)
-        ("rust-rustls" ,rust-rustls-0.20)
+        ("rust-rcgen" ,rust-rcgen-0.12)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-tokio-rustls" ,rust-tokio-rustls-0.23)
-        ("rust-url" ,rust-url-2)
-        ("rust-webpki" ,rust-webpki-0.22))
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.25)
+        ("rust-url" ,rust-url-2))
        #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
                                    ("rust-gemini-fetch" ,rust-gemini-fetch-0.2))))
     (home-page "https://github.com/mbrubeck/agate")
@@ -359,27 +362,28 @@ paging.")
 (define-public cargo-machete
   (package
     (name "cargo-machete")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri name version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lbymfxgcizmj1c1ydpzinjbjhc7c9j0wb5y1xq33j80s5hzayaz"))))
+        (base32 "1an8d88njnk8hfsnwnx52zlzdmijscv7m20as1ci986rxz3vgpcl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ;Error: No such file or directory (os error 2)
+       #:install-source? #f
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
                        ("rust-argh" ,rust-argh-0.1)
                        ("rust-cargo-metadata" ,rust-cargo-metadata-0.18)
-                       ("rust-cargo-toml" ,rust-cargo-toml-0.16)
-                       ("rust-grep" ,rust-grep-0.2)
+                       ("rust-cargo-toml" ,rust-cargo-toml-0.19)
+                       ("rust-grep" ,rust-grep-0.3)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-toml-edit" ,rust-toml-edit-0.20)
+                       ("rust-toml-edit" ,rust-toml-edit-0.22)
                        ("rust-walkdir" ,rust-walkdir-2))))
     (home-page "https://github.com/est31/cargo-udeps")
     (synopsis "Find unused dependencies in Cargo.toml")
@@ -545,19 +549,20 @@ configuration instructions.")
 (define-public eza
   (package
     (name "eza")
-    (version "0.17.0")
+    (version "0.18.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "eza" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "026xagh42nrdy2yg9197mmb2bhm5mdvbf9vd9fk9iysrj1iay63r"))))
+        (base32 "1wnkbzaza0bcw5rld3baikpwwvnajz3j6nbpaic5mhv86rshqlcq"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:cargo-inputs `(("rust-ansiterm" ,rust-ansiterm-0.12)
+      #:cargo-inputs `(("rust-ansi-width" ,rust-ansi-width-0.1)
+                       ("rust-ansiterm" ,rust-ansiterm-0.12)
                        ("rust-chrono" ,rust-chrono-0.4)
                        ("rust-git2" ,rust-git2-0.18)
                        ("rust-glob" ,rust-glob-0.3)
@@ -565,24 +570,24 @@ configuration instructions.")
                        ("rust-locale" ,rust-locale-0.2)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-natord" ,rust-natord-1)
-                       ("rust-num-cpus" ,rust-num-cpus-1)
                        ("rust-number-prefix" ,rust-number-prefix-0.4)
                        ("rust-once-cell" ,rust-once-cell-1)
                        ("rust-palette" ,rust-palette-0.7)
+                       ("rust-path-clean" ,rust-path-clean-1)
                        ("rust-percent-encoding" ,rust-percent-encoding-2)
                        ("rust-phf" ,rust-phf-0.11)
                        ("rust-plist" ,rust-plist-1)
                        ("rust-proc-mounts" ,rust-proc-mounts-0.3)
-                       ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
+                       ("rust-rayon" ,rust-rayon-1)
                        ("rust-terminal-size" ,rust-terminal-size-0.3)
                        ("rust-timeago" ,rust-timeago-0.4)
                        ("rust-unicode-width" ,rust-unicode-width-0.1)
-                       ("rust-uutils-term-grid" ,rust-uutils-term-grid-0.3)
+                       ("rust-uutils-term-grid" ,rust-uutils-term-grid-0.6)
                        ("rust-uzers" ,rust-uzers-0.11)
                        ("rust-windows-sys" ,rust-windows-sys-0.52)
                        ("rust-zoneinfo-compiled" ,rust-zoneinfo-compiled-0.5))
       #:cargo-development-inputs `(("rust-criterion" ,rust-criterion-0.5)
-                                   ("rust-trycmd" ,rust-trycmd-0.14))
+                                   ("rust-trycmd" ,rust-trycmd-0.15))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'build 'build-manual
                      (lambda* (#:key inputs #:allow-other-keys)
@@ -594,7 +599,9 @@ configuration instructions.")
                                             "-f" "markdown"
                                             "-t" "man"
                                             (string-append "man/" page ".md")))))
-                              (list "eza.1" "eza_colors.5")))))
+                              (list "eza.1"
+                                    "eza_colors.5"
+                                    "eza_colors-explanation.5")))))
                    (add-after 'install 'install-extras
                      (lambda* (#:key outputs #:allow-other-keys)
                        (let* ((out (assoc-ref outputs "out"))
@@ -611,6 +618,8 @@ configuration instructions.")
                            (install-file "eza.1" man1))
                          (when (file-exists? "eza_colors.5")
                            (install-file "eza_colors.5" man5))
+                         (when (file-exists? "eza_colors-explanation.5")
+                           (install-file "eza_colors-explanation.5" man5))
                          (mkdir-p bash-completions-dir)
                          (mkdir-p zsh-completions-dir)
                          (mkdir-p fish-completions-dir)
@@ -722,6 +731,89 @@ This package is the community maintained fork of @code{exa}.")
 While it does not seek to mirror all of find's powerful functionality, it provides
 defaults for 80% of the use cases.")
      (license (list license:expat license:asl2.0))))
+
+(define-public gitui
+  (package
+    (name "gitui")
+    (version "0.25.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gitui" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19xv6bvp0hs1m5y8a0myifvh8xrxrv14wd4gknlsrka0l7d8ijg7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; disable vendor-openssl from default flags
+       ;; use oniguruma regex lib which is faster and makes gitui 25% smaller
+       #:features '("ghemoji" "regex-onig" "trace-libgit")
+       #:cargo-build-flags
+       '("--release" "--no-default-features")
+       #:cargo-test-flags
+       '("--release" "--no-default-features"
+         "--features" "ghemoji regex-onig trace-libgit"
+         "--"
+         ;; this test fails with permission denied error
+         "--skip=test_symbolic_links")
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+          (replace 'install
+             ;; Add --no-default-features to the install phase.
+             (lambda* (#:key outputs features #:allow-other-keys)
+                (let ((out (assoc-ref outputs "out")))
+                  (invoke "cargo" "install" "--no-track"
+                          "--path" "."
+                          "--root" out
+                          "--no-default-features"
+                          "--features" (string-join features))))))
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-asyncgit" ,rust-asyncgit-0.25)
+                       ("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bugreport" ,rust-bugreport-0.5)
+                       ("rust-bwrap" ,rust-bwrap-1)
+                       ("rust-bytesize" ,rust-bytesize-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-crossterm" ,rust-crossterm-0.27)
+                       ("rust-dirs" ,rust-dirs-5)
+                       ("rust-easy-cast" ,rust-easy-cast-0.5)
+                       ("rust-filetreelist" ,rust-filetreelist-0.5)
+                       ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
+                       ("rust-gh-emoji" ,rust-gh-emoji-1)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-notify" ,rust-notify-6)
+                       ("rust-notify-debouncer-mini" ,rust-notify-debouncer-mini-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-ratatui" ,rust-ratatui-0.24)
+                       ("rust-rayon-core" ,rust-rayon-core-1)
+                       ("rust-ron" ,rust-ron-0.8)
+                       ("rust-scopeguard" ,rust-scopeguard-1)
+                       ("rust-scopetime" ,rust-scopetime-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-shellexpand" ,rust-shellexpand-3)
+                       ("rust-simplelog" ,rust-simplelog-0.12)
+                       ("rust-struct-patch" ,rust-struct-patch-0.4)
+                       ("rust-syntect" ,rust-syntect-5)
+                       ("rust-tui-textarea" ,rust-tui-textarea-0.4)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-truncate" ,rust-unicode-truncate-0.2)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-which" ,rust-which-6))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.7 libssh2 openssl zlib))
+    (home-page "https://github.com/extrawurst/gitui")
+    (synopsis "Terminal UI for git")
+    (description "This package provides a fast Terminal UI for git.")
+    (license license:expat)))
 
 (define-public hexyl
   (package
@@ -1366,7 +1458,12 @@ on the terminal in a visually appealing way.")
        (uri (crate-uri "netavark" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1viyj9xqq9hkcsghrfx7wjmky3hkxfr96952f9favd4zg9ih64yw"))))
+        (base32 "1viyj9xqq9hkcsghrfx7wjmky3hkxfr96952f9favd4zg9ih64yw"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* (find-files "." "^Cargo\\.toml$")
+                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -2043,22 +2140,24 @@ of support files.")
 (define-public treefmt
   (package
     (name "treefmt")
-    (version "0.4.1")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "treefmt" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rarg6rffzl1cf6r167h9p14wr696kwnzr85kwbdy7x7x5zpj5li"))))
+        (base32 "1pfx8kgaf0rc8ijps2fqb61gjnak3sf430hvg52bnby9qqyd51h8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-verbosity-flag" ,rust-clap-verbosity-flag-2)
         ("rust-console" ,rust-console-0.13)
         ("rust-directories" ,rust-directories-3)
+        ("rust-env-logger" ,rust-env-logger-0.10)
         ("rust-filetime" ,rust-filetime-0.2)
         ("rust-globset" ,rust-globset-0.4)
         ("rust-ignore" ,rust-ignore-0.4)
@@ -2068,12 +2167,12 @@ of support files.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-sha-1" ,rust-sha-1-0.9)
-        ("rust-structopt" ,rust-structopt-0.3)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-toml" ,rust-toml-0.5)
         ("rust-which" ,rust-which-4))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3))))
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-mockall" ,rust-mockall-0.11))))
     (home-page "https://numtide.github.io/treefmt")
     (synopsis "Command-line application to format the code tree")
     (description
@@ -2405,19 +2504,20 @@ background agent taking care of maintaining the necessary state.")
 (define-public rust-cargo
   (package
     (name "rust-cargo")
-    (version "0.76.0")
+    (version "0.78.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14yjyvj9bl6mlzx6bbi3igflgdrx1hil9ifnf1dl9xnm4mb2gjw6"))))
+        (base32 "1p6564hg38xxbpjiiqxmnm1kmysxfjh0kbm5g56n85c3s0wmwc6n"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; unresolved import `cargo_test_support`
        #:cargo-inputs
-       (("rust-anstream" ,rust-anstream-0.6)
+       (("rust-annotate-snippets" ,rust-annotate-snippets-0.10)
+        ("rust-anstream" ,rust-anstream-0.6)
         ("rust-anstyle" ,rust-anstyle-1)
         ("rust-anyhow" ,rust-anyhow-1)
         ("rust-base64" ,rust-base64-0.21)
@@ -2428,18 +2528,18 @@ background agent taking care of maintaining the necessary state.")
         ("rust-cargo-credential-wincred" ,rust-cargo-credential-wincred-0.4)
         ("rust-cargo-platform" ,rust-cargo-platform-0.1)
         ("rust-cargo-util" ,rust-cargo-util-0.2)
+        ("rust-cargo-util-schemas" ,rust-cargo-util-schemas-0.2)
         ("rust-clap" ,rust-clap-4)
         ("rust-color-print" ,rust-color-print-0.3)
-        ("rust-crates-io" ,rust-crates-io-0.39)
+        ("rust-crates-io" ,rust-crates-io-0.40)
         ("rust-curl" ,rust-curl-0.4)
         ("rust-curl-sys" ,rust-curl-sys-0.4)
         ("rust-filetime" ,rust-filetime-0.2)
         ("rust-flate2" ,rust-flate2-1)
-        ("rust-flate2" ,rust-flate2-1)
         ("rust-git2" ,rust-git2-0.18)
         ("rust-git2-curl" ,rust-git2-curl-0.19)
-        ("rust-gix" ,rust-gix-0.55)
-        ("rust-gix-features" ,rust-gix-features-0.35)
+        ("rust-gix" ,rust-gix-0.57)
+        ("rust-gix-features" ,rust-gix-features-0.37)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-hmac" ,rust-hmac-0.12)
@@ -2449,7 +2549,7 @@ background agent taking care of maintaining the necessary state.")
         ("rust-ignore" ,rust-ignore-0.4)
         ("rust-im-rc" ,rust-im-rc-15)
         ("rust-indexmap" ,rust-indexmap-2)
-        ("rust-itertools" ,rust-itertools-0.11)
+        ("rust-itertools" ,rust-itertools-0.12)
         ("rust-jobserver" ,rust-jobserver-0.1)
         ("rust-lazycell" ,rust-lazycell-1)
         ("rust-libc" ,rust-libc-0.2)
@@ -2460,33 +2560,30 @@ background agent taking care of maintaining the necessary state.")
         ("rust-os-info" ,rust-os-info-3)
         ("rust-pasetors" ,rust-pasetors-0.6)
         ("rust-pathdiff" ,rust-pathdiff-0.2)
-        ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.9)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-rustfix" ,rust-rustfix-0.6)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-rusqlite" ,rust-rusqlite-0.30)
+        ("rust-rustfix" ,rust-rustfix-0.8)
         ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-untagged" ,rust-serde-untagged-0.1)
-        ("rust-serde-value" ,rust-serde-value-0.7)
         ("rust-serde-ignored" ,rust-serde-ignored-0.1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-sha1" ,rust-sha1-0.10)
         ("rust-shell-escape" ,rust-shell-escape-0.1)
         ("rust-supports-hyperlinks" ,rust-supports-hyperlinks-2)
-        ("rust-syn" ,rust-syn-2)
-        ("rust-tar" ,rust-tar-0.4)
         ("rust-tar" ,rust-tar-0.4)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-time" ,rust-time-0.3)
         ("rust-toml" ,rust-toml-0.8)
-        ("rust-toml-edit" ,rust-toml-edit-0.20)
+        ("rust-toml-edit" ,rust-toml-edit-0.21)
         ("rust-tracing" ,rust-tracing-0.1)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-unicase" ,rust-unicase-2)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-unicode-xid" ,rust-unicode-xid-0.2)
         ("rust-url" ,rust-url-2)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))
+        ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs (("rust-same-file" ,rust-same-file-1)
                                    ("rust-snapbox" ,rust-snapbox-0.4))))
     (native-inputs
@@ -2502,19 +2599,19 @@ the library crate of Cargo.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.9.29+cargo-0.76.0")
+    (version "0.9.31+cargo-0.78.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "cargo-c" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "03ks9rl2skvf5j93sbmbz6l72k5cgvf4hc0nhnp7aadrvb05v5sr"))))
+         (base32 "1y60hhjikkzk5s36gskgbxbyzr6ik7w0dn5j84mvqlilcs3ab0lj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cargo" ,rust-cargo-0.76)
+        ("rust-cargo" ,rust-cargo)
         ("rust-cargo-util" ,rust-cargo-util-0.2)
         ("rust-cbindgen" ,rust-cbindgen-0.26)
         ("rust-cc" ,rust-cc-1)
@@ -2527,7 +2624,7 @@ the library crate of Cargo.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-toml" ,rust-toml-0.7)
+        ("rust-toml" ,rust-toml-0.8)
         ("rust-windows-sys" ,rust-windows-sys-0.52))))
     (native-inputs
      (list pkg-config))
@@ -3027,7 +3124,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
 (define-public rust-xremap
   (package
     (name "rust-xremap")
-    (version "0.8.14")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
@@ -3035,7 +3132,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1691clzqbwcywz66k0lf5wjz3q5cpbks0l090bfv42idzr5a0ghl"))))
+         "13pvlc40zha7c9ma30s32x65c8qciqcnsznw43crx3wymlaqc9sn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '()
@@ -3048,7 +3145,6 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
         ("rust-env-logger" ,rust-env-logger-0.10)
         ("rust-evdev" ,rust-evdev-0.12)
         ("rust-fork" ,rust-fork-0.1)
-        ("rust-hyprland" ,rust-hyprland-0.3)
         ("rust-indoc" ,rust-indoc-2)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
@@ -3058,7 +3154,6 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-with" ,rust-serde-with-3)
         ("rust-serde-yaml" ,rust-serde-yaml-0.9)
-        ("rust-swayipc" ,rust-swayipc-3)
         ("rust-toml" ,rust-toml-0.8)
         ("rust-wayland-client" ,rust-wayland-client-0.30)
         ("rust-wayland-protocols-wlr" ,rust-wayland-protocols-wlr-0.1)
@@ -3073,19 +3168,19 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
                     (xremap (string-append out "/bin/xremap")))
                (mkdir-p (string-append share "/bash-completion/completions"))
                (with-output-to-file
-                 (string-append share "/bash-completion/completions/xremap")
+                   (string-append share "/bash-completion/completions/xremap")
                  (lambda _ (invoke xremap "--completions" "bash")))
                (mkdir-p (string-append share "/fish/vendor_completions.d"))
                (with-output-to-file
-                 (string-append share "/fish/vendor_completions.d/xremap.fish")
+                   (string-append share "/fish/vendor_completions.d/xremap.fish")
                  (lambda _ (invoke xremap "--completions" "fish")))
                (mkdir-p (string-append share "/zsh/site-functions"))
                (with-output-to-file
-                 (string-append share "/zsh/site-functions/_xremap")
+                   (string-append share "/zsh/site-functions/_xremap")
                  (lambda _ (invoke xremap "--completions" "zsh")))
                (mkdir-p (string-append share "/elvish/lib"))
                (with-output-to-file
-                 (string-append share "/elvish/lib/xremap")
+                   (string-append share "/elvish/lib/xremap")
                  (lambda _ (invoke xremap "--completions" "elvish")))))))))
     (home-page "https://github.com/k0kubun/xremap")
     (synopsis "Dynamic key remapp for X and Wayland")
@@ -3100,14 +3195,6 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
      (substitute-keyword-arguments (package-arguments rust-xremap)
        ((#:features _) '(list "gnome"))))))
 
-(define-public xremap-sway
-  (package
-    (inherit rust-xremap)
-    (name "xremap-sway")
-    (arguments
-     (substitute-keyword-arguments (package-arguments rust-xremap)
-       ((#:features _) '(list "sway"))))))
-
 (define-public xremap-wlroots
   (package
     (inherit rust-xremap)
@@ -3115,6 +3202,12 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
     (arguments
      (substitute-keyword-arguments (package-arguments rust-xremap)
        ((#:features _) '(list "wlroots"))))))
+
+(define-public xremap-hyprland
+  (deprecated-package "xremap-hyprland" xremap-wlroots))
+
+(define-public xremap-sway
+  (deprecated-package "xremap-sway" xremap-wlroots))
 
 (define-public xremap-x11
   (package

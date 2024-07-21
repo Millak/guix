@@ -960,8 +960,8 @@ safety and thread safety guarantees.")
                              (replace "llvm" llvm-17))))))
 
 (define-public rust-1.77
-  (let ((base-rust (rust-bootstrapped-package rust-1.76 "1.77.0"
-                    "11rda8d8qj24a5mkjzj1x6x9pkvaq0zlhkgdp5b39zj5m0gwsv0d")))
+  (let ((base-rust (rust-bootstrapped-package rust-1.76 "1.77.1"
+                    "18d4ncdzp0nfimmw029xdf7vv1hgh82v30mjnnixnllzar66w47f")))
     (package
       (inherit base-rust)
       (arguments
@@ -1027,12 +1027,12 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.75))
+  (let ((base-rust rust-1.77))
     (package
       (inherit base-rust)
       (properties (append
                     (alist-delete 'hidden? (package-properties base-rust))
-                    (clang-compiler-cpu-architectures "15")))
+                    (clang-compiler-cpu-architectures "17")))
       (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
       (source
        (origin
@@ -1041,6 +1041,7 @@ safety and thread safety guarantees.")
           '(begin
              (for-each delete-file-recursively
                        '("src/llvm-project"
+                         "vendor/jemalloc-sys/jemalloc"
                          "vendor/openssl-src/openssl"
                          "vendor/tikv-jemalloc-sys/jemalloc"
                          ;; These are referenced by the cargo output
@@ -1049,7 +1050,8 @@ safety and thread safety guarantees.")
                          "vendor/curl-sys-0.4.63+curl-8.1.2/curl"
                          "vendor/libffi-sys/libffi"
                          "vendor/libnghttp2-sys/nghttp2"
-                         "vendor/libz-sys/src/zlib"))
+                         "vendor/libz-sys/src/zlib"
+                         "vendor/libz-sys-1.1.9/src/zlib"))
              ;; Use the packaged nghttp2
              (delete-file "vendor/libnghttp2-sys/build.rs")
              (with-output-to-file "vendor/libnghttp2-sys/build.rs"
@@ -1140,7 +1142,12 @@ safety and thread safety guarantees.")
                                  '("fn uplift_dwp_of_bin_on_linux")))
                            (substitute* "cache_lock.rs"
                              ,@(make-ignore-test-list
-                                 '("fn multiple_download")))))))
+                                 '("fn multiple_shared"
+                                   "fn multiple_download"
+                                   "fn download_then_mutate")))
+                           (substitute* "global_cache_tracker.rs"
+                             ,@(make-ignore-test-list
+                                 '("fn package_cache_lock_during_build")))))))
                    `())
              (add-after 'unpack 'disable-tests-broken-on-aarch64
                (lambda _
@@ -1193,7 +1200,7 @@ safety and thread safety guarantees.")
                      ;; The three tests which are known to fail upstream on QEMU
                      ;; emulation on aarch64 and riscv64 also fail on x86_64 in
                      ;; Guix's build system.  Skip them on all builds.
-                     (substitute* "sys/unix/process/process_common/tests.rs"
+                     (substitute* "sys/pal/unix/process/process_common/tests.rs"
                        ;; We can't use make-ignore-test-list because we will get
                        ;; build errors due to the double [ignore] block.
                        (("target_arch = \"arm\"" arm)

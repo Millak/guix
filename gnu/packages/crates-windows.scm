@@ -101,18 +101,18 @@
 (define-public rust-cargo-credential-wincred-0.4
   (package
     (name "rust-cargo-credential-wincred")
-    (version "0.4.1")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-credential-wincred" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1d3h1y0f42xv2sjvn2bmyib4pdimpxjmsi17npx0bd6wlsn568xs"))))
+        (base32 "0bb9yczmk3ral2r20v5c4jzf3l9qp0nmm11i20s0w5inprp9b228"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cargo-credential" ,rust-cargo-credential-0.4)
-                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))))
     (home-page "https://github.com/rust-lang/cargo")
     (synopsis
      "Cargo credential process that stores tokens with Windows Credential Manager")
@@ -138,8 +138,31 @@ Windows Credential Manager.")
        (("rust-cargo-credential" ,rust-cargo-credential-0.3)
         ("rust-windows-sys" ,rust-windows-sys-0.48))))))
 
+(define-public rust-clipboard-win-5
+  (package
+    (name "rust-clipboard-win")
+    (version "5.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clipboard-win" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15x28184cw6r8hx30farqvcir0kz151dfbfms4avl9q11rqa1y8j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; unresolved import `clipboard_win::raw`
+       #:cargo-inputs (("rust-error-code" ,rust-error-code-3)
+                       ("rust-windows-win" ,rust-windows-win-3))))
+    (home-page "https://github.com/DoumanAsh/clipboard-win")
+    (synopsis "Simple way to interact with Windows clipboard")
+    (description
+     "This package provides simple way to interact with Windows clipboard.")
+    (license license:boost1.0)))
+
 (define-public rust-clipboard-win-4
   (package
+    (inherit rust-clipboard-win-5)
     (name "rust-clipboard-win")
     (version "4.5.0")
     (source
@@ -149,18 +172,12 @@ Windows Credential Manager.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0qh3rypkf1lazniq4nr04hxsck0d55rigb5sjvpvgnap4dyc54bi"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; unresolved import `clipboard_win::raw`
        #:cargo-inputs
        (("rust-error-code" ,rust-error-code-2)
         ("rust-str-buf" ,rust-str-buf-1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/DoumanAsh/clipboard-win")
-    (synopsis "Simple way to interact with Windows clipboard")
-    (description
-     "This package provides simple way to interact with Windows clipboard.")
-    (license license:boost1.0)))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-clipboard-win-3
   (package
@@ -719,14 +736,14 @@ See winapi for types and constants.")
 (define-public rust-win-crypto-ng-0.5
   (package
     (name "rust-win-crypto-ng")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "win-crypto-ng" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0faf5bd4d5kaf642yw91lh0n2bfwnz0l70bm85ysmj3dsj4hg9mf"))))
+                "14mv2wsvji8x7ds72zsjpz6hdq57y4r8r38xjyr4mrbib91zpawr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Windows library
@@ -941,8 +958,44 @@ color in a Windows console.")
        #:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-winreg-0.52
+  (package
+    (name "rust-winreg")
+    (version "0.52.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winreg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19gh9vp7mp1ab84kc3ag48nm9y7xgjhh3xa4vxss1gylk1rsaxx2"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                    (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; OS not supported
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.3)
+                                   ("rust-serde-transcode" ,rust-serde-transcode-1)
+                                   ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/gentoo90/winreg-rs")
+    (synopsis "Rust bindings to the MS Windows Registry API")
+    (description
+     "This package provides Rust bindings to MS Windows Registry API.")
+    (license license:expat)))
+
 (define-public rust-winreg-0.51
   (package
+    (inherit rust-winreg-0.52)
     (name "rust-winreg")
     (version "0.51.0")
     (source
@@ -967,12 +1020,7 @@ color in a Windows console.")
        #:cargo-development-inputs (("rust-rand" ,rust-rand-0.3)
                                    ("rust-serde-bytes" ,rust-serde-bytes-0.11)
                                    ("rust-serde-derive" ,rust-serde-derive-1)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/gentoo90/winreg-rs")
-    (synopsis "Rust bindings to the MS Windows Registry API")
-    (description
-     "This package provides Rust bindings to MS Windows Registry API.")
-    (license license:expat)))
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-winreg-0.50
   (package
@@ -1134,6 +1182,29 @@ color in a Windows console.")
 icons to windows executables and dynamic libraries.")
     (license license:expat)))
 
+(define-public rust-winresource-0.1
+  (package
+    (name "rust-winresource")
+    (version "0.1.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winresource" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0aakwh8llq2zvm7qihkrg7sz50hzccyl4x831j60g4psijpsmqkp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; failed to resolve: could not find `um` in `winapi`
+       #:cargo-inputs (("rust-toml" ,rust-toml-0.7)
+                       ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs (("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/BenjaminRi/winresource")
+    (synopsis "Create and set windows icons and metadata for executables")
+    (description "This package provides functions to create and set windows
+icons and metadata for executables.")
+    (license license:expat)))
+
 (define-public rust-winutil-0.1
   (package
     (name "rust-winutil")
@@ -1238,8 +1309,34 @@ for Rust.")
      "Contains function definitions for the Windows API library ws2_32.")
     (license license:expat)))
 
+(define-public rust-windows-0.52
+  (package
+    (name "rust-windows")
+    (version "0.52.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gnh210qjlprpd1szaq04rjm1zqgdm9j7l9absg0kawi2rwm72p4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-core" ,rust-windows-core-0.52)
+                       ("rust-windows-implement" ,rust-windows-implement-0.52)
+                       ("rust-windows-interface" ,rust-windows-interface-0.52)
+                       ("rust-windows-targets" ,rust-windows-targets-0.52))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Rust for Windows")
+    (description "The windows crate lets you call any Windows API past,
+present, and future using code generated on the fly directly from the metadata
+describing the API and right into your Rust package where you can call them as
+if they were just another Rust module.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-0.48
   (package
+    (inherit rust-windows-0.52)
     (name "rust-windows")
     (version "0.48.0")
     (source
@@ -1249,19 +1346,11 @@ for Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "03vh89ilnxdxdh0n9np4ns4m10fvm93h3b0cc05ipg3qq1mqi1p6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-windows-implement" ,rust-windows-implement-0.48)
         ("rust-windows-interface" ,rust-windows-interface-0.48)
-        ("rust-windows-targets" ,rust-windows-targets-0.48))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Rust for Windows")
-    (description "The windows crate lets you call any Windows API past,
-present, and future using code generated on the fly directly from the metadata
-describing the API and right into your Rust package where you can call them as
-if they were just another Rust module.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-windows-targets" ,rust-windows-targets-0.48))))))
 
 (define-public rust-windows-0.46
   (package
@@ -1387,16 +1476,16 @@ if they were just another Rust module.")
   (package
     (inherit rust-windows-aarch64-gnullvm-0.52)
     (name "rust-windows-aarch64-gnullvm")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_aarch64_gnullvm" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1g71yxi61c410pwzq05ld7si4p9hyx6lf5fkw21sinvr3cp5gbli"))
+                "1n05v7qblg1ci3i567inc7xrkmywczxrs1z3lj3rkkxw18py6f1b"))
               (snippet
-               '(delete-file "lib/libwindows.0.48.0.a"))))
+               '(delete-file "lib/libwindows.0.48.5.a"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-aarch64-gnullvm-0.42
@@ -1441,16 +1530,16 @@ crate.")
   (package
     (inherit rust-windows-aarch64-msvc-0.52)
     (name "rust-windows-aarch64-msvc")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_aarch64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1wvwipchhywcjaw73h998vzachf668fpqccbhrxzrz5xszh2gvxj"))
+                "1g5l4ry968p73g6bg6jgyvy9lb8fyhcs54067yzxpcpkf44k2dfw"))
               (snippet
-               #~(delete-file "lib/windows.0.48.0.lib"))))
+               #~(delete-file "lib/windows.0.48.5.lib"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-aarch64-msvc-0.42
@@ -1567,6 +1656,25 @@ crate.")
                        ("rust-syn" ,rust-syn-2)
                        ("rust-windows-metadata" ,rust-windows-metadata-0.51))))))
 
+(define-public rust-windows-core-0.52
+  (package
+    (name "rust-windows-core")
+    (version "0.52.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nc3qv7sy24x0nlnb32f7alzpd6f72l4p24vl65vydbyil669ark"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-targets" ,rust-windows-targets-0.52))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Rust for Windows")
+    (description "This package provides the core of Rust for Windows.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-i686-gnu-0.52
   (package
     (name "rust-windows-i686-gnu")
@@ -1592,16 +1700,16 @@ crate.")
   (package
     (inherit rust-windows-i686-gnu-0.52)
     (name "rust-windows-i686-gnu")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_i686_gnu" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0hd2v9kp8fss0rzl83wzhw0s5z8q1b4875m6s1phv0yvlxi1jak2"))
+                "0gklnglwd9ilqx7ac3cn8hbhkraqisd0n83jxzf9837nvvkiand7"))
               (snippet
-               #~(delete-file "lib/libwindows.0.48.0.a"))))
+               #~(delete-file "lib/libwindows.0.48.5.a"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-i686-gnu-0.42
@@ -1703,15 +1811,15 @@ crate.")
   (package
     (inherit rust-windows-i686-msvc-0.52)
     (name "rust-windows-i686-msvc")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_i686_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "004fkyqv3if178xx9ksqc4qqv8sz8n72mpczsr2vy8ffckiwchj5"))
+               (base32 "01m4rik437dl9rdf0ndnm2syh10hizvq0dajdkv2fjqcywrw4mcg"))
               (snippet
-               #~(delete-file "lib/windows.0.48.0.lib"))))
+               #~(delete-file "lib/windows.0.48.5.lib"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-i686-msvc-0.42
@@ -1788,8 +1896,31 @@ crate.")
                (base32
                 "0r0z8s1wcdwd20azsdfilf2a6bz68xkavl990wy64hyc8f51bmai"))))))
 
+(define-public rust-windows-implement-0.52
+  (package
+    (name "rust-windows-implement")
+    (version "0.52.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-implement" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0il91jkdgnwl20gm8dwbjswsmiq7paif49dyk5kvhwv72wrqq5hj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "The implement macro for the windows crate")
+    (description "This package provides the @code{implement} macro for the
+windows crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-implement-0.48
   (package
+    (inherit rust-windows-implement-0.52)
     (name "rust-windows-implement")
     (version "0.48.0")
     (source
@@ -1799,17 +1930,11 @@ crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1764n853zd7bb0wn94i0qxfs6kdy7wrz7v9qhdn7x7hvk64fabjy"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "The implement macro for the windows crate")
-    (description "This package provides the @code{implement} macro for the
-windows crate.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-windows-implement-0.46
   (package
@@ -1882,8 +2007,31 @@ windows crate.")
        (("rust-syn" ,rust-syn-1)
         ("rust-windows-tokens" ,rust-windows-tokens-0.32))))))
 
+(define-public rust-windows-interface-0.52
+  (package
+    (name "rust-windows-interface")
+    (version "0.52.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-interface" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1la254wzd8qlbxplvb667z5mwdh9jngg1qyhxg6fx9wm00pc73cx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "The interface macro for the windows crate")
+    (description "This package provides the interface macro for the windows
+crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-interface-0.48
   (package
+    (inherit rust-windows-interface-0.52)
     (name "rust-windows-interface")
     (version "0.48.0")
     (source
@@ -1893,17 +2041,11 @@ windows crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1iqcilw0hfyzwhk12xfmcy40r10406sgf4xmdansijlv1kr8vyz6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "The interface macro for the windows crate")
-    (description "This package provides the interface macro for the windows
-crate.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-windows-interface-0.46
   (package
@@ -2175,14 +2317,14 @@ if they were just another Rust module.")
   (package
     (inherit rust-windows-targets-0.52)
     (name "rust-windows-targets")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows-targets" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1mfzg94w0c8h4ya9sva7rra77f3iy1712af9b6bwg03wrpqbc7kv"))))
+                "034ljxqshifs1lan89xwpcy1hp0lhdh4b5n0d2z4fwjx2piacbws"))))
     (arguments
      `(#:cargo-inputs
        (("rust-windows-aarch64-gnullvm" ,rust-windows-aarch64-gnullvm-0.48)
@@ -2248,6 +2390,28 @@ windows crate.")
                (base32
                 "1rrqbxjkyk6h6p6jjzbcxr0mhqbz0yfndd2s2dsgmbl75f4yy7gn"))))))
 
+(define-public rust-windows-win-3
+  (package
+    (name "rust-windows-win")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-win" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p7jbk3i7wj1i6w7chfp4rpbyd6ckgncp6h493wm4frbc8rkxqjq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `windows_win::sys`
+       #:cargo-inputs (("rust-error-code" ,rust-error-code-3))
+       #:cargo-development-inputs (("rust-clipboard-win" ,rust-clipboard-win-5))))
+    (home-page "https://github.com/DoumanAsh/windows-win-rs")
+    (synopsis "Windows hacking library to find windows and access them")
+    (description
+     "Some windows hacking library with utilities to find windows and access them.")
+    (license license:boost1.0)))
+
 (define-public rust-windows-x86-64-gnu-0.52
   (package
     (name "rust-windows-x86-64-gnu")
@@ -2273,16 +2437,16 @@ windows crate.")
   (package
     (inherit rust-windows-x86-64-gnu-0.52)
     (name "rust-windows-x86-64-gnu")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_gnu" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1cblz5m6a8q6ha09bz4lz233dnq5sw2hpra06k9cna3n3xk8laya"))
+                "13kiqqcvz2vnyxzydjh73hwgigsdr2z1xpzx313kxll34nyhmm2k"))
               (snippet
-               #~(delete-file "lib/libwindows.0.48.0.a"))))
+               #~(delete-file "lib/libwindows.0.48.5.a"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-x86-64-gnu-0.42
@@ -2384,16 +2548,16 @@ windows crate.")
   (package
     (inherit rust-windows-x86-64-gnullvm-0.52)
     (name "rust-windows-x86-64-gnullvm")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_gnullvm" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0lxryz3ysx0145bf3i38jkr7f9nxiym8p3syklp8f20yyk0xp5kq"))
+                "1k24810wfbgz8k48c2yknqjmiigmql6kk3knmddkv8k8g1v54yqb"))
               (snippet
-               '(delete-file "lib/libwindows.0.48.0.a"))))
+               '(delete-file "lib/libwindows.0.48.5.a"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-x86-64-gnullvm-0.42
@@ -2437,15 +2601,15 @@ windows crate.")
   (package
     (inherit rust-windows-x86-64-msvc-0.52)
     (name "rust-windows-x86-64-msvc")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "12ipr1knzj2rwjygyllfi5mkd0ihnbi3r61gag5n2jgyk5bmyl8s"))
+               (base32 "0f4mdp895kkjh9zv8dxvn4pc10xr7839lf5pa9l0193i2pkgr57d"))
               (snippet
-               #~(delete-file "lib/windows.0.48.0.lib"))))
+               #~(delete-file "lib/windows.0.48.5.lib"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-x86-64-msvc-0.42

@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
-;;; Copyright © 2015-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2020, 2022, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Ben Sturmfels <ben@sturm.com.au>
@@ -523,16 +523,18 @@ def contents() -> str:
 (define-public python-cryptography-vectors
   (package
     (name "python-cryptography-vectors")
-    (version "41.0.4")
+    (version "42.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography_vectors" version))
        (sha256
         (base32
-         "17m1azxfc3w0390jp9mkx1v0k3xfv4v1lrgch4hvbbm77s0z42j4"))))
+         "1lcflcvv0xjz5cyvf33iav1vd91qzjvl4w7h4qaxlcnbn3ixap2h"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))  ; No tests included.
+    (native-inputs
+     (list python-flit-core))
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Test vectors for the cryptography package")
     (description
@@ -543,14 +545,14 @@ def contents() -> str:
 (define-public python-cryptography
   (package
     (name "python-cryptography")
-    (version "41.0.4")
+    (version "42.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography" version))
        (sha256
         (base32
-         "06pm952pr6f31pzwh5fb68zryqyss0hg9cbggxm15z15844w7svz"))))
+         "1qdz0yk5smi0dnywbxmanccwizilmnzgbbihjpmpgm6zjpn7xq3g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -561,8 +563,7 @@ def contents() -> str:
                        ;; 'python-cryptography-rust', so there's no need
                        ;; to build it here.
                        (substitute* "pyproject.toml"
-                         ((".*setuptools-rust.*") ""))
-                       (delete-file "setup.py")))
+                         (("\\s+\\\"setuptools-rust.*") ""))))
                    (add-before 'check 'symlink-rust-library
                      (lambda* (#:key inputs outputs #:allow-other-keys)
                        (symlink (search-input-file
@@ -572,13 +573,12 @@ def contents() -> str:
                                                "_rust.abi3.so")))))))
 
     (native-inputs
-     (list python-cryptography-vectors
-           python-hypothesis
+     (list python-certifi
+           python-cryptography-vectors
            python-iso8601
            python-pretend
            python-pytest                ;for subtests
-           python-pytest-benchmark
-           python-pytest-subtests))
+           python-pytest-benchmark))
     (inputs (list python-cryptography-rust))
     (propagated-inputs (list python-cffi))
     (home-page "https://github.com/pyca/cryptography")
@@ -632,14 +632,15 @@ ciphers, message digests and key derivation functions.")
       #:cargo-inputs
       `(("rust-asn1" ,rust-asn1-0.15)
         ("rust-cc" ,rust-cc-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-foreign-types" ,rust-foreign-types-0.3)
         ("rust-foreign-types-shared" ,rust-foreign-types-shared-0.1)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
-        ("rust-ouroboros" ,rust-ouroboros-0.15)
-        ("rust-pem" ,rust-pem-1)
-        ("rust-pyo3" ,rust-pyo3-0.18))))
+        ("rust-pem" ,rust-pem-3)
+        ("rust-pyo3" ,rust-pyo3-0.20)
+        ("rust-self-cell" ,rust-self-cell-1))))
     (native-inputs (list pkg-config python python-cffi))
     ;; XXX: Adding rust-openssl-sys-0.9 is needed because #:cargo-inputs
     ;; doesn't honor propagated-inputs.
@@ -650,14 +651,14 @@ ciphers, message digests and key derivation functions.")
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "23.2.0")
+    (version "24.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyOpenSSL" version))
        (sha256
         (base32
-         "1b4bkcpzhmablf592g21rq3l8apbhklp6wcwlvgfflm4algr6vr7"))))
+         "0vqsyji1q4vhd5yxlzks0z6va62knq64mxhfdjhz3yaxmazx9gna"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -669,25 +670,21 @@ ciphers, message digests and key derivation functions.")
                 ;; PyOpenSSL runs tests against a certificate with a fixed
                 ;; expiry time.  To ensure successful builds in the future,
                 ;; set the time to roughly the release date.
-                (invoke "faketime" "2023-03-25" "pytest" "-vv" "-k"
-                        (string-append
-                         ;; This test tries to look up certificates from
-                         ;; the compiled-in default path in OpenSSL, which
-                         ;; does not exist in the build environment.
-                         "not test_fallback_default_verify_paths "
-                         ;; This test attempts to make a connection to
-                         ;; an external web service.
-                         "and not test_set_default_verify_paths "
-                         ;; Fails on i686-linux and possibly other 32-bit platforms
-                         ;; https://github.com/pyca/pyopenssl/issues/974
-                         "and not test_verify_with_time"))))))))
+                (invoke "faketime" "2024-03-09" "pytest" "-vv" "-k"
+                        ;; This test tries to look up certificates from
+                        ;; the compiled-in default path in OpenSSL, which
+                        ;; does not exist in the build environment.
+                        "not test_fallback_default_verify_paths ")))))))
     (propagated-inputs (list python-cryptography))
     (inputs (list openssl))
-    (native-inputs (list libfaketime python-flaky python-pretend python-pytest))
+    (native-inputs (list libfaketime python-pretend python-pytest
+                         python-pytest-rerunfailures))
     (home-page "https://github.com/pyca/pyopenssl")
     (synopsis "Python wrapper module around the OpenSSL library")
     (description "PyOpenSSL is a high-level wrapper around a subset of the
 OpenSSL library.")
+    (properties `((updater-extra-inputs . ("openssl"))
+                  (updater-extra-native-inputs . ("libfaketime"))))
     (license license:asl2.0)))
 
 (define-public python-ed25519

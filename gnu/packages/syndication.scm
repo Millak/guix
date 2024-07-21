@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
@@ -224,14 +224,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.34")
+    (version "2.35")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "0kj3qbm3881fkrplvgnng4747bh29a8f2hhm7a2gc1n9n0wvbmvk"))))
+        (base32 "1i5nil0lwa621ixxp1vwkic56sxsqp46pyq1xw7lrr1qrbv07w7l"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)

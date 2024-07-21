@@ -219,6 +219,7 @@ directory = '" vendor-dir "'") port)
 
   (setenv "LIBGIT2_SYS_USE_PKG_CONFIG" "1")
   (setenv "LIBSSH2_SYS_USE_PKG_CONFIG" "1")
+  (setenv "ZSTD_SYS_USE_PKG_CONFIG" "1")
   (when (assoc-ref inputs "openssl")
     (setenv "OPENSSL_DIR" (assoc-ref inputs "openssl")))
   (when (assoc-ref inputs "gettext")

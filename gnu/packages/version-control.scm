@@ -1635,7 +1635,12 @@ lot easier.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cgv7chxqkjaqmzi4691in26j2fm8r0vanw8xzb9cqnz6350wvvj"))))
+        (base32 "0cgv7chxqkjaqmzi4691in26j2fm8r0vanw8xzb9cqnz6350wvvj"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* (find-files "." "^Cargo\\.toml$")
+                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)

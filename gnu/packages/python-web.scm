@@ -65,6 +65,7 @@
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
+;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -83,6 +84,7 @@
 
 (define-module (gnu packages python-web)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
@@ -96,6 +98,8 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
@@ -122,6 +126,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages rpc)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
@@ -3441,6 +3446,46 @@ over the default provided with Python and, importantly, enables full
 verification of the SSL peer.")
     (home-page "https://github.com/cedadev/ndg_httpsclient/")
     (license license:bsd-3)))
+
+(define-public python-nh3
+  (package
+    (name "python-nh3")
+    (version "0.2.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nh3" version))
+       (sha256
+        (base32 "0a7hrca5bbbrz20cbqy16n8vaxf4v2q1r9zv9vjlbmn334d79l20"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build (assoc-ref py:%standard-phases 'build))
+          (replace 'install (assoc-ref py:%standard-phases 'install))
+          ;; cargo-build-system's %standard-phases has 'check before 'install.
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (py:add-installed-pythonpath inputs outputs)
+                (invoke "pytest" "-vv" "tests")))))
+      #:cargo-inputs
+      `(("rust-ammonia" ,rust-ammonia-4)
+        ("rust-pyo3" ,rust-pyo3-0.21))
+      #:install-source? #false))
+    (native-inputs (list maturin python-pytest python-wrapper))
+    (home-page "https://nh3.readthedocs.io")
+    (synopsis "Python bindings to Ammonia HTML sanitization library")
+    (description "This package provides Python bindings to Ammonia HTML
+sanitizer Rust crate.")
+    (license license:expat)))
 
 (define-public python-noiseprotocol
   (package

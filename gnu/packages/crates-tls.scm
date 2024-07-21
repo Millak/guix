@@ -3,7 +3,7 @@
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2021, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -424,18 +424,19 @@ Google @code{BoringSSL} project and the @code{OpenSSL} project.")
 (define-public rust-der-0.7
   (package
     (name "rust-der")
-    (version "0.7.5")
+    (version "0.7.8")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "der" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "06f2clallhpjc51s3dc7mpcw5ms3jak727qc5yrfg3ncrpzqvr85"))))
+                "070bwiyr80800h31c5zd96ckkgagfjgnrrdmz3dzg2lccsd3dypz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-bytes" ,rust-bytes-1)
         ("rust-const-oid" ,rust-const-oid-0.9)
         ("rust-der-derive" ,rust-der-derive-0.7)
         ("rust-flagset" ,rust-flagset-0.4)
@@ -523,14 +524,14 @@ targets")
 (define-public rust-der-derive-0.7
   (package
     (name "rust-der-derive")
-    (version "0.7.1")
+    (version "0.7.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "der_derive" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0cmyza28s52wfb67ymydjmvsc4m3sfp98dv9vprx6ibmdfx94iqi"))))
+                "0jg0y3k46bpygwc5cqha07axz5sdnsx5116g3nxf0rwrabj7rs2z"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -1451,18 +1452,22 @@ PEM-encodings commonly used to store keys and certificates at rest.")
 (define-public rust-rustls-pki-types-1
   (package
     (name "rust-rustls-pki-types")
-    (version "1.0.1")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-pki-types" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16rkx6gn5l2zximxy8fx9h2vzks1hfxi5z5cd9y97r0fl853wrz7"))))
+        (base32 "0banlc9xzwqrx8n0h4bd0igmq3z5hc72rn941lf22cp3gkkraqlp"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-web-time" ,rust-web-time-1))))
     (home-page "https://github.com/rustls/pki-types")
     (synopsis "Shared types for the rustls PKI ecosystem")
-    (description "Shared types for the rustls PKI ecosystem.")
+    (description
+     "This crate provides shared types for the rustls PKI ecosystem.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-rustls-webpki-0.102
@@ -1577,6 +1582,42 @@ PEM-encodings commonly used to store keys and certificates at rest.")
     (synopsis "Parser for the TLS protocol")
     (description "This package provides a Rust parser for the TLS protocol.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-x509-cert-0.2
+  (package
+    (name "rust-x509-cert")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x509-cert" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "155f42vm6m7phn8w7s2wmk9vli3ws45dqpk5z3jilw0a04syj08k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-const-oid" ,rust-const-oid-0.9)
+                       ("rust-der" ,rust-der-0.7)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-signature" ,rust-signature-2)
+                       ("rust-spki" ,rust-spki-0.7)
+                       ("rust-tls-codec" ,rust-tls-codec-0.4))
+       #:cargo-development-inputs
+       (("rust-ecdsa" ,rust-ecdsa-0.16)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-p256" ,rust-p256-0.13)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rsa" ,rust-rsa-0.9)
+        ("rust-rstest" ,rust-rstest-0.18)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/x509-cert")
+    (synopsis "X.509 Public Key Infrastructure Certificate format in Rust")
+    (description
+     "This package provides a pure Rust implementation of the X.509
+Public Key Infrastructure Certificate format as described in RFC 5280.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-x509-parser-0.15
   (package

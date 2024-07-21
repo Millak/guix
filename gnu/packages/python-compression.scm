@@ -173,11 +173,13 @@ were a single file.")
                        ("rust-zstd" ,rust-zstd-0.11))
       #:install-source? #f))
     (native-inputs (list maturin
+                         pkg-config
                          python-pytest
                          python-pytest-xdist
                          python-numpy
                          python-hypothesis
                          python-wrapper))
+    (inputs (list `(,zstd "lib")))
     (home-page "https://github.com/milesgranger/cramjam")
     (synopsis "Python bindings to compression algorithms in Rust")
     (description
