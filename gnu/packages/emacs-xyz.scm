@@ -1673,7 +1673,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-plz))
     (home-page "https://github.com/ahyatt/llm")
-    (synopsis "Emacs library abstracting Large Language Model capabilities.")
+    (synopsis "Emacs library abstracting Large Language Model capabilities")
     (description
      "This package provides interfaces to abstract various @acronym{LLM, large
 language model}s out in the world.  To respect user freedom, it will warn you
