@@ -21082,24 +21082,17 @@ as a modern file manager.")
 (define-public emacs-which-key
   (package
     (name "emacs-which-key")
-    (version "3.6.0")
+    (version "3.6.1")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/justbur/emacs-which-key")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/which-key-" version
+                           ".tar"))
        (sha256
-        (base32 "0ph5mrzz3r7x4dmy93v6affl4jznvic97a30mrs3kvhwyr2v4mby"))))
+        (base32 "0p1vl7dnd7nsvzgsff19px9yzcw4w07qb5sb8g9r8a8slgvf3vqh"))))
     (build-system emacs-build-system)
-    (arguments
-     `(#:tests? #t
-       #:test-command '("emacs" "--batch"
-                        "-l" "which-key-tests.el"
-                        "-f" "ert-run-tests-batch-and-exit")))
-    (home-page "https://github.com/justbur/emacs-which-key")
-    (synopsis "Display available key bindings in popup")
+    (home-page "https://elpa.gnu.org/packages/which-key.html")
+    (synopsis "Display available keybindings in popup")
     (description
      "@code{emacs-which-key} is a minor mode for Emacs that displays the key
 bindings following your currently entered incomplete command (a prefix) in a
