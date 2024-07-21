@@ -4232,34 +4232,6 @@ Pion}.")
      "@code{refmt} is a serialization and object-mapping library.")
     (license license:expat)))
 
-(define-public go-github-com-prometheus-client-model
-  (package
-    (name "go-github-com-prometheus-client-model")
-    (version "0.6.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/prometheus/client_model")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0g1q2szzwp4rwkvayi2mnq2nwj6hj4ja7j43vwyi1iaz6d9z505c"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/prometheus/client_model"
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; Source-only package
-         (delete 'build))))
-    (propagated-inputs
-     (list go-github-com-golang-protobuf))
-    (synopsis "Data model artifacts for Prometheus")
-    (description "This package provides data model artifacts for Prometheus.")
-    (home-page "https://github.com/prometheus/client_model")
-    (license license:asl2.0)))
-
 (define-public go-github-com-pterm-pterm
   (package
     (name "go-github-com-pterm-pterm")

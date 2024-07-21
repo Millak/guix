@@ -96,6 +96,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages prometheus)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages terminals)
