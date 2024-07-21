@@ -24794,6 +24794,46 @@ abbreviation for Extended Unique Identifier.")
     (description "This package provides evdev interface for Linux.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-evdev-rs-0.6
+  (package
+    (name "rust-evdev-rs")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "evdev-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fkdw23kjjn8an3xjpi2g74yhdfkv89ngsrkjd2cxz5n1xwxa4lq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=context_change_file"
+         "--skip=context_create_with_file"
+         "--skip=context_create_with_path"
+         "--skip=context_grab"
+         "--skip=context_set_file"
+         "--skip=device_get_absinfo"
+         "--skip=device_get_value"
+         "--skip=device_has_property"
+         "--skip=device_has_syn")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-evdev-sys" ,rust-evdev-sys-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list libevdev))
+    (home-page "https://github.com/ndesh26/evdev-rs")
+    (synopsis "Bindings to libevdev")
+    (description
+     "This package provides bindings to libevdev for interacting with evdev
+devices.  It moves the common tasks when dealing with evdev devices into
+a library and provides a library interface to the callers, thus avoiding
+erroneous ioctls, etc.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-evdev-sys-0.2
   (package
     (name "rust-evdev-sys")
