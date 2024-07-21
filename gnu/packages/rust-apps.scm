@@ -546,6 +546,46 @@ Features include:
 configuration instructions.")
     (license license:expat)))
 
+(define-public evremap
+  (let ((commit "cc618e8b973f5c6f66682d1477b3b868a768c545")) ;version bump
+    (package
+      (name "evremap")
+      (version "0.1.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wez/evremap")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "182ry573q8kjsxx2hvxk9d6clahpll1vh50zvs5g652jd6a2f038"))))
+      (build-system cargo-build-system)
+      (arguments
+       (list #:cargo-inputs `(("rust-anyhow" ,rust-anyhow-1)
+                              ("rust-clap" ,rust-clap-4)
+                              ("rust-env-logger" ,rust-env-logger-0.11)
+                              ("rust-evdev-rs" ,rust-evdev-rs-0.6)
+                              ("rust-libc" ,rust-libc-0.2)
+                              ("rust-log" ,rust-log-0.4)
+                              ("rust-serde" ,rust-serde-1)
+                              ("rust-thiserror" ,rust-thiserror-1)
+                              ("rust-toml" ,rust-toml-0.8))))
+      (native-inputs (list pkg-config))
+      (inputs (list libevdev))
+      (home-page "https://github.com/wez/evremap")
+      (synopsis "Keyboard input remappper")
+      (description
+       "Evremap is a keyboard input remapper.  It works by grabbing exclusive
+access to an input device and maintaining a model of the keys that are
+pressed.  It then applies your remapping configuration to produce the
+effective set of pressed keys and emits appropriate changes to a virtual
+output device.
+
+Its remapping is effective system-wide: in Wayland, X11 and the Linux
+console.")
+      (license license:expat))))
+
 (define-public eza
   (package
     (name "eza")
