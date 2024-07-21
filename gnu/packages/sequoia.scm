@@ -589,6 +589,10 @@ rules are rather complex.  This crate implements the whole grammar." )
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
+       #:cargo-test-flags
+       (list "--release" "--"
+             ;; The certificate has an expiration date.
+             "--skip=sq_autocrypt_import")
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-buffered-reader" ,rust-buffered-reader-1)
