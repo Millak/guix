@@ -15872,6 +15872,39 @@ purposes.  See the
 [README](https://github.com/aaronallen8455/breakpoint#breakpoint) for details.")
     (license license:expat)))
 
+(define-public ghc-brick
+  (package
+    (name "ghc-brick")
+    (version "2.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "brick" version))
+       (sha256
+        (base32 "160np0bz1mcfkp077yc936i026s3zv1czn8lj3k3qr6scldavw35"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "brick")))
+    (inputs (list ghc-vty-6
+                  ghc-vty-crossplatform
+                  ghc-bimap
+                  ghc-data-clist
+                  ghc-microlens
+                  ghc-microlens-th
+                  ghc-microlens-mtl
+                  ghc-config-ini
+                  ghc-vector
+                  ghc-text-zipper
+                  ghc-unix-compat-7
+                  ghc-word-wrap
+                  ghc-random))
+    (native-inputs (list ghc-quickcheck))
+    (home-page "https://github.com/jtdaugherty/brick/")
+    (synopsis "Declarative terminal user interface library")
+    (description
+     "Brick helps you write @dfn{terminal user interfaces} (TUIs).  You write
+an event handler and a drawing function and the library does the rest.")
+    (license license:bsd-3)))
+
 (define-public ghc-githash
   (package
     (name "ghc-githash")
