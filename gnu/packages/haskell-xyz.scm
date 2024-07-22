@@ -13430,9 +13430,31 @@ elements in a list.")
     (home-page "https://github.com/jacobstanley/unix-compat")
     (synopsis "Portable POSIX-compatibility layer")
     (description
-     "This package provides portable implementations of parts of the unix
-package.  This package re-exports the unix package when available.  When it
-isn't available, portable implementations are used.")
+     "This package provides portable implementations of parts of the
+@code{unix} package.  This package re-exports the @code{unix} package when
+available.  When it isn't available, portable implementations are used.")
+    (license license:bsd-3)))
+
+(define-public ghc-unix-compat-7
+  (package
+    (name "ghc-unix-compat")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "unix-compat" version))
+       (sha256
+        (base32 "0gz30f4g3gyjz60jbcg072ms67pwdn4by6wvdkg63hjshgl0cj60"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "unix-compat")))
+    (native-inputs (list ghc-monad-parallel ghc-hspec ghc-hunit ghc-extra
+                         ghc-temporary))
+    (home-page "https://github.com/haskell-pkg-janitors/unix-compat")
+    (synopsis "Portable POSIX-compatibility layer")
+    (description
+     "This package provides portable implementations of parts of the unix package.
+This package re-exports the unix package when available.  When it isn't
+available, portable implementations are used.")
     (license license:bsd-3)))
 
 (define-public ghc-unix-time
