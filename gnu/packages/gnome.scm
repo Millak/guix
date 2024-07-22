@@ -7226,6 +7226,11 @@ almost all of them.")
     (arguments
      (list
       #:glib-or-gtk? #t
+      #:modules '((guix build meson-build-system)
+                  (guix build utils)
+                  (guix build union))
+      #:imported-modules `((guix build union)
+                           ,@%meson-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -7255,8 +7260,9 @@ almost all of them.")
                    ", ")
                   "],")))))
           (replace 'check
-            (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+            (lambda* (#:key inputs parallel-tests? tests? #:allow-other-keys)
               (when tests?
+                ;(setenv "GALLIUM_DRIVER" "llvmpipe")
                 (setenv "XDG_RUNTIME_DIR" (string-append (getcwd)
                                                          "/runtime-dir"))
                 (mkdir (getenv "XDG_RUNTIME_DIR"))
@@ -7266,6 +7272,13 @@ almost all of them.")
                             (number->string (parallel-job-count))
                             "1"))
                 (setenv "XDG_CACHE_HOME" (getcwd))
+                ;; There are too many directories in XDG_DATA_DIRS, so
+                ;; dbus-daemon fails to start.  We work around this by
+                ;; creating a single union directory of all these directories.
+                (setenv "XDG_DATA_DIRS" "/tmp/share")
+                (union-build "/tmp/share"
+                             (search-path-as-list '("share") (map cdr inputs))
+                             #:create-all-directories? #t)
                 ;; Tests require a running X server.
                 (system "Xvfb :1 &")
                 (setenv "DISPLAY" ":1")
