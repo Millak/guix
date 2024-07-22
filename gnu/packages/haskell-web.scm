@@ -89,6 +89,36 @@ for screen-scraping.")
     (description "HTTP cookie parsing and rendering library for Haskell.")
     (license license:expat)))
 
+(define-public ghc-crypton-connection
+  (package
+    (name "ghc-crypton-connection")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "crypton-connection" version))
+       (sha256
+        (base32 "07lrkv6lwphsyp4797yp8ywnndzd270bk58r8gwyby0hr4xy52r0"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "crypton-connection")))
+    (inputs (list ghc-basement
+                  ghc-data-default-class
+                  ghc-network
+                  ghc-tls-1.9
+                  ghc-socks
+                  ghc-crypton-x509
+                  ghc-crypton-x509-store
+                  ghc-crypton-x509-system
+                  ghc-crypton-x509-validation))
+    (home-page "https://github.com/kazu-yamamoto/crypton-connection")
+    (synopsis "Simple and easy network connections API")
+    (description
+     "This package provides a simple network library for all your connection
+needs.  Features: Really simple to use, SSL/TLS, SOCKS.  This library provides
+a very simple API to create sockets to a destination with the choice of
+SSL/TLS, and SOCKS.")
+    (license license:bsd-3)))
+
 (define-public ghc-curl
   (package
     (name "ghc-curl")
