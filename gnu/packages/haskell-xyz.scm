@@ -14153,6 +14153,31 @@ one package so you don't have to conditionally depend on them in your cabal
 file.")
     (license license:bsd-3)))
 
+(define-public ghc-vty-unix
+  (package
+    (name "ghc-vty-unix")
+    (version "0.2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "vty-unix" version))
+       (sha256
+        (base32 "1hfxc7qw884vlq8qshhyndl3zs10jc2xr6i69vhasjywkvh6gay2"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "vty-unix")))
+    (inputs (list ghc-blaze-builder
+                  ghc-vty-6
+                  ghc-vector
+                  ghc-utf8-string
+                  ghc-microlens
+                  ghc-microlens-mtl
+                  ghc-microlens-th
+                  ghc-ansi-terminal))
+    (home-page "https://hackage.haskell.org/package/vty-unix")
+    (synopsis "Unix backend for Vty")
+    (description "This package provides Unix terminal support for Vty.")
+    (license license:bsd-3)))
+
 (define-public ghc-wave
   (package
     (name "ghc-wave")
