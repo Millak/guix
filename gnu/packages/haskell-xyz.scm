@@ -450,6 +450,26 @@ colored output using the ansi-terminal package.")
 style.")
     (license license:bsd-3)))
 
+(define-public ghc-aspell-pipe
+  (package
+    (name "ghc-aspell-pipe")
+    (version "0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "aspell-pipe" version))
+       (sha256
+        (base32 "09dw4v4j5pmqi8pdh3p7kk7f8pph5w33s7vd21fgvhv3arnrj6p8"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "aspell-pipe")))
+    (inputs (list ghc-async))
+    (home-page "https://hackage.haskell.org/package/aspell-pipe")
+    (synopsis "Pipe-based interface to the Aspell program")
+    (description
+     "This package provides a pipe-based interface to the Aspell program (no
+dynamic linking required).")
+    (license license:bsd-3)))
+
 (define-public ghc-assoc
   (package
     (name "ghc-assoc")
