@@ -11757,6 +11757,28 @@ features.")
 source and a sink.")
     (license license:bsd-3)))
 
+(define-public ghc-stm-delay
+  (package
+    (name "ghc-stm-delay")
+    (version "0.1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "stm-delay" version))
+       (sha256
+        (base32 "0cla21v89gcvmr1iwzibq13v1yq02xg4h6k9l6kcprj7mhd5hcmi"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "stm-delay")))
+    (home-page "https://github.com/joeyadams/haskell-stm-delay")
+    (synopsis "Updatable one-shot timer polled with STM")
+    (description
+     "This library lets you create a one-shot timer, poll it using STM, and
+update it to ring at a different time than initially specified.  It uses GHC
+event manager timeouts when available, yielding performance similar to
+@code{threadDelay} and @code{registerDelay}.  Otherwise, it falls back to
+forked threads and @code{threadDelay}.")
+    (license license:bsd-3)))
+
 (define-public ghc-stmonadtrans
   (package
     (name "ghc-stmonadtrans")
