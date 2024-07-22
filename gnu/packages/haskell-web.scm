@@ -923,6 +923,36 @@ library to allow use of the API library without testing dependencies.")
      "This library provides basic MIME type handling types and functions.")
     (license license:expat)))
 
+(define-public ghc-modern-uri
+  (package
+    (name "ghc-modern-uri")
+    (version "0.3.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "modern-uri" version))
+       (sha256
+        (base32 "1sag8l91qd7xs56rlx8r6dz9zxxmqsnfw0v47az7l8nirv7zjih2"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "modern-uri")))
+    (inputs (list ghc-quickcheck
+                  ghc-hashable
+                  ghc-megaparsec
+                  ghc-profunctors
+                  ghc-reflection
+                  ghc-tagged))
+    (native-inputs (list ghc-hspec
+                         ghc-hspec-megaparsec
+                         ghc-hspec-discover))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "0c0mr8aqs963nmy7i8yfih24snaijgwkxim2q2khw12capshac0q")))
+    (home-page "https://github.com/mrkkrp/modern-uri")
+    (synopsis "Library for working with URIs")
+    (description "This is a library for working with URIs in Haskell as
+per RFC 3986.")
+    (license license:bsd-3)))
+
 (define-public ghc-html
   (package
     (name "ghc-html")
