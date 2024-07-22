@@ -14132,6 +14132,27 @@ given term should not exist.")
 to use and to provide good support for common terminal types.")
     (license license:bsd-3)))
 
+(define-public ghc-vty-crossplatform
+  (package
+    (name "ghc-vty-crossplatform")
+    (version "0.4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "vty-crossplatform" version))
+       (sha256
+        (base32 "06iwxgqrqzz05hmic7z5hxd48x0i49sk935vm0xfi0xq28sl7r9m"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "vty-crossplatform")))
+    (inputs (list ghc-vty-6 ghc-vty-unix ghc-random ghc-string-qq))
+    (home-page "https://hackage.haskell.org/package/vty-crossplatform")
+    (synopsis "Cross-platform support for Vty")
+    (description
+     "This package provides a generic interface for multiple Vty platforms in
+one package so you don't have to conditionally depend on them in your cabal
+file.")
+    (license license:bsd-3)))
+
 (define-public ghc-wave
   (package
     (name "ghc-wave")
