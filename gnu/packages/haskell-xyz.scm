@@ -1830,6 +1830,31 @@ linear performance.  Output is sanitized by default for protection against
 cross-site scripting (@dfn{XSS}) attacks.")
     (license license:bsd-3)))
 
+(define-public ghc-checkers
+  (package
+    (name "ghc-checkers")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "checkers" version))
+       (sha256
+        (base32 "1r4rsa4k0fy8xig3m530ryflry9viv9v47g4gh7h0ld27rbd6z60"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "checkers")))
+    (inputs (list ghc-random ghc-quickcheck ghc-semigroupoids))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "0wkvf57zd7i87z18vj285whjpcl9pscpwxz2cp7v7w6kk0769p0i")))
+    (home-page "https://github.com/haskell-checkers/checkers")
+    (synopsis "Check properties on standard classes and data structures")
+    (description
+     "Checkers wraps up the expected properties associated with various
+standard type classes as @code{QuickCheck} properties.  It also provides some
+morphism properties, arbitrary instances, and generator combinators for common
+data types.")
+    (license license:bsd-3)))
+
 (define-public ghc-chell
   (package
     (name "ghc-chell")
