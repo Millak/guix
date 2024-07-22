@@ -844,6 +844,46 @@ attacks.")
 Haskell.")
     (license license:bsd-3)))
 
+(define-public ghc-mattermost-api
+  (package
+    (name "ghc-mattermost-api")
+    (version "90000.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "mattermost-api" version))
+       (sha256
+        (base32 "1ka3r4bnfwlbjnkws8vkg8i9gj8wzsyss137p7hxrx4sr75s6iyv"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "mattermost-api")))
+    (inputs (list ghc-websockets
+                  ghc-aeson
+                  ghc-crypton-connection
+                  ghc-memory
+                  ghc-resource-pool
+                  ghc-http
+                  ghc-http-media
+                  ghc-network-uri
+                  ghc-modern-uri
+                  ghc-unordered-containers
+                  ghc-hashable
+                  ghc-gitrev
+                  ghc-microlens
+                  ghc-microlens-th
+                  ghc-pretty-show
+                  ghc-split
+                  ghc-connection))
+    (native-inputs (list ghc-tasty ghc-tasty-hunit ghc-hunit))
+    (arguments
+     (list #:tests? #f)) ;tests require networking and Mattermost Docker image
+    (home-page "https://hackage.haskell.org/package/mattermost-api")
+    (synopsis "Client API for Mattermost chat system")
+    (description
+     "This package implements the client API for the Mattermost chat system.
+Mattermost is a flexible messaging platform.  This library provides network
+API interaction with the Mattermost server.")
+    (license license:bsd-3)))
+
 (define-public ghc-mime-types
   (package
     (name "ghc-mime-types")
