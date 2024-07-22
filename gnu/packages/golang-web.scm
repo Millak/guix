@@ -2024,6 +2024,35 @@ used to read GeoLite2 and GeoIP2 databases, @code{geoip2} provides a
 higher-level API for doing so.")
     (license license:isc)))
 
+(define-public go-github-com-pion-datachannel
+  (package
+    (name "go-github-com-pion-datachannel")
+    (version "1.5.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/datachannel")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v2xwrzvflrh1s8x6p1dj9h0hmxsp30h8whbl5p544r30rvsbnp2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pion/datachannel"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pion-logging
+           go-github-com-pion-sctp
+           go-github-com-pion-transport-v3))
+    (home-page "https://github.com/pion/datachannel")
+    (synopsis "Implementation of WebRTC Data Channels in Golang")
+    (description
+     "This package implements @code{WebRTC} Data Channels.")
+    (license license:expat)))
+
 (define-public go-github-com-pion-dtls
   (package
     (name "go-github-com-pion-dtls")
