@@ -648,6 +648,37 @@ abstraction for CPRNGs.")
 @end itemize")
     (license license:bsd-3)))
 
+(define-public ghc-crypton-x509
+  (package
+    (name "ghc-crypton-x509")
+    (version "1.7.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "crypton-x509" version))
+       (sha256
+        (base32 "1zyaz0krf08g36g30zr5wn8f2x51l4dj2zcjnhpiw9h05p54mdzb"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "crypton-x509")))
+    (inputs (list ghc-memory
+                  ghc-hourglass
+                  ghc-pem
+                  ghc-asn1-types
+                  ghc-asn1-encoding
+                  ghc-asn1-parse
+                  ghc-crypton))
+    (native-inputs (list ghc-tasty ghc-tasty-quickcheck ghc-x509))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "10a2x47znhbayyfr6fqgq27623akpycyjbfxz4hnavavf1x6ary5")
+       ;; build phase fails when tests are activated.
+       ;; See https://github.com/kazu-yamamoto/crypton-certificate/pull/7
+       #:tests? #f))
+    (home-page "https://github.com/kazu-yamamoto/crypton-certificate")
+    (synopsis "X509 reader and writer")
+    (description "This package provides generic X509 support for Haskell.")
+    (license license:bsd-3)))
+
 (define-public ghc-cprng-aes
   (package
     (name "ghc-cprng-aes")
