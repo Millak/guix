@@ -8519,13 +8519,13 @@ plus the length of the UTF-8 encoded payload.")
 (define-public ghc-text-zipper
   (package
     (name "ghc-text-zipper")
-    (version "0.12")
+    (version "0.13")
     (source (origin
               (method url-fetch)
               (uri (hackage-uri "text-zipper" version))
               (sha256
                (base32
-                "00k7d6qfznhp6l2ihw3pppkn580pwd7ac7wx9vidil4y9hjagaw6"))))
+                "1acq583wmgb53viqslbkgl454300fawg5lryxddfiy1mqk3iqlh6"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "text-zipper")))
     (inputs (list ghc-vector))
