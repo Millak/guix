@@ -612,6 +612,42 @@ AES-NI available, or you'll need to use a different implementation.")
 abstraction for CPRNGs.")
     (license license:bsd-3)))
 
+(define-public ghc-crypton
+  (package
+    (name "ghc-crypton")
+    (version "0.34")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "crypton" version))
+       (sha256
+        (base32 "1mhypjhzn95in853bp7ary0a2xc6lsji6j8hrrgn2mfa4ilq8i24"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "crypton")))
+    (inputs (list ghc-memory ghc-basement))
+    (native-inputs (list ghc-tasty ghc-tasty-quickcheck ghc-tasty-hunit
+                         ghc-tasty-kat))
+    (home-page "https://github.com/kazu-yamamoto/crypton")
+    (synopsis "Cryptography Primitives sink")
+    (description
+     "This package provides a repository of cryptographic primitives.
+
+@itemize @bullet
+@item Symmetric ciphers: AES, DES, 3DES, CAST5, Blowfish, Twofish, Camellia,
+  RC4, Salsa, XSalsa, ChaCha.
+@item Hash: SHA1, SHA2, SHA3, SHAKE, MD2, MD4, MD5, Keccak, Skein, Ripemd,
+ Tiger, Whirlpool, Blake2.
+@item MAC: HMAC, KMAC, Poly1305
+@item Asymmetric crypto: DSA, RSA, DH, ECDH, ECDSA, ECC, Curve25519, Curve448,
+  Ed25519, Ed448
+@item Key Derivation Function: PBKDF2, Scrypt, HKDF, Argon2, BCrypt,
+  BCryptPBKDF
+@item Cryptographic Random generation: System Entropy, Deterministic Random
+  Generator
+@item Data related: Anti-Forensic Information Splitter (AFIS)
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public ghc-cprng-aes
   (package
     (name "ghc-cprng-aes")
