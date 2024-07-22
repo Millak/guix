@@ -884,16 +884,16 @@ extensions.")
                   ghc-unix-time
                   ghc-network))
     (native-inputs (list ghc-tasty ghc-tasty-quickcheck ghc-quickcheck))
-    (home-page "http://github.com/vincenthz/hs-tls")
-    (synopsis "TLS/SSL protocol native implementation (Server and Client)")
+    (home-page "https://github.com/haskell-tls/hs-tls")
+    (synopsis "TLS/SSL protocol native implementation (server and client)")
     (description
-     "Native Haskell TLS and SSL protocol implementation for server and client.
-This provides a high-level implementation of a sensitive security protocol,
-eliminating a common set of security issues through the use of the advanced
-type system, high level constructions and common Haskell features.  Currently
-implement the SSL3.0, TLS1.0, TLS1.1 and TLS1.2 protocol, and support RSA and
-Ephemeral (Elliptic curve and regular) Diffie Hellman key exchanges, and many
-extensions.")
+     "This package provides a native Haskell TLS and SSL protocol
+implementation for server and client.  It provides a high-level implementation
+of a sensitive security protocol, eliminating a common set of security issues
+through the use of the advanced type system, high level constructions and
+common Haskell features.  It currently implements the SSL3.0, TLS1.0, TLS1.1
+and TLS1.2 protocol, and supports RSA and Ephemeral (Elliptic curve and
+regular) Diffie Hellman key exchanges, and many extensions.")
     (license license:bsd-3)))
 
 (define-public ghc-hsopenssl

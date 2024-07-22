@@ -37,6 +37,7 @@
 
 (define-module (gnu packages haskell-apps)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
@@ -681,6 +682,98 @@ and conditional mappings that send a different keycode when tapped or held.
 By operating at a lower level than most similar tools, it supports X11,
 Wayland, and Linux console environments alike.")
       (license license:expat))))
+
+(define-public matterhorn
+  (package
+    (name "matterhorn")
+    (version "90000.0.0")
+    (source
+     (origin
+       ;; use git repo instead of hackage URL because the hackage tarball
+       ;; doesn't contain the sample config file
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matterhorn-chat/matterhorn")
+             (commit version)))
+       (sha256
+        (base32 "08ng5axranilvfl9j3v0mjgpg76kzacrqj4c8x6pblpc3yxx02i5"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "matterhorn")))
+    (inputs (list ghc-aeson
+                  ghc-aspell-pipe
+                  ghc-async
+                  ghc-base-compat
+                  ghc-bimap
+                  ghc-brick
+                  ghc-brick-skylighting
+                  ghc-commonmark
+                  ghc-commonmark-extensions
+                  ghc-config-ini
+                  ghc-crypton-connection
+                  ghc-data-clist
+                  ghc-gitrev
+                  ghc-hashable
+                  ghc-hclip
+                  ghc-mattermost-api
+                  ghc-microlens-platform
+                  ghc-network-uri
+                  ghc-random
+                  ghc-semigroups
+                  ghc-skylighting-core
+                  ghc-split
+                  ghc-stm-delay
+                  ghc-strict
+                  ghc-temporary
+                  ghc-text-zipper
+                  ghc-timezone-olson
+                  ghc-timezone-series
+                  ghc-unix-compat-7
+                  ghc-unordered-containers
+                  ghc-utf8-string
+                  ghc-uuid
+                  ghc-vector
+                  ghc-vty-6
+                  ghc-vty-crossplatform
+                  ghc-word-wrap
+                  ghc-xdg-basedir))
+    (native-inputs (list ghc-checkers
+                         ghc-mattermost-api-qc
+                         ghc-tasty
+                         ghc-tasty-hunit
+                         ghc-tasty-quickcheck
+                         ghc-unique))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-requirements
+            (lambda _
+              (for-each (lambda (dep)
+                          (substitute* "matterhorn.cabal"
+                            (((string-append "(,\\s" dep
+                                             "\\s*>=\\s[0-9].[0-9]).*")
+                              all pat)
+                             pat)))
+                        (list "random"
+                              "data-clist"
+                              "semigroups"
+                              "word-wrap"
+                              "unix-compat"
+                              "skylighting-core"
+                              "checkers"
+                              "vty"
+                              "vty-crossplatform"
+                              "brick"))))
+          (add-after 'install 'install-config-file
+            (lambda _
+              (install-file "./docs/sample-config.ini"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version "/etc/")))))))
+    (home-page "https://hackage.haskell.org/package/matterhorn")
+    (synopsis "Terminal client for the Mattermost chat system")
+    (description
+     "This is a terminal client for the Mattermost chat system.")
+    (license license:bsd-3)))
 
 (define-public nixfmt
   (package
