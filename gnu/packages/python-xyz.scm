@@ -19254,16 +19254,19 @@ templates into Python modules.")
 (define-public python-waitress
   (package
     (name "python-waitress")
-    (version "1.1.0")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "waitress" version))
-       (patches (search-patches "python-waitress-fix-tests.patch"))
        (sha256
         (base32
-         "1a85gyji0kajc3p0s1pwwfm06w4wfxjkvvl4rnrz3h164kbd6g6k"))))
-    (build-system python-build-system)
+         "18dq4bibsv6cfhv6a3b16w2xwycxqkkiwbb0vpcwsd21n1ws8p80"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; https://github.com/Pylons/waitress/issues/443
+     (list #:test-flags #~(list "-k" "not test_service_port")))
+    (native-inputs (list python-pytest python-pytest-cov))
     (home-page "https://github.com/Pylons/waitress")
     (synopsis "Waitress WSGI server")
     (description "Waitress is meant to be a production-quality pure-Python WSGI
