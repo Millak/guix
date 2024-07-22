@@ -722,6 +722,34 @@ lists.")
 storage methods, and accessors.")
     (license license:bsd-3)))
 
+(define-public ghc-crypton-x509-validation
+  (package
+    (name "ghc-crypton-x509-validation")
+    (version "1.6.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "crypton-x509-validation" version))
+       (sha256
+        (base32 "1xjhwvmkcy47a6xiqxb3xy944ca7g660203jdrz5xzd46zibfq0f"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "crypton-x509-validation")))
+    (inputs (list ghc-memory
+                  ghc-hourglass
+                  ghc-data-default-class
+                  ghc-pem
+                  ghc-asn1-types
+                  ghc-asn1-encoding
+                  ghc-crypton-x509
+                  ghc-crypton-x509-store
+                  ghc-crypton))
+    (native-inputs (list ghc-tasty ghc-tasty-hunit))
+    (home-page "https://github.com/kazu-yamamoto/crypton-certificate")
+    (synopsis "X.509 Certificate and CRL validation")
+    (description "This package provides Haskell tools for X.509 certificate
+and @dfn{Certificates revocation list} (CRL) validation.")
+    (license license:bsd-3)))
+
 (define-public ghc-cprng-aes
   (package
     (name "ghc-cprng-aes")
