@@ -15140,6 +15140,28 @@ footnotes, math, and more.")
 Pandoc types.")
     (license license:bsd-3)))
 
+(define-public ghc-hclip
+  (package
+    (name "ghc-hclip")
+    (version "3.0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "Hclip" version))
+       (sha256
+        (base32 "04ppwm7vfzndrys8x1n8vfb41vzwx59r9xp4dkbiqmrms390pj6q"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "Hclip")))
+    (inputs (list ghc-strict))
+    (home-page "https://github.com/jetho/Hclip")
+    (synopsis
+     "Small cross-platform library for reading and modifying the system clipboard")
+    (description
+     "This package provides a small cross-platform library for reading and
+modifying the system clipboard.  It uses @code{xclip} or @code{xsel}
+at runtime.")
+    (license license:bsd-3)))
+
 (define-public ghc-hslua-module-path
   (package
     (name "ghc-hslua-module-path")
