@@ -123,6 +123,7 @@
   #:use-module (gnu packages bittorrent)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cdrom)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -3176,7 +3177,7 @@ YouTube.com and many more sites.")
        (if (supported-package? pandoc)
          (list pandoc)
          '())
-       (list python-hatchling python-pytest zip)))
+       (list nss-certs-for-test python-hatchling python-pytest zip)))
     (synopsis "Download videos from YouTube.com and other sites")
     (description
      "yt-dlp is a small command-line program to download videos from
