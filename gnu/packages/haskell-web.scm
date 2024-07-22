@@ -884,6 +884,27 @@ Mattermost is a flexible messaging platform.  This library provides network
 API interaction with the Mattermost server.")
     (license license:bsd-3)))
 
+(define-public ghc-mattermost-api-qc
+  (package
+    (name "ghc-mattermost-api-qc")
+    (version "90000.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "mattermost-api-qc" version))
+       (sha256
+        (base32 "0lrb8l8nbrdp4y2ala8hchr8ikv5hqw710ffiiw1sz6z2dqiqbxm"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "mattermost-api-qc")))
+    (inputs (list ghc-mattermost-api ghc-quickcheck))
+    (home-page "https://github.com/matterhorn-chat/mattermost-api-qc")
+    (synopsis "QuickCheck instances for the Mattermost client API library")
+    (description
+     "This package provides a library providing @code{QuickCheck} for the
+mattermost-api library to allow testing.  This is provided as a separate
+library to allow use of the API library without testing dependencies.")
+    (license license:isc)))
+
 (define-public ghc-mime-types
   (package
     (name "ghc-mime-types")
