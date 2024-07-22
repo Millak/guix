@@ -859,6 +859,43 @@ Ephemeral (Elliptic curve and regular) Diffie Hellman key exchanges, and many
 extensions.")
     (license license:bsd-3)))
 
+(define-public ghc-tls-1.9
+  (package
+    (name "ghc-tls")
+    (version "1.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "tls" version))
+       (sha256
+        (base32 "0gj3af9sqd0bw7dpcqfyvbslpxsk2ij00a77kl710fwhw35vj1an"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "tls")))
+    (inputs (list ghc-cereal
+                  ghc-data-default-class
+                  ghc-memory
+                  ghc-crypton
+                  ghc-asn1-types
+                  ghc-asn1-encoding
+                  ghc-crypton-x509
+                  ghc-crypton-x509-store
+                  ghc-crypton-x509-validation
+                  ghc-async
+                  ghc-unix-time
+                  ghc-network))
+    (native-inputs (list ghc-tasty ghc-tasty-quickcheck ghc-quickcheck))
+    (home-page "http://github.com/vincenthz/hs-tls")
+    (synopsis "TLS/SSL protocol native implementation (Server and Client)")
+    (description
+     "Native Haskell TLS and SSL protocol implementation for server and client.
+This provides a high-level implementation of a sensitive security protocol,
+eliminating a common set of security issues through the use of the advanced
+type system, high level constructions and common Haskell features.  Currently
+implement the SSL3.0, TLS1.0, TLS1.1 and TLS1.2 protocol, and support RSA and
+Ephemeral (Elliptic curve and regular) Diffie Hellman key exchanges, and many
+extensions.")
+    (license license:bsd-3)))
+
 (define-public ghc-hsopenssl
   (package
     (name "ghc-hsopenssl")
