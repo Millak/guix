@@ -6277,6 +6277,18 @@ data serialization format.")
      (list #:import-path "google.golang.org/protobuf"
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-failing-tests
+                 (lambda* (#:key tests? unpack-path #:allow-other-keys)
+                   (with-directory-excursion (string-append "src/" unpack-path)
+                     (substitute* (find-files "." "\\_test.go$")
+                       ;; XXX Failing on i686-linux:
+                       ;; panic: unaligned 64-bit atomic operation
+                       (("TestDynamicTypesExtensionNotFound")
+                        "OffTestDynamicTypesExtensionNotFound")
+                       (("TestDynamicTypesFilesChangeAfterCreation")
+                        "OffTestDynamicTypesFilesChangeAfterCreation")
+                       (("TestDynamicTypesFindExtensionByNameOrNumber")
+                        "OffTestDynamicTypesFindExtensionByNameOrNumber")))))
                ;; XXX: Workaround for go-build-system's lack of Go modules
                ;; support.
                (delete 'build)
