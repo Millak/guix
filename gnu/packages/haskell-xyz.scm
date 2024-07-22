@@ -972,6 +972,27 @@ storing and transmitting loosely structured data.")
     (description "This package provides bifunctors for Haskell.")
     (license license:bsd-3)))
 
+(define-public ghc-bimap
+  (package
+    (name "ghc-bimap")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "bimap" version))
+       (sha256
+        (base32 "158cdwk9jwklcfgbn62dqq255i40w13ifggsdps87sxc5q7lpd5h"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "bimap")))
+    (native-inputs (list ghc-quickcheck))
+    (home-page "https://github.com/joelwilliamson/bimap")
+    (synopsis "Bidirectional mapping between two key types")
+    (description
+     "This package provides a data structure representing a bidirectional
+mapping between two key types.  Each value in the bimap is associated with
+exactly one value of the opposite type.")
+    (license license:bsd-3)))
+
 (define-public ghc-bindings-dsl
   (package
     (name "ghc-bindings-dsl")
