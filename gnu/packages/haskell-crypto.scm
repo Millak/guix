@@ -702,6 +702,26 @@ collections of certificates, certificate revocation lists, and exception
 lists.")
     (license license:bsd-3)))
 
+(define-public ghc-crypton-x509-system
+  (package
+    (name "ghc-crypton-x509-system")
+    (version "1.6.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "crypton-x509-system" version))
+       (sha256
+        (base32 "1jilnr9715njlx1hqvg5lrsrwk12r04maypmh18di0sybwg2cdm4"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "crypton-x509-system")))
+    (inputs (list ghc-pem ghc-crypton-x509 ghc-crypton-x509-store))
+    (home-page "https://github.com/kazu-yamamoto/crypton-certificate")
+    (synopsis "Handle per-operating-system X.509 accessors and storage")
+    (description
+     "This package provides tools for operating system dependent X.509 stores,
+storage methods, and accessors.")
+    (license license:bsd-3)))
+
 (define-public ghc-cprng-aes
   (package
     (name "ghc-cprng-aes")
