@@ -1,0 +1,110 @@
+From b5e9f017bab8fad05cac47f2ac75841dc37c7f34 Mon Sep 17 00:00:00 2001
+From: Yura Lazarev <Unisay@users.noreply.github.com>
+Date: Wed, 14 Sep 2022 07:04:41 +0000
+Subject: [PATCH] Support hashable >=^ 1.4, improve unit tests.
+
+---
+ Unique.cabal                             | 2 +-
+ tests/UniqueStrict/RepeatedBy.hs         | 4 ++--
+ tests/UniqueUnsorted/RemoveDuplicates.hs | 6 +++---
+ tests/UniqueUnsorted/RepeatedBy.hs       | 8 ++++----
+ 4 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/Unique.cabal b/Unique.cabal
+index 1c03188..45dbbed 100644
+--- a/Unique.cabal
++++ b/Unique.cabal
+@@ -29,7 +29,7 @@ library
+         base >=4.0 && < 5,
+         containers >=0.5.0.0 && <=0.7,
+         extra >=1.6.2 && <=1.8,
+-        hashable >= 1.2.6 && <=1.4,
++        hashable >= 1.2.6 && < 1.5,
+         unordered-containers >= 0.2.8 && <=0.3
+ 
+ test-suite HspecTest
+diff --git a/tests/UniqueStrict/RepeatedBy.hs b/tests/UniqueStrict/RepeatedBy.hs
+index 11eb180..04d8706 100644
+--- a/tests/UniqueStrict/RepeatedBy.hs
++++ b/tests/UniqueStrict/RepeatedBy.hs
+@@ -15,7 +15,7 @@ repeatedByTests =
+     repeatedBy (>100) ( [] :: [Int] ) `shouldBe` []
+ 
+   it "repeatedBy: simple test" $ do
+-    repeatedBy (>2) "This is the test line" `shouldBe` " eist"
++    sort (repeatedBy (>2) "This is the test line") `shouldBe` " eist"
+ 
+   it "repeatedBy: returns [] when predicate (=< negative) " $
+     property $
+@@ -39,7 +39,7 @@ repeatedByTests =
+   it "repeatedBy: resulted elements should occur only once" $
+     property $
+     \ x xs -> x > 0
+-              ==> all (==1) . map length . group $ repeatedBy (> x) ( xs :: String )
++              ==> all ((==1) . length) . group $ repeatedBy (> x) ( xs :: String )
+ 
+   it "unique: simple test" $ do
+     unique  "foo bar" `shouldBe` " abfr"
+diff --git a/tests/UniqueUnsorted/RemoveDuplicates.hs b/tests/UniqueUnsorted/RemoveDuplicates.hs
+index 19b4e5f..93861c5 100644
+--- a/tests/UniqueUnsorted/RemoveDuplicates.hs
++++ b/tests/UniqueUnsorted/RemoveDuplicates.hs
+@@ -4,7 +4,7 @@ import Test.Hspec
+ import Test.QuickCheck
+ 
+ import Data.List.UniqueUnsorted
+-import Data.List (group)
++import Data.List (group, sort)
+ 
+ 
+ removeDuplicatesTests :: SpecWith ()
+@@ -15,7 +15,7 @@ removeDuplicatesTests =
+     removeDuplicates ( [] :: [Int] ) `shouldBe` []
+ 
+   it "removeDuplicates: simple test" $ do
+-    removeDuplicates "foo bar" `shouldBe` " abrfo"
++    sort (removeDuplicates "foo bar") `shouldBe` " abfor"
+ 
+   it "removeDuplicates: multiple execution should return the same result" $
+     property $
+@@ -27,4 +27,4 @@ removeDuplicatesTests =
+ 
+   it "removeDuplicates: elements should occur only once #2" $
+     property $
+-    \ xs -> all (==1) . map length . group $ removeDuplicates ( xs :: [Integer] )
++    \ xs -> all ((==1) . length) . group $ removeDuplicates ( xs :: [Integer] )
+diff --git a/tests/UniqueUnsorted/RepeatedBy.hs b/tests/UniqueUnsorted/RepeatedBy.hs
+index 54e3930..5550489 100644
+--- a/tests/UniqueUnsorted/RepeatedBy.hs
++++ b/tests/UniqueUnsorted/RepeatedBy.hs
+@@ -4,7 +4,7 @@ import Test.Hspec
+ import Test.QuickCheck
+ 
+ import Data.List.UniqueUnsorted
+-import Data.List (group)
++import Data.List (group, sort)
+ 
+ 
+ repeatedByTests :: SpecWith ()
+@@ -15,7 +15,7 @@ repeatedByTests =
+     repeatedBy (>100) ( [] :: [Int] ) `shouldBe` []
+ 
+   it "repeatedBy: simple test" $ do
+-    repeatedBy (>2) "This is the test line" `shouldBe` " stei"
++    sort (repeatedBy (>2) "This is the test line") `shouldBe` " eist"
+ 
+   it "repeatedBy: returns [] when predicate (=< negative) " $
+     property $
+@@ -29,10 +29,10 @@ repeatedByTests =
+   it "repeatedBy: resulted elements should occur only once" $
+     property $
+     \ x xs -> x > 0
+-              ==> all (==1) . map length . group $ repeatedBy (> x) ( xs :: String )
++              ==> all ((==1) . length) . group $ repeatedBy (> x) ( xs :: String )
+ 
+   it "unique: simple test" $ do
+-    unique  "foo bar" `shouldBe` " abrf"
++    sort (unique  "foo bar") `shouldBe` " abfr"
+ 
+   it "repeated: simple test" $ do
+     repeated  "foo bar" `shouldBe` "o"
