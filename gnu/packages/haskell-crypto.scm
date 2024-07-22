@@ -679,6 +679,29 @@ abstraction for CPRNGs.")
     (description "This package provides generic X509 support for Haskell.")
     (license license:bsd-3)))
 
+(define-public ghc-crypton-x509-store
+  (package
+    (name "ghc-crypton-x509-store")
+    (version "1.6.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "crypton-x509-store" version))
+       (sha256
+        (base32 "0vr5b9cyf9x016wn1g0bryslf5nz8jq2sy8r3llwqfg02apihqiy"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "crypton-x509-store")))
+    (inputs (list ghc-pem ghc-asn1-types ghc-asn1-encoding ghc-crypton
+                  ghc-crypton-x509))
+    (native-inputs (list ghc-tasty ghc-tasty-hunit))
+    (home-page "https://github.com/kazu-yamamoto/crypton-certificate")
+    (synopsis "X.509 collection accessing and storing methods")
+    (description
+     "This package provides methods for accessing and storing X.509
+collections of certificates, certificate revocation lists, and exception
+lists.")
+    (license license:bsd-3)))
+
 (define-public ghc-cprng-aes
   (package
     (name "ghc-cprng-aes")
