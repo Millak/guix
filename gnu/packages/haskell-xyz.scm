@@ -15905,6 +15905,26 @@ purposes.  See the
 an event handler and a drawing function and the library does the rest.")
     (license license:bsd-3)))
 
+(define-public ghc-brick-skylighting
+  (package
+    (name "ghc-brick-skylighting")
+    (version "1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "brick-skylighting" version))
+       (sha256
+        (base32 "1nw2x9zn0jlvykm89v80fh4187bxgn8l4cljgnf4mp4ci7aqjmkr"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "brick-skylighting")))
+    (inputs (list ghc-brick ghc-vty-6 ghc-skylighting-core))
+    (home-page "https://github.com/jtdaugherty/brick-skylighting/")
+    (synopsis "Show syntax-highlighted text in your Brick UI")
+    (description
+     "This package provides a module to use Skylighting to perform syntax
+highlighting and display the results in Brick-based interfaces.")
+    (license license:bsd-3)))
+
 (define-public ghc-githash
   (package
     (name "ghc-githash")
