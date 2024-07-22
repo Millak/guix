@@ -7563,6 +7563,28 @@ that are much lighter weight than IO-threads.")
 and other added capabilities layered on top of the @code{Par} monad.")
     (license license:bsd-3)))
 
+(define-public ghc-monad-parallel
+  (package
+    (name "ghc-monad-parallel")
+    (version "0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "monad-parallel" version))
+       (sha256
+        (base32 "1j905cwc440g7rvbhsdkqf50ag7p2bi6cy2rqsk918rn80fqqra4"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "monad-parallel")))
+    (inputs (list ghc-parallel ghc-transformers-compat))
+    (home-page "https://hub.darcs.net/blamario/SCC.wiki/")
+    (synopsis "Parallel execution of monadic computations")
+    (description
+     "This package defines classes of monads that can perform multiple
+executions in parallel and combine their results.  For any monad that's an
+instance of the class, the package re-implements a subset of the
+@code{Control.Monad} interface, but with parallel execution.")
+    (license license:bsd-3)))
+
 (define-public ghc-monadrandom
   (package
     (name "ghc-monadrandom")
