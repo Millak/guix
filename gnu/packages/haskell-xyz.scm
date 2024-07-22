@@ -14132,6 +14132,21 @@ given term should not exist.")
 to use and to provide good support for common terminal types.")
     (license license:bsd-3)))
 
+(define-public ghc-vty-6
+  (package
+    (inherit ghc-vty)
+    (name "ghc-vty")
+    (version "6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "vty" version))
+       (sha256
+        (base32 "0ywqfdngfv5pnsk5pa99yizpbhdq856sy3z70q2hmpmlc2r4h7vg"))))
+    (properties '((upstream-name . "vty")))
+    (inputs (list ghc-blaze-builder ghc-microlens ghc-microlens-mtl
+                  ghc-utf8-string ghc-vector))))
+
 (define-public ghc-vty-crossplatform
   (package
     (name "ghc-vty-crossplatform")
