@@ -106,6 +106,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
@@ -2825,6 +2826,65 @@ compatible with the XAPI toolstack as currently used in XCP-ng and Citrix
 Hypervisor/Xenserver, and thus roughly follow what @code{xe-guest-utilities}
 is doing.")
     (license license:agpl3)))
+
+(define-public xe-guest-utilities
+  (package
+    (name "xe-guest-utilities")
+    (version "8.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xenserver/xe-guest-utilities")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yqspizhq3ii6cz2w75slaxy8838yyri9pmgc2q1radnm7w735if"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xenserver/xe-guest-utilities"
+      #:install-source? #f
+      #:tests? #f ; There are no tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Despite using go-build-system, this project does not use Go's build
+          ;; infrastructure to do anything, instead relying on a Makefile.
+          ;; NOTE: This target builds a tarball, but it is only filled with
+          ;; 2 binaries, 1 script, and a bunch of text files; it is tiny.
+          (add-after 'patch-source-shebangs 'fix-udev-rule
+            (lambda* (#:key inputs import-path #:allow-other-keys)
+              (substitute* (string-append "src/" import-path "/mk/xen-vcpu-hotplug.rules")
+                (("/bin/sh") (search-input-file inputs "/bin/sh")))))
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Explicitly state version, removes git as native-input.
+                ;; NOTE: The final step of the Makefile's build target is to "cd"
+                ;; to the final build directory.
+                (invoke "make" (string-append "RELEASE=" #$version) "build"))))
+          ;; The default "install" actions produce package-manager-specific
+          ;; outputs, .deb, .rpm, and .tgz. We just copy the final build
+          ;; products out.
+          (replace 'install
+            (lambda* (#:key outputs import-path #:allow-other-keys)
+              (let* ((stage (string-append "src/" import-path "/build/stage"))
+                     (out (assoc-ref outputs "out")))
+                ;; Put udev rules in #$output/lib/udev/rules.d/
+                (copy-recursively (string-append stage "/etc/udev")
+                                  (string-append out "/lib/udev"))
+                ;; Copy produced binaries and scripts
+                (copy-recursively (string-append stage "/usr") out)))))))
+    (native-inputs (list go-golang-org-x-sys))
+    (inputs (list bash-minimal))
+    (home-page "https://github.com/xenserver/xe-guest-utilities")
+    (synopsis "XenServer guest utilities for unix-like operating systems")
+    (description "The XenServer guest utilities enable a Xen-based hypervisor,
+(Citrix XenServer, XCP-NG, etc.) to work with a Xen-enabled Unix-like guest VMs.
+This allows the guest to share information about its state back to the host,
+such IP address, memory usage, etc. and allows the host to inform the guest VM
+about events that change the virtualized hardware, such as hotplugging.")
+    (license license:bsd-2)))
 
 (define-public osinfo-db-tools
   (package
