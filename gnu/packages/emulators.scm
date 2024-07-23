@@ -687,20 +687,20 @@ V2.")
         (base32 "0ciqr3dlf1b3r8jncy9k9cihiclai8v28r9pb1vsw4k2nr5bjzny"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list
-        ;; "--with-external-mpcdec"
-        "--with-external-lzo")))
+     (list #:configure-flags
+           #~(list
+              ;; "--with-external-mpcdec"
+              "--with-external-lzo")))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("alsa" ,alsa-lib)
-       ("flac" ,flac)
-       ;; ("libmpcdec" ,libmpcdec) FIXME: not recognized.
-       ("libsndfile" ,libsndfile)
-       ("lzo" ,lzo)
-       ("sdl2" ,sdl2)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           flac
+           ;; libmpcdec ;FIXME: not recognized.
+           libsndfile
+           lzo
+           sdl2
+           zlib))
     (home-page "https://mednafen.github.io/")
     (synopsis "Multi-system emulator utilizing OpenGL and SDL")
     (description
