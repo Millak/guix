@@ -840,14 +840,14 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.23.11")
+    (version "1.24.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
                            "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32 "1kv44zqijkvljc9fcqmgb8zqkj7hmasga70fsz98aimmrfc2rmyv"))
+        (base32 "0hydmp8sdnkrkpqyysa6klkxbwv9awf1xc753r27gcj7ds7375fj"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
@@ -899,6 +899,7 @@ and based on PDF specification 1.7.")
               "USE_SYSTEM_CURL=yes"
               "USE_SYSTEM_LEPTONICA=yes"
               "USE_SYSTEM_TESSERACT=yes"
+              "USE_SONAME=no"           ;install as libmupdf.so
               "shared=yes"
               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
               (string-append "prefix=" #$output))
