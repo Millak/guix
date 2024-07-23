@@ -675,7 +675,7 @@ by using the @code{mupdf} rendering library.")
 (define-public zathura-pdf-poppler
   (package
     (name "zathura-pdf-poppler")
-    (version "0.3.1")
+    (version "0.3.2")
     (source (origin
               (method url-fetch)
               (uri
@@ -683,24 +683,15 @@ by using the @code{mupdf} rendering library.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "12qhkshpp1wjfpjmjccsyi6wscqyqvaa19j85prjpyf65i9jg0gf"))))
+                "049h8m9swxni7ar6fsbm0hb3fg4ffmjc3m6vyg78ilfi3kayxavi"))))
     (native-inputs (list pkg-config))
     (inputs
      (list poppler zathura))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; package does not include tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-plugin-directory
-           ;; Something of a regression in 0.2.9: the new Meson build system
-           ;; now hard-codes an incorrect plugin directory.  Fix it.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "meson.build"
-               (("(install_dir:).*" _ key)
-                (string-append key
-                               "'" (assoc-ref outputs "out") "/lib/zathura'\n")))
-             #t)))))
+     (list #:tests? #f                ; package does not include tests
+           #:configure-flags
+           #~(list (string-append "-Dplugindir=" #$output "/lib/zathura"))))
     (home-page "https://pwmt.org/projects/zathura-pdf-poppler/")
     (synopsis "PDF support for zathura (poppler backend)")
     (description "The zathura-pdf-poppler plugin adds PDF support to zathura
