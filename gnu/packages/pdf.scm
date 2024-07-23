@@ -625,7 +625,7 @@ using the DjVuLibre library.")
 (define-public zathura-pdf-mupdf
   (package
     (name "zathura-pdf-mupdf")
-    (version "0.4.1")
+    (version "0.4.3")
     (source (origin
               (method url-fetch)
               (uri
@@ -633,7 +633,7 @@ using the DjVuLibre library.")
                               "/download/zathura-pdf-mupdf-" version ".tar.xz"))
               (sha256
                (base32
-                "0bxc0b2bkzfc3mqv1g8wjvbvzv95lq34q641jdk2byi3clfs10pr"))))
+                "0xk7fxgx5fiafczwqlpb3hkfmfhhq2ljabxvi272m9vy13p89kwc"))))
     (native-inputs (list pkg-config))
     (inputs
      (list gumbo-parser
