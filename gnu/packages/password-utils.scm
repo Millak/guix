@@ -151,7 +151,7 @@ human.")
 (define-public keepassxc
   (package
     (name "keepassxc")
-    (version "2.7.8")
+    (version "2.7.9")
     (source
      (origin
        (method url-fetch)
@@ -159,7 +159,7 @@ human.")
                            "/releases/download/" version "/keepassxc-"
                            version "-src.tar.xz"))
        (sha256
-        (base32 "18w32yw5y6dsadpibd3wf40vqa95grdss25r4im6bj5k28bi1lw7"))))
+        (base32 "1za6xnwnq68gswz8vh7s5wia1bdhnia11hcb7p3dl3f049gy8i1w"))))
     (build-system qt-build-system)
     (arguments
      (list
