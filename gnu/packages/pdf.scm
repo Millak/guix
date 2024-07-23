@@ -710,7 +710,7 @@ by using the poppler rendering engine.")
 (define-public zathura
   (package
     (name "zathura")
-    (version "0.5.4")
+    (version "0.5.6")
     (source (origin
               (method url-fetch)
               (uri
@@ -718,8 +718,7 @@ by using the poppler rendering engine.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "0ckgamf98sydq543arp865jg1afwzhpzcsbhv6zrch2dm5x7y0x3"))
-              (patches (search-patches "zathura-use-struct-initializers.patch"))))
+                "1nhhdww8z6i2cmj7n6qjgyh49dy4jf0xq4j13djpvrfchxgf6y5l"))))
     (build-system meson-build-system)
     (arguments
      (list
