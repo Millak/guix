@@ -17,8 +17,9 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -52,6 +53,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
@@ -71,6 +73,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages valgrind)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages python-web)
@@ -982,17 +985,24 @@ commands part of the U-Boot project, such as Patman.")))
           (add-after 'unpack 'chdir
             (lambda _
               (chdir "tools/patman")))
-          (add-after 'chdir 'patch-pyproject.toml
-            ;; There is no 'run_patman' procedure in the __main__.py script,
-            ;; which breaks execution
-            ;; Patch submitted upstream (see:
-            ;; https://patchwork.ozlabs.org/project/uboot/\
-            ;; patch/20230901050532.725-1-maxim.cournoyer@gmail.com/).
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("patman.__main__:run_patman")
-                 "patman.__main__")))))))
-    (inputs (list python-pygit2 python-requests python-u-boot-pylib))
+          (add-after 'install 'wrap-script
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-script (string-append #$output "/bin/patman")
+                `("PATH" ":" prefix
+                  (,(string-append #$(this-package-input "git") "/bin")))
+                `("GIT_EXEC_PATH" ":" prefix
+                  (,(dirname (search-input-file
+                              inputs "libexec/git-core/git-commit"))
+                   ,(dirname (search-input-file
+                              inputs
+                              "libexec/git-core/git-send-email"))))))))))
+    (inputs
+     (list git
+           `(,git "send-email")
+           guile-3.0/pinned             ;for wrap-script
+           python-pygit2
+           python-requests
+           python-u-boot-pylib))
     (synopsis "Patch automation tool")
     (description "Patman is a patch automation script which:
 @itemize
