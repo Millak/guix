@@ -81,6 +81,7 @@
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1810,7 +1811,7 @@ graphics card on Optimus laptops.")
 (define-public ddcci-driver-linux
   (package
     (name "ddcci-driver-linux")
-    (version "0.4.4")
+    (version "0.4.5")
     (source
      (origin
        (method git-fetch)
@@ -1820,8 +1821,7 @@ graphics card on Optimus laptops.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19vi7dk4jv5wm18cznz4lj2fb1c7m7j3ig62x4a6qy9djxf9z472"))
-       (patches (search-patches "ddcci-driver-linux-linux-6.8.patch"))))
+        (base32 "0j2bgzadrbcyf3k4zplv7p5yqb9pw2ca6wzkqjhhidaah2722vlf"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ; no tests

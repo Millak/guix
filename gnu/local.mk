@@ -65,6 +65,7 @@
 # Copyright © 2023 Herman Rimm <herman@rimm.ee>
 # Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 # Copyright © 2024 David Elsing <david.elsing@posteo.net>
+# Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 #
 # This file is part of GNU Guix.
 #
@@ -1111,7 +1112,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/dbus-c++-gcc-compat.patch		\
   %D%/packages/patches/dbus-c++-threading-mutex.patch		\
   %D%/packages/patches/dbxfs-remove-sentry-sdk.patch		\
-  %D%/packages/patches/ddcci-driver-linux-linux-6.8.patch	\
   %D%/packages/patches/debops-constants-for-external-program-names.patch \
   %D%/packages/patches/debops-debops-defaults-fall-back-to-less.patch \
   %D%/packages/patches/dee-vapi.patch			\
