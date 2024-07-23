@@ -74,6 +74,7 @@
 ;;; Copyright © 2024 bigbug <bigbookofbug@proton.me>
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2024 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2307,7 +2308,7 @@ core/thread.")
 (define-public mako
   (package
     (name "mako")
-    (version "1.8.0")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2316,7 +2317,7 @@ core/thread.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05g1gp61qd9n9w4lq925i4wgryagvah6x489g17j7rnw59q4qhdi"))))
+                "0wcyhnpah1g5qpixfwlpybsjcl22iv39jrxlbi84xv2gfyi2vmj2"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases
