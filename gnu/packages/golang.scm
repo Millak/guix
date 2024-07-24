@@ -7378,7 +7378,7 @@ system, kernel, and process metrics from the @file{/proc} pseudo file system.")
 (define-public go-github-com-prometheus-client-golang
   (package
     (name "go-github-com-prometheus-client-golang")
-    (version "1.17.0")
+    (version "1.19.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7387,7 +7387,7 @@ system, kernel, and process metrics from the @file{/proc} pseudo file system.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v8vdvi9wlpf18nxi62diysfnh9gc3c3cqq6hvx378snsvvl6n82"))))
+                "0mx5q221pbkx081ycf1lp8sxz513220ya8qczkkvab943cwlcarv"))))
     (build-system go-build-system)
     (arguments
      '(#:tests? #f
@@ -7397,12 +7397,15 @@ system, kernel, and process metrics from the @file{/proc} pseudo file system.")
          ;; Source-only package
          (delete 'build))))
     (propagated-inputs
-     (list go-github-com-beorn7-perks-quantile
-           go-github-com-golang-protobuf
+     (list go-github-com-beorn7-perks
+           go-github-com-cespare-xxhash-v2
+           go-github-com-davecgh-go-spew
+           go-github-com-json-iterator-go
            go-github-com-prometheus-client-model
            go-github-com-prometheus-common
            go-github-com-prometheus-procfs
-           go-github-com-cespare-xxhash))
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf))
     (synopsis "HTTP server and client tools for Prometheus")
     (description "This package @code{promhttp} provides HTTP client and
 server tools for Prometheus metrics.")
