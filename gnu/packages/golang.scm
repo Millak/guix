@@ -7361,7 +7361,17 @@ formatting information, rather than the current locale name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "006y6mlxglr2xzmdqxl5bwh899whfx1prcgjai7qhhs5ys5dspy5"))))
+                "006y6mlxglr2xzmdqxl5bwh899whfx1prcgjai7qhhs5ys5dspy5"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   ;; Submodules with their own go.mod files and packed as
+                   ;; separated packages:
+                   ;;
+                   ;; - github.com/prometheus/common/assets
+                   ;; - github.com/prometheus/common/sigv4
+                   (for-each delete-file-recursively
+                             (list "assets" "sigv4"))))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/prometheus/common"
