@@ -4,6 +4,7 @@
 ;;; Copyright © 2018, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2024 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -164,7 +165,14 @@ block-scoped lexical variables."))))
                      ""))))))
     (build-system gnu-build-system)
     (arguments
-     (list #:parallel-build? #f))   ; Prevent a race condition.
+     (list
+      #:parallel-build? #f              ; Prevent a race condition.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'symlink-awk
+            (lambda _
+              (with-directory-excursion (string-append #$output "/bin")
+                (symlink "mawk" "awk")))))))
     (native-inputs
      (list bison))
     (synopsis "Text scanning and processing language")
