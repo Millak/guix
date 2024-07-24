@@ -983,15 +983,17 @@ private network between hosts on the internet.")
 (define-public sshuttle
   (package
     (name "sshuttle")
-    (version "0.78.5")
+    (version "1.1.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri name version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sshuttle/sshuttle")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0vp13xwrhx4m6zgsyzvai84lkq9mzkaw47j58dk0ll95kaymk2x8"))))
-    (build-system python-build-system)
+        (base32 "01hd7z7gxkc2bjxndnv5dw1x98qcakxli9k8w285iq2b7d786f7f"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1007,6 +1009,7 @@ private network between hosts on the internet.")
            ;; For tests only.
            python-flake8
            python-mock
+           python-poetry-core
            python-pytest-cov
            python-pytest-runner))
     (home-page "https://github.com/sshuttle/sshuttle")
