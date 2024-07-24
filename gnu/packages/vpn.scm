@@ -995,15 +995,14 @@ private network between hosts on the internet.")
         (base32 "01hd7z7gxkc2bjxndnv5dw1x98qcakxli9k8w285iq2b7d786f7f"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-FHS-file-names
-           (lambda _
-             (substitute* "sshuttle/client.py"
-               (("/usr/bin/env") (which "env")))
-             (substitute* "sshuttle/ssh.py"
-               (("/bin/sh") "sh"))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-FHS-file-names
+                 (lambda _
+                   (substitute* "sshuttle/client.py"
+                     (("/usr/bin/env") (which "env")))
+                   (substitute* "sshuttle/ssh.py"
+                     (("/bin/sh") "sh")))))))
     (native-inputs
      (list python-setuptools-scm
            ;; For tests only.
