@@ -1,5 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018, 2019, 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -113,6 +115,72 @@ x/net/trace)} tracing wrappers @code{net.Conn}, both inbound
     (synopsis "Data model artifacts for Prometheus")
     (description
      "This package provides data model artifacts for Prometheus.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-prometheus-common
+  (package
+    (name "go-github-com-prometheus-common")
+    (version "0.55.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus/common")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bsbxil7qz8rhckhv0844nmn38g7i7347cjv5m6na47hbdpi0rqh"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packed as
+            ;; separated packages:
+            ;;
+            ;; - github.com/prometheus/common/assets
+            ;; - github.com/prometheus/common/sigv4
+            (for-each delete-file-recursively
+                      (list "assets" "sigv4"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/prometheus/common"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v"
+                          ;; "./config/..." requries
+                          ;; <github.com/prometheus/client_golang/prometheus>,
+                          ;; which introduce cycle.
+                          "./expfmt/..."
+                          "./helpers/..."
+                          "./model/..."
+                          "./promlog/..."
+                          "./route/..."
+                          "./server/..."))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-alecthomas-kingpin-v2
+           go-github-com-go-kit-log
+           go-github-com-google-go-cmp
+           go-github-com-julienschmidt-httprouter
+           go-github-com-munnerz-goautoneg
+           go-github-com-mwitkow-go-conntrack
+           go-github-com-prometheus-client-model
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/prometheus/common")
+    (synopsis "Prometheus metrics")
+    (description
+     "This package provides tools for reading and writing Prometheus
+metrics.")
     (license license:asl2.0)))
 
 ;;;
