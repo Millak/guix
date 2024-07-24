@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2014, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2018, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -191,7 +191,8 @@ endif()~%~%"
                         ;; https://gitlab.com/inkscape/inkscape/-/issues/3554#note_1035539888
                         ;; According to upstream, this is a false positive.
                         (substitute* "testfiles/rendering_tests/CMakeLists.txt"
-                          (("test-use") "#test-use"))
+                          (("add_rendering_test\\(test-use" all)
+                           (string-append "#" all)))
                         ;; https://gitlab.com/inkscape/inkscape/-/issues/3554#note_1035539888
                         ;; Allegedly a precision error in the gamma.
                         (substitute* "testfiles/cli_tests/CMakeLists.txt"
