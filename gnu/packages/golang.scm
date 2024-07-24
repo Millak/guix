@@ -7352,7 +7352,7 @@ formatting information, rather than the current locale name.")
 (define-public go-github-com-prometheus-common
   (package
     (name "go-github-com-prometheus-common")
-    (version "0.45.0")
+    (version "0.55.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7361,7 +7361,7 @@ formatting information, rather than the current locale name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "006y6mlxglr2xzmdqxl5bwh899whfx1prcgjai7qhhs5ys5dspy5"))
+                "0bsbxil7qz8rhckhv0844nmn38g7i7347cjv5m6na47hbdpi0rqh"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
@@ -7380,10 +7380,20 @@ formatting information, rather than the current locale name.")
        (modify-phases %standard-phases
          ;; Source-only package
          (delete 'build))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-golang-protobuf
-           go-github-com-matttproud-golang-protobuf-extensions-v2
-           go-github-com-prometheus-client-model))
+     (list go-github-com-alecthomas-kingpin-v2
+           go-github-com-go-kit-log
+           go-github-com-google-go-cmp
+           go-github-com-julienschmidt-httprouter
+           go-github-com-munnerz-goautoneg
+           go-github-com-mwitkow-go-conntrack
+           go-github-com-prometheus-client-model
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v2))
     (synopsis "Prometheus metrics")
     (description "This package provides tools for reading and writing
 Prometheus metrics.")
