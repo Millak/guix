@@ -243,7 +243,22 @@ connections from a single physical connection.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/aws/aws-sdk-go"))
+      #:import-path "github.com/aws/aws-sdk-go"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  (("TestProcessProviderTimeout")
+                   "OffTestProcessProviderTimeout")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-jmespath-go-jmespath))
     (home-page "https://github.com/aws/aws-sdk-go")
