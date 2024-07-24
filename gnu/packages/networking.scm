@@ -4750,7 +4750,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
      (list go-dario-cat-mergo
            go-github-com-anmitsu-go-shlex
            go-github-com-armon-go-radix
-           go-github-com-cespare-xxhash
+           go-github-com-cespare-xxhash-v2
            go-github-com-cyberdelia-go-metrics-graphite
            go-github-com-flynn-noise
            go-github-com-gogo-protobuf

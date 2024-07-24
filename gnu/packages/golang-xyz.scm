@@ -1237,7 +1237,7 @@ levels that works by wrapping the standard @code{log} library.")
     (arguments
      (list
       #:import-path "github.com/coocood/freecache"))
-    (propagated-inputs (list go-github-com-cespare-xxhash))
+    (propagated-inputs (list go-github-com-cespare-xxhash-v2))
     (home-page "https://github.com/coocood/freecache")
     (synopsis "Caching library for Go")
     (description

@@ -1589,7 +1589,7 @@ files for valid UTF-8 use and to report which line endings they use.")
       #:install-source? #f
       #:import-path "github.com/aswinkarthik/csvdiff"))
     (native-inputs
-     (list go-github-com-cespare-xxhash
+     (list go-github-com-cespare-xxhash-v2
            go-github-com-fatih-color
            go-github-com-spf13-afero
            go-github-com-spf13-cobra

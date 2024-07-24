@@ -355,9 +355,9 @@ needing to use secp256k1 elliptic curve cryptography.")
 the Ristretto prime-order group built from Edwards25519.")
     (license license:expat)))
 
-(define-public go-github-com-cespare-xxhash
+(define-public go-github-com-cespare-xxhash-v2
   (package
-    (name "go-github-com-cespare-xxhash")
+    (name "go-github-com-cespare-xxhash-v2")
     (version "2.1.2")
     (source
      (origin
@@ -373,7 +373,7 @@ the Ristretto prime-order group built from Edwards25519.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/cespare/xxhash"
+      #:import-path "github.com/cespare/xxhash/v2"
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
