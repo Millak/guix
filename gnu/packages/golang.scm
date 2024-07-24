@@ -3263,32 +3263,6 @@ developed by the Go team.  It provides IDE features to any LSP-compatible
 editor.")
     (license license:bsd-3)))
 
-(define-public go-github-com-jpillora-backoff
-  (let ((commit
-         "06c7a16c845dc8e0bf575fafeeca0f5462f5eb4d")
-        (revision "0"))
-    (package
-      (name "go-github-com-jpillora-backoff")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/jpillora/backoff")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0xhvxr7bm47czdc5hy3kl508z3y4j91i2jm7vg774i52zych6k4l"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/jpillora/backoff"))
-      (home-page "https://github.com/jpillora/backoff")
-      (synopsis "Simple exponential backoff counter in Go")
-      (description "This package is a simple exponential backoff counter in
-Go.")
-      (license license:expat))))
-
 (define-public go-github-com-stretchr-objx
   (package
     (name "go-github-com-stretchr-objx")
