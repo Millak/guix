@@ -183,6 +183,30 @@ x/net/trace)} tracing wrappers @code{net.Conn}, both inbound
 metrics.")
     (license license:asl2.0)))
 
+(define-public go-github-com-prometheus-common-assets
+  (package
+    (name "go-github-com-prometheus-common-assets")
+    (version "0.55.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus/common")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bsbxil7qz8rhckhv0844nmn38g7i7347cjv5m6na47hbdpi0rqh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/prometheus/common/assets"
+      #:unpack-path "github.com/prometheus/common"))
+    (home-page "https://github.com/prometheus/common")
+    (synopsis "Prometheus assets")
+    (description
+     "This package provides Prometheus assets.")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Executables:
 ;;;
