@@ -7374,12 +7374,26 @@ formatting information, rather than the current locale name.")
                              (list "assets" "sigv4"))))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/prometheus/common"
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; Source-only package
-         (delete 'build))))
+     (list
+      #:import-path "github.com/prometheus/common"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v"
+                          ;; "./config/..." requries
+                          ;; <github.com/prometheus/client_golang/prometheus>,
+                          ;; which introduce cycle.
+                          "./expfmt/..."
+                          "./helpers/..."
+                          "./model/..."
+                          "./promlog/..."
+                          "./route/..."
+                          "./server/..."))))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
