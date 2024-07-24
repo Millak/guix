@@ -2766,12 +2766,11 @@ called concurrently with themselves and each other.")
     (license license:expat)))
 
 (define-public go-github-com-jpillora-backoff
-  (let ((commit
-         "06c7a16c845dc8e0bf575fafeeca0f5462f5eb4d")
-        (revision "0"))
+  (let ((commit "fab01a9d9810a410d2d95a0a697f0afb604658f9")
+        (revision "1"))
     (package
       (name "go-github-com-jpillora-backoff")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "1.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -2780,7 +2779,7 @@ called concurrently with themselves and each other.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0xhvxr7bm47czdc5hy3kl508z3y4j91i2jm7vg774i52zych6k4l"))))
+          (base32 "0irpxdjvwmfd1njvws5x466ar8faiwjnnna26jnly9sw1b0h1b89"))))
       (build-system go-build-system)
       (arguments
        (list
