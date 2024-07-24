@@ -2017,6 +2017,34 @@ Differentiation between text and binary files}.
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-go-kit-log
+  (package
+    (name "go-github-com-go-kit-log")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-kit/log")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xjv2g1cd1iaghhm1c1zw0lcz89a9zq5xradyjipvrbqxbxckqm6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-kit/log"))
+    (propagated-inputs
+     (list go-github-com-go-logfmt-logfmt))
+    (home-page "https://github.com/go-kit/log")
+    (synopsis "Minimal and extensible structured logger")
+    (description
+     "This package provides a minimal interface for structured logging in
+services.  It may be wrapped to encode conventions, enforce type-safety,
+provide leveled logging, and so on.  It can be used for both typical
+application log events, and log-structured data streams.")
+    (license license:expat)))
+
 (define-public go-github-com-go-logfmt-logfmt
   (package
     (name "go-github-com-go-logfmt-logfmt")
