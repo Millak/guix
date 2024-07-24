@@ -2017,6 +2017,33 @@ Differentiation between text and binary files}.
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-go-logfmt-logfmt
+  (package
+    (name "go-github-com-go-logfmt-logfmt")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-logfmt/logfmt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s3dz7z5a8p5ia5czihy5y2hkij7rdfyr425sw9rnxqil3d0dlj6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-logfmt/logfmt"))
+    (home-page "https://github.com/go-logfmt/logfmt")
+    (synopsis "Marshal and unmarshal logfmt messages")
+    (description
+     "Package logfmt implements utilities to marshal and unmarshal data in the
+logfmt format.  The logfmt format records key/value pairs in a way that
+balances readability for humans and simplicity of computer parsing.  It is
+most commonly used as a more human friendly alternative to JSON for structured
+logging.")
+    (license license:expat)))
+
 (define-public go-github-com-go-logr-logr
   (package
     (name "go-github-com-go-logr-logr")
