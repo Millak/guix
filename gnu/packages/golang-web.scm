@@ -1897,6 +1897,30 @@ multistream-select protocol.  The protocol is defined at
 @url{https://github.com/multiformats/multistream-select}")
     (license license:expat)))
 
+(define-public go-github-com-munnerz-goautoneg
+  (package
+    (name "go-github-com-munnerz-goautoneg")
+    (version "0.0.0-20191010083416-a7dc8b61c822")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/munnerz/goautoneg")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m4v6bw6yf1g0kvpc46isjp0qfhx2y8gnvlnyjf637jy64613mgg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/munnerz/goautoneg"))
+    (home-page "https://github.com/munnerz/goautoneg")
+    (synopsis "HTTP Content-Type Autonegotiation")
+    (description
+     "This package implements @url{https://rfc-editor.org/rfc/rfc2616.html,RFC
+2616} HTTP/1.1 standard.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-nwidger-jsoncolor
   (package
     (name "go-github-com-nwidger-jsoncolor")
