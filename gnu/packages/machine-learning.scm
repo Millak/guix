@@ -5506,35 +5506,6 @@ and Numpy.")
            python-pyro-api
            python-pytorch
            python-tqdm))
-    (native-inputs
-     (list ninja
-           jupyter
-           python-black
-           python-flake8
-           python-graphviz
-           python-isort
-           python-lap
-           python-matplotlib
-           python-mypy
-           python-nbformat
-           python-nbsphinx
-           python-nbstripout
-           python-nbval
-           python-pandas
-           python-pillow
-           python-pypandoc
-           python-pytest
-           python-pytest-cov
-           python-pytest-xdist
-           python-scikit-learn
-           python-scipy
-           python-seaborn
-           python-sphinx
-           python-sphinx-rtd-theme
-           python-torchvision
-           python-visdom
-           python-wget
-           python-yapf))
     (home-page "https://pyro.ai")
     (synopsis "Python library for probabilistic modeling and inference")
     (description
