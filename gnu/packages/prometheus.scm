@@ -24,7 +24,11 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
-  #:use-module (gnu packages golang-build))
+  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz))
 
 ;;; Commentary:
 ;;;
@@ -38,6 +42,48 @@
 ;;;
 ;;; Libraries:
 ;;;
+
+(define-public go-github-com-mwitkow-go-conntrack
+  (package
+    (name "go-github-com-mwitkow-go-conntrack")
+    (version "0.0.0-20190716064945-2f068394615f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mwitkow/go-conntrack")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ymjmy12ks7smgwmrwsa5kf07d9w5kpk1dn650azlzr61b561aw7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:import-path "github.com/mwitkow/go-conntrack"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Breaking cycle:
+          ;; go-github-com-prometheus-common ->
+          ;; go-github-com-prometheus-client-golang ->
+          ;; go-github-com-mwitkow-go-conntrack ->
+          ;; go-github-com-prometheus-common
+          (delete 'build))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-jpillora-backoff
+           go-github-com-munnerz-goautoneg
+           ;; go-github-com-prometheus-client-golang
+           go-golang-org-x-net))
+    (home-page "https://github.com/mwitkow/go-conntrack")
+    (synopsis "Go middleware for @code{net.Conn} tracking")
+    (description
+     "@url{https://prometheus.io/,Prometheus} monitoring and
+@url{https://godoc.org/golang.org/x/net/trace#@code{EventLog,(code}
+x/net/trace)} tracing wrappers @code{net.Conn}, both inbound
+(@@code{net.Listener}) and outbound (@@code{net.Dialer}).")
+    (license license:asl2.0)))
 
 (define-public go-github-com-prometheus-client-model
   (package
