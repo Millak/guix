@@ -230,7 +230,7 @@ connections from a single physical connection.")
 (define-public go-github-com-aws-aws-sdk-go
   (package
     (name "go-github-com-aws-aws-sdk-go")
-    (version "1.36.18")
+    (version "1.55.2")
     (source
      (origin
        (method git-fetch)
@@ -239,17 +239,17 @@ connections from a single physical connection.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "169mkkw1cff1px6326krwvfpfj07sb4y5rbn003gi4bk176h6ry9"))))
+        (base32 "0wsl1vcig3j9z6v2hppfr1bvrvbisck026fwq2a7yzmx36pwnj6a"))))
     (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go"))
     (propagated-inputs
      (list go-github-com-jmespath-go-jmespath))
-    (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go"
-       #:phases %standard-phases))
+    (home-page "https://github.com/aws/aws-sdk-go")
     (synopsis "The official AWS SDK for the Go programming language")
     (description
      "The official AWS SDK for the Go programming language.")
-    (home-page "https://github.com/aws/aws-sdk-go")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2
