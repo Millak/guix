@@ -207,6 +207,44 @@ metrics.")
      "This package provides Prometheus assets.")
     (license license:asl2.0)))
 
+(define-public go-github-com-prometheus-common-sigv4
+  (package
+    (name "go-github-com-prometheus-common-sigv4")
+    (version "0.55.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus/common")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bsbxil7qz8rhckhv0844nmn38g7i7347cjv5m6na47hbdpi0rqh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/prometheus/common/sigv4"
+      #:unpack-path "github.com/prometheus/common"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'unpack 'override-prometheus-common
+            (lambda _
+              (delete-file-recursively "src/github.com/prometheus/common"))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-common
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/prometheus/common")
+    (synopsis "HTTP signed requests with Amazon's Signature Verification V4")
+    (description
+     "This package provides a @code{http.RoundTripper} that will sign requests
+using Amazon's Signature Verification V4 signing procedure, using credentials
+from the default AWS credential chain.")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Executables:
 ;;;
