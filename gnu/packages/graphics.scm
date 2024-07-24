@@ -920,16 +920,24 @@ exception-handling library.")
                 (("PYTHON_LIB_INSTALL \"[^\"]*\"")
                  (format #f "PYTHON_LIB_INSTALL ~s"
                          (python:site-packages inputs outputs))))))
-          #$@(if (target-x86-32?)
-                 #~((add-after 'unpack 'skip-faulty-test
-                      (lambda _
-                        ;; This test fails on i686 when comparing floating point
-                        ;; values, probably due to excess precision.  However,
-                        ;; '-fexcess-precision' is not implemented for C++ in
-                        ;; GCC 10 so just skip it.
-                        (substitute* "tests/CMakeLists.txt"
-                          (("bezier-test") "")))))
-                 #~()))))
+          #$@(cond
+              ((target-x86-32?)
+               #~((add-after 'unpack 'skip-faulty-test
+                    (lambda _
+                      ;; This test fails on i686 when comparing floating point
+                      ;; values, probably due to excess precision.  However,
+                      ;; '-fexcess-precision' is not implemented for C++ in
+                      ;; GCC 10 so just skip it.
+                      (substitute* "tests/CMakeLists.txt"
+                        (("bezier-test") ""))))))
+              ;; See https://gitlab.com/inkscape/lib2geom/-/issues/63
+              ((target-aarch64?)
+               #~((add-after 'unpack 'fix-aarch64-faulty-test
+                    (lambda _
+                      (substitute* "tests/CMakeLists.txt"
+                        (("elliptical-arc-test") ""))))))
+              (else
+               #~())))))
     (native-inputs (list python-wrapper googletest pkg-config))
     (inputs (list cairo python-pycairo double-conversion glib gsl))
     (propagated-inputs (list boost))    ;included in 2geom/pathvector.h
