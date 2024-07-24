@@ -227,36 +227,6 @@ the parse trees produced by the html package.")
 connections from a single physical connection.")
     (license license:expat)))
 
-(define-public go-github-com-aws-sdk
-  (package
-    (name "go-github-com-aws-sdk")
-    (version "1.35.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/aws/aws-sdk-go")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1ky5lw2s2zpslnnqcs6hgsrwvwbxwgflb5jwf16dd4aga3vrg10c"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go/aws"
-       #:unpack-path "github.com/aws/aws-sdk-go"))
-    (propagated-inputs
-     (list go-github-com-go-sql-driver-mysql
-           go-github-com-jmespath-go-jmespath
-           go-github-com-pkg-errors
-           go-golang-org-x-net))
-    (home-page "https://github.com/aws/aws-sdk-go")
-    (synopsis "Library to access Amazon Web Services (AWS)")
-    (description
-     "This is the official AWS SDK for the Go programming language.")
-    (license license:asl2.0)))
-
-;; XXX: This package might be a duplicate of go-github-com-aws-sdk, it's not
-;; in use anywhere. Keep it here for the farther review.
 (define-public go-github-com-aws-aws-sdk-go
   (package
     (name "go-github-com-aws-aws-sdk-go")
