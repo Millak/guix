@@ -889,7 +889,7 @@ high-performance computing} clusters.")
                      (target-x86-32?))
                  (list libcpuid)
                  '())))
-    (home-page "https://nixos.org/nix/")
+    (home-page "https://nixos.org/")
     (synopsis "The Nix package manager")
     (description
      "Nix is a purely functional package manager.  This means that it treats
