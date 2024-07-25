@@ -9305,8 +9305,16 @@ management tools in userspace.")
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f      ; Tests depend on specific kernel modules.
-      #:import-path "github.com/vishvananda/netlink"))
+      #:import-path "github.com/vishvananda/netlink"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Disable tests requiring root access.
+                  (("TestNetNsIdByFd") "OffTestNetNsIdByFd")
+                  (("TestNetNsIdByPid") "OffTestNetNsIdByPid"))))))))
     (propagated-inputs
      (list go-golang-org-x-sys go-github-com-vishvananda-netns))
     (home-page "https://github.com/vishvananda/netlink")
