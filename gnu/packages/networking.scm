@@ -1918,29 +1918,30 @@ virtual machines, and certificates.")
     (license license:gpl3+)))
 
 (define-public go-netns
-    (package
-      (name "go-netns")
-      (version "0.0.4")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/vishvananda/netns")
-                      (commit (string-append "v" version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0rci8c211m57nya9il81fz6459pia3dj5i4b16fp34vjrkcxliml"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/vishvananda/netns"
-         #:tests? #f))                  ;tests require root privileges
-      (propagated-inputs
-       (list go-golang-org-x-sys))
-      (home-page "https://github.com/vishvananda/netns")
-      (synopsis "Simple network namespace handling for Go")
-      (description "The netns package provides a simple interface for
-handling network namespaces in Go.")
-      (license license:asl2.0)))
+  (package
+    (name "go-netns")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vishvananda/netns")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rci8c211m57nya9il81fz6459pia3dj5i4b16fp34vjrkcxliml"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/vishvananda/netns"
+       #:tests? #f))                  ;tests require root privileges
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/vishvananda/netns")
+    (synopsis "Simple network namespace handling for Go")
+    (description
+     "The netns package provides a simple interface for handling network
+namespaces in Go.")
+    (license license:asl2.0)))
 
 (define-public go-sctp
   ;; docker-libnetwork-cmd-proxy requires this exact commit.
