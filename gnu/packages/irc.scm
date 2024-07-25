@@ -924,11 +924,11 @@ building block for other projects.")
         (base32 "1ag5x7h71pxjaaf4b561rwdqr05zzywkc0p3jf2yhg3lbjkjrc7z"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; There are no tests.
-       #:make-flags
-       (list
-        (string-append "CC=" ,(cc-for-target))
-        (string-append "PREFIX=" %output))))
+     (list #:tests? #f ; There are no tests.
+           #:make-flags
+           #~(list
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))))
     (native-inputs
       (list pkg-config universal-ctags))
     (inputs
