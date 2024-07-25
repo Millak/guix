@@ -9292,7 +9292,7 @@ management tools in userspace.")
 (define-public go-netlink
   (package
     (name "go-netlink")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9301,7 +9301,7 @@ management tools in userspace.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hpzghf1a4cwawzhkiwdzin80h6hd09fskl77d5ppgc084yvj8x0"))))
+                "1vhl30p1gx636a088ls4h6a0l8jjyfvz79fr5w0qzdrg4qg9h08h"))))
     (build-system go-build-system)
     (arguments
      `(#:tests? #f      ; Tests depend on specific kernel modules.
