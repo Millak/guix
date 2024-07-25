@@ -355,8 +355,36 @@ needing to use secp256k1 elliptic curve cryptography.")
 the Ristretto prime-order group built from Edwards25519.")
     (license license:expat)))
 
+(define-public go-github-com-cespare-xxhash
+  (package
+    (name "go-github-com-cespare-xxhash")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cespare/xxhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qyzlcdcayavfazvi03izx83fvip8h36kis44zr2sg7xf6sx6l4x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cespare/xxhash"))
+    (propagated-inputs
+     (list go-github-com-spaolacci-murmur3
+           go-github-com-oneofone-xxhash))
+    (home-page "https://github.com/cespare/xxhash")
+    (synopsis "Go implementation of xxHash")
+    (description
+     "Package xxhash implements the 64-bit variant of @code{xxHash} (XXH64) as
+described at @url{https://xxhash.com/}.")
+    (license license:expat)))
+
 (define-public go-github-com-cespare-xxhash-v2
   (package
+    (inherit go-github-com-cespare-xxhash)
     (name "go-github-com-cespare-xxhash-v2")
     (version "2.1.2")
     (source
@@ -370,7 +398,6 @@ the Ristretto prime-order group built from Edwards25519.")
         (base32 "1f3wyr9msnnz94szrkmnfps9wm40s5sp9i4ak0kl92zcrkmpy29a"))
        (modules '((guix build utils)))
        (snippet '(delete-file-recursively "xxhashbench"))))
-    (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/cespare/xxhash/v2"
@@ -382,11 +409,7 @@ the Ristretto prime-order group built from Edwards25519.")
                   ;; The tests fail when run with gccgo.
                   (false-if-exception (search-input-file inputs "/bin/gccgo"))
                 (apply (assoc-ref %standard-phases 'check) args)))))))
-    (home-page "https://github.com/cespare/xxhash/")
-    (synopsis "Go implementation of xxHash")
-    (description "This package provides of Go implementation of the 64-bit
-xxHash algorithm (XXH64).")
-    (license license:expat)))
+    (propagated-inputs '())))
 
 (define-public go-github-com-chmduquesne-rollinghash
   (let ((commit "9a5199be7309f50c496efc87d29bd08788605ae7")
