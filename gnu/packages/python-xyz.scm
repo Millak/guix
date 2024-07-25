@@ -19234,13 +19234,14 @@ of @acronym{REGEXPs, regular expressions}.")
          "0gqnv9py1dqp01jmf5zxp0vj2dbhq1l9zy55fai319iv6sdqc91p"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "pytest" "-vv")
-                          (format #t "test suite not run~%"))
-                      #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "pytest" "-vv")
+                  (format #t "test suite not run~%")))))))
     (propagated-inputs
      (list python-markupsafe))
     (native-inputs
