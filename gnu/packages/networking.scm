@@ -1932,8 +1932,17 @@ virtual machines, and certificates.")
         (base32 "0rci8c211m57nya9il81fz6459pia3dj5i4b16fp34vjrkcxliml"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/vishvananda/netns"
-       #:tests? #f))                  ;tests require root privileges
+     (list
+      #:import-path "github.com/vishvananda/netns"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Disable tests requiring root access.
+                  (("TestGetNewSetDelete") "OffTestGetNewSetDelete")
+                  (("TestThreaded") "OffTestThreaded"))))))))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://github.com/vishvananda/netns")
