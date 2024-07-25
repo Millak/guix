@@ -3906,6 +3906,7 @@ configuration."))))
                   alsa-lib
                   json-c
                   libmpdclient
+                  pulseaudio
                   eudev))
     (synopsis "X11 and Wayland status panel")
     (description
