@@ -310,7 +310,7 @@ the required network abstractions for applications.")
      `(("go-sctp" ,go-sctp)
        ;; For tests.
        ("logrus" ,go-github-com-sirupsen-logrus)
-       ("go-netlink" ,go-netlink)
+       ("go-github-com-vishvananda-netlink" ,go-github-com-vishvananda-netlink)
        ("go-github-com-vishvananda-netns" ,go-github-com-vishvananda-netns)
        ("go-golang-org-x-crypto"
         ,go-golang-org-x-crypto)

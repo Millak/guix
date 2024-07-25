@@ -4664,7 +4664,7 @@ QUIC protocol.")
            go-golang-org-x-tools
            go-golang-org-x-sys
            go-github-com-vishvananda-netns
-           go-netlink
+           go-github-com-vishvananda-netlink
            go-github-com-bits-and-blooms-bitset
            go-github-com-bits-and-blooms-bloom
            go-github-com-quic-go-quic-go
@@ -4780,7 +4780,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
            go-golang-org-x-term
            go-google-golang-org-protobuf
            go-gopkg-in-yaml-v2
-           go-netlink
+           go-github-com-vishvananda-netlink
            go-github-com-vishvananda-netns))
     (home-page "https://github.com/slackhq/nebula")
     (synopsis "Scalable, peer-to-peer overlay networking tool")

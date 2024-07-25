@@ -9289,9 +9289,9 @@ nfnetlink_queue, nfnetlink_conntrack) and their respective users and/or
 management tools in userspace.")
     (license license:gpl2)))
 
-(define-public go-netlink
+(define-public go-github-com-vishvananda-netlink
   (package
-    (name "go-netlink")
+    (name "go-github-com-vishvananda-netlink")
     (version "1.1.0")
     (source
      (origin
