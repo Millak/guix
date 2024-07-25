@@ -2999,7 +2999,7 @@ queues, resource pools, strings, etc.
 (define-public ftxui
   (package
     (name "ftxui")
-    (version "4.0.0")
+    (version "5.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3007,7 +3007,7 @@ queues, resource pools, strings, etc.
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "01h59ln8amsj6ymxmsxhmslld2yp003n82fg3mphgkrh6lf22h6y"))
+                "1qfk6jwasxhjk410igma7pdv1q664w8cgjf95ciln3hh1kiqcpi0"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs (list googletest benchmark))
