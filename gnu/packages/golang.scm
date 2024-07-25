@@ -7390,12 +7390,24 @@ system, kernel, and process metrics from the @file{/proc} pseudo file system.")
                 "0mx5q221pbkx081ycf1lp8sxz513220ya8qczkkvab943cwlcarv"))))
     (build-system go-build-system)
     (arguments
-     '(#:tests? #f
-       #:import-path "github.com/prometheus/client_golang"
-       #:phases
-       (modify-phases %standard-phases
-         ;; Source-only package
-         (delete 'build))))
+     (list
+      #:import-path "github.com/prometheus/client_golang"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-tutorials
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "api/prometheus/v1/example_test.go"
+                                "examples"
+                                "tutorial")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-beorn7-perks
            go-github-com-cespare-xxhash-v2
