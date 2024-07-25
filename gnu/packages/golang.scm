@@ -3262,33 +3262,6 @@ developed by the Go team.  It provides IDE features to any LSP-compatible
 editor.")
     (license license:bsd-3)))
 
-(define-public go-golang-org-x-oauth2
-  (package
-    (name "go-golang-org-x-oauth2")
-    (version "0.21.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://go.googlesource.com/oauth2")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0pzpa9jqrfxxhxi1w7n5ljnvr9qfw42hzavz62fc9i6z9vk2466k"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "golang.org/x/oauth2"))
-    (propagated-inputs
-     (list go-cloud-google-com-go-compute-metadata
-           go-github-com-google-go-cmp-cmp))
-    (home-page "https://go.googlesource.com/oauth2")
-    (synopsis "Client implementation of the OAuth 2.0 spec")
-    (description
-     "This package contains a client implementation for OAuth 2.0
- spec in Go.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-jpillora-backoff
   (let ((commit
          "06c7a16c845dc8e0bf575fafeeca0f5462f5eb4d")

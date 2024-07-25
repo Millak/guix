@@ -3,9 +3,9 @@
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
+;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
-;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
@@ -3223,6 +3223,33 @@ programming language.")
        "This package provides an implementation of JSON Schema for the Go
 programming language, which supports draft-04, draft-06 and draft-07.")
       (license license:asl2.0))))
+
+(define-public go-golang-org-x-oauth2
+  (package
+    (name "go-golang-org-x-oauth2")
+    (version "0.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/oauth2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pzpa9jqrfxxhxi1w7n5ljnvr9qfw42hzavz62fc9i6z9vk2466k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "golang.org/x/oauth2"))
+    (propagated-inputs
+     (list go-cloud-google-com-go-compute-metadata
+           go-github-com-google-go-cmp))
+    (home-page "https://go.googlesource.com/oauth2")
+    (synopsis "Client implementation of the OAuth 2.0 spec")
+    (description
+     "This package contains a client implementation for OAuth 2.0
+ spec in Go.")
+    (license license:bsd-3)))
 
 ;; XXX: This repository has been archived by the owner on Feb 27, 2023. It is
 ;; now read-only and it is DEPRECATED.
