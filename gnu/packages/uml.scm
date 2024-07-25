@@ -3,7 +3,7 @@
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022, 2024 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +24,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system ant)
   #:use-module (gnu packages graphviz)
@@ -32,14 +33,15 @@
 (define-public plantuml
   (package
     (name "plantuml")
-    (version "1.2023.7")
+    (version "1.2024.6")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/plantuml/"
-                                  version "/plantuml-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/plantuml/plantuml/")
+                    (commit (string-append "v" version))))
               (sha256
                (base32
-                "0680hlhmwvzp1fw3zdsmy2x4szdhpdjgk028674fg3hwzwk5fv40"))))
+                "0h6hk34x5qc8cyqlw90wnakji8w6n9bykpr3dygvfwg2kvw5rhlv"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
