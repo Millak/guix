@@ -1643,7 +1643,7 @@ and search library.")
 (define-public bower
   (package
     (name "bower")
-    (version "1.0")
+    (version "1.1")
     (home-page "https://github.com/wangp/bower")
     (source
      (origin
@@ -1653,7 +1653,7 @@ and search library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vcsbxlsvr2wv3c7sfr3yj21kbqy259skpxg00vf5bdkbc8qknq4"))))
+        (base32 "1zh2zlwdmpq6195kg87q5dh864jvabxnrvfvzhks53pf9wjkv80a"))))
     (build-system gnu-build-system)
     (arguments
      (list
