@@ -4666,7 +4666,7 @@ QUIC protocol.")
            go-github-com-vishvananda-netns
            go-github-com-vishvananda-netlink
            go-github-com-bits-and-blooms-bitset
-           go-github-com-bits-and-blooms-bloom
+           go-github-com-bits-and-blooms-bloom-v3
            go-github-com-quic-go-quic-go
            go-github-com-hjson-hjson-go-v4
            go-github-com-olekukonko-tablewriter

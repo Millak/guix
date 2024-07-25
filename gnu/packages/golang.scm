@@ -6188,9 +6188,9 @@ efficient space usage.")
     (home-page "https://github.com/bits-and-blooms/bitset")
     (license license:bsd-3)))
 
-(define-public go-github-com-bits-and-blooms-bloom
+(define-public go-github-com-bits-and-blooms-bloom-v3
   (package
-    (name "go-github-com-bits-and-blooms-bloom")
+    (name "go-github-com-bits-and-blooms-bloom-v3")
     (version "3.7.0")
     (source (origin
               (method git-fetch)
