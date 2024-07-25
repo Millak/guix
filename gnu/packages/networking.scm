@@ -4658,14 +4658,13 @@ QUIC protocol.")
            go-github-com-bits-and-blooms-bitset
            go-github-com-bits-and-blooms-bloom
            go-github-com-quic-go-quic-go
-           go-github-com-hjson-hjson-go
+           go-github-com-hjson-hjson-go-v4
            go-github-com-olekukonko-tablewriter
            go-github-com-mitchellh-mapstructure
            go-github-com-mattn-go-runewidth
            go-github-com-mattn-go-isatty
            go-github-com-mattn-go-colorable
            go-github-com-kardianos-minwinsvc
-           go-github-com-hjson-hjson-go
            go-github-com-hashicorp-go-syslog
            go-github-com-gologme-log
            go-github-com-fatih-color

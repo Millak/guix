@@ -1379,9 +1379,9 @@ the Go standard library, but returns a client that does not share any state
 with other clients.")
     (license license:mpl2.0)))
 
-(define-public go-github-com-hjson-hjson-go
+(define-public go-github-com-hjson-hjson-go-v4
   (package
-    (name "go-github-com-hjson-hjson-go")
+    (name "go-github-com-hjson-hjson-go-v4")
     (version "4.4.0")
     (source
      (origin
@@ -1394,12 +1394,14 @@ with other clients.")
         (base32 "1d4b2hpqsnzbmfhgxq15hd19rjr5hydjmpblrh5yzfgx9z3cz2by"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/hjson/hjson-go"))
+     (list
+      #:import-path "github.com/hjson/hjson-go/v4"))
     (home-page "https://hjson.org/")
     (synopsis "Human JSON implementation for Go")
-    (description "Hjson is a syntax extension to JSON.  It is intended to be
-used like a user interface for humans, to read and edit before passing the
-JSON data to the machine.")
+    (description
+     "Hjson is a syntax extension to JSON.  It is intended to be used like a
+user interface for humans, to read and edit before passing the JSON data to
+the machine.")
     (license license:expat)))
 
 (define-public go-github-com-jackpal-gateway
