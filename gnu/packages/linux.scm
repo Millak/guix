@@ -9293,27 +9293,29 @@ management tools in userspace.")
   (package
     (name "go-netlink")
     (version "1.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/vishvananda/netlink")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1vhl30p1gx636a088ls4h6a0l8jjyfvz79fr5w0qzdrg4qg9h08h"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vishvananda/netlink")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vhl30p1gx636a088ls4h6a0l8jjyfvz79fr5w0qzdrg4qg9h08h"))))
     (build-system go-build-system)
     (arguments
-     `(#:tests? #f      ; Tests depend on specific kernel modules.
-       #:import-path "github.com/vishvananda/netlink"))
-    (native-inputs
+     (list
+      #:tests? #f      ; Tests depend on specific kernel modules.
+      #:import-path "github.com/vishvananda/netlink"))
+    (propagated-inputs
      (list go-golang-org-x-sys go-github-com-vishvananda-netns))
     (home-page "https://github.com/vishvananda/netlink")
     (synopsis "Simple netlink library for Go")
-    (description "The netlink package provides a simple netlink library for
-Go.  Netlink is the interface a user-space program in Linux uses to
-communicate with the kernel.  It can be used to add and remove interfaces, set
-IP addresses and routes, and configure IPsec.")
+    (description
+     "The netlink package provides a simple netlink library for Go.  Netlink
+is the interface a user-space program in Linux uses to communicate with the
+kernel.  It can be used to add and remove interfaces, set IP addresses and
+routes, and configure IPsec.")
     (license license:asl2.0)))
 
 (define-public libinih
