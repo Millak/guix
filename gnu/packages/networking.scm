@@ -4657,31 +4657,23 @@ QUIC protocol.")
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))))))))
     (propagated-inputs
-     (list go-golang-zx2c4-com-wireguard
-           go-golang-org-x-text
-           go-golang-org-x-net
-           go-golang-org-x-crypto
-           go-golang-org-x-tools
-           go-golang-org-x-sys
-           go-github-com-vishvananda-netns
-           go-github-com-vishvananda-netlink
-           go-github-com-bits-and-blooms-bitset
-           go-github-com-bits-and-blooms-bloom-v3
-           go-github-com-quic-go-quic-go
-           go-github-com-hjson-hjson-go-v4
-           go-github-com-olekukonko-tablewriter
-           go-github-com-mitchellh-mapstructure
-           go-github-com-mattn-go-runewidth
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-colorable
-           go-github-com-kardianos-minwinsvc
-           go-github-com-hashicorp-go-syslog
-           go-github-com-gologme-log
-           go-github-com-fatih-color
-           go-github-com-cheggaaa-pb-v3
-           go-github-com-vividcortex-ewma
+     (list ;; go-golang-org-x-mobile ; Not packed yet, for contrib.
+           ;; go-golang-zx2c4-com-wireguard-windows ; Not packed yet, for tun.
+           go-github-com-arceliar-ironwood
            go-github-com-arceliar-phony
-           go-github-com-arceliar-ironwood))
+           go-github-com-cheggaaa-pb-v3
+           go-github-com-gologme-log
+           go-github-com-hashicorp-go-syslog
+           go-github-com-hjson-hjson-go-v4
+           go-github-com-kardianos-minwinsvc
+           go-github-com-olekukonko-tablewriter
+           go-github-com-quic-go-quic-go
+           go-github-com-vishvananda-netlink
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           go-golang-zx2c4-com-wireguard))
     (home-page "https://yggdrasil-network.github.io/blog.html")
     (synopsis
      "Experiment in scalable routing as an encrypted IPv6 overlay network")
