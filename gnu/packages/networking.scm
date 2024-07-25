@@ -1917,9 +1917,9 @@ manage, and delete Internet resources from Gandi.net such as domain names,
 virtual machines, and certificates.")
     (license license:gpl3+)))
 
-(define-public go-netns
+(define-public go-github-com-vishvananda-netns
   (package
-    (name "go-netns")
+    (name "go-github-com-vishvananda-netns")
     (version "0.0.4")
     (source
      (origin
@@ -4663,7 +4663,7 @@ QUIC protocol.")
            go-golang-org-x-crypto
            go-golang-org-x-tools
            go-golang-org-x-sys
-           go-netns
+           go-github-com-vishvananda-netns
            go-netlink
            go-github-com-bits-and-blooms-bitset
            go-github-com-bits-and-blooms-bloom
@@ -4781,7 +4781,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
            go-google-golang-org-protobuf
            go-gopkg-in-yaml-v2
            go-netlink
-           go-netns))
+           go-github-com-vishvananda-netns))
     (home-page "https://github.com/slackhq/nebula")
     (synopsis "Scalable, peer-to-peer overlay networking tool")
     (description

@@ -311,7 +311,7 @@ the required network abstractions for applications.")
        ;; For tests.
        ("logrus" ,go-github-com-sirupsen-logrus)
        ("go-netlink" ,go-netlink)
-       ("go-netns" ,go-netns)
+       ("go-github-com-vishvananda-netns" ,go-github-com-vishvananda-netns)
        ("go-golang-org-x-crypto"
         ,go-golang-org-x-crypto)
        ("go-golang-org-x-sys" ,go-golang-org-x-sys)))

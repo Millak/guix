@@ -9307,7 +9307,7 @@ management tools in userspace.")
      `(#:tests? #f      ; Tests depend on specific kernel modules.
        #:import-path "github.com/vishvananda/netlink"))
     (native-inputs
-     (list go-golang-org-x-sys go-netns))
+     (list go-golang-org-x-sys go-github-com-vishvananda-netns))
     (home-page "https://github.com/vishvananda/netlink")
     (synopsis "Simple netlink library for Go")
     (description "The netlink package provides a simple netlink library for
