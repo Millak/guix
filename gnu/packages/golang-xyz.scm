@@ -72,6 +72,7 @@
   #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages prometheus) ; for go-github-com-nbrownus-go-metrics-prometheus
   #:use-module (gnu packages specifications))
 
 ;;; Commentary:

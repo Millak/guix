@@ -7375,55 +7375,6 @@ system, kernel, and process metrics from the @file{/proc} pseudo file system.")
     (home-page "https://github.com/prometheus/procfs")
     (license license:asl2.0)))
 
-(define-public go-github-com-prometheus-client-golang
-  (package
-    (name "go-github-com-prometheus-client-golang")
-    (version "1.19.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/prometheus/client_golang")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0mx5q221pbkx081ycf1lp8sxz513220ya8qczkkvab943cwlcarv"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/prometheus/client_golang"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-examples-and-tutorials
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file-recursively
-                          (list "api/prometheus/v1/example_test.go"
-                                "examples"
-                                "tutorial")))))
-          ;; XXX: Workaround for go-build-system's lack of Go modules support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
-    (propagated-inputs
-     (list go-github-com-beorn7-perks
-           go-github-com-cespare-xxhash-v2
-           go-github-com-davecgh-go-spew
-           go-github-com-json-iterator-go
-           go-github-com-prometheus-client-model
-           go-github-com-prometheus-common
-           go-github-com-prometheus-procfs
-           go-golang-org-x-sys
-           go-google-golang-org-protobuf))
-    (synopsis "HTTP server and client tools for Prometheus")
-    (description "This package @code{promhttp} provides HTTP client and
-server tools for Prometheus metrics.")
-    (home-page "https://github.com/prometheus/client_golang")
-    (license license:asl2.0)))
-
 (define-public go-github-com-zalando-go-keyring
   (package
     (name "go-github-com-zalando-go-keyring")
