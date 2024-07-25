@@ -1135,6 +1135,7 @@ written in Go.")
                   ;; available.
                   ;;
                   go-github-com-alecthomas-units              ; github.com/ipfs/boxo
+                  go-github-com-cespare-xxhash
                   go-github-com-docker-go-units               ; github.com/containerd/cgroups
                   go-github-com-felixge-httpsnoop             ; go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
                   go-github-com-flynn-noise                   ; github.com/libp2p/go-libp2p
