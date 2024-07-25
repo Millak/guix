@@ -38,6 +38,7 @@
 ;;; Copyright © 2022 Samuel Culpepper <sculpepper@newstore.com>
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
+;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -117,6 +118,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
@@ -2474,6 +2476,37 @@ Updates the database containing a cache of MIME types handled by desktop
 files.
 @end table")
     (license license:gpl2+)))
+
+(define-public drm-info
+  (package
+    (name "drm-info")
+    (version "2.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/emersion/drm_info.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0fc1rd3c16ddzbdpcj473ykszipzblj98lk376slk63v7mqvc1qm"))))
+    (build-system meson-build-system)
+    (arguments (list #:configure-flags
+                     #~(list "-Dman-pages=enabled"
+                             "-Dlibpci=enabled")))
+    (native-inputs
+     (append (if (%current-target-system)
+                 (list pkg-config-for-build)
+                 '())
+             (list pkg-config scdoc)))
+    (inputs
+     (list libdrm json-c pciutils))
+    (home-page "https://gitlab.freedesktop.org/emersion/drm_info")
+    (synopsis "Dump DRM device info")
+    (description "Displaying and dumping information on Direct
+Rendering Manager devices.")
+    (license license:expat)))
 
 (define-public xdg-user-dirs
   (package
