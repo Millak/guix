@@ -49,7 +49,7 @@
 ;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
-;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022, 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
@@ -85,6 +85,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
@@ -4339,6 +4340,37 @@ related tools to process winmail.dat files.")
        "The @command{l2md} command line tool imports public-inbox archives via
 Git and exports them in maildir format or to an MDA through a pipe.")
       (license license:gpl2))))
+
+(define-public bubger
+  (package
+    (name "bubger")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://git.causal.agency/bubger/snapshot/bubger-"
+                       version ".tar.gz"))
+       (sha256
+        (base32 "014r9p7f0ismhybvcs4p3s4ph3lcygn15kfdkd73i09fb82pqyw6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ; There are no tests.
+           #:make-flags
+           #~(list
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))))
+    (native-inputs
+     (list pkg-config universal-ctags))
+    (inputs (list libressl))
+    (home-page "https://code.causal.agency/june/bubger")
+    (synopsis "IMAP archive generator")
+    (description
+     "@command{bubger} is a mailing list archive generator for mail stored in
+IMAP.  It produces static files of HTML, Atom and mboxrd, making its output
+easy to serve from a host without IMAP access.  It requires the IMAP THREAD
+extension.")
+    (license license:gpl3+)))
 
 (define-public public-inbox
   (package
