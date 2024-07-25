@@ -1918,29 +1918,29 @@ virtual machines, and certificates.")
     (license license:gpl3+)))
 
 (define-public go-netns
-  (let ((commit "13995c7128ccc8e51e9a6bd2b551020a27180abd")
-        (revision "1"))
     (package
       (name "go-netns")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.4")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/vishvananda/netns")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1zk6w8158qi4niva5rijchbv9ixgmijsgqshh54wdaav4xrhjshn"))))
+                  "0rci8c211m57nya9il81fz6459pia3dj5i4b16fp34vjrkcxliml"))))
       (build-system go-build-system)
       (arguments
        `(#:import-path "github.com/vishvananda/netns"
          #:tests? #f))                  ;tests require root privileges
+      (propagated-inputs
+       (list go-golang-org-x-sys))
       (home-page "https://github.com/vishvananda/netns")
       (synopsis "Simple network namespace handling for Go")
       (description "The netns package provides a simple interface for
 handling network namespaces in Go.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-sctp
   ;; docker-libnetwork-cmd-proxy requires this exact commit.
