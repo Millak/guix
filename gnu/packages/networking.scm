@@ -4635,8 +4635,6 @@ QUIC protocol.")
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/yggdrasil-network/yggdrasil-go"
-           ;; TODO: figure out how tests are run
-           #:tests? #f
            #:install-source? #f
            #:phases
            #~(modify-phases %standard-phases
@@ -4655,7 +4653,12 @@ QUIC protocol.")
                          #:import-path directory))
                       (list "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasil"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
-                            "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))))))))
+                            "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys")))))
+               (replace 'check
+                 (lambda* (#:key tests? import-path #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion (string-append "src/" import-path)
+                       (invoke "go" "test" "-v" "./cmd/..." "./src/..."))))))))
     (propagated-inputs
      (list ;; go-golang-org-x-mobile ; Not packed yet, for contrib.
            ;; go-golang-zx2c4-com-wireguard-windows ; Not packed yet, for tun.
