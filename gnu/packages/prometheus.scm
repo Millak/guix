@@ -2,7 +2,9 @@
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018, 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2024 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,6 +88,39 @@
 @url{https://godoc.org/golang.org/x/net/trace#@code{EventLog,(code}
 x/net/trace)} tracing wrappers @code{net.Conn}, both inbound
 (@@code{net.Listener}) and outbound (@@code{net.Dialer}).")
+    (license license:asl2.0)))
+
+(define-public go-github-com-nbrownus-go-metrics-prometheus
+  (package
+    (name "go-github-com-nbrownus-go-metrics-prometheus")
+    (version "0.0.0-20210712211119-974a6260965f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nbrownus/go-metrics-prometheus")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kl9l08aas544627zmhkgp843qx94sxs4inxm20nw1hx7gp79dz0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; The project looks abandoned, tests failed with a new go-metrics, see
+      ;; <https://github.com/nbrownus/go-metrics-prometheus/pull/2>.
+      #:tests? #f
+      #:import-path "github.com/nbrownus/go-metrics-prometheus"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-prometheus-client-golang
+           go-github-com-rcrowley-go-metrics))
+    (home-page "https://github.com/nbrownus/go-metrics-prometheus")
+    (synopsis "Prometheus support for go-metrics")
+    (description
+     "This package provides a reporter for the @code{go-metrics} library which
+posts the metrics to the Prometheus client registry and just updates the
+registry.")
     (license license:asl2.0)))
 
 (define-public go-github-com-prometheus-client-golang

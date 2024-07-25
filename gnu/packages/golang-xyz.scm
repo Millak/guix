@@ -72,7 +72,6 @@
   #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages prometheus) ; for go-github-com-nbrownus-go-metrics-prometheus
   #:use-module (gnu packages specifications))
 
 ;;; Commentary:
@@ -3944,38 +3943,6 @@ varints.")
     (description
      "This package provides a unique identifier generator that is high performance,
 very fast, and tries to be entropy pool friendly.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-nbrownus-go-metrics-prometheus
-  (package
-    (name "go-github-com-nbrownus-go-metrics-prometheus")
-    (version "0.0.0-20210712211119-974a6260965f")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nbrownus/go-metrics-prometheus")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1kl9l08aas544627zmhkgp843qx94sxs4inxm20nw1hx7gp79dz0"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      ;; The project looks abandoned, tests failed with a new go-metrics.
-      #:tests? #f
-      #:import-path "github.com/nbrownus/go-metrics-prometheus"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-github-com-prometheus-client-golang
-           go-github-com-rcrowley-go-metrics))
-    (home-page "https://github.com/nbrownus/go-metrics-prometheus")
-    (synopsis "Prometheus support for go-metrics")
-    (description
-     "This package provides a reporter for the @code{go-metrics} library which
-posts the metrics to the Prometheus client registry and just updates the
-registry.")
     (license license:asl2.0)))
 
 (define-public go-github-com-neurosnap-sentences
