@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021 BonfaceKilz <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
@@ -1067,6 +1068,37 @@ Architecture Processors\" by J. Guilford et al.")
     (synopsis "Multihash implementation in Go")
     (description "Multihash implementation in Go.")
     (license license:expat)))
+
+(define-public go-github-com-oneofone-xxhash
+  (package
+    (name "go-github-com-oneofone-xxhash")
+    (version "1.2.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OneOfOne/xxhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f98qk83l2fhpclvrgyxsa9b8m4pipf11fah85bnjl01wy4lvybw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/OneOfOne/xxhash"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-benchmarks
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/benchmarks")))))))
+    (home-page "https://github.com/OneOfOne/xxhash")
+    (synopsis "Go implementation of xxHash")
+    (description
+     "This is a native Go implementation of the
+@url{https://github.com/Cyan4973/xxHash, xxHash} algorithm, an extremely fast
+non-cryptographic hash algorithm, working at speeds close to RAM limits.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-operatorfoundation-ed25519
   (let ((commit "b22b4bd3ddef042eec45f3ee135cd40281fde2b4")

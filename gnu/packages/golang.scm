@@ -8013,36 +8013,6 @@ friendly sizes.  It converts boring ugly numbers to human-friendly strings and
 back.")
     (license license:expat)))
 
-(define-public go-github-com-oneofone-xxhash
-  (package
-    (name "go-github-com-oneofone-xxhash")
-    (version "1.2.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/OneOfOne/xxhash")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0f98qk83l2fhpclvrgyxsa9b8m4pipf11fah85bnjl01wy4lvybw"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/OneOfOne/xxhash"
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'remove-benchmarks
-                     (lambda* (#:key import-path #:allow-other-keys)
-                       (delete-file-recursively
-                        (string-append "src/" import-path "/benchmarks")))))))
-    (home-page "https://github.com/OneOfOne/xxhash")
-    (synopsis "Go implementation of xxHash")
-    (description "This is a native Go implementation of the
-@url{https://github.com/Cyan4973/xxHash, xxHash} algorithm, an extremely fast
-non-cryptographic hash algorithm, working at speeds close to RAM limits.")
-    (license license:asl2.0)))
-
 (define-public go-gopkg-in-djherbis-times-v1
   (package
     (name "go-gopkg-in-djherbis-times-v1")
