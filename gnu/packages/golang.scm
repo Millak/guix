@@ -6191,7 +6191,7 @@ efficient space usage.")
 (define-public go-github-com-bits-and-blooms-bloom
   (package
     (name "go-github-com-bits-and-blooms-bloom")
-    (version "3.6.0")
+    (version "3.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6200,20 +6200,10 @@ efficient space usage.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02rpjlgl7k3755qnlsk519xazgqlk73b8wvkpqlvccywms5w77bq"))))
+                "022pyzjp862ysl30aj105i2xmapn400ambjh8h1dcyjy9c0f8agn"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/bits-and-blooms/bloom"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-import-path
-           (lambda _
-             ;; See 'go.mod' in the source distribution of Syncthing 1.5.0 for
-             ;; more information.
-             ;; <https://github.com/spaolacci/murmur3/issues/29>
-             (substitute* "src/github.com/bits-and-blooms/bloom/bloom.go"
-               (("spaolacci") "twmb"))
-             #t)))))
+     (list #:import-path "github.com/bits-and-blooms/bloom"))
     (propagated-inputs
      (list go-github-com-twmb-murmur3 go-github-com-bits-and-blooms-bitset))
     (synopsis "Bloom filters in Go")
