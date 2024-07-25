@@ -93,13 +93,14 @@ unpacking."
 
 (define* (build #:key egg-name #:allow-other-keys)
   "Build the Chicken egg named by EGG-NAME"
-  (invoke "chicken-install" "-cached" "-no-install" egg-name))
+  (chdir egg-name)
+  (invoke "chicken-install" "-cached" "-no-install"))
 
-(define* (install #:key egg-name #:allow-other-keys)
+(define (install . _)
   "Install the already built egg named by EGG-NAME"
-  (invoke "chicken-install" "-cached" egg-name))
+  (invoke "chicken-install" "-cached"))
 
-(define* (check #:key egg-name tests? #:allow-other-keys)
+(define* (check #:key tests? #:allow-other-keys)
   "Build and run tests for the Chicken egg EGG-NAME"
   ;; there is no "-test-only" option, but we've already run install
   ;; so this just runs tests.
@@ -109,7 +110,7 @@ unpacking."
                          ":"
                          (getenv "CHICKEN_REPOSITORY_PATH")))
   (when tests?
-    (invoke "chicken-install" "-cached" "-test" "-no-install" egg-name)))
+    (invoke "chicken-install" "-cached" "-test" "-no-install")))
 
 (define* (stamp-egg-version #:key egg-name name #:allow-other-keys)
   "Check if EGG-NAME.egg contains version information and add some if not."
