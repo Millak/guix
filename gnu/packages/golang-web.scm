@@ -1382,7 +1382,7 @@ with other clients.")
 (define-public go-github-com-hjson-hjson-go
   (package
     (name "go-github-com-hjson-hjson-go")
-    (version "4.3.1")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -1391,7 +1391,7 @@ with other clients.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "138vmbnrwzxf64cia27k407clrydvs2jx927dlv6ziydiqyvy7m3"))))
+        (base32 "1d4b2hpqsnzbmfhgxq15hd19rjr5hydjmpblrh5yzfgx9z3cz2by"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/hjson/hjson-go"))
