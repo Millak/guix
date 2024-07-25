@@ -8176,14 +8176,26 @@ dependencies and a simple API.")
          "06ay82gqm3k649m7x0r3a3crnqv9x0yxhyqfabrf1b7inki35mfs"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/Arceliar/ironwood"
-           #:tests? #f
-           #:phases
-           #~(modify-phases %standard-phases
-             ;; Source-only package
-             (delete 'build))))
+     (list
+      #:import-path "github.com/Arceliar/ironwood"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/cmd/ironwood-example"))))
+          ;; XXX: Replace when go-build-system supports nested path.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
-     (list go-golang-org-x-crypto go-github-com-arceliar-phony))
+     (list go-github-com-arceliar-phony
+           go-github-com-bits-and-blooms-bitset
+           go-github-com-bits-and-blooms-bloom-v3
+           go-golang-org-x-crypto))
     (home-page "https://github.com/Arceliar/ironwood")
     (synopsis "Experimental network routing library")
     (description
