@@ -1,10 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2024 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,7 +31,6 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
-  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
@@ -329,6 +331,37 @@ metrics.")
      "This package provides a @code{http.RoundTripper} that will sign requests
 using Amazon's Signature Verification V4 signing procedure, using credentials
 from the default AWS credential chain.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-prometheus-procfs
+  (package
+    (name "go-github-com-prometheus-procfs")
+    (version "0.15.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus/procfs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "116ns8k1yjdj9a2vq5czlpmafrhy0yw5y0bcm1qqbqnn57agg68m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/prometheus/procfs"
+      ;; The tests require Go modules, which are not yet supported in Guix's
+      ;; Go build system.
+      #:tests? #f))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (synopsis "Go library for reading @file{/proc}")
+    (home-page "https://github.com/prometheus/procfs")
+    (description
+     "The @code{procfs} Go package provides functions to retrieve system,
+kernel, and process metrics from the @file{/proc} pseudo file system.")
     (license license:asl2.0)))
 
 ;;;

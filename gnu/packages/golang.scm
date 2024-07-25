@@ -96,7 +96,6 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages prometheus)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages terminals)
@@ -7348,35 +7347,6 @@ system.")
       (description "@code{go-localeinfo} extracts monetary/numeric/time
 formatting information, rather than the current locale name.")
       (license license:expat))))
-
-(define-public go-github-com-prometheus-procfs
-  (package
-    (name "go-github-com-prometheus-procfs")
-    (version "0.15.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/prometheus/procfs")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "116ns8k1yjdj9a2vq5czlpmafrhy0yw5y0bcm1qqbqnn57agg68m"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/prometheus/procfs"
-       ;; The tests require Go modules, which are not yet supported in Guix's
-       ;; Go build system.
-       #:tests? #f))
-    (propagated-inputs
-     (list go-github-com-google-go-cmp
-           go-golang-org-x-sync
-           go-golang-org-x-sys))
-    (synopsis "Go library for reading @file{/proc}")
-    (description "The @code{procfs} Go package provides functions to retrieve
-system, kernel, and process metrics from the @file{/proc} pseudo file system.")
-    (home-page "https://github.com/prometheus/procfs")
-    (license license:asl2.0)))
 
 (define-public go-github-com-zalando-go-keyring
   (package
