@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2021, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
@@ -239,7 +239,9 @@ has a 'meson.build' file."
                                    configure-flags)
                              #:build-type #$build-type
                              #:tests? #$tests?
-                             #:test-options #$(sexp->gexp test-options)
+                             #:test-options #$(if (pair? test-options)
+                                                  (sexp->gexp test-options)
+                                                  test-options)
                              #:parallel-build? #$parallel-build?
                              #:parallel-tests? #$parallel-tests?
                              #:validate-runpath? #$validate-runpath?
@@ -352,7 +354,9 @@ SOURCE has a 'meson.build' file."
                                                    configure-flags))
                        #:build-type #$build-type
                        #:tests? #$tests?
-                       #:test-options #$(sexp->gexp test-options)
+                       #:test-options #$(if (pair? test-options)
+                                            (sexp->gexp test-options)
+                                            test-options)
                        #:parallel-build? #$parallel-build?
                        #:parallel-tests? #$parallel-tests?
                        #:validate-runpath? #$validate-runpath?
