@@ -1547,6 +1547,20 @@ Go.")
        #:unpack-path "filippo.io/age"
        #:install-source? #f))))
 
+(define-public go-keyring
+  (package
+    (inherit go-github-com-99designs-keyring)
+    (name "go-keyring")
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/99designs/keyring/cmd/keyring"
+      #:unpack-path "github.com/99designs/keyring"))
+    (description
+     (string-append (package-description go-github-com-99designs-keyring)
+                    "  This package provides an command line interface (CLI)
+tool."))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
