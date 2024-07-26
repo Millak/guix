@@ -46,12 +46,14 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages password-utils)
   #:use-module (gnu packages specifications))
 
 ;;; Commentary:
@@ -214,6 +216,30 @@ primitives.")
        (sha256
         (base32 "0mkvy7scyq07rkqhabfmkd8imcm4h9y7zj9palj04znpihpixa5m"))))
     (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/99designs/keyring"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Disable test requring running DBus.
+                  (("TestLibSecretKeysWhenEmpty")
+                   "OffTestLibSecretKeysWhenEmpty")
+                  (("TestLibSecretKeysWhenNotEmpty")
+                   "OffTestLibSecretKeysWhenNotEmpty")
+                  (("TestLibSecretGetWhenEmpty")
+                   "OffTestLibSecretGetWhenEmpty")
+                  (("TestLibSecretGetWhenNotEmpty")
+                   "OffTestLibSecretGetWhenNotEmpty")
+                  (("TestLibSecretRemoveWhenEmpty")
+                   "OffTestLibSecretRemoveWhenEmpty")
+                  (("TestLibSecretRemoveWhenNotEmpty")
+                   "OffTestLibSecretRemoveWhenNotEmpty"))))))))
+    (native-inputs
+     (list gnupg go-github-com-stretchr-testify password-store))
     (propagated-inputs
      (list go-github-com-dvsekhvalnov-jose2go
            go-github-com-godbus-dbus
@@ -222,9 +248,7 @@ primitives.")
            go-github-com-mtibben-percent
            go-golang-org-x-sys
            go-golang-org-x-term))
-    (arguments
-     '(#:import-path "github.com/99designs/keyring"
-       #:tests? #f))                              ;XXX: tests require Vagrant
+    (home-page "https://github.com/99designs/keyring")
     (synopsis "Go library providing a uniform interface for various secure
 credential stores")
     (description
@@ -235,7 +259,6 @@ workstations.
 
 Currently Keyring supports the following backends: macOS/OSX Keychain, Windows
 pcredential store, Pass, Secret Service, KDE Wallet, Encrypted File.")
-    (home-page "https://github.com/99designs/keyring")
     (license license:expat)))
 
 (define-public go-github-com-aead-chacha20
