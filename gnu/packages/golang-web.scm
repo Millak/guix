@@ -923,31 +923,6 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
 language.")
     (license license:expat)))
 
-(define-public go-github-com-go-telegram-bot-api-telegram-bot-api
-  (package
-    (name "go-github-com-go-telegram-bot-api-telegram-bot-api")
-    (version "4.6.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/go-telegram-bot-api/telegram-bot-api")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1x6j0k3aiicsr8l53na99ci10zm3qpn2syz4f60fzh164w5k1l7w"))))
-    (build-system go-build-system)
-    (home-page "https://go-telegram-bot-api.dev/")
-    (arguments
-     (list #:tests? #f                  ; Upstream tests are broken.
-           #:import-path "github.com/go-telegram-bot-api/telegram-bot-api"))
-    (propagated-inputs
-     (list go-github-com-technoweenie-multipartstreamer))
-    (synopsis "Golang bindings for the Telegram Bot API")
-    (description
-     "This package provides Golang bindings for the Telegram Bot API.")
-    (license license:expat)))
-
 (define-public go-github-com-go-webauthn-webauthn
   (package
     (name "go-github-com-go-webauthn-webauthn")
