@@ -40,7 +40,8 @@
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages sqlite))
+  #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages time))
 
 (define-public nspr
   (package
@@ -213,11 +214,21 @@ in the Mozilla clients.")
                     (substitute* "nss/tests/dbtests/dbtests.sh"
                       ((" -lt 5") " -lt 50"))
 
+                    #$@(if (target-64bit?)
+                           '()
+                           ;; The script fails to determine the source
+                           ;; directory when running under 'datefudge' (see
+                           ;; <https://issues.guix.gnu.org/72239>).  Help it.
+                           #~((substitute* "nss/tests/gtests/gtests.sh"
+                                (("SOURCE_DIR=.*")
+                                 (string-append "SOURCE_DIR=" (getcwd) "/nss\n")))))
+
                     ;; The "PayPalEE.cert" certificate expires every six months,
                     ;; leading to test failures:
                     ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
                     ;; work around that, set the time to roughly the release date.
-                    (invoke "faketime" "2024-01-23" "./nss/tests/all.sh"))
+                    (invoke #$(if (target-64bit?) "faketime" "datefudge")
+                            "2024-01-23" "./nss/tests/all.sh"))
                   (format #t "test suite not run~%"))))
           (replace 'install
             (lambda* (#:key outputs #:allow-other-keys)
@@ -242,7 +253,9 @@ in the Mozilla clients.")
                 (copy-recursively (string-append obj "/lib") lib)))))))
     (inputs (list sqlite zlib))
     (propagated-inputs (list nspr))               ;required by nss.pc.
-    (native-inputs (list perl libfaketime which)) ;for tests
+    (native-inputs (list perl                     ;for tests
+                         (if (target-64bit?) libfaketime datefudge)
+                         which))
 
     ;; The NSS test suite takes around 48 hours on Loongson 3A (MIPS) when
     ;; another build is happening concurrently on the same machine.
