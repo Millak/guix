@@ -200,9 +200,9 @@ Go, exposing the necessary APIs to build a wide array of higher-level
 primitives.")
     (license license:bsd-3)))
 
-(define-public go-github-com-99designs-go-keyring
+(define-public go-github-com-99designs-keyring
   (package
-    (name "go-github-com-99designs-go-keyring")
+    (name "go-github-com-99designs-keyring")
     (version "1.2.2")
     (source
      (origin
