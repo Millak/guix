@@ -8653,38 +8653,6 @@ email library.")
 text-only mail clients to display them.")
     (license license:expat)))
 
-(define-public go-github-com-jhillyerd-enmime
-  (package
-    (name "go-github-com-jhillyerd-enmime")
-    (version "1.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jhillyerd/enmime")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "03pir9wq9ha2i2ifj819yv5i0lvrgdn904ksbzgc3k8bqc497ydn"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/jhillyerd/enmime"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs (list
-                        go-github-com-cention-sany-utf7
-                        go-github-com-go-test-deep
-                        go-github-com-gogs-chardet
-                        go-github-com-jaytaylor-html2text
-                        go-github-com-pkg-errors
-                        go-golang-org-x-text))
-    (home-page "https://github.com/jhillyerd/enmime")
-    (synopsis "MIME encoder and decoder for Go")
-    (description
-     "The enmime package implements a MIME encoding and decoding
-library geared towards parsing MIME encoded emails.")
-    (license license:expat)))
-
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")
