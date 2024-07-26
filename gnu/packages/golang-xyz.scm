@@ -3457,6 +3457,35 @@ the @code{cpan} module @code{Parse::CommandLine}.")
 @code{database/sql}.")
     (license license:expat)))
 
+(define-public go-github-com-mattn-go-tty
+  (package
+    (name "go-github-com-mattn-go-tty")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-tty")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09ndgwrx99jqaakmhk4v2pnai9h2mvryapc3qg6i33v2x809y6z6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/go-tty"))
+    (propagated-inputs
+     (list go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth
+           go-golang-org-x-sys))
+    (home-page "https://github.com/mattn/go-tty")
+    (synopsis "Simple TTY utility for Golang")
+    (description
+     "This package provides a TTY utilities implementation for verity of
+operation systems.")
+    (license license:expat)))
+
 (define-public go-github-com-mattn-go-zglob
   (package
     (name "go-github-com-mattn-go-zglob")
