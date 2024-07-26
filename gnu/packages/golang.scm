@@ -4049,13 +4049,13 @@ which satisfies the cron expression.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1vpzkjmrwp7bqqsijp61293kk2vn6lcck56j8m5y6ks6cf21lpap"))))
+        (base32 "1vpzkjmrwp7bqqsijp61293kk2vn6lcck56j8m5y6ks6cf21lpap"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "gopkg.in/ini.v1"
-       ;; Requires large unpackaged test framework
-       #:tests? #f))
+     (list
+      #:import-path "gopkg.in/ini.v1"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (home-page "https://gopkg.in/ini.v1")
     (synopsis "Go library for ini files")
     (description "Go library for ini files")
