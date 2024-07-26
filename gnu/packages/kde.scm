@@ -1361,6 +1361,7 @@ different notification systems.")
            qtdeclarative
            qtmultimedia
            qtwayland
+           sonnet
            wayland
            modemmanager-qt
            libxkbcommon))
