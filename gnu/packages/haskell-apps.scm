@@ -617,11 +617,11 @@ and mIRC chat codes.")
 (define-public kmonad
   ;; Project is active, but no new releases exist. Pick current master
   ;; HEAD as of 2023-01-08.
-  (let ((commit "a0af5b8b3f085adb2c09ca52374a53566c25194c")
-        (revision "1"))
+  (let ((commit "31c591b647d277fe34cb06fc70b0d053dd15f867")
+        (revision "0"))
     (package
       (name "kmonad")
-      (version (git-version "0.4.1" revision commit))
+      (version (git-version "0.4.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -630,7 +630,7 @@ and mIRC chat codes.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "00qmmk1lgadhh32dqi530xm18v79ndcm7rrxvdsf827vicv2nhw1"))))
+          (base32 "0k1dfyy1q86l5yivv1jrclgvp9k48qm8pzk1j9wavq92li77y7r5"))))
       (build-system haskell-build-system)
       (arguments
        `(#:haddock? #f ; Haddock fails to generate docs
