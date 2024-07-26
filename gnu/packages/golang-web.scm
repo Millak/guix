@@ -305,6 +305,34 @@ connections from a single physical connection.")
      (list go-github-com-google-go-cmp
            go-github-com-aws-smithy-go))))
 
+(define-public go-github-com-aws-aws-sdk-go-v2-credentials
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-credentials")
+    (version "1.17.27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-sdk-go-v2")
+             (commit (string-append "credentials/v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jdj7wim98g80hjbw3av7ffrr3dqxzbygprmhjs0cxc16cw62wj7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/credentials"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-aws-smithy-go))
+    (home-page "https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/credentials")
+    (synopsis "AWS SDK for Go v2 - credentials module")
+    (description
+     "Package credentials provides types for retrieving credentials from
+credentials sources.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
   (package
     (inherit go-github-com-aws-aws-sdk-go-v2)
