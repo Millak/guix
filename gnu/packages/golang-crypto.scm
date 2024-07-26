@@ -539,9 +539,7 @@ library.")
         (base32 "1fiqpdwxnfba2cgij7j83dfqc0zz4mq95x15wicgm5f3vjr1xg5h"))))
     (build-system go-build-system)
     (arguments
-     (list ;; tests don't support our version of protonmail/go-crypto; see
-      ;; <https://github.com/emersion/go-pgpmail/issues/12>
-      #:tests? #f
+     (list
       #:import-path "github.com/emersion/go-pgpmail"))
     (propagated-inputs
      (list go-github-com-emersion-go-message
