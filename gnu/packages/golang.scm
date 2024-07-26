@@ -8754,11 +8754,12 @@ library geared towards parsing MIME encoded emails.")
                              go-github-com-jhillyerd-enmime
                              go-github-com-gdamore-tcell-v2))
     (home-page "https://github.com/gatherstars-com/jwz")
-    (synopsis "Implementation in Go of the email threading algorithm
-originally invented for Netscape Mail")
+    (synopsis "Email threading algorithm in Golang")
     (description
      "The jwz package provides an implementation of the email threading
-algorithm originally designed for use in Netscape Mail 2.0 for Go.")
+algorithm originally designed for use in
+@url{https://www.jwz.org/doc/threading.html,Netscape Mail 2.0 and 3.0} for
+Golang.")
     (license license:asl2.0)))
 
 (define-public go-github-com-creack-pty
