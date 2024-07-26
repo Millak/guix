@@ -8210,7 +8210,7 @@ be useful for other network applications.")
 (define-public aws-vault
   (package
     (name "aws-vault")
-    (version "6.6.2")
+    (version "7.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8219,31 +8219,24 @@ be useful for other network applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fjdslg7nhlm9hl7bg69j1izrjx6sspbhwk973d0m8ig9nkdja06"))))
+                "1dqg6d2k8r80ww70afghf823z0pijha1i0a0c0c6918yb322zkj2"))))
     (build-system go-build-system)
     (native-inputs
-     (list go-github-com-99designs-go-keyring
-           go-github-com-mtibben-androiddnsfix
-           go-github-com-mtibben-percent
-           go-github-com-jmespath-go-jmespath
-           go-github-com-dvsekhvalnov-jose2go
-           go-github-com-godbus-dbus
-           go-github-com-gsterjov-go-libsecret
-           go-github-com-mitchellh-go-homedir
-           go-golang-org-x-crypto
-           go-golang-org-x-sys
-           go-golang-org-x-term
-           go-gopkg-in-ini
-           go-github-com-skratchdot-open-golang
-           go-github-com-alecthomas-kingpin
-           go-github-com-alecthomas-template
-           go-github-com-alecthomas-units
+     (list go-github-com-99designs-keyring
+           go-github-com-alecthomas-kingpin-v2
            go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
            go-github-com-aws-aws-sdk-go-v2-service-iam
            go-github-com-aws-aws-sdk-go-v2-service-sso
            go-github-com-aws-aws-sdk-go-v2-service-ssooidc
-           go-github-com-aws-aws-sdk-go-v2-service-sts))
+           go-github-com-aws-aws-sdk-go-v2-service-sts
+           go-github-com-google-go-cmp
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-tty
+           go-github-com-skratchdot-open-golang
+           go-golang-org-x-term
+           go-gopkg-in-ini-v1))
     (arguments
      `(#:import-path "github.com/99designs/aws-vault"
        #:install-source? #f
