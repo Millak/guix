@@ -8628,7 +8628,7 @@ email library.")
 (define-public go-github-com-emersion-go-message
   (package
     (name "go-github-com-emersion-go-message")
-    (version "0.16.0")
+    (version "0.18.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8637,12 +8637,12 @@ email library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j5qdhsna28xcs843zsiccw700rld5hin466dl0n3a0ax1w13ay0"))))
+                "0gzcgrs5sava8fpybp5cw6f3zqnbz096wf93hcgkrg94wl1g7kqb"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/emersion/go-message"))
-    (propagated-inputs (list go-golang-org-x-text
-                             go-github-com-emersion-go-textwrapper))
+    (propagated-inputs
+     (list go-golang-org-x-text))
     (home-page "https://github.com/emersion/go-message")
     (synopsis "Internet messages and MIME for Go")
     (description
