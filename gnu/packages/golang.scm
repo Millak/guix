@@ -8734,34 +8734,6 @@ text-only mail clients to display them.")
 library geared towards parsing MIME encoded emails.")
     (license license:expat)))
 
-(define-public go-github-com-gatherstars-com-jwz
-  (package
-    (name "go-github-com-gatherstars-com-jwz")
-    (version "1.4.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/gatherstars-com/jwz")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1d66axc3504wqpb4axlm8m9jq8rmwndxb4asbqwryymj3yh60cla"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/gatherstars-com/jwz"))
-    (propagated-inputs (list go-github-com-rivo-tview
-                             go-github-com-jhillyerd-enmime
-                             go-github-com-gdamore-tcell-v2))
-    (home-page "https://github.com/gatherstars-com/jwz")
-    (synopsis "Email threading algorithm in Golang")
-    (description
-     "The jwz package provides an implementation of the email threading
-algorithm originally designed for use in
-@url{https://www.jwz.org/doc/threading.html,Netscape Mail 2.0 and 3.0} for
-Golang.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")

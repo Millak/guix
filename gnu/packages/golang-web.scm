@@ -10,11 +10,12 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 raingloom <raingloom@riseup.net>
-;;; Copyright © 2020-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Adam Kandur <kefironpremise@gmail.com>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -755,6 +756,35 @@ application's http.Handlers.")
 API and doesn't use reflection.  It relies on small interfaces to
 decode/encode structures and slices.")
     (license license:expat)))
+
+(define-public go-github-com-gatherstars-com-jwz
+  (package
+    (name "go-github-com-gatherstars-com-jwz")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gatherstars-com/jwz")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d66axc3504wqpb4axlm8m9jq8rmwndxb4asbqwryymj3yh60cla"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/gatherstars-com/jwz"))
+    (propagated-inputs
+     (list go-github-com-rivo-tview
+           go-github-com-jhillyerd-enmime
+           go-github-com-gdamore-tcell-v2))
+    (home-page "https://github.com/gatherstars-com/jwz")
+    (synopsis "Email threading algorithm in Golang")
+    (description
+     "The jwz package provides an implementation of the email threading
+algorithm originally designed for use in
+@url{https://www.jwz.org/doc/threading.html,Netscape Mail 2.0 and 3.0} for
+Golang.")
+    (license license:asl2.0)))
 
 ;; TODO: This repository has been archived by the owner on Aug 30, 2023. It is
 ;; now read-only. The raven-go SDK is no longer maintained and was superseded
