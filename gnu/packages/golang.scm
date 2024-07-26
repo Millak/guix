@@ -8211,16 +8211,46 @@ be useful for other network applications.")
   (package
     (name "aws-vault")
     (version "7.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/99designs/aws-vault")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1dqg6d2k8r80ww70afghf823z0pijha1i0a0c0c6918yb322zkj2"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/99designs/aws-vault")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dqg6d2k8r80ww70afghf823z0pijha1i0a0c0c6918yb322zkj2"))))
     (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/99designs/aws-vault"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-version
+            (lambda _
+              (substitute* "src/github.com/99designs/aws-vault/main.go"
+                (("var Version = \"dev\"")
+                 (string-append "var Version = \"v" #$version "\"")))))
+          (add-after 'build 'contrib
+            (lambda* (#:key import-path #:allow-other-keys)
+              (let* ((zsh-site-dir
+                      (string-append #$output "/share/zsh/site-functions"))
+                     (bash-completion-dir
+                      (string-append #$output "/share/bash-completion/completions"))
+                     (fish-completion-dir
+                      (string-append #$output "/share/fish/completions")))
+                (for-each mkdir-p (list bash-completion-dir
+                                        fish-completion-dir
+                                        zsh-site-dir))
+                (with-directory-excursion
+                    (string-append "src/" import-path "/contrib/completions")
+                  (copy-file "zsh/aws-vault.zsh"
+                             (string-append zsh-site-dir "/_aws-vault"))
+                  (copy-file "bash/aws-vault.bash"
+                             (string-append bash-completion-dir "/aws-vault"))
+                  (copy-file "fish/aws-vault.fish"
+                             (string-append fish-completion-dir "/aws-vault.fish")))))))))
     (native-inputs
      (list go-github-com-99designs-keyring
            go-github-com-alecthomas-kingpin-v2
@@ -8237,36 +8267,8 @@ be useful for other network applications.")
            go-github-com-skratchdot-open-golang
            go-golang-org-x-term
            go-gopkg-in-ini-v1))
-    (arguments
-     `(#:import-path "github.com/99designs/aws-vault"
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-version
-           (lambda _
-             (substitute* "src/github.com/99designs/aws-vault/main.go"
-               (("var Version = \"dev\"")
-                (string-append "var Version = \"v" ,version "\"")))))
-         (add-after 'build 'contrib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (zsh-site-dir (string-append out "/share/zsh/site-functions"))
-                    (bash-completion-dir
-                     (string-append out "/share/bash-completion/completions"))
-                    (fish-completion-dir
-                     (string-append out "/share/fish/completions")))
-               (for-each mkdir-p
-                         `(,zsh-site-dir ,bash-completion-dir ,fish-completion-dir))
-               (with-directory-excursion
-                   "src/github.com/99designs/aws-vault/contrib/completions"
-                 (copy-file "zsh/aws-vault.zsh"
-                            (string-append zsh-site-dir "/_aws-vault"))
-                 (copy-file "bash/aws-vault.bash"
-                            (string-append bash-completion-dir "/aws-vault"))
-                 (copy-file "fish/aws-vault.fish"
-                            (string-append fish-completion-dir "/aws-vault.fish")))))))))
-    (synopsis
-     "Vault for securely storing and accessing AWS credentials")
+    (home-page "https://github.com/99designs/aws-vault")
+    (synopsis "Vault for securely storing and accessing AWS credentials")
     (description
      "AWS Vault is a tool to securely store and access @acronym{Amazon Web
 Services,AWS} credentials.
@@ -8275,7 +8277,6 @@ AWS Vault stores IAM credentials in your operating system's secure keystore and
 then generates temporary credentials from those to expose to your shell and
 applications.  It's designed to be complementary to the AWS CLI tools, and is
 aware of your profiles and configuration in ~/.aws/config.")
-    (home-page "https://github.com/99designs/aws-vault")
     (license license:expat)))
 
 (define-public go-github-com-gsterjov-go-libsecret
