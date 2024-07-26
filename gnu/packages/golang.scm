@@ -4040,7 +4040,7 @@ which satisfies the cron expression.")
 (define-public go-gopkg-in-ini-v1
   (package
     (name "go-gopkg-in-ini-v1")
-    (version "1.56.0")
+    (version "1.67.0")
     (source
      (origin
        (method git-fetch)
@@ -4050,7 +4050,7 @@ which satisfies the cron expression.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j5z0cngg6mq2f9id083jcdi7k6r2h35714pashv6sdv2q7bmfc5"))))
+         "1vpzkjmrwp7bqqsijp61293kk2vn6lcck56j8m5y6ks6cf21lpap"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "gopkg.in/ini.v1"
