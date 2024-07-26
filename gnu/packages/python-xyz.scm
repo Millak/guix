@@ -12904,24 +12904,31 @@ computing.")
 (define-public python-urwid
   (package
     (name "python-urwid")
-    (version "2.1.2")
+    (version "2.6.15")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "urwid" version))
        (sha256
         (base32
-         "1bky2bra6673xx8jy0826znw6cmxs89wcwwzda8d025j3jffx2sq"))))
-    (build-system python-build-system)
+         "06v7m5xayyglzv630qsbg7zh6k37h6k94w7x7xkdkj481lrmgk4y"))))
+    (build-system pyproject-build-system)
     (arguments
       (list
+        ;; XXX The test suite requires python-tornado but fails to find it
+        ;; whether or not it is available in the build environment.
+        #:tests? #f
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'remove-vterm-tests
               ;; According to Debian these tests are cursed.
               ;; https://salsa.debian.org/python-team/packages/urwid/-/blob/debian/2.1.2-2/debian/changelog#L141
               (lambda _
-                (delete-file "urwid/tests/test_vterm.py"))))))
+                (delete-file "tests/test_vterm.py"))))))
+    (propagated-inputs
+      (list python-typing-extensions python-wcwidth))
+    (native-inputs
+      (list python-setuptools-scm))
     (home-page "https://urwid.org")
     (synopsis "Console user interface library for Python")
     (description
