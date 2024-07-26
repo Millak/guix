@@ -3303,30 +3303,6 @@ editor.")
 slices, JSON and other data.")
     (license license:expat)))
 
-(define-public go-github-com-technoweenie-multipartstreamer
-  (package
-    (name "go-github-com-technoweenie-multipartstreamer")
-    (version "1.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/technoweenie/multipartstreamer")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "159jhcabdkds8m5777zfs8p5z3snpjhzz7q9aq9wjpcvh6xlljqa"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:tests? #f                  ; Upstream tests are broken.
-           #:import-path "github.com/technoweenie/multipartstreamer"))
-    (home-page "https://github.com/technoweenie/multipartstreamer")
-    (synopsis "MIME multipart format streamer")
-    (description
-     "This package helps you encode large files in MIME multipart format
-without reading the entire content into memory.")
-    (license license:expat)))
-
 (define-public go-github-com-tevino-abool
   (let ((commit
           "3c25f2fe7cd0ef3eabefce1d90efd69a65d35b12")
