@@ -3545,6 +3545,11 @@ September 2004}")
               (let* ((prefix (assoc-ref outputs "out"))
                      (flags `(,(string-append "--prefix=" prefix)
                               ,@configure-flags)))
+                ;; Sort source files in configure (for reproducibility).
+                (substitute* "config/gmakegen.py"
+                  (("join\\(srcs\\[lang\\]\\)")
+                   "join(sorted(srcs[lang]))"))
+
                 (format #t "build directory: ~s~%" (getcwd))
                 (format #t "configure flags: ~s~%" flags)
                 (apply invoke "./configure" flags)
@@ -3559,8 +3564,8 @@ September 2004}")
                 (substitute* (find-files "." "^petsc(conf|machineinfo).h$")
                   ;; Prevent build directory from leaking into compiled code
                   (((getcwd)) out)
-                  ;; Scrub timestamp for reproducibility
-                  ((".*Libraries compiled on.*") ""))
+                  (("Machine characteristics: Linux-[0-9]+\\.[0-9]+\\.[0-9]+")
+                    "Machine characteristics: Linux-x.x.x"))
                 (substitute* (find-files "." "petscvariables")
                   ;; Do not expose build machine characteristics, set to defaults.
                   (("MAKE_NP = [:digit:]+") "MAKE_NP = 2")
