@@ -527,7 +527,7 @@ library.")
 (define-public go-github-com-emersion-go-pgpmail
   (package
     (name "go-github-com-emersion-go-pgpmail")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -536,7 +536,7 @@ library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ar26b0apw5bxn58qfn1a79cxigbmrqm1irh1rb7x57fydihc7wm"))))
+        (base32 "1fiqpdwxnfba2cgij7j83dfqc0zz4mq95x15wicgm5f3vjr1xg5h"))))
     (build-system go-build-system)
     (arguments
      (list ;; tests don't support our version of protonmail/go-crypto; see
@@ -546,7 +546,6 @@ library.")
     (propagated-inputs
      (list go-github-com-emersion-go-message
            go-github-com-protonmail-go-crypto
-           go-golang-org-x-crypto
            go-golang-org-x-text))
     (home-page "https://github.com/emersion/go-pgpmail")
     (synopsis "PGP mail encryption for Go")
