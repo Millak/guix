@@ -9,6 +9,7 @@
 ;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
+;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021 raingloom <raingloom@riseup.net>
@@ -35,8 +36,8 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
-;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Luis Higino <luishenriquegh2701@gmail.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5343,6 +5344,30 @@ Go.")
     (arguments
      (list
       #:import-path "gopkg.in/alecthomas/kingpin.v2"))))
+
+(define-public go-gopkg-in-ini-v1
+  (package
+    (name "go-gopkg-in-ini-v1")
+    (version "1.67.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-ini/ini")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vpzkjmrwp7bqqsijp61293kk2vn6lcck56j8m5y6ks6cf21lpap"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/ini.v1"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://gopkg.in/ini.v1")
+    (synopsis "Go library for ini files")
+    (description "Go library for ini files")
+    (license license:asl2.0)))
 
 (define-public go-gopkg-in-natefinch-lumberjack.v2
   (package
