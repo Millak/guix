@@ -66,8 +66,10 @@
 
 ;;; Commentary:
 ;;;
-;;; Golang modules (libraries) related to HTML, CSS, SCSS, JavaScript, JSON,
-;;; Web-framework, REST-API or similar functionality. They may provide
+;;; Golang modules (libraries) for Web related projects: HTML, CSS, SCSS,
+;;; JavaScript, JSON, Web-framework, REST-API or similar functionality; for
+;;; Network related projects: OSI layers implementation algorithms, MIME,
+;;; Email protocols implementations, and similar.  They may provide
 ;;; executables and libraries, for which there are marked sections.
 
 ;;;
