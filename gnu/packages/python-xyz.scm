@@ -16073,7 +16073,7 @@ structures.")
 
 (define-public wfetch
   (let ((commit "e1cfa37814aebc9eb56ce994ebe877b6a6f9a715")
-        (revision "1"))
+        (revision "2"))
     (package
       (name "wfetch")
       (version (git-version "0.1-pre" revision commit))
@@ -16101,7 +16101,10 @@ structures.")
                  (mkdir-p share)
                  (substitute* "wfetch/wfetch.py"
                    (("os.sep, 'opt', 'wfetch'") (string-append "'" share "'")))
-                 (install-file "wfetch/wfetch.py" bin)
+                 ; The documentation expects the executable to be named
+                 ; 'wfetch', not 'wfetch.py'.
+                 (rename-file "wfetch/wfetch.py" "wfetch/wfetch")
+                 (install-file "wfetch/wfetch" bin)
                  (copy-recursively "wfetch/icons" share)))))))
       (inputs (list python-pyowm python-fire python-termcolor python-requests))
       (synopsis "Command-line tool to display weather info")
