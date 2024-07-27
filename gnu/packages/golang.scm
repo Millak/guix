@@ -5650,7 +5650,7 @@ can be used to build IMAP clients and servers.")
 (define-public go-github-com-emersion-go-smtp
   (package
     (name "go-github-com-emersion-go-smtp")
-    (version "0.15.0")
+    (version "0.21.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5659,7 +5659,7 @@ can be used to build IMAP clients and servers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vhc0vpjd4yhxk6wrh01sdpi7nprjn98s46yy82xwlkm0cskl0h7"))))
+                "0drvmvrkmhqhnv4m3my1hbkyyva2vi35b36j0pdi57xc9rflziq3"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/emersion/go-smtp"))
