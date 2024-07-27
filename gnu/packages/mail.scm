@@ -56,6 +56,7 @@
 ;;; Copyright © 2023 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Benjamin Slade <slade@lambda-y.net>
+;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5117,3 +5118,41 @@ features:
     ;; <https://lists.sr.ht/~rjarry/aerc-devel/%3Cb5cb213a7d0c699a886971658c2476
     ;; 1073eb2391%40disroot.org%3E>
     (license license:gpl3+)))
+
+(define-public hydroxide
+  (package
+    (name "hydroxide")
+    (version "0.2.29")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/hydroxide")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11gbikrgm7nf0zjav64202wsnr9pvrmslm2rzg9d9rbvwdqcq1jl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/emersion/hydroxide/cmd/hydroxide"
+      #:unpack-path "github.com/emersion/hydroxide"))
+    (native-inputs
+     (list go-github-com-protonmail-go-crypto
+           go-github-com-boltdb-bolt
+           go-github-com-emersion-go-bcrypt
+           go-github-com-emersion-go-imap
+           go-github-com-emersion-go-mbox
+           go-github-com-emersion-go-message
+           go-github-com-emersion-go-smtp
+           go-github-com-emersion-go-vcard
+           go-github-com-emersion-go-webdav
+           go-golang-org-x-crypto
+           go-golang-org-x-term))
+    (home-page "https://github.com/emersion/hydroxide")
+    (synopsis "ProtonMail CardDAV, IMAP and SMTP bridge")
+    (description
+     "This package implements a functionality to translate standard
+protocols (SMTP, IMAP, CardDAV) into ProtonMail API requests.")
+    (license license:expat)))
