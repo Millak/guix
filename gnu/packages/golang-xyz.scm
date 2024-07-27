@@ -825,6 +825,38 @@ for generating command line clients for your application configuration that is
 stored in a Go struct.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-avast-retry-go
+  (package
+    (name "go-github-com-avast-retry-go")
+    (version "2.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/avast/retry-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zkn8c2gyz8j90bf0aj6avfl3sf7j4rk5g4ak4yhglnsx72jdhbz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/avast/retry-go"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))
+    (propagated-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/avast/retry-go")
+    (synopsis "Simple golang library for retry mechanism")
+    (description
+     "This package is a simple Go library that provides retry functionality
+for functions that may fail.  It includes various customizable retry
+strategies, such as fixed delay, backoff delay, and random delay.")
+    (license license:expat)))
+
 (define-public go-github-com-aymanbagabas-go-osc52-v2
   (package
     (name "go-github-com-aymanbagabas-go-osc52-v2")
