@@ -1124,21 +1124,19 @@ cluster segmentation algorithm.")
        #:import-path "github.com/apparentlymart/go-textseg/autoversion/textseg"))))
 
 (define-public go-github-com-avast-retry-go
-  (let ((commit "a322e24d96313ab405dec28ad5711f036c6d25a3")
-        (revision "0"))
     (package
       (name "go-github-com-avast-retry-go")
-      (version (git-version "2.4.2" revision commit))
+      (version "2.7.0")
       (source
        (origin
          (method git-fetch)
          (uri
           (git-reference
            (url "https://github.com/avast/retry-go")
-           (commit commit)))
+           (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0hb4b1668516a4gv8avmflr565b6c1h93phdb068hcjxxj8767ba"))))
+          (base32 "0zkn8c2gyz8j90bf0aj6avfl3sf7j4rk5g4ak4yhglnsx72jdhbz"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -1154,7 +1152,7 @@ cluster segmentation algorithm.")
       (description "This package is a simple Go library that provides retry
 functionality for functions that may fail.  It includes various customizable
 retry strategies, such as fixed delay, backoff delay, and random delay.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-operatorfoundation-shapeshifter-transports
   (package
