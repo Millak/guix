@@ -4981,6 +4981,31 @@ well as a program to generate applications and command files.")
 storage system.")
     (license license:bsd-2)))
 
+(define-public go-github-com-teambition-rrule-go
+  (package
+    (name "go-github-com-teambition-rrule-go")
+    (version "1.8.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/teambition/rrule-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fnbava35w9z60carny5b7whd4nkv6hrf9g43wwg8d88gfij9zj2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/teambition/rrule-go"))
+    (home-page "https://github.com/teambition/rrule-go")
+    (synopsis "Recurrence rules for calendar dates for Golang")
+    (description
+     "This package provides a functionality to work with recurrence rules for
+calendar dates.  It offers a complete implementation of the
+@url{https://www.ietf.org/rfc/rfc2445.txt,RFC 2445} specification.")
+    (license license:expat)))
+
 (define-public go-github-com-thejerf-suture
   (package
     (name "go-github-com-thejerf-suture")
