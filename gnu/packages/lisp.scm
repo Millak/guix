@@ -1506,8 +1506,9 @@ be built as a stand-alone REPL interpreter.")
                                          `("clisp")))
                      (string-append "--prefix="
                                     (assoc-ref outputs "out"))
-                     ,@(if (target-ppc32?)
-                         ;; 3072 is too much for this architecture.
+                     ,@(if (or (target-ppc32?)
+                               (target-x86-32?))
+                         ;; 3072 is too much for these architectures.
                          `("--dynamic-space-size=2048")
                          `("--dynamic-space-size=3072"))
                      "--with-sb-core-compression"
