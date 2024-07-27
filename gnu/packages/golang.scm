@@ -5725,7 +5725,7 @@ defined by RFC 5321.")
 (define-public go-github-com-emersion-go-maildir
   (package
     (name "go-github-com-emersion-go-maildir")
-    (version "0.3.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5734,7 +5734,7 @@ defined by RFC 5321.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rs9kbacjpcza25pmdkbm7sdm7r6gq4g44nihi9asyrvspx96zf2"))))
+                "0wa7spn3qa7ipmg29vrimw7phyybyaagdalrjklcazjb6rplvwpl"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/emersion/go-maildir"))
