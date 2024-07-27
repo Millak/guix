@@ -9305,6 +9305,10 @@ management tools in userspace.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; The tests are unsupported on all architectures except x86_64-linux:
+      ;; cannot use 0xabcdef99 (untyped int constant 2882400153) as int value
+      ;; in struct literal (overflows)
+      #:tests? (and (not (%current-target-system)) (target-x86-64?))
       #:import-path "github.com/vishvananda/netlink"
       #:phases
       #~(modify-phases %standard-phases
