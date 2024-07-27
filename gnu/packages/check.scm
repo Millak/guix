@@ -1063,6 +1063,7 @@ with the @code{klee} package.")
       (base32 "1nma6dqi8chjb97llsa8mzyskgsg4dx56lm8j514j5wmr8vkafz6"))))
    (arguments
     (list
+     #:strip-directories #~(list "bin") ;don't strip LLVM bitcode in /lib
      #:test-target "check"
      #:phases
      #~(modify-phases %standard-phases
