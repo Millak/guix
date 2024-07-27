@@ -321,6 +321,42 @@ annotations on struct fields.  It came as a spin-off from
 commands.")
     (license license:expat)))
 
+(define-public go-git-sr-ht-rockorager-vaxis
+  (package
+    (name "go-git-sr-ht-rockorager-vaxis")
+    (version "0.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~rockorager/vaxis")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pmi4bigqgrfdlk9d6ia3jxgcr4iadiyynf6bny9fdc3yyppcxic"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~rockorager/vaxis"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-containerd-console
+           go-github-com-creack-pty
+           go-github-com-mattn-go-runewidth
+           go-github-com-mattn-go-sixel
+           go-github-com-rivo-uniseg
+           go-golang-org-x-exp
+           go-golang-org-x-image
+           go-golang-org-x-sys))
+    (home-page "https://git.sr.ht/~rockorager/vaxis")
+    (synopsis "TUI library for Golang")
+    (description
+     "Package vaxis is a terminal user interface for modern terminals.  It
+supports supports modern terminal features, such as styled underlines and
+graphics.  A widgets package is provided with some useful widgets.")
+    (license license:asl2.0)))
+
 (define-public go-git-sr-ht-sircmpwn-getopt
   (package
     (name "go-git-sr-ht-sircmpwn-getopt")
