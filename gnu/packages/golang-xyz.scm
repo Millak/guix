@@ -3552,6 +3552,32 @@ string.")
 the @code{cpan} module @code{Parse::CommandLine}.")
     (license license:expat)))
 
+(define-public go-github-com-mattn-go-sixel
+  (package
+    (name "go-github-com-mattn-go-sixel")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-sixel")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0icv1mcavdw867s47kwvd16q19h2a4znph850lyq18d5z00kpjjs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/go-sixel"))
+    (propagated-inputs
+     (list go-github-com-soniakeys-quant))
+    (home-page "https://github.com/mattn/go-sixel")
+    (synopsis "DRCS/Sixel Encoder/Decoder")
+    (description
+     "This package implements functionality to encode and decode
+@acronym{DRCS,Dynamically Redefinable Character Sets} Sixel.")
+    (license license:expat)))
+
 (define-public go-github-com-mattn-go-sqlite3
   (package
     (name "go-github-com-mattn-go-sqlite3")
