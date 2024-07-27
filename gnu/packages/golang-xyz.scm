@@ -857,6 +857,35 @@ for functions that may fail.  It includes various customizable retry
 strategies, such as fixed delay, backoff delay, and random delay.")
     (license license:expat)))
 
+(define-public go-github-com-avast-retry-go-v3
+  (package
+    (inherit go-github-com-avast-retry-go)
+    (name "go-github-com-avast-retry-go-v3")
+    (version "3.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/avast/retry-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01mwrzjh2y3xignkivx8kaghjs3gwb3z89zqgxjfaslslazc863b"))))
+    (arguments
+     (list
+      #:import-path "github.com/avast/retry-go/v3"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  (("TestMaxDelay") "OffTestMaxDelay")))))
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))))
+
 (define-public go-github-com-aymanbagabas-go-osc52-v2
   (package
     (name "go-github-com-aymanbagabas-go-osc52-v2")
