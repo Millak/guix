@@ -22,6 +22,7 @@
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -523,6 +524,32 @@ Cryptography (ECC).")
 and encrypting JSON Web Tokens (JWT).  It relies only on the standard
 library.")
     (license license:expat)))
+
+(define-public go-github-com-emersion-go-bcrypt
+  (package
+    (name "go-github-com-emersion-go-bcrypt")
+    (version "0.0.0-20170822072041-6e724a1baa63")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-bcrypt")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pchrgs05w30iqbh4d6iys4wvlyajsdwchp5mkf59amgsbyjaqgm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-bcrypt"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/emersion/go-bcrypt")
+    (synopsis "Extract of bcrypt from golang.org/x/crypto/bcrypt")
+    (description
+     "This package provides an extract @code{bcrypt} from
+@code{golang.org/x/crypto/bcrypt}.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-emersion-go-pgpmail
   (package
