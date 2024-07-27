@@ -1979,6 +1979,42 @@ for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
 specified in @url{https://datatracker.ietf.org/doc/html/rfc6350, RFC 6350}.")
     (license license:expat)))
 
+(define-public go-github-com-emersion-go-webdav
+  (package
+    (name "go-github-com-emersion-go-webdav")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-webdav")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ay0x3c1frkj4z3j17s42yvf1hgmg8223qmsyr41yxwz88zsvjlj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-webdav"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-github-com-emersion-go-ical
+           go-github-com-emersion-go-vcard))
+    (home-page "https://github.com/emersion/go-webdav")
+    (synopsis "WebDAV, CalDAV and CardDAV implementations in Golang")
+    (description
+     "This package provides Golang modules implementing WebDAV
+@url{https://tools.ietf.org/html/rfc4918, RFC 4918}, CalDAV
+@url{https://tools.ietf.org/html/rfc4791, RFC 4791} and CardDAV
+@url{https://tools.ietf.org/html/rfc6352, RFC 6352} specifications.")
+    (license license:expat)))
+
 (define-public go-github-com-errata-ai-ini
   (package
     (name "go-github-com-errata-ai-ini")
