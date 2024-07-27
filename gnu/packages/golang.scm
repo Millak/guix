@@ -7991,7 +7991,7 @@ parser.")
 (define-public go-github-com-rivo-uniseg
   (package
     (name "go-github-com-rivo-uniseg")
-    (version "0.2.0")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch)
@@ -8000,7 +8000,7 @@ parser.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j7h22vfmjj562vr8gpsyrkrwp1pq9ayh5fylv24skxb467g9f0q"))))
+        (base32 "0nlcqyvq4vhq3hqhk84h6fp0jbqkjj88kcpcl853yr7sh4sisdxc"))))
     (build-system go-build-system)
     (arguments '(#:import-path "github.com/rivo/uniseg"))
     (home-page "https://github.com/rivo/uniseg")
