@@ -1930,6 +1930,31 @@ scanner API made public.")
 for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
     (license license:expat)))
 
+(define-public go-github-com-emersion-go-ical
+  (package
+    (name "go-github-com-emersion-go-ical")
+    (version "0.0.0-20240127095438-fc1c9d8fb2b6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-ical")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01cn9kggkdalb6xp2nrka01gs40zs8v6h5bq8d2m8wrdcsy5b36v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-ical"))
+    (propagated-inputs (list go-github-com-teambition-rrule-go))
+    (home-page "https://github.com/emersion/go-ical")
+    (synopsis "iCalendar library for Golang")
+    (description
+     "This package implements @url{https://tools.ietf.org/html/rfc5545, RFC
+5545} iCalendar specification.")
+    (license license:expat)))
+
 (define-public go-github-com-emersion-go-vcard
   (package
     (name "go-github-com-emersion-go-vcard")
