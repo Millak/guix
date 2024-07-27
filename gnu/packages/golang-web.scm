@@ -130,6 +130,44 @@ API service accounts for Go.")
      "This package provides a GraphQL client and code generator for Go.")
     (license license:expat)))
 
+(define-public go-git-sr-ht-rockorager-go-jmap
+  (package
+    (name "go-git-sr-ht-rockorager-go-jmap")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~rockorager/go-jmap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r8bmdlmvpk08i7xrqwgv0aaz05564wgcyji73nszdh2s32m4kzl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~rockorager/go-jmap"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list
+      go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-oauth2))
+    (home-page "https://git.sr.ht/~rockorager/go-jmap")
+    (synopsis "JSON meta application protocol in Golang")
+    (description
+     "Package jmap implements JMAP Core protocol as defined in
+@@url{https://rfc-editor.org/rfc/rfc8620.html,RFC 8620} published on July
+2019.")
+    (license license:expat)))
+
 (define-public go-github-com-alexliesenfeld-health
   (package
     (name "go-github-com-alexliesenfeld-health")
