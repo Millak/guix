@@ -35,6 +35,7 @@
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Luis Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
@@ -1178,6 +1179,35 @@ information and periodically output metrics")
      "Perks contains the Go package @code{quantile} that computes approximate
 quantiles over an unbounded data stream within low memory and CPU bounds.")
     (license license:bsd-2)))
+
+;; XXX: This repository has been archived by the owner on Mar 9, 2019. It is
+;; now read-only.
+(define-public go-github-com-boltdb-bolt
+  (package
+    (name "go-github-com-boltdb-bolt")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/boltdb/bolt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z7j06lijfi4y30ggf2znak2zf2srv2m6c68ar712wd2ys44qb3r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;tests are broken in upstream
+      #:import-path "github.com/boltdb/bolt"))
+    (home-page "https://github.com/boltdb/bolt")
+    (synopsis "Embedded key/value database for Golang")
+    (description
+     "Bolt is a pure Go key/value store inspired by
+@url{http://symas.com/mdb/, Howard Chu's LMDB project}.  The goal of the
+project is to provide a simple, fast, and reliable database for projects that
+don't require a full database server such as Postgres or MySQL.")
+    (license license:expat)))
 
 (define-public go-github-com-briandowns-spinner
   (package
