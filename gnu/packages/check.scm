@@ -1070,12 +1070,17 @@ with the @code{klee} package.")
                           (substitute* "CMakeLists.txt"
                             (("\\$\\{KLEE_UCLIBC_PATH\\}/lib/libc\\.a")
                              "${KLEE_UCLIBC_PATH}"))))
-                      (add-after 'install 'wrap-hooks
+                      (add-after 'install 'wrap-programs
                         (lambda* (#:key inputs outputs #:allow-other-keys)
                           (let* ((out (assoc-ref outputs "out"))
                                  (bin (string-append out "/bin"))
                                  (lib (string-append out "/lib")))
-                            ;; Ensure that KLEE finds runtime libraries (e.g. uclibc).
+                            ;; Ensure that klee-stats finds its Python dependencies.
+                            (wrap-program (string-append bin "/klee-stats")
+                              `("GUIX_PYTHONPATH" ":" prefix
+                                ,(search-path-as-string->list
+                                   (getenv "GUIX_PYTHONPATH"))))
+                            ;; Ensure that klee finds runtime libraries (e.g. uclibc).
                             (wrap-program (string-append bin "/klee")
                               `("KLEE_RUNTIME_LIBRARY_PATH" =
                                 (,(string-append lib "/klee/runtime/"))))))))
@@ -1088,7 +1093,7 @@ with the @code{klee} package.")
                             (search-input-file %build-inputs "/lib/klee/libc.a"))
              "-DENABLE_POSIX_RUNTIME=ON")))
    (native-inputs (list clang-13 llvm-13 python-lit))
-   (inputs (list bash-minimal klee-uclibc gperftools sqlite z3))
+   (inputs (list bash-minimal klee-uclibc gperftools sqlite z3 python python-tabulate))
    (build-system cmake-build-system)
    (home-page "https://klee-se.org/")
    (synopsis "Symbolic execution engine")
