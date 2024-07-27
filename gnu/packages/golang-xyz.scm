@@ -293,6 +293,34 @@ a human-readable byte format.")
 search functionality to database applications.")
     (license license:expat)))
 
+(define-public go-git-sr-ht-rjarry-go-opt
+  (package
+    (name "go-git-sr-ht-rjarry-go-opt")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~rjarry/go-opt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jcs3bn43g3wv4d5w59zazy139qfkn0903lnvndfn06s81gzqpch"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~rjarry/go-opt"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://git.sr.ht/~rjarry/go-opt")
+    (synopsis "Argument parsing and completion based on struct tags")
+    (description
+     "@code{go-opt} is a library to parse command line arguments based on tag
+annotations on struct fields.  It came as a spin-off from
+@url{https://git.sr.ht/~rjarry/aerc,aerc} to deal with its internal
+commands.")
+    (license license:expat)))
+
 (define-public go-git-sr-ht-sircmpwn-getopt
   (package
     (name "go-git-sr-ht-sircmpwn-getopt")
