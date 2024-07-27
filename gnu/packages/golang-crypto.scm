@@ -1216,11 +1216,16 @@ algorithm.")
     (arguments
      (list
       #:import-path "github.com/ProtonMail/go-crypto"
-      #:tests? #f ; Source-only package.
       #:phases
       #~(modify-phases %standard-phases
-          ;; Source-only package.
-          (delete 'build))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-cloudflare-circl
            go-golang-org-x-crypto))
