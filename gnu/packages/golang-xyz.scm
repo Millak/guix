@@ -886,6 +886,30 @@ strategies, such as fixed delay, backoff delay, and random delay.")
               (delete-file-recursively
                (string-append "src/" import-path "/examples")))))))))
 
+(define-public go-github-com-avast-retry-go-v4
+  (package
+    (inherit go-github-com-avast-retry-go)
+    (name "go-github-com-avast-retry-go-v4")
+    (version "4.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/avast/retry-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09gs4wmkq7ragyf2xd0h6j8f9xqq66cwa95kwp5qdwz3wwv9xq1b"))))
+    (arguments
+     (list
+      #:import-path "github.com/avast/retry-go/v4"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))))
+
 (define-public go-github-com-aymanbagabas-go-osc52-v2
   (package
     (name "go-github-com-aymanbagabas-go-osc52-v2")
