@@ -210,6 +210,34 @@ required dependencies.  The HTTP response contains the aggregated health
 result and details about the health status of each component.")
     (license license:expat)))
 
+(define-public go-github-com-anaskhan96-soup
+  (package
+    (name "go-github-com-anaskhan96-soup")
+    (version "1.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/anaskhan96/soup")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s19119sy4zqf05sgpdymcbdaz5bg86n7xwgd2m1vvxjmp485k5p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/anaskhan96/soup"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/anaskhan96/soup")
+    (synopsis "Web Scraper in Go, similar to BeautifulSoup")
+    (description
+     "Small web scraper package for Go, with its interface highly similar to
+that of BeautifulSoup.")
+    (license license:expat)))
+
 (define-public go-github-com-andybalholm-cascadia
   (package
     (name "go-github-com-andybalholm-cascadia")
