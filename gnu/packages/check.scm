@@ -1111,6 +1111,7 @@ with the @code{klee} package.")
    (native-inputs (list clang-13 llvm-13 python-lit))
    (inputs (list bash-minimal klee-uclibc gperftools sqlite z3 python python-tabulate))
    (build-system cmake-build-system)
+   (supported-systems '("x86_64-linux"))
    (home-page "https://klee-se.org/")
    (synopsis "Symbolic execution engine")
    (description "KLEE is a symbolic virtual machine built on top of the LLVM
