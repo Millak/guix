@@ -1063,13 +1063,22 @@ with the @code{klee} package.")
       (base32 "1nma6dqi8chjb97llsa8mzyskgsg4dx56lm8j514j5wmr8vkafz6"))))
    (arguments
     (list
+     #:test-target "check"
      #:phases
      #~(modify-phases %standard-phases
                       (add-after 'unpack 'patch
                         (lambda _
+                          ;; Allow specification of an absolute full path to uclibc.
                           (substitute* "CMakeLists.txt"
                             (("\\$\\{KLEE_UCLIBC_PATH\\}/lib/libc\\.a")
-                             "${KLEE_UCLIBC_PATH}"))))
+                             "${KLEE_UCLIBC_PATH}"))
+                          ;; Make sure that we retain the value of the GUIX_PYTHONPATH
+                          ;; environment variable in the test environmented created by
+                          ;; python-lit.  Otherwise, the test scripts won't be able to
+                          ;; find the python-tabulate dependency, causing test failures.
+                          (substitute* "test/lit.cfg"
+                            (("addEnv\\('PWD'\\)" env)
+                             (string-append env "\n" "addEnv('GUIX_PYTHONPATH')")))))
                       (add-after 'install 'wrap-programs
                         (lambda* (#:key inputs outputs #:allow-other-keys)
                           (let* ((out (assoc-ref outputs "out"))
@@ -1085,7 +1094,13 @@ with the @code{klee} package.")
                               `("KLEE_RUNTIME_LIBRARY_PATH" =
                                 (,(string-append lib "/klee/runtime/"))))))))
      #:configure-flags
-     #~(list (string-append "-DLLVMCC="
+     #~(list "-DENABLE_UNIT_TESTS=ON"
+             "-DENABLE_SYSTEM_TESTS=ON"
+             (string-append "-DGTEST_SRC_DIR="
+                            #+(package-source googletest))
+             (string-append "-DGTEST_INCLUDE_DIR="
+                            #+(package-source googletest) "/googletest/include")
+             (string-append "-DLLVMCC="
                             (search-input-file %build-inputs "/bin/clang"))
              (string-append "-DLLVMCXX="
                             (search-input-file %build-inputs "/bin/clang++"))
