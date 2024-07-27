@@ -1930,6 +1930,30 @@ scanner API made public.")
 for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
     (license license:expat)))
 
+(define-public go-github-com-emersion-go-vcard
+  (package
+    (name "go-github-com-emersion-go-vcard")
+    (version "0.0.0-20230815062825-8fda7d206ec9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-vcard")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12n5jinj5xzdfl9jhqvjbzxvj32bw310mdw4q5rjv35pk566zixl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-vcard"))
+    (home-page "https://github.com/emersion/go-vcard")
+    (synopsis "Parse and format vCard in Golang")
+    (description
+     "This package implements functionality to parse and format vCard as
+specified in @url{https://datatracker.ietf.org/doc/html/rfc6350, RFC 6350}.")
+    (license license:expat)))
+
 (define-public go-github-com-errata-ai-ini
   (package
     (name "go-github-com-errata-ai-ini")
