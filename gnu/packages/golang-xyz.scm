@@ -4749,6 +4749,29 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
      "@{gitconfig} is a package to get configuration values from gitconfig.")
     (license license:expat)))
 
+(define-public go-github-com-soniakeys-quant
+  (package
+    (name "go-github-com-soniakeys-quant")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/soniakeys/quant")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y50h4d9l4v1dxhf99ys6fha5c7viflwdnlfxn7glf2jr49x5z78"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/soniakeys/quant"))
+    (home-page "https://github.com/soniakeys/quant")
+    (synopsis "Interface for image color quantizers")
+    (description
+     "Quant provides an interface for image color quantizers.")
+    (license license:expat)))
+
 (define-public go-github-com-spf13-cobra
   (package
     (name "go-github-com-spf13-cobra")
