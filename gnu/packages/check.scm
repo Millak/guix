@@ -1006,6 +1006,7 @@ runner.  It is quite unopinionated with most of its features being optional.")
          (sha256
           (base32 "12fnr5mq80cxwvv09gi844mi31jgi8067swagxnlxlhxj4mi125j"))))
       (build-system gnu-build-system)
+      (supported-systems '("x86_64-linux"))
       (arguments
        `(#:tests? #f ;upstream uClibc tests do not work in the fork
          #:strip-directories '() ;only ships a static library, so don't strip anything.
