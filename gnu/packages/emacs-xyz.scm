@@ -35164,6 +35164,28 @@ It can also be useful on Unix-like platforms to delay having to enter your
 passphrase until the first time you push to a remote.")
     (license license:gpl3+)))
 
+(define-public emacs-ssh-deploy
+  (package
+    (name "emacs-ssh-deploy")
+    (version "3.1.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/ssh-deploy-" version
+                           ".tar"))
+       (sha256
+	(base32 "0fb88l3270d7l808q8x16zcvjgsjbyhgifgv17syfsj0ja63x28p"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/cjohansson/emacs-ssh-deploy")
+    (synopsis "Deployment via Tramp, global or per directory.")
+    (description
+     "SSH Deploy enables automatic deploys on explicit-save actions, manual
+uploads, renaming, deleting, downloads, file and directory differences,
+launching remote terminals (Eshell, Shell), detection of remote changes,
+remote directory browsing, remote SQL database sessions and running custom
+deployment scripts via Tramp.")
+    (license license:gpl3+)))
+
 (define-public emacs-super-save
   (package
     (name "emacs-super-save")
