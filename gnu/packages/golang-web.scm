@@ -799,6 +799,29 @@ used to build IMAP clients and servers.")
 @code{go-github-com-emersion-go-imap}.")
     (license license:expat)))
 
+(define-public go-github-com-emersion-go-maildir
+  (package
+    (name "go-github-com-emersion-go-maildir")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-maildir")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wa7spn3qa7ipmg29vrimw7phyybyaagdalrjklcazjb6rplvwpl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-maildir"))
+    (home-page "https://github.com/emersion/go-maildir")
+    (synopsis "Maildir interface for Go")
+    (description
+     "This package provides an interface to mailboxes in the Maildir format.")
+    (license license:expat)))
+
 (define-public go-github-com-emersion-go-message
   (package
     (name "go-github-com-emersion-go-message")
