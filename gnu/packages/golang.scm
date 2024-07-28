@@ -8859,25 +8859,22 @@ terminal.")
 (define-public go-github-com-arran4-golang-ical
   (package
     (name "go-github-com-arran4-golang-ical")
-    (version "0.0.0-20220517104411-fd89fefb0182")
+    (version "0.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/arran4/golang-ical")
-                    (commit (go-version->git-ref version))))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bxs0b5yg26liiifc0cc41l307r0wc93hp8iygv8dgpc60yzncaw"))))
+                "0gcn5afds1dnq3wrl4ndi4wqqwmrnvh9pdqhyv77d3cqakn82vj3"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/arran4/golang-ical"))
-    (propagated-inputs (list go-gopkg-in-yaml-v3
-                             go-gopkg-in-check-v1
-                             go-github-com-stretchr-testify
-                             go-github-com-niemeyer-pretty
-                             go-github-com-kr-text
-                             go-github-com-davecgh-go-spew))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
     (home-page "https://github.com/arran4/golang-ical")
     (synopsis "Handle iCalenders in Go")
     (description
