@@ -3682,7 +3682,7 @@ updating files, like @command{tail -f}.")
 (define-public go-github-com-sirupsen-logrus
   (package
     (name "go-github-com-sirupsen-logrus")
-    (version "1.9.0")
+    (version "1.9.3")
     (source
      (origin
        (method git-fetch)
@@ -3692,7 +3692,7 @@ updating files, like @command{tail -f}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "12i402dxq5js4npnncg043vx874h6nk4ffn4gswcccxrp6h10ivz"))))
+         "1jz7nyq88i9fwfpp7krl046q62kjn6lb9j4r932bxnpypl1hwc49"))))
     (build-system go-build-system)
     (arguments
      (list
