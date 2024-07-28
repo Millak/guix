@@ -914,11 +914,16 @@ for Go.")
     (arguments
      (list
       #:import-path "github.com/emersion/go-msgauth"
-      #:tests? #f ; Source-only package.
       #:phases
       #~(modify-phases %standard-phases
-          ;; Source-only package.
-          (delete 'build))))
+          ;; XXX: Run all tests, workaround for go-build-system's lack of Go
+          ;; modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-golang-org-x-crypto
            go-github-com-emersion-go-milter
