@@ -5002,7 +5002,7 @@ remote SMTP server.")
 (define-public aerc
   (package
     (name "aerc")
-    (version "0.15.2")
+    (version "0.18.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5011,7 +5011,7 @@ remote SMTP server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gbprx0i8d13q974n5hsys6lllav5cpll3cwrr1hfw6307hc001r"))))
+                "1gj8m8xvqaf0lsnk4h1n9d0qhwi8d3mm0w9zhw16v888n7rll9fb"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~rjarry/aerc"
@@ -5029,14 +5029,10 @@ remote SMTP server.")
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-paths
                  (lambda* (#:key import-path inputs #:allow-other-keys)
-                   (with-directory-excursion
-                       (string-append "src/" import-path)
-                     (substitute* (list "config/config.go"
-                                        "lib/templates/template.go"
-                                        "widgets/compose.go"
-                                        "widgets/msgviewer.go"
-                                        "worker/maildir/worker.go"
-                                        "worker/notmuch/worker.go")
+                   (with-directory-excursion (string-append "src/" import-path)
+                     (substitute* (find-files "." "\\.go$")
+                       ;; Patch all occurrences to "sh" with absolute path to
+                       ;; the shell available in Guix.
                        (("\"sh\"")
                         (string-append
                          "\"" (search-input-file inputs "bin/sh")
@@ -5069,18 +5065,19 @@ remote SMTP server.")
     (inputs
      (append
       (list gnupg
+            notmuch ; Failing to build without it.
             python
             python-vobject)
       (if (supported-package? zoxide)
           (list zoxide)
           '())))
     (native-inputs
-     (list go-git-sr-ht-rockorager-tcell-term
-           go-git-sr-ht-sircmpwn-getopt
+     (list go-git-sr-ht-rjarry-go-opt
+           go-git-sr-ht-rockorager-go-jmap
+           go-git-sr-ht-rockorager-vaxis
+           go-github-com-protonmail-go-crypto
            go-github-com-arran4-golang-ical
-           go-github-com-creack-pty
            go-github-com-danwakefield-fnmatch
-           go-github-com-ddevault-go-libvterm
            go-github-com-emersion-go-imap
            go-github-com-emersion-go-imap-sortthread
            go-github-com-emersion-go-maildir
@@ -5092,24 +5089,18 @@ remote SMTP server.")
            go-github-com-emersion-go-smtp
            go-github-com-fsnotify-fsnotify
            go-github-com-gatherstars-com-jwz
-           go-github-com-gdamore-tcell-v2
            go-github-com-go-ini-ini
-           go-github-com-google-shlex
-           go-github-com-imdario-mergo
-           go-github-com-kyoh86-xdg
            go-github-com-lithammer-fuzzysearch
            go-github-com-mattn-go-isatty
            go-github-com-mattn-go-runewidth
-           go-github-com-miolini-datacounter
-           go-github-com-mitchellh-go-homedir
            go-github-com-pkg-errors
-           go-github-com-protonmail-go-crypto
            go-github-com-riywo-loginshell
            go-github-com-stretchr-testify
            go-github-com-syndtr-goleveldb
-           go-github-com-xo-terminfo
-           go-github-com-zenhack-go-notmuch
+           go-golang-org-x-image
            go-golang-org-x-oauth2
+           go-golang-org-x-sys
+           go-golang-org-x-tools
            scdoc))
     (home-page "https://git.sr.ht/~rjarry/aerc")
     (synopsis "Email client for the terminal")
