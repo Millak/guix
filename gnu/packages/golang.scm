@@ -5748,7 +5748,7 @@ format.")
 (define-public go-github-com-emersion-go-milter
   (package
     (name "go-github-com-emersion-go-milter")
-    (version "0.3.3")
+    (version "0.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5757,7 +5757,7 @@ format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10vpry5gjz2bh9qchcx4p59zm7cc6cb6bfkii2n6vsn4svb950sa"))))
+                "11qjwjz6ippsx9da81gylx46p1a96mk39j54ayw925m40skqhh3c"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/emersion/go-milter"))
