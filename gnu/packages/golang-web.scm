@@ -743,6 +743,35 @@ and stop increasing when a certain threshold is met.")
 used to build IMAP clients and servers.")
     (license license:expat)))
 
+;; XXX: This repository has been archived by the owner on Sep 8, 2021. It is
+;; now read-only.
+(define-public go-github-com-emersion-go-imap-idle
+  (let ((commit "2704abd7050ed7f2143753554ee23affdf847bd9")
+        (revision "0"))
+    (package
+      (name "go-github-com-emersion-go-imap-idle")
+      (version (git-version "0.0.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/emersion/go-imap-idle")
+                (commit commit)))
+          (sha256
+           (base32
+            "0blwcadmxgqsdwgr9m4jqfbpfa2viw5ah19xbybpa1z1z4aj5cbc"))
+          (file-name (git-file-name name version))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/emersion/go-imap-idle"))
+      (propagated-inputs
+       (list go-github-com-emersion-go-imap))
+      (home-page "https://github.com/emersion/go-imap-idle")
+      (synopsis "IDLE extension for go-imap")
+      (description "This package provides an IDLE extension for go-imap.")
+      (license license:expat))))
+
 (define-public go-github-com-emersion-go-message
   (package
     (name "go-github-com-emersion-go-message")
