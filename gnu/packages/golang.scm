@@ -5772,7 +5772,7 @@ filters for Go.")
 (define-public go-github-com-emersion-go-msgauth
   (package
     (name "go-github-com-emersion-go-msgauth")
-    (version "0.6.6")
+    (version "0.6.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5781,7 +5781,7 @@ filters for Go.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ds8yr4cm9wigcxg1sxc2m0wmy4z9n6gws3mj50dmf2ayij69z9j"))))
+                "0az83i6jmk3bjglgdqw5zsvhh8698rav0mcg4dy8kr0cgq0lj5zs"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/emersion/go-msgauth"
