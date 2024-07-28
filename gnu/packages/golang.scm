@@ -8856,32 +8856,6 @@ useful during debugging, to avoid wrapping long output lines in the
 terminal.")
     (license license:expat)))
 
-(define-public go-github-com-arran4-golang-ical
-  (package
-    (name "go-github-com-arran4-golang-ical")
-    (version "0.3.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/arran4/golang-ical")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0gcn5afds1dnq3wrl4ndi4wqqwmrnvh9pdqhyv77d3cqakn82vj3"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/arran4/golang-ical"))
-    (native-inputs
-     (list go-github-com-google-go-cmp
-           go-github-com-stretchr-testify))
-    (home-page "https://github.com/arran4/golang-ical")
-    (synopsis "Handle iCalenders in Go")
-    (description
-     "The @code{ical} package provides an ICS/iCalender parser and
-serialiser for Go.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-lithammer-fuzzysearch
   (package
     (name "go-github-com-lithammer-fuzzysearch")
