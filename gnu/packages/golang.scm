@@ -5643,30 +5643,6 @@ defined by RFC 5321.")
       (description "This package provides a SASL library written in Go.")
       (license license:expat))))
 
-(define-public go-github-com-emersion-go-milter
-  (package
-    (name "go-github-com-emersion-go-milter")
-    (version "0.4.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/emersion/go-milter")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "11qjwjz6ippsx9da81gylx46p1a96mk39j54ayw925m40skqhh3c"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/emersion/go-milter"))
-    (propagated-inputs (list go-github-com-emersion-go-message))
-    (home-page "https://github.com/emersion/go-milter")
-    (synopsis "Milter mail filters in Go")
-    (description
-     "This package provides an interface for implementing milter mail
-filters for Go.")
-    (license license:bsd-2)))
-
 (define-public go-github-com-emersion-go-msgauth
   (package
     (name "go-github-com-emersion-go-msgauth")
