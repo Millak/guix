@@ -5595,32 +5595,6 @@ a cron spec parser and job runner.")
        "This is a fork of another go-libvterm library for use with aerc.")
       (license license:expat))))
 
-(define-public go-github-com-emersion-go-imap-sortthread
-  (package
-    (name "go-github-com-emersion-go-imap-sortthread")
-    (version "1.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/emersion/go-imap-sortthread")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1cfbgz1l5angnj52v9pxwggai2shx0h78ffcp7j4r4lr7lzflnwz"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/emersion/go-imap-sortthread"))
-    (propagated-inputs (list go-golang-org-x-text
-                             go-github-com-emersion-go-sasl
-                             go-github-com-emersion-go-imap))
-    (home-page "https://github.com/emersion/go-imap-sortthread")
-    (synopsis "Sorting and threading of messages for the imap package")
-    (description
-     "The sortthread package implements message sorting and threading for
-@code{go-github-com-emersion-go-imap}.")
-    (license license:expat)))
-
 (define-public go-github-com-emersion-go-smtp
   (package
     (name "go-github-com-emersion-go-smtp")
