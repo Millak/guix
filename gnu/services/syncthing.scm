@@ -73,7 +73,15 @@
                 #:user #$(and (not home-service?) user)
                 #:group #$(and (not home-service?) group)
                 #:environment-variables
-                (append (list (string-append "HOME=" (or #$home (passwd:dir (getpw #$user))))
+                (append
+                 (list
+                  (string-append "HOME="
+                                 (or #$home
+                                     (passwd:dir
+                                      (getpw (if (and #$home-service?
+                                                      (not #$user))
+                                                 (getuid)
+                                                 #$user)))))
                               "SSL_CERT_DIR=/etc/ssl/certs"
                               "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt")
                         (filter (negate       ;XXX: 'remove' is not in (guile)
