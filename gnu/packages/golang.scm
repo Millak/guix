@@ -8312,7 +8312,7 @@ aware of your profiles and configuration in ~/.aws/config.")
   (package
     (inherit go-gopkg-in-ini)
     (name "go-github-com-go-ini-ini")
-    (version "1.66.6")
+    (version "1.67.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8321,7 +8321,7 @@ aware of your profiles and configuration in ~/.aws/config.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kqg13606hnw8f75cb59fsy1m85kiqf3csi2g7q2512avdmaphc9"))))
+                "1vpzkjmrwp7bqqsijp61293kk2vn6lcck56j8m5y6ks6cf21lpap"))))
     (arguments
      (list #:import-path "github.com/go-ini/ini"))
     (propagated-inputs (list go-github-com-stretchr-testify))))
