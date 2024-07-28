@@ -5697,29 +5697,6 @@ filters for Go.")
      "This package provides a Go library for authenticating emails.")
     (license license:expat)))
 
-(define-public go-github-com-emersion-go-mbox
-  (package
-    (name "go-github-com-emersion-go-mbox")
-    (version "1.0.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/emersion/go-mbox")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0vnadh2khx7sxn0irrd8gz8ra02x7ij0q8zglq3rqffqil06nliv"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/emersion/go-mbox"))
-    (home-page "https://github.com/emersion/go-mbox")
-    (synopsis "Go library for handling @code{mbox} files")
-    (description
-     "This package provides a library for parsing and formatting
-@code{mbox} files.")
-    (license license:expat)))
-
 (define-public go-github-com-google-uuid
   (package
     (name "go-github-com-google-uuid")
