@@ -934,6 +934,31 @@ for Go.")
      "This package provides a Go library for authenticating emails.")
     (license license:expat)))
 
+(define-public go-github-com-emersion-go-sasl
+  (let ((commit "0b9dcfb154ac3d7515b08bc2691a0332800edfe9")
+        (revision "1"))
+    (package
+      (name "go-github-com-emersion-go-sasl")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emersion/go-sasl")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1cbf86wkqrdinfydndgdlnayg4a5mg3d4vqra377j2sfkg7wj0hs"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/emersion/go-sasl"))
+      (home-page "https://github.com/emersion/go-sasl")
+      (synopsis "SASL library written in Go")
+      (description
+       "This package provides a SASL library written in Go.")
+      (license license:expat))))
+
 (define-public go-github-com-emicklei-go-restful
   (package
     (name "go-github-com-emicklei-go-restful")
