@@ -3542,7 +3542,7 @@ all types of configuration needs and formats.")
 (define-public go-github-com-fsnotify-fsnotify
   (package
     (name "go-github-com-fsnotify-fsnotify")
-    (version "1.4.9")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -3552,7 +3552,7 @@ all types of configuration needs and formats.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1i1r72knpbfwwql9frn9bqc3nhfc2ai5m6qllcyr6wban62lr40x"))))
+         "1h7vs21lkj4bqbw5a6mqykaf56y181r0nja7c8pzajkvbsc39y8m"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/fsnotify/fsnotify"))
