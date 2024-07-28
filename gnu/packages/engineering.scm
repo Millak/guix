@@ -2996,6 +2996,32 @@ arithmetic operations on fields, entity location functionalities, and
 interpolation toolkit.")
     (license license:gpl3+)))
 
+(define-public python-motulator
+  (package
+    (name "python-motulator")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "motulator" version))
+       (sha256
+        (base32 "01qv4d4rgkwk653vz1qz1nmakniv86572j5ikrxwd63rwv5ckggf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; there are no tests
+    (propagated-inputs (list python-matplotlib python-numpy python-scipy))
+    (native-inputs (list python-hatchling
+                         python-ipykernel
+                         python-toml))
+    (home-page "https://aalto-electric-drives.github.io/motulator/")
+    (synopsis "Motor Drive Simulator in Python")
+    (description "This package includes simulation models for an induction
+motor, a synchronous reluctance motor, and a permanent-magnet synchronous
+motor.  The motor models are simulated in the continuous-time domain while the
+control algorithms run in discrete time.  The default solver is the explicit
+Runge-Kutta method of order 5(4) from @code{scipy.integrate.solve_ivp.}")
+    (license license:expat)))
+
 (define-public cgns
   (package
     (name "cgns")
