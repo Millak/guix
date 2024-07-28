@@ -8885,7 +8885,7 @@ serialiser for Go.")
 (define-public go-github-com-lithammer-fuzzysearch
   (package
     (name "go-github-com-lithammer-fuzzysearch")
-    (version "1.1.5")
+    (version "1.1.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8894,7 +8894,7 @@ serialiser for Go.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b036sm42cf64diwlqhx24vxy6g5afrmfbdfyqhpg8zrii3lpwns"))))
+                "0fp00gzbrr5fnz01lmkjqcs5z24zjrsp4r13ia0x0wslp5r13hv8"))))
     (build-system go-build-system)
     (propagated-inputs (list go-golang-org-x-text))
     (arguments
