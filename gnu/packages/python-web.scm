@@ -45,7 +45,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2021, 2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2022, 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -830,6 +830,24 @@ ASGI server.")
      "This program converts a WSGI program to an ASGI program or the other
 way around.  It depends only on the Python standard library.")
     (license license:asl2.0)))
+
+(define-public python-httpauth
+  (package
+    (name "python-httpauth")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "httpauth" version))
+              (sha256
+               (base32
+                "1m6rwvivg61l3h34hf6p6gkqmr69sb1c4k5ha379nxq0p8bfgahb"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/jonashaag/httpauth")
+    (synopsis "WSGI HTTP Digest Authentication middleware")
+    (description "@code{python-httpauth} is WSGI middleware that secures some/all
+routes using HTTP Digest Authentication.")
+    (license license:bsd-2)))
 
 (define-public python-css-html-js-minify
   (package
