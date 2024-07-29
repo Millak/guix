@@ -1353,14 +1353,14 @@ be built as a stand-alone REPL interpreter.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.4.5")
+    (version "2.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "1lbvb9rzlkl3h8s75i2js4dnmgxmvs41jxjb5dj0f603r688xxjd"))
+        (base32 "1lhia29g0byj7w3akd99sjb8kxp95adwqk2kbl0wsnk30cjlsm38"))
        (modules '((guix build utils)))
        (snippet
         '(begin
