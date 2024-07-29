@@ -38,7 +38,7 @@
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
-;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2022, 2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
@@ -47,6 +47,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2024 hapster <o.rojon@posteo.net>
+;;; Copyright © 2024 mio <stigma@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,6 +75,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cdrom)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
@@ -137,6 +139,7 @@
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vim) ;xxd
   #:use-module (gnu packages web)
@@ -6536,6 +6539,36 @@ be separated.")
       (description "Cubeb is Mozilla's cross-platform audio library.")
       (home-page "https://github.com/mozilla/cubeb")
       (license license:isc))))
+
+(define-public cyanrip
+  (package
+    (name "cyanrip")
+    (version "0.9.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cyanreg/cyanrip")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13v6gjbxw6ybviq802wmgwlwy846ma4yw94aay0h698qhjqwf0qq"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list curl
+                  ffmpeg
+                  libcdio-paranoia
+                  libmusicbrainz
+                  libxml2
+                  neon))
+    (synopsis "Command line CD ripper and encoder")
+    (description
+     "cyanrip is a command line tool for ripping CDs.  It uses
+MusicBrainz to name and tag each track, and to download and embed cover art.
+cyanrip supports encoding tracks to multiple formats in parallel and automatically
+verifies checksums.")
+    (home-page "https://github.com/cyanreg/cyanrip")
+    (license license:lgpl2.1+)))
 
 (define-public easyeffects
   (package
