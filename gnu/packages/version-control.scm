@@ -41,7 +41,7 @@
 ;;; Copyright © 2021 François J. <francois-oss@avalenn.eu>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
@@ -716,6 +716,53 @@ everything from small to very large projects with speed and efficiency.")
               (sha256
                (base32
                 "0bqz401dyp8wnjj3k5ahrniwk4dalndysqazzwdvv25hqbkacm70"))))))
+
+(define-public python-klaus
+  (package
+    (name "python-klaus")
+    (version "3.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "klaus" version))
+              (sha256
+               (base32
+                "1w6sl15llnkcg7kmnpn64awdiis061q2gijnhdx0ng7z4p1glapl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; TODO: https://github.com/jonashaag/klaus/issues/322
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure-git
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each (lambda (file)
+                          (substitute* file
+                            (("\"git\"")
+                             (string-append "\""
+                                            (search-input-file inputs "/bin/git") "\""))))
+                        (list "klaus/ctagsutils.py"
+                              "klaus/repo.py"
+                              "klaus/utils.py"
+                              "tests/test_contrib.py"
+                              "tests/test_make_app.py")))))))
+    (inputs (list git-minimal))
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-dulwich python-flask python-httpauth
+           python-humanize python-pygments python-werkzeug))
+    (home-page "https://github.com/jonashaag/klaus")
+    (synopsis "Simple git web viewer")
+    (description
+"@code{klaus} is a simple, easy-to-set-up git web viewer.  It features
+@itemize
+@item Super easy to set up -- no configuration required
+@item Syntax highlighting
+@item Markdown + RestructuredText rendering support
+@item Pull + push support (Git Smart HTTP)
+@item Code navigation using Exuberant ctags
+@end itemize")
+    (license license:isc)))
 
 (define-public git2cl
   (let ((commit "1d74d4c0d933fc69ed5cec838c73502584dead05"))
