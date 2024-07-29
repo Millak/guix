@@ -400,6 +400,46 @@ reproducible, and easy-to-use manner, making it easy to compare one particular
 setup against another one.")
     (license license:gpl3+)))
 
+(define-public python-benchexec
+  (package
+    (name "python-benchexec")
+    (version "3.24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sosy-lab/benchexec")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14yllwinbvifrin29vbm9ibjzswri0isvc6476ygf0whlg90z24j"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--exclude=runexecutor")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'skip-failing-tests
+            (lambda _
+              (delete-file-recursively "benchexec/test_integration"))))))
+    (propagated-inputs (list python-pyyaml))
+    (native-inputs (list coreutils python-lxml python-nose))
+    (home-page "https://github.com/sosy-lab/benchexec/")
+    (synopsis "Framework for Reliable Benchmarking")
+    (description
+     "BenchExec is a framework for reliable benchmarking, which takes care
+of important low-level details for accurate, precise, and reproducible
+measurements.  In particular, it makes use of cgroups, kernel namespaces,
+and overlay filesystems to restrict interference of the executed tool
+with the benchmarking host.")
+    (license license:asl2.0)))
+
+(define-public benchexec
+  (package/inherit python-benchexec
+    (name "benchexec")
+    (inputs (package-propagated-inputs python-benchexec))
+    (propagated-inputs (list))))
+
 (define-public python-locust
   (package
     (name "python-locust")
