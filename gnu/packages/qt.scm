@@ -313,19 +313,21 @@ Qt.  Some of its features include:
 (define-public kvantum
   (package
     (name "kvantum")
-    (version "1.0.7")
+    (version "1.1.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/tsujan/Kvantum/releases/download/V"
-                    version "/Kvantum-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tsujan/Kvantum")
+                    (commit (string-append "V" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zwxswbgd3wc7al3fhrl5qc0fmmb6mkygywjh1spbqpl7s8jw5s3"))))
+                "1prlv2fqwbxj9fqs4xf925qh9m9ginh0mcc618yg3h23vxq9g9ym"))))
     (build-system qt-build-system)
     (arguments
      (list
       #:tests? #f                       ;no tests
+      #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
@@ -336,15 +338,11 @@ Qt.  Some of its features include:
               (substitute* "style/CMakeLists.txt"
                 (("\\$\\{KVANTUM_STYLE_DIR\\}")
                  (string-append #$output
-                                "/lib/qt5/plugins/styles"))))))))
-    (native-inputs (list qttools-5))
+                                "/lib/qt6/plugins/styles"))))))))
+    (native-inputs (list qttools))
     (inputs (list
              kwindowsystem
-             libx11
-             libxext
-             qtbase-5
-             qtsvg-5
-             qtx11extras))
+             qtsvg))
     (synopsis "SVG-based theme engine for Qt")
     (description
      "Kvantum is an SVG-based theme engine for Qt,
