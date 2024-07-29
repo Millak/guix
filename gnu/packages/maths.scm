@@ -1814,7 +1814,7 @@ extremely large and complex data collections.")
 (define-public hdf5-1.14
   (package
     (inherit hdf5-1.8)
-    (version "1.14.0")
+    (version "1.14.3")
     (source
      (origin
        (method url-fetch)
@@ -1828,8 +1828,19 @@ extremely large and complex data collections.")
                                         (take (string-split version #\.) 2))
                                  "/src/hdf5-" version ".tar.bz2")))
        (sha256
-        (base32 "181bdh8hp7v9xqwcby3lknr92lxlicc2hqscba3f5nhf8lrr9rz4"))
-       (patches (search-patches "hdf5-config-date.patch"))))))
+        (base32 "05zr11y3bivfwrbvzbky1q2gjf6r7n92cvvdnh5jilbmxljg49cl"))
+       (patches (search-patches "hdf5-config-date.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments hdf5-1.8)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'configure 'skip-version-test
+              (lambda _
+                ;; Skip test_check_version since the 'patch-settings' phase
+                ;; modifies the test reference.
+                (substitute* "test/test_check_version.sh.in"
+                  (("TESTING\\(\\).*" all)
+                   (string-append all "\nSKIP; exit 0\n")))))))))))
 
 (define-public hdf5
   ;; Default version of HDF5.
