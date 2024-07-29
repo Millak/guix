@@ -3434,7 +3434,7 @@ Weechat communicate over the Matrix protocol.")
 (define-public weechat-wee-slack
   (package
     (name "weechat-wee-slack")
-    (version "2.10.1")
+    (version "2.10.2")
     (source
      (origin
        (method git-fetch)
@@ -3444,7 +3444,7 @@ Weechat communicate over the Matrix protocol.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ykzmn4q592ih9d6m5ks2dzbxkz3mj81sxwsn9g2vzsxj7w3p2r7"))))
+         "0klvvrrvdjh3wph1cdqd4x3nj170v1wirmr2mm91q3sqs5lf3lqj"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
