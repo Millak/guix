@@ -49,7 +49,7 @@
                        ("mingw-w64" ,xlibc)))
       (inputs (list zlib))
       (arguments
-       `(#:scons ,scons-python2
+       `(#:scons ,scons-3
          #:modules ((srfi srfi-1)
                     (srfi srfi-26)
                     (guix build utils)
