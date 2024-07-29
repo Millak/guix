@@ -64,7 +64,7 @@
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
-;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.

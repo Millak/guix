@@ -2,7 +2,7 @@
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2021, 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2021, 2023 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Denis Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>

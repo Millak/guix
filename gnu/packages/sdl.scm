@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2023, 2024 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.

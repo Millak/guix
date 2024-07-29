@@ -27,7 +27,7 @@
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2022 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>

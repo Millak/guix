@@ -126,7 +126,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
-;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2022-2023 Simon Josefsson <simon@josefsson.org>
 ;;; Copyright © 2023 Fabio Natali <me@fabionatali.com>

@@ -116,7 +116,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
-;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2022 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2022 drozdov <drozdov@portalenergy.tech>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022, 2023 Wamm K. D. <jaft.r@outlook.com>

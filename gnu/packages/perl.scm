@@ -32,7 +32,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2022, 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2022, 2023 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2022, 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
