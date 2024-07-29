@@ -2321,7 +2321,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
 (define-public skopeo
   (package
     (name "skopeo")
-    (version "1.15.2")
+    (version "1.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2330,7 +2330,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13y1fmv78hh5ycm7xlsg851y17s223q13b9srksnq6jcwgprqkm8"))))
+                "1vjhi4xvb3vdz9nm627bymih9nil1xm4m5zcmx088d76dnqm3l1k"))))
     (build-system gnu-build-system)
     (native-inputs
      (list go-1.21
@@ -2370,22 +2370,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
               ;; Required for detecting btrfs in hack/btrfs* due to bug in GNU
               ;; Make <4.4 causing CC not to be propagated into $(shell ...)
               ;; calls.  Can be removed once we update to >4.3.
-              ;;
-              ;; This techically does nothing *now*, but after upstream
-              ;; issue[1] is solved and 'cc-to-gcc phase is removed, it will
-              ;; start being required.
-              ;; 1: https://github.com/containers/skopeo/issues/2278
               (setenv "CC" #$(cc-for-target))))
-          (add-after 'unpack 'cc-to-gcc
-            (lambda _
-              (for-each (lambda (file)
-                          (substitute* file
-                            (("^cc( -.*)" all rest)
-                             (string-append "\"$CC\"" rest))))
-                        '("hack/btrfs_tag.sh"
-                          "hack/btrfs_installed_tag.sh"
-                          "hack/libdm_tag.sh"
-                          "hack/libsubid_tag.sh"))))
           (add-after 'install 'wrap-skopeo
             (lambda _
               (wrap-program (string-append #$output "/bin/skopeo")
