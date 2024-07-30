@@ -3,6 +3,7 @@
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -222,7 +223,7 @@
           (use-modules #$@(sexp->gexp modules))
 
           (define %build-host-inputs
-            '#+(input-tuples->gexp build-inputs))
+            #+(input-tuples->gexp build-inputs))
 
           (define %build-target-inputs
             (append #$(input-tuples->gexp host-inputs)
