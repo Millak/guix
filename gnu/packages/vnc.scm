@@ -695,7 +695,12 @@ authentication, SSH tunneling, and ZRLE or Tight encoding.")
        (sha256
         (base32 "1k02i70v8niqvadzfrki8q6wiymcfdqanc9zlmzdslw2bpdhqq90"))))
     (build-system meson-build-system)
-    (native-inputs (list pkg-config scdoc))
+    (native-inputs
+     (append (if (%current-target-system)
+                 ;; for wayland-scanner
+                 (list wayland)
+                 '())
+             (list pkg-config scdoc)))
     (inputs (list aml
                   neatvnc
                   zlib
