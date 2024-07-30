@@ -406,7 +406,7 @@ Python.")
 (define-public aml
   (package
     (name "aml")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -415,7 +415,7 @@ Python.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mxmzlhiv88hm4sf8kyawyrml8qy1xis019hdyb5skl9g95z9yyf"))))
+                "0r4k233hh3iqc6zlhh2agmdj8q973x49pdixhz7h5hz7md38qzq5"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
