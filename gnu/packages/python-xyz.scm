@@ -2219,7 +2219,7 @@ Python library and command line interface.")
 (define-public python-glymur
   (package
     (name "python-glymur")
-    (version "0.12.9")
+    (version "0.13.5")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -2228,7 +2228,7 @@ Python library and command line interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0awyav7071nn9z2g4mmpg33y0y0nfandfr6nr3j5vyb8hnprcmns"))))
+        (base32 "1n2n7bj5w29w5y2gcl4hxhqf85n0j2crkln9i0mprq3xw8finxpx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
