@@ -151,7 +151,8 @@ and others.")
         (base32 "1al04jx72bxwqch1nv9lx536mb6pvj7pgnqzy6lm32q6xa114yr2"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--with-os-name=Linux")      ; uname -s
+     `(#:configure-flags '("--with-os-name=Linux" ; uname -s
+                           "--with-os-version=") ; uname -r
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-source
