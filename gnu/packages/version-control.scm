@@ -52,6 +52,7 @@
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -829,6 +830,52 @@ on @command{git}, and use any regular Git hosting service.")
     (description "@code{git-cal} is a script to view commits calendar similar
 to GitHub contributions calendar.")
     (license license:expat)))
+
+(define-public git-tools
+  (package
+    (name "git-tools")
+    (version "2022.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MestreLion/git-tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s8x74ggcr6nqzplr0jfzp3cavq0nmdm35hqywzs2bbq75i1mijd"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan '(("git-branches-rename" "bin/git-branches-rename")
+                        ("git-clone-subset" "bin/git-clone-subset")
+                        ("git-find-uncommitted-repos"
+                         "bin/git-find-uncommitted-repos")
+                        ("git-rebase-theirs" "bin/git-rebase-theirs")
+                        ("git-restore-mtime" "bin/git-restore-mtime")
+                        ("git-strip-merge" "bin/git-strip-merge")
+                        ("./man1/" "share/man/man1"
+                         #:include-regexp (".*\\.1$")))))
+    (inputs (list bash-minimal git-minimal python-minimal))
+    (home-page "https://github.com/MestreLion/git-tools")
+    (synopsis "Assorted git-related scripts and tools")
+    (description
+     "@code{git-tools} is a collection of bash and python scripts.
+Specifically, it includes the following tools:
+
+@itemize
+@item @code{git-branches-rename}: Batch rename branches with a matching prefix
+to another prefix
+@item @code{git-clone-subset}: Clone a subset of a git repository
+@item @code{git-find-uncommitted-repos}: Recursively list repositories in the
+given directory(ies) that have uncommitted changes
+@item @code{git-rebase-theirs}: Resolve rebase conflicts and failed
+cherry-picks by favoring \"theirs\" version
+@item @code{git-restore-mtime}: Restore modification time of files based on
+the date of the most recent commit that modified them
+@item @code{git-strip-merge}: A git-merge wrapper that deletes files on a
+\"foreign\" branch before merging
+@end itemize")
+    (license license:gpl3+)))
 
 (define-public xdiff
   (let ((revision "0")
