@@ -26,6 +26,7 @@
 (define-module (gnu packages upnp)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
@@ -154,12 +155,17 @@ and others.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-source
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "Makefile.am"
-               ((".*LIBAVUTIL_LIBS.*") "")))))))
+               ((".*LIBAVUTIL_LIBS.*") ""))
+             (substitute* "minidlna.c"
+               (("rm -rf")
+                (string-append
+                 (search-input-file inputs "/bin/rm") " -rf"))))))))
     (native-inputs (list autoconf automake gettext-minimal))
     (inputs
-     (list ffmpeg
+     (list coreutils-minimal
+           ffmpeg
            flac
            libexif
            libid3tag
