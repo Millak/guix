@@ -1815,7 +1815,9 @@ objects.")
                     "not remote_data"
                     ;; ValueError: The truth value of an array with more than
                     ;; one element is ambiguous. Use a.any() or a.all()
-                    " and not test_table_comp[t16-t26]"))
+                    " and not test_table_comp[t16-t26]"
+                    ;; E Unreliable test timings! <...>
+                    " and not test_datetime_timedelta_roundtrip"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
