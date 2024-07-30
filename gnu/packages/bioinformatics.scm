@@ -4271,8 +4271,9 @@ splice junctions between exons.")
                 "1vf3iwkzxqkzhcfz2q3qyvcv3jrvbb012qy21pfgjl8lv20ywfr1"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f ;no "check" target
-       #:make-flags '("CFLAGS=-fcommon")
+     `(#:tests? #f ;no "check" target
+       #:make-flags (list "CFLAGS=-fcommon"
+                          (string-append "CC=" ,(cc-for-target)))
        #:phases
        (modify-phases %standard-phases
          (replace 'install
