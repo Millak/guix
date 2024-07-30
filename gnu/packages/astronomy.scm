@@ -3222,13 +3222,13 @@ orbits described in TLE files.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "5.1.5")
+    (version "6.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "1jdkkcv247chsj08wrxxv0m577ji5cg7mxx5pw7q0ahmnq93xk2p"))))
+        (base32 "1yp7x26fzxs66bfvzaim8ns5q6514l66mbz5gabhlxb9pp8i6i85"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3247,10 +3247,11 @@ orbits described in TLE files.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
             (lambda _
-              (substitute* "setup.cfg"
-                ;; It's already updated in master branch, but not released yet.
-                ;; drms>=0.6.1,<0.7.0
-                (("0.7.0") "0.7.2"))))
+              (substitute* "pyproject.toml"
+                ;; packaging>=23.0
+                ((">=23.0") ">=21.3")
+                ;; numpy>=1.23.5
+                ((">=1.23.5") ">=1.23.2"))))
           (add-before 'install 'writable-compiler
             (lambda _
               (make-file-writable "sunpy/_compiler.c")))
@@ -3266,10 +3267,10 @@ python_files = test_*.py"))))))))
            python-aiohttp
            python-extension-helpers
            python-hvpy
+           python-jplephem
+           ;; python-mplcairo ; Not packed yet in Guix
            python-packaging
-           python-pytest
            python-pytest-astropy
-           python-pytest-doctestplus
            python-pytest-mock
            python-pytest-mpl
            python-pytest-xdist
@@ -3288,16 +3289,15 @@ python_files = test_*.py"))))))))
            python-h5netcdf
            python-h5py
            python-hypothesis
-           python-jplephem
            python-matplotlib
            python-mpl-animators
            python-numpy
            python-pandas
+           python-pyerfa
            python-reproject
            python-scikit-image
            python-scipy
            ;; python-spiceypy ; Not packed yet in Guix, long jorney.
-           python-sqlalchemy
            python-tqdm
            python-zeep))
     (home-page "https://sunpy.org")
