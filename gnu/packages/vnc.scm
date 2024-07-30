@@ -70,6 +70,7 @@
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
@@ -683,7 +684,7 @@ authentication, SSH tunneling, and ZRLE or Tight encoding.")
 (define-public wayvnc
   (package
     (name "wayvnc")
-    (version "0.4.1")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -692,7 +693,7 @@ authentication, SSH tunneling, and ZRLE or Tight encoding.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cws9jfnmxqycmlyllvvqzw4jsbrwwk10v9gy8wifv3c61rwgdkk"))))
+        (base32 "1k02i70v8niqvadzfrki8q6wiymcfdqanc9zlmzdslw2bpdhqq90"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config scdoc))
     (inputs (list aml
@@ -700,6 +701,7 @@ authentication, SSH tunneling, and ZRLE or Tight encoding.")
                   zlib
                   libjpeg-turbo
                   gnutls
+                  jansson
                   libdrm
                   pixman
                   libglvnd
