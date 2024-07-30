@@ -2422,20 +2422,18 @@ Cesium.")
 (define-public python-drms
   (package
     (name "python-drms")
-    (version "0.7.1")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "drms" version))
        (sha256
-        (base32 "01q00zwpbhik9lgbc42z6q791ybxc41rxgrj04fpcfkl3hcl0nyr"))))
+        (base32 "19lqy510d7iyxfz445h2rn4d0rvmd4d3lnjmvbkvv270ckpfw09f"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-astropy
-           python-pytest-astropy
-           python-pytest
-           python-setuptools-scm))
-    (propagated-inputs (list python-numpy python-pandas))
+     (list python-astropy python-pytest-astropy python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy python-pandas))
     (home-page "https://sunpy.org")
     (synopsis "Access astronomical HMI, AIA and MDI data with Python")
     (description
