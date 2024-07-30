@@ -2396,7 +2396,7 @@ files and provide related services.")
 (define-public python-czml3
   (package
     (name "python-czml3")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -2405,17 +2405,12 @@ files and provide related services.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vm9ajpnwxncvsl1ix3jarqyi14b0703g12wsr8b0agkrjlpmvmx"))))
+        (base32 "0gsdffn5w7j1aridvmx4xh6axvmbmqjwawacc8fnshpcyh4md5pn"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-attrs
-           python-dateutil
-           python-w3lib))
+     (list python-attrs python-dateutil python-w3lib))
     (native-inputs
-     (list python-astropy
-           python-pytest
-           python-pytest-cov
-           python-pytest-mypy))
+     (list python-astropy python-pytest python-pytest-mypy))
     (home-page "https://github.com/poliastro/czml3")
     (synopsis "Python library to write CZML")
     (description
