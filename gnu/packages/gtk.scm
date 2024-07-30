@@ -2751,7 +2751,7 @@ displayed on the other side of the bus.")
 (define-public gtk-layer-shell
   (package
     (name "gtk-layer-shell")
-    (version "0.6.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -2760,10 +2760,10 @@ displayed on the other side of the bus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kcp4p3s7sdh9lwniybjdarfy8z69j2j23hfrw98amhwhq39gdcc"))))
+        (base32 "0cf1fjlsplslmabpvyfdnvngkn5wfsk6jd7gbq6h74x0n9hczf37"))))
     (build-system meson-build-system)
     (arguments `(#:configure-flags (list "-Dtests=true")))
-    (native-inputs (list pkg-config gobject-introspection))
+    (native-inputs (list pkg-config gobject-introspection vala))
     (inputs (list wayland gtk+))
     (home-page "https://github.com/wmww/gtk-layer-shell")
     (synopsis "Library to create Wayland desktop components using the Layer
