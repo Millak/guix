@@ -47,6 +47,13 @@
 (define %store
   (open-connection-for-tests))
 
+(define (bootstrap-guile-effective-version)
+  ;; TODO The package version of %bootstrap-guile is incorrect for
+  ;; riscv64-linux
+  (if (string=? "riscv64-linux" (%current-system))
+      "3.0"
+      (package-version %bootstrap-guile)))
+
 ;; Globally disable grafts because they can trigger early builds.
 (%graft? #f)
 
@@ -1099,8 +1106,8 @@ importing.* \\(guix config\\) from the host"
                              (write (list the-answer (multiply 2))
                                     port)))))))
        (drv      (gexp->derivation "thingie" build
-                                   ;; %BOOTSTRAP-GUILE is 2.0.
-                                   #:effective-version "2.0"))
+                                   #:effective-version
+                                   (bootstrap-guile-effective-version)))
        (out ->   (derivation->output-path drv)))
     (mbegin %store-monad
       (built-derivations (list drv))
@@ -1120,7 +1127,8 @@ importing.* \\(guix config\\) from the host"
                          mkdir-p
                          the-answer))))
        (lexp     (lower-gexp exp
-                             #:effective-version "2.0")))
+                             #:effective-version
+                             (bootstrap-guile-effective-version))))
     (define (matching-input drv output)
       (lambda (input)
         (and (eq? (derivation-input-derivation input) drv)
@@ -1134,12 +1142,15 @@ importing.* \\(guix config\\) from the host"
                          (lowered-gexp-inputs lexp))
                    (member (string-append
                             (derivation->output-path extension-drv)
-                            "/share/guile/site/2.0")
+                            "/share/guile/site/"
+                            (bootstrap-guile-effective-version))
                            (lowered-gexp-load-path lexp))
                    (= 2 (length (lowered-gexp-load-path lexp)))
                    (member (string-append
                             (derivation->output-path extension-drv)
-                            "/lib/guile/2.0/site-ccache")
+                            "/lib/guile/"
+                            (bootstrap-guile-effective-version)
+                            "/site-ccache")
                            (lowered-gexp-load-compiled-path lexp))
                    (= 2 (length (lowered-gexp-load-compiled-path lexp)))
                    (eq? (derivation-input-derivation (lowered-gexp-guile lexp))
@@ -1149,7 +1160,10 @@ importing.* \\(guix config\\) from the host"
   (mlet* %store-monad ((thing -> (program-file "prog" #~(display "hi!")))
                        (exp -> #~(list #$(raw-derivation-file thing)))
                        (drv  (lower-object thing))
-                       (lexp (lower-gexp exp #:effective-version "2.0")))
+                       (lexp (lower-gexp
+                              exp
+                              #:effective-version
+                              (bootstrap-guile-effective-version))))
     (return (and (equal? `(list ,(derivation-file-name drv))
                          (lowered-gexp-sexp lexp))
                  (equal? (list (derivation-file-name drv))
