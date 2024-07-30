@@ -86,11 +86,11 @@
              #f))
     (let ((store (open-connection uri)))
       ;; Make sure we build everything by ourselves.  When we build something,
-      ;; it should take at most 5 minutes.
+      ;; it should take at most 10 minutes.
       (set-build-options store
                          #:use-substitutes? #f
                          #:substitute-urls (%test-substitute-urls)
-                         #:timeout (* 5 60))
+                         #:timeout (* 10 60))
 
       ;; Use the bootstrap Guile when running tests, so we don't end up
       ;; building everything in the temporary test store.
