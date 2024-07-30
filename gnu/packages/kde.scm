@@ -1326,6 +1326,13 @@ different notification systems.")
                    "-DKDE_INSTALL_LIBEXECDIR=libexec"
                    ;; So kdeconnect.so isn't installed to lib/plugins
                    "-DPLUGIN_INSTALL_DIR=lib/qt6/plugins")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-dbus-autostart
+                          (lambda _
+                            ;; 'dbus-daemon' requires an absolute Exec path.
+                            (substitute* "daemon/org.kde.kdeconnect.service.in"
+                              (("kdeconnectd")
+                               (string-append #$output "/bin/kdeconnectd"))))))
            #:tests? #f)) ; tests fail hard in our build environment
     (native-inputs
      (list extra-cmake-modules
