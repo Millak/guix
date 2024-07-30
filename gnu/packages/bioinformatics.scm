@@ -4271,24 +4271,24 @@ splice junctions between exons.")
                 "1vf3iwkzxqkzhcfz2q3qyvcv3jrvbb012qy21pfgjl8lv20ywfr1"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ;no "check" target
-       #:make-flags (list "CFLAGS=-fcommon"
-                          (string-append "CC=" ,(cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (lib (string-append out "/lib"))
-                    (doc (string-append out "/share/doc/bwa"))
-                    (man (string-append out "/share/man/man1")))
-               (install-file "bwa" bin)
-               (install-file "libbwa.a" lib)
-               (install-file "README.md" doc)
-               (install-file "bwa.1" man))))
-         ;; no "configure" script
-         (delete 'configure))))
+     (list #:tests? #f ;no "check" target
+           #:make-flags #~(list "CFLAGS=-fcommon"
+                                (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin"))
+                          (lib (string-append out "/lib"))
+                          (doc (string-append out "/share/doc/bwa"))
+                          (man (string-append out "/share/man/man1")))
+                     (install-file "bwa" bin)
+                     (install-file "libbwa.a" lib)
+                     (install-file "README.md" doc)
+                     (install-file "bwa.1" man))))
+               ;; no "configure" script
+               (delete 'configure))))
     (inputs (list zlib))
     (supported-systems '("x86_64-linux" "aarch64-linux"))
     (home-page "https://bio-bwa.sourceforge.net/")
@@ -4306,7 +4306,8 @@ and more accurate.  BWA-MEM also has better performance than BWA-backtrack for
     (license license:gpl3+)))
 
 (define-public bwa-pssm
-  (package (inherit bwa)
+  (package
+    (inherit bwa)
     (name "bwa-pssm")
     (version "0.5.11")
     (source (origin
@@ -4321,12 +4322,12 @@ and more accurate.  BWA-MEM also has better performance than BWA-backtrack for
     (build-system gnu-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments bwa)
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'patch-C-error
-             (lambda _
-               (substitute* "pssm.c"
-                 (("inline int map") "int map"))))))))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-C-error
+              (lambda _
+                (substitute* "pssm.c"
+                  (("inline int map") "int map"))))))))
     (inputs
      (list gdsl zlib perl))
     ;; https://bwa-pssm.binf.ku.dk is down, and all Web Archived copies are
