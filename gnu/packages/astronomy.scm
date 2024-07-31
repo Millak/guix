@@ -3703,18 +3703,35 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.7.1")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stcal" version))
        (sha256
-        (base32 "003ygbfa25awvy2zjfxd1k4f1aklsvd53sdk7qa0w42v6ys2kabs"))))
+        (base32 "0vcq1462wdfi96qqsd5bidx38bbpnpcm18j6s761jz8ymi6vifap"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Tests requiring network access.
+                    "not test_absolute_align"
+                    " and not test_relative_align[True]"
+                    " and not test_relative_align[False]"
+                    " and not test_get_catalog"
+                    " and not test_create_catalog"
+                    " and not test_create_catalog_graceful_failure"
+                    " and not test_parse_refcat"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-slope-fitter
+            (lambda _
+              (substitute* "src/stcal/ramp_fitting/src/slope_fitter.c"
+                ;; It's failing to build, it looks like Guix's NumPy does not
+                ;; contain the variable: error: ‘NPY_NTYPES_LEGACY’ undeclared
+                ;; (first use in this function)
+                ((".*NPY_NTYPES_LEGACY.*") ""))))
           (add-before 'build 'silent-check-for-opencv
             (lambda _
               ;; XXX: Can't detect opencv-python version. The input opencv
@@ -3729,14 +3746,17 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
      (list opencv ;Provides OpenCV-Python
            python-asdf
            python-astropy
+           python-drizzle
            python-gwcs
            python-numpy
-           python-scipy))
+           python-requests
+           python-scikit-image
+           python-scipy
+           python-tweakwcs))
     (native-inputs
      (list python-cython-3
            python-psutil
            python-pytest
-           python-pytest-cov
            python-pytest-doctestplus
            python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stcal")
