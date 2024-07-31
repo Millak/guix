@@ -1611,20 +1611,20 @@ and the notification, WiFi, and Bluetooth LED.")
 (define-public tuxedo-keyboard
   (package
     (name "tuxedo-keyboard")
-    (version "3.2.10")
+    (version "4.6.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tuxedocomputers/tuxedo-keyboard.git")
+             (url "https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers.git")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kbspr1vs6jpfsb3c4hbw2d8y06v2a3m4c27rhggkfksf4x82gip"))))
+        (base32 "0hbqk28qi3yxw0g3j8yarsplyigpd8kgliri7c48d3yhliiiz7l5"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f))                ; no test suite
-    (home-page "https://github.com/tuxedocomputers/tuxedo-keyboard")
+    (home-page "https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers")
     (synopsis "Linux kernel modules to control keyboard on most Tuxedo computers")
     (description
      "This package provides the @code{tuxedo_keyboard}, @code{tuxedo_io},
