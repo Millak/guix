@@ -2629,7 +2629,7 @@ with Numpy and SciPy.")
      (list geos))
     (propagated-inputs
      (list python-numpy))
-    (home-page "https://github.com/Toblerity/Shapely")
+    (home-page "https://github.com/shapely/shapely")
     (synopsis "Library for the manipulation and analysis of geometric objects")
     (description "Shapely is a Python package for manipulation and analysis of
 planar geometric objects.  It is based on the @code{GEOS} library.")
