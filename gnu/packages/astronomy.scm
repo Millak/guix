@@ -5336,13 +5336,13 @@ channels
 (define-public python-radiospectra
   (package
     (name "python-radiospectra")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "radiospectra" version))
        (sha256
-        (base32 "0nw71a7i875lfwbwhpc80nvwalb7iq3fynfkbngx6f6jb3v10dgs"))))
+        (base32 "1mqdh90hpq7sc9lybmc7y33g84vswf7w0r5hs57rf3a9hzfxad90"))))
     (build-system pyproject-build-system)
     (arguments
      (list
