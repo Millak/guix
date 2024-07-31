@@ -737,22 +737,20 @@ bibliographic data and simple document and bibtex retrieval.")
 (define-public ugrep
   (package
     (name "ugrep")
-    (version "6.1.0")
+    (version "6.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/Genivia/ugrep")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "01zgvwhawz1sv3sib31jgbs5q27yc4kqmhz3v9l1zbqkkhwxsvqy"))
+               (base32 "0s4cic232nlqzr3ha40gfgdnfqj12j6k5j89mrzjv8gk2zwn9l5z"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet
                #~(begin
                    (delete-file-recursively "bin/win32") ; pre-built
                    (delete-file-recursively "bin/win64") ; pre-built
-                   (delete-file-recursively "bin/linux_amd64") ; pre-built
-                   (delete-file-recursively "bin/linux_arm64") ; pre-built
                    (for-each (lambda (regexp)
                                (for-each delete-file
                                          (find-files "tests" regexp)))
@@ -765,6 +763,7 @@ bibliographic data and simple document and bibtex retrieval.")
            lzip ;; lzma
            pcre2
            zlib
+           brotli
            `(,zstd "lib")))
     (arguments
      (list
