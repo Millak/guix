@@ -3119,13 +3119,13 @@ PSF} describing how the optical system spreads light from sources.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.13.1")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reproject" version))
        (sha256
-        (base32 "1xk809h2j3zj37l5lx4l87zanf9zxbxajcrff2b2f2i0jpnmxqv3"))))
+        (base32 "1h5v74da32ai9dkhcdn3xx4h05awlxhhnrsdjj1sb644c1vlyg6x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3162,7 +3162,6 @@ setup(ext_modules=get_extensions())")))))
      (list python-asdf
            python-astropy
            python-astropy-healpix
-           python-click
            python-cloudpickle
            python-dask
            python-fsspec
@@ -3175,9 +3174,11 @@ setup(ext_modules=get_extensions())")))))
     (native-inputs
      (list python-cython-3
            python-extension-helpers
-           python-pytest
+           python-asdf
+           python-gwcs
            python-pytest-astropy
            python-pytest-xdist
+           python-pyvo
            ;; python-sunpy ; circular dependencies, test optional
            python-setuptools-scm))
     (home-page "https://reproject.readthedocs.io")
