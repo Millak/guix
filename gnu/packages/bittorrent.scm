@@ -87,16 +87,16 @@
 (define-public transmission
   (package
     (name "transmission")
-    (version "4.0.5")
+    (version "4.0.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/transmission/transmission"
                                   "/releases/download/" version "/transmission-"
                                   version ".tar.xz"))
-              (patches (search-patches "transmission-4.0.5-fix-build.patch"))
+              (patches (search-patches "transmission-4.0.6-fix-build.patch"))
               (sha256
                (base32
-                "0mv3ds3bbp1fbmdlrjinmzvk46acpafydirh7h2014j7988zys7x"))))
+                "0py4n33wk2srdfrcd5rbrbg5p1zq6nipghlins01d693i9nzwf1a"))))
     (build-system cmake-build-system)
     (outputs '("out"                      ; library and command-line interface
                "gui"))                    ; graphical user interface
@@ -109,10 +109,10 @@
                     (guix build utils))
         #:phases
         #~(modify-phases %standard-phases
-         ;; Avoid embedding kernel version for reproducible build
+           ;; Avoid embedding kernel version for reproducible build
            (add-after 'unpack 'remove-kernel-version
              (lambda _
-               (substitute* "third-party/miniupnpc/updateminiupnpcstrings.sh"
+               (substitute* "third-party/miniupnp/miniupnpc/updateminiupnpcstrings.sh"
                  (("OS_VERSION=`uname -r`") "OS_VERSION=Guix"))))
            (replace 'check
              (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
