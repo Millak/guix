@@ -5232,13 +5232,15 @@ and import their menus over DBus.")
      (list
       #:qtbase qtbase
       #:configure-flags
-      #~(list "-DKDSingleApplication_QT6=true" "-DKDSingleApplication_TESTS=true")))
+      #~(list "-DKDSingleApplication_QT6=ON" "-DKDSingleApplication_TESTS=ON")))
     (inputs (list libxkbcommon vulkan-headers))
     (home-page "https://github.com/KDAB/KDSingleApplication")
     (synopsis "Qt helper class for single-instance policy applications")
     (description "KD SingleApplication is a helper class for single-instance
 policy applications.")
-    (license (list license:bsd-3 license:expat))))
+    (license
+     (list license:bsd-3 ; cmake/*
+           license:expat)))) ; everything else
 
 (define-public kdsoap
   (package
