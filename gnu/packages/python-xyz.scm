@@ -2607,13 +2607,13 @@ with Numpy and SciPy.")
 (define-public python-shapely
   (package
     (name "python-shapely")
-    (version "2.0.2")
+    (version "2.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "shapely" version))
        (sha256
-        (base32 "1rs90q4ys5cav0hz1dq72wq2mk4aqlqqbfjrnb2zzfkiq42cq4qp"))))
+        (base32 "0cpyziixzdj7xqkya4k6fwr0qmrw8k84fsrx6p5sdgw6qxmkdwmz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
