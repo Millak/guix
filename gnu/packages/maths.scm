@@ -22,7 +22,7 @@
 ;;; Copyright © 2017, 2019, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Dave Love <me@fx@gnu.org>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Nadya Voronova <voronovank@gmail.com>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
@@ -7915,7 +7915,7 @@ reduction.")
 (define-public mcrl2
   (package
     (name "mcrl2")
-    (version "202206.1")
+    (version "202307.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7923,7 +7923,7 @@ reduction.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1rbfyw47bi31qla1sa4fd1npryb5kbdr0vijmdc2gg1zhpqfv0ia"))))
+                "147002dl3gq2jsk5gcmvw7hj3mfxrpgxwcfda5mfrj26rcxw48fc"))))
     (inputs
      (list boost glu mesa qtbase-5))
     (build-system cmake-build-system)
