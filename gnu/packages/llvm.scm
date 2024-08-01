@@ -78,6 +78,8 @@
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xml)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
   #:export (make-lld-wrapper
             system->llvm-target))
@@ -107,8 +109,7 @@ as \"x86_64-linux\"."
                               (if (string-prefix? system-prefix system)
                                   target
                                   (matches rest ...)))
-                             ((_)
-                              (error "LLVM target arch for system is unknown" system)))))
+                             ((_) #f))))
     (matches ("aarch64"     => "AArch64")
              ("armhf"       => "ARM")
              ("mips64el"    => "Mips")
@@ -591,15 +592,21 @@ output), and Binutils.")
          ;; These options are required for cross-compiling LLVM according
          ;; to <https://llvm.org/docs/HowToCrossCompileLLVM.html>.
          #$@(if (%current-target-system)
-                #~((string-append "-DLLVM_TABLEGEN="
+                (or (and=>
+                     (system->llvm-target-arch)
+                     (lambda (llvm-target-arch)
+                       #~((string-append "-DLLVM_TABLEGEN="
                                   #+(file-append this-package
                                                  "/bin/llvm-tblgen"))
-                   #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
-                                    (%current-target-system))
-                   #$(string-append "-DLLVM_TARGET_ARCH="
-                                    (system->llvm-target-arch))
-                   #$(string-append "-DLLVM_TARGETS_TO_BUILD="
-                                    (system->llvm-target)))
+                          #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
+                                           (%current-target-system))
+                          #$(string-append "-DLLVM_TARGET_ARCH=" llvm-target-arch)
+                          #$(string-append "-DLLVM_TARGETS_TO_BUILD="
+                                           (system->llvm-target)))))
+                    (raise (condition
+                            (&package-unsupported-target-error
+                             (package this-package)
+                             (target (%current-target-system))))))
                 '())
          ;; Note: sadly, the build system refuses the use of
          ;; -DBUILD_SHARED_LIBS=ON and the large static archives are needed to
@@ -651,15 +658,21 @@ of programming tools as well as libraries with equivalent functionality.")
          ;; These options are required for cross-compiling LLVM according
          ;; to <https://llvm.org/docs/HowToCrossCompileLLVM.html>.
          #$@(if (%current-target-system)
-                #~((string-append "-DLLVM_TABLEGEN="
-                                  #+(file-append this-package
-                                                 "/bin/llvm-tblgen"))
-                   #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
-                                    (%current-target-system))
-                   #$(string-append "-DLLVM_TARGET_ARCH="
-                                    (system->llvm-target-arch))
-                   #$(string-append "-DLLVM_TARGETS_TO_BUILD="
-                                    (system->llvm-target)))
+                (or (and=>
+                     (system->llvm-target-arch)
+                     (lambda (llvm-target-arch)
+                       #~((string-append "-DLLVM_TABLEGEN="
+                                         #+(file-append this-package
+                                                        "/bin/llvm-tblgen"))
+                          #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
+                                           (%current-target-system))
+                          #$(string-append "-DLLVM_TARGET_ARCH=" llvm-target-arch)
+                          #$(string-append "-DLLVM_TARGETS_TO_BUILD="
+                                           (system->llvm-target)))))
+                    (raise (condition
+                            (&package-unsupported-target-error
+                             (package this-package)
+                             (target (%current-target-system))))))
                 '())
          ;; undefined reference to `__atomic_fetch_add_8' in lib/libLLVMOrcJIT.so.14
          #$@(if (target-ppc32?)
