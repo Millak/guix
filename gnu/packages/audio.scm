@@ -2545,10 +2545,6 @@ well suited to all musical instruments and vocals.")
            zita-convolver))
     (native-inputs
      (list pkg-config))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "LV2_PATH")
-            (files '("lib/lv2")))))
     (home-page "https://tomszilagyi.github.io/plugins/ir.lv2")
     (synopsis "LV2 convolution reverb")
     (description
