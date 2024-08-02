@@ -3141,6 +3141,10 @@ significantly faster and have minimal dependencies.")
      (list libsndfile))
     (native-inputs
      (list pkg-config))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "LV2_PATH")
+            (files '("lib/lv2")))))
     (home-page "https://lv2plug.in/")
     (synopsis "LV2 audio plugin specification")
     (description
