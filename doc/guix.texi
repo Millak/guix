@@ -860,8 +860,28 @@ files, configuration, and services.
 @section Setting Up the Daemon
 
 @cindex daemon
+During the installation, the @dfn{build daemon} that must be running
+to use Guix has already been set up and you can run @command{guix}
+commands in your terminal program, @pxref{Getting Started}:
+
+@example
+guix build hello
+@end example
+
+If this runs through without error, feel free to skip this section.
+You should continue with the following section, @ref{Application
+Setup}.
+
+However, now would be a good time to replace outdated daemon versions,
+tweak it, perform builds on other machines (@pxref{Daemon Offload
+Setup}) or start it manually in special environments like Chroots
+(@pxref{Chrooting into an existing system}) or WSL (not needed for WSL
+images created with Guix, @pxref{System Images,
+@code{wsl2-image-type}}).  If you want to know more or optimize your
+system, this section is worth reading.
+
 Operations such as building a package or running the garbage collector
-are all performed by a specialized process, the @dfn{build daemon}, on
+are all performed by a specialized process, the build daemon, on
 behalf of clients.  Only the daemon may access the store and its
 associated database.  Thus, any operation that manipulates the store
 goes through the daemon.  For instance, command-line tools such as
