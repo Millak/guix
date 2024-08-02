@@ -40,6 +40,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Suhail <suhail@bayesians.ca>
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -848,7 +849,7 @@ eye-candy, customizable, and reasonably lightweight.")
 (define-public foot
   (package
     (name "foot")
-    (version "1.17.2")
+    (version "1.18.0")
     (home-page "https://codeberg.org/dnkl/foot")
     (source
      (origin
@@ -858,7 +859,7 @@ eye-candy, customizable, and reasonably lightweight.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gi2c3zxyyf3l3wp702yfwxk512yz83rk06wljc7wlkbf1c9msm7"))))
+        (base32 "1znfk64kimm0vr3alvj66i1yn5glig3bw60n2lv9cn4jzi1b7qhb"))))
     (build-system meson-build-system)
     (arguments
      (list
