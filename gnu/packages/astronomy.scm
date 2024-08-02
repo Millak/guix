@@ -1273,6 +1273,56 @@ across many files.")
 to make such analysis both as flexible and clear as possible.")
     (license license:bsd-3)))
 
+(define-public python-soxs
+  (package
+    (name "python-soxs")
+    (version "4.8.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "soxs" version))
+       (sha256
+        (base32 "1m5q3i7hk7jqdpd46h13c4a16b74p0k4mqkxhs43b4vi95h70qrj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require additional data, check if it may be packed
+      ;; separately, see tests/ci_install.sh.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; To address sanity check warning: UserWarning: unable to write
+              ;; new config file.
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-appdirs
+           python-astropy
+           python-h5py
+           python-numpy
+           python-pooch
+           python-pyyaml
+           python-regions
+           python-scipy
+           python-tqdm))
+    (native-inputs
+     (list python-cython
+           python-setuptools-scm))
+    (home-page "https://hea-www.cfa.harvard.edu/soxs/")
+    (synopsis "Simulated Observations of X-ray Sources")
+    (description
+     "SOXS is a software suite which can create simulated X-ray observations
+of astrophysical sources with almost any existing or planned X-ray
+observatory.  The goal of SOXS is to provide a comprehensive set of tools to
+design source models and convolve them with simulated models of X-ray
+instruments.  This package was originally developed to support the
+@url{https://www.lynxobservatory.org/,Lynx X-ray Observatory} mission concept,
+but has evolved to support other missions as well.")
+    ;; SOXS is licensed under the terms of the Modified BSD License (also
+    ;; known as New or Revised BSD).
+    (license license:bsd-3)))
+
 (define-public wcslib
   (package
     (name "wcslib")
