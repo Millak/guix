@@ -1333,10 +1333,6 @@ plugins are provided.")
            fftw))
     (native-inputs
      (list pkg-config))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "LV2_PATH")
-            (files '("lib/lv2")))))
     (home-page "http://calf.sourceforge.net/")
     (synopsis "Audio plug-in pack for LV2 and JACK environments")
     (description
