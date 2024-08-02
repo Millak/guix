@@ -3206,10 +3206,6 @@ generate C headers from Turtle files.")
      (list lv2 lvtk))
     (native-inputs
      (list pkg-config ttl2c))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "LV2_PATH")
-            (files '("lib/lv2")))))
     (home-page "https://elephly.net/lv2/mdapiano.html")
     (synopsis "LV2 port of the mda Piano plugin")
     (description "An LV2 port of the mda Piano VSTi.")
