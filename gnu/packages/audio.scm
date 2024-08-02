@@ -2438,10 +2438,6 @@ partial release of the General MIDI sound set.")
            gettext-minimal
            pkg-config
            sassc))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "LV2_PATH")
-            (files '("lib/lv2")))))
     (home-page "https://guitarix.org/")
     (synopsis "Virtual guitar amplifier")
     (description "Guitarix is a virtual guitar amplifier running JACK.
