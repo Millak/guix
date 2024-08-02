@@ -3712,10 +3712,6 @@ filters using the so-called @emph{window method}.")
      (list fftw libsamplerate)) ;required by rubberband.pc
     (native-inputs
      (list pkg-config))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "LADSPA_PATH")
-            (files '("lib/ladspa")))))
     (home-page "https://breakfastquay.com/rubberband/")
     (synopsis "Audio time-stretching and pitch-shifting library")
     (description
