@@ -58,6 +58,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2024 hapster <o.rojon@posteo.net>
+;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6831,9 +6832,6 @@ ones.")
              mesa))
       (native-search-paths
        (list (search-path-specification
-              (variable "LV2_PATH")
-              (files '("lib/lv2")))
-             (search-path-specification
               (variable "VST2_PATH")
               (files '("lib/vst")))
              (search-path-specification
