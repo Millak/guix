@@ -3710,9 +3710,6 @@ filters using the so-called @emph{window method}.")
      (list pkg-config))
     (native-search-paths
      (list (search-path-specification
-            (variable "LV2_PATH")
-            (files '("lib/lv2")))
-           (search-path-specification
             (variable "LADSPA_PATH")
             (files '("lib/ladspa")))))
     (home-page "https://breakfastquay.com/rubberband/")
