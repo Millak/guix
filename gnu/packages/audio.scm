@@ -48,6 +48,7 @@
 ;;; Copyright © 2023 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2024 hapster <o.rojon@posteo.net>
 ;;; Copyright © 2024 mio <stigma@disroot.org>
+;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6573,7 +6574,7 @@ verifies checksums.")
 (define-public easyeffects
   (package
     (name "easyeffects")
-    (version "7.0.1") ; later version require gtk 4.10
+    (version "7.1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6581,10 +6582,11 @@ verifies checksums.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0c49yd4dfh7qarq5h651dgxdbs71is4pp1sl8r0gfswqji6bv39w"))))
+               (base32 "19r8pzlhdn7jp7lggxv3c74xbr48hwmz234rl600fnqhygpixg6b"))))
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin") ;for glib-compile-resources
+           gcc-12 ; fails to build with gcc-11
            gettext-minimal
            itstool
            pkg-config))
@@ -6605,19 +6607,19 @@ verifies checksums.")
            pango
            pipewire
            rnnoise
-           speex
            speexdsp
            tbb
-           zita-convolver))
+           zita-convolver
+           soundtouch))
     ;; Propagating these allows EasyEffects to find the plugins via their
     ;; search-path specification
     (propagated-inputs
-     (list calf
-           lsp-plugins
-           lv2
+     (list lv2
+           calf
+           `(,lsp-plugins "lv2")
            mda-lv2
-           rubberband
-           zam-plugins))
+           zam-plugins
+           ladspa))
     (arguments
      `(#:glib-or-gtk? #t
        #:phases
