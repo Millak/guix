@@ -2803,6 +2803,10 @@ plugin function as a JACK application.")
                  (("^CPP.*")           "CPP = g++\n")))
              #t))
          (delete 'build))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "LADSPA_PATH")
+            (files '("lib/ladspa")))))
     ;; Since the home page is gone, we provide a link to the archived version.
     (home-page
      "https://web.archive.org/web/20140729190945/http://www.ladspa.org/")
