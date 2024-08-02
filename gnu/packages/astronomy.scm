@@ -1196,6 +1196,59 @@ zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
 across many files.")
     (license license:bsd-3)))
 
+(define-public python-pyxsim
+  (package
+    (name "python-pyxsim")
+    (version "4.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyxsim" version))
+       (sha256
+        (base32 "1vviy9hk2z3h0fi6c8207ps5pklsjn0a77pqq6wa4sa1n07clc8i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require additional data, check if it may be packed
+      ;; separately, see tests/ci_install.sh.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; To address sanity check warning: UserWarning: unable to write
+              ;; new config file.
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-astropy
+           python-h5py
+           python-numpy
+           python-scipy
+           python-soxs
+           python-tqdm
+           python-unyt
+           python-yt))
+    (native-inputs
+     (list python-cython-3
+           python-setuptools-scm))
+    (home-page "https://hea-www.cfa.harvard.edu/~jzuhone/pyxsim/")
+    (synopsis "Simulating X-ray observations from astrophysical sources")
+    (description
+     "This package implements functionality for simulating X-ray emission from
+astrophysical sources.
+
+X-rays probe the high-energy universe, from hot galaxy clusters to compact
+objects such as neutron stars and black holes and many interesting sources in
+between.  pyXSIM makes it possible to generate synthetic X-ray observations of
+these sources from a wide variety of models, whether from grid-based
+simulation codes such as FLASH, Enzo, and Athena, to particle-based codes such
+as Gadget and AREPO, and even from datasets that have been created 'by hand',
+such as from NumPy arrays.  pyXSIM also provides facilities for manipulating
+the synthetic observations it produces in various ways, as well as ways to
+export the simulated X-ray events to other software packages to simulate the
+end products of specific X-ray observatories.")
+    (license license:bsd-3)))
+
 (define-public python-sncosmo
   (package
     (name "python-sncosmo")
