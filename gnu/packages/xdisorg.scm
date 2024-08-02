@@ -63,6 +63,7 @@
 ;;; Copyright © 2022 Mehmet Tekman <mtekman89@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3374,6 +3375,30 @@ rofi's drun mode.  It has Emacs key bindings and remembers frequently launched
 applications.  The font and colors can be configured.")
     (license (list license:expat ;fuzzel
                    license:zlib)))) ;; bundled nanosvg
+
+(define-public fyi
+  (package
+    (name "fyi")
+    (version "1.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/dnkl/fyi")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "112jczg0gfjgf7jkqlr97a9n5nv931dfdmwvnd5jivdh8ljajwfh"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list dbus))
+    (home-page "https://codeberg.org/dnkl/fyi")
+    (synopsis "Lightweight alternative to @code{notify-send}")
+    (description
+     "@acronym{FYI, For Your Information} is a command line utility to send
+desktop notifications to the user via a notification daemon implementing XDG
+desktop notifications.")
+    (license license:expat)))
 
 (define-public wofi
   (package
