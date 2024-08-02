@@ -6343,10 +6343,6 @@ systems.")
      (list lv2))
     (native-inputs
      (list pkg-config))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "LV2_PATH")
-            (files '("lib/lv2")))))
     (home-page "https://drobilla.net/software/mda-lv2.html")
     (synopsis "Audio plug-in pack for LV2")
     (description
