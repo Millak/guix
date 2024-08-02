@@ -2593,7 +2593,11 @@ system is under heavy load.")
         (base32 "1z9vjn2131iv3pwrh04z6r5ygi1qgad5bi3jhghcvc3v1b4k5ran"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:make-flags
+     ;; XXX The test suite seems to cause instability on the VisionFive 2
+     ;; build machines, maybe it's stressing them as intended but this is
+     ;; unhelpful
+     (list #:tests? (not (target-riscv64?))
+           #:make-flags
            #~(list (string-append "CC=" #$(cc-for-target))
                    (string-append "BINDIR=" #$output "/bin")
                    ;; XXX Really: MAN1DIR, or man pages won't be found.
