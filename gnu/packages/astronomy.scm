@@ -1376,6 +1376,59 @@ but has evolved to support other missions as well.")
     ;; known as New or Revised BSD).
     (license license:bsd-3)))
 
+(define-public python-specreduce
+  (package
+    (name "python-specreduce")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "specreduce" version))
+       (sha256
+        (base32 "14ba4ws2z3kpw007f3hpslgp5i6dx082xhql4aim7j82211gpj6s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; TODO: Try to link some test data availale in
+      ;; specification-specreduce-data package.
+      #~(list "-k" (string-append
+                    "not specreduce.calibration_data.get_pypeit_data_path"
+                    " and not specreduce.calibration_data.get_reference_file_path"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pypojrect-toml
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; TypeError: Configuration.__init__() got an unexpected
+                ;; keyword argument 'version_file'
+                (("version_file = .*") ""))))
+         (add-before 'check 'set-home
+           (lambda _
+             ;; Relax matplotlib warning: ... because the default path
+             ;; (/homeless-shelter/.config/matplotlib) is not a writable
+             ;; directory ...
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-astropy
+           python-gwcs
+           python-matplotlib
+           python-photutils
+           python-specutils
+           python-synphot))
+    (native-inputs
+     (list python-photutils
+           python-setuptools-scm
+           python-pytest-astropy))
+    (home-page "https://specreduce.readthedocs.io/")
+    (synopsis "Spectroscopic Reductions")
+    (description
+     "This package implements functionality of spectroscopic reduction in
+observations from Optical and @acronym{Near-infrared spectroscopy,NIR}
+instruments.")
+    (license (list license:bsd-3     ; licenses/LICENSE.rst, same as python-astropy
+                   license:expat)))) ; licenses/KOSMOS_LICENSE
+
 (define-public wcslib
   (package
     (name "wcslib")
