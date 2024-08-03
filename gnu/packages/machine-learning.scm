@@ -134,6 +134,28 @@
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match))
 
+(define-public dlpack
+  (package
+    (name "dlpack")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dmlc/dlpack")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "169slm88jin4ddhdwk1qhqzzkhkwk1jrz35i7abhcqkry9wjib4f"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ;No tests.
+    (home-page "https://github.com/dmlc/dlpack")
+    (synopsis "In memory tensor structure")
+    (description
+     "DLPack is an in-memory tensor structure for sharing tensors among
+frameworks.")
+    (license license:asl2.0)))
+
 (define-public fasttext
   (package
     (name "fasttext")
