@@ -64,7 +64,7 @@
 (define-public arcan
   (package
     (name "arcan")
-    (version "0.6.3")
+    (version "0.6.3.3")
     (source (origin
               (method git-fetch)
               (file-name (git-file-name name version))
@@ -73,7 +73,7 @@
                     (commit version)))
               (sha256
                (base32
-                "1aj8hffxsf6vg1al2v29cn35wnh7wir5x9krk4h68sy5va88w8k5"))
+                "0rbswqqrgh9bkv0fzsswpkfw2zp1a7znwy0abgrxha5vpn13qd8c"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove some bundled packages.
