@@ -4893,6 +4893,50 @@ as signed sessions, multipart message support, etc.")
     (propagated-inputs
      (list guile2.2-irregex guile2.2-gcrypt))))
 
+(define-public guile-web-driver-ng
+  (package
+    (name "guile-web-driver-ng")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/artyom-poptsov/guile-web-driver-ng")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0saljgf3kj3p9b1mk5211s8np2vwkzf072xp6j2xnc10vdn891ja"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf
+                         automake
+                         pkg-config
+                         texinfo
+                         ;; needed when cross-compiling.
+                         guile-lib
+                         guile-json-4
+                         guile-gnutls
+                         guile-3.0))
+    (propagated-inputs (list guile-json-4 guile-gnutls guile-lib guile-3.0
+                             inetutils))
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'strip))))
+    (home-page "https://github.com/artyom-poptsov/guile-web-driver-ng")
+    (synopsis "Web driver (Selenium) client for Guile")
+    (description
+     "This is a web-driver, or Selenium 2, client.  It's purpose is to automate
+browsers, specifically for automatic web server testing.  Chrome or Firefox can be
+used as the automated browsers, or it can connect to arbitrary server providing
+webdriver interface.  The client implements most of the WebDriver
+@url{https://www.w3.org/TR/webdriver2/, specification}.
+
+@code{guile-web-driver-ng} also provides a proxy implemented as a Guile module.  If
+configured, the proxy can intercept and modify HTTP/HTTPS traffic (for example, add,
+delete and replace HTTP headers) which is useful for Selenium WebDriver as it does
+not provide a way to change the headers on its own.")
+    (license license:gpl3+)))
+
 (define-public guile-lens
   (let ((commit "14b15d07255f9d3f55d40a3b750d13c9ee3a154f")
         (revision "0"))
