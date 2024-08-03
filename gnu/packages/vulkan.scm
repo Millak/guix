@@ -6,7 +6,7 @@
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2022, 2024 dan <i@dan.games>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -297,7 +297,11 @@ interpretation of the specifications for these languages.")
                                        (search-input-directory
                                         %build-inputs "include/vulkan"))))
               #$@(if (%current-target-system)
-                     #~("-DBUILD_TESTS=OFF" "-DUSE_GAS=OFF")
+                     #~("-DBUILD_TESTS=OFF" "-DUSE_GAS=OFF"
+                        (string-append "-DPKG_CONFIG_EXECUTABLE="
+                                       (search-input-file
+                                        %build-inputs
+                                        (string-append "bin/" #$(pkg-config-for-target)))))
                      #~("-DBUILD_TESTS=ON")))
        #:phases
        #~(modify-phases %standard-phases
