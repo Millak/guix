@@ -4121,6 +4121,67 @@ applied via a static image (.png, .jpeg, etc).
 @end itemize\n")
     (license license:gpl2)))
 
+(define-public obs-composite-blur
+  (package
+    (name "obs-composite-blur")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/FiniteSingularity/obs-composite-blur")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mlbc1zi4bp8xwiq0ynjciysqvlbrxa0v5an9hkzsl9vwxgz9jc9"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils))
+      #:tests? #f ;no tests
+      #:configure-flags
+      #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
+                             #$(this-package-input "obs") "/lib")
+              "-DBUILD_OUT_OF_TREE=On"
+              "-Wno-dev")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'move-shaders
+            (lambda _
+              (mkdir-p
+               (string-append
+                #$output
+                "/share/obs/obs-plugins/obs-composite-blur"))
+              (rename-file
+               (string-append
+                #$output
+                "/data/obs-plugins/obs-composite-blur/shaders")
+               (string-append
+                #$output
+                "/share/obs/obs-plugins/obs-composite-blur/shaders")))))))
+    (inputs (list obs qtbase-5))
+    (home-page "https://github.com/FiniteSingularity/obs-composite-blur")
+    (synopsis "Different blur algorithms for OBS")
+    (description "Composite Blur Plugin is a comprehensive blur plugin that
+provides blur algorithms and types for all levels of quality and computational
+need.
+
+@itemize
+@item Composite Blur provides several highly optimized blur algorithms
+including Gaussian, Multi-Pass Box, Dual Kawase, and Pixelate.
+@item Composite Blur provides multiple blur effects to give a different look
+and feel to the blur including Area, Directional, Zoom, Motion, and
+Tilt-Shift.
+@item Composite Blur also allows setting a Background Source so that it can
+properly composite blurred masks, allowing you to properly layer blurred
+sources.
+@item Finally, Composite Blur provides an option to mask where and how much
+blurring occurs on the source via Crop, Rectangle, Circle, Source, and Image
+masks.
+@end itemize\n")
+    (license license:gpl2)))
+
 (define-public obs-looking-glass
   (package
     (name "obs-looking-glass")
