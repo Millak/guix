@@ -4227,7 +4227,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
 (define-public fbgemm
   (package
     (name "fbgemm")
-    (version "0.6.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4236,7 +4236,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mw30v55aicqdbh3xwfj9p8f38nw70ks5cxiwpgwjsk0dylah9rf"))
+                "1dzw9w82ca0hss1lvshix6piwsd0k11lyq9pzm8yg8k7j56hmyig"))
               (patches (search-patches "fbgemm-use-system-libraries.patch"))
               (modules '((guix build utils)))
               (snippet
