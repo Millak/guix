@@ -4283,6 +4283,37 @@ your host privately.")
 inputs and applications using PipeWire.")
     (license license:gpl2+)))
 
+(define-public obs-source-clone
+  (package
+    (name "obs-source-clone")
+    (version "0.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/exeldro/obs-source-clone")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rw0qknlkljzn4rk41g2jjnf113vald5k7kpvxvz0mpaywa6vc6j"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils))
+      #:tests? #f ;no tests
+      #:configure-flags
+      #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
+                             #$(this-package-input "obs") "/lib")
+              "-DBUILD_OUT_OF_TREE=On"
+              "-Wno-dev")))
+    (inputs (list obs qtbase-5))
+    (home-page "https://github.com/exeldro/obs-source-clone")
+    (synopsis "Plugin for OBS Studio to clone sources")
+    (description "Add source to OBS that lets you clone sources to allow
+different filters than the original.")
+    (license license:gpl2)))
+
 (define-public obs-source-copy
   (package
     (name "obs-source-copy")
