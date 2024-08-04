@@ -62832,6 +62832,19 @@ Should not be used directly.")
 functionality as retain but gives mutable borrow to the predicate.")
     (license license:expat)))
 
+(define-public rust-retain-mut-0.1.7
+  (package
+    (inherit rust-retain-mut-0.1)
+    (name "rust-retain-mut")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "retain_mut" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11j09lp1wqwc2r9bw58my2474zj95jz5fihff3ldv3rz0g2baccc"))))))
+
 (define-public rust-rfc2047-decoder-0.2
   (package
     (name "rust-rfc2047-decoder")
@@ -63141,6 +63154,33 @@ MessagePack format.")
     (synopsis "Model a project roadmap as a directed acyclic graph")
     (description "Model a project roadmap as a directed acyclic graph.")
     (license license:expat-0)))
+
+(define-public rust-roaring-0.10
+  (package
+    (name "rust-roaring")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "roaring" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wcgprdw49xy7w00zzspbhrq8f1kvlwqasmfxh8y1gd84vlba3zg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-retain-mut" ,rust-retain-mut-0.1.7)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/RoaringBitmap/roaring-rs")
+    (synopsis "Better compressed bitset as a pure Rust implementation")
+    (description
+     "This package provides a better compressed bitset, as a pure Rust
+implementation.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-rodio-0.15
   (package
