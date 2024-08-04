@@ -4045,7 +4045,9 @@ and Darknet.")
              pthreadpool
              googletest))
       (native-inputs
-       (list python python-peachpy python-six))
+       `(,python
+         ,@(if (target-x86-64?) (list python-peachpy) '())
+         ,python-six))
       ;; Supported for Linux.
       (supported-systems '("x86_64-linux" "armhf-linux" "aarch64-linux"))
       (license license:bsd-2))))
