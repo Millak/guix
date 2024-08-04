@@ -393,6 +393,50 @@ paging.")
     (description "@code{cargo-machete} finds unused dependencies in Cargo.toml.")
     (license (list license:expat license:asl2.0))))
 
+(define-public complgen
+  (package
+    (name "complgen")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/adaszko/complgen")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "026bv2cync6qgdkn1ifhspy6z9v25plziqhnn58rlgffx2a0dqn2"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:cargo-inputs `(("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-bumpalo" ,rust-bumpalo-3)
+                       ("rust-chic" ,rust-chic-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-hashbrown" ,rust-hashbrown-0.13)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-nom-locate" ,rust-nom-locate-4)
+                       ("rust-railroad" ,rust-railroad-0.2)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-roaring" ,rust-roaring-0.10)
+                       ("rust-slice-group-by" ,rust-slice-group-by-0.3)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-ustr" ,rust-ustr-0.9))
+      #:cargo-development-inputs `(("rust-proptest" ,rust-proptest-1))))
+    (native-inputs (list git))
+    (home-page "https://github.com/adaszko/complgen")
+    (synopsis "Declarative bash/fish/zsh completions without writing shell
+scripts")
+    (description
+     "@command{complgen} is a tool that allows you to generate
+completion scripts for all major shells (@code{bash}, @code{fish}, @code{zsh})
+from a single, concise, @code{EBNF}-like grammar.")
+    (license license:asl2.0)))
+
 (define-public diffr
   (package
     (name "diffr")
