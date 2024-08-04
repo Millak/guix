@@ -505,9 +505,9 @@ command---e.g., @code{%salloc}, @code{%sbatch}, etc.")
 (define-public pthreadpool
   ;; This repository has only one tag, 0.1, which is older than what users
   ;; such as XNNPACK expect.
-  (let ((commit "178e3e0646cc671708bf78e77c273940130ac637")
+  (let ((commit "560c60d342a76076f0557a3946924c6478470044")
         (version "0.1")
-        (revision "2"))
+        (revision "3"))
     (package
       (name "pthreadpool")
       (version (git-version version revision commit))
@@ -518,7 +518,7 @@ command---e.g., @code{%salloc}, @code{%sbatch}, etc.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1s86lnq9bahacf5wxn7y14w70jh3g9lq1l7y16ijwhifd01nc2km"))
+                  "0l82ix1h8pmjikf15bvmlap355gmyfjpahmgz4lbd6g40ab3ls5c"))
                 (patches (search-patches "pthreadpool-system-libraries.patch"))))
       (build-system cmake-build-system)
       (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
