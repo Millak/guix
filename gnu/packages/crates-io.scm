@@ -1727,6 +1727,26 @@ it outputs messages to Android's logcat.")
                                    ("rust-toml" ,rust-toml-0.5)
                                    ("rust-yansi-term" ,rust-yansi-term-0.1))))))
 
+(define-public rust-annotate-snippets-0.6
+  (package
+    (inherit rust-annotate-snippets-0.10)
+    (name "rust-annotate-snippets")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "annotate-snippets" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19x7ldklprdgf8pam8b3lfhrxqw5yldcvk5j0bw2agsajbj1q0n7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.11))
+       #:cargo-development-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
+                                   ("rust-difference" ,rust-difference-2)
+                                   ("rust-glob" ,rust-glob-0.3)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-yaml" ,rust-serde-yaml-0.8))))))
+
 (define-public rust-ansi-parser-0.8
   (package
     (name "rust-ansi-parser")
@@ -12257,6 +12277,25 @@ Encoding Standard.")
     (home-page "https://github.com/chronotope/chrono")
     (synopsis "Date and time library for Rust")
     (description "Date and time library for Rust.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-chic-1
+  (package
+    (name "rust-chic")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "chic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "037pkdccj25gr4my8fq1qni9v87rydpyhfi2naf86mimkxhxpdd5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-annotate-snippets" ,rust-annotate-snippets-0.6))))
+    (home-page "https://github.com/yoshuawuyts/chic")
+    (synopsis "Pretty parser error reporting")
+    (description "This package provides pretty parser error reporting.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-chrono-humanize-0.2
