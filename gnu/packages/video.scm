@@ -4254,6 +4254,37 @@ This may help improve your viewers watching experience, and allows you to use
 your host privately.")
     (license license:gpl2+)))
 
+(define-public obs-move-transition
+  (package
+    (name "obs-move-transition")
+    (version "3.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/exeldro/obs-move-transition")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0kni1a8zqqbgx5mmaw4k4chswsy0i9qk89zcbg58mvspz9zzv4id"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils))
+      #:tests? #f ;no tests
+      #:configure-flags
+      #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
+                             #$(this-package-input "obs") "/lib")
+              "-DBUILD_OUT_OF_TREE=On"
+              "-Wno-dev")))
+    (inputs (list obs qtbase-5))
+    (home-page "https://github.com/exeldro/obs-move-transition")
+    (synopsis "Move transition for OBS Studio")
+    (description "Plugin for OBS Studio to move source to a new position
+during scene transition.")
+    (license license:gpl2)))
+
 (define-public obs-pipewire-audio-capture
   (package
     (name "obs-pipewire-audio-capture")
