@@ -3888,8 +3888,8 @@ that:
 
 (define-public gloo
   (let ((version "0.0.0")                         ; no proper version tag
-        (commit "c22a5cfba94edf8ea4f53a174d38aa0c629d070f")
-        (revision "1"))
+        (commit "81925d1c674c34f0dc34dd9a0f2151c1b6f701eb")
+        (revision "2"))
     (package
       (name "gloo")
       (version (git-version version revision commit))
@@ -3902,7 +3902,7 @@ that:
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1crmqgybzkgkpbmcx16912gsl5qsj49swa0ikx6mhqgph0chrh11"))))
+           "16zs8ndbiv9nppn8bv6lfanzyyssz7g5pawxiqcnafwq3nvxpj9m"))))
       (build-system cmake-build-system)
       (native-inputs
        (list googletest))
@@ -3914,6 +3914,7 @@ that:
       (arguments
        (list #:configure-flags #~'("-DBUILD_SHARED_LIBS=ON"
                                    "-DBUILD_TEST=1"
+                                   "-DCMAKE_CXX_STANDARD=17"
                                    #$@(if (this-package-input "rdma-core")
                                           #~("-DUSE_IBVERBS=ON")
                                           #~()))
@@ -3929,6 +3930,7 @@ that:
 number of collective algorithms useful for machine learning applications.
 These include a barrier, broadcast, and allreduce.")
       (home-page "https://github.com/facebookincubator/gloo")
+      (supported-systems %64bit-supported-systems)
       (license license:bsd-3))))
 
 (define-public python-tensorly
