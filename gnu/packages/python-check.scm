@@ -1609,13 +1609,13 @@ notebooks.")
 (define-public python-nbval
   (package
     (name "python-nbval")
-    (version "0.9.6")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nbval" version))
        (sha256
-        (base32 "0h3xrnw0mj1srigrx2rfnd73h8s0xjycclmjs0vx7qkfyqpcvvyg"))))
+        (base32 "154h6xpf9h6spgg3ax6k79fd40j197ipwnfjmf5rc2kvc2bmgjbp"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1629,21 +1629,16 @@ notebooks.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "-vv" "-k"
-                       (string-append
-                        ;; This only works with Pytest < 5.
-                        "not nbdime_reporter"
-                        ;; https://github.com/computationalmodelling/nbval/pull/148.
-                        " and not test_timeouts"
-                        ;; It seems the output format has changed; the following
-                        ;; test fails with "Unexpected output fields from
-                        ;; running code: {'text/plain'}".
-                        " and not test_conf_ignore_stderr "))))))))
-    (native-inputs
-     (list python-pytest python-pytest-cov python-sympy))
+               (invoke "pytest" "-vv"
+                       ;; nbdime forms a dependency cycle
+                       "--ignore=tests/test_nbdime_reporter.py")))))))
+    (native-inputs (list python-pytest-cov python-sympy))
     (propagated-inputs
-     (list python-ipykernel python-jupyter-client python-nbformat
-           python-six))
+     (list python-coverage
+           python-ipykernel
+           python-jupyter-client
+           python-nbformat
+           python-pytest))
     (home-page "https://github.com/computationalmodelling/nbval")
     (synopsis "Pytest plugin to validate Jupyter notebooks")
     (description
