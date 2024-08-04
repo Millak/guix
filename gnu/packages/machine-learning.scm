@@ -5903,7 +5903,7 @@ Brian 2 simulator.")
 (define-public oneapi-dnnl
   (package
     (name "oneapi-dnnl")
-    (version "3.3.5")
+    (version "3.5.3")
     (source
      (origin
        (method git-fetch)
@@ -5912,7 +5912,7 @@ Brian 2 simulator.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05ra5zziys2hvn29y6ysiqzsf4jr9bf2bci5sc3swvf3bs2y5ihf"))))
+        (base32 "1m2d7qlbfk86rmvmpvx2k3rc2k0l9hf9qpa54jl44670ls9n8i7w"))))
     (build-system cmake-build-system)
     (arguments (if (target-riscv64?)
                    (list #:configure-flags #~'("-DDNNL_CPU_RUNTIME=SEQ"))
