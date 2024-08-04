@@ -5040,14 +5040,14 @@ AI services.")
 (define-public python-lightning-utilities
   (package
     (name "python-lightning-utilities")
-    (version "0.8.0")
+    (version "0.11.6")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "lightning-utilities" version))
+              (uri (pypi-uri "lightning_utilities" version))
               (sha256
                (base32
-                "084pn8fizxrcn1699jb8x2jsg4wcx01l65bwxpgnq0kzqp3rapcf"))))
-    (build-system python-build-system)
+                "016zikn39apig3y6xyipw34w0w02c73z483radddbf68ivpjgz3r"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-importlib-metadata python-packaging
                              python-typing-extensions))
     (native-inputs (list python-coverage))
