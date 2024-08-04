@@ -1122,7 +1122,7 @@ tools:
   ;; header
   (package
     (name "cpp-httplib")
-    (version "0.12.5")
+    (version "0.16.0")
     (source
      (origin
        (method git-fetch)
@@ -1130,7 +1130,7 @@ tools:
              (url "https://github.com/yhirose/cpp-httplib")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1m1p6h1dsxg4kg5zziffb6xl8zgjbkw7gmgmmlnrhpl3bswam87n"))
+        (base32 "0n4ribq7c6lqj0hn50pdvy7wml62fqbgrgysb038fq1qc6xyw3np"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
