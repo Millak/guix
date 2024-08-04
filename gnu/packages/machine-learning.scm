@@ -5330,7 +5330,7 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
 (define-public python-torchvision
   (package
     (name "python-torchvision")
-    (version "0.17.1")
+    (version "0.19.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5340,7 +5340,7 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "094jz0ryzh0yjxf687r61r482fdh3bax8ix2csghraps0z1sns1b"))
+                "15zyq2k4x9yapx7qfghhslznz1mwybhf086pirsr98c4l891sp1r"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -5348,10 +5348,21 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
                   (delete-file-recursively "ios")))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #false)) ;the test suite is expensive and there is no easy
-                             ;way to subset it.
+     (list
+      ;; The test suite is expensive and there is no easy way to subset it.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'setenv
+            (lambda _
+              (let ((jpegdir #$(this-package-input "libjpeg-turbo")))
+                (setenv "TORCHVISION_INCLUDE"
+                        (string-append jpegdir "/include/"))
+                (setenv "TORCHVISION_LIBRARY"
+                        (string-append jpegdir "/lib/"))))))))
     (inputs
-     (list libpng
+     (list ffmpeg
+           libpng
            libjpeg-turbo))
     (propagated-inputs
      (list python-numpy
