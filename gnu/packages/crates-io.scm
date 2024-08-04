@@ -46781,6 +46781,30 @@ combinators library (fork for proposals for v8)")
     (description "This package provides custom derive nom parsers from structs.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-nom-locate-4
+  (package
+    (name "rust-nom-locate")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nom_locate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wx87c2pm84h63rb4rsjrqzgx574x1zy93av1jk3swdhag086g0y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytecount" ,rust-bytecount-0.6)
+                       ("rust-memchr" ,rust-memchr-1)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
+    (home-page "https://github.com/fflorent/nom_locate")
+    (synopsis "Special input type for @code{nom} to locate tokens")
+    (description
+     "This package provides a special input type for @code{nom} to locate
+tokens.")
+    (license license:expat)))
+
 (define-public rust-nonempty-0.7
   (package
     (name "rust-nonempty")
