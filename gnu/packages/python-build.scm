@@ -264,18 +264,6 @@ Included are implementations of:
 @end enumerate\n")
     (license license:psfl)))
 
-(define-public python-typing-extensions-4.10
-  (package
-    (inherit python-typing-extensions)
-    (version "4.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "typing_extensions" version))
-       (sha256
-        (base32
-         "1jxkj4pni8pdyrn79sq441lsp40xzw363n0qvfc6zfcgkv4dgaxh"))))))
-
 
 ;;;
 ;;; Python builder packages.

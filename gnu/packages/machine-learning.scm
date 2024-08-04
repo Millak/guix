@@ -4666,7 +4666,7 @@ PyTorch.")
            python-pytest-xdist
            python-hypothesis
            python-types-dataclasses
-           python-typing-extensions-4.10
+           python-typing-extensions
            shaderc
            valgrind))
     (inputs
