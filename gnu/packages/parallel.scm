@@ -536,7 +536,7 @@ features.")
   ;; There's currently no tag on this repo.
   (let ((version "0.0")
         (revision "3")
-        (commit "aa4b2163b99ac9534194520f70b93eeefb0b3b4e"))
+        (commit "05332fd802d9109a2a151ec32154b107c1e5caf9"))
     (package
       (name "cpuinfo")
       (version (git-version version revision commit))
@@ -547,10 +547,13 @@ features.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "12x4krkyzxngf1l2ck33lnsp8pyzf6gyjj9mp9cnka9mw3h6617m"))))
+                  "0w0kfc1fn9viirkhbr8dgfy9m5clfsg3k9p6kdxhzqpyjhgd252n"))))
       (build-system cmake-build-system)
       (arguments
        (list
+        ;; cpuinfo does not work in the build container for aarch64:
+        ;; https://github.com/pytorch/cpuinfo/issues/143
+        #:tests? (not (target-aarch64?))
         #:configure-flags
         '(list "-DBUILD_SHARED_LIBS=ON"
                "-DUSE_SYSTEM_LIBS=ON")
@@ -569,9 +572,6 @@ GTEST_SKIP() << \"See https://github.com/pytorch/cpuinfo/issues/132\";"))))))))
        "The cpuinfo library provides a C/C++ and a command-line interface to
 obtain information about the CPU being used: supported instruction set,
 processor name, cache information, and topology information.")
-      ;; On aarch64-linux, there is a bug reported upstream:
-      ;; https://github.com/pytorch/cpuinfo/issues/14
-      (supported-systems '("armhf-linux" "i686-linux" "x86_64-linux"))
       (license license:bsd-2))))
 
 (define-public clog
