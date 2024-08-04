@@ -35,7 +35,8 @@
  (entry (commit "26638b8e8129aa755586d017677b4cf076bafda6")
         (title
          (en "The containerd service is separated from @code{docker-service-type}")
-         (ru "Сервис containerd отделен от @code{docker-service-type}"))
+         (ru "Сервис containerd отделен от @code{docker-service-type}")
+         (de "containerd-Dienst wurde vom @code{docker-service-type} getrennt"))
         (body
          (en "containerd service has been decoupled from the
 @code{docker-service-type}.  Moving forward, users are required to specify
