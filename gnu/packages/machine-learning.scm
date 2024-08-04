@@ -28,6 +28,7 @@
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1331,7 +1332,7 @@ in terms of new algorithms.")
 (define-public onnx
   (package
     (name "onnx")
-    (version "1.12.0")
+    (version "1.16.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1339,70 +1340,88 @@ in terms of new algorithms.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1g9f1hviksbn7gi6fnd0dsm7nf0w3yia0mjj33d9mggklrl0db6x"))
+                "0f5h204ksfz4ir3qq38ckxja1jfhf1vn5xzwrj83vkkbfjq6fv16"))
               (file-name (git-file-name name version))
-              (patches (search-patches "onnx-use-system-googletest.patch"
-                                       "onnx-shared-libraries.patch"
-                                       "onnx-skip-model-downloads.patch"))
+              (patches (search-patches
+                        "onnx-shared-libraries.patch"
+                        "onnx-skip-model-downloads.patch"))
               (modules '((guix build utils)))
               (snippet '(delete-file-recursively "third_party"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-requirements
-                    (lambda _
-                      ;; Does this difference really matter?
-                      (substitute* "requirements.txt"
-                        (("3.20.1") "3.20.2"))))
-                  (add-before 'build 'pass-cmake-arguments
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Pass options to the CMake-based build process.
-                      (define out
-                        (assoc-ref outputs "out"))
+     (list
+      ;; python-nbval depends transitively on Rust.
+      #:tests?
+      (->bool (member (or (%current-target-system)
+                          (%current-system))
+                      (package-transitive-supported-systems python-nbval)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pass-cmake-arguments
+            (lambda* (#:key outputs tests? #:allow-other-keys)
+              ;; For derived package use
+              (substitute* "CMakeLists.txt"
+                (("set\\(ONNX_ROOT.*")
+                 (string-append "set(ONNX_ROOT "#$(package-source this-package) ")\n"))
+                (("\\$\\{ROOT_DIR\\}(/tools.*)" _ rest)
+                 (string-append "${PROJECT_SOURCE_DIR}" rest)))
+              ;; Pass options to the CMake-based build process.
+              (define out
+                (assoc-ref outputs "out"))
 
-                      (define args
-                        ;; Copy arguments from 'cmake-build-system', plus ask
-                        ;; for shared libraries.
-                        (list "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
-                              (string-append "-DCMAKE_INSTALL_PREFIX=" out)
-                              "-DCMAKE_INSTALL_LIBDIR=lib"
-                              "-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE"
-                              (string-append "-DCMAKE_INSTALL_RPATH=" out
-                                             "/lib")
-                              "-DCMAKE_VERBOSE_MAKEFILE=ON"
+              (define args
+                ;; Copy arguments from 'cmake-build-system', plus ask
+                ;; for shared libraries.
+                (list "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+                      (string-append "-DCMAKE_INSTALL_PREFIX=" out)
+                      "-DCMAKE_INSTALL_LIBDIR=lib"
+                      "-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE"
+                      (string-append "-DCMAKE_INSTALL_RPATH=" out
+                                     "/lib")
+                      "-DCMAKE_VERBOSE_MAKEFILE=ON"
+                      (string-append "-DONNX_BUILD_TESTS="
+                                     (if tests? "ON" "OFF"))
+                      "-DBUILD_SHARED_LIBS=ON"
+                      "-DONNX_USE_PROTOBUF_SHARED_LIBS=ON"))
 
-                              "-DBUILD_SHARED_LIBS=ON"))
+              ;; This environment variable is honored by 'setup.py',
+              ;; which passes it down to 'cmake'.
+              (setenv "CMAKE_ARGS" (string-join args))
 
-                      ;; This environment variable is honored by 'setup.py',
-                      ;; which passes it down to 'cmake'.
-                      (setenv "CMAKE_ARGS" (string-join args))
-
-                      ;; This one is honored by 'setup.py' and passed to 'make
-                      ;; -j'.
-                      (setenv "MAX_JOBS"
-                              (number->string (parallel-job-count)))))
-                  (add-before 'check 'make-test-directory-writable
-                    (lambda _
-                      ;; Make things writable for tests.
-                      (setenv "HOME" (getcwd))
-                      (for-each make-file-writable
-                                (find-files "onnx/examples" "."
-                                            #:directories? #t))))
-                  (add-after 'install 'install-from-cmake
-                    (lambda _
-                      ;; Run "make install" in the build tree 'setup.py'
-                      ;; created for CMake so that libonnx.so,
-                      ;; libonnx_proto.so, etc. are installed.
-                      (invoke "make" "install"
-                              "-C" ".setuptools-cmake-build"))))))
+              ;; This one is honored by 'setup.py' and passed to 'make
+              ;; -j'.
+              (setenv "MAX_JOBS"
+                      (number->string (parallel-job-count)))))
+          (add-before 'check 'make-test-directory-writable
+            (lambda _
+              ;; Make things writable for tests.
+              (setenv "HOME" (getcwd))
+              (for-each make-file-writable
+                        (find-files "onnx/examples" "."
+                                    #:directories? #t))))
+          (add-after 'install 'install-from-cmake
+            (lambda _
+              ;; Run "make install" in the build tree 'setup.py'
+              ;; created for CMake so that libonnx.so,
+              ;; libonnx_proto.so, etc. are installed.
+              (invoke "make" "install"
+                      "-C" ".setuptools-cmake-build"))))))
     (native-inputs
-     (list cmake
-           googletest
-           pybind11
-           python-coverage
-           python-nbval
-           python-pytest
-           python-pytest-runner))
+     (append
+      (list cmake-minimal
+            googletest
+            pybind11
+            python-coverage
+            python-fb-re2
+            python-parameterized-next
+            python-pytest
+            python-pytest-runner)
+      (filter
+       (lambda (pkg)
+         (member (or (%current-target-system)
+                     (%current-system))
+                 (package-transitive-supported-systems pkg)))
+       (list python-nbval))))
     (inputs
      (list protobuf))
     (propagated-inputs

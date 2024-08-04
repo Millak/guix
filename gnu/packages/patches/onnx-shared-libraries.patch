@@ -1,13 +1,12 @@
-These linker options for the 'onnx_cpp2py_export.cpython-38-*-gnu.so'
-(or similar) extension are meant to be used when building 'libonn.a',
-a static archive.  This patch adapts the link flags to linking with
-'libonnx.so'.
+These linker options for the 'onnx_cpp2py_export.cpython-310-*-gnu.so' (or
+similar) extension are meant to be used when building 'libonn.a', a static
+archive.  This patch adapts the link flags to linking with 'libonnx.so'.
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index cede3073..52f846ed 100644
+index b666eec4..1525b219 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -475,11 +475,10 @@ if(BUILD_ONNX_PYTHON)
+@@ -585,16 +585,15 @@ if(BUILD_ONNX_PYTHON)
                            PRIVATE $<TARGET_OBJECTS:onnx>)
    else()
      # Assume everything else is like gcc
@@ -15,10 +14,15 @@ index cede3073..52f846ed 100644
 -                          PRIVATE "-Wl,--whole-archive" $<TARGET_FILE:onnx>
 -                                  "-Wl,--no-whole-archive")
 +    target_link_libraries(onnx_cpp2py_export PRIVATE onnx)
+     # Prevent "undefined symbol: _ZNSt10filesystem7__cxx114path14_M_split_cmptsEv" 
+     # (std::filesystem::__cxx11::path::_M_split_cmpts()) on gcc 8
+     if (CMAKE_CXX_STANDARD EQUAL 17 AND CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
+       target_link_libraries(onnx_cpp2py_export PRIVATE "-lstdc++fs")
+     endif()
      set_target_properties(onnx_cpp2py_export
 -                          PROPERTIES LINK_FLAGS "-Wl,--exclude-libs,ALL")
 +                          PROPERTIES LINK_FLAGS
-+			  "-Wl,-rpath=${CMAKE_INSTALL_PREFIX}/lib")
++                          "-Wl,-rpath=${CMAKE_INSTALL_PREFIX}/lib")
    endif()
  
    target_link_libraries(onnx_cpp2py_export PRIVATE onnx)
