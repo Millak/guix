@@ -12311,7 +12311,7 @@ without using the configuration machinery.")
 (define-public python-optree
   (package
     (name "python-optree")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -12321,9 +12321,14 @@ without using the configuration machinery.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1q3wljk7cyl5rsam02sfsj8zjrqx4c3x9vic8j6xx13p8czpsisg"))
+         "0sk5lm1xyxi7z0yjckip77qvbidyb7i1znmn9fz96q74hl9ffyan"))
        (patches (search-patches "python-optree-fix-32-bit.patch"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This test fails due to a circular import
+      ''("-k" "not test_treespec_pickle_missing_registration")))
     (propagated-inputs (list python-typing-extensions))
     (native-inputs
      (list python-pytest
