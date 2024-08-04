@@ -921,7 +921,7 @@ game development and other performance-critical applications.")
 (define-public flatbuffers-next
   (package
     (inherit flatbuffers)
-    (version "23.5.26")
+    (version "24.3.25")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -930,7 +930,7 @@ game development and other performance-critical applications.")
               (file-name (git-file-name "flatbuffers" version))
               (sha256
                (base32
-                "0cd12dvkzqdafz46q4302mzgpzbz589zmmiga7bq07f2sqy4vrvv"))))))
+                "0q066x1h0x9225aj25jv40gxgz46yvwmiqc2g6q06mkkg1144kxq"))))))
 
 (define-public python-flatbuffers
   (package
