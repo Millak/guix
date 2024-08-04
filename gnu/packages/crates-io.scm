@@ -60220,6 +60220,53 @@ radix.")
 learnt from TrieMap and Sequence Trie.")
     (license license:expat)))
 
+(define-public rust-railroad-0.2
+  (package
+    (name "rust-railroad")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "railroad" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08y86hb3vp0i9k9dkz3lbfhrd8x051f6pcg3p87z65ss3shdmzh1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-htmlescape" ,rust-htmlescape-0.3)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-railroad-verification" ,rust-railroad-verification-0.1))))
+    (home-page "https://github.com/lukaslueg/railroad")
+    (synopsis "library to create syntax-diagrams as Scalable Vector Graphics")
+    (description
+     "This package provides a library to create syntax-diagrams as Scalable
+Vector Graphics.")
+    (license license:expat)))
+
+(define-public rust-railroad-verification-0.1
+  (package
+    (name "rust-railroad-verification")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "railroad_verification" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "131qx7xjs06gmna8xvnw6js31y9wmhayaiykssv45qrh3gr7c9dr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/lukaslueg/railroad-verification")
+    (synopsis "Common verification against SVG11-DTD for @code{railroad}")
+    (description
+     "This package provides common verification against SVG11-DTD for
+@code{railroad}.")
+    (license license:expat)))
+
 (define-public rust-rand-0.8
   (package
     (name "rust-rand")
