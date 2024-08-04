@@ -315,6 +315,28 @@ displays a histogram of the roundtrip time jitter.")
        (sha256
         (base32 "0xfvq5lxg612vfzk3zk6896zcb4cgrrb7fq76w9h40magz0jymcm"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags (if (target-x86-32?)
+                                 #~(list "-Dc_args=-DPFFFT_SIMD_DISABLE")
+                                 #~'())
+           #:phases
+           (if (or (target-x86-32?) (target-powerpc?))
+               #~(modify-phases %standard-phases
+                   (add-after 'unpack 'apply-patches
+                     (lambda _
+                       (define (patch file)
+                         (invoke "patch" "-p1" "--force" "-i" file))
+
+                       ;; https://gitlab.freedesktop.org/pulseaudio/webrtc-audio-processing/-/issues/5
+                       ;; TODO: Move to the 'patches' field of the origin on
+                       ;; the next rebuild.
+                       (patch #$(local-file
+                                 (search-patch
+                                  "webrtc-audio-processing-byte-order-pointer-size.patch")))
+                       (patch #$(local-file
+                                 (search-patch
+                                  "webrtc-audio-processing-x86-no-sse.patch"))))))
+               #~%standard-phases)))
     (native-inputs (list pkg-config))
     (inputs (list abseil-cpp))
     (synopsis "WebRTC's Audio Processing Library")
