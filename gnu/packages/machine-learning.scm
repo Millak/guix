@@ -4466,7 +4466,7 @@ PyTorch.")
         (base32
          "0hdpkhcjry22fjx2zg2r48v7f4ljrclzj0li2pgk76kvyblfbyvm"))))))
 
-(define %python-pytorch-version "2.2.1")
+(define %python-pytorch-version "2.4.0")
 
 (define %python-pytorch-src
   (origin
@@ -4477,7 +4477,7 @@ PyTorch.")
     (file-name (git-file-name "python-pytorch" %python-pytorch-version))
     (sha256
      (base32
-      "03mm0pwwb5lxdsmmiw3cch9fijgjw81kmmc4ln9rlyazkm7l1r48"))
+      "18hdhzr12brj0b7ppyiscax0dbra30207qx0cckw78midfkcn7cn"))
     (patches (search-patches "python-pytorch-system-libraries.patch"
                              "python-pytorch-runpath.patch"
                              "python-pytorch-without-kineto.patch"
@@ -4505,14 +4505,6 @@ PyTorch.")
          delete-file
          '("aten/src/ATen/nnapi/nnapi_wrapper.cpp"
            "aten/src/ATen/nnapi/nnapi_wrapper.h"
-           "caffe2/mobile/contrib/ios/mpscnn/mpscnn_kernels.h"
-           "caffe2/proto/caffe2_legacy_pb2.pyi"
-           "caffe2/proto/caffe2_pb2.pyi"
-           "caffe2/proto/hsm_pb2.pyi"
-           "caffe2/proto/metanet_pb2.pyi"
-           "caffe2/proto/predictor_consts_pb2.pyi"
-           "caffe2/proto/prof_dag_pb2.pyi"
-           "caffe2/proto/torch_pb2.pyi"
            ;; These files contain just lists of floating point values and
            ;; might be as well hand-written.
            ;; "test/cpp/api/init_baseline.h"
@@ -4619,7 +4611,18 @@ PyTorch.")
                   #$(this-package-native-input "pocketfft-cpp") "/include"))
                 (("#FP16_INCLUDE_DIR")
                  (string-append
-                  #$(this-package-input "fp16") "/include")))))
+                  #$(this-package-input "fp16") "/include"))
+                ;; Disable opentelemetry
+                ((".*(add_library|target_include_directories).*opentelemetry.*")
+                 ""))
+              (substitute* "torch/CMakeLists.txt"
+                ((".*opentelemetry.*") ""))
+              ;; Fix Python install directory
+              (substitute* "caffe2/CMakeLists.txt"
+                (("\\$\\{Python_SITELIB\\}")
+                 (string-append #$output "/lib/python"
+                                #$(version-major+minor (package-version python))
+                                "/site-packages")))))
           (add-before 'build 'use-system-libraries
             (lambda _
               (substitute* '("caffe2/serialize/crc.cc"
@@ -4641,9 +4644,7 @@ PyTorch.")
                        name))
                     '("compat_bindings.cpp" "timer_callgrind_template.cpp")))
                 (("<callgrind.h>") "<valgrind/callgrind.h>"))
-              (setenv "USE_FFMPEG" "1")
               (setenv "USE_VULKAN" "1")
-              (setenv "USE_OPENCV" "1")
               ;; Tell 'setup.py' to let 'CMakeLists.txt' know that we
               ;; want to use "system libraries" instead of the bundled
               ;; ones.
@@ -4659,8 +4660,7 @@ PyTorch.")
                           (or (%current-target-system)
                               (%current-system))
                           (package-transitive-supported-systems qnnpack)))
-                  (setenv "USE_QNNPACK" "0")
-                  (setenv "USE_PYTORCH_QNNPACK" "0"))))
+                  (setenv "USE_QNNPACK" "0"))))
           ;; PyTorch is still built with AVX2 and AVX-512 support selected at
           ;; runtime, but these dependencies require it (nnpack only for
           ;; x86_64).
@@ -4773,15 +4773,15 @@ PyTorch.")
            python-pytest-xdist
            python-hypothesis
            python-types-dataclasses
-           python-typing-extensions
            shaderc
            valgrind))
     (inputs
      (append
       (list asmjit
+            brotli ; for cpp-httplib
             clog
+            cpp-httplib
             eigen
-            ffmpeg
             flatbuffers-next
             fmt
             foxi
@@ -4793,38 +4793,33 @@ PyTorch.")
             googlebenchmark
             libuv
             miniz-for-pytorch
+            oneapi-dnnl
             openblas
-            opencv
             openmpi
+            openssl ; for cpp-httplib
             pthreadpool
             protobuf
             pybind11
+            ;; qnnpack
+            qnnpack-pytorch
             sleef
             tensorpipe
             vulkan-headers
             vulkan-loader
             vulkan-memory-allocator
+            xnnpack
+            zlib ; for cpp-httplib
             zstd)
-      ;; TODO: fix build on 32 bit systems once Rust is available.
-      (filter
-       (lambda (pkg)
-         (member (or (%current-target-system)
-                     (%current-system))
-                 (package-transitive-supported-systems pkg)))
-       (list oneapi-dnnl
-             qnnpack
-             qnnpack-pytorch
-             xnnpack))
       ;; nnpack requires AVX2 for x86_64-linux
-      (filter
-       (lambda (pkg)
-         (member (or (%current-target-system)
-                     (%current-system))
-                 '("armhf-linux" "aarch64-linux")))
-       (list nnpack))))
+      (if (equal? (or (%current-target-system)
+                      (%current-system))
+                  '("aarch64-linux"))
+          (list nnpack)
+          '())))
     (propagated-inputs
      (append
-      (list onnx ;propagated for its Python modules
+      (list cpuinfo
+            onnx ;propagated for its Python modules
             onnx-optimizer
             python-astunparse
             python-click
@@ -4841,15 +4836,11 @@ PyTorch.")
             python-pyyaml
             python-requests
             python-sympy
-            python-typing-extensions)
-      (filter
-       (lambda (pkg)
-         (member (or (%current-target-system)
-                     (%current-system))
-                 (package-transitive-supported-systems pkg)))
-       (list cpuinfo))))
+            python-typing-extensions)))
     (home-page "https://pytorch.org/")
     (synopsis "Python library for tensor computation and deep neural networks")
+    ;; TODO: Support other 64-bit systems.
+    (supported-systems '("x86_64-linux" "aarch64-linux"))
     (description
      "PyTorch is a Python package that provides two high-level features:
 
@@ -4927,6 +4918,7 @@ Note: currently this package does not provide GPU support.")
        (replace "ideep-pytorch" ideep-pytorch-for-r-torch)))
     (inputs
      (modify-inputs (package-inputs python-pytorch)
+       (prepend qnnpack)
        (replace "qnnpack-pytorch" qnnpack-pytorch-for-r-torch)
        (replace "oneapi-dnnl" oneapi-dnnl-for-r-torch)
        (replace "xnnpack" xnnpack-for-r-torch)))

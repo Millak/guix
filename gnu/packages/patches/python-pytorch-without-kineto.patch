@@ -1,12 +1,12 @@
 Even when building without Kineto, the <ActivityType.h> header is still
 imported and the ActivityType type is used. This patch was copied from
-https://github.com/pytorch/pytorch/pull/111048.
+https://github.com/pytorch/pytorch/pull/111048 and adapted.
 
 diff --git a/torch/csrc/profiler/kineto_shim.h b/torch/csrc/profiler/kineto_shim.h
-index e92cbf00..68985ab7 100644
+index 7a3b788..7f49d18 100644
 --- a/torch/csrc/profiler/kineto_shim.h
 +++ b/torch/csrc/profiler/kineto_shim.h
-@@ -12,7 +12,51 @@
+@@ -12,7 +12,55 @@
  #undef USE_KINETO
  #endif
  
@@ -48,6 +48,10 @@ index e92cbf00..68985ab7 100644
 +    MTIA_CCP_EVENTS, // MTIA ondevice CCP events
 +    HPU_OP, // HPU host side runtime event
 +    XPU_RUNTIME, // host side xpu runtime events
++    MTIA_WORKLOADD,
++
++    PRIVATEUSE1_RUNTIME,
++    PRIVATEUSE1_DRIVER,
 +
 +    ENUM_COUNT, // This is to add buffer and not used for any profiling logic. Add your new type before it.
 +    OPTIONAL_ACTIVITY_TYPE_START = CUDA_SYNC,

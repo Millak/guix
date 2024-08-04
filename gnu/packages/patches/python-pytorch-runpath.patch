@@ -2,21 +2,8 @@ Libraries (such as 'libtorch_cpu.so') and executables (such as 'torch_shm_manage
 get installed, quite surprisingly, to 'lib/python3.8/site-packages/{bin,lib}'.
 Make sure RUNPATH matches that.
 
-diff --git a/caffe2/CMakeLists.txt b/caffe2/CMakeLists.txt
-index 74836372..c8eb69d1 100644
---- a/caffe2/CMakeLists.txt
-+++ b/caffe2/CMakeLists.txt
-@@ -1910,7 +1910,7 @@ if(BUILD_PYTHON)
-   if(${BUILDING_WITH_TORCH_LIBS})
-     # site-packages/caffe2/python/caffe2_pybind11_state
-     # site-packages/torch/lib
--    set(caffe2_pybind11_rpath "${_rpath_portable_origin}/../../torch/lib")
-+    set(caffe2_pybind11_rpath $ORIGIN/../../torch/lib)
-   endif(${BUILDING_WITH_TORCH_LIBS})
- 
-   # Must also include `CMAKE_SHARED_LINKER_FLAGS` in linker flags for
 diff --git a/cmake/Dependencies.cmake b/cmake/Dependencies.cmake
-index acc95842..8f8fb7d7 100644
+index f1f2eb7..cb5caea 100644
 --- a/cmake/Dependencies.cmake
 +++ b/cmake/Dependencies.cmake
 @@ -4,7 +4,7 @@ if(APPLE)
@@ -29,10 +16,10 @@ index acc95842..8f8fb7d7 100644
  # Use separate rpaths during build and install phases
  set(CMAKE_SKIP_BUILD_RPATH  FALSE)
 diff --git a/functorch/CMakeLists.txt b/functorch/CMakeLists.txt
-index f2f32745..db21b656 100644
+index bdfa4bf..2a75e38 100644
 --- a/functorch/CMakeLists.txt
 +++ b/functorch/CMakeLists.txt
-@@ -21,7 +21,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE pybind::pybind11)
+@@ -26,7 +26,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE pybind::pybind11)
  
  set_target_properties(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
        ${CMAKE_BINARY_DIR}/functorch)
