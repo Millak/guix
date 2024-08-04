@@ -1417,35 +1417,6 @@ an extensible computation graph model, as well as definitions of built-in
 operators and standard data types.")
     (license license:expat)))
 
-(define-public onnx-for-torch2
-  (package
-    (inherit onnx)
-    (name "onnx")
-    (version "1.13.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/onnx/onnx")
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "16967dbq2j40diqd0s37r19llsab8q8vbxkg1ppgy0p9fpdhfhyp"))
-              (file-name (git-file-name name version))
-              (patches (search-patches "onnx-1.13.1-use-system-googletest.patch"
-                                       "onnx-shared-libraries.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (delete-file-recursively "third_party")
-                  (substitute* "onnx/backend/test/runner/__init__.py"
-                    (("urlretrieve\\(.*") "raise unittest.SkipTest('Skipping download')\n"))))))
-    (arguments
-     ;; reuse build system tweaks
-     (substitute-keyword-arguments (package-arguments onnx)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (delete 'relax-requirements)))))))
-
 (define-public python-onnx
   ;; This used to be called "python-onnx" because it provided nothing but
   ;; Python bindings.  The package now provides shared libraries and C++
