@@ -5281,17 +5281,25 @@ PyTorch code to decouple the science from the engineering.")
 (define-public python-torchmetrics
   (package
     (name "python-torchmetrics")
-    (version "0.11.4")
+    (version "1.4.1")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "torchmetrics" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Lightning-AI/torchmetrics")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "150lcy6c20n42rwxl4d3m1b8s4js9ddds5wh3685vmjdnha5mr0z"))))
+                "0371kx2fpp46rlhzkafa7397kp1lirgykpzk9g12kxsqypb67v1l"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Tests require many additional dependencies
+      #:tests? #f))
     (propagated-inputs
      (list python-numpy python-packaging python-pytorch
-           python-typing-extensions))
+           python-typing-extensions
+           python-lightning-utilities))
     (native-inputs
      (list python-cloudpickle
            python-coverage
@@ -5311,7 +5319,7 @@ PyTorch code to decouple the science from the engineering.")
            python-scipy
            python-types-protobuf
            python-types-setuptools))
-    (home-page "https://github.com/Lightning-AI/metrics")
+    (home-page "https://github.com/Lightning-AI/torchmetrics")
     (synopsis "Machine learning metrics for PyTorch applications")
     (description "TorchMetrics is a collection of 100+ PyTorch metrics
 implementations and an easy-to-use API to create custom metrics.  It offers:
