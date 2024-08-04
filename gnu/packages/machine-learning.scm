@@ -1361,8 +1361,7 @@ in terms of new algorithms.")
             (lambda* (#:key outputs tests? #:allow-other-keys)
               ;; For derived package use
               (substitute* "CMakeLists.txt"
-                (("set\\(ONNX_ROOT.*")
-                 (string-append "set(ONNX_ROOT "#$(package-source this-package) ")\n"))
+                (("set\\(ONNX_ROOT.*") "")
                 (("\\$\\{ROOT_DIR\\}(/tools.*)" _ rest)
                  (string-append "${PROJECT_SOURCE_DIR}" rest)))
               ;; Pass options to the CMake-based build process.
@@ -1382,14 +1381,15 @@ in terms of new algorithms.")
                       (string-append "-DONNX_BUILD_TESTS="
                                      (if tests? "ON" "OFF"))
                       "-DBUILD_SHARED_LIBS=ON"
-                      "-DONNX_USE_PROTOBUF_SHARED_LIBS=ON"))
+                      "-DONNX_USE_PROTOBUF_SHARED_LIBS=ON"
+                      (string-append
+                       "-DONNX_ROOT=" #$(package-source this-package))))
 
               ;; This environment variable is honored by 'setup.py',
               ;; which passes it down to 'cmake'.
               (setenv "CMAKE_ARGS" (string-join args))
 
-              ;; This one is honored by 'setup.py' and passed to 'make
-              ;; -j'.
+              ;; This one is honored by 'setup.py' and passed to 'make -j'.
               (setenv "MAX_JOBS"
                       (number->string (parallel-job-count)))))
           (add-before 'check 'make-test-directory-writable
@@ -1445,8 +1445,8 @@ operators and standard data types.")
 (define-public onnx-optimizer
   (package
     (name "onnx-optimizer")
-    ;; Note: 0.2.x is *more* recent than 1.5.0.
-    (version "0.2.6")
+    ;; Note: 0.3.x is *more* recent than 1.5.0.
+    (version "0.3.19")
     (home-page "https://github.com/onnx/optimizer")
     (source (origin
               (method git-fetch)
@@ -1455,7 +1455,7 @@ operators and standard data types.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1wkqqdxcxpfbf8zpbdfdd3zz5jkw775g31gyykj11z4y6pp659l6"))
+                "1mx3hsl42na6fr05nh2x3j9kxm56cpfmwk6lwl2cfq9zs3gv929w"))
               (file-name (git-file-name name version))
               (patches (search-patches "onnx-optimizer-system-library.patch"))
               (modules '((guix build utils)))
@@ -1466,10 +1466,35 @@ operators and standard data types.")
      (substitute-keyword-arguments (package-arguments onnx)
        ((#:phases phases)
         #~(modify-phases #$phases
-            (delete 'relax-requirements)))))
+            (add-after 'pass-cmake-arguments
+                'pass-onnx-optimizer-cmake-arguments
+              (lambda _
+                (setenv
+                 "CMAKE_ARGS"
+                 (string-append
+                  (getenv "CMAKE_ARGS")
+                  " -DONNX_OPT_USE_SYSTEM_PROTOBUF=ON"
+                  " -DCMAKE_CXX_FLAGS=\"-DONNX_ML=1 -DONNX_NAMESPACE=onnx\""))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (if tests?
+                    (invoke "pytest" "-vv" "-k"
+                            ;; These tests fail with upstream ONNX:
+                            ;; https://github.com/onnx/optimizer/issues/138
+                            (string-append
+                             "not test_fuse_matmul"
+                             " and not test_fuse_consecutive"
+                             " and not test_fuse_transpose")))))))))
     (native-inputs
-     (list cmake python-pytest python-pytest-runner python-nbval
-           python-coverage))
+     (append
+      (list cmake-minimal python-pytest python-pytest-runner
+            python-coverage)
+      (filter
+       (lambda (pkg)
+         (member (or (%current-target-system)
+                     (%current-system))
+                 (package-transitive-supported-systems pkg)))
+       (list python-nbval))))
     (inputs
      (list onnx protobuf pybind11))
     (propagated-inputs
