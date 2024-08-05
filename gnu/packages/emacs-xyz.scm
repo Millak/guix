@@ -20111,7 +20111,7 @@ It should enable you to implement low-level X11 applications.")
                               ((not (featurep 'exwm))
                                (require 'exwm)
                                (require 'exwm-config)
-                               (exwm-config-default)
+                               (exwm-config-example)
                                (message (concat "exwm configuration not found. "
                                                 "Falling back to default configuration...")))))))
                 (chmod exwm-executable #o555)))))))
