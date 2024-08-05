@@ -43,6 +43,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pciutils)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages xml)
@@ -450,14 +451,14 @@ arrays) that expose a buffer interface.")
 (define-public mpich
   (package
     (name "mpich")
-    (version "3.3.2")
+    (version "4.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.mpich.org/static/downloads/"
                                   version "/mpich-" version ".tar.gz"))
               (sha256
                (base32
-                "1farz5zfx4cd0c3a0wb9pgfypzw0xxql1j1294z1sxslga1ziyjb"))))
+                "0h8xg1wi2d88hnfmj3xydf1hj78r7fh05jljhk5jgxmbmsrmngw8"))))
     (build-system gnu-build-system)
     (inputs
      `(,zlib
@@ -468,7 +469,7 @@ arrays) that expose a buffer interface.")
              (list ucx)
              '())))
     (native-inputs
-     (list perl which gfortran))
+     (list perl which gfortran python-minimal))
     (outputs '("out" "debug"))
     (arguments
      `(#:configure-flags
