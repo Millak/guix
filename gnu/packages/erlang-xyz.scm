@@ -89,6 +89,22 @@ Erlang and Elixir.")
     (home-page "https://hex.pm/packages/jiffy")
     (license license:expat)))
 
+(define-public erlang-p1-oauth2
+  (package
+    (name "erlang-p1-oauth2")
+    (version "0.6.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "p1_oauth2" version))
+       (sha256
+        (base32 "13xfk4flaqb3nsxirf3vmy3yv67n6s6xzil7bafjswj39r3srlqz"))))
+    (build-system rebar-build-system)
+    (synopsis "OAuth 2.0 implementation for Erlang")
+    (description "This package provides OAuth 2.0 implementation for Erlang.")
+    (home-page "https://hex.pm/packages/p1_oauth2")
+    (license (list license:expat license:asl2.0))))
+
 (define-public erlang-p1-utils
   (package
     (name "erlang-p1-utils")
