@@ -19,6 +19,7 @@
 (define-module (gnu packages erlang-xyz)
   #:use-module (gnu packages)
   #:use-module (gnu packages erlang)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages python)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages tls)
@@ -401,6 +402,33 @@ Erlang/Elixir.")
     (synopsis "YAML configuration processor")
     (description "This package provides YAML configuration processor.")
     (home-page "https://hex.pm/packages/yconf")
+    (license license:asl2.0)))
+
+(define-public erlang-epam
+  (package
+    (name "erlang-epam")
+    (version "1.0.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "epam" version))
+       (sha256
+        (base32 "12frsirp8m0ajdb19xi1g86zghhgvld5cgw459n2m9w553kljd1g"))))
+    (build-system rebar-build-system)
+    (native-inputs (list erlang-pc linux-pam))
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc"))))))
+    (synopsis "Helper for PAM authentication support")
+    (description "This package provides epam helper for PAM authentication
+support.")
+    (home-page "https://hex.pm/packages/epam")
     (license license:asl2.0)))
 
 (define-public erlang-unicode-util-compat
