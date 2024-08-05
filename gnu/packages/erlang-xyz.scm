@@ -157,6 +157,32 @@ implementation.")
     (home-page "https://hex.pm/packages/eimp")
     (license license:asl2.0)))
 
+(define-public erlang-mqtree
+  (package
+    (name "erlang-mqtree")
+    (version "1.0.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "mqtree" version))
+       (sha256
+        (base32 "18z23c1axn6y9799f0ydb0m29wxvq956b57bzk886ixwiz7vgs2z"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-p1-utils))
+    (native-inputs (list erlang-pc))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc"))))))
+    (synopsis "Index tree for MQTT topic filters")
+    (description "This package provides index tree for MQTT topic filters.")
+    (home-page "https://hex.pm/packages/mqtree")
+    (license license:asl2.0)))
+
 (define-public erlang-unicode-util-compat
   (package
     (name "erlang-unicode-util-compat")
