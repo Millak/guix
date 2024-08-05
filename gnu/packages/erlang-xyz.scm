@@ -19,6 +19,7 @@
 (define-module (gnu packages erlang-xyz)
   #:use-module (gnu packages)
   #:use-module (gnu packages erlang)
+  #:use-module (gnu packages python)
   #:use-module (guix build-system rebar)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -60,6 +61,32 @@
      "This package provides JSON Object Signing and Encryption (JOSE) for
 Erlang and Elixir.")
     (home-page "https://hex.pm/packages/jose")
+    (license license:expat)))
+
+(define-public erlang-jiffy
+  (package
+    (name "erlang-jiffy")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "jiffy" version))
+       (sha256
+        (base32 "10gkbi48in96bzkv7f2cqw9119krpd40whcsn0yd7fr0lx1bqqdv"))))
+    (build-system rebar-build-system)
+    (native-inputs (list erlang-pc
+                         python)) ; for tests
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc"))))))
+    (synopsis "JSON Decoder/Encoder")
+    (description "This package provides JSON Decoder/Encoder for Erlang.")
+    (home-page "https://hex.pm/packages/jiffy")
     (license license:expat)))
 
 (define-public erlang-p1-utils
