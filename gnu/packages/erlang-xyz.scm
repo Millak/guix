@@ -22,6 +22,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages python)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (guix build-system rebar)
   #:use-module (guix download)
@@ -198,6 +199,31 @@ Erlang and Elixir.")
     (synopsis "PostgreSQL driver for Erlang")
     (description "This package provides @code{PostgreSQL} driver for Erlang.")
     (home-page "https://hex.pm/packages/p1_pgsql")
+    (license license:asl2.0)))
+
+(define-public erlang-sqlite3
+  (package
+    (name "erlang-sqlite3")
+    (version "1.1.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "sqlite3" version))
+       (sha256
+        (base32 "0mr8kpv8hf4yknx8vbmyakgasrhk64ldsbafvr4svhi26ghs82rw"))))
+    (build-system rebar-build-system)
+    (native-inputs (list erlang-pc sqlite))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc"))))))
+    (synopsis "SQLite3 driver for Erlang")
+    (description "This package provides SQLite3 driver for Erlang.")
+    (home-page "https://hex.pm/packages/sqlite3")
     (license license:asl2.0)))
 
 (define-public erlang-stringprep
