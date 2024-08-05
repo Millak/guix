@@ -27,6 +27,25 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
+(define-public erlang-jose
+  (package
+    (name "erlang-jose")
+    (version "1.11.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "jose" version))
+       (sha256
+        (base32 "0576jdjygby37qmzrs8cm5l6n622b0mi3z28j6r4s5xsz1px6v0d"))))
+    (build-system rebar-build-system)
+    (synopsis
+     "JSON Object Signing and Encryption for Erlang and Elixir")
+    (description
+     "This package provides JSON Object Signing and Encryption (JOSE) for
+Erlang and Elixir.")
+    (home-page "https://hex.pm/packages/jose")
+    (license license:expat)))
+
 (define-public erlang-base64url
   (package
     (name "erlang-base64url")
