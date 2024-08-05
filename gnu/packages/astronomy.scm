@@ -1237,6 +1237,54 @@ astronomy-specific functionality")
 across many files.")
     (license license:bsd-3)))
 
+(define-public python-pvextractor
+  (package
+    (name "python-pvextractor")
+    (version "0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pvextractor" version))
+       (sha256
+        (base32 "1kl33vg5rxmdwlk36pn8zqa7k7f43fb7w417fym6ygp86mci2spd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "pvextractor")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; See <https://github.com/radio-astro-tools/pvextractor/issues/124>.
+         (add-after 'unpack 'patch-regexp
+           (lambda _
+             (substitute* "pvextractor/pvregions.py"
+               (("coordre = re.compile.*")
+                "coordre = re.compile(\"^[a-z]*\\\\((.*)\\\\)\")\n"))))
+           (add-before 'check 'prepare-x
+             (lambda _
+               (system "Xvfb &")
+               (setenv "DISPLAY" ":0")
+               (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-pyqt-6
+           python-qtpy
+           python-scipy
+           python-spectral-cube))
+    (native-inputs
+     (list python-pytest-astropy
+           python-setuptools-scm
+           xorg-server-for-tests))
+    (home-page "http://pvextractor.readthedocs.io")
+    (synopsis "Position-Velocity diagram extractor")
+    (description
+     "The concept of the pvextractor package is simple - given a path defined
+in sky coordinates, and a spectral cube, extract a slice of the cube along
+that path, and along the spectral axis, producing a position-velocity or
+position-frequency slice.")
+    (license license:bsd-3)))
+
 (define-public python-pyxsim
   (package
     (name "python-pyxsim")
