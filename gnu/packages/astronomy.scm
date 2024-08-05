@@ -1149,6 +1149,47 @@ zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
        (prepend python-pyqt)))
     (synopsis "Qt5 image viewer build based on python-ginga library")))
 
+(define-public python-glue-astronomy
+  (package
+    (name "python-glue-astronomy")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "glue-astronomy" version))
+       (sha256
+        (base32 "1bra11i55g687ykzll5clp7mf3l9kc0x11wqc3gwfi98qx8fgpqz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "glue_astronomy"
+              ;; XXX: Findout why these tests fail to load:
+              ;; E ModuleNotFoundError: No module named 'glue.qglue'
+              ;; E ImportError: cannot import name 'make_2dspec_image' from
+              ;; 'specreduce.utils.synth_data'
+              "--ignore=glue_astronomy/io/spectral_cube/tests/test_spectral_cube.py"
+              "--ignore=glue_astronomy/io/spectral_cube/tests/test_spectral_cube.py"
+              "--ignore=glue_astronomy/translators/tests/test_trace.py"
+              "--ignore=glue_astronomy/translators/tests/test_trace.py")))
+    (propagated-inputs
+     (list python-astropy
+           python-glue-core
+           python-regions
+           python-specreduce
+           python-spectral-cube
+           python-specutils))
+    (native-inputs
+     (list python-mock
+           python-pytest-astropy
+           python-setuptools-scm))
+    (home-page "https://github.com/glue-viz/glue-astronomy")
+    (synopsis "Astronomy-specific plugins for glue")
+    (description
+     "The glue-astronomy plugin for glue provides a collection of
+astronomy-specific functionality")
+    (license license:bsd-3)))
+
 (define-public python-glue-core
   (package
     (name "python-glue-core")
