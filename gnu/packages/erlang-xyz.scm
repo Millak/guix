@@ -108,6 +108,33 @@ Erlang and Elixir.")
     (home-page "https://hex.pm/packages/pkix")
     (license license:asl2.0)))
 
+(define-public erlang-p1-acme
+  (package
+    (name "erlang-p1-acme")
+    (version "1.0.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "p1_acme" version))
+       (sha256
+        (base32 "0nfxs3ldgbh7a8r7wxl0gw98r1v50jaj54c0nw8fl8ixdvr9dqcc"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-base64url erlang-idna erlang-jiffy erlang-jose
+                  erlang-yconf))
+    (native-inputs (list erlang-pc))
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (synopsis "ACME client for Erlang")
+    (description "This package provides ACME client for Erlang.")
+    (home-page "https://hex.pm/packages/p1_acme")
+    (license license:asl2.0)))
+
 (define-public erlang-p1-oauth2
   (package
     (name "erlang-p1-oauth2")
