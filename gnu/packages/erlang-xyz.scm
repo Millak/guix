@@ -20,6 +20,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages erlang)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages tls)
   #:use-module (guix build-system rebar)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -266,6 +267,46 @@ implementation.")
     (synopsis "Native zlib driver for Erlang/Elixir")
     (description "This package provides native zlib driver for Erlang/Elixir.")
     (home-page "https://hex.pm/packages/ezlib")
+    (license license:asl2.0)))
+
+(define-public erlang-fast-tls
+  (package
+    (name "erlang-fast-tls")
+    (version "1.1.21")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "fast_tls" version))
+       (sha256
+        (base32 "0nsh5597pa1643kj2mmp05anss2r0gq83al0rm45w0ip768l458k"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-p1-utils openssl))
+    (native-inputs (list erlang-pc openssl))
+    (arguments
+     (list
+      #:tests? #f ; some required files are absent
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-/bin/sh
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((sh (search-input-file inputs "/bin/sh")))
+                (substitute* "configure"
+                  (("/bin/sh") sh)))))
+          (add-after 'unpack 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc")
+              (let ((openssl (assoc-ref %build-inputs "openssl")))
+                (setenv "LDFLAGS" (string-append "-L" openssl "/lib"))
+                (setenv "CFLAGS" (string-append "-I" openssl "/include")))))
+          (add-before 'build 'configure
+            (lambda _
+              (invoke "./configure"))))))
+    (synopsis "TLS/SSL OpenSSL-based native driver for Erlang/Elixir")
+    (description
+     "This package provides TLS/SSL @code{OpenSSL}-based native driver
+for Erlang/Elixir.")
+    (home-page "https://hex.pm/packages/fast_tls")
     (license license:asl2.0)))
 
 (define-public erlang-unicode-util-compat
