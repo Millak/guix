@@ -131,6 +131,32 @@ implementation.")
     (home-page "https://hex.pm/packages/cache_tab")
     (license license:asl2.0)))
 
+(define-public erlang-eimp
+  (package
+    (name "erlang-eimp")
+    (version "1.0.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "eimp" version))
+       (sha256
+        (base32 "12k2df0mwq16rh77ziiahq9mjd9cy2jfdnsbzkj96a6b4c07hz4h"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-p1-utils))
+    (native-inputs (list erlang-pc))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc"))))))
+    (synopsis "Erlang/Elixir image converter")
+    (description "This package provides Erlang/Elixir image converter.")
+    (home-page "https://hex.pm/packages/eimp")
+    (license license:asl2.0)))
+
 (define-public erlang-unicode-util-compat
   (package
     (name "erlang-unicode-util-compat")
