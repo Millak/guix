@@ -62,6 +62,22 @@ Erlang and Elixir.")
     (home-page "https://hex.pm/packages/jose")
     (license license:expat)))
 
+(define-public erlang-p1-utils
+  (package
+    (name "erlang-p1-utils")
+    (version "1.0.26")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "p1_utils" version))
+       (sha256
+        (base32 "0k5hfqrjrvgh7gknqj5pzpra9k1g0bgc2ac19zb8pfan2669wdyh"))))
+    (build-system rebar-build-system)
+    (synopsis "ProcessOne utility modules for Erlang")
+    (description "This package provides ProcessOne utility modules for Erlang.")
+    (home-page "https://hex.pm/packages/p1_utils")
+    (license license:asl2.0)))
+
 (define-public erlang-base64url
   (package
     (name "erlang-base64url")
