@@ -20,6 +20,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages erlang)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages tls)
   #:use-module (guix build-system rebar)
   #:use-module (guix download)
@@ -352,6 +353,37 @@ Erlang/Elixir.")
     (description "This package provides fast Expat-based Erlang/Elixir XML
 parsing library.")
     (home-page "https://hex.pm/packages/fast_xml")
+    (license license:asl2.0)))
+
+(define-public erlang-fast-yaml
+  (package
+    (name "erlang-fast-yaml")
+    (version "1.0.37")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "fast_yaml" version))
+       (sha256
+        (base32 "0sd72nal5i6mbmicsmb494mr4g0gvs719lzp2hj1gqpp3dr6is4d"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-p1-utils))
+    (native-inputs (list erlang-pc libyaml))
+    (arguments
+     (list
+      #:tests? #f ; some required files are absent
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc")
+              (let ((openssl (assoc-ref %build-inputs "libyaml")))
+                (setenv "LDFLAGS" (string-append "-L" openssl "/lib"))
+                (setenv "CFLAGS" (string-append "-I" openssl "/include"))))))))
+    (synopsis "Fast YAML native library for Erlang/Elixir")
+    (description "This package provides fast YAML native library for
+Erlang/Elixir.")
+    (home-page "https://hex.pm/packages/fast_yaml")
     (license license:asl2.0)))
 
 (define-public erlang-unicode-util-compat
