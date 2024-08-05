@@ -242,6 +242,32 @@ implementation.")
     (home-page "https://hex.pm/packages/mqtree")
     (license license:asl2.0)))
 
+(define-public erlang-ezlib
+  (package
+    (name "erlang-ezlib")
+    (version "1.0.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ezlib" version))
+       (sha256
+        (base32 "1fxz584ry1ib35r74hbmapwq71j5iv5rymm927ys0mgdz2rjmrly"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-p1-utils))
+    (native-inputs (list erlang-pc))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc"))))))
+    (synopsis "Native zlib driver for Erlang/Elixir")
+    (description "This package provides native zlib driver for Erlang/Elixir.")
+    (home-page "https://hex.pm/packages/ezlib")
+    (license license:asl2.0)))
+
 (define-public erlang-unicode-util-compat
   (package
     (name "erlang-unicode-util-compat")
