@@ -1166,6 +1166,7 @@ zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
            python-dill
            python-echo
            python-fast-histogram
+           python-h5py
            python-ipython
            python-matplotlib
            python-mpl-scatter-density
@@ -1173,6 +1174,7 @@ zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
            python-openpyxl
            python-pandas
            ;; python-pyavm ; optional, not packed
+           python-pillow
            python-scikit-image
            python-scipy
            python-setuptools
