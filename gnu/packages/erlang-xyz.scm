@@ -383,6 +383,38 @@ parsing library.")
     (home-page "https://hex.pm/packages/fast_xml")
     (license license:asl2.0)))
 
+(define-public erlang-xmpp
+  (package
+    (name "erlang-xmpp")
+    (version "1.8.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "xmpp" version))
+       (sha256
+        (base32 "04gpka0dp03jvgnin1g12ha4yzwy1h44rds3zzf1ia49k9ghcw7d"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-ezlib
+                  erlang-fast-tls
+                  erlang-fast-xml
+                  erlang-idna
+                  erlang-p1-utils
+                  erlang-stringprep))
+    (native-inputs (list erlang-pc erlang-provider-asn1))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc"))))))
+    (synopsis "XMPP parsing and serialization library for Erlang/Elixir")
+    (description "This package provides XMPP parsing and serialization library
+for Erlang/Elixir.")
+    (home-page "https://hex.pm/packages/xmpp")
+    (license license:asl2.0)))
+
 (define-public erlang-fast-yaml
   (package
     (name "erlang-fast-yaml")
