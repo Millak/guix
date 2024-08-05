@@ -43,6 +43,7 @@
 ;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -82,6 +83,8 @@
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages enchant)
+  #:use-module (gnu packages erlang)
+  #:use-module (gnu packages erlang-xyz)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -157,6 +160,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system rebar)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
@@ -3626,5 +3630,136 @@ a text snippet), using @code{libphonenumber}.")
     (description
      "@code{senpai} is an IRC client that works best with bouncers.")
     (license license:isc)))
+
+(define-public ejabberd
+  (package
+    (name "ejabberd")
+    (version "24.07")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/processone/ejabberd")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d5i9skgfjzs2100k0g99sigc2w61480ysz3va6pmb4nx43100g3"))))
+    (build-system rebar-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           erlang-base64url
+           erlang-cache-tab
+           erlang-eimp
+           erlang-epam
+           erlang-eredis
+           erlang-esip
+           erlang-ezlib
+           erlang-fast-tls
+           erlang-fast-xml
+           erlang-fast-yaml
+           erlang-idna
+           erlang-jiffy
+           erlang-jose
+           erlang-luerl
+           erlang-mqtree
+           erlang-p1-acme
+           erlang-p1-mysql
+           erlang-p1-oauth2
+           erlang-p1-pgsql
+           erlang-p1-utils
+           erlang-pc
+           erlang-pkix
+           erlang-provider-asn1
+           erlang-stringprep
+           erlang-stun
+           erlang-sqlite3
+           erlang-unicode-util-compat
+           erlang-xmpp
+           erlang-yconf))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc")))
+          (add-after 'unpack 'bootstrap
+            (lambda _
+              (invoke "aclocal" "-I" "m4")
+              (invoke "autoconf" "-f")))
+          (add-after 'bootstrap 'make-various-fixes
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((sh (search-input-file inputs "/bin/sh")))
+                ;; Fix shell locations.
+                (substitute* "configure" (("/bin/sh") sh))
+                (substitute* "rebar.config.script"
+                  (("sh -c '") (string-append sh " -c '")))
+                ;; Do not recompile dependences.
+                (substitute* "rebar.config"
+                  (("\\[\\{\"eimp\", \\[\\]\\},") "[]}.\n{nop, ["))
+                ;; Do not include source files into release.
+                (substitute* "rebar.config"
+                  (("\\{include_src, true\\},") "{include_src, false},"))
+                ;; Do not install erl wrapper, we will do it ourselves.
+                (substitute* "rebar.config"
+                  (("\\{copy, \"rel/files/erl\",")
+                   "%{copy, \"rel/files/erl\","))
+                ;; Unpin pinned dependences.
+                (substitute* "rebar.lock"
+                  ((",1\\}") ",0}"))
+                ;; Set proper paths.
+                (substitute* "vars.config.in"
+                  (("\\{sysconfdir, \".*\"\\}\\.")
+                   "{sysconfdir, \"/etc\"}."))
+                (substitute* "vars.config.in"
+                  (("\\{localstatedir, \".*\"\\}\\.")
+                   "{sysconfdir, \"/var\"}."))
+                (substitute* "vars.config.in"
+                  (("\\{config_dir, \".*\"\\}\\.")
+                   "{config_dir, \"/etc/ejabberd\"}."))
+                (substitute* "vars.config.in"
+                  (("\\{logs_dir, \".*\"\\}\\.")
+                   "{logs_dir, \"/var/log/ejabberd\"}."))
+                (substitute* "vars.config.in"
+                  (("\\{spool_dir, \".*\"\\}\\.")
+                   "{spool_dir, \"/var/lib/ejabberd\"}.")))))
+          (add-after 'make-various-fixes 'configure
+            (lambda _
+              (invoke "./configure"
+                      (string-append "--prefix=" #$output))))
+          (replace 'build
+            (lambda _
+              (invoke "make" "rel")))
+          (replace 'install
+            (lambda _
+              (let ((ejabberd "_build/prod/rel/ejabberd"))
+                (copy-recursively
+                 (string-append ejabberd "/conf")
+                 (string-append ejabberd "/share/doc/ejabberd-"
+                                #$version "/examples"))
+                (for-each
+                 (lambda (rmdir)
+                   (delete-file-recursively
+                    (string-append ejabberd "/" rmdir)))
+                 '("conf" "database" "logs"))
+                (delete-file
+                 (string-append (string-append ejabberd "/ejabberd-"
+                                               #$version ".tar.gz")))
+                (let ((erts (car (find-files ejabberd "erts-.*"
+                                             #:directories? #t))))
+                  (delete-file (string-append erts "/bin/erl"))
+                  (install-file "rel/files/erl"
+                                (string-append erts "/bin")))
+                (chmod (string-append ejabberd
+                                      "/bin/install_upgrade.escript") #o755)
+                (copy-recursively ejabberd #$output)))))))
+    (synopsis "Robust, Ubiquitous and Massively Scalable Messaging Platform")
+    (description "This package provides Ejabberd -- Robust, Ubiquitous and
+Massively Scalable Messaging Platform.  It supports XMPP, MQTT and SIP
+protocols.")
+    (home-page "https://www.ejabberd.im")
+    (license license:gpl2+)))
 
 ;;; messaging.scm ends here
