@@ -386,6 +386,23 @@ Erlang/Elixir.")
     (home-page "https://hex.pm/packages/fast_yaml")
     (license license:asl2.0)))
 
+(define-public erlang-yconf
+  (package
+    (name "erlang-yconf")
+    (version "1.0.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "yconf" version))
+       (sha256
+        (base32 "12bcb0w0nc30bws4lx2ghnz7n755r6nf9a75nb3i31zkfcr82iz9"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-fast-yaml))
+    (synopsis "YAML configuration processor")
+    (description "This package provides YAML configuration processor.")
+    (home-page "https://hex.pm/packages/yconf")
+    (license license:asl2.0)))
+
 (define-public erlang-unicode-util-compat
   (package
     (name "erlang-unicode-util-compat")
