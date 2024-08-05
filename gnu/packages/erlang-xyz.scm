@@ -577,6 +577,25 @@ support.")
     (home-page "https://hex.pm/packages/epam")
     (license license:asl2.0)))
 
+(define-public erlang-eredis
+  (package
+    (name "erlang-eredis")
+    (version "1.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "eredis" version))
+       (sha256
+        (base32 "1h9wihjqs4fmgr5ihqpisf7k99h006dsf71lygp5zmgycv2m8avw"))))
+    (build-system rebar-build-system)
+    (synopsis
+     "Non-blocking Redis client with focus on performance and robustness")
+    (description
+     "This package provides non-blocking Redis client for Erlang with focus
+on performance and robustness.")
+    (home-page "https://hex.pm/packages/eredis")
+    (license license:expat)))
+
 (define-public erlang-unicode-util-compat
   (package
     (name "erlang-unicode-util-compat")
