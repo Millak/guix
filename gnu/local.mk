@@ -268,6 +268,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/enlightenment.scm		\
   %D%/packages/entr.scm				\
   %D%/packages/erlang.scm			\
+  %D%/packages/erlang-xyz.scm			\
   %D%/packages/esolangs.scm			\
   %D%/packages/fabric-management.scm		\
   %D%/packages/fcitx.scm			\
