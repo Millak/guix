@@ -78,6 +78,33 @@ Erlang and Elixir.")
     (home-page "https://hex.pm/packages/p1_utils")
     (license license:asl2.0)))
 
+(define-public erlang-stringprep
+  (package
+    (name "erlang-stringprep")
+    (version "1.0.30")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "stringprep" version))
+       (sha256
+        (base32 "16hb49f9ghx8sqrs7928fjig9wyah22z7cl91y1pff50hhrrpz7n"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-p1-utils))
+    (native-inputs (list erlang-pc))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc"))))))
+    (synopsis "Fast Stringprep Erlang/Elixir implementation")
+    (description "This package provides fast Stringprep Erlang/Elixir
+implementation.")
+    (home-page "https://hex.pm/packages/stringprep")
+    (license license:asl2.0)))
+
 (define-public erlang-unicode-util-compat
   (package
     (name "erlang-unicode-util-compat")
