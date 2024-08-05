@@ -5566,6 +5566,23 @@ into URL query parameters.")
 create or replace a file or symbolic link.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-renameio-v2
+  (package/inherit go-github-com-google-renameio
+    (name "go-github-com-google-renameio-v2")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/renameio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13vc7p43zz5pmgli4k18b15khxpca1zd8v1ga0ryq7ddyz55fg7i"))))
+    (arguments
+     (list
+      #:import-path "github.com/google/renameio/v2"))))
+
 (define (go-gotest-tools-source version sha256-base32-hash)
   (origin
     (method git-fetch)
