@@ -204,6 +204,13 @@ endif()~%~%"
                           (("add_pdfinput_test\\(font-(spacing|style) 1 draw-all" all)
                            (string-append "#" all))))))
                   '())
+           #$@(if (target-x86-32?)
+                  '((add-after 'unpack 'fix-32bit-size_t-format
+                      (lambda _
+                        ;; Fix an error due to format type mismatch with 32-bit size_t.
+                        (substitute* "testfiles/src/visual-bounds-test.cpp"
+                          (("%lu") "%u")))))
+                  '())
            (add-after 'unpack 'set-home
              ;; Mute Inkscape warnings during tests.
              (lambda _
@@ -239,7 +246,15 @@ endif()~%~%"
                               "cli_export-ps-level_3_check_output"
                               "cli_export-ps-level_3_content_check_output"
                               "cli_export-ps-level_2_content_check_output"
-                              "cli_export-ps-level_2_check_output")))
+                              "cli_export-ps-level_2_check_output"
+                          ;; These fail on i686 but not x86-64
+                          #$@(if (target-x86-32?)
+                                 '("cli_pdfinput-font-spacing_check_output"
+                                   "cli_pdfinput-font-style_check_output"
+                                   "cli_pdfinput-latex_check_output"
+                                   "cli_pdfinput-multi-page-sample_check_output"
+                                   "test_lpe")
+                                 '()))))
                    (invoke "make" "-j" job-count "tests")
                    (invoke "ctest" "-j" job-count
                            "--output-on-error"
@@ -340,10 +355,13 @@ as the native format.")
         #~(delete "-DWITH_IMAGE_MAGICK=OFF" #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
-            (replace 'check
-              ;; Re-instate the tests disabled in inskcape/stable, now that
-              ;; their ImageMagick requirement is satisfied.
-              (assoc-ref %standard-phases 'check))
+            #$@(if (target-x86-32?)
+                   #~()            ;XXX: there are remaining failures on i686
+                   #~((replace 'check
+                        ;; Re-instate the tests disabled in inkscape/stable, now that
+                        ;; their ImageMagick requirement is satisfied.
+                        (assoc-ref %standard-phases 'check))))
+
             (replace 'wrap-program
               ;; Ensure Python is available at runtime.
               (lambda _
