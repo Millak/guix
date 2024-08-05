@@ -768,6 +768,23 @@ a git checkout.")
 rebar3.")
     (license license:bsd-3)))
 
+(define-public erlang-pc
+  (package
+    (name "erlang-pc")
+    (version "1.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "pc" version))
+       (sha256
+        (base32 "1cwm8pjsmjllfj41g62blkzvhiw3wy7j3nhpsm9y7jipci7ss3sc"))))
+    (build-system rebar-build-system)
+    (synopsis "Rebar3 port compiler for native code")
+    (description "This package provides support for compiling native code
+for Rebar3.")
+    (home-page "https://hex.pm/packages/pc")
+    (license license:expat)))
+
 (define-public erlang-lfe
   (package
     (name "erlang-lfe")
