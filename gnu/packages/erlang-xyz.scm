@@ -78,6 +78,23 @@ Erlang and Elixir.")
     (home-page "https://hex.pm/packages/p1_utils")
     (license license:asl2.0)))
 
+(define-public erlang-unicode-util-compat
+  (package
+    (name "erlang-unicode-util-compat")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "unicode_util_compat" version))
+       (sha256
+        (base32 "08952lw8cjdw8w171lv8wqbrxc4rcmb3jhkrdb7n06gngpbfdvi5"))))
+    (build-system rebar-build-system)
+    (synopsis "Compatibility library for Erlang < 20")
+    (description "This package provides @code{unicode_util} compatibility
+library for Erlang < 20.")
+    (home-page "https://hex.pm/packages/unicode_util_compat")
+    (license license:asl2.0)))
+
 (define-public erlang-base64url
   (package
     (name "erlang-base64url")
