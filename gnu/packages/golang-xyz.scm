@@ -66,6 +66,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages golang)
@@ -6306,6 +6307,32 @@ Go.")
      "This package provides a Go library for encode and decode YAML
 values.")
     (license license:asl2.0)))
+
+(define-public go-mvdan-cc-editorconfig
+  (package
+    (name "go-mvdan-cc-editorconfig")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mvdan/editorconfig")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mi1cp6fyaknjn7smvaas4lj03fws5qib5vbi4mrz3qrmvmhh9l4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "mvdan.cc/editorconfig"))
+    (native-inputs
+     (list cmake))
+    (home-page "https://github.com/mvdan/editorconfig")
+    (synopsis "EditorConfig support in Go")
+    (description
+     "Package editorconfig allows parsing and using @code{EditorConfig} files, as
+defined in @url{https://editorconfig.org/,https://editorconfig.org/}.")
+    (license license:bsd-3)))
 
 ;;;
 ;;; Executables:
