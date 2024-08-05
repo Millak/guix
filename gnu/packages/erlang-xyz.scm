@@ -309,6 +309,24 @@ for Erlang/Elixir.")
     (home-page "https://hex.pm/packages/fast_tls")
     (license license:asl2.0)))
 
+(define-public erlang-stun
+  (package
+    (name "erlang-stun")
+    (version "1.2.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "stun" version))
+       (sha256
+        (base32 "10qm6wh6smj3ixpy251x5w2b9iv51vhgxvk49vczz3bs3dxq0d71"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-fast-tls erlang-p1-utils))
+    (synopsis "STUN and TURN library for Erlang/Elixir")
+    (description "This package provodes STUN and TURN library for
+Erlang/Elixir.")
+    (home-page "https://hex.pm/packages/stun")
+    (license license:asl2.0)))
+
 (define-public erlang-unicode-util-compat
   (package
     (name "erlang-unicode-util-compat")
