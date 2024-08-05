@@ -327,6 +327,33 @@ Erlang/Elixir.")
     (home-page "https://hex.pm/packages/stun")
     (license license:asl2.0)))
 
+(define-public erlang-fast-xml
+  (package
+    (name "erlang-fast-xml")
+    (version "1.1.52")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "fast_xml" version))
+       (sha256
+        (base32 "1z8vrpnjx8y9qfqhhj4is8k4lzvjlnzhp6d62r8bdlh61qwr4lbr"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-p1-utils))
+    (native-inputs (list erlang-pc))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc"))))))
+    (synopsis "Fast Expat-based Erlang/Elixir XML parsing library")
+    (description "This package provides fast Expat-based Erlang/Elixir XML
+parsing library.")
+    (home-page "https://hex.pm/packages/fast_xml")
+    (license license:asl2.0)))
+
 (define-public erlang-unicode-util-compat
   (package
     (name "erlang-unicode-util-compat")
