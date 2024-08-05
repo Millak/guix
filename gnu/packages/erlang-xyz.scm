@@ -105,6 +105,32 @@ implementation.")
     (home-page "https://hex.pm/packages/stringprep")
     (license license:asl2.0)))
 
+(define-public erlang-cache-tab
+  (package
+    (name "erlang-cache-tab")
+    (version "1.0.31")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "cache_tab" version))
+       (sha256
+        (base32 "0lb35g3p3ybij5f7fnilq3ni37nfgzhajnrmhvplgch9985bd0l5"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-p1-utils))
+    (native-inputs (list erlang-pc))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc"))))))
+    (synopsis "In-memory cache Erlang/Elixir library")
+    (description "This package provides in-memory cache Erlang/Elixir library.")
+    (home-page "https://hex.pm/packages/cache_tab")
+    (license license:asl2.0)))
+
 (define-public erlang-unicode-util-compat
   (package
     (name "erlang-unicode-util-compat")
