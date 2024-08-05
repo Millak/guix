@@ -415,6 +415,34 @@ for Erlang/Elixir.")
     (home-page "https://hex.pm/packages/xmpp")
     (license license:asl2.0)))
 
+(define-public erlang-esip
+  (package
+    (name "erlang-esip")
+    (version "1.0.54")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "esip" version))
+       (sha256
+        (base32 "1vip49gbz1z6sgrab6021fdlqq7g7712d5znvanwsnbjkn0sz1w1"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-fast-tls erlang-p1-utils erlang-stun))
+    (native-inputs (list erlang-pc))
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "CC" "gcc"))))))
+    (synopsis "SIP server component in Erlang")
+    (description "This package provides ProcessOne SIP server component in
+Erlang.")
+    (home-page "https://hex.pm/packages/esip")
+    (license license:asl2.0)))
+
 (define-public erlang-fast-yaml
   (package
     (name "erlang-fast-yaml")
