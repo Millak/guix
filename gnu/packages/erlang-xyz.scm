@@ -89,6 +89,22 @@ Erlang and Elixir.")
     (home-page "https://hex.pm/packages/jiffy")
     (license license:expat)))
 
+(define-public erlang-pkix
+  (package
+    (name "erlang-pkix")
+    (version "1.0.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "pkix" version))
+       (sha256
+        (base32 "03jxmjirg98r1zq7b1f3mnwm8pb1iac2iaxi85615jwl63w688g0"))))
+    (build-system rebar-build-system)
+    (synopsis "PKIX management")
+    (description "This package provides PKIX management for Erlang.")
+    (home-page "https://hex.pm/packages/pkix")
+    (license license:asl2.0)))
+
 (define-public erlang-p1-oauth2
   (package
     (name "erlang-p1-oauth2")
