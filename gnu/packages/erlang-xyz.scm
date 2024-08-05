@@ -167,6 +167,22 @@ Erlang and Elixir.")
     (home-page "https://hex.pm/packages/p1_utils")
     (license license:asl2.0)))
 
+(define-public erlang-p1-mysql
+  (package
+    (name "erlang-p1-mysql")
+    (version "1.0.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "p1_mysql" version))
+       (sha256
+        (base32 "0pv5zfpkw6sgmn6jbm5k635xnx8kkcvgynka5ix50zr5cigqcn7h"))))
+    (build-system rebar-build-system)
+    (synopsis "Pure Erlang MySQL driver")
+    (description "This package provides pure Erlang @code{MySQL} driver.")
+    (home-page "https://hex.pm/packages/p1_mysql")
+    (license license:asl2.0)))
+
 (define-public erlang-stringprep
   (package
     (name "erlang-stringprep")
