@@ -434,55 +434,57 @@ and will take advantage of multiple processor cores where possible.")
         (base32 "0pc8rbcp7njbx8m02z47pcbbwcp5cjggbgq4sfjc19dc3n65p4zw"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-Dpython-bindings=ON"
-                           "-Dbuild_tests=ON")
-       ;; Tests do not reliably work when executed in parallel.
-       #:parallel-tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
-             (let* ((disabled-tests
-                     '(
-                       ;; Requires a non-localhost IPv4 interface.
-                       "test_upnp"
-                       ;; test_ssl needs to be run separately.
-                       "test_ssl"))
-                    (exclude-regex (string-append "^("
-                                                  (string-join disabled-tests "|")
-                                                  ")$"))
-                    (timeout "600")
-                    (jobs (if parallel-tests?
-                              (number->string (parallel-job-count))
-                              "1")))
-               (when tests?
-                 (invoke "ctest"
-                         "-E" exclude-regex
-                         "-j" jobs
-                         "--timeout" timeout
-                         "--output-on-failure")
-                 ;; test_ssl relies on bundled TLS certificates with a fixed
-                 ;; expiry date.  To ensure succesful builds in the future,
-                 ;; fake the time to be roughly that of the release.
-                 ;;
-                 ;; At the same time, faketime happens to cause
-                 ;; test_fast_extension, test_privacy and test_resolve_links
-                 ;; to hang, even with FAKETIME_ONLY_CMDS.  Not sure why.  So
-                 ;; execute only test_ssl under faketime.
-                 ;;
-                 ;; Note: The test_ssl test times out in the ci.
-                 ;; Temporarily disable it until that is resolved.
-                 ;; (invoke "faketime" "2022-10-24"
-                 ;;         "ctest"
-                 ;;         "-R" "^test_ssl$"
-                 ;;         "-j" jobs
-                 ;;         "--timeout" timeout
-                 ;;         "--output-on-failure")
-                 )))))))
+     (list
+      #:configure-flags
+      #~(list "-Dpython-bindings=ON"
+              "-Dbuild_tests=ON")
+      ;; Tests do not reliably work when executed in parallel.
+      #:parallel-tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (let* ((disabled-tests
+                      '(;; Requires a non-localhost IPv4 interface.
+                        "test_upnp"
+                        ;; test_ssl needs to be run separately.
+                        "test_ssl"))
+                     (exclude-regex (string-append "^("
+                                                   (string-join disabled-tests "|")
+                                                   ")$"))
+                     (timeout "600")
+                     (jobs (if parallel-tests?
+                               (number->string (parallel-job-count))
+                               "1")))
+                (when tests?
+                  (invoke "ctest"
+                          "-E" exclude-regex
+                          "-j" jobs
+                          "--timeout" timeout
+                          "--output-on-failure")
+                  ;; test_ssl relies on bundled TLS certificates with a fixed
+                  ;; expiry date.  To ensure succesful builds in the future,
+                  ;; fake the time to be roughly that of the release.
+                  ;;
+                  ;; At the same time, faketime happens to cause
+                  ;; test_fast_extension, test_privacy and test_resolve_links
+                  ;; to hang, even with FAKETIME_ONLY_CMDS.  Not sure why.  So
+                  ;; execute only test_ssl under faketime.
+                  ;;
+                  ;; Note: The test_ssl test times out in the ci.
+                  ;; Temporarily disable it until that is resolved.
+                  ;; (invoke "faketime" "2022-10-24"
+                  ;;         "ctest"
+                  ;;         "-R" "^test_ssl$"
+                  ;;         "-j" jobs
+                  ;;         "--timeout" timeout
+                  ;;         "--output-on-failure")
+                  )))))))
     (inputs (list boost openssl))
-    (native-inputs `(("libfaketime" ,libfaketime)
-                     ("python-wrapper" ,python-wrapper)
-                     ("pkg-config" ,pkg-config)))
+    (native-inputs
+     (list libfaketime
+           python-wrapper
+           pkg-config))
     (home-page "https://www.libtorrent.org/")
     (synopsis "Feature-complete BitTorrent implementation")
     (description
