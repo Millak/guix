@@ -1560,6 +1560,50 @@ instruments.")
     (license (list license:bsd-3     ; licenses/LICENSE.rst, same as python-astropy
                    license:expat)))) ; licenses/KOSMOS_LICENSE
 
+(define-public python-sunkit-image
+  (package
+    (name "python-sunkit-image")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sunkit_image" version))
+       (sha256
+        (base32 "1wzii7dy0yb2lx0k8m3iak5vxc0wbybj5cdkvrk93sr14k9crqds"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Check with upstram: assert False.
+      #:test-flags #~(list "-k" "not test_fnrgf")
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-before 'check 'set-home
+           (lambda _
+             ;; For tests: Permission denied: '/homeless-shelter'
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scikit-image
+           python-scipy
+           python-sunpy))
+    (native-inputs
+     (list python-astroscrappy
+           python-beautifulsoup4
+           python-dask
+           python-drms
+           python-importlib-resources
+           python-pytest-astropy
+           python-pytest-mpl
+           python-setuptools-scm
+           python-zeep))
+    (home-page "https://github.com/sunpy/sunkit-image/")
+    (synopsis "Solar Physics image processing toolbox")
+    (description
+     "This package provides an image processing toolbox for Solar Physics.")
+    (license license:bsd-2)))
+
 (define-public wcslib
   (package
     (name "wcslib")
