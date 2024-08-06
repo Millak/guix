@@ -16245,13 +16245,13 @@ your package is installed, via @code{pkg_resources} (part of
 (define-public python-filetype
   (package
     (name "python-filetype")
-    (version "1.0.8")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "filetype" version))
        (sha256
-        (base32 "05mkinkcn36v1cnb5hzay3zxmv7jmmflckxxp08rgzbkkf3i9pvp"))))
+        (base32 "1nxa91szfbhhbhvdwj06jz8zghzwgb9lf0v6aj61vx2b8zb6rdb6"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
