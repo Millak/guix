@@ -3384,6 +3384,26 @@ on the eyes during night and day.  They only support GUI and 256 colour
 terminals.")
       (license license:gpl3+))))
 
+(define-public emacs-rbs-mode
+  (package
+    (name "emacs-rbs-mode")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ybiquitous/rbs-mode")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1ibn8246q0yqdnf3qdww9rvzac9gla7gzjj0n5j5x08brgj5ll2h"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/ybiquitous/rbs-mode")
+    (synopsis "Major mode for Ruby type signature")
+    (description
+     "RBS mode is a major mode for Ruby type signature language (RBS).  It
+provides basic supports for syntax highlighting and indentation.")
+    (license license:gpl3+)))
+
 (define-public emacs-reformatter
   (package
     (name "emacs-reformatter")
