@@ -1073,7 +1073,7 @@ dark, switch backgrounds and run custom commands at sunset and sunrise.")
 (define-public gpaste
   (package
     (name "gpaste")
-    (version "44.1")
+    (version "45.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1082,7 +1082,7 @@ dark, switch backgrounds and run custom commands at sunset and sunrise.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1amfr8hwf7401xa3fzaa8w17w3v3lxx0fkr7rqkkyfy57iavrykk"))
+                "1x8rqxqzggvzs0hr9hkwq9gmzn1m16jwllml4m4bxrdib4c9lh8q"))
               (patches
                (search-patches "gpaste-fix-paths.patch"))))
     (build-system meson-build-system)
@@ -1098,7 +1098,6 @@ dark, switch backgrounds and run custom commands at sunset and sunrise.")
            desktop-file-utils           ; for update-desktop-database
            gjs
            gtk+
-           mutter
            libadwaita))
     (arguments
      (list #:glib-or-gtk? #true
@@ -1119,7 +1118,7 @@ dark, switch backgrounds and run custom commands at sunset and sunrise.")
                       (string-append #$output "/share/glib-2.0/schemas/")))
                    (substitute* '("src/gnome-shell/extension.js"
                                   "src/gnome-shell/prefs.js")
-                     (("@typelibPath@")
+                     (("@typelibDir@")
                       (string-append #$output "/lib/girepository-1.0/"))))))))
     (home-page "https://github.com/Keruspe/GPaste")
     (synopsis "Clipboard management system for GNOME Shell")
