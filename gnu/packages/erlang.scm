@@ -290,26 +290,29 @@ printing extending the io:format syntax to add colours.")
     (license license:expat)))
 
 (define-public erlang-yamerl
-  (package
-    (name "erlang-yamerl")
-    (version "0.10.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             ;; There are no tests included on Hex.
-             (url "https://github.com/yakaz/yamerl")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0if8abgmispcfk7zhd0a5dndzwzbsmqrbyrm5shk375r2dbbwak6"))))
-    (build-system rebar-build-system)
-    (synopsis "YAML and JSON parser in pure Erlang")
-    (description
-     "Erlang application to parse YAML 1.1 and YAML 1.2 documents, as well as
+  (let ((commit "a24f448c0a8084f70b751dc38621047e56fb53cc")
+        (revision "0"))
+    (package
+      (name "erlang-yamerl")
+      (version (git-version "0.10.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               ;; There are no tests included on Hex.
+               (url "https://github.com/yakaz/yamerl")
+               ;; Fetching commit which includes Erlang 27+ related fixes.
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1csq0z4igyybjgmrynz4d49ysv437iyd2xzkhifb5x47lpdpfpkq"))))
+      (build-system rebar-build-system)
+      (synopsis "YAML and JSON parser in pure Erlang")
+      (description
+       "Erlang application to parse YAML 1.1 and YAML 1.2 documents, as well as
 JSON documents.")
-    (home-page "https://hexdocs.pm/yamerl/")
-    (license license:bsd-2)))
+      (home-page "https://hexdocs.pm/yamerl/")
+      (license license:bsd-2))))
 
 (define-public erlang-covertool
   (package
