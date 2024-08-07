@@ -3706,6 +3706,9 @@ a text snippet), using @code{libphonenumber}.")
                 (substitute* "rebar.config"
                   (("\\{copy, \"rel/files/erl\",")
                    "%{copy, \"rel/files/erl\","))
+                ;; It seems ejabberd still needs jiffy due to p1_acme.
+                (substitute* "rebar.config"
+                  (("\\{if_version_below, \"27\",") "{if_version_below, \"30\","))
                 ;; Unpin pinned dependences.
                 (substitute* "rebar.lock"
                   ((",1\\}") ",0}"))
