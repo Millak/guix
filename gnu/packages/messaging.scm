@@ -44,6 +44,7 @@
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2538,6 +2539,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            spdlog
            vulkan-headers
            vulkan-loader
+           xdg-utils                    ; xdg-open for opening URLs
            zlib))
     (native-inputs
      (list asciidoc pkg-config qttools))
