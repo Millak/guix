@@ -1080,7 +1080,11 @@ and many other) available for GIO applications.")
                                     (default '("disk")))
   (hybrid-sleep-mode                elogind-hybrid-sleep-mode
                                     (default
-                                      '("suspend" "platform" "shutdown"))))
+                                      '("suspend" "platform" "shutdown")))
+  (hibernate-delay-seconds          elogind-hibernate-delay-seconds
+                                    (default *unspecified*))
+  (suspend-estimation-seconds       elogind-suspend-estimation-seconds
+                                    (default *unspecified*)))
 
 (define (elogind-configuration-file config)
   (define (yesno x)
@@ -1104,8 +1108,11 @@ and many other) available for GIO applications.")
     (unless (exact-integer? x) (error "not an integer" x))
     (when (negative? x) (error "negative number not allowed" x))
     (number->string x))
+  (define (maybe-non-negative-integer x)
+    (or (and (unspecified? x) x)
+        (non-negative-integer x)))
   (define handle-actions
-    '(ignore poweroff reboot halt kexec suspend hibernate hybrid-sleep lock))
+    '(ignore poweroff reboot halt kexec suspend hibernate hybrid-sleep suspend-then-hibernate lock))
   (define (handle-action x)
     (if (unspecified? x)
         x                               ;let the unspecified value go through
@@ -1163,7 +1170,9 @@ and many other) available for GIO applications.")
    ("HibernateState" (sleep-list elogind-hibernate-state))
    ("HibernateMode" (sleep-list elogind-hibernate-mode))
    ("HybridSleepState" (sleep-list elogind-hybrid-sleep-state))
-   ("HybridSleepMode" (sleep-list elogind-hybrid-sleep-mode))))
+   ("HybridSleepMode" (sleep-list elogind-hybrid-sleep-mode))
+   ("HibernateDelaySec" (maybe-non-negative-integer elogind-hibernate-delay-seconds))
+   ("SuspendEstimationSec" (maybe-non-negative-integer elogind-suspend-estimation-seconds))))
 
 (define (elogind-dbus-service config)
   "Return a @file{org.freedesktop.login1.service} file that tells D-Bus how to

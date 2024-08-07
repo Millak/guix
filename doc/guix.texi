@@ -24996,6 +24996,12 @@ Data type representing the configuration of @command{elogind}.
 @item @code{hybrid-sleep-mode} (default: @code{'("suspend" "platform" "shutdown")}) (type: list)
 ...
 
+@item @code{hibernate-delay-seconds} (default: @code{*unspecified*}) (type: integer)
+...
+
+@item @code{suspend-estimation-seconds} (default: @code{*unspecified*}) (type: integer)
+...
+
 @end table
 @end deftp
 
