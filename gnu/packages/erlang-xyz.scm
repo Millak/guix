@@ -59,6 +59,18 @@
        (sha256
         (base32 "0576jdjygby37qmzrs8cm5l6n622b0mi3z28j6r4s5xsz1px6v0d"))))
     (build-system rebar-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Do not treat warnings as errors, for more info see:
+          ;; https://github.com/potatosalad/erlang-jose/issues/168
+          (add-after 'unpack 'relax-build-options
+            (lambda _
+              (substitute* "rebar.config"
+                (("debug_info,") "debug_info"))
+              (substitute* "rebar.config"
+                (("warnings_as_errors") "")))))))
     (synopsis
      "JSON Object Signing and Encryption for Erlang and Elixir")
     (description
