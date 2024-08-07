@@ -21,6 +21,7 @@
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Valter Nazianzeno <manipuladordedados@gmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -166,8 +167,8 @@ for configuration, scripting, and rapid prototyping.")
                                       "lua51-pkgconfig.patch"))))))
 
 (define-public luajit
-  (let ((branch "2.1.0-beta3")
-        (commit "6c4826f12c4d33b8b978004bc681eb1eef2be977"))
+  (let ((branch "v2.1")
+        (commit "04dca7911ea255f37be799c18d74c305b921c1a6"))
     (package
       (name "luajit")
       (version (git-version branch "0" commit))
@@ -179,20 +180,13 @@ for configuration, scripting, and rapid prototyping.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1a002yh8v1i1q9w09494q0b8vsbmw3amn9jgfs5qnz7ba54jij0q"))))
+                  "0srwk9nmiz8a93f70inq2597ff6xy203ckr4c0k7jcksdixymi9v"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f                    ; luajit is distributed without tests
          #:phases
          (modify-phases %standard-phases
-           (delete 'configure)          ; no configure script
-           (add-after 'install 'create-luajit-symlink
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (with-directory-excursion bin
-                   (symlink ,(string-append name "-" branch)
-                            ,name))))))
+           (delete 'configure)) ; no configure script
          #:make-flags (list (string-append "PREFIX="
                                            (assoc-ref %outputs "out")))))
       (home-page "https://www.luajit.org/")
