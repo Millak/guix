@@ -541,6 +541,16 @@ testing of stateful systems.")
                (base32
                 "1wr7jkxm6nlgvd52xhniav64xr9rml2ngb35rwjwqlqvq7ywhp0c"))))
     (build-system rebar-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; Fix tests for running under Erlang 27+.
+         (add-after 'unpack 'fix-tests-for-erlang-27
+           (lambda _
+             (substitute* "src/jsx_decoder.erl"
+               (("\\{\"-0\\.0\", \\[\\{float, 0\\.0\\}, end_json\\], <<\"-0\\.0\">>\\},")
+                "{\"0.0\", [{float, 0.0}, end_json], <<\"0.0\">>},
+{\"-0.0\", [{float, -0.0}, end_json], <<\"-0.0\">>},")))))))
     (synopsis "Streaming, evented JSON parsing toolkit")
     (description
      "An Erlang application for consuming, producing and manipulating json.")
