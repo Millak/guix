@@ -7217,7 +7217,7 @@ additions.")
 (define-public go-golang-zx2c4-com-wireguard
   (package
     (name "go-golang-zx2c4-com-wireguard")
-    (version "0.0.20211016")
+    (version "0.0.0-20231211153847-12269c276173")
     (source
      (origin
        (method git-fetch)
@@ -7226,11 +7226,11 @@ additions.")
        ;; source: golang.zx2c4.com/wireguard
        (uri (git-reference
              (url "https://git.zx2c4.com/wireguard-go/")
-             (commit version)))
+             (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09a4gsh75a8bj71wr042afrma9frriqp60cm0cx6c9a8lv5yzzi0"))))
+         "1fbc6m0ahifhrd6jdrpdxi8l3b2slpp8fmv20kpq2yzz19vzzgkf"))))
     (build-system go-build-system)
     (arguments
      '(;; XXX: Failed on newer version of Golang, the recent release requires
