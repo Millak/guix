@@ -1359,7 +1359,7 @@ reflection.")
   (package
     (inherit go-github-com-cheggaaa-pb)
     (name "go-github-com-cheggaaa-pb-v3")
-    (version "3.0.8")
+    (version "3.1.5")
     (source
      (origin
        (method git-fetch)
@@ -1368,7 +1368,7 @@ reflection.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d701s2niy39r650d1phjw19h4l27b1yfc2ih6s31f56b3zzqspx"))))
+        (base32 "1mf86iav69qpyg0nd54g0f50yigjkfzdhaqzkbn4yfb3fnb75n2z"))))
     (arguments
      (list
       #:import-path "github.com/cheggaaa/pb/v3"
