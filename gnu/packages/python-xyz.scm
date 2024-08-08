@@ -888,14 +888,14 @@ documentation of programming languages.")
 (define-public python-fire
   (package
     (name "python-fire")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fire" version))
        (sha256
         (base32
-         "1imc9ais15dz3gmphawql86l9av5dykbp4hz0883k5n8k2gd9c56"))))
+         "0rmaw26xjndr7makpiqv4h9aav9xf2h280w0khqc1lyddscmpv2l"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
