@@ -23,6 +23,7 @@
 ;;; Copyright © 2023 Tomas Volf <wolf@wolfsden.cz>
 ;;; Copyright © 2023 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -413,6 +414,7 @@
                        (setenv "CC" "clang")
                        (setenv "CXX" "clang++")
                        (setenv "MOZ_NOSPAM" "1")
+                       (setenv "MOZ_APP_REMOTINGNAME" "LibreWolf")
                        (setenv "MOZ_APP_NAME" "librewolf")
 
                        (setenv "MOZBUILD_STATE_PATH"
@@ -626,8 +628,7 @@
                            (("-NewPrivateWindow")
                             "-new-private-window")
                            (("StartupNotify=true")
-                            "StartupNotify=true
-StartupWMClass=Navigator"))
+                            "StartupNotify=true\nStartupWMClass=LibreWolf"))
                          (copy-file desktop-file "librewolf.desktop")
                          (install-file "librewolf.desktop" applications))))
                    (add-after 'install-desktop-entry 'install-icons
