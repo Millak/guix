@@ -9324,31 +9324,45 @@ nfnetlink_queue, nfnetlink_conntrack) and their respective users and/or
 management tools in userspace.")
     (license license:gpl2)))
 
-(define-public go-netlink
+(define-public go-github-com-vishvananda-netlink
   (package
-    (name "go-netlink")
-    (version "1.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/vishvananda/netlink")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0hpzghf1a4cwawzhkiwdzin80h6hd09fskl77d5ppgc084yvj8x0"))))
+    (name "go-github-com-vishvananda-netlink")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vishvananda/netlink")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vhl30p1gx636a088ls4h6a0l8jjyfvz79fr5w0qzdrg4qg9h08h"))))
     (build-system go-build-system)
     (arguments
-     `(#:tests? #f      ; Tests depend on specific kernel modules.
-       #:import-path "github.com/vishvananda/netlink"))
-    (native-inputs
-     (list go-golang-org-x-sys go-netns))
+     (list
+      ;; The tests are unsupported on all architectures except x86_64-linux:
+      ;; cannot use 0xabcdef99 (untyped int constant 2882400153) as int value
+      ;; in struct literal (overflows)
+      #:tests? (and (not (%current-target-system)) (target-x86-64?))
+      #:import-path "github.com/vishvananda/netlink"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Disable tests requiring root access.
+                  (("TestNetNsIdByFd") "OffTestNetNsIdByFd")
+                  (("TestNetNsIdByPid") "OffTestNetNsIdByPid"))))))))
+    (propagated-inputs
+     (list go-golang-org-x-sys go-github-com-vishvananda-netns))
     (home-page "https://github.com/vishvananda/netlink")
     (synopsis "Simple netlink library for Go")
-    (description "The netlink package provides a simple netlink library for
-Go.  Netlink is the interface a user-space program in Linux uses to
-communicate with the kernel.  It can be used to add and remove interfaces, set
-IP addresses and routes, and configure IPsec.")
+    (description
+     "The netlink package provides a simple netlink library for Go.  Netlink
+is the interface a user-space program in Linux uses to communicate with the
+kernel.  It can be used to add and remove interfaces, set IP addresses and
+routes, and configure IPsec.")
     (license license:asl2.0)))
 
 (define-public libinih

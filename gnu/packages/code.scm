@@ -390,7 +390,7 @@ cloc can handle a greater variety of programming languages.")
 (define-public scc
   (package
     (name "scc")
-    (version "3.1.0")
+    (version "3.3.5")
     (source
      (origin
        (method git-fetch)
@@ -399,7 +399,7 @@ cloc can handle a greater variety of programming languages.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rkkfg6jimlc2rkajk6ypd5v0m3zai25ga5idz2pmkmzakv82n21"))))
+        (base32 "0fvp9ab65vwn3dn0wm8l63rrp5fz1gpymcxs8yr0h4s5zmrsg9zf"))))
     (build-system go-build-system)
     (arguments
      (list

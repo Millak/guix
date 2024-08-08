@@ -161,6 +161,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages pretty-print)
+  #:use-module (gnu packages prometheus)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
@@ -1916,30 +1917,40 @@ manage, and delete Internet resources from Gandi.net such as domain names,
 virtual machines, and certificates.")
     (license license:gpl3+)))
 
-(define-public go-netns
-  (let ((commit "13995c7128ccc8e51e9a6bd2b551020a27180abd")
-        (revision "1"))
-    (package
-      (name "go-netns")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/vishvananda/netns")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1zk6w8158qi4niva5rijchbv9ixgmijsgqshh54wdaav4xrhjshn"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/vishvananda/netns"
-         #:tests? #f))                  ;tests require root privileges
-      (home-page "https://github.com/vishvananda/netns")
-      (synopsis "Simple network namespace handling for Go")
-      (description "The netns package provides a simple interface for
-handling network namespaces in Go.")
-      (license license:asl2.0))))
+(define-public go-github-com-vishvananda-netns
+  (package
+    (name "go-github-com-vishvananda-netns")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vishvananda/netns")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rci8c211m57nya9il81fz6459pia3dj5i4b16fp34vjrkcxliml"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/vishvananda/netns"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Disable tests requiring root access.
+                  (("TestGetNewSetDelete") "OffTestGetNewSetDelete")
+                  (("TestThreaded") "OffTestThreaded"))))))))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/vishvananda/netns")
+    (synopsis "Simple network namespace handling for Go")
+    (description
+     "The netns package provides a simple interface for handling network
+namespaces in Go.")
+    (license license:asl2.0)))
 
 (define-public go-sctp
   ;; docker-libnetwork-cmd-proxy requires this exact commit.
@@ -4624,8 +4635,6 @@ QUIC protocol.")
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/yggdrasil-network/yggdrasil-go"
-           ;; TODO: figure out how tests are run
-           #:tests? #f
            #:install-source? #f
            #:phases
            #~(modify-phases %standard-phases
@@ -4644,34 +4653,30 @@ QUIC protocol.")
                          #:import-path directory))
                       (list "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasil"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
-                            "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))))))))
+                            "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys")))))
+               (replace 'check
+                 (lambda* (#:key tests? import-path #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion (string-append "src/" import-path)
+                       (invoke "go" "test" "-v" "./cmd/..." "./src/..."))))))))
     (propagated-inputs
-     (list go-golang-zx2c4-com-wireguard
-           go-golang-org-x-text
-           go-golang-org-x-net
-           go-golang-org-x-crypto
-           go-golang-org-x-tools
-           go-golang-org-x-sys
-           go-netns
-           go-netlink
-           go-github-com-bits-and-blooms-bitset
-           go-github-com-bits-and-blooms-bloom
-           go-github-com-quic-go-quic-go
-           go-github-com-hjson-hjson-go
-           go-github-com-olekukonko-tablewriter
-           go-github-com-mitchellh-mapstructure
-           go-github-com-mattn-go-runewidth
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-colorable
-           go-github-com-kardianos-minwinsvc
-           go-github-com-hjson-hjson-go
-           go-github-com-hashicorp-go-syslog
-           go-github-com-gologme-log
-           go-github-com-fatih-color
-           go-github-com-cheggaaa-pb-v3
-           go-github-com-vividcortex-ewma
+     (list ;; go-golang-org-x-mobile ; Not packed yet, for contrib.
+           ;; go-golang-zx2c4-com-wireguard-windows ; Not packed yet, for tun.
+           go-github-com-arceliar-ironwood
            go-github-com-arceliar-phony
-           go-github-com-arceliar-ironwood))
+           go-github-com-cheggaaa-pb-v3
+           go-github-com-gologme-log
+           go-github-com-hashicorp-go-syslog
+           go-github-com-hjson-hjson-go-v4
+           go-github-com-kardianos-minwinsvc
+           go-github-com-olekukonko-tablewriter
+           go-github-com-quic-go-quic-go
+           go-github-com-vishvananda-netlink
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           go-golang-zx2c4-com-wireguard))
     (home-page "https://yggdrasil-network.github.io/blog.html")
     (synopsis
      "Experiment in scalable routing as an encrypted IPv6 overlay network")
@@ -4702,7 +4707,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
 (define-public nebula
   (package
     (name "nebula")
-    (version "1.8.2")
+    (version "1.9.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4711,7 +4716,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ly1axgmskrkmxhzymqis6gxf2wd7rvhycm94wfb8k0hirndvg5m"))
+                "08zzbx2v713zd9p7i4kd1bvcw47xb0092p5apba1x5wg6fpxw5zr"))
               ;; Remove windows-related binary blobs and files
               (snippet
                #~(begin
@@ -4749,7 +4754,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
      (list go-dario-cat-mergo
            go-github-com-anmitsu-go-shlex
            go-github-com-armon-go-radix
-           go-github-com-cespare-xxhash
+           go-github-com-cespare-xxhash-v2
            go-github-com-cyberdelia-go-metrics-graphite
            go-github-com-flynn-noise
            go-github-com-gogo-protobuf
@@ -4770,8 +4775,8 @@ IPv6 Internet connectivity - it also works over IPv4.")
            go-golang-org-x-term
            go-google-golang-org-protobuf
            go-gopkg-in-yaml-v2
-           go-netlink
-           go-netns))
+           go-github-com-vishvananda-netlink
+           go-github-com-vishvananda-netns))
     (home-page "https://github.com/slackhq/nebula")
     (synopsis "Scalable, peer-to-peer overlay networking tool")
     (description

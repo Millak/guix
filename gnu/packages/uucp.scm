@@ -149,7 +149,7 @@ between computers.")
            go-github-com-dustin-go-humanize
            go-github-com-flynn-noise
            go-github-com-gorhill-cronexpr
-           go-github-com-hjson-hjson-go
+           go-github-com-hjson-hjson-go-v4
            go-github-com-klauspost-compress
            go-golang-org-x-crypto
            go-golang-org-x-net

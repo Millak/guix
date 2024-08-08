@@ -37,6 +37,7 @@
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages prometheus)
   #:use-module (gnu packages python)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages specifications))
@@ -606,7 +607,7 @@ and @code{go-ipld-format} legacy interface.")
            go-github-com-warpfork-go-testmark
            specification-ipld))
     (propagated-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-github-com-ipfs-go-block-format
            go-github-com-ipfs-go-cid
            go-github-com-multiformats-go-multicodec
@@ -799,7 +800,7 @@ daemon as described in
       #:import-path "github.com/whyrusleeping/cbor-gen"))
     (propagated-inputs
      (list go-github-com-ipfs-go-cid
-           go-github-com-google-go-cmp-cmp
+           go-github-com-google-go-cmp
            go-golang-org-x-xerrors))
     (home-page "https://github.com/whyrusleeping/cbor-gen")
     (synopsis "Codegen for CBOR codecs on the specified types")
@@ -1135,6 +1136,7 @@ written in Go.")
                   ;; available.
                   ;;
                   go-github-com-alecthomas-units              ; github.com/ipfs/boxo
+                  go-github-com-cespare-xxhash
                   go-github-com-docker-go-units               ; github.com/containerd/cgroups
                   go-github-com-felixge-httpsnoop             ; go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
                   go-github-com-flynn-noise                   ; github.com/libp2p/go-libp2p

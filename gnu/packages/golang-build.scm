@@ -1,21 +1,23 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2018, 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
-;;; Copyright © 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2020, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 HiPhish <hiphish@posteo.de>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Vagrant Cascadian <vagrant@debian.org>
+;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 hackeryarn <artemchernyak@gmail.com>
+;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -56,6 +58,82 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-golang-protobuf
+  (package
+    (name "go-github-com-golang-protobuf")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/protobuf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03f1w2cd4s8a3xhl61x7yjx81kbzlrjpvnnwmbhqnz814yi7h43i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/golang/protobuf"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-google-golang-org-protobuf))
+    (home-page "https://github.com/golang/protobuf")
+    (synopsis "Go support for Protocol Buffers")
+    (description
+     "This package provides Go support for the Protocol Buffers data
+serialization format.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-google-go-cmp
+  (package
+    (name "go-github-com-google-go-cmp")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/go-cmp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n1j4hi50bl05pyys4i7y417k9g6k1blslj27z327qny7kkdl2ma"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/go-cmp/cmp"
+      #:unpack-path "github.com/google/go-cmp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? import-path inputs #:allow-other-keys)
+              (when tests?
+                ;; The tests fail when run with gccgo.
+                (let ((gccgo? (false-if-exception
+                               (search-input-file inputs "/bin/gccgo"))))
+                  (if gccgo?
+                      (format #t "skipping tests with gccgo compiler~%")
+                      ;; XXX: Workaround for go-build-system's lack of Go
+                      ;; modules support.
+                      (with-directory-excursion (string-append "src/" import-path)
+                        (invoke "go" "test" "-v" "./..."))))))))))
+    (synopsis "Determine equality of values in Go")
+    (home-page "https://github.com/google/go-cmp")
+    (description
+     "This package is intended to be a more powerful and safer
+alternative to @code{reflect.DeepEqual} for comparing whether two values are
+semantically equal.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-yuin-goldmark
   (package
     (name "go-github-com-yuin-goldmark")
@@ -222,28 +300,52 @@ language.")
         (base32 "0ccjgv19w5p9sbcq12czmfnkjwv3b7hfljifwax6r9wk4dx0fcn7"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Submodules with their own go.mod files and packed as separated
-           ;; packages:
-           ;;
-           ;; - golang.org/x/exp/event
-           ;; - golang.org/x/exp/jsonrpc2
-           ;; - golang.org/x/exp/shiny
-           ;; - golang.org/x/exp/sumbdb
-           ;; - golang.org/x/exp/typeparams
-           (for-each delete-file-recursively
-                     (list "event" "jsonrpc2" "shiny" "sumdb" "typeparams"))))))
+        #~(begin
+            ;; Submodules with their own go.mod files and packed as separated
+            ;; packages:
+            ;;
+            ;; - golang.org/x/exp/event
+            ;; - golang.org/x/exp/jsonrpc2
+            ;; - golang.org/x/exp/shiny
+            ;; - golang.org/x/exp/sumbdb
+            ;; - golang.org/x/exp/typeparams
+            (for-each delete-file-recursively
+                      (list "event" "jsonrpc2" "shiny" "sumdb" "typeparams"))))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "golang.org/x/exp"
-       ;; Source-only package
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (delete 'build))))
+     (list
+      #:import-path "golang.org/x/exp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Benchmark requires other modules to pass tests, delete them.
+                (delete-file-recursively "slog/benchmarks")
+               (substitute* (find-files "." "\\_test.go$")
+                 ;; Disable failing tests: error running `go mod init`: go:
+                 ;; modules disabled by GO111MODULE=off; see 'go help modules'
+                 ;; , exit status 1
+                 (("TestFailure") "OffTestFailure")
+                 (("TestRelease_gitRepo_uncommittedChanges")
+                  "OffTestRelease_gitRepo_uncommittedChanges")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-golang-org-x-mod
+           go-golang-org-x-tools))
     (home-page "https://golang.org/x/exp")
     (synopsis "Experimental and deprecated Go packages")
-    (description "This subrepository holds experimental and deprecated (in the
-@code{old} directory) packages.")
+    (description
+     "This subrepository holds experimental and deprecated (in the @code{old}
+directory) packages.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-exp-typeparams
@@ -700,6 +802,55 @@ Go programming language.")
       (description "This package holds the transition packages for the new Go
 1.13 error values.")
       (license license:bsd-3))))
+
+(define-public go-google-golang-org-protobuf
+  (package
+    (name "go-google-golang-org-protobuf")
+    (version "1.31.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/protobuf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xf18kzz96hgfy1vlbnydrizzpxkqj2iamfdbj3dx5a1zz5mi8n0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "google.golang.org/protobuf"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; XXX Failing on i686-linux:
+                  ;; panic: unaligned 64-bit atomic operation
+                  (("TestDynamicTypesExtensionNotFound")
+                   "OffTestDynamicTypesExtensionNotFound")
+                  (("TestDynamicTypesFilesChangeAfterCreation")
+                   "OffTestDynamicTypesFilesChangeAfterCreation")
+                  (("TestDynamicTypesFindExtensionByNameOrNumber")
+                   "OffTestDynamicTypesFindExtensionByNameOrNumber")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs (list go-github-com-google-go-cmp))
+    (home-page "https://google.golang.org/protobuf")
+    (synopsis "Go library for Protocol Buffers")
+    (description
+     "The protobuf package provides a Go implementation of Protocol Buffers, a
+language and platform neutral, extensible mechanism for serializing structured
+data.  It is a successor to @code{go-github-com-golang-protobuf} with an
+improved and cleaner API.")
+    (license license:bsd-3)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

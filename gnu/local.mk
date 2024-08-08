@@ -542,6 +542,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/printers.scm			\
   %D%/packages/profiling.scm			\
   %D%/packages/prolog.scm			\
+  %D%/packages/prometheus.scm		\
   %D%/packages/pth.scm				\
   %D%/packages/pulseaudio.scm			\
   %D%/packages/pumpio.scm			\

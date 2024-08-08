@@ -1167,7 +1167,7 @@ but it works for any C/C++ project.")
                   go-golang-org-x-sync
                   go-golang-org-x-sync
                   go-gopkg-in-yaml-v3))
-    (native-inputs (list go-github-com-google-go-cmp-cmp))
+    (native-inputs (list go-github-com-google-go-cmp))
     (home-page "https://rhysd.github.io/actionlint/")
     (synopsis "Static checker for GitHub Actions workflow files")
     (description

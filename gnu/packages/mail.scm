@@ -56,6 +56,7 @@
 ;;; Copyright © 2023 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Benjamin Slade <slade@lambda-y.net>
+;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5034,7 +5035,7 @@ remote SMTP server.")
 (define-public aerc
   (package
     (name "aerc")
-    (version "0.15.2")
+    (version "0.18.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5043,7 +5044,7 @@ remote SMTP server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gbprx0i8d13q974n5hsys6lllav5cpll3cwrr1hfw6307hc001r"))))
+                "1gj8m8xvqaf0lsnk4h1n9d0qhwi8d3mm0w9zhw16v888n7rll9fb"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~rjarry/aerc"
@@ -5052,23 +5053,19 @@ remote SMTP server.")
            #:build-flags
            #~(list "-tags=notmuch"
                    (string-append
-                     "-ldflags=-X main.Version=" #$version
-                     " -X git.sr.ht/~rjarry/aerc/config.libexecDir="
-                     #$output "/libexec/aerc"
-                     " -X git.sr.ht/~rjarry/aerc/config.shareDir="
-                     #$output "/share/aerc"))
+                    "-ldflags=-X main.Version=" #$version
+                    " -X git.sr.ht/~rjarry/aerc/config.libexecDir="
+                    #$output "/libexec/aerc"
+                    " -X git.sr.ht/~rjarry/aerc/config.shareDir="
+                    #$output "/share/aerc"))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-paths
                  (lambda* (#:key import-path inputs #:allow-other-keys)
-                   (with-directory-excursion
-                       (string-append "src/" import-path)
-                     (substitute* (list "config/config.go"
-                                        "lib/templates/template.go"
-                                        "widgets/compose.go"
-                                        "widgets/msgviewer.go"
-                                        "worker/maildir/worker.go"
-                                        "worker/notmuch/worker.go")
+                   (with-directory-excursion (string-append "src/" import-path)
+                     (substitute* (find-files "." "\\.go$")
+                       ;; Patch all occurrences to "sh" with absolute path to
+                       ;; the shell available in Guix.
                        (("\"sh\"")
                         (string-append
                          "\"" (search-input-file inputs "bin/sh")
@@ -5077,8 +5074,8 @@ remote SMTP server.")
                        (substitute* "commands/z.go"
                          (("\"zoxide\"")
                           (string-append
-                            "\"" (search-input-file inputs "bin/zoxide")
-                            "\""))))
+                           "\"" (search-input-file inputs "bin/zoxide")
+                           "\""))))
                      (substitute* (list "lib/crypto/gpg/gpg.go"
                                         "lib/crypto/gpg/gpg_test.go"
                                         "lib/crypto/gpg/gpgbin/keys.go"
@@ -5100,51 +5097,47 @@ remote SMTP server.")
                            (string-append "PREFIX=" #$output)))))))
     (inputs
      (append
-       (list gnupg
-             go-github-com-zenhack-go-notmuch
-             go-golang-org-x-oauth2
-             go-github-com-xo-terminfo
-             go-github-com-stretchr-testify
-             go-github-com-riywo-loginshell
-             go-github-com-pkg-errors
-             go-github-com-mitchellh-go-homedir
-             go-github-com-miolini-datacounter
-             go-github-com-mattn-go-runewidth
-             go-github-com-mattn-go-isatty
-             go-github-com-lithammer-fuzzysearch
-             go-github-com-kyoh86-xdg
-             go-github-com-imdario-mergo
-             go-github-com-google-shlex
-             go-github-com-go-ini-ini
-             go-github-com-gdamore-tcell-v2
-             go-github-com-gatherstars-com-jwz
-             go-github-com-fsnotify-fsnotify
-             go-github-com-emersion-go-smtp
-             go-github-com-emersion-go-sasl
-             go-github-com-emersion-go-pgpmail
-             go-github-com-emersion-go-message
-             go-github-com-emersion-go-maildir
-             go-github-com-emersion-go-imap-sortthread
-             go-github-com-emersion-go-imap
-             go-github-com-emersion-go-msgauth
-             go-github-com-emersion-go-mbox
-             go-github-com-ddevault-go-libvterm
-             go-github-com-danwakefield-fnmatch
-             go-github-com-creack-pty
-             go-github-com-arran4-golang-ical
-             go-github-com-protonmail-go-crypto
-             go-github-com-syndtr-goleveldb
-             go-git-sr-ht-sircmpwn-getopt
-             go-git-sr-ht-rockorager-tcell-term
-             python
-             python-vobject)
-       (if (supported-package? zoxide)
-           (list zoxide)
-           '())))
-    (native-inputs (list scdoc))
+      (list gnupg
+            notmuch ; Failing to build without it.
+            python
+            python-vobject)
+      (if (supported-package? zoxide)
+          (list zoxide)
+          '())))
+    (native-inputs
+     (list go-git-sr-ht-rjarry-go-opt
+           go-git-sr-ht-rockorager-go-jmap
+           go-git-sr-ht-rockorager-vaxis
+           go-github-com-protonmail-go-crypto
+           go-github-com-arran4-golang-ical
+           go-github-com-danwakefield-fnmatch
+           go-github-com-emersion-go-imap
+           go-github-com-emersion-go-imap-sortthread
+           go-github-com-emersion-go-maildir
+           go-github-com-emersion-go-mbox
+           go-github-com-emersion-go-message
+           go-github-com-emersion-go-msgauth
+           go-github-com-emersion-go-pgpmail
+           go-github-com-emersion-go-sasl
+           go-github-com-emersion-go-smtp
+           go-github-com-fsnotify-fsnotify
+           go-github-com-gatherstars-com-jwz
+           go-github-com-go-ini-ini
+           go-github-com-lithammer-fuzzysearch
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth
+           go-github-com-pkg-errors
+           go-github-com-riywo-loginshell
+           go-github-com-stretchr-testify
+           go-github-com-syndtr-goleveldb
+           go-golang-org-x-image
+           go-golang-org-x-oauth2
+           go-golang-org-x-sys
+           go-golang-org-x-tools
+           scdoc))
     (home-page "https://git.sr.ht/~rjarry/aerc")
     (synopsis "Email client for the terminal")
-    (description "@code{aerc} is a textual email client for terminals. It
+    (description "@code{aerc} is a textual email client for terminals.  It
 features:
 @enumerate
 @item First-class support for using patches and @code{git send-email}
@@ -5157,3 +5150,41 @@ features:
     ;; <https://lists.sr.ht/~rjarry/aerc-devel/%3Cb5cb213a7d0c699a886971658c2476
     ;; 1073eb2391%40disroot.org%3E>
     (license license:gpl3+)))
+
+(define-public hydroxide
+  (package
+    (name "hydroxide")
+    (version "0.2.29")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/hydroxide")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11gbikrgm7nf0zjav64202wsnr9pvrmslm2rzg9d9rbvwdqcq1jl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/emersion/hydroxide/cmd/hydroxide"
+      #:unpack-path "github.com/emersion/hydroxide"))
+    (native-inputs
+     (list go-github-com-protonmail-go-crypto
+           go-github-com-boltdb-bolt
+           go-github-com-emersion-go-bcrypt
+           go-github-com-emersion-go-imap
+           go-github-com-emersion-go-mbox
+           go-github-com-emersion-go-message
+           go-github-com-emersion-go-smtp
+           go-github-com-emersion-go-vcard
+           go-github-com-emersion-go-webdav
+           go-golang-org-x-crypto
+           go-golang-org-x-term))
+    (home-page "https://github.com/emersion/hydroxide")
+    (synopsis "ProtonMail CardDAV, IMAP and SMTP bridge")
+    (description
+     "This package implements a functionality to translate standard
+protocols (SMTP, IMAP, CardDAV) into ProtonMail API requests.")
+    (license license:expat)))

@@ -3,18 +3,19 @@
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
+;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
-;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 raingloom <raingloom@riseup.net>
-;;; Copyright © 2020-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Adam Kandur <kefironpremise@gmail.com>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -66,8 +67,10 @@
 
 ;;; Commentary:
 ;;;
-;;; Golang modules (libraries) related to HTML, CSS, SCSS, JavaScript, JSON,
-;;; Web-framework, REST-API or similar functionality. They may provide
+;;; Golang modules (libraries) for Web related projects: HTML, CSS, SCSS,
+;;; JavaScript, JSON, Web-framework, REST-API or similar functionality; for
+;;; Network related projects: OSI layers implementation algorithms, MIME,
+;;; Email protocols implementations, and similar.  They may provide
 ;;; executables and libraries, for which there are marked sections.
 
 ;;;
@@ -125,6 +128,44 @@ API service accounts for Go.")
     (synopsis "GraphQL client and code generator")
     (description
      "This package provides a GraphQL client and code generator for Go.")
+    (license license:expat)))
+
+(define-public go-git-sr-ht-rockorager-go-jmap
+  (package
+    (name "go-git-sr-ht-rockorager-go-jmap")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~rockorager/go-jmap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r8bmdlmvpk08i7xrqwgv0aaz05564wgcyji73nszdh2s32m4kzl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~rockorager/go-jmap"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list
+      go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-oauth2))
+    (home-page "https://git.sr.ht/~rockorager/go-jmap")
+    (synopsis "JSON meta application protocol in Golang")
+    (description
+     "Package jmap implements JMAP Core protocol as defined in
+@@url{https://rfc-editor.org/rfc/rfc8620.html,RFC 8620} published on July
+2019.")
     (license license:expat)))
 
 (define-public go-github-com-alexliesenfeld-health
@@ -227,40 +268,10 @@ the parse trees produced by the html package.")
 connections from a single physical connection.")
     (license license:expat)))
 
-(define-public go-github-com-aws-sdk
-  (package
-    (name "go-github-com-aws-sdk")
-    (version "1.35.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/aws/aws-sdk-go")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1ky5lw2s2zpslnnqcs6hgsrwvwbxwgflb5jwf16dd4aga3vrg10c"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go/aws"
-       #:unpack-path "github.com/aws/aws-sdk-go"))
-    (propagated-inputs
-     (list go-github-com-go-sql-driver-mysql
-           go-github-com-jmespath-go-jmespath
-           go-github-com-pkg-errors
-           go-golang-org-x-net))
-    (home-page "https://github.com/aws/aws-sdk-go")
-    (synopsis "Library to access Amazon Web Services (AWS)")
-    (description
-     "This is the official AWS SDK for the Go programming language.")
-    (license license:asl2.0)))
-
-;; XXX: This package might be a duplicate of go-github-com-aws-sdk, it's not
-;; in use anywhere. Keep it here for the farther review.
 (define-public go-github-com-aws-aws-sdk-go
   (package
     (name "go-github-com-aws-aws-sdk-go")
-    (version "1.36.18")
+    (version "1.55.2")
     (source
      (origin
        (method git-fetch)
@@ -269,17 +280,32 @@ connections from a single physical connection.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "169mkkw1cff1px6326krwvfpfj07sb4y5rbn003gi4bk176h6ry9"))))
+        (base32 "0wsl1vcig3j9z6v2hppfr1bvrvbisck026fwq2a7yzmx36pwnj6a"))))
     (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  (("TestProcessProviderTimeout")
+                   "OffTestProcessProviderTimeout")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-jmespath-go-jmespath))
-    (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go"
-       #:phases %standard-phases))
+    (home-page "https://github.com/aws/aws-sdk-go")
     (synopsis "The official AWS SDK for the Go programming language")
     (description
      "The official AWS SDK for the Go programming language.")
-    (home-page "https://github.com/aws/aws-sdk-go")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2
@@ -300,7 +326,7 @@ connections from a single physical connection.")
      '(#:import-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
      (list go-github-com-aws-smithy-go
-           go-github-com-google-go-cmp-cmp
+           go-github-com-google-go-cmp
            go-github-com-jmespath-go-jmespath))
     (home-page "https://github.com/aws/aws-sdk-go-v2")
     (synopsis "AWS SDK for Go v2")
@@ -317,8 +343,36 @@ connections from a single physical connection.")
      '(#:import-path "github.com/aws/aws-sdk-go-v2/config"
        #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-github-com-aws-smithy-go))))
+
+(define-public go-github-com-aws-aws-sdk-go-v2-credentials
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-credentials")
+    (version "1.17.27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-sdk-go-v2")
+             (commit (string-append "credentials/v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jdj7wim98g80hjbw3av7ffrr3dqxzbygprmhjs0cxc16cw62wj7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/credentials"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-aws-smithy-go))
+    (home-page "https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/credentials")
+    (synopsis "AWS SDK for Go v2 - credentials module")
+    (description
+     "Package credentials provides types for retrieving credentials from
+credentials sources.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
   (package
@@ -402,7 +456,7 @@ connections from a single physical connection.")
     (arguments
      '(#:import-path "github.com/aws/smithy-go"))
     (propagated-inputs
-     (list go-github-com-jmespath-go-jmespath go-github-com-google-go-cmp-cmp))
+     (list go-github-com-jmespath-go-jmespath go-github-com-google-go-cmp))
     (home-page "https://github.com/aws/smithy-go")
     (synopsis "@url{https://smithy.io/2.0/index.html,Smithy} code generators
 for Go")
@@ -633,7 +687,7 @@ and stop increasing when a certain threshold is met.")
   (package
     (inherit go-github-com-coreos-go-oidc)
     (name "go-github-com-coreos-go-oidc-v3")
-    (version "3.6.0")
+    (version "3.11.0")
     (source
      (origin
        (method git-fetch)
@@ -642,14 +696,294 @@ and stop increasing when a certain threshold is met.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sbm6n3lp48lymn0g921afhq2j6inb38w3wy5rhyx9h8gpzhnxx9"))))
+        (base32 "00nbv15pjfcfxdy0i4k366ricdm2cylhpwak3hmjlgh6lrzxypl9"))))
     (arguments
-     (list ;; no Go files in [...]/src/github.com/coreos/go-oidc/v3.
-      #:import-path "github.com/coreos/go-oidc/v3/oidc"
-      #:unpack-path "github.com/coreos/go-oidc/v3"))
+     (list
+      #:import-path "github.com/coreos/go-oidc/v3"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
-     (list go-github-com-go-jose-go-jose-v3
+     (list go-github-com-go-jose-go-jose-v4
+           go-golang-org-x-net
            go-golang-org-x-oauth2))))
+
+(define-public go-github-com-emersion-go-imap
+  (package
+    (name "go-github-com-emersion-go-imap")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-imap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ak2ysvfcc9w0g1070msis8x9sh6gzvf0nd65ks594siwbmqddw8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-imap"))
+    (propagated-inputs
+     (list go-golang-org-x-text
+           go-github-com-emersion-go-sasl
+           go-github-com-emersion-go-message))
+    (home-page "https://github.com/emersion/go-imap")
+    (synopsis "IMAP4rev1 library written in Go")
+    (description
+     "This package provides an IMAP4rev1 library written in Go.  It can be
+used to build IMAP clients and servers.")
+    (license license:expat)))
+
+;; XXX: This repository has been archived by the owner on Sep 8, 2021. It is
+;; now read-only.
+(define-public go-github-com-emersion-go-imap-idle
+  (let ((commit "2704abd7050ed7f2143753554ee23affdf847bd9")
+        (revision "0"))
+    (package
+      (name "go-github-com-emersion-go-imap-idle")
+      (version (git-version "0.0.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/emersion/go-imap-idle")
+                (commit commit)))
+          (sha256
+           (base32
+            "0blwcadmxgqsdwgr9m4jqfbpfa2viw5ah19xbybpa1z1z4aj5cbc"))
+          (file-name (git-file-name name version))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/emersion/go-imap-idle"))
+      (propagated-inputs
+       (list go-github-com-emersion-go-imap))
+      (home-page "https://github.com/emersion/go-imap-idle")
+      (synopsis "IDLE extension for go-imap")
+      (description "This package provides an IDLE extension for go-imap.")
+      (license license:expat))))
+
+(define-public go-github-com-emersion-go-imap-sortthread
+  (package
+    (name "go-github-com-emersion-go-imap-sortthread")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-imap-sortthread")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cfbgz1l5angnj52v9pxwggai2shx0h78ffcp7j4r4lr7lzflnwz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-imap-sortthread"))
+    (propagated-inputs
+     (list
+      go-github-com-emersion-go-imap))
+    (home-page "https://github.com/emersion/go-imap-sortthread")
+    (synopsis "Sorting and threading of messages for the imap package")
+    (description
+     "The sortthread package implements message sorting and threading for
+@code{go-github-com-emersion-go-imap}.")
+    (license license:expat)))
+
+(define-public go-github-com-emersion-go-maildir
+  (package
+    (name "go-github-com-emersion-go-maildir")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-maildir")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wa7spn3qa7ipmg29vrimw7phyybyaagdalrjklcazjb6rplvwpl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-maildir"))
+    (home-page "https://github.com/emersion/go-maildir")
+    (synopsis "Maildir interface for Go")
+    (description
+     "This package provides an interface to mailboxes in the Maildir format.")
+    (license license:expat)))
+
+(define-public go-github-com-emersion-go-mbox
+  (package
+    (name "go-github-com-emersion-go-mbox")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-mbox")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vnadh2khx7sxn0irrd8gz8ra02x7ij0q8zglq3rqffqil06nliv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-mbox"))
+    (home-page "https://github.com/emersion/go-mbox")
+    (synopsis "Go library for handling @code{mbox} files")
+    (description
+     "This package provides a library for parsing and formatting @code{mbox}
+files.")
+    (license license:expat)))
+
+(define-public go-github-com-emersion-go-message
+  (package
+    (name "go-github-com-emersion-go-message")
+    (version "0.18.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-message")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gzcgrs5sava8fpybp5cw6f3zqnbz096wf93hcgkrg94wl1g7kqb"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-message"))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (home-page "https://github.com/emersion/go-message")
+    (synopsis "Internet messages and MIME for Go")
+    (description
+     "The message package implements the Internet Message Format and
+Multipurpose Internet Mail Extensions in Go.")
+    (license license:expat)))
+
+(define-public go-github-com-emersion-go-milter
+  (package
+    (name "go-github-com-emersion-go-milter")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-milter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11qjwjz6ippsx9da81gylx46p1a96mk39j54ayw925m40skqhh3c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-milter"))
+    (propagated-inputs
+     (list go-github-com-emersion-go-message))
+    (home-page "https://github.com/emersion/go-milter")
+    (synopsis "Milter mail filters in Go")
+    (description
+     "This package provides an interface for implementing milter mail filters
+for Go.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-emersion-go-msgauth
+  (package
+    (name "go-github-com-emersion-go-msgauth")
+    (version "0.6.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-msgauth")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0az83i6jmk3bjglgdqw5zsvhh8698rav0mcg4dy8kr0cgq0lj5zs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-msgauth"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Run all tests, workaround for go-build-system's lack of Go
+          ;; modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-github-com-emersion-go-milter
+           go-github-com-emersion-go-message))
+    (home-page "https://github.com/emersion/go-msgauth")
+    (synopsis "Email authentication for Go")
+    (description
+     "This package provides a Go library for authenticating emails.")
+    (license license:expat)))
+
+(define-public go-github-com-emersion-go-sasl
+  (let ((commit "0b9dcfb154ac3d7515b08bc2691a0332800edfe9")
+        (revision "1"))
+    (package
+      (name "go-github-com-emersion-go-sasl")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emersion/go-sasl")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1cbf86wkqrdinfydndgdlnayg4a5mg3d4vqra377j2sfkg7wj0hs"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/emersion/go-sasl"))
+      (home-page "https://github.com/emersion/go-sasl")
+      (synopsis "SASL library written in Go")
+      (description
+       "This package provides a SASL library written in Go.")
+      (license license:expat))))
+
+(define-public go-github-com-emersion-go-smtp
+  (package
+    (name "go-github-com-emersion-go-smtp")
+    (version "0.21.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-smtp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0drvmvrkmhqhnv4m3my1hbkyyva2vi35b36j0pdi57xc9rflziq3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-smtp"))
+    (propagated-inputs
+     (list go-github-com-emersion-go-sasl))
+    (home-page "https://github.com/emersion/go-smtp")
+    (synopsis "SMTP implementation for Go")
+    (description
+     "This package implements the Simple Mail Transfer Protocol as defined by
+RFC 5321.")
+    (license license:expat)))
 
 (define-public go-github-com-emicklei-go-restful
   (package
@@ -731,6 +1065,35 @@ API and doesn't use reflection.  It relies on small interfaces to
 decode/encode structures and slices.")
     (license license:expat)))
 
+(define-public go-github-com-gatherstars-com-jwz
+  (package
+    (name "go-github-com-gatherstars-com-jwz")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gatherstars-com/jwz")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d66axc3504wqpb4axlm8m9jq8rmwndxb4asbqwryymj3yh60cla"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/gatherstars-com/jwz"))
+    (propagated-inputs
+     (list go-github-com-rivo-tview
+           go-github-com-jhillyerd-enmime
+           go-github-com-gdamore-tcell-v2))
+    (home-page "https://github.com/gatherstars-com/jwz")
+    (synopsis "Email threading algorithm in Golang")
+    (description
+     "The jwz package provides an implementation of the email threading
+algorithm originally designed for use in
+@url{https://www.jwz.org/doc/threading.html,Netscape Mail 2.0 and 3.0} for
+Golang.")
+    (license license:asl2.0)))
+
 ;; TODO: This repository has been archived by the owner on Aug 30, 2023. It is
 ;; now read-only. The raven-go SDK is no longer maintained and was superseded
 ;; by the sentry-go
@@ -802,7 +1165,7 @@ decompose request handling into many smaller layers.")
     (propagated-inputs
      (list go-golang-org-x-crypto))
     (native-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-github-com-stretchr-testify))
     (home-page "https://github.com/go-jose/go-jose")
     (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")
@@ -866,31 +1229,6 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
     (synopsis "LDAP v3 functionality for Go")
     (description "This package provides basic LDAP v3 functionality in the Go
 language.")
-    (license license:expat)))
-
-(define-public go-github-com-go-telegram-bot-api-telegram-bot-api
-  (package
-    (name "go-github-com-go-telegram-bot-api-telegram-bot-api")
-    (version "4.6.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/go-telegram-bot-api/telegram-bot-api")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1x6j0k3aiicsr8l53na99ci10zm3qpn2syz4f60fzh164w5k1l7w"))))
-    (build-system go-build-system)
-    (home-page "https://go-telegram-bot-api.dev/")
-    (arguments
-     (list #:tests? #f                  ; Upstream tests are broken.
-           #:import-path "github.com/go-telegram-bot-api/telegram-bot-api"))
-    (propagated-inputs
-     (list go-github-com-technoweenie-multipartstreamer))
-    (synopsis "Golang bindings for the Telegram Bot API")
-    (description
-     "This package provides Golang bindings for the Telegram Bot API.")
     (license license:expat)))
 
 (define-public go-github-com-go-webauthn-webauthn
@@ -1384,10 +1722,10 @@ the Go standard library, but returns a client that does not share any state
 with other clients.")
     (license license:mpl2.0)))
 
-(define-public go-github-com-hjson-hjson-go
+(define-public go-github-com-hjson-hjson-go-v4
   (package
-    (name "go-github-com-hjson-hjson-go")
-    (version "4.3.1")
+    (name "go-github-com-hjson-hjson-go-v4")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -1396,15 +1734,17 @@ with other clients.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "138vmbnrwzxf64cia27k407clrydvs2jx927dlv6ziydiqyvy7m3"))))
+        (base32 "1d4b2hpqsnzbmfhgxq15hd19rjr5hydjmpblrh5yzfgx9z3cz2by"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/hjson/hjson-go"))
+     (list
+      #:import-path "github.com/hjson/hjson-go/v4"))
     (home-page "https://hjson.org/")
     (synopsis "Human JSON implementation for Go")
-    (description "Hjson is a syntax extension to JSON.  It is intended to be
-used like a user interface for humans, to read and edit before passing the
-JSON data to the machine.")
+    (description
+     "Hjson is a syntax extension to JSON.  It is intended to be used like a
+user interface for humans, to read and edit before passing the JSON data to
+the machine.")
     (license license:expat)))
 
 (define-public go-github-com-jackpal-gateway
@@ -1563,6 +1903,38 @@ SPNEGO Kerberos authentication, as well as a HTTP handler wrapper decodes
 Microsoft AD PAC authorization data.")
     (license license:asl2.0)))
 
+(define-public go-github-com-jhillyerd-enmime
+  (package
+    (name "go-github-com-jhillyerd-enmime")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jhillyerd/enmime")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03pir9wq9ha2i2ifj819yv5i0lvrgdn904ksbzgc3k8bqc497ydn"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/jhillyerd/enmime"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cention-sany-utf7
+           go-github-com-go-test-deep
+           go-github-com-gogs-chardet
+           go-github-com-jaytaylor-html2text
+           go-github-com-pkg-errors
+           go-golang-org-x-text))
+    (home-page "https://github.com/jhillyerd/enmime")
+    (synopsis "MIME encoder and decoder for Go")
+    (description
+     "The enmime package implements a MIME encoding and decoding library
+geared towards parsing MIME encoded emails.")
+    (license license:expat)))
+
 (define-public go-github-com-jmespath-go-jmespath
   (package
     (name "go-github-com-jmespath-go-jmespath")
@@ -1663,7 +2035,7 @@ router.")
         (base32 "196rxfg7w8s3zn87gra1mxh1l8iav6kdmg909gkbnc9cxip65zc0"))))
     (build-system go-build-system)
     (propagated-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-golang-org-x-net
            go-golang-org-x-text))
     (arguments
@@ -1901,6 +2273,30 @@ conversion to and from @command{net.Addr}.")
 multistream-select protocol.  The protocol is defined at
 @url{https://github.com/multiformats/multistream-select}")
     (license license:expat)))
+
+(define-public go-github-com-munnerz-goautoneg
+  (package
+    (name "go-github-com-munnerz-goautoneg")
+    (version "0.0.0-20191010083416-a7dc8b61c822")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/munnerz/goautoneg")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m4v6bw6yf1g0kvpc46isjp0qfhx2y8gnvlnyjf637jy64613mgg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/munnerz/goautoneg"))
+    (home-page "https://github.com/munnerz/goautoneg")
+    (synopsis "HTTP Content-Type Autonegotiation")
+    (description
+     "This package implements @url{https://rfc-editor.org/rfc/rfc2616.html,RFC
+2616} HTTP/1.1 standard.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-nwidger-jsoncolor
   (package
@@ -2776,7 +3172,7 @@ protocol.")
       #:import-path "github.com/quic-go/webtransport-go"))
     (native-inputs
      (list go-go-uber-org-mock
-           go-github-com-stretchr-testify-next))
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-quic-go-quic-go
            go-golang-org-x-exp))
@@ -3224,6 +3620,33 @@ programming language.")
 programming language, which supports draft-04, draft-06 and draft-07.")
       (license license:asl2.0))))
 
+(define-public go-golang-org-x-oauth2
+  (package
+    (name "go-golang-org-x-oauth2")
+    (version "0.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/oauth2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pzpa9jqrfxxhxi1w7n5ljnvr9qfw42hzavz62fc9i6z9vk2466k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "golang.org/x/oauth2"))
+    (propagated-inputs
+     (list go-cloud-google-com-go-compute-metadata
+           go-github-com-google-go-cmp))
+    (home-page "https://go.googlesource.com/oauth2")
+    (synopsis "Client implementation of the OAuth 2.0 spec")
+    (description
+     "This package contains a client implementation for OAuth 2.0
+ spec in Go.")
+    (license license:bsd-3)))
+
 ;; XXX: This repository has been archived by the owner on Feb 27, 2023. It is
 ;; now read-only and it is DEPRECATED.
 (define-public go-gopkg-in-square-go-jose-v2
@@ -3250,7 +3673,7 @@ programming language, which supports draft-04, draft-06 and draft-07.")
     (propagated-inputs
      (list go-golang-org-x-crypto))
     (native-inputs
-     (list go-github-com-google-go-cmp-cmp
+     (list go-github-com-google-go-cmp
            go-github-com-stretchr-testify))
     (home-page "https://gopkg.in/square/go-jose.v2")
     (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")

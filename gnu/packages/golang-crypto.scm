@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021 BonfaceKilz <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
@@ -21,6 +22,7 @@
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,12 +47,14 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages password-utils)
   #:use-module (gnu packages specifications))
 
 ;;; Commentary:
@@ -199,9 +203,9 @@ Go, exposing the necessary APIs to build a wide array of higher-level
 primitives.")
     (license license:bsd-3)))
 
-(define-public go-github-com-99designs-go-keyring
+(define-public go-github-com-99designs-keyring
   (package
-    (name "go-github-com-99designs-go-keyring")
+    (name "go-github-com-99designs-keyring")
     (version "1.2.2")
     (source
      (origin
@@ -213,6 +217,30 @@ primitives.")
        (sha256
         (base32 "0mkvy7scyq07rkqhabfmkd8imcm4h9y7zj9palj04znpihpixa5m"))))
     (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/99designs/keyring"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Disable test requring running DBus.
+                  (("TestLibSecretKeysWhenEmpty")
+                   "OffTestLibSecretKeysWhenEmpty")
+                  (("TestLibSecretKeysWhenNotEmpty")
+                   "OffTestLibSecretKeysWhenNotEmpty")
+                  (("TestLibSecretGetWhenEmpty")
+                   "OffTestLibSecretGetWhenEmpty")
+                  (("TestLibSecretGetWhenNotEmpty")
+                   "OffTestLibSecretGetWhenNotEmpty")
+                  (("TestLibSecretRemoveWhenEmpty")
+                   "OffTestLibSecretRemoveWhenEmpty")
+                  (("TestLibSecretRemoveWhenNotEmpty")
+                   "OffTestLibSecretRemoveWhenNotEmpty"))))))))
+    (native-inputs
+     (list gnupg go-github-com-stretchr-testify password-store))
     (propagated-inputs
      (list go-github-com-dvsekhvalnov-jose2go
            go-github-com-godbus-dbus
@@ -221,9 +249,7 @@ primitives.")
            go-github-com-mtibben-percent
            go-golang-org-x-sys
            go-golang-org-x-term))
-    (arguments
-     '(#:import-path "github.com/99designs/keyring"
-       #:tests? #f))                              ;XXX: tests require Vagrant
+    (home-page "https://github.com/99designs/keyring")
     (synopsis "Go library providing a uniform interface for various secure
 credential stores")
     (description
@@ -234,7 +260,6 @@ workstations.
 
 Currently Keyring supports the following backends: macOS/OSX Keychain, Windows
 pcredential store, Pass, Secret Service, KDE Wallet, Encrypted File.")
-    (home-page "https://github.com/99designs/keyring")
     (license license:expat)))
 
 (define-public go-github-com-aead-chacha20
@@ -357,6 +382,34 @@ the Ristretto prime-order group built from Edwards25519.")
 (define-public go-github-com-cespare-xxhash
   (package
     (name "go-github-com-cespare-xxhash")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cespare/xxhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qyzlcdcayavfazvi03izx83fvip8h36kis44zr2sg7xf6sx6l4x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cespare/xxhash"))
+    (propagated-inputs
+     (list go-github-com-spaolacci-murmur3
+           go-github-com-oneofone-xxhash))
+    (home-page "https://github.com/cespare/xxhash")
+    (synopsis "Go implementation of xxHash")
+    (description
+     "Package xxhash implements the 64-bit variant of @code{xxHash} (XXH64) as
+described at @url{https://xxhash.com/}.")
+    (license license:expat)))
+
+(define-public go-github-com-cespare-xxhash-v2
+  (package
+    (inherit go-github-com-cespare-xxhash)
+    (name "go-github-com-cespare-xxhash-v2")
     (version "2.1.2")
     (source
      (origin
@@ -369,10 +422,9 @@ the Ristretto prime-order group built from Edwards25519.")
         (base32 "1f3wyr9msnnz94szrkmnfps9wm40s5sp9i4ak0kl92zcrkmpy29a"))
        (modules '((guix build utils)))
        (snippet '(delete-file-recursively "xxhashbench"))))
-    (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/cespare/xxhash"
+      #:import-path "github.com/cespare/xxhash/v2"
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -381,11 +433,7 @@ the Ristretto prime-order group built from Edwards25519.")
                   ;; The tests fail when run with gccgo.
                   (false-if-exception (search-input-file inputs "/bin/gccgo"))
                 (apply (assoc-ref %standard-phases 'check) args)))))))
-    (home-page "https://github.com/cespare/xxhash/")
-    (synopsis "Go implementation of xxHash")
-    (description "This package provides of Go implementation of the 64-bit
-xxHash algorithm (XXH64).")
-    (license license:expat)))
+    (propagated-inputs '())))
 
 (define-public go-github-com-chmduquesne-rollinghash
   (let ((commit "9a5199be7309f50c496efc87d29bd08788605ae7")
@@ -477,10 +525,36 @@ and encrypting JSON Web Tokens (JWT).  It relies only on the standard
 library.")
     (license license:expat)))
 
+(define-public go-github-com-emersion-go-bcrypt
+  (package
+    (name "go-github-com-emersion-go-bcrypt")
+    (version "0.0.0-20170822072041-6e724a1baa63")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-bcrypt")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pchrgs05w30iqbh4d6iys4wvlyajsdwchp5mkf59amgsbyjaqgm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-bcrypt"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/emersion/go-bcrypt")
+    (synopsis "Extract of bcrypt from golang.org/x/crypto/bcrypt")
+    (description
+     "This package provides an extract @code{bcrypt} from
+@code{golang.org/x/crypto/bcrypt}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-emersion-go-pgpmail
   (package
     (name "go-github-com-emersion-go-pgpmail")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -489,17 +563,14 @@ library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ar26b0apw5bxn58qfn1a79cxigbmrqm1irh1rb7x57fydihc7wm"))))
+        (base32 "1fiqpdwxnfba2cgij7j83dfqc0zz4mq95x15wicgm5f3vjr1xg5h"))))
     (build-system go-build-system)
     (arguments
-     (list ;; tests don't support our version of protonmail/go-crypto; see
-      ;; <https://github.com/emersion/go-pgpmail/issues/12>
-      #:tests? #f
+     (list
       #:import-path "github.com/emersion/go-pgpmail"))
     (propagated-inputs
      (list go-github-com-emersion-go-message
            go-github-com-protonmail-go-crypto
-           go-golang-org-x-crypto
            go-golang-org-x-text))
     (home-page "https://github.com/emersion/go-pgpmail")
     (synopsis "PGP mail encryption for Go")
@@ -1068,6 +1139,37 @@ Architecture Processors\" by J. Guilford et al.")
     (description "Multihash implementation in Go.")
     (license license:expat)))
 
+(define-public go-github-com-oneofone-xxhash
+  (package
+    (name "go-github-com-oneofone-xxhash")
+    (version "1.2.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OneOfOne/xxhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f98qk83l2fhpclvrgyxsa9b8m4pipf11fah85bnjl01wy4lvybw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/OneOfOne/xxhash"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-benchmarks
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/benchmarks")))))))
+    (home-page "https://github.com/OneOfOne/xxhash")
+    (synopsis "Go implementation of xxHash")
+    (description
+     "This is a native Go implementation of the
+@url{https://github.com/Cyan4973/xxHash, xxHash} algorithm, an extremely fast
+non-cryptographic hash algorithm, working at speeds close to RAM limits.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-operatorfoundation-ed25519
   (let ((commit "b22b4bd3ddef042eec45f3ee135cd40281fde2b4")
         (revision "0"))
@@ -1127,32 +1229,40 @@ algorithm.")
 (define-public go-github-com-protonmail-go-crypto
   (package
     (name "go-github-com-protonmail-go-crypto")
-    (version "0.0.0-20220623141421-5afb4c282135")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ProtonMail/go-crypto")
-             (commit (go-version->git-ref version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05qxdbn8wdk901z5kw2r3jdrag58nxlcsy0p8xd6rq0d71sw94wy"))))
+        (base32 "11q94983r6zjrdvflpikms4773a9s5vb9gg4qw1rj5800yhhah0n"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/ProtonMail/go-crypto"
-           #:tests? #f ; Source-only package.
-           #:phases
-           #~(modify-phases %standard-phases
-               ;; Source-only package.
-               (delete 'build))))
+     (list
+      #:import-path "github.com/ProtonMail/go-crypto"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
-     (list go-golang-org-x-crypto))
+     (list go-github-com-cloudflare-circl
+           go-golang-org-x-crypto))
     (home-page "https://github.com/ProtonMail/go-crypto")
     (synopsis "Fork of x/crypto with up-to-date OpenPGP implementation")
-    (description "This package provides cryptography for Go.  This version of
-the package is a fork that adds a more up-to-date OpenPGP implementation.  It
-is completely backwards compatible with @code{golang.org/x/crypto}, the
-official package.")
+    (description
+     "This package provides cryptography for Go.  This version of the package
+is a fork that adds a more up-to-date OpenPGP implementation.  It is
+completely backwards compatible with @code{golang.org/x/crypto}, the official
+package.")
     (license license:bsd-3)))
 
 (define-public go-github-com-quic-go-qtls-go1-20
@@ -1468,6 +1578,20 @@ Go.")
      `(#:import-path "filippo.io/age/cmd/age-keygen"
        #:unpack-path "filippo.io/age"
        #:install-source? #f))))
+
+(define-public go-keyring
+  (package
+    (inherit go-github-com-99designs-keyring)
+    (name "go-keyring")
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/99designs/keyring/cmd/keyring"
+      #:unpack-path "github.com/99designs/keyring"))
+    (description
+     (string-append (package-description go-github-com-99designs-keyring)
+                    "  This package provides an command line interface (CLI)
+tool."))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
