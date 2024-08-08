@@ -129,6 +129,7 @@ Copyright @copyright{} 2024 Matthew Trzcinski@*
 Copyright @copyright{} 2024 Richard Sent@*
 Copyright @copyright{} 2024 Dariqq@*
 Copyright @copyright{} 2024 Denis 'GNUtoo' Carikli@*
+Copyright @copyright{} 2024 Fabio Natali@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -47109,6 +47110,38 @@ documentation of the system service (@pxref{Networking Services,
 @subsection Miscellaneous Home Services
 
 This section lists Home services that lack a better place.
+
+@subsubheading Beets Service
+
+@cindex Beets service, for Home
+The @code{(gnu home services music)} module provides the following
+service:
+
+@defvar home-beets-service-type
+@uref{https://beets.io, Beets} is a music file and metadata manager
+that can be used via its command-line interface, @command{beet}. Beets
+requires a YAML configuration file and this Guix Home service is to
+create such file.
+@end defvar
+
+The service can be used as follows:
+
+@lisp
+(service home-beets-service-type
+         (home-beets-configuration (directory "/home/alice/music")))
+@end lisp
+
+Additional options can be specified via the service wild-card field
+@code{extra-options}:
+
+@lisp
+(service home-beets-service-type
+         (home-beets-configuration
+          (directory "/home/alice/music")
+          (extra-options '("
+import:
+  move: yes"))))
+@end lisp
 
 @subsubheading Dictionary Service
 

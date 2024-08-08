@@ -66,6 +66,7 @@
 # Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 # Copyright © 2024 David Elsing <david.elsing@posteo.net>
 # Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+# Copyright © 2024 Fabio Natali <me@fabionatali.com>
 #
 # This file is part of GNU Guix.
 #
@@ -107,6 +108,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/mail.scm			\
   %D%/home/services/media.scm			\
   %D%/home/services/messaging.scm		\
+  %D%/home/services/music.scm			\
   %D%/home/services/pm.scm			\
   %D%/home/services/shells.scm			\
   %D%/home/services/shepherd.scm		\
