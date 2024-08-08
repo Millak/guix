@@ -2112,7 +2112,7 @@ task of adding retry behavior to just about anything.")
 (define-public python-pytelegrambotapi
   (package
     (name "python-pytelegrambotapi")
-    (version "4.21.0")
+    (version "4.22.0")
     (source
      (origin
        (method git-fetch)
@@ -2121,7 +2121,7 @@ task of adding retry behavior to just about anything.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14df0mll9q8x4fka4lihmz4vdlgrvc4i13bspxnig2qz1b3k4ivv"))))
+        (base32 "0mic9wk6xg7p2ca7b03fc19l86yc9bkciq7kp8l9xvzzzmg4rzw4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
