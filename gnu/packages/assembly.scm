@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -664,7 +665,24 @@ files.")
       #:tests? #f
       #:configure-flags
       #~(list "-DBUILD_TESTING=off" ;; XXX: insists on using bundled googletest
-              "-DBUILD_SHARED_LIBS=ON")))
+              "-DBUILD_SHARED_LIBS=ON"
+              #$@(let ((target (%current-target-system)))
+                   (if target
+                       (cond ((string-prefix? "arm" target)
+                              '("-DCMAKE_SYSTEM_PROCESSOR=arm"))
+                             ((string-prefix? "aarch64" target)
+                              '("-DCMAKE_SYSTEM_PROCESSOR=aarch64"))
+                             ((string-prefix? "i686" target)
+                              '("-DCMAKE_SYSTEM_PROCESSOR=x86"))
+                             ((string-prefix? "x86_64" target)
+                              '("-DCMAKE_SYSTEM_PROCESSOR=x86_64"))
+                             ;; 32-bit and 64-bit
+                             ((string-prefix? "powerpc" target)
+                              '("-DCMAKE_SYSTEM_PROCESSOR=powerpc"))
+                             ((string-prefix? "riscv64" target)
+                              '("-DCMAKE_SYSTEM_PROCESSOR=riscv64"))
+                             (else '()))
+                       '())))))
     (home-page "https://github.com/google/cpu_features")
     (synopsis "Cross platform C99 library to get cpu features at runtime")
     (description
