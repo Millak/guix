@@ -7492,9 +7492,9 @@ That is, @code{gofumpt} is happy with a subset of the formats that
     (native-inputs '())
     (inputs '())))
 
-(define-public xurls
+(define-public go-mvdan-cc-xurls
   (package
-    (name "xurls")
+    (name "go-mvdan-cc-xurls")
     (version "2.4.0")
     (source (origin
               (method git-fetch)
@@ -7507,15 +7507,7 @@ That is, @code{gofumpt} is happy with a subset of the formats that
                 "0b040nbk1vwlk1qljavh8w8fn2r243q700n6gr8j2asmnz0xq84p"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "mvdan.cc/xurls/v2"
-       #:unpack-path "mvdan.cc/xurls/v2"
-       #:phases (modify-phases %standard-phases
-                  (replace 'build
-                    (lambda arguments
-                      (apply (assoc-ref %standard-phases
-                                        'build)
-                             `(,@arguments #:import-path
-                               "mvdan.cc/xurls/v2/cmd/xurls")))))))
+     `(#:import-path "mvdan.cc/xurls/v2"))
     (inputs (list go-golang-org-x-sync go-github-com-rogpeppe-go-internal))
     (home-page "https://mvdan.cc/xurls/v2/")
     (synopsis "Extracts URLs from text")
@@ -7524,19 +7516,14 @@ That is, @code{gofumpt} is happy with a subset of the formats that
 be used as both a binary and a library.")
     (license license:bsd-3)))
 
-(define-public go-mvdan-cc-xurls
+(define-public xurls
   (package
-    (inherit xurls)
-    (name "go-mvdan-cc-xurls")
+    (inherit go-mvdan-cc-xurls)
+    (name "xurls")
     (arguments
-     `(#:import-path "mvdan.cc/xurls"
-       #:tests? #f
-       #:install-source? #t
-       #:phases (modify-phases %standard-phases
-                  (delete 'build))))
-    (propagated-inputs (package-inputs xurls))
-    (native-inputs '())
-    (inputs '())))
+     `(#:import-path "mvdan.cc/xurls/v2/cmd/xurls"
+       #:unpack-path "mvdan.cc/xurls/v2"
+       #:install-source? #f))))
 
 (define-public go-github-com-davecgh-go-xdr
   (package
