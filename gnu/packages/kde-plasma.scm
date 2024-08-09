@@ -2698,14 +2698,14 @@ sensors, process information and other system resources.")
 (define-public plasma-workspace
   (package
     (name "plasma-workspace")
-    (version "6.1.3")
+    (version "6.1.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1jnmqj16ivi2qv3q9i5fggknaw85drf216ml7ckvfvc5abxxx73r"))))
+                "0mlddkjxq7p01wgy8pzp65fhg1sihibzd32wn3s3zcn077frj86b"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules kdoctools pkg-config qtsvg
                          qttools
@@ -2824,6 +2824,12 @@ sensors, process information and other system resources.")
                              "/libexec/kglobalacceld"))
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'add-span-header
+                 (lambda _
+                   (substitute* "xembed-sni-proxy/sniproxy.cpp"
+                     (("#include \"sniproxy.h\"")
+                      (string-append "#include \"sniproxy.h\"
+#include <span>")))))
                (add-after 'unpack 'patch-workspace-bins
                  (lambda* (#:key inputs #:allow-other-keys)
                    (let ((xmessage (search-input-file inputs "/bin/xmessage"))
