@@ -1677,7 +1677,7 @@ on top of Baloo.")
 (define-public plasma
   (package
     (name "plasma")
-    (version "6.1.2")
+    (version (package-version breeze))
     (source #f)
     (build-system trivial-build-system)
     (arguments
