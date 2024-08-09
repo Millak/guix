@@ -3143,7 +3143,7 @@ with other frameworks.")
 (define-public plasma-activities-stats
   (package
     (name "plasma-activities-stats")
-    (version "6.1.3")
+    (version "6.1.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -3151,7 +3151,7 @@ with other frameworks.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0sfni5mraa6m39w6gm26la28vhlwk43xh4n3bhpp2vqzj5fj7qpv"))))
+                "0xr0gzncb4sf6asdd5hgfs9bkfjv9z4nn215jvlmyk2r56zydylj"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
