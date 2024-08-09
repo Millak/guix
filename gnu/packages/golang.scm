@@ -7089,7 +7089,7 @@ configuration languages, but other uses may be possible too.")
 (define-public go-github-com-rogpeppe-go-internal
   (package
     (name "go-github-com-rogpeppe-go-internal")
-    (version "1.9.0")
+    (version "1.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7098,7 +7098,7 @@ configuration languages, but other uses may be possible too.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bh08k8fy1qcc0vzyv0xkg0sx5kjx348zd1dpjmp3rbrr6xrpaaw"))))
+                "18szjxqrjjvgsvyjbkqs6xw4bvg5nn1myg5hhb5qzwz5xl4wvw5a"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/rogpeppe/go-internal"
