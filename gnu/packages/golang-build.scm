@@ -481,7 +481,7 @@ loading algorithms.")
 (define-public go-golang-org-x-net
   (package
     (name "go-golang-org-x-net")
-    (version "0.27.0")
+    (version "0.28.0")
     (source
      (origin
        (method git-fetch)
@@ -490,7 +490,7 @@ loading algorithms.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fc6d968yiv2l67z9jg7ssvas1hd1jniqh4m7mmlay0q5gk4vf8s"))))
+        (base32 "1fh4rnqsxc652lhncnrdb3qcsw811565qb9619z21z0p1fdgzlar"))))
     (build-system go-build-system)
     (arguments
      (list
