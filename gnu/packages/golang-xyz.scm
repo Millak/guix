@@ -4752,18 +4752,30 @@ not overload the given database.")
     (arguments
      (list
       #:import-path "github.com/rogpeppe/go-internal"
-      ;; Source-only package
-      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'build))))
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  (("TestSimple") "OffTestSimple")))))
+          ;; XXX: Replace when go-build-system supports nested path.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
-     (list go-github-com-pkg-diff))
+     (list go-golang-org-x-mod
+           go-golang-org-x-sys
+           go-golang-org-x-tools))
     (home-page "https://github.com/rogpeppe/go-internal/")
     (synopsis "Internal packages from the Go standard library")
-    (description "This repository factors out an opinionated selection of
-internal packages and functionality from the Go standard library.  Currently
-this consists mostly of packages and testing code from within the Go tool
+    (description
+     "This repository factors out an opinionated selection of internal
+packages and functionality from the Go standard library.  Currently this
+consists mostly of packages and testing code from within the Go tool
 implementation.
 
 Included are the following:
