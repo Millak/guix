@@ -7086,52 +7086,6 @@ losing type information.  The primary intended use is for implementing
 configuration languages, but other uses may be possible too.")
     (license license:expat)))
 
-(define-public go-github-com-rogpeppe-go-internal
-  (package
-    (name "go-github-com-rogpeppe-go-internal")
-    (version "1.12.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rogpeppe/go-internal")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "18szjxqrjjvgsvyjbkqs6xw4bvg5nn1myg5hhb5qzwz5xl4wvw5a"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/rogpeppe/go-internal"
-       ; Source-only package
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build))))
-    (propagated-inputs
-     (list go-github-com-pkg-diff))
-    (home-page "https://github.com/rogpeppe/go-internal/")
-    (synopsis "Internal packages from the Go standard library")
-    (description "This repository factors out an opinionated selection of
-internal packages and functionality from the Go standard library.  Currently
-this consists mostly of packages and testing code from within the Go tool
-implementation.
-
-Included are the following:
-@itemize
-@item dirhash: calculate hashes over directory trees the same way that the Go tool does.
-@item goproxytest: a GOPROXY implementation designed for test use.
-@item gotooltest: Use the Go tool inside test scripts (see testscript below)
-@item imports: list of known architectures and OSs, and support for reading import import statements.
-@item modfile: read and write go.mod files while preserving formatting and comments.
-@item module: module paths and versions.
-@item par: do work in parallel.
-@item semver: semantic version parsing.
-@item testenv: information on the current testing environment.
-@item testscript: script-based testing based on txtar files
-@item txtar: simple text-based file archives for testing.
-@end itemize\n")
-    (license license:bsd-3)))
-
 (define-public go-gopkg-in-errgo-fmt-errors
   (package
     (name "go-gopkg-in-errgo-fmt-errors")
