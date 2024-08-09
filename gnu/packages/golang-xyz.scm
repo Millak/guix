@@ -3677,7 +3677,7 @@ whether a file descriptor points to a terminal and the type of the terminal.")
 (define-public go-github-com-mattn-go-runewidth
   (package
     (name "go-github-com-mattn-go-runewidth")
-    (version "0.0.14")
+    (version "0.0.16")
     (source
      (origin
        (method git-fetch)
@@ -3686,7 +3686,7 @@ whether a file descriptor points to a terminal and the type of the terminal.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iaqw5pd7f4f2xz37540kp0828p2820g4vxx3hz089hwl331sx1v"))))
+        (base32 "0d7wbfz1kd3m0a4sx0ijrnbn4kw3bhn6myvnk76s19h8zjvafbrl"))))
     (build-system go-build-system)
     (arguments
      (list
