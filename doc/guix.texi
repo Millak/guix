@@ -4439,15 +4439,7 @@ effect on the version of Guix that user @code{alice} sees, and vice
 versa.
 
 The result of running @command{guix pull} is a @dfn{profile} available
-under @file{~/.config/guix/current} containing the latest Guix.  Thus,
-make sure to add it to the beginning of your search path so that you use
-the latest version, and similarly for the Info manual
-(@pxref{Documentation}):
-
-@example
-export PATH="$HOME/.config/guix/current/bin:$PATH"
-export INFOPATH="$HOME/.config/guix/current/share/info:$INFOPATH"
-@end example
+under @file{~/.config/guix/current} containing the latest Guix.
 
 The @option{--list-generations} or @option{-l} option lists past generations
 produced by @command{guix pull}, along with details about their provenance:
