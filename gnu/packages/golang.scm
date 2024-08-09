@@ -7008,26 +7008,26 @@ system.")
       (license license:expat))))
 
 (define-public go-github-com-delthas-go-localeinfo
-    (package
-      (name "go-github-com-delthas-go-localeinfo")
-      (version "0.0.0-20240607105203-b2e834fc307d")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/delthas/go-localeinfo")
-                       (commit (go-version->git-ref version))))
-                (file-name (git-file-name name version))
-                (sha256
-                  (base32
-                    "0817lhic77sz9lxizy2rchwssp0vzl7qxbsfghcddg6ssy1n0zhj"))))
-      (build-system go-build-system)
-      (arguments `(#:tests? #f ; FIXME: tests assume certain locale
-                   #:import-path "github.com/delthas/go-localeinfo"))
-      (home-page "https://github.com/delthas/go-localeinfo")
-      (synopsis "Library for extracting locale information")
-      (description "@code{go-localeinfo} extracts monetary/numeric/time
+  (package
+    (name "go-github-com-delthas-go-localeinfo")
+    (version "0.0.0-20240607105203-b2e834fc307d")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/delthas/go-localeinfo")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0817lhic77sz9lxizy2rchwssp0vzl7qxbsfghcddg6ssy1n0zhj"))))
+    (build-system go-build-system)
+    (arguments `(#:tests? #f ; FIXME: tests assume certain locale
+                 #:import-path "github.com/delthas/go-localeinfo"))
+    (home-page "https://github.com/delthas/go-localeinfo")
+    (synopsis "Library for extracting locale information")
+    (description "@code{go-localeinfo} extracts monetary/numeric/time
 formatting information, rather than the current locale name.")
-      (license license:expat)))
+    (license license:expat)))
 
 (define-public go-github-com-zalando-go-keyring
   (package
