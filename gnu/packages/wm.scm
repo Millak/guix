@@ -872,6 +872,24 @@ manager and a system tray.")
         (base32 "19qz9a23377nzc0qq8nca45s745mfncd4i2vwba14gi7ipipfcil"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xmonad")))
+    (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-xsession
+             (lambda _
+               (let* ((xsessions (string-append #$output "/share/xsessions"))
+                      (entry     (string-append xsessions "/xmonad.desktop")))
+                 (mkdir-p xsessions)
+                 (call-with-output-file
+                  entry
+                  (lambda (port)
+                    (format port "~
+                      [Desktop Entry]~@
+                      Name=xmonad~@
+                      Comment=xmonad window manager~@
+                      Exec=~a/bin/xmonad~@
+                      Type=Application~%" #$output)))))))))
     (inputs (list ghc-x11 ghc-data-default-class ghc-setlocale))
     (native-inputs (list ghc-quickcheck ghc-quickcheck-classes))
     (home-page "http://xmonad.org")
