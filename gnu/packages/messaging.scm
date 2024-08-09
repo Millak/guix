@@ -3590,7 +3590,7 @@ a text snippet), using @code{libphonenumber}.")
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://git.sr.ht/~taiite/senpai")
+         (url "https://git.sr.ht/~delthas/senpai")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -3628,7 +3628,7 @@ a text snippet), using @code{libphonenumber}.")
                          go-golang-org-x-time
                          go-mvdan-cc-xurls
                          scdoc))
-    (home-page "https://sr.ht/~taiite/senpai")
+    (home-page "https://sr.ht/~delthas/senpai")
     (synopsis "Modern terminal IRC client")
     (description
      "@code{senpai} is an IRC client that works best with bouncers.")
