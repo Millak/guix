@@ -1231,14 +1231,14 @@ basic needs and easy to configure for those who want special setups.")
 (define-public libksysguard
   (package
     (name "libksysguard")
-    (version "6.1.3")
+    (version "6.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version
                            "/libksysguard-" version ".tar.xz"))
        (sha256
-        (base32 "197zbddmykdfw6gh137fbpvnwv6f094932vzprgkvlv3m89n7s3a"))))
+        (base32 "1cf5ar63l81q41324g9h9712j66rl1s5n2brras83kkijnyax9yj"))))
     (native-inputs
      (list bash-minimal extra-cmake-modules pkg-config qttools))
     (inputs
