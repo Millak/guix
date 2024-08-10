@@ -697,7 +697,7 @@ format documents, with the following features:
                 "0cx5q6hvaka5lsbzc5q93mfkpsg44x4hp4z9aszxk55wlx1jcmiq"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f)) ; There are no tests.
-    (propagated-inputs (list python-lxml))
+    (propagated-inputs (list python-lxml python-six))
     (home-page "https://github.com/aerkalov/ebooklib")
     (synopsis "Ebook library which can handle EPUB2/EPUB3 and Kindle format")
     (description
