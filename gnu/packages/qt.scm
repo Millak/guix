@@ -3349,14 +3349,14 @@ and binaries removed, and adds modular support for using system libraries.")
 (define-public qtwebengine
   (package
     (name "qtwebengine")
-    (version "6.6.3")
+    (version "6.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "016qvbmdja2abajvsznnjdvblrmzgvs8s2dzlxws30hvna1xqavw"))
+         "1lgz0mj9lw4ii1c8nkbr0ll02xzx8i6n7wvvn21f72sdb5smhxf7"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -3391,10 +3391,10 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/angle/src/common/third_party/xxhash"
                     "third_party/angle/src/third_party/libXNVCtrl" ;Expat
                     "third_party/angle/src/third_party/volk"
-                    "third_party/angle/src/third_party/systeminfo"
                     "third_party/angle/src/third_party/ceval"
                     "third_party/axe-core"
                     "third_party/blink"
+                    "third_party/bidimapper"
                     "third_party/boringssl"
                     "third_party/boringssl/src/third_party/fiat"
                     "third_party/breakpad"
@@ -3418,6 +3418,7 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/crashpad/crashpad/third_party/lss"
                     "third_party/crashpad/crashpad/third_party/zlib"
                     "third_party/crc32c"
+                    "third_party/d3"
                     "third_party/dav1d"
                     "third_party/dawn"
                     "third_party/dawn/third_party/gn/webgpu-cts"
@@ -3431,7 +3432,6 @@ additional_readme_paths.json"
                     "third_party/devtools-frontend/src/front_end/third_party/codemirror"
                     "third_party/devtools-frontend/src/front_end/third_party/codemirror.next"
                     "third_party/devtools-frontend/src/front_end/third_party/diff"
-                    "third_party/devtools-frontend/src/front_end/third_party/i18n"
                     "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat"
                     "third_party/devtools-frontend/src/front_end/third_party/lighthouse"
                     "third_party/devtools-frontend/src/front_end/third_party/lit"
@@ -3441,7 +3441,10 @@ additional_readme_paths.json"
                     "third_party/devtools-frontend/src/front_end/third_party/\
 puppeteer/package/lib/esm/third_party/mitt"
                     "third_party/devtools-frontend/src/front_end/third_party/\
+puppeteer/package/lib/esm/third_party/rxjs"
+                    "third_party/devtools-frontend/src/front_end/third_party/\
 vscode.web-custom-data"
+                    "third_party/devtools-frontend/src/front_end/third_party/puppeteer-replay"
                     "third_party/devtools-frontend/src/third_party/pyjson5"
                     "third_party/devtools-frontend/src/front_end/third_party/wasmparser"
                     "third_party/devtools-frontend/src/third_party/typescript"
@@ -3484,6 +3487,7 @@ vscode.web-custom-data"
                     "third_party/libaom/source/libaom/third_party/vector"
                     "third_party/libaom/source/libaom/third_party/x86inc"
                     "third_party/libavif"
+                    "third_party/libavifinfo"
                     "third_party/libevent"
                     "third_party/libgav1"
                     "third_party/libjingle_xmpp"
@@ -3518,7 +3522,6 @@ vscode.web-custom-data"
                     "third_party/one_euro_filter"
                     "third_party/openscreen" ;BSD-3
                     "third_party/openscreen/src/third_party/tinycbor" ;Expat
-                    "third_party/openscreen/src/third_party/mozilla" ;MPL1.1/GPL2+/LGPL2.1+, BSD-3
                     "third_party/openh264"
                     "third_party/opus/src/include/opus.h"
                     "third_party/opus/src/include/opus_custom.h"
@@ -3535,7 +3538,6 @@ vscode.web-custom-data"
                     "third_party/pdfium/third_party/lcms"
                     "third_party/pdfium/third_party/libopenjpeg"
                     "third_party/pdfium/third_party/libtiff"
-                    "third_party/pdfium/third_party/skia_shared"
                     "third_party/pdfium/third_party/freetype/include/pstables.h" ;FreeType
                     "third_party/perfetto"
                     "third_party/perfetto/protos/third_party/chromium"
@@ -3551,6 +3553,7 @@ vscode.web-custom-data"
                     "third_party/re2"
                     "third_party/rnnoise"
                     "third_party/ruy" ;ASL2.0
+                    "third_party/selenium-atoms"
                     "third_party/s2cellid" ;ASL2.0
                     "third_party/securemessage" ;ASL2.0
                     "third_party/shell-encryption" ;ASL2.0
@@ -3580,7 +3583,7 @@ vscode.web-custom-data"
                     "third_party/vulkan-deps/vulkan-tools"
                     "third_party/vulkan-deps/vulkan-validation-layers"
                     "third_party/vulkan_memory_allocator"
-                    "third_party/web-animations-js"
+                    "third_party/webgpu-cts"
                     "third_party/webrtc"
                     "third_party/webrtc/common_audio/third_party/ooura"
                     "third_party/webrtc/common_audio/third_party/spl_sqrt_floor"
@@ -3596,6 +3599,7 @@ vscode.web-custom-data"
                     "third_party/wuffs"
                     "third_party/x11proto"
                     "third_party/xnnpack" ;BSD-3
+                    "third_party/zstd"
                     "third_party/zlib" ;TODO: make pdfium use system version
                     "third_party/zxcvbn-cpp" ;Expat
                     "url/third_party/mozilla"
@@ -3655,6 +3659,10 @@ linux/libcurl_wrapper.h"
               "-DQT_FEATURE_webengine_printing_and_pdf=OFF"
               "-DQT_FEATURE_webengine_pepper_plugins=OFF" ;widevine
               "-DQT_FEATURE_system_ffmpeg=ON"
+
+              ;; The webenginedriver feature is disabled, otherwise the RUNPATH
+              ;; validation phase fails.
+              "-DQT_FEATURE_webenginedriver=OFF"
 
               ;; Do not artificially limit codec support; video decoding is
               ;; done by ffmpeg.
@@ -3733,9 +3741,9 @@ linux/libcurl_wrapper.h"
             (lambda _
               (invoke "cmake" "--install" ".")))
           (add-after 'install 'delete-installed-tests
-                 (lambda _
-                   (delete-file-recursively
-                    (string-append #$output "/tests")))))))
+            (lambda _
+              (delete-file-recursively
+               (string-append #$output "/tests")))))))
     (native-inputs
      (modify-inputs (package-native-inputs qtwebengine-5)
        (delete "python2" "python2-six")
@@ -3747,8 +3755,10 @@ linux/libcurl_wrapper.h"
                python-html5lib)))
     (inputs
      (modify-inputs (package-inputs qtwebengine-5)
+       (replace "icu4c" icu4c-75)
+       (replace "re2" re2-next)
        (replace "qtmultimedia" qtmultimedia)
-       (append libxkbfile xkeyboard-config)))
+       (append fp16 fxdiv libxkbfile xkeyboard-config)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs qtwebengine-5)
        (replace "qtbase" qtbase)
