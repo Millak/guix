@@ -455,15 +455,15 @@ using NumPy-like idioms.")
 (define-public python-xmldiff
   (package
     (name "python-xmldiff")
-    (version "2.4")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xmldiff" version))
        (sha256
-        (base32 "0qygxi3z1jwb0471k7bh5gcqf7wqm4xhrkmwhf36gjgjw46a5gh5"))))
+        (base32 "18k8kiml9wpl4wf9lmi0j6ys21lbdv8fa8r9qrzdsrh3h0ghp4f0"))))
     (build-system python-build-system)
-    (propagated-inputs (list python-lxml python-six))
+    (propagated-inputs (list python-lxml))
     (home-page "https://github.com/Shoobx/xmldiff")
     (synopsis "Creates diffs of XML files")
     (description "This Python tool figures out the differences between two
