@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Mathieu Laparie <mlaparie@disr.it>
+;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +38,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
@@ -686,15 +688,16 @@ format documents, with the following features:
 (define-public python-ebooklib
   (package
     (name "python-ebooklib")
-    (version "0.17.1")
+    (version "0.18")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "EbookLib" version))
               (sha256
                (base32
-                "1w972g0kmh9cdxf3kjr7v4k99wvv4lxv3rxkip39c08550nf48zy"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-lxml python-six))
+                "0cx5q6hvaka5lsbzc5q93mfkpsg44x4hp4z9aszxk55wlx1jcmiq"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; There are no tests.
+    (propagated-inputs (list python-lxml))
     (home-page "https://github.com/aerkalov/ebooklib")
     (synopsis "Ebook library which can handle EPUB2/EPUB3 and Kindle format")
     (description
