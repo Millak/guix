@@ -5565,7 +5565,7 @@ including @i{fix-its} for automatic refactoring.")
 (define-public qt-creator
   (package
     (name "qt-creator")
-    (version "12.0.2")
+    (version "14.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5582,13 +5582,21 @@ including @i{fix-its} for automatic refactoring.")
                              ;; Marketplace recommends nonfree extensions;
                              ;; remove it.
                              "src/plugins/marketplace"))
+                          ;; qt-creator installation attempts to install the
+                          ;; yaml-cpp LICENSE file, but we removed the bundled
+                          ;; yaml-cpp, so create an empty file to allow it to
+                          ;; install properly.
+                          (mkdir-p "src/libs/3rdparty/yaml-cpp")
+                          (call-with-output-file "src/libs/3rdparty/yaml-cpp/LICENSE"
+                            (lambda (port)
+                              (const #t)))
                           (substitute* "src/plugins/CMakeLists.txt"
                             (("add_subdirectory\\(marketplace).*") ""))
                           (substitute* "src/plugins/plugins.qbs"
                             ((".*marketplace/marketplace.qbs.*") ""))))
               (sha256
                (base32
-                "1lgk547pvg31zzqra7gn9gsszm5wrwxiw06crbr5n2kqfavk9r22"))))
+                "0zc9z4zzypqd1q49p4ckwbgxqcnnsc11jgsys6wli1ppmvzmn2zn"))))
     (outputs '("out" "debug"))
     (build-system qt-build-system)
     (arguments
@@ -5638,7 +5646,7 @@ including @i{fix-its} for automatic refactoring.")
                              "src/libs/utils/deviceshell.cpp")
                 (("/bin/sh")
                  (search-input-file inputs "bin/sh")))
-              (substitute* "src/libs/utils/process.cpp"
+              (substitute* "src/libs/utils/qtcprocess.cpp"
                 (("/usr/bin/env")
                  (search-input-file inputs "bin/env")))
               (substitute* '("tests/auto/utils/process/tst_process.cpp"
