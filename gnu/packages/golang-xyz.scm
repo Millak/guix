@@ -3389,6 +3389,44 @@ pattern is called repeatedly.")
 database/sql package.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-buffer-pool
+  (package
+    (name "go-github-com-libp2p-go-buffer-pool")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-buffer-pool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0514rsnin6wjqifpg66dp5nrwh40smqlkgs3kxyz9cansi78c2n1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-buffer-pool"))
+    (home-page "https://github.com/libp2p/go-buffer-pool")
+    (synopsis "Variable size buffer pool for Golang")
+    (description
+     "This package provides a variable size buffer pool for Golang.
+
+@code{go-buffer-pool} provides:
+@itemize
+@item @code{BufferPool}: A pool for re-using byte slices of varied sizes.
+This pool will always return a slice with at least the size requested and a capacity
+up to the next power of two.  Each size class is pooled independently which makes the
+@code{BufferPool} more space efficient than a plain @code{sync.Pool} when used in
+situations where data size may vary over an arbitrary range.
+@item @code{Buffer}: a buffer compatible with @code{bytes.Buffer} but backed by a
+@code{BufferPool}.  Unlike @code{bytes.Buffer}, @code{Buffer} will automatically
+shrink on read, using the buffer pool to avoid causing too much work for the
+allocator.  This is primarily useful for long lived buffers that usually sit empty.
+@end itemize")
+    ;; There are two license files provided by the project: LICENSE and
+    ;; LICENSE-BSD.
+    (license (list license:expat license:bsd-3))))
+
 (define-public go-github-com-logrusorgru-aurora
   (package
     (name "go-github-com-logrusorgru-aurora")
