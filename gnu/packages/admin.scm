@@ -5169,14 +5169,14 @@ Netgear devices.")
 (define-public atop
   (package
     (name "atop")
-    (version "2.10.0")
+    (version "2.11.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.atoptool.nl/download/atop-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "14szbpvsm9czib1629cbh8qcp7pxhgn0vjrfv1yqwmw25k7p79p7"))
+                "083fckjn2s3276fqyjb3rcwqrws7qc3fgk1f82zzgzrfc1kcd54v"))
               (snippet
                ;; The 'mkdate' script generates a new 'versdate.h' header
                ;; containing the build date.  That makes builds
