@@ -547,6 +547,40 @@ order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-fore
 and @code{go-ipld-format} legacy interface.")
     (license (list license:expat license:asl2.0))))
 
+;; XXX: This repository has been archived by the owner on Jun 20, 2023. It is
+;; now read-only.  We highly recommend switching to the maintained version at
+;; https://github.com/ipfs/boxo/tree/main/verifcid.  It's still in use by some
+;; dependencies chain for unbundled inputs in Kubo.
+(define-public go-github-com-ipfs-go-verifcid
+  (package
+    (name "go-github-com-ipfs-go-verifcid")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-verifcid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05i6wp2nln0mlr1pivmva7j6bwa09k7jl04acx1lw65h4d9nxsjm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-verifcid"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-cid go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/ipfs/go-verifcid")
+    (synopsis "CID security code")
+    (description
+     "@code{go-verifcid} provides @url{https://github.com/ipld/cid, CID} security
+code prior to it getting merged into @code{go-cid}.")
+    ;; This library is dual-licensed under Apache 2.0 and MIT terms:
+    ;; LICENSE-MIT and LICENSE-APACHE.
+    (license (list license:expat license:asl2.0))))
+
 (define-public go-github-com-ipld-go-codec-dagpb
   (package
     (name "go-github-com-ipld-go-codec-dagpb")
