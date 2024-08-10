@@ -1748,6 +1748,61 @@ user interface for humans, to read and edit before passing the JSON data to
 the machine.")
     (license license:expat)))
 
+(define-public go-github-com-huin-goupnp
+  (package
+    (name "go-github-com-huin-goupnp")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/huin/goupnp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04j5rmrfawjxcimiqpyjm9gm5phdndjxrmydf9f1ylij6m360nwl"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packed as separated
+            ;; packages:
+            ;;
+            ;; - github.com/huin/goupnp/v2alpha
+            (for-each delete-file-recursively
+                      (list "v2alpha"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/huin/goupnp"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Run all tests, workaround for go-build-system's lack of Go
+          ;; modules support.
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (home-page "https://github.com/huin/goupnp")
+    (propagated-inputs
+     (list go-golang-org-x-sync))
+    (synopsis "UPnP client library for Go")
+    (description
+     "@code{goupnp} is a @acronym{Universal Plug and Play, UPnP} client
+library for Go.
+
+Core components:
+@itemize
+@item @code{goupnp}: core library - contains datastructures and utilities
+typically used by the implemented DCPs
+@item @code{httpu}: HTTPU implementation, underlies SSDP
+@item @code{ssdp}: SSDP client implementation (simple service discovery
+protocol) - used to discover UPnP services on a network
+@item @code{soap}: SOAP client implementation (simple object access protocol)
+- used to communicate with discovered services
+@end itemize")
+    (license license:bsd-2)))
+
 (define-public go-github-com-jackpal-gateway
   (package
     (name "go-github-com-jackpal-gateway")
