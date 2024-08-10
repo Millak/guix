@@ -1519,14 +1519,14 @@ with JavaScript and C++.")))
 (define-public qtdeclarative
   (package
     (name "qtdeclarative")
-    (version "6.6.3")
+    (version "6.7.2")
     ;; TODO: Package 'masm' and unbundle from sources.
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1wwjlwjb3hnlpai4rrrdsm096a6ahb1izs3524r79jpjzhn7n805"))
+                "16drp7yjsm50cvsyww9xk15hzf2csax02vpbv0jx8hlcmyhwnaac"))
               (patches (search-patches "qtdeclarative-disable-qmlcache.patch"))))
     (outputs '("out" "debug"))
     (build-system cmake-build-system)
