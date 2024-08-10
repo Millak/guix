@@ -1344,14 +1344,14 @@ support for MNG, TGA, TIFF and WBMP image formats.")))
 (define-public qtimageformats
   (package
     (name "qtimageformats")
-    (version "6.6.3")
+    (version "6.7.2")
     (source (origin
               (inherit (package-source qtimageformats-5))
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0z328i6fix1qdklfbs1w4dsr64zavjj5kzqvzipww0v62xhfm99w"))))
+                "1mp5bi45gcmsds0g2xfjd1mklrijbwfv0hx4s1md2rxfbxwdi8g1"))))
     (build-system cmake-build-system)
     (arguments
      (list
