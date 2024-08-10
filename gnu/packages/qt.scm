@@ -2014,7 +2014,7 @@ compositor libraries.")))
 (define-public qtwayland
   (package
     (name "qtwayland")
-    (version "6.6.3")
+    (version "6.7.2")
     (source
      (origin
        (method url-fetch)
@@ -2022,7 +2022,7 @@ compositor libraries.")))
        (patches (search-patches
                  "qtwayland-6-update-wayland-xml.patch"))
        (sha256
-        (base32 "0gamcqpl302wlznfnlcg9vlnnhfpxgjnz05prwc9wpy0xh7wqvm9"))))
+        (base32 "0nwa59g1wk7fkym837pkw312abjb376gx44rpd5d8jv4vphmg852"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
