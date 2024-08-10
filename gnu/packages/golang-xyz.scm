@@ -3427,6 +3427,43 @@ allocator.  This is primarily useful for long lived buffers that usually sit emp
     ;; LICENSE-BSD.
     (license (list license:expat license:bsd-3))))
 
+(define-public go-github-com-libp2p-go-msgio
+  (package
+    (name "go-github-com-libp2p-go-msgio")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-msgio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "005cdmkcgsfqlf8478wxyzmy5iixqa8fhjrbig912n8ngnqx1029"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-msgio"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-github-com-gogo-protobuf
+           go-github-com-libp2p-go-buffer-pool
+           go-github-com-multiformats-go-varint
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/libp2p/go-msgio")
+    (synopsis "Read and write length-delimited slices")
+    (description
+     "@code{go-msgio} implements functionality to read and write
+length-delimited slices.  It's helpful for building wire protocols.")
+    (license license:expat)))
+
 (define-public go-github-com-logrusorgru-aurora
   (package
     (name "go-github-com-logrusorgru-aurora")
