@@ -716,13 +716,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
   (package
     (inherit qtbase-5)
     (name "qtbase")
-    (version "6.6.3")
+    (version "6.7.2")
     (source (origin
               (inherit (package-source qtbase-5))
               (uri (qt-url name version))
               (sha256
                (base32
-                "0qklvzg242ilxw29jd2vsz6s8ni4dpraf4ghfa4dykhc705zv4q4"))
+                "16bmfrjfxjajs6sqg1383ihhfwwf69ihkpnpvsajh5pv21g2mwn5"))
               (modules '((guix build utils)))
               (snippet
                ;; corelib uses bundled harfbuzz, md4, md5, sha3
@@ -1080,7 +1080,11 @@ tst_qt_cmake_create.cpp"
                               (string-append "lib/qt6/mkspecs/features/" file)))
                            '("device_config.prf" "moc.prf" "qt_config.prf"))
                     (("\\$\\$\\[QT_HOST_DATA/get\\]") archdata)
-                    (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))))))
+                    (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))
+            (add-after 'install 'delete-installed-tests
+              (lambda _
+                (delete-file-recursively
+                 (string-append #$output "/tests"))))))))
     (native-inputs
      (modify-inputs (package-native-inputs qtbase-5)
        (prepend tzdata-for-tests
