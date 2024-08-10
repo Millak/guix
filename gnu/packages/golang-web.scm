@@ -2124,6 +2124,34 @@ router.")
 @acronym{Simple Service Discovery Protocol, SSDP}} library for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-nat
+  (package
+    (name "go-github-com-libp2p-go-nat")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-nat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yyb3knxvfr7fi759nh7mhh88ap1jpkb7nky7niqrh75737phgh0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-nat"))
+    (propagated-inputs
+     (list go-github-com-huin-goupnp
+           go-github-com-jackpal-go-nat-pmp
+           go-github-com-koron-go-ssdp
+           go-github-com-libp2p-go-netroute))
+    (home-page "https://github.com/libp2p/go-nat")
+    (synopsis "NAT port mapping library for Golang")
+    (description
+     "Package @code{go-nat} implements NAT handling facilities.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-libp2p-go-netroute
   (package
     (name "go-github-com-libp2p-go-netroute")
