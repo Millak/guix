@@ -4774,7 +4774,7 @@ tools are not needed to actually run Gtk2Hs programs.")
     (synopsis "Hackage security library")
     (description
      "This Hackage security library provides both server and
-client utilities for securing @uref{httsp://hackage.haskell.org/, the
+client utilities for securing @uref{https://hackage.haskell.org/, the
 Hackage package server}.  It is based on
 @uref{http://theupdateframework.com/, The Update Framework}, a set of
 recommendations developed by security researchers at various universities
@@ -7234,7 +7234,7 @@ microlens.")
      "This library provides everything that @code{microlens}
 provides plus instances to make @code{each}, @code{at}, and @code{ix}
 usable with arrays, @code{ByteString}, and containers.  This package is
-a part of the @uref{httsp://hackage.haskell.org/package/microlens,
+a part of the @uref{https://hackage.haskell.org/package/microlens,
 microlens} family; see the readme
 @uref{https://github.com/aelve/microlens#readme, on Github}.")
     (license license:bsd-3)))
@@ -7258,7 +7258,7 @@ microlens} family; see the readme
      "This package contains functions (like @code{view} or @code{+=}) which
 work on @code{MonadReader}, @code{MonadWriter}, and @code{MonadState} from the
 mtl package.  This package is a part of the
-@uref{httsp://hackage.haskell.org/package/microlens, microlens} family; see the
+@uref{https://hackage.haskell.org/package/microlens, microlens} family; see the
 readme @uref{https://github.com/aelve/microlens#readme, on Github}.")
     (license license:bsd-3)))
 
@@ -7285,20 +7285,20 @@ readme @uref{https://github.com/aelve/microlens#readme, on Github}.")
     (synopsis "Feature-complete microlens")
     (description
      "This package exports a module which is the recommended starting point
-for using @uref{httsp://hackage.haskell.org/package/microlens, microlens} if
+for using @uref{https://hackage.haskell.org/package/microlens, microlens} if
 you aren't trying to keep your dependencies minimal.  By importing
 @code{Lens.Micro.Platform} you get all functions and instances from
-@uref{httsp://hackage.haskell.org/package/microlens, microlens},
-@uref{httsp://hackage.haskell.org/package/microlens-th, microlens-th},
-@uref{httsp://hackage.haskell.org/package/microlens-mtl, microlens-mtl},
-@uref{httsp://hackage.haskell.org/package/microlens-ghc, microlens-ghc}, as
+@uref{https://hackage.haskell.org/package/microlens, microlens},
+@uref{https://hackage.haskell.org/package/microlens-th, microlens-th},
+@uref{https://hackage.haskell.org/package/microlens-mtl, microlens-mtl},
+@uref{https://hackage.haskell.org/package/microlens-ghc, microlens-ghc}, as
 well as instances for @code{Vector}, @code{Text}, and @code{HashMap}.  The
 minor and major versions of @code{microlens-platform} are incremented whenever
 the minor and major versions of any other @code{microlens} package are
 incremented, so you can depend on the exact version of
 @code{microlens-platform} without specifying the version of @code{microlens}
 you need.  This package is a part of the
-@uref{httsp://hackage.haskell.org/package/microlens, microlens} family; see the
+@uref{https://hackage.haskell.org/package/microlens, microlens} family; see the
 readme @uref{https://github.com/aelve/microlens#readme, on Github}.")
     (license license:bsd-3)))
 
@@ -9526,7 +9526,7 @@ of the @code{primitive} library before @code{primitive-0.7.0.0}.")
     (home-page "https://github.com/seereason/process-extras")
     (synopsis "Extra tools for managing processes")
     (description "This package extends
-@url{httsp://hackage.haskell.org/package/process}.  It allows you to read
+@url{https://hackage.haskell.org/package/process}.  It allows you to read
 process input and output as ByteStrings or Text, or write your own
 ProcessOutput instance.  It also provides lazy process input and output,
 and a ProcessMaker class for more flexibility in the process creation
@@ -11916,7 +11916,7 @@ similar intention.
 
 This library does not do advanced fusion optimization, since especially
 for lazy vectors this would either be incorrect or not applicable.  See
-@url{httsp://hackage.haskell.org/package/storablevector-streamfusion} for
+@url{https://hackage.haskell.org/package/storablevector-streamfusion} for
 a library that provides fusion with lazy lists.")
     (license license:bsd-3)))
 
