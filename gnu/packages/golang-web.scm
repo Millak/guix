@@ -2124,6 +2124,43 @@ router.")
 @acronym{Simple Service Discovery Protocol, SSDP}} library for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-netroute
+  (package
+    (name "go-github-com-libp2p-go-netroute")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-netroute")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06p68j63fd5nf2gf1fz2pnksmdmv735swpbpvnhb15vrgg3r528g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-netroute"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Test requiring network access: no route found for 8.8.8.8
+                  (("TestRoute") "OffTestRoute"))))))))
+    (propagated-inputs
+     (list go-github-com-google-gopacket
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/libp2p/go-netroute")
+    (synopsis "Routing table abstraction library for Golang")
+    (description
+     "@code{go-netroute} provides an implementation of the
+@url{https://godoc.org/github.com/google/gopacket/routing#Router,
+gopacket/routing.Router} interface for Golang.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-makeworld-the-better-one-go-gemini
   (package
     (name "go-github-com-makeworld-the-better-one-go-gemini")
