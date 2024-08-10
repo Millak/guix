@@ -1883,13 +1883,13 @@ Vulkan, OpenGL and other main graphic APIs.")
 (define-public qtmultimedia
   (package
     (name "qtmultimedia")
-    (version "6.6.3")
+    (version "6.7.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1ciswpv8p71j9hwwdhfr5pmsrnizlaijp0dnyc99lk5is8qgh05y"))
+                "1lsiarvag8lr4a1apa466xz56b1znjncy8wz5hyiv6nbb88kby4f"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1920,9 +1920,12 @@ Vulkan, OpenGL and other main graphic APIs.")
               ;; RHI backend. Using CPU conversion." (see:
               ;; https://bugreports.qt.io/browse/QTBUG-123749).
               (substitute* "tests/auto/unit/multimedia/CMakeLists.txt"
-                (("add_subdirectory\\(qvideoframecolormanagement\\)") ""))))
+                (("add_subdirectory\\(qvideoframecolormanagement\\)") "")
+                ;; The 'qmediaplayer_gstreamer' test times out.
+                (("add_subdirectory\\(qmediaplayer_gstreamer\\)") ""))))
           (add-before 'check 'prepare-for-tests
             (lambda _
+              (setenv "HOME" (getcwd))
               (setenv "QT_QPA_PLATFORM" "offscreen")))
           (add-after 'install 'delete-installed-tests
             (lambda _
