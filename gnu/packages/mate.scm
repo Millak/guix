@@ -1443,15 +1443,17 @@ can be used as backgrounds in the MATE Desktop environment.")
 (define-public mate-system-monitor
   (package
     (name "mate-system-monitor")
-    (version "1.26.0")
+    (version "1.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "mate-system-monitor-" version ".tar.xz"))
        (sha256
-        (base32 "13rkrk7c326ng8164aqfp6i7334n7zrmbg61ncpjprbrvlx2qiw3"))))
+        (base32 "09asjqln7sn6rbqy8anwfnnf5wfnhdwm9xhkphg3dd8gp7b67mj2"))))
     (build-system glib-or-gtk-build-system)
+    (arguments
+     `(#:configure-flags '("--enable-systemd=no")))
     (native-inputs
      (list autoconf gettext-minimal intltool pkg-config yelp-tools))
     (inputs
