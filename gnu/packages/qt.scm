@@ -2407,13 +2407,13 @@ that helps in Qt development.")))
 (define-public qttools
   (package
     (name "qttools")
-    (version "6.6.3")
+    (version "6.7.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1h0vz46mpvzbm5w6sgpk0b3mqkn278l45arhxxk41dwc5n14qvda"))))
+                "0ajbma9lbrb0d048bvg2xl74m833ddv2b9684r3hjcr53fnmbs2q"))))
     (build-system cmake-build-system)
     (arguments
      (list
