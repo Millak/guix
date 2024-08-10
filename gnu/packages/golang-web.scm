@@ -2076,6 +2076,54 @@ jsoniter and variable type declarations (if any).  jsoniter interfaces gives
 router.")
     (license license:bsd-3)))
 
+(define-public go-github-com-koron-go-ssdp
+  (package
+    (name "go-github-com-koron-go-ssdp")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/koron/go-ssdp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0agzxzlwvnhgwk6sxswjq7v1ghmf0l02gr7zpdih24i3g457af4f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/koron/go-ssdp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Test requiring network setup.
+                  (("TestAdvertise_Alive") "OffTestAdvertise_Alive")
+                  (("TestAdvertise_Bye") "OffTestAdvertise_Bye")
+                  (("TestAnnounceAlive") "OffTestAnnounceAlive")
+                  (("TestAnnounceBye") "OffTestAnnounceBye")
+                  (("TestInterfaces") "OffTestInterfaces")
+                  (("TestSearch_Request") "OffTestSearch_Request")
+                  (("TestSearch_Response") "OffTestSearch_Response")
+                  (("TestSearch_ServiceRawHeader") "OffTestSearch_ServiceRawHeader")))))
+          ;; XXX: Run all tests, workaround for go-build-system's lack of Go
+          ;; modules support.
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/koron/go-ssdp")
+    (synopsis "SSDP library for Golang")
+    (description
+     "@code{go-ssdp} is a @url{https://tools.ietf.org/html/draft-cai-ssdp-v1-03,
+@acronym{Simple Service Discovery Protocol, SSDP}} library for Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-makeworld-the-better-one-go-gemini
   (package
     (name "go-github-com-makeworld-the-better-one-go-gemini")
