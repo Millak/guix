@@ -913,17 +913,21 @@ icons on the MATE desktop.  It works on local and remote file systems.")
 (define-public mate-control-center
   (package
     (name "mate-control-center")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "mate-control-center-" version ".tar.xz"))
        (sha256
-        (base32 "022nbgdvhfjj9zdy9zaiagigh3f8r0dzfz4gqmpsayk57cm4jpz0"))))
+        (base32 "1g0lg4x3idilaxhwq1s90pajkvv9i012kzrnk0pxqj2jzl2cgwpb"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
+                  (add-before 'configure 'use-elogind-as-systemd
+                    (lambda _
+                      (substitute* "configure"
+                        (("systemd") "libelogind"))))
                   (add-before 'build 'fix-polkit-action
                     (lambda* (#:key outputs #:allow-other-keys)
                       ;; Make sure the polkit file refers to the right
@@ -950,11 +954,14 @@ icons on the MATE desktop.  It works on local and remote file systems.")
        ("dconf" ,dconf)
        ("dbus" ,dbus)
        ("dbus-glib" ,dbus-glib)
+       ("elogind" ,elogind)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("glib" ,glib)
        ("gtk+" ,gtk+)
+       ("libappindicator" ,libappindicator)
        ("libcanberra" ,libcanberra)
+       ("libgtop" ,libgtop)
        ("libmatekbd" ,libmatekbd)
        ("libx11" ,libx11)
        ("libxcursor" ,libxcursor)
@@ -971,7 +978,8 @@ icons on the MATE desktop.  It works on local and remote file systems.")
        ("mate-settings-daemon" ,mate-settings-daemon)
        ("pango" ,pango)
        ("polkit" ,polkit)
-       ("startup-notification" ,startup-notification)))
+       ("startup-notification" ,startup-notification)
+       ("udisks" ,udisks)))
     (propagated-inputs
      (list (librsvg-for-system)))        ;mate-slab.pc
     (home-page "https://mate-desktop.org/")
