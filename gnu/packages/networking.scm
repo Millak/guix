@@ -1848,14 +1848,14 @@ network frames.")
 (define-public fping
   (package
     (name "fping")
-    (version "5.1")
+    (version "5.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://fping.org/dist/fping-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1zh9fkyn0bixgn77v9z6ayv446nqwx960hmly9m68xix0s62dr8y"))))
+        (base32 "0bz4n0c4p5v8yh1fzvfvbbydpg4vy6krligpw5vbpc1zsw82ssd7"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--enable-ipv6")))
     (home-page "https://fping.org/")
