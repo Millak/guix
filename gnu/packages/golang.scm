@@ -8124,6 +8124,9 @@ production-ready implementation, compatible with the original Jsonnet C++
 implementation.")
     (license license:asl2.0)))
 
+;; XXX: This repository has been archived by the owner on Dec 29, 2022. It is
+;; now read-only.  It's only used by kiln, consider to remove it when it does
+;; no longer require it.
 (define-public go-github-com-google-shlex
   (package
     (name "go-github-com-google-shlex")
