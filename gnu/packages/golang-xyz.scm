@@ -44,6 +44,7 @@
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Luis Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Spencer Peters <spencerpeters@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6419,6 +6420,32 @@ Go host programs.")
 LMDB project.  The goal of the project is to provide a simple, fast, and
 reliable database for projects that don't require a full database server such as
 Postgres or MySQL.")
+    (license license:expat)))
+
+(define-public go-go-senan-xyz-flagconf
+  (package
+    (name "go-go-senan-xyz-flagconf")
+    (version "0.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sentriz/flagconf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rms7hj1cdi5gfyhf1am1f8c4lq9ll4ashqi87yc6aq93gqgkag0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.senan.xyz/flagconf"))
+    (propagated-inputs
+     (list go-github-com-rogpeppe-go-internal))
+    (home-page "https://go.senan.xyz/flagconf")
+    (synopsis "Extensions to Go's flag package")
+    (description
+     "Flagconf provides extensions to Go's flag package to support prefixed
+environment variables and a simple config file format.")
     (license license:expat)))
 
 (define-public go-go-uber-org-atomic
