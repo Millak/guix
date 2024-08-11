@@ -9018,7 +9018,7 @@ in mind.  It has features such as:
 (define-public kiln
   (package
     (name "kiln")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9027,7 +9027,7 @@ in mind.  It has features such as:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lvzv46hn80gffw47mcc28iahwqng7pvg500s9jlrq6mhr4k5ih4"))))
+                "1ynb079jsyv6viwdksavwar5lqj84ssfw39dl5da98z683xrvch5"))))
     (build-system go-build-system)
     (arguments
      (list
