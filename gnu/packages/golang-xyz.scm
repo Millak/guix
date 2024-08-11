@@ -245,8 +245,7 @@ a human-readable byte format.")
     (arguments
      (list #:import-path "git.sr.ht/~emersion/go-scfg"))
     (propagated-inputs
-     (list go-github-com-google-shlex
-           go-github-com-davecgh-go-spew))
+     (list go-github-com-davecgh-go-spew))
     (home-page "https://git.sr.ht/~emersion/go-scfg")
     (synopsis "Go library for simple configuration file format")
     (description
