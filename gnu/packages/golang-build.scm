@@ -288,7 +288,7 @@ language.")
 (define-public go-golang-org-x-exp
   (package
     (name "go-golang-org-x-exp")
-    (version "0.0.0-20240613232115-7f521ea00fb8")
+    (version "0.0.0-20240808152545-0cdaa3abc0fa")
     (source
      (origin
        (method git-fetch)
@@ -297,7 +297,7 @@ language.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ccjgv19w5p9sbcq12czmfnkjwv3b7hfljifwax6r9wk4dx0fcn7"))
+        (base32 "1sa03fm57326qnchvfza7am7jjlz32l1yyqbdvy6mknw5bmp8a71"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
