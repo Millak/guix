@@ -199,7 +199,7 @@ semantically equal.")
 (define-public go-golang-org-x-crypto
   (package
     (name "go-golang-org-x-crypto")
-    (version "0.25.0")
+    (version "0.26.0")
     (source
      (origin
        (method git-fetch)
@@ -208,7 +208,7 @@ semantically equal.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cnglyy3fhvnnynazfdrikkwcxv3rlxamvfxink2z241lncvwkxy"))))
+        (base32 "1rc5zl3gxfy4wcwqjibqgnqj8wdm0v9ff25vkyirzb71l343ydlx"))))
     (build-system go-build-system)
     (arguments
      (list
