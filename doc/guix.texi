@@ -2004,19 +2004,10 @@ We consider Guix System to be ready for a wide range of ``desktop'' and server
 use cases.  The reliability guarantees it provides---transactional upgrades
 and rollbacks, reproducibility---make it a solid foundation.
 
-Nevertheless, before you proceed with the installation, be aware of the
-following noteworthy limitations applicable to version @value{VERSION}:
+More and more system services are provided (@pxref{Services}).
 
-@itemize
-@item
-More and more system services are provided (@pxref{Services}), but some
-may be missing.
-
-@item
-GNOME, Xfce, LXDE, and Enlightenment are available (@pxref{Desktop Services}),
-as well as a number of X11 window managers.  However, KDE is currently
-missing.
-@end itemize
+Nevertheless, before you proceed with the installation, be aware that some
+services you rely on may still be missing from version @value{VERSION}.
 
 More than a disclaimer, this is an invitation to report issues (and success
 stories!), and to join us in improving it.  @xref{Contributing}, for more
