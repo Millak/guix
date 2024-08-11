@@ -7492,49 +7492,6 @@ That is, @code{gofumpt} is happy with a subset of the formats that
     (native-inputs '())
     (inputs '())))
 
-(define-public go-mvdan-cc-xurls
-  (package
-    (name "go-mvdan-cc-xurls")
-    (version "2.5.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/mvdan/xurls")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1516hwlxbnhdca56qy7sx9h2n5askq6ddqpqyp3f5rvmzdkxf4zn"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "mvdan.cc/xurls/v2"))
-    (propagated-inputs
-     (list go-github-com-rogpeppe-go-internal
-           go-golang-org-x-mod
-           go-golang-org-x-sync))
-    (home-page "https://mvdan.cc/xurls/v2/")
-    (synopsis "Extracts URLs from text")
-    (description
-     "Xurls extracts urls from plain text using regular expressions.  It can
-be used as both a binary and a library.")
-    (license license:bsd-3)))
-
-(define-public xurls
-  (package
-    (inherit go-mvdan-cc-xurls)
-    (name "xurls")
-    (arguments
-     (list
-      #:import-path "mvdan.cc/xurls/v2/cmd/xurls"
-      #:unpack-path "mvdan.cc/xurls/v2"
-      #:install-source? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (delete-file "testdata/script/version.txtar")))))))))
-
 (define-public go-github-com-davecgh-go-xdr
   (package
     (name "go-github-com-davecgh-go-xdr")
