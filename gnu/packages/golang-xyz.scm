@@ -1326,6 +1326,31 @@ marshalling and unmarshalling library in Go.  It uses code generation and not
 reflection.")
     (license license:expat)))
 
+(define-public go-github-com-charlievieth-fastwalk
+  (package
+    (name "go-github-com-charlievieth-fastwalk")
+    (version "1.0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charlievieth/fastwalk")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17zy17q31p8b93bf703rr0xqafp02bb0slkrgpxb8r0aaxz3zg4y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charlievieth/fastwalk"))
+    (home-page "https://github.com/charlievieth/fastwalk")
+    (synopsis "Fast directory traversal for Golang")
+    (description
+     "Package fastwalk provides a faster version of
+@url{/path/filepath#@code{WalkDir,filepath.WalkDir}} for file system scanning
+tools.")
+    (license license:expat)))
+
 (define-public go-github-com-cheggaaa-pb
   (package
     (name "go-github-com-cheggaaa-pb")
