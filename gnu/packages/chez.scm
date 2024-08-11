@@ -296,7 +296,7 @@ will name the threaded machine type unless THREADS? is provided as #f."
 (define-public chez-scheme-for-racket
   (package
     (name "chez-scheme-for-racket")
-    ;; The version should match `(scheme-version-number #t)`.
+    ;; The version should match `(scheme-version #t)`.
     ;; See s/cmacros.ss c. line 360.
     (version "10.1.0-pre-release.1")
     (source #f)
