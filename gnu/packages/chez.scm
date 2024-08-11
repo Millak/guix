@@ -130,9 +130,8 @@ Scheme machine types, or '#f' if none is defined."
     #f)
    ((target-ppc32? system)
     "ppc32")
-   ;; This is apparently not ready in chez-scheme-for-racket.
-   ;((target-riscv64? system)
-   ; "rv64")
+   ((target-riscv64? system)
+    "rv64")
    ((string-prefix? "loongarch64-" system)
     "la64")
    (else
