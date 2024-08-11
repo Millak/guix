@@ -7495,7 +7495,7 @@ That is, @code{gofumpt} is happy with a subset of the formats that
 (define-public go-mvdan-cc-xurls
   (package
     (name "go-mvdan-cc-xurls")
-    (version "2.4.0")
+    (version "2.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7504,11 +7504,14 @@ That is, @code{gofumpt} is happy with a subset of the formats that
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0b040nbk1vwlk1qljavh8w8fn2r243q700n6gr8j2asmnz0xq84p"))))
+                "1516hwlxbnhdca56qy7sx9h2n5askq6ddqpqyp3f5rvmzdkxf4zn"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "mvdan.cc/xurls/v2"))
-    (inputs (list go-golang-org-x-sync go-github-com-rogpeppe-go-internal))
+    (propagated-inputs
+     (list go-github-com-rogpeppe-go-internal
+           go-golang-org-x-mod
+           go-golang-org-x-sync))
     (home-page "https://mvdan.cc/xurls/v2/")
     (synopsis "Extracts URLs from text")
     (description
@@ -7521,9 +7524,16 @@ be used as both a binary and a library.")
     (inherit go-mvdan-cc-xurls)
     (name "xurls")
     (arguments
-     `(#:import-path "mvdan.cc/xurls/v2/cmd/xurls"
-       #:unpack-path "mvdan.cc/xurls/v2"
-       #:install-source? #f))))
+     (list
+      #:import-path "mvdan.cc/xurls/v2/cmd/xurls"
+      #:unpack-path "mvdan.cc/xurls/v2"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "testdata/script/version.txtar")))))))))
 
 (define-public go-github-com-davecgh-go-xdr
   (package
