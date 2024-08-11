@@ -24618,28 +24618,26 @@ The @code{%desktop-services} variable can be used as the @code{services}
 field of an @code{operating-system} declaration (@pxref{operating-system
 Reference, @code{services}}).
 
-Additionally, the @code{gnome-desktop-service-type},
-@code{xfce-desktop-service}, @code{mate-desktop-service-type},
-@code{lxqt-desktop-service-type} and @code{enlightenment-desktop-service-type}
-procedures can add GNOME, Xfce, MATE and/or Enlightenment to a system.  To
-``add GNOME'' means that system-level services like the backlight adjustment
-helpers and the power management utilities are added to the system, extending
-@code{polkit} and @code{dbus} appropriately, allowing GNOME to operate with
-elevated privileges on a limited number of special-purpose system interfaces.
-Additionally, adding a service made by @code{gnome-desktop-service-type} adds
-the GNOME metapackage to the system profile.  Likewise, adding the Xfce
-service not only adds the @code{xfce} metapackage to the system profile, but
-it also gives the Thunar file manager the ability to open a ``root-mode'' file
-management window, if the user authenticates using the administrator's
-password via the standard polkit graphical interface.  To ``add MATE'' means
-that @code{polkit} and @code{dbus} are extended appropriately, allowing MATE
-to operate with elevated privileges on a limited number of special-purpose
-system interfaces.  Additionally, adding a service of type
-@code{mate-desktop-service-type} adds the MATE metapackage to the system
-profile.  ``Adding Enlightenment'' means that @code{dbus} is extended
-appropriately, and several of Enlightenment's binaries are set as setuid,
-allowing Enlightenment's screen locker and other functionality to work as
-expected.
+Additionally, the following procedures add one (or more!) desktop
+environments to a system.
+
+@itemize
+@item @code{gnome-desktop-service-type} adds GNOME,
+@item @code{plasma-desktop-service-type} adds KDE Plasma,
+@item @code{enlightenment-desktop-service-type} adds Enlightenment,
+@item @code{lxqt-desktop-service-type} adds LXQt,
+@item @code{mate-desktop-service-type} adds MATE, and
+@item @code{xfce-desktop-service} adds Xfce.
+@end itemize
+
+These service types add ``metapackages'' such as @code{gnome} or
+@code{plasma} to the system profile, but most of them also set up other useful
+services that mere packages can't do.
+
+For example, they may elevate privileges on a limited number of
+special-purpose system interfaces and programs.  This allows backlight
+adjustment helpers, power management utilities, screen lockers, and
+other integrated functionality to work as expected.
 
 The desktop environments in Guix use the Xorg display server by
 default.  If you'd like to use the newer display server protocol
