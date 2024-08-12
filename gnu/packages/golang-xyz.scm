@@ -2571,6 +2571,30 @@ non-blocking @code{TryLock} function to allow locking without blocking
 execution.")
     (license license:bsd-3)))
 
+(define-public go-github-com-google-subcommands
+  (package
+    (name "go-github-com-google-subcommands")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/subcommands")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00w7fx92696z5p3isvpg71b4023g8f686xnhy56k08vc2q1r2hhw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/subcommands"))
+    (home-page "https://github.com/google/subcommands")
+    (synopsis "Go subcommand library")
+    (description
+     "@code{subcommands} implements a functionality for a single command to
+have many subcommands, each of which takes arguments.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-gookit-color
   (package
     (name "go-github-com-gookit-color")
