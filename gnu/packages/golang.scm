@@ -7214,37 +7214,6 @@ is unchanged.  This package contains a series of small enhancements and
 additions.")
       (license license:bsd-3))))
 
-(define-public go-golang-zx2c4-com-wireguard
-  (package
-    (name "go-golang-zx2c4-com-wireguard")
-    (version "0.0.0-20231211153847-12269c276173")
-    (source
-     (origin
-       (method git-fetch)
-       ;; NOTE: module URL is a redirect
-       ;; target: git.zx2c4.com/wireguard-go
-       ;; source: golang.zx2c4.com/wireguard
-       (uri (git-reference
-             (url "https://git.zx2c4.com/wireguard-go/")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1fbc6m0ahifhrd6jdrpdxi8l3b2slpp8fmv20kpq2yzz19vzzgkf"))))
-    (build-system go-build-system)
-    (arguments
-     '(;; XXX: Failed on newer version of Golang, the recent release requires
-       ;; gvisor.dev/gvisor, which is huge to pack.
-       #:tests? #f
-       #:import-path "golang.zx2c4.com/wireguard"))
-    (propagated-inputs
-     (list go-golang-org-x-crypto go-golang-org-x-net go-golang-org-x-sys
-           go-golang-org-x-text))
-    (home-page "https://git.zx2c4.com/wireguard")
-    (synopsis "Implementation of WireGuard in Go")
-    (description "This package is a Go Implementation of WireGuard.")
-    (license license:expat)))
-
 (define-public go-github-com-kardianos-minwinsvc
   (package
     (name "go-github-com-kardianos-minwinsvc")
