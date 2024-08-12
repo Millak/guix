@@ -548,3 +548,28 @@ Gigabit Ethernet, InfiniBand, Myrinet, Quadrics), and proprietary high-end
 computing systems (Blue Gene, Cray).  It enables research in MPI through a
 modular framework for other derived implementations.")
     (license license:bsd-2)))
+
+(define-public mpich-ofi
+  (package/inherit mpich
+    (name "mpich-ofi")
+    (inputs (modify-inputs (package-inputs mpich)
+              (delete ucx)
+              (append libfabric)
+              (append rdma-core)
+              (append psm2)))
+    (arguments
+      (substitute-keyword-arguments (package-arguments mpich)
+        ((#:configure-flags flags)
+         #~(list "--disable-silent-rules" ;let's see what's happening
+                 "--enable-debuginfo"
+                 "--with-device=ch4:ofi"
+
+                 (string-append "--with-hwloc-prefix="
+                                #$(this-package-input "hwloc"))
+
+                 (string-append "--with-libfabric="
+                                #$(this-package-input "libfabric"))))
+        ((#:phases phases
+          '%standard-phases)
+         phases)))
+    (synopsis "Implementation of the Message Passing Interface (MPI) for OmniPath")))
