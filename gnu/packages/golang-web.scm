@@ -3667,15 +3667,29 @@ programming language, which supports draft-04, draft-06 and draft-07.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; XXX: Failed on newer version of Golang, the recent release requires
-      ;; gvisor.dev/gvisor, which is huge to pack.
-      #:tests? #f
-      #:import-path "golang.zx2c4.com/wireguard"))
+      #:import-path "golang.zx2c4.com/wireguard"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v"
+                          ;; "./tune/..." ; Requires gvisor.dev/gvisor, not packed yet
+                          "./"
+                          "./conn/..."
+                          "./device/..."
+                          "./ipc/..."
+                          "./ratelimiter/..."
+                          "./replay/..."
+                          "./rwcancel/..."
+                          "./tai64n/..."))))))))
     (propagated-inputs
      (list go-golang-org-x-crypto
            go-golang-org-x-net
-           go-golang-org-x-sys
-           go-golang-org-x-text))
+           go-golang-org-x-sys))
     (home-page "https://git.zx2c4.com/wireguard")
     (synopsis "Implementation of WireGuard in Go")
     (description "This package is a Go Implementation of WireGuard.")
