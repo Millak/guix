@@ -2102,6 +2102,42 @@ Implements string conversion functionality for unit prefixes.
 scanner API made public.")
     (license license:bsd-3)))
 
+(define-public go-github-com-edsrzf-mmap-go
+  (package
+    (name "go-github-com-edsrzf-mmap-go")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/edsrzf/mmap-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11xpfcacfvmrkbp0pv4j8pg2gyjnxpfp7l93j42h0svwxywhjmrc"))))
+    (build-system go-build-system)
+    (propagated-inputs (list go-golang-org-x-sys))
+    (arguments
+     (list
+      #:import-path "github.com/edsrzf/mmap-go"))
+    (home-page "https://github.com/edsrzf/mmap-go")
+    (synopsis "Memory mapped fiels (mmap) in Golang")
+    (description
+     "This package implements functinoality of mapping files into memory.  It
+tries to provide a simple interface, but doesn't go out of its way to abstract
+away every little platform detail.
+
+This specifically means:
+@itemize
+@item forked processes may or may not inherit mappings
+@item a file's timestamp may or may not be updated by writes through mappings
+@item specifying a size larger than the file's actual size can increase the
+file's size
+@item if the mapped file is being modified by another process while your
+program's running, don't expect consistent results between platforms
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public go-github-com-elliotchance-orderedmap
   (package
     (name "go-github-com-elliotchance-orderedmap")
