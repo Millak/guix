@@ -8933,7 +8933,13 @@ comparing system environments.")
                        ((member (package-supported-systems psm))
                         `(("psm" ,psm)))
                        (_ `()))
+              ("psm2" ,psm2)
               ("libnl" ,libnl)))
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-psm2"
+                   "--enable-efa"
+                   "--enable-verbs")))
     (home-page "https://ofiwg.github.io/libfabric/")
     (synopsis "Open Fabric Interfaces")
     (description
