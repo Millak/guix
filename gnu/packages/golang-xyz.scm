@@ -4128,6 +4128,31 @@ explicit ownership.")
 without the runtime cost of the standard library reflect.Value.")
     (license license:asl2.0)))
 
+(define-public go-github-com-mohae-deepcopy
+  (package
+    (name "go-github-com-mohae-deepcopy")
+    (version "0.0.0-20170308212314-bb9b5e7adda9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mohae/deepcopy")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "173j05wv4yy8jh9ccjw46xfy1knxwvv1ir6b8l6g9pc5j5damm1f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mohae/deepcopy"))
+    (home-page "https://github.com/mohae/deepcopy")
+    (synopsis "Copy of pointers and values for Golang")
+    (description
+     "@code{deepcopy} implements a functionality of deep copies of things.  A
+standard @code{copy} will copy the pointers where @code{deepcopy} copies the
+values pointed to.  Unexported field values are not copied.")
+    (license license:expat)))
+
 (define-public go-github-com-mreiferson-go-options
   (package
     (name "go-github-com-mreiferson-go-options")
