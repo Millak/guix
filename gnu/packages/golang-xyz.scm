@@ -1432,6 +1432,33 @@ levels that works by wrapping the standard @code{log} library.")
      "Readline is a pure Go implementation of a GNU-Readline like library.")
     (license license:expat)))
 
+(define-public go-github-com-containerd-fifo
+  (package
+    (name "go-github-com-containerd-fifo")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/fifo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ddb1spairbsjkvxqysa7pzb5za07dvv1aay3mqr160gh2za3kd4"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/containerd/fifo"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/containerd/fifo")
+    (synopsis "FIFO package for Golang")
+    (description
+     "This package implements a functionality of handling FIFOs in a sane
+way.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-coocood-freecache
   (package
     (name "go-github-com-coocood-freecache")
