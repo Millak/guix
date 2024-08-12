@@ -13327,6 +13327,27 @@ backends.  It supports url.el which is shipped with Emacs and the curl command
 line program.")
       (license license:gpl3+))))
 
+(define-public emacs-ruby-electric
+  (package
+    (name "emacs-ruby-electric")
+    (version "2.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ruby/elisp-ruby-electric")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1p0l0fsn0jcgb4raimyc4d1wpfksrfhn0rkwdazadvm6s8baydf7"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/ruby/elisp-ruby-electric")
+    (synopsis "Minor mode for electrically editing Ruby code")
+    (description
+     "Ruby Electric mode accelerates code writing in Ruby by making some keys
+electric and automatically supplying with closing parentheses and @code{end}
+as appropriate.")
+    (license license:ruby)))
+
 (define-public emacs-rudel
   (package
     (name "emacs-rudel")
