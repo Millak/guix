@@ -2271,6 +2271,38 @@ clients that speak the Gemini protocol.")
 @@url{https://github.com/makeworld-the-better-one/go-gemini,go-gemini}.")
     (license license:expat)))
 
+(define-public go-github-com-mattbaird-jsonpatch
+  (package
+    (name "go-github-com-mattbaird-jsonpatch")
+    (version "0.0.0-20240118010651-0ba75a80ca38")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattbaird/jsonpatch")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nxbrpk8bvvmfgl4sfsbx82g0q44i2sakl7vigbsj3prx6nql5iv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattbaird/jsonpatch"))
+    (native-inputs
+     (list go-github-com-evanphx-json-patch go-github-com-stretchr-testify))
+    (home-page "https://github.com/mattbaird/jsonpatch")
+    (synopsis "JSON Patch library for Go")
+    (description
+     "@url{http://jsonpatch.com/, JSON Patch} implementation for Go as
+specified in @url{https://datatracker.ietf.org/doc/html/rfc6902/, RFC 6902}
+from the IETF.
+
+JSON Patch allows you to generate JSON that describes changes you want to make
+to a document, so you don't have to send the whole doc.  JSON Patch format is
+supported by HTTP PATCH method, allowing for standards based partial updates
+via REST APIs.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-microcosm-cc-bluemonday
   (package
     (name "go-github-com-microcosm-cc-bluemonday")
