@@ -162,6 +162,16 @@
        (sha256
         (base32 "1xmcv6rwinqsbr863rgl9005h2jlmd7k2qrwsc1h4fb8r61ykpjl"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        ;; XXX: Meson build fails due to a misspelling of
+                        ;; "description" keyword in the configuration.  This phase
+                        ;; fixes that.
+                        (add-after 'unpack 'patch-meson-build
+                          (lambda _
+                            (substitute* "meson.build"
+                              (("not stable, Description:")
+                               "not stable, description:")))))))
     (native-inputs
      (list luajit pkg-config))
     (inputs
@@ -169,7 +179,7 @@
     (synopsis "Memory Mapped Machine")
     (description "MMM is a shared memory protocol for virtualising access to
 framebuffer graphics, audio output and input event.")
-    (home-page "https://github.com/hodefoting/mrg")
+    (home-page "https://github.com/hodefoting/mmm")
     (license license:isc)))
 
 (define-public directfb
