@@ -2542,6 +2542,35 @@ the library more lightweight.")
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-gofrs-flock
+  (package
+    (name "go-github-com-gofrs-flock")
+    (version "0.12.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gofrs/flock/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kfnbcahr9x61k40wsrqzxxr3ybix0jqsm4ibpjgnhfgrln7ag8v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gofrs/flock"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/gofrs/flock/")
+    (synopsis "Thread-safe file locking library in Go")
+    (description
+     "@code{flock} implements a thread-safe file lock.  It also includes a
+non-blocking @code{TryLock} function to allow locking without blocking
+execution.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-gookit-color
   (package
     (name "go-github-com-gookit-color")
