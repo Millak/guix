@@ -657,6 +657,55 @@ and stop increasing when a certain threshold is met.")
     (description "This package provides a CSS parser and inliner.")
     (license license:expat)))
 
+(define-public go-github-com-containerd-typeurl
+  (package
+    (name "go-github-com-containerd-typeurl")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/typeurl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wvfxlxgkln11d9s6rxay965c715bnpk203klbsq8m8qpjqrz620"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/containerd/typeurl"))
+    (propagated-inputs
+     (list go-github-com-gogo-protobuf
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/containerd/typeurl")
+    (synopsis "Managing marshaled types to @code{protobuf.Any}")
+    (description
+     "This package implements a functionality of managing the registration,
+marshaling, and unmarshaling of encoded types.  It helps when types are sent
+over a ttrpc/GRPC API and marshaled as a protobuf
+@url{https://pkg.go.dev/google.golang.org/protobuf@@v1.27.1/types/known/anypb#Any,
+Any}.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-containerd-typeurl-v2
+  (package
+    (inherit go-github-com-containerd-typeurl)
+    (name "go-github-com-containerd-typeurl-v2")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/typeurl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n43s8zqwwrvpzb0pczm73xx4w8yb96ax31cripzxmfhj43z21b5"))))
+    (arguments
+     (list #:import-path "github.com/containerd/typeurl/v2"))
+    (propagated-inputs
+     (list go-github-com-gogo-protobuf
+           go-google-golang-org-protobuf))))
+
 (define-public go-github-com-coreos-go-oidc
   (package
     (name "go-github-com-coreos-go-oidc")
