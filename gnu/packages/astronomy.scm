@@ -61,6 +61,7 @@
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
@@ -4316,26 +4317,30 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
         (base32 "1rsy6ihwl3fnv502pmycx0xry9qn1qfz13kwdifcf2075wqd1lx9"))))
     (build-system cmake-build-system)
     (arguments
-     ;; TODO: fix failing tests on aarch64-system.
-     `(#:tests? ,(not (or (%current-target-system) (target-aarch64?)))
-       #:configure-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list
-          "-DINDI_BUILD_UNITTESTS=ON"
-          "-DCMAKE_BUILD_TYPE=Release"
-          (string-append "-DCMAKE_INSTALL_PREFIX=" out)
-          (string-append "-DUDEVRULES_INSTALL_DIR=" out "/lib/udev/rules.d")))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "test"
-                 (invoke "ctest")))))
-         (add-before 'install 'set-install-directories
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir-p (string-append out "/lib/udev/rules.d"))))))))
+     (list
+      #:parallel-tests? #f  ; Socket address collisions between tests
+      #:configure-flags
+      #~(list "-DINDI_BUILD_UNITTESTS=ON"
+              "-DINDI_BUILD_INTEGTESTS=ON"
+              "-DCMAKE_INSTALL_LIBDIR=lib"
+              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+              (string-append "-DUDEVRULES_INSTALL_DIR=" #$output "/lib/udev/rules.d"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-udev-rules
+            (lambda _
+              (substitute* (list "drivers/auxiliary/99-indi_auxiliary.rules"
+                                 "drivers/video/80-dbk21-camera.rules")
+                (("/bin/sh") (which "sh"))
+                (("/sbin/modprobe")
+                 (string-append #$(this-package-input "kmod") "/bin/modprobe")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "integs"
+                  (invoke "ctest" "-V" "--output-on-failure"))
+                (with-directory-excursion "test"
+                  (invoke "ctest" "-V"))))))))
     (native-inputs
      (list googletest))
     (inputs
@@ -4343,6 +4348,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
            curl
            fftw
            gsl
+           kmod
            libev
            libjpeg-turbo
            libnova
