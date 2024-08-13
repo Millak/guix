@@ -67,7 +67,7 @@
 (define-public crun
   (package
     (name "crun")
-    (version "1.16")
+    (version "1.16.1")
     (source
      (origin
        (method url-fetch)
@@ -77,7 +77,7 @@
              "/crun-" version ".tar.gz"))
        (sha256
         (base32
-         "0m7z9jm6fwjwnp3ch4jm4ygsapqxs6qr4fpd099vhfm5mlczfczq"))))
+         "17i8vwj9zmr6dvi1w9i359vwr3rzwa9g03q83rz9w32ghzj8sm3h"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-systemd")
