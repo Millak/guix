@@ -19133,7 +19133,7 @@ actually changing the buffer's text.")
 (define-public emacs-diff-hl
   (package
     (name "emacs-diff-hl")
-    (version "1.9.2")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -19142,7 +19142,7 @@ actually changing the buffer's text.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nh3rrvjjddyng5j7wjrk4ls7l6cjx3fpf8ksg4kjq7wzw4abf1s"))))
+        (base32 "0vfqyhzf3lyrhn788fbyc4p3lf36fkh8qnxvg6vddg4bxmqcjnsw"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/dgutov/diff-hl")
     (synopsis "Highlight uncommitted changes using VC")
