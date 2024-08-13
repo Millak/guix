@@ -1630,7 +1630,7 @@ represented by a QPoint or a QSize.")
 (define-public kwidgetsaddons
   (package
     (name "kwidgetsaddons")
-    (version "6.4.0")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1639,7 +1639,7 @@ represented by a QPoint or a QSize.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1gqd7wm60z18g64pfqhzq0ib5h3rj14r8ab5j6iz7p522glf59zx"))))
+                "02gys2sr03j5m85gw6n4qs9yanmnl1hwjpb2sk3q74b11b2bqfng"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules qttools))
