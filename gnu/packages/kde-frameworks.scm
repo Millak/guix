@@ -2843,7 +2843,7 @@ covers feedback and persistent events.")
 (define-public kpackage
   (package
     (name "kpackage")
-    (version "6.4.0")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2852,7 +2852,7 @@ covers feedback and persistent events.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0260mnqnmsx0b1vwy77hzc7zvf3qa4g66mrcs517qlmxnymicjms"))))
+                "0wxpim80hlw8ad1hlqpynjvag6z5w6r0ml1vk9zh84lif70m4d6g"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
