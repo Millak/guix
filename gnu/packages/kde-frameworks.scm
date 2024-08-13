@@ -802,7 +802,7 @@ kconfiggui-kstandardshortcutwatchertest)")))))))))
 (define-public kcoreaddons
   (package
     (name "kcoreaddons")
-    (version "6.4.0")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -811,7 +811,7 @@ kconfiggui-kstandardshortcutwatchertest)")))))))))
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1f72ik6pylxanhvpcmrwl0mjm466f3g8wv781hyik8dwa09k5kf5"))))
+                "167gwmrj7vfi49bfx16vri3vvzz979ymgwadb1s4xq6lvhlis3jy"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules qttools shared-mime-info))
     (inputs (list qtdeclarative))
