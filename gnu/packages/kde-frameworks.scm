@@ -673,7 +673,7 @@ which can be used to add custom colors to the popup menu.")
 (define-public kcolorscheme
   (package
     (name "kcolorscheme")
-    (version "6.4.0")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -683,7 +683,7 @@ which can be used to add custom colors to the popup menu.")
 
               (sha256
                (base32
-                "1342f70qynp711whgykpjbvq154vih7s6zyi8sr9kz1ndd3syx2w"))))
+                "0axlj37ayra5ds8pfajx6pwjidj6i9fcxwld2p68qh6w6zfmafrj"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kguiaddons ki18n
