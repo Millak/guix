@@ -4615,7 +4615,7 @@ Items.")
 (define-public ktexteditor
   (package
     (name "ktexteditor")
-    (version "6.4.0")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4624,7 +4624,7 @@ Items.")
                     "ktexteditor-" version ".tar.xz"))
               (sha256
                (base32
-                "1m6nrknkdclrx31yicvndswlm8f8pggz2s88sl2g4rlxaiwilpl2"))))
+                "1hdqvfc5p7hlm4m3ng54w9q5bq8zz6rdmhlr75zn4swclrsqifwv"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kparts
