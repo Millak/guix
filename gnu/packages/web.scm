@@ -5434,7 +5434,7 @@ you'd expect.")
 (define-public go-github-com-mikefarah-yq-v4
   (package
     (name "go-github-com-mikefarah-yq-v4")
-    (version "4.34.2")
+    (version "4.44.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5443,7 +5443,7 @@ you'd expect.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y5i0p4fiq0kad9xqihhyclhd9d3l2r5yligdkvsdc90hlqjmql3"))))
+                "0s7c8r6y5jv6wda2v3k47hawfdr9j3rwk717l6byvh5qsbbml0vd"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/mikefarah/yq/v4"
@@ -5456,6 +5456,7 @@ you'd expect.")
     (propagated-inputs
      (list go-github-com-a8m-envsubst
            go-github-com-alecthomas-participle-v2
+           go-github-com-alecthomas-repr
            go-github-com-dimchansky-utfbom
            go-github-com-elliotchance-orderedmap
            go-github-com-fatih-color
@@ -5464,7 +5465,10 @@ you'd expect.")
            go-github-com-jinzhu-copier
            go-github-com-magiconair-properties
            go-github-com-pelletier-go-toml-v2
+           go-github-com-pkg-diff
            go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-yuin-gopher-lua
            go-golang-org-x-net
            go-golang-org-x-text
            go-gopkg-in-op-go-logging-v1
