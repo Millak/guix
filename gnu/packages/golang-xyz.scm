@@ -2458,6 +2458,42 @@ interfaces to back that API.  Packages in the Go ecosystem can depend on it,
 while callers can implement logging with whatever backend is appropriate.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-playground-locales
+  (package
+    (name "go-github-com-go-playground-locales")
+    (version "0.14.1")
+    (home-page "https://github.com/go-playground/locales")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "117nss5gv7rfzr7z40rkpwfr273wv6ahrd3ycqdarxvaxh0ldhh4"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/go-playground/locales"))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (synopsis "Set of locales generated from the CLDR Unicode Project")
+    (description
+     "This package provides a set of locales generated from the
+@uref{http://cldr.unicode.org/, Unicode CLDR Project} which can be used
+independently or within an internalization (i18n) package.  Its currently
+implemented features include
+
+@itemize
+@item Rules generated from the CLDR data, v31.0.3
+@item Contains Cardinal, Ordinal and Range Plural Rules
+@item Contains Month, Weekday and Timezone translations built in
+@item Contains Date & Time formatting functions
+@item Contains Number, Currency, Accounting and Percent formatting functions
+@item Supports the \"Gregorian\" calendar only
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-go-task-slim-sprig
   (let ((commit "afa1e2071829e4db655eb448d6c7c16eb0bc5766")
         (revision "0"))
