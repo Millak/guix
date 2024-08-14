@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
-;;; Copyright © 2015, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2019, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -84,13 +84,27 @@ bootstrap libc."
 when producing a bootstrap libc."
 
   (define (copy-mach-headers output kernel-headers)
-    (let* ((incdir (string-append output "/include")))
+    (let ((mach-headers (readlink
+                         (string-append kernel-headers "/include/mach")))
+          (incdir (string-append output "/include")))
       (copy-recursively (string-append libc "/include") incdir)
 
-      (copy-recursively (string-append kernel-headers "/include/mach")
-                        (string-append incdir "/mach"))
-      #t))
-  
+      ;; As of glibc 2.39, essential Mach headers get installed by glibc
+      ;; itself in its own includedir, except for most of mach/machine/*.h.
+      ;; Copy anything that's missing from MACH-HEADERS.
+      (copy-recursively mach-headers
+                        (string-append incdir "/mach")
+                        #:select?
+                        (let ((prefix (string-length mach-headers))
+                              (target (string-append incdir "/mach")))
+                          (lambda (file stat)
+                            ;; Select everything but files and symlinks that
+                            ;; already exist under TARGET.
+                            (or (eq? 'directory (stat:type stat))
+                                (let ((suffix (string-drop file prefix)))
+                                  (not (file-exists?
+                                        (in-vicinity target suffix))))))))))
+
   (define (copy-libc+linux-headers output kernel-headers)
     (let* ((incdir (string-append output "/include")))
       (copy-recursively (string-append libc "/include") incdir)
