@@ -5497,7 +5497,7 @@ JSON, XML, properties, CSV and TSV.")
 (define-public go-github-com-itchyny-gojq
   (package
     (name "go-github-com-itchyny-gojq")
-    (version "0.12.11")
+    (version "0.12.16")
     (source
      (origin
        (method git-fetch)
@@ -5506,7 +5506,7 @@ JSON, XML, properties, CSV and TSV.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dqmnxnipi497nx9x10ifack09w41579svryss5q2w5wxy0pg764"))))
+        (base32 "0favs281iaq98cmqwf47amk12xpksznpwgfid24z8migkp8628wl"))))
     (build-system go-build-system)
     (arguments
      (list
