@@ -5214,7 +5214,7 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
 (define-public go-github-com-spf13-cobra
   (package
     (name "go-github-com-spf13-cobra")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
        (method git-fetch)
@@ -5223,7 +5223,7 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mhnqfgcwwcknlhk7n07i02q3iqq6ihksj4dwz296zci8ry3w0d0"))))
+        (base32 "0brbyy5mc6n2j6m6q1xyswh907vxd3wdzvgaci45swgj0747lcf8"))))
     (build-system go-build-system)
     (arguments
      (list
