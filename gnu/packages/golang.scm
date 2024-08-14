@@ -2716,7 +2716,7 @@ way of specifying command line options.")
 (define-public go-github-com-go-playground-locales
   (package
     (name "go-github-com-go-playground-locales")
-    (version "0.13.0")
+    (version "0.14.1")
     (home-page "https://github.com/go-playground/locales")
     (source
      (origin
@@ -2726,7 +2726,7 @@ way of specifying command line options.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qydcpkvss3mf8mk3xzg6a34n8i69aydrigcl2apifrkx72jw7pf"))))
+        (base32 "117nss5gv7rfzr7z40rkpwfr273wv6ahrd3ycqdarxvaxh0ldhh4"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/go-playground/locales"))
