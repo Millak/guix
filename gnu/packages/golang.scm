@@ -8283,7 +8283,7 @@ text-only mail clients to display them.")
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")
-    (version "1.1.18")
+    (version "1.1.23")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8292,7 +8292,7 @@ text-only mail clients to display them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qqhcgfym0napz8damj7dhfw28g2qn2f5h3lr93i0sxawq926yzc"))))
+                "1chx7ml9wlpk8pzgnnxb97gblmxz1j1v37m5i1asb94l5c24r1fg"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/creack/pty"
