@@ -448,19 +448,20 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
            (make-stripped-libc (assoc-ref %outputs "out")
                                (assoc-ref %build-inputs "libc")
                                (assoc-ref %build-inputs "kernel-headers")))))
-      (inputs `(("kernel-headers"
-                 ,(if (or (and (%current-target-system)
-                               (target-hurd? (%current-target-system)))
-                          (string-suffix? "-hurd" (%current-system)))
-                      gnumach-headers
-                      linux-libre-headers))
-                ("libc" ,(let ((target (%current-target-system)))
-                           (if target
-                               (glibc-for-bootstrap
-                                (parameterize ((%current-target-system #f))
-                                  (cross-libc target)))
-                               glibc)))))
-      (native-inputs '())
+      (native-inputs
+       `(("libc" ,(let ((target (%current-target-system)))
+                    (if target
+                        (glibc-for-bootstrap
+                         (parameterize ((%current-target-system #f))
+                           (cross-libc target)))
+                        glibc)))))
+      (inputs
+       `(("kernel-headers"
+          ,(if (or (and (%current-target-system)
+                        (target-hurd? (%current-target-system)))
+                   (string-suffix? "-hurd" (%current-system)))
+               gnumach-headers
+               linux-libre-headers))))
       (propagated-inputs '())
 
       ;; Only one output.
