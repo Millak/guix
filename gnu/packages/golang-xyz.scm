@@ -2236,7 +2236,7 @@ Alphanum Algorithm} developed by Dave Koelle in Go.")
 (define-public go-github-com-fatih-color
   (package
     (name "go-github-com-fatih-color")
-    (version "1.16.0")
+    (version "1.17.0")
     (source
      (origin
        (method git-fetch)
@@ -2245,7 +2245,7 @@ Alphanum Algorithm} developed by Dave Koelle in Go.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15689x103gy9q7g7623rlvhwrw27p079ardapmrrag0sdwrx5bq2"))))
+        (base32 "07axwr6016xwylxlsrw3cnkg1kg963zqqgf06pc3dgicfg5qrhj2"))))
     (build-system go-build-system)
     (arguments
      (list
