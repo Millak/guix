@@ -2576,7 +2576,7 @@ the library more lightweight.")
 (define-public go-github-com-goccy-go-yaml
   (package
     (name "go-github-com-goccy-go-yaml")
-    (version "1.11.3")
+    (version "1.12.0")
     (home-page "https://github.com/goccy/go-yaml")
     (source
      (origin
@@ -2586,7 +2586,7 @@ the library more lightweight.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rm2rfnlvv704zkb1mnjqv5xx32vfkzv7r2kc8if6gr9ryb7hmbf"))))
+        (base32 "06sf7vpz8gjyivrn3yhzcbbf3qhsqq5n7lsc23j91xw5xwpn37bk"))))
     (build-system go-build-system)
     (arguments
      (list
