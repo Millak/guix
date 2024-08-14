@@ -3603,7 +3603,7 @@ updating files, like @command{tail -f}.")
   (package
     (inherit go-github-com-pelletier-go-toml)
     (name "go-github-com-pelletier-go-toml-v2")
-    (version "2.1.1")
+    (version "2.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3612,12 +3612,13 @@ updating files, like @command{tail -f}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k0rwg7870f4va7jaavnpwvdn6d76gxgyr7c978bx2h829a9sx2a"))))
+                "0gimgz33yxmvj0nmy56yy7zq4ay8j55ir8pfzmgwga7npgpzspk7"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/pelletier/go-toml/v2"))
     (native-inputs
-     (list go-github-com-stretchr-testify))))
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs '())))
 
 (define-public go-github-com-subosito-gotenv
   (package
