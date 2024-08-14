@@ -5522,25 +5522,25 @@ time strings.")
     (name "go-github-com-itchyny-gojq")
     (version "0.12.11")
     (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/itchyny/gojq")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1dqmnxnipi497nx9x10ifack09w41579svryss5q2w5wxy0pg764"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/itchyny/gojq")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dqmnxnipi497nx9x10ifack09w41579svryss5q2w5wxy0pg764"))))
     (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/itchyny/gojq/cmd/gojq"
+      #:unpack-path "github.com/itchyny/gojq"))
     (inputs
      (list go-github-com-google-go-cmp
            go-github-com-itchyny-timefmt-go
            go-github-com-mattn-go-isatty
            go-github-com-mattn-go-runewidth
            go-gopkg-in-yaml-v3))
-    (arguments
-     (list
-      #:import-path "github.com/itchyny/gojq/cmd/gojq"
-      #:unpack-path "github.com/itchyny/gojq"))
     (home-page "https://github.com/itchyny/gojq")
     (synopsis "Pure Go implementation of jq")
     (description
