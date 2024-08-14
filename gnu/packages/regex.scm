@@ -4,6 +4,7 @@
 ;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,7 +28,10 @@
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
-  #:use-module (guix utils))
+  #:use-module (guix build-system cmake)
+  #:use-module (guix utils)
+  #:use-module (gnu packages check)
+  #:use-module (gnu packages cpp))
 
 (define-public re2
    (package
@@ -59,6 +63,29 @@
 backtracking regular expression engines like those used in PCRE, Perl and
 Python.  It is a C++ library.")
      (license license:bsd-3)))
+
+(define-public re2-next
+  (package
+    (inherit re2)
+    (name "re2")
+    (version "2024-07-02")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/re2")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11q0kz8b3y5ysn58fr62yhib520f9l3grbn8gxr8x5s9k700vq11"))))
+    (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                               ;; "-DRE2_USE_ICU=ON"
+                                               #$@(if (%current-target-system)
+                                                      #~("-DRE2_BUILD_TESTING=ON")
+                                                      #~()))))
+    (native-inputs (list googletest))
+    (propagated-inputs (list abseil-cpp))))
 
 (define-public tre
   (package
