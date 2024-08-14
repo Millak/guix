@@ -267,9 +267,12 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                 (inputs '())                   ;remove PCRE, which is optional
                 (arguments
                  (substitute-keyword-arguments (package-arguments grep)
+                   ((#:configure-flags flags #~'())
+                    #~(cons "--disable-perl-regexp"
+                            (delete "--enable-perl-regexp" #$flags)))
                    ((#:phases phases)
-                    `(modify-phases ,phases
-                       (delete 'fix-egrep-and-fgrep)))))))
+                    #~(modify-phases #$phases
+                        (delete 'fix-egrep-and-fgrep)))))))
         (finalize (compose static-package
                            package-with-relocatable-glibc)))
     (append (map finalize
