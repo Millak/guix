@@ -1983,6 +1983,25 @@ scanner API made public.")
 O(1) for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
     (license license:expat)))
 
+(define-public go-github-com-elliotchance-orderedmap-v2
+  (package
+    (inherit go-github-com-elliotchance-orderedmap)
+    (name "go-github-com-elliotchance-orderedmap-v2")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elliotchance/orderedmap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11bvia6cflq46nzc2hfgikgxyck7wskyi0i7ksy9r0d41l4jh4l9"))))
+    (arguments
+     (list
+      #:import-path "github.com/elliotchance/orderedmap/v2"
+      #:unpack-path "github.com/elliotchance/orderedmap"))))
+
 (define-public go-github-com-emersion-go-ical
   (package
     (name "go-github-com-emersion-go-ical")
