@@ -1342,7 +1342,7 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
 (define-public go-github-com-goccy-go-json
   (package
     (name "go-github-com-goccy-go-json")
-    (version "0.10.2")
+    (version "0.10.3")
     (source
      (origin
        (method git-fetch)
@@ -1351,7 +1351,7 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1krid2hlvs808jl9zmv7m6zx92samc60gymhwr2mwwykicwbnks8"))
+        (base32 "0w9kjplhyzq8n4iainddapzj7dxnfbjiz4xdpb0hlb6h35grpxgn"))
        (modules '((guix build utils)))
        (snippet '(delete-file-recursively "benchmarks"))))
     (build-system go-build-system)
