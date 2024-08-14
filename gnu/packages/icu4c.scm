@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -131,6 +132,23 @@ C/C++ part.")
                  "icu4c-icu-22132-fix-vtimezone.patch"
                  "icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch")
                 (origin-patches (package-source icu4c))))))))
+
+(define-public icu4c-75
+  (package
+    (inherit icu4c)
+    (name "icu4c")
+    (version "75.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/unicode-org/icu/releases/download/release-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
+                    "/icu4c-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
+                    "-src.tgz"))
+              (sha256
+               (base32
+                "1vya31v549pq89kgr02jajwi7gc7qw0mv6n4265pxs6jwkrqv5nb"))))))
 
 (define-public icu4c-70
   (package
