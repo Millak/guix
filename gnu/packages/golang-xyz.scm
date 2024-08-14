@@ -4694,6 +4694,53 @@ memory accessible to the kernel.  It does not account for memory used by other
 processes.")
       (license license:bsd-3))))
 
+(define-public go-github-com-pelletier-go-toml
+  (package
+    (name "go-github-com-pelletier-go-toml")
+    (version "1.9.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pelletier/go-toml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wypjrr1axkrkzp4n5gvams94f2sd7dq1pdpd2i35sgpdz6r2m6g"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/pelletier/go-toml"))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-davecgh-go-spew
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/pelletier/go-toml")
+    (synopsis "Go library for the TOML configuration language")
+    (description
+     "Go library for the TOML configuration language")
+    (license license:expat)))
+
+(define-public go-github-com-pelletier-go-toml-v2
+  (package
+    (inherit go-github-com-pelletier-go-toml)
+    (name "go-github-com-pelletier-go-toml-v2")
+    (version "2.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pelletier/go-toml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gimgz33yxmvj0nmy56yy7zq4ay8j55ir8pfzmgwga7npgpzspk7"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/pelletier/go-toml/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs '())))
+
 (define-public go-github-com-pierrec-cmdflag
   (package
     (name "go-github-com-pierrec-cmdflag")
