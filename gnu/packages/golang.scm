@@ -3590,10 +3590,10 @@ updating files, like @command{tail -f}.")
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/pelletier/go-toml"))
-    (native-inputs
-     `(("github.com/BurntSushi/toml" ,go-github-com-burntsushi-toml)
-       ("github.com/davecgh/go-spew" ,go-github-com-davecgh-go-spew)
-       ("gopkg.in/yaml.v2" ,go-gopkg-in-yaml-v2)))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-davecgh-go-spew
+           go-gopkg-in-yaml-v2))
     (home-page "https://github.com/pelletier/go-toml")
     (synopsis "Go library for the TOML configuration language")
     (description "Go library for the TOML configuration language")
