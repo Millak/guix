@@ -143,6 +143,7 @@
 ;;; Copyright © 2024 Noé Lopez <noelopez@free.fr>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Daniel Szmulewicz <daniel.szmulewicz@gmail.com>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1677,94 +1678,92 @@ before interacting with non-free LLMs.")
     (license license:gpl3+)))
 
 (define-public emacs-magit
-  (let ((commit "538cb2f90b5fdd04fcaacd537834f4f3c8c0720f")
-        (revision "8"))
-    (package
-      (name "emacs-magit")
-      (version (git-version "3.3.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/magit/magit")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1vzqy82ai8w0k283bij45k49pq4v3xy4yyy5gd24ba713y03327f"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:tests? #t
-        #:test-command #~(list "make" "test")
-        #:exclude #~(cons* "magit-libgit.el"
-                           "magit-libgit-pkg.el"
-                           %default-exclude)
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'build-info-manual
-              (lambda _
-                (invoke "make" "info")
-                ;; Copy info files to the lisp directory, which acts as
-                ;; the root of the project for the emacs-build-system.
-                (for-each (lambda (f)
-                            (install-file f "lisp"))
-                          (find-files "docs" "\\.info$"))))
-            (add-after 'build-info-manual 'set-magit-version
-              (lambda _
-                (make-file-writable "lisp/magit.el")
-                (emacs-substitute-variables "lisp/magit.el"
-                  ("magit-version" #$version))))
-            (add-after 'set-magit-version 'patch-exec-paths
-              (lambda* (#:key inputs #:allow-other-keys)
-                (for-each make-file-writable
-                          (list "lisp/magit-git.el" "lisp/magit-sequence.el"))
-                (emacs-substitute-variables "lisp/magit-git.el"
-                  ("magit-git-executable"
-                   (search-input-file inputs "/bin/git")))
-                (emacs-substitute-variables "lisp/magit-sequence.el"
-                  ("magit-perl-executable"
-                   (search-input-file inputs "/bin/perl")))))
-            (add-before 'check 'configure-git
-              (lambda _
-                ;; Otherwise some tests fail with error "unable to auto-detect
-                ;; email address".
-                (setenv "HOME" (getcwd))
-                (invoke "git" "config" "--global" "user.name" "toto")
-                (invoke "git" "config" "--global" "user.email"
-                        "toto@toto.com")))
-            (replace 'expand-load-path
-              (lambda args
-                (with-directory-excursion "lisp"
-                  (apply (assoc-ref %standard-phases 'expand-load-path) args))))
-            (replace 'make-autoloads
-              (lambda args
-                (with-directory-excursion "lisp"
-                  (apply (assoc-ref %standard-phases 'make-autoloads) args))))
-            (replace 'install
-              (lambda args
-                (with-directory-excursion "lisp"
-                  (apply (assoc-ref %standard-phases 'install) args))))
-            (replace 'build
-              (lambda args
-                (with-directory-excursion "lisp"
-                  (apply (assoc-ref %standard-phases 'build) args)))))))
-      (native-inputs
-       (list texinfo))
-      (inputs
-       (list git perl))
-      (propagated-inputs
-       ;; Note: the 'git-commit' and 'magit-section' dependencies are part of
-       ;; magit itself.
-       (list emacs-compat emacs-dash emacs-transient emacs-with-editor))
-      (home-page "https://magit.vc/")
-      (synopsis "Emacs interface for the Git version control system")
-      (description
-       "With Magit, you can inspect and modify your Git repositories
+  (package
+    (name "emacs-magit")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/magit/magit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xfwli031hk2c0f6gj6f5f7bd9awyq70dl2a1z8k2a1j9msg1s6k"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "make" "test")
+      #:exclude #~(cons* "magit-libgit.el"
+                         "magit-libgit-pkg.el"
+                         %default-exclude)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-info-manual
+            (lambda _
+              (invoke "make" "info")
+              ;; Copy info files to the lisp directory, which acts as
+              ;; the root of the project for the emacs-build-system.
+              (for-each (lambda (f)
+                          (install-file f "lisp"))
+                        (find-files "docs" "\\.info$"))))
+          (add-after 'build-info-manual 'set-magit-version
+            (lambda _
+              (make-file-writable "lisp/magit.el")
+              (emacs-substitute-variables "lisp/magit.el"
+                ("magit-version" #$version))))
+          (add-after 'set-magit-version 'patch-exec-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each make-file-writable
+                        (list "lisp/magit-git.el" "lisp/magit-sequence.el"))
+              (emacs-substitute-variables "lisp/magit-git.el"
+                ("magit-git-executable"
+                 (search-input-file inputs "/bin/git")))
+              (emacs-substitute-variables "lisp/magit-sequence.el"
+                ("magit-perl-executable"
+                 (search-input-file inputs "/bin/perl")))))
+          (add-before 'check 'configure-git
+            (lambda _
+              ;; Otherwise some tests fail with error "unable to auto-detect
+              ;; email address".
+              (setenv "HOME" (getcwd))
+              (invoke "git" "config" "--global" "user.name" "toto")
+              (invoke "git" "config" "--global" "user.email"
+                      "toto@toto.com")))
+          (replace 'expand-load-path
+            (lambda args
+              (with-directory-excursion "lisp"
+                (apply (assoc-ref %standard-phases 'expand-load-path) args))))
+          (replace 'make-autoloads
+            (lambda args
+              (with-directory-excursion "lisp"
+                (apply (assoc-ref %standard-phases 'make-autoloads) args))))
+          (replace 'install
+            (lambda args
+              (with-directory-excursion "lisp"
+                (apply (assoc-ref %standard-phases 'install) args))))
+          (replace 'build
+            (lambda args
+              (with-directory-excursion "lisp"
+                (apply (assoc-ref %standard-phases 'build) args)))))))
+    (native-inputs
+     (list texinfo))
+    (inputs
+     (list git perl))
+    (propagated-inputs
+     ;; Note: the 'git-commit' and 'magit-section' dependencies are part of
+     ;; magit itself.
+     (list emacs-compat emacs-dash emacs-transient emacs-with-editor))
+    (home-page "https://magit.vc/")
+    (synopsis "Emacs interface for the Git version control system")
+    (description
+     "With Magit, you can inspect and modify your Git repositories
 with Emacs.  You can review and commit the changes you have made to
 the tracked files, for example, and you can browse the history of past
 changes.  There is support for cherry picking, reverting, merging,
 rebasing, and other common Git operations.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-magit-svn
   (package
