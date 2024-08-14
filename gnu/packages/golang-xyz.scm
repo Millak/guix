@@ -1961,7 +1961,7 @@ scanner API made public.")
 (define-public go-github-com-elliotchance-orderedmap
   (package
     (name "go-github-com-elliotchance-orderedmap")
-    (version "1.5.1")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1970,7 +1970,7 @@ scanner API made public.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06gq5hsgfmzfr46wds366ghyn16qkygyz83vrsgargf4l7db9zg7"))))
+        (base32 "1hhyk96l6mfijkay9ga6jqpczpn34fbqkjrqj3v9pf5p1hzd0xdx"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/elliotchance/orderedmap"))
@@ -1979,8 +1979,8 @@ scanner API made public.")
     (home-page "https://github.com/elliotchance/orderedmap")
     (synopsis "Go ordered map library")
     (description
-     "This package provides a ordered map library that maintains amortized O(1)
-for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
+     "This package provides a ordered map library that maintains amortized
+O(1) for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
     (license license:expat)))
 
 (define-public go-github-com-emersion-go-ical
