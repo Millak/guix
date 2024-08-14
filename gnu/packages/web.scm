@@ -5494,29 +5494,6 @@ JSON, XML, properties, CSV and TSV.")
     (propagated-inputs '())
     (inputs (package-propagated-inputs go-github-com-mikefarah-yq-v4))))
 
-(define-public go-github-com-itchyny-timefmt-go
-  (package
-    (name "go-github-com-itchyny-timefmt-go")
-    (version "0.1.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/itchyny/timefmt-go")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ldagirn1wh3klkk1rr96d5b5jbn24aib14x3j73x47cjfqi92wf"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/itchyny/timefmt-go"))
-    (home-page "https://github.com/itchyny/timefmt-go")
-    (synopsis "Efficient time formatting library (strftime, strptime) for Golang")
-    (description
-     "@code{timefmt-go} is a Go language package for formatting and parsing date
-time strings.")
-    (license license:expat)))
-
 (define-public go-github-com-itchyny-gojq
   (package
     (name "go-github-com-itchyny-gojq")
