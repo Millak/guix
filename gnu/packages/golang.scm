@@ -3196,7 +3196,7 @@ editor.")
 (define-public go-github-com-stretchr-objx
   (package
     (name "go-github-com-stretchr-objx")
-    (version "0.4.0")
+    (version "0.5.2")
     (source
      (origin
        (method git-fetch)
@@ -3206,11 +3206,7 @@ editor.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0dygds32qxx6x1x2mmn7msyjr15qi5r70pyzv8dz8cprxq32nzc1"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            (delete-file-recursively "vendor")))))
+         "1jcxpfgfpk82lryjkhbd5dy7xzx08d7b9dvbx4bpkmjvn6p339jl"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3223,11 +3219,12 @@ editor.")
                  ;; The tests fail when run with gccgo.
                  (false-if-exception (search-input-file inputs "/bin/gccgo"))
                  (apply (assoc-ref %standard-phases 'check) args)))))))
-    (propagated-inputs
+    (native-inputs
+     ;; go-spew and go-difflib are to cover testify-bootstrap and not required
+     ;; for odjx itself.
      (list go-github-com-davecgh-go-spew
-           go-github-com-pmezard-go-difflib))
-    (inputs
-     (list go-github-com-stretchr-testify-bootstrap))
+           go-github-com-pmezard-go-difflib
+           go-github-com-stretchr-testify-bootstrap))
     (home-page "https://github.com/stretchr/objx")
     (synopsis "Go package for dealing with maps, slices, JSON and other data")
     (description "This package provides a Go library for dealing with maps,
