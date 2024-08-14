@@ -230,7 +230,7 @@ integration with code written in C.")
     (name "ccl")
     ;; XXX When updating this package, check whether we can simply append
     ;; VERSION to the ccl-bootstrap URL again, instead of per architecture.
-    (version "1.12.1")
+    (version "1.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -239,7 +239,7 @@ integration with code written in C.")
               (file-name (git-file-name "ccl" version))
               (sha256
                (base32
-                "1zz291lvsrr7pps8wfl2kdxsnzjngqi4v3mil14pga4r5zanmsi7"))))
+                "12cb3gp43bhl7nyms3a4lix8j1s3arnp124d3ahc2lhlrjirs0mr"))))
     (build-system gnu-build-system)
     ;; CCL consists of a "lisp kernel" and "heap image", both of which are
     ;; shipped in precompiled form in source tarballs.  The former is a C
@@ -253,18 +253,18 @@ integration with code written in C.")
            (uri (string-append
                  "https://github.com/Clozure/ccl/releases/download/v"
                  (match (%current-system)
-                   ("armhf-linux" "1.12/linuxarm")
+                   ("armhf-linux" "1.13/linuxarm")
                    ;; XXX: This source only works on x86, but provide it as a
                    ;; catch-all to prevent errors when querying this package
                    ;; on unsupported platforms.
-                   (_ "1.12.1/linuxx86"))
+                   (_ "1.13/linuxx86"))
                  ".tar.gz"))
            (sha256
             (base32
              (match (%current-system)
                ("armhf-linux"
-                "0x4bjx6cxsjvxyagijhlvmc7jkyxifdvz5q5zvz37028va65243c")
-               (_ "0ll017ajcfsyx8f7zsy4394y8xxvz40iz0gcsmznp0n3mf0xi67c"))))))))
+                "1mlj7lgn4p9bw1ki7gk00sj89cjv0cjpdmpp65brhx9q3fvkk9xf")
+               (_ "04ry8zwrcjjmzbxp43nkknchabk6i6mclrzg5biwfp1h64bcnzfx"))))))))
     (native-inputs
      (list cl-asdf m4))
     (arguments
