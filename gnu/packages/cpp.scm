@@ -1532,7 +1532,7 @@ Google's C++ code base.")
     (package
       (inherit base)
       (name "abseil-cpp")
-      (version "20230802.1")
+      (version "20240722.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1541,7 +1541,7 @@ Google's C++ code base.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ydkkbanrpkp5i814arzsk973kyzhhjhagnp392rq6rrv16apldq"))
+                  "1pmrigimzic2k3ix3l81j2jpfgjgbajz0qbc5s57zljr2w7fjn77"))
                 (patches
                  (search-patches "abseil-cpp-20220623.1-no-kepsilon-i686.patch"))))
       (arguments
@@ -1556,7 +1556,7 @@ Google's C++ code base.")
               (add-before 'check 'set-env-vars
                 (lambda* (#:key inputs #:allow-other-keys)
                  ;; absl_time_test requires this environment variable.
-                 (setenv "TZDIR" (string-append #$(package-source base)
+                 (setenv "TZDIR" (string-append #$(package-source this-package)
                                                 "/absl/time/internal/cctz/testdata/zoneinfo"))))
               #$@(if (target-riscv64?)
                      #~((replace 'check
