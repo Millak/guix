@@ -5497,7 +5497,7 @@ JSON, XML, properties, CSV and TSV.")
 (define-public go-github-com-itchyny-timefmt-go
   (package
     (name "go-github-com-itchyny-timefmt-go")
-    (version "0.1.4")
+    (version "0.1.6")
     (source
      (origin
        (method git-fetch)
@@ -5506,7 +5506,7 @@ JSON, XML, properties, CSV and TSV.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z5z8hy5lbjqdxp544mf238i77n7pf7bv3psgr5gffh0630dsyag"))))
+        (base32 "0ldagirn1wh3klkk1rr96d5b5jbn24aib14x3j73x47cjfqi92wf"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/itchyny/timefmt-go"))
