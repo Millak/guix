@@ -2321,7 +2321,7 @@ Representation,CBOR} (@url{https://www.rfc-editor.org/rfc/rfc8949.html,RFC
 (define-public go-github-com-gabriel-vasile-mimetype
   (package
     (name "go-github-com-gabriel-vasile-mimetype")
-    (version "1.4.4")
+    (version "1.4.5")
     (source
      (origin
        (method git-fetch)
@@ -2330,7 +2330,7 @@ Representation,CBOR} (@url{https://www.rfc-editor.org/rfc/rfc8949.html,RFC
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "199x3zbrs3bca4xc4m66c2fvs4vzywqcfylqx6n14kys0sh1p73b"))))
+        (base32 "1ris146v7k1x1n4vraq0xzjds0f7jw3scx9mzj8y29hql3sy4nkd"))))
     (build-system go-build-system)
     (arguments
      (list
