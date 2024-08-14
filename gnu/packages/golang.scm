@@ -5069,29 +5069,6 @@ have super fancy logs.")
 format in Go.")
       (license license:expat))))
 
-(define-public go-github-com-kr-pretty
-  (package
-    (name "go-github-com-kr-pretty")
-    (version "0.3.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/kr/pretty")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "19d4ycy22il43s4pnr7jv1aahp87wa1p16zpis5jdiiyfgni2l8f"))))
-    (build-system go-build-system)
-    (propagated-inputs
-     (list go-github-com-kr-text go-github-com-rogpeppe-go-internal))
-    (arguments
-     '(#:import-path "github.com/kr/pretty"))
-    (synopsis "Pretty printer for Go values")
-    (description "This package provides a pretty printer for Go values.")
-    (home-page "https://github.com/kr/pretty")
-    (license license:expat)))
-
 (define-public go-github-com-kylelemons-godebug
   (package
     (name "go-github-com-kylelemons-godebug")

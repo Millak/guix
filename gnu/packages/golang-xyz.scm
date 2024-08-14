@@ -1,14 +1,15 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017-2020 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Pierre Neidhardt <ambrevar@gmail.com>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
+;;; Copyright © 2018, 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019, 2021 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019-2021 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
+;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
@@ -3321,6 +3322,31 @@ very eas to use.")
     (arguments
      (list
       #:import-path "github.com/klauspost/cpuid/v2"))))
+
+(define-public go-github-com-kr-pretty
+  (package
+    (name "go-github-com-kr-pretty")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kr/pretty")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19d4ycy22il43s4pnr7jv1aahp87wa1p16zpis5jdiiyfgni2l8f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kr/pretty"))
+    (propagated-inputs
+     (list go-github-com-kr-text go-github-com-rogpeppe-go-internal))
+    (home-page "https://github.com/kr/pretty")
+    (synopsis "Pretty printer for Go values")
+    (description
+     "This package provides a pretty printer for Go values.")
+    (license license:expat)))
 
 (define-public go-github-com-lestrrat-go-envload
   (package
