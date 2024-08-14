@@ -5072,7 +5072,7 @@ format in Go.")
 (define-public go-github-com-kr-pretty
   (package
     (name "go-github-com-kr-pretty")
-    (version "0.2.1")
+    (version "0.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5081,10 +5081,10 @@ format in Go.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vzfz06y9q8gs2nxx0kys0591vzp78k0fvpb8digi5n15h3b25hy"))))
+                "19d4ycy22il43s4pnr7jv1aahp87wa1p16zpis5jdiiyfgni2l8f"))))
     (build-system go-build-system)
     (propagated-inputs
-     (list go-github-com-kr-text))
+     (list go-github-com-kr-text go-github-com-rogpeppe-go-internal))
     (arguments
      '(#:import-path "github.com/kr/pretty"))
     (synopsis "Pretty printer for Go values")
