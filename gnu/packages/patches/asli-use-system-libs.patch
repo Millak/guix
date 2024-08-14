@@ -1,12 +1,20 @@
-Adjust CMakeLists.txt to use system-provided mmg and yaml-cpp libraries.
+From edfff0027c3cdacbbc0f288078366058f598544d Mon Sep 17 00:00:00 2001
+From: "Artyom V. Poptsov" <poptsov.artyom@gmail.com>
+Date: Wed, 14 Aug 2024 07:57:20 +0300
+Subject: [PATCH] CMakeLists.txt: Adjust to use system libraries.
+
+* CMakeLists.txt: Adjust to use system-provided mmg and yaml-cpp libraries.
+---
+ CMakeLists.txt | 38 ++++++--------------------------------
+ 1 file changed, 6 insertions(+), 32 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index b11c5ba..702423e 100755
+index ca2a01f9..c6eff22f 100755
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -122,28 +122,8 @@ if(MMG_MESH)
-   add_definitions(-DMMG_MESH)
+@@ -113,28 +113,8 @@ endif()
  
+ # Mmg and its components
    # MMG
 -  set(MMG_PREFIX mmg3d)
 -  set(MMG_PREFIX_DIR ${CMAKE_CURRENT_BINARY_DIR}/${MMG_PREFIX})
@@ -19,7 +27,7 @@ index b11c5ba..702423e 100755
 -    INSTALL_DIR  ${MMG_INSTALL_DIR}
 -
 -    CMAKE_ARGS(-DCMAKE_BUILD_TYPE=Release -DBUILD=MMG3D -DLIBMMG3D_STATIC=ON
--               -DLIBMMG3D_SHARED=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>)
+-               -DLIBMMG3D_SHARED=OFF -DUSE_ELAS=OFF -DUSE_VTK=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>)
 -
 -    BUILD_COMMAND   make
 -    INSTALL_COMMAND make install
@@ -35,8 +43,8 @@ index b11c5ba..702423e 100755
  
    # MshMet
    set(MSHMET_PREFIX mshmet)
-@@ -192,14 +172,8 @@ target_include_directories(tet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/libs/tetgen)
- target_compile_definitions(tet PUBLIC TETLIBRARY) # -DTETLIBRARY: flag to compile tetgen as a library
+@@ -174,14 +154,8 @@ target_include_directories(alg PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/libs/alglib/sr
+ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/mTT/include)
  
  # yaml
 -file(GLOB yaml_SRC CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/libs/yaml/src/*.cpp) # Using file GLOB is not recomended!
@@ -52,21 +60,22 @@ index b11c5ba..702423e 100755
  
  # Compile options for debuging
  if(CMAKE_BUILD_TYPE MATCHES Debug)
-@@ -259,7 +233,7 @@ if(MARCH_NATIVE)
- endif()
+@@ -218,7 +192,7 @@ endif()
  
  # Create entries for C++ files in "ASLI" routine
--target_link_libraries(ASLI PUBLIC alg tet yaml)
-+target_link_libraries(ASLI PUBLIC alg tet ${YAML_CPP_LIBRARIES})
- if(NOT MSVC)
-   target_link_libraries(ASLI PUBLIC stdc++fs)
- endif()
-@@ -272,7 +246,7 @@ if(CGAL_MESH)
- endif()
- 
- if(MMG_MESH)
--  add_dependencies(ASLI ${MMG_PREFIX} ${MSHMET_PREFIX})
-+  add_dependencies(ASLI ${MSHMET_PREFIX})
-   target_link_libraries(ASLI PUBLIC ${MMG3D_LIBRARIES} ${MSHMET_LIBRARIES})
-   if(SCOTCH_FOUND)
-     target_link_libraries(ASLI PUBLIC ${SCOTCH_LIBRARIES} scotch)
+ add_dependencies(ASLI ${MMG_PREFIX} ${MSHMET_PREFIX})
+-target_link_libraries(ASLI PUBLIC alg yaml 
++target_link_libraries(ASLI PUBLIC alg ${YAML_CPP_LIBRARIES}
+                       CGAL::CGAL CGAL::Eigen_support 
+                       ${MMG3D_LIBRARIES} ${MSHMET_LIBRARIES}
+ )
+@@ -301,4 +275,4 @@ if(MSYS AND ASLI_DLL)
+    						      $<TARGET_FILE_DIR:ASLI>
+     )
+   endif()
+-endif()
+\ No newline at end of file
++endif()
+-- 
+2.45.2
+
