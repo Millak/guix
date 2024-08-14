@@ -32,7 +32,7 @@
 ;;; Copyright © 2022-2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
-;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -7808,6 +7808,26 @@ documentation for Ruby code.")
     (synopsis "Assorted tools for Ruby")
     (description "Tins is a Ruby library providing assorted tools.")
     (home-page "https://github.com/flori/tins")
+    (license license:expat)))
+
+(define-public ruby-gemtext
+  (package
+    (name "ruby-gemtext")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "gemtext" version))
+       (sha256
+        (base32 "1z559f5z0zvwnqgnny0zf4mppiary020ljxwpw3bdxi2hr9aj3gp"))))
+    (build-system ruby-build-system)
+    (synopsis "Gemtext parser for Ruby")
+    (description
+     "This package is a Ruby parser library for Gemtext (hypertext format
+which is intended to serve as the native response format of the Gemini
+file transfer protocol) and produces a document object of various
+nodes.")
+    (home-page "https://github.com/exastencil/gemtext")
     (license license:expat)))
 
 (define-public ruby-gem-hadar
