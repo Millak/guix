@@ -5632,6 +5632,48 @@ string.  The string can be a string retorned for @code{time.Duration} or a
 similar string with weeks or days too.")
     (license license:bsd-3)))
 
+(define-public go-github-com-yuin-gopher-lua
+  (package
+    (name "go-github-com-yuin-gopher-lua")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yuin/gopher-lua")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bvmd6kywbwzcpdqmmk6gjzrc2x4q24q1p25si4sm0s18kfqnmap"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/yuin/gopher-lua"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: "ls" needs to be substituted in _glua-tests/issues.lua and
+          ;; _lua5.1-tests/files.lua with full path, but attempt was failed:
+          ;; Throw to key `decoding-error' with args `("peek-char" "input
+          ;; decoding error" 84 #<input: _lua5.1-tests/files.lua 11>)'.
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "script_test.go"
+                  ((".issues.lua.*") "")
+                  ((".files.lua.*") ""))
+                (for-each delete-file
+                          (list "_glua-tests/issues.lua"
+                                "_lua5.1-tests/files.lua"))))))))
+    (propagated-inputs
+     (list go-github-com-chzyer-readline))
+    (home-page "https://github.com/yuin/gopher-lua")
+    (synopsis "VM and compiler for Lua in Golang")
+    (description
+     "GopherLua is a Lua5.1(+ goto statement in Lua5.2) VM and compiler.  It
+provides Go APIs that allow you to easily embed a scripting language to your
+Go host programs.")
+    (license license:expat)))
+
 (define-public go-go-etcd-io-bbolt
   (package
     (name "go-go-etcd-io-bbolt")
@@ -5948,6 +5990,17 @@ values.")
 ;;;
 ;;; Executables:
 ;;;
+
+(define-public glua
+  (package
+    (inherit go-github-com-yuin-gopher-lua)
+    (name "glua")
+    (arguments
+     (list
+      #:tests? #f
+      #:install-source? #f
+      #:import-path "github.com/yuin/gopher-lua/cmd/glua"
+      #:unpack-path "github.com/yuin/gopher-lua"))))
 
 (define-public go-chroma
   (package
