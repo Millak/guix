@@ -5388,7 +5388,8 @@ returns a package for the given channels, and using it as part of your
 operating system configuration, as in this example:
 
 @lisp
-(use-modules (guix channels))
+(use-modules (gnu packages package-management)
+             (guix channels))
 
 (define my-channels
   ;; Channels that should be available to
