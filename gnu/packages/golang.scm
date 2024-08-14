@@ -3576,7 +3576,7 @@ updating files, like @command{tail -f}.")
 (define-public go-github-com-pelletier-go-toml
   (package
     (name "go-github-com-pelletier-go-toml")
-    (version "1.9.3")
+    (version "1.9.5")
     (source
      (origin
        (method git-fetch)
@@ -3586,7 +3586,7 @@ updating files, like @command{tail -f}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0cqwnvlgs1wgdgjxlwv8j52f7d6syniadr51sjh2fya99m5wzvsn"))))
+         "1wypjrr1axkrkzp4n5gvams94f2sd7dq1pdpd2i35sgpdz6r2m6g"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/pelletier/go-toml"))
