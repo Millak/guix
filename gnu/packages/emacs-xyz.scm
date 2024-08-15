@@ -37861,6 +37861,28 @@ ASCII UML sequence diagrams in Emacs, which can be embedded in source code,
 comments or emails.")
       (license license:gpl3+))))
 
+(define-public emacs-sv-kalender-namnsdagar
+  (let ((commit "31ef6ac82e448de3db1cf0c37df54581eb9b00f6")) ;versiom bump
+    (package
+      (name "emacs-sv-kalender-namnsdagar")
+      (version "1.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/matsl/sv-kalender-namnsdagar")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1sv5p2f0i4zhfrh8pv39p5aaa9wnbzxkb58p9qslw7qli1wax2l0"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/matsl/sv-kalender-namnsdagar")
+      (synopsis "Swedish name day calendar")
+      (description
+       "This package provides the current day's name from the Swedish name
+day calendar.  It is integrated with the Emacs calendar and diary.")
+      (license license:gpl3+))))
+
 (define-public emacs-ukrainian-holidays
   ;; There is no proper release.
   ;; The base version is extracted from the source code.
