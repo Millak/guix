@@ -110,9 +110,11 @@ when producing a bootstrap libc."
       (copy-recursively (string-append libc "/include") incdir)
       (copy-linux-headers output kernel-headers)))
 
+  ;; Include *.so, *.so.*, but also empty ar archives provided for backward
+  ;; compatibility as of libc 2.39: libdl.a and libutil.a.
   (define %libc-object-files-rx "^(crt.*|ld.*|lib(c|m|dl|rt|pthread|nsl|\
 util).*\\.so(\\..*)?|lib(machuser|hurduser).so.*|(libc(rt|)|libpthread)\
-_nonshared\\.a)$")
+_nonshared\\.a|lib(dl|util)\\.a)$")
 
   (setvbuf (current-output-port) 'line)
   (let* ((libdir (string-append output "/lib")))
