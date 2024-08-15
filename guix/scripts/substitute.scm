@@ -43,7 +43,11 @@
                 #:select (uri-abbreviation nar-uri-abbreviation
                           (open-connection-for-uri
                            . guix:open-connection-for-uri)))
-  #:autoload   (gnutls) (error/invalid-session error/again error/interrupted)
+  #:autoload   (gnutls) (error/invalid-session
+                         error/again
+                         error/interrupted
+                         error/push-error
+                         error/pull-error)
   #:use-module (guix progress)
   #:use-module ((guix build syscalls)
                 #:select (set-thread-name))
@@ -425,6 +429,11 @@ server certificates."
                          (and (eq? key 'gnutls-error)
                               (memq (first args)
                                     (list error/invalid-session
+
+                                          ;; "Error in the push function" is
+                                          ;; usually a transient error.
+                                          error/push-error
+                                          error/pull-error
 
                                           ;; XXX: These two are not properly handled in
                                           ;; GnuTLS < 3.7.3, in
