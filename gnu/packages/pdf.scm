@@ -27,6 +27,7 @@
 ;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2023 Benjamin Slade <slade@lambda-y.net>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1489,7 +1490,7 @@ PDF.  Indeed @command{pdfposter} was inspired by @command{poster}.")
 (define-public pdfgrep
   (package
     (name "pdfgrep")
-    (version "2.1.2")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
@@ -1497,7 +1498,7 @@ PDF.  Indeed @command{pdfposter} was inspired by @command{poster}.")
                            name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1fia10djcxxl7n9jw2prargw4yzbykk6izig2443ycj9syhxrwqf"))))
+         "1jr0qqvkcb3xz0ps111cqwwxp1b5g5rrf75ab5whkvy0whqyaq86"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
