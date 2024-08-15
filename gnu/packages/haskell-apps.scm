@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 David Thompson <dthompson2@worcester.edu>
+;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -921,30 +922,31 @@ too slow and you'll get wound up in the scroll and crushed.")
 (define-public shellcheck
   (package
     (name "shellcheck")
-    (version "0.9.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "ShellCheck" version))
        (sha256
-        (base32 "071k2gc8rzpg9lwq9g10c9xx0zm1wcgsf8v4n1csj9fm56vy7gmb"))
+        (base32 "08bdjcdl457xz2vh8y2w29bcwh1k7sfzyvszln3498vm5m1xn22d"))
        (file-name (string-append name "-" version ".tar.gz"))))
     (build-system haskell-build-system)
     (arguments
-     '(#:haddock? #f ; TODO: Fails to build.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-man-page
-           (lambda _
-             (invoke "./manpage")))
-         (add-after 'install 'install-man-page
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "shellcheck.1"
-                           (string-append (assoc-ref outputs "out")
-                                          "/share/man/man1/"))))
-         (add-after 'register 'remove-libraries
-           (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))
+     (list #:haddock? #f ; TODO: Fails to build.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'build-man-page
+                 (lambda _
+                   (chmod "manpage" #o555)
+                   (invoke "./manpage")))
+               (add-after 'install 'install-man-page
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (install-file "shellcheck.1"
+                                 (string-append #$output
+                                                "/share/man/man1/"))))
+               (add-after 'register 'remove-libraries
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (delete-file-recursively (string-append #$output "/lib")))))))
     (native-inputs
      (list pandoc))
     (inputs
