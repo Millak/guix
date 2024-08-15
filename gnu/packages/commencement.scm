@@ -2484,7 +2484,14 @@ exec " gcc "/bin/" program
                ;; support is missing.
                ((#:configure-flags configure-flags)
                 #~(delete "-Dusethreads"
-                          #$configure-flags)))))))
+
+                          ;; On i586-gnu, linking fails with "undefined
+                          ;; reference to `__stack_chk_guard'" so avoid
+                          ;; '-fstack-protector'.
+                          #$(if (target-hurd?)
+                                #~(cons* "-A" "ccflags=-fno-stack-protector"
+                                         #$configure-flags)
+                                configure-flags))))))))
 
 (define m4-boot0
   (package
