@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2020, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2020, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -37,7 +37,7 @@
                 #:select (raw-derivation derivation-input derivation->output-path))
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:select (elf-file?))
-  #:use-module ((guix gexp) #:select (lower-object))
+  #:use-module ((guix gexp) #:select (lower-object local-file))
   #:use-module (guix monads)
   #:use-module (guix memoization)
   #:use-module (guix i18n)
@@ -770,7 +770,7 @@ $out/bin/guile --version~%"
                                       ("powerpc64le-linux"
                                        "/20210106/glibc-stripped-2.31-powerpc64le-linux-gnu.tar.xz")
                                       ("i586-gnu"
-                                       "/20200326/glibc-stripped-2.31-i586-pc-gnu.tar.xz")
+                                       "/20240816/glibc-stripped-2.39-i586-pc-gnu.tar.xz")
                                       ("powerpc-linux"
                                        "/20200923/glibc-2.32.tar.xz")
                                       ("riscv64-linux"
@@ -800,7 +800,7 @@ $out/bin/guile --version~%"
                           "0d9x80vm7ca1pd2whcmpm1h14zxpb58kqajlxlwffzm04xfsjnxm"))
                         ("i586-gnu"
                          (base32
-                          "14ddm10lpbas8bankmn5bcrlqvz1v5dnn1qjzxb19r57vd2w5952"))
+                          "0x2x6w611k6v9qdabacawamw2475p04hm3s0q95xcg063wjq4ig2"))
                         ("powerpc-linux"
                          (base32
                           "0smmssyjrlk5cvx49586smmk81gkwff0i6r91n4rir4jm6ba25sb"))
