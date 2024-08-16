@@ -26483,14 +26483,14 @@ matched.")
 (define-public r-ggnewscale
   (package
     (name "r-ggnewscale")
-    (version "0.4.10")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggnewscale" version))
        (sha256
         (base32
-         "1j8d512qhdlhfp3hb36d1dqlqlxs0i303mnn31xnq1adcwwibmlz"))))
+         "0bfzqjaxg5r9qzi6hav0m6rcw1cr90h8pwwjklbv930finrxrw5p"))))
     (properties `((upstream-name . "ggnewscale")))
     (build-system r-build-system)
     (propagated-inputs
