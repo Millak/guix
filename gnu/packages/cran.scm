@@ -11433,14 +11433,14 @@ their own grammars and easily expose them in R packages.")
 (define-public r-uuid
   (package
     (name "r-uuid")
-    (version "1.2-0")
+    (version "1.2-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "uuid" version))
        (sha256
         (base32
-         "1z9a4b7hkymkwjq69d00myy5xw8kl9g99f4m2y4lxqqjz0a0lwbk"))))
+         "15jbzj0i4qphakbi8s9yk55lm8z9s2vhgp5bj77sfvkx7mrlj3pr"))))
     (build-system r-build-system)
     (home-page "https://www.rforge.net/uuid")
     (synopsis "Tools for generating and handling of UUIDs")
