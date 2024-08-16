@@ -40071,14 +40071,14 @@ light-weight geometry library used by @url{http://postgis.net/,PostGIS}.")
 (define-public r-stars
   (package
     (name "r-stars")
-    (version "0.6-5")
+    (version "0.6-6")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "stars" version))
         (sha256
           (base32
-            "1b5gs0qa8097f2mvz4rgl46wrvk1rbbbi2a4s901hdg4bkr15jsg"))))
+            "1b679s25f9vpzrisyxs5xzc0dv47yn3prm0hi752fhpvml4kbjkh"))))
     (properties `((upstream-name . "stars")))
     (build-system r-build-system)
     (propagated-inputs
