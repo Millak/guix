@@ -34836,14 +34836,14 @@ with posterior predictive checks and leave-one-out cross-validation.")
 (define-public r-mstate
   (package
     (name "r-mstate")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mstate" version))
        (sha256
         (base32
-         "054dzrd5b0xjjjl7862q3aq1jwgrxbkqz7zpvbdirqsld3zksirw"))))
+         "0vxfayp9d21hgihrb3bfn04y76qgvqx0mcwbw5w6izpbqcwxlcw5"))))
     (properties `((upstream-name . "mstate")))
     (build-system r-build-system)
     (propagated-inputs
