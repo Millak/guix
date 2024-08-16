@@ -19682,13 +19682,13 @@ for evolution along a phylogenetic tree.")
 (define-public r-fmri
   (package
     (name "r-fmri")
-    (version "1.9.12")
+    (version "1.9.12.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "fmri" version))
               (sha256
                (base32
-                "1cv5mxcdpyf05n5pcjdawl59j7f4k40386r4m38qf15vcy45zdfq"))))
+                "0fyvnc39la5wgd9232nw6lp6yi1v3nkjwzn0sbhm4rckknibb5s4"))))
     (properties `((upstream-name . "fmri")))
     (build-system r-build-system)
     (propagated-inputs (list r-aws r-metafor r-nlme r-oro-nifti))
