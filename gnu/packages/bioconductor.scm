@@ -23720,14 +23720,14 @@ real numbers.")
 (define-public r-bgeecall
   (package
     (name "r-bgeecall")
-    (version "1.18.1")
+    (version "1.20.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BgeeCall" version))
        (sha256
         (base32
-         "1ipypkyfqx6mahiwl0gzdsi7z9j9cm5rgfw4ybgh6blfq8kg9qyk"))))
+         "02k83a01fb4gydnw81j2vc3d1m92y0n44bskbdrlm7cb1zscvc13"))))
     (properties `((upstream-name . "BgeeCall")))
     (build-system r-build-system)
     (propagated-inputs
@@ -23742,6 +23742,7 @@ real numbers.")
            r-rslurm
            r-rtracklayer
            r-sjmisc
+           r-txdbmaker
            r-tximport))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/BgeeDB/BgeeCall")
