@@ -1607,13 +1607,13 @@ syntax that can be converted to XHTML or other formats.")
 (define-public r-yaml
   (package
     (name "r-yaml")
-    (version "2.3.8")
+    (version "2.3.10")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "yaml" version))
               (sha256
                (base32
-                "1n1zlbnq3ldipnnm08whpvm8r21vxg4c9jzg7x7j3blw2pi7kl4y"))))
+                "0v9al1fh82vpjhml91j73sim7gfyc0154kxaam41sdkf6qnx8dp2"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/yaml/")
     (synopsis "Methods to convert R data to YAML and back")
