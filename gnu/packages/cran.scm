@@ -25034,13 +25034,13 @@ multipliers.  See <arXiv:1711.08013> for details.")
 (define-public r-kernlab
   (package
     (name "r-kernlab")
-    (version "0.9-32")
+    (version "0.9-33")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kernlab" version))
        (sha256
-        (base32 "1p3gbn9qgc6yqx9irkl8c23khvkx77jl96hk9hn4vsrx6i7g6kk5"))))
+        (base32 "0q9hvnams1cjjrx7hny0sjszqqg837pgn642nsdwhqipdmypih3h"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/kernlab")
     (synopsis "Kernel-based machine learning tools")
