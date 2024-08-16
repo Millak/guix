@@ -35554,13 +35554,13 @@ Kolmogorov-Smirnov, ANOVA) are also supported.")
 (define-public r-spatstat-model
   (package
     (name "r-spatstat-model")
-    (version "3.2-11")
+    (version "3.3-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "spatstat.model" version))
               (sha256
                (base32
-                "0hvnqig6cdrp8hk2fkcajag3hrqsamfr6h66wn4cs30iblic23bh"))))
+                "19xgc4hmcyhxdk4cw7k5qyffr48vyc9dj76k3blxzgrbbydrc72w"))))
     (properties `((upstream-name . "spatstat.model")))
     (build-system r-build-system)
     (propagated-inputs
@@ -35575,6 +35575,7 @@ Kolmogorov-Smirnov, ANOVA) are also supported.")
            r-spatstat-geom
            r-spatstat-random
            r-spatstat-sparse
+           r-spatstat-univar
            r-spatstat-utils
            r-tensor))
     (home-page "https://spatstat.org/")
