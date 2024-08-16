@@ -2002,13 +2002,13 @@ celestial-to-terrestrial coordinate transformations.")
 (define-public python-astroplan
   (package
     (name "python-astroplan")
-    (version "0.10")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astroplan" version))
        (sha256
-        (base32 "0nl7yi0h5nn4id1jifd8hpwzqdarq9z2iq56x0j2kmj3472cjw0n"))))
+        (base32 "0nb97fz0mlypdlvs09wyh0z7mxw0d6aqqkd9yfzhlqz1fwrprn9r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
