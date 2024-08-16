@@ -35572,6 +35572,30 @@ tests for covariate effects (Cox-Berman-Waller-Lawson,
 Kolmogorov-Smirnov, ANOVA) are also supported.")
     (license license:gpl2+)))
 
+(define-public r-spatstat-univar
+  (package
+    (name "r-spatstat-univar")
+    (version "3.0-0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "spatstat.univar" version))
+       (sha256
+        (base32 "0wa7zys089sym8f16rg4dih81miv34rj8mph0w926cpckcfm1g00"))))
+    (properties `((upstream-name . "spatstat.univar")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-spatstat-utils))
+    (home-page "https://www.spatstat.org/")
+    (synopsis
+     "One-dimensional probability distribution support for spatstat")
+    (description
+     "This is a package for estimation of one-dimensional probability
+distributions including kernel density estimation, weighted empirical
+cumulative distribution functions, Kaplan-Meier and reduced-sample estimators
+for right-censored data, heat kernels, kernel properties, quantiles and
+integration.")
+    (license license:gpl2+)))
+
 (define-public r-spatstat-utils
   (package
     (name "r-spatstat-utils")
