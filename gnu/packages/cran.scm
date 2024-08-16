@@ -35747,14 +35747,14 @@ user-level code from spatstat, except for the code for linear networks.")
 (define-public r-spatstat-linnet
   (package
     (name "r-spatstat-linnet")
-    (version "3.1-5")
+    (version "3.2-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat.linnet" version))
        (sha256
         (base32
-         "18zp6dsddc9js4ck6iqh5li4hw5qbyvh16vsa9vqk4ccgc1krl57"))))
+         "1gqivj8lsqn67068ygjqjjbnl2wywq3zp6mpqqbhyrbj7h3diw0s"))))
     (properties
      `((upstream-name . "spatstat.linnet")))
     (build-system r-build-system)
@@ -35766,6 +35766,7 @@ user-level code from spatstat, except for the code for linear networks.")
            r-spatstat-model
            r-spatstat-random
            r-spatstat-sparse
+           r-spatstat-univar
            r-spatstat-utils))
     (home-page "https://spatstat.org/")
     (synopsis "Linear networks functionality of the spatstat package")
