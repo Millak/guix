@@ -7,6 +7,7 @@
 ;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2022, 2024 dan <i@dan.games>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,7 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bison)
@@ -245,6 +247,56 @@ interpretation of the specifications for these languages.")
     (license (list license:bsd-3
                    ;; include/SPIRV/{bitutils,hex_float}.h are Apache 2.0.
                    license:asl2.0))))
+
+(define-public vkbasalt
+  (package
+    (name "vkbasalt")
+    (version "0.3.2.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DadSchoorse/vkBasalt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f3qmcmqnnh8i9qd2sd3p5w0akn8rkzfm5z0hc0wazgci4lqjbhq"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags
+           ;; Needed for giving full path to library.
+           #~(list "-Dappend_libdir_vkbasalt=TRUE")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-libdir
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("\\$LIB") "lib")))))))
+    (native-inputs (list pkg-config
+                         ;; for glslangValidator
+                         glslang))
+    (inputs (list libx11 spirv-headers vulkan-headers))
+    (home-page "https://github.com/DadSchoorse/vkBasalt")
+    (synopsis "Vulkan post processing layer for GNU/Linux")
+    (description "vkBasalt is a Vulkan post processing layer to enhance the
+visual graphics of games.
+
+Currently, the built-in effects are:
+
+@itemize @bullet
+@item
+Contrast Adaptive Sharpening
+@item
+Denoise Luma Sharpening
+@item
+Fast Approximate Anti-Aliasing
+@item
+Enhanced Subpixel Morphological Anti-Aliasing
+@item
+3D color LookUp Table
+@end itemize")
+    (license (list license:bsd-3    ; src/reshade/LICENSE.md
+                   license:zlib)))) ; LICENSE
 
 (define-public vulkan-headers
   (package
