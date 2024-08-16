@@ -9742,20 +9742,19 @@ provides a one-row summary of model-level statistics.")
 (define-public r-recipes
   (package
     (name "r-recipes")
-    (version "1.0.10")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "recipes" version))
        (sha256
         (base32
-         "1m4v9j7by0w5avqljmwck1jsgjgwc8rsby0affa5zii3xkvvvifg"))))
+         "0v9063w4ahdc0xnwry3knykl4k2656df6jxv5f0p40k8piv8ip65"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
            r-clock
            r-dplyr
-           r-ellipsis
            r-generics
            r-glue
            r-gower
