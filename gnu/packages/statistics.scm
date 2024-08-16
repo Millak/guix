@@ -7508,13 +7508,13 @@ L-Moments and Distributional Least Absolutes.")
 (define-public r-exact
   (package
     (name "r-exact")
-    (version "3.2")
+    (version "3.3")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "Exact" version))
         (sha256
-          (base32 "0a33gbhzd580i31xxsjxigg0nl8ag1x4xz3jqmq5jqappc6f5d2k"))))
+          (base32 "0hikz8f19blywxs66xj6zf4krwyivsy3w165qvrnb0m2l6dx1l7v"))))
     (properties `((upstream-name . "Exact")))
     (build-system r-build-system)
     (propagated-inputs (list r-rootsolve))
