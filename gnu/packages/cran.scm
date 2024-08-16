@@ -1194,13 +1194,13 @@ plots.")
 (define-public r-ggstatsplot
   (package
     (name "r-ggstatsplot")
-    (version "0.12.3")
+    (version "0.12.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggstatsplot" version))
               (sha256
                (base32
-                "0lm48b664nin8f32a3xpqvc95cizi27sls5m4vrymfz3aarcwrxr"))))
+                "07xv8d5yv08wcrmz6abjcfq9vv8h78axsnhgxgz08iswhb7a377a"))))
     (properties `((upstream-name . "ggstatsplot")))
     (build-system r-build-system)
     (propagated-inputs (list r-correlation
