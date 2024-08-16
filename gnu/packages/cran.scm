@@ -42161,14 +42161,14 @@ configuration of status code, short description, and verbose message.")
 (define-public r-webmockr
   (package
     (name "r-webmockr")
-    (version "0.9.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "webmockr" version))
        (sha256
         (base32
-         "1a590fyzmag1p6c9a82yp93wd1s4jdznk0416i0pv8r5jwarkdv7"))))
+         "09j6j5d60cz0sjzg7zacdk3pypip3hnhf2qq24nmvy9aiz0a4lkk"))))
     (properties `((upstream-name . "webmockr")))
     (build-system r-build-system)
     (propagated-inputs
