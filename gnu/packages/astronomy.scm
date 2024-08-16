@@ -9,7 +9,7 @@
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2023 Iliya Tikhonenko <tikhonenko@mpe.mpg.de>
+;;; Copyright © 2023-2024 Iliya Tikhonenko <tikhonenko@mpe.mpg.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
@@ -35,6 +35,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -1538,25 +1539,48 @@ crowded star fields.")
   (package
     (name "siril")
     (version "1.2.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.com/free-astro/siril")
-                    (commit version)))
-              (sha256
-               (base32
-                "0gkd8w2bpwq4ibl3vawx008yrm5k6zlj77lp98fflffcf7cj8hr5"))
-              (file-name (git-file-name name version))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/free-astro/siril")
+             (commit version)))
+       (sha256
+        (base32 "0gkd8w2bpwq4ibl3vawx008yrm5k6zlj77lp98fflffcf7cj8hr5"))
+       (file-name (git-file-name name version))))
     (build-system meson-build-system)
-    (native-inputs (list cmake git glib libconfig pkg-config))
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules `(,@%meson-build-system-modules (guix build
+                                                          glib-or-gtk-build-system))
+      #:modules '((guix build meson-build-system)
+                  ((guix build glib-or-gtk-build-system)
+                   #:prefix glib-or-gtk:)
+                  (guix build utils))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+                     (assoc-ref glib-or-gtk:%standard-phases
+                                'generate-gdk-pixbuf-loaders-cache-file))
+                   (add-after 'install 'wrap-program
+                     (lambda* _
+                       (wrap-program (string-append #$output "/bin/siril")
+                         ;; Wrapping GDK_PIXBUF_MODULE_FILE to load icons in
+                         ;; pure environments.
+                         `("GDK_PIXBUF_MODULE_FILE" =
+                           (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
+    (native-inputs (list cmake git libconfig pkg-config))
     (inputs (list cfitsio
+                  (librsvg-for-system)
                   exiv2
                   ffms2
                   fftwf
                   gsl
+                  gdk-pixbuf
                   gtk+
                   json-glib
                   libheif
+                  bash-minimal ;for wrap-program
                   libraw
                   librtprocess
                   opencv))
