@@ -25551,14 +25551,14 @@ color.")
 (define-public r-polyclip
   (package
     (name "r-polyclip")
-    (version "1.10-6")
+    (version "1.10-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "polyclip" version))
        (sha256
         (base32
-         "0qwb5w1ishbhg1nhdp8985ddvcs7ljdyrbv059hx576xmgni6brw"))))
+         "1lshalmhdaw0g0hzfy2qwid282pq3kwzy4jz1hf73xmjlp1sm3pm"))))
     (build-system r-build-system)
     (native-inputs (list pkg-config))
     (home-page "http://www.angusj.com/delphi/clipper.php")
