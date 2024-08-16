@@ -20093,14 +20093,14 @@ data.")
 (define-public r-universalmotif
   (package
     (name "r-universalmotif")
-    (version "1.22.0")
+    (version "1.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "universalmotif" version))
        (sha256
         (base32
-         "1kasmib3lp68pq5f9qzh38z7gpv8hik536iz16g8a73pc6bcbmzy"))))
+         "0nb2xc0rw9k6nr7bgf4ip33g2cs5vnhy55ms6zkwsnd30hi69wyy"))))
     (properties
      `((upstream-name . "universalmotif")))
     (build-system r-build-system)
