@@ -18554,14 +18554,14 @@ User credentials are shared with command line git through the
 (define-public r-usethis
   (package
     (name "r-usethis")
-    (version "2.2.3")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "usethis" version))
        (sha256
         (base32
-         "1cyy1k5iansg63ziph4w76kzl59dgmam7m2wp6sz9d93bjcrh34d"))))
+         "1dfcyxvw95lhm4giarsw266833sfbckk44nddjqpxqxarvwm1y4q"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
