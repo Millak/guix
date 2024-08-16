@@ -8864,17 +8864,17 @@ provides the R language without the environment.")
 (define-public r-fitdistrplus
   (package
     (name "r-fitdistrplus")
-    (version "1.1-11")
+    (version "1.2-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fitdistrplus" version))
        (sha256
         (base32
-         "0gdm06anjmihfj1d0yiqy36d887kmc0d8553pjl1f90bf4mly9r6"))))
+         "0n25b3f92pghkavk4j9l25v1k6wjwkmpyvxslf05ixpzkmd23d38"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-mass r-survival))
+     (list r-mass r-rlang r-survival))
     (native-inputs
      (list r-knitr))
     (home-page "https://riskassessment.r-forge.r-project.org")
