@@ -24323,14 +24323,14 @@ high-performance functions are provided here.")
 (define-public r-s2
   (package
     (name "r-s2")
-    (version "1.1.6")
+    (version "1.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "s2" version))
        (sha256
         (base32
-         "0rm0jd5k5w725v1bnn6ix8vic40grdh61y6qdy8jy4lhg1mjx78x"))))
+         "0y38g1zy19m7xsipns3m6avmjb9vnyw683nmlgsf4wnxa1qjqxih"))))
     (properties `((upstream-name . "s2")))
     (build-system r-build-system)
     (arguments
@@ -24347,7 +24347,7 @@ high-performance functions are provided here.")
     (propagated-inputs
      (list r-rcpp r-wk))
     (inputs
-     (list openssl))
+     (list openssl zlib))
     (native-inputs
      (list pkg-config))
     (home-page "https://r-spatial.github.io/s2/")
