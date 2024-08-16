@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Simon South <simon@simonsouth.net>
-;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
@@ -647,7 +647,7 @@ BIND and djbdns---whilst using relatively little memory.")
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
-     (list flex swig))
+     (list flex swig python-wrapper))
     (inputs
      (list expat
            libevent
