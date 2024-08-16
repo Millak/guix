@@ -15874,14 +15874,14 @@ are standardized and usable by the accompanying mutossGUI package.")
 (define-public r-metap
   (package
     (name "r-metap")
-    (version "1.10")
+    (version "1.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "metap" version))
        (sha256
         (base32
-         "18l86026g5g0pdihw41h7yck1ad5k43bb7as5qih2k5xkr680mzx"))))
+         "1dwk402kbxigz5llh223z0b98cq2vs3ij049fgsj7bna7kycks1l"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice
