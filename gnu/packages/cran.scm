@@ -9600,14 +9600,14 @@ Core algorithms are executed in parallel on systems supporting OpenMP.")
 (define-public r-rcpproll
   (package
     (name "r-rcpproll")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppRoll" version))
        (sha256
         (base32
-         "0srzfhzkk42kzrdjnhbb37946jp1p688rgysy6k3i2is8jb21zyb"))))
+         "1prnc3svhc2v1w97vbdzfyxh545zx2h0p9d1q4753f7ynrwdkxfj"))))
     (properties `((upstream-name . "RcppRoll")))
     (build-system r-build-system)
     (propagated-inputs
