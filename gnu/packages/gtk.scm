@@ -652,7 +652,7 @@ printing and other features typical of a source code editor.")
      (list `(,glib "bin")               ; for glib-genmarshal, etc.
            gettext-minimal
            gi-docgen
-           gobject-introspection-next
+           gobject-introspection
            pkg-config
            vala
            ;; For testing.

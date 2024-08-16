@@ -2517,7 +2517,7 @@ capabilities.")
            clutter
            xorg-server-for-tests))
     (propagated-inputs
-     (list gobject-introspection-next))
+     (list gobject-introspection))
     (home-page "https://www.gnu.org/software/g-golf/")
     (synopsis "Guile bindings for GObject Introspection")
     (description
