@@ -24402,6 +24402,28 @@ datum transformations.")
     ;; Either of these licenses
     (license (list license:gpl2 license:expat))))
 
+(define-public r-sfd
+  (package
+    (name "r-sfd")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "sfd" version))
+       (sha256
+        (base32 "0zffbjzdzgvz7vj1wn7j7sqmnsvskkn94w7lkjxmaahd62xdh6v3"))))
+    (properties `((upstream-name . "sfd")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli r-rlang r-tibble))
+    (home-page "https://cran.r-project.org/package=sfd")
+    (synopsis "Space-Filling Design Library")
+    (description
+     "This package provides a collection of pre-optimized space-filling
+designs, for up to ten parameters, is contained here.  Functions are provided
+to access designs described by Husslage et al (2011) and Wang and Fang (2005).
+The design types included are Audze-Eglais, MaxiMin, and uniform.")
+    (license license:expat)))
+
 (define-public r-sftime
   (package
     (name "r-sftime")
