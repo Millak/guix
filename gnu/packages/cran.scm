@@ -35807,19 +35807,24 @@ sampler).")
 (define-public r-spatstat
   (package
     (name "r-spatstat")
-    (version "3.0-8")
+    (version "3.1-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat" version))
        (sha256
         (base32
-         "0ghhj161n7bxd6hpk3hz6lq2gv8bwx5clrdp729lfyi9d1xjw162"))))
+         "04jmyngwzdb1v5yzcmnsj26kaaxxvhjnmdp7is5nrry632c30jan"))))
     (properties `((upstream-name . "spatstat")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-spatstat-data r-spatstat-explore r-spatstat-geom
-           r-spatstat-linnet r-spatstat-model r-spatstat-random
+     (list r-spatstat-data
+           r-spatstat-explore
+           r-spatstat-geom
+           r-spatstat-linnet
+           r-spatstat-model
+           r-spatstat-random
+           r-spatstat-univar
            r-spatstat-utils))
     (home-page "https://www.spatstat.org")
     (synopsis "Spatial Point Pattern analysis, model-fitting, simulation, tests")
