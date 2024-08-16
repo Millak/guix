@@ -2528,13 +2528,13 @@ the system clipboards.")
 (define-public r-clock
   (package
     (name "r-clock")
-    (version "0.7.0")
+    (version "0.7.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "clock" version))
               (sha256
                (base32
-                "0x58xhngpd2rj7da9gr1x1zwz4rliza7aakfadkqsc4c7wxpmral"))))
+                "1n7hl5mbywfshk8jid5shnsqsn1al0v636wsy14f681zkp1jyba3"))))
     (properties `((upstream-name . "clock")))
     (build-system r-build-system)
     (propagated-inputs
