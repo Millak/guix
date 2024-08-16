@@ -1807,13 +1807,13 @@ Orcid ID.")
 (define-public r-rrna
   (package
     (name "r-rrna")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RRNA" version))
        (sha256
-        (base32 "0bgsakpz1wr3wr6c5xa7wx2xmzs3xzkscrgwn6dc7f93kpq1j17p"))))
+        (base32 "05ijsnxxylfan4c4hnl20655qjzix2l43i5qmdzm19wqcf4ipylp"))))
     (properties `((upstream-name . "RRNA")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=RRNA")
