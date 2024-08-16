@@ -34,8 +34,10 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu services mail)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (guix packages)
   #:use-module (guix modules)
@@ -50,7 +52,8 @@
             %test-php-fpm
             %test-hpcguix-web
             %test-tailon
-            %test-patchwork))
+            %test-patchwork
+            %test-agate))
 
 (define %index.html-contents
   ;; Contents of the /index.html file.
@@ -657,3 +660,103 @@ HTTP-PORT."
    (name "patchwork")
    (description "Connect to a running Patchwork service.")
    (value (run-patchwork-test patchwork))))
+
+
+;;;
+;;; Agate
+;;;
+
+(define %index.gmi-contents
+  ;; Contents of the /index.gmi file.
+  "Hello, guix!")
+
+(define %make-agate-root
+  ;; Create our server root in /srv.
+  #~(begin
+      (mkdir "/srv")
+      (mkdir "/srv/gemini")
+      (mkdir "/srv/gemini-certs")
+      ;; Directory should be writable for Agate user to generate certificates
+      (let ((user (getpw "agate")))
+        (chown "/srv/gemini-certs" (passwd:uid user) (passwd:gid user)))
+      (call-with-output-file (string-append "/srv/gemini/index.gmi")
+        (lambda (port)
+          (display #$%index.gmi-contents port)))))
+
+(define %agate-os
+  (simple-operating-system
+   (service dhcp-client-service-type)
+   (simple-service 'make-agate-root activation-service-type
+                   %make-agate-root)
+   (service agate-service-type
+            (agate-configuration
+             (hostnames '("localhost"))))))
+
+(define* (run-agate-test name test-os expected-content)
+  (define os
+    (marionette-operating-system
+     test-os
+     #:imported-modules '((gnu services herd)
+                          (guix combinators))
+     #:extensions (list guile-gemini guile-gnutls)))
+
+  (define forwarded-port 1965)
+
+  (define vm
+    (virtual-machine
+     (operating-system os)
+     (port-forwardings `((1965 . ,forwarded-port)))))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-64)
+                       (gnu build marionette))
+
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin #$name)
+
+          (test-assert #$(string-append name " service running")
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (match (start-service '#$(string->symbol name))
+                  (#f #f)
+                  (('service response-parts ...)
+                   (match (assq-ref response-parts 'running)
+                     ((#t) #t)
+                     ((pid) (number? pid))))))
+             marionette))
+
+          (test-assert "Agate TCP port ready, IPv4"
+            (wait-for-tcp-port #$forwarded-port marionette))
+
+          (test-assert "Agate TCP port ready, IPv6"
+            (wait-for-tcp-port #$forwarded-port marionette
+                               #:address
+                               '(make-socket-address
+                                 AF_INET6 (inet-pton AF_INET6 "::1") #$forwarded-port)))
+
+          (test-equal "Agate responses with the specified index.gmi"
+            #$expected-content
+            (marionette-eval '(begin
+                                (use-modules (ice-9 iconv)
+                                             (gemini client)
+                                             (gemini request)
+                                             (gemini response))
+                                (bytevector->string (gemini-response-body-bytes
+                                                     (send-gemini-request
+                                                      (build-gemini-request #:host "localhost" #:port #$forwarded-port)))
+                                                    "utf8")) marionette))
+
+          (test-end))))
+  (gexp->derivation "agate-test" test))
+
+(define %test-agate
+  (system-test
+   (name "agate")
+   (description "Connect to a running Agate service.")
+   (value (run-agate-test name %agate-os %index.gmi-contents))))

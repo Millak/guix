@@ -2186,20 +2186,20 @@ root=/srv/gemini
             (default agate))
   (content  agate-configuration-content
             (default "/srv/gemini"))
-  (certs     agate-configuration-certs
-             (default "/srv/gemini-certs"))
-  (addr     agate-configuration-addr
-            (default '("0.0.0.0:1965" "[::]:1965")))
-  (hostname agate-configuration-hostname
-            (default '()))
-  (lang     agate-configuration-lang
-            (default #f))
+  (certificates agate-configuration-certificates
+                (default "/srv/gemini-certs"))
+  (addresses     agate-configuration-addresses
+                 (default '("[::]:1965" "0.0.0.0:1965")))
+  (hostnames  agate-configuration-hostnames
+              (default '()))
+  (languages     agate-configuration-languages
+                 (default #f))
   (only-tls13? agate-configuration-only-tls13
                (default #f))
   (serve-secret? agate-configuration-serve-secret
                  (default #f))
-  (central-conf? agate-configuration-central-conf
-                 (default #f))
+  (central-configuration? agate-configuration-central-configuration
+                          (default #f))
   (ed25519? agate-configuration-ed25519
             (default #f))
   (skip-port-check? agate-configuration-skip-port-check
@@ -2215,9 +2215,9 @@ root=/srv/gemini
 
 (define agate-shepherd-service
   (match-lambda
-    (($ <agate-configuration> package content certs addr
-                              hostname lang only-tls13?
-                              serve-secret? central-conf?
+    (($ <agate-configuration> package content certificates addresses
+                              hostnames languages only-tls13?
+                              serve-secret? central-configuration?
                               ed25519? skip-port-check?
                               log-ip? user group log-file)
      (list (shepherd-service
@@ -2228,19 +2228,19 @@ root=/srv/gemini
                      #~(make-forkexec-constructor
                         (list #$agate
                               "--content" #$content
-                              "--certs" #$certs
+                              "--certs" #$certificates
                               #$@(append-map
                                   (lambda x (append '("--addr") x))
-                                  addr)
+                                  addresses)
                               #$@(append-map
                                   (lambda x (append '("--hostname") x))
-                                  hostname)
-                              #$@(if lang
-                                     (list "--lang" lang)
+                                  hostnames)
+                              #$@(if languages
+                                     (list "--lang" languages)
                                      '())
                               #$@(if serve-secret? '("--serve-secret") '())
                               #$@(if only-tls13? '("--only-tls13") '())
-                              #$@(if central-conf? '("--central-conf") '())
+                              #$@(if central-configuration? '("--central-conf") '())
                               #$@(if ed25519? '("--ed25519") '())
                               #$@(if skip-port-check? '("--skip-port-check") '())
                               #$@(if log-ip? '("--log-ip") '()))
