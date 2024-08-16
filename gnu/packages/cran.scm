@@ -39383,14 +39383,14 @@ in output to the equivalent HTML.")
 (define-public r-pkgdown
   (package
     (name "r-pkgdown")
-    (version "2.0.9")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgdown" version))
        (sha256
         (base32
-         "186xzilh4079a6xjig3j4pdn99ipg4d5s5q1k75qclivq0b24m3f"))))
+         "1d4z4wv18yn00cj9wb4pizjjyvy4hqfc0mqynw6ycrldfcxxzlf4"))))
     (properties `((upstream-name . "pkgdown")))
     (build-system r-build-system)
     (inputs (list pandoc))
@@ -39401,11 +39401,11 @@ in output to the equivalent HTML.")
            r-desc
            r-digest
            r-downlit
+           r-fontawesome
            r-fs
-           r-httr
+           r-httr2
            r-jsonlite
-           r-magrittr
-           r-memoise
+           r-openssl
            r-purrr
            r-ragg
            r-rlang
