@@ -35690,18 +35690,19 @@ package.")
 (define-public r-spatstat-geom
   (package
     (name "r-spatstat-geom")
-    (version "3.2-9")
+    (version "3.3-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat.geom" version))
        (sha256
         (base32
-         "05ymr4h6g5kp6kinm8qi6mcwi51d2rp671cm3hqgyrhk91k72cx7"))))
+         "03spxazgjspmsialvjy2sv5yxjh049dns4q4l4g0zgzd4ilqmh6b"))))
     (properties `((upstream-name . "spatstat.geom")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-deldir r-polyclip r-spatstat-data r-spatstat-utils))
+     (list r-deldir r-polyclip r-spatstat-data r-spatstat-univar
+           r-spatstat-utils))
     (home-page "https://spatstat.org/")
     (synopsis "Geometrical functionality of the spatstat package")
     (description
