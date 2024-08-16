@@ -38911,13 +38911,13 @@ barplots, boxplots, histograms, ROC curves, and precision-recall curves.")
 (define-public r-paradox
   (package
     (name "r-paradox")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "paradox" version))
               (sha256
                (base32
-                "0lll3sjyn0hmxfzg71zk53f3fddibvq7762ax7gxjgiy6zgi9mny"))))
+                "120ll8xrdg9s7ip0053m0i83gshxh3n79spsfwv6dzjwsj3mmpkj"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports r-checkmate r-data-table r-mlr3misc r-r6))
