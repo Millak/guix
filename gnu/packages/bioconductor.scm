@@ -12788,13 +12788,13 @@ Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
 (define-public r-qfeatures
   (package
     (name "r-qfeatures")
-    (version "1.14.1")
+    (version "1.14.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "QFeatures" version))
               (sha256
                (base32
-                "1sgvabfad3zibrg449y7hw8l59yb2d8q01x7lp841m45b1g0q9d8"))))
+                "1vd1kvx2kr47czz58375msc2x8p155cn0zqr4w7i1v1ki951r3a4"))))
     (properties `((upstream-name . "QFeatures")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationfilter
