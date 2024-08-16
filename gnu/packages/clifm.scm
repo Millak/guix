@@ -30,7 +30,7 @@
 (define-public clifm
   (package
     (name "clifm")
-    (version "1.19")
+    (version "1.20")
     (source
      (origin
        (method git-fetch)
@@ -39,7 +39,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "062z3ic2knsrnj9bm5hh5ah47x18zpqdpvv4az88hyvrasy49p20"))))
+        (base32 "1hmky0rdrdp5zs1pgayrcgrf0ylvl2xh135r2c0g8k4ibwv3392c"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list (string-append "CC="
@@ -53,7 +53,8 @@
     (inputs (list readline acl libcap))
     (home-page "https://github.com/leo-arch/clifm")
     (synopsis "Command-line file manager")
-    (description "Clifm is a shell-like, text-based terminal file manager
+    (description
+     "Clifm is a shell-like, text-based terminal file manager
 that sits on the command line.
 
 It is built with command line principles in mind: instead of navigating
