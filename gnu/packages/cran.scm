@@ -10006,13 +10006,13 @@ for ggstatsplot.")
 (define-public r-strawr
   (package
     (name "r-strawr")
-    (version "0.0.91")
+    (version "0.0.92")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "strawr" version))
               (sha256
                (base32
-                "1nbcn20g3f3f5x9sscj3020n5h4iaphr70s90n2fz31vc4snzq2m"))))
+                "0dy6pagwvmswmrlvb9ndy8lz3krcm8fqik83l0gmv9wjb9vba27s"))))
     (properties `((upstream-name . "strawr")))
     (build-system r-build-system)
     (inputs (list curl zlib))
