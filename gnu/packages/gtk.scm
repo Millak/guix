@@ -385,7 +385,7 @@ applications.")
 (define-public pango
   (package
     (name "pango")
-    (version "1.50.14")
+    (version "1.54.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/pango/"
@@ -394,7 +394,7 @@ applications.")
               (patches (search-patches "pango-skip-libthai-test.patch"))
               (sha256
                (base32
-                "1s41sprfgkc944fva36zjmkmdpv8hn1bdpyg55xc4663pw2z4rqx"))))
+                "1n0y5l5wfq2a86dimraazvz1v9dvqdjkmpqgzkbk9rqy09syv7la"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
