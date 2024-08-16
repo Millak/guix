@@ -18226,29 +18226,30 @@ are common in Chromium-derived projects.")
     (license license:bsd-3)))
 
 (define-public emacs-gnosis
-  (package
-    (name "emacs-gnosis")
-    (version "0.3.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.thanosapollo.org/gnosis")
-             (commit version)))
-       (sha256
-        (base32
-         "03ydknrzl5xcmn5n2ybyxqmjfrqrpk0h0p6cp9xnpmra6r87xqkd"))
-       (file-name (git-file-name name version))))
-    (build-system emacs-build-system)
-    (propagated-inputs (list emacs-compat emacs-emacsql))
-    (home-page "https://thanosapollo.org/projects/gnosis")
-    (synopsis "Spaced repetition system for GNU Emacs")
-    (description
-     "Gnosis is a spaced repetition system for note-taking and self-testing
+  (let ((commit "1c3eafb6efb05d52a8b01c463d1b47efc1fb2c8e")
+        (revision "0"))
+    (package
+      (name "emacs-gnosis")
+      (version (git-version "0.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.thanosapollo.org/gnosis")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1nzgzf2109h20gigk11y5686pni4l4wx1bgdmprfz6vyjdhzmz7z"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-compat emacs-emacsql))
+      (home-page "https://github.com/emacsorphanage/ac-ispell")
+      (synopsis "Spaced repetition system for GNU Emacs.")
+      (description
+       "Gnosis is a spaced repetition system for note-taking and self-testing
 where notes are formatted as Question/Answer/Explanation. Notes are reviewed
 at spaced intervals based on the success or failure in recalling the answer to
 each question.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-drag-stuff
   (package
