@@ -4484,14 +4484,14 @@ sources.")
 (define-public r-reprex
   (package
     (name "r-reprex")
-    (version "2.1.0")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "reprex" version))
        (sha256
         (base32
-         "0ld90pkw2r7z115xdnyqk4p39vnxrc8jnn57sl4bkpg5frczw38a"))))
+         "174705043b90phm6aj5yb199pn1clipsnqgvhskhxybypj63cq68"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-callr
