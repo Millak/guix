@@ -9022,13 +9022,13 @@ Binomial data via estimation of latent structure in the natural parameter.")
 (define-public r-limma
   (package
     (name "r-limma")
-    (version "3.60.3")
+    (version "3.60.4")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "limma" version))
               (sha256
                (base32
-                "0fy3lmjrhy7301v9far5n6c3m4n3nad463rgy2fka3bk4jls6ipg"))))
+                "123z062fc0qf43zplmw5svzpdmpgxagyl1gi1bxa34426s1hfv6m"))))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
     (propagated-inputs (list r-statmod))
