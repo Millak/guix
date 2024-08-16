@@ -2302,14 +2302,14 @@ similar rank-based tests for equal probability distributions due to Neuhauser
 (define-public r-v8
   (package
     (name "r-v8")
-    (version "4.4.2")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "V8" version))
        (sha256
         (base32
-         "0w4n794l4f7hwwjr83112zf3cjx72q6ak0fn45qm6pqg8brkbg77"))))
+         "06mjjrwg9bgyfxn4gcj3bf4xc9ijx08xf8dfd8g6w0bkz5cvg3v6"))))
     (properties
      `((upstream-name . "V8")
        (updater-extra-inputs . ("libnode"))))
