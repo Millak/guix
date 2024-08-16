@@ -5975,14 +5975,14 @@ based on an interface to Fortran implementations by M. J. D. Powell.")
 (define-public r-rcppeigen
   (package
     (name "r-rcppeigen")
-    (version "0.3.4.0.0")
+    (version "0.3.4.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppEigen" version))
        (sha256
         (base32
-         "0djiyimgka7g3kfakb6mfaq7cxna9kn6kgib59x9p7qj24ha1m18"))))
+         "09jf5bvz77qsx4m6draarm7an07yxvip6bbmjbfsl2mm93qliv95"))))
     (properties `((upstream-name . "RcppEigen")))
     (build-system r-build-system)
     (propagated-inputs
