@@ -3355,13 +3355,13 @@ method for preprocessing data for conos.")
 (define-public r-pals
   (package
     (name "r-pals")
-    (version "1.8")
+    (version "1.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "pals" version))
               (sha256
                (base32
-                "0z6lkvkq7b3wsxvizljf08sjqrdcj33p5kdx6074pc5jv36dylhb"))))
+                "1rnm6yvql39b4gbly90svbb5n9m66gc7f0abrxzkll6vsn71xfar"))))
     (properties `((upstream-name . "pals")))
     (build-system r-build-system)
     (propagated-inputs
