@@ -2069,7 +2069,7 @@ control to Git repositories.")
            guile-fibers
            guile-gcrypt
            guile-git
-           guile-syntax-highlight-for-gitile
+           guile-syntax-highlight
            guile-gnutls))
     (home-page "https://git.lepiller.eu/gitile")
     (synopsis "Simple Git forge written in Guile")
