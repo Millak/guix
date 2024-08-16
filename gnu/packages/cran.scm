@@ -20959,14 +20959,14 @@ PostScript pictures in R plots.")
 (define-public r-grimport2
   (package
     (name "r-grimport2")
-    (version "0.3-1")
+    (version "0.3-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "grImport2" version))
        (sha256
         (base32
-         "1lj58z6yc2p6ns27fkgh11ac90bcihi65hf62gxpsylcn5dilsi1"))))
+         "11glz1yi76235x3di9r7nny0nfcisk12acc4xsm4m2d9ingjh4pn"))))
     (properties `((upstream-name . "grImport2")))
     (build-system r-build-system)
     (propagated-inputs
