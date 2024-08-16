@@ -4003,13 +4003,13 @@ related models.  This is done using Markov chain Monte Carlo techniques.")
 (define-public r-shadowtext
   (package
     (name "r-shadowtext")
-    (version "0.1.3")
+    (version "0.1.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "shadowtext" version))
               (sha256
                (base32
-                "109bq4d3j7vw6rcj9cjby955bdzgghkxwvwrb974xqq16kzzc6l6"))))
+                "1s3fsh6cmblyhlqrswialc9437as306ki36dyx0dv4001slvxl47"))))
     (properties `((upstream-name . "shadowtext")))
     (build-system r-build-system)
     (propagated-inputs
