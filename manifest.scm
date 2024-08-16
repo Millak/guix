@@ -24,10 +24,24 @@
 ;;
 ;;     guix shell --pure -m manifest.scm hello ...
 
+(use-modules (guix packages))
+
 (concatenate-manifests
- (list (package->development-manifest (specification->package "guix"))
+ (list (package->development-manifest
+        (let ((guix (specification->package "guix")))
+          (package/inherit guix
+            ;; Replace with non-minimal Graphviz for PDF support.
+            (native-inputs (modify-inputs (package-native-inputs guix)
+                             (replace "graphviz"
+                               (specification->package "graphviz")))))))
+
        ;; Extra packages used by unit tests.
        (specifications->manifest (list "gnupg"))
+
+       ;; Packages needed for 'make dist' and 'make distcheck'.
+       (specifications->manifest
+        (list "imagemagick"
+              "perl"))
 
        ;; Useful extras for patches submission.
        (specifications->manifest
