@@ -1553,48 +1553,51 @@ crowded star fields.")
      (list
       #:glib-or-gtk? #t
       #:imported-modules `(,@%meson-build-system-modules (guix build
-                                                          glib-or-gtk-build-system))
+                                                               glib-or-gtk-build-system))
       #:modules '((guix build meson-build-system)
                   ((guix build glib-or-gtk-build-system)
                    #:prefix glib-or-gtk:)
                   (guix build utils))
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
-                     (assoc-ref glib-or-gtk:%standard-phases
-                                'generate-gdk-pixbuf-loaders-cache-file))
-                   (add-after 'install 'wrap-program
-                     (lambda* _
-                       (wrap-program (string-append #$output "/bin/siril")
-                         ;; Wrapping GDK_PIXBUF_MODULE_FILE to load icons in
-                         ;; pure environments.
-                         `("GDK_PIXBUF_MODULE_FILE" =
-                           (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
-    (native-inputs (list cmake git libconfig pkg-config))
-    (inputs (list cfitsio
-                  (librsvg-for-system)
-                  exiv2
-                  ffms2
-                  fftwf
-                  gsl
-                  gdk-pixbuf
-                  gtk+
-                  json-glib
-                  libheif
-                  bash-minimal ;for wrap-program
-                  libraw
-                  librtprocess
-                  opencv))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'generate-gdk-pixbuf-loaders-cache-file))
+          (add-after 'install 'wrap-program
+            (lambda* _
+              (wrap-program (string-append #$output "/bin/siril")
+                ;; Wrapping GDK_PIXBUF_MODULE_FILE to load icons in pure
+                ;; environments.
+                `("GDK_PIXBUF_MODULE_FILE" =
+                  (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
+    (native-inputs
+     (list cmake git libconfig pkg-config))
+    (inputs
+     (list cfitsio
+           (librsvg-for-system)
+           exiv2
+           ffms2
+           fftwf
+           gsl
+           gdk-pixbuf
+           gtk+
+           json-glib
+           libheif
+           bash-minimal ;for wrap-program
+           libraw
+           librtprocess
+           opencv))
     (home-page "https://siril.org/")
     (synopsis "Image processing software for amateur astronomy")
     (description
-     "This package provides an astronomical image processing tool - SIRIL.  It is
-specially tailored for noise reduction and improving the signal/noise ratio of
-an image from multiple captures, as required in astronomy.  SIRIL can align
-automatically or manually, stack and enhance pictures from various file formats,
-even image sequence files (films and SER files).  It works well with limited
-system resources, like in embedded platforms, but is also very fast when run on
-more powerful computers and provides conversion to FITS from a large number of
-image formats.")
+     "This package provides an astronomical image processing tool - SIRIL.  It
+is specially tailored for noise reduction and improving the signal/noise ratio
+of an image from multiple captures, as required in astronomy.  SIRIL can align
+automatically or manually, stack and enhance pictures from various file
+formats, even image sequence files (films and SER files).  It works well with
+limited system resources, like in embedded platforms, but is also very fast
+when run on more powerful computers and provides conversion to FITS from a
+large number of image formats.")
     (license license:gpl3+)))
 
 (define-public splash
