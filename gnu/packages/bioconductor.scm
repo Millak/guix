@@ -21165,14 +21165,14 @@ db and resource files to AWS S3 buckets.")
 (define-public r-multiassayexperiment
   (package
     (name "r-multiassayexperiment")
-    (version "1.30.2")
+    (version "1.30.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MultiAssayExperiment" version))
        (sha256
         (base32
-         "1j74ql0lz2xf0jsf4cjfapdmxbf6hb22699d3dyj8gwd1s92myjz"))))
+         "0spws2kawf5rqhp5h5wi46sa07c2yhhnjhdxpmxz8gkvqsvdjqkp"))))
     (properties
      `((upstream-name . "MultiAssayExperiment")))
     (build-system r-build-system)
