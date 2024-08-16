@@ -31968,19 +31968,19 @@ problems (food web problems, linear programming problems).")
 (define-public r-shinycssloaders
   (package
     (name "r-shinycssloaders")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinycssloaders" version))
        (sha256
         (base32
-         "0r3xm273lhdhzbs2mkgw1m2kwb7z1dh1pzya8yxy5vacda1l2ikl"))))
+         "0w7gw81j5d2dvjdk49dd222bqd40ll3sl8mykg68vcz64ihdg2h3"))))
     (properties
      `((upstream-name . "shinycssloaders")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-digest r-glue r-shiny))
+     (list r-digest r-glue r-htmltools r-shiny))
     (home-page "https://github.com/andrewsali/shinycssloaders")
     (synopsis "Add CSS loading animations to Shiny outputs")
     (description
