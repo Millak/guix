@@ -38711,13 +38711,13 @@ is straightforward via mlr3tuning.")
 (define-public r-mlr3measures
   (package
     (name "r-mlr3measures")
-    (version "0.5.0")
+    (version "0.6.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3measures" version))
               (sha256
                (base32
-                "0k0i1xx63lds1870p2ljy1dlp2i376gdd0sq9s4xiqljqjb8va57"))))
+                "0vhqcfn3fijj2lwjrly2lyb9bs5msqvlwdv1asfkr9shkw61piik"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate r-prroc))
