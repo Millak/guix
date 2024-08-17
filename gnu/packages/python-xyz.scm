@@ -6993,22 +6993,22 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
 (define-public python-docx
   (package
     (name "python-docx")
-    (version "0.8.11")
+    (version "1.1.2")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "python-docx" version))
+              (uri (pypi-uri "python_docx" version))
               (sha256
                (base32
-                "1i7bxghb7knlyjain101qg1jmmz2b6qj03bi3vfxhvcml0rx418i"))))
+                "1z9ffsvksaaxr90ijzq4k3adzb6p5ipy2j3rrbfjl05rjlpg5w8c"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list behave
-           python-flake8
-           python-mock
            python-pyparsing
-           python-pytest))
+           python-pytest
+           python-pytest-cov
+           python-pytest-xdist))
     (propagated-inputs
-     (list python-lxml))
+     (list python-lxml python-typing-extensions))
     (home-page "https://github.com/python-openxml/python-docx/")
     (synopsis "Python library to create and modify Microsoft Word documents")
     (description "This Python library can be used to create and update
