@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 Adam Kandur <kefironpremise@gmail.com>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2022 jgart via Guix-patches via <guix-patches@gnu.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -2265,6 +2266,34 @@ router.")
 @url{https://godoc.org/github.com/google/gopacket/routing#Router,
 gopacket/routing.Router} interface for Golang.")
     (license license:bsd-3)))
+
+(define-public go-github-com-mailru-easyjson
+  (package
+    (name "go-github-com-mailru-easyjson")
+    (version "0.7.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mailru/easyjson")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0clifkvvy8f45rv3cdyv58dglzagyvfcqb63wl6rij30c5j2pzc1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mailru/easyjson"))
+    (propagated-inputs
+     (list go-github-com-josharian-intern))
+    (home-page "https://github.com/mailru/easyjson")
+    (synopsis "JSON serializer for Golang")
+    (description
+     "Package @code{easyjson} implements functionality to marshal/unmarshal
+Golang structs to/from JSON without the use of reflection.  It also aims to
+keep generated Go code simple enough so that it can be easily optimized or
+fixed.")
+    (license license:expat)))
 
 (define-public go-github-com-makeworld-the-better-one-go-gemini
   (package
