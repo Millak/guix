@@ -2674,6 +2674,33 @@ implemented features include
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-go-stack-stack
+  (package
+    (name "go-github-com-go-stack-stack")
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-stack/stack")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01m6l9w84yq2yyly8bdfsgc386hla1gn9431c7vr3mfa3bchj5wb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-stack/stack"))
+    (home-page "https://github.com/go-stack/stack")
+    (synopsis "Utilities to capture, manipulate, and format call stacks")
+    (description
+     "Package @code{stack} implements utilities to capture, manipulate,
+and format call stacks.  It provides a simpler API than package
+@code{runtime}.  The implementation takes care of the minutia and special
+cases of interpreting the program counter (pc) values returned by
+@code{runtime.Callers}.")
+    (license license:expat)))
+
 (define-public go-github-com-go-task-slim-sprig
   (let ((commit "afa1e2071829e4db655eb448d6c7c16eb0bc5766")
         (revision "0"))
