@@ -508,6 +508,7 @@ variable defined below.  It requires guile-json to be installed."
    ("0xndsph4v725q3xcpmxxjb9vxv19sssqnng82m9215cdsv9klgpb" "bf5f6e362f6f" "sco")
    ("0l70n8817mbmbc09fsnn2aqjj9k9dhad2gmzgphmiilf9mqm2dpf" "1f705c926a99" "si")
    ("19bqjazazww08chd1qc08dsnr2521088jq5jd4j3185yb1ypm3nr" "c1bd10d70325" "sk")
+   ("12q1nv6z4bk8yaw3vhl9xs41i7kpx1415mwg635v76fx8h94ycl3" "00eaf8d9e83b" "skr")
    ("11nmjmy2j249588ahg4mh9lxdqr476jbh28a07qxxibfa76j9vk3" "44be3cbf69b6" "sl")
    ("1ww35141nixg2s03kfmmq9fk6m3qiz2vg7p5a85shjp7i89pyj1d" "800576ff8ef9" "son")
    ("1q7nfybwc8mxdwi9fpvfhayq18mykzygkpakr5ngfz2316k8lf5r" "4de8638ac27f" "sq")
