@@ -5049,6 +5049,32 @@ queue.")
 NSQ protocol @url{https://nsq.io/}.")
     (license license:expat)))
 
+(define-public go-github-com-oklog-run
+  (package
+    (name "go-github-com-oklog-run")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oklog/run")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r55p3kgdkgw55i33lqvvvl60mjp92mhd1170m980sw98z9150jk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/oklog/run"))
+    (home-page "https://github.com/oklog/run")
+    (synopsis "Universal mechanism to manage goroutine lifecycles")
+    (description
+     "@code{run.Group} is a universal mechanism to manage goroutine
+lifecycles, written to manage component lifecycles in @code{func main} for OK
+Log.  It's useful in any circumstance where you need to orchestrate multiple
+goroutines as a unit whole.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-op-go-logging
   (package
     (name "go-github-com-op-go-logging")
