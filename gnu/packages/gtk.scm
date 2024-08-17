@@ -1874,7 +1874,7 @@ text rendering library.")
 (define-public atkmm
   (package
     (name "atkmm")
-    (version "2.36.2")
+    (version "2.36.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1882,7 +1882,7 @@ text rendering library.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0yg0v8f0xms2cfj1r9q6yrl4757wrivpb4q56rbmx626yycxsqkg"))))
+                "0x2rdjmgmxza83lznss69nz7z6ny1cbh1ih2fbdhmpn4l3m69hkf"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
