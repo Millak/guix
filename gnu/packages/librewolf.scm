@@ -117,9 +117,9 @@
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
 (define librewolf-source
-  (let* ((ff-src (firefox-source-origin "126.0.1" "0fr679rcwshwpfxidc55b2xsn4pmrr7p9ix4rr2mv2k7kwsjcc7n"))
-         (version "126.0.1-1")
-         (lw-src (librewolf-source-origin version "0cac80073vkzd85ai9rbnwixs1h9bpy4dj2ri6jxdlqsy5d663km")))
+  (let* ((ff-src (firefox-source-origin "129.0.1" "0wy0fn0pavlhlkdybr59hhbn5ng0zn56mxa7gsknf8f2whiyipwx"))
+         (version "129.0.1-1")
+         (lw-src (librewolf-source-origin version "0pvv3v23q31hdjvqi1f3cqfyjrb8dbrrbfwxj2wacak1g0mzbxf4")))
 
     (origin
       (method computed-origin-method)
@@ -215,12 +215,12 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20240607212143")
+(define %librewolf-build-id "20240817075827")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "126.0.1-1")
+    (version "129.0.1-1")
     (source librewolf-source)
     (build-system gnu-build-system)
     (arguments
@@ -691,7 +691,7 @@
                   mesa
                   mit-krb5
                   nspr
-                  nss/fixed
+                  nss-rapid
                   pango
                   pciutils
                   pipewire
