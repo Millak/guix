@@ -2768,13 +2768,13 @@ Microwave engineering.")
 (define-public python-lcapy
   (package
     (name "python-lcapy")
-    (version "1.23")
+    (version "1.24")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lcapy" version))
        (sha256
-        (base32 "13swd2nd2s20hixy4as924sr223flcvcy9zw3qlzsrcvhppzb84n"))))
+        (base32 "0lmprghkr274l3ykiq80a31njrzj7qqgm02wifkkwh2935shbk76"))))
     (build-system pyproject-build-system)
     (arguments
      (list
