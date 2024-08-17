@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,6 +74,9 @@
               "--with-user=chrony")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-CC
+            (lambda _
+              (setenv "CC" #$(cc-for-target))))
           (add-after 'unpack 'stay-inside-out
             ;; Simply setting CHRONYVARDIR to something nonsensical at install
             ;; time would result in nonsense file names in man pages.
