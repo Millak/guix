@@ -106,6 +106,8 @@ in the Mozilla clients.")
               (base32
                "0v3zds1id71j5a5si42a658fjz8nv2f6zp6w4gqrqmdr6ksz8sxv"))))))
 
+;; nss should track ESRs, but currently doesn't.  3.102.1 is the current ESR.
+
 (define-public nss
   (package
     (name "nss")
@@ -303,6 +305,71 @@ security standards.")
                          (invoke "faketime" "2024-01-23" "./nss/tests/all.sh"))
                        (format #t "test suite not run~%"))))))))))))
 
+;; nss-rapid tracks the rapid release channel.  Unless your package requires a
+;; newer version, you should prefer the `nss' package, which tracks the ESR
+;; channel.
+;;
+;; See https://wiki.mozilla.org/NSS:Release_Versions
+;; and https://wiki.mozilla.org/Rapid_Release_Model
+
+(define-public nss-rapid
+  (package
+   (inherit nss)
+   (name "nss-rapid")
+   (version "3.103")
+   (source (origin
+             (inherit (package-source nss))
+             (uri (let ((version-with-underscores
+                         (string-join (string-split version #\.) "_")))
+                    (string-append
+                     "https://ftp.mozilla.org/pub/mozilla.org/security/nss/"
+                     "releases/NSS_" version-with-underscores "_RTM/src/"
+                     "nss-" version ".tar.gz")))
+             (sha256
+              (base32
+               "0qp9rs226rr6gh51b42cdbydr4mj80cli3bfqhh7bp3jyxbvcjkv"))))
+   (arguments
+    (substitute-keyword-arguments (package-arguments nss)
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (if tests?
+                   (begin
+                     ;; Use 127.0.0.1 instead of $HOST.$DOMSUF as HOSTADDR for
+                     ;; testing.  The latter requires a working DNS or /etc/hosts.
+                     (setenv "DOMSUF" "localdomain")
+                     (setenv "USE_IP" "TRUE")
+                     (setenv "IP_ADDRESS" "127.0.0.1")
+
+                     ;; This specific test is looking at performance "now
+                     ;; verify that we can quickly dump a database", and
+                     ;; we're not testing performance here (especially
+                     ;; since we're using faketime), so raise the
+                     ;; threshold
+                     (substitute* "nss/tests/dbtests/dbtests.sh"
+                       ((" -lt 5") " -lt 50"))
+
+                     ;; Since the test suite is very lengthy, run the test
+                     ;; suite once, not thrice as done by default, by
+                     ;; selecting only the 'standard' cycle.
+                     (setenv "NSS_CYCLES" "standard")
+
+                     ;; The "PayPalEE.cert" certificate expires every six months,
+                     ;; leading to test failures:
+                     ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
+                     ;; work around that, set the time to roughly the release date.
+                     (invoke "faketime" "2024-08-17" "./nss/tests/all.sh"))
+                   (format #t "test suite not run~%"))))))))
+   (synopsis "Network Security Services (Rapid Release)")
+   (description
+    "Network Security Services (@dfn{NSS}) is a set of libraries designed to
+support cross-platform development of security-enabled client and server
+applications.  Applications built with NSS can support SSL v2 and v3, TLS,
+PKCS #5, PKCS #7, PKCS #11, PKCS #12, S/MIME, X.509 v3 certificates, and other
+security standards.
+
+This package tracks the Rapid Release channel, which updates frequently.")))
 (define-public nsncd
   (package
     (name "nsncd")
