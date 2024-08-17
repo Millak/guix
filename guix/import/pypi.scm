@@ -544,8 +544,9 @@ name)))
                         'native-inputs)
         (home-page ,(project-info-home-page info))
         (synopsis ,(project-info-summary info))
-        (description ,(beautify-description
-                       (project-info-summary info)))
+        (description ,(and=> (non-empty-string-or-false
+                              (project-info-summary info))
+                             beautify-description))
         (license ,(license->symbol
                    (string->license
                     (project-info-license info)))))
