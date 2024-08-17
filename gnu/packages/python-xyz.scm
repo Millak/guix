@@ -17156,7 +17156,7 @@ JSON Reference and JSON Pointer.")
 (define-public python-fastbencode
   (package
     (name "python-fastbencode")
-    (version "0.0.7")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
@@ -17165,7 +17165,7 @@ JSON Reference and JSON Pointer.")
        ;; Delete pre-generated Cython C files.
        (snippet '(for-each delete-file (find-files "." "\\.c$")))
        (sha256
-        (base32 "1r66w3vpmvfmssshjpgqaj2m14c8p94nymr96mwn61idajz9mg5n"))))
+        (base32 "15x1in22gwam7wwga5lbj1pd8hc9jk741pia3pv1m29n2xywpq2z"))))
     (build-system python-build-system)
     (native-inputs (list python-cython))
     (home-page "https://github.com/breezy-team/fastbencode")
