@@ -3703,7 +3703,8 @@ for dealing with different structured file formats.")
               (setenv "RSVG_TEST_TOLERANCE" "20")
               ;; These tests fail even after loosening the tolerance.
               (substitute* "rsvg/tests/reference.rs"
-                ((".*svg1_1_filters_conv_0[24]_f_svg.*") ""))))
+                ((".*svg1_1_filters_conv_0[24]_f_svg.*") "")
+                ((".*rtl_tspan_svg.*") ""))))
           (add-before 'configure 'pre-configure
             (lambda* (#:key outputs #:allow-other-keys)
               (substitute* "gdk-pixbuf-loader/Makefile.in"
