@@ -38780,6 +38780,31 @@ This package contains the protobuf logic.")
     (description "This package provides Rust bindings to libsensors.")
     (license license:miros)))
 
+(define-public rust-libspa-sys-0.7
+  (package
+    (name "rust-libspa-sys")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libspa-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ifkg4k7azfqbz4i1lk31d77nhlc2w36s133yf78a3z7yfihrrxk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.66)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-system-deps" ,rust-system-deps-6))))
+    (native-inputs
+     (list pkg-config clang))
+    (inputs
+     (list pipewire))
+    (home-page "https://pipewire.org")
+    (synopsis "Rust FFI bindings for libspa")
+    (description "This package provides Rust FFI bindings for libspa.")
+    (license license:expat)))
+
 (define-public rust-libsqlite3-sys-0.28
   (package
     (name "rust-libsqlite3-sys")
