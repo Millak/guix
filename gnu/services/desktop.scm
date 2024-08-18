@@ -11,7 +11,7 @@
 ;;; Copyright © 2017, 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
-;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2020, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021, 2022 muradm <mail@muradm.net>
@@ -49,7 +49,7 @@
                           file-system))
   #:autoload   (gnu services sddm) (sddm-service-type)
   #:use-module (gnu system)
-  #:use-module (gnu system setuid)
+  #:use-module (gnu system privilege)
   #:use-module (gnu system shadow)
   #:use-module (gnu system uuid)
   #:use-module (gnu system pam)
@@ -1732,11 +1732,12 @@ need to create it beforehand."))))
   (enlightenment        enlightenment-package
                         (default enlightenment)))
 
-(define (enlightenment-setuid-programs enlightenment-desktop-configuration)
+(define (enlightenment-privileged-programs enlightenment-desktop-configuration)
   (match-record enlightenment-desktop-configuration
       <enlightenment-desktop-configuration>
     (enlightenment)
-    (map file-like->setuid-program
+    (map (lambda (program) (privileged-program (program program)
+                                               (setuid? #t)))
          (list (file-append enlightenment
                             "/lib/enlightenment/utils/enlightenment_sys")
                (file-append enlightenment
@@ -1758,8 +1759,8 @@ need to create it beforehand."))))
                                       (package-direct-input-selector
                                         "ddcutil")
                                       enlightenment-package))
-          (service-extension setuid-program-service-type
-                             enlightenment-setuid-programs)
+          (service-extension privileged-program-service-type
+                             enlightenment-privileged-programs)
           (service-extension profile-service-type
                              (compose list
                                       enlightenment-package))))
@@ -1767,7 +1768,7 @@ need to create it beforehand."))))
    (description
     "Return a service that adds the @code{enlightenment} package to the system
 profile, and extends dbus with the ability for @code{efl} to generate
-thumbnails and makes setuid the programs which enlightenment needs to function
+thumbnails and privileges the programs which enlightenment needs to function
 as expected.")))
 
 ;;;
@@ -2053,8 +2054,9 @@ applications needing access to be root.")
          ;; without root.
          (simple-service 'mount-setuid-helpers setuid-program-service-type
                          (map (lambda (program)
-                                (setuid-program
-                                 (program program)))
+                                (privileged-program
+                                 (program program)
+                                 (setuid? #t)))
                               (list (file-append nfs-utils "/sbin/mount.nfs")
                                (file-append ntfs-3g "/sbin/mount.ntfs-3g"))))
 
