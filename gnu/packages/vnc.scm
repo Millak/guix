@@ -4,7 +4,7 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2021, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2021, 2022, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Mehmet Tekman <mtekman89@gmail.com>
 ;;; Copyright @ 2022, Kitzman <kitzman@disroot.org>
@@ -206,13 +206,20 @@ RDP, VNC, SPICE, NX, XDMCP, SSH and EXEC network protocols are supported.")
            libxdamage
            pixman))
     (home-page "https://tigervnc.org/")
-    (synopsis "High-performance, platform-neutral
-implementation of VNC (client)")
-    (description "TigerVNC is a client/server implementation of VNC (Virtual
-Network Computing).  It provides enough performance to run even 3D and video
+    (synopsis "High-performance VNC remote desktop client")
+    (description "TigerVNC implements a @acronym{VNC, Virtual Network Computing}
+client and server.  @dfn{VNC} is a remote display system that lets you view and
+interact with a virtual desktop environment running on another computer on the
+network.  Client and server may be running on different operating systems and
+architectures.
+
+TigerVNC uses a variant of Tight encoding that is greatly accelerated by the use
+of the libjpeg-turbo JPEG codec and performs fast enough to run even 3D or video
 applications.  It also provides extensions for advanced authentication methods
-and TLS encryption.  This package installs only the VNC client, the
-application which is needed to connect to VNC servers.")
+and @acronym{TLS, Transport-Level Security} encryption.
+
+This package installs only the VNC client (@command{vncviewer}), the application
+used to connect to VNC servers such as the tigervnc-server package.")
     (license license:gpl2)))
 
 (define %tigervnc-client-source (package-source tigervnc-client))
@@ -376,12 +383,20 @@ application which is needed to connect to VNC servers.")
      (modify-inputs (package-propagated-inputs xorg-server)
        (prepend xauth)))
     (synopsis "High-performance VNC remote desktop server based on Xorg")
-    (description "TigerVNC is a client/server implementation of VNC (Virtual
-Network Computing).  It provides enough performance to run even 3D and video
+    (description "TigerVNC implements a @acronym{VNC, Virtual Network Computing}
+client and server.  @dfn{VNC} is a remote display system that lets you view and
+interact with a virtual desktop environment running on another computer on the
+network.  Client and server may be running on different operating systems and
+architectures.
+
+TigerVNC uses a variant of Tight encoding that is greatly accelerated by the use
+of the libjpeg-turbo JPEG codec and performs fast enough to run even 3D or video
 applications.  It also provides extensions for advanced authentication methods
-and TLS encryption.  This package installs the VNC server, a program that will
-enable users with VNC clients to log into a graphical session on the machine
-where the server is installed.")))
+and @acronym{TLS, Transport-Level Security} encryption.
+
+This package installs the VNC server.  Permitted users can log into a graphical
+session on the machine where the server is running, using a VNC client such as
+the tigervnc-client package.")))
 
 (define-public turbovnc
   (package
