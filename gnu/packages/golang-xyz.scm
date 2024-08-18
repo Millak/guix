@@ -5075,6 +5075,49 @@ Log.  It's useful in any circumstance where you need to orchestrate multiple
 goroutines as a unit whole.")
     (license license:asl2.0)))
 
+(define-public go-github-com-oklog-ulid
+  (package
+    (name "go-github-com-oklog-ulid")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oklog/ulid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hybwyid820n80axrk863k2py93hbqlq6hxhf84ppmz0qd0ys0gq"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/oklog/ulid"))
+    (home-page "https://github.com/oklog/ulid")
+    (synopsis "Universally Unique Lexicographically Sortable Identifier in Golang")
+    (description
+     "This package implements @acronym{ULID, Universally Unique
+Lexicographically Sortable Identifier} as specificed in
+@url{https://github.com/ulid/spec}.
+
+Features of ULID:
+@itemize
+@item 128-bit compatibility with UUID
+@item 1.21e+24 unique ULIDs per millisecond
+@item lexicographically sortable
+@item canonically encoded as a 26 character string, as opposed to the 36
+character UUID
+@item uses Crockford's base32 for better efficiency and readability (5 bits
+per character)
+@item case insensitive
+@item no special characters (URL safe)
+@item monotonic sort order (correctly detects and handles the same
+millisecond)
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-github-com-op-go-logging
   (package
     (name "go-github-com-op-go-logging")
