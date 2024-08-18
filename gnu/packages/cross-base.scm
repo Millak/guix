@@ -716,13 +716,13 @@ returned."
                              (string-append kernel "/lib")) ; for Hurd's libihash
                      #t)))
                (add-before 'configure 'add-cross-binutils-to-PATH
-                 (lambda* (#:key inputs #:allow-other-keys)
+                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
                    ;; Add BINUTILS/TARGET/bin to $PATH so that 'gcc
                    ;; -print-prog-name=objdump' returns the correct name.  See
                    ;; <https://inbox.sourceware.org/libc-alpha/d72f5f6f-cc3a-bd89-0800-ffb068928e0f@linaro.org/t/>.
                    (define cross-objdump
                      (search-input-file
-                      inputs
+                      (or native-inputs inputs)
                       (string-append ,target "/bin/objdump")))
 
                    (define cross-binutils
