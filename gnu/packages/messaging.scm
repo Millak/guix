@@ -824,14 +824,14 @@ used by Pidgin and Bitlbee, among others, to access
 (define-public hexchat
   (package
     (name "hexchat")
-    (version "2.16.1")
+    (version "2.16.2")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://dl.hexchat.net/hexchat/hexchat-"
-                           version ".tar.xz"))
+       (uri (string-append "https://github.com/hexchat/hexchat/releases/"
+                           "download/v" version "/hexchat-" version ".tar.xz"))
        (sha256
-        (base32 "1iy4ln6yfgy3xysrfpjxw8fn38i3qx8jsn2mk2prshfzf7d9gr57"))))
+        (base32 "0jhfg6n9r6fn9ld21pdzdz6210d7dms401zcfdrvhx52il53921f"))))
     (build-system meson-build-system)
     (native-inputs `(("gettext" ,gettext-minimal)
                      ("glib:bin" ,glib "bin")       ;need glib-genmarshal
