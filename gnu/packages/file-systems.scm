@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2020–2022, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2017, 2018, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
@@ -682,10 +682,11 @@ from a mounted file system.")
     (home-page "https://bcachefs.org/")
     (synopsis "Tools to create and manage bcachefs file systems")
     (description
-     "The bcachefs-tools are command-line utilities for creating, checking,
-and otherwise managing bcachefs file systems.
+     "This package provides the @command{bcachefs} command-line tool with many
+subcommands for creating, checking, and otherwise managing bcachefs file
+systems.  Traditional aliases like @command{mkfs.bcachefs} are also included.
 
-Bcachefs is a @acronym{CoW, copy-on-write} file system supporting native
+@dfn{Bcachefs} is a @acronym{CoW, copy-on-write} file system supporting native
 encryption, compression, snapshots, and (meta)data checksums.  It can use
 multiple block devices for replication and/or performance, similar to RAID.
 
