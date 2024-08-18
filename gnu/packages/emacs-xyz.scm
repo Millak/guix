@@ -1229,7 +1229,7 @@ Emacs package archive}.")
                (base32
                 "1hwl2jhv1fhsdrspfhprq77n763i4zsj350q024ajy0m2kaql6ws"))))
     (build-system emacs-build-system)
-    (home-page "http://mumble.net/~campbell/emacs/paredit/")
+    (home-page "https://mumble.net/~campbell/emacs/paredit/")
     (synopsis "Emacs minor mode for editing parentheses")
     (description
      "ParEdit (paredit.el) is a minor mode for performing structured editing
