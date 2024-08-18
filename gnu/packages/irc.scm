@@ -632,13 +632,13 @@ highlighted.
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))         ; No ./configure script
+    (home-page "https://mcpcpc.github.io/kirc/")
     (synopsis "IRC client written in POSIX C99")
     (description "Kirc is an Internet Relay Chat (IRC) client.  It includes
 support for Simple Authentication and Security Layer (SASL), the
 client-to-client (CTCP) protocol, simple chat history logging, synchronous
 message handling, multi-channel joining at server connection, full support for
 all RFC 2812 commands, and customized color scheme definitions.")
-    (home-page "http://kirc.io/index.html")
     (license license:expat)))
 
 (define-public limnoria
