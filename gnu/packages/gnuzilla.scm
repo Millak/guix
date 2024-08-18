@@ -1424,6 +1424,9 @@ ca495991b7852b855"))
 
                 (setenv "MOZ_BUILD_DATE" #$%icedove-build-id) ; avoid timestamp
                 (setenv "MOZ_APP_NAME" "icedove")
+                ;; WM_CLASS (default is "$MOZ_APP_NAME-$MOZ_UPDATE_CHANNEL").
+                (setenv "MOZ_APP_REMOTINGNAME" "Icedove")
+
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" #$output
                                                  "/lib/icedove"))
                 (mkdir-p (string-append (getcwd) "/builddir"))
@@ -1496,6 +1499,7 @@ ca495991b7852b855"))
                             MimeType=x-scheme-handler/mailto;~@
                             Type=Application~@
                             Actions=ComposeMessage;~@
+                            StartupWMClass=Icedove;~@
                             [Desktop Action ComposeMessage]~@
                             Name=Write new message~@
                             Exec=~@*~a/bin/icedove -compose~%"
