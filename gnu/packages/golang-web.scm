@@ -2631,6 +2631,41 @@ multistream-select protocol.  The protocol is defined at
 which produce colorized output using github.com/fatih/color.")
     (license license:expat)))
 
+(define-public go-github-com-opentracing-contrib-go-stdlib
+  (package
+    (name "go-github-com-opentracing-contrib-go-stdlib")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/opentracing-contrib/go-stdlib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ssnfhbpljxy2v3nsw9aqmh7xlky49dpfwj275aj0b576w46ys6m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/opentracing-contrib/go-stdlib"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-github-com-opentracing-opentracing-go))
+    (home-page "https://github.com/opentracing-contrib/go-stdlib")
+    (synopsis "OpenTracing instrumentation for packages in the Golang stdlib")
+    (description
+     "This package provides an OpenTracing instrumentation for @code{net/http}
+standard library.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-opentracing-opentracing-go
   (package
     (name "go-github-com-opentracing-opentracing-go")
