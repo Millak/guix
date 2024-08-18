@@ -51,6 +51,7 @@
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -83,6 +84,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -276,6 +278,51 @@ source code editors and IDEs.")
              (sha256
               (base32
                "0d22h8xshmbpl9hba9ch3xj8vb9ybm5akpsbbh7yj07fic4h2hj6"))))))
+
+(define-public checkmake
+  (package
+    (name "checkmake")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mrtazz/checkmake")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ajrgnm5mg4b317brx53b8cpjvdw6vin1rk6yh9vrhrz014ifps2"))
+       (modules '((guix build utils)))
+       (snippet `(begin
+                   (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:instal-source? #f
+      #:import-path "github.com/mrtazz/checkmake"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-man
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (let ((man-dir (string-append #$output "/share/man")))
+                  (mkdir-p man-dir)
+                  (invoke "go-md2man"
+                          "-in" "man/man1/checkmake.1.md"
+                          "-out" (string-append man-dir "/man1")))))))))
+    (native-inputs
+     (list go-github-com-docopt-docopt-go
+           go-github-com-go-ini-ini
+           go-github-com-go-md2man
+           go-github-com-olekukonko-tablewriter
+           go-github-com-stretchr-testify))
+    (home-page "https://github.com/mrtazz/checkmake")
+    (synopsis "Linter and analyzer for @file{Makefile}")
+    (description
+     "@samp{checkmake} is an experimental tool for linting and checking
+Makefiles.  It allows for a set of configurable rules being run
+against a @file{Makefile} or a set of @file{*.mk} files.")
+    (license license:expat)))
 
 ;;; XXX: This project is abandoned upstream, and included in modern catch2
 ;;; releases.  It is still depended by the restinio test suite at this time,
