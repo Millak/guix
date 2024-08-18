@@ -1151,7 +1151,7 @@ Corporation.  The engine is independent of any language, dictionary or corpus.")
     (native-inputs (list mecab)); for mecab-config
     (home-page "https://taku910.github.io/mecab")
     (synopsis "Dictionary data for MeCab")
-    (description "This package contains dictionnary data derived from
+    (description "This package contains dictionary data derived from
 ipadic for use with MeCab.")
     (license (license:non-copyleft "mecab-ipadic/COPYING"))))
 
