@@ -5118,6 +5118,24 @@ millisecond)
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-oklog-ulid-v2
+  (package
+    (inherit go-github-com-oklog-ulid)
+    (name "go-github-com-oklog-ulid-v2")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oklog/ulid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pxjrg48zrmzzdjpsz7b2d56x1vwix2wywgbbv3sdi5mqf0hz17y"))))
+    (arguments
+     (list
+      #:import-path "github.com/oklog/ulid/v2"))))
+
 (define-public go-github-com-op-go-logging
   (package
     (name "go-github-com-op-go-logging")
@@ -6860,6 +6878,22 @@ tool."))))
       #:unpack-path "github.com/BurntSushi/toml"))
     (description
      (string-append (package-description go-github-com-burntsushi-toml)
+                    " This package provides an command line interface (CLI)
+tool."))))
+
+(define-public go-ulid
+  (package
+    (inherit go-github-com-oklog-ulid-v2)
+    (name "go-ulid")
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/oklog/ulid/v2/cmd/ulid"
+      #:unpack-path "github.com/oklog/ulid/v2"))
+    (native-inputs
+     (list go-github-com-pborman-getopt))
+    (description
+     (string-append (package-description go-github-com-oklog-ulid)
                     " This package provides an command line interface (CLI)
 tool."))))
 
