@@ -729,7 +729,16 @@ precision floating point numbers.")
     (build-system gnu-build-system)
     (arguments
      (let ((system (%current-system)))
-       `(#:make-flags (list "CFLAGS=-fPIC")
+       `(;; FIXME: Setting CFLAGS=-fPIC is not only unnecessary, it's also
+         ;; harmful because it removes the default '-O2 -g', meaning that the
+         ;; library ends up being compiled as -O0.  Consequently, some
+         ;; numerical tests fail, notably on i686-linux.  TODO: Remove
+         ;; 'CFLAGS=-fPIC' for all systems and revisit or remove
+         ;; 'disable-failing-tests' phases accordingly.
+         #:make-flags ,(if (and (not (%current-target-system))
+                                (string=? system "i686-linux"))
+                           ''()
+                           '(list "CFLAGS=-fPIC"))
          #:phases
          (modify-phases %standard-phases
            ,@(cond
@@ -756,13 +765,6 @@ precision floating point numbers.")
                ;; https://lists.gnu.org/archive/html/bug-gsl/2020-04/msg00000.html
                '((add-before 'check 'disable-failing-tests
                    (lambda _
-                     (substitute* "linalg/test.c"
-                       ((".*gsl_test\\(test_LU_decomp.*") "\n")
-                       ((".*gsl_test\\(test_LUc_decomp.*") "\n")
-                       ((".*gsl_test\\(test_QR_decomp_r.*") "\n")
-                       ((".*gsl_test\\(test_cholesky_decomp.*") "\n")
-                       ((".*gsl_test\\(test_pcholesky_solve.*") "\n")
-                       ((".*gsl_test\\(test_COD_lssolve2.*") "\n"))
                      (substitute* "spmatrix/test.c"
                        ((".*test_all.*") "\n")
                        ((".*test_float.*") "\n")
