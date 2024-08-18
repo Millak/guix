@@ -8017,6 +8017,24 @@ types.")
 @code{rust-bitcoin}.")
     (license license:cc0)))
 
+(define-public rust-bitfield-0.14
+  (package
+    (name "rust-bitfield")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bitfield" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b26k9acwss4qvrl60lf9n83l17d4hj47n5rmpd3iigf9j9n0zid"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/dzamlo/rust-bitfield")
+    (synopsis "Macros to generate bitfield-like struct")
+    (description
+     "This Rust crate provides macros to generate bitfield-like struct.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-bitflags-2
   (package
     (name "rust-bitflags")
