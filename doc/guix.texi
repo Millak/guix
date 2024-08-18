@@ -25134,7 +25134,7 @@ Package object for UDisks.
 
 @defvar gvfs-service-type
 Type for the service that provides virtual file systems for GIO
-applicaitons, which enables support for @code{trash:///}, @code{ftp://},
+applications, which enables support for @code{trash://}, @code{ftp://},
 @code{sftp://} and many other location schemas in file managers like
 Nautilus (GNOME Files) and Thunar.
 
@@ -44752,7 +44752,7 @@ Below is an example of a record type created using
    "The owner's email address.")
   (contacts
    (list-of-contact-configurations '())
-   "A list of @@code@{contact-configuation@} records which contain
+   "A list of @@code@{contact-configuration@} records which contain
 information about all your contacts."))
 @end lisp
 
