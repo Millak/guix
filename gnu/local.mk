@@ -1370,6 +1370,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghc-9.2-cabal-support-package-path.patch \
   %D%/packages/patches/ghc-9-StgCRunAsm-only-when-needed.patch	\
   %D%/packages/patches/ghc-9.2-grep-warnings.patch \
+  %D%/packages/patches/ghc-basement-fix-32-bit.patch		\
   %D%/packages/patches/ghc-testsuite-dlopen-pie.patch		\
   %D%/packages/patches/ghc-testsuite-grep-compat.patch		\
   %D%/packages/patches/ghc-testsuite-recomp015-execstack.patch	\
