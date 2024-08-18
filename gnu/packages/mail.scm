@@ -3327,7 +3327,7 @@ from the Cyrus IMAP project.")
              ;; avoids warning smtpd: couldn't enqueue offline message
              ;; smtpctl exited abnormally
              (substitute* "usr.sbin/smtpd/smtpd.h"
-               (("/usr/bin/smtpctl") "/run/setuid-programs/smtpctl"))
+               (("/usr/bin/smtpctl") "/run/privileged/bin/smtpctl"))
              (substitute* "usr.sbin/smtpd/smtpctl.c"
                ;; ‘gzcat’ is auto-detected at compile time, but ‘cat’ isn't.
                (("/bin/cat" file) (search-input-file inputs file)))

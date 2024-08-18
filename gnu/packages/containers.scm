@@ -536,7 +536,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
                    ,(string-append #$iptables       "/sbin")
                    ,(string-append #$passt          "/bin")
                    ,(string-append #$procps         "/bin") ; ps
-                   "/run/setuid-programs")))))
+                   "/run/privileged/bin")))))
           (add-after 'install 'install-completions
             (lambda _
               (invoke "make" "install.completions"
@@ -669,7 +669,7 @@ being rootless and not requiring any daemon to be running.")
                   (,(string-append #$crun           "/bin")
                    ,(string-append #$gcc            "/bin") ; cpp
                    ,(string-append #$passt          "/bin")
-                   "/run/setuid-programs")))))
+                   "/run/privileged/bin")))))
           (add-after 'install 'install-completions
             (lambda _
               (invoke "make" "install.completions"

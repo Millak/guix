@@ -3791,13 +3791,15 @@ QEMU comes with a helper program to conveniently make use of a network
 bridge interface as an unprivileged user @pxref{Network options,,, QEMU,
 QEMU Documentation}.  The binary must be made setuid root for proper
 operation; this can be achieved by adding it to the
-@code{setuid-programs} field of your (host) @code{operating-system}
+@code{privileged-programs} field of your (host) @code{operating-system}
 definition, as shown below:
 
 @example lisp
-(setuid-programs
- (cons (file-append qemu "/libexec/qemu-bridge-helper")
-       %setuid-programs))
+(privileged-programs
+ (cons (privileged-program
+         (program (file-append qemu "/libexec/qemu-bridge-helper"))
+         (setuid? #t))
+       %default-privileged-programs))
 @end example
 
 The file @file{/etc/qemu/bridge.conf} must also be made to allow the

@@ -17,7 +17,7 @@
 ;;; Copyright © 2016 Petter <petter@mykolab.ch>
 ;;; Copyright © 2017 Mekeor Melire <mekeor.melire@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Marek Benc <dusxmt@gmx.com>
 ;;; Copyright © 2017 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2018 Thomas Sigurdsen <tonton@riseup.net>
@@ -2730,15 +2730,17 @@ temperature of the screen.")
     (description "@code{xsecurelock} is an X11 screen locker which uses
 a modular design to avoid the usual pitfalls of screen locking utility design.
 
-As a consequence of the modular design, the usual screen locker service
-shouldn't be used with @code{xsecurelock}.  Instead, you need to add a helper
-binary to setuid-binaries:
+As a consequence of this design, you shouldn't use the usual screen locker
+service with @code{xsecurelock}.  Instead, add a helper binary to your
+@code{operating-system}'s @code{privileged-programs} field:
+
 @example
-(setuid-programs
+(privileged-programs
  (cons*
-  (setuid-program
-   (program (file-append xsecurelock \"/libexec/xsecurelock/authproto_pam\")))
-  %setuid-programs))
+  (privileged-program
+   (program (file-append xsecurelock \"/libexec/xsecurelock/authproto_pam\"))
+   (setuid? #t))
+  %default-privileged-programs))
 @end example")
     (license license:asl2.0)))
 

@@ -209,9 +209,9 @@ and write-back caching.")
         (string-append "--sysconfdir="
                        (assoc-ref %outputs "out")
                        "/etc")
-        ;; udevil expects these programs to be run with uid set as root.
-        ;; user has to manually add these programs to setuid-programs.
-        ;; mount and umount are default setuid-programs in guix system.
+        ;; udevil expects these programs to be run with an UID of root.
+        ;; mount and umount are %default-privileged-programs on Guix System;
+        ;; the others must be explicitly added if desired.
         "--with-mount-prog=/run/privileged/bin/mount"
         "--with-umount-prog=/run/privileged/bin/umount"
         "--with-losetup-prog=/run/privileged/bin/losetup"

@@ -172,7 +172,7 @@ which allows users to view a desktop computing environment.")
               ;; variable.
               (substitute* "src/usb-acl-helper.c"
                 (("ACL_HELPER_PATH\"/spice-client-glib-usb-acl-helper\"")
-                 "\"/run/setuid-programs/spice-client-glib-usb-acl-helper\""))))
+                 "\"/run/privileged/bin/spice-client-glib-usb-acl-helper\""))))
           (add-before 'configure 'correct-polkit-dir
             (lambda _
               (substitute* "meson.build"
