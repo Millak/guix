@@ -1,7 +1,7 @@
 ;; GNU Guix news, for use by 'guix pull'.
 ;;
 ;; Copyright © 2019-2024 Ludovic Courtès <ludo@gnu.org>
-;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;; Copyright © 2019–2021, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;; Copyright © 2019, 2020, 2021, 2023 Julien Lepiller <julien@lepiller.eu>
@@ -32,6 +32,31 @@
 
 (channel-news
  (version 0)
+ (entry (commit "4e58dfee6c7456d1e662f66041b8a157efe8710a")
+        (title
+         (en "More capable @code{privileged-programs} replace @code{setuid-programs}")
+         (nl "Capabelere @code{privileged-programs} vervangen @code{setuid-programs}"))
+        (body
+         (en "Where the kernel supports it, Guix System can now assign
+POSIX@tie{}@dfn{capabilities} to trusted executables.  Capabilities offer a
+more granular alternative to the traditional setuid and setgid permissions,
+which remain available.
+
+To reflect this, @code{(gnu system setuid)} has been renamed to @code{(gnu
+system privilege)}.  @code{privileged-programs} replaces @code{setuid-programs}
+as @code{operating-system} field and defaults to
+@code{%default-privileged-programs}.  The executables themselves have moved from
+@file{/run/setuid-programs} to @file{/run/privileged/bin}.")
+         (nl "Waar de kernel dit toelaat kan Guix System nu
+POSIX@tie{}@dfn{capabilities} toewijzen aan vertrouwde uitvoerbare bestanden.
+``Capabilities'' zijn een fijnmaziger alternatief voor de klassieke setuid- en
+setgid-rechten, die ook beschikbaar blijven.
+
+Om dit duidelijk te maken heet @code{(gnu system setuid)} nu @code{(gnu system
+privilege)}.  @code{privileged-programs} vervangt @code{setuid-programs} als
+veld in het @code{operating-system} en heeft @code{%default-privileged-programs}
+als standaardwaarde.  De uitvoerbare bestanden verhuizen van
+@file{/run/setuid-programs} naar @file{/run/privileged/bin}.")))
  (entry (commit "26638b8e8129aa755586d017677b4cf076bafda6")
         (title
          (en "The containerd service is separated from @code{docker-service-type}")
