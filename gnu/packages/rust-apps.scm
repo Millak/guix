@@ -50,6 +50,7 @@
 (define-module (gnu packages rust-apps)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -66,6 +67,7 @@
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
+  #:use-module (gnu packages crates-gtk)
   #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages crates-vcs)
   #:use-module (gnu packages crates-web)
@@ -77,6 +79,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages icu4c)
@@ -854,6 +857,88 @@ defaults for 80% of the use cases.")
     (synopsis "Terminal UI for git")
     (description "This package provides a fast Terminal UI for git.")
     (license license:expat)))
+
+(define-public helvum
+  (package
+    (name "helvum")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/pipewire/helvum")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q8gkx7djrfdl8fykppsqkxiadsq47v0xhj612nxlrvjz8n77ygn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-glib" ,rust-glib-0.18)
+                       ("rust-libadwaita" ,rust-libadwaita-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pipewire" ,rust-pipewire-0.7))
+       #:imported-modules (,@%glib-or-gtk-build-system-modules
+                           ,@%cargo-build-system-modules)
+       #:modules ((guix build cargo-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'install-extra
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (source (assoc-ref inputs "source"))
+                    (share (string-append out "/share"))
+                    (hicolor (string-append share "/icons/hicolor")))
+               (mkdir-p hicolor)
+               (with-directory-excursion hicolor
+                 (mkdir-p "scalable/apps")
+                 (install-file
+                  (string-append source "/data/icons/org.pipewire.Helvum.svg")
+                  "scalable/apps")
+                 (mkdir-p "symbolic/apps")
+                 (install-file
+                  (string-append
+                   source "/data/icons/org.pipewire.Helvum-symbolic.svg")
+                  "symbolic/apps"))
+               (with-directory-excursion share
+                 (mkdir-p "applications")
+                 (with-directory-excursion "applications"
+                   (install-file
+                    (string-append
+                     source "/data/org.pipewire.Helvum.desktop.in") ".")
+                   (substitute* "org.pipewire.Helvum.desktop.in"
+                     (("@icon@") "org.pipewire.Helvum")
+                     (("Exec=helvum")
+                      (string-append "Exec="
+                                     (string-append out "/bin/helvum"))))
+                   (rename-file "org.pipewire.Helvum.desktop.in"
+                                "org.pipewire.Helvum.desktop"))
+                 (mkdir-p "metainfo")
+                 (with-directory-excursion "metainfo"
+                   (install-file
+                    (string-append
+                     source
+                     "/data/org.pipewire.Helvum.metainfo.xml.in") ".")
+                   (substitute* "org.pipewire.Helvum.metainfo.xml.in"
+                     (("@app-id@") "org.pipewire.Helvum"))
+                   (rename-file "org.pipewire.Helvum.metainfo.xml.in"
+                                "org.pipewire.Helvum.metainfo.xml"))))))
+         (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+           (assoc-ref glib-or-gtk:%standard-phases
+                      'generate-gdk-pixbuf-loaders-cache-file))
+         (add-after 'install 'glib-or-gtk-compile-schemas
+           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+         (add-after 'install 'glib-or-gtk-wrap
+           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+    (native-inputs (list pkg-config clang))
+    (inputs (list glib gtk libadwaita pipewire))
+    (home-page "https://gitlab.freedesktop.org/pipewire/helvum")
+    (synopsis "GTK patchbay for pipewire")
+    (description "This package provides a GTK patchbay for pipewire.")
+    (license license:gpl3)))
 
 (define-public hexyl
   (package
