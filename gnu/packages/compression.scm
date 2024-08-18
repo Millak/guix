@@ -2958,7 +2958,7 @@ compression and decompression speed compared to Deflate using Zlib.")
 (define-public unrar-free
   (package
     (name "unrar-free")
-    (version "0.1.3")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -2967,14 +2967,14 @@ compression and decompression speed compared to Deflate using Zlib.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12idmr5rjmw7dg2mi6250q599nywrirgc8553353a4swf5n1pmx4"))))
+        (base32 "1qf2fdr4bl10kys2fsb6090r9xj0ascrk7pn0iklsv1ajwcql3qf"))))
     (build-system gnu-build-system)
-    (inputs
-     `(("libarchive" ,libarchive)))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           pkg-config))
+    (inputs
+     (list libarchive))
     (home-page "https://gitlab.com/bgermann/unrar-free")
     (synopsis "Extract files from RAR archives")
     (description
