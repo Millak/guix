@@ -393,55 +393,50 @@ provided the driver also exposes the buttons.")
                                 "xsane-tighten-default-umask.patch"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Remove ancient bundled lprng code under a non-free licence.  See
-           ;; <https://trisquel.info/en/issues/10713>, which solves the problem
-           ;; by replacing it with a newer (free) copy.  We let the build fall
-           ;; back to the system version instead, which appears to work fine.
-           (delete-file "lib/snprintf.c")
-           (substitute* "lib/Makefile.in"
-             (("snprintf\\.o ") ""))
-           #t))))
+        #~(begin
+            ;; Remove ancient bundled lprng code under a non-free licence.  See
+            ;; <https://trisquel.info/en/issues/10713>, which solves the problem
+            ;; by replacing it with a newer (free) copy.  We let the build fall
+            ;; back to the system version instead, which appears to work fine.
+            (delete-file "lib/snprintf.c")
+            (substitute* "lib/Makefile.in"
+              (("snprintf\\.o ") ""))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "xsanedocdir=" (assoc-ref %outputs "out")
-                            "/share/doc/" ,name "-" ,version))
-       #:tests? #f                                ; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-invalid-dereference
-           ;; Fix the following compilation error with libpng:
-           ;;   xsane-save.c: In function ‘xsane_save_png’:
-           ;;   xsane-save.c:4913:21: error: dereferencing pointer to
-           ;;   incomplete type ‘png_struct {aka struct png_struct_def}’
-           ;;       if (setjmp(png_ptr->jmpbuf))
-           ;;                         ^
-           (lambda _
-             (substitute* "src/xsane-save.c"
-               (("png_ptr->jmpbuf") "png_jmpbuf(png_ptr)"))
-             #t))
-         (add-after 'unpack 'use-sane-help-browser
-           (lambda _
-             (substitute* "src/xsane.h"
-               (("netscape") (which "xdg-open")))
-             #t))
-         (add-after 'install 'delete-empty-/sbin
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (rmdir (string-append out "/sbin"))
-               #t))))))
+     (list
+      #:make-flags
+      #~(list (string-append "xsanedocdir=" #$output
+                             "/share/doc/" #$name "-" #$version))
+      #:tests? #f                       ; no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-invalid-dereference
+            ;; Fix the following compilation error with libpng:
+            ;;   xsane-save.c: In function ‘xsane_save_png’:
+            ;;   xsane-save.c:4913:21: error: dereferencing pointer to
+            ;;   incomplete type ‘png_struct {aka struct png_struct_def}’
+            ;;       if (setjmp(png_ptr->jmpbuf))
+            ;;                         ^
+            (lambda _
+              (substitute* "src/xsane-save.c"
+                (("png_ptr->jmpbuf") "png_jmpbuf(png_ptr)"))))
+          (add-after 'unpack 'use-sane-help-browser
+            (lambda _
+              (substitute* "src/xsane.h"
+                (("netscape") (which "xdg-open")))))
+          (add-after 'install 'delete-empty-/sbin
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (rmdir (string-append out "/sbin"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("gtk+" ,gtk+-2)
-       ("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libtiff" ,libtiff)
-       ("sane-backends" ,sane-backends)
-
-       ;; To open the manual from the Help menu.
-       ("xdg-utils" ,xdg-utils)))
+     (list gtk+-2
+           lcms
+           libjpeg-turbo
+           libtiff
+           sane-backends
+           xdg-utils))                  ;to open the manual from the Help menu
     (home-page "https://gitlab.com/sane-project/frontend/xsane")
     (synopsis "Featureful graphical interface for document and image scanners")
     (description
