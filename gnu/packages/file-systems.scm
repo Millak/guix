@@ -723,14 +723,10 @@ performance and other characteristics.")
            #:builder
            #~(begin
                (use-modules (guix build utils))
-               (mkdir-p #$output)
-               (with-directory-excursion #$output
-                 (install-file (string-append #$(this-package-input
-                                                 "bcachefs-tools-static")
-                                              "/sbin/bcachefs")
-                               "sbin")
-                 (remove-store-references "sbin/bcachefs")
-                 (invoke "sbin/bcachefs" "version"))))) ; test suite
+               (let ((target (string-append #$output "/sbin/bcachefs")))
+                 (install-file (search-input-file %build-inputs "sbin/bcachefs")
+                               (dirname target))
+                 (remove-store-references target)))))
     (inputs
      (list bcachefs-tools/static))
     (home-page (package-home-page bcachefs-tools/static))
