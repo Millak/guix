@@ -521,14 +521,14 @@ the same, being completely separated from the Internet.")
     ;; Track the ‘mainline’ branch.  Upstream considers it more reliable than
     ;; ’stable’ and recommends that “in general you deploy the NGINX mainline
     ;; branch at all times” (https://www.nginx.com/blog/nginx-1-6-1-7-released/)
-    (version "1.27.0")
+    (version "1.27.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nginx.org/download/nginx-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "170ja338zh7wdyva34cr7f3wfq59434sssn51d5jvakyz0y0w8xp"))))
+                "1z5x0i0k1hmnxm7mb3dfn6qrz9am96my5ivinxl3gsp1dj5acyxx"))))
     (build-system gnu-build-system)
     (inputs (list libxml2 libxslt openssl pcre zlib))
     (arguments
