@@ -53580,6 +53580,32 @@ along with strong support for variations and the core header tables.")
        #:cargo-development-inputs
        (("rust-futures" ,rust-futures-0.3))))))
 
+(define-public rust-pipewire-sys-0.7
+  (package
+    (name "rust-pipewire-sys")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pipewire-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0r4z0farzflycgfp6x7z65h57np4l1qnpj4r8z5lcwkkgd70h349"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.66)
+                       ("rust-libspa-sys" ,rust-libspa-sys-0.7)
+                       ("rust-system-deps" ,rust-system-deps-6))))
+    (native-inputs
+     (list pkg-config clang))
+    (inputs
+     (list pipewire))
+    (home-page "https://pipewire.org")
+    (synopsis "Rust FFI bindings for PipeWire")
+    (description
+     "This package provides Rust FFI bindings for @code{PipeWire}.")
+    (license license:expat)))
+
 (define-public rust-pkg-config-0.3
   (package
     (name "rust-pkg-config")
