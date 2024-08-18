@@ -6230,7 +6230,7 @@ file or files to several hosts.")
                (install-file "completions/dust.fish"
                              (string-append share "/fish/vendor_completions.d"))
                (install-file "completions/_dust"
-                             (string-append share "/zsh/site-fuctions"))))))))
+                             (string-append share "/zsh/site-functions"))))))))
     (home-page "https://github.com/bootandy/dust")
     (synopsis "Graphical disk usage analyzer")
     (description "This package provides a graphical disk usage analyzer in
