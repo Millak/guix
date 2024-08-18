@@ -38805,6 +38805,39 @@ This package contains the protobuf logic.")
     (description "This package provides Rust FFI bindings for libspa.")
     (license license:expat)))
 
+(define-public rust-libspa-0.7
+  (package
+    (name "rust-libspa")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libspa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i58ayw50brjh1a7gzfs9ijwl42lqmq2k4b7c2w1ijnx41q62d04"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; NOTE: 1 fail, `async_seq_panic' test should panic.
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-convert-case" ,rust-convert-case-0.6)
+                       ("rust-cookie-factory" ,rust-cookie-factory-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libspa-sys" ,rust-libspa-sys-0.7)
+                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-system-deps" ,rust-system-deps-6)
+                       ("rust-pipewire" ,rust-pipewire-0.7))))
+    (native-inputs
+     (list pkg-config clang))
+    (inputs
+     (list pipewire))
+    (home-page "https://pipewire.org")
+    (synopsis "Rust bindings for libspa")
+    (description "This package provides Rust bindings for libspa.")
+    (license license:expat)))
+
 (define-public rust-libsqlite3-sys-0.28
   (package
     (name "rust-libsqlite3-sys")
