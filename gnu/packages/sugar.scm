@@ -1277,14 +1277,10 @@ import logging
              sugar-toolkit-gtk3))
       (native-inputs
        (list gettext-minimal))
-      (home-page "https://github.com/sugarlabs/sugar-commander")
-      (synopsis "Manage your Sugar journal")
-      (description "Sugar-commander lets you import items from removeable
-devices like USB drives and SD cards using a familiar hierarchical view of
-files on these devices, as opposed to the flattened Journal view that the
-Sugar Journal gives to these devices.  It also enables you to see how much
-disk space each Journal entry uses, generates thumbnails, and does other
-things to enhance your use of the Journal.")
+      (home-page "https://github.com/sugarlabs/turtlepond")
+      (synopsis "Turtle-based strategy game")
+      (description "Turtle in a Pond is a strategy game.  The goal is to
+surround the turtle before it runs off the screen.")
       (license license:gpl2+))))
 
 (define-public sugar-typing-turtle-activity
