@@ -715,7 +715,7 @@ performance and other characteristics.")
 (define-public bcachefs/static
   (package
     (name "bcachefs-static")
-    (version (package-version bcachefs-tools))
+    (version (package-version bcachefs-tools/static))
     (source #f)
     (build-system trivial-build-system)
     (arguments
@@ -733,11 +733,12 @@ performance and other characteristics.")
                  (invoke "sbin/bcachefs" "version"))))) ; test suite
     (inputs
      (list bcachefs-tools/static))
-    (home-page (package-home-page bcachefs-tools))
+    (home-page (package-home-page bcachefs-tools/static))
     (synopsis "Statically-linked bcachefs command from bcachefs-tools")
-    (description "This package provides the statically-linked @command{bcachefs}
-from the bcachefs-tools package.  It is meant to be used in initrds.")
-    (license (package-license bcachefs-tools))))
+    (description
+     "This package provides the statically-linked @command{bcachefs} from the
+bcachefs-tools package.  It is meant to be used in initrds.")
+    (license (package-license bcachefs-tools/static))))
 
 (define-public exfatprogs
   (package
