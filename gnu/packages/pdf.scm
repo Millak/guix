@@ -503,13 +503,13 @@ reading and editing of existing PDF files.")
 (define-public xpdf
   (package
    (name "xpdf")
-   (version "4.04")
+   (version "4.05")
    (source
     (origin
       (method url-fetch)
       (uri (string-append "https://dl.xpdfreader.com/xpdf-" version ".tar.gz"))
       (sha256
-       (base32 "1pmsark94xza8q31wvfvp8n7l3c4qfd4ggj09i98y13npzy27kk3"))))
+       (base32 "1sjw5b7j404py1rblc8zxm6nar8km7yr2h7kffylyn5nmkapww4j"))))
    (build-system cmake-build-system)
    (inputs (list cups freetype libpng qtbase-5 zlib))
    (arguments
