@@ -896,14 +896,14 @@ from the jfsutils package.  It is meant to be used in initrds.")
 (define-public nilfs-utils
   (package
     (name "nilfs-utils")
-    (version "2.2.9")
+    (version "2.2.11")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://nilfs.sourceforge.io/download"
                             "/nilfs-utils-" version ".tar.bz2"))
         (sha256
-         (base32 "15vsayvzr8nc29n939sz9ddq46vpn53rp8h8qv484h88qac3kxjx"))))
+         (base32 "1k9l5kzhdph3jh04kxz4dn5yb210205iycbnpklrpi6jy1zqj0l6"))))
     (build-system gnu-build-system)
     (arguments
      (list
