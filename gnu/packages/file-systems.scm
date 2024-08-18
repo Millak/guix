@@ -818,7 +818,8 @@ performance and other characteristics.")
                        `(,lz4 "static")
                        `(,util-linux "static")
                        `(,zlib "static")
-                       `(,zstd "static"))))))
+                       `(,zstd "static"))))
+    (synopsis "Statically-linked, minimal variant of bcachefs-tools")))
 
 (define-public bcachefs/static
   (package
