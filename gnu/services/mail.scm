@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
-;;; Copyright © 2017, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2020, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
@@ -32,8 +32,8 @@
   #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system pam)
+  #:use-module (gnu system privilege)
   #:use-module (gnu system shadow)
-  #:use-module (gnu system setuid)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages dav)
@@ -1744,32 +1744,32 @@ match from local for any action outbound
   (match-record config <opensmtpd-configuration> (package config-file setgid-commands?)
     (if setgid-commands?
         (list
-         (setuid-program
+         (privileged-program
           (program (file-append package "/sbin/smtpctl"))
           (setuid? #false)
           (setgid? #true)
           (group "smtpq"))
-         (setuid-program
+         (privileged-program
           (program (file-append package "/sbin/sendmail"))
           (setuid? #false)
           (setgid? #true)
           (group "smtpq"))
-         (setuid-program
+         (privileged-program
           (program (file-append package "/sbin/send-mail"))
           (setuid? #false)
           (setgid? #true)
           (group "smtpq"))
-         (setuid-program
+         (privileged-program
           (program (file-append package "/sbin/makemap"))
           (setuid? #false)
           (setgid? #true)
           (group "smtpq"))
-         (setuid-program
+         (privileged-program
           (program (file-append package "/sbin/mailq"))
           (setuid? #false)
           (setgid? #true)
           (group "smtpq"))
-         (setuid-program
+         (privileged-program
           (program (file-append package "/sbin/newaliases"))
           (setuid? #false)
           (setgid? #true)
@@ -1790,7 +1790,7 @@ match from local for any action outbound
                              (compose list opensmtpd-configuration-package))
           (service-extension shepherd-root-service-type
                              opensmtpd-shepherd-service)
-          (service-extension setuid-program-service-type
+          (service-extension privileged-program-service-type
                              opensmtpd-set-gids)))
    (description "Run the OpenSMTPD, a lightweight @acronym{SMTP, Simple Mail
 Transfer Protocol} server.")))
