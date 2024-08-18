@@ -429,8 +429,8 @@ interface.")
                        "--reproducible-build"
                        "--package-path=/"
                        (string-append "--bin-path=" out "/bin")
-                       (string-append "--lib-path=" out "/lib")
-                       (string-append "--share-path=" out "/share")))))
+                       (string-append "--lib-path=" out "/lib/clasp")
+                       (string-append "--share-path=" out "/share/clasp")))))
          (replace 'build
            (lambda* _
              (invoke "ninja" "-C" "build")))
