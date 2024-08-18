@@ -27896,8 +27896,10 @@ There are multiple main modules for fsio:
         ("rust-rustix" ,rust-rustix-0.37)
         ("rust-windows-sys" ,rust-windows-sys-0.48))))
     (home-page "https://github.com/bytecodealliance/fs-set-times")
-    (synopsis "Set filesystem timestamps")
-    (description "Set filesystem timestamps")
+    (synopsis "Set file system timestamps")
+    (description
+     "This Rust crate provides functions to set timestamps on files,
+directories, and other file system objects.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-fs-utils-1
@@ -32410,9 +32412,15 @@ characters in HTML, decoding and unescaping HTML entities as well.")
         ("rust-walkdir" ,rust-walkdir-2))))
     (home-page "https://github.com/byron/jwalk")
     (synopsis
-     "Filesystem walk performed in parallel with streamed and sorted results")
+     "File system walk performed in parallel with streamed and sorted results")
     (description
-     "Filesystem walk performed in parallel with streamed and sorted results.")
+     "This Rust crate implements a file system walk that runs in parallel
+using @code{rayon}.  It attempts to combine the parallelism of @code{ignore}
+with @code{walkdir}'s streaming iterator API.  Entries are streamed in sorted
+order with options for custom sorting, filtering, and skipping.
+
+Directory traversal is already pretty fast.  If you don't need this crate's
+speed then walkdir provides a smaller and more tested single threaded implementation.")
     (license license:expat)))
 
 (define-public rust-koibumi-base32-0.0.2
