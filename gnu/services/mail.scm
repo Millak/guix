@@ -1743,37 +1743,20 @@ match from local for any action outbound
 (define (opensmtpd-set-gids config)
   (match-record config <opensmtpd-configuration> (package config-file setgid-commands?)
     (if setgid-commands?
-        (list
-         (privileged-program
-          (program (file-append package "/sbin/smtpctl"))
-          (setuid? #false)
-          (setgid? #true)
-          (group "smtpq"))
-         (privileged-program
-          (program (file-append package "/sbin/sendmail"))
-          (setuid? #false)
-          (setgid? #true)
-          (group "smtpq"))
-         (privileged-program
-          (program (file-append package "/sbin/send-mail"))
-          (setuid? #false)
-          (setgid? #true)
-          (group "smtpq"))
-         (privileged-program
-          (program (file-append package "/sbin/makemap"))
-          (setuid? #false)
-          (setgid? #true)
-          (group "smtpq"))
-         (privileged-program
-          (program (file-append package "/sbin/mailq"))
-          (setuid? #false)
-          (setgid? #true)
-          (group "smtpq"))
-         (privileged-program
-          (program (file-append package "/sbin/newaliases"))
-          (setuid? #false)
-          (setgid? #true)
-          (group "smtpq")))
+        (map (lambda (command)
+               (privileged-program
+                (program (file-append package "/" command))
+                (setgid? #t)
+                (group "smtpq")))
+             (list "sbin/smtpctl"
+
+                   ;; Also privilege the compatibility symlinks created by
+                   ;; the Guix opensmtpd package; all synonyms for smtpctl.
+                   "sbin/mailq"
+                   "sbin/makemap"
+                   "sbin/newaliases"
+                   "sbin/sendmail"
+                   "sbin/send-mail"))
         '())))
 
 (define opensmtpd-service-type
