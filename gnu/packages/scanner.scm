@@ -421,9 +421,9 @@ provided the driver also exposes the buttons.")
               (substitute* "src/xsane-save.c"
                 (("png_ptr->jmpbuf") "png_jmpbuf(png_ptr)"))))
           (add-after 'unpack 'use-sane-help-browser
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/xsane.h"
-                (("netscape") (which "xdg-open")))))
+                (("netscape") (search-input-file inputs "bin/xdg-open")))))
           (add-after 'install 'delete-empty-/sbin
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((out (assoc-ref outputs "out")))
