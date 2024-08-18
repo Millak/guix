@@ -375,6 +375,7 @@ application which is needed to connect to VNC servers.")
     (propagated-inputs
      (modify-inputs (package-propagated-inputs xorg-server)
        (prepend xauth)))
+    (synopsis "High-performance VNC remote desktop server based on Xorg")
     (description "TigerVNC is a client/server implementation of VNC (Virtual
 Network Computing).  It provides enough performance to run even 3D and video
 applications.  It also provides extensions for advanced authentication methods
