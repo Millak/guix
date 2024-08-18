@@ -40,6 +40,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
+;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1926,6 +1927,32 @@ It can also compare (@dfn{diff}) binaries with graphs and extract information
 like relocation symbols.  It is able to deal with malformed binaries, making
 it suitable for security research and analysis.")
     (license license:lgpl3)))
+
+(define-public zycore
+  (package
+    (name "zycore")
+    (version "1.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/zyantific/zycore-c")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0s962pkqybh1xbs75y4jb4bqc9qnq0sviqd570mirqdhhq87agib"))))
+    (build-system cmake-build-system)
+    (native-inputs (list googletest))
+    (arguments (list #:configure-flags
+                     #~(list "-DZYCORE_BUILD_SHARED_LIB=ON"
+                             #$(if (%current-target-system)
+                                   "-DZYCORE_BUILD_TESTS=OFF"
+                                   "-DZYCORE_BUILD_TESTS=ON"))))
+    (home-page "https://github.com/zyantific/zycore-c")
+    (synopsis "Internal library for Zydis")
+    (description
+     "This package provides platfrom-independent types, macros
+and a fallback for environments without libc for Zydis.")
+    (license license:expat)))
 
 (define-public asco
   (package
