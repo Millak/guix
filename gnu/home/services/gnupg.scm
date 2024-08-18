@@ -180,7 +180,7 @@ enabled, @command{gpg-agent} acts as a drop-in replacement for OpenSSH's
   (verbose?
     (boolean #f)
     "Provide extra output to the log file.")
-  (gnupg-aleady-torified?
+  (gnupg-already-torified?
     (boolean #f)
     "GnuPG is already configured to use tor and parcimonie won't attempt to use
 tor directly.")
@@ -194,7 +194,7 @@ tor directly.")
 (define (home-parcimonie-shepherd-service config)
   "Return a user service to run parcimonie."
   (match-record config <home-parcimonie-configuration>
-    (parcimonie verbose? gnupg-aleady-torified?
+    (parcimonie verbose? gnupg-already-torified?
                 refresh-guix-keyrings? extra-content)
     (let ((log-file #~(string-append %user-log-dir "/parcimonie.log")))
       (list (shepherd-service
@@ -208,7 +208,7 @@ tor directly.")
                            #$@(if verbose?
                                 '("--verbose")
                                 '())
-                           #$@(if gnupg-aleady-torified?
+                           #$@(if gnupg-already-torified?
                                 '("--gnupg_already_torified")
                                 '())
                            #$@(if (not (string=? extra-content ""))
