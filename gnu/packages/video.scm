@@ -3128,7 +3128,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package
     (name "yt-dlp")
-    (version "2024.07.09")
+    (version "2024.08.06")
     (source
      (origin
        (method git-fetch)
@@ -3137,7 +3137,7 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zw8zaihfx6fg1l9ynwm0d4zy6k30jwi7qbq9ylsl93yg1a73js9"))))
+        (base32 "0k44p1a9nckj7m6gxz7zggci0iihflivxvkh9l8wwbnsfvqhyfrn"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? ,(not (%current-target-system))
