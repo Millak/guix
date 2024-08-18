@@ -53606,6 +53606,37 @@ along with strong support for variations and the core header tables.")
      "This package provides Rust FFI bindings for @code{PipeWire}.")
     (license license:expat)))
 
+(define-public rust-pipewire-0.7
+  (package
+    (name "rust-pipewire")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pipewire" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sg9cbvhp0s07a337zwli0xm40f8wkvm06d72nsr1s35vp40kl52"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libspa" ,rust-libspa-0.7)
+                       ("rust-libspa-sys" ,rust-libspa-sys-0.7)
+                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pipewire-sys" ,rust-pipewire-sys-0.7)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list pipewire clang))
+    (home-page "https://pipewire.org")
+    (synopsis "Rust bindings for PipeWire")
+    (description "This package provides Rust bindings for @code{PipeWire}.")
+    (license license:expat)))
+
 (define-public rust-pkg-config-0.3
   (package
     (name "rust-pkg-config")
