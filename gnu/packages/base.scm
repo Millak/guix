@@ -134,6 +134,14 @@ command-line arguments, multiple languages, and so on.")
    (arguments
     `(#:configure-flags
       (list "--enable-perl-regexp")
+
+      ;; XXX: On 32-bit Hurd platforms, 'time_t' is defined as a 32-bit
+      ;; integer in 'hurd_types.defs', so this Gnulib test always fails.
+      #:make-flags ,(if (and (not (%current-target-system))
+                             (string=? (%current-system) "i586-gnu"))
+                        ''("XFAIL_TESTS=test-year2038")
+                        ''())
+
       #:phases
       (modify-phases %standard-phases
         (add-after 'install 'fix-egrep-and-fgrep
