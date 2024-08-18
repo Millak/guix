@@ -5772,6 +5772,41 @@ a Guile implementation of CBOR.")
     (home-page "https://inqlab.net/git/guile-cbor.git")
     (license license:gpl3+)))
 
+(define-public guile-qr-code
+  (package
+    (name "guile-qr-code")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/artyom-poptsov/guile-qr-code")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pbsnkz8pw1x8n9mjq8rm37wmalzbcz98gk8mcfycyd896qdmf4w"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'strip))))
+    (native-inputs (list autoconf
+                         automake
+                         pkg-config
+                         texinfo
+                         ;; needed when cross-compiling.
+                         guile-3.0
+                         guile-lib
+                         guile-png))
+    (inputs (list bash-minimal guile-3.0 guile-lib guile-png))
+    (synopsis "Guile QR Code library")
+    (description
+     "GNU Guile QR code generator that can create QR codes from text and binary data.
+The resulting QR codes can be rendered to ASCII art strings or to PNG images (using
+@url{https://github.com/artyom-poptsov/guile-png, Guile-PNG} API.)")
+    (home-page "https://github.com/artyom-poptsov/guile-qr-code")
+    (license (list license:gpl3+ license:expat))))
+
 (define-public guile-quickcheck
   (package
     (name "guile-quickcheck")
