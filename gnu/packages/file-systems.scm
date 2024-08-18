@@ -722,9 +722,7 @@ performance and other characteristics.")
      (list #:modules '((guix build utils))
            #:builder
            #~(begin
-               (use-modules (guix build utils)
-                            (ice-9 ftw)
-                            (srfi srfi-26))
+               (use-modules (guix build utils))
                (mkdir-p #$output)
                (with-directory-excursion #$output
                  (install-file (string-append #$(this-package-input
