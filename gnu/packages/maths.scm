@@ -728,65 +728,68 @@ precision floating point numbers.")
     (outputs '("out" "static"))
     (build-system gnu-build-system)
     (arguments
-     (let ((system (%current-system)))
-       `(;; FIXME: Setting CFLAGS=-fPIC is not only unnecessary, it's also
-         ;; harmful because it removes the default '-O2 -g', meaning that the
-         ;; library ends up being compiled as -O0.  Consequently, some
-         ;; numerical tests fail, notably on i686-linux.  TODO: Remove
-         ;; 'CFLAGS=-fPIC' for all systems and revisit or remove
-         ;; 'disable-failing-tests' phases accordingly.
-         #:make-flags ,(if (and (not (%current-target-system))
-                                (string=? system "i686-linux"))
-                           ''()
-                           '(list "CFLAGS=-fPIC"))
-         #:phases
-         (modify-phases %standard-phases
-           ,@(cond
-              ((and (target-riscv64?)
-                    (%current-target-system))
-               '((add-after 'unpack 'force-bootstrap
-                   (lambda _
-                     ;; gsl ships with an old configure script that does not
-                     ;; support riscv64. Regenerate it.
-                     (delete-file "configure")))))
+     (list ;; FIXME: Setting CFLAGS=-fPIC is not only unnecessary, it's also
+           ;; harmful because it removes the default '-O2 -g', meaning that the
+           ;; library ends up being compiled as -O0.  Consequently, some
+           ;; numerical tests fail, notably on i686-linux.  TODO: Remove
+           ;; 'CFLAGS=-fPIC' for all systems and revisit or remove
+           ;; 'disable-failing-tests' phases accordingly.
+           #:make-flags (if (and (not (%current-target-system))
+                                 (string=? (%current-system) "i686-linux"))
+                            #~'()
+                            #~(list "CFLAGS=-fPIC"))
+           #:phases
+           #~(modify-phases %standard-phases
+               #$@(cond
+                   ((and (target-riscv64?)
+                         (%current-target-system))
+                    #~((add-after 'unpack 'force-bootstrap
+                         (lambda _
+                           ;; gsl ships with an old configure script that does not
+                           ;; support riscv64. Regenerate it.
+                           (delete-file "configure")))))
 
-              ((or (string-prefix? "aarch64" system)
-                   (string-prefix? "powerpc" system))
-               ;; Some sparse matrix tests are failing on AArch64 and PowerPC:
-               ;; https://lists.gnu.org/archive/html/bug-gsl/2020-04/msg00001.html
-               '((add-before 'check 'disable-failing-tests
-                   (lambda _
-                     (substitute* "spmatrix/test.c"
-                       ((".*test_complex.*") "\n"))))))
+                   ((or (string-prefix? "aarch64" (%current-system))
+                        (string-prefix? "powerpc" (%current-system)))
+                    ;; Some sparse matrix tests are failing on AArch64 and PowerPC:
+                    ;; https://lists.gnu.org/archive/html/bug-gsl/2020-04/msg00001.html
+                    #~((add-before 'check 'disable-failing-tests
+                         (lambda _
+                           (substitute* "spmatrix/test.c"
+                             ((".*test_complex.*")
+                              "\n"))))))
 
-              ((string-prefix? "i686" system)
-               ;; There are rounding issues with these tests on i686:
-               ;; https://lists.gnu.org/archive/html/bug-gsl/2016-10/msg00000.html
-               ;; https://lists.gnu.org/archive/html/bug-gsl/2020-04/msg00000.html
-               '((add-before 'check 'disable-failing-tests
-                   (lambda _
-                     (substitute* "spmatrix/test.c"
-                       ((".*test_all.*") "\n")
-                       ((".*test_float.*") "\n")
-                       ((".*test_complex.*") "\n"))
+                   ((string-prefix? "i686" (%current-system))
+                    ;; There are rounding issues with these tests on i686:
+                    ;; https://lists.gnu.org/archive/html/bug-gsl/2016-10/msg00000.html
+                    ;; https://lists.gnu.org/archive/html/bug-gsl/2020-04/msg00000.html
+                    #~((add-before 'check 'disable-failing-tests
+                         (lambda _
+                           (substitute* "spmatrix/test.c"
+                             ((".*test_all.*") "\n")
+                             ((".*test_float.*") "\n")
+                             ((".*test_complex.*") "\n"))
 
-                     ;; XXX: These tests abort with:
-                     ;; gsl: cholesky.c:645: ERROR: matrix is not positive definite
-                     (substitute* '("multifit_nlinear/test.c"
-                                    "multilarge_nlinear/test.c")
-                       (("gsl_ieee_env_setup.*" all)
-                        (string-append "exit (77);\n" all)))))))
+                           ;; XXX: These tests abort with:
+                           ;; gsl: cholesky.c:645: ERROR: matrix is not positive definite
+                           (substitute* '("multifit_nlinear/test.c"
+                                          "multilarge_nlinear/test.c")
+                             (("gsl_ieee_env_setup.*" all)
+                              (string-append "exit (77);\n" all)))))))
 
-              (else '()))
-           (add-after 'install 'move-static-library
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((static (string-append (assoc-ref outputs "static") "/lib/"))
-                     (out    (string-append (assoc-ref outputs "out") "/lib/")))
-                 (mkdir-p static)
-                 (rename-file (string-append out "libgsl.a")
-                              (string-append static "libgsl.a"))
-                 (rename-file (string-append out "libgslcblas.a")
-                              (string-append static "libgslcblas.a")))))))))
+                   (else #~()))
+               (add-after 'install 'move-static-library
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((static (string-append (assoc-ref outputs
+                                                           "static")
+                                                "/lib/"))
+                         (out (string-append (assoc-ref outputs "out")
+                                             "/lib/")))
+                     (mkdir-p static)
+                     (rename-file (string-append out "libgsl.a")
+                                  (string-append static "libgsl.a"))
+                     (rename-file (string-append out "libgslcblas.a")
+                                  (string-append static "libgslcblas.a"))))))))
     (native-inputs
      (if (and (target-riscv64?)
               (%current-target-system))
