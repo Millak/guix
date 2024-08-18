@@ -173,7 +173,7 @@ RDP, VNC, SPICE, NX, XDMCP, SSH and EXEC network protocols are supported.")
 (define-public tigervnc-client
   (package
     (name "tigervnc-client")
-    (version "1.13.1")
+    (version "1.14.0")
     (source
      (origin
        (method git-fetch)
@@ -181,11 +181,11 @@ RDP, VNC, SPICE, NX, XDMCP, SSH and EXEC network protocols are supported.")
              (url "https://github.com/TigerVNC/tigervnc")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1ymyay51sig9cs74ggb1vnyy7dzddkqa0ijjxvhb2v9v9y920ab1"))
+        (base32 "1nj34l9yy7ij7i52sdrgvjjxbhhwbszg9pwh5bc03c8ihgzma1af"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f                   ; Tests that do exists are not automated.
+     '(#:tests? #f                   ; tests that do exists are not automated
        #:phases (modify-phases %standard-phases
                   (replace 'install
                     (lambda* (#:key outputs #:allow-other-keys)
@@ -197,6 +197,7 @@ RDP, VNC, SPICE, NX, XDMCP, SSH and EXEC network protocols are supported.")
      (list zlib
            gnutls
            libjpeg-turbo
+           ;;ffmpeg                     ;TODO: add this for h264 encoding
            fltk
            linux-pam
            libx11
@@ -264,7 +265,7 @@ used to connect to VNC servers such as the tigervnc-server package.")
        ;; Patch the xorg-server build system so that it builds the VNC
        ;; extension.
        (patches (cons (file-append %tigervnc-client-source
-                                   "/unix/xserver21.1.1.patch")
+                                   "/unix/xserver21.patch")
                       (origin-patches (package-source xorg-server))))
        (file-name (string-append name "-" version ".tar.xz"))))
     (arguments
@@ -273,7 +274,7 @@ used to connect to VNC servers such as the tigervnc-server package.")
        ((#:tests? #f #f)
         #f)
        ((#:configure-flags flags)
-        #~(cons* "--with-pic"           ; Taken from BUILDING.txt
+        #~(cons* "--with-pic"           ; taken from BUILDING.txt
                  "--without-dtrace"
                  "--disable-static"
                  "--disable-dri2"
@@ -316,12 +317,12 @@ used to connect to VNC servers such as the tigervnc-server package.")
                            (string-append #$(this-package-input "font-alias")
                                           "share/fonts/X11")
                            all))
-                  ;; Adjust the location used to locate of the .desktop files.
+                  ;; Adjust the location where .desktop files will be saved.
                   (("/usr/share/xsessions")
                    "/run/current-system/profile/share/xsessions")
-                  ;; Do not require a system-provided Xsession shell script,
-                  ;; as Guix System has none.  This causes the foreach loop to
-                  ;; iterate an empty list (disabled).
+                  ;; Do not require a system-provided Xsession shell script.
+                  ;; Guix System has none, causing the for loop to iterate
+                  ;; over an empty list.
                   (("\"/etc/X11/xinit/Xsession\", \"/etc/X11/Xsession\"")
                    "()")
                   (("if \\(not defined \\$Xsession)")
