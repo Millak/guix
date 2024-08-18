@@ -752,8 +752,22 @@ bcachefs-tools package.  It is meant to be used in initrds.")
         (base32 "0plj52kjvhy94hdk0bq8bc7ql6yh44x76kryxhn46vwbxayv790j"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--disable-static")))
+     (list
+      #:configure-flags
+      #~(list "--disable-static")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "FSCK1" "../fsck/fsck.exfat")
+                ;; Upstream CI uses a second FSCK provided by its host operating
+                ;; system to verify the results of the newly-built one.  That
+                ;; makes no sense in Guix, but we can detect crashes, unexpected
+                ;; inconsistencies, and other badness by testing with only one.
+                (setenv "FSCK2" (getenv "FSCK1"))
+                (with-directory-excursion "tests"
+                  (invoke "./test_fsck.sh"))))))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://github.com/exfatprogs/exfatprogs")
