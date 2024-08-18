@@ -1954,6 +1954,38 @@ it suitable for security research and analysis.")
 and a fallback for environments without libc for Zydis.")
     (license license:expat)))
 
+(define-public zydis
+  (package
+    (name "zydis")
+    (version "4.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/zyantific/zydis")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "15iw6wcg2van8pw54xs15zk5cniqm8d8vbd1w1br9azv8jxsqjva"))))
+    (build-system cmake-build-system)
+    (arguments (list #:configure-flags
+                     #~(list "-DZYAN_SYSTEM_ZYCORE=ON"
+                             "-DZYDIS_BUILD_SHARED_LIB=ON"
+                             "-DZYDIS_BUILD_MAN=ON")))
+    (native-inputs (list python-minimal ronn-ng))
+    (inputs (list zycore))
+    (home-page "https://zydis.re")
+    (synopsis "Disassembler and code generation library for x86 and AMD64")
+    (description
+     "Zydis is a decoder and disassembler library with the following features:
+@itemize
+@item Support for all x86 and AMD64 instructions and extensions
+@item Optimization for high performance
+@item No dynamic memory allocation
+@item Thread-safe by design
+@item Smaller file-size overhead compared to other common disassembler libraries
+@end itemize")
+    (license license:expat)))
+
 (define-public asco
   (package
     (name "asco")
