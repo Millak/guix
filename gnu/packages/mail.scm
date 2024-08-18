@@ -3289,7 +3289,10 @@ from the Cyrus IMAP project.")
     (inputs
      ;; OpenSMTPd bundled (a subset of) libasr and libtls, which we use.  See
      ;; https://www.mail-archive.com/misc@opensmtpd.org/msg05909.html for why.
-     (list bdb
+     (list bash-minimal    ;sh invoked at run time
+           bdb
+           coreutils       ;for cat
+           gzip            ;for zcat
            libbsd          ;https://github.com/OpenSMTPD/OpenSMTPD/issues/1233
            libevent
            libressl
@@ -3300,30 +3303,36 @@ from the Cyrus IMAP project.")
            groff                        ;for man pages
            pkg-config))
     (arguments
-     `(#:configure-flags
-       (list "--localstatedir=/var"
-             "--with-libbsd"
-             ;; This is the default only if it exists at build time—it doesn't.
-             "--with-path-socket=/var/run"
-             "--with-path-CAfile=/etc/ssl/certs/ca-certificates.crt"
-             "--with-user-smtpd=smtpd"
-             "--with-user-queue=smtpq" "--with-group-queue=smtpq"
-             "--with-auth-pam"
-             "--with-table-db")
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:configure-flags
+      #~(list "--localstatedir=/var"
+              "--with-libbsd"
+              ;; This is the default only if it exists at build time—it doesn't.
+              "--with-path-socket=/var/run"
+              "--with-path-CAfile=/etc/ssl/certs/ca-certificates.crt"
+              "--with-user-smtpd=smtpd"
+              "--with-user-queue=smtpq" "--with-group-queue=smtpq"
+              "--with-auth-pam"
+              "--with-table-db"
+
+              ;; This is called at run time but defaults to the native zcat in
+              ;; $PATH, breaking cross-compilation.
+              (string-append "ac_cv_path_ZCAT="
+                             #$(this-package-input "gzip") "/bin/zcat"))
+      #:phases
+      `(modify-phases %standard-phases
          ;; Fix some incorrectly hard-coded external tool file names.
          (add-after 'unpack 'patch-FHS-file-names
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              ;; avoids warning smtpd: couldn't enqueue offline message
              ;; smtpctl exited abnormally
              (substitute* "usr.sbin/smtpd/smtpd.h"
                (("/usr/bin/smtpctl") "/run/setuid-programs/smtpctl"))
              (substitute* "usr.sbin/smtpd/smtpctl.c"
                ;; ‘gzcat’ is auto-detected at compile time, but ‘cat’ isn't.
-               (("/bin/cat") (which "cat")))
+               (("/bin/cat" file) (search-input-file inputs file)))
              (substitute* "usr.sbin/smtpd/mda_unpriv.c"
-               (("/bin/sh") (which "sh")))))
+               (("/bin/sh" file) (search-input-file inputs file)))))
          ;; OpenSMTPD provides a single smtpctl utility to control both the
          ;; daemon and the local submission subsystem.  To accomodate systems
          ;; that require historical interfaces such as sendmail, newaliases or
