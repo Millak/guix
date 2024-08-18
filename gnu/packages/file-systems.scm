@@ -765,10 +765,14 @@ performance and other characteristics.")
 		 (list bcachefs-tools-minimal)
 		 (list))))))
 
-(define-public bcachefs-tools/static
+(define-public bcachefs-tools-minimal/static
+  ;; The static variant is public for consistency with the other file system
+  ;; tools packages, but ours is based on the private minimal package.  We
+  ;; don't need/want a bcachefs with FUSE support in the initrd, and nobody
+  ;; is likely to complain about the lack of a non-minimal bcachefs-static…
   (package
     (inherit bcachefs-tools-minimal)
-    (name "bcachefs-tools-static")
+    (name "bcachefs-tools-minimal-static")
     (arguments
      (substitute-keyword-arguments (package-arguments bcachefs-tools-minimal)
        ((#:phases phases #~%standard-phases)
@@ -811,7 +815,7 @@ performance and other characteristics.")
 (define-public bcachefs/static
   (package
     (name "bcachefs-static")
-    (version (package-version bcachefs-tools/static))
+    (version (package-version bcachefs-tools-minimal/static))
     (source #f)
     (build-system trivial-build-system)
     (arguments
@@ -824,13 +828,13 @@ performance and other characteristics.")
                                (dirname target))
                  (remove-store-references target)))))
     (inputs
-     (list bcachefs-tools/static))
-    (home-page (package-home-page bcachefs-tools/static))
+     (list bcachefs-tools-minimal/static))
+    (home-page (package-home-page bcachefs-tools-minimal/static))
     (synopsis "Statically-linked bcachefs command from bcachefs-tools")
     (description
      "This package provides the statically-linked @command{bcachefs} from a
 minimal bcachefs-tools package.  It is meant to be used in initrds.")
-    (license (package-license bcachefs-tools/static))))
+    (license (package-license bcachefs-tools-minimal/static))))
 
 (define-public exfatprogs
   (package
