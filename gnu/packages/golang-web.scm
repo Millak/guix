@@ -3403,6 +3403,31 @@ Caching.")
 to jQuery to the Go language.")
     (license license:bsd-3)))
 
+(define-public go-github-com-puerkitobio-purell
+  (package
+    (name "go-github-com-puerkitobio-purell")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PuerkitoBio/purell")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zv1pkfvnrpv18ji3mgqa1k77h066yz5hvhdr1mxdz19kdjc5l43"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/PuerkitoBio/purell"))
+    (propagated-inputs
+     (list go-golang-org-x-net go-golang-org-x-text))
+    (home-page "https://github.com/PuerkitoBio/purell")
+    (synopsis "Tiny Go library to normalize URLs")
+    (description
+     "This package provides implements a functionality of URL normalizer as
+described in @url{http://tools.ietf.org/html/rfc3986#section-6, RFC 3986}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-quic-go-qpack
   (package
     (name "go-github-com-quic-go-qpack")
