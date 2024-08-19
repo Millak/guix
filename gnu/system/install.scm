@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -27,7 +27,7 @@
 (define-module (gnu system install)
   #:use-module (gnu)
   #:use-module (gnu system)
-  #:use-module (gnu system setuid)
+  #:use-module (gnu system privilege)
   #:use-module (gnu bootloader u-boot)
   #:use-module (guix gexp)
   #:use-module (guix store)
@@ -540,8 +540,9 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
 
     ;; We don't need setuid programs, except for 'passwd', which can be handy
     ;; if one is to allow remote SSH login to the machine being installed.
-    (setuid-programs (list (setuid-program
-                            (program (file-append shadow "/bin/passwd")))))
+    (privileged-programs (list (privileged-program
+                                (program (file-append shadow "/bin/passwd"))
+                                (setuid? #t))))
 
     (pam-services
      ;; Explicitly allow for empty passwords.
