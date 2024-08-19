@@ -940,7 +940,7 @@ The deprecated @file{/run/setuid-programs} directory is also populated with
 symbolic links to their @file{/run/privileged/bin} counterpart.  It will be
 removed in a future Guix release.")))
 
-(define setuid-program-service-type
+(define-deprecated/alias setuid-program-service-type
   ;; Deprecated alias to ease transition.  Will be removed!
   privileged-program-service-type)
 
