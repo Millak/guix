@@ -22468,7 +22468,7 @@ literate programming tools for exporting, weaving and tangling.")
 (define-public emacs-polymode-ansible
   (package
     (name "emacs-polymode-ansible")
-    (version "0.4.1")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -22477,8 +22477,18 @@ literate programming tools for exporting, weaving and tangling.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0980z444419pk7xgic6g5vvi30yibxfimd0rp0zznrshmc9xxra8"))))
+        (base32 "17c0c2gsxw892hq1acxsvl3i1cgpwfkk76hszcr9ydw566478972"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(list "maint/poly-ansible-jinja2-filters-generator.el")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-source-files
+            (lambda _
+              (let ((el-files (find-files "./lisp" ".*\\.el$")))
+                (for-each (lambda (f) (copy-file f (basename f)))
+                          el-files)))))))
     (propagated-inputs
      (list emacs-ansible
            emacs-ansible-doc
