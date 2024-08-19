@@ -37714,8 +37714,8 @@ go directly to where they belong.")
       (license license:gpl3+))))
 
 (define-public emacs-org-roam
-  (let ((commit "74422df546a515bc984c2f3d3a681c09d6f43916")
-        (revision "0"))
+  (let ((commit "0b9fcbc97b65b349826e63bad89ca121a08fd2be")
+        (revision "1"))
     (package
       (name "emacs-org-roam")
       (version (git-version "2.2.2" revision commit))
@@ -37727,7 +37727,7 @@ go directly to where they belong.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0vhl69y6yk2zzfixjdwr8vxl2k921h0syshk5123r1nm9jp3i1s9"))))
+          (base32 "04vqwrsb71jdb66fkahmxwvx8cssgqamrradbdgp3ygf8alwc7ml"))))
       (build-system emacs-build-system)
       (arguments
        (list
