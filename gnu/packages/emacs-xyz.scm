@@ -1656,6 +1656,32 @@ on stdout instead of using a socket as the Emacsclient does.")
 libgit2 bindings for Emacs, intended to boost the performance of Magit.")
       (license license:gpl2+))))
 
+(define-public emacs-llama
+  (package
+    (name "emacs-llama")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tarsius/llama")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rgm5jv9iv8b0xabdwicrpih2d3slchmv17xdjk705dqhfc18f4w"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #true
+           #:test-command #~(list "emacs" "-Q" "--batch"
+                                  "-l" "llama.el"
+                                  "-f" "ert-run-tests-batch-and-exit")))
+    (home-page "https://github.com/tarsius/llama")
+    (synopsis "Compact syntax for short lambda")
+    (description
+     "This package implements the macro @code{##}, which provides compact
+syntax for short lambda.")
+    (license license:gpl3+)))
+
 (define-public emacs-llm
   (package
     (name "emacs-llm")
