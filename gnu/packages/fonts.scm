@@ -388,6 +388,30 @@ This package contains both the non-variable as well as the variable versions
 of the font.")
       (license license:silofl1.1))))
 
+(define-public font-atkinson-hyperlegible
+  (let ((commit "1cb311624b2ddf88e9e37873999d165a8cd28b46")
+        (revision "0"))
+    (package
+      (name "font-atkinson-hyperlegible")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/googlefonts/atkinson-hyperlegible")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1qw0pr1dhmqrgmw1acyw8dv8kbm66xa1bq0mrn7yin4q1kk2dpj4"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/googlefonts/atkinson-hyperlegible")
+      (synopsis "Typeface with greater legibility and readability for low vision readers")
+      (description
+       "Atkinson Hyperlegible is a freely available typeface built around a grotesque sans-serif core,
+intended to be optimally legible for readers who are partially visually impaired, with
+all characters maximally distinguishable from one another.")
+      (license license:silofl1.1))))
+
 (define-public font-lato
   (package
     (name "font-lato")
