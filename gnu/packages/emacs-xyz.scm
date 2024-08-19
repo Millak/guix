@@ -585,7 +585,7 @@ API key.")
 (define-public emacs-chatgpt-shell
   (package
     (name "emacs-chatgpt-shell")
-    (version "0.74.1")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
