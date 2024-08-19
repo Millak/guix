@@ -42299,6 +42299,28 @@ least four days in the calendar year.  This package provides functionality to
 convert dates to MMWR day, week, and year and the reverse.")
     (license license:gpl2+)))
 
+(define-public r-cca
+  (package
+    (name "r-cca")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "CCA" version))
+       (sha256
+        (base32 "0r1f7m64608hq6bpw36wsw6fr4s8bj26x4062brqgn5dbpqlgczk"))))
+    (properties `((upstream-name . "CCA")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-fda r-fields))
+    (home-page "https://cran.r-project.org/package=CCA")
+    (synopsis "Canonical correlation analysis")
+    (description
+     "This package contains a set of functions that extend the @code{cancor}
+function.  These functions provide new numerical and graphical outputs.  It
+also includes a regularized extension of the canonical correlation analysis to
+deal with datasets with more variables than observations.")
+    (license license:gpl2+)))
+
 (define-public r-cccd
   (package
     (name "r-cccd")
