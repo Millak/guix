@@ -6376,7 +6376,7 @@ kmonad's configuration files (@file{.kbd}).")
 (define-public emacs-keycast
   (package
     (name "emacs-keycast")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -6385,7 +6385,7 @@ kmonad's configuration files (@file{.kbd}).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ibg746xvy96rmzbh4bsgg2ifmrab6w0figz3ag3wyibcg2frdml"))))
+        (base32 "02h6dq1hq2k3x1gqcx5lafsl94wqq63jx1avf91dc6r0s6byb0sm"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
