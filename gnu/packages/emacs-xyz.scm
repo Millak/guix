@@ -5193,7 +5193,7 @@ that the binary uses instead of the actual binary contents.")
 (define-public emacs-ellama
   (package
     (name "emacs-ellama")
-    (version "0.11.12")
+    (version "0.11.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5201,7 +5201,7 @@ that the binary uses instead of the actual binary contents.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256 (base32
-                       "16hhzb38qcrj7irf0h1h2yr8j02v0lkgxn89ysapabh9ppf6amx8"))))
+                       "12p56vynj86qyz0bif1pcqz83n2q694frgxbfxlw5ws8igzx1hzl"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat emacs-dash emacs-llm emacs-spinner))
     (home-page "https://github.com/s-kostyaev/ellama")
