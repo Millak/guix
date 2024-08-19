@@ -9,7 +9,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
-;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019-2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -2077,29 +2077,25 @@ software Beancount with a focus on features and usability.")
     (license license:expat)))
 
 (define-public emacs-beancount
-  ;; Note that upstream has not made any release since this project moved
-  ;; into its own repository (it was originally part of beancount itself)
-  (let ((commit "687775da63784d153a3c1cfee9801090c6b51842")
-        (revision "1"))
-    (package
-      (name "emacs-beancount")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/beancount/beancount-mode")
-               (commit commit)))
-         (sha256
-          (base32
-           "08383yqqanx29al1hg1r6ndx3gwjg6fj7kl340f1zz9m9cfiyvg3"))
-         (file-name (git-file-name name version))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/beancount/beancount-mode")
-      (synopsis "Emacs mode for Beancount")
-      (description
-       "Emacs-beancount is an Emacs mode for the Beancount accounting tool.")
-      (license license:gpl3+))))
+  (package
+    (name "emacs-beancount")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/beancount/beancount-mode")
+             (commit version)))
+       (sha256
+        (base32
+         "01ivxgv1g0pkr0xi43366pghc3j3mmhk5bshis6kkn04bq04cx7f"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/beancount/beancount-mode")
+    (synopsis "Emacs mode for Beancount")
+    (description
+     "Emacs-beancount is an Emacs mode for the Beancount accounting tool.")
+    (license license:gpl3+)))
 
 (define-public hledger-web
   (package
