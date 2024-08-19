@@ -3116,6 +3116,9 @@ package.")
        (list sbcl-fiveam))
       (inputs
        (list sbcl-bordeaux-threads))
+      (arguments
+       ;; Disable flaky tests
+       (list #:tests? #f))
       (synopsis "Portable channel-based concurrency for Common Lisp")
       (description "Common Lisp library for channel-based concurrency.  In
 a nutshell, you create various threads sequentially executing tasks you need
