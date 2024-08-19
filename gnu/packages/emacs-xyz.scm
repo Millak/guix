@@ -23579,7 +23579,7 @@ object @code{nil} corresponds 1:1 with @code{NULL} in the database.")
 (define-public emacs-closql
   (package
     (name "emacs-closql")
-    (version "1.2.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -23589,10 +23589,10 @@ object @code{nil} corresponds 1:1 with @code{NULL} in the database.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1s9riibws28xjn2bjn9qz3m2gvcmrn18b7g5y6am4sy7rgkx3nwx"))))
+         "0fh7mvm2qcwkkmzpkagwzrsi11nm4laj2bvjdmyrv8pnmjigwwqw"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-emacsql))
+     (list emacs-compat emacs-emacsql))
     (home-page "https://github.com/emacscollective/closql")
     (synopsis "Store EIEIO objects using EmacSQL")
     (description
