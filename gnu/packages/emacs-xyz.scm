@@ -26078,7 +26078,7 @@ regions which @code{hideshow} can hide.")
 (define-public emacs-know-your-http-well
   (package
     (name "emacs-know-your-http-well")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -26087,7 +26087,7 @@ regions which @code{hideshow} can hide.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lppggnii2r9fvlhh33gbdrwb50za8lnalavlq9s86ngndn4n94k"))))
+        (base32 "1p4ibx0qgznv8ard4a9m7345ay8ij2qzmqdqiqlllndqq6mz62x5"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
