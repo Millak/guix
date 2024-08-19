@@ -1851,7 +1851,7 @@ process, passing on the arguments as command line arguments.")
 (define-public emacs-magit-annex
   (package
     (name "emacs-magit-annex")
-    (version "1.8.1")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -1860,7 +1860,7 @@ process, passing on the arguments as command line arguments.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1amr2c08mq1nnn6k66mgz4rzyni4np7gxm96g4qyla2cbfbachgk"))))
+        (base32 "0gbrn80xcwhfav962hjv6lhx444b81jknzj22zb8d5piqfpg8rvc"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-magit))
     (home-page "https://github.com/magit/magit-annex/")
