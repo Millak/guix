@@ -1685,15 +1685,16 @@ syntax for short lambda.")
 (define-public emacs-llm
   (package
     (name "emacs-llm")
-    (version "0.17.0")
+    (version "0.17.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/ahyatt/llm")
                     (commit version)))
               (file-name (git-file-name name version))
-              (sha256 (base32
-                       "1sds3gb5accmpkajc60cbly2imkvvb7a3afi8qdb67p5vkk5xvc2"))))
+              (sha256
+               (base32
+                "1c71p7a7lsq2xwg2jh021cfdgdp5q11sqb844flbf7pn2vdk6p07"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-plz))
     (home-page "https://github.com/ahyatt/llm")
