@@ -915,9 +915,14 @@ FILES must be a list of name/file-like object pairs."
       #~(begin
           (use-modules (gnu system privilege))
 
-          (activate-privileged-programs (list #$@programs)
-                                        #$(and (supported-package? libcap)
-                                               libcap))))))
+          (let ((libcap #$(let-system (system target)
+                            ;; When cross-compiling, assume libcap is
+                            ;; available on GNU/Linux only.
+                            (and (if target
+                                     (string-suffix? "linux-gnu" target)
+                                     (supported-package? libcap system))
+                                 libcap))))
+            (activate-privileged-programs (list #$@programs) libcap))))))
 
 (define privileged-program-service-type
   (service-type (name 'privileged-program)
