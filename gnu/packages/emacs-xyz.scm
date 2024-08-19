@@ -28710,7 +28710,7 @@ and @code{C++} files through the @code{ccls} language server.")
 (define-public emacs-cpreproc
   (package
    (name "emacs-cpreproc")
-   (version "1.0.0")
+   (version "1.0.1")
    (source
     (origin
      (method git-fetch)
@@ -28719,7 +28719,7 @@ and @code{C++} files through the @code{ccls} language server.")
            (commit version)))
      (sha256
       (base32
-       "0n4lhj9bbnkbzvifrj9q6z3j7z6jqzkaa36y239cfxdcc7i86c1c"))
+       "0y4zialcw46md14az08x75vnl4kg08shnhd8q4lxiqxnpl12da8c"))
      (file-name (git-file-name name version))))
    (build-system emacs-build-system)
    (home-page "https://sr.ht/~plattfot/cpreproc")
