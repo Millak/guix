@@ -11467,7 +11467,7 @@ Cucumber tool) user stories.  Also known by the name @code{cucumber.el}.")
 (define-public emacs-org-appear
   (package
     (name "emacs-org-appear")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -11476,7 +11476,7 @@ Cucumber tool) user stories.  Also known by the name @code{cucumber.el}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pdf16agcjfzpjvz8kv39abir35rip93nkawxcpjjh4ywsdsbnm6"))))
+        (base32 "1hfhnzhmbxrw4kz977s48x4nbq86vda5dvj00s2ima2i22b8l2z4"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/awth13/org-appear")
     (synopsis "Make invisible parts of Org fragments appear visible")
