@@ -13104,7 +13104,7 @@ perspective only its buffers are available by default.")
 (define-public emacs-persp-mode
   (package
     (name "emacs-persp-mode")
-    (version "2.9.8")
+    (version "3.0.8")
     (source
      (origin
        (method git-fetch)
@@ -13114,7 +13114,7 @@ perspective only its buffers are available by default.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0b4y7a6j70s9lvr37riyy9k5kh3yvmx0m6nd9c0c8572ji4ij65g"))))
+         "0y29vyvqdfxcpmzkyv2c6msbshx2f680izk2r0djrqj08ii8zmpr"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/Bad-ptr/persp-mode.el")
     (synopsis "Switch between named \"perspectives\" shared among frames")
