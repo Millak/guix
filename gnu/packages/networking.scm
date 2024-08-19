@@ -376,7 +376,7 @@ them in order to efficiently transfer a minimal amount of data.")
 (define-public libcamera
   (package
     (name "libcamera")
-    (version "0.1.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -387,7 +387,7 @@ them in order to efficiently transfer a minimal amount of data.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "06dj3dpfbayj61015n5kffin2g3hyys11ra0px2g4hmrznvdkhc9"))))
+        (base32 "15wgy6dc56dwjyasw6w6x6d4j8475clbrxkgphc2zly6232ds7mw"))))
     (build-system meson-build-system)
     (outputs '("out" "doc" "gst" "tools"))
     (arguments
