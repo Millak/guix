@@ -306,10 +306,10 @@ by managing a queue of pending work.")
 
 (define-public slurm-21.08
   (package
-    (inherit slurm)
+    (inherit slurm-22.05)
     (version "21.08.8")
     (source (origin
-              (inherit (package-source slurm))
+              (inherit (package-source slurm-22.05))
               (method url-fetch)
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
@@ -321,10 +321,10 @@ by managing a queue of pending work.")
 
 (define-public slurm-20.11
   (package
-    (inherit slurm)
+    (inherit slurm-21.08)
     (version "20.11.9")
     (source (origin
-              (inherit (package-source slurm))
+              (inherit (package-source slurm-21.08))
               (method url-fetch)
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
@@ -336,10 +336,10 @@ by managing a queue of pending work.")
 
 (define-public slurm-20.02
   (package
-    (inherit slurm)
+    (inherit slurm-20.11)
     (version "20.02.6-1")
     (source (origin
-              (inherit (package-source slurm))
+              (inherit (package-source slurm-20.11))
               (method url-fetch)
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
@@ -349,7 +349,7 @@ by managing a queue of pending work.")
                (base32
                 "0qj4blfymrd2ry2qmb58l3jbr4jwygc3adcfw7my27rippcijlyc"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments slurm)
+     (substitute-keyword-arguments (package-arguments slurm-20.11)
        ((#:configure-flags flags ''())
         #~(append '("CFLAGS=-O2 -g -fcommon" "LDFLAGS=-fcommon")
                   #$flags))))))
@@ -359,7 +359,7 @@ by managing a queue of pending work.")
     (inherit slurm-20.02)
     (version "19.05.8")
     (source (origin
-              (inherit (package-source slurm))
+              (inherit (package-source slurm-20.02))
               (method url-fetch)
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
@@ -372,11 +372,11 @@ by managing a queue of pending work.")
 ;; Same as Debian 10
 (define-public slurm-18.08
   (package
-    (inherit slurm-20.02)
+    (inherit slurm-19.05)
     (version "18.08.9")
     (source
       (origin
-        (inherit (package-source slurm))
+        (inherit (package-source slurm-20.02))
         (uri (string-append
                "https://download.schedmd.com/slurm/slurm-"
                version ".tar.bz2"))
