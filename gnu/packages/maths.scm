@@ -2080,35 +2080,34 @@ Swath).")
     (license (license:non-copyleft home-page))))
 
 (define-public hdf5-parallel-openmpi
-  (package/inherit hdf5-1.10                      ;use the latest
+  (package/inherit hdf5-1.14                      ;use the latest
     (name "hdf5-parallel-openmpi")
     (inputs
      `(("mpi" ,openmpi)
        ,@(package-inputs hdf5)))
     (arguments
-     (substitute-keyword-arguments (package-arguments hdf5)
+     (substitute-keyword-arguments (package-arguments hdf5-1.14)
        ((#:configure-flags flags)
-        ``("--enable-parallel"
-           ,@(delete "--enable-cxx"
-                     (delete "--enable-threadsafe" ,flags))))
+        #~(cons "--enable-parallel"
+                (delete "--enable-cxx"
+                        (delete "--enable-threadsafe" #$flags))))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'build 'mpi-setup
-             ,%openmpi-setup)
-           (add-before 'check 'patch-tests
-             (lambda _
-               ;; OpenMPI's mpirun will exit with non-zero status if it
-               ;; detects an "abnormal termination", i.e. any process not
-               ;; calling MPI_Finalize().  Since the test is explicitly
-               ;; avoiding MPI_Finalize so as not to have at_exit and thus
-               ;; H5C_flush_cache from being called, mpirun will always
-               ;; complain, so turn this test off.
-               (substitute* "testpar/Makefile"
-                 (("(^TEST_PROG_PARA.*)t_pflush1(.*)" front back)
-                  (string-append front back "\n")))
-               (substitute* "tools/test/h5diff/testph5diff.sh"
-                 (("/bin/sh") (which "sh")))
-               #t))))))
+        #~(modify-phases #$phases
+            (add-after 'build 'mpi-setup
+              #$%openmpi-setup)
+            (add-before 'check 'patch-tests
+              (lambda _
+                ;; OpenMPI's mpirun will exit with non-zero status if it
+                ;; detects an "abnormal termination", i.e. any process not
+                ;; calling MPI_Finalize().  Since the test is explicitly
+                ;; avoiding MPI_Finalize so as not to have at_exit and thus
+                ;; H5C_flush_cache from being called, mpirun will always
+                ;; complain, so turn this test off.
+                (substitute* "testpar/Makefile"
+                  (("(^TEST_PROG_PARA.*)t_pflush1(.*)" front back)
+                   (string-append front back "\n")))
+                (substitute* "tools/test/h5diff/testph5diff.sh"
+                  (("/bin/sh") (which "sh")))))))))
     (synopsis "Management suite for data with parallel IO support")))
 
 (define-public hdf5-blosc
