@@ -5093,7 +5093,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
 (define-public emacs-cape
   (package
     (name "emacs-cape")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method git-fetch)
@@ -5102,7 +5102,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ah0nwib2k46467j0fhq9kckx7cqnjgwpdb7zk9jw8rbrjlndcpw"))))
+        (base32 "0bkkb4fpga7r0rmyj8i621xmn5s0l7w49xyj1byy8z4rgl73zlhb"))))
     (build-system emacs-build-system)
     (arguments
      (list
