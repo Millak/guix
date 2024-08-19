@@ -144,6 +144,7 @@
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Daniel Szmulewicz <daniel.szmulewicz@gmail.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -5999,10 +6000,11 @@ inspired by the Deep Purple.")
 (define-public emacs-pdfgrep
   ;; XXX: Upstream does not tag releases.  The commit below matches latest
   ;; version bump.
-  (let ((commit "e250376d97fc5240e07d81108bbca9b5a9ab50f4"))
+  (let ((commit "a4ca0a1e6521de93f28bb6736a5344b4974d144c")
+        (revision "1"))
     (package
       (name "emacs-pdfgrep")
-      (version "1.4")
+      (version (git-version "1.4" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -6011,7 +6013,7 @@ inspired by the Deep Purple.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "17yqvvgkgxmcl8nc0mb9yaz884zcdnz7dwvfi4mxjzp1l05fvwjk"))))
+          (base32 "093sm3ywa338lhhz2ib3ylcgklsbxcsqck2qsaq26i2qxr0r7lq2"))))
       (build-system emacs-build-system)
       (arguments
        (list #:phases
