@@ -39846,7 +39846,7 @@ Fennel code within Emacs.")
 (define-public emacs-org-modern
   (package
    (name "emacs-org-modern")
-   (version "1.3")
+   (version "1.5")
    (source
      (origin
        (method git-fetch)
@@ -39854,7 +39854,7 @@ Fennel code within Emacs.")
              (url "https://github.com/minad/org-modern")
              (commit version)))
        (sha256
-        (base32 "0bk8mz3va5vwkkvgvq761bnm9id8sb70rnf3ydq62ap27k0ab967"))
+        (base32 "0zvg7jqfgaaayw8x3bi704ad47kpk4g8hxxfsd5p0xhyhxkq528m"))
        (file-name (git-file-name name version))))
    (build-system emacs-build-system)
    (propagated-inputs (list emacs-compat))
