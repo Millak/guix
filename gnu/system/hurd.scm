@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -132,4 +132,5 @@
     (locale-libcs (list glibc/hurd))
     (name-service-switch #f)
     (essential-services (hurd-default-essential-services this-operating-system))
+    (privileged-programs '())
     (setuid-programs %setuid-programs/hurd)))
