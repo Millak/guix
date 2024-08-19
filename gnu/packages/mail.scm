@@ -1262,14 +1262,14 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.12.5")
+    (version "1.12.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/djcb/mu/releases/download/v"
                            version "/mu-" version ".tar.xz"))
        (sha256
-        (base32 "1jwalqmvk5s4mf7bnz7gnzh6rii7n348bsflgdvyinia0zir42vp"))))
+        (base32 "0qdpag5skcwml4mrhz8205wfirayn55cqdydsy7ng6f9hyv3k9gq"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
