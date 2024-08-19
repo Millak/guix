@@ -2452,7 +2452,7 @@ organizing remote Go repository clones.")
 (define-public emacs-ghub
   (package
     (name "emacs-ghub")
-    (version "3.6.0")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -2461,7 +2461,7 @@ organizing remote Go repository clones.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11nrh2lr5179r0brd9vl7r0i0dpjxdr5frplxq6j2ca7l2vzwqyr"))))
+        (base32 "1dnl4idvc96jv73gdsrp377m1782i5n0cq0y4s0mp4i1vqd5drj2"))))
     (build-system emacs-build-system)
     (arguments
      (list
