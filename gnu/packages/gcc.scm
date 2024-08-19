@@ -1150,6 +1150,12 @@ as the 'native-search-paths' field."
          (variable "LIBRARY_PATH")
          (files '("lib" "lib64")))))
 
+(define-public gfortran-13
+  (hidden-package
+   (custom-gcc gcc-13
+               "gfortran" '("fortran")
+               %generic-search-paths)))
+
 (define-public gfortran
   (hidden-package
    (custom-gcc gcc
