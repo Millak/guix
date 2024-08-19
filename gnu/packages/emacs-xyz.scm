@@ -23650,7 +23650,7 @@ match your personal coding style.")
 (define-public emacs-epkg
   (package
     (name "emacs-epkg")
-    (version "3.3.3")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -23659,7 +23659,7 @@ match your personal coding style.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d09ddlhvgp8rpybqmzvzpzdp1hjaq97wp2br4g90lpx2vclkgn7"))))
+        (base32 "0w06bpwbwsl3diypywfzrwp6l0kr3h34xja34xssym2bmdl11z8p"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -23685,7 +23685,7 @@ match your personal coding style.")
     (native-inputs
      (list texinfo))
     (propagated-inputs
-     (list emacs-closql emacs-dash))
+     (list emacs-closql emacs-dash emacs-llama))
     (home-page "https://emacsmirror.net")
     (synopsis "Browse the Emacsmirror package database")
     (description "This package provides access to a local copy of the
