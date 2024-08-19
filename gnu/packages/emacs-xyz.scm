@@ -1505,7 +1505,7 @@ size.")
 (define-public emacs-git-modes
   (package
     (name "emacs-git-modes")
-    (version "1.4.3")
+    (version "1.4.4")
     (source
      (origin
        (method git-fetch)
@@ -1514,7 +1514,7 @@ size.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p7985708fc3nln1qazpdqb0qw0sq12hz5rdkqwvijc5iimdr73i"))))
+        (base32 "0nvkpy3bv9816hvgm91fv9l8lla4xras4i05579bs7bc8fck1mr3"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
