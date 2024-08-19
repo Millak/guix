@@ -21,6 +21,7 @@
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -985,6 +986,7 @@ OpenGL.")
                                "libvulkan.so.1"
                                "libwayland-cursor.so.0"
                                "libwayland-egl.so.1"
+                               "libwayland-client.so.0"
                                "libxkbcommon.so.0"
                                "libXxf86vm.so.1"
                                "libXi.so.6"
