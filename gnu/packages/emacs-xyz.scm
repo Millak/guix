@@ -605,7 +605,7 @@ API key.")
 (define-public emacs-geiser-guile
   (package
     (name "emacs-geiser-guile")
-    (version "0.28.1")
+    (version "0.28.2")
     (source
      (origin
        (method git-fetch)
@@ -614,7 +614,7 @@ API key.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gp8xbfm7y2gabjyys8jylfy1pkkglqas32xxrbqxfh1hv0cfh2f"))))
+        (base32 "0dm1fw3c5m0im8zg2q4zr37xkhw45k366gwmmfjl73bmf8qr8ysy"))))
     (build-system emacs-build-system)
     (arguments
      (list
