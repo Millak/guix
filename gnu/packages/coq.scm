@@ -91,8 +91,10 @@
                      (libdir (string-append out "/lib/ocaml/site-lib")))
                 (invoke "dune" "install" "--prefix" out
                         "--libdir" libdir "coq" "coq-core" "coq-stdlib")))))))
+    (propagated-inputs
+     (list ocaml-zarith))
     (inputs
-     (list gmp ocaml-zarith))
+     (list gmp))
     (native-inputs
      (list ocaml-ounit2 which))
     (properties '((upstream-name . "coq"))) ; also for inherited packages
@@ -114,7 +116,7 @@ It is developed using Objective Caml and Camlp5.")
      `(#:tests? #f
        #:package "coqide-server"))
     (inputs
-     (list coq gmp ocaml-zarith))))
+     (list coq gmp))))
 
 (define-public coq-ide
   (package
@@ -319,7 +321,7 @@ inside Coq.")
            bison
            flex))
     (inputs
-     (list gmp mpfr ocaml-zarith boost))
+     (list gmp mpfr boost))
     (propagated-inputs
      (list coq-flocq))
     (arguments
@@ -457,7 +459,7 @@ theorems between the two libraries.")
     (native-inputs
      (list ocaml coq))
     (inputs
-     (list camlp5 ocaml-zarith))
+     (list camlp5))
     (arguments
      `(#:tests? #f ; No test target.
        #:make-flags
@@ -495,8 +497,7 @@ provides BigN, BigZ, BigQ that used to be part of Coq standard library.")
      `(("flocq" ,coq-flocq)
        ("bignums" ,coq-bignums)
        ("coquelicot" ,coq-coquelicot)
-       ("mathcomp" ,coq-mathcomp)
-       ("ocaml-zarith" ,ocaml-zarith)))
+       ("mathcomp" ,coq-mathcomp)))
     (arguments
      `(#:configure-flags
        (list (string-append "COQUSERCONTRIB=" (assoc-ref %outputs "out")
@@ -579,8 +580,6 @@ uses Ltac to synthesize the substitution operation.")
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml coq camlp5))
-    (inputs
-     (list ocaml-zarith))
     (arguments
      `(#:test-target "test-suite"
        #:make-flags (list (string-append "COQLIBINSTALL="
