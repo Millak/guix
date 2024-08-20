@@ -660,6 +660,72 @@ or classmates.")
 on various criteria.")
       (license license:gpl3+))))
 
+(define-public sugar-commander-activity
+  (let ((commit "a018652903e1c52c86ebf23e3250e7b68327427f")
+        (revision "1"))
+    (package
+      (name "sugar-commander-activity")
+      (version (git-version "11" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/sugar-commander")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02n5wqh9cwr3jnjaxyd9kxcls4h3fdhhxdcyvvxmya08h20idvgd"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (add-after 'unpack 'inject-load-path
+              (lambda _
+                (substitute* "sugarcommander.py"
+                  (("^import logging")
+                   (string-append "\
+import sys
+for directory in \"" (getenv "GUIX_PYTHONPATH") "\".split(\":\"):
+    try:
+        sys.path.index(directory)
+    except ValueError:
+        sys.path.insert(1, directory)
+import logging
+")))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list cairo
+             gdk-pixbuf
+             gobject-introspection
+             gtk+
+             python-pygobject
+             sugar-toolkit-gtk3))
+      (inputs (list python-pygame))
+      (native-inputs
+       (list gettext-minimal))
+      (home-page "https://github.com/sugarlabs/sugar-commander")
+      (synopsis "Manage your Sugar journal")
+      (description "Sugar-commander lets you import items from removeable
+devices like USB drives and SD cards using a familiar hierarchical view of
+files on these devices, as opposed to the flattened Journal view that the
+Sugar Journal gives to these devices.  It also enables you to see how much
+disk space each Journal entry uses, generates thumbnails, and does other
+things to enhance your use of the Journal.")
+      (license license:gpl2+))))
+
 (define-public sugar-help-activity
   (let ((commit "492531e95a4c60af9b85c79c59c24c06c2cd4bb3")
         (revision "1"))
