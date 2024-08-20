@@ -88,6 +88,7 @@
   #:use-module (gnu packages xml)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 regex)
 
   #:export (make-ergodox-firmware
             make-qmk-firmware))
@@ -1523,7 +1524,9 @@ upstream repository, provide a file-like object directory containing the whole
 keyboard definition in KEYBOARD-SOURCE-DIRECTORY."
   (package
     (name (string-append "qmk-firmware-"
-                         (string-replace-substring keyboard "_" "-") "-"
+                         (regexp-substitute/global #f "[_/]" keyboard
+                                                   'pre "-" 'post)
+                         "-"
                          (string-replace-substring keymap "_" "-")))
     ;; Note: When updating this package, make sure to also update the commit
     ;; used for the LUFA submodule in the 'copy-lufa-source' phase below.
