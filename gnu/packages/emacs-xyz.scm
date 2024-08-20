@@ -35200,7 +35200,7 @@ passphrase until the first time you push to a remote.")
 	(base32 "0fb88l3270d7l808q8x16zcvjgsjbyhgifgv17syfsj0ja63x28p"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/cjohansson/emacs-ssh-deploy")
-    (synopsis "Deployment via Tramp, global or per directory.")
+    (synopsis "Deployment via Tramp, global or per directory")
     (description
      "SSH Deploy enables automatic deploys on explicit-save actions, manual
 uploads, renaming, deleting, downloads, file and directory differences,
