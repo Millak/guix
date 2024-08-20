@@ -887,7 +887,7 @@ manipulate repositories of the Git version control system.")
 (define-public guile-zlib
   (package
     (name "guile-zlib")
-    (version "0.1.0")
+    (version "0.2.1")
     (source
      (origin
        ;; XXX: Do not use "git-fetch" method here that would create and
@@ -899,13 +899,10 @@ manipulate repositories of the Git version control system.")
                        version ".tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        ;; content hash: 1ip18nzwnczqyhn9cpzxkm9vzpi5fz5sy96cgjhmp7cwhnkmv6zv
+        ;; content hash: 09zfka3js7dp39fnplxbp90x98s5nj0pc93p1l9cmgrbj8nyn2sv
         (base32
-         "1safz7rrbdf1d98x3lgx5v74kivpyf9n1v6pdyy22vd0f2sjdir5"))))
+         "0wqva23zrxcsj9cp3xqmqpxqyd7a4nnja3dc7v7g0i9yfixi7xd5"))))
     (build-system gnu-build-system)
-    (arguments
-     '(#:make-flags
-       '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
     (native-inputs (list autoconf automake pkg-config guile-3.0))
     (inputs (list guile-3.0 zlib))
     (synopsis "Guile bindings to zlib")
