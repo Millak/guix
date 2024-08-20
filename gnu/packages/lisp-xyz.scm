@@ -17684,7 +17684,7 @@ and @code{kqueue(2)}), a pathname library and file-system utilities.")
 (define-public sbcl-ironclad
   (package
     (name "sbcl-ironclad")
-    (version "0.60")
+    (version "0.61")
     (source
      (origin
        (method git-fetch)
@@ -17692,7 +17692,7 @@ and @code{kqueue(2)}), a pathname library and file-system utilities.")
              (url "https://github.com/sharplispers/ironclad/")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "122ldxiddkscb3li5wjrppr7vyn77znyjfgs8pbflrskzyxlabdd"))
+        (base32 "1yszjy6a0q1jvdgd7fpmnvi9851s8ivp4plscw27lbnl7jlj1pmk"))
        (file-name (git-file-name "cl-ironclad" version))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
