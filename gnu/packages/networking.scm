@@ -371,8 +371,6 @@ local filesystem.  It splits the file into blocks, hashes them, and compares
 them in order to efficiently transfer a minimal amount of data.")
     (license (list license:gpl2 license:gpl3))))
 
-;; This package does not have a release yet.
-;; But this is required to provide a feature in PipeWire.
 (define-public libcamera
   (package
     (name "libcamera")
@@ -395,6 +393,13 @@ them in order to efficiently transfer a minimal amount of data.")
            #:configure-flags
            #~(list (string-append "-Dbindir="
                                   (assoc-ref %outputs "tools") "/bin")
+
+                   ;; In 0.3.1 release simple pipeline wasn't enabled for
+                   ;; x86_64 by mistake, it's enabled a couple commits later.
+                   ;; Remove this expression on the next release.
+                   #$(if (target-x86-64?)
+                         "-Dpipelines=ipu3,vimc,uvcvideo,simple"
+                         "")
                    "-Dtest=true" "-Dv4l2=true"
                    ;; XXX: Requires bundled pybind11.
                    "-Dpycamera=disabled")
