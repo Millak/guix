@@ -56,7 +56,7 @@
 (define-public coq
   (package
     (name "coq")
-    (version "8.17.1")
+    (version "8.18.0")
     (source
      (origin
        (method git-fetch)
@@ -66,7 +66,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0gg6hizq0i08lk741b579cbswhy6qvkh6inc3d3i5a2af98psq63"))))
+         "1qy71gdr4s2l6847b4nwns6akib2f7l725zb01m7zc26n6mrrh1m"))))
     (native-search-paths
      (list (search-path-specification
             (variable "COQPATH")
