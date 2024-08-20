@@ -35123,7 +35123,13 @@ count matches, etc.")
                (base32
                 "0ylgnvpfindg4cxccbqy02ic7p0i9rygf1w16dm1filwhbqvjplq"))))
     (build-system emacs-build-system)
-    (arguments '(#:include '("\\.el$" "\\.txt$")))
+    (arguments
+     (list #:include #~(cons* "\\.txt$" %default-include)
+           #:tests? #true
+           #:test-command #~(list "emacs" "-Q" "--batch"
+                                  "-L" "."
+                                  "-l" "test/systemd-tests.el"
+                                  "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/holomorph/systemd-mode")
     (synopsis
      "Major mode for editing systemd units")
