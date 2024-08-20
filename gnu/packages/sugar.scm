@@ -613,6 +613,53 @@ present in gene regulatory networks.")
 or classmates.")
       (license license:gpl2+))))
 
+(define-public sugar-classify-cats-activity
+  (let ((commit "83aa89788c65bfdd3f77e24ac5a32b37f9518e54")
+        (revision "1"))
+    (package
+      (name "sugar-classify-cats-activity")
+      (version (git-version "2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/classify-cats")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "101drh1dqgr9qsz3r1fzkcn5h6z720zskaqnz2aixzp2ybvh17wk"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gdk-pixbuf
+             gobject-introspection
+             gtk+
+             python-pygobject
+             sugar-toolkit-gtk3))
+      (native-inputs
+       (list gettext-minimal))
+      (home-page "https://github.com/sugarlabs/classify-cats")
+      (synopsis "Classify cats based on various criteria")
+      (description "This is a Sugar activity where players classify cats based
+on various criteria.")
+      (license license:gpl3+))))
+
 (define-public sugar-help-activity
   (let ((commit "492531e95a4c60af9b85c79c59c24c06c2cd4bb3")
         (revision "1"))
