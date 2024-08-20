@@ -22719,6 +22719,51 @@ starting from Hi-C data.  Each hierarchical level is identified by a minimum
 value of physical insulation between neighboring domains.")
       (license license:gpl2+))))
 
+(define-public r-spacexr
+  (let ((commit "0a0861e3d1e16014a20e9b743d0e19d3b42231f3")
+        (revision "1"))
+    (package
+      (name "r-spacexr")
+      (version (git-version "2.2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dmcable/spacexr")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hqrllzq2hi6dsr8nykn1yp7s3rcbjrv3m624b61n4nxnzza458a"))))
+      (properties `((upstream-name . "spacexr")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-compquadform
+                               r-data-table
+                               r-doparallel
+                               r-dplyr
+                               r-fields
+                               r-foreach
+                               r-ggplot2
+                               r-knitr
+                               r-locfdr
+                               r-matrix
+                               r-metafor
+                               r-mgcv
+                               r-pals
+                               r-quadprog
+                               r-readr
+                               r-reshape2
+                               r-rfast
+                               r-rmarkdown
+                               r-tibble))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/dmcable/spacexr")
+      (synopsis
+       "Cell type identification and differential expression in spatial transcriptomics")
+      (description
+       "This package is used for cell type identification in spatial transcriptomics.
+It also handles cell type-specific differential expression.")
+      (license license:gpl3))))
+
 (define-public r-spectre
   (let ((commit "f6648ab3eb9499300d86502b5d60ec370ae9b61a")
         (revision "1"))
