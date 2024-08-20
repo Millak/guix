@@ -35131,10 +35131,10 @@ count matches, etc.")
                                   "-l" "test/systemd-tests.el"
                                   "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/holomorph/systemd-mode")
-    (synopsis
-     "Major mode for editing systemd units")
+    (synopsis "Major mode for editing Systemd units")
     (description
-     "Major mode for editing systemd units in GNU Emacs.")
+     "This package provides a major mode for editing Systemd unit files in GNU
+Emacs.")
     (license license:gpl3+)))
 
 (define-public emacs-ssh-config-mode
