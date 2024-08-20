@@ -145,6 +145,7 @@
 ;;; Copyright © 2024 Daniel Szmulewicz <daniel.szmulewicz@gmail.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Spencer King <spencer.king@nursiapress.com>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -14818,6 +14819,28 @@ provides the following features:
 @item Organize Imports
 @end itemize")
     (license license:gpl3+)))
+
+(define-public emacs-tinysegmenter
+  (let ((commit "872134704bd25c13a4c59552433da4c6881b5230"))
+    (package
+      (name "emacs-tinysegmenter")
+      (version "0.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/myuhe/tinysegmenter.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1n8cn6mr26hgmsm2mkbj5gs6dv61d0pap8ija4g0n1vsibfhzd8j"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/myuhe/tinysegmenter.el")
+      (synopsis "Compact Japanese tokenizer in Emacs Lisp")
+      (description
+       "This package provides functions for tokenizing Japanese text in
+Emacs buffers.")
+      (license license:bsd-3))))
 
 (define-public emacs-markdown-mode
   (package
