@@ -23,6 +23,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages game-development)
   #:use-module (gnu packages gettext)
@@ -329,6 +330,23 @@ and metadata, and the journal with querying and full text search.")
               (substitute* "autogen.sh"
                 (("^\"\\$srcdir/configure" m)
                  (string-append "#" m)))))
+          (add-after 'unpack 'patch-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/sugar3/eggsmclient-xsmp.c"
+                (("/bin/rm") (search-input-file inputs "/bin/rm")))
+              (substitute* "src/sugar3/mime.py"
+                (("'/usr/local/share/'" m)
+                 (string-append m ", '/run/current-system/profile/share'")))
+              (substitute* "src/sugar3/bundle/activitybundle.py"
+                (("'update-mime-database', mime_dir")
+                 (string-append "'"
+                                (search-input-file inputs "/bin/update-mime-database")
+                                "', mime_dir")))
+              (substitute* "src/sugar3/bundle/bundle.py"
+                (("'unzip', '-o'")
+                 (string-append "'"
+                                (search-input-file inputs "/bin/unzip")
+                                "', '-o'")))))
           (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (wrap-program (search-input-file outputs "bin/sugar-activity3")
@@ -345,7 +363,9 @@ and metadata, and the journal with querying and full text search.")
            libx11
            libxfixes
            libxi
-           python))
+           python
+           shared-mime-info
+           unzip))
     (propagated-inputs
      ;; The gi typelib files are needed by users of this library.
      (list gdk-pixbuf
