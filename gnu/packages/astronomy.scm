@@ -6017,6 +6017,46 @@ analysis.  This package contains functionality for:
 @end itemize")
     (license (list license:bsd-3 license:lgpl3))))
 
+(define-public python-zodipy
+  (package
+    (name "python-zodipy")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch) ;; no tests in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/Cosmoglobe/zodipy")
+             (commit (string-append "v." version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08hwicpv3wfpccr2cj1vxb8iy7av12yjs3prq0zw7qc89imrgrbn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; numpy = "^1.26.4"
+                (("1.26.4") "1.23.2")
+                ;; scipy = "^1.13.0"
+                (("1.13.0") "1.12.0")))))))
+    (propagated-inputs
+     (list python-astropy
+           python-jplephem
+           python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/Cosmoglobe/zodipy")
+    (synopsis "Zodiacal emission simulations")
+    (description
+     "ZodiPy is an package for simulating zodiacal light in intensity for
+arbitrary solar system observers.")
+    (license license:gpl3+)))
+
 (define-public qfits
   (package
     (name "qfits")
