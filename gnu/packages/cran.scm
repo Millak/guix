@@ -4596,6 +4596,27 @@ for the dendrogram that preserves the hierarchical clustering result and at the
 same time tries to group instances from the same class together.")
    (license license:gpl3+)))
 
+(define-public r-caliberrfimpute
+  (package
+    (name "r-caliberrfimpute")
+    (version "1.0-7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "CALIBERrfimpute" version))
+       (sha256
+        (base32 "1fspn6wgr0kc7j4ixx24c706kzrgjhi1b1w28izpfxm4r89zk08s"))))
+    (properties `((upstream-name . "CALIBERrfimpute")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mice r-mvtnorm r-randomforest))
+    (home-page "https://cran.r-project.org/package=CALIBERrfimpute")
+    (synopsis "Multiple imputation using MICE and random forest")
+    (description
+     "This package provides functions to impute using random forest.
+It operates under full conditional specifications (multivariate
+imputation by chained equations).")
+    (license license:gpl3)))
+
 (define-public r-callr
   (package
     (name "r-callr")
