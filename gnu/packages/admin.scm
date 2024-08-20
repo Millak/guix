@@ -6355,16 +6355,17 @@ backup directories or just finding duplicate files.")
     (name "sshguard")
     (version "2.4.3")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://bitbucket.org/sshguard/sshguard")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256 (base32 "1dkijr287zpwdz1bjdchxzmwf1sk6vzpkycz1skm25lkaba6nd9r"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://bitbucket.org/sshguard/sshguard")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dkijr287zpwdz1bjdchxzmwf1sk6vzpkycz1skm25lkaba6nd9r"))))
     (build-system gnu-build-system)
     (native-inputs
-      (list autoconf automake bison flex python-docutils))
+     (list autoconf automake bison flex python-docutils))
     (home-page "https://sshguard.net/")
     (synopsis "Daemon to blocks SSH brute-force attacks")
     (description
