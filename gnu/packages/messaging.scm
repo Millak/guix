@@ -1489,12 +1489,12 @@ default.")
               (method url-fetch)
               (uri (string-append "mirror://kde/unstable/kaidan/" version
                                   "/kaidan-" version ".tar.xz"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (delete-file-recursively "3rdparty")))
-       (sha256
-        (base32 "1waqv0fdkhvp3cqy2a2g6i2wc9s0zbvgzknymrwxy99mnx9ymw9g"))))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "3rdparty")))
+              (sha256
+               (base32 "1waqv0fdkhvp3cqy2a2g6i2wc9s0zbvgzknymrwxy99mnx9ymw9g"))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags #~(list "-DBUILD_TESTS=true")))
@@ -1502,8 +1502,8 @@ default.")
                          perl
                          pkg-config
                          python-wrapper))
-    (inputs (list kirigami
-                  knotifications
+    (inputs (list kirigami-5
+                  knotifications-5
                   qtbase-5
                   qtdeclarative-5
                   qtgraphicaleffects
