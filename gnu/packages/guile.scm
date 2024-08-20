@@ -856,17 +856,17 @@ Guile's foreign function interface.")
 (define-public guile-bytestructures
   (package
     (name "guile-bytestructures")
-    (version "1.0.10")
+    (version "2.0.2")
     (home-page "https://github.com/TaylanUB/scheme-bytestructures")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14k50jln32kkxv41hvsdgjkkfj6xlv06vc1caz01qkgk1fzh72nk"))))
+                "1dyhf39s16q3fvps0mfb65xrlcb8rk8m5kc82ngkwhzmf1svalpc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")     ;to prevent guild warnings
