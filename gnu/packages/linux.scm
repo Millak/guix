@@ -8903,17 +8903,20 @@ comparing system environments.")
        (sha256
         (base32 "1znmw83rmippv0fwz0x7lgylfk17dr9ckll8lrm4z7kclspnqpj8"))))
     (build-system gnu-build-system)
-    (inputs `(("rdma-core" ,rdma-core)
-              ,@(match (%current-system)
-                       ((member (package-supported-systems psm))
-                        `(("psm" ,psm)))
-                       (_ `()))
-              ("psm2" ,psm2)
-              ("libnl" ,libnl)))
+    (inputs
+     (let ((if-supported                          ;XXX: copied from openmpi
+            (lambda (package)
+              (if (and (not (%current-target-system))
+                       (member (%current-system)
+                               (package-supported-systems package)))
+                  (list package)
+                  '()))))
+       (append (list rdma-core libnl)
+               (if-supported psm)
+               (if-supported psm2))))
     (arguments
      (list #:configure-flags
-           #~(list "--enable-psm2"
-                   "--enable-efa"
+           #~(list "--enable-efa"
                    "--enable-verbs")))
     (home-page "https://ofiwg.github.io/libfabric/")
     (synopsis "Open Fabric Interfaces")
