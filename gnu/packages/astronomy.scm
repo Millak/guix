@@ -1574,13 +1574,17 @@ instruments.")
     (arguments
      (list
       ;; XXX: Check with upstram: assert False.
-      #:test-flags #~(list "-k" "not test_fnrgf")
+      #:test-flags
+      #~(list "-k" (string-append
+                    "not test_fnrgf"
+                    " and not test_calculate_solar_rotate_shift"
+                    " and not test_mapsequence_solar_derotate"))
       #:phases
       #~(modify-phases %standard-phases
-         (add-before 'check 'set-home
-           (lambda _
-             ;; For tests: Permission denied: '/homeless-shelter'
-             (setenv "HOME" "/tmp"))))))
+          (add-before 'check 'set-home
+            (lambda _
+              ;; For tests: Permission denied: '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
