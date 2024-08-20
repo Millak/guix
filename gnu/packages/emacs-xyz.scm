@@ -18267,7 +18267,7 @@ are common in Chromium-derived projects.")
         (base32 "0c8gal7lfibaryb5w85zcmzpmvifdjp959v5bcjxjl37cdws0cnd"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat emacs-emacsql))
-    (home-page "https://github.com/emacsorphanage/ac-ispell")
+    (home-page "https://thanosapollo.org/projects/gnosis")
     (synopsis "Spaced repetition system for GNU Emacs.")
     (description
      "Gnosis is a spaced repetition system for note-taking and self-testing
