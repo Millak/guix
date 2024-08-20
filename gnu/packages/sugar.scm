@@ -964,6 +964,66 @@ handheld mode, with extremely low power consumption and simple navigation
 controls.")
       (license license:gpl2+))))
 
+(define-public sugar-river-crossing-activity
+  (let ((commit "0abbeb455363672ed29d734e6e48f50ef78ec48b")
+        (revision "1"))
+    (package
+      (name "sugar-river-crossing-activity")
+      (version (git-version "1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/river-crossing-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0h7c3i288vwz249figw3jwyylwhlh9qlgjhlbs902ldpmib0k237"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (add-after 'unpack 'inject-load-path
+              (lambda _
+                (substitute* "activity.py"
+                  (("^import pygame")
+                   (string-append "\
+import sys
+for directory in \"" (getenv "GUIX_PYTHONPATH") "\".split(\":\"):
+    try:
+        sys.path.index(directory)
+    except ValueError:
+        sys.path.insert(1, directory)
+import pygame
+")))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; These libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gtk+))
+      (inputs
+       (list python-pygame
+             sugar-toolkit-gtk3
+             gettext-minimal))
+      (home-page "https://github.com/sugarlabs/river-crossing-activity")
+      (synopsis "Puzzle game for Sugar desktop")
+      (description "A farmer is to ferry across a river a goat, a cabbage, and
+a wolf.  The boat allows the farmer to carry only one of the three at a time.
+Without supervision, the goat will gobble the cabbage whereas the wolf will
+not hesitate to feast on the goat.")
+      (license license:gpl3+))))
+
 (define-public sugar-terminal-activity
   (let ((commit "a1f92b9da6121bc9a6fbba2c3f3b885dd26d4617")
         (revision "1"))
