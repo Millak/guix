@@ -3812,13 +3812,13 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
 (define-public python-stpipe
   (package
     (name "python-stpipe")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stpipe" version))
        (sha256
-        (base32 "0iipbz5ydxxxk44q8ab0ylk7jpxjfhag4vgkhvpj67zs4s45sd8a"))
+        (base32 "0kxm0vllyi3z149q3g3xpfl0c0wpviiyfh55rv0x6zvs0px6c81j"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -3828,10 +3828,6 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
              (("from astropy.extern.configobj import validate") "import validate")
              (("from astropy.extern.configobj.configobj import ") "from configobj import ")
              (("from astropy.extern.configobj.validate import ") "from validate import "))))))
-    (arguments
-     (list
-      ;; See https://github.com/spacetelescope/stpipe/issues/114
-      #:test-flags #~(list "-k" "not test_roman_datamodel")))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-asdf
@@ -3839,7 +3835,8 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
            python-crds
            python-stdatamodels))
     (native-inputs
-     (list python-pytest
+     (list ;; python-jwst ; cycle:  python-stpipe -> python-jwst -> python-stpipe
+           python-pytest
            python-pytest-doctestplus
            python-pytest-openfiles
            python-setuptools-scm))
