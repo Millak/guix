@@ -22504,19 +22504,27 @@ literate programming tools for exporting, weaving and tangling.")
     (build-system emacs-build-system)
     (arguments
      (list
-      #:include #~(list "maint/poly-ansible-jinja2-filters-generator.el")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'move-source-files
             (lambda _
               (let ((el-files (find-files "./lisp" ".*\\.el$")))
                 (for-each (lambda (f) (copy-file f (basename f)))
-                          el-files)))))))
+                          el-files))))
+          ;; Autoloads file include a reference to "systemd-autoload-regexp".
+          ;; Require `systemd' to load its definition and let
+          ;; `validate-compiled-autoloads' phase run peacefully.
+          (add-after 'make-autoloads 'require-systemd-mode
+            (lambda _
+              (substitute* "polymode-ansible-autoloads.el"
+                ((";;; Code:" lead)
+                 (string-append lead "\n(require 'systemd)"))))))))
     (propagated-inputs
      (list emacs-ansible
            emacs-ansible-doc
            emacs-jinja2-mode
            emacs-polymode
+           emacs-systemd-mode
            emacs-yaml-mode))
     (properties '((upstream-name . "poly-ansible")))
     (home-page "https://gitlab.com/mavit/poly-ansible/")
