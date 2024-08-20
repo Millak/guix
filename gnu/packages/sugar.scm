@@ -1155,6 +1155,72 @@ mathematics, and Computer Science features which will challenge the more
 adventurous student.")
       (license license:expat))))
 
+(define-public sugar-turtlepond-activity
+  (let ((commit "e460fc472d2f900c4c71659dbec07a715a3847a7")
+        (revision "1"))
+    (package
+      (name "sugar-turtlepond-activity")
+      (version (git-version "10" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/turtlepond")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0j7jzbwi2aph312f5dazmwgxqzh458b4yzz8mvrdxpr91ksxd4h4"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            #;
+            (add-after 'unpack 'inject-load-path
+              (lambda _
+                (substitute* "TurtlePondActivity.py"
+                  (("^import logging")
+                   (string-append "\
+import sys
+for directory in \"" (getenv "GUIX_PYTHONPATH") "\".split(\":\"):
+    try:
+        sys.path.index(directory)
+    except ValueError:
+        sys.path.insert(1, directory)
+import logging
+")))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list cairo
+             gdk-pixbuf
+             gobject-introspection
+             gtk+
+             python-pygobject
+             sugar-toolkit-gtk3))
+      (native-inputs
+       (list gettext-minimal))
+      (home-page "https://github.com/sugarlabs/sugar-commander")
+      (synopsis "Manage your Sugar journal")
+      (description "Sugar-commander lets you import items from removeable
+devices like USB drives and SD cards using a familiar hierarchical view of
+files on these devices, as opposed to the flattened Journal view that the
+Sugar Journal gives to these devices.  It also enables you to see how much
+disk space each Journal entry uses, generates thumbnails, and does other
+things to enhance your use of the Journal.")
+      (license license:gpl2+))))
+
 (define-public sugar-typing-turtle-activity
   (package
     (name "sugar-typing-turtle-activity")
