@@ -36920,6 +36920,33 @@ Wordnet.")
 @code{xref} results.")
     (license license:gpl3+)))
 
+(define-public emacs-helm-css-scss
+  (let ((commit "2169d83d8fdc661241df208cb3235112735d936e")
+        (revision "0"))
+    (package
+      (name "emacs-helm-css-scss")
+      (version (git-version "1.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsorphanage/helm-css-scss")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0jjjw7fw2ngrpgvd599vjd291zr8zr1m7xnxfq2dpqc3mf0s397z"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-helm))
+      (home-page "https://github.com/emacsorphanage/helm-css-scss")
+      (synopsis
+       "Helm interface for navigating CSS, SCSS, and LESS selectors in Emacs")
+      (description
+       "This package provides Helm integration for quickly navigating and
+ searching CSS, SCSS, and LESS selectors in Emacs.  It enables you to view and
+ jump to selectors across multiple buffers, enhancing your workflow when
+ editing stylesheets.")
+      (license license:gpl3+))))
+
 (define-public emacs-metal-mercury-mode
   (let ((commit "99e2d8fb7177cae3bfa2dec2910fc28216d5f5a8")
         (revision "1")
