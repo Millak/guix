@@ -8,7 +8,7 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -262,7 +262,17 @@ internal RPC protocols and file formats.")
                 "17rk42r3gcc46c2svd1mxs542wnl4mi77a6klkhg6wl1a36zmi2c"))))
     (build-system gnu-build-system)
     (inputs (list protobuf))
-    (native-inputs (list pkg-config))
+    (native-inputs (append (if (%current-target-system)
+                               (list protobuf)
+                               '())
+                           (list pkg-config)))
+    (arguments (if (%current-target-system)
+                   (list #:configure-flags
+                         #~(list
+                            (string-append
+                             "PROTOC="
+                             (search-input-file %build-inputs "bin/protoc"))))
+                   (list)))
     (home-page "https://github.com/protobuf-c/protobuf-c")
     (synopsis "Protocol Buffers implementation in C")
     (description
