@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -367,14 +368,14 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "4.3.6")
+    (version "4.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "16bwch9k6sp7hkgy9pzaw8jrkhzb2yi64m299c7w9p9j2lwhd2w7"))))
+                "0v4k4rrp2a5zaxl86wnwffajv3b4fb9w70rsh42samra9k8hppp5"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
