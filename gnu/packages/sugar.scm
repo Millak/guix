@@ -503,6 +503,64 @@ a Tetris-like game.")
                    license:gpl2+
                    license:gpl3+))))
 
+(define-public sugar-cellgame-activity
+  (let ((commit "4a22fd177af224d2df588590eb835affacd5ca72")
+        (revision "1"))
+    (package
+      (name "sugar-cellgame-activity")
+      (version (git-version "5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/cellgame")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "09dxq06dr43i3g8im4j1xffl19rzr1pwbixwgb0kipnmbx8pln5c"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (add-after 'unpack 'inject-load-path
+              (lambda _
+                (substitute* "activity.py"
+                  (("^import pygame")
+                   (string-append "\
+import sys
+for directory in \"" (getenv "GUIX_PYTHONPATH") "\".split(\":\"):
+    try:
+        sys.path.index(directory)
+    except ValueError:
+        sys.path.insert(1, directory)
+import pygame
+")))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gtk+
+             sugar-toolkit-gtk3))
+      (inputs (list python-pygame))
+      (native-inputs
+       (list gettext-minimal))
+      (home-page "https://github.com/sugarlabs/cellgame")
+      (synopsis "Cell game for Sugar")
+      (description "This game for the Sugar desktop is based on the mechanisms
+present in gene regulatory networks.")
+      (license license:gpl3+))))
+
 (define-public sugar-chat-activity
   ;; The last release was in 2019 and since then commits have been published
   ;; that include build fixes and translation updates.
