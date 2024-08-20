@@ -26475,8 +26475,8 @@ browse the phrases by the paper section and fill-in the blanks if required.")
       (license license:gpl3+))))
 
 (define-public emacs-auto-yasnippet
-  (let ((commit "624b0d9711222073a2a3f2186e2605eb99fc83c9")
-        (revision "2"))
+  (let ((commit "6a9e406d0d7f9dfd6dff7647f358cb05a0b1637e")
+        (revision "3"))
     (package
       (name "emacs-auto-yasnippet")
       (version (git-version "0.3.0" revision commit))
@@ -26488,7 +26488,7 @@ browse the phrases by the paper section and fill-in the blanks if required.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "15g8wi067f345xhpi0c12w0h04p4f4lpccwmdjdfj8hzfl4gyxy9"))))
+                  "0ifzbwnm2axb8kmfp3jvg05wq02j121iwp2m64pi70c7mza0i886"))))
       (build-system emacs-build-system)
       (arguments
        '(#:tests? #t
