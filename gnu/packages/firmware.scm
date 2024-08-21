@@ -119,7 +119,6 @@
            #:tests? #f
            #:configure-flags
            #~'("-DCMAKE_C_FLAGS=-Wno-error=implicit-function-declaration"
-               "-DCMAKE_SYSTEM_NAME=Generic"      ;override default value
                "-DTARGET_MAGPIE=ON")
            #:phases
            #~(modify-phases %standard-phases
@@ -148,8 +147,7 @@
      (substitute-keyword-arguments
        (package-arguments ath9k-htc-ar7010-firmware)
        ((#:configure-flags flags)
-        #~'("-DCMAKE_SYSTEM_NAME=Generic"         ;override default value
-            "-DCMAKE_C_FLAGS=-Wno-error=implicit-function-declaration"
+        #~'("-DCMAKE_C_FLAGS=-Wno-error=implicit-function-declaration"
             "-DTARGET_K2=ON"))))
     (synopsis "Firmware for the Atheros AR9271 USB 802.11n NICs")
     (description
