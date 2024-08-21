@@ -145,6 +145,11 @@ TARGET."
                        "x86_64-linux-gnu"
                        "i686-linux-gnu"
 
+                       ;; Ignore obsolete systems, as in (gnu ci).
+                       "mips64el-linux-gnu"
+                       "powerpc-linux-gnu"
+                       "powerpc64-linux-gnu"
+
                        ;; Ignore bare-metal targets.
                        "avr"
                        "or1k-elf"
