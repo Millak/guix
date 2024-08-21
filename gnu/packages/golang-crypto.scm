@@ -1493,6 +1493,34 @@ package is intended for interoperability with the standard library and the
 possible.")
       (license license:bsd-3))))
 
+(define-public go-github-com-youmark-pkcs8
+  (package
+    (name "go-github-com-youmark-pkcs8")
+    (version "1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/youmark/pkcs8")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ckdrwa5rmp2c85936qd9d0gzrnrvqfg0297ansz5frdhg6fc6nq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/youmark/pkcs8"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/youmark/pkcs8")
+    (synopsis "Functions to parse and convert private keys in PKCS#8 format")
+    (description
+     "@code{pkcs8} implements functions to process private keys in PKCS#8
+format, as defined in RFC 5208 and RFC 5958.  It can handle both unencrypted
+PKCS#8 PrivateKeyInfo format and EncryptedPrivateKeyInfo format with
+PKCS#5 (v2.0) algorithms.")
+    (license license:expat)))
+
 (define-public go-lukechampine-com-blake3
   (package
     (name "go-lukechampine-com-blake3")
