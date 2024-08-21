@@ -40,7 +40,8 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2024 dan <i@dan.games>
-;;;
+;;; Copyright © 2024 Peepo Froggings <peepofroggings@tutanota.de>
+
 ;;; This file is part of GNU Guix.
 ;;;
 ;;; GNU Guix is free software; you can redistribute it and/or modify it
@@ -188,36 +189,69 @@ allocator that makes it easy to generate complex code without a significant
 development effort.")
       (license license:zlib))))
 
-(define-public castxml
+(define-public biblesync
   (package
-    (name "castxml")
-    (version "0.6.4")
+    (name "biblesync")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)
               (uri
                (git-reference
-                (url "https://github.com/CastXML/CastXML")
-                (commit (string-append "v" version))))
+                (url "https://github.com/karlkleinpaste/biblesync")
+                (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0l5ys9zmllfgwhjrm897akbsf38iswfcarhxg27xfhiy0bmzcwsg"))))
+               (base32
+                "0prmd12jq2cjdhsph5v89y38j7hhd51dr3r1hivgkhczr3m5hf4s"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f                    ;FIXME: Not sure how to run tests, if any
       #:configure-flags
-      #~(list
-         (string-append "-DCLANG_RESOURCE_DIR="
-                        #$(this-package-native-input "clang") "/lib/clang/"
-                        #$(version-major
-                           (package-version (this-package-native-input "clang")))))))
-    (inputs (list libffi))
-    (native-inputs (list clang-17 llvm-17))
-    (home-page "https://github.com/CastXML/CastXML")
-    (synopsis "C-family abstract syntax tree XML output")
-    (description "CastXML is a C-family abstract syntax tree XML output tool.
+      #~(list (string-append "-DBUILD_SHARED_LIBS=TRUE"))))
+    (inputs (list `(,util-linux "lib")))
+    (synopsis "C++ library implementing the BibleSync protocol")
+    (description
+     "BibleSync is a multicast protocol to support Bible software shared
+co-navigation.  The premise is that there is a local network over which to
+multicast Bible navigation, and someone, possibly several someones, will
+transmit, and others will receive.  The library implementing the protocol is
+a single C++ class providing a complete yet minimal public interface to
+support mode setting, setup for packet reception, transmit on local
+navigation, and handling of incoming packets.")
+    (home-page "https://github.com/karlkleinpaste/biblesync")
+    (license license:public-domain)))
+
+(define-public castxml
+(package
+  (name "castxml")
+  (version "0.6.4")
+  (source (origin
+            (method git-fetch)
+            (uri
+             (git-reference
+              (url "https://github.com/CastXML/CastXML")
+              (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32 "0l5ys9zmllfgwhjrm897akbsf38iswfcarhxg27xfhiy0bmzcwsg"))))
+  (build-system cmake-build-system)
+  (arguments
+   (list
+    #:configure-flags
+    #~(list
+       (string-append "-DCLANG_RESOURCE_DIR="
+                      #$(this-package-native-input "clang") "/lib/clang/"
+                      #$(version-major
+                         (package-version (this-package-native-input "clang")))))))
+  (inputs (list libffi))
+  (native-inputs (list clang-17 llvm-17))
+  (home-page "https://github.com/CastXML/CastXML")
+  (synopsis "C-family abstract syntax tree XML output")
+  (description "CastXML is a C-family abstract syntax tree XML output tool.
 This project is maintained by Kitware in support of ITK, the Insight
 Segmentation and Registration Toolkit.")
-    (license license:asl2.0)))
+  (license license:asl2.0)))
 
 (define-public range-v3
   (package
