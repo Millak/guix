@@ -33,7 +33,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 Evgeny Pisemsky <mail@pisemsky.site>
-;;; Copyright © 2022, 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2022, 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
@@ -9146,6 +9146,28 @@ are organized into modules by the kind of @code{PPI} class they relate to, by
 replacing the \"@code{PPI}\" at the front of the module name with
 \"@code{PPIx::Utilities}\", e.g. functionality related to @code{PPI::Nodes} is
 in @code{PPIx::Utilities::Node}.")
+    (license license:perl-license)))
+
+(define-public perl-ppix-utils
+  (package
+    (name "perl-ppix-utils")
+    (version "0.003")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/D/DB/DBOOK/PPIx-Utils-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "04dszlp7yas3yi7gm1l2g47h88i52n7gwj3jnq0vw0xdivycr6ra"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-b-keywords perl-ppi))
+    (home-page "https://metacpan.org/release/PPIx-Utils")
+    (synopsis "Utility functions for Perl PPI")
+    (description
+     "@samp{PPIx::Utils} is a collection of utility functions for working
+with @samp{PPI} documents.  The functions are organized into
+submodules, and may be imported from the appropriate submodules or via
+this module.")
     (license license:perl-license)))
 
 (define-public perl-probe-perl
