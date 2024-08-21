@@ -3428,6 +3428,32 @@ to jQuery to the Go language.")
 described in @url{http://tools.ietf.org/html/rfc3986#section-6, RFC 3986}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-puerkitobio-urlesc
+  (package
+    (name "go-github-com-puerkitobio-urlesc")
+    (version "0.0.0-20170810143723-de5bf2ad4578")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PuerkitoBio/urlesc")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n0srpqwbaan1wrhh2b7ysz543pjs1xw2rghvqyffg9l0g8kzgcw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/PuerkitoBio/urlesc"))
+    (home-page "https://github.com/PuerkitoBio/urlesc")
+    (synopsis "Proper URL escaping as per RFC 3986")
+    (description
+     "Package @code{urlesc} implements query escaping as per
+@url{https://rfc-editor.org/rfc/rfc3986.html,RFC 3986}.  It contains some
+parts of the @code{net/url} package, modified so as to allow some reserved
+characters incorrectly escaped by net/url.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-quic-go-qpack
   (package
     (name "go-github-com-quic-go-qpack")
