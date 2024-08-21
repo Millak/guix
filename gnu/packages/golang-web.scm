@@ -3605,6 +3605,34 @@ of the specification.")
 support.")
     (license license:expat)))
 
+(define-public go-github-com-shurcool-httpgzip
+  (package
+    (name "go-github-com-shurcool-httpgzip")
+    (version "0.0.0-20230704072819-d1585fc322fa")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shurcooL/httpgzip")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10fnndia8ij3hwwvknn8qy8z3955bm7xyvqd69yh5g2zh25zc5x2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shurcooL/httpgzip"))
+    (native-inputs
+     (list go-golang-org-x-tools))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/shurcooL/httpgzip")
+    (synopsis "Primitives of @code{net-http}-like with gzip compression")
+    (description
+     "Package @code{httpgzip} provides @code{net/http}-like primitives that
+use gzip compression when serving HTTP requests.")
+    (license license:expat)))
+
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
     (name "go-github-com-sourcegraph-jsonrpc2")
