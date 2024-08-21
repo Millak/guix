@@ -1009,6 +1009,34 @@ developers to use @code{http} methods explicitly and in a way that's
 consistent with the HTTP protocol definition.")
     (license license:expat)))
 
+(define-public go-github-com-evanphx-json-patch
+  (package
+    (name "go-github-com-evanphx-json-patch")
+    (version "0.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/evanphx/json-patch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00sib9ba8j1h1n3r1cxx48zn8hs6sxwnrh78p6wbs28wcpz8nqxi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/evanphx/json-patch"))
+    (propagated-inputs
+     (list go-github-com-jessevdk-go-flags go-github-com-pkg-errors))
+    (home-page "https://github.com/evanphx/json-patch")
+    (synopsis "Apply and create JSON (RFC6902 and RFC7386) patches for Golang")
+    (description
+     "@code{jsonpatch} is a library which provides functionality for both
+applying @url{http://tools.ietf.org/html/rfc6902,RFC6902 JSON patches} against
+documents, as well as for calculating & applying
+@url{https://tools.ietf.org/html/rfc7396,RFC7396 JSON merge patches}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-felixge-httpsnoop
   (package
     (name "go-github-com-felixge-httpsnoop")
