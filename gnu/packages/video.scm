@@ -3346,6 +3346,32 @@ Both command-line and GTK2 interface are available.")
     (home-page "https://github.com/trizen/youtube-viewer")
     (license license:perl-license)))
 
+(define-public ytcc
+  (package
+    (name "ytcc")
+    (version "2.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ytcc" version))
+       (sha256
+        (base32 "0laaj7m9mkn421hsljaqyhj2az641lg4y7ym6l8jl1xgs1vl9b4b"))))
+    (build-system pyproject-build-system)
+    (inputs (list python-click
+                  python-wcwidth
+                  python-websockets
+                  python-urllib3-next
+                  python-requests-next
+                  python-pycryptodomex
+                  python-mutagen
+                  python-brotli
+                  yt-dlp))
+    (home-page "https://github.com/woefe/ytcc")
+    (synopsis "Command line tool to keep track of your favorite playlists")
+    (description "ytcc is a command line tool to keep track of your favorite
+playlists.")
+    (license license:gpl3+)))
+
 (define-public libbluray
   (package
     (name "libbluray")
