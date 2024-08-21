@@ -39,6 +39,15 @@
 ;;
 ;; Code:
 
+(define* (cmake-system-name-for-target
+          #:optional (target (or (%current-target-system)
+                                 (%current-system))))
+  (cond ((target-hurd? target)  "GNU")
+        ((target-linux? target) "Linux")
+        ((target-mingw? target) "Windows")
+        ;; For avr, or1k-elf, xtensa-ath9k-elf
+        (else "Generic")))
+
 (define %cmake-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build cmake-build-system)
@@ -231,7 +240,15 @@ build system."
                                                  search-path-specification->sexp
                                                  native-search-paths)
                        #:phases #$phases
-                       #:configure-flags #$configure-flags
+                       #:configure-flags `(#$(string-append "-DCMAKE_C_COMPILER="
+                                                            (cc-for-target target))
+                                           #$(string-append "-DCMAKE_CXX_COMPILER="
+                                                            (cxx-for-target target))
+                                           #$(string-append "-DCMAKE_SYSTEM_NAME="
+                                                            (cmake-system-name-for-target target))
+                                           ,@#$(if (pair? configure-flags)
+                                                   (sexp->gexp configure-flags)
+                                                   configure-flags))
                        #:make-flags #$make-flags
                        #:out-of-source? #$out-of-source?
                        #:build-type #$build-type

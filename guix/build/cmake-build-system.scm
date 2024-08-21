@@ -62,17 +62,6 @@
                   ,(string-append "-DCMAKE_INSTALL_RPATH=" out "/lib")
                   ;; enable verbose output from builds
                   "-DCMAKE_VERBOSE_MAKEFILE=ON"
-
-                  ;;  Cross-build
-                  ,@(if target
-                        (list (string-append "-DCMAKE_C_COMPILER="
-                                             target "-gcc")
-                              (string-append "-DCMAKE_CXX_COMPILER="
-                                             target "-g++")
-                              (if (string-contains target "mingw")
-                                  "-DCMAKE_SYSTEM_NAME=Windows"
-                                  "-DCMAKE_SYSTEM_NAME=Linux"))
-                        '())
                   ,@configure-flags)))
       (format #t "running 'cmake' with arguments ~s~%" args)
       (apply invoke "cmake" args))))
