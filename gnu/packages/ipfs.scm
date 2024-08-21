@@ -1003,6 +1003,7 @@ written in Go.")
                              "vendor/github.com/google/uuid"
                              "vendor/github.com/gorilla"
                              "vendor/github.com/hashicorp"
+                             "vendor/github.com/huin"
                              "vendor/github.com/ipfs/go-block-format"
                              "vendor/github.com/ipfs/go-cid"
                              "vendor/github.com/ipfs/go-cidutil"
@@ -1016,12 +1017,18 @@ written in Go.")
                              "vendor/github.com/ipfs/go-ipld-legacy"
                              "vendor/github.com/ipfs/go-log"
                              "vendor/github.com/ipfs/go-metrics-interface"
+                             "vendor/github.com/ipfs/go-verifcid"
                              "vendor/github.com/ipld/go-codec-dagpb"
                              "vendor/github.com/ipld/go-ipld-prime"
                              "vendor/github.com/jackpal"
                              "vendor/github.com/jbenet"
                              "vendor/github.com/julienschmidt"
                              "vendor/github.com/klauspost"
+                             "vendor/github.com/koron"
+                             "vendor/github.com/libp2p/go-buffer-pool"
+                             "vendor/github.com/libp2p/go-msgio"
+                             "vendor/github.com/libp2p/go-nat"
+                             "vendor/github.com/libp2p/go-netroute"
                              "vendor/github.com/libp2p/go-socket-activation"
                              "vendor/github.com/mattn"
                              "vendor/github.com/mgutz"
@@ -1048,6 +1055,7 @@ written in Go.")
                              "vendor/github.com/whyrusleeping"
                              "vendor/go.uber.org"
                              "vendor/golang.org"
+                             "vendor/google.golang.org/protobuf"
                              "vendor/gopkg.in"
                              "vendor/lukechampine.com")))))
     (build-system go-build-system)
@@ -1182,8 +1190,11 @@ written in Go.")
                   go-github-com-gorilla-websocket             ; github.com/libp2p/go-libp2p
                   go-github-com-hashicorp-golang-lru          ; github.com/libp2p/go-libp2p-kad-dht
                   go-github-com-hashicorp-golang-lru-v2       ; github.com/ipfs/boxo
-                  go-github-com-jackpal-go-nat-pmp            ; github.com/libp2p/go-nat
+                  go-github-com-ipfs-go-verifcid              ; github.com/ipfs/go-blockservice
                   go-github-com-klauspost-compress            ; github.com/libp2p/go-libp2p
+                  go-github-com-libp2p-go-buffer-pool         ; github.com/libp2p/go-libp2p
+                  go-github-com-libp2p-go-msgio               ; github.com/libp2p/go-libp2p-kad-dht
+                  go-github-com-libp2p-go-nat                 ; github.com/libp2p/go-libp2p
                   go-github-com-multiformats-go-multiaddr-fmt ; github.com/libp2p/go-libp2p
                   go-github-com-multiformats-go-multistream   ; github.com/libp2p/go-libp2p
                   go-github-com-quic-go-quic-go               ; github.com/libp2p/go-libp2p
