@@ -6747,6 +6747,25 @@ also provides V-style logging controlled by the @code{-v} and
 @code{https://github.com/golang/glog}.")
     (license license:asl2.0)))
 
+(define-public go-k8s-io-klog-v2
+  (package
+    (inherit go-k8s-io-klog)
+    (name "go-k8s-io-klog-v2")
+    (version "2.130.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kubernetes/klog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12q9jhxfpq75sgmdxgcz85znbgdi04ic9zy3rm0c47n24clz6z73"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "k8s.io/klog/v2"))))
+
 (define-public go-mvdan-cc-editorconfig
   (package
     (name "go-mvdan-cc-editorconfig")
