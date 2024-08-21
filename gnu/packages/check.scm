@@ -298,7 +298,7 @@ source code editors and IDEs.")
     (build-system go-build-system)
     (arguments
      (list
-      #:instal-source? #f
+      #:install-source? #f
       #:import-path "github.com/mrtazz/checkmake"
       #:phases
       #~(modify-phases %standard-phases
