@@ -1078,7 +1078,7 @@ trivial to build for local use.  Portability is emphasized over performance.")
 (define-public libsecp256k1
   (package
     (name "libsecp256k1")
-    (version "0.3.2")
+    (version "0.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1087,13 +1087,17 @@ trivial to build for local use.  Portability is emphasized over performance.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12wksk7bi3yfzmk1zwh5b6846zcaycqz1w4w4p23apjc8da4jwpn"))))
+                "1f3nq1dg6afbwp45m2rbndd8mpvx7hhggmzji22csyzwhq3fz2r1"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; These files are pre-generated, the build system is able to
+               ;; re-generate those.
+               #~(for-each delete-file '("src/precomputed_ecmult.c"
+                                         "src/precomputed_ecmult_gen.c")))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-module-recovery"
                            "--enable-experimental"
-                           "--enable-module-ecdh"
-                           "--enable-module-schnorrsig"
                            "--enable-shared"
                            "--disable-static"
                            "--disable-benchmark")))
