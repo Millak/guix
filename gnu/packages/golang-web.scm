@@ -270,6 +270,41 @@ the parse trees produced by the html package.")
 connections from a single physical connection.")
     (license license:expat)))
 
+(define-public go-github-com-aws-aws-lambda-go
+  (package
+    (name "go-github-com-aws-aws-lambda-go")
+    (version "1.47.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-lambda-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xki0n3va9nr6dmlgrb8zarkccx5jba6ig6g8zxcznw3rlllf1zv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-lambda-go"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/aws/aws-lambda-go")
+    (synopsis "AWS Lambda for Go")
+    (description
+     "Libraries, samples, and tools to help Go developers develop AWS Lambda
+functions.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aws-aws-sdk-go
   (package
     (name "go-github-com-aws-aws-sdk-go")
