@@ -6877,6 +6877,46 @@ from various sources.  For instance, it contains all IANA types and the
 knowledge of Apache.")
     (license (package-license perl))))
 
+(define-public perl-minimumversion
+  (package
+    (name "perl-minimumversion")
+    (version "1.40")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/D/DB/DBOOK/Perl-MinimumVersion-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "145yl4qv14xcrr74w1qvdb6s0h5lj8smnfawfnj0rmv0rdwab2bm"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'wrap-programs
+                     (lambda _
+                       (wrap-program (string-append #$output "/bin/perlver")
+                         (list "PERL5LIB" ":"
+                               'prefix
+                               (list (string-append (getenv "PERL5LIB") ":"
+                                                    #$output
+                                                    "/lib/perl5/site_perl")))))))))
+    (inputs (list bash-minimal))
+    (propagated-inputs (list perl-file-find-rule
+                             perl-file-find-rule-perl
+                             perl-params-util
+                             perl-ppi
+                             perl-ppix-regexp
+                             perl-ppix-utils))
+    (home-page "https://metacpan.org/release/Perl-MinimumVersion")
+    (synopsis "Find a minimum required version of perl for Perl code")
+    (description
+     "@samp{Perl::MinimumVersion} takes Perl source code and calculates the minimum
+version of perl required to be able to run it.  Because it is based on the @samp{PPI}
+(Perl Parsing Interface), it can do this without loading the code.  The distribution
+comes with a script called @samp{perlver}.")
+    (license license:perl-license)))
+
 (define-public perl-mixin-linewise
   (package
     (name "perl-mixin-linewise")
