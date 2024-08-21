@@ -5940,6 +5940,18 @@ tool."))
 Trace/Debug/Info/Warn/Error methods on @code{hclog.Logger} are used
 correctly.")))
 
+(define-public go-msgio
+  (package
+    (inherit go-github-com-libp2p-go-msgio)
+    (name "go-msgio")
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:install-source? #f
+      #:import-path "github.com/libp2p/go-msgio/msgio"
+      #:unpack-path "github.com/libp2p/go-msgio"))
+    (synopsis "CLI tool to wrap messages with msgio header.")))
+
 (define-public go-numcpus
   (package
     (inherit go-github-com-tklauser-numcpus)
