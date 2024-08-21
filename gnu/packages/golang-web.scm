@@ -3670,6 +3670,35 @@ interface.")
 use gzip compression when serving HTTP requests.")
     (license license:expat)))
 
+(define-public go-github-com-shurcool-vfsgen
+  (package
+    (name "go-github-com-shurcool-vfsgen")
+    (version "0.0.0-20230704071429-0000e147ea92")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shurcooL/vfsgen")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ypfdiv56ckb0yc7mccc2l8vc3gmfws2p7bcf9f0j415m7r0aq6q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shurcooL/vfsgen"))
+    (native-inputs
+     (list go-golang-org-x-tools))
+    (propagated-inputs
+     (list go-github-com-shurcool-httpfs))
+    (home-page "https://github.com/shurcooL/vfsgen")
+    (synopsis "Generate Go code from an @code{http.FileSystem}")
+    (description
+     "Package @code{vfsgen} takes an @code{http.FileSystem} (likely at
+@code{go generate} time) and generates Go code that statically implements the
+provided @code{http.FileSystem}.")
+    (license license:expat)))
+
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
     (name "go-github-com-sourcegraph-jsonrpc2")
