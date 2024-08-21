@@ -31431,7 +31431,6 @@ constant expressions.")
     (propagated-inputs
      (list emacs-aio
            emacs-dash
-           emacs-docker-tramp
            emacs-json-mode
            emacs-s
            emacs-tablist))
