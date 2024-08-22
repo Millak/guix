@@ -15,7 +15,7 @@
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016–2023 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Bake Timmons <b3timmons@speedymail.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -1609,6 +1609,30 @@ current version of any major web browser.")
        "RapidJSON is a fast JSON parser/generator for C++ with both SAX/DOM
 style API.")
       (license license:expat))))
+
+(define-public libjwt
+  (package
+    (name "libjwt")
+    (version "1.17.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/benmcollins/libjwt/releases/download/v"
+                           version "/libjwt-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32
+         "1bpfaa0y8bccz5hr677lkrprs07akx02k0qbf82z2c8syr24a77i"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list jansson openssl))
+    (native-inputs
+     (list check pkg-config))
+    (home-page "https://github.com/benmcollins/libjwt")
+    (synopsis "C @acronym{JWT, JSON Web Token} library")
+    (description "@code{libjwt} is a @acronym{JWT, JSON Web Token} library for
+C.")
+    (license license:mpl2.0)))
 
 (define-public yajl
   (package
