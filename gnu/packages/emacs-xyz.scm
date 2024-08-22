@@ -19735,6 +19735,32 @@ guidelines.  It also includes a couple handy IDE-type features such as
 documentation search and a source and class browser.")
     (license license:gpl3+)))
 
+(define-public emacs-composer
+  (let ((commit "791a7104be2ef2748757a186094c1e8f7f531a01")
+        (revision "0"))
+    (package
+      (name "emacs-composer")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/zonuexe/composer.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01kb74nlkp4fvpbz6wdx776q3v7jfknhax1qmg85kj2ilkadfrd0"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/zonuexe/composer.el")
+      (synopsis "Emacs interface for managing PHP dependencies with Composer")
+      (description
+       "This package provides an Emacs interface for working with PHP
+ dependencies managed by Composer.  It allows users to run Composer commands
+ directly from Emacs, including installing and updating packages, and managing
+ Composer configurations.  The package aims to streamline the development
+ workflow for PHP projects within Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-pippel
   (let ((commit "cb194952ee150e77601d3233dabdb521b976ee79")
         (revision "0"))
