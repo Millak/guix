@@ -1420,7 +1420,7 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
 (define-public go-github-com-goccy-go-json
   (package
     (name "go-github-com-goccy-go-json")
-    (version "0.10.2")
+    (version "0.10.3")
     (source
      (origin
        (method git-fetch)
@@ -1429,7 +1429,7 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1krid2hlvs808jl9zmv7m6zx92samc60gymhwr2mwwykicwbnks8"))
+        (base32 "0w9kjplhyzq8n4iainddapzj7dxnfbjiz4xdpb0hlb6h35grpxgn"))
        (modules '((guix build utils)))
        (snippet '(delete-file-recursively "benchmarks"))))
     (build-system go-build-system)
@@ -4008,6 +4008,34 @@ Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
 
+(define-public go-mvdan-cc-xurls
+  (package
+    (name "go-mvdan-cc-xurls")
+    (version "2.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mvdan/xurls")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1516hwlxbnhdca56qy7sx9h2n5askq6ddqpqyp3f5rvmzdkxf4zn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "mvdan.cc/xurls/v2"))
+    (propagated-inputs
+     (list go-github-com-rogpeppe-go-internal
+           go-golang-org-x-mod
+           go-golang-org-x-sync))
+    (home-page "https://mvdan.cc/xurls/v2/")
+    (synopsis "Extracts URLs from text")
+    (description
+     "Xurls extracts urls from plain text using regular expressions.  It can
+be used as both a binary and a library.")
+    (license license:bsd-3)))
+
 (define-public go-nhooyr-io-websocket
   (package
     (name "go-nhooyr-io-websocket")
@@ -4071,6 +4099,22 @@ go-github-com-multiformats-go-multiaddr-dns.")))
            go-github-com-spf13-pflag))
     (description "This package provides a CLI binary executible built from
 go-github-com-tdewolff-minify-v2 source.")))
+
+(define-public xurls
+  (package
+    (inherit go-mvdan-cc-xurls)
+    (name "xurls")
+    (arguments
+     (list
+      #:import-path "mvdan.cc/xurls/v2/cmd/xurls"
+      #:unpack-path "mvdan.cc/xurls/v2"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "testdata/script/version.txtar")))))))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

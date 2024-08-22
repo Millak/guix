@@ -1019,30 +1019,28 @@ programmer to write text-based user interfaces.")
 (define-public go-github-com-junegunn-fzf
   (package
     (name "go-github-com-junegunn-fzf")
-    (version "0.41.0")
+    (version "0.54.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/junegunn/fzf")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1l9nsvziip3azyvg8wi4g3x606fh6w9vpfcbcgjdzdnp2ywqciim"))))
+         "0mdj3z7w2igkvy8r304k9rcr2l6xm459ifshdm55iy6mazd8cmci"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/junegunn/fzf"))
     (inputs
-     (list go-github-com-mattn-go-runewidth
-           go-github-com-mattn-go-shellwords
+     (list go-github-com-charlievieth-fastwalk
+           go-github-com-gdamore-tcell-v2
            go-github-com-mattn-go-isatty
-           go-github-com-gdamore-tcell
+           go-github-com-mattn-go-shellwords
            go-github-com-rivo-uniseg
-           go-github-com-saracen-walker
-           go-golang-org-x-sync
-           go-golang-org-x-term
-           go-golang-org-x-crypto))
+           go-golang-org-x-sys
+           go-golang-org-x-term))
     (home-page "https://github.com/junegunn/fzf")
     (synopsis "Command-line fuzzy-finder")
     (description "This package provides an interactive command-line filter

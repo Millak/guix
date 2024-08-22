@@ -199,7 +199,7 @@ semantically equal.")
 (define-public go-golang-org-x-crypto
   (package
     (name "go-golang-org-x-crypto")
-    (version "0.25.0")
+    (version "0.26.0")
     (source
      (origin
        (method git-fetch)
@@ -208,7 +208,7 @@ semantically equal.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cnglyy3fhvnnynazfdrikkwcxv3rlxamvfxink2z241lncvwkxy"))))
+        (base32 "1rc5zl3gxfy4wcwqjibqgnqj8wdm0v9ff25vkyirzb71l343ydlx"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -288,7 +288,7 @@ language.")
 (define-public go-golang-org-x-exp
   (package
     (name "go-golang-org-x-exp")
-    (version "0.0.0-20240613232115-7f521ea00fb8")
+    (version "0.0.0-20240808152545-0cdaa3abc0fa")
     (source
      (origin
        (method git-fetch)
@@ -297,7 +297,7 @@ language.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ccjgv19w5p9sbcq12czmfnkjwv3b7hfljifwax6r9wk4dx0fcn7"))
+        (base32 "1sa03fm57326qnchvfza7am7jjlz32l1yyqbdvy6mknw5bmp8a71"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -385,7 +385,7 @@ compile does not support generics.")
 (define-public go-golang-org-x-image
   (package
     (name "go-golang-org-x-image")
-    (version "0.18.0")
+    (version "0.19.0")
     (source
      (origin
        (method git-fetch)
@@ -394,7 +394,7 @@ compile does not support generics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d7zwdsg06km24vhx6dzk1w26wpi3yhx9jfkf9jnsp5chv5pzlw3"))))
+        (base32 "0nb1wvy0xr0s9xylzf336vghkblkp5b9sq2hqh6wdav1awnpry90"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -431,7 +431,7 @@ compile does not support generics.")
 (define-public go-golang-org-x-mod
   (package
     (name "go-golang-org-x-mod")
-    (version "0.19.0")
+    (version "0.20.0")
     (source
      (origin
        (method git-fetch)
@@ -440,7 +440,7 @@ compile does not support generics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02wilb8q2bp6qhqcrbjxq1pjy3y5k8p11pxlg481609zx4rjiszc"))))
+        (base32 "0vrzahgr08idiz9g2ksngwsjhyaa0rryn4vh0lm54kkxgv9pcv7f"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -481,7 +481,7 @@ loading algorithms.")
 (define-public go-golang-org-x-net
   (package
     (name "go-golang-org-x-net")
-    (version "0.27.0")
+    (version "0.28.0")
     (source
      (origin
        (method git-fetch)
@@ -490,7 +490,7 @@ loading algorithms.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fc6d968yiv2l67z9jg7ssvas1hd1jniqh4m7mmlay0q5gk4vf8s"))))
+        (base32 "1fh4rnqsxc652lhncnrdb3qcsw811565qb9619z21z0p1fdgzlar"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -519,7 +519,7 @@ loading algorithms.")
 (define-public go-golang-org-x-sync
   (package
     (name "go-golang-org-x-sync")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -528,7 +528,7 @@ loading algorithms.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03yq3pnjwqxqy1cvbkaa39ca2b9cli1k5wnz76l3a65n9fafai6q"))))
+        (base32 "1jssyq49g5z7dbhdb9bnzsb8gigvsy5f4aczbzn5paz07v9wbjxs"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -561,7 +561,7 @@ cancelation for groups of goroutines working on subtasks of a common task
 (define-public go-golang-org-x-sys
   (package
     (name "go-golang-org-x-sys")
-    (version "0.22.0")
+    (version "0.24.0")
     (source
      (origin
        (method git-fetch)
@@ -570,7 +570,7 @@ cancelation for groups of goroutines working on subtasks of a common task
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kpl5hk0zbh5bfschnq64yj1cs7v3l9v6bd1rw5crlfd4hg7xawa"))))
+        (base32 "0j5hhwrbgjh5bnwqr9g1c32175j43rqlrpv199ay1b970iwiqd4l"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -594,7 +594,7 @@ support for low-level interaction with the operating system.")
 (define-public go-golang-org-x-term
   (package
     (name "go-golang-org-x-term")
-    (version "0.22.0")
+    (version "0.23.0")
     (source
      (origin
        (method git-fetch)
@@ -603,7 +603,7 @@ support for low-level interaction with the operating system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0iqh035y65gfm28xp52pnksh49q3nyaz0zrjjj032rs8hv5py75m"))))
+        (base32 "1pdv60bm4gfvgf98lyms92qm32zc4f4h4w1fagrhzllwflmsca8h"))))
     (build-system go-build-system)
     (arguments '(#:import-path "golang.org/x/term"))
     (propagated-inputs
@@ -617,7 +617,7 @@ terminals, as commonly found on Unix systems.")
 (define-public go-golang-org-x-text
   (package
     (name "go-golang-org-x-text")
-    (version "0.16.0")
+    (version "0.17.0")
     (source
      (origin
        (method git-fetch)
@@ -626,7 +626,7 @@ terminals, as commonly found on Unix systems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pmn0i1xbpwvzl4cdgmjqcsk9vckhqrq6699fnr9mkglh4xj3p7a"))))
+        (base32 "1jqvh4mmg3db2slh5z7fxdhkgazyld5l858rwnbpfxvfrw0k9w1h"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -668,7 +668,7 @@ processing.")
 (define-public go-golang-org-x-time
   (package
     (name "go-golang-org-x-time")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -677,7 +677,7 @@ processing.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dahq0p6zn2pd408q6hsv1jl12nqrwd1gkl3r3dysk2q0z16192v"))))
+        (base32 "14z7f1yx3r393f94yjv09mrsfaydq6da7pswv8wvk327mxa56vw1"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -702,7 +702,7 @@ time.")
 (define-public go-golang-org-x-tools
   (package
     (name "go-golang-org-x-tools")
-    (version "0.23.0")
+    (version "0.24.0")
     (source
      (origin
        (method git-fetch)
@@ -711,7 +711,7 @@ time.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hr81fr5s39p97m9y3ipma7ryw4nm2246k8ds0flkybzf19mhzbi"))
+        (base32 "007n9bmhxn2yspvmcdbj8h0l132vhakszv4i0bd65cvravskcw8y"))
        (modules '((guix build utils)))
        (snippet
         '(begin
