@@ -429,8 +429,8 @@ interface.")
                        "--reproducible-build"
                        "--package-path=/"
                        (string-append "--bin-path=" out "/bin")
-                       (string-append "--lib-path=" out "/lib")
-                       (string-append "--share-path=" out "/share")))))
+                       (string-append "--lib-path=" out "/lib/clasp")
+                       (string-append "--share-path=" out "/share/clasp")))))
          (replace 'build
            (lambda* _
              (invoke "ninja" "-C" "build")))
@@ -1353,14 +1353,14 @@ be built as a stand-alone REPL interpreter.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.4.5")
+    (version "2.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "1lbvb9rzlkl3h8s75i2js4dnmgxmvs41jxjb5dj0f603r688xxjd"))
+        (base32 "1lhia29g0byj7w3akd99sjb8kxp95adwqk2kbl0wsnk30cjlsm38"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1506,8 +1506,9 @@ be built as a stand-alone REPL interpreter.")
                                          `("clisp")))
                      (string-append "--prefix="
                                     (assoc-ref outputs "out"))
-                     ,@(if (target-ppc32?)
-                         ;; 3072 is too much for this architecture.
+                     ,@(if (or (target-ppc32?)
+                               (target-x86-32?))
+                         ;; 3072 is too much for these architectures.
                          `("--dynamic-space-size=2048")
                          `("--dynamic-space-size=3072"))
                      "--with-sb-core-compression"

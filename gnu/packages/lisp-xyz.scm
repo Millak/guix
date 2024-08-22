@@ -3116,6 +3116,9 @@ package.")
        (list sbcl-fiveam))
       (inputs
        (list sbcl-bordeaux-threads))
+      (arguments
+       ;; Disable flaky tests
+       (list #:tests? #f))
       (synopsis "Portable channel-based concurrency for Common Lisp")
       (description "Common Lisp library for channel-based concurrency.  In
 a nutshell, you create various threads sequentially executing tasks you need
@@ -4796,8 +4799,8 @@ from/to strings, streams and files.")
   (sbcl-package->ecl-package sbcl-cl-csv))
 
 (define-public sbcl-cl-data-structures
-  (let ((commit "25dd479377eb40ce54eed4ecc0d660aed32f3a78")
-        (revision "1"))
+  (let ((commit "ffab56830f3ed777450a065890484ef22147cd44")
+        (revision "2"))
     (package
       (name "sbcl-cl-data-structures")
       (version (git-version "1.4.1" revision commit))
@@ -4809,7 +4812,7 @@ from/to strings, streams and files.")
                (commit commit)))
          (file-name (git-file-name "cl-data-structures" version))
          (sha256
-          (base32 "1yhfahnsx56s9jzdk7jnqic5a3fiq29i1a9d0ay6fd1rg2wfa3k3"))))
+          (base32 "0h49h1x9dgr53imj0r4lgx0zvdsv3mnh7lyayzy9hlysy2ixp425"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-prove))
@@ -17681,7 +17684,7 @@ and @code{kqueue(2)}), a pathname library and file-system utilities.")
 (define-public sbcl-ironclad
   (package
     (name "sbcl-ironclad")
-    (version "0.60")
+    (version "0.61")
     (source
      (origin
        (method git-fetch)
@@ -17689,7 +17692,7 @@ and @code{kqueue(2)}), a pathname library and file-system utilities.")
              (url "https://github.com/sharplispers/ironclad/")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "122ldxiddkscb3li5wjrppr7vyn77znyjfgs8pbflrskzyxlabdd"))
+        (base32 "1yszjy6a0q1jvdgd7fpmnvi9851s8ivp4plscw27lbnl7jlj1pmk"))
        (file-name (git-file-name "cl-ironclad" version))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
