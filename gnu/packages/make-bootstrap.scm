@@ -85,7 +85,18 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
           ;; and can use statically-linked NSS modules.
           `(cons* "--disable-nscd" "--disable-build-nscd"
                   "--enable-static-nss"
-                  ,flags))))
+                  ,flags))
+         ((#:phases phases #~%standard-phases)
+          ;; Apply i686-linux-specific patch.
+          (if (target-x86-32?)
+              #~(modify-phases #$phases
+                  (add-after 'unpack 'apply-libm-patch
+                    (lambda _
+                      (define patch
+                        #$(local-file
+                           (search-patch "glibc-2.39-fmod-libm-a.patch")))
+                      (invoke "patch" "--force" "-p1" "-i" patch))))
+              phases))))
 
       ;; Remove the 'debug' output to allow bit-reproducible builds (when the
       ;; 'debug' output is used, ELF files end up with a .gnu_debuglink, which
