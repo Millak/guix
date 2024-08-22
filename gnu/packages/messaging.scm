@@ -3659,6 +3659,7 @@ a text snippet), using @code{libphonenumber}.")
        (sha256
         (base32 "0d5i9skgfjzs2100k0g99sigc2w61480ysz3va6pmb4nx43100g3"))))
     (build-system rebar-build-system)
+    (inputs (list bash-minimal coreutils procps sed))
     (native-inputs
      (list autoconf
            automake
@@ -3771,7 +3772,18 @@ a text snippet), using @code{libphonenumber}.")
                                 (string-append erts "/bin")))
                 (chmod (string-append ejabberd
                                       "/bin/install_upgrade.escript") #o755)
-                (copy-recursively ejabberd #$output)))))))
+                (copy-recursively ejabberd #$output))))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (wrap-program (string-append out "/bin/ejabberdctl")
+                  `("PATH" ":" suffix
+                    ,(map (lambda (command)
+                            (dirname
+                             (search-input-file
+                              inputs (string-append "bin/" command))))
+                          (list "date" "dirname" "grep"
+                                "id" "pgrep" "sed"))))))))))
     (synopsis "Robust, Ubiquitous and Massively Scalable Messaging Platform")
     (description "This package provides Ejabberd -- Robust, Ubiquitous and
 Massively Scalable Messaging Platform.  It supports XMPP, MQTT and SIP
