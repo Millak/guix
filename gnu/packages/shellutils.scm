@@ -436,13 +436,19 @@ all of the regexes given on the command line in order.")
                     (("version = \"\\(devel\\)\"")
                      (format #f "version = \"~a\"" fixed-version)))
                   (substitute* "cmd/shfmt/testdata/script/flags.txtar"
-                    (("devel\\|v3") #$version)))))))))
+                    (("devel\\|v3") #$version))))))
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (native-inputs
      (list go-github-com-creack-pty
-           go-github-com-frankban-quicktest
+           go-github-com-go-quicktest-qt
            go-github-com-google-go-cmp
            go-github-com-google-renameio-v2
-           go-github-com-pkg-diff
+           go-github-com-muesli-cancelreader
            go-github-com-rogpeppe-go-internal
            go-golang-org-x-sync
            go-golang-org-x-sys
