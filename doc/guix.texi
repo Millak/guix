@@ -41292,6 +41292,116 @@ setuid-root (@pxref{Privileged Programs}) such that unprivileged users can
 invoke @command{singularity run} and similar commands.
 @end defvar
 
+@cindex Rootless Podman
+@subsubheading Rootless Podman Service
+
+@cindex rootless podman, container management tool
+@cindex podman, rootless
+@cindex container management, podman
+The @code{(gnu services containers)} module provides the following service.
+
+
+@defvar rootless-podman-service-type
+This is the service type for @url{https://podman.io, Podman} is a
+container management tool.
+
+In addition to providing a drop-in replacement for Docker, Podman offers
+the ability to run containers in ``root-less'' mode, meaning that regular users can
+deploy containers without elevated privileges.  It does so mainly by leveraging
+two Linux kernel features: unprivileged user namespaces, and subordinate
+user and group IDs (@pxref{subordinate-user-group-ids, the subordinate
+user and group ID service}).
+
+The @code{rootless-podman-service-type} sets up the system to allow
+unprivileged users to run @command{podman} commands:
+
+@lisp
+(use-service-modules containers networking @dots{})
+
+(operating-system
+  ;; @dots{}
+  (users (cons (user-account
+                (name "alice")
+                (comment "Bob's sister")
+                (group "users")
+
+                ;; Adding the account to the "cgroup" group
+                ;; makes it possible to run podman commands.
+                (supplementary-groups '("cgroup" "wheel"
+                                        "audio" "video")))
+               %base-user-accounts))
+  (services
+    (append (list (service iptables-service-type)
+                  (service rootless-podman-service-type
+                           (rootless-podman-configuration
+                             (subgids
+                               (list (subid-range (name "alice"))))
+                             (subuids
+                               (list (subid-range (name "alice")))))))
+            %base-services)))
+@end lisp
+
+The @code{iptables-service-type} is required for Podman to be able to setup its
+own networks.  Due to the change in user groups and file systems it is
+recommended to reboot (or at least logout), before trying to run Podman commands.
+
+To test your installation you can run:
+
+@example
+$ podman run -it --rm docker.io/alpine cat /etc/*release*
+NAME="Alpine Linux"
+ID=alpine
+VERSION_ID=3.20.2
+PRETTY_NAME="Alpine Linux v3.20"
+HOME_URL="https://alpinelinux.org/"
+BUG_REPORT_URL="https://gitlab.alpinelinux.org/alpine/aports/-/issues"
+@end example
+
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} rootless-podman-configuration
+Available @code{rootless-podman-configuration} fields are:
+
+@table @asis
+@item @code{podman} (default: @code{podman}) (type: package)
+The Podman package that will be installed in the system profile.
+
+@item @code{group-name} (default: @code{"cgroup"}) (type: string)
+The name of the group that will own /sys/fs/cgroup resources.  Users that
+want to use rootless Podman have to be in this group.
+
+@item @code{containers-registries} (type: lowerable)
+A string or a gexp evaluating to the path of Podman's
+@code{containers/registries.conf} configuration file.
+
+@item @code{containers-storage} (type: lowerable)
+A string or a gexp evaluating to the path of Podman's
+@code{containers/storage.conf} configuration file.
+
+@item @code{containers-policy} (type: lowerable)
+A string or a gexp evaluating to the path of Podman's
+@code{containers/policy.json} configuration file.
+
+@item @code{pam-limits} (type: list-of-pam-limits-entries)
+The PAM limits to be set for rootless Podman.
+
+@item @code{subgids} (default: @code{()}) (type: list-of-subid-ranges)
+A list of subid ranges representing the subgids that will be
+available for each configured user.
+
+@item @code{subuids} (default: @code{()}) (type: list-of-subid-ranges)
+A list of subid ranges representing the subuids that will be
+available for each configured user.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 @cindex OCI-backed, Shepherd services
 @subsubheading OCI backed services
 

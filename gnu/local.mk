@@ -719,6 +719,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/cgit.scm			\
   %D%/services/ci.scm				\
   %D%/services/configuration.scm		\
+  %D%/services/containers.scm   		\
   %D%/services/cuirass.scm			\
   %D%/services/cups.scm				\
   %D%/services/databases.scm			\
@@ -825,6 +826,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/base.scm				\
   %D%/tests/cachefilesd.scm			\
   %D%/tests/ci.scm				\
+  %D%/tests/containers.scm			\
   %D%/tests/cups.scm				\
   %D%/tests/databases.scm			\
   %D%/tests/desktop.scm				\
