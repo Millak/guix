@@ -6089,37 +6089,6 @@ matching and globbing with support for \"doublestar\" patterns.")
 helping you to transform blocks of text.")
     (license license:expat)))
 
-(define-public go-github-com-muesli-termenv
-  (package
-    (name "go-github-com-muesli-termenv")
-    (version "0.15.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/muesli/termenv")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "19yhli6k79aqpra4djp0cl4q76mqxbc1f7in20y0dzhnjb7yz42p"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/muesli/termenv"))
-    (propagated-inputs
-     (list go-github-com-aymanbagabas-go-osc52-v2
-           go-github-com-lucasb-eyer-go-colorful
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-runewidth
-           go-golang-org-x-sys))
-    (home-page "https://github.com/muesli/termenv/")
-    (synopsis "Advanced styling options on the terminal")
-    (description "termenv lets you safely use advanced styling options on the
-terminal.  It gathers information about the terminal environment in terms of
-its ANSI and color support and offers you convenient methods to colorize and
-style your output, without you having to deal with all kinds of weird ANSI
-escape sequences and color conversions.")
-    (license license:expat)))
-
 (define-public go-github-com-olekukonko-tablewriter
   (package
     (name "go-github-com-olekukonko-tablewriter")
