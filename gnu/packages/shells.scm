@@ -26,6 +26,7 @@
 ;;; Copyright © 2024 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 Luís Henriques <henrix@camandro.org>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -916,27 +917,20 @@ Shell (pdksh).")
     (license (list license:miros
                    license:isc))))              ; strlcpy.c
 
-(define-public oil
+(define-public oils
   (package
-    (name "oil")
-    (version "0.20.0")
+    (name "oils")
+    (version "0.22.0")
     (source
-     ;; oil's sources contain a modified version of CPython 2.7.13.
-     ;; According to https://www.oilshell.org/blog/2017/05/05.html
-     ;; this bundles version of CPython had certain unused parts removed
-     ;; and its build system has been replaced by a custom one.
-     ;; This would probably make it quite complicated to replace the
-     ;; bundled CPython with the one from the python2 package.
      (origin
        (method url-fetch)
-       (uri (string-append "https://www.oilshell.org/download/oil-"
+       (uri (string-append "https://www.oilshell.org/download/oils-for-unix-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1jpxhixwq29ik01jx372g9acib59wmww8lrdlcypq7jpg5b0b7pi"))))
+        (base32 "0pylgbxbnp683g51lcbmmd0y149jm7q7vh8g67yviagsa7clmmks"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:strip-binaries? #f         ; strip breaks the binary
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (replace 'configure
                  (lambda _
@@ -945,24 +939,40 @@ Shell (pdksh).")
                      ((" cc ") " $CC "))
                    (invoke "./configure" (string-append "--prefix=" #$output)
                            "--with-readline")))
+               (replace 'build
+                 (lambda _
+                   (invoke "_build/oils.sh")))
+               (replace 'install
+                 (lambda _
+                   (setenv "PREFIX" #$output)
+                   (invoke "./install")))
                (replace 'check
                  ;; The tests are not distributed in the tarballs but upstream
                  ;; recommends running this smoke test.
-                 ;; https://github.com/oilshell/oil/blob/release/0.8.0/INSTALL.txt#L38-L48
+                 ;; https://github.com/oilshell/oil/blob/release/0.22.0/INSTALL.txt#L30-L50
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
-                     (let* ((oil "_bin/oil.ovm"))
-                       (invoke/quiet oil "osh" "-c" "echo hi")
-                       (invoke/quiet oil "osh" "-n" "configure"))))))))
+                     (let ((osh "_bin/cxx-opt-sh/osh")
+                           (ysh "_bin/cxx-opt-sh/ysh"))
+                       (invoke/quiet osh "-c" "echo hi")
+                       (invoke/quiet osh "-n" "configure")
+                       (invoke/quiet ysh "-c" "echo hi")
+                       (invoke/quiet ysh "-c"
+                                     "json write ({x: 42})"))))))))
     (inputs
      (list readline))
     (home-page "https://www.oilshell.org")
     (synopsis "Programming language and Bash-compatible Unix shell")
-    (description "Oil is a programming language with automatic translation for
-Bash.  It includes osh, a Unix/POSIX shell that runs unmodified Bash
-scripts.")
-    (license (list license:psfl                 ; tarball includes python2.7
-                   license:asl2.0))))
+    (description "Oils is a programming language with automatic translation for
+Bash.  It includes OSH, a Unix/POSIX shell that runs unmodified Bash
+scripts and YSH is a legacy-free shell, with structured data for Python and
+JavaScript users who avoid shell.")
+    (license (list license:asl2.0))))
+
+(define-public oil
+  ;; Since release 0.16.0 the former Oil project has been renamed to Oils:
+  ;; <https://www.oilshell.org/blog/2023/03/rename.html>.
+  (deprecated-package "oil" oils))
 
 (define-public gash
   (package
