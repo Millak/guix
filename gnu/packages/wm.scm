@@ -2374,8 +2374,11 @@ compositors that support the layer-shell protocol.")
        (sha256
         (base32 "0g5glpkcn54ypfym4lpfdjai479yfazcai1rg86bn72nkcbpwfql"))))
     (build-system meson-build-system)
-    (inputs (list wayland))
-    (native-inputs (list pkg-config scdoc libscfg))
+    (inputs (list libscfg wayland))
+    (native-inputs (append (if (%current-target-system)
+                               (list pkg-config-for-build)
+                               (list))
+                           (list pkg-config scdoc wayland)))
     (home-page "https://wayland.emersion.fr/kanshi")
     (synopsis "Hotswappable output profiles for Wayland")
     (description "Kanshi allows you to define output profiles that are
