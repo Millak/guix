@@ -35,6 +35,7 @@
  (entry (commit "4e58dfee6c7456d1e662f66041b8a157efe8710a")
         (title
          (en "More capable @code{privileged-programs} replace @code{setuid-programs}")
+         (de "Befähigtere @code{privileged-programs} ersetzen @code{setuid-programs}")
          (nl "Capabelere @code{privileged-programs} vervangen @code{setuid-programs}"))
         (body
          (en "Where the kernel supports it, Guix System can now assign
@@ -47,6 +48,17 @@ system privilege)}.  @code{privileged-programs} replaces @code{setuid-programs}
 as @code{operating-system} field and defaults to
 @code{%default-privileged-programs}.  The executables themselves have moved from
 @file{/run/setuid-programs} to @file{/run/privileged/bin}.")
+         (de "Wo der Kernel dies unterstützt, kann Guix System nun
+POSIX-@dfn{Capabilities} an die Anwendungen vergeben, denen besonders vertraut
+wird.  Capabilities bieten eine feinmaschigere Alternative zu den klassischen
+setuid- und setgid-Berechtigungen, die auch verfügbar bleiben.
+
+Um dies deutlich zu machen, heißt @code{(gnu system setuid)} nun @code{(gnu
+system privilege)}.  Das Feld @code{privileged-programs} ersetzt
+@code{setuid-programs} in jedem @code{operating-system}-Objekt und sein
+Vorgabewert ist @code{%default-privileged-programs}.  Die ausführbaren Dateien
+wurden von @file{/run/setuid-programs} nach @file{/run/privileged/bin}
+verschoben.")
          (nl "Waar de kernel dit toelaat kan Guix System nu
 POSIX@tie{}@dfn{capabilities} toewijzen aan vertrouwde uitvoerbare bestanden.
 ``Capabilities'' zijn een fijnmaziger alternatief voor de klassieke setuid- en
