@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2024 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -307,6 +308,32 @@ workloads.  This kind of profiling is also known as wall-clock profiling.")
     (description
      "Package quicktest provides a collection of Go helpers for writing
 tests.")
+    (license license:expat)))
+
+(define-public go-github-com-go-quicktest-qt
+  (package
+    (name "go-github-com-go-quicktest-qt")
+    (version "1.101.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-quicktest/qt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mc10cszgm760aw82jyrgvld5dqcfnrsjy9zx1dzf9px34d8vlgx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-quicktest/qt"))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp go-github-com-kr-pretty))
+    (home-page "https://github.com/go-quicktest/qt")
+    (synopsis "qt: quicker Go tests")
+    (description
+     "Package qt implements assertions and other helpers wrapped around the
+standard library's testing types.")
     (license license:expat)))
 
 (define-public go-github-com-go-test-deep
