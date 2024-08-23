@@ -4921,31 +4921,6 @@ have super fancy logs.")
        "The fs package provides file-system-related Go functions.")
       (license license:bsd-3))))
 
-(define-public go-github-com-direnv-go-dotenv
-  (let ((commit "4cce6d1a66f7bc8dc730eab85cab6af1b801abed")
-        (revision "0"))
-    (package
-      (name "go-github-com-direnv-go-dotenv")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/direnv/go-dotenv")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "00wn4fc2lma0csf6ryvlc6k9jbpbifm4n7i3kkd2xrfw5qlm29b6"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/direnv/go-dotenv"))
-      (home-page "https://github.com/direnv/go-dotenv")
-      (synopsis "Go dotenv parsing library")
-      (description "This package provides a library for parsing the dotenv
-format in Go.")
-      (license license:expat))))
-
 (define-public go-github-com-kylelemons-godebug
   (package
     (name "go-github-com-kylelemons-godebug")
