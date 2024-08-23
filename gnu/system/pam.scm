@@ -34,6 +34,7 @@
   #:use-module ((guix utils) #:select (%current-system))
   #:use-module (gnu packages linux)
   #:export (pam-service
+            pam-service?
             pam-service-name
             pam-service-account
             pam-service-auth
@@ -41,11 +42,13 @@
             pam-service-session
 
             pam-entry
+            pam-entry?
             pam-entry-control
             pam-entry-module
             pam-entry-arguments
 
             pam-limits-entry
+            pam-limits-entry?
             pam-limits-entry-domain
             pam-limits-entry-type
             pam-limits-entry-item
