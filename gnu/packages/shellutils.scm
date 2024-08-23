@@ -639,8 +639,10 @@ Latin script and other languages.")
                  ;; direnv executable that's generated is removed.
                  (invoke "make" "clean"))))))))
     (native-inputs
-     (list go-github-com-burntsushi-toml go-github-com-direnv-go-dotenv
-           go-github-com-mattn-go-isatty go-golang-org-x-mod which))
+     (list go-github-com-burntsushi-toml
+           go-github-com-mattn-go-isatty
+           go-golang-org-x-mod
+           which))
     (home-page "https://direnv.net/")
     (synopsis "Environment switcher for the shell")
     (description
