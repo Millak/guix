@@ -36,6 +36,7 @@
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Brian Kubisiak <brian@kubisiak.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
@@ -2679,6 +2680,47 @@ the library more lightweight.")
 non-blocking @code{TryLock} function to allow locking without blocking
 execution.")
     (license license:bsd-3)))
+
+(define-public go-github-com-google-renameio
+  (package
+    (name "go-github-com-google-renameio")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/renameio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qn84nra9nxqyqg4i496b6ijbhnxvx66hdndwl7qh7r6q8lz2ba5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/renameio"))
+    (home-page "https://github.com/google/renameio/")
+    (synopsis "Atomically create or replace a file or symbolic link")
+    (description
+     "@code{renameio} Go package provides a way to atomically create or
+replace a file or symbolic link.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-google-renameio-v2
+  (package/inherit go-github-com-google-renameio
+    (name "go-github-com-google-renameio-v2")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/renameio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13vc7p43zz5pmgli4k18b15khxpca1zd8v1ga0ryq7ddyz55fg7i"))))
+    (arguments
+     (list
+      #:import-path "github.com/google/renameio/v2"))))
 
 (define-public go-github-com-google-subcommands
   (package
