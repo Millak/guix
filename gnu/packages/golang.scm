@@ -5547,7 +5547,7 @@ into URL query parameters.")
 (define-public go-github-com-google-renameio
   (package
     (name "go-github-com-google-renameio")
-    (version "0.1.0")
+    (version "1.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5556,7 +5556,7 @@ into URL query parameters.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ki2x5a9nrj17sn092d6n4zr29lfg5ydv4xz5cp58z6cw8ip43jx"))))
+                "1qn84nra9nxqyqg4i496b6ijbhnxvx66hdndwl7qh7r6q8lz2ba5"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/google/renameio"))
