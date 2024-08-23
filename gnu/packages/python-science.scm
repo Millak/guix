@@ -471,9 +471,11 @@ and linear forms into vectors.")
        (sha256
         (base32 "0zsfyd8cpd2l82fwh3smxbwhb3bkqwlq17cbav53axma4c2k9r9f"))))
     (build-system pyproject-build-system)
-    (arguments '(#:tests? #f))   ;XXX: not compatible with newer numpy.testing
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "skfuzzy")))
     (native-inputs
-     (list python-nose))
+     (list python-pytest))
     (propagated-inputs
      (list python-networkx python-numpy python-scipy))
     (home-page "https://github.com/scikit-fuzzy/scikit-fuzzy")
