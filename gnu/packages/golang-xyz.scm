@@ -4456,6 +4456,31 @@ Authentication Modules, PAM} application API.")
        ((#:import-path _ "github.com/msteinert/pam")
         "github.com/msteinert/pam/v2")))))
 
+(define-public go-github-com-muesli-cancelreader
+  (package
+    (name "go-github-com-muesli-cancelreader")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/muesli/cancelreader")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0157mgpk0z45xizrgrz73swhky0d8nyk6fhwb089n1290k7yjhxq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/muesli/cancelreader"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/muesli/cancelreader")
+    (synopsis "Cancelable reader for Golang")
+    (description
+     "This package provides a cancelable reader for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-multiformats-go-base32
   (package
     (name "go-github-com-multiformats-go-base32")
