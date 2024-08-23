@@ -2672,13 +2672,13 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
 (define-public python-pandapower
   (package
     (name "python-pandapower")
-    (version "2.14.9")
+    (version "2.14.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandapower" version ".zip"))
        (sha256
-        (base32 "0c5vgiq795kd5q4wcy2x7s3l7x9xdj2nqyfx188dmhgqckrym161"))))
+        (base32 "139ahp08kci8asmv35bcibbnkfr5s1ff5j84n490s47ibsglk4yi"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pyproj python-pytest unzip))
     (propagated-inputs (list python-deepdiff
