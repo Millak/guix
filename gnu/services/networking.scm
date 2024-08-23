@@ -2110,6 +2110,7 @@ COMMIT
 (define iptables-service-type
   (service-type
    (name 'iptables)
+   (default-value (iptables-configuration))
    (description
     "Run @command{iptables-restore}, setting up the specified rules.")
    (extensions
