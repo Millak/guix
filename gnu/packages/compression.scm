@@ -2235,14 +2235,14 @@ corrupted input.")
 (define-public plzip
   (package
     (name "plzip")
-    (version "1.10")
+    (version "1.11")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/plzip/"
                            "plzip-" version ".tar.gz"))
        (sha256
-        (base32 "16408n8z21hfxp0qnx3hh1d0c47g8z9i3vflbgbrmf6qcn1abyj3"))))
+        (base32 "0sv2sp0ppxkdds4qiwb3ddvlv22ydv61n3hk74rkh8ljbkjcpqyq"))))
     (build-system gnu-build-system)
     (inputs
      (list lzlib))
