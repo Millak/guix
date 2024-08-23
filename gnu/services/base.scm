@@ -1739,6 +1739,8 @@ information on the configuration file syntax."
 
     (service-type
      (name 'limits)
+     (compose concatenate)
+     (extend append)
      (extensions
       (list (service-extension pam-root-service-type
                                (lambda (config)
