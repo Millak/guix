@@ -1595,6 +1595,54 @@ submodules:
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-creack-pty
+  (package
+    (name "go-github-com-creack-pty")
+    (version "1.1.23")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/creack/pty")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1chx7ml9wlpk8pzgnnxb97gblmxz1j1v37m5i1asb94l5c24r1fg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/creack/pty"
+      #:modules '((ice-9 popen)
+                  (ice-9 textual-ports)
+                  (guix build go-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'regenerate-types
+            (lambda* (#:key import-path #:allow-other-keys)
+              ;; Generated files are included (ztypes_*). We need to remake
+              ;; them with Cgo.
+              (with-directory-excursion (string-append "src/" import-path)
+                (let* ((go-arch
+                        #$(car (go-target
+                                (or (%current-target-system)
+                                    (nix-system->gnu-triplet (%current-system))))))
+                       (file (string-append "ztypes_" go-arch ".go"))
+                       (pipe (open-input-pipe "go tool cgo -godefs types.go"))
+                       (text (get-string-all pipe)))
+                  (close-pipe pipe)
+                  (for-each delete-file
+                            (find-files (getcwd) (file-name-predicate
+                                                  "ztypes_[a-zA-Z0-9_]+.go")))
+                  (call-with-output-file file
+                    (lambda (port)
+                      (display text port))))))))))
+    (home-page "https://github.com/creack/pty")
+    (synopsis "Pseudoterminal handling in Go")
+    (description
+     "The pty package provides functions for working with Unix pseudoterminals.")
+    (license license:expat)))
+
 (define-public go-github-com-cskr-pubsub
   (package
     (name "go-github-com-cskr-pubsub")
