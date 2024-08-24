@@ -28008,8 +28008,8 @@ determine the cost of certain actions on a given platform and implementation.")
   (sbcl-package->ecl-package sbcl-the-cost-of-nothing))
 
 (define-public sbcl-tooter
-  (let ((commit "2dcc2facddcacd79d0cce545a8c4b73c35826fc1")
-        (revision "4"))
+  (let ((commit "76fbb36552b036ee84ec7fe4773616470b1ce4c2")
+        (revision "5"))
     (package
       (name "sbcl-tooter")
       (version (git-version "1.0.0" revision commit))
@@ -28021,7 +28021,7 @@ determine the cost of certain actions on a given platform and implementation.")
                (commit commit)))
          (file-name (git-file-name "cl-tooter" version))
          (sha256
-          (base32 "1zisrmslj4rnibm02vxh7hbas2cfsjh6iizs2nfdg3a3pn7bhf6h"))))
+          (base32 "05icr9aflxvqbkjj0f6yh0g5cr77vf9qdvwvlicw2nvbw4jdnmm8"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
