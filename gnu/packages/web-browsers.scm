@@ -852,7 +852,7 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.9.9.141421356")
+    (version "0.9.9.14142135623")
     (source
      (origin
        (method git-fetch)
@@ -861,12 +861,13 @@ http, and https via third-party applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cw8scjxci98jx5cmm98x0frjrbs3q7w3dwz60xpy67aqmwq7kqx"))))
+        (base32 "02kp527gyh60fm2ss92wy3k3m9fih82wvzndri98sj2zc0wgcnki"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
            automake
            gnu-gettext
+           libjpeg-turbo
            imagemagick
            mandoc
            nano
