@@ -12276,11 +12276,11 @@ well as standard genetic algorithms.")
   (sbcl-package->ecl-package sbcl-core-gp))
 
 (define-public sbcl-croatoan
-  (let ((commit "282145ff9e9005fddc4241bc6827b3ab09c5bd25")
+  (let ((commit "0157da69edf1459db43fcd30bc6941ef0b26c02d")
         (revision "1"))
     (package
       (name "sbcl-croatoan")
-      (version (git-version "2.0" revision commit))
+      (version (git-version "0.3" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -12289,7 +12289,7 @@ well as standard genetic algorithms.")
                (commit commit)))
          (file-name (git-file-name "cl-croatoan" version))
          (sha256
-          (base32 "021h2f2yj4j9gynr3k7qi36x94jm5b95p3vaddbaih96wyzgbmq5"))))
+          (base32 "1pd3ivh2hcrbj7xfrfma10chlpzcgh0g36sjy5b23pm2zga4dqvs"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
