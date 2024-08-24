@@ -1345,6 +1345,80 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
 language.")
     (license license:expat)))
 
+(define-public go-github-com-go-openapi-analysis
+  (package
+    (name "go-github-com-go-openapi-analysis")
+    (version "0.23.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-openapi/analysis")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i1sn6fzjv83y31b8lky0wh08xl8yj60y04jcidzcy5gmknavyfi"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Introduce cycle with go-github-com-go-openapi-loads.
+                 (delete-file-recursively "analysis_test")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/analysis"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Tests requiring network access.
+                  (("TestFlatten_RemoteAbsolute")
+                   "OffTestFlatten_RemoteAbsolute")))))
+          ;; FIXME: pattern schemas/*.json: cannot embed irregular file
+          ;; schemas/jsonschema-draft-04.json
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module which is sourced during setup environment phase, but
+          ;; easy resolved after coping to expected directory "vendor" within
+          ;; the current package, see details in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-before 'build 'copy-input-to-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (mkdir "vendor")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-input "go-github-com-go-openapi-spec")
+                  "/src/github.com")
+                 "vendor/github.com"))))
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./...")))))
+          (add-before 'install 'remove-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "vendor")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-openapi-jsonpointer
+           go-github-com-go-openapi-spec
+           go-github-com-go-openapi-strfmt
+           go-github-com-go-openapi-swag))
+    (home-page "https://github.com/go-openapi/analysis")
+    (synopsis "OpenAPI specification object model analyzer")
+    (description
+     "This package provides a foundational library to analyze an
+@acronym{OpenAPI Initiative,OAI} specification document for easier reasoning
+about the content.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-openapi-errors
   (package
     (name "go-github-com-go-openapi-errors")
