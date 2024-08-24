@@ -1399,6 +1399,35 @@ found in the go-openapi toolkit.")
 prototyped in @url{https://github.com/xeipuuv/gojsonpointer}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-openapi-jsonreference
+  (package
+    (name "go-github-com-go-openapi-jsonreference")
+    (version "0.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-openapi/jsonreference")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1121cnjjh07qdl4jdrd46kmdhx4dgsxn02rvsq5xzapl8gz5nhcn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/jsonreference"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-openapi-jsonpointer
+           go-github-com-go-openapi-swag
+           go-github-com-puerkitobio-purell))
+    (home-page "https://github.com/go-openapi/jsonreference")
+    (synopsis "JSON Reference with structs")
+    (description
+     "This package provides an implementation of JSON Reference, initially
+prototyped in @url{https://github.com/xeipuuv/gojsonreference}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-openapi-swag
   (package
     (name "go-github-com-go-openapi-swag")
