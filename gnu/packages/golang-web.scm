@@ -1460,6 +1460,41 @@ prototyped in @url{https://github.com/xeipuuv/gojsonreference}.")
 model.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-openapi-strfmt
+  (package
+    (name "go-github-com-go-openapi-strfmt")
+    (version "0.23.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-openapi/strfmt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00hqmfsgknhvp7mcbxfadpv4109f9gj59223yxhvmcviqg0a6a7b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/strfmt"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-asaskevich-govalidator
+           go-github-com-go-openapi-errors
+           go-github-com-google-uuid
+           go-github-com-mitchellh-mapstructure
+           go-github-com-oklog-ulid
+           go-go-mongodb-org-mongo-driver))
+    (home-page "https://github.com/go-openapi/strfmt")
+    (synopsis "OpenAPI toolkit common string formats")
+    (description
+     "This package exposes a registry of data types to support string formats
+in the @code{go-openapi} toolkit.  @code{strfmt} represents a well known
+string format such as credit card or email.  The Go toolkit for OpenAPI
+specifications knows how to deal with those.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-openapi-swag
   (package
     (name "go-github-com-go-openapi-swag")
