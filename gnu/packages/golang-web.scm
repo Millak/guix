@@ -1371,6 +1371,34 @@ language.")
 found in the go-openapi toolkit.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-openapi-swag
+  (package
+    (name "go-github-com-go-openapi-swag")
+    (version "0.23.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-openapi/swag")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c03mnmy162rrd1rzfqxiwnblvlwl4v09yklq55q4j9p4jqv740g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/swag"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-mailru-easyjson go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/go-openapi/swag")
+    (synopsis "Goodie bag in use in the go-openapi projects")
+    (description
+     "Contains a bunch of helper functions for go-openapi and go-swagger
+projects.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-webauthn-webauthn
   (package
     (name "go-github-com-go-webauthn-webauthn")
