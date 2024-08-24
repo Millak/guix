@@ -1345,6 +1345,32 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
 language.")
     (license license:expat)))
 
+(define-public go-github-com-go-openapi-errors
+  (package
+    (name "go-github-com-go-openapi-errors")
+    (version "0.22.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-openapi/errors")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nikzvknkv0nqdy44dfi096lcvkjnpjfrpg1gqlkg5ffccvdnd9s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/errors"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/go-openapi/errors")
+    (synopsis "OpenAPI toolkit common errors")
+    (description
+     "Shared errors and error interface used throughout the various libraries
+found in the go-openapi toolkit.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-webauthn-webauthn
   (package
     (name "go-github-com-go-webauthn-webauthn")
