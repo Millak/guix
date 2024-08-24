@@ -5427,7 +5427,7 @@ a cron spec parser and job runner.")
 (define-public go-github-com-google-uuid
   (package
     (name "go-github-com-google-uuid")
-    (version "1.1.1")
+    (version "1.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5436,7 +5436,7 @@ a cron spec parser and job runner.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hfxcf9frkb57k6q0rdkrmnfs78ms21r1qfk9fhlqga2yh5xg8zb"))))
+                "131d01minir79dq6d4jq55018343yidl5cs2bfhynx1klnr7ssam"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/google/uuid"))
