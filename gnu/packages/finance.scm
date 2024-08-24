@@ -2372,7 +2372,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "4.0")
+    (version "4.1")
     (source
      (origin
        (method git-fetch)
@@ -2381,7 +2381,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0x6s7fm5gn0q2274b2nja8hj84cvmxp4rr9x4xw050sxj74880jh"))
+       (sha256 (base32 "1ijj3ci0kx87yjv29c6p9wqj15aij7r87sdbjwhzcmbdf46krj3q"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively
