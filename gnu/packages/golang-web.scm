@@ -1660,6 +1660,86 @@ specifications knows how to deal with those.")
 projects.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-openapi-validate
+  (package
+    (name "go-github-com-go-openapi-validate")
+    (version "0.24.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-openapi/validate")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04inl03ha8sqqn1ccslbsl68shzf53qqk4yi88kvis0qdhcpl9fk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/validate"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Tests requiring network access.
+                (for-each delete-file
+                          (list "benchmark_test.go"
+                                "example_validator_test.go"
+                                "doc_test.go")))))
+          ;; FIXME: pattern schemas/*.json: cannot embed irregular file
+          ;; schemas/jsonschema-draft-04.json
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module which is sourced during setup environment phase, but
+          ;; easy resolved after coping to expected directory "vendor" within
+          ;; the current package, see details in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-before 'build 'copy-input-to-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (mkdir "vendor")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-input "go-github-com-go-openapi-loads")
+                  "/src/github.com")
+                 "vendor/github.com")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-input "go-github-com-go-openapi-spec")
+                  "/src/github.com")
+                 "vendor/github.com")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-input "go-github-com-go-openapi-analysis")
+                  "/src/github.com")
+                 "vendor/github.com"))))
+          (add-before 'install 'remove-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "vendor")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-go-openapi-analysis
+           go-github-com-go-openapi-errors
+           go-github-com-go-openapi-jsonpointer
+           go-github-com-go-openapi-loads
+           go-github-com-go-openapi-spec
+           go-github-com-go-openapi-strfmt
+           go-github-com-go-openapi-swag
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/go-openapi/validate")
+    (synopsis "OpenAPI toolkit validation helpers")
+    (description
+     "This package provides helpers to validate Swagger 2.0 specification (aka
+OpenAPI 2.0).")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-webauthn-webauthn
   (package
     (name "go-github-com-go-webauthn-webauthn")
