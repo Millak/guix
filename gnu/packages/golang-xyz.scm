@@ -6766,6 +6766,85 @@ also provides V-style logging controlled by the @code{-v} and
      (list
       #:import-path "k8s.io/klog/v2"))))
 
+(define-public go-go-mongodb-org-mongo-driver
+  (package
+    (name "go-go-mongodb-org-mongo-driver")
+    (version "1.16.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mongodb/mongo-go-driver")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "160hwrk8y8h3nl9sh5v6pxnlyw1ywbssjgzb72lj0x68akgl8gff"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.mongodb.org/mongo-driver"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "benchmark"
+                                "examples"
+                                "cmd/godriver-benchmark")))))
+          (add-before 'check 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Some tests require running database and available network connection.
+                  (("TestAggregate") "OffTestAggregate")
+                  (("TestPollSRVRecords") "OffTestPollSRVRecords")
+                  (("TestPollSRVRecordsServiceName")
+                   "OffTestPollSRVRecordsServiceName")
+                  (("TestPollingSRVRecordsLoadBalanced")
+                   "OffTestPollingSRVRecordsLoadBalanced")
+                  (("TestPollingSRVRecordsSpec")
+                   "OffTestPollingSRVRecordsSpec")
+                  (("TestServerHeartbeatOffTimeout")
+                   "OffTestServerHeartbeatTimeout")
+                  (("TestServerHeartbeatTimeout")
+                   "OffTestServerHeartbeatTimeout")
+                  (("TestTimeCodec") "OffTestTimeCodec")
+                  (("TestTopologyConstructionLogging")
+                   "OffTestTopologyConstructionLogging")
+                  (("TestURIOptionsSpec") "OffTestURIOptionsSpec")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (for-each
+                   (lambda (package)
+                     (invoke "go" "test" (string-append "./" package "/...")))
+                   (list "bson" "event" "internal" "tag" "x")))))))))
+    (native-inputs
+     (list go-github-com-aws-aws-lambda-go))
+    (propagated-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-golang-snappy
+           go-github-com-google-go-cmp
+           go-github-com-klauspost-compress
+           go-github-com-montanaflynn-stats
+           go-github-com-xdg-go-scram
+           go-github-com-xdg-go-stringprep
+           go-github-com-youmark-pkcs8
+           go-golang-org-x-crypto
+           go-golang-org-x-sync))
+    (home-page "https://go.mongodb.org/mongo-driver")
+    (synopsis "MongoDB Go Driver")
+    (description
+     "This package provides a driver for @code{Mongo} data base.")
+    (license license:asl2.0)))
+
 (define-public go-mvdan-cc-editorconfig
   (package
     (name "go-mvdan-cc-editorconfig")
