@@ -1371,6 +1371,34 @@ language.")
 found in the go-openapi toolkit.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-openapi-jsonpointer
+  (package
+    (name "go-github-com-go-openapi-jsonpointer")
+    (version "0.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-openapi/jsonpointer")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17gb0ab2r61j4gqbpwgpz6cvf9jy91xwn11gkbg3b1rq797if7vc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/jsonpointer"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-openapi-swag))
+    (home-page "https://github.com/go-openapi/jsonpointer")
+    (synopsis "JSON Pointer with structs")
+    (description
+     "This package provides an implementation of JSON Pointer, initially
+prototyped in @url{https://github.com/xeipuuv/gojsonpointer}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-openapi-swag
   (package
     (name "go-github-com-go-openapi-swag")
