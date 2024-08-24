@@ -1428,6 +1428,38 @@ prototyped in @url{https://github.com/xeipuuv/gojsonpointer}.")
 prototyped in @url{https://github.com/xeipuuv/gojsonreference}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-openapi-spec
+  (package
+    (name "go-github-com-go-openapi-spec")
+    (version "0.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-openapi/spec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07qp7gakrjwznbxg1w5ww8j0ky407s9rmyyrpwv5rsp8yw6qimjc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/spec"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-openapi-jsonpointer
+           go-github-com-go-openapi-jsonreference
+           go-github-com-go-openapi-swag
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/go-openapi/spec")
+    (synopsis "OpenAPI specification object model")
+    (description
+     "This package implements functionality to marshal and unmarshal
+@url{https://swagger.io/,Swagger} API specifications into a Golang object
+model.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-openapi-swag
   (package
     (name "go-github-com-go-openapi-swag")
