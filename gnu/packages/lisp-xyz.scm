@@ -4420,7 +4420,7 @@ This library is no longer supported by its author.")
 (define-public sbcl-cl-colors2
   (package
     (name "sbcl-cl-colors2")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -4429,7 +4429,7 @@ This library is no longer supported by its author.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-colors2" version))
        (sha256
-        (base32 "0vnvlq9xixs04768q7hapsi16cjp3ych6mypvs6chihd5dal4cnd"))))
+        (base32 "053bidgbqziv5visdq09gy8zf30cvqh1w06l23yygn1yrg7m7302"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-clunit2))
