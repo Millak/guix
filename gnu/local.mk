@@ -253,6 +253,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/docbook.scm			\
   %D%/packages/docker.scm			\
   %D%/packages/documentation.scm		\
+  %D%/packages/dpdk.scm        \
   %D%/packages/dvtm.scm				\
   %D%/packages/easyrpg.scm			\
   %D%/packages/ebook.scm			\
