@@ -21513,6 +21513,30 @@ processing standard MIME types, including JSON, XML, HTML, and binary data, in
 a streaming and non-streaming way.")
     (license license:gpl3+)))
 
+(define-public emacs-plz-event-source
+  (package
+    (name "emacs-plz-event-source")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/r0man/plz-event-source")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rg3dmaqnhzvzqsyfnk3y77s88jrjpwpzkj1fyz40j8b184q3qcs"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-plz-media-type))
+    (arguments (list #:tests? #f))
+    (home-page "https://github.com/r0man/plz-event-source")
+    (synopsis "Server Sent Events extension for Plz")
+    (description
+     "The @code{plz-event-source} library provides a @code{plz-media-type},
+a parser, and an event source implementation for the @acronym{SSE, Server Sent
+Event} protocol.")
+    (license license:gpl3+)))
+
 (define-public emacs-ement
   (package
     (name "emacs-ement")
