@@ -687,7 +687,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.18.3.3")
+    (version "0.18.3.4")
     (source
      (origin
        (method git-fetch)
@@ -705,7 +705,7 @@ blockchain.")
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "1d3dnkz18v0mlspafnzm301lmdiz6pwjzdbsdq23mn7cyynzgnc9"))))
+        (base32 "0rjyxcggg7pdp5026kbb49mk7vnvldvbr7qlkn76n4sq20cpk3v9"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -754,30 +754,28 @@ blockchain.")
                  (lambda _
                    (for-each make-file-writable
                              (find-files "tests/data/" "wallet_9svHk1.*"))))
-               ;; Only try tests that don't need access to network or system
                (replace 'check
+                 ;; Only try tests that don't need access to network or system
                  (lambda* (#:key tests? #:allow-other-keys)
                    ;; Core tests sometimes fail, at least on i686-linux.
                    ;; Let's disable them for now and just try hash tests
                    ;; and unit tests.
                    ;; (invoke "make" "ARGS=-R 'hash|core_tests' --verbose" "test")))
                    (when tests?
-                     (invoke "make" "ARGS=-R 'hash' --verbose" "test"))))
-               (add-after 'check 'unit-tests
-                 (lambda _
-                   (let ((excluded-unit-tests
-                          (string-join
-                           '("AddressFromURL.Success"
-                             "AddressFromURL.Failure"
-                             "DNSResolver.IPv4Success"
-                             "DNSResolver.DNSSECSuccess"
-                             "DNSResolver.DNSSECFailure"
-                             "DNSResolver.GetTXTRecord"
-                             "is_hdd.linux_os_root")
-                           ":")))
-                     (invoke "tests/unit_tests/unit_tests"
-                             (string-append "--gtest_filter=-"
-                                            excluded-unit-tests)))))
+                     (invoke "make" "ARGS=-R 'hash' --verbose" "test")
+                     (let ((excluded-unit-tests
+                            (string-join
+                             '("AddressFromURL.Success"
+                               "AddressFromURL.Failure"
+                               "DNSResolver.IPv4Success"
+                               "DNSResolver.DNSSECSuccess"
+                               "DNSResolver.DNSSECFailure"
+                               "DNSResolver.GetTXTRecord"
+                               "is_hdd.linux_os_root")
+                             ":")))
+                       (invoke "tests/unit_tests/unit_tests"
+                               (string-append "--gtest_filter=-"
+                                              excluded-unit-tests))))))
                (add-after 'install 'delete-unused-files
                  (lambda* (#:key outputs #:allow-other-keys)
                    (delete-file-recursively
