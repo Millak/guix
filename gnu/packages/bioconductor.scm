@@ -6516,14 +6516,14 @@ Michailidis G (2016) <doi:10.1093/bioinformatics/btw410>.")
 (define-public r-nmf
   (package
     (name "r-nmf")
-    (version "0.27")
+    (version "0.28")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NMF" version))
        (sha256
         (base32
-         "1y9y7xpfd9y8j5b8s2x5g61455ilpgqpdhrirpz58xjarbph4hxg"))))
+         "1yzf5vcvyb2lypxcfyhah7y2yblkar1is7c50645yppf4frygpvp"))))
     (properties `((upstream-name . "NMF")))
     (build-system r-build-system)
     (propagated-inputs
