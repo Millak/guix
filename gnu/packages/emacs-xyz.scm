@@ -31633,7 +31633,7 @@ in Docker environment.")
 (define-public emacs-dape
   (package
     (name "emacs-dape")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -31642,7 +31642,7 @@ in Docker environment.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0227i5z9vkr2l9isrlssdwda844jvpcs4i9ryj0cwj6i60jbf1g3"))))
+        (base32 "04k1bppkb5sd06cy1vz8yd9jmbd9mnqb54gglxwrbk9x6gxbbcfk"))))
     (build-system emacs-build-system)
     (arguments
      ;; FIXME python tests pass, JS tests require additional dependencies
