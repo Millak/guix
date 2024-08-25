@@ -4306,9 +4306,7 @@ generation features.  This code generation is used to achieve:
            "13yb68vrcn2zdi0mjjh17dphfxl6y99bkq0ia53hasyfj6l6626h"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "github.com/libp2p/go-flow-metrics"
-         ;; TODO: Tests hang.
-         #:tests? #f))
+       `(#:import-path "github.com/libp2p/go-flow-metrics"))
       (propagated-inputs
        (list go-github-com-benbjohnson-clock))
       (home-page
