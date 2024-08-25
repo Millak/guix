@@ -1726,7 +1726,7 @@ functionality to display information about the most commonly used services.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.17.1")
+    (version "0.17.4")
     (source
      (origin
        (method git-fetch)
@@ -1735,7 +1735,7 @@ functionality to display information about the most commonly used services.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hj4gq5vx8in65622yvjm8bwqkw2vpc556k9my997a0hn0ricj37"))
+        (base32 "0niigjpy8xxrnw3v9b3bsksw2q3yy3qsa2xx0aazwpycw5zrff83"))
          ;; This patch can be removed once hwdata in Guix supports pkg-config
          (patches (search-patches "wlroots-hwdata-fallback.patch"))))
     (build-system meson-build-system)
