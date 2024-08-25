@@ -19340,13 +19340,13 @@ simulation of correlated data, and more.")
 (define-public r-biocmanager
   (package
     (name "r-biocmanager")
-    (version "1.30.23")
+    (version "1.30.24")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BiocManager" version))
        (sha256
-        (base32 "0k7kv06wksy3lkp37yf0kfnsbwf6fbac2vmrqip2wyy996y5vd7p"))))
+        (base32 "1lf7bsamjgyxcrqiapqijhs1lv706sypi1ihrdvd9ns4n4xl4p34"))))
     (properties `((upstream-name . "BiocManager")))
     (build-system r-build-system)
     (native-inputs
