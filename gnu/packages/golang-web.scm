@@ -2944,31 +2944,6 @@ following:
 @end itemize")
     (license license:expat)))
 
-;; It's for the Kubo update; remove it when it is no longer needed.
-(define-public go-github-com-multiformats-go-multiaddr-0.12
-  (package
-    (inherit go-github-com-multiformats-go-multiaddr)
-    (name "go-github-com-multiformats-go-multiaddr")
-    (version "0.12.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/multiformats/go-multiaddr")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1rn02yn7494r7ayn585bbsddprbn8wdccxs4n2k5dmll4dyd39mp"))))
-    (arguments
-     (list
-      #:import-path "github.com/multiformats/go-multiaddr"))
-    (native-inputs (list go-github-com-stretchr-testify))
-    (propagated-inputs (list go-github-com-ipfs-go-cid
-                             go-github-com-multiformats-go-multibase
-                             go-github-com-multiformats-go-varint
-                             go-github-com-multiformats-go-multihash
-                             go-golang-org-x-exp))))
-
 (define-public go-github-com-multiformats-go-multiaddr-dns
   (package
     (name "go-github-com-multiformats-go-multiaddr-dns")
@@ -2989,7 +2964,7 @@ following:
       #:unpack-path "github.com/multiformats/go-multiaddr-dns"))
     (propagated-inputs
      (list go-github-com-miekg-dns
-           go-github-com-multiformats-go-multiaddr-0.12))
+           go-github-com-multiformats-go-multiaddr))
     (home-page "https://multiformats.io/multiaddr/")
     (synopsis "Library and CLI tool for DNS multiaddr resolution")
     (description
@@ -3014,7 +2989,7 @@ following:
      (list
       #:import-path "github.com/multiformats/go-multiaddr-fmt"))
     (propagated-inputs
-     (list go-github-com-multiformats-go-multiaddr-0.12))
+     (list go-github-com-multiformats-go-multiaddr))
     (home-page "https://github.com/multiformats/go-multiaddr-fmt")
     (synopsis "Declarative validator for multiaddrs")
     (description

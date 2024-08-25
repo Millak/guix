@@ -787,7 +787,7 @@ their levels to be controlled individually.")
     (propagated-inputs
      (list go-github-com-coreos-go-systemd-v22
            go-github-com-ipfs-go-log
-           go-github-com-multiformats-go-multiaddr-0.12))
+           go-github-com-multiformats-go-multiaddr))
     (home-page "https://github.com/libp2p/go-socket-activation")
     (synopsis "Multiaddr backed systemd socket activation")
     (description
@@ -1006,7 +1006,7 @@ types.")
                   ;;go-github-com-libp2p-go-libp2p-testing
                   go-github-com-libp2p-go-socket-activation
                   go-github-com-mitchellh-go-homedir
-                  go-github-com-multiformats-go-multiaddr-0.12
+                  go-github-com-multiformats-go-multiaddr
                   go-github-com-multiformats-go-multiaddr-dns
                   go-github-com-multiformats-go-multibase
                   go-github-com-multiformats-go-multicodec
