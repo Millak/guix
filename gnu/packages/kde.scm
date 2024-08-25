@@ -1670,14 +1670,14 @@ creating routes by drag and drop and more.")
 (define-public okular
   (package
     (name "okular")
-    (version "24.05.2")
+    (version "24.08.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0kh3a40887f7lajgvk3ndr3ns3mm1kld0biw0cqg9ys69f4d8677"))))
+        (base32 "12ri5j9jsmh5ib7fp2vk0ir3vfknlq1h8xpi1lkn6f2b54k6xq9x"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -1707,7 +1707,8 @@ chmgeneratortest)"))))
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config
            ;; for test
-           desktop-file-utils))
+           desktop-file-utils
+           python-wrapper))
     (inputs
      (list ebook-tools
            breeze-icons
