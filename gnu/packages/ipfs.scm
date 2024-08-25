@@ -933,59 +933,6 @@ powerful and simple.")
      '(#:unpack-path "github.com/whyrusleeping/gx"
        #:import-path "github.com/whyrusleeping/gx/gxutil"))))
 
-;; XXX: No updates for 4 years, and depends on dated Golang modules which
-;; require go-1.16 to compile, see
-;; <https://github.com/whyrusleeping/gx-go/issues/65>.
-(define-public gx-go
-  (package
-    (name "gx-go")
-    (version "1.9.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/whyrusleeping/gx-go")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0fdy4b3ymqw6hzvvjwq37mfrdmizc8lxm53axw93n3x6118na9jc"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/whyrusleeping/gx-go"))
-    (native-inputs
-     (list go-github-com-whyrusleeping-gx-util
-           go-github-com-kr-fs
-           go-github-com-gxed-hashland-keccakpg
-           go-github-com-ipfs-go-ipfs-api
-           go-github-com-ipfs-go-ipfs-cmdkit-files
-           go-github-com-libp2p-go-flow-metrics
-           go-github-com-libp2p-go-libp2p-crypto
-           go-github-com-libp2p-go-libp2p-metrics
-           go-github-com-libp2p-go-libp2p-peer
-           go-github-com-libp2p-go-libp2p-protocol
-           go-github-com-minio-blake2b-simd
-           go-github-com-minio-sha256-simd
-           go-github-com-mitchellh-go-homedir
-           go-github-com-mr-tron-base58
-           go-github-com-multiformats-go-multiaddr
-           go-github-com-multiformats-go-multiaddr-net
-           go-github-com-multiformats-go-multihash
-           go-github-com-spaolacci-murmur3
-           go-github-com-whyrusleeping-tar-utils
-           go-github-com-btcsuite-btcd-btcec
-           go-github-com-gogo-protobuf
-           go-github-com-sabhiram-go-gitignore
-           go-github-com-urfave-cli
-           go-github-com-whyrusleeping-progmeter
-           go-github-com-whyrusleeping-stump
-           go-golang-org-x-crypto))
-    (home-page "https://github.com/whyrusleeping/gx-go")
-    (synopsis "Golang subtool for the @command{gx} package manager")
-    (description "A subtool for the @command{gx} package manager for packages
-written in Go.")
-    (license license:expat)))
-
 (define-public kubo
   (package
     (name "kubo")
