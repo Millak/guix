@@ -14990,14 +14990,14 @@ functions.")
 (define-public r-rjags
   (package
     (name "r-rjags")
-    (version "4-15")
+    (version "4-16")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rjags" version))
        (sha256
         (base32
-         "188qxyanny4yb1cq8hrz0y7pjafgvj0vhly0gaw271dam8glrk9m"))))
+         "1rz7qx5prkikrvfcj3ps0sxsj44kgpqairj4zwcn5qlsa4z3k79n"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-coda))
