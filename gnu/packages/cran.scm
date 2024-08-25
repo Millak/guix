@@ -9387,14 +9387,14 @@ with particular emphasis on making attractive log axis plots.")
 (define-public r-rmysql
   (package
     (name "r-rmysql")
-    (version "0.10.27")
+    (version "0.10.28")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RMySQL" version))
        (sha256
         (base32
-         "1axz0pqvpqs028p2j7awmgdwpignl7m3hqd1fv3vkgfrkil5nwzi"))))
+         "00kzxn7y2k9nfrkwg1xzn268aifka5k14wa15yvniidd9982wr6b"))))
     (properties `((upstream-name . "RMySQL")))
     (build-system r-build-system)
     (inputs
