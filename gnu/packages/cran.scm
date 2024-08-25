@@ -1851,20 +1851,19 @@ RUV-I, and RUV-III, along with various supporting algorithms.")
 (define-public r-waldo
   (package
     (name "r-waldo")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "waldo" version))
        (sha256
         (base32
-         "019fvypq36kwvr2znlr0fd9f2ihb08rgigf6ypdybry5n8daxkc2"))))
+         "01kv3hz4inijks4nq863ikpgvphy4hqwfqjr6vpbk3yz6i5nss6r"))))
     (properties `((upstream-name . "waldo")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
            r-diffobj
-           r-fansi
            r-glue
            r-rematch2
            r-rlang
