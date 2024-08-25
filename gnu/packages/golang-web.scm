@@ -2661,6 +2661,38 @@ router.")
 @acronym{Simple Service Discovery Protocol, SSDP}} library for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-cidranger
+  (package
+    (name "go-github-com-libp2p-go-cidranger")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-cidranger")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05hzlk5hx7qna5znr3q1crr0qb7h8yrv1v96pj015dh0kbdkdaba"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-cidranger"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-detect-race))
+    (home-page "https://github.com/libp2p/go-cidranger")
+    (synopsis "Fast IP to CIDR lookup in Golang")
+    (description
+     "Fast IP to @url{https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing,
+CIDR} block(s) lookup using trie in Golang, inspired by
+@url{https://vincent.bernat.im/en/blog/2017-ipv4-route-lookup-linux, IPv4
+route lookup Linux}.  Possible use cases include detecting if a IP address is
+from published cloud provider CIDR blocks (e.g. 52.95.110.1 is contained in
+published AWS Route53 CIDR 52.95.110.0/24), IP routing rules, etc.")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-flow-metrics
   (package
     (name "go-github-com-libp2p-go-flow-metrics")
