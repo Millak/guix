@@ -2638,6 +2638,33 @@ interfaces to back that API.  Packages in the Go ecosystem can depend on it,
 while callers can implement logging with whatever backend is appropriate.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-logr-stdr
+  (package
+    (name "go-github-com-go-logr-stdr")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-logr/stdr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dl2rzvjacwqlnvw7azrxqbh4jvzaq8v399f6drs146l39ss21c1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests for stdr.go
+      #:import-path "github.com/go-logr/stdr"))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr))
+    (home-page "https://github.com/go-logr/stdr")
+    (synopsis "Minimal Go logging using logr and Go's standard library")
+    (description
+     "Package stdr implements github.com/go-logr/logr.Logger in terms of Go's
+standard log package.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-playground-locales
   (package
     (name "go-github-com-go-playground-locales")
