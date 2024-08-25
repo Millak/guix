@@ -5419,13 +5419,13 @@ dispersion modeling and Tweedie power-law families.")
 (define-public r-rann
   (package
     (name "r-rann")
-    (version "2.6.1")
+    (version "2.6.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RANN" version))
               (sha256
                (base32
-                "10kid40w9w7vkz2hpcfkdpxr4afxzms5dzvfwr0sl5xynzgw76dj"))))
+                "0wlpkf6vilw871ac2bxy5nr790cfs6sax5k8m0fhasxbansxbxvf"))))
     (properties
      `((upstream-name . "RANN")))
     (build-system r-build-system)
