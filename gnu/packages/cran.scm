@@ -5961,13 +5961,13 @@ application framework for R, making it easy to create attractive dashboards.")
 (define-public r-shinydashboardplus
   (package
     (name "r-shinydashboardplus")
-    (version "2.0.4")
+    (version "2.0.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "shinydashboardPlus" version))
               (sha256
                (base32
-                "11ckx8il1v4jk26ss0bylk73xb5bh3xd2d5421i5s8wlxlwd0z5q"))
+                "1k53ycfdv5r58rwqsk7mkrrlz72wikhrhzlfrg3dkwbdbzblrhqb"))
               (modules '((guix build utils)))
               (snippet
                `(begin
