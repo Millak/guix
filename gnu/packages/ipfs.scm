@@ -1005,7 +1005,7 @@ written in Go.")
                            '("vendor/bazil.org"
                              "vendor/github.com/alecthomas"
                              "vendor/github.com/benbjohnson"
-                             "vendor/github.com/beorn7/perks"
+                             "vendor/github.com/beorn7"
                              "vendor/github.com/blang"
                              "vendor/github.com/cenkalti"
                              "vendor/github.com/cespare"
@@ -1021,15 +1021,14 @@ written in Go.")
                              "vendor/github.com/francoispqt"
                              "vendor/github.com/fsnotify"
                              "vendor/github.com/gabriel-vasile"
-                             "vendor/github.com/go-logr/logr"
+                             "vendor/github.com/go-kit"
+                             "vendor/github.com/go-logfmt"
+                             "vendor/github.com/go-logr"
                              "vendor/github.com/go-task"
                              "vendor/github.com/godbus"
                              "vendor/github.com/gogo"
-                             "vendor/github.com/golang/groupcache"
-                             "vendor/github.com/golang/snappy"
-                             "vendor/github.com/google/gopacket"
-                             "vendor/github.com/google/pprof"
-                             "vendor/github.com/google/uuid"
+                             "vendor/github.com/golang"
+                             "vendor/github.com/google"
                              "vendor/github.com/gorilla"
                              "vendor/github.com/hashicorp"
                              "vendor/github.com/huin"
@@ -1039,6 +1038,7 @@ written in Go.")
                              "vendor/github.com/ipfs/go-datastore"
                              "vendor/github.com/ipfs/go-detect-race"
                              "vendor/github.com/ipfs/go-ipfs-delay"
+                             "vendor/github.com/ipfs/go-ipfs-redirects-file"
                              "vendor/github.com/ipfs/go-ipfs-util"
                              "vendor/github.com/ipfs/go-ipld-cbor"
                              "vendor/github.com/ipfs/go-ipld-format"
@@ -1055,6 +1055,7 @@ written in Go.")
                              "vendor/github.com/klauspost"
                              "vendor/github.com/koron"
                              "vendor/github.com/libp2p/go-buffer-pool"
+                             "vendor/github.com/libp2p/go-flow-metrics"
                              "vendor/github.com/libp2p/go-msgio"
                              "vendor/github.com/libp2p/go-nat"
                              "vendor/github.com/libp2p/go-netroute"
@@ -1072,15 +1073,13 @@ written in Go.")
                              "vendor/github.com/pkg"
                              "vendor/github.com/pmezard"
                              "vendor/github.com/polydawn"
-                             "vendor/github.com/prometheus/client_golang"
-                             "vendor/github.com/prometheus/client_model"
-                             "vendor/github.com/prometheus/common"
-                             "vendor/github.com/prometheus/procfs"
-                             "vendor/github.com/quic-go/quic-go"
+                             "vendor/github.com/prometheus"
+                             "vendor/github.com/quic-go"
                              "vendor/github.com/spaolacci"
                              "vendor/github.com/stretchr"
                              "vendor/github.com/syndtr"
                              "vendor/github.com/tidwall"
+                             "vendor/github.com/ucarion"
                              "vendor/github.com/whyrusleeping"
                              "vendor/go.uber.org"
                              "vendor/golang.org"
@@ -1212,21 +1211,25 @@ written in Go.")
                   go-github-com-felixge-httpsnoop             ; go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
                   go-github-com-flynn-noise                   ; github.com/libp2p/go-libp2p
                   go-github-com-gabriel-vasile-mimetype       ; github.com/ipfs/boxo
-                  go-github-com-go-logr-logr                  ; go.opentelemetry.io/otel
+                  go-github-com-go-logr-stdr                  ; go.opentelemetry.io/otel
                   go-github-com-golang-groupcache             ; go.opencensus.io/trace
                   go-github-com-google-gopacket               ; github.com/libp2p/go-libp2p-kad-dht
                   go-github-com-gorilla-mux                   ; github.com/ipfs/boxo
                   go-github-com-gorilla-websocket             ; github.com/libp2p/go-libp2p
                   go-github-com-hashicorp-golang-lru          ; github.com/libp2p/go-libp2p-kad-dht
                   go-github-com-hashicorp-golang-lru-v2       ; github.com/ipfs/boxo
+                  go-github-com-ipfs-go-ipfs-redirects-file   ; github.com/ipfs/boxo
                   go-github-com-ipfs-go-verifcid              ; github.com/ipfs/go-blockservice
                   go-github-com-klauspost-compress            ; github.com/libp2p/go-libp2p
                   go-github-com-libp2p-go-buffer-pool         ; github.com/libp2p/go-libp2p
+                  go-github-com-libp2p-go-flow-metrics        ; github.com/libp2p/go-libp2p
                   go-github-com-libp2p-go-msgio               ; github.com/libp2p/go-libp2p-kad-dht
                   go-github-com-libp2p-go-nat                 ; github.com/libp2p/go-libp2p
                   go-github-com-multiformats-go-multiaddr-fmt ; github.com/libp2p/go-libp2p
                   go-github-com-multiformats-go-multistream   ; github.com/libp2p/go-libp2p
+                  go-github-com-prometheus-statsd-exporter    ; contrib.go.opencensus.io/exporter/prometheus
                   go-github-com-quic-go-quic-go               ; github.com/libp2p/go-libp2p
+                  go-github-com-quic-go-webtransport-go       ; github.com/libp2p/go-libp2p
                   go-github-com-whyrusleeping-base32          ; github.com/ipfs/boxo
                   go-github-com-whyrusleeping-cbor            ; github.com/ipld/go-car
                   go-github-com-whyrusleeping-chunker         ; github.com/ipfs/boxo
