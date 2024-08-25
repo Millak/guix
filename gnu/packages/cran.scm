@@ -37734,14 +37734,14 @@ covariate (usually group indicator) and the scores.")
 (define-public r-qtl
   (package
     (name "r-qtl")
-    (version "1.66")
+    (version "1.70")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qtl" version))
        (sha256
         (base32
-         "10fnc3ms97rdqsqxz5jpvg2cmrwmz69wjxxs3h65r1yhy94pssnl"))))
+         "06zlp6m0w3gxxa04q7jhfh29r0d8xa0lgn9jaz80axn94css243m"))))
     (build-system r-build-system)
     (home-page "https://rqtl.org/")
     (synopsis "R package for analyzing QTL experiments in genetics")
