@@ -2754,6 +2754,40 @@ faster (and only does simple bandwidth metrics).")
 gopacket/routing.Router} interface for Golang.")
     (license license:bsd-3)))
 
+(define-public go-github-com-libp2p-go-reuseport
+  (package
+    (name "go-github-com-libp2p-go-reuseport")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-reuseport")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "012kgriw1bchf0apk6ff4y34n9mffbh0cmi15348v9vj3h4w3sa5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-reuseport"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-gopacket
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/libp2p/go-reuseport")
+    (synopsis "Reuse TCP/UDP ports in Golang")
+    (description
+     "@code{go-reuseport} enables listening and dialing from the same TCP or
+UDP port.  This means that @code{SO_REUSEADDR} and @code{SO_REUSEPORT} socket
+options may be set.  This is particularly important when attempting to do TCP
+NAT hole-punching, which requires a process to both @code{Listen} and
+@code{Dial} on the same TCP port.  @code{go-reuseport} provides some utilities
+around enabling this behaviour on various operating systems.")
+    (license license:isc)))
+
 (define-public go-github-com-mailru-easyjson
   (package
     (name "go-github-com-mailru-easyjson")
