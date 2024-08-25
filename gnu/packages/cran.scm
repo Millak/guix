@@ -31171,23 +31171,22 @@ classification and regression models.")
 (define-public r-caretensemble
   (package
     (name "r-caretensemble")
-    (version "2.0.3")
+    (version "4.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "caretEnsemble" version))
               (sha256
                (base32
-                "14d318czpqpalf18ggd9mx6f4nz3r4zilljvgxzy2a8v450y96ch"))))
+                "0hwgr7n2sahs3zlvrnhnk6yfmqpmphkl4xii8aa2x1yjgx3ssxwi"))))
     (properties `((upstream-name . "caretEnsemble")))
     (build-system r-build-system)
     (propagated-inputs (list r-caret
                              r-data-table
-                             r-digest
                              r-ggplot2
-                             r-gridextra
                              r-lattice
+                             r-patchwork
                              r-pbapply
-                             r-plyr))
+                             r-rlang))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/zachmayer/caretEnsemble")
     (synopsis "Ensembles of caret models")
