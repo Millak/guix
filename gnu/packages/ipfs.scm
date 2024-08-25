@@ -872,67 +872,6 @@ daemon as described in
 types.")
     (license license:expat)))
 
-;; XXX: No updates for 4 years, and depends on dated Golang modules which
-;; require go-1.16 to compile, see
-;; <https://github.com/whyrusleeping/gx/issues/247>.
-(define-public gx
-  (package
-    (name "gx")
-    (version "0.14.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/whyrusleeping/gx")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1sk20kv3rfsnizgwmcmmr69jb1b2iwzqh9wwwd6wg6x0pnqm8swc"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/whyrusleeping/gx"))
-    (native-inputs
-     (list go-github-com-blang-semver
-           go-github-com-gxed-hashland-keccakpg
-           go-github-com-ipfs-go-ipfs-api
-           go-github-com-ipfs-go-ipfs-cmdkit-files
-           go-github-com-libp2p-go-flow-metrics
-           go-github-com-libp2p-go-libp2p-crypto
-           go-github-com-libp2p-go-libp2p-metrics
-           go-github-com-libp2p-go-libp2p-peer
-           go-github-com-libp2p-go-libp2p-protocol
-           go-github-com-minio-blake2b-simd
-           go-github-com-minio-sha256-simd
-           go-github-com-mitchellh-go-homedir
-           go-github-com-mr-tron-base58
-           go-github-com-multiformats-go-multiaddr
-           go-github-com-multiformats-go-multiaddr-net
-           go-github-com-multiformats-go-multihash
-           go-github-com-spaolacci-murmur3
-           go-github-com-whyrusleeping-tar-utils
-           go-github-com-btcsuite-btcd-btcec
-           go-github-com-gogo-protobuf
-           go-github-com-sabhiram-go-gitignore
-           go-github-com-urfave-cli
-           go-github-com-whyrusleeping-json-filter
-           go-github-com-whyrusleeping-progmeter
-           go-github-com-whyrusleeping-stump
-           go-golang-org-x-crypto))
-    (home-page "https://github.com/whyrusleeping/gx")
-    (synopsis "Package management tool using IPFS")
-    (description "@command{gx} is a packaging tool built around the
-distributed, content addressed file system IPFS.  It aims to be flexible,
-powerful and simple.")
-    (license license:expat)))
-
-(define-public go-github-com-whyrusleeping-gx-util
-  (package
-    (inherit gx)
-    (name "go-github-com-whyrusleeping-gx-util")
-    (arguments
-     '(#:unpack-path "github.com/whyrusleeping/gx"
-       #:import-path "github.com/whyrusleeping/gx/gxutil"))))
-
 (define-public kubo
   (package
     (name "kubo")
