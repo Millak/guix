@@ -950,6 +950,30 @@ Features include:
       (propagated-inputs
        (list go-gopkg-in-yaml-v3)))))
 
+(define-public go-github-com-stvp-go-udp-testing
+  (package
+    (name "go-github-com-stvp-go-udp-testing")
+    (version "0.0.0-20201019212854-469649b16807")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stvp/go-udp-testing")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03dzhwnvbshiivbcawaxsl963d8hh18yf3ydvzvhyjgz60g8lxil"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/stvp/go-udp-testing"))
+    (home-page "https://github.com/stvp/go-udp-testing")
+    (synopsis "UDP test helpers for Golang")
+    (description
+     "This package implements UDP test helpers.  It lets assert that certain
+strings must or must not be sent to a given local UDP listener.")
+    (license license:expat)))
+
 (define-public go-github-com-tdewolff-test
   (package
     (name "go-github-com-tdewolff-test")
