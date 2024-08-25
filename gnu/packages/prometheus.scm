@@ -399,9 +399,22 @@ from the default AWS credential chain.")
     (arguments
      (list
       #:import-path "github.com/prometheus/procfs"
-      ;; The tests require Go modules, which are not yet supported in Guix's
-      ;; Go build system.
-      #:tests? #f))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'unpack-testdata
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "./ttar" "-C" "testdata/" "-x" "-f" "testdata/fixtures.ttar"))))
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./...")))))
+          (add-after 'check 'remove-testdata
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "testdata")))))))
     (propagated-inputs
      (list go-github-com-google-go-cmp
            go-golang-org-x-sync
