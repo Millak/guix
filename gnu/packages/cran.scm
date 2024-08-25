@@ -4187,13 +4187,13 @@ Chaitanya Swamy <doi:10.1145/2395116.2395117>.")
 (define-public r-tgp
   (package
     (name "r-tgp")
-    (version "2.4-22")
+    (version "2.4-22.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "tgp" version))
               (sha256
                (base32
-                "0gpndjq2xiic6fb5187f4hgrqj3477pd83caajnw3yy9wan4vly6"))))
+                "1jf4mr59qp169z00pxb4kc0484mg73hgcyajg9hisdxl02qs1m4r"))))
     (properties `((upstream-name . "tgp")))
     (build-system r-build-system)
     (propagated-inputs (list r-maptree))
