@@ -413,6 +413,69 @@ from the default AWS credential chain.")
 kernel, and process metrics from the @file{/proc} pseudo file system.")
     (license license:asl2.0)))
 
+(define-public go-github-com-prometheus-statsd-exporter
+  (package
+    (name "go-github-com-prometheus-statsd-exporter")
+    (version "0.27.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus/statsd_exporter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y8n02h46q22wkcm2yy62bzsi9hxrarmvjamfpn2sygqhbb1pv38"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/prometheus/statsd_exporter"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: pattern landing_page.css: cannot embed irregular file
+          ;; landing_page.css
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module which is sourced during setup environment phase, but
+          ;; easy resolved after coping to expected directory "vendor" within
+          ;; the current package, see details in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-before 'build 'copy-input-to-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (mkdir "vendor")
+                (copy-recursively
+                 (string-append
+                  #$(this-package-input "go-github-com-prometheus-exporter-toolkit")
+                  "/src/github.com")
+                 "vendor/github.com"))))
+          (add-before 'install 'remove-vendor-directory
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "vendor")))))))
+    (native-inputs
+     (list go-github-com-stvp-go-udp-testing))
+    (propagated-inputs
+     (list go-github-com-alecthomas-kingpin-v2
+           go-github-com-go-kit-log
+           go-github-com-golang-groupcache
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-prometheus-common
+           go-github-com-prometheus-exporter-toolkit
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/prometheus/statsd_exporter")
+    (synopsis "StatsD to Prometheus metrics exporter")
+    (description
+     "The StatsD exporter is a drop-in replacement for
+@url{https://github.com/statsd/statsd,StatsD}.  The exporter translates StatsD
+metrics to Prometheus metrics via configured mapping rules.  This package
+provdies a Golang module and @code{statsd_exporter} executable command.")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Executables:
 ;;;
