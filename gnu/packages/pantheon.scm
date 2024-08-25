@@ -213,20 +213,21 @@ also be used on others.")
                 "0x3gzghnfx4a1q2zhra4dysc0pm1zvlfdxj96qhfb627pz16iv4k"))))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f      ; Tests invole launching the terminal.
-       #:glib-or-gtk? #t
-       #:phases (modify-phases %standard-phases
-                  (add-before 'install 'set-environment-variables
-                    (lambda _
-                      ;; Disable compiling schemas and updating desktop databases
-                      (setenv "DESTDIR" "/")))
-                  (add-after 'install 'install-symlinks
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (bin (string-append out
-                                   "/bin/io.elementary.terminal"))
-                             (link (string-append out "/bin/pantheon-terminal")))
-                        (symlink bin link)))))))
+     (list
+      #:tests? #f      ; Tests invole launching the terminal.
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'set-environment-variables
+            (lambda _
+              ;; Disable compiling schemas and updating desktop databases
+              (setenv "DESTDIR" "/")))
+          (add-after 'install 'install-symlinks
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((bin (string-append #$output
+                                         "/bin/io.elementary.terminal"))
+                     (link (string-append #$output "/bin/pantheon-terminal")))
+                (symlink bin link)))))))
     (native-inputs (list appstream
                          desktop-file-utils     ;required for tests
                          gettext-minimal        ;for msgfmt
