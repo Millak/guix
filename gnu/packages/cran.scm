@@ -3903,13 +3903,13 @@ similar to OLS.")
 (define-public r-mboost
   (package
    (name "r-mboost")
-   (version "2.9-10")
+   (version "2.9-11")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "mboost" version))
             (sha256
              (base32
-              "13dhs3q9gf5n6kwf6j3b29gvwxnkycfkpsw5fr4lnhllm9zs84z7"))))
+              "0n5wpyayhdyd46vl87c9r70m13y48khmlwii58rvi57mgw6aadwz"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-lattice
