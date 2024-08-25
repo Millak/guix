@@ -391,6 +391,35 @@ throughout its lifetime.")
      "@code{go-ipfs-exchange-interface} defines the IPFS exchange interface.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipfs-redirects-file
+  (package
+    (name "go-github-com-ipfs-go-ipfs-redirects-file")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-redirects-file")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16lisd5jbniang85jzfwfigw0kmz73913fsrfj49nh92mpw50qpz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ipfs-redirects-file"))
+    (native-inputs
+     (list go-github-com-tj-assert))
+    (propagated-inputs
+     (list go-github-com-pkg-errors
+           go-github-com-ucarion-urlpath))
+    (home-page "https://github.com/ipfs/go-ipfs-redirects-file")
+    (synopsis "IPFS Web Gateway _redirects file format parser")
+    (description
+     "Package redirects provides Netlify style _redirects file format
+parsing.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-util
   (package
     (name "go-github-com-ipfs-go-ipfs-util")
