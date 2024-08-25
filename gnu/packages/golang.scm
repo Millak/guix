@@ -4291,32 +4291,32 @@ generation features.  This code generation is used to achieve:
     (license license:bsd-3)))
 
 (define-public go-github-com-libp2p-go-flow-metrics
-  (let ((commit "7e5a55af485341567f98d6847a373eb5ddcdcd43")
-        (revision "0"))
     (package
       (name "go-github-com-libp2p-go-flow-metrics")
-      (version (git-version "0.2.0" revision commit))
+      (version "0.1.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/libp2p/go-flow-metrics")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1p87iyk6q6f3g3xkncssx400qlld8f2z93qiz8m1f97grfyhjif1"))))
+           "13yb68vrcn2zdi0mjjh17dphfxl6y99bkq0ia53hasyfj6l6626h"))))
       (build-system go-build-system)
       (arguments
        `(#:import-path "github.com/libp2p/go-flow-metrics"
          ;; TODO: Tests hang.
          #:tests? #f))
+      (propagated-inputs
+       (list go-github-com-benbjohnson-clock))
       (home-page
        "https://github.com/libp2p/go-flow-metrics")
       (synopsis "Simple library for tracking flow metrics")
       (description "A simple alternative to rcrowley's @command{go-metrics}
 that's a lot faster (and only does simple bandwidth metrics).")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-btcsuite-btclog
   (let ((commit "84c8d2346e9fc8c7b947e243b9c24e6df9fd206a")
