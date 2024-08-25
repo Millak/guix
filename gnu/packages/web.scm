@@ -8488,7 +8488,7 @@ compressed JSON header blocks.
 (define-public nghttp3
   (package
     (name "nghttp3")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
@@ -8497,7 +8497,7 @@ compressed JSON header blocks.
                            "nghttp3-" version ".tar.gz"))
        (sha256
         (base32
-         "13s0jhqbs86a91702j8ybh4h5l75k3mi8cwdiikd9b03n5rq19s3"))))
+         "08zzwn40kr632wab2vr4cjy4l1yycphfdql1kdkv0bkxhr48mmhk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
