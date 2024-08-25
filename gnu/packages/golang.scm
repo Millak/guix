@@ -4420,39 +4420,6 @@ required by Go's standard Hash interface.")
       (description "Just a type for protocol strings.  Nothing more.")
       (license license:expat))))
 
-(define-public go-github-com-libp2p-go-libp2p-metrics
-  (let ((commit "a10ff6e75dae3c868023867e8caa534a04bdc624")
-        (revision "0"))
-    (package
-      (name "go-github-com-libp2p-go-libp2p-metrics")
-      (version (git-version "2.1.6" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/libp2p/go-libp2p-metrics")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "05wy0cq4h6yg9bzgapcvm2criwriicbswx80ma82gyn4a9fdrk8m"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/libp2p/go-libp2p-metrics"))
-      (propagated-inputs
-       (list go-github-com-libp2p-go-flow-metrics
-             go-github-com-libp2p-go-libp2p-peer
-             go-github-com-libp2p-go-libp2p-protocol
-             go-github-com-libp2p-go-libp2p-crypto
-             go-github-com-multiformats-go-multihash
-             go-github-com-btcsuite-btcd-btcec
-             go-github-com-gogo-protobuf))
-      (home-page "https://github.com/libp2p/go-libp2p-metrics")
-      (synopsis "Connection wrapper for go-libp2p that provides bandwidth metrics")
-      (description "A connection wrapper for @command{go-libp2p} that provides bandwidth
-statistics for wrapped connections.")
-      (license license:expat))))
-
 (define-public go-github-com-mitchellh-go-homedir
   (let ((commit "ae18d6b8b3205b561c79e8e5f69bff09736185f4")
         (revision "0"))
