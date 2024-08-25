@@ -11555,13 +11555,13 @@ implementation of an approximate nearest neighbor search using hierarchical
 (define-public r-nestedcv
   (package
     (name "r-nestedcv")
-    (version "0.7.9")
+    (version "0.7.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nestedcv" version))
        (sha256
-        (base32 "025xfs476r2mfzyjgpjzj2h9izfm2h9kia9hzhz9ikhxmj0a2lrd"))))
+        (base32 "1cfxw9pblrn2f0bw448sxdnj7pb04l1pkfdajzcmg9yn95k1v95b"))))
     (properties `((upstream-name . "nestedcv")))
     (build-system r-build-system)
     (propagated-inputs (list r-caret
