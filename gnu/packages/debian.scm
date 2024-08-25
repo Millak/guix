@@ -2,7 +2,7 @@
 ;;; Copyright © 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2023, 2024 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,10 +25,12 @@
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system trivial)
+  #:use-module (gnu packages adns)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
@@ -40,12 +42,14 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wget)
   #:use-module (srfi srfi-1)
@@ -528,6 +532,54 @@ in installation scripts of Debian packages.  The programs included are
                    (license:fsf-free "file://debian/copyright"
                                      "The SMAIL General Public License, see
 debian/copyright for more information.")))))
+
+(define-public apt-cacher-ng
+  (package
+    (name "apt-cacher-ng")
+    (version "3.7.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://salsa.debian.org/blade/apt-cacher-ng.git")
+             (commit "upstream/3.7.5")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wxqdmmm2gm27zng7v7lwai4zf6ppj26890r7z2ns237xx33jdp6"))))
+    (build-system cmake-build-system)
+    (inputs (list bzip2 ;optional
+                  c-ares
+                  libevent
+                  openssl ;optional
+                  xz ;optional
+                  zlib))
+    (native-inputs (list pkg-config))
+    (arguments
+     (list
+      #:tests? #f ;Tests are "for development only".
+      #:phases #~(modify-phases %standard-phases
+                   ;; We want to provide good defaults. Here apt-cacher-ng is built
+                   ;; without libwrap support so we disable that by default.
+                   (add-before 'configure 'patch-config
+                     (lambda _
+                       (substitute* "conf/acng.conf.in"
+                         (("# UseWrap: 0")
+                          "UseWrap: 0")))))))
+    (home-page "https://www.unix-ag.uni-kl.de/~bloch/acng/")
+    (synopsis "Caching proxy for packages of various software distributions or
+repositories")
+    (description
+     "This package mainly meant for caching packages of Debian or Debian
+based distributions (like Trisquel) through HTTP.  It also has partial support
+for HTTPS and other distributions / repositories (OpenSUSE, Arch Linux,
+Sourceforge mirror network, Cygwin mirrors) as this requires more
+configuration and comes with some limitations.  Packages can be imported
+manually either by copying files from another apt-cacher-ng instance or by
+importing them from CD, DVD, jigdo, etc.  While apt-cacher-ng can work offline,
+it requires some online access before that to build valid index files.  It also
+supports partial mirroring.  It can be configured through configuration files
+and/or a web interface and/or a command line tool.")
+    (license license:gpl3+)))
 
 (define-public apt-mirror
   (let ((commit "e664486a5d8947c2579e16dd793d762ea3de4202")
