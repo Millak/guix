@@ -4408,7 +4408,7 @@ colored strings.")
 (define-public go-github-com-miekg-dns
   (package
     (name "go-github-com-miekg-dns")
-    (version "1.1.48")
+    (version "1.1.62")
     (source
      (origin
        (method git-fetch)
@@ -4417,9 +4417,19 @@ colored strings.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14m4wnbgmc1prj4ds1fsz1nwb1awaq365lhbp8clzsidxmhjf3hl"))))
+        (base32 "0wdsacp4ay6ji72vnszq6ksn5n060z2hv94wgjsn0pr7gpa3nk6c"))))
     (build-system go-build-system)
-    (arguments '(#:import-path "github.com/miekg/dns"))
+    (arguments
+     (list
+      #:import-path "github.com/miekg/dns"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Unable to run test server.
+                  (("TestIsPacketConn") "OffTestIsPacketConn"))))))))
     (propagated-inputs
      (list go-golang-org-x-tools
            go-golang-org-x-sys
