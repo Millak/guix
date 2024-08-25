@@ -5285,13 +5285,13 @@ and vice-versa.")
 (define-public r-fastdummies
   (package
     (name "r-fastdummies")
-    (version "1.7.3")
+    (version "1.7.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "fastDummies" version))
               (sha256
                (base32
-                "0sm02pxbabckxpi3mn36h5bz2wx5pyx7a1dhc2abc4c7fwpihsng"))))
+                "026xc1wrzgwyhs1h1bdn7yy56mnpr5rr9bkwljpzmhzgcx5lv44m"))))
     (properties `((upstream-name . "fastDummies")))
     (build-system r-build-system)
     (propagated-inputs (list r-data-table r-stringr r-tibble))
