@@ -1923,16 +1923,14 @@ audio/video codec library.")
 (define-public ffmpeg-4
   (package
     (inherit ffmpeg-5)
-    (version "4.4.2")
+    (version "4.4.5")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "14xadxm1yaamp216nq09xwasxg5g133v86dbb33mdg5di1zrlhdg"))
-             (patches (search-patches "ffmpeg-remove-compressed_ten_bit_format.patch"
-                                      "ffmpeg-4-binutils-2.41.patch"))))
+               "01xb2vj4n52fv2y56n5ifirgzlg16qbgfg98f6ifbbhm6l6lwlgr"))))
     (inputs (modify-inputs (package-inputs ffmpeg)
               (replace "sdl2" sdl2-2.0)))
     (arguments
