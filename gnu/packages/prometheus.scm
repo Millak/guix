@@ -333,6 +333,55 @@ using Amazon's Signature Verification V4 signing procedure, using credentials
 from the default AWS credential chain.")
     (license license:asl2.0)))
 
+(define-public go-github-com-prometheus-exporter-toolkit
+  (package
+    (name "go-github-com-prometheus-exporter-toolkit")
+    (version "0.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus/exporter-toolkit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n46jw3b13g355iv8phxxnnci7a877y5dscc1rlj3rpz4vy6yfzx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/prometheus/exporter-toolkit"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Some tests require network set up.
+                  (("TestServerBehaviour") "OffTestServerBehaviour")
+                  (("TestConfigReloading") "OffTestConfigReloading")))))
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-github-com-alecthomas-kingpin-v2
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-go-kit-log
+           ; Imported for go-github-com-prometheus-common to break the cycle.
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-common
+           go-golang-org-x-crypto
+           go-golang-org-x-sync
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/prometheus/exporter-toolkit")
+    (synopsis "Utility package to build Prometheus exporters")
+    (description
+     "This package provides tooling to build Prometheus exporters")
+    (license license:asl2.0)))
+
 (define-public go-github-com-prometheus-procfs
   (package
     (name "go-github-com-prometheus-procfs")
