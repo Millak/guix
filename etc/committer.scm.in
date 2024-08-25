@@ -3,7 +3,7 @@
 !#
 
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -255,10 +255,18 @@ corresponding to the top-level definition containing the staged changes."
 (define* (change-commit-message file-name old new #:optional (port (current-output-port)))
   "Print ChangeLog commit message for changes between OLD and NEW."
   (define (get-values expr field)
-    (match ((xpath:sxpath `(// ,field quasiquote *)) expr)
+    (match ((xpath:node-or
+             (xpath:sxpath `(*any* *any* package ,field quasiquote *))
+             ;; For let binding
+             (xpath:sxpath `(*any* *any* (*any*) package ,field quasiquote *)))
+            (cons '*TOP* expr))
       (()
        ;; New-style plain lists
-       (match ((xpath:sxpath `(// ,field list *)) expr)
+       (match ((xpath:node-or
+                (xpath:sxpath `(*any* *any* package ,field list *))
+                ;; For let binding
+                (xpath:sxpath `(*any* *any* (*any*) package ,field list *)))
+               (cons '*TOP* expr))
          ((inner) inner)
          (_ '())))
       ;; Old-style labelled inputs
@@ -275,7 +283,11 @@ corresponding to the top-level definition containing the staged changes."
   (define variable-name
     (second old))
   (define version
-    (and=> ((xpath:sxpath '(// version *any*)) new)
+    (and=> ((xpath:node-or
+             (xpath:sxpath '(*any* *any* package version *any*))
+             ;; For let binding
+             (xpath:sxpath '(*any* *any* (*any*) package version *any*)))
+            (cons '*TOP* new))
            first))
   (format port
           "gnu: ~a: Update to ~a.~%~%* ~a (~a): Update to ~a.~%"
