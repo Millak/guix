@@ -2818,6 +2818,36 @@ NAT hole-punching, which requires a process to both @code{Listen} and
 around enabling this behaviour on various operating systems.")
     (license license:isc)))
 
+(define-public go-github-com-libp2p-go-yamux-v4
+  (package
+    (name "go-github-com-libp2p-go-yamux-v4")
+    (version "4.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-yamux")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13px8fcjjp02cricabbf3x410jkr8sb6r369nqq1zrgr7v90s22j"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-yamux/v4"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-libp2p-go-buffer-pool))
+    (home-page "https://github.com/libp2p/go-yamux")
+    (synopsis "Reuse TCP/UDP ports in Golang")
+    (description
+     "Yamux (Yet another Multiplexer) is a multiplexing library for Golang.
+It relies on an underlying connection to provide reliability and ordering,
+such as TCP or Unix domain sockets, and provides stream-oriented multiplexing.
+It is inspired by SPDY but is not interoperable with it.")
+    (license (list license:mpl2.0 license:bsd-3))))
+
 (define-public go-github-com-mailru-easyjson
   (package
     (name "go-github-com-mailru-easyjson")
