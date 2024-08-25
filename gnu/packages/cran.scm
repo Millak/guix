@@ -19725,14 +19725,14 @@ related functions.")
 (define-public r-stabledist
   (package
     (name "r-stabledist")
-    (version "0.7-1")
+    (version "0.7-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stabledist" version))
        (sha256
         (base32
-         "0scar396wiq6wkbkvwp4qrxqc1m075y56p37i6iry5rw796p1i86"))))
+         "1mbgl6an18dzry55pvy08zdhj1gar5mlyvkfnlawiqyqq081frr6"))))
     (build-system r-build-system)
     (home-page "https://www.rmetrics.org")
     (synopsis "Stable distribution functions")
