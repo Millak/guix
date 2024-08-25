@@ -4325,6 +4325,31 @@ an interface to implement any other minifier.")
 sockets.")
       (license license:expat))))
 
+(define-public go-github-com-ucarion-urlpath
+  (package
+    (name "go-github-com-ucarion-urlpath")
+    (version "0.0.0-20200424170820-7ccc79b76bbb")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ucarion/urlpath")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12ns9lqdz566agdp4y0whgksmidi0zp7759akvx0b79mjzyvypax"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ucarion/urlpath"))
+    (home-page "https://github.com/ucarion/urlpath")
+    (synopsis "REST-like URL path patterns matching")
+    (description
+     "Package urlpath matches paths against a template.  It's meant for
+applications that take in REST-like URL paths, and need to validate and
+extract data from those paths.")
+    (license license:expat)))
+
 (define-public go-github-com-ugorji-go-codec
   (package
     (name "go-github-com-ugorji-go-codec")
