@@ -4613,15 +4613,15 @@ network.")
 (define-public ngtcp2
   (package
     (name "ngtcp2")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/ngtcp2/ngtcp2/"
                            "releases/download/v" version "/"
-                           "ngtcp2-" version ".tar.xz"))
+                           "ngtcp2-" version ".tar.gz"))
        (sha256
-        (base32 "0fh2c0iafjihvg7cb2kkhxzs0gvlz4phczqil61ckhk9sd15lmrf"))))
+        (base32 "0r06ib077n4i7s5bfrdq2f2sh8jc2fck5k73wffsypk1k9fcpp2r"))))
     (build-system gnu-build-system)
     (arguments
      (list
