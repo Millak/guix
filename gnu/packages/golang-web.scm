@@ -2689,6 +2689,36 @@ router.")
 faster (and only does simple bandwidth metrics).")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-libp2p-asn-util
+  (package
+    (name "go-github-com-libp2p-go-libp2p-asn-util")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p-asn-util")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c94sq43bl1kp04lllcfrfyiy5z3zcfz0s65sm1vgb2s40zrwpr7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-libp2p-asn-util"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-exp))
+    (home-page "https://github.com/libp2p/go-libp2p-asn-util")
+    (synopsis "Golang library for IP to ASN mapping")
+    (description
+     "@code{go-libp2p-asn-util} is a Golang library to lookup the
+@acronym{ASN, Autonomous System Number} for an IP address.  It uses the IPv6
+to ASN database downloaded from https://iptoasn.com/.  Supports only IPv6
+addresses for now.")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-nat
   (package
     (name "go-github-com-libp2p-go-nat")
