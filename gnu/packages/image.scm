@@ -2269,15 +2269,14 @@ identical visual appearance.")
       (base32 "1snp4qlj05d0nx4f0qr8kywv0i1xcw5i278ybng1rand2alhkjz5"))))
    (build-system meson-build-system)
    (native-inputs (append (if (%current-target-system)
-                              ;; for wayland-scanner
+                              ;; For wayland-scanner.
                               (list pkg-config-for-build wayland)
                               '())
                           (list pkg-config scdoc)))
    (inputs (list pixman libpng libjpeg-turbo wayland wayland-protocols))
-   (home-page "https://sr.ht/~emersion/grim/")
+   (home-page "https://wayland.emersion.fr/grim/")
    (synopsis "Create screenshots from a Wayland compositor")
    (description "grim can create screenshots from a Wayland compositor.")
-   ;; MIT license.
    (license license:expat)))
 
 (define-public slurp
