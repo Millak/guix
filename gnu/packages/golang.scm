@@ -4290,32 +4290,6 @@ generation features.  This code generation is used to achieve:
     (home-page "https://github.com/gogo/protobuf")
     (license license:bsd-3)))
 
-(define-public go-github-com-libp2p-go-flow-metrics
-    (package
-      (name "go-github-com-libp2p-go-flow-metrics")
-      (version "0.1.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/libp2p/go-flow-metrics")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "13yb68vrcn2zdi0mjjh17dphfxl6y99bkq0ia53hasyfj6l6626h"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/libp2p/go-flow-metrics"))
-      (propagated-inputs
-       (list go-github-com-benbjohnson-clock))
-      (home-page
-       "https://github.com/libp2p/go-flow-metrics")
-      (synopsis "Simple library for tracking flow metrics")
-      (description "A simple alternative to rcrowley's @command{go-metrics}
-that's a lot faster (and only does simple bandwidth metrics).")
-      (license license:expat)))
-
 (define-public go-github-com-btcsuite-btclog
   (let ((commit "84c8d2346e9fc8c7b947e243b9c24e6df9fd206a")
         (revision "0"))

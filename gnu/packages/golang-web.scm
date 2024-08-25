@@ -2633,6 +2633,34 @@ router.")
 @acronym{Simple Service Discovery Protocol, SSDP}} library for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-flow-metrics
+  (package
+    (name "go-github-com-libp2p-go-flow-metrics")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-flow-metrics")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13yb68vrcn2zdi0mjjh17dphfxl6y99bkq0ia53hasyfj6l6626h"))))
+    (build-system go-build-system)
+    (arguments
+     ;; XXX: Tests may hang sometimes, see
+     ;; <https://github.com/libp2p/go-flow-metrics/issues/30>.
+     (list
+      #:import-path "github.com/libp2p/go-flow-metrics"))
+    (propagated-inputs
+     (list go-github-com-benbjohnson-clock))
+    (home-page "https://github.com/libp2p/go-flow-metrics")
+    (synopsis "Simple library for tracking flow metrics")
+    (description
+     "A simple alternative to rcrowley's @command{go-metrics} that's a lot
+faster (and only does simple bandwidth metrics).")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-nat
   (package
     (name "go-github-com-libp2p-go-nat")
