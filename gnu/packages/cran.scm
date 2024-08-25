@@ -9859,14 +9859,14 @@ with iterators from the @code{reticulate} package.")
 (define-public r-corrplot
   (package
     (name "r-corrplot")
-    (version "0.92")
+    (version "0.94")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "corrplot" version))
        (sha256
         (base32
-         "1g98jk6xsl08z4n6sy5vriif99m31zhbz7j3dh1kfj4w7yb9zh78"))))
+         "1x2mgq5fnws6imywwrkshcq41qh1dmdq98kxmf6yrpwjffpmv1cf"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
