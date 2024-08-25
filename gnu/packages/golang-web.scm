@@ -2907,7 +2907,7 @@ presenting a small interface.")
 (define-public go-github-com-multiformats-go-multiaddr
   (package
     (name "go-github-com-multiformats-go-multiaddr")
-    (version "0.1.0")
+    (version "0.12.3")
     (source
      (origin
        (method git-fetch)
@@ -2916,13 +2916,19 @@ presenting a small interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cdzlzh7cb1pj9mhq45va3r6gs6pcdfa9j7vdrqlv3zd6k3bxg39"))))
+        (base32 "1rn02yn7494r7ayn585bbsddprbn8wdccxs4n2k5dmll4dyd39mp"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/multiformats/go-multiaddr"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-multiformats-go-multihash))
+     (list go-github-com-ipfs-go-cid
+           go-github-com-multiformats-go-multibase
+           go-github-com-multiformats-go-varint
+           go-github-com-multiformats-go-multihash
+           go-golang-org-x-exp))
     (home-page "https://github.com/multiformats/go-multiaddr")
     (synopsis "Composable and future-proof network addresses")
     (description
