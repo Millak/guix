@@ -4405,46 +4405,6 @@ language, namely support for record length-delimited message streaming.")
 colored strings.")
       (license license:expat))))
 
-(define-public go-github-com-miekg-dns
-  (package
-    (name "go-github-com-miekg-dns")
-    (version "1.1.62")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/miekg/dns")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0wdsacp4ay6ji72vnszq6ksn5n060z2hv94wgjsn0pr7gpa3nk6c"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/miekg/dns"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Unable to run test server.
-                  (("TestIsPacketConn") "OffTestIsPacketConn"))))))))
-    (propagated-inputs
-     (list go-golang-org-x-tools
-           go-golang-org-x-sys
-           go-golang-org-x-sync
-           go-golang-org-x-net))
-    (home-page "https://github.com/miekg/dns")
-    (synopsis "Domain Name Service library in Go")
-    (description
-     "This package provides a fully featured interface to the @acronym{DNS,
-Domain Name System}.  Both server and client side programming is supported.
-The package allows complete control over what is sent out to the @acronym{DNS,
-Domain Name Service}.  The API follows the less-is-more principle, by
-presenting a small interface.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-mitchellh-colorstring
   (package
     (name "go-github-com-mitchellh-colorstring")
