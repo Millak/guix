@@ -6397,21 +6397,26 @@ Go host programs.")
 (define-public go-go-etcd-io-bbolt
   (package
     (name "go-go-etcd-io-bbolt")
-    (version "1.3.6")
+    (version "1.3.11")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/etcd-io/bbolt")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0pj5245d417za41j6p09fmkbv05797vykr1bi9a6rnwddh1dbs8d"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/etcd-io/bbolt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16s2l1yjn55rgybc9k8kh88zg7z8igm10y1xmx2qx1a147k64d31"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "go.etcd.io/bbolt"
-       ;; Extending the test timeout to 30 minutes still times out on aarch64.
-       #:tests? ,(not target-arm?)))
+     (list
+      ;; Extending the test timeout to 30 minutes still times out on aarch64.
+      #:tests? (not target-arm?)
+      #:import-path "go.etcd.io/bbolt"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-etcd-io-gofail
+           go-golang-org-x-sync))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://go.etcd.io/bbolt")
