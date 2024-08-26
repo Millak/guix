@@ -8297,6 +8297,57 @@ installing the entire GSL.")
 a variety of different samplers.")
     (license license:expat)))
 
+(define-public r-rmapshaper
+  (package
+    (name "r-rmapshaper")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rmapshaper" version))
+       (sha256
+        (base32 "01c1sd02ws3k2dmlj964c4j5jg93x192s3brhmaw4pi4qfjzc21x"))
+       (snippet
+        '(delete-file "inst/mapshaper/mapshaper-browserify.min.js"))))
+    (properties `((upstream-name . "rmapshaper")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:modules
+      '((guix build r-build-system)
+        (guix build minify-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:imported-modules
+      `(,@%r-build-system-modules
+        (guix build minify-build-system))
+      #:phases
+      '(modify-phases (@ (guix build r-build-system) %standard-phases)
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/"
+               (for-each (match-lambda
+                           ((source . target)
+                            (minify source #:target target)))
+                         '(("mapshaper/mapshaper-browserify.js"
+                            . "mapshaper/mapshaper-browserify.min.js")))))))))
+    (propagated-inputs (list r-geojsonsf
+                             r-jsonify
+                             r-readr
+                             r-sf
+                             r-sp
+                             r-v8))
+    (native-inputs (list esbuild r-knitr))
+    (home-page "https://github.com/ateucher/rmapshaper")
+    (synopsis "Client for mapshaper for geospatial operations")
+    (description
+     "This package lets you edit and simplify @code{geojson}, @code{Spatial},
+and @code{sf} objects.  This is a wrapper around the @code{mapshaper}
+JavaScript library to perform topologically-aware polygon simplification, as
+well as other operations such as clipping, erasing, dissolving, and converting
+multi-part to single-part geometries.")
+    (license license:expat)))
+
 (define-public r-rmdfiltr
   (package
     (name "r-rmdfiltr")
