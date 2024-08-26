@@ -2081,6 +2081,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/sbcl-eazy-gnuplot-skip-path-check.patch	\
   %D%/packages/patches/sbcl-fast-generic-functions-fix-sbcl-2.4.patch	\
   %D%/packages/patches/sbcl-png-fix-sbcl-compatibility.patch	\
+  %D%/packages/patches/sbcl-s-sysdeps-bt2.patch			\
   %D%/packages/patches/scalapack-gcc-10-compilation.patch	\
   %D%/packages/patches/scheme48-tests.patch			\
   %D%/packages/patches/scilab-better-compiler-detection.patch	\
