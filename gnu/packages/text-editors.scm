@@ -1105,14 +1105,14 @@ The basic features of Text Pieces are:
 (define-public scintilla
   (package
     (name "scintilla")
-    (version "5.4.3")
+    (version "5.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.scintilla.org/scintilla"
                            (string-delete #\. version) ".tgz"))
        (sha256
-        (base32 "1ysdi9rsg14w5mn581gjvr9jrdg1yp9rmg1r9jz7gngdgcz7q5ij"))))
+        (base32 "1rvp8aabk0m75fih7fvv6qhhc2ahf93vqbqa2zd0r8627v3llqzx"))))
     (build-system gnu-build-system)
     (arguments
      (list
