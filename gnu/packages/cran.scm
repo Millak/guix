@@ -42932,26 +42932,17 @@ calculate a dimension's unknown value from other dimensions' measurements.")
 (define-public r-sungeo
   (package
     (name "r-sungeo")
-    (version "1.1.1")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "SUNGEO" version))
               (sha256
                (base32
-                "1sy9kw3nr69jf33034kcnv418lqyz6sfrd01646i7dfsm64aydp2"))
-              (modules '((guix build utils)))
-              (snippet '(begin
-                          ;; Fortunately, the package does not actually use
-                          ;; rmapshaper, which has got a js/node dependency.
-                          ;; The only occurrence is in R/point2poly_tess.R,
-                          ;; where it is commented out.
-                          (substitute* "DESCRIPTION"
-                            (("rmapshaper,") ""))
-                          (substitute* "NAMESPACE"
-                            (("importFrom\\(rmapshaper,ms_dissolve\\)
-") ""))))))
+                "0ydwsrgqknngx7567xwfhwj1jdmi4ip1jxkb5jdy41f7ysy1myd0"))))
     (properties `((upstream-name . "SUNGEO")))
     (build-system r-build-system)
+    (native-inputs
+     (list r-codetools)) ;recommended package for checking field assignments
     (propagated-inputs
      (list r-automap
            r-cartogram
@@ -42967,8 +42958,8 @@ calculate a dimension's unknown value from other dimensions' measurements.")
            r-rcpp
            r-rcurl
            r-rlang
+           r-rmapshaper
            r-sf
-           r-sp
            r-spdep
            r-stringr
            r-terra))
