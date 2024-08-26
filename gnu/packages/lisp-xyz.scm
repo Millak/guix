@@ -29997,7 +29997,7 @@ precisely controls the behavior of the parser via Common Lisp restarts.")
 (define-public sbcl-usocket
   (package
     (name "sbcl-usocket")
-    (version "0.8.6")
+    (version "0.8.8")
     (source
      (origin
        (method git-fetch)
@@ -30006,7 +30006,7 @@ precisely controls the behavior of the parser via Common Lisp restarts.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-usocket" version))
        (sha256
-        (base32 "0by8hhg6gijdbq5vjykd374rmvqyikp4synpyk0wjcl7rk3r0vgn"))))
+        (base32 "13j2hyl7j06vl8hh3930wd3bi2p0pcg4dcd243al31fgw4m0bvag"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-rt))
