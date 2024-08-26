@@ -9564,6 +9564,29 @@ interface to @code{PostgreSQL}, a relational database.")
 Optimization problems by using the simplex algorithm.")
     (license license:gpl2+)))
 
+(define-public r-geometries
+  (package
+    (name "r-geometries")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "geometries" version))
+       (sha256
+        (base32 "040ljxmzbjdr76p81ygnn5y0gzckz5k2arxkih5m5f3b6g62laf6"))))
+    (properties `((upstream-name . "geometries")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-knitr))
+    (home-page "https://dcooley.github.io/geometries/")
+    (synopsis "Convert between R objects and geometric structures")
+    (description
+     "Geometry shapes in R are typically represented by matrices (points,
+lines), with more complex shapes being lists of matrices (polygons).
+Geometries will convert various R objects into these shapes.  Conversion
+functions are available at both the R level, and through Rcpp.")
+    (license license:expat)))
+
 (define-public r-geometry
   (package
     (name "r-geometry")
