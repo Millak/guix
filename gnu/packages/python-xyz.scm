@@ -11018,15 +11018,16 @@ your favourite programs.")
     (version "0.3.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "click_didyoumean" version))
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/click-contrib/click-didyoumean")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qx4npxxgj87zk5hkah5ijrc76ba7ymdd6r7na5fyr5y1pzzv0jg"))))
+        (base32 "1byfqs3m87zfpvssm1al9dvq94gjd0iddpwrzk6205n18wjsphqb"))))
     (build-system pyproject-build-system)
-    (arguments
-     `(#:tests? #f))              ; no tests in PyPI and no setup.py in github
     (native-inputs
-     (list python-poetry-core))
+     (list python-poetry-core python-pytest))
     (propagated-inputs
      (list python-click))
     (home-page "https://github.com/timofurrer/click-didyoumean")
