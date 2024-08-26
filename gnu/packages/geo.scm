@@ -2121,15 +2121,15 @@ from multiple records.")
 (define-public java-jmapviewer
   (package
     (name "java-jmapviewer")
-    (version "2.13")
+    (version "2.20")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://svn.openstreetmap.org/applications/"
-                                  "viewer/jmapviewer/releases/" version
-                                  "/JMapViewer-" version "-Source.zip"))
+              (uri (string-append "https://josm.openstreetmap.de/osmsvn/"
+                                  "/applications/viewer/jmapviewer/releases/"
+                                  version "/JMapViewer-" version "-Source.zip"))
               (sha256
                (base32
-                "0sy6r5fkbb9bclw0is6gwnbzz627m7pjfnsqydxz58pbndakkhrv"))))
+                "02cvmmvvlqpbwn022w3m60xkq4gh4jh9lajs6yjgvjf2hnwxll31"))))
     (build-system ant-build-system)
     (native-inputs
      (list unzip))
