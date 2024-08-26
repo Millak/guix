@@ -79938,6 +79938,27 @@ handle Unicode characters correctly.")
              ("rust-unicode-linebreak" ,rust-unicode-linebreak-0.1)
              ("rust-unicode-width" ,rust-unicode-width-0.1))))))
 
+(define-public rust-textwrap-0.14
+  (package
+    (inherit rust-textwrap-0.15)
+    (name "rust-textwrap")
+    (version "0.14.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "textwrap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "106xjfzfpk3nj51fx9slf9kyir7xjwvpqm003v9ardgq5b8whrh0"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-hyphenation" ,rust-hyphenation-0.8)
+        ("rust-smawk" ,rust-smawk-0.3)
+        ("rust-terminal-size" ,rust-terminal-size-0.1)
+        ("rust-unicode-linebreak" ,rust-unicode-linebreak-0.1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))))))
+
 (define-public rust-textwrap-0.12
   (package
     (inherit rust-textwrap-0.15)
