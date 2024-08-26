@@ -8847,7 +8847,7 @@ management via the GIMPS project's Primenet server.")
 (define-public nauty
   (package
     (name "nauty")
-    (version "2.8.8")
+    (version "2.8.9")
     (source
      (origin
        (method url-fetch)
@@ -8855,7 +8855,7 @@ management via the GIMPS project's Primenet server.")
              "https://pallini.di.uniroma1.it/"
              "nauty" (string-join (string-split version #\.) "_") ".tar.gz"))
        (sha256
-        (base32 "1ki9z60qcyx3va68hp7iv6451n5d86v1xmhc850b4sqah5b2378m"))))
+        (base32 "00zlb7cvkzfcfs3abcrykc2picapg16qng0zc2cwszmvqma6bi4s"))))
     (build-system gnu-build-system)
     (outputs '("out" "lib"))
     (arguments
@@ -8868,9 +8868,12 @@ management via the GIMPS project's Primenet server.")
             (lambda _
               (substitute* "makefile.in"
                 (("^(pkgconfigexecdir=).*" _ prefix)
-                 (string-append prefix "${libdir}/pkgconfig\n"))))))))
-    (inputs
-     (list gmp))                        ;for sumlines
+                 (string-append prefix "${libdir}/pkgconfig\n")))))
+          (add-after 'unpack 'fix-failing-test
+            (lambda _
+              (substitute* "runalltests.in"
+                ((" uniqg") " ./uniqg")))))))
+    (inputs (list gmp))                 ;for sumlines
     (home-page "https://pallini.di.uniroma1.it/")
     (synopsis "Library for graph automorphisms")
     (description "@code{nauty} (No AUTomorphisms, Yes?) is a set of
