@@ -11015,16 +11015,18 @@ your favourite programs.")
 (define-public python-click-didyoumean
   (package
     (name "python-click-didyoumean")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "click-didyoumean" version))
+       (uri (pypi-uri "click_didyoumean" version))
        (sha256
-        (base32 "0dc0xrmqbw0idpx843ahzzvivmvx3fcfsm3k54lnssyra7cg117i"))))
-    (build-system python-build-system)
+        (base32 "0qx4npxxgj87zk5hkah5ijrc76ba7ymdd6r7na5fyr5y1pzzv0jg"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))              ; no tests in PyPI and no setup.py in github
+    (native-inputs
+     (list python-poetry-core))
     (propagated-inputs
      (list python-click))
     (home-page "https://github.com/timofurrer/click-didyoumean")
