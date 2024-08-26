@@ -7444,14 +7444,14 @@ Longest Commons Subsequence of a set of strings.")
 (define-public jacal
   (package
     (name "jacal")
-    (version "1c7")
+    (version "1c8")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "http://groups.csail.mit.edu/mac/ftpdir/scm/jacal-"
+                    "https://groups.csail.mit.edu/mac/ftpdir/scm/jacal-"
                     version ".zip"))
               (sha256
-               (base32 "06a5sx9ikd62bpnd898g3yk818b020b1a27mk7dbfla2zizib4xz"))))
+               (base32 "0dn706gl5nd36177m7rkx9sdzpxy116jy2mdmc0dcb758r64qvmw"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -7481,7 +7481,7 @@ Longest Commons Subsequence of a set of strings.")
                      (string-append "--prefix="
                                     (assoc-ref outputs "out"))))))))
     (inputs (list scm))
-    (native-inputs (list unzip texinfo))
+    (native-inputs (list time unzip texinfo))
     (synopsis "Symbolic mathematics system")
     (description "GNU JACAL is an interactive symbolic mathematics program based on
 Scheme.  It manipulate and simplify a range of mathematical expressions such
