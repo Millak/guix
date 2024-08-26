@@ -8083,6 +8083,29 @@ colors random but consistent between same tags, colors are generated from the
 hash of the tag names.")
       (license license:gpl3+))))
 
+(define-public emacs-comment-tags
+  ;; Upstream didn't tag a working version.
+  (let ((commit "7d914097f0a03484af71e621db533737fc692f58")
+        (revision "1"))
+    (package
+      (name "emacs-comment-tags")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vincekd/comment-tags.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0s86a7078arck9z4gzkp2hnxyklprl0zh5hsw7nkyyscjydly80i"))))
+      (build-system emacs-build-system)
+      (synopsis "Minor mode to show comments which have tags like TODO")
+      (description "This package provides a minor mode to show all lines that
+have a comment with a tag, for example listing them right next to each other.")
+      (home-page "https://github.com/vincekd/comment-tags")
+      (license license:gpl3+))))
+
 (define-public emacs-org-rich-yank
   (package
     (name "emacs-org-rich-yank")
