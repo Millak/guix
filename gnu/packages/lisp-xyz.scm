@@ -8223,6 +8223,15 @@ compatible with ANSI-compliant Common Lisp implementations.")
        (list sbcl-moptilities sbcl-s-sysdeps sbcl-s-xml))
       (native-inputs
        (list sbcl-fiveam sbcl-find-port))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-build-with-usocket-bt2
+                   (lambda _
+                     ;; See https://github.com/40ants/cl-prevalence/pull/27
+                     (substitute* "src/master-slave.lisp"
+                       (("stop-process \\(bt:thread-name server-thread\\)")
+                        "stop-process (bt2:thread-name server-thread)")))))))
       (synopsis "Implementation of object prevalence for Common Lisp")
       (description "This Common Lisp library implements object prevalence (see
 @url{https://en.wikipedia.org/wiki/System_prevalence}).  It allows
