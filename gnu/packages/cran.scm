@@ -9564,6 +9564,27 @@ interface to @code{PostgreSQL}, a relational database.")
 Optimization problems by using the simplex algorithm.")
     (license license:gpl2+)))
 
+(define-public r-geojsonsf
+  (package
+    (name "r-geojsonsf")
+    (version "2.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "geojsonsf" version))
+       (sha256
+        (base32 "1la6zfzv14ascwds0bp67d7x3am0v14mylc4b2lyd0nrf93a2p17"))))
+    (properties `((upstream-name . "geojsonsf")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-geometries r-jsonify r-rapidjsonr r-rcpp
+                             r-sfheaders))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/SymbolixAU/geojsonsf")
+    (synopsis "GeoJSON to Simple Feature converter")
+    (description "This package converts between @code{GeoJSON} and Simple
+Feature objects.")
+    (license license:expat)))
+
 (define-public r-geometries
   (package
     (name "r-geometries")
