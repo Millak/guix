@@ -864,11 +864,15 @@ types.")
                              "vendor/github.com/klauspost"
                              "vendor/github.com/koron"
                              "vendor/github.com/libp2p/go-buffer-pool"
+                             "vendor/github.com/libp2p/go-cidranger"
                              "vendor/github.com/libp2p/go-flow-metrics"
+                             "vendor/github.com/libp2p/go-libp2p-asn-util"
                              "vendor/github.com/libp2p/go-msgio"
                              "vendor/github.com/libp2p/go-nat"
                              "vendor/github.com/libp2p/go-netroute"
+                             "vendor/github.com/libp2p/go-reuseport"
                              "vendor/github.com/libp2p/go-socket-activation"
+                             "vendor/github.com/libp2p/go-yamux"
                              "vendor/github.com/mattn"
                              "vendor/github.com/mgutz"
                              "vendor/github.com/miekg"
@@ -902,6 +906,26 @@ types.")
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
       #:phases
       #~(modify-phases %standard-phases
+          ;; FIXME: src/github.com/libp2p/go-libp2p-asn-util/asn.go:12:12:
+          ;; pattern sorted-network-list.bin: cannot embed irregular file
+          ;; sorted-network-list.bin
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module which is sourced during setup environment phase, but
+          ;; easy resolved after coping to expected directory "vendor" within
+          ;; the current package, see details in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-before 'build 'copy-input-to-vendor-directory
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (copy-recursively
+                 (string-append
+                  #$(this-package-input "go-github-com-libp2p-go-libp2p-asn-util")
+                  "/src/github.com")
+                 "vendor/github.com"))))
           ;; https://github.com/ipfs/kubo/blob/master/docs/command-completion.md
           (add-after 'install 'install-bashcompletion
             (lambda _
@@ -1031,9 +1055,13 @@ types.")
                   go-github-com-ipfs-go-verifcid              ; github.com/ipfs/go-blockservice
                   go-github-com-klauspost-compress            ; github.com/libp2p/go-libp2p
                   go-github-com-libp2p-go-buffer-pool         ; github.com/libp2p/go-libp2p
+                  go-github-com-libp2p-go-cidranger           ; github.com/libp2p/go-libp2p-kbucket
                   go-github-com-libp2p-go-flow-metrics        ; github.com/libp2p/go-libp2p
+                  go-github-com-libp2p-go-libp2p-asn-util     ; github.com/libp2p/go-libp2p-kbucket
                   go-github-com-libp2p-go-msgio               ; github.com/libp2p/go-libp2p-kad-dht
                   go-github-com-libp2p-go-nat                 ; github.com/libp2p/go-libp2p
+                  go-github-com-libp2p-go-reuseport           ; github.com/libp2p/go-libp2p
+                  go-github-com-libp2p-go-yamux-v4            ; github.com/libp2p/go-libp2p
                   go-github-com-multiformats-go-multiaddr-fmt ; github.com/libp2p/go-libp2p
                   go-github-com-multiformats-go-multistream   ; github.com/libp2p/go-libp2p
                   go-github-com-prometheus-statsd-exporter    ; contrib.go.opencensus.io/exporter/prometheus
