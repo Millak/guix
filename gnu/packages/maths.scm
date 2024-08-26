@@ -8855,7 +8855,7 @@ management via the GIMPS project's Primenet server.")
              "https://pallini.di.uniroma1.it/"
              "nauty" (string-join (string-split version #\.) "_") ".tar.gz"))
        (sha256
-        (base32 "00zlb7cvkzfcfs3abcrykc2picapg16qng0zc2cwszmvqma6bi4s"))))
+        (base32 "1vn4abz498h8fbh27z0l5jrs4z04d693xklbb5mai5l7yhmv8yn9"))))
     (build-system gnu-build-system)
     (outputs '("out" "lib"))
     (arguments
