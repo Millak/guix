@@ -14509,13 +14509,13 @@ abnormal copy number.")
 (define-public r-hmmcopy
   (package
     (name "r-hmmcopy")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HMMcopy" version))
        (sha256
-        (base32 "1nhm8bv6p5zcs7f9p1hqzyjgya6v3q8rl13blh135pk9gxjiad2c"))))
+        (base32 "1i2n4i4vkxqfgdcmwhz1vcbhxk716m1blc2drzh5449y6x3qd026"))))
     (properties `((upstream-name . "HMMcopy")))
     (build-system r-build-system)
     (propagated-inputs (list r-data-table))
