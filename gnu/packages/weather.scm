@@ -29,7 +29,7 @@
 (define-public wego
   (package
     (name "wego")
-    (version "2.2")
+    (version "2.3")
     (source
      (origin
        (method git-fetch)
@@ -38,7 +38,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09zn1z2744izzkkavs3lc1scsv22js8h28b0d86qd5dh2zfwfikf"))))
+        (base32 "16fx09wf5mll8nbyq5bjd9lbwmq1bqhsvln56jjqpzm28nbjarb0"))))
     (build-system go-build-system)
     (arguments '(#:import-path "github.com/schachmat/wego"))
     (propagated-inputs
