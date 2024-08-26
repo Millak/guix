@@ -987,8 +987,15 @@ safety and thread safety guarantees.")
                     "[build]\noptimized-compiler-builtins = false")))))))))))
 
 (define-public rust-1.78
-  (rust-bootstrapped-package
-   rust-1.77 "1.78.0" "1afmj5g3bz7439w4i8zjhd68zvh0gqg7ymr8h5rz49ybllilhm7z"))
+  (let ((base-rust (rust-bootstrapped-package rust-1.77 "1.78.0"
+                    "1afmj5g3bz7439w4i8zjhd68zvh0gqg7ymr8h5rz49ybllilhm7z")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         ;; see https://github.com/rust-lang/rust/pull/125844
+         (patches (search-patches "rust-1.78-unwinding-fix.patch")))))))
 
 (define-public rust-1.79
   (let ((base-rust (rust-bootstrapped-package rust-1.78 "1.79.0"
@@ -1030,7 +1037,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.77))
+  (let ((base-rust rust-1.78))
     (package
       (inherit base-rust)
       (properties (append
@@ -1050,11 +1057,10 @@ safety and thread safety guarantees.")
                          ;; These are referenced by the cargo output
                          ;; so we unbundle them.
                          "vendor/curl-sys/curl"
-                         "vendor/curl-sys-0.4.63+curl-8.1.2/curl"
                          "vendor/libffi-sys/libffi"
                          "vendor/libnghttp2-sys/nghttp2"
                          "vendor/libz-sys/src/zlib"
-                         "vendor/libz-sys-1.1.9/src/zlib"))
+                         "vendor/libz-sys-1.1.12/src/zlib"))
              ;; Use the packaged nghttp2
              (delete-file "vendor/libnghttp2-sys/build.rs")
              (with-output-to-file "vendor/libnghttp2-sys/build.rs"
@@ -1170,6 +1176,11 @@ safety and thread safety guarantees.")
                    (substitute* "features2.rs"
                      ,@(make-ignore-test-list
                         '("fn dep_with_optional_host_deps_activated"))))))
+             (add-after 'unpack 'disable-tests-requiring-crates.io
+               (lambda _
+                 (substitute* "src/tools/cargo/tests/testsuite/install.rs"
+                   ,@(make-ignore-test-list
+                      '("fn install_global_cargo_config")))))
              (add-after 'unpack 'patch-command-exec-tests
                ;; This test suite includes some tests that the stdlib's
                ;; `Command` execution properly handles in situations where
@@ -1228,7 +1239,7 @@ safety and thread safety guarantees.")
                      ((" = rpath.*" all)
                       (string-append all
                                      "                "
-                                     "rustflags.arg(\"-Clink-args=-Wl,-rpath="
+                                     "self.rustflags.arg(\"-Clink-args=-Wl,-rpath="
                                      out "/lib\");\n"))))))
              (add-after 'unpack 'unpack-profiler-rt
                ;; Copy compiler-rt sources to where libprofiler_builtins looks
