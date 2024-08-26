@@ -31788,6 +31788,31 @@ debug server.  It is similar to the LSP but provides integration with
 Debug server.")
     (license license:gpl3+)))
 
+(define-public emacs-fortran-tags
+  (package
+    (name "emacs-fortran-tags")
+    (version "1.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/raullaasner/fortran-tags.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1f22p0nsdayxqdh03s41qs833gamdhv4q7a4csm6vgwp4ivn3z1g"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(cons "^fortran-tags.py" %default-include)))
+    (inputs
+     (list python))
+    (synopsis "Emacs plugin for source code indexing of modern Fortran")
+    (description "This package provides an Emacs plugin for source code
+indexing of modern Fortran.")
+    (home-page "https://github.com/raullaasner/fortran-tags")
+    (license license:gpl3+)))
+
 (define-public emacs-bfuture
   (package
     (name "emacs-bfuture")
