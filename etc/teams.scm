@@ -734,10 +734,6 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "adam.faiz@disroot.org")
   games)
 
-(define-member (person "Matthew Trzcinski"
-                       "matt@excalamus.com")
-  documentation)
-
 (define-member (person "Laurent Gatto"
                        "laurent.gatto@gmail.com")
   r)
