@@ -2850,6 +2850,35 @@ NAT hole-punching, which requires a process to both @code{Listen} and
 around enabling this behaviour on various operating systems.")
     (license license:isc)))
 
+(define-public go-github-com-libp2p-go-socket-activation
+  (package
+    (name "go-github-com-libp2p-go-socket-activation")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-socket-activation")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cqxzmjfg7838xifs07kigys9icardwlj1wl426mzgzmbwn6pg5s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-socket-activation"))
+    (propagated-inputs
+     (list go-github-com-coreos-go-systemd-v22
+           go-github-com-ipfs-go-log
+           go-github-com-multiformats-go-multiaddr))
+    (home-page "https://github.com/libp2p/go-socket-activation")
+    (synopsis "Multiaddr backed systemd socket activation")
+    (description
+     "This package provides access to sockets registered by the system's init
+daemon as described in
+@url{http://0pointer.de/blog/projects/socket-activation}.")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-yamux-v4
   (package
     (name "go-github-com-libp2p-go-yamux-v4")
