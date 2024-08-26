@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 L  p R n  d n <guix@lprndn.info>
-;;; Copyright © 2020 Fredrik Salomonsson <plattfot@gmail.com>
+;;; Copyright © 2020, 2024 Fredrik Salomonsson <plattfot@posteo.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021-2023 Efraim Flashner <efraim@flashner.co.il>
@@ -222,26 +222,33 @@ background.")
 (define-public guix-simplyblack-sddm-theme
   (package
     (name "guix-simplyblack-sddm-theme")
-    (version "0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/plattfot/guix-simplyblack-sddm")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "1fwny6b0xpjs8ad2b16pyxd27gf0sr0nillmhc2h5k0q7dva21vi"))))
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/plattfot/guix-simplyblack-sddm")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09vb9b0pmyhj6fh0b6by59bykszbkdayhz678pnb4pyrdmlvv1am"))))
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((out (assoc-ref %outputs "out"))
-                (sddm-themes (string-append out "/share/sddm/themes")))
-           (mkdir-p sddm-themes)
-           (copy-recursively (assoc-ref %build-inputs "source")
-                             (string-append sddm-themes "/guix-simplyblack-sddm"))))))
+     `(#:modules ((guix build utils)
+                  (srfi srfi-26))
+       #:builder (begin
+                   (use-modules (guix build utils)
+                                (srfi srfi-26))
+                   (let* ((out (assoc-ref %outputs "out"))
+                          (themes-dir (string-append out
+                                       "/share/sddm/themes/guix-simplyblack-sddm/")))
+                     (mkdir-p themes-dir)
+                     (copy-recursively (assoc-ref %build-inputs "source")
+                                       themes-dir)
+                     (substitute* (map (cut string-append themes-dir <>)
+                                       '("Main.qml" "theme.conf"))
+                       (("file:")
+                        themes-dir))))))
     (home-page "https://github.com/plattfot/guix-simplyblack-sddm")
     (synopsis "Guix based theme for SDDM")
     (description
