@@ -24499,6 +24499,27 @@ to access designs described by Husslage et al (2011) and Wang and Fang (2005).
 The design types included are Audze-Eglais, MaxiMin, and uniform.")
     (license license:expat)))
 
+(define-public r-sfheaders
+  (package
+    (name "r-sfheaders")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "sfheaders" version))
+       (sha256
+        (base32 "01xxp7lpf333djs0lifnnhk5akv8prk0r5mq0ilynyyhn5kzwpzn"))))
+    (properties `((upstream-name . "sfheaders")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-geometries r-rcpp))
+    (home-page "https://dcooley.github.io/sfheaders/")
+    (synopsis "Converts between R objects and Simple Feature objects")
+    (description
+     "This package converts between R and Simple Feature @code{sf} objects,
+without depending on the Simple Feature library.  Conversion functions are
+available at both the R level, and through Rcpp.")
+    (license license:expat)))
+
 (define-public r-sftime
   (package
     (name "r-sftime")
