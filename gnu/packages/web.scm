@@ -30,7 +30,7 @@
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2019, 2020-2021, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2020-2021, 2023, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -7204,7 +7204,7 @@ file links.")
 (define-public castor
   (package
     (name "castor")
-    (version "0.8.18")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -7213,18 +7213,25 @@ file links.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l72r6a917ymc9pn8dllbal1xdczfai376nvqkiys5fm4j4s3zmj"))))
+        (base32 "1gda77ya2qbmjxfbw3yfr64inm8xw8243iwnfsgwwiwl35pw70n9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-ansi-parser" ,rust-ansi-parser-0.6)
-        ("rust-dirs" ,rust-dirs-2)
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-cargo-requirements
+            (lambda _
+              (substitute* "Cargo.toml" (("~") "")))))
+      #:cargo-inputs
+      `(("rust-ansi-parser" ,rust-ansi-parser-0.6)
+        ("rust-dirs" ,rust-dirs-3)
         ("rust-gdk" ,rust-gdk-0.13)
         ("rust-gtk" ,rust-gtk-0.8)
-        ("rust-linkify" ,rust-linkify-0.4)
+        ("rust-linkify" ,rust-linkify-0.7)
         ("rust-native-tls" ,rust-native-tls-0.2)
-        ("rust-open" ,rust-open-1)
+        ("rust-open" ,rust-open-2)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-textwrap" ,rust-textwrap-0.14)
         ("rust-url" ,rust-url-2))))
     (native-inputs
      (list pkg-config))
