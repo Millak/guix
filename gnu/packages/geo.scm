@@ -2200,7 +2200,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "18907")
+    (version "19160")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -2209,7 +2209,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "0vkczijw537f4y1b7hfxa45k3ww6nf2cf485b19dnbgh9ab6mnjl"))
+                "06m6rg9czs7mhkh0byd3c8n8y1gbzqqw2iy7qyn4084al4mdrw2z"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -2280,6 +2280,9 @@ to the OSM opening hours specification.")
            (lambda _
              (system* "javac" "scripts/BuildProjectionDefinitions.java"
                       "-cp" "build/classes")
+             (mkdir-p "resources/data/projection")
+             (with-output-to-file "resources/data/projection/custom-epsg"
+               (lambda _ (display "")))
              (mkdir-p "data/projection")
              (with-output-to-file "data/projection/custom-epsg"
                (lambda _ (display "")))
@@ -2342,6 +2345,9 @@ to the OSM opening hours specification.")
                                                (not (string-contains jar "-javacc-"))))
                                         (string-split (getenv "CLASSPATH") #\:))
                                       ":")
+                                    " --add-exports=java.base/sun.security.action=ALL-UNNAMED"
+                                    " --add-exports=java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED"
+                                    " --add-exports=java.desktop/com.sun.imageio.spi=ALL-UNNAMED"
                                     " org.openstreetmap.josm.gui.MainApplication"))))
                (chmod (string-append bin "/josm") #o755))
              #t)))))
