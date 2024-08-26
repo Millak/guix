@@ -942,7 +942,7 @@ typed in using the computer keyboard, played in using a MIDI keyboard, or
 even input via a microphone connected to the sound card.  The final product
 is publication-quality music notation that is continuously generated in the
 background while you work.")
-    (home-page "http://www.denemo.org")
+    (home-page "https://www.denemo.org")
     (license license:gpl3+)))
 
 (define-public dumb
