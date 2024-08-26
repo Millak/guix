@@ -739,7 +739,7 @@ utility functions for all standard Scheme implementations.")
 (define-public scm
   (package
     (name "scm")
-    (version "5f3")
+    (version "5f4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -747,7 +747,7 @@ utility functions for all standard Scheme implementations.")
                     version ".zip"))
               (sha256
                (base32
-                "1jxxlhmgal26mpcl97kz37djkn97rfy9h5pvw0hah6f3f6w49j97"))))
+                "17i6shvh2caqmksm7z130f9fz0qinaxg7xz9yadv904xh3znshnk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
