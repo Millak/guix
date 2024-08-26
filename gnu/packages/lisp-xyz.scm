@@ -21789,11 +21789,11 @@ instead of #'FOO.
   (sbcl-package->ecl-package sbcl-nkeymaps))
 
 (define-public sbcl-nodgui
-  (let ((commit "9d0c9731bc2f2b434f0ddabe4b3796432aad8cba")
+  (let ((commit "dc3efed8f93d4955e59347824f8f6d018e1a22e0")
         (revision "1"))
     (package
       (name "sbcl-nodgui")
-      (version (git-version "0.6.2.0" revision commit))
+      (version (git-version "0.7.0.3" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -21802,7 +21802,7 @@ instead of #'FOO.
                (commit commit)))
          (file-name (git-file-name "cl-nodgui" version))
          (sha256
-          (base32 "0j98mcq0mn3wrlqm3j29pv530q0pkq00sk6liai97an51i1n08g6"))))
+          (base32 "1kjbimzl9q74dz1fhl03n49607li55q6h0kdygfyr0n8cnf5638j"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-clunit2))
@@ -21820,6 +21820,7 @@ instead of #'FOO.
              sbcl-parse-number
              sbcl-pngload
              sbcl-sdl2
+             sbcl-sdl2-ttf
              sbcl-static-vectors
              sbcl-trivial-garbage
              sbcl-zpng
