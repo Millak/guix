@@ -1064,7 +1064,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.79))
+  (let ((base-rust rust-1.80))
     (package
       (inherit base-rust)
       (properties (append
@@ -1079,7 +1079,7 @@ safety and thread safety guarantees.")
              (for-each delete-file-recursively
                        '("src/llvm-project"
                          "vendor/jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
-                         "vendor/openssl-src-111.28.1+1.1.1w/openssl"
+                         "vendor/openssl-src-111.28.2+1.1.1w/openssl"
                          "vendor/tikv-jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
                          ;; These are referenced by the cargo output
                          ;; so we unbundle them.
@@ -1100,7 +1100,8 @@ safety and thread safety guarantees.")
              (for-each delete-file
                        (find-files "vendor" "\\.(a|dll|exe|lib)$"))
              ;; Adjust vendored dependency to explicitly use rustix with libc backend.
-             (substitute* "vendor/tempfile/Cargo.toml"
+             (substitute* '("vendor/tempfile-3.7.1/Cargo.toml"
+                            "vendor/tempfile-3.10.1/Cargo.toml")
                (("features = \\[\"fs\"" all)
                 (string-append all ", \"use-libc\"")))))))
       (arguments
@@ -1210,6 +1211,15 @@ safety and thread safety guarantees.")
                  (substitute* "src/tools/cargo/tests/testsuite/install.rs"
                    ,@(make-ignore-test-list
                       '("fn install_global_cargo_config")))))
+             (add-after 'unpack 'disable-miscellaneous-broken-tests
+               (lambda _
+                 (substitute* "src/tools/cargo/tests/testsuite/check_cfg.rs"
+                   ;; These apparently get confused by the fact that
+                   ;; we're building in a directory containing the
+                   ;; string "rustc"
+                   ,@(make-ignore-test-list
+                      '("fn config_fingerprint"
+                        "fn features_fingerprint")))))
              (add-after 'unpack 'patch-command-exec-tests
                ;; This test suite includes some tests that the stdlib's
                ;; `Command` execution properly handles in situations where
