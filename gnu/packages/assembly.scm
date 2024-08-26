@@ -470,7 +470,7 @@ Supported architectures are:
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f           ; TODO: custom test harness, not sure how it works
+      #:test-target "test"
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure))          ; no "configure" script
