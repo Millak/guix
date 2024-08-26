@@ -257,6 +257,19 @@ Guix's logo.  Based on Arch linux's archlinux-simplyblack theme.")
     ;; Theme under cc-by-sa3.0, guix logo under license:cc-by-sa4.0
     (license (list license:cc-by-sa3.0 license:cc-by-sa4.0))))
 
+(define-public guix-simplyblack-sddm-theme-qt5
+  (package
+    (inherit guix-simplyblack-sddm-theme)
+    (name "guix-simplyblack-sddm-theme-qt5")
+    (source
+     (origin
+       (inherit (package-source guix-simplyblack-sddm-theme))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   (substitute* "metadata.desktop"
+                     (("QtVersion=6")
+                      "QtVersion=5"))))))))
+
 (define-public chili-sddm-theme
   (package
     (name "chili-sddm-theme")
