@@ -8516,7 +8516,7 @@ ncurses for text display.")
 (define-public naev
   (package
     (name "naev")
-    (version "0.11.4")
+    (version "0.11.5")
     (source
      (origin
        (method git-fetch)
@@ -8526,7 +8526,7 @@ ncurses for text display.")
              (recursive? #t))) ; for game data
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gd7jgb996fgnlrlqkfyx416g1kd458vik3nviazwwj83ksafaqb"))))
+        (base32 "1wwgnlljcr3zhmxpb21lp9zgyyd198g6bisgykdj868b500f9lxx"))))
     (build-system meson-build-system)
     (arguments
      ;; XXX: Do not add debugging symbols, which cause the build to fail.
