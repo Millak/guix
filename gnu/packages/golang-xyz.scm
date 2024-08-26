@@ -6421,10 +6421,11 @@ Go host programs.")
      (list go-golang-org-x-sys))
     (home-page "https://go.etcd.io/bbolt")
     (synopsis "Embedded key/value database for Go")
-    (description "Bolt is a pure Go key/value store inspired by Howard Chu's
-LMDB project.  The goal of the project is to provide a simple, fast, and
-reliable database for projects that don't require a full database server such as
-Postgres or MySQL.")
+    (description
+     "Bolt is a pure Go key/value store inspired by Howard Chu's LMDB project.
+The goal of the project is to provide a simple, fast, and reliable database
+for projects that don't require a full database server such as Postgres or
+MySQL.")
     (license license:expat)))
 
 (define-public go-go-senan-xyz-flagconf
