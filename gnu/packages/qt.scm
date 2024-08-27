@@ -1694,6 +1694,36 @@ integrate QML code with JavaScript and C++.")
     (description "The Qt Connectivity modules provides modules for interacting
 with Bluetooth and NFC.")))
 
+(define-public qtconnectivity
+  (package
+    (name "qtconnectivity")
+    (version "6.7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "1s08djgzhh5p9ij0hxbrrcx9n7r7f0ba6pr9793mdsgh8ar23lwf"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list perl pkg-config qtdeclarative))
+    (inputs
+     (list bluez qtbase))
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-display
+            (lambda _
+              ;; Make Qt render "offscreen", required for tests.
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (synopsis "Qt Connectivity module")
+    (description "The Qt Connectivity modules provides modules for interacting
+with Bluetooth and NFC.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
+
 (define-public qtwebsockets-5
   (package (inherit qtsvg-5)
     (name "qtwebsockets")
