@@ -1675,7 +1675,7 @@ application developers to extend the QML language with custom types and
 integrate QML code with JavaScript and C++.")
     (license (package-license qtbase))))
 
-(define-public qtconnectivity
+(define-public qtconnectivity-5
   (package
     (inherit qtsvg-5)
     (name "qtconnectivity")
@@ -4010,7 +4010,7 @@ module provides support functions to the automatically generated code.")
     (inputs
      `(("python" ,python-wrapper)
        ("qtbase" ,qtbase-5)
-       ("qtconnectivity" ,qtconnectivity)
+       ("qtconnectivity-5" ,qtconnectivity-5)
        ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtlocation" ,qtlocation-5)
        ("qtmultimedia-5" ,qtmultimedia-5)
