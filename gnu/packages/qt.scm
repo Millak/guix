@@ -3937,24 +3937,26 @@ Python.")
 (define-public python-sip
   (package
     (name "python-sip")
-    (version "6.8.3")
+    (version "6.8.6")
     (source
-      (origin
-        (method url-fetch)
-        (uri (list (pypi-uri "sip" version)
-                   (string-append "https://www.riverbankcomputing.com/static/"
-                                  "Downloads/sip/" version
-                                  "/sip-" version ".tar.gz")))
-        (sha256
-         (base32
-          "0b3n237lbggz3b6bfmdsl1m4qgai7qyyj6fmvrmc695v32q4g1c8"))
-        (patches (search-patches "python-sip-include-dirs.patch"))))
+     (origin
+       (method url-fetch)
+       (uri (list (pypi-uri "sip" version)
+                  (string-append "https://www.riverbankcomputing.com/static/"
+                                 "Downloads/sip/" version
+                                 "/sip-" version ".tar.gz")))
+       (sha256
+        (base32
+         "0ykxq0607f2sdwbl5cxbp0y8pl14bsgzc9nhifpxbibfivj5kjbz"))
+       (patches (search-patches "python-sip-include-dirs.patch"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-wrapper))
+     (list python-wrapper python-setuptools python-setuptools-scm-next))
     (propagated-inputs
      (list python-tomli
            python-packaging))
+    ;; no test.
+    (arguments (list #:tests? #f))
     (home-page "https://www.riverbankcomputing.com/software/sip/intro")
     (synopsis "Python binding creator for C and C++ libraries")
     (description
