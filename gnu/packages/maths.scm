@@ -3738,41 +3738,31 @@ scientific applications modeled by partial differential equations.")
 (define-public python-petsc4py
   (package
     (name "python-petsc4py")
-    (version "3.16.1")
+    (version "3.21.4")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "petsc4py" version))
         (sha256
           (base32
-           "0pxr6qa7p0pmpq0av29lx8lzlrdcfdzj87ynixzr8dn42y13a662"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;; Ensure source file is regenerated in the build phase.
-            (delete-file "src/petsc4py.PETSc.c")
-            ;; Remove legacy GC code.  See
-            ;; https://bitbucket.org/petsc/petsc4py/issues/125.
-            (substitute* "src/PETSc/cyclicgc.pxi"
-                         ((".*gc_refs.*") "" )
-                         ((".*PyGC_Head.*") ""))
-            #t))))
+           "1kffxhcwkx6283n2p83ymanz6m8j2xmz5kpa5s8qc4f9iiah59sb"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'pre-build
-           (lambda _
-             ;; Define path to PETSc installation.
-             (setenv "PETSC_DIR" (assoc-ref %build-inputs "petsc"))
-             #t))
-         (add-before 'check 'mpi-setup
-           ,%openmpi-setup))))
-    (native-inputs
-     (list python-cython))
-    (inputs
-     `(("petsc" ,petsc-openmpi)
-       ("python-numpy" ,python-numpy)))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'set-PETSC_DIR
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Define path to PETSc installation.
+                   (setenv "PETSC_DIR"
+                           (assoc-ref inputs "petsc-openmpi"))))
+               (add-before 'check 'mpi-setup
+                 #$%openmpi-setup)
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python" "test/runtests.py")))))))
+    (native-inputs (list python-cython-3))
+    (inputs (list petsc-openmpi python-numpy))
     (home-page "https://bitbucket.org/petsc/petsc4py/")
     (synopsis "Python bindings for PETSc")
     (description "PETSc, the Portable, Extensible Toolkit for
