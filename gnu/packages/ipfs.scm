@@ -189,6 +189,33 @@ giving a clean interface for getting and putting block objects.")
 @url{https://github.com/ipfs/go-block-format, IPFS blocks}.")
       (license license:expat))))
 
+;; XXX: This repository has been archived by the owner on Jun 20, 2023. It is
+;; now read-only.
+(define-public go-github-com-ipfs-go-ipfs-posinfo
+  (package
+    (name "go-github-com-ipfs-go-ipfs-posinfo")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-posinfo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wgd3708gr42f37dcva41w1pkb5iywf8jdx6pgfhwwlw2s4lrn0p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ipfs-posinfo"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-ipld-format))
+    (home-page "https://github.com/ipfs/go-ipfs-posinfo")
+    (synopsis "Wrap offset information for IPFS filestore nodes")
+    (description
+     "@code{go-ipfs-posinfo} wraps offset information for IPFS filestore nodes.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-cid
   (package
     (name "go-github-com-ipfs-go-cid")
@@ -871,6 +898,7 @@ types.")
                              "vendor/github.com/ipfs/go-datastore"
                              "vendor/github.com/ipfs/go-detect-race"
                              "vendor/github.com/ipfs/go-ipfs-delay"
+                             "vendor/github.com/ipfs/go-ipfs-posinfo"
                              "vendor/github.com/ipfs/go-ipfs-redirects-file"
                              "vendor/github.com/ipfs/go-ipfs-util"
                              "vendor/github.com/ipfs/go-ipld-cbor"
