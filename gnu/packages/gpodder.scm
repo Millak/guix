@@ -191,13 +191,13 @@ downloading episode status changes.")
 (define-public python-podcastparser
   (package
     (name "python-podcastparser")
-    (version "0.6.6")
+    (version "0.6.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "podcastparser" version))
        (sha256
-        (base32 "0m24r2qhck0win44xfhxajbppkss4ha6am0042s0xyq3408883m3"))))
+        (base32 "1mqkkxz928y430xx3mgw9dj78ilkgv9hjdha1hizbks6mmhcp6ib"))))
     (native-inputs
      (list python-pytest))
     (arguments
