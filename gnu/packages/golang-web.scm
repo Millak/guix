@@ -2698,6 +2698,36 @@ from published cloud provider CIDR blocks (e.g. 52.95.110.1 is contained in
 published AWS Route53 CIDR 52.95.110.0/24), IP routing rules, etc.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-doh-resolver
+  (package
+    (name "go-github-com-libp2p-go-doh-resolver")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-doh-resolver")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0asni7f3gd65bjfqz99fqchz9y75cpgmfwkkhsbq0y2dydagw666"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-doh-resolver"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-log-v2
+           go-github-com-miekg-dns
+           go-github-com-multiformats-go-multiaddr-dns))
+    (home-page "https://github.com/libp2p/go-doh-resolver")
+    (synopsis "DNS over HTTPS resolver")
+    (description
+     "This package provides an implementation DNS over HTTPS resolver as
+specified in @url{https://datatracker.ietf.org/doc/html/rfc8484, RFC 8484}.")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-flow-metrics
   (package
     (name "go-github-com-libp2p-go-flow-metrics")
