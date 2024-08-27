@@ -4220,13 +4220,13 @@ itself.")
 (define-public python-pyqtwebengine-6
   (package
     (inherit python-pyqtwebengine)
-    (version "6.6.0")
+    (version "6.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyQt6_WebEngine" version))
        (sha256
-        (base32 "11wlnggs5vi7z465xhmnz664wbaj44ki6mmijbk0kr457x69h2ym"))))
+        (base32 "00ahqmdgyfw21nhymarrskx723fakkkq2s4mvvspbqnrnsnwgvb8"))))
     (native-inputs (list python python-sip python-pyqt-builder
                          ;; qtbase is required for qmake
                          qtbase))
