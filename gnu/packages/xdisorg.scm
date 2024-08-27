@@ -1487,15 +1487,15 @@ Escape key when Left Control is pressed and released on its own.")
 (define-public libwacom
   (package
     (name "libwacom")
-    (version "2.12.1")
+    (version "2.12.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/linuxwacom/libwacom/releases/download/"
-                    "libwacom-" version "/libwacom-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/linuxwacom/libwacom")
+                    (commit (string-append "libwacom-" version))))
               (sha256
                (base32
-                "0wjmv0rnxbd143cb5a73drflpdaxpb0mck0r9rsds08bs8l7l12v"))))
+                "1z8p8k19j4snl90rh1j9m53m1wq4vamsdny3hq9azwmzwf3xf6bp"))))
     (build-system meson-build-system)
     (arguments
      (list
