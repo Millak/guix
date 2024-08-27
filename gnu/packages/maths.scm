@@ -3939,7 +3939,7 @@ integration of real-, complex-, and vector-valued functions.")
 (define-public slepc
   (package
     (name "slepc")
-    (version "3.16.1")
+    (version "3.21.1")
     (source
      (origin
        (method url-fetch)
@@ -3947,7 +3947,7 @@ integration of real-, complex-, and vector-valued functions.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "1ysfm77s5fcissv3q0k5d65mlp93zi4anqg62q3cd25dn66sva5i"))))
+         "12kdgnw9lm5q6bq5wp27ygdp1bjdz3fhkb8m9ds83kn32l53zcxy"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("python" ,python)
