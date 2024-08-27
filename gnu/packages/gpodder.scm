@@ -147,9 +147,9 @@ locally for later listening.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("qt" ,qtbase-5)))
+     (list qtbase-5))
     (arguments
-     `(#:configure-flags '("-DMYGPO_BUILD_TESTS=ON")
+     '(#:configure-flags '("-DMYGPO_BUILD_TESTS=ON")
        ;; TODO: Enable tests when https://github.com/gpodder/gpodder/issues/446
        ;; is fixed.
        #:tests? #f))
