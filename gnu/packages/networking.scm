@@ -400,6 +400,7 @@ them in order to efficiently transfer a minimal amount of data.")
                    #$(if (target-x86-64?)
                          "-Dpipelines=ipu3,vimc,uvcvideo,simple"
                          "")
+                   "-Dudev=enabled"
                    "-Dtest=true" "-Dv4l2=true"
                    ;; XXX: Requires bundled pybind11.
                    "-Dpycamera=disabled")
