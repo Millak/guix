@@ -32,6 +32,18 @@
 
 (channel-news
  (version 0)
+ (entry (commit "fc35b9fa6d6ed3583d4f3fc9214f657022d49678")
+        (title
+          (en "Linux-libre 6.9 removed due to end of upstream support")
+          (de "Linux-libre 6.9 wurde entfernt"))
+        (body
+          (en "The linux-libre 6.9 kernel series has reached the end of
+             its life, and is no longer supported upstream.  For this
+             reason, it has been removed from GNU Guix.")
+          (de "Die @code{linux-libre} 6.9-Versionsreihe hat ihr
+Supportende erreicht und wird nicht mehr unterstützt („end of life“). Daher ist die
+Versionsreihe aus GNU Guix entfernt worden.")))
+
  (entry (commit "4e58dfee6c7456d1e662f66041b8a157efe8710a")
         (title
          (en "More capable @code{privileged-programs} replace @code{setuid-programs}")
