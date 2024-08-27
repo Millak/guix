@@ -2677,6 +2677,11 @@ router.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; XXX: Check if the most of the tests may be enabled:
+      ;; src/github.com/libp2p/go-cidranger/trie_test.go:557:8: cannot use
+      ;; 4294967295 (untyped int constant) as int value in assignment
+      ;; (overflows).
+      #:tests? (target-64bit?)
       #:import-path "github.com/libp2p/go-cidranger"))
     (native-inputs
      (list go-github-com-stretchr-testify))
