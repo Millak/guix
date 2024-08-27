@@ -163,19 +163,19 @@ and track podcasts.")
 (define-public python-mygpoclient
   (package
     (name "python-mygpoclient")
-    (version "1.8")
+    (version "1.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mygpoclient" version))
        (sha256
         (base32
-         "1fi5x6k1mngr0iviw2s4n1f3y2x7pwqy5ivkcrjdprzvwr37f0mh"))))
+         "05hmjdb73m7vl6lzvh58bnliy4227pv8hprwfka0bg19cnvgpyf5"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-coverage python-minimock python-nose))
+     (list python-coverage python-minimock python-nose python-pytest))
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda _
