@@ -34,6 +34,7 @@ choice.
 * Commit Access::               Pushing to the official repository.
 * Reviewing the Work of Others::  Some guidelines for sharing reviews.
 * Updating the Guix Package::   Updating the Guix package definition.
+* Deprecation Policy::          Commitments and tools for deprecation.
 * Writing Documentation::       Improving documentation in GNU Guix.
 * Translating Guix::            Make Guix speak your native language.
 @end menu
@@ -2808,9 +2809,11 @@ Ensure you're aware of how the changes should be handled
 repository, especially for the @code{master} branch.
 
 If you're committing and pushing your own changes, try and wait at least
-one week (two weeks for more significant changes) after you send them
-for review. After this, if no one else is available to review them and
-if you're confident about the changes, it's OK to commit.
+one week (two weeks for more significant changes, up to one month for
+changes such as removing a package---@pxref{package-removal-policy,
+Package Removal}) after you send them for review.  After this, if no one
+else is available to review them and if you're confident about the
+changes, it's OK to commit.
 
 When pushing a commit on behalf of somebody else, please add a
 @code{Signed-off-by} line at the end of the commit log message---e.g.,
@@ -3032,6 +3035,196 @@ This check can be disabled, @emph{at your own peril}, by setting the
 @code{GUIX_ALLOW_ME_TO_USE_PRIVATE_COMMIT} environment variable.  When
 this variable is set, the updated package source is also added to the
 store.  This is used as part of the release process of Guix.
+
+@node Deprecation Policy
+@section Deprecation Policy
+
+@cindex deprecation policy
+As any lively project with a broad scope, Guix changes all the time and
+at all levels.  Because it's user-extensible and programmable,
+incompatible changes can directly impact users and make their life
+harder.  It is thus important to reduce user-visible incompatible
+changes to a minimum and, when such changes are deemed necessary, to
+clearly communicate them through a @dfn{deprecation period} so everyone
+can adapt with minimum hassle.  This section defines the project's
+commitments for smooth deprecation and describes procedures and
+mechanisms to honor them.
+
+There are several ways to use Guix; how to handle deprecation will
+depend on each use case.  Those can be roughly categorized like this:
+
+@itemize
+@item
+package management exclusively through the command line;
+
+@item
+advanced package management using the manifest and package interfaces;
+
+@item
+Home and System management, using the @code{operating-system} and/or
+@code{home-environment} interfaces together with the service interfaces;
+
+@item
+development or use of external tools that use programming interfaces
+such as the @code{(guix ...)} modules.
+@end itemize
+
+These use cases form a spectrum with varying degrees of coupling---from
+``distant'' to tightly coupled.  Based on this insight, we define the
+following @dfn{deprecation policies} that we consider suitable for each
+of these levels.
+
+@table @asis
+@item Command-line tools
+Guix sub-commands should be thought of as remaining available
+``forever''.  Once a Guix sub-command is to be removed, it should be
+deprecated first, and then remain available for @b{at least one year}
+after the first release that deprecated it.
+
+Deprecation should first be announced in the manual and as an entry in
+@file{etc/news.scm}; additional communication such as a blog post
+explaining the rationale is welcome.  Months before the scheduled
+removal date, the command should print a warning explaining how to
+migrate.  An example of this is the replacement of @command{guix
+environment} by @command{guix shell}, started in October
+2021@footnote{For more details on the @command{guix shell} transition,
+see
+@uref{https://guix.gnu.org/en/blog/2021/from-guix-environment-to-guix-shell/}.}.
+
+Because of the broad impact of such a change, we recommend conducting a
+user survey before enacting a plan.
+
+@cindex package deprecation
+@item Package name changes
+When a package name changes, it must remain available under its old name
+for @b{at least one year}.  For example, @code{go-ipfs} was renamed to
+@code{kubo} following a decision made upstream; to communicate the name
+change to users, the package module provided this definition:
+
+@findex deprecated-package
+@lisp
+(define-public go-ipfs
+  (deprecated-package "go-ipfs" kubo))
+@end lisp
+
+That way, someone running @command{guix install go-ipfs} or similar sees
+a deprecation warning mentioning the new name.
+
+@cindex package removal policy
+@anchor{package-removal-policy}
+@item Package removal
+Packages whose upstream developers have declared as having reached ``end
+of life'' or being unmaintained may be removed; likewise, packages that
+have been @b{failing to build for two months or more} may be removed.
+
+There is no formal deprecation mechanism for this case, unless a
+replacement exists, in which case the @code{deprecated-package}
+procedure mentioned above can be used.
+
+If the package being removed is a ``leaf'' (no other packages depend on
+it), it may be removed after a @b{one-month review period} of the patch
+removing it (this applies even when the removal has additional
+motivations such as security problems affecting the package).
+
+If it has many dependent packages---as is the case for example with
+Python version@tie{}2---the relevant team must propose a deprecation
+removal agenda and seek consensus with other packagers for @b{at least
+one month}.  It may also invite feedback from the broader user
+community, for example through a survey.  Removal of all impacted
+packages may be gradual, spanning multiple months, to accommodate all
+use cases.
+
+When the package being removed is considered popular, whether or not it
+is a leaf, its deprecation must be announced as an entry in
+@code{etc/news.scm}.
+
+@item Package upgrade
+In the case of packages with many dependents and/or many users, an
+upgrade may be treated like the @emph{removal} of the previous version.
+
+Examples include major version upgrades of programming language
+implementations, as we've seen above with Python, and major upgrades of
+``big'' libraries such as Qt or GTK.
+
+@cindex service deprecation
+@item Services
+Changes to services for Guix Home and Guix System have a direct impact
+on user configuration.  For a user, adjusting to interface changes is
+rarely rewarding, which is why any such change must be clearly
+communicated in advance through deprecation warnings and documentation.
+
+Renaming of variables related to service, home, or system configuration
+must be communicated for at least six months before removal using the
+@code{(guix deprecation)} mechanisms.  For example, renaming of
+@code{murmur-configuration} to @code{mumble-server-configuration} was
+communicated through a series of definitions like this one:
+
+@findex define-deprecated/public-alias
+@lisp
+(define-deprecated/public-alias
+  murmur-configuration
+  mumble-server-configuration)
+@end lisp
+
+Procedures slated for removal may be defined like this:
+
+@findex define-deprecated
+@lisp
+(define-deprecated (elogind-service #:key (config (elogind-configuration)))
+  elogind-service-type
+  (service elogind-service-type config))
+@end lisp
+
+Record fields, notably fields of service configuration records, must
+follow a similar deprecation period.  This is usually achieved through
+@i{ad hoc} means though.  For example, the @code{hosts-file} field of
+@code{operating-system} was deprecated by adding a @code{sanitized}
+property that would emit a warning:
+
+@lisp
+(define-record-type* <operating-system>
+  ;; @dots{}
+  (hosts-file %operating-system-hosts-file         ;deprecated
+              (default #f)
+              (sanitize warn-hosts-file-field-deprecation)))
+
+(define-deprecated (operating-system-hosts-file os)
+  hosts-service-type
+  (%operating-system-hosts-file os))
+@end lisp
+
+When deprecating interfaces in @code{operating-system},
+@code{home-environment}, @code{(gnu services)}, or any popular service,
+the deprecation must come with an entry in @code{etc/news.scm}.
+
+@cindex deprecation of programming interfaces
+@item Core interfaces
+Core programming interfaces, in particular the @code{(guix ...)}
+modules, may be relied on by a variety of external tools and channels.
+Any incompatible change must be formally deprecated with
+@code{define-deprecated}, as shown above, for @b{at least one year}
+before removal.  The manual must clearly document the new interface and,
+except in obvious cases, explain how to migrate from the old one.
+
+As an example, the @code{build-expression->derivation} procedure was
+superseded by @code{gexp->derivation} and remained available as a
+deprecated symbol:
+
+@lisp
+(define-deprecated (build-expression->derivation store name exp
+                                                 #:key @dots{})
+  gexp->derivation
+  @dots{})
+@end lisp
+
+Sometimes bindings are moved from one module to another.  In those
+cases, bindings must be reexported from the original module for at least
+one year.
+@end table
+
+This section does not cover all possible situations but hopefully allows
+users to know what to expect and developers to stick to its spirit.
+Please email @email{guix-devel@@gnu.org} for any questions.
 
 @cindex documentation
 @node Writing Documentation
