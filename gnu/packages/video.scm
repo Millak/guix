@@ -1836,6 +1836,18 @@ operate properly.")
          "--disable-mipsfpu")
       #:phases
       #~(modify-phases %standard-phases
+          #$@(if (target-x86-32?)
+                 #~((add-before 'configure 'bypass-openal-check
+                      ;; configure fails linking to openal when using binutils
+                      ;; >= 2.38 due to openal's usage of protected visibility
+                      ;; for its dynamic symbols. Bypass this configure time
+                      ;; check for now. See:
+                      ;; https://lists.gnu.org/archive/html/guix-devel/2024-08/msg00159.html
+                      (lambda _
+                        (substitute* "configure"
+                          (("alGetError \\|\\|")
+                           "alGetError \|\| true \|\|")))))
+                 #~())
           (replace 'configure
             ;; configure does not work followed by "SHELL=..." and
             ;; "CONFIG_SHELL=..."; set environment variables instead
