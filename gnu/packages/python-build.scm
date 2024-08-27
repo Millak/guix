@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -676,6 +677,37 @@ system, then @code{flit_core} to build the package.")
 @dfn{software configuration management} (SCM) metadata instead of declaring
 them as the version argument or in a SCM managed file.")
     (license license:expat)))
+
+(define-public python-setuptools-scm-next
+  (package
+    (inherit python-setuptools-scm)
+    (name "python-setuptools-scm")
+    (version "8.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "setuptools_scm" version))
+              (sha256
+               (base32 "19y84rzqwb2rd88bjrlafrhfail2bnk6apaig8xskjviayva3pj2"))))
+    (build-system pyproject-build-system)
+    (arguments (list
+                ;; pyproject-build-system will error handle forms such as
+                ;; "module:object", so we set it.
+                #:build-backend "setuptools.build_meta"
+                #:phases
+                #~(modify-phases %standard-phases
+                    (add-before 'build 'setenv
+                      (lambda _
+                        ;; pyproject-build-system ignore backend-path,
+                        ;; and __import__ ignore GUIX_PYTHONPATH, so set
+                        ;; PYTHONPATH.
+                        (setenv "PYTHONPATH"
+                                (string-append
+                                 (getcwd)
+                                 ":"
+                                 (getcwd) "/src:"
+                                 (getenv "GUIX_PYTHONPATH"))))))
+                #:tests? #f))    ;avoid extra dependencies such as pytest
+    (native-inputs (list python-setuptools))))
 
 (define-public python-editables
   (package
