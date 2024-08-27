@@ -4053,31 +4053,32 @@ arising after the discretization of partial differential equations.")
 (define-public python-slepc4py
   (package
     (name "python-slepc4py")
-    (version "3.16.1")
+    (version "3.21.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "slepc4py" version))
         (sha256
           (base32
-            "0fq997y73ymvcvdrxycp450pxwdgnqaw62gv9rwncfgsfplkvs9w"))))
+            "01vvpl8g73knkwnh6mbxd45vwcs4zsw814147fvgkvj30qkhx3mw"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'pre-build
-           (lambda _
-             ;; Define path to PETSc installation.
-             (setenv "PETSC_DIR" (assoc-ref %build-inputs "petsc"))
-             ;; Define path to SLEPc installation.
-             (setenv "SLEPC_DIR" (assoc-ref %build-inputs "slepc"))
-             #t))
-         (add-before 'check 'mpi-setup
-           ,%openmpi-setup))))
-    (inputs
-     `(("python-numpy" ,python-numpy)
-       ("python-petsc4py" ,python-petsc4py)
-       ("slepc" ,slepc-openmpi)))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'pre-build
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Define path to PETSc installation.
+                   (setenv "PETSC_DIR" (assoc-ref inputs "petsc-openmpi"))
+                   ;; Define path to SLEPc installation.
+                   (setenv "SLEPC_DIR" (assoc-ref inputs "slepc-openmpi"))))
+               (add-before 'check 'mpi-setup
+                 #$%openmpi-setup)
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python" "test/runtests.py")))))))
+    (native-inputs (list python-cython-3))
+    (inputs (list python-numpy python-petsc4py petsc-openmpi slepc-openmpi))
     (home-page "https://bitbucket.org/slepc/slepc4py/")
     (synopsis "Python bindings for SLEPc")
     (description "SLEPc, the Scalable Library for Eigenvalue Problem
