@@ -2485,6 +2485,10 @@ quoting, commenting, and escaping.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; XXX: Check if the most of the tests may be enabled:
+      ;; src/github.com/fxamacker/cbor/v2/decode_test.go:328:9: cannot convert
+      ;; 1000000000000 (untyped int constant) to type uint
+      #:tests? (target-64bit?)
       #:import-path "github.com/fxamacker/cbor/v2"))
     (propagated-inputs
      (list go-github-com-x448-float16))
