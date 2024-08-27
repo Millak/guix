@@ -67,6 +67,30 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
     (license (list license:expat             ; bbloom.go
                    license:public-domain)))) ; siphash.go
 
+(define-public go-github-com-ipfs-go-bitfield
+  (package
+    (name "go-github-com-ipfs-go-bitfield")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-bitfield")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zhgwdg2kizhk0hb9q5p0pwrwldd2pacz8l1pnapxh6qm3fqs663"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-bitfield"))
+    (home-page "https://github.com/ipfs/go-bitfield")
+    (synopsis "Allocated up-front Bitfield for Golang")
+    (description
+     "This package implements a functionality similar to standard
+@code{big.Int} with some optimizations to use in IPFS.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public go-github-com-ipfs-go-block-format
   (package
     (name "go-github-com-ipfs-go-block-format")
