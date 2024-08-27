@@ -143,7 +143,7 @@ display via @command{fortune}, drawn from sources all around the world.")
 (define-public lolcat
   (package
     (name "lolcat")
-    (version "1.4")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -152,7 +152,7 @@ display via @command{fortune}, drawn from sources all around the world.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "0wyx184072z820njlc6qkvpxwcpjhj25gq4j0iw3jqzv3sk7mg7q"))
+         "1vq5y4wzjnj5r9jd085mifw84wz6hnp8p9gnd2d3x3jg9xwb0jmc"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
