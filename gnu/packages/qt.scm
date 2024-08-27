@@ -4253,26 +4253,30 @@ set of three modules.")))
 
 (define-public python-pyqt-builder
   (package
-   (name "python-pyqt-builder")
-   (version "1.14.1")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (pypi-uri "PyQt-builder" version))
-     (sha256
-      (base32
-       "00m5piryz9l4hp5z1ncaqicsp29kj71akdh4b10432zz18q3xg43"))))
-   (build-system python-build-system)
-   (inputs
-    (list python-sip))
-   (home-page "https://www.riverbankcomputing.com/static/Docs/PyQt-builder/")
-   (synopsis "PEP 517 compliant PyQt build system")
-   (description "PyQt-builder is a tool for generating Python bindings for C++
+    (name "python-pyqt-builder")
+    (version "1.16.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyqt_builder" version))
+       (sha256
+        (base32
+         "1pxgcqk9qf0qvszllb467v2cmr6ngksfr2caz1a2xgkrwcdf85a5"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools
+                         python-setuptools-scm-next
+                         python-wheel))
+    (inputs
+     (list python-sip))
+    (arguments (list #:tests? #f))      ; no test suite
+    (home-page "https://www.riverbankcomputing.com/static/Docs/PyQt-builder/")
+    (synopsis "PEP 517 compliant PyQt build system")
+    (description "PyQt-builder is a tool for generating Python bindings for C++
 libraries that use the Qt application framework.  The bindings are built on
 top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
-   ;; Either version 2 or 3, but no other version. See the file
-   ;; 'pyqtbuild/builder.py' in the source distribution for more information.
-   (license (list license:gpl2 license:gpl3))))
+    ;; Either version 2 or 3, but no other version. See the file
+    ;; 'pyqtbuild/builder.py' in the source distribution for more information.
+    (license (list license:gpl2 license:gpl3))))
 
 (define-public python-qtpy
   (package
