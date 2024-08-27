@@ -892,6 +892,7 @@ types.")
                              "vendor/github.com/gorilla"
                              "vendor/github.com/hashicorp"
                              "vendor/github.com/huin"
+                             "vendor/github.com/ipfs/go-bitfield"
                              "vendor/github.com/ipfs/go-block-format"
                              "vendor/github.com/ipfs/go-cid"
                              "vendor/github.com/ipfs/go-cidutil"
@@ -917,6 +918,7 @@ types.")
                              "vendor/github.com/koron"
                              "vendor/github.com/libp2p/go-buffer-pool"
                              "vendor/github.com/libp2p/go-cidranger"
+                             "vendor/github.com/libp2p/go-doh-resolver"
                              "vendor/github.com/libp2p/go-flow-metrics"
                              "vendor/github.com/libp2p/go-libp2p-asn-util"
                              "vendor/github.com/libp2p/go-msgio"
@@ -1041,7 +1043,7 @@ types.")
                   go-github-com-jbenet-go-temp-err-catcher
                   go-github-com-jbenet-goprocess
                   go-github-com-julienschmidt-httprouter
-                  ;;go-github-com-libp2p-go-doh-resolver
+                  go-github-com-libp2p-go-doh-resolver
                   ;;go-github-com-libp2p-go-libp2p
                   ;;go-github-com-libp2p-go-libp2p-http
                   ;;go-github-com-libp2p-go-libp2p-kad-dht
@@ -1103,6 +1105,7 @@ types.")
                   go-github-com-gorilla-websocket             ; github.com/libp2p/go-libp2p
                   go-github-com-hashicorp-golang-lru          ; github.com/libp2p/go-libp2p-kad-dht
                   go-github-com-hashicorp-golang-lru-v2       ; github.com/ipfs/boxo
+                  go-github-com-ipfs-go-bitfield              ; github.com/ipfs/boxo
                   go-github-com-ipfs-go-ipfs-redirects-file   ; github.com/ipfs/boxo
                   go-github-com-ipfs-go-verifcid              ; github.com/ipfs/go-blockservice
                   go-github-com-klauspost-compress            ; github.com/libp2p/go-libp2p
