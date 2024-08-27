@@ -409,6 +409,11 @@ from the default AWS credential chain.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; XXX: Check if the most of the tests may be enabled on non x86_64
+      ;; architectures, disable for now: ./proc_stat_test.go:98:49: cannot use
+      ;; math.MinInt64 (untyped int constant -9223372036854775808) as int
+      ;; value in struct literal (overflows).
+      #:tests? (target-x86-64?)
       #:import-path "github.com/prometheus/procfs"
       #:phases
       #~(modify-phases %standard-phases
