@@ -3521,15 +3521,15 @@ September 2004}")
 (define-public petsc
   (package
     (name "petsc")
-    (version "3.16.1")
+    (version "3.21.4")
     (source
      (origin
       (method url-fetch)
       ;; The *-lite-* tarball does not contain the *large* documentation
-      (uri (string-append "http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/"
+      (uri (string-append "https://web.cels.anl.gov/projects/petsc/download/release-snapshots/"
                           "petsc-lite-" version ".tar.gz"))
       (sha256
-       (base32 "0sm03vpg010q9icidiq587n325m0598cj6hab2rdv85nwyygg74h"))))
+       (base32 "1394ybnchawb2kghx4xk36gw26930aa73lxyw96diiqp8rnhgbm9"))))
     (outputs '("out"                    ; libraries and headers
                "examples"))             ; ~30MiB of examples
     (build-system gnu-build-system)
@@ -3625,6 +3625,16 @@ September 2004}")
                 (("([[:graph:]]+)/bin/diff") "diff")
                 (("([[:graph:]]+)/bin/sed") "sed")
                 (("([[:graph:]]+)/bin/gfortran") "gfortran")))))
+
+          ;; Some of the tests get linked with '-L$prefix/lib -lpetsc' (even
+          ;; though that's unnecessary because they also explicitly link
+          ;; against 'libpetsc.so' from the build directory).  To work around
+          ;; it, run tests after installation.  See
+          ;; <https://gitlab.com/petsc/petsc/-/issues/1634>.
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+
           (add-after 'install 'move-examples
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
@@ -3633,7 +3643,7 @@ September 2004}")
                      (exdir' (string-append examples "/share/petsc/examples")))
                 (copy-recursively exdir exdir')
                 (delete-file-recursively exdir)))))))
-    (home-page "https://www.mcs.anl.gov/petsc")
+    (home-page "https://petsc.org")
     (synopsis "Library to solve PDEs")
     (description "PETSc, pronounced PET-see (the S is silent), is a suite of
 data structures and routines for the scalable (parallel) solution of
