@@ -30,6 +30,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
@@ -241,11 +242,21 @@ Prometheus metrics.")
               (when tests?
                 (with-directory-excursion (string-append "src/" import-path)
                   (invoke "go" "test" "-v"
-                          ;; "./config/..." requries
+                          ;; Skipp, as it requires
                           ;; <github.com/prometheus/client_golang/prometheus>,
-                          ;; which introduce cycle.
+                          ;; which introduces cycle.
+                          ;; "./config/..."
+
+                          ;; Some tests fail on non x86_64 architecture:
+                          ;; Cannot use 9223372036 (untyped int constant) as int
+                          ;; value in ;; struct literal (overflows).
+                          ;; Cannot use math.MaxInt64
+                          ;; (untyped int constant 9223372036854775807) as int value
+                          ;; in argument to HumanizeTimestamp (overflows)
+                          #$@(if (target-x86-64?)
+                                 '("./helpers/...")
+                                 '())
                           "./expfmt/..."
-                          "./helpers/..."
                           "./model/..."
                           "./promlog/..."
                           "./route/..."
