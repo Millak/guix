@@ -142,6 +142,10 @@ registry.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; XXX: Check if the most of the tests may be enabled:
+      ;; api/prometheus/v1/api_test.go:1063:23: cannot use 1634644800304
+      ;; (untyped int constant) as int value in map literal (overflows)
+      #:tests? (target-64bit?)
       #:import-path "github.com/prometheus/client_golang"
       #:phases
       #~(modify-phases %standard-phases
