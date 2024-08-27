@@ -427,7 +427,21 @@ them in order to efficiently transfer a minimal amount of data.")
                      (mkdir-p (string-append gst "/lib"))
                      (rename-file
                       (string-append out "/lib/gstreamer-1.0")
-                      (string-append gst "/lib/gstreamer-1.0"))))))))
+                      (string-append gst "/lib/gstreamer-1.0")))))
+               (add-after 'shrink-runpath 're-sign-binaries
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   "Update signatures of all ipa libraries.
+
+After stipping phases signatures are not valid anymore, so it's necessary to
+re-sign."
+                   (let* ((out (assoc-ref outputs "out")))
+                     (for-each
+                      (lambda (file)
+                        (invoke
+                         "source/src/ipa/ipa-sign.sh" "src/ipa-priv-key.pem"
+                         file (string-append file ".sign")))
+                      (find-files
+                       (string-append out "/lib/libcamera") "\\.so$"))))))))
     (native-inputs
      (list googletest
            graphviz                     ;for 'dot'
