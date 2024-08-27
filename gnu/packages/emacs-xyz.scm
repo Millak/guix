@@ -9627,6 +9627,10 @@ build jobs.")
               (substitute* "src/configure"
                 (("/bin/sh") (which "sh"))
                 (("/usr/bin/file") (which "file")))
+              (substitute* "zmq.el"
+                ;; This typo is already fixed in master--but no release was
+                ;; made.
+                (("zmq-mesage-more-p") "zmq-message-more-p"))
               (invoke "make")))
           (add-after 'install 'install-shared-object
             (lambda* (#:key inputs outputs #:allow-other-keys)
