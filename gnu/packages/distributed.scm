@@ -3,6 +3,7 @@
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2024 Vitalii Koshura <lestat.de.lionkur@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,7 +47,7 @@
 (define-public boinc-client
   (package
     (name "boinc-client")
-    (version "7.22.2")
+    (version "8.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -57,7 +58,7 @@
               (file-name (git-file-name "boinc" version))
               (sha256
                (base32
-                "06qlfrn9bxcdgs9b4j7l4mwikrkvfizccprip18rlzl3i34jys7l"))))
+                "1kmjxjyl32flp3k2996fvaizg5v9bxd7fin3x3ih2hbp4dvc8k3v"))))
     (build-system gnu-build-system)
     (arguments
      (list
