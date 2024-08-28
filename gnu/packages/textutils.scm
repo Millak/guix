@@ -497,19 +497,18 @@ useful when it is desired to reformat numbers.
         (base32 "0z4ibnd2zzya489vl84cfh82bmdwdhf0isf1myqwrs3s9s0vqyyn"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-dependency-tracking")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'fix-paths
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (a2b (assoc-ref inputs "ascii2binary"))
-                   (iconv (assoc-ref inputs "libiconv")))
-               (substitute* "utf8lookup"
-                 (("^ascii2binary ") (string-append a2b "/bin/ascii2binary "))
-                 (("^uniname ") (string-append out "/bin/uniname "))
-                 (("^iconv ") (string-append iconv "/bin/iconv ")))
-             #t))))))
+     (list #:configure-flags #~(list "--disable-dependency-tracking")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'fix-paths
+                 (lambda* (#:key outputs inputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out"))
+                         (a2b (assoc-ref inputs "ascii2binary"))
+                         (iconv (assoc-ref inputs "libiconv")))
+                     (substitute* "utf8lookup"
+                       (("^ascii2binary ") (string-append a2b "/bin/ascii2binary "))
+                       (("^uniname ") (string-append out "/bin/uniname "))
+                       (("^iconv ") (string-append iconv "/bin/iconv ")))))))))
     (inputs
      (list ascii2binary libiconv))
     (home-page "https://billposer.org/Software/unidesc.html")
