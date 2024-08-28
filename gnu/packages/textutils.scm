@@ -32,6 +32,7 @@
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -486,14 +487,14 @@ useful when it is desired to reformat numbers.
 (define-public uniutils
   (package
     (name "uniutils")
-    (version "2.27")
+    (version "2.28")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://billposer.org/Software/Downloads/"
+       (uri (string-append "https://billposer.org/Software/Downloads/"
                            "uniutils-" version ".tar.bz2"))
        (sha256
-        (base32 "19w1510w87gx7n4qy3zsb0m467a4rn5scvh4ajajg7jh6x5xri08"))))
+        (base32 "0z4ibnd2zzya489vl84cfh82bmdwdhf0isf1myqwrs3s9s0vqyyn"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-dependency-tracking")
