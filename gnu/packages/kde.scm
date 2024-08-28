@@ -393,6 +393,7 @@ annotating features.")
            ladspa
            mlt
            purpose
+           qqc2-desktop-style
            qtbase
            qtdeclarative
            qtmultimedia
