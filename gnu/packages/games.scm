@@ -10259,54 +10259,104 @@ remake of that series or any other game.")
     ;; released under lgpl2.1+.
     (license (list license:gpl2 license:cc-by-sa3.0 license:lgpl2.1+))))
 
+(define-public lead-solver
+  (package
+    (name "lead-solver")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (let ((v (apply string-append (string-split version #\.))))
+                     (string-append
+                      "https://lajollabridge.com/Software/Lead-Solver/"
+                      "leadsolver-" v ".zip")))
+              (sha256
+               (base32
+                "0xsa7r6r5sprgy0pkdm1xj1jwyy6d3qak2ynviy8xplicl99q09f"))
+              (modules '((guix build utils)
+                         (ice-9 ftw)))
+              (snippet
+               #~(begin
+                   ;; Remove pre-built executables and cruft relative
+                   ;; to other OSes.
+                   (for-each
+                    delete-file-recursively
+                    (scandir "."
+                             (lambda (f)
+                               (not (member f '("." ".." "leadsolver.cpp"))))))
+                   (substitute* "leadsolver.cpp"
+                     (("#include \"dll.h\"") "#include <dll.h>"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #false              ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ;no configure script
+               (replace 'build
+                 (lambda _
+                   (invoke "g++" "leadsolver.cpp" "-ldds" "-o" "leadsolver")))
+               (replace 'install        ;no install phase
+                 (lambda _
+                   (let ((bin (string-append #$output "/bin")))
+                     (install-file "leadsolver" bin)))))))
+    (native-inputs (list unzip))
+    (inputs (list dds))
+    (home-page
+     "https://lajollabridge.com/Software/Lead-Solver/Lead-Solver-About.htm")
+    (synopsis "Analyze leads in bridge game")
+    (description
+     "Given bridge hands, Lead Solver tallies up how well each card does when
+led in terms of average tricks taken for the defense (for matchpoints) and how
+often the contract is set (for team play).")
+    (license license:gpl3)))
+
 (define-public leela-zero
   (package
-   (name "leela-zero")
-   (version "0.17")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/leela-zero/leela-zero")
-           (commit (string-append "v" version))))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32
-       "17px5iny8mql5c01bymcli7zfssswkzvb2i8gnsmjcck6i2n8srl"))
-     (patches (search-patches "leela-zero-gtest.patch"))))
-   (build-system cmake-build-system)
-   (native-inputs
-    (list googletest))
-   (inputs
-    (list boost
-          opencl-icd-loader
-          openblas
-          opencl-headers
-          qtbase-5
-          zlib))
-   (arguments
-    '(#:configure-flags '("-DUSE_BLAS=YES")
-      #:phases (modify-phases %standard-phases
-                 (add-before 'configure 'fix-tests
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     (let ((home (getcwd)))
-                       (setenv "HOME" home)
-                       (substitute* "src/tests/gtests.cpp"
-                         (("\\.\\./src/tests/0k\\.txt")
-                          (string-append home "/src/tests/0k.txt"))
-                         (("cfg_gtp_mode = true;")
-                          "cfg_gtp_mode = true; cfg_cpu_only = true;")))
-                     #t))
-                 (replace 'check
-                   (lambda _
-                     (invoke "./tests"))))))
-   (home-page "https://github.com/leela-zero/leela-zero")
-   (synopsis "Program playing the game of Go")
-   (description
-    "Leela-zero is a Go engine with no human-provided knowledge, modeled after
+    (name "leela-zero")
+    (version "0.17")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leela-zero/leela-zero")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "17px5iny8mql5c01bymcli7zfssswkzvb2i8gnsmjcck6i2n8srl"))
+       (patches (search-patches "leela-zero-gtest.patch"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list googletest))
+    (inputs
+     (list boost
+           opencl-icd-loader
+           openblas
+           opencl-headers
+           qtbase-5
+           zlib))
+    (arguments
+     '(#:configure-flags '("-DUSE_BLAS=YES")
+       #:phases (modify-phases %standard-phases
+                  (add-before 'configure 'fix-tests
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((home (getcwd)))
+                        (setenv "HOME" home)
+                        (substitute* "src/tests/gtests.cpp"
+                          (("\\.\\./src/tests/0k\\.txt")
+                           (string-append home "/src/tests/0k.txt"))
+                          (("cfg_gtp_mode = true;")
+                           "cfg_gtp_mode = true; cfg_cpu_only = true;")))
+                      #t))
+                  (replace 'check
+                    (lambda _
+                      (invoke "./tests"))))))
+    (home-page "https://github.com/leela-zero/leela-zero")
+    (synopsis "Program playing the game of Go")
+    (description
+     "Leela-zero is a Go engine with no human-provided knowledge, modeled after
 the AlphaGo Zero paper.  The current best network weights file for the engine
 can be downloaded from @url{https://zero.sjeng.org/best-network}.")
-   (license license:gpl3+)))
+    (license license:gpl3+)))
 
 (define-public q5go
   (package
