@@ -3266,12 +3266,12 @@ a built-in wiki, built-in file browsing, built-in tickets system, etc.")
                 "17yggk3fbm731z98warvix332487s0k6knhxnf9zc6f667qi2mlr"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; No tests
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)))) ; No configure script
+     (list #:tests? #f ; No tests
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)))) ; No configure script
     (inputs
      (list libgit2))
     (home-page "https://git.codemadness.org/stagit/")
