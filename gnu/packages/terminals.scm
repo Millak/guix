@@ -1510,6 +1510,10 @@ terminal are replicated to the others.
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list glib lua))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-Dbashcompletiondir=share/bash-completion/completions")))
     (home-page "https://tio.github.io/")
     (synopsis "Simple TTY terminal I/O application")
     (description "tio is a simple TTY terminal application which features a
