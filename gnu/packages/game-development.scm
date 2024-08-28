@@ -249,6 +249,8 @@ is used in some video games and movies.")
                    (lambda _
                      (install-file "libdds.so"
                                    (string-append #$output "/lib"))
+                     (let ((inc (string-append #$output "/include")))
+                       (copy-recursively "../include" inc))
                      (let ((doc (string-append #$output
                                                "/share/doc/"
                                                #$name "-" #$version)))
