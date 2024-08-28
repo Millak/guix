@@ -715,6 +715,42 @@ any other grammar rules.")
 expressions.")
     (license license:lgpl2.1+)))
 
+(define-public c-template-sort
+  ;; The latest commit is used as there is no release.
+  (let ((commit "24f5b8b13810ad130109c7b56daf8e99ab0fe1b8")
+        (revision "0"))
+  (package
+    (name "c-template-sort")
+    (version (git-version "0.0.0" revision commit))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/swenson/sort")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0q3pgw51rjq7pb6gc7zx9i48pckyl930lcab4ngxrpa5a8flq850"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("sort.h" "include/sort.h")
+          ("sort_extra.h" "include/sort_extra.h"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "make" "test"
+                       (string-append "CC=" #$(cc-for-target)))))))))
+    (home-page "https://github.com/swenson/sort")
+    (synopsis "C implementation of many sorting algorithms")
+    (description "This package provides a header-only C library,
+that implements several sorting algorithms.  It is configured using
+macros and supports user-defined types.")
+    (license license:expat))))
+
 (define-public sparse
   (package
     (name "sparse")
