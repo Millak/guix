@@ -1611,7 +1611,7 @@ throughput.")
     (inputs
      (list elogind))
     (propagated-inputs
-     (list go-github-com-godbus-dbus))
+     (list go-github-com-godbus-dbus-v5))
     (home-page "https://github.com/coreos/go-systemd")
     (synopsis "Go bindings to systemd")
     (description

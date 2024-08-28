@@ -6654,16 +6654,16 @@ RFC-5802 and RFC-7677.")
 (define-public go-github-com-godbus-dbus
   (package
     (name "go-github-com-godbus-dbus")
-    (version "5.1.0")
+    (version "0.0.0-20190726142602-4481cbc300e2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/godbus/dbus")
-                    (commit (string-append "v" version))))
+                    (commit (go-version->git-ref version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kayd4x7idrhi06ahh5kqkgwzgh9icvv71mjar2d0jl486dfs8r5"))))
+                "0h0cl1r136g0kxbw3i7ggb9mhavpi1yr7d7312iwhkxm93dxkphg"))))
     (build-system go-build-system)
     (arguments
      `(#:tests? #f ;no /var/run/dbus/system_bus_socket
@@ -6675,6 +6675,26 @@ RFC-5802 and RFC-7677.")
     (description "@code{dbus} is a library that implements native Go client
 bindings for the D-Bus message bus system.")
     (license license:bsd-2)))
+
+(define-public go-github-com-godbus-dbus-v5
+  (package
+    (inherit go-github-com-godbus-dbus)
+    (name "go-github-com-godbus-dbus-v5")
+    (version "5.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/godbus/dbus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kayd4x7idrhi06ahh5kqkgwzgh9icvv71mjar2d0jl486dfs8r5"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-godbus-dbus)
+       ((#:import-path _ "github.com/godbus/dbus")
+        "github.com/godbus/dbus/v5")))))
 
 (define-public go-github-com-delthas-go-libnp
   (let ((commit "0e45ece1f878f202fee2c74801e287804668f677"))
@@ -6692,7 +6712,7 @@ bindings for the D-Bus message bus system.")
                     "1hylpvwz3kb8wr00knba6mggjacak2vmqafwysansj0ns038lp8w"))))
       (build-system go-build-system)
       (arguments `(#:import-path "github.com/delthas/go-libnp"))
-      (propagated-inputs (list go-github-com-godbus-dbus))
+      (propagated-inputs (list go-github-com-godbus-dbus-v5))
       (home-page "https://github.com/delthas/go-libnp")
       (synopsis "Tiny library providing information about now-playing media")
       (description "@code{go-libnp} is a tiny cross-platform library for
