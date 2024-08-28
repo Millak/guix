@@ -5818,7 +5818,7 @@ create smoother and stable videos.")
 (define-public libopenshot
   (package
     (name "libopenshot")
-    (version "0.3.2")
+    (version "0.3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5827,7 +5827,7 @@ create smoother and stable videos.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hx2y9lvca7fzmy3996z08bzy65z1b0ip9d4jnnwd0wamwv4c4bb"))
+                "0jfp0kdncwmw8gqk0z8frpc4xdv9rxwh4z5m5l6mkyy320hr8zgm"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Allow overriding of the python installation dir
@@ -5881,7 +5881,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
 (define-public openshot
   (package
     (name "openshot")
-    (version "3.1.1")
+    (version "3.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5890,7 +5890,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11wmcipcx5icjcw4vaai5z06p8xj1j39dwl6kkjn5db2y00gak4h"))
+                "1hh5sggvnfayzgj1h9h7wp9k0n44lj2z32am9g51whkyzl5pp5nd"))
        (modules '((guix build utils)))
        (snippet
         '(begin
