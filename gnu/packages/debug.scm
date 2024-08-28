@@ -567,6 +567,33 @@ It is a fork of American Fuzzy Lop fuzzer and features:
 redqueen, AFLfast++ power schedules, MOpt mutators, unicorn_mode, etc.
 @end itemize")))
 
+(define-public backward-cpp
+  (package
+    (name "backward-cpp")
+    (version "1.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bombela/backward-cpp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1b2h03iwfhcsg8i4f125mlrjf8l1y7qsr2gsbkv0z03i067lykns"))))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBACKWARD_SHARED=ON")))
+    (build-system cmake-build-system)
+    (inputs
+     (list libiberty zlib))
+    (synopsis "Stack trace pretty printer for C++")
+    (description
+     "Backward-cpp is a stack trace pretty printer for C++.
+It can print annotated stack traces using debug info in the executable.")
+    (home-page "https://github.com/bombela/backward-cpp")
+    (license license:expat)))
+
 (define-public stress-make
   (let ((commit "97815bed8060de33952475b3498767c91f59ffd9")
         (revision "2"))                 ;No official source distribution
