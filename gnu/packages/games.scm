@@ -9377,97 +9377,100 @@ a fortress beyond the forbidden swamp.")
   (package
     (name "openclonk")
     (version "8.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://www.openclonk.org/builds/release/" version "/"
-                    "openclonk-" version "-src.tar.bz2"))
-              (sha256
-               (base32
-                "0imkqjp8lww5p0cnqf4k4mb2v682mnsas63qmiz17rspakr7fxik"))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   (delete-file-recursively "thirdparty")
-                   (substitute* "CMakeLists.txt"
-                     (("add_subdirectory\\(thirdparty/.*\\)") "")
-                     (("set_property\\(.*Third-party.*\\)") "")
-                     (("blake2") "b2")
-                     (("thirdparty/timsort/sort\\.h") "")
-                     (("thirdparty/pcg/.*\\.hpp") ""))
-                   (substitute* '("src/lib/C4Random.cpp"
-                                  "src/landscape/C4Particles.h")
-                     (("#include <pcg/pcg_random.hpp>")
-                      "#include <pcg_random.hpp>"))
-                   (substitute* "src/script/C4ScriptLibraries.cpp"
-                     (("blake2b.hash_output.get.., raw_output_length, data, data_length, nullptr, 0.")
-                      "blake2b(hash_output.get(), (const void*)raw_output_length, data, data_length, (size_t)(0), 0)"))
-                   (substitute* '("src/script/C4AulParse.cpp"
-                                  "src/editor/C4EditCursor.cpp"
-                                  "src/gui/C4ScriptGuiWindow.cpp")
-                     (("#include .C4Include\\.h." all)
-                      (string-append "#include <limits>\n" all)))
-                   (substitute* "src/lib/StdMesh.cpp"
-                     (("#include .timsort/sort\\.h.")
-                      "#include <sort.h>"))))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://www.openclonk.org/builds/release/" version "/"
+             "openclonk-" version "-src.tar.bz2"))
+       (sha256
+        (base32
+         "0imkqjp8lww5p0cnqf4k4mb2v682mnsas63qmiz17rspakr7fxik"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "thirdparty")
+            (substitute* "CMakeLists.txt"
+              (("add_subdirectory\\(thirdparty/.*\\)") "")
+              (("set_property\\(.*Third-party.*\\)") "")
+              (("blake2") "b2")
+              (("thirdparty/timsort/sort\\.h") "")
+              (("thirdparty/pcg/.*\\.hpp") ""))
+            (substitute* '("src/lib/C4Random.cpp"
+                           "src/landscape/C4Particles.h")
+              (("#include <pcg/pcg_random.hpp>")
+               "#include <pcg_random.hpp>"))
+            (substitute* "src/script/C4ScriptLibraries.cpp"
+              (("blake2b.hash_output.get.., raw_output_length, data, data_length, nullptr, 0.")
+               "blake2b(hash_output.get(), (const void*)raw_output_length, data, data_length, (size_t)(0), 0)"))
+            (substitute* '("src/script/C4AulParse.cpp"
+                           "src/editor/C4EditCursor.cpp"
+                           "src/gui/C4ScriptGuiWindow.cpp")
+              (("#include .C4Include\\.h." all)
+               (string-append "#include <limits>\n" all)))
+            (substitute* "src/lib/StdMesh.cpp"
+              (("#include .timsort/sort\\.h.")
+               "#include <sort.h>"))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DAudio_TK=OpenAL")
-       #:test-target "tests"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'prepare-gmock
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir "gmock")
-             (copy-recursively (assoc-ref inputs "googlemock") "gmock")
-             (substitute* "tests/CMakeLists.txt"
-               (("/usr/src/gmock")
-                (string-append (getcwd) "/gmock/googlemock"))
-               (("/usr/src/gtest")
-                (string-append (getcwd) "/gmock/googletest"))
-               (("PATH_SUFFIXES \"src\" \"gtest\"")
-                "PATH_SUFFIXES \"src\""))
-             #t))
-         (add-after 'prepare-gmock 'lax-freealut-requirement
-           ;; TODO: We provide freealut 1.1.0, but pkg-config somehow detects
-           ;; it as 1.0.1.  Force minimal version.
-           (lambda _
-             (substitute* "cmake/FindAudio.cmake"
-               (("freealut>=1.1.0") "freealut>=1.0.1"))
-             #t))
-         (add-after 'lax-freealut-requirement 'fix-directories
-           ;; Prefer "$out/share/openclonk" over
-           ;; "$out/share/games/openclonk". Also install "openclonk"
-           ;; binary in "bin/", not "games/".
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("share/games/openclonk") "share/openclonk")
-               (("TARGETS openclonk DESTINATION games")
-                "TARGETS openclonk DESTINATION bin"))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "-DAudio_TK=OpenAL")
+      #:test-target "tests"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-gmock
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gmock (search-input-directory inputs "/googlemock"))
+                    (gtest (search-input-directory inputs "/googletest")))
+                (mkdir "gmock")
+                (copy-recursively gmock "gmock/googlemock")
+                (copy-recursively gtest "gmock/googletest")
+                (substitute* "tests/CMakeLists.txt"
+                  (("/usr/src/gmock")
+                   (string-append (getcwd) "/gmock/googlemock"))
+                  (("/usr/src/gtest")
+                   (string-append (getcwd) "/gmock/googletest"))
+                  (("PATH_SUFFIXES \"src\" \"gtest\"")
+                   "PATH_SUFFIXES \"src\"")))))
+          (add-after 'prepare-gmock 'lax-freealut-requirement
+            ;; TODO: We provide freealut 1.1.0, but pkg-config somehow detects
+            ;; it as 1.0.1.  Force minimal version.
+            (lambda _
+              (substitute* "cmake/FindAudio.cmake"
+                (("freealut>=1.1.0") "freealut>=1.0.1"))))
+          (add-after 'lax-freealut-requirement 'fix-directories
+            ;; Prefer "$out/share/openclonk" over
+            ;; "$out/share/games/openclonk". Also install "openclonk"
+            ;; binary in "bin/", not "games/".
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("share/games/openclonk") "share/openclonk")
+                (("TARGETS openclonk DESTINATION games")
+                 "TARGETS openclonk DESTINATION bin")))))))
     (native-inputs
-     `(("googlemock" ,(package-source googletest))
-       ("googletest" ,googletest)
-       ("pkg-config" ,pkg-config)))
+     (list (package-source googletest)
+           googletest
+           pkg-config))
     (inputs
-     `(("c-template-sort" ,c-template-sort)
-       ("freealut" ,freealut)
-       ("freetype" ,freetype)
-       ("glew" ,glew)
-       ("libb2" ,libb2)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libogg" ,libogg)
-       ("libpng" ,libpng)
-       ("libvorbis" ,libvorbis)
-       ("libxrandr" ,libxrandr)
-       ("mesa" ,mesa)
-       ("miniupnpc" ,miniupnpc)
-       ("openal" ,openal)
-       ("pcg-cpp" ,pcg-cpp)
-       ("qtbase" ,qtbase-5)
-       ("readline" ,readline)
-       ("sdl" ,sdl2)
-       ("tinyxml" ,tinyxml)))
+     (list c-template-sort
+           freealut
+           freetype
+           glew
+           libb2
+           libjpeg-turbo
+           libogg
+           libpng
+           libvorbis
+           libxrandr
+           mesa
+           miniupnpc
+           openal
+           pcg-cpp
+           qtbase-5
+           readline
+           sdl2
+           tinyxml))
     (home-page "https://www.openclonk.org/")
     (synopsis
      "Multiplayer action game where you control small and nimble humanoids")
