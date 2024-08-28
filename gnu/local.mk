@@ -1632,6 +1632,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libgda-fix-missing-initialization.patch	\
   %D%/packages/patches/libgda-skip-postgresql-tests.patch	\
   %D%/packages/patches/libgit2-mtime-0.patch			\
+  %D%/packages/patches/libgit2-uninitialized-proxy-settings.patch	\
   %D%/packages/patches/libgnome-encoding.patch			\
   %D%/packages/patches/libgnomeui-utf8.patch			\
   %D%/packages/patches/libgrss-CVE-2016-2001.patch		\

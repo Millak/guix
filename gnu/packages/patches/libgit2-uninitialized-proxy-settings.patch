@@ -1,0 +1,19 @@
+Fix use of uninitialized value in the http-parser backend, a bug introduced
+in libgit2 1.8.1:
+
+  https://github.com/libgit2/libgit2/pull/6870
+
+This code is exercised by 'tests/proxy.scm' in Guile-Git.
+
+diff --git a/src/libgit2/transports/httpparser.c b/src/libgit2/transports/httpparser.c
+index 50ba6d2e0..1f0e65372 100644
+--- a/src/libgit2/transports/httpparser.c
++++ b/src/libgit2/transports/httpparser.c
+@@ -71,6 +71,7 @@ size_t git_http_parser_execute(
+ {
+ 	struct http_parser_settings settings_proxy;
+ 
++	settings_proxy.on_status = NULL;
+ 	settings_proxy.on_message_begin = parser->settings.on_message_begin ? on_message_begin : NULL;
+ 	settings_proxy.on_url = parser->settings.on_url ? on_url : NULL;
+ 	settings_proxy.on_header_field = parser->settings.on_header_field ? on_header_field : NULL;

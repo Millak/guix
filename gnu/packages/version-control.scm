@@ -1082,6 +1082,8 @@ write native speed custom Git applications in any language with bindings.")
               (sha256
                (base32
                 "1mh55804cvxl2cyl4clinajzgfn3zmlhacnv1pdvdj4w6z2w4si7"))
+              (patches
+               (search-patches "libgit2-uninitialized-proxy-settings.patch"))
 	      (snippet
                '(begin
                   (for-each delete-file-recursively
