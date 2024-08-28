@@ -983,6 +983,21 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      ;; as the bootstrap toolchain.
      (alist-replace "go" (list go-1.21) (package-native-inputs go-1.21)))))
 
+(define-public go-1.23
+  (package
+    (inherit go-1.22)
+    (name "go")
+    (version "1.23.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/go")
+             (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yq7fmha7x6fiah68mpx7cvffsd8a7z569cfq2dj5s66pbgzmji9"))))))
+
 ;;
 ;; Default Golang version used in guix/build-system/go.scm to build packages.
 ;;
@@ -1029,6 +1044,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.20 (make-go-std go-1.20))
 (define-public go-std-1.21 (make-go-std go-1.21))
 (define-public go-std-1.22 (make-go-std go-1.22))
+(define-public go-std-1.23 (make-go-std go-1.23))
 
 (define-public go-0xacab-org-leap-shapeshifter
   (let ((commit "0aa6226582efb8e563540ec1d3c5cfcd19200474")
