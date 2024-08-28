@@ -3258,8 +3258,9 @@ a built-in wiki, built-in file browsing, built-in tickets system, etc.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "git://git.codemadness.org/stagit")
-                     (commit version)))
+                    ;; NOTE: It can only be cloned using the git protocol
+                    (url "git://git.codemadness.org/stagit")
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
