@@ -122,6 +122,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -9383,7 +9384,32 @@ a fortress beyond the forbidden swamp.")
                     "openclonk-" version "-src.tar.bz2"))
               (sha256
                (base32
-                "0imkqjp8lww5p0cnqf4k4mb2v682mnsas63qmiz17rspakr7fxik"))))
+                "0imkqjp8lww5p0cnqf4k4mb2v682mnsas63qmiz17rspakr7fxik"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "thirdparty")
+                   (substitute* "CMakeLists.txt"
+                     (("add_subdirectory\\(thirdparty/.*\\)") "")
+                     (("set_property\\(.*Third-party.*\\)") "")
+                     (("blake2") "b2")
+                     (("thirdparty/timsort/sort\\.h") "")
+                     (("thirdparty/pcg/.*\\.hpp") ""))
+                   (substitute* '("src/lib/C4Random.cpp"
+                                  "src/landscape/C4Particles.h")
+                     (("#include <pcg/pcg_random.hpp>")
+                      "#include <pcg_random.hpp>"))
+                   (substitute* "src/script/C4ScriptLibraries.cpp"
+                     (("blake2b.hash_output.get.., raw_output_length, data, data_length, nullptr, 0.")
+                      "blake2b(hash_output.get(), (const void*)raw_output_length, data, data_length, (size_t)(0), 0)"))
+                   (substitute* '("src/script/C4AulParse.cpp"
+                                  "src/editor/C4EditCursor.cpp"
+                                  "src/gui/C4ScriptGuiWindow.cpp")
+                     (("#include .C4Include\\.h." all)
+                      (string-append "#include <limits>\n" all)))
+                   (substitute* "src/lib/StdMesh.cpp"
+                     (("#include .timsort/sort\\.h.")
+                      "#include <sort.h>"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DAudio_TK=OpenAL")
@@ -9402,30 +9428,7 @@ a fortress beyond the forbidden swamp.")
                (("PATH_SUFFIXES \"src\" \"gtest\"")
                 "PATH_SUFFIXES \"src\""))
              #t))
-         (add-after 'unpack 'adjust-backward-cpp-includes
-           (lambda _
-             ;; XXX: The bundled backward-cpp exports a CMake "interface"
-             ;; that includes external libraries such as libdl from glibc.
-             ;; By default, CMake interface includes are treated as "system
-             ;; headers", and GCC behaves poorly when glibc is passed as a
-             ;; system header (causing #include_next failures).
-
-             ;; Here we prevent targets that consume the Backward::Backward
-             ;; interface from treating it as "system includes".
-             (substitute* "CMakeLists.txt"
-               (("target_link_libraries\\((.+) Backward::Backward\\)" all target)
-                (string-append "set_property(TARGET " target " PROPERTY "
-                               "NO_SYSTEM_FROM_IMPORTED true)\n"
-                               all)))
-             #t))
-         (add-after 'unpack 'add-libiberty
-           ;; Build fails upon linking executables without this.
-           (lambda _
-             (substitute* "thirdparty/backward-cpp/BackwardConfig.cmake"
-               (("set\\(LIBBFD_LIBRARIES (.*?)\\)" _ libraries)
-                (string-append "set(LIBBFD_LIBRARIES " libraries " iberty)")))
-             #t))
-         (add-after 'add-libiberty 'lax-freealut-requirement
+         (add-after 'prepare-gmock 'lax-freealut-requirement
            ;; TODO: We provide freealut 1.1.0, but pkg-config somehow detects
            ;; it as 1.0.1.  Force minimal version.
            (lambda _
@@ -9447,10 +9450,11 @@ a fortress beyond the forbidden swamp.")
        ("googletest" ,googletest)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("freealut" ,freealut)
+     `(("c-template-sort" ,c-template-sort)
+       ("freealut" ,freealut)
        ("freetype" ,freetype)
        ("glew" ,glew)
-       ("libiberty" ,libiberty)
+       ("libb2" ,libb2)
        ("libjpeg" ,libjpeg-turbo)
        ("libogg" ,libogg)
        ("libpng" ,libpng)
@@ -9459,11 +9463,11 @@ a fortress beyond the forbidden swamp.")
        ("mesa" ,mesa)
        ("miniupnpc" ,miniupnpc)
        ("openal" ,openal)
+       ("pcg-cpp" ,pcg-cpp)
        ("qtbase" ,qtbase-5)
        ("readline" ,readline)
        ("sdl" ,sdl2)
-       ("tinyxml" ,tinyxml)
-       ("zlib" ,zlib)))
+       ("tinyxml" ,tinyxml)))
     (home-page "https://www.openclonk.org/")
     (synopsis
      "Multiplayer action game where you control small and nimble humanoids")
