@@ -9349,15 +9349,16 @@ tools:
 (define-public uriparser
   (package
     (name "uriparser")
-    (version "0.9.6")
+    (version "0.9.8")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/uriparser/uriparser"
-                                  "/releases/download/uriparser-"
-                                  version "/uriparser-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/uriparser/uriparser")
+                    (commit (string-append "uriparser-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i7nxgy36i8v81r213sbvmpxxq9qb4rhii9qbvl1k32jd1ka1252"))))
+                "0qr3rc0iz1zxim1ylwzf7zijgnxpzv4m35fzvv5kf66a8bqhrw2k"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest doxygen graphviz))
     (synopsis "Strictly RFC 3986 compliant URI parsing and handling library")
