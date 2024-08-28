@@ -952,7 +952,7 @@ move windows, switch between desktops, etc.).")
 (define-public scrot
   (package
     (name "scrot")
-    (version "1.11")
+    (version "1.11.1")
     (source
      (origin
        (method git-fetch)
@@ -962,7 +962,7 @@ move windows, switch between desktops, etc.).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1syip5ai4kn62qbhpf710wj60z7jzpkqhkchlbxhs322wmhhidkp"))))
+        (base32 "0pvp44lb2lrvm11x92vzxwl21hmcbld55kk8wjqa5k1kjg6syj9i"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf autoconf-archive automake pkg-config))
