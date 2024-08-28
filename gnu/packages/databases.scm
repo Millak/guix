@@ -5034,18 +5034,44 @@ algorithm implementations.")
     (build-system python-build-system)
     (arguments
      (list
-      #:tests? #f          ; XXX There are no tests in the "python" directory
+      ;; XXX: Test data is distributed sepratly in
+      ;; <https://github.com/apache/arrow-testing> 39MiB and requires
+      ;; additional steps to be implemented, see
+      ;; <https://github.com/apache/arrow/blob/main/ci/scripts/python_build.sh>.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (delete 'build) ; XXX the build is performed again during the install phase
           (add-after 'unpack 'enter-source-directory
             (lambda _ (chdir "python")))
+          (add-after 'enter-source-directory 'set-version
+            (lambda _
+              ;; XXX: This python-setuptools-scm option is available in v8+:
+              ;; TypeError: Configuration.__init__() got an unexpected
+              ;; keyword argument 'version_file'
+              (substitute* "pyproject.toml"
+                (("version_file = .*") ""))
+
+              ;; Version file generation ad-hoc, remove when a newer version
+              ;; of python-setuptools-scm is packed.
+              (with-output-to-file "pyarrow/_generated_version.py"
+                (let* ((version #$(package-version this-package) )
+                       (version-tuple (string-join (string-split version #\.) ", ")))
+                  (lambda ()
+                    (format #t
+                            "__version__ = version = '~a'
+__version_tuple__ = version_tuple = (~a)~%" version version-tuple))))))
           (add-before 'install 'set-pyarrow-build-options
             (lambda _
               (setenv "PYARROW_BUNDLE_ARROW_CPP_HEADERS" "0")
+              (setenv "PYARROW_CMAKE_OPTIONS"
+                      (string-append "-DCMAKE_INSTALL_RPATH=" #$output))
+              (setenv "PYARROW_PARALLEL"
+                      (number->string (parallel-job-count)))
+              (setenv "PYARROW_WITH_DATASET" "1")
+              (setenv "PYARROW_WITH_HDFS" "1")
               (setenv "PYARROW_WITH_ORC" "1")
-              (setenv "PYARROW_WITH_PARQUET" "1")
-              (setenv "PYARROW_WITH_DATASET" "1"))))))
+              (setenv "PYARROW_WITH_PARQUET" "1"))))))
     (propagated-inputs
      (list (list apache-arrow "lib")
            (list apache-arrow "include")
