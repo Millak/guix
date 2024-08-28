@@ -133,8 +133,8 @@
         (base32 "010h3aj0y9n8kcg5yvy1m7g4hc7nbm5gym5r3f3jmk5vyb8c8z8x"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-html-docs"
-                           "--disable-pdf-docs")))
+     (list #:configure-flags #~(list "--disable-html-docs"
+                                     "--disable-pdf-docs")))
     (native-inputs
      (list bison
            dos2unix
