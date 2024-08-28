@@ -117,11 +117,12 @@
                          '("perl"
                            "procps")))))))
          (add-after 'wrap-program 'post-install-test
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke (string-append
-                      (assoc-ref outputs "out") "/bin/parallel")
-                     "echo"
-                     ":::" "1" "2" "3"))))))
+           (lambda* (#:key tests? outputs #:allow-other-keys)
+             (when tests?
+               (invoke (string-append
+                        (assoc-ref outputs "out") "/bin/parallel")
+                       "echo"
+                       ":::" "1" "2" "3")))))))
     (native-inputs
      (list perl pod2pdf))
     (inputs
