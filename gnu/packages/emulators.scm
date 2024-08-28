@@ -21,6 +21,7 @@
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -121,14 +122,15 @@
 (define-public vice
   (package
     (name "vice")
-    (version "3.7.1")
+    (version "3.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/vice-emu/releases/"
                            "vice-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "165b1ixrarcqy1rl06yhaf46ni3j8lrbn8f3zf5nkc2d0bk12f3y"))))
+        (base32 "010h3aj0y9n8kcg5yvy1m7g4hc7nbm5gym5r3f3jmk5vyb8c8z8x"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-html-docs"
@@ -141,6 +143,7 @@
            pkg-config))
     (inputs
      (list alsa-lib
+           curl
            glew
            glib
            gtk+
