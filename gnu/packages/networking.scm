@@ -59,7 +59,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
@@ -1805,14 +1805,14 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.2.5")
+    (version "4.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "07r6n7xjckx5scp3d6s61hc54v5p5k4kaqik8jn3m9x9hymr7rsm"))))
+        (base32 "0s8jqxcvq7ibfsq8v4scl8dq7y5hqgpivq4iw9y2x6jj136cvmga"))))
     (build-system qt-build-system)
     (arguments
      (list
