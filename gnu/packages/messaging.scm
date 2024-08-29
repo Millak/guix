@@ -1010,8 +1010,8 @@ authentication.")
            nss-certs
            pango
            perl
-           python-2
-           python2-dbus
+           python-wrapper
+           python-dbus
            silc-toolkit
            sqlite
            startup-notification
