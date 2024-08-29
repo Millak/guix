@@ -9966,6 +9966,7 @@ computation is supported via MPI.")
            autoconf-archive
            automake
            bison
+           coreutils-minimal
            eigen
            flex
            gfortran
@@ -10073,6 +10074,10 @@ computation is supported via MPI.")
                     (("PROGNAME.*") "\n")))))
             (add-before 'build 'pre-build
               (lambda* (#:key inputs #:allow-other-keys)
+                ;; Fix scilab script.
+                (substitute* "bin/scilab"
+                  (("/bin/ls")
+                   (search-input-file inputs "bin/ls")))
                 ;; Fix core.start.
                 (substitute* "modules/core/etc/core.start"
                   (("'SCI/modules")
