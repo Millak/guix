@@ -9925,7 +9925,8 @@ computation is supported via MPI.")
                         "libs/GetWindowsVersion"
                         "Visual-Studio-settings"))
             (for-each delete-file
-                      (cons* "aclocal.m4"
+                      (append
+                       (list "aclocal.m4"
                              "configure"
                              "m4/ax_cxx_compile_stdcxx.m4"
                              "m4/lib-ld.m4"
@@ -9935,8 +9936,9 @@ computation is supported via MPI.")
                              "m4/ltversion.m4"
                              "m4/lt~obsolete.m4"
                              "m4/pkg.m4"
-                             "Scilab.sln"
-                             (find-files "." "^Makefile\\.in$")))
+                             "Scilab.sln")
+                       (find-files "." "^Makefile\\.in$")
+                       (find-files "." "\\.bat$")))
 
             ;; And finally some files in the modules directory:
             (for-each
