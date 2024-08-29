@@ -3231,6 +3231,46 @@ Groupcache.")
      (list
       #:import-path "github.com/hashicorp/golang-lru/v2"))))
 
+(define-public go-github-com-hashicorp-golang-lru-arc-v2
+  (package
+    (name "go-github-com-hashicorp-golang-lru-arc-v2")
+    (version "2.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/golang-lru")
+             (commit (string-append "arc/v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jin9spx8mv3ynnnyplfmf7plxkym398aaqq04i7zklb716ld4gq"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; It's a helper for go-build-system to compile import-path and
+        ;; unpack-path when it struggles to find module.
+        #~(begin
+            (mkdir "arc/v2")
+            (for-each (lambda (f)
+                        (rename-file f (string-append "arc/v2/" (basename f))))
+                      (find-files  "./arc"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/golang-lru/arc/v2"
+      #:unpack-path "github.com/hashicorp/golang-lru"))
+    (propagated-inputs
+     (list go-github-com-hashicorp-golang-lru-v2))
+    (home-page "https://github.com/hashicorp/golang-lru")
+    (synopsis "Adaptive Replacement Cache")
+    (description
+     "@acronym{Adaptive Replacement Cache,ARC} is an enhancement over the
+standard LRU cache in that tracks both frequency and recency of use.  This
+avoids a burst in access to new entries from evicting the frequently used
+older entries.  It adds some additional tracking overhead to a standard LRU
+cache, computationally it is roughly 2x the cost, and the extra memory
+overhead is linear with the size of the cache.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-hcl
   (package
     (name "go-github-com-hashicorp-hcl")
