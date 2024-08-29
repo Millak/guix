@@ -9891,7 +9891,7 @@ computation is supported via MPI.")
 (define-public scilab
   (package
     (name "scilab")
-    (version "2024.0.0")
+    (version "2024.1.0")
     (source
      (origin
        (method git-fetch)
@@ -9901,7 +9901,7 @@ computation is supported via MPI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "08nyfli3x7gd396ffd1a8zn9fj3gm6a8yw0ggm547c09sp2rgvl7"))
+         "1qk0pf1cwcvdqjza9xqkynd90ywq0yh421bz59w5zjzbs40ijnrx"))
        (patches (search-patches "scilab-better-compiler-detection.patch"
                                 "scilab-tbx_build_help.patch"))
        (modules '((guix build utils)

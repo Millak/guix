@@ -1,38 +1,35 @@
-From c59d78c5a5c8c187450f157cf7f8480455e8e6a2 Mon Sep 17 00:00:00 2001
+From 24a9bc240729b7630e20a7b83b75f086024ae03d Mon Sep 17 00:00:00 2001
 From: Nicolas Graves <ngraves@ngraves.fr>
-Date: Wed, 3 Apr 2024 03:32:23 +0200
+Date: Wed, 21 Aug 2024 15:42:35 +0200
 Subject: [PATCH] scilab: tbx_build_help: Allow for some flexibility under
  -nwni.
 
 upstream reference: https://gitlab.com/scilab/scilab/-/merge_requests/818
-
 ---
- .../modules_manager/macros/tbx_build_help.sci        | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ scilab/modules/modules_manager/macros/tbx_build_help.sci | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/scilab/modules/modules_manager/macros/tbx_build_help.sci b/scilab/modules/modules_manager/macros/tbx_build_help.sci
-index 7862e33a868..5593ee3dc04 100644
+index ab06b3fa8dc..cbb1b4cadf8 100644
 --- a/scilab/modules/modules_manager/macros/tbx_build_help.sci
 +++ b/scilab/modules/modules_manager/macros/tbx_build_help.sci
-@@ -58,12 +58,12 @@ function tbx_build_help(moduletitle, path)
+@@ -57,8 +57,8 @@ function tbx_build_help(moduletitle, path)
  
      // Check scilab mode
      if and(getscilabmode() <> ["STD" "NW"]) then
 -        error(msprintf(gettext("%s: documentation cannot be built in this scilab mode: %s.\n"),"tbx_build_help",getscilabmode()));
+-    end
 +        msprintf(gettext("%s: documentation cannot be built in this scilab mode: %s.\n"),"tbx_build_help",getscilabmode());
 +    else
-+        directory_language = basename(path);
-+        default_language = "en_US"
-+
-+        xmltojar(path, moduletitle, directory_language, default_language);
-     end
  
--    directory_language = basename(path);
--    default_language = "en_US"
--
--    xmltojar(path, moduletitle, directory_language, default_language);
--
+     directory_language = basename(path);
+     default_language = "en_US"
+@@ -89,4 +89,5 @@ function tbx_build_help(moduletitle, path)
+         warning(_(".start file was not found, build of help pages using <scilab:image> tag may failed."));
+         xmltojar(path, moduletitle, directory_language, default_language);
+     end
++    end
  endfunction
 -- 
-2.41.0
+2.45.2
 
