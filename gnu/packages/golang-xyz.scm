@@ -7564,6 +7564,16 @@ tool."))
 Trace/Debug/Info/Warn/Error methods on @code{hclog.Logger} are used
 correctly.")))
 
+(define-public go-jfmt
+  (package/inherit go-zgo-at-jfmt
+    (name "go-jfmt")
+    (arguments (list #:install-source? #f
+                     #:import-path "zgo.at/jfmt/cmd/jfmt"
+                     #:unpack-path "zgo.at/jfmt"))
+    (description
+     (string-append (package-description go-zgo-at-jfmt)
+                    "  This package provides a command line interface (CLI) tool."))))
+
 (define-public go-msgio
   (package
     (inherit go-github-com-libp2p-go-msgio)
