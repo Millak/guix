@@ -66,6 +66,7 @@
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9361,6 +9362,9 @@ tools:
                 "0qr3rc0iz1zxim1ylwzf7zijgnxpzv4m35fzvv5kf66a8bqhrw2k"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest doxygen graphviz))
+    (arguments (if (%current-target-system)
+                   (list #:configure-flags #~(list "-DURIPARSER_BUILD_TESTS=OFF"))
+                   '()))
     (synopsis "Strictly RFC 3986 compliant URI parsing and handling library")
     (description "uriparser is a strictly RFC 3986 compliant URI parsing and
 handling library written in C89 (\"ANSI C\").  uriparser is fast and supports
