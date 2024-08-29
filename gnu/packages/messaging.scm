@@ -990,7 +990,6 @@ authentication.")
            ;; gtkspell2
            libgadu
            libgcrypt
-           libgnt
            libice
            libidn
            libltdl
@@ -1016,7 +1015,8 @@ authentication.")
            tcl
            tk))
     (propagated-inputs
-     (list glib gtk+-2))
+     ;; Required by finch.pc, pidgin.pc and purple.pc
+     (list glib gtk+-2 libgnt))
     (arguments
      `(#:configure-flags
        (list
