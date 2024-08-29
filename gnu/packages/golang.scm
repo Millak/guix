@@ -6666,8 +6666,22 @@ RFC-5802 and RFC-7677.")
                 "0h0cl1r136g0kxbw3i7ggb9mhavpi1yr7d7312iwhkxm93dxkphg"))))
     (build-system go-build-system)
     (arguments
-     `(#:tests? #f ;no /var/run/dbus/system_bus_socket
-       #:import-path "github.com/godbus/dbus"))
+     (list
+      #:import-path "github.com/godbus/dbus"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Disable tests which require a system D-Bus instance.
+                  (("TestSystemBus") "OffTestSystemBus")
+                  (("TestConnectSystemBus") "OffTestConnectSystemBus")))))
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "dbus-run-session" "--" "go" "test" "./..."))))))))
     (native-inputs
      (list dbus)) ;dbus-launch
     (home-page "https://github.com/godbus/dbus/")
