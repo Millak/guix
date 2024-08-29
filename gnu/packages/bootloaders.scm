@@ -284,7 +284,7 @@
                                    (arguments
                                     (substitute-keyword-arguments (package-arguments binutils)
                                       ((#:configure-flags flags ''())
-                                       `(cons "--enable-64-bit-bfd" ,flags)))))))
+                                       #~(cons* "--enable-64-bit-bfd" #$flags)))))))
                    (list (make-ld-wrapper "ld-wrapper-i386"
                                           #:binutils binutils)
                          binutils))
@@ -2078,7 +2078,7 @@ the features of iPXE without the hassle of reflashing.")
                      (arguments
                        (substitute-keyword-arguments (package-arguments binutils)
                         ((#:configure-flags flags ''())
-                         `(cons "--enable-64-bit-bfd" ,flags)))))))
+                         #~(cons* "--enable-64-bit-bfd" #$flags)))))))
              (modify-inputs (package-native-inputs ipxe)
                (prepend edk2-tools
                         (make-ld-wrapper "ld-wrapper-64-bit-bfd"
