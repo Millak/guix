@@ -8051,7 +8051,7 @@ and comparisons are supported.")
 (define-public sundials
   (package
     (name "sundials")
-    (version "6.2.0")
+    (version "7.1.1")
     (source
      (origin
        (method url-fetch)
@@ -8059,10 +8059,10 @@ and comparisons are supported.")
                            version "/sundials-" version ".tar.gz"))
        (sha256
         (base32
-         "07gk9060xk3bzfqf8v4fqlp0rcxswiwlsy887zv87i1gfy9map8r"))))
+         "1fwlgbcdxz30dzsqw3y1b6ic1rhzfadghj7cq7yxsj14npgnwzga"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list python-2))          ; For tests; syntax incompatible with Python 3.
+     (list pkg-config python-2)) ;for tests; syntax incompatible with Python 3
     (inputs
      (list openblas suitesparse))
     (arguments
@@ -8115,8 +8115,9 @@ easily be incorporated into existing simulation codes.")
                                (assoc-ref %build-inputs "hypre-openmpi")
                                "/lib")
                 "-DENABLE_PETSC:BOOL=ON"
-                (string-append "-DPETSC_DIR="
-                               (assoc-ref %build-inputs "petsc-openmpi"))
+                (string-append "-DPETSC_INCLUDE_DIRS="
+                               (assoc-ref %build-inputs "petsc-openmpi")
+                               "/include")
                 ,flags))
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
