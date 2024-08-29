@@ -3589,8 +3589,10 @@ September 2004}")
                     "Machine characteristics: Linux-x.x.x"))
                 (substitute* (find-files "." "petscvariables")
                   ;; Do not expose build machine characteristics, set to defaults.
-                  (("MAKE_NP = [:digit:]+") "MAKE_NP = 2")
-                  (("NPMAX = [:digit:]+") "NPMAX = 2")))))
+                  (("MAKE_NP = [[:digit:]]+") "MAKE_NP = 2")
+                  (("MAKE_TEST_NP = [[:digit:]]+") "MAKE_TEST_NP = 2")
+                  (("MAKE_LOAD = .*") "MAKE_LOAD = 256.0\n")
+                  (("NPMAX = [[:digit:]]+") "NPMAX = 2")))))
           (add-after 'install 'clean-install
             ;; Try to keep installed files from leaking build directory names.
             (lambda* (#:key inputs outputs #:allow-other-keys)
