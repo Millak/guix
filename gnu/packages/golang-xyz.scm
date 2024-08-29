@@ -7373,6 +7373,33 @@ the newest Unicode and having various helper functions removed, so all that
 remains is just the @code{runewidth.RuneWidth()} function.")
     (license license:expat)))
 
+(define-public go-zgo-at-termtext
+  (package
+    (name "go-zgo-at-termtext")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/arp242/termtext")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0czhvcx6crmwfl6555l9hgl6gq21ykwr4bg2dqksc71qmv6b27hh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "zgo.at/termtext"))
+    (propagated-inputs
+     (list go-github-com-rivo-uniseg
+           go-zgo-at-runewidth))
+    (home-page "https://github.com/arp242/termtext")
+    (synopsis "Deal with monospace text as interpreted by terminals")
+    (description
+     "Package @samp{termtext} deals with monospace text as interpreted by
+terminals.")
+    (license license:expat)))
+
 ;;;
 ;;; Executables:
 ;;;
