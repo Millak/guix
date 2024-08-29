@@ -67,7 +67,7 @@
 ;;; Copyright © 2023 Dominik Delgado Steuter <dds@disroot.org>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1664,17 +1664,17 @@ These tools require a supported graphics chip, driver, and VA-API back end to
 operate properly.")
     (license license:expat)))
 
-(define-public ffmpeg
+(define-public ffmpeg-7
   (package
     (name "ffmpeg")
-    (version "6.1.1")
+    (version "7.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0s7r2qv8gh2a3w568n9xxgcz0q8j5ww1jdsci1hm9f4l1yqg9146"))))
+                "12dkv17mrsdqrm70c30azjw7qi1lfxca7xisw81x6flacddm2il6"))))
     (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (inputs
@@ -1882,6 +1882,18 @@ operate properly.")
 convert and stream audio and video.  It includes the libavcodec
 audio/video codec library.")
     (license license:gpl2+)))
+
+(define-public ffmpeg
+  (package
+    (inherit ffmpeg-7)
+    (version "6.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0s7r2qv8gh2a3w568n9xxgcz0q8j5ww1jdsci1hm9f4l1yqg9146"))))))
 
 (define-public ffmpeg-5
   (package
