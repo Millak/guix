@@ -970,51 +970,51 @@ authentication.")
            #t))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf) ;; For bootstrap
-       ("automake" ,automake) ;; For bootstrap
-       ("check" ,check)
-       ("dot" ,graphviz)
-       ("gconf" ,gconf)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool) ;; For bootstrap
-       ("pkg-config" ,pkg-config)))
+     (list autoconf ;; For bootstrap
+           automake ;; For bootstrap
+           check
+           graphviz
+           gconf
+           intltool
+           libtool ;; For bootstrap
+           pkg-config))
     (inputs
-     `(("avahi" ,avahi)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("dbus" ,dbus)
-       ("dbus-glib" ,dbus-glib)
-       ;; ("evolution-data-server" ,evolution-data-server)
-       ("farstream" ,farstream)
-       ("gnutls" ,gnutls)
-       ("gstreamer" ,gstreamer)
-       ;; ("gtkspell2" ,gtkspell2)
-       ("libgadu" ,libgadu)
-       ("libgcrypt" ,libgcrypt)
-       ("libgnt" ,libgnt)
-       ("libice" ,libice)
-       ("libidn" ,libidn)
-       ("libltdl" ,libltdl)
-       ("libsm" ,libsm)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxml2" ,libxml2)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("libxslt" ,libxslt)
-       ;; ("libzephyr" ,libzephyr)
-       ("meanwhile" ,meanwhile)
-       ("ncurses" ,ncurses)
-       ("network-manager" ,network-manager)
-       ("nspr" ,nspr)
-       ("nss" ,nss)
-       ("pango" ,pango)
-       ("perl" ,perl)
-       ("python" ,python-2)
-       ("python2-dbus" ,python2-dbus)
-       ("silc" ,silc-toolkit)
-       ("sqlite" ,sqlite)
-       ("startup-notification" ,startup-notification)
-       ("tcl" ,tcl)
-       ("tk" ,tk)))
+     (list avahi
+           cyrus-sasl
+           dbus
+           dbus-glib
+           ;; evolution-data-server
+           farstream
+           gnutls
+           gstreamer
+           ;; gtkspell2
+           libgadu
+           libgcrypt
+           libgnt
+           libice
+           libidn
+           libltdl
+           libsm
+           libx11
+           libxext
+           libxml2
+           libxscrnsaver
+           libxslt
+           ;; libzephyr
+           meanwhile
+           ncurses
+           network-manager
+           nspr
+           nss
+           pango
+           perl
+           python-2
+           python2-dbus
+           silc-toolkit
+           sqlite
+           startup-notification
+           tcl
+           tk))
     (propagated-inputs
      (list glib gtk+-2))
     (arguments
