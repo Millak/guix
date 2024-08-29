@@ -7347,6 +7347,47 @@ also provides V-style logging controlled by the @code{-v} and
 defined in @url{https://editorconfig.org/,https://editorconfig.org/}.")
     (license license:bsd-3)))
 
+(define-public go-zgo-at-jfmt
+  (package
+    (name "go-zgo-at-jfmt")
+    (version "0.0.0-20240531161922-a97493b8db3c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/arp242/jfmt")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vm38kp46m1drxx16prbjwrc575vv7819ci16p96i0mksnnlfxj3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "zgo.at/jfmt"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Remove test data which failing during tests, see
+          ;; <https://github.com/arp242/jfmt/issues/1>.
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each
+                 (lambda (file) (delete-file file))
+                 '("testdata/escape.json"
+                   "testdata/toml-test-key-escapes.json"
+                   "testdata/toml-test-string-quoted-unicode.json"))))))))
+    (propagated-inputs
+     (list go-zgo-at-termtext
+           go-zgo-at-zli
+           go-zgo-at-zstd))
+    (home-page "https://github.com/arp242/jfmt")
+    (synopsis "JSON formatter written in Go")
+    (description
+     "@samp{jfmt} is a JSON formatter which tries to produce opinionated
+output with more lines squashed into single one where possible (e.g. list,
+brackets, ordering).")
+    (license license:expat)))
+
 (define-public go-zgo-at-runewidth
   (package
     (name "go-zgo-at-runewidth")
