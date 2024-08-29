@@ -356,7 +356,7 @@ Unix Domain Sockets, SCTP for both IPv4 and IPv6.")
 (define-public lcsync
   (package
     (name "lcsync")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -365,7 +365,7 @@ Unix Domain Sockets, SCTP for both IPv4 and IPv6.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rhk80ybd2zranay76z1ysifnnm786lg9kiiijcwv76qy95in9ks"))))
+        (base32 "15vfik9saqmvys2v10ci68n00s71d9k4kpqhrwz4ilv79fys7hn7"))))
     (build-system gnu-build-system)
     (arguments
      (list
