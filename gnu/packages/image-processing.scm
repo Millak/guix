@@ -476,7 +476,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
 (define-public opencv
   (package
     (name "opencv")
-    (version "4.9.0")
+    (version "4.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -515,7 +515,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                   (for-each delete-file (find-files "." "\\.jar$"))))
               (sha256
                (base32
-                "1s3d2bzf74biz18flb33533dfx3j31305ddh4gzgvg55hpr1zp55"))))
+                "0vinljqhq3r8sffy2396q688irb6iz389sv5vlg04z9y7mvddb8x"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -698,7 +698,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
            (file-name (git-file-name "opencv_extra" version))
            (sha256
             (base32
-             "1x095sgc0fkl8zzpxlswpnmxkf80cvzab1ddcq792dys5qm2s1x4"))))
+             "16gykga4cc8q8iqx9sj25ggxrp6mqbppwwib734nhlk1b6s2q15j"))))
        ("opencv-contrib"
         ,(origin
            (method git-fetch)
@@ -707,7 +707,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
            (file-name (git-file-name "opencv_contrib" version))
            (sha256
             (base32
-             "17xrvzllbcrprxn6c0g4x25i2wa7yqa0ycv177wah3if9s30dgib"))))))
+             "07sanb0kb90rwghlp4jpgvmicr39hgrsjmsc5nifcryw3d0r0m14"))))))
     (inputs
      (list eigen
            ffmpeg-4
