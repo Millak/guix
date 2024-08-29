@@ -7400,6 +7400,31 @@ remains is just the @code{runewidth.RuneWidth()} function.")
 terminals.")
     (license license:expat)))
 
+(define-public go-zgo-at-zli
+  (package
+    (name "go-zgo-at-zli")
+    (version "0.0.0-20240922172047-d7bc84b1106f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/arp242/zli")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "110kwhydj6bzwqk7amkm9xgr3apx2bq6frlqb5yxds8cj5y25jks"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "zgo.at/zli"))
+    (home-page "https://github.com/arp242/zli")
+    (synopsis "Go library for writing command line interface programs")
+    (description
+     "@samp{zli} is a Go library for writing command line interface
+programs.  It includes flag parsing, color escape codes, various
+helpful utility functions, and makes testing fairly easy.")
+    (license license:expat)))
+
 (define-public go-zgo-at-zstd
   (package
     (name "go-zgo-at-zstd")
