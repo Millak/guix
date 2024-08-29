@@ -3624,6 +3624,42 @@ allowing you to declaratively define \"match\" rules.")
    (description "Theft is a library for property-based testing.")
    (license license:isc)))
 
+(define-public toml-test
+  (package
+    ;; Upstream is informed to provide man/info for the project, see
+    ;; <https://github.com/toml-lang/toml-test/issues/163>.
+    (name "toml-test")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/toml-lang/toml-test")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "188xcsxgn20pjnddfn3mvx7wak030xdgkhxkhjiijfap37gbv6df"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/toml-lang/toml-test/cmd/toml-test"
+      #:unpack-path "github.com/toml-lang/toml-test"))
+    (native-inputs
+     (list go-zgo-at-zli
+           go-zgo-at-jfmt
+           go-github-com-burntsushi-toml))
+    (home-page "https://github.com/toml-lang/toml-test")
+    (synopsis "Language agnostic test suite for TOML parsers")
+    (description
+     "@samp{toml-test} is a language-agnostic test suite to verify the
+correctness of @url{https://toml.io,TOML} parsers and writers.  Tests are
+divided into two groups: @emph{invalid} and @emph{valid}.  Decoders or
+encoders that reject @emph{invalid} tests pass the tests, and decoders that
+accept @emph{valid} tests and output precisely what is expected pass the
+tests.  The output format is JSON.")
+    (license license:expat)))
+
 (define-public unittest-cpp
   (package
     (name "unittest-cpp")
