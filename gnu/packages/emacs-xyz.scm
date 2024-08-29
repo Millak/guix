@@ -14376,6 +14376,30 @@ navigation commands.  @code{qml-mode} is derived from code{js-mode}, the Emacs
 builtin JavaScript mode.")
     (license license:gpl2+)))
 
+(define-public emacs-qt-pro-mode
+  (let ((commit "7a2da323de834294b413cbbb3c92f42f54913643")
+        (revision "1"))
+    (package
+      (name "emacs-qt-pro-mode")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsorphanage/qt-pro-mode")
+               (commit commit)))
+         (sha256
+          (base32 "07054hzl7gd0wfibcqvij2wx9zji330gsryn53qad9gyalvlavpa"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #t
+             #:test-command #~(list "make" "test")))
+      (home-page "https://github.com/emacsorphanage/qt-pro-mode")
+      (synopsis "Emacs major mode for Qt build-system files")
+      (description
+       "This package provides a major mode for editing Qt build-system files.")
+      (license license:gpl2+))))
+
 (define-public emacs-queue
   (package
     (name "emacs-queue")
