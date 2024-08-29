@@ -8066,25 +8066,28 @@ and comparisons are supported.")
     (inputs
      (list openblas suitesparse))
     (arguments
-     '(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
+     (list #:configure-flags
+           #~(list "-DCMAKE_C_FLAGS=-O2 -g -fcommon"
 
-                           "-DSUNDIALS_INDEX_SIZE=32"
-                           ;; Incompatible with 32-bit indices.
-                           ;;"-DBUILD_FORTRAN_MODULE_INTERFACE:BOOL=ON"
+                   "-DSUNDIALS_INDEX_SIZE=32"
+                   ;; Incompatible with 32-bit indices.
+                   ;;"-DBUILD_FORTRAN_MODULE_INTERFACE:BOOL=ON"
 
-                           "-DEXAMPLES_ENABLE_C:BOOL=ON"
-                           "-DEXAMPLES_ENABLE_CXX:BOOL=ON"
-                           ;; Requires -DBUILD_FORTRAN_MODULE_INTERFACE:BOOL=ON.
-                           ;;"-DEXAMPLES_ENABLE_F2003:BOOL=ON"
-                           "-DEXAMPLES_INSTALL:BOOL=OFF"
+                   "-DEXAMPLES_ENABLE_C:BOOL=ON"
+                   "-DEXAMPLES_ENABLE_CXX:BOOL=ON"
+                   ;; Requires -DBUILD_FORTRAN_MODULE_INTERFACE:BOOL=ON.
+                   ;;"-DEXAMPLES_ENABLE_F2003:BOOL=ON"
+                   "-DEXAMPLES_INSTALL:BOOL=OFF"
 
-                           "-DENABLE_KLU:BOOL=ON"
-                           ,(string-append "-DKLU_INCLUDE_DIR="
-                                           (assoc-ref %build-inputs "suitesparse")
-                                           "/include")
-                           ,(string-append "-DKLU_LIBRARY_DIR="
-                                           (assoc-ref %build-inputs "suitesparse")
-                                           "/lib"))))
+                   "-DENABLE_KLU:BOOL=ON"
+                   (string-append "-DKLU_INCLUDE_DIR="
+                                  (dirname
+                                   (search-input-file %build-inputs
+                                                      "include/klu.h")))
+                   (string-append "-DKLU_LIBRARY_DIR="
+                                  (dirname
+                                   (search-input-file %build-inputs
+                                                      "lib/libklu.so"))))))
     (home-page "https://computation.llnl.gov/projects/sundials")
     (synopsis "Suite of nonlinear and differential/algebraic equation solvers")
     (description "SUNDIALS is a family of software packages implemented with
@@ -8105,24 +8108,27 @@ easily be incorporated into existing simulation codes.")
            petsc-openmpi))
     (arguments
      (substitute-keyword-arguments (package-arguments sundials)
-       ((#:configure-flags flags '())
-        `(cons* "-DENABLE_MPI:BOOL=ON"
-                "-DENABLE_HYPRE:BOOL=ON"
-                (string-append "-DHYPRE_INCLUDE_DIR="
-                               (assoc-ref %build-inputs "hypre-openmpi")
-                               "/include")
-                (string-append "-DHYPRE_LIBRARY_DIR="
-                               (assoc-ref %build-inputs "hypre-openmpi")
-                               "/lib")
-                "-DENABLE_PETSC:BOOL=ON"
-                (string-append "-DPETSC_INCLUDE_DIRS="
-                               (assoc-ref %build-inputs "petsc-openmpi")
-                               "/include")
-                ,flags))
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-before 'check 'mpi-setup
-             ,%openmpi-setup)))))
+       ((#:configure-flags flags #~())
+        #~(cons* "-DENABLE_MPI:BOOL=ON"
+                 "-DENABLE_HYPRE:BOOL=ON"
+                 (string-append "-DHYPRE_INCLUDE_DIR="
+                                (dirname
+                                 (search-input-file %build-inputs
+                                                    "include/HYPRE.h")))
+                 (string-append "-DHYPRE_LIBRARY_DIR="
+                                (dirname
+                                 (search-input-file %build-inputs
+                                                    "lib/libHYPRE.so")))
+                 "-DENABLE_PETSC:BOOL=ON"
+                 (string-append "-DPETSC_INCLUDE_DIRS="
+                                (dirname
+                                 (search-input-file %build-inputs
+                                                    "include/petsc.h")))
+                 #$flags))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'mpi-setup
+              #$%openmpi-setup)))))
     (synopsis "SUNDIALS with MPI support")))
 
 (define-public sundials-5
