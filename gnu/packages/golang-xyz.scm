@@ -45,6 +45,7 @@
 ;;; Copyright © 2024 Luis Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Spencer Peters <spencerpeters@protonmail.com>
+;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7345,6 +7346,32 @@ also provides V-style logging controlled by the @code{-v} and
      "Package editorconfig allows parsing and using @code{EditorConfig} files, as
 defined in @url{https://editorconfig.org/,https://editorconfig.org/}.")
     (license license:bsd-3)))
+
+(define-public go-zgo-at-runewidth
+  (package
+    (name "go-zgo-at-runewidth")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/arp242/runewidth")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17wbzwak831z04kj4xdvh2q78k3in3kay009n0yj8nlwn1p126ph"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "zgo.at/runewidth"))
+    (home-page "https://github.com/arp242/runewidth")
+    (synopsis "Get fixed width of the character or string")
+    (description
+     "@samp{runewidth} provides functions to get fixed width of the character
+or string.  It is a fork of https://github.com/mattn/go-runewidth, updated to
+the newest Unicode and having various helper functions removed, so all that
+remains is just the @code{runewidth.RuneWidth()} function.")
+    (license license:expat)))
 
 ;;;
 ;;; Executables:
