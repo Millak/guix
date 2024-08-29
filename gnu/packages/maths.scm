@@ -10113,7 +10113,12 @@ computation is supported via MPI.")
                     "\"${XDG_STATE_HOME:-$HOME/.local/state}/scilab/"
                     #$(package-version this-package) "\""))
                   (("export SCI=")
-                   "unset LANGUAGE\nexport SCI="))))))))
+                   "unset LANGUAGE\nexport SCI="))))
+            (add-after 'rewrap-scilab-cli 'sanity-check
+              (lambda _
+                (setenv "HOME" (getcwd))
+                (invoke (string-append #$output "/bin/scilab-cli")
+                        "-e" "\"quit;\"")))))))
     (home-page "https://www.scilab.org/")
     (synopsis "Software for engineers and scientists")
     (description "This package provides the non-graphical version of the Scilab
