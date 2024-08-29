@@ -289,9 +289,20 @@ protocols.")
     (arguments
      (list
       #:parallel-tests? #f
+      ;; Use recommended optimizations from lcrq README.md
+      #:configure-flags
+      #~(list (string-append "CFLAGS=-Wall -Wextra -pedantic -O3 -flto "
+                             "-funroll-loops -ffast-math -DNDEBUG"))
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
               (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Leave some speed comparisons in the build log
+          (add-after 'check 'speedtest
+            (lambda _
+              (invoke "make" "-C" "test" "speedtest"
+                      (string-append "CC=" #$(cc-for-target))))))
       #:test-target "test"))
     (home-page "https://librecast.net/lcrq.html")
     (synopsis "Librecast RaptorQ library")
