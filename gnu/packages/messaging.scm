@@ -951,15 +951,15 @@ authentication.")
 (define-public pidgin
   (package
     (name "pidgin")
-    (version "2.14.5")
+    (version "2.14.13")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "mirror://sourceforge/pidgin/Pidgin/"
-                       version "/pidgin-" version ".tar.gz"))
+                       version "/pidgin-" version ".tar.bz2"))
        (sha256
-        (base32 "12llip3r8126gph82r638xjv2v2rg34qgggn1nbwfmc3s7halimr"))
+        (base32 "1a3by4niw5ls67mwgj20p2mr317zj4hzysi5glm9mq0pivf4j00j"))
        (patches
         (search-patches "pidgin-add-search-path.patch"))
        (modules '((guix build utils)))
