@@ -2972,6 +2972,11 @@ database.")
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
+       ;; TODO: Make this unconditional on core-updates.
+       ,@(if (%current-target-system)
+             `(#:make-flags `(,(string-append "CC=" ,(cc-for-target))
+                              ,(string-append "AR=" ,(ar-for-target))))
+             '())
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
