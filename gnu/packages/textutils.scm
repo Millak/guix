@@ -441,7 +441,18 @@ input bits thoroughly but are not suitable for cryptography.")
         (base32 "0dc9fxcdmppbs9s06jvq61zbk552laxps0xyk098gj41697ihd96"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list gettext-minimal))
+     (list gettext-minimal autoconf automake))
+    (arguments (list #:phases
+                     #~(modify-phases %standard-phases
+                         ;; AC_FUNC_MALLOC and AC_FUNC_REALLOC usually unneeded
+                         ;; see https://lists.gnu.org/archive/html/autoconf/2003-02/msg00017.html
+                         (add-after 'unpack 'fix-rpl_malloc
+                           (lambda _
+                             (substitute* "configure.ac"
+                               (("AC_FUNC_MALLOC") "")
+                               (("AC_FUNC_REALLOC") ""))
+                             ;; let bootstrap phase run.
+                             (delete-file "./configure"))))))
     (home-page "https://billposer.org/Software/a2b.html")
     (synopsis "Convert between ASCII, hexadecimal and binary representations")
     (description "The two programs are useful for generating test data, for
