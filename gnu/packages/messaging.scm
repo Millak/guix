@@ -75,6 +75,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -1005,6 +1006,7 @@ authentication.")
            network-manager
            nspr
            nss
+           nss-certs
            pango
            perl
            python-2
@@ -1027,6 +1029,10 @@ authentication.")
         "--disable-gevolution"
         "--enable-cap"
         "--enable-cyrus-sasl"
+        ;; Use nss-certs instead of bundled ones.
+        (string-append "--with-system-ssl-certs="
+                       (assoc-ref %build-inputs "nss-certs")
+                       "/etc/ssl/certs")
         (string-append "--with-ncurses-headers="
                        (assoc-ref %build-inputs "ncurses")
                        "/include")
