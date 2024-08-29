@@ -272,6 +272,7 @@ XMPP-based sessions.")
     (outputs '("out" "doc"))
     (arguments
      (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
+           #:configure-flags #~'("-Dpython2=false")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-ncurses-path
@@ -293,7 +294,7 @@ XMPP-based sessions.")
            gtk-doc/stable
            pkg-config))
     (inputs (list libxcrypt ncurses))
-    (propagated-inputs (list glib libxml2 python-2))
+    (propagated-inputs (list glib libxml2))
     (synopsis "GLib Ncurses Toolkit")
     (description "GNT is an ncurses toolkit for creating text-mode graphical
 user interfaces in a fast and easy way.  It is based on GLib and ncurses.")
