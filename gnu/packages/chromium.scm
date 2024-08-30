@@ -413,7 +413,7 @@
         (let ((chromium-dir (getcwd)))
           (set-path-environment-variable
            "PATH" '("bin")
-           (list #+patch #+python-wrapper #+xz))
+           (list #+patch #+python-wrapper #+xz #+zstd))
 
           ;; Apply patches before running the ungoogled scripts because
           ;; domain substitution may break some of the patches.
