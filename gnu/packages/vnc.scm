@@ -46,6 +46,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cups)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -79,7 +80,7 @@
 (define-public remmina
   (package
     (name "remmina")
-    (version "1.4.32")
+    (version "1.4.35")
     (source
      (origin
        (method git-fetch)
@@ -89,7 +90,7 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gfmbcgvwakhy539hh2fpws3j7ljrfkckar5fx8sifig9n7wsm49"))))
+        (base32 "0wsjhmazmv888a6xs0q6llfj6v81d7y9p18w7xc2116235q9ygfk"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; No target
@@ -135,6 +136,7 @@
            bash-minimal
            cairo
            cups
+           curl
            ffmpeg
            freerdp                      ; for rdp plugin
            libgcrypt
