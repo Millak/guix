@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2017, 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016 Raimon Grau <raimonster@gmail.com>
@@ -397,9 +397,9 @@ them in order to efficiently transfer a minimal amount of data.")
                    ;; In 0.3.1 release simple pipeline wasn't enabled for
                    ;; x86_64 by mistake, it's enabled a couple commits later.
                    ;; Remove this expression on the next release.
-                   #$(if (target-x86-64?)
-                         "-Dpipelines=ipu3,vimc,uvcvideo,simple"
-                         "")
+                   #$@(if (target-x86-64?)
+                          '("-Dpipelines=ipu3,vimc,uvcvideo,simple")
+                          '())
                    "-Dudev=enabled"
                    "-Dtest=true" "-Dv4l2=true"
                    ;; XXX: Requires bundled pybind11.
