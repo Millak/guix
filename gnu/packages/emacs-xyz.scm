@@ -5158,6 +5158,24 @@ completion backends used by @code{completion-at-point} are so called
 provided by Cape can also be used by Company.")
     (license license:gpl3+)))
 
+(define-public emacs-capf-autosuggest
+  (package
+    (name "emacs-capf-autosuggest")
+    (version "0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/capf-autosuggest-"
+                                  version ".tar"))
+              (sha256
+               (base32
+                "18cwiv227m8y1xqvsnjrzgd6f6kvvih742h8y38pphljssl109fk"))))
+    (build-system emacs-build-system)
+    (synopsis "eshell completion suggestions for Emacs")
+    (description "This package provides comint autosuggestions for Emacs
+eshell.")
+    (home-page "https://repo.or.cz/emacs-capf-autosuggest")
+    (license license:gpl3+)))
+
 (define-public emacs-direnv
   (package
     (name "emacs-direnv")
