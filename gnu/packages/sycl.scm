@@ -37,7 +37,7 @@
 (define-public adaptivecpp
   (package
     (name "adaptivecpp")
-    (version "24.02.0")
+    (version "24.06.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -46,7 +46,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gfr0mr9shgf33bj5sfy6nv2vh7wdky333ryy2n5ikvhfvjmqc7m"))))
+                "1d7ld2azk45sv7124zkrkj1nfkmq0dani5zlalyn8v5s7q6vdxjc"))))
     (build-system cmake-build-system)
     (native-inputs (list clang-15 llvm-15 python spirv-tools))
     (inputs (list boost rocm-opencl-runtime spirv-headers))
