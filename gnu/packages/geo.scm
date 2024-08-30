@@ -1700,13 +1700,13 @@ to create databases that are optimized for rendering/tile/map-services.")
 (define-public python-metpy
   (package
     (name "python-metpy")
-    (version "1.6.2")
+    (version "1.6.3")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "MetPy" version))
+              (uri (pypi-uri "metpy" version))
               (sha256
                (base32
-                "1fvnfhk4x2a1cn3f9x4snlars3bjzrnwk9lgldzmh63q1nn5n1pb"))))
+                "0rh7lslwf79sgbf0933pz6mxchbrb0434pbdzqgzs1kjlsli9pr3"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Too many of the tests in the files below require online data.
