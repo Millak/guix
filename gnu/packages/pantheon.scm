@@ -198,6 +198,28 @@ also be used on others.")
     (home-page "https://elementary.io/open-source")
     (license license:lgpl2.1+)))
 
+(define-public pantheon-stylesheet
+  (package
+    (name "pantheon-stylesheet")
+    (version "8.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elementary/stylesheet")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h8k75m9jrqxwq0py8hrqrsc83myrwpmnrwx05aljdyr6sys06k6"))))
+    (build-system meson-build-system)
+    (native-inputs (list gettext-minimal)) ;for msgfmt
+    (inputs (list sassc))
+    (synopsis "GTK stylesheet for the Pantheon desktop")
+    (description "pantheon-stylesheet is the GTK Stylesheet for the Pantheon
+desktop environment (originally from elementary OS).")
+    (home-page "https://elementary.io/open-source")
+    (license license:gpl3+)))
+
 (define-public pantheon-terminal
   (package
     (name "pantheon-terminal")
