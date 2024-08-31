@@ -5239,6 +5239,13 @@ in a digital read-out.")
              (setenv "SHELL_PATH" (which "bash"))
              (chdir "tools/perf")
 
+             ;; In Linux 6.10.6, 'Makefile.config' overrides PKG_CONFIG_PATH
+             ;; when looking for libtraceevent and thus fails to find it.
+             ;; Remove that.
+             (substitute* "Makefile.config"
+               (("PKG_CONFIG_PATH=[[:graph:]]+")
+                ""))
+
              ;; This file hard-codes file system layouts for specific distros
              ;; but not for ours; address that.  With this change, one can run
              ;; "perf report --symfs=$HOME/.guix-profile" (without
