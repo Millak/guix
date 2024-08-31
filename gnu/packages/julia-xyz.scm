@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4916,6 +4917,27 @@ everything from run time algorithm choice to code generation at compile time.")
     (description "This package has the purpose to print data in matrices in a
 human-readable format.")
     (license license:expat)))
+
+(define-public julia-progressbars
+  (package
+    (name "julia-progressbars")
+    (version "1.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cloud-oak/ProgressBars.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y4i2kdir0wxr3amafidr3585w8lj4s0cqfcbl690a8jvw6rs3jw"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/cloud-oak/ProgressBars.jl")
+    (synopsis "Progress bar for Julia")
+    (description
+     "This package provides a fast, extensible progress bar for Julia.
+This can help users track the progress of long-running tasks.")
+    (license license:mpl2.0)))
 
 (define-public julia-pycall
   (package
