@@ -37,6 +37,9 @@
 (define (default-minetest)
   (module-ref (resolve-interface '(gnu packages minetest)) 'minetest))
 
+(define (default-minetest-game)
+  (module-ref (resolve-interface '(gnu packages minetest)) 'minetest-game))
+
 (define (default-xvfb-run)
   (module-ref (resolve-interface '(gnu packages xorg)) 'xvfb-run))
 
@@ -57,6 +60,7 @@ standard packages used as implicit inputs of the Minetest build system."
   `(("xvfb-run" ,(default-xvfb-run))
     ("optipng" ,(default-optipng))
     ("minetest" ,(default-minetest))
+    ("minetest-game" ,(default-minetest-game))
     ,@(filter (lambda (input)
                 (member (car input)
                         '("libc" "tar" "gzip" "bzip2" "xz" "locales")))

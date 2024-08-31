@@ -83,6 +83,7 @@
 ;;; Copyright © 2024 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2024 Sébastien Lerique <sl@eauchat.org>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3960,29 +3961,6 @@ management, character animation, particle and other special effects, support
 for common mesh file formats, and collision detection.")
     (home-page "https://irrlicht.sourceforge.io/")
     (license license:zlib)))
-
-(define-public irrlicht-for-minetest
-  (package
-    (inherit irrlicht)
-    (name "irrlicht-for-minetest")
-    (version "1.9.0mt13")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/minetest/irrlicht")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "11pxg0yh50ym1hvh8va5jbbcjz5dsshj3xxvm3qhkgg96vpism06"))))
-    (build-system cmake-build-system)
-    (arguments
-     ;; No check target.
-     (list #:tests? #f))
-    (inputs
-     (modify-inputs (package-inputs irrlicht)
-       (prepend libxi)))))
 
 (define-public mars
   ;; The latest release on SourceForge relies on an unreleased version of SFML

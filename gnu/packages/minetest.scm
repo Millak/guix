@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Trevor Hass <thass@okstate.edu>
 ;;; Copyright © 2020, 2021, 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; This file is part of GNU Guix.
 ;;;
 ;;; GNU Guix is free software; you can redistribute it and/or modify it
@@ -29,7 +30,6 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages fontutils)
-  #:use-module (gnu packages games)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages image)
@@ -53,105 +53,107 @@
 (define-public minetest
   (package
     (name "minetest")
-    (version "5.8.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/minetest/minetest")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1sww17h8z77w38jk19nsqxn8xcj27msq0glbil7pyj4i0ffprjrr"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Delete bundled libraries.
-                  (delete-file-recursively "lib")
-                  #t))))
+    (version "5.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minetest/minetest")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h4yn4k0wpjr1h24aiqcnc9xsxgxj4bq757pla2pa9zmh2xf45kk"))
+       (modules '((guix build utils)))
+       ;; Delete bundled libraries, keep lib/sha256 because there's no good
+       ;; upstream, see:
+       ;; https://github.com/openssl/openssl/blob/master/crypto/sha/sha512.c
+       ;; "SHA512 low level APIs are deprecated for public use,
+       ;; but still ok for internal use." Also asked MT devs on IRC for this.
+       (snippet
+        '(begin
+           (with-directory-excursion "lib"
+             (for-each (lambda (file)
+                         (if (not (string=? file "sha256"))
+                             (delete-file-recursively file)))
+                       (find-files (string-append "lib") #:directories? #t)))
+           #t))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list "-DRUN_IN_PLACE=0"
-              "-DENABLE_FREETYPE=1"
-              "-DENABLE_GETTEXT=1"
-              "-DENABLE_SYSTEM_JSONCPP=TRUE"
-              (string-append "-DIRRLICHTMT_INCLUDE_DIR="
-                             (search-input-directory %build-inputs
-                                                     "include/irrlichtmt"))
+      #~(list "-DENABLE_LTO=ON"
+              "-DENABLE_UPDATE_CHECKER=FALSE"
               (string-append "-DCURL_INCLUDE_DIR="
-                             (search-input-directory %build-inputs
-                                                     "include/curl"))
+                             (search-input-directory
+                              %build-inputs "include/curl"))
               (string-append "-DZSTD_INCLUDE_DIR="
-                             (dirname
-                              (search-input-file %build-inputs
-                                                 "include/zstd.h")))
+                             (dirname (search-input-file
+                                       %build-inputs
+                                       "include/zstd.h")))
               (string-append "-DZSTD_LIBRARY="
-                             (search-input-file %build-inputs
-                                                "lib/libzstd.so")))
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'patch-sources
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "src/filesys.cpp"
-                 ;; Use store-path for "rm" instead of non-existing FHS path.
-                 (("\"/bin/rm\"")
-                  (format #f "~s" (search-input-file inputs "bin/rm"))))
-               (substitute* "src/CMakeLists.txt"
-                 ;; Let minetest binary remain in build directory.
-                 (("set\\(EXECUTABLE_OUTPUT_PATH .*\\)") ""))
-               (substitute* "src/unittest/test_servermodmanager.cpp"
-                 ;; do no override MINETEST_SUBGAME_PATH
-                 (("(un)?setenv\\(\"MINETEST_SUBGAME_PATH\".*\\);")
-                  "(void)0;"))
-               (setenv "MINETEST_SUBGAME_PATH" ; for check
-                       (string-append (getcwd) "/games"))))
-           (delete 'check)
-           (add-after 'install 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               ;; Thanks to our substitutions, the tests should also run
-               ;; when invoked on the target outside of `guix build'.
-               (when tests?
-                 (setenv "HOME" "/tmp")
-                 (invoke "src/minetest" "--run-unittests")))))))
+                             (search-input-file
+                              %build-inputs "lib/libzstd.so")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sources
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/filesys.cpp"
+                ;; Use store-path for "rm" instead of non-existing FHS path.
+                (("\"/bin/rm\"")
+                 (format #f "~s"
+                         (search-input-file inputs "bin/rm"))))
+              (substitute* "src/CMakeLists.txt"
+                ;; Let minetest binary remain in build directory.
+                (("set\\(EXECUTABLE_OUTPUT_PATH .*\\)")
+                 ""))
+              (substitute* "src/unittest/test_servermodmanager.cpp"
+                ;; do no override MINETEST_GAME_PATH
+                (("(un)?setenv\\(\"MINETEST_GAME_PATH\".*\\);")
+                 "(void)0;"))
+              (setenv "MINETEST_GAME_PATH" ;for check
+                      (string-append (getcwd) "/games"))))
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              ;; Thanks to our substitutions, the tests should also run
+              ;; when invoked on the target outside of `guix build'.
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "src/minetest" "--run-unittests")))))))
     (native-search-paths
      (list (search-path-specification
-            (variable "MINETEST_SUBGAME_PATH")
+            (variable "MINETEST_GAME_PATH")
             (files '("share/minetest/games")))
            (search-path-specification
             (variable "MINETEST_MOD_PATH")
             (files '("share/minetest/mods")))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list coreutils
-           curl
-           freetype
-           gettext-minimal
-           gmp
-           irrlicht-for-minetest
-           jsoncpp
-           libjpeg-turbo
-           libpng
-           libogg
-           libvorbis
-           libxxf86vm
-           luajit
-           mesa
-           ncurses
-           openal
-           sqlite
-           `(,zstd "lib")))
-    (propagated-inputs
-     (list minetest-data))
-    (synopsis "Infinite-world block sandbox game")
+    (native-inputs (list pkg-config))
+    (inputs (list coreutils
+                  curl
+                  freetype
+                  gettext-minimal
+                  gmp
+                  jsoncpp
+                  libjpeg-turbo
+                  libpng
+                  libogg
+                  libvorbis
+                  libxxf86vm
+                  libxi
+                  luajit
+                  mesa
+                  ncurses
+                  openal
+                  sqlite
+                  `(,zstd "lib")))
+    (synopsis "Voxel game engine")
     (description
-     "Minetest is a sandbox construction game.  Players can create and destroy
-various types of blocks in a three-dimensional open world.  This allows
-forming structures in every possible creation, on multiplayer servers or as a
-single player.  Mods and texture packs allow players to personalize the game
-in different ways.")
+     "Minetest is a voxel game engine that supports modding and game creation
+using its Lua modding API.  It allows playing a wide range of voxel-based
+games, installing mods and texture packs.  This package only provides the base
+platform, users need to install games themselves (for example,
+@code{minetest-game}), either through Guix, the built-in interface or other
+sources.")
     (home-page "https://www.minetest.net/")
     (license license:lgpl2.1+)))
 
@@ -183,35 +185,40 @@ in different ways.")
                "openal")))
     (synopsis "Infinite-world block sandbox game (server)")
     (description
-     "Minetest is a sandbox construction game.  Players can create and destroy
-various types of blocks in a three-dimensional open world.  This allows
-forming structures in every possible creation, on multiplayer servers or as a
-single player.  Mods and texture packs allow players to personalize the game
-in different ways.  This package provides @command{minetestserver} to run a
-Minetest server.")))
+     "Server for Minetest game engine and gaming platform. Allows hosting
+Minetest games with multiplayer support.  This package provides
+@command{minetestserver} to run a Minetest server.")))
 
-(define minetest-data
-  (package
-    (name "minetest-data")
-    (version (package-version minetest))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/minetest/minetest_game")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1pq4rm15lzwcqv6npgyz6v89hi3zj8zybw25n9i0d27qj786xc4z"))))
-    (build-system copy-build-system)
-    (arguments
-     (list #:install-plan
-           #~'(("." "/share/minetest/games/minetest_game"))))
-    (synopsis "Main game data for the Minetest game engine")
-    (description
-     "Game data for the Minetest infinite-world block sandbox game.")
-    (home-page "https://www.minetest.net/")
-    (license license:lgpl2.1+)))
+(define-public minetest-game
+  (let ((commit "88ecab34d98550c8eb77f49ac2866b480a6e707a")
+        (revision "0"))
+    (package
+      (name "minetest-game")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/minetest/minetest_game")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0pvr3m7kxrriabw20sy6rhx0givh5ic85dk5g88cbbsy83admsp0"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan #~'(("." "/share/minetest/games/minetest_game"))))
+      (synopsis "Ex-official game for Minetest game engine")
+      (description
+       "A game for the Minetest voxel game platform. It provides a very basic
+Minecraft-like base for some mods. It is currently in maintenance mode
+and gets no new features.")
+      (home-page "https://www.minetest.net/")
+      (license license:lgpl2.1+))))
+
+;; This package is deprecated. "Minetest Game" is no longer the official game.
+(define-public minetest-data
+  (deprecated-package "minetest-data" minetest-game))
 
 (define-public (minetest-topic topic-id)
   "Return an URL (as a string) pointing to the forum topic with
