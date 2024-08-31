@@ -1267,7 +1267,7 @@ CJK fonts.")
 (define-public font-google-noto-serif-cjk
   (package
     (name "font-google-noto-serif-cjk")
-    (version "2.002")
+    (version "2.003")
     (source
      (origin
        (method url-fetch)
@@ -1276,7 +1276,7 @@ CJK fonts.")
              version "/02_NotoSerifCJK-OTF-VF.zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32 "007jk7rmfapq5zq4ji9d1l5gpp34p98l9ylhiw33q42d66v2g717"))))
+        (base32 "17jjsacnv5lmnidhha9xs1kz6gspbijda01c5y50vk2n86swz63q"))))
     (build-system font-build-system)
     (arguments
      (list #:phases
