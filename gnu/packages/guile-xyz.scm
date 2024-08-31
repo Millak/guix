@@ -5821,7 +5821,7 @@ a Guile implementation of CBOR.")
 (define-public guile-qr-code
   (package
     (name "guile-qr-code")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -5830,7 +5830,7 @@ a Guile implementation of CBOR.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pbsnkz8pw1x8n9mjq8rm37wmalzbcz98gk8mcfycyd896qdmf4w"))))
+        (base32 "0rs23xk6wpf618ln9n0aj3k6vhg4s80qpyp6z3j5gdrpfsgp7nf7"))))
     (build-system gnu-build-system)
     (arguments
      (list
