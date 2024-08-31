@@ -32,6 +32,84 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "2fae63df2138b74d30e120364f0f272871595862")
+        (title
+         (en "Core packages updated")
+         (fr "Logiciels fondamentaux mis à jour"))
+        (body
+         (en "Core packages have been updated, in particular those that
+are used to build every other package in the distribution.  Noteworthy
+upgrades include:
+
+@itemize
+@item @code{glibc} 2.39 (was 2.35);
+@item @code{gcc} 11.4.0 as the default compiler (was 11.3.0);
+@item @code{binutils} 2.41 (was 2.38);
+@item @code{make} 4.4.1 (was 4.3);
+@item TeX@tie{}Live 2024.2 (was 20230313; note that due to the new
+versioning scheme, @command{guix upgrade} will consider the new packages
+as ``older'' than the previous ones so you may need to use
+@command{guix install} to upgrade them).
+@end itemize
+
+Additional improvements were made to build systems and related packages and
+tools:
+
+@itemize
+@item
+the @code{glibc} package now includes the @code{C.UTF-8} locale,
+suitable for use when a UTF-8 locale is necessary regardless of
+any language or regional convention;
+@item
+origins that include patches are now repacked with zstd instead of xz,
+which uses less CPU power and memory, both when compressing and when
+decompressing;
+@item
+performance issues with the modular TeX@tie{}Live package set have
+been fixed.
+@end itemize
+
+If you encounter any problem, please check
+@url{https://issues.guix.gnu.org} for existing reports and resolutions;
+email @email{bug-guix@@gnu.org} to report new bugs.")
+         (fr "Les logiciels fondamentaux on été mis à jour, en particulier
+ceux qui servent à construire tous les autres logiciels de la distribution.
+Les mises à jour notables sont :
+
+@itemize
+@item @code{glibc} 2.39 (au lieu de 2.35) ;
+@item @code{gcc} 11.4.0 comme compilateur par défaut (au lieu de 11.3.0) ;
+@item @code{binutils} 2.41 (au lieu de 2.38) ;
+@item @code{make} 4.4.1 (au lieu de 4.3) ;
+@item TeX@tie{}Live 2024.2 (au lieu de 20230313 ; compte tenu du changement de
+numérotation des versions, @command{guix upgrade} va croire que les nouveaux
+paquets sont « plus vieux » que les précédents et il faudra donc utiliser
+@command{guix install} pour les mettre à jour).
+@end itemize
+
+Les systèmes de construction ainsi que les paquets et outils connexes ont été
+améliorés :
+
+@itemize
+@item
+le paquet @code{glibc} inclut dorénavant la locale @code{C.UTF-8} qui convient
+chaque fois qu'on a besoin d'une locale UTF-8 indépendemment d'un langage ou
+de conventions régionales ;
+@item
+les origines qui incluent des @i{patches} sont maintenant recompressées avec
+zstd au lieu de xz, ce qui demande moins de temps de calcul et de mémoire, à
+la fois en compression et en décompression ;
+@item
+des problèmes de performance avec les paquets TeX@tie{}Live modulaires ont été
+résolus.
+@end itemize
+
+En cas de difficultés, merci de jeter un œil à
+@url{https://issues.guix.gnu.org} pour voir la liste des problèmes qui ont été
+remontés et les éventuelles solutions ; envoyer un courrier à
+@email{bug-guix@@gnu.org} pour faire remonter de nouveaux bogues.")))
+
  (entry (commit "fc35b9fa6d6ed3583d4f3fc9214f657022d49678")
         (title
           (en "Linux-libre 6.9 removed due to end of upstream support")
