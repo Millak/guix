@@ -256,6 +256,21 @@ integrate Windows applications into your desktop.")
         )
        ((#:phases phases)
         #~(modify-phases #$phases
+            (add-after 'install 'copy-wine32-binaries
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let ((out (assoc-ref %outputs "out")))
+                  ;; Copy the 32-bit binaries needed for WoW64.
+                  (copy-file (search-input-file inputs "/bin/wine")
+                             (string-append out "/bin/wine"))
+                  ;; Copy the real 32-bit wine-preloader instead of the wrapped
+                  ;; version.
+                  (copy-file (search-input-file inputs "/bin/.wine-preloader-real")
+                             (string-append out "/bin/wine-preloader")))))
+            (add-after 'install 'copy-wine32-libraries
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((out (assoc-ref %outputs "out")))
+                  (copy-recursively (search-input-directory inputs "/lib/wine32")
+                                    (string-append out "/lib/wine32")))))
             ;; Explicitly set both the 64-bit and 32-bit versions of vulkan-loader
             ;; when installing to x86_64-linux so both are available.
             ;; TODO: Add more JSON files as they become available in Mesa.
@@ -281,27 +296,12 @@ integrate Windows applications into your desktop.")
                             `("VK_ICD_FILENAMES" ":" = ,icd-files)))))))
                  (_
                   `()))
-            (add-after 'install 'copy-wine32-binaries
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let ((out (assoc-ref %outputs "out")))
-                  ;; Copy the 32-bit binaries needed for WoW64.
-                  (copy-file (search-input-file inputs "/bin/wine")
-                             (string-append out "/bin/wine"))
-                  ;; Copy the real 32-bit wine-preloader instead of the wrapped
-                  ;; version.
-                  (copy-file (search-input-file inputs "/bin/.wine-preloader-real")
-                             (string-append out "/bin/wine-preloader")))))
-            (add-after 'install 'copy-wine32-libraries
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let* ((out (assoc-ref %outputs "out")))
-                  (copy-recursively (search-input-directory inputs "/lib/wine32")
-                                    (string-append out "/lib/wine32")))))
             (add-after 'compress-documentation 'copy-wine32-manpage
               (lambda* (#:key inputs outputs #:allow-other-keys)
                 (let* ((out (assoc-ref %outputs "out")))
                   ;; Copy the missing man file for the wine binary from wine.
-                  (copy-file (search-input-file inputs "/share/man/man1/wine.1.gz")
-                             (string-append out "/share/man/man1/wine.1.gz")))))))
+                  (copy-file (search-input-file inputs "/share/man/man1/wine.1.zst")
+                             (string-append out "/share/man/man1/wine.1.zst")))))))
        ((#:configure-flags configure-flags '())
         #~(cons "--enable-win64" #$configure-flags))))
     (synopsis "Implementation of the Windows API (WoW64 version)")
