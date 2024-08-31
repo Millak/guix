@@ -2294,7 +2294,22 @@ versa.")
                (base32
                 "1nzxpn71mrpp85yxrxlraj52q2skvf9ja887ls11d57h6smg1vmz"))))
     (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'wrap-perlcritic
+                     (lambda _
+                       (wrap-program (string-append #$output "/bin/perlcritic")
+                         `("PERL5LIB" ":" prefix
+                           (,(getenv "PERL5LIB") ,(string-append #$output
+                                                   "/lib/perl5/site_perl"))))))
+                   (add-after 'wrap-perlcritic 'check-perlcritic
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke (string-append #$output "/bin/perlcritic")
+                                 "--version")))))))
     (native-inputs (list perl-module-build perl-test-deep))
+    (inputs (list bash-minimal))
     (propagated-inputs (list perltidy
                              perl-exception-class
                              perl-io-string
