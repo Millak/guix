@@ -34,7 +34,7 @@
 ;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
@@ -1239,7 +1239,7 @@ and make @code{cpplint} usable in wider contexts.")
 (define-public reproc
   (package
     (name "reproc")
-    (version "14.2.4")
+    (version "14.2.5")
     (source
       (origin
         (method git-fetch)
@@ -1248,7 +1248,7 @@ and make @code{cpplint} usable in wider contexts.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "09xnf8hmld1fk8j33zwlz1qcxnjdx1ncbg62csic9va4m1wc2v1d"))))
+         (base32 "07h11rzhvplgmd420v650h8abyvwcbws4w1xlq8x18nxbp4nnqn1"))))
    (build-system cmake-build-system)
    (arguments
     (list #:tests? #f     ; No tests.
