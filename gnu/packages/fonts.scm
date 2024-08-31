@@ -2149,7 +2149,7 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "1.0.5")
+    (version "1.0.20")
     (source
      (origin
        (method url-fetch)
@@ -2157,7 +2157,7 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
                            "/releases/download/v" version
                            "/Sarasa-TTC-" version ".7z"))
        (sha256
-        (base32 "0sfmqrjfzjy2zxd26kjrdbp59ahxj7p2qr1z5qy512j2cgl1gyiq"))))
+        (base32 "1p84qqjijm618pg7mbzndyl2vjpa6wg8d5rhsi5clppmxjh70ml0"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
