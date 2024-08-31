@@ -664,10 +664,8 @@ information is missing, return the empty list (for channels) and possibly
            (delete-file-recursively "/tmp")
            (delete-file-recursively "/var/run")
 
-           (mkdir "/tmp")
-           (chmod "/tmp" #o1777)
-           (mkdir "/var/run")
-           (chmod "/var/run" #o755)
+           (mkdir "/tmp" #o1777)
+           (mkdir "/var/run" #o755)
            (delete-file-recursively "/run/udev/watch.old"))))))
 
 (define cleanup-service-type
