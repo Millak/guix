@@ -3489,7 +3489,7 @@ in Golang.")
   (package
     (inherit go-github-com-pion-dtls)
     (name "go-github-com-pion-dtls-v2")
-    (version "2.2.11")
+    (version "2.2.12")
     (source
      (origin
        (inherit (package-source go-github-com-pion-dtls))
@@ -3498,7 +3498,7 @@ in Golang.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10nn9349f7snqkzncda5m013fgnzicrcxi6pb6ghc0vb6rhqkf30"))))
+        (base32 "0fihyk4p7mqilj4ymdrgns6fg3c2pfsi12v145im5vy1gxy6lc42"))))
     (arguments
      (list
       #:import-path "github.com/pion/dtls/v2"))
@@ -3507,7 +3507,6 @@ in Golang.")
     (propagated-inputs
      (list go-github-com-pion-logging
            go-github-com-pion-transport-v2
-           go-github-com-pion-transport-v3
            go-golang-org-x-crypto
            go-golang-org-x-net))))
 
