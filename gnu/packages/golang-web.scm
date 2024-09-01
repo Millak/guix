@@ -4448,6 +4448,48 @@ on @@url{https://github.com/quic-go/quic-go,quic-go}.  It currently implements
 of the specification.")
     (license license:expat)))
 
+(define-public go-github-com-rs-cors
+  (package
+    (name "go-github-com-rs-cors")
+    (version "1.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rs/cors")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qbzxk1aabn8k2smrkpz3h59mwr6s2zvg4faj6kjsp78hyi172xn"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodule(s) with their own go.mod files and packed as
+            ;; separated packages:
+            ;;
+            ;; - github.com/rs/cors/wrapper/gin
+            (for-each delete-file-recursively
+                      (list "wrapper/gin"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rs/cors"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Examples requires additional dependencies and comes with their
+          ;; own go.mod, consider to pack it as separate package if required.
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))
+    (home-page "https://github.com/rs/cors")
+    (synopsis "Golang @code{net/http} configurable handler for CORS requests")
+    (description
+     "Package cors is @code{net/http} handler to handle @acronym{Cross-origin
+resource sharing,CORS} related requests as defined by
+@url{http://www.w3.org/TR/cors/,http://www.w3.org/TR/cors/}.")
+    (license license:expat)))
+
 (define-public go-github-com-sherclockholmes-webpush-go
   (package
     (name "go-github-com-sherclockholmes-webpush-go")
