@@ -11,21 +11,22 @@
 # Julien Lepiller <fedora-account@lepiller.eu>, 2022.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2023, 2024.
 # Alejandro Alcaide <alex@blueselene.com>, 2023.
+# Everardo Tamez Galván <tg0xff@proton.me>, 2024.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-02-26 22:56+0000\n"
-"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
+"PO-Revision-Date: 2024-08-27 16:38+0000\n"
+"Last-Translator: Everardo Tamez Galván <tg0xff@proton.me>\n"
 "Language-Team: Spanish <https://translate.fedoraproject.org/projects/guix/guix/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.4\n"
+"X-Generator: Weblate 5.7\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -115,10 +116,9 @@ msgid "This is a simple service."
 msgstr "Este es un servicio simple."
 
 #: gnu/services.scm:342
-#, fuzzy, scheme-format
-#| msgid "modify-services: service '~a' not found in service list"
+#, scheme-format
 msgid "modify-services: service '~a' was deleted here: ~a"
-msgstr "modify-services: servicio '~a' no encontrado en la lista de servicios"
+msgstr "modify-services: servicio '~a' se eliminó aquí: ~a"
 
 #: gnu/services.scm:375
 #, scheme-format
@@ -275,10 +275,9 @@ msgid "service of type '~a' not found"
 msgstr "servicio de tipo '~a' no encontrado"
 
 #: gnu/system.scm:216
-#, fuzzy, scheme-format
-#| msgid "The 'system' field is deprecated, please use 'systems' instead.~%"
+#, scheme-format
 msgid "the 'hosts-file' field is deprecated, please use 'hosts-service-type' instead~%"
-msgstr "El campo 'system' es obsoleto, use en su lugar 'systems'.~%"
+msgstr "el campo 'hosts-file' está obsoleto, por favor use 'hosts-service-type' en su lugar~%"
 
 #: gnu/system.scm:396
 #, scheme-format
@@ -387,10 +386,8 @@ msgstr ""
 
 # FUZZY
 #: gnu/services/base.scm:767
-#, fuzzy
-#| msgid "Populate the @file{/etc} directory."
 msgid "Populate the @file{/etc/hosts} file."
-msgstr "Genera el contenido del directorio @file{/etc}."
+msgstr "Genera el contenido del archivo @file{/etc/hosts}."
 
 #: gnu/services/base.scm:784
 msgid "Initialize the machine's host name."
@@ -524,10 +521,9 @@ msgstr ""
 
 # FUZZY
 #: gnu/services/base.scm:2715
-#, fuzzy, scheme-format
-#| msgid "signature is not a valid s-expression: ~s~%"
+#, scheme-format
 msgid "Value (~S) is not a valid mac address.~%"
-msgstr "la firma no es una expresión-s válida: ~s~%"
+msgstr "El valor (~S) no es una dirección mac válida.~%"
 
 #: gnu/services/base.scm:2727
 #, scheme-format
@@ -540,22 +536,19 @@ msgid "network links are currently ignored on GNU/Hurd~%"
 msgstr ""
 
 #: gnu/services/base.scm:2838
-#, fuzzy, scheme-format
-#| msgid "importing file or directory '~a'...~%"
+#, scheme-format
 msgid "ignoring network route for '~a'~%"
-msgstr "importando el archivo o directorio '~a'...~%"
+msgstr "ignorando ruta de red para '~a'~%"
 
 #: gnu/services/base.scm:2952
-#, fuzzy, scheme-format
-#| msgid "file system with label '~a' not found~%"
+#, scheme-format
 msgid "Interface with name '~a' not found~%"
-msgstr "sistema de archivos con etiqueta '~a' no encontrado~%"
+msgstr "interfaz con nombre '~a' no encontrada~%"
 
 #: gnu/services/base.scm:2959
-#, fuzzy, scheme-format
-#| msgid "file system with label '~a' not found~%"
+#, scheme-format
 msgid "Interface with mac-address '~a' not found~%"
-msgstr "sistema de archivos con etiqueta '~a' no encontrado~%"
+msgstr "Interfaz con dirección mac '~a' no encontrada~%"
 
 #: gnu/services/base.scm:3105
 msgid ""
@@ -591,10 +584,9 @@ msgid "invalid value ~s for field '~a'"
 msgstr "valor no válido ~s para el campo '~a'"
 
 #: gnu/services/configuration.scm:246
-#, fuzzy, scheme-format
-#| msgid "'--recursive' is deprecated, use '--serializer=nar' instead~%"
+#, scheme-format
 msgid "specifying serializers after documentation is deprecated, use (serializer ~a) instead~%"
-msgstr "'--recursive' está obsoleto, use en su lugar '--serializer=nar'~%"
+msgstr "especificar serializadores después de la documentación está obsoleto, use (serializador ~a) en su lugar~%"
 
 #: gnu/services/configuration.scm:496
 #, scheme-format
@@ -695,10 +687,9 @@ msgid ""
 msgstr ""
 
 #: gnu/services/networking.scm:1176
-#, fuzzy, scheme-format
-#| msgid "The 'system' field is deprecated, please use 'systems' instead.~%"
+#, scheme-format
 msgid "the 'iwd?' field is deprecated, please use 'shepherd-requirement' field instead~%"
-msgstr "El campo 'system' es obsoleto, use en su lugar 'systems'.~%"
+msgstr "el campo 'iwd?' está obsoleto, por favor use el campo 'shepherd-requirement' en su lugar~%"
 
 #: gnu/services/networking.scm:1324
 msgid ""
@@ -708,12 +699,12 @@ msgid ""
 msgstr ""
 
 #: gnu/services/networking.scm:1653
-#, fuzzy
-#| msgid "Connman network connection manager"
 msgid ""
 "Run @url{https://01.org/connman,Connman},\n"
 "a network connection manager."
-msgstr "Gestor de conexiones de red Connman"
+msgstr ""
+"Ejecuta @url{https://01.org/connman,Connman},\n"
+"un administrador de conexiones de redes."
 
 #: gnu/services/networking.scm:1675
 msgid ""
