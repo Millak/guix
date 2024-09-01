@@ -38,9 +38,9 @@
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
-  #:use-module (gnu system pam)
-  #:use-module (gnu system setuid)
   #:use-module (gnu system keyboard)
+  #:use-module (gnu system pam)
+  #:use-module (gnu system privilege)
   #:use-module (gnu services base)
   #:use-module (gnu services dbus)
   #:use-module (gnu packages base)
@@ -847,11 +847,13 @@ reboot_cmd " shepherd "/sbin/reboot\n"
                                 allow-empty-password?))
         '())))
 
-(define (screen-locker-setuid-programs config)
+(define (screen-locker-privileged-programs config)
   (match-record config <screen-locker-configuration>
     (name program using-setuid?)
     (if using-setuid?
-        (list (file-like->setuid-program program))
+        (list (privileged-program
+               (program program)
+               (setuid? #t)))
         '())))
 
 (define screen-locker-service-type
@@ -859,8 +861,8 @@ reboot_cmd " shepherd "/sbin/reboot\n"
                 (extensions
                  (list (service-extension pam-root-service-type
                                           screen-locker-pam-services)
-                       (service-extension setuid-program-service-type
-                                          screen-locker-setuid-programs)))
+                       (service-extension privileged-program-service-type
+                                          screen-locker-privileged-programs)))
                 (description
                  "Allow the given program to be used as a screen locker for
 the graphical server by making it setuid-root, so it can authenticate users,
