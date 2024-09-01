@@ -31274,6 +31274,30 @@ transparently adjusts the corresponding settings in Emacs, making it more
 convenient to edit foreign files.")
     (license license:gpl2+)))
 
+(define-public emacs-outline-indent
+  (package
+    (name "emacs-outline-indent")
+    (version "1.0.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/jamescherti/outline-indent.el.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1n6k3cjacb9pqhykbxl75jli6770cb0cfc2gmjx8xkhj4yrhb5nn"))))
+    (build-system emacs-build-system)
+    (synopsis "Outline and code folding for indentation-based texts in Emacs")
+    (description "This package provides a minor mode that enables code folding
+based on indentation levels for various indentation-based text files, such as
+YAML, Python, and any other indented text files.  In addition to code folding,
+outline-indent allows moving indented subtrees up and down, promoting and
+demoting sections to adjust indentation levels, customizing the ellipsis, and
+inserting a new line with the same indentation level as the current line.")
+    (home-page "https://github.com/jamescherti/outline-indent.el")
+    (license license:gpl3+)))
+
 (define-public emacs-repo
   (package
     (name "emacs-repo")
