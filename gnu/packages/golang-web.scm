@@ -2944,6 +2944,35 @@ such as TCP or Unix domain sockets, and provides stream-oriented multiplexing.
 It is inspired by SPDY but is not interoperable with it.")
     (license (list license:mpl2.0 license:bsd-3))))
 
+(define-public go-github-com-libp2p-zeroconf-v2
+  (package
+    (name "go-github-com-libp2p-zeroconf-v2")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/zeroconf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xrqdi7s8296963zh7gz450ivbniar7723xlr8v9nh90cyy1ah3r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; it requires netwok setup
+      #:import-path "github.com/libp2p/zeroconf/v2"))
+    (propagated-inputs
+     (list go-github-com-miekg-dns go-golang-org-x-net))
+    (home-page "https://github.com/libp2p/zeroconf")
+    (synopsis "mDNS/DNS-SD Service Discovery in pure Golang")
+    (description
+     "This package implements a service discovery functionality specified in
+@url{https://tools.ietf.org/html/rfc6762, RFC 6762} (mDNS) and
+@url{https://tools.ietf.org/html/rfc6763, RFC 6763} (DNS-SD) standards which
+intends to be compatible with Avahi.")
+    (license license:expat)))
+
 (define-public go-github-com-mailru-easyjson
   (package
     (name "go-github-com-mailru-easyjson")
