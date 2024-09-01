@@ -4104,6 +4104,69 @@ it like any library.  The quickest way to get started is to look at the
            go-github-com-pion-transport-v3
            go-golang-org-x-sys))))
 
+(define-public go-github-com-pion-webrtc-v3
+  (package
+    (name "go-github-com-pion-webrtc-v3")
+    (version "3.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/webrtc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f421a2s00mj5l9bj96xlignwfdfkp6kwk9qjs3vhazpmvqxzsgi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Figure out why tests timeout and fail eventually.
+      #:tests? #f
+      #:import-path "github.com/pion/webrtc/v3"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "examples"))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pion-datachannel
+           go-github-com-pion-dtls-v2
+           go-github-com-pion-ice-v2
+           go-github-com-pion-interceptor
+           go-github-com-pion-logging
+           go-github-com-pion-randutil
+           go-github-com-pion-rtcp
+           go-github-com-pion-rtp
+           go-github-com-pion-sctp
+           go-github-com-pion-sdp-v3
+           go-github-com-pion-srtp-v2
+           go-github-com-pion-stun
+           go-github-com-pion-transport-v2
+           go-golang-org-x-net))
+    (home-page "https://github.com/pion/webrtc")
+    (synopsis "Implementation of the WebRTC API in Golang")
+    (description
+     "Package webrtc implements the @code{WebRTC} (Real-Time Communication in
+Browsers) 1.0 as defined in W3C @url{https://www.w3.org/TR/webrtc/,WebRTC}
+specification document.
+Features:
+@itemize
+@item implementation of @url{https://w3c.github.io/webrtc-pc/,webrtc-pc} and
+@code{https://www.w3.org/TR/webrtc-stats/,webrtc-stats}
+@item DataChannels
+@item Send/Receive audio and video
+@item Renegotiation
+@item Plan-B and Unified Plan
+@item SettingEngine for Pion specific extensions
+@item implemented connectivity - Full ICE Agent, ICE Restart, Trickle ICE,
+STUN, TURN mDNS candidates
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-pires-go-proxyproto
   (package
     (name "go-github-com-pires-go-proxyproto")
