@@ -40865,7 +40865,7 @@ The main features of Wanderlust:
         #:tests? #f                     ;there are no tests
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'set-waveform-el-version 'patch-exec-paths
+            (add-after 'unpack 'patch-exec-paths
               (lambda* (#:key inputs #:allow-other-keys)
                 (emacs-substitute-variables "waveform.el"
                   ("waveform-ffmpeg-executable"
