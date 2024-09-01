@@ -1499,7 +1499,7 @@ as RetroArch.")
 (define-public retroarch
   (package
     (name "retroarch")
-    (version "1.18.0")
+    (version "1.19.1")
     (source
      (origin
        (method git-fetch)
@@ -1508,7 +1508,7 @@ as RetroArch.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wdl9zrb1gpqgrxxmv6fida1si1s5g6061aja9dm0hnbpa8cbsdq"))))
+        (base32 "15nh4y4vpf4n1ryhiy4fwvzn5xz5idzfzn9fsi5v9hzp25vbjmrm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
