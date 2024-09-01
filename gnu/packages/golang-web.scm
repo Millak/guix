@@ -4699,6 +4699,33 @@ https://github.com/restic/restic project.")
 netmasks.")
     (license license:expat)))
 
+(define-public go-github-com-wlynxg-anet
+  (package
+    (name "go-github-com-wlynxg-anet")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wlynxg/anet")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i8sqq9d2k19jxplqhb1phzv6qxgzchbpdazq8l26h7pihzsq1gg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/wlynxg/anet"))
+    (home-page "https://github.com/wlynxg/anet")
+    (synopsis "Adjusted @code{net.Interfaces()} for Golang")
+    (description
+     "This package implements a functionality to resolve some problems for
+Android environment where standard @code{net} and @code{golang.org/x/net}
+missing it.  It address the issues
+@url{https://github.com/golang/go/issues/40569, #40569} and
+@url{https://github.com/golang/go/issues/68082, #68082}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-xeipuuv-gojsonpointer
   (let ((commit "4e3ac2762d5f479393488629ee9370b50873b3a6")
         (revision "0"))
