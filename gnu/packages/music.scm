@@ -79,6 +79,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system emacs)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -1707,6 +1708,25 @@ Guile.")
     ;; On armhf and mips64el, building the documentation sometimes leads to
     ;; more than an hour of silence, so double the max silent time.
     (properties `((max-silent-time . 7200)))))
+
+(define-public emacs-lilypond-mode
+  (package
+    (name "emacs-lilypond-mode")
+    (version (package-version lilypond))
+    (source (package-source lilypond))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'expand-load-path 'change-working-directory
+            (lambda _ (chdir "elisp"))))))
+    (home-page (package-home-page lilypond))
+    (synopsis "Major mode for editing GNU LilyPond music scores")
+    (description
+     "This package provides an Emacs major mode for editing GNU LilyPond music
+scores.")
+    (license (package-license lilypond))))
 
 (define-public music21
   (package
