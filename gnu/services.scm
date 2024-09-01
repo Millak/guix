@@ -893,23 +893,26 @@ FILES must be a list of name/file-like object pairs."
 
 (define (privileged-program->activation-gexp programs)
   "Return an activation gexp for privileged-program from PROGRAMS."
-  (let ((programs (map (lambda (program)
-                         ;; FIXME This is really ugly, I didn't managed to use
-                         ;; "inherit"
-                         (let ((program-name (privileged-program-program program))
-                               (setuid?      (privileged-program-setuid? program))
-                               (setgid?      (privileged-program-setgid? program))
-                               (user         (privileged-program-user program))
-                               (group        (privileged-program-group program))
-                               (capabilities (privileged-program-capabilities program)))
-                           #~(privileged-program
-                              (setuid? #$setuid?)
-                              (setgid? #$setgid?)
-                              (user    #$user)
-                              (group   #$group)
-                              (capabilities #$capabilities)
-                              (program #$program-name))))
-                       programs)))
+  (let ((programs
+         (map (lambda (program)
+                ;; FIXME This is really ugly, I didn't manage to use "inherit".
+                (let ((program-name (privileged-program-program program))
+                      (setuid?      (privileged-program-setuid? program))
+                      (setgid?      (privileged-program-setgid? program))
+                      (user         (privileged-program-user program))
+                      (group        (privileged-program-group program))
+                      (capabilities (privileged-program-capabilities program)))
+                  (unless (or setuid? setgid? capabilities)
+                    (warning
+                     (G_ "so-called privileged-program ~s lacks any privilege~%")
+                     program-name))
+                  #~(privileged-program (setuid? #$setuid?)
+                                        (setgid? #$setgid?)
+                                        (user    #$user)
+                                        (group   #$group)
+                                        (capabilities #$capabilities)
+                                        (program #$program-name))))
+              programs)))
     (with-imported-modules (source-module-closure
                             '((gnu system privilege)))
       #~(begin
