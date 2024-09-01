@@ -66141,7 +66141,7 @@ rustc compiler.")
 (define-public rust-rustix-0.38
   (package
     (name "rust-rustix")
-    (version "0.38.31")
+    (version "0.38.31") ;XXX drop rust-rustix-for-bcachefs-tools when updating
     (source
      (origin
        (method url-fetch)
@@ -66194,6 +66194,20 @@ rustc compiler.")
      "This package provides safe Rust bindings to POSIX syscalls.")
     ;; Apache 2.0, Apache 2.0 with LLVM exception, or Expat.
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-rustix-for-bcachefs-tools
+  ;; The package above is too old; too many dependents to update it directly.
+  (package
+    (inherit rust-rustix-0.38)
+    (name (package-name rust-rustix-0.38))
+    (version "0.38.34")
+    (source
+     (origin
+       (inherit (package-source rust-rustix-0.38))
+       (uri (crate-uri "rustix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03vkqa2ism7q56rkifyy8mns0wwqrk70f4i4fd53r97p8b05xp3h"))))))
 
 (define-public rust-rustix-0.37
   (package

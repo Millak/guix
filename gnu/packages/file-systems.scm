@@ -34,8 +34,10 @@
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -58,6 +60,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
@@ -85,6 +88,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages man)
   #:use-module (gnu packages m4)
@@ -589,10 +593,39 @@ from a mounted file system.")
     (home-page "http://www.gphoto.org/proj/gphotofs/")
     (license license:gpl2+)))
 
+(define bcachefs-tools-rust-target
+  (platform-rust-target (lookup-platform-by-target-or-system
+                         (or (%current-target-system)
+                             (%current-system)))))
+
+(define bcachefs-tools-target/release
+  (string-append "target/" bcachefs-tools-rust-target "/release"))
+
+(define bcachefs-tools-cargo-args
+  ;; Distinct from -MAKE-FLAGS for use with ‘cargo test’ in 'check.
+  #~(list "--release"
+          (string-append "--target=" #$bcachefs-tools-rust-target)))
+
+;; XXX We want to share common make flags across different packages & phases,
+;; but the cargo-build-system doesn't allow #:make-flags.
+(define bcachefs-tools-make-flags
+  ;; These result of these flags should be as minimal as possible.
+  ;; Enable any optional features in the bcachefs-tools package instead.
+  #~(list (string-append "CARGO_BUILD_ARGS="
+                         (string-join #$bcachefs-tools-cargo-args " "))
+          (string-append "CC=" #$(cc-for-target))
+          (string-append "PKG_CONFIG=" #$(pkg-config-for-target))))
+
+(define bcachefs-tools-make-install-flags
+  #~(cons* (string-append "PREFIX=" #$output)
+           "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
+           "PKGCONFIG_UDEVRULESDIR=$(PREFIX)/lib/udev/rules.d"
+           #$bcachefs-tools-make-flags))
+
 (define-public bcachefs-tools
   (package
     (name "bcachefs-tools")
-    (version "1.4.1")
+    (version "1.11.0")
     (source
      (origin
        (method git-fetch)
@@ -601,84 +634,74 @@ from a mounted file system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0axwbckqrw1v3v50nzhpkvpyjbjwy3rq5bv23db84x3xia497apq"))))
-    (build-system gnu-build-system)
+        (base32 "0m6z8z1cv78ay9yspypgr0kv70ck4wpln5n44f6n57i7sihqhrrg"))))
+    (build-system cargo-build-system)
     (arguments
-     (list #:make-flags
-           #~(list (string-append "VERSION=" #$version) ; ‘v…-nogit’ otherwise
-                   (string-append "PREFIX=" #$output)
-                   "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
-                   "PKGCONFIG_UDEVRULESDIR=$(PREFIX)/lib/udev/rules.d"
-                   (string-append "CC=" #$(cc-for-target))
-                   (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
-                   ;; ‘This will be less of an option in the future, as more
-                   ;; code gets rewritten in Rust.’
-                   "NO_RUST=better")
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure)    ; no configure script
-               (replace 'check
-                 ;; The test suite is moribund upstream (‘never been useful’),
-                 ;; but let's keep running it as a sanity check until then.
-                 (lambda* (#:key tests? make-flags #:allow-other-keys)
-                   (when tests?
-                     ;; We must manually build the test_helper first.
-                     (apply invoke "make" "tests" make-flags)
-                     (invoke (string-append
-                              #$(this-package-native-input "python-pytest")
-                              "/bin/pytest") "-k"
-                              ;; These fail (‘invalid argument’) on kernels
-                              ;; with a previous bcachefs version.
-                              (string-append "not test_format and "
-                                             "not test_fsck and "
-                                             "not test_list and "
-                                             "not test_list_inodes and "
-                                             "not test_list_dirent")))))
-               (add-after 'install 'promote-mount.bcachefs.sh
-                 ;; The (optional) ‘mount.bcachefs’ requires rust:cargo.
-                 ;; This shell alternative does the job well enough for now.
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (define (whence file)
-                     (dirname (search-input-file inputs file)))
-                   (let ((mount (string-append #$output
-                                               "/sbin/mount.bcachefs")))
-                     (delete-file mount) ; symlink to ‘bcachefs’
-                     (copy-file "mount.bcachefs.sh" mount)
-                     ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
-                     (wrap-program mount
-                       `("PATH" ":" prefix
-                         ,(list (getcwd)
-                                (whence "bin/tail")
-                                (whence "bin/awk")
-                                (whence "bin/mount"))))))))))
+     (list
+      #:install-source? #f
+      ;; The Makefile CCs *every* C file anywhere beneath the build directory,
+      ;; even in Rust crates, creating ludicrous and totally bogus dependencies
+      ;; such as the Android SDK.  Put our crates elsewhere.
+      #:vendor-dir "../guix-vendor"
+      #:cargo-inputs
+      `(("rust-aho-corasick" ,rust-aho-corasick-1)
+        ("rust-anstream" ,rust-anstream-0.6)
+        ("rust-anstyle" ,rust-anstyle-1)
+        ("rust-anstyle-parse" ,rust-anstyle-parse-0.2)
+        ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-autocfg" ,rust-autocfg-1)
+        ("rust-bitfield" ,rust-bitfield-0.14)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-either" ,rust-either-1)
+        ("rust-errno" ,rust-errno-0.2)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-memoffset" ,rust-memoffset-0.8)
+        ("rust-owo-colors" ,rust-owo-colors-4)
+        ("rust-rustix" ,rust-rustix-for-bcachefs-tools)
+        ("rust-strum" ,rust-strum-0.26)
+        ("rust-strum-macros" ,rust-strum-macros-0.26)
+        ("rust-udev" ,rust-udev-0.7)
+        ("rust-uuid" ,rust-uuid-1)
+        ("rust-zeroize" ,rust-zeroize-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (apply invoke "make"
+                     "-j" (if parallel-build?
+                              (number->string (parallel-job-count))
+                              "1")
+                     (string-append "VERSION=" #$version)
+                     #$bcachefs-tools-make-flags)))
+          (add-before 'install 'patch-install
+            ;; ‘make install’ hard-codes target/release/bcachefs, which is
+            ;; incorrect when passing --target, as required to cross-compile or
+            ;; even just link statically.  We always pass it, so always patch.
+            (lambda _
+              (substitute* "Makefile"
+                (("target/release")
+                 #$bcachefs-tools-target/release))))
+          (replace 'install
+            (lambda _
+              (apply invoke "make" "install"
+                     #$bcachefs-tools-make-install-flags))))))
     (native-inputs
-     (cons* pkg-config
-            ;; For generating documentation with rst2man.
-            python
-            python-docutils
-            ;; For tests.
-            python-pytest
-            (if (member (%current-system) (package-supported-systems valgrind))
-                (list valgrind)
-                '())))
+     (list pkg-config))
     (inputs
-     (list bash-minimal
+     (list clang
            eudev
            keyutils
            libaio
            libscrypt
            libsodium
            liburcu
-           `(,util-linux "lib")
+           `(,util-linux "lib")         ;libblkid
            lz4
            zlib
-           `(,zstd "lib")
-
-           ;; Only for mount.bcachefs.sh.
-           bash-minimal
-           coreutils-minimal
-           gawk
-           util-linux))
+           `(,zstd "lib")))
     (home-page "https://bcachefs.org/")
     (synopsis "Tools to create and manage bcachefs file systems")
     (description
@@ -701,9 +724,34 @@ performance and other characteristics.")
     (name "bcachefs-tools-static")
     (arguments
      (substitute-keyword-arguments (package-arguments bcachefs-tools)
-       ((#:make-flags make-flags)
-        #~(append #$make-flags
-                  (list "LDFLAGS=-static")))))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'configure 'set-rust-flags
+              (lambda _
+                (setenv "RUSTFLAGS" (string-join
+                                     '("-C" "link-arg=-z"
+                                       "-C" "link-arg=muldefs"
+                                       "-C" "target-feature=+crt-static"
+                                       "-C" "relocation-model=static")
+                                     " "))))
+            (replace 'build
+              (lambda* (#:key parallel-build? #:allow-other-keys)
+                (apply invoke "make"
+                       "-j" (if parallel-build?
+                                (number->string (parallel-job-count))
+                                "1")
+                       (string-append "VERSION="
+                                      #$(package-version this-package))
+                       #$bcachefs-tools-make-flags)))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (apply invoke "cargo" "test" #$bcachefs-tools-cargo-args))))
+            (replace 'install
+              (lambda _
+                (apply invoke "make" "install"
+                       (string-append "PREFIX=" #$output)
+                       #$bcachefs-tools-make-install-flags)))))))
     (inputs (modify-inputs (package-inputs bcachefs-tools)
               (prepend `(,eudev "static")
                        `(,keyutils "static")
