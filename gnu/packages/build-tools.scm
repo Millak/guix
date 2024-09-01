@@ -329,6 +329,19 @@ files}, are written in a custom domain-specific language (@dfn{DSL}) that
 resembles Python.")
     (license license:asl2.0)))
 
+(define-public meson-1.5
+  (package
+    (inherit meson)
+    (version "1.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/mesonbuild/meson/"
+                                  "releases/download/" version  "/meson-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1vab706pw1q17vh9rbsmlirgiji3k6wljl735lxffp95vwx56zjn"))))))
+
 (define-public meson-python
   (package
     (name "meson-python")
