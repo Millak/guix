@@ -47901,10 +47901,13 @@ the previous partition end.  It defaults to @code{0} which means that
 there is no offset applied.
 
 @item @code{file-system} (default: @code{"ext4"})
-The partition file system as a string, defaulting to @code{"ext4"}.  The
-supported values are @code{"vfat"}, @code{"fat16"}, @code{"fat32"} and
-@code{"ext4"}.  @code{"vfat"}, @code{"fat16"} and @code{"fat32"}
-partitions without the @code{'esp} flag are by default LBA compatible.
+The partition file system as a string, defaulting to @code{"ext4"}.
+
+The supported values are @code{"vfat"}, @code{"fat16"}, @code{"fat32"},
+and @code{"ext4"}.
+
+@code{"vfat"}, @code{"fat16"}, and @code{"fat32"} partitions without the
+@code{'esp} flag are by default LBA compatible.
 
 @item @code{file-system-options} (default: @code{'()})
 The partition file system creation options that should be passed to the
