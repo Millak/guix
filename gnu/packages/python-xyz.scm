@@ -37071,7 +37071,7 @@ and @code{bspatch4}.")
 (define-public python-mpv
   (package
     (name "python-mpv")
-    (version "1.0.1")
+    (version "1.0.7")
     (source
      (origin
        ;; python-mpv from pypi does not include the tests directory.
@@ -37081,28 +37081,14 @@ and @code{bspatch4}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "10w6j3n62ap45sf6q487kz8z6g58sha37i14fa2hhng794z7a8jh"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; One of the tests never completes, so neutering it using
-            ;; early return allows other test to run without issue.
-            (substitute* "tests/test_mpv.py"
-              ;; Note the typo in "prooperty" - this was fixed later in
-              ;; upstream but has no effect on whether the tests hangs or not.
-              (("test_wait_for_prooperty_event_overflow.*" line)
-               ;; The long whitespace between \n and return is to match the
-               ;; identation level, which is significant in python.
-               (string-append line "\n        return\n")))))))
-    (build-system python-build-system)
+        (base32 "102fajzrcgxapsanh0phlqmk9q2v95bvix6mrkg8rypv717idins"))))
+    (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
                (add-before 'build 'patch-reference-to-mpv
                  (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Without an absolute path it is not able find and
-                   ;; load the libmpv library.
+                   ;; Without an absolute path it is not able find and load libmpv.
                    (substitute* "mpv.py"
                      (("sofile = .*")
                       (string-append "sofile = \""
@@ -37113,11 +37099,16 @@ and @code{bspatch4}.")
                    ;; Fontconfig throws errors when it has no cache dir to use.
                    (setenv "XDG_CACHE_HOME" (getcwd))
                    ;; Some tests fail without a writable and readable HOME.
-                   (setenv "HOME" (getcwd)))))))
+                   (setenv "HOME" (getcwd))
+                   (setenv "PY_MPV_SKIP_TESTS"
+                           "test_wait_for_property_event_overflow"))))))
     (native-inputs
-     (list python-xvfbwrapper)) ; needed for tests only
+     ;; For tests.
+     (list python-pytest
+           python-pyvirtualdisplay
+           python-xvfbwrapper))
     (inputs (list mpv))
-    (propagated-inputs (list python-pillow)) ; for raw screenshots
+    (propagated-inputs (list python-pillow)) ;for raw screenshots
     (home-page "https://github.com/jaseg/python-mpv")
     (synopsis "Python interface to the mpv media player")
     (description
