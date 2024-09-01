@@ -530,7 +530,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.6.4")
+    (version "4.6.6")
     (source
      (origin
        (method git-fetch)
@@ -539,7 +539,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fxjsad9d35pdy0cqjlip46kwgxfim10fy70x6wymn9pagwq9j7p"))))
+        (base32 "0kv7dgnfy8m480kxc4na9v9cjq9f9m3il191w7yvj4i8lz6jcaq1"))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags #~(list "-DTESTING=ON")
