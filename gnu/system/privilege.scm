@@ -26,7 +26,9 @@
             privileged-program-setgid?
             privileged-program-user
             privileged-program-group
-            privileged-program-capabilities))
+            privileged-program-capabilities
+
+            file-like->setuid-program))
 
 ;;; Commentary:
 ;;;
@@ -56,3 +58,9 @@
   ;; POSIX capabilities in cap_from_text(3) form (defaults to #f: none).
   (capabilities  privileged-program-capabilities ;string or #f
                  (default #f)))
+
+(define (file-like->setuid-program program)
+  "Simple wrapper to facilitate MAPping over a list of file-like objects and
+make them setuid, a pattern just common enough to justify a special helper."
+  (privileged-program (program program)
+                      (setuid? #t)))

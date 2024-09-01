@@ -286,8 +286,7 @@ bundles in Docker containers.")
                                                            "-helper")))
                                  '("action" "mount" "start")))))
 
-  (map (lambda (program) (privileged-program (program program)
-                                        (setuid? #t)))
+  (map file-like->setuid-program
        (list (file-append helpers "/singularity-action-helper")
              (file-append helpers "/singularity-mount-helper")
              (file-append helpers "/singularity-start-helper"))))

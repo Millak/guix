@@ -21,15 +21,14 @@
   #:use-module (gnu system privilege)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:re-export (file-like->setuid-program)
   #:export (setuid-program
             setuid-program?
             setuid-program-program
             setuid-program-setuid?
             setuid-program-setgid?
             setuid-program-user
-            setuid-program-group
-
-            file-like->setuid-program))
+            setuid-program-group))
 
 ;;; Commentary:
 ;;;
@@ -56,6 +55,3 @@
 (define setuid-program-setgid? privileged-program-setgid?)
 (define setuid-program-user    privileged-program-user)
 (define setuid-program-group   privileged-program-group)
-
-(define (file-like->setuid-program program)
-  (setuid-program (program program)))

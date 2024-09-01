@@ -1736,8 +1736,7 @@ need to create it beforehand."))))
   (match-record enlightenment-desktop-configuration
       <enlightenment-desktop-configuration>
     (enlightenment)
-    (map (lambda (program) (privileged-program (program program)
-                                               (setuid? #t)))
+    (map file-like->setuid-program
          (list (file-append enlightenment
                             "/lib/enlightenment/utils/enlightenment_sys")
                (file-append enlightenment
