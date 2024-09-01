@@ -17940,6 +17940,18 @@ taking a new approach.  All IANA character set names for which the Python core
 library provides codecs are supported.")
     (license license:expat)))
 
+(define-public python-charset-normalizer-3
+  (package
+    (inherit python-charset-normalizer)
+    (name "python-charset-normalizer")
+    (version "3.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "charset-normalizer" version))
+       (sha256
+        (base32 "1m9g0f513ng4dp2vd3smi4g2nmhqkjqh3bzcza14li947frkq37k"))))))
+
 (define-public python-docopt
   (package
     (name "python-docopt")
