@@ -40769,8 +40769,8 @@ latest Emacs.")
 
 (define-public emacs-flim-lb
   ;; No release since Nov 28, 2007.
-  (let ((commit "abdd2315006eb31476249223569808adb1c0f7b2")
-        (revision "142"))
+  (let ((commit "23bb29d70a13cada2eaab425ef80071564586a6d")
+        (revision "143"))
     (package
       (name "emacs-flim-lb")
       (version (git-version "1.14.9" revision commit))
@@ -40782,7 +40782,7 @@ latest Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1s21y0djlyiwmc1kz3dx19mdiq472ib07gdrw353imw5vmx3mp7d"))))
+                  "14ihl59sj829hycbw182byk4npmrsmhcgl98j5v7i81vmxdfrcm9"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-apel-lb emacs-oauth2))
       (home-page "https://www.emacswiki.org/emacs/WanderLust")
