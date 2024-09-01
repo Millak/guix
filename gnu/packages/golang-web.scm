@@ -3674,6 +3674,33 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
        ((#:import-path flags ''())
         "github.com/pion/mdns/v2")))))
 
+(define-public go-github-com-pion-rtcp
+  (package
+    (name "go-github-com-pion-rtcp")
+    (version "1.2.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/rtcp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00hfq0l17zq47slzfbrghgfc0v808hqiyaab3ni9kh1v7nmvp5ic"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pion/rtcp"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/pion/rtcp")
+    (synopsis "Implementation of RTCP protocol in Golang")
+    (description
+     "Package rtcp implements encoding and decoding of RTCP packets according
+to @url{https://www.rfc-editor.org/rfc/rfc3550, RFC 3550},
+@url{https://www.rfc-editor.org/rfc/rfc5506, RFC 5506}.")
+    (license license:expat)))
+
 (define-public go-github-com-pion-rtp
   (package
     (name "go-github-com-pion-rtp")
