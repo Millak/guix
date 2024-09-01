@@ -622,9 +622,13 @@ from a mounted file system.")
            "PKGCONFIG_UDEVRULESDIR=$(PREFIX)/lib/udev/rules.d"
            #$bcachefs-tools-make-flags))
 
-(define-public bcachefs-tools
+(define bcachefs-tools-minimal
+  ;; This ‘minimal’ package is not *that* minimal, and not different enough to
+  ;; export.  It's used as-is only when cross-compiling, as an input to the
+  ;; public bcachefs-tools package that inherits from it to generate the shell
+  ;; completions by running a native bcachefs binary at build time.
   (package
-    (name "bcachefs-tools")
+    (name "bcachefs-tools-minimal")
     (version "1.11.0")
     (source
      (origin
@@ -718,12 +722,55 @@ caching system, and lets you assign different roles to each device based on its
 performance and other characteristics.")
     (license license:gpl2+)))
 
+(define-public bcachefs-tools
+  ;; The final public package with shell completion even when cross-compiling.
+  (package
+    (inherit bcachefs-tools-minimal)
+    (name "bcachefs-tools")
+    (arguments
+     (substitute-keyword-arguments
+	 (package-arguments bcachefs-tools-minimal)
+       ((#:modules modules '())
+	`(,@modules
+	  (guix build cargo-build-system)
+          (guix build utils)
+          (srfi srfi-26)))
+       ((#:phases phases #~%standard-phases)
+	#~(modify-phases #$phases
+	    (add-after 'install 'install-completions
+              (lambda* (#:key native-inputs #:allow-other-keys)
+                (define bcachefs
+                  (or (false-if-exception (search-input-file native-inputs
+                                                             "sbin/bcachefs"))
+                      (string-append #$bcachefs-tools-target/release
+                                     "/bcachefs")))
+
+                (define (output-completions shell file)
+                  (let ((output (string-append #$output "/" file)))
+                    (mkdir-p (dirname output))
+                    (with-output-to-file output
+                      (lambda _
+                        (invoke bcachefs "completions" shell)))))
+
+                (for-each (cut apply output-completions <>)
+                          '(("bash"
+                             "share/bash-completion/completions/bcachefs")
+                            ("fish"
+                             "share/fish/vendor_completions.d/bcachefs.fish")
+                            ("zsh"
+                             "share/zsh/site-functions/_bcachefs")))))))))
+    (native-inputs
+     (append (package-native-inputs bcachefs-tools-minimal)
+	     (if (%current-target-system)
+		 (list bcachefs-tools-minimal)
+		 (list))))))
+
 (define-public bcachefs-tools/static
   (package
-    (inherit bcachefs-tools)
+    (inherit bcachefs-tools-minimal)
     (name "bcachefs-tools-static")
     (arguments
-     (substitute-keyword-arguments (package-arguments bcachefs-tools)
+     (substitute-keyword-arguments (package-arguments bcachefs-tools-minimal)
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-after 'configure 'set-rust-flags
@@ -752,7 +799,7 @@ performance and other characteristics.")
                 (apply invoke "make" "install"
                        (string-append "PREFIX=" #$output)
                        #$bcachefs-tools-make-install-flags)))))))
-    (inputs (modify-inputs (package-inputs bcachefs-tools)
+    (inputs (modify-inputs (package-inputs bcachefs-tools-minimal)
               (prepend `(,eudev "static")
                        `(,keyutils "static")
                        `(,libscrypt "static")
@@ -781,8 +828,8 @@ performance and other characteristics.")
     (home-page (package-home-page bcachefs-tools/static))
     (synopsis "Statically-linked bcachefs command from bcachefs-tools")
     (description
-     "This package provides the statically-linked @command{bcachefs} from the
-bcachefs-tools package.  It is meant to be used in initrds.")
+     "This package provides the statically-linked @command{bcachefs} from a
+minimal bcachefs-tools package.  It is meant to be used in initrds.")
     (license (package-license bcachefs-tools/static))))
 
 (define-public exfatprogs
