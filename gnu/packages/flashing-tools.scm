@@ -149,7 +149,7 @@ brick your device.")
 (define-public avrdude
   (package
     (name "avrdude")
-    (version "7.3")
+    (version "8.0")
     (source
      (origin
       (method git-fetch)
@@ -158,7 +158,7 @@ brick your device.")
             (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0g7c30baaxav43rlfj0cdbl40p2swamp44glz0rgf096wc0bg996"))))
+       (base32 "1r8cfi1lkic8zknb7x44i2mmwxzfwfbblr894x36mffa5da0g7y3"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f))                      ; no tests
