@@ -3758,6 +3758,33 @@ Protocol,SCTP} as specified in
 @uref{https://rfc-editor.org/rfc/rfc9260.html,RFC 9260}.")
     (license license:expat)))
 
+(define-public go-github-com-pion-sdp-v3
+  (package
+    (name "go-github-com-pion-sdp-v3")
+    (version "3.0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/sdp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08d3glli1n45ayc26qwaxm7k5knrf99x5nwkllmmhf29g8kwc89n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pion/sdp/v3"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pion-randutil))
+    (home-page "https://github.com/pion/sdp")
+    (synopsis "Implementation of the SDP protocol in Golang")
+    (description
+     "Package sdp implements @acronym{Session Description Protocol,SDP}.")
+    (license license:expat)))
+
 (define-public go-github-com-pion-stun
   (package
     (name "go-github-com-pion-stun")
