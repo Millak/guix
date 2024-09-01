@@ -12353,7 +12353,9 @@ higher level porcelain stuff.")
     (build-system meson-build-system)
     (arguments
      (list
+      #:meson meson-1.5                 ; XXX: breaks with Meson 1.2
       #:glib-or-gtk? #t
+      #:build-type "release"            ; don't look at -Wformat…
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-post-install-partially
