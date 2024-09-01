@@ -36,6 +36,7 @@
  (entry (commit "2fae63df2138b74d30e120364f0f272871595862")
         (title
          (en "Core packages updated")
+         (de "Kernpakete aktualisiert")
          (fr "Logiciels fondamentaux mis à jour"))
         (body
          (en "Core packages have been updated, in particular those that
@@ -73,6 +74,42 @@ been fixed.
 If you encounter any problem, please check
 @url{https://issues.guix.gnu.org} for existing reports and resolutions;
 email @email{bug-guix@@gnu.org} to report new bugs.")
+         (de "Pakete, die den Kern der Distribution ausmachen, wurden
+aktualisiert, insbesondere solche Pakete, aus denen heraus alle anderen Pakete
+der Distribution erstellt werden.  Zu den nennenswerten Neuerungen gehören:
+
+@itemize
+@item @code{glibc} 2.39 (war 2.35),
+@item @code{gcc} 11.4.0 ist der voreingestellte Compiler (war 11.3.0),
+@item @code{binutils} 2.41 (war 2.38),
+@item @code{make} 4.4.1 (war 4.3),
+@item TeX@tie{}Live 2024.2 (war 20230313; das bedeutet, dass wegen der neuen
+Versionsbezeichnungen @command{guix upgrade} die neuen Pakete für „älter“ als
+die vorherigen hält und eine Aktualisierung unter Umständen nur zulässt, indem
+Sie @command{guix install} benutzen).
+@end itemize
+
+Weitere Verbesserungen wurden an Erstellungssystemen und zugehörigen Paketen
+und Werkzeugen vorgenommen:
+
+@itemize
+@item
+Zu dem Paket @code{glibc} gehört jetzt die Locale für @code{C.UTF-8}, die
+geeignet ist, wenn eine UTF-8-Locale gebraucht wird, aber Sprache und regionale
+Konventionen unwichtig sind.
+@item
+Paketursprünge mit Patches werden jetzt in Archive mit zstd anstelle von xz
+neu gepackt, wodurch weniger Rechenzeit und Speicher beim Komprimieren und
+Dekomprimieren nötig sind.
+@item
+Performance-Probleme mit den modularen Paketsatz von TeX@tie{}Live wurden
+behoben.
+@end itemize
+
+Wenn Sie Probleme feststellen, schauen Sie bitte auf
+@url{https://issues.guix.gnu.org} nach bisherigen Fehlerberichten und Lösungen
+und schicken Sie eine E-Mail an @email{bug-guix@@gnu.org}, um neue Fehler zu
+melden.")
          (fr "Les logiciels fondamentaux on été mis à jour, en particulier
 ceux qui servent à construire tous les autres logiciels de la distribution.
 Les mises à jour notables sont :
