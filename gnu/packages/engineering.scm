@@ -1286,8 +1286,8 @@ worksheet templates.")))
 
 (define-public librseq
   ;; There's no release.
-  (let ((commit "170f840b498e1aff068b90188727a656111bfc2f")
-        (revision "1"))
+  (let ((commit "c3ed6b64bbe1944bd8de8b9fde14e7c290f02a90")
+        (revision "2"))
     (package
       (name "librseq")
       (version (git-version "0.0.0" revision commit))
@@ -1299,9 +1299,15 @@ worksheet templates.")))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0rdx59y8y9x8cfmmx5gl66gibkzpk3kw5lrrqhrxan8zr37a055y"))))
+                  "046lrfw87gjbr4rvs054s6wk22c4xcmrcww04wkpnxmy5vp33mk3"))))
       (build-system gnu-build-system)
-      (native-inputs (list autoconf automake libtool))
+      (inputs
+       (list numactl))
+      (native-inputs
+       (list autoconf
+             automake
+             libtool
+             pkg-config))
       (home-page "https://github.com/compudj/librseq")
       (synopsis "Userspace library for restartable sequences")
       (description "A restartable sequence is a critical region delimited by a
