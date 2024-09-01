@@ -3785,6 +3785,36 @@ Protocol,SCTP} as specified in
      "Package sdp implements @acronym{Session Description Protocol,SDP}.")
     (license license:expat)))
 
+(define-public go-github-com-pion-srtp-v2
+  (package
+    (name "go-github-com-pion-srtp-v2")
+    (version "2.0.20")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/srtp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ijwx9mrc0ha8fam6y6xxih59dyr8hg9ly476kv6gfw564qfp7hk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pion/srtp/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pion-logging
+           go-github-com-pion-rtcp
+           go-github-com-pion-rtp
+           go-github-com-pion-transport-v2))
+    (home-page "https://github.com/pion/srtp")
+    (synopsis "Implementation of SRTP protocol in Golang")
+    (description
+     "Package srtp implements Secure Real-time Transport Protocol.")
+    (license license:expat)))
+
 (define-public go-github-com-pion-stun
   (package
     (name "go-github-com-pion-stun")
