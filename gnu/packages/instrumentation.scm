@@ -372,14 +372,14 @@ many probes which instrument numerous interesting parts of Linux.")
 (define-public lttng-ust
   (package
     (name "lttng-ust")
-    (version "2.13.6")
+    (version "2.13.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-ust/"
                                   "lttng-ust-" version ".tar.bz2"))
               (sha256
                (base32
-                "1mffy0fmr8h8kfghjadxa7nhzfwxjh7h1k97kslpmb3kvnb4bq77"))))
+                "0dyr4j8f8y6fmfpxb3ajkc1ndwpl1baxzbyc4ksx8ym3p7d9ivyl"))))
     (build-system gnu-build-system)
     (inputs
      (list numactl))
