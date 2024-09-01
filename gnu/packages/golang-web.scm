@@ -3828,7 +3828,7 @@ throughout the @url{https://github.com/pion, Pion} modules.")
   (package
     (inherit go-github-com-pion-transport)
     (name "go-github-com-pion-transport-v2")
-    (version "2.2.5")
+    (version "2.2.10")
     (source
      (origin
        (inherit (package-source go-github-com-pion-transport))
@@ -3837,10 +3837,15 @@ throughout the @url{https://github.com/pion, Pion} modules.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00q3v37l56yr1ch25g5w70jy8y923csbvy4krvy4dv3h5f1mdpmf"))))
+        (base32 "0g5pg6mz61blprccxzysbwldkil84qgwp6404lsp4m9wh44312hf"))))
     (arguments
      (list
-      #:import-path "github.com/pion/transport/v2"))))
+      #:import-path "github.com/pion/transport/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs go-github-com-pion-transport)
+       (prepend go-github-com-wlynxg-anet)))))
 
 (define-public go-github-com-pion-transport-v3
   (package
