@@ -31,7 +31,7 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu system)
   #:use-module (gnu system image)
-  #:use-module (gnu system setuid)
+  #:use-module (gnu system privilege)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)               ;shadow
   #:use-module (gnu packages docker)
@@ -268,11 +268,11 @@ bundles in Docker containers.")
                   '("container" "final" "overlay" "session"))
         (chmod %mount-directory #o755))))
 
-(define (singularity-setuid-programs singularity)
-  "Return the setuid-root programs that SINGULARITY needs."
+(define (singularity-privileged-programs singularity)
+  "Return the privileged programs that SINGULARITY needs."
   (define helpers
     ;; The helpers, under a meaningful name.
-    (computed-file "singularity-setuid-helpers"
+    (computed-file "singularity-privileged-helpers"
                    #~(begin
                        (mkdir #$output)
                        (for-each (lambda (program)
@@ -286,7 +286,8 @@ bundles in Docker containers.")
                                                            "-helper")))
                                  '("action" "mount" "start")))))
 
-  (map file-like->setuid-program
+  (map (lambda (program) (privileged-program (program program)
+                                        (setuid? #t)))
        (list (file-append helpers "/singularity-action-helper")
              (file-append helpers "/singularity-mount-helper")
              (file-append helpers "/singularity-start-helper"))))
@@ -296,8 +297,8 @@ bundles in Docker containers.")
                 (description
                  "Install the Singularity application bundle tool.")
                 (extensions
-                 (list (service-extension setuid-program-service-type
-                                          singularity-setuid-programs)
+                 (list (service-extension privileged-program-service-type
+                                          singularity-privileged-programs)
                        (service-extension activation-service-type
                                           (const %singularity-activation))))
                 (default-value singularity)))
