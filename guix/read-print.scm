@@ -350,7 +350,7 @@ expressions and blanks that were read."
    ('swap-space 1)
    ('user-account 1)
    ('user-group 1)
-   ('setuid-program 1)
+   ('privileged-program 1)
    ('modify-services 2)
 
    ;; (gnu home).
