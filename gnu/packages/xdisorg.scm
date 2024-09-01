@@ -298,29 +298,29 @@ program.")
     (inputs
      (list xrandr libxcb))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((xrandr (search-input-file inputs "/bin/xrandr")))
-               (substitute* "contrib/etc/xdg/autostart/autorandr.desktop"
-                 (("/usr") (assoc-ref outputs "out")))
-               (substitute* "autorandr.py"
-                 (("popen\\(\"xrandr") (string-append "popen(\"" xrandr))
-                 (("\\[\"xrandr") (string-append "[\"" xrandr)))
-               (substitute* "contrib/autorandr_launcher/autorandr_launcher.c"
-                 (("/usr/bin/autorandr")
-                  (string-append (assoc-ref outputs "out") "/bin/autorandr")))
-               (setenv "CC" "gcc"))
-             #t))
-         (add-after 'install 'install-contrib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "make"
-                     (string-append "DESTDIR=" (assoc-ref outputs "out"))
-                     "PREFIX="
-                     "BASH_COMPLETIONS_DIR=etc/bash_completion.d"
-                     "install"
-                     "TARGETS=autorandr launcher manpage bash_completion"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((xrandr (search-input-file inputs "/bin/xrandr")))
+                (substitute* "contrib/etc/xdg/autostart/autorandr.desktop"
+                  (("/usr") #$output))
+                (substitute* "autorandr.py"
+                  (("popen\\(\"xrandr") (string-append "popen(\"" xrandr))
+                  (("\\[\"xrandr") (string-append "[\"" xrandr)))
+                (substitute* "contrib/autorandr_launcher/autorandr_launcher.c"
+                  (("/usr/bin/autorandr")
+                   (string-append #$output "/bin/autorandr")))
+                (setenv "CC" "gcc"))))
+          (add-after 'install 'install-contrib
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "make"
+                      (string-append "DESTDIR=" #$output)
+                      "PREFIX="
+                      "BASH_COMPLETIONS_DIR=etc/bash_completion.d"
+                      "install"
+                      "TARGETS=autorandr launcher manpage bash_completion"))))))
     (synopsis "Auto-detect connected displays and load appropriate setup")
     (description "Autorandr wraps around xrandr to help with X11
 multi-screen configuration management.  It allows the user to create profiles
