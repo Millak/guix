@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2019–2020, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -169,7 +169,7 @@ ISO9660 UUID representation."
 
 
 ;;;
-;;; FAT32/FAT16.
+;;; exFAT/FAT32/FAT16.
 ;;;
 
 (define-syntax %fat-endianness
@@ -258,7 +258,7 @@ ISO9660 UUID representation."
   (vhashq
    ('dce 'ext2 'ext3 'ext4 'bcachefs 'btrfs 'f2fs 'jfs 'xfs 'luks
          => string->dce-uuid)
-   ('fat32 'fat16 'fat => string->fat-uuid)
+   ('exfat 'fat32 'fat16 'fat => string->fat-uuid)
    ('ntfs => string->ntfs-uuid)
    ('iso9660 => string->iso9660-uuid)))
 
@@ -267,7 +267,7 @@ ISO9660 UUID representation."
    ('dce 'ext2 'ext3 'ext4 'bcachefs 'btrfs 'f2fs 'jfs 'xfs 'luks
          => dce-uuid->string)
    ('iso9660 => iso9660-uuid->string)
-   ('fat32 'fat16 'fat => fat-uuid->string)
+   ('exfat 'fat32 'fat16 'fat => fat-uuid->string)
    ('ntfs => ntfs-uuid->string)))
 
 (define* (string->uuid str #:optional (type 'dce))
