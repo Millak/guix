@@ -75,6 +75,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages benchmark)
   #:use-module (gnu packages boost)
@@ -914,11 +915,12 @@ intuitive syntax and trivial integration.")
                 (lambda _
                   (substitute* "tests/meson.build"
                     (("foreach locale : test_locales" all)
-                     (format #f "test_locales = ['C', ~{'~a.utf8', ~}]~%~a"
+                     (format #f "test_locales = [~{'~a.utf8', ~}]~%~a"
                              ;; %default-utf8-locales in (gnu packages base).
-                             '("de_DE" "el_GR" "en_US" "fr_FR" "tr_TR")
+                             '("C" "de_DE" "el_GR" "en_US" "fr_FR" "tr_TR")
                              all))))))))
-   (native-inputs (list cmake-minimal))
+   ;; Tests require locales.
+   (native-inputs (list cmake-minimal (libc-utf8-locales-for-target)))
    (home-page "https://marzer.github.io/tomlplusplus/")
    (synopsis "Header-only TOML config file parser and serializer for C++17")
    (description
