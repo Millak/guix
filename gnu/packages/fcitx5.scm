@@ -89,15 +89,15 @@ client.")
 (define-public fcitx5
   (package
     (name "fcitx5")
-    (version "5.1.7")
+    (version "5.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://download.fcitx-im.org/fcitx5/fcitx5/fcitx5-"
-             version "_dict.tar.xz"))
+             version "_dict.tar.zst"))
        (sha256
-        (base32 "1wnky24a8jy4nwairzbb00j0rnn8qr2105va3kpymnvh0cyh0rwa"))))
+        (base32 "1r6wyxxghl673q8wmp9519s1gwg8w18mrjg3zkg9qyln3hccyhvs"))))
     (arguments
      (list #:configure-flags #~(list "-DUSE_SYSTEMD=OFF")))
     (build-system cmake-build-system)
@@ -128,7 +128,9 @@ client.")
        ("xcb-util-wm" ,xcb-util-wm)
        ("xkeyboard-config" ,xkeyboard-config)))
     (native-inputs
-     (list extra-cmake-modules pkg-config))
+     (list extra-cmake-modules
+           zstd
+           pkg-config))
     (native-search-paths
      (list (search-path-specification
             (variable "FCITX_ADDON_DIRS")
