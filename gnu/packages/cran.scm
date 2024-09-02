@@ -4181,14 +4181,14 @@ Analysis Approach Using R.  Chapman-Hall, 2019,
 (define-public r-vegan
   (package
     (name "r-vegan")
-    (version "2.6-6.1")
+    (version "2.6-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vegan" version))
        (sha256
         (base32
-         "0q0bp7xxmab1gcqk8wwm81sdvhccdvz5vqyn0grbwfb619q5wakx"))))
+         "1hdkp316cx06jccb4f4n8592g82wmrf0k0pcm1nxy38m72xy4v8r"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran r-knitr))
