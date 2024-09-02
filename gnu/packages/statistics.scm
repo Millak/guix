@@ -1334,26 +1334,21 @@ agnes cluster diagrams.")
 (define-public r-gdtools
   (package
     (name "r-gdtools")
-    (version "0.3.7")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdtools" version))
        (sha256
         (base32
-         "155ky9fdi023b5fjk1gh3607xlgm3hymq232fq03ip2aaywc74nj"))))
+         "0srg8034a6pc677njzn42abqh6r4lzvfm3xw0np579kvk6d6w4z1"))))
     (build-system r-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
      (list cairo fontconfig freetype zlib))
     (propagated-inputs
-     (list r-curl
-           r-fontquiver
-           r-gfonts
-           r-htmltools
-           r-rcpp
-           r-systemfonts))
+     (list r-fontquiver r-htmltools r-rcpp r-systemfonts))
     (home-page "https://cran.r-project.org/web/packages/gdtools")
     (synopsis "Utilities for graphical rendering")
     (description
