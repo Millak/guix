@@ -20791,8 +20791,8 @@ compliance control.")
   (sbcl-package->cl-source-package sbcl-modularize-interfaces))
 
 (define-public sbcl-moira
-  (let ((commit "21f1cfd5942fcaea2ed2e4f6055b2a5a39ac4c6e")
-        (revision "0"))
+  (let ((commit "448d8e77b95f5de7b41d2897a2167c4b1fb85a76")
+        (revision "1"))
     (package
       (name "sbcl-moira")
       (version (git-version "0.0.0" revision commit))
@@ -20804,7 +20804,7 @@ compliance control.")
                (commit commit)))
          (file-name (git-file-name "cl-moira" version))
          (sha256
-          (base32 "0r6hvq8j04y1i85f8jwhhafylgfrkg8c1z5746nsbv0v0348sf5h"))))
+          (base32 "01wxjg122flla4pgys57hya3fwrkyjkpp26j5ypl5885zz1ip5b7"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
