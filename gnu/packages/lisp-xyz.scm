@@ -16,7 +16,7 @@
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
 ;;; Copyright © 2019-2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
-;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
+;;; Copyright © 2020, 2024 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Adam Kandur <rndd@tuta.io>
@@ -14949,6 +14949,42 @@ attributes not supported by the Common Lisp standard functions.")
 
 (define-public cl-file-attributes
   (sbcl-package->cl-source-package sbcl-file-attributes))
+
+(define-public sbcl-file-finder
+  (let ((commit "ec392d775eee33dbdea0d6532d20952438991f99")
+        (revision "0"))
+    (package
+      (name "sbcl-file-finder")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lisp-maintainers/file-finder")
+               (commit commit)))
+         (file-name (git-file-name "cl-file-finder" version))
+         (sha256
+          (base32 "1mpasi7n0ysggx0inxdbzlwavh08m0jxvv220ammvcyn3xybbchj"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-str
+             sbcl-file-attributes
+             sbcl-local-time
+             sbcl-named-readtables
+             sbcl-serapeum))
+      (synopsis "Enable rapid file search, inspection and manipulation")
+      (description
+       "This library provides modern file handling for Common Lisp, which
+avoids many of the pitfalls of pathnames.")
+      (home-page "https://github.com/lisp-maintainers/file-finder")
+      (license license:gpl3+))))
+
+(define-public ecl-file-finder
+  (sbcl-package->ecl-package sbcl-file-finder))
+
+(define-public cl-file-finder
+  (sbcl-package->cl-source-package sbcl-file-finder))
 
 (define-public sbcl-file-notify
   (let ((commit "f12dc2f2aae5fee13355cd93a8cae0c4c412b76d")
