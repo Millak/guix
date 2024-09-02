@@ -33025,14 +33025,14 @@ package by providing:
 (define-public r-sem
   (package
     (name "r-sem")
-    (version "3.1-15")
+    (version "3.1-16")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sem" version))
        (sha256
         (base32
-         "05hk72zxvyv6kkjhk5y6qw253c64108az7030z8j1sz8wq03n0md"))))
+         "0jy9hp85w3lnicymw9881qk7z7ypvz6iy7dd88qqxc6pknzkx7x3"))))
     (properties `((upstream-name . "sem")))
     (build-system r-build-system)
     (propagated-inputs
