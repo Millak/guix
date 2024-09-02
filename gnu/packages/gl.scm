@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021, 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2021-2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
@@ -299,7 +299,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "24.0.4")
+    (version "24.2.2")
     (source
      (origin
        (method url-fetch)
@@ -309,7 +309,7 @@ also known as DXTn or DXTC) for Mesa.")
                                  "mesa-" version ".tar.xz")))
        (sha256
         (base32
-         "1w25lwdrb0ffrx2fjk9izbvpcgf9ypfc7v32zybwvjwql0qbvzlh"))))
+         "00hxi7wjp368kh5qq2v25nyzjrf0grsx55w55fg4bgpd0hqps1zx"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
@@ -322,35 +322,32 @@ also known as DXTn or DXTC) for Mesa.")
            libxxf86vm
            xorgproto))
     (inputs
-     (append
-       (if (target-aarch64?)
-           (list clang-18)
-           '())
-       (list elfutils                   ;libelf required for r600 when using llvm
-             expat
-             (force libva-without-mesa)
-             libxml2
-             libxrandr
-             libxvmc
-             llvm-for-mesa
-             vulkan-loader
-             wayland
-             wayland-protocols
-             `(,zstd "lib"))))
+     (list elfutils                   ;libelf required for r600 when using llvm
+           expat
+           (force libva-without-mesa)
+           libxml2
+           libxrandr
+           libxvmc
+           llvm-for-mesa
+           vulkan-loader
+           wayland
+           wayland-protocols
+           `(,zstd "lib")))
     (native-inputs
      (append
       (list bison
+            clang-18
             flex
             gettext-minimal
             glslang
+            libclc
             pkg-config
             python-libxml2              ;for OpenGL ES 1.1 and 2.0 support
             python-mako
+            python-ply
+            python-pyyaml
             python-wrapper
             (@ (gnu packages base) which))
-      (if (target-aarch64?)
-          (list libclc)
-          '())
       (if (%current-target-system)
           (list cmake-minimal-cross
                 pkg-config-for-build
@@ -595,15 +592,7 @@ from software emulation to complete hardware acceleration for modern GPUs.")
     (arguments
      (substitute-keyword-arguments (package-arguments mesa)
        ((#:configure-flags flags)
-        #~(cons "-Dgallium-opencl=standalone" #$flags))))
-    (inputs
-     (modify-inputs (package-inputs mesa)
-       (prepend libclc)))
-    (native-inputs
-     (if (target-aarch64?)
-         (package-native-inputs mesa)
-         (modify-inputs (package-native-inputs mesa)
-           (prepend clang-18))))))
+        #~(cons "-Dgallium-opencl=standalone" #$flags))))))
 
 (define-public mesa-opencl-icd
   (package/inherit mesa-opencl
