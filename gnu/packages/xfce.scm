@@ -185,7 +185,7 @@ storage system.")
 (define-public libxfce4ui
   (package
     (name "libxfce4ui")
-    (version "4.18.4")
+    (version "4.18.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -193,7 +193,7 @@ storage system.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0k6b8al8cy2w5zi8iywkzjsz2cgiz9r8ir2dflzxw9kdgiwzxvl7"))))
+                "1k9hrq4mlpknv6kb32aakp57n0vaxv3q7716kkvcgin8dhh9kpbp"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
