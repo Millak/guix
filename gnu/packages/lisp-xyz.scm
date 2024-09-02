@@ -25793,6 +25793,35 @@ conditions.")
 (define-public ecl-sealable-metaobjects
   (sbcl-package->ecl-package sbcl-sealable-metaobjects))
 
+(define-public sbcl-secret-values
+  (let ((commit "72996c0551eea338afa355ee90e20171ac74ebd4")
+        (revision "0"))
+    (package
+      (name "sbcl-secret-values")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rotatef/secret-values")
+               (commit commit)))
+         (file-name (git-file-name "cl-secret-values" version))
+         (sha256
+          (base32  "07ph49s27gvjzx60yy094bb9ddwiys34r8cx5l837i34nm2fn3nh"))))
+      (build-system asdf-build-system/sbcl)
+      (synopsis "Hide passwords and similar secret inputs")
+      (description
+       "This library provides a wrapper type for secret values, to reduce the
+risk of accidentally revealing them.")
+      (home-page "https://github.com/rotatef/secret-values")
+      (license license:expat))))
+
+(define-public cl-secret-values
+  (sbcl-package->cl-source-package sbcl-secret-values))
+
+(define-public ecl-secret-values
+  (sbcl-package->ecl-package sbcl-secret-values))
+
 (define-public sbcl-seedable-rng
   (let ((commit "aa1a1564b6e07e2698df37c7a98348c4f762cb15")
         (revision "1"))
