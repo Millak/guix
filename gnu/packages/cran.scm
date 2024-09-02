@@ -9690,17 +9690,17 @@ functions are available at both the R level, and through Rcpp.")
 (define-public r-geometry
   (package
     (name "r-geometry")
-    (version "0.4.7")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "geometry" version))
        (sha256
         (base32
-         "0fq1sbjlc02idfsnvily7hgi6zgjvrjh7c57wz166k8vyl2l484n"))))
+         "0qcymxxbs3lqi4w6cl8h3hwrchk3ahxp83kkv86bvrq4cd6mbxxm"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-magic r-linprog r-lpsolve r-rcpp r-rcppprogress))
+     (list r-linprog r-lpsolve r-magic r-rcpp r-rcppprogress))
     (home-page "https://geometry.r-forge.r-project.org/")
     (synopsis "Mesh generator and surface tessellator")
     (description
