@@ -1265,7 +1265,7 @@ system resources, while still being visually appealing and user friendly.")
 (define-public xfce4-power-manager
   (package
     (name "xfce4-power-manager")
-    (version "4.18.3")
+    (version "4.18.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -1273,7 +1273,7 @@ system resources, while still being visually appealing and user friendly.")
                                   "xfce4-power-manager-" version ".tar.bz2"))
               (sha256
                (base32
-                "1w445v3911cf7l6w5c0f84aphv8s579f8srnhjrhf3drd07xsy8d"))))
+                "0x6qychcgqxc5dwwxzypqw2da35y6cd25ngg42zxndnrvixqz4bn"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
