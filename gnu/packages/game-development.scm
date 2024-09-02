@@ -495,15 +495,15 @@ types (revolute, prismatic, wheel, etc.).")
 (define-public python-sge
   (package
     (name "python-sge")
-    (version "2.0.post0")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sge" version))
        (sha256
         (base32
-         "0s5d5qzlzfmqb10iyrqi62n36ll94d99xjaznp5ca6dz1b91qkvr"))))
-    (build-system python-build-system)
+         "1bp4spcjsmy6xv2j0ciaripfgd3pj5413hhhrj8v8mxcwhraw68p"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-pygame python-uniseg))
     (home-page "https://python-sge.github.io/")
