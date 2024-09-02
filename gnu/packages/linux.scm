@@ -1371,6 +1371,66 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                         ("CONFIG_RTC_DRV_RK808" . #t))
                       (default-extra-linux-options linux-libre-5.4-version))))
 
+(define-public linux-libre-arm64-honeycomb
+  ;; Kernel for use on the HoneyComb LX2 boards:
+  ;; <https://shop.solid-run.com/product/SRCFTXE000IV13/>.
+  (make-linux-libre* linux-libre-5.15-version
+                     linux-libre-5.15-gnu-revision
+                     linux-libre-5.15-source
+                     '("aarch64-linux")
+                     #:extra-version "arm64-honeycomb"
+                     #:extra-options
+                     ;; See
+                     ;; https://github.com/SolidRun/lx2160a_build/blob/master/configs/linux/lx2k_additions.config
+                     (append
+                      `(("CONFIG_GPIO_SYSFS" . #true)
+                        ("CONFIG_GPIO_MPC8XXX" . #true)
+                        ("CONFIG_NET_PKTGEN" . #true)
+                        ("CONFIG_USB_SERIAL" . #true)
+                        ("CONFIG_USB_SERIAL_CONSOLE" . #true)
+                        ("CONFIG_USB_SERIAL_GENERIC" . #true)
+                        ("CONFIG_USB_SERIAL_SIMPLE" . #true)
+                        ("CONFIG_USB_SERIAL_FTDI_SIO" . #true)
+                        ("CONFIG_USB_ACM" . #true)
+                        ("CONFIG_USB_NET_DRIVERS" . #true)
+                        ("CONFIG_USB_USBNET" . #true)
+                        ("CONFIG_USB_NET_CDCETHER" . #true)
+                        ("CONFIG_USB_NET_CDC_NCM" . #true)
+                        ("CONFIG_USB_NET_NET1080" . #true)
+                        ("CONFIG_USB_NET_CDC_SUBSET_ENABLE" . #true)
+                        ("CONFIG_USB_NET_CDC_SUBSET" . #true)
+                        ("CONFIG_USB_ARMLINUX" . #true)
+                        ("CONFIG_BLK_DEV_NVME" . #true)
+                        ("CONFIG_NVMEM_BCM_OCOTP" . #true)
+                        ("CONFIG_DRM_AMDGPU" . #true)
+                        ("CONFIG_DRM_AMDGPU_SI" . #true)
+                        ("CONFIG_DRM_AMDGPU_CIK" . #true)
+                        ("CONFIG_DRM_AMDGPU_USERPTR" . #true)
+                        ("CONFIG_DRM_AMD_DC" . #true)
+                        ("CONFIG_CHASH" . #true)
+                        ("CONFIG_PMBUS" . #true)
+                        ("CONFIG_SENSORS_PMBUS" . #true)
+                        ("CONFIG_REGULATOR" . #true)
+                        ("CONFIG_REGULATOR_FIXED_VOLTAGE" . #true)
+                        ("CONFIG_REGULATOR_PWM" . #true)
+                        ("CONFIG_SENSORS_AMC6821" . #true)
+                        ("CONFIG_SENSORS_LM90" . #true)
+                        ("CONFIG_SENSORS_LTC2978" . #true)
+                        ("CONFIG_SENSORS_LTC2978_REGULATOR" . #true)
+                        ("CONFIG_TMPFS" . #true)
+                        ("CONFIG_TMPFS_POSIX_ACL" . #true)
+                        ("CONFIG_TMPFS_XATTR" . #true)
+                        ;;("CONFIG_BLK_DEV_RAM_SIZE" . 524288)
+                        ("CONFIG_POWER_RESET_GPIO" . #true)
+                        ("CONFIG_CRYPTO_USER_API_HASH" . #true)
+                        ("CONFIG_CRYPTO_USER_API_SKCIPHER" . #true)
+                        ("CONFIG_CRYPTO_USER_API_RNG" . #true)
+                        ("CONFIG_CRYPTO_USER_API_AEAD" . #true)
+
+                        ;; For connecting to ci.guix.gnu.org over VPN.
+                        ("CONFIG_WIREGUARD" . m))
+                      (default-extra-linux-options linux-libre-5.15-version))))
+
 (define-public linux-libre-riscv64-generic
   (make-linux-libre* linux-libre-version
                      linux-libre-gnu-revision
