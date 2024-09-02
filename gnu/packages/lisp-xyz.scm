@@ -23896,6 +23896,37 @@ pattern-matching-like, but a char-by-char procedural parser.")
 (define-public ecl-proc-parse
   (sbcl-package->ecl-package sbcl-proc-parse))
 
+(define-public sbcl-progressons
+  (let ((commit "69a8092e43876d66943aef709ab641818d52f2da")
+        (revision "0"))
+    (package
+      (name "sbcl-progressons")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vindarel/progressons")
+               (commit commit)))
+         (file-name (git-file-name "cl-progressons" version))
+         (sha256
+          (base32 "1i93khd0l1aphzh6qb4yy9cpi2nmqac08b90yx95p4zymap03nly"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-ansi-text
+             sbcl-cl-str))
+      (synopsis "Display a progress bar on one line")
+      (description
+       "This library can be used to display a progress bar on one line.")
+      (home-page "https://github.com/vindarel/progressons")
+      (license license:expat))))
+
+(define-public cl-progressons
+  (sbcl-package->cl-source-package sbcl-progressons))
+
+(define-public ecl-progressons
+  (sbcl-package->ecl-package sbcl-progressons))
+
 (define-public sbcl-prometheus
   (package
     (name "sbcl-prometheus")
