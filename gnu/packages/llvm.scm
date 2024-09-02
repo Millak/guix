@@ -22,7 +22,7 @@
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022, 2024 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
@@ -2172,21 +2172,18 @@ using @code{clang-rename}.")))
             ,@modules))
          ((#:configure-flags cf ''())
           #~(cons*
-              ;; AMDGPU is needed by the vulkan drivers.
-              #$(string-append "-DLLVM_TARGETS_TO_BUILD="
-                               (system->llvm-target) ";AMDGPU")
-              #$@(if (%current-target-system)
-                     '("-DBUILD_SHARED_LIBS:BOOL=TRUE"
-                       "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
+             #$@(if (%current-target-system)
+                    '("-DBUILD_SHARED_LIBS:BOOL=TRUE"
+                      "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
                     '())
-              ;; Skipping tools and utils decreases the output by ~100 MiB.
-              "-DLLVM_BUILD_TOOLS=NO"
-              (remove
-               (cut string-match
-                    #$(if (%current-target-system)
-                          "-DLLVM_(LINK_LLVM_DYLIB|TARGETS_TO_BUILD|INSTALL_UTILS).*"
-                          "-DLLVM_(TARGETS_TO_BUILD|INSTALL_UTILS).*") <>)
-                      #$cf)))
+             ;; Skipping tools and utils decreases the output by ~100 MiB.
+             "-DLLVM_BUILD_TOOLS=NO"
+             (remove
+              (cut string-match
+                   #$(if (%current-target-system)
+                         "-DLLVM_(LINK_LLVM_DYLIB|INSTALL_UTILS).*"
+                         "-DLLVM_INSTALL_UTILS.*") <>)
+              #$cf)))
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
               #$@(if (%current-target-system)
