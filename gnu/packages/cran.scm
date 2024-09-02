@@ -382,6 +382,34 @@ facilitate the computation of the conditional Akaike information for model
 evaluation.")
     (license license:gpl2+)))
 
+(define-public r-cards
+  (package
+    (name "r-cards")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cards" version))
+       (sha256
+        (base32 "1sw4qic8p539lxx0rz3wy87k3jr06izdlwnvli41s8ij8yl4s124"))))
+    (properties `((upstream-name . "cards")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-dplyr
+                             r-glue
+                             r-rlang
+                             r-tidyr
+                             r-tidyselect))
+    (home-page "https://github.com/insightsengineering/cards")
+    (synopsis "Analysis Results Data")
+    (description
+     "This package lets you construct @dfn{Clinical Data Interchange Standards
+Consortium} (CDISC) compliant Analysis Results Data objects.  These objects
+are used and re-used to construct summary tables, visualizations, and written
+reports.  The package also exports utilities for working with these objects
+and creating new Analysis Results Data objects.")
+    (license license:asl2.0)))
+
 (define-public r-castor
   (package
     (name "r-castor")
