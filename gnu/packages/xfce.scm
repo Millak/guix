@@ -623,7 +623,7 @@ your system in categories, so you can quickly find and launch them.")
 (define-public xfce4-session
   (package
     (name "xfce4-session")
-    (version "4.18.3")
+    (version "4.18.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -631,7 +631,7 @@ your system in categories, so you can quickly find and launch them.")
                                   "xfce4-session-" version ".tar.bz2"))
               (sha256
                (base32
-                "1v4lfgz7az8iqp01a1ww8sxxjfmr676bijhrhw4r6r7cjvh96brq"))
+                "05k5w3n3hyb93a74f0qc6q0lky4vc51vdlsra8d8i2rkqxs5174s"))
               (modules '((guix build utils)))
               (snippet
                '(begin
