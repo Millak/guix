@@ -27981,6 +27981,36 @@ provides a method for determining which capabilities a terminal
 (define-public ecl-terminfo
   (sbcl-package->ecl-package sbcl-terminfo))
 
+(define-public sbcl-termp
+  (let ((commit "29789fe83db624679b6f341e3fae3f2577ce6a45")
+        (revision "0"))
+    (package
+      (name "sbcl-termp")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vindarel/termp")
+               (commit commit)))
+         (file-name (git-file-name "cl-termp" version))
+         (sha256
+          (base32 "03r5cv01q4yg0a2dv2ckn2xys53y9isrq3hkp0dqa96q8wrindlh"))))
+      (build-system asdf-build-system/sbcl)
+      (synopsis "Test for real vs. dumb terminal window")
+      (description
+       "This is a trivial utility for distinguishing between a process running
+in a real terminal window and a process running in a dumb one, e.g.
+emacs-slime.")
+      (home-page "https://github.com/vindarel/termp")
+      (license license:expat))))
+
+(define-public cl-termp
+  (sbcl-package->cl-source-package sbcl-termp))
+
+(define-public ecl-termp
+  (sbcl-package->ecl-package sbcl-termp))
+
 (define-public sbcl-terrable
   (let ((commit "e4fe23ffa08e8d53a8168105b413861da59cc786")
         (revision "1"))
