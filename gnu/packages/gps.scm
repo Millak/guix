@@ -100,9 +100,22 @@
               "-DGPSBABEL_WITH_SHAPELIB=pkgconfig"
               "-DGPSBABEL_WITH_ZLIB=pkgconfig")))
     (inputs
-     (list expat libusb libxkbcommon shapelib qt5compat qtbase qtserialport qttranslations zlib))
+     (list expat
+           libusb
+           libxkbcommon
+           qt5compat
+           qtbase
+           qtserialport
+           qttranslations
+           shapelib
+           zlib))
     (native-inputs
-     (list which pkg-config qttools libxml2 tzdata-for-tests)) ;'xmllint' needed for the KML tests
+     (list (libc-utf8-locales-for-target)
+           libxml2  ;'xmllint' needed for the KML tests
+           pkg-config
+           qttools
+           tzdata-for-tests
+           which))
     (home-page "https://www.gpsbabel.org/")
     (synopsis "Convert and exchange data with GPS and map programs")
     (description
