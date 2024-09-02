@@ -7599,16 +7599,14 @@ aware of your profiles and configuration in ~/.aws/config.")
     (license license:expat)))
 
 (define-public go-github-com-gsterjov-go-libsecret
-  (let ((commit "a6f4afe4910cad8688db3e0e9b9ac92ad22d54e1")
-        (revision "0"))
     (package
       (name "go-github-com-gsterjov-go-libsecret")
-      (version "5.0.1")
+      (version "0.0.0-20161001094733-a6f4afe4910c")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/gsterjov/go-libsecret")
-                      (commit commit)))
+                      (commit (go-version->git-ref version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
@@ -7624,7 +7622,7 @@ aware of your profiles and configuration in ~/.aws/config.")
        "This native Go library manages secrets via the freedesktop.org
 \"Secret Service\" DBus interface.")
       (home-page "https://github.com/gsterjov/go-libsecret")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-mtibben-androiddnsfix
   (let ((commit "ff02804463540c36e3a148dcf4b009d003cf2a31")
