@@ -525,7 +525,7 @@ keys for controlling the audio volume.")
 (define-public xfce4-whiskermenu-plugin
   (package
     (name "xfce4-whiskermenu-plugin")
-    (version "2.7.3")
+    (version "2.8.3")
     (source
      (origin
        (method url-fetch)
@@ -533,28 +533,21 @@ keys for controlling the audio volume.")
                            "xfce4-whiskermenu-plugin/" (version-major+minor version) "/"
                            "xfce4-whiskermenu-plugin-" version ".tar.bz2"))
        (sha256
-        (base32 "1sg6kx52c5j1l7y6z156gxk4b0ppj210i40hzbvqqf35jvn9j9ns"))))
+        (base32 "1l4wzirqk754cliwyhl28f460xkqzqi9a9s7jirx164gcn3w4xp7"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     (list xfce4-panel
+     (list accountsservice
+           xfce4-panel
            garcon
            gettext-minimal
            exo
            gtk
+           gtk-layer-shell
            libxfce4ui))
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-shell-script
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (string-append "panel-plugin/xfce4-popup-whiskermenu.in")
-               (("@CMAKE_INSTALL_FULL_BINDIR@")
-                (string-append (assoc-ref inputs "xfce4-panel") "/bin"))
-               (("gettext") (which "gettext")))
-             #t)))))
+     (list #:tests? #f))                ; no tests
     (home-page "https://goodies.xfce.org/projects/panel-plugins/xfce4-whiskermenu-plugin")
     (synopsis "Application menu panel plugin for Xfce")
     (description
