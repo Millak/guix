@@ -15227,6 +15227,13 @@ configuration (you need write permissions for the file):
 guix style -f /etc/config.scm
 @end example
 
+@item --alphabetical-sort
+@itemx -A
+Place the top-level package definitions in the given files in
+alphabetical order.  Package definitions with matching names are placed
+with versions in descending order.  This option only has an effect in
+combination with @option{--whole-file}.
+
 @item --styling=@var{rule}
 @itemx -S @var{rule}
 Apply @var{rule}, one of the following styling rules:

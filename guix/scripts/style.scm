@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
 
 (define-module (guix scripts style)
   #:autoload   (gnu packages) (specification->package fold-packages)
+  #:use-module (guix combinators)
   #:use-module (guix scripts)
   #:use-module ((guix scripts build) #:select (%standard-build-options))
   #:use-module (guix ui)
@@ -494,11 +496,62 @@ bailing out~%"))
 ;;; Whole-file formatting.
 ;;;
 
-(define* (format-whole-file file #:rest rest)
-  "Reformat all of FILE."
+(define (order-packages lst)
+  "Return LST, a list of top-level expressions and blanks, with
+top-level package definitions in alphabetical order.  Packages which
+share a name are placed with versions in descending order."
+  (define (package-name pkg)
+    (match pkg
+      ((('define-public _ expr) _ ...)
+       (match expr
+         ((or ('package _ ('name name) _ ...)
+              ('package ('name name) _ ...))
+          name)
+         (_ #f)))
+      (_ #f)))
+
+  (define (package-version pkg)
+    (match pkg
+      ((('define-public _ expr) _ ...)
+       (match expr
+         ((or ('package _ _ ('version version) _ ...)
+              ('package _ ('version version) _ ...))
+          version)
+         (_ #f)))
+      (_ #f)))
+
+  (define (package>? lst1 lst2)
+    (let ((name1 (package-name lst1))
+          (name2 (package-name lst2))
+          (version1 (package-version lst1))
+          (version2 (package-version lst2)))
+      (and name1 name2 (or (string>? name1 name2)
+                           (and (string=? name1 name2)
+                                version1
+                                version2
+                                (version>? version2 version1))))))
+
+        ;; Group define-public with preceding blanks and defines.
+  (let ((lst (fold2 (lambda (expr tail head)
+                      (let ((head (cons expr head)))
+                        (match expr
+                          ((? blank?)
+                           (values tail head))
+                          (('define _ ...)
+                           (values tail head))
+                          (_ (values (cons head tail) '())))))
+                    '() '() lst)))
+    (reverse (concatenate (sort! lst package>?)))))
+
+(define* (format-whole-file file order? #:rest rest)
+  "Reformat all of FILE. When ORDER? is true, top-level package definitions
+are put in alphabetical order."
   (with-fluids ((%default-port-encoding "UTF-8"))
-    (let ((lst (call-with-input-file file read-with-comments/sequence
-                                     #:guess-encoding #t)))
+    (let* ((lst (call-with-input-file file read-with-comments/sequence
+                                      #:guess-encoding #t))
+           (lst (if order?
+                    (order-packages lst)
+                    lst)))
       (with-atomic-file-output file
         (lambda (port)
           (apply pretty-print-with-comments/splice port lst
@@ -526,6 +579,9 @@ bailing out~%"))
         (option '(#\f "whole-file") #f #f
                 (lambda (opt name arg result)
                   (alist-cons 'whole-file? #t result)))
+        (option '(#\A "--alphabetical-sort") #f #f
+                (lambda (opt name arg result)
+                  (alist-cons 'order? #t result)))
         (option '(#\S "styling") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'styling-procedure
@@ -569,7 +625,7 @@ Update package definitions to the latest style.\n"))
   (display (G_ "
   -S, --styling=RULE     apply RULE, a styling rule"))
   (display (G_ "
-  -l, --list-stylings   display the list of available style rules"))
+  -l, --list-stylings    display the list of available style rules"))
   (newline)
   (display (G_ "
   -n, --dry-run          display files that would be edited but do nothing"))
@@ -584,6 +640,9 @@ Update package definitions to the latest style.\n"))
   (newline)
   (display (G_ "
   -f, --whole-file       format the entire contents of the given file(s)"))
+  (display (G_ "
+  -A, --alphabetical-sort
+                         place the contents in alphabetical order as well"))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
@@ -627,7 +686,9 @@ Update package definitions to the latest style.\n"))
               (warning (G_ "'--styling' option has no effect in whole-file mode~%")))
             (when (null? files)
               (warning (G_ "no files specified, nothing to do~%")))
-            (for-each format-whole-file files))
+            (for-each
+              (cute format-whole-file <> (assoc-ref opts 'order?))
+              files))
           (let ((packages (filter-map (match-lambda
                                         (('argument . spec)
                                          (specification->package spec))

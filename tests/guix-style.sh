@@ -58,6 +58,24 @@ cat > "$tmpfile" <<EOF
   ;; The services.
   (services
    (cons (service mcron-service-type) %base-services)))
+;; Incomplete package definitions in alphabetical order.
+
+(define-public pkg
+  (package
+    (name "bar")
+    (version "2")))
+
+;; The comment below belongs to the foo package.
+(define-public pkg
+  (package
+    (name "bar")
+    (version "1")))
+;; Incomplete package definitions in alphabetical order.
+
+(define-public pkg
+  (package
+    (name "foo")
+    (version "2")))
 EOF
 
 cp "$tmpfile" "$tmpfile.bak"
@@ -77,4 +95,12 @@ sed -i "$tmpfile" -e's/ \+/ /g'
 test "$initial_hash" != "$(guix hash "$tmpfile")"
 
 guix style -f "$tmpfile"
+test "$initial_hash" = "$(guix hash "$tmpfile")"
+
+# Swap foo and bar packages.
+sed -i "$tmpfile" -e 's/"foo"/"bar"/g'
+sed -i "$tmpfile" -e '0,/"bar"/{s//"foo"/}'
+test "$initial_hash" != "$(guix hash "$tmpfile")"
+
+guix style -fA "$tmpfile"
 test "$initial_hash" = "$(guix hash "$tmpfile")"
