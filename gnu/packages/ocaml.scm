@@ -1419,9 +1419,12 @@ Knuth’s LR(1) parser construction technique.")
                 "179ipx0c6bpxm4gz0syxgqy09dp5p4x9qsdil7s9jlx8ffg1mm0w"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("ocaml" ,ocaml)
-       ("findlib" ,ocaml-findlib)
-       ("pkg-config" ,pkg-config)))
+     (list ;; Build failure with make-4.4, so we use make-4.2.
+           ;; See <https://github.com/garrigue/lablgtk/issues/170>.
+           gnu-make-4.2
+           ocaml
+           ocaml-findlib
+           pkg-config))
     ;; FIXME: Add inputs gtkgl-2.0, libpanelapplet-2.0, gtkspell-2.0,
     ;; and gtk+-quartz-2.0 once available.
     (inputs
