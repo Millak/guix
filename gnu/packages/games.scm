@@ -2494,7 +2494,7 @@ dummy solver, it can even solve the hands it has generated for you.")
       (license license:gpl3))))
 
 (define-public retux
-  (let ((release "1.6.1")
+  (let ((release "1.6.2")
         (revision 0))
     (package
       (name "retux")
@@ -2510,7 +2510,7 @@ dummy solver, it can even solve the hands it has generated for you.")
                                     release "-src.zip"))
                 (sha256
                  (base32
-                  "1bkyfm0h4kys0x7c1340fnkhgnmcrf4j2xjm250r5w8q6l7v2wj4"))))
+                  "1fzsjg4k25mxjjc28ykz8n3dx5xzwxnp772fwzz5jy1wrxmjkl4x"))))
       (build-system python-build-system)
       (arguments
        `(#:tests? #f                    ; no check target
