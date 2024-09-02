@@ -19791,14 +19791,14 @@ University Press, 2007.")
 (define-public r-circular
   (package
     (name "r-circular")
-    (version "0.5-0")
+    (version "0.5-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "circular" version))
        (sha256
         (base32
-         "14kvkbmvdfzh8j4hgw93qkjkg86xlpw69sp7g8d5smcyw9fxmx2b"))))
+         "1ngkhdvdzxdm8amc4s9jmiqc916fmf1xnm70gz3znxyp368zqngv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-boot r-mvtnorm))
