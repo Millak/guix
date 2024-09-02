@@ -89,7 +89,8 @@ It can read and write LCF and XML files.")
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
-       (list (string-append "--with-bash-completion-dir="
+       (list "--enable-fmmidi"
+             (string-append "--with-bash-completion-dir="
                             %output "/etc/bash_completion.d/"))))
     (native-inputs
      (list pkg-config))
