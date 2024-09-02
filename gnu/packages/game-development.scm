@@ -546,15 +546,15 @@ levels.")
 (define-public python-xsge
   (package
     (name "python-xsge")
-    (version "2020.09.07")
+    (version "2021.10.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/python-sge/xsge"
                                   "/releases/download/v" version
-                                  "/xsge-" version ".zip"))
+                                  "/xsge-" version ".tar.gz"))
               (sha256
                (base32
-                "136xgy3f9vw636wxpqbha022avk0wyxw63mm3a2dvwhh90s716f9"))))
+                "0g86p5i9lflvblzy7977lmxbsma5hdlz63sk0k8c59vnhg8sij4i"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -567,8 +567,6 @@ levels.")
                      (string-append "--prefix=" (assoc-ref outputs "out"))
                      "--root=/"))))
        #:tests? #f)) ; no check target
-    (native-inputs
-     (list unzip))
     (propagated-inputs
      (list python-sge))
     (home-page "https://python-sge.github.io/")
@@ -578,7 +576,7 @@ levels.")
 Game Engine easier.  In addition to SGE's conveniences, the user has access to a
 GUI toolkit, lighting and physics frameworks and @code{Tiled} TMX format
 support.")
-    (license license:gpl3+)))
+    (license license:lgpl3+)))
 
 (define-public slade
   (package
