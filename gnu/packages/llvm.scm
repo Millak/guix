@@ -2158,7 +2158,7 @@ using @code{clang-rename}.")))
 
 (define-public llvm-for-mesa
   ;; Note: update the 'clang' input of mesa-opencl when bumping this.
-  (let ((base-llvm llvm-15))
+  (let ((base-llvm llvm-18))
     (package
       (inherit base-llvm)
       (name "llvm-for-mesa")

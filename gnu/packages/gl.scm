@@ -324,15 +324,15 @@ also known as DXTn or DXTC) for Mesa.")
     (inputs
      (append
        (if (target-aarch64?)
-           (list clang-18
-                 llvm-18)
-           (list llvm-for-mesa))
+           (list clang-18)
+           '())
        (list elfutils                   ;libelf required for r600 when using llvm
              expat
              (force libva-without-mesa)
              libxml2
              libxrandr
              libxvmc
+             llvm-for-mesa
              vulkan-loader
              wayland
              wayland-protocols
@@ -603,7 +603,7 @@ from software emulation to complete hardware acceleration for modern GPUs.")
      (if (target-aarch64?)
          (package-native-inputs mesa)
          (modify-inputs (package-native-inputs mesa)
-           (prepend clang-15))))))
+           (prepend clang-18))))))
 
 (define-public mesa-opencl-icd
   (package/inherit mesa-opencl
