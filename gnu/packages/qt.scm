@@ -153,7 +153,8 @@
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags
-           #~(list (string-append "-DUSE_QT_VERSION="
+           #~(list "-DCMAKE_CXX_FLAGS=-fPIC"
+                   (string-append "-DUSE_QT_VERSION="
                                   #$(version-major
                                      (package-version
                                       (this-package-input "qtbase")))))))
