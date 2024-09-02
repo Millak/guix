@@ -2509,13 +2509,13 @@ size and can be easily tested locally before being sent to a remote.")
 (define-public r-climaemet
   (package
     (name "r-climaemet")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "climaemet" version))
               (sha256
                (base32
-                "1ccf7639zk56m60cqd6z8h4s6nsvhv76d8ndbk832d9lak13b7wb"))))
+                "1h17lf5mkahgx9zqqbnadjc9jr8y0jis7lvla8r6ifr0vpccy7wg"))))
     (properties `((upstream-name . "climaemet")))
     (build-system r-build-system)
     (propagated-inputs
@@ -2528,7 +2528,8 @@ size and can be easily tested locally before being sent to a remote.")
            r-readr
            r-rlang
            r-tibble
-           r-tidyr))
+           r-tidyr
+           r-xml2))
     (native-inputs (list r-knitr))
     (home-page "https://ropenspain.github.io/climaemet/")
     (synopsis "Climate AEMET Tools")
