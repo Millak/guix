@@ -282,16 +282,17 @@ files and provide more explicit control over line endings.")
 (define-public r-broom-helpers
   (package
     (name "r-broom-helpers")
-    (version "1.16.0")
+    (version "1.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "broom.helpers" version))
        (sha256
-        (base32 "05979v4c40hzcr6sq5n9h3lg3maz6xyjhv9v1xz9mk6dg23aqyws"))))
+        (base32 "0k97smqgxggdkbgfs2yvvgqw225q9106124kaw499m6cjcldxqyi"))))
     (properties `((upstream-name . "broom.helpers")))
     (build-system r-build-system)
     (propagated-inputs (list r-broom
+                             r-cards
                              r-cli
                              r-dplyr
                              r-labelled
