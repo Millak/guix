@@ -5422,6 +5422,39 @@ with other libraries which may also use Freetype.")
 (define-public ecl-cl-freetype2
   (sbcl-package->ecl-package sbcl-cl-freetype2))
 
+(define-public sbcl-cl-ftp
+  (let ((commit "530f1ec06427c69966d83c86638be628eacb9502")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-ftp")
+      (version (git-version "1.6.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pinterface/cl-ftp")
+               (commit commit)))
+         (file-name (git-file-name "cl-ftp" version))
+         (sha256
+          (base32  "0q5x9g419crvaf106q33k0xkh4xvglzjyjhibz9siymcngyc7zdh"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-split-sequence
+             sbcl-usocket))
+      (synopsis "FTP client for Common Lisp")
+      (description
+       "CL-FTP is a library which provides FTP client functionality
+to a Common Lisp program.  CL-FTP uses the USOCKET package for network
+sockets and the SPLIT-SEQUENCE package for some parsing needs.")
+      (home-page "https://github.com/pinterface/cl-ftp")
+      (license license:expat))))
+
+(define-public cl-ftp
+  (sbcl-package->cl-source-package sbcl-cl-ftp))
+
+(define-public ecl-cl-ftp
+  (sbcl-package->ecl-package sbcl-cl-ftp))
+
 (define-public sbcl-cl-gamepad
   (let ((commit "d5b99fbaa2e39294d23061699e8f1e761eda7205")
         (revision "3"))
