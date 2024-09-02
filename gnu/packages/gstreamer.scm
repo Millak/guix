@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1126,7 +1127,7 @@ binary, but none of the actual plugins.")))
     (native-inputs
      (list pkg-config python))
     (propagated-inputs
-     (list gst-plugins-base python-pygobject))
+     (list gst-plugins-base python-pygobject-3.48))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "GStreamer GObject Introspection overrides for Python")
     (description

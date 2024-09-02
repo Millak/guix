@@ -20,6 +20,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1076,6 +1077,20 @@ useful for C++.")
     (properties
      '((upstream-name . "pygobject")))
     (license license:lgpl2.1+)))
+
+(define-public python-pygobject-3.48
+  (package
+    (inherit python-pygobject)
+    (version "3.48.2")
+    (source
+     (origin
+       (inherit (package-source python-pygobject))
+       (uri (string-append "mirror://gnome/sources/pygobject/"
+                           (version-major+minor version)
+                           "/pygobject-" version ".tar.xz"))
+       (sha256
+        (base32
+         "19yii8lydnjw225k4gclhn8hya7caiginqi0mj9a0cdym6sax507"))))))
 
 (define-public perl-glib
   (package
