@@ -8201,39 +8201,6 @@ array or reader.")
 ICU to Go.")
     (license license:expat)))
 
-(define-public go-github-com-niemeyer-pretty
-  (package
-    (name "go-github-com-niemeyer-pretty")
-    (version "0.0.0-20200227124842-a10e7caefd8e")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/niemeyer/pretty")
-                    (commit (go-version->git-ref version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1jmazh4xzaa3v6g46hz60q2z7nmqs9l9cxdzmmscn3kbcs2znq4v"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/niemeyer/pretty"
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'int-to-string-with-rune
-                 (lambda* (#:key import-path #:allow-other-keys)
-                   (with-directory-excursion (string-append "src/" import-path)
-                     (substitute* "formatter.go"
-                       (("s \\+= string\\(i\\)")
-                        "s += string(rune(i))"))))))))
-    (propagated-inputs (list go-github-com-kr-text))
-    (home-page "https://github.com/niemeyer/pretty")
-    (synopsis "Pretty-print Go values")
-    (description
-     "The pretty package provides pretty-printing for Go values.  This is
-useful during debugging, to avoid wrapping long output lines in the
-terminal.")
-    (license license:expat)))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
