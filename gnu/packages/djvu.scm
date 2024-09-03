@@ -380,7 +380,7 @@ and background layers of images, which can then be encoded into a DjVu file.")
                   "0x64hg9ysrk8sismxb4jgk0sq7r9j90v2i9765xhmxpiy6f0lpni"))))
       (build-system gnu-build-system)
       (native-inputs
-       (list libxml2 python-nose python-pillow))
+       (list (libc-utf8-locales-for-target) libxml2 python-nose python-pillow))
       (inputs
        (list bash-minimal
              djvulibre
