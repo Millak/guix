@@ -12806,6 +12806,7 @@ non-privileged user.")
            gobject-introspection
            itstool
            libarchive
+           (libc-utf8-locales-for-target)
            libxml2
            pkg-config
            python-minimal
