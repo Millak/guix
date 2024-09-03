@@ -3170,6 +3170,29 @@ non-blocking @code{TryLock} function to allow locking without blocking
 execution.")
     (license license:bsd-3)))
 
+(define-public go-github-com-gogs-chardet
+  (package
+    (name "go-github-com-gogs-chardet")
+    (version "0.0.0-20211120154057-b7413eaefb8f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gogs/chardet")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12j8q5wc9m4n51v2j2m40nahqdl9bh3hzpdp26clzq91kc2amiz0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gogs/chardet"))
+    (home-page "https://github.com/gogs/chardet")
+    (synopsis "Character set detection for Go")
+    (description
+     "The chardet package ports character set detection from ICU to Go.")
+    (license license:expat)))
+
 (define-public go-github-com-google-renameio
   (package
     (name "go-github-com-google-renameio")
