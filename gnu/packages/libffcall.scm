@@ -28,7 +28,7 @@
 (define-public libffcall
    (package
     (name "libffcall")
-    (version "2.2")
+    (version "2.5")
     (source
      (origin
        (method url-fetch)
@@ -36,7 +36,7 @@
              "mirror://gnu/libffcall/libffcall-" version ".tar.gz"))
        (sha256
         (base32
-         "0ixp7kbr7y8s34nsrsdfh77ig5c2zkwr6cfg9v1gm53cggwkgypb"))))
+         "0yb8hk3ksih98249s90lc3nngfs1y4jmi5ckj0wb3604njb20hkz"))))
     (build-system gnu-build-system)
     (arguments
      '(#:parallel-build? #f
