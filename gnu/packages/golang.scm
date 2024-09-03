@@ -8250,12 +8250,17 @@ terminal.")
     (build-system go-build-system)
     (propagated-inputs (list go-golang-org-x-text))
     (arguments
-     (list #:import-path "github.com/lithammer/fuzzysearch"
-           #:tests? #f ; Source-only package.
-           #:phases
-           #~(modify-phases %standard-phases
-               ;; Source-only package.
-               (delete 'build))))
+     (list
+      #:import-path "github.com/lithammer/fuzzysearch"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (home-page "https://github.com/lithammer/fuzzysearch")
     (synopsis "Tiny and fast fuzzy search in Go")
     (description
