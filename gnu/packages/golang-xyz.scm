@@ -2003,6 +2003,29 @@ more complicated parallel cases.")
      "Set is the set collection for the Go language.")
     (license license:expat)))
 
+(define-public go-github-com-deckarep-golang-set-v2
+  (package
+    (inherit go-github-com-deckarep-golang-set)
+    (name "go-github-com-deckarep-golang-set-v2")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/deckarep/golang-set")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11bvia6cflq46nzc2hfgikgxyck7wskyi0i7ksy9r0d41l4jh4l9"))))
+    (arguments
+     (list
+      #:import-path "github.com/deckarep/golang-set/v2"
+      #:unpack-path "github.com/deckarep/golang-set"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-elliotchance-orderedmap-v2))))
+
 (define-public go-github-com-dennwc-varint
   (package
     (name "go-github-com-dennwc-varint")
