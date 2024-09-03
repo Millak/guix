@@ -2154,7 +2154,18 @@ program's running, don't expect consistent results between platforms
         (base32 "1hhyk96l6mfijkay9ga6jqpczpn34fbqkjrqj3v9pf5p1hzd0xdx"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/elliotchance/orderedmap"))
+     (list
+      #:import-path "github.com/elliotchance/orderedmap"
+      #:unpack-path "github.com/elliotchance/orderedmap"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  ;; The full test suite runs flaky performance tests, so only
+                  ;; run the short tests.
+                  (invoke "go" "test" "-test.short" "."))))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://github.com/elliotchance/orderedmap")
@@ -2179,9 +2190,9 @@ O(1) for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
        (sha256
         (base32 "11bvia6cflq46nzc2hfgikgxyck7wskyi0i7ksy9r0d41l4jh4l9"))))
     (arguments
-     (list
-      #:import-path "github.com/elliotchance/orderedmap/v2"
-      #:unpack-path "github.com/elliotchance/orderedmap"))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-elliotchance-orderedmap)
+       ((#:import-path _) "github.com/elliotchance/orderedmap/v2")))))
 
 (define-public go-github-com-emersion-go-ical
   (package
