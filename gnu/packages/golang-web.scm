@@ -2443,6 +2443,33 @@ default LAN gateway.")
 port mapping and discovering the external IP address of a firewall.")
     (license license:asl2.0)))
 
+(define-public go-github-com-jaytaylor-html2text
+  (package
+    (name "go-github-com-jaytaylor-html2text")
+    (version "0.0.0-20230321000545-74c2419ad056")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jaytaylor/html2text")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14r0ph8w4yxx129kfvj0qbx4cyid65md93qmwlz2cly4iwjnr7w2"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/jaytaylor/html2text"))
+    (propagated-inputs
+     (list go-golang-org-x-net
+           go-github-com-olekukonko-tablewriter
+           go-github-com-ssor-bom))
+    (home-page "https://github.com/jaytaylor/html2text")
+    (synopsis "Convert HTML emails to text")
+    (description
+     "The html2text package converts HTML emails to plain text, allowing
+text-only mail clients to display them.")
+    (license license:expat)))
+
 (define-public go-github-com-jcmturner-dnsutils-v2
   (package
     (name "go-github-com-jcmturner-dnsutils-v2")
