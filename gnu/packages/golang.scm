@@ -8021,32 +8021,6 @@ email library.")
 of the current user.")
     (license license:expat)))
 
-(define-public go-github-com-rylans-getlang
-  (package
-    (name "go-github-com-rylans-getlang")
-    (version "0.0.0-20201227074721-9e7f44ff8aa0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rylans/getlang")
-                    (commit (go-version->git-ref version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1yf698h21j88d7d9wkzq69cfd7vs1mfp96nhb83lx6hhh7rfvb92"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/rylans/getlang"))
-    (propagated-inputs
-     (list go-golang-org-x-text))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (home-page "https://github.com/rylans/getlang")
-    (synopsis "Natural language detection package in pure Go")
-    (description
-     "This package provides fast natural language detection in Go.")
-    (license license:expat)))
-
 (define-public go-github-com-ssgelm-cookiejarparser
   (package
     (name "go-github-com-ssgelm-cookiejarparser")
