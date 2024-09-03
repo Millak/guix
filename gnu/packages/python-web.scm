@@ -8168,13 +8168,13 @@ of the CRC32C hashing algorithm.")
 (define-public python-google-auth
   (package
     (name "python-google-auth")
-    (version "2.17.3")
+    (version "2.34.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "google-auth" version))
+       (uri (pypi-uri "google_auth" version))
        (sha256
-        (base32 "1z2f0vj374rscvlivhvf9xxjlg4lng4mgpqnygfhy4wbqlmiwcff"))))
+        (base32 "1k04kkg5n3pi4awjxxsa50ail68wwf2gklmb686v46aw8fb77f4f"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
