@@ -1845,6 +1845,9 @@ operate properly.")
                       ;; https://lists.gnu.org/archive/html/guix-devel/2024-08/msg00159.html
                       (lambda _
                         (substitute* "configure"
+                          ;; This string only matches on ffmpeg v6 and above.
+                          ;; Replace it with the one defined at ffmpeg-5 which
+                          ;; matches on all ffmpeg versions. See #71917.
                           (("alGetError \\|\\|")
                            "alGetError \|\| true \|\|")))))
                  #~())
@@ -1889,7 +1892,18 @@ audio/video codec library.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0qwhyhil805hns7yksdxagnrcc90h60al7lz1rc65kd1j2w3nf2l"))))))
+                "0qwhyhil805hns7yksdxagnrcc90h60al7lz1rc65kd1j2w3nf2l"))))
+    (arguments
+     (if (target-x86-32?)
+         (substitute-keyword-arguments (package-arguments ffmpeg)
+           ((#:phases phases)
+            #~(modify-phases #$phases
+                (replace 'bypass-openal-check
+                  (lambda _
+                    (substitute* "configure"
+                      (("die \"ERROR: openal not found\"")
+                       "true")))))))
+         (package-arguments ffmpeg)))))
 
 (define-public ffmpeg-4
   (package
@@ -1907,7 +1921,7 @@ audio/video codec library.")
     (inputs (modify-inputs (package-inputs ffmpeg)
               (replace "sdl2" sdl2-2.0)))
     (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg)
+     (substitute-keyword-arguments (package-arguments ffmpeg-5)
        ((#:configure-flags flags ''())
         #~(cons "--enable-avresample" #$flags))))))
 
