@@ -170,9 +170,31 @@ It also includes the capability to perform syntax highlighting for several
 different programming languages.")
     (license gpl3+)))
 
-(define-public fmt-10
+(define-public fmt-11
   (package
     (name "fmt")
+    (version "11.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fmtlib/fmt")
+             (commit version)))
+       (sha256
+        (base32 "1v9k57zj34axagkxwkmg73gs9h15i6c8nv9hsgwjwmi82pinv8r0"))))
+    (build-system cmake-build-system)
+    (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
+    (home-page "https://fmt.dev")
+    (synopsis "Small and fast C++ formatting library")
+    (description "@code{fmt} (formerly @code{cppformat}) is a formatting
+library for C++.  It can be used as a safe alternative to @code{printf} or as
+a fast alternative to @code{IOStreams}.")
+    ;; The library is bsd-2, but documentation and tests include other licenses.
+    (license (list bsd-2 bsd-3 psfl))))
+
+(define-public fmt-10
+  (package
+    (inherit fmt-11)
     (version "10.2.1")
     (source
      (origin
@@ -181,16 +203,7 @@ different programming languages.")
                            version "/fmt-" version ".zip"))
        (sha256
         (base32 "1j8nln7rql2nxkhdlgpmx1c1dp6dyxnar1n5r7sjg0rws6i5289i"))))
-    (build-system cmake-build-system)
-    (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
-    (native-inputs (list unzip))
-    (home-page "https://fmt.dev")
-    (synopsis "Small and fast C++ formatting library")
-    (description "@code{fmt} (formerly @code{cppformat}) is a formatting
-library for C++.  It can be used as a safe alternative to @code{printf} or as
-a fast alternative to @code{IOStreams}.")
-    ;; The library is bsd-2, but documentation and tests include other licenses.
-    (license (list bsd-2 bsd-3 psfl))))
+    (native-inputs (list unzip))))
 
 (define-public fmt-9
   (package
