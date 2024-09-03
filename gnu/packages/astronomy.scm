@@ -541,7 +541,7 @@ accurately in real time at any rate desired.")
 (define-public cfitsio
   (package
     (name "cfitsio")
-    (version "4.4.1")
+    (version "4.5.0")
     (source
      (origin
        (method url-fetch)
@@ -549,7 +549,7 @@ accurately in real time at any rate desired.")
              "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/"
              "cfitsio-" version ".tar.gz"))
        (sha256
-        (base32 "098x1l8ijwsjp2ivp3v7pamrmpgwj5xmgb4yppm9w3w044zxr8b6"))))
+        (base32 "02ff4xsc4r6vam4m4nmp426bpl7klbx6nn5ajgj6452w6v1lz1g4"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -574,11 +574,15 @@ accurately in real time at any rate desired.")
     (inputs (list bzip2 curl zlib))
     (home-page "https://heasarc.gsfc.nasa.gov/fitsio/fitsio.html")
     (synopsis "Library for reading and writing FITS files")
-    (description "CFITSIO provides simple high-level routines for reading and
-writing @dfn{FITS} (Flexible Image Transport System) files that insulate the
-programmer from the internal complexities of the FITS format. CFITSIO also
+    (description
+     "CFITSIO provides simple high-level routines for reading and writing
+@acronym{Flexible Image Transport System,FITS} files that insulate the
+programmer from the internal complexities of the FITS format.  CFITSIO also
 provides many advanced features for manipulating and filtering the information
 in FITS files.")
+    (properties
+     '((release-monitoring-url .
+        "https://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html")))
     (license (license:non-copyleft "file://License.txt"
                                    "See License.txt in the distribution."))))
 
