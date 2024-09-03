@@ -6771,10 +6771,28 @@ formatting information, rather than the current locale name.")
                 "1p6qlsbj9rmqiwz9ly4c7jmifcx8m45xjhsbdwdvw2jzw5jc2ch1"))))
     (build-system go-build-system)
     (arguments
-     `(#:tests? #f ;XXX: Fix dbus tests
-       #:import-path "github.com/zalando/go-keyring"))
+     (list
+      #:import-path "github.com/zalando/go-keyring"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  ;; Disable tests which require a system DBus instance.
+                  (("TestDelete") "OffTestDelete")
+                  (("TestGet") "OffTestGet")
+                  (("TestSet") "OffTestSet")))))
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "dbus-run-session" "--"
+                          "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list dbus))
     (propagated-inputs
-     (list go-github-com-godbus-dbus-v5 dbus))
+     (list go-github-com-godbus-dbus-v5))
     (home-page "https://github.com/zalando/go-keyring/")
     (synopsis "Library for working with system keyring")
     (description "@code{go-keyring} is a library for setting, getting and
