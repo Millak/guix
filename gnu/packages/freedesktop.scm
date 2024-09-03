@@ -1151,7 +1151,7 @@ manager for the current system.")
 (define-public power-profiles-daemon
   (package
     (name "power-profiles-daemon")
-    (version "0.21")
+    (version "0.22")
     (source
      (origin
        (method git-fetch)
@@ -1161,7 +1161,7 @@ manager for the current system.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0dn3ygv49q7mzs52ch3yphxf4hbry698r1ajj52f6jgw7mpwr5p4"))))
+         "1r85mxnixkqlgiby46s8p0yrkzwq9lb6r6md933vssyr5xwsfdip"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
