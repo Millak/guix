@@ -37,6 +37,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages hurd)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
@@ -46,24 +47,27 @@
 (define-public screen
   (package
     (name "screen")
-    (version "4.9.1")
+    (version "5.0.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/screen/screen-"
                                  version ".tar.gz"))
              (patches (search-patches "screen-hurd-path-max.patch"))
              (sha256
-              (base32 "0sdc0ms6qxm4gbx0caw7pwghj5aw1h8syvxdhkac0w95qkiz7ki6"))))
+              (base32 "0wa9v6p7cna2scpimpvk9pgxaah80f4q0f2kln37qp0f1b83jjph"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake texinfo))
     (inputs
-     (list libxcrypt ncurses perl))
+     (list libxcrypt linux-pam ncurses perl))
     (arguments
      `(#:configure-flags
+         ;; GNU_SOURCE must be defined for mallocmock_reset() to be defined
+         '("CFLAGS=-O2 -g -D_GNU_SOURCE=1"
+
        ;; By default, screen supports 16 colors, but we want 256 when
        ;; ~/.screenrc contains 'term xterm-256color'.
-       '("--enable-colors256")))
+           "--enable-colors256")))
     (home-page "https://www.gnu.org/software/screen/")
     (synopsis "Full-screen window manager providing multiple terminals")
     (description
