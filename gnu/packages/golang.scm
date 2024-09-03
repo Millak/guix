@@ -8032,9 +8032,7 @@ email library.")
                 "14r0ph8w4yxx129kfvj0qbx4cyid65md93qmwlz2cly4iwjnr7w2"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/jaytaylor/html2text"
-           ;; Tests are broken: <https://github.com/jaytaylor/html2text/issues/53>
-           #:tests? #f))
+     (list #:import-path "github.com/jaytaylor/html2text"))
     (propagated-inputs (list go-golang-org-x-net
                              go-github-com-olekukonko-tablewriter
                              go-github-com-ssor-bom))
