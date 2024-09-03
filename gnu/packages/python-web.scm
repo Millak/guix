@@ -6604,7 +6604,8 @@ and serve updated contents upon changes to the directory.")
                             "test_extra_info")
                           " and not "))))
     (native-inputs
-     (list python-pytest
+     (list nss-certs-for-test
+           python-pytest
            python-pytest-asyncio
            python-pytest-cov
            python-pytest-httpbin
