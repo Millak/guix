@@ -6680,7 +6680,8 @@ Some things HTTP Core does do:
               ;; 'function' object has no attribute 'name'".
               " and not test_main"))))
     (native-inputs
-     (list python-cryptography
+     (list nss-certs-for-test
+           python-cryptography
            python-hatchling
            python-hatch-fancy-pypi-readme
            python-pytest
