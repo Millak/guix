@@ -2550,7 +2550,7 @@ Microsoft AD PAC authorization data.")
 (define-public go-github-com-jhillyerd-enmime
   (package
     (name "go-github-com-jhillyerd-enmime")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -2559,15 +2559,15 @@ Microsoft AD PAC authorization data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03pir9wq9ha2i2ifj819yv5i0lvrgdn904ksbzgc3k8bqc497ydn"))))
+        (base32 "1mlgnk0y0d8njx7h66w6bhr95zh2ccg1hxlnm15i2lfh6l58s60q"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/jhillyerd/enmime"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-go-test-deep
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-cention-sany-utf7
-           go-github-com-go-test-deep
            go-github-com-gogs-chardet
            go-github-com-jaytaylor-html2text
            go-github-com-pkg-errors
