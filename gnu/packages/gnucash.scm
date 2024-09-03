@@ -167,6 +167,7 @@
            gnucash-docs
            googletest
            intltool
+           (libc-utf8-locales-for-target)
            pkg-config
            swig))
     (inputs
