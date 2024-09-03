@@ -8190,7 +8190,8 @@ of the CRC32C hashing algorithm.")
            python-rsa
            python-six))
     (native-inputs
-     (list python-flask
+     (list nss-certs-for-test
+           python-flask
            python-freezegun
            python-mock
            python-oauth2client
