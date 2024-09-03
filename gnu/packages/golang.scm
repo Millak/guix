@@ -6447,10 +6447,13 @@ temporal directories.")
                 "002yb1s2mxq2xijkl39ip1iyc3l52k23ikyi9ijfl4bgqxy79ljg"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/go-git/go-git-fixtures/v4"
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'reset-gzip-timestamps))))
+     (list
+      ;; XXX: panic: runtime error: makeslice: cap out of range
+      #:tests? (target-64bit?)
+      #:import-path "github.com/go-git/go-git-fixtures/v4"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'reset-gzip-timestamps))))
     (native-inputs
      (list go-github-com-alcortesm-tgz go-github-com-go-git-go-billy
            go-golang-org-x-sys go-gopkg-in-check-v1))
