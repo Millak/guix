@@ -6759,7 +6759,7 @@ formatting information, rather than the current locale name.")
 (define-public go-github-com-zalando-go-keyring
   (package
     (name "go-github-com-zalando-go-keyring")
-    (version "0.1.0")
+    (version "0.2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6768,13 +6768,13 @@ formatting information, rather than the current locale name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kj54nkiyccy6m9iy9a53f6412a54xk96j88jaiq35yzdgfa4z3p"))))
+                "1p6qlsbj9rmqiwz9ly4c7jmifcx8m45xjhsbdwdvw2jzw5jc2ch1"))))
     (build-system go-build-system)
     (arguments
      `(#:tests? #f ;XXX: Fix dbus tests
        #:import-path "github.com/zalando/go-keyring"))
     (propagated-inputs
-     (list go-github-com-godbus-dbus dbus))
+     (list go-github-com-godbus-dbus-v5 dbus))
     (home-page "https://github.com/zalando/go-keyring/")
     (synopsis "Library for working with system keyring")
     (description "@code{go-keyring} is a library for setting, getting and
