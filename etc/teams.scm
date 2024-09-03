@@ -744,6 +744,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "guix@nicolasgoaziou.fr")
   tex)
 
+(define-member (person "André Batista"
+                       "nandre@riseup.net")
+  mozilla)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
