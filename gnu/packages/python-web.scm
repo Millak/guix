@@ -4542,7 +4542,7 @@ for the basic TCP/IP protocols.")
                        ;; Append the test modules to sys.path to avoid
                        ;; namespace conflict which breaks SSL tests.
                        "--import-mode=append")))))))
-    (native-inputs (list python-dpkt python-pytest))
+    (native-inputs (list nss-certs-for-test python-dpkt python-pytest))
     (propagated-inputs (list python-brotli python-certifi python-gevent
                              python-six python-urllib3))
     (home-page "https://github.com/geventhttpclient/geventhttpclient")
