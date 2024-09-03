@@ -899,6 +899,7 @@ types.")
                              "vendor/github.com/libp2p/go-reuseport"
                              "vendor/github.com/libp2p/go-socket-activation"
                              "vendor/github.com/libp2p/go-yamux"
+                             "vendor/github.com/libp2p/zeroconf"
                              "vendor/github.com/mattn"
                              "vendor/github.com/mgutz"
                              "vendor/github.com/miekg"
@@ -909,11 +910,13 @@ types.")
                              "vendor/github.com/onsi"
                              "vendor/github.com/opentracing"
                              "vendor/github.com/pbnjay"
+                             "vendor/github.com/pion"
                              "vendor/github.com/pkg"
                              "vendor/github.com/pmezard"
                              "vendor/github.com/polydawn"
                              "vendor/github.com/prometheus"
                              "vendor/github.com/quic-go"
+                             "vendor/github.com/rs"
                              "vendor/github.com/spaolacci"
                              "vendor/github.com/stretchr"
                              "vendor/github.com/syndtr"
@@ -1089,11 +1092,14 @@ types.")
                   go-github-com-libp2p-go-nat                 ; github.com/libp2p/go-libp2p
                   go-github-com-libp2p-go-reuseport           ; github.com/libp2p/go-libp2p
                   go-github-com-libp2p-go-yamux-v4            ; github.com/libp2p/go-libp2p
+                  go-github-com-libp2p-zeroconf-v2            ; github.com/libp2p/go-libp2p
                   go-github-com-multiformats-go-multiaddr-fmt ; github.com/libp2p/go-libp2p
                   go-github-com-multiformats-go-multistream   ; github.com/libp2p/go-libp2p
+                  go-github-com-pion-webrtc-v3                ; github.com/libp2p/go-libp2p
                   go-github-com-prometheus-statsd-exporter    ; contrib.go.opencensus.io/exporter/prometheus
                   go-github-com-quic-go-quic-go               ; github.com/libp2p/go-libp2p
                   go-github-com-quic-go-webtransport-go       ; github.com/libp2p/go-libp2p
+                  go-github-com-rs-cors                       ; github.com/ipfs/go-ipfs-cmds
                   go-github-com-whyrusleeping-base32          ; github.com/ipfs/boxo
                   go-github-com-whyrusleeping-cbor            ; github.com/ipld/go-car
                   go-github-com-whyrusleeping-chunker         ; github.com/ipfs/boxo
