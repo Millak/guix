@@ -8020,7 +8020,7 @@ email library.")
 (define-public go-github-com-jaytaylor-html2text
   (package
     (name "go-github-com-jaytaylor-html2text")
-    (version "0.0.0-20211105163654-bc68cce691ba")
+    (version "0.0.0-20230321000545-74c2419ad056")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8029,7 +8029,7 @@ email library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12ckgkp8xqgp0fh6019nwp4ssg2k1rv1a67cpk37ian4q5zrvppm"))))
+                "14r0ph8w4yxx129kfvj0qbx4cyid65md93qmwlz2cly4iwjnr7w2"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/jaytaylor/html2text"
