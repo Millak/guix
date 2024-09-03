@@ -2455,7 +2455,13 @@ port mapping and discovering the external IP address of a firewall.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14r0ph8w4yxx129kfvj0qbx4cyid65md93qmwlz2cly4iwjnr7w2"))))
+        (base32 "14r0ph8w4yxx129kfvj0qbx4cyid65md93qmwlz2cly4iwjnr7w2"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module name has been changed upstream.
+            (substitute* (find-files "." "\\.go$")
+              (("jaytaylor.com/html2text") "github.com/jaytaylor/html2text"))))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/jaytaylor/html2text"))
@@ -5635,6 +5641,22 @@ protocol.")
 ;;;
 ;;; Executables:
 ;;;
+
+(define-public go-html2text
+  (package
+    (inherit go-github-com-jaytaylor-html2text)
+    (name "go-html2text")
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/jaytaylor/html2text/cmd/html2text"
+      #:unpack-path "github.com/jaytaylor/html2text"))
+    (native-inputs
+     (list go-github-com-pborman-getopt))
+    (description
+     (string-append (package-description go-github-com-jaytaylor-html2text)
+                    " This package provides an command line interface (CLI)
+tool."))))
 
 (define-public go-madns
   (package
