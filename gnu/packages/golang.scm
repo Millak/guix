@@ -8234,40 +8234,6 @@ useful during debugging, to avoid wrapping long output lines in the
 terminal.")
     (license license:expat)))
 
-(define-public go-github-com-lithammer-fuzzysearch
-  (package
-    (name "go-github-com-lithammer-fuzzysearch")
-    (version "1.1.8")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/lithammer/fuzzysearch")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0fp00gzbrr5fnz01lmkjqcs5z24zjrsp4r13ia0x0wslp5r13hv8"))))
-    (build-system go-build-system)
-    (propagated-inputs (list go-golang-org-x-text))
-    (arguments
-     (list
-      #:import-path "github.com/lithammer/fuzzysearch"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Replace when go-build-system supports nested path.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
-    (home-page "https://github.com/lithammer/fuzzysearch")
-    (synopsis "Tiny and fast fuzzy search in Go")
-    (description
-     "A speedy fuzzy matching package for Go inspired by the JavaScript
-library bevacqua/fuzzysearch.")
-    (license license:expat)))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
