@@ -35,6 +35,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2218,7 +2219,7 @@ main monitor/GPU.")
 (define-public runc
   (package
     (name "runc")
-    (version "1.1.12")
+    (version "1.1.14")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2227,7 +2228,7 @@ main monitor/GPU.")
               (file-name (string-append name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1mx4iik1gx1am3d2s4ljhrirwjzf4ikn8frba5hdhy74012y7na7"))))
+                "1nypczyb3fp3cnfdg13grxjhg9361i44zialsdkxcfxb0c9g79jf"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/opencontainers/runc"
