@@ -10972,6 +10972,55 @@ for sequence alignment, masking of sequence alignments, and estimation of
 phylogenies and ancestral character states.")
     (license license:gpl3)))
 
+(define-public r-dtwclust
+  (package
+    (name "r-dtwclust")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dtwclust" version))
+       (sha256
+        (base32 "0by01x4qpf1pin5l61wmm600bmsnlnns9knwb0qmjlj72pmwfkqh"))))
+    (properties `((upstream-name . "dtwclust")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-clue
+           r-cluster
+           r-dplyr
+           r-dtw
+           r-flexclust
+           r-foreach
+           r-ggplot2
+           r-ggrepel
+           r-matrix
+           r-proxy
+           r-rcpp
+           r-rcpparmadillo
+           r-rcppparallel
+           r-rcppthread
+           r-reshape2
+           r-rlang
+           r-rspectra
+           r-shiny
+           r-shinyjs))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/asardaes/dtwclust")
+    (synopsis
+     "Clustering time series with dynamic time warping distance optimization")
+    (description
+     "This package implements time series clustering along with optimized
+techniques related to the dynamic time warping distance and its corresponding
+lower bounds.  The implementations of partitional, hierarchical, fuzzy, k-Shape
+and TADPole clustering are available.  Functionality can be easily extended with
+custom distance measures and centroid definitions.  Implementations of @acronym{
+DTW, dynamic time warping} barycenter averaging, a distance based on global
+alignment kernels, and the soft-DTW distance and centroid routines are also
+provided.  All included distance functions have custom loops optimized for the
+calculation of cross-distance matrices, including parallelization support.
+Several cluster validity indices are included.")
+    (license license:gpl3)))
+
 (define-public r-dtw
   (package
     (name "r-dtw")
