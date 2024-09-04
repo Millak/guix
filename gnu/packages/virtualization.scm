@@ -2220,6 +2220,8 @@ main monitor/GPU.")
   (package
     (name "runc")
     (version "1.1.14")
+    ;; XXX: Source contains "vendor", consider to unbundle and pack missing
+    ;; packages.
     (source (origin
               (method url-fetch)
               (uri (string-append
