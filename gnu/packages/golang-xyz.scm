@@ -2159,6 +2159,10 @@ program's running, don't expect consistent results between platforms
       #:unpack-path "github.com/elliotchance/orderedmap"
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-submodule
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "v2"))))
           (replace 'check
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (when tests?
@@ -2192,7 +2196,10 @@ O(1) for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
     (arguments
      (substitute-keyword-arguments
          (package-arguments go-github-com-elliotchance-orderedmap)
-       ((#:import-path _) "github.com/elliotchance/orderedmap/v2")))))
+       ((#:import-path _) "github.com/elliotchance/orderedmap/v2")
+       ((#:phases _ '%standard-phases)
+        #~(modify-phases %standard-phases
+            (delete 'remove-submodule)))))))
 
 (define-public go-github-com-emersion-go-ical
   (package
