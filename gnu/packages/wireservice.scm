@@ -109,20 +109,21 @@ charts now and don't care if they're perfect.")))
               (base32
                "1wqyml7f70hr7zhgwvwqy4bdshlbcmp4jmyc5y12jyx10xp3sk7c"))))
    (native-inputs
-    `(("locales" ,python-agate-locales)
-      ("python-nose" ,python-nose)
-      ("python-sphinx" ,python-sphinx)
-      ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)
-      ("python-csselect" ,python-cssselect)
-      ("python-lxml" ,python-lxml)))
+    (list (libc-utf8-locales-for-target)
+          python-agate-locales
+          python-nose
+          python-sphinx
+          python-sphinx-rtd-theme
+          python-cssselect
+          python-lxml))
    (propagated-inputs
-    `(("python-babel" ,python-babel)
-      ("python-isodate" ,python-isodate)
-      ("python-leather" ,python-leather)
-      ("python-parsedatetime" ,python-parsedatetime)
-      ("python-pytimeparse" ,python-pytimeparse)
-      ("python-six" ,python-six)
-      ("python-slugify" ,python-slugify)))
+    (list python-babel
+          python-isodate
+          python-leather
+          python-parsedatetime
+          python-pytimeparse
+          python-six
+          python-slugify))
    (home-page "https://agate.rtfd.org")
    (synopsis "Data analysis library")
    (description "Agate is a Python data analysis library.  It is an
