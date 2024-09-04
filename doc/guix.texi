@@ -12239,6 +12239,7 @@ When @var{recursive?} is true, call @code{(@var{select?} @var{file}
 absolute file name and @var{stat} is the result of @code{lstat}; exclude
 entries for which @var{select?} does not return true.
 
+@findex assume-valid-file-name
 @var{file} can be wrapped in the @code{assume-valid-file-name} syntactic
 keyword. When this is done, there will not be a warning when
 @code{local-file} is used with a non-literal path.  The path is still
@@ -12251,6 +12252,8 @@ Wrapping is done like this:
 (local-file (assume-valid-file-name alice-key-file-path))
 @end lisp
 
+@cindex relative file name, in @code{local-file}
+@findex assume-source-relative-file-name
 @var{file} can be wrapped in the @code{assume-source-relative-file-name}
 syntactic keyword.  When this is done, the file name will be looked up
 relative to the source file where it appears even when it is not a
