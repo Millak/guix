@@ -11,7 +11,7 @@
 ;;; Copyright © 2017, 2021, 2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2018-2024 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2019, 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
@@ -13154,6 +13154,54 @@ paired replicates.")
     (inputs '())
     (propagated-inputs (list r-doparallel r-foreach r-iterators r-nloptr))
     (license license:expat)))
+
+(define-public r-pairwiseadonis
+  ;; There is no tag for version 0.4.1, nor is there a release archive.
+  (let ((commit "cb190f7668a0c82c0b0853927db239e7b9ec3e83")
+        (revision "1"))
+    (package
+      (name "r-pairwiseadonis")
+      ;; The versioning scheme of this package is inconsistent, with versions
+      ;; progressing from 0.21 to 0.3 and then to 0.4.1, which does not follow
+      ;; a standard numerical order or convention (e.g., semantic versioning).
+      (version (git-version "0.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pmartinezarbizu/pairwiseAdonis")
+               (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "11hl6qqmr5vns476921802y0qmb46i1jf0rf7xfkyswlh6xkcl99"))))
+      (properties `((upstream-name . "pairwiseAdonis")))
+      (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        ;; Move into the subdirectory containing the R package files
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'move-to-subdir
+             (lambda _ (chdir "pairwiseAdonis"))))))
+      (propagated-inputs
+       (list r-cluster
+             r-permute
+             r-vegan))
+      (synopsis "Pairwise multilevel comparison using adonis")
+      (description
+       "This package implements two functions:
+@itemize
+@item @code{pairwise.adonis} is a wrapper function for multilevel pairwise
+comparison using adonis2 from package vegan.  The function returns adjusted
+p-values using @code{p.adjust()}.  It does not accept interaction between factors
+neither strata.
+@item @code{pairwise.adonis2} accepts a model formula like in adonis from vegan.
+You can use interactions between factors and define strata to constrain
+permutations.  For pairwise comparison a list of unique pairwise combination of
+factors is produced.
+@end itemize")
+      (home-page "https://github.com/pmartinezarbizu/pairwiseAdonis")
+      (license license:gpl2+))))
 
 (define-public pardre
   (package
