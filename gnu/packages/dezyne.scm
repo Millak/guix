@@ -48,6 +48,7 @@
                              scmackerel))
     (inputs (list bash-minimal
                   guile-3.0
+                  (libc-utf8-locales-for-target)
                   mcrl2-minimal
                   pth
                   sed))
