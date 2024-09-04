@@ -1025,7 +1025,12 @@ and surfaces, receiving input and events.")
                (base32
                 "1sd396kkn53myp61kxrd18h7b1q4ix173hhxhvl0iz8j4x5h1v5m"))))
     (native-inputs (modify-inputs (package-native-inputs glfw)
-                     (prepend pkg-config)))))
+                     (prepend pkg-config)))
+    ;; When building out of source, the install phase fails with:
+    ;;  file INSTALL cannot find "/tmp/guix-build-glfw-3.4.drv-0/build/docs/html":
+    ;;  No such file or directory
+    (arguments (substitute-keyword-arguments (package-arguments glfw)
+                 ((#:out-of-source? _ #f) #f)))))
 
 (define-public nanovg-for-extempore
   (let ((version "0.7.1")
