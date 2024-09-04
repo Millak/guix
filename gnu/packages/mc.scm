@@ -120,3 +120,26 @@ RPM package files and other archives and managing files on other computers via
 FTP or FISH.  It also includes a powerful text editor for opening text
 files.")
     (license gpl3+)))
+
+
+(define-public gnudos
+  (package
+    (name "gnudos")
+    (version "2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/gnudos/gnudos-" version ".tar.gz"))
+       (sha256
+        (base32 "06n4n6j7w6f54akmqqmsrbxv5rj6xairc6yskm33ag2ar7w8hz48"))))
+    (build-system gnu-build-system)
+    (propagated-inputs (list ncurses))
+    (home-page "https://www.gnu.org/software/gnudos/")
+    (synopsis "MS-DOS-like file manager, editor, and other tools")
+    (description
+     "GnuDOS is a set of programs designed to help new users of the GNU
+system in growing accustomed to the system, particularly users who might be
+coming from a DOS background.  It consists of a file manager, a text editor
+and a form designer for the console as well as a core library for building
+similar utilities.")
+    (license gpl3+)))
