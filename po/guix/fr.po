@@ -28,15 +28,15 @@ msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-05-17 09:36+0000\n"
-"Last-Translator: Noe Lopez <noelopez@free.fr>\n"
+"PO-Revision-Date: 2024-09-04 15:04+0000\n"
+"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: French <https://translate.fedoraproject.org/projects/guix/guix/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.5.5\n"
+"X-Generator: Weblate 5.7.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -69,7 +69,7 @@ msgid ""
 "If you get the line @code{location: gnu/services/foo.scm:188:2},\n"
 "add @code{foo} to the @code{use-service-modules} form."
 msgstr ""
-"Vous pouvez utiliser @commande{guix system search ~a} pour chercher un\n"
+"Vous pouvez utiliser @command{guix system search ~a} pour chercher un\n"
 "service qui correspond à @code{~a}.\n"
 "Si vous voyez la ligne @code{location: gnu/services/foo.scm:188:2},\n"
 "ajoutez @code{foo} dans @code{use-service-modules}."
@@ -4488,7 +4488,7 @@ msgstr ""
 #: guix/scripts/package.scm:399
 #, scheme-format
 msgid ";; Note: these other commits were also used to install some of the packages in this profile:~%"
-msgstr ";; Remarque : ces autres commits ont aussi été utilisés pour installer certains des paquets de ce profil :~%"
+msgstr ";; Remarque : ces autres commits ont aussi été utilisés pour installer certains des paquets de ce profil :~%"
 
 #: guix/scripts/package.scm:429
 msgid ""
@@ -8725,22 +8725,22 @@ msgstr "~:[~,1h Mo seraient téléchargés :~%~;~]"
 #, scheme-format
 msgid "~:[The following file would be downloaded:~%~;~]"
 msgid_plural "~:[The following files would be downloaded:~%~;~]"
-msgstr[0] "~:[Le fichier suivant serait téléchargé :~%~;~]"
-msgstr[1] "~:[Les fichiers suivants seraient téléchargés :~%~;~]"
+msgstr[0] "~:[Le fichier suivant serait téléchargé :~%~;~]"
+msgstr[1] "~:[Les fichiers suivants seraient téléchargés :~%~;~]"
 
 #: guix/ui.scm:1112
 #, scheme-format
 msgid "~:[The following graft would be made:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following grafts would be made:~%~{   ~a~%~}~;~]"
-msgstr[0] "~:[La greffe suivante serait effectuée :~%~{   ~a~%~}~;~]"
-msgstr[1] "~:[Les greffes suivantes seraient effectuées :~%~{   ~a~%~}~;~]"
+msgstr[0] "~:[La greffe suivante serait effectuée :~%~{   ~a~%~}~;~]"
+msgstr[1] "~:[Les greffes suivantes seraient effectuées :~%~{   ~a~%~}~;~]"
 
 #: guix/ui.scm:1117
 #, scheme-format
 msgid "~:[The following profile hook would be built:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following profile hooks would be built:~%~{   ~a~%~}~;~]"
-msgstr[0] "~:[Le crochet suivante serait compilé :~%~{   ~a~%~}~;~]"
-msgstr[1] "~:[Les crochets suivants seraient compilés :~%~{   ~a~%~}~;~]"
+msgstr[0] "~:[Le crochet suivante serait compilé :~%~{   ~a~%~}~;~]"
+msgstr[1] "~:[Les crochets suivants seraient compilés :~%~{   ~a~%~}~;~]"
 
 #. TRANSLATORS: "MB" is for "megabyte"; it should be
 #. translated to the corresponding abbreviation.
@@ -8766,28 +8766,28 @@ msgstr[1] "Les dérivations suivantes seront compilées :~%"
 #. abbreviation.
 #: guix/ui.scm:1155
 msgid "~:[~,1h MB will be downloaded:~%~;~]"
-msgstr "~:[~,1h Mo seront téléchargés :~%~;~]"
+msgstr "~:[~,1h Mo seront téléchargés :~%~;~]"
 
 #: guix/ui.scm:1164
 #, scheme-format
 msgid "~:[The following file will be downloaded:~%~;~]"
 msgid_plural "~:[The following files will be downloaded:~%~;~]"
-msgstr[0] "~:[Le fichier suivant sera téléchargé :~%~;~]"
-msgstr[1] "~:[Les fichiers suivants seront téléchargés :~%~;~]"
+msgstr[0] "~:[Le fichier suivant sera téléchargé :~%~;~]"
+msgstr[1] "~:[Les fichiers suivants seront téléchargés :~%~;~]"
 
 #: guix/ui.scm:1172
 #, scheme-format
 msgid "~:[The following graft will be made:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following grafts will be made:~%~{   ~a~%~}~;~]"
-msgstr[0] "~:[La greffe suivante sera effectuée :~%~{   ~a~%~}~;~]"
-msgstr[1] "~:[Les greffes suivantes seront effectuées :~%~{   ~a~%~}~;~]"
+msgstr[0] "~:[La greffe suivante sera effectuée :~%~{   ~a~%~}~;~]"
+msgstr[1] "~:[Les greffes suivantes seront effectuées :~%~{   ~a~%~}~;~]"
 
 #: guix/ui.scm:1177
 #, scheme-format
 msgid "~:[The following profile hook will be built:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following profile hooks will be built:~%~{   ~a~%~}~;~]"
-msgstr[0] "~:[Le crochet suivant sera compilée :~%~{   ~a~%~}~;~]"
-msgstr[1] "~:[Les crochets suivants seront compilés :~%~{   ~a~%~}~;~]"
+msgstr[0] "~:[Le crochet suivant sera compilée :~%~{   ~a~%~}~;~]"
+msgstr[1] "~:[Les crochets suivants seront compilés :~%~{   ~a~%~}~;~]"
 
 #. TRANSLATORS: "MB" is for "megabyte"; it should be
 #. translated to the corresponding abbreviation.

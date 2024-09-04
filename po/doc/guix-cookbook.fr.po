@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE
 # Copyright (C) 2021 the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the guix manual package.
-# Julien Lepiller <fedora-account@lepiller.eu>, 2021, 2022, 2023.
+# Julien Lepiller <fedora-account@lepiller.eu>, 2021, 2022, 2023, 2024.
 # Francois Polito <francois@polito.se>, 2021.
 # tisse vert <tissevert+fedora@marvid.fr>, 2021.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2023, 2024.
@@ -13,15 +13,15 @@ msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-08-23 03:18+0000\n"
-"PO-Revision-Date: 2024-07-16 07:38+0000\n"
-"Last-Translator: Léane GRASSER <leane.grasser@proton.me>\n"
+"PO-Revision-Date: 2024-09-02 06:33+0000\n"
+"Last-Translator: Julien Lepiller <fedora-account@lepiller.eu>\n"
 "Language-Team: French <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.7.1\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -40,8 +40,6 @@ msgstr "Livre de recettes de GNU Guix"
 
 #. type: copying
 #: guix-git/doc/guix-cookbook.texi:28
-#, fuzzy
-#| msgid "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong"
 msgid "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2024 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@*"
 msgstr ""
 "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@*\n"
@@ -55,8 +53,9 @@ msgstr ""
 "Copyright @copyright{} 2020 Christine Lemmer-Webber@*\n"
 "Copyright @copyright{} 2021 Joshua Branson@*\n"
 "Copyright @copyright{} 2022, 2023 Maxim Cournoyer@*\n"
-"Copyright @copyright{} 2023 Ludovic Courtès@*\n"
-"Copyright @copyright{} 2023 Thomas Ieong"
+"Copyright @copyright{} 2023-2024 Ludovic Courtès@*\n"
+"Copyright @copyright{} 2023 Thomas Ieong@*\n"
+"Copyright @copyright{} 2024 Florian Pelz@*"
 
 #. type: copying
 #: guix-git/doc/guix-cookbook.texi:35
@@ -720,10 +719,9 @@ msgstr "Étape 3 : intégration continue."
 #. type: node
 #: guix-git/doc/guix-cookbook.texi:189 guix-git/doc/guix-cookbook.texi:4399
 #: guix-git/doc/guix-cookbook.texi:4874
-#, fuzzy, no-wrap
-#| msgid "a manifest,"
+#, no-wrap
 msgid "Build Manifest"
-msgstr "un manifeste,"
+msgstr "Manifeste de construction"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:189 guix-git/doc/guix-cookbook.texi:4399
@@ -3367,23 +3365,7 @@ msgstr "La deuxième manière de créer un noyau personnalisé est de passer une
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1768
-#, fuzzy, no-wrap
-#| msgid ""
-#| "(define %default-extra-linux-options\n"
-#| "  `(;; https://lists.gnu.org/archive/html/guix-devel/2014-04/msg00039.html\n"
-#| "   (\"CONFIG_DEVPTS_MULTIPLE_INSTANCES\" . #true)\n"
-#| "   ;; Modules required for initrd:\n"
-#| "   (\"CONFIG_NET_9P\" . m)\n"
-#| "   (\"CONFIG_NET_9P_VIRTIO\" . m)\n"
-#| "   (\"CONFIG_VIRTIO_BLK\" . m)\n"
-#| "   (\"CONFIG_VIRTIO_NET\" . m)\n"
-#| "   (\"CONFIG_VIRTIO_PCI\" . m)\n"
-#| "   (\"CONFIG_VIRTIO_BALLOON\" . m)\n"
-#| "   (\"CONFIG_VIRTIO_MMIO\" . m)\n"
-#| "   (\"CONFIG_FUSE_FS\" . m)\n"
-#| "   (\"CONFIG_CIFS\" . m)\n"
-#| "   (\"CONFIG_9P_FS\" . m)))\n"
-#| "\n"
+#, no-wrap
 msgid ""
 "(define (default-extra-linux-options version)\n"
 "  `(;; https://lists.gnu.org/archive/html/guix-devel/2014-04/msg00039.html\n"
@@ -3401,10 +3383,10 @@ msgid ""
 "   (\"CONFIG_9P_FS\" . m)))\n"
 "\n"
 msgstr ""
-"(define %default-extra-linux-options\n"
+"(define (default-extra-linux-options version)\n"
 "  `(;; https://lists.gnu.org/archive/html/guix-devel/2014-04/msg00039.html\n"
 "   (\"CONFIG_DEVPTS_MULTIPLE_INSTANCES\" . #true)\n"
-"   ;; Modules required for initrd:\n"
+"   ;; Modules requis pour initrd :\n"
 "   (\"CONFIG_NET_9P\" . m)\n"
 "   (\"CONFIG_NET_9P_VIRTIO\" . m)\n"
 "   (\"CONFIG_VIRTIO_BLK\" . m)\n"
@@ -3527,10 +3509,8 @@ msgstr ""
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1824
-#, fuzzy
-#| msgid "In the above example @code{%file-systems} is a collection of flags enabling different file system support, @code{%efi-support} enables EFI support and @code{%emulation} enables a x86_64-linux machine to act in 32-bit mode also.  @code{%default-extra-linux-options} are the ones quoted above, which had to be added in since they were replaced in the @code{extra-options} keyword."
 msgid "In the above example @code{%file-systems} is a collection of flags enabling different file system support, @code{%efi-support} enables EFI support and @code{%emulation} enables a x86_64-linux machine to act in 32-bit mode also.  The @code{default-extra-linux-options} procedure is the one defined above, which had to be used to avoid loosing the default configuration options of the @code{extra-options} keyword."
-msgstr "Dans l'exemple ci-dessus @code{%fale-systems} est un ensemble de drapeaux qui activent la prise en charge de différents systèmes de fichiers, @code{%efi-support} active la prise en charge de l'EFI et @code{%emulation} permet à une machine x86_64-linux de fonctionner aussi en mode 32-bits. @code{%default-extra-linux-options} sont l'ensemble de ces options et elles devaient être ajoutées puisqu'elles ont été remplacées dans le mot-clé @code{extra-options}."
+msgstr "Dans l'exemple ci-dessus @code{%fale-systems} est un ensemble de drapeaux qui activent la prise en charge de différents systèmes de fichiers, @code{%efi-support} active la prise en charge de l'EFI et @code{%emulation} permet à une machine x86_64-linux de fonctionner aussi en mode 32-bits. La procédure @code{default-extra-linux-options} est définie plus haut, et elles devaient être utilisée pour éviter de perdre les options de configuration par défaut dans le mot-clé @code{extra-options}."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1833
@@ -7021,35 +7001,35 @@ msgstr "qemu, pont réseau"
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3756
 msgid "By default, QEMU uses a so-called ``user mode'' host network back-end, which is convenient as it does not require any configuration.  Unfortunately, it is also quite limited.  In this mode, the guest @abbr{VM, virtual machine} can access the network the same way the host would, but it cannot be reached from the host.  Additionally, since the QEMU user networking mode relies on ICMP, ICMP-based networking tools such as @command{ping} do @emph{not} work in this mode.  Thus, it is often desirable to configure a network bridge, which enables the guest to fully participate in the network.  This is necessary, for example, when the guest is to be used as a server."
-msgstr ""
+msgstr "Par défaut, QEMU utilise un moteur réseau hôte en « mode utilisateur », qui est pratique comme il n'a pas besoin de configuration. Malheureusement, il est aussi très limité. Dans ce mode, la @abbr{VM, machine virtuelle} invitée peut accéder au réseau de la même manière que l'hôte, mais elle ne peut pas être atteinte depuis l'hôte. De plus, comme le mode de réseau utilisateur de QEMU se base sur ICMP, les outils de réseau basés sur ICMP comme @command{ping} ne fonctionnent @emph{pas} dans ce mode. Ainsi, il est souvent préférable de configurer un pont réseau, qui permet à l'invité de participer pleinement au réseau. Cela est nécessaire, par exemple, lorsque l'invité est utilisé comme serveur."
 
 #. type: subsection
 #: guix-git/doc/guix-cookbook.texi:3757
 #, no-wrap
 msgid "Creating a network bridge interface"
-msgstr ""
+msgstr "Créer une interface réseau pont"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3763
 msgid "There are many ways to create a network bridge.  The following command shows how to use NetworkManager and its @command{nmcli} command line interface (CLI) tool, which should already be available if your operating system declaration is based on one of the desktop templates:"
-msgstr ""
+msgstr "Il y a plusieurs manières de créer un pont réseau. La commande suivante indique comment utiliser NetworkManager et son outil en ligne de commande @command{nmcli}, qui devrait déjà être disponible si votre déclaration de système d'exploitation se base sur l'un des modèles de systèmes de bureau :"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:3766
 #, no-wrap
 msgid "# nmcli con add type bridge con-name br0 ifname br0\n"
-msgstr ""
+msgstr "# nmcli con add type bridge con-name br0 ifname br0\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3772
 msgid "To have this bridge be part of your network, you must associate your network bridge with the Ethernet interface used to connect with the network.  Assuming your interface is named @samp{enp2s0}, the following command can be used to do so:"
-msgstr ""
+msgstr "Pour que ce pont fasse partie de votre réseau, vous devez associer votre pont réseau à l’interface Ethernet utilisée pour vous connecter au réseau. En supposant que cette interface est nommée @samp{enp2s0}, la commande suivante peut être utilisée pour cela :"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:3775
 #, no-wrap
 msgid "# nmcli con add type bridge-slave ifname enp2s0 master br0\n"
-msgstr ""
+msgstr "# nmcli con add type bridge-slave ifname enp2s0 master br0\n"
 
 #. type: quotation
 #: guix-git/doc/guix-cookbook.texi:3777 guix-git/doc/guix-cookbook.texi:3819
@@ -7060,7 +7040,7 @@ msgstr "Important"
 #. type: quotation
 #: guix-git/doc/guix-cookbook.texi:3781
 msgid "Only Ethernet interfaces can be added to a bridge.  For wireless interfaces, consider the routed network approach detailed in @xref{Routed network for libvirt}."
-msgstr ""
+msgstr "Seules les interfaces Ethernet peut être ajoutées à un pont. Pour les interfaces sans fil, envisagez l'approche par réseau routé détaillée dans @xref{Routed network for libvirt}."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3787

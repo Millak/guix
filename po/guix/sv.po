@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: guix 1.2.0-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-06-20 17:36+0000\n"
+"PO-Revision-Date: 2024-09-04 11:59+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Swedish <https://translate.fedoraproject.org/projects/guix/guix/sv/>\n"
 "Language: sv\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5.5\n"
+"X-Generator: Weblate 5.7.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -7881,7 +7881,7 @@ msgstr "Glömde du en @code{use-modules}-form?"
 #: guix/ui.scm:363
 #, scheme-format
 msgid "Did you forget @code{(use-modules ~a)}?"
-msgstr "Glömde du @code{(use-modules ~s)}?"
+msgstr "Glömde du @code{(use-modules ~a)}?"
 
 #: guix/ui.scm:373
 #, scheme-format

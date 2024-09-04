@@ -14,22 +14,22 @@
 # a x <meruarasu@email1.io>, 2023.
 # Sapphire RainSlide <RainSlide@outlook.com>, 2023.
 # Jingge Chen <mariocanfly@hotmail.com>, 2023, 2024.
-# Florian Pelz <pelzflorian@pelzflorian.de>, 2023.
+# Florian Pelz <pelzflorian@pelzflorian.de>, 2023, 2024.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.14.0\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-03-17 19:36+0000\n"
-"Last-Translator: 郑俊杰 <873216071@qq.com>\n"
+"PO-Revision-Date: 2024-09-04 09:38+0000\n"
+"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Chinese (Simplified) <https://translate.fedoraproject.org/projects/guix/guix/zh_CN/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.4\n"
+"X-Generator: Weblate 5.7.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -45,7 +45,7 @@ msgid ""
 "add @code{bar} to the @code{use-package-modules} form."
 msgstr ""
 "你可以使用@command{guix package --show=foo | grep location} 来定位软件包 @code{foo}的位置。\n"
-"如果你得到了结果 @code{location: gnu/packages/bar.scm:174:2}，将@code{bar}添加到 @{use-package-modules} 中。"
+"如果你得到了结果 @code{location: gnu/packages/bar.scm:174:2}，将@code{bar}添加到 @code{use-package-modules} 中。"
 
 #: gnu.scm:107
 #, scheme-format
@@ -61,7 +61,7 @@ msgid ""
 "add @code{foo} to the @code{use-service-modules} form."
 msgstr ""
 "你可以使用 @command{guix system search ~a} 来搜寻匹配 @code{~a} 的服务。\n"
-"如果你得到了结果 @code{location: gnu/services/fo.scm:188:2}，将 @code{foo} 添加到 @{use-service-modules} 中。"
+"如果你得到了结果 @code{location: gnu/services/foo.scm:188:2}，将 @code{foo} 添加到 @code{use-service-modules} 中。"
 
 #: gnu.scm:131
 #, scheme-format

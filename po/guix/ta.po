@@ -4,7 +4,7 @@
 # List of contributors follow:
 # Arun Isaac <arunisaac@systemreboot.net>, 2020.
 # Nardhini <nardhini@systemreboot.net>, 2020.
-# Florian Pelz <pelzflorian@pelzflorian.de>, 2023.
+# Florian Pelz <pelzflorian@pelzflorian.de>, 2023, 2024.
 # Gold Ayan <thangaayyanar@gmail.com>, 2024.
 # Vaanjinathan Ramasamy <vaanjinathanramasamy@gmail.com>, 2024.
 #: guix/diagnostics.scm:159
@@ -13,15 +13,15 @@ msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-08-21 12:38+0000\n"
-"Last-Translator: Vaanjinathan Ramasamy <vaanjinathanramasamy@gmail.com>\n"
+"PO-Revision-Date: 2024-09-04 11:59+0000\n"
+"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Tamil <https://translate.fedoraproject.org/projects/guix/guix/ta/>\n"
 "Language: ta\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7\n"
+"X-Generator: Weblate 5.7.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -4140,7 +4140,7 @@ msgstr "~a: பதிவிறக்கம் தோல்வியுற்ற�
 #: guix/scripts/package.scm:130
 #, scheme-format
 msgid "not removing generation ~a, which is current~%"
-msgstr "தற்போதைய வரிசையாதலால் வரிசை ~a யை அழிக்கவில்லை"
+msgstr "தற்போதைய வரிசையாதலால் வரிசை ~a யை அழிக்கவில்லை~%"
 
 #: guix/scripts/package.scm:137
 #, scheme-format
@@ -5419,7 +5419,7 @@ msgstr "~s: ஏற்கத்தகாக் கட்டளை; புறக�
 #: guix/scripts/authenticate.scm:223
 #, scheme-format
 msgid "wrong arguments~%"
-msgstr "ஏற்கத்தகாச் செயலுருபுகள்"
+msgstr "ஏற்கத்தகாச் செயலுருபுகள்~%"
 
 #: guix/scripts/system.scm:179
 #, scheme-format

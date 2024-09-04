@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-02-25 12:38+0000\n"
+"PO-Revision-Date: 2024-09-04 15:04+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: German <https://translate.fedoraproject.org/projects/guix/guix/de/>\n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.4\n"
+"X-Generator: Weblate 5.7.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -766,7 +766,7 @@ msgstr "Eine Verbindung zum Yggdrasil-Mesh-Netzwerk aufbauen. Siehe @command{ygg
 msgid ""
 "Run @command{ipfs daemon}, the reference implementation\n"
 "of the IPFS peer-to-peer storage network."
-msgstr "Den @command{IPFS-Daemon} als Referenzimplementierung des IPFS-Peer-to-Peer-Speichernetzwerks ausführen."
+msgstr "@command{ipfs daemon} als Referenzimplementierung des IPFS-Peer-to-Peer-Speichernetzwerks ausführen."
 
 #: gnu/services/networking.scm:2516
 msgid ""
