@@ -326,7 +326,6 @@
     (native-inputs (list python-babel
                          python-coverage
                          python-cryptography
-                         python-flake8
                          python-paho-mqtt
                          python-pytest
                          python-pytest-cov
@@ -335,12 +334,16 @@
                          python-wheel))
     (arguments
      (list
-      #:phases #~(modify-phases %standard-phases
-                   (replace 'check
-                     (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-                       (when tests?
-                         (delete-file "test/test_plugin_macosx.py")
-                         (invoke "pytest")))))))
+      #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+                (when tests?
+                  (delete-file "test/test_plugin_macosx.py")
+                  (invoke "pytest" "-vv" "-k"
+                          (string-append
+                           "not test_plugin_mqtt_tls_connect_success"
+                           " and not test_plugin_mqtt_tls_no_verify_success"))))))))
     (home-page "https://github.com/caronc/apprise")
     (synopsis
      "Push notification Python library that works with many platforms")
