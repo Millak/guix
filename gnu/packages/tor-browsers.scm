@@ -21,7 +21,7 @@
 ;;; Copyright © 2021 Baptiste Strazzul <bstrazzull@hotmail.fr>
 ;;; Copyright © 2022 SeerLite <seerlite@disroot.org>
 ;;; Copyright © 2024 Aleksandr Vityazev <avityazew@gmail.com>
-;;; Copyright © 2020, 2021 André Batista <nandre@riseup.net>
+;;; Copyright © 2020, 2021, 2024 André Batista <nandre@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -104,63 +104,48 @@
   #~(list (cons #$locale #$(mozilla-locale locale changeset hash-string))
           ...))
 
-;; See tor-browser-build/rbm.conf for the list.
-;; See browser/locales/l10n-changesets.json for the changeset.
-;; See update-mozilla-locales in gnuzilla.scm to automate updating changeset.
-(define %torbrowser-locales
-  (mozilla-locales
-   ;;                      sha256                            changeset    locale
-   ;;---------------------------------------------------------------------------
-   ("1218mldjxybhgzdi0myzkwjr2fgnysl71pl847kr7wyn1j8wk3a5" "c25d00080479" "ar")
-   ("11c96jhfzd3h46qhblhvn2acsn895ykynarai8r5pf0655nfjs0j" "2de60e3d6d0c" "ca")
-   ("0yhycgb3s3kydbzy6f2q7f7g2lp975spr092prf9xp8ha62ghby7" "609edd15f9a9" "cs")
-   ("1kzx94n36c5vv954j7w65djvb37c178zazy25b35l71q2rvhmlhj" "2197a99c9a08" "da")
-   ("13h7hk11bbd0yq8gqdv7ndbizkgwlm3ybz225l3x2b5cnyjxyg14" "b7a533e5edc9" "de")
-   ("13ay27vdrqfv2ysyi7c2jmz50lps7rff9rmnws1z7jkj0a5chwrn" "20baf15379d8" "el")
-   ("0mdr5b6pqxjmg9c8064x3hpf53h6w9j8ghl32655sx9jh4v3ykza" "beff1baac7c5" "es-ES")
-   ("1pnyg09j6r15w8m62lwj89x6rz4br877z60p8s1hlrb9hj2s3vdx" "ebe0b60b0b36" "fa")
-   ("067r505626cvlrsalnndf2ykz3nnkiy0b8yaxzf1rracpzmp0hni" "d5ae6a933d71" "fi")
-   ("0026zzjv2bqc8sg06yvyd0mhny6mwwvhpvzjrhv2fi5v4wkxapdj" "496c2eb73b82" "fr")
-   ("1dxcp26y8siap4k54zsw7mqa7k0l4f1505rdf4hnnxrzf9a643g5" "2fcccb5b19b3" "ga-IE")
-   ("14v6xnlyj65hzaz2rmzxcl4skjgm48426jgr9mwkwiqis587lp4a" "c53cea027f8f" "he")
-   ("04fdw2gzb64fb51bvs0bwsidzlvkdahmcy76vdg3gfcxslnlpi3y" "5a76dd3b5d5c" "hu")
-   ("0bpyxpclfy74bcsjrs1ajh2am4zv6j6j9q4gc4vz8pgvzy9354zp" "6e6de17dcac4" "id")
-   ("131ph8n235kr6nj1pszk0m00nh6kl360r4qvx4hjm8s22mw0k8qd" "536265635dfe" "is")
-   ("03fbp4vgkwyimfmbm4n8blx1m16yhms2wm8j4wlx2h3cpxp5r71k" "91951e37e2b8" "it")
-   ("0ncm531d7ih7phcn9d83zwq0dfphvmzg3gmhqmrrkkbydi1g3pbb" "895dcf8bb524" "ja")
-   ("1x3110v730ak522zfm8j3r3v1x5lq3ig82kcgyxkc49xywajy0ni" "d0819a64fc40" "ka")
-   ("14rc9mr4ngxdzwpjagzhz47jazgp1a6vwb0vbwj31yxv9iwkrgzi" "6ef881aff44b" "ko")
-   ("1gl85z550amhbaxp39zdj6yyvashj9xd4ampfhm9jdpbf6n5j2l8" "afcbc29a15e5" "lt")
-   ("1hz5g3iprfkbd88ncppyksbhlws73lhs75nf62hangw8l73wdn69" "84f3d6c7e2da" "mk")
-   ("14aq37ngnav5m2kcb4wavxwhp28ad4jzdkzc7i64h0qvvxq5n3hf" "c9ec27a5db3d" "ms")
-   ("0h7dlnawm5mbcx4qdlz5c7n4axz2dpa677v13ljdgm2b5w76msmq" "5c1480ccc040" "my")
-   ("1b12azc1n8j1i2l20v66r74q79zqjvc5sf9pd8rmj3xd0fkxzdp2" "fc1896a0a24d" "nb-NO")
-   ("1fh4dhlb6hynlpb2997gssv9v8zk5b7qrw0sclggczb5pcpjk6wc" "7e6da4f01bdb" "nl")
-   ("1w8x3jjrd28f6g6ywwxldizpiipfkr63dzqd74kjpg24s2lqzp80" "e86a451a9cb5" "pl")
-   ("1v3v4n82sn7a4h2d9n653fmgc31mikacf59lvdj6gbwvzpjb5yfa" "94c3dbb67a5d" "pt-BR")
-   ("061a4z0lffgks3wlr6yh5z7x9arcn804mjwvffcmibs106vzamyq" "470b13b5805b" "ro")
-   ("1fxgh7nfxpg2zknvfff8igq9q1vm5n4q033v7lm2c0xn3dbl8m28" "402b2ecbf04d" "ru")
-   ("1i119g6dnhzxmpaz5r2jr9yzm1v24v2q6m3z6bfz2yihj0w7m133" "f637484e72b6" "sq")
-   ("1nllh3ax323sxwhj7xvwvbfnh4179332pcmpfyybw1vaid3nr39k" "bb2d5d96d69e" "sv-SE")
-   ("136m68fd0641k3qqmsw6zp016cvvd0sipsyv6rx2b9nli56agz57" "0e6c56bf2ac9" "th")
-   ("0q8p8bwq8an65yfdwzm4dhl6km68r83bv5i17kay2gak8msxxhsb" "91e611ae3f19" "tr")
-   ("1f2g7rnxpr2gjzngfsv19g11vk9zqpyrv01pz07mw2z3ffbkxf0j" "99d5ffa0b81e" "uk")
-   ("1rizwsfgr7vxm31bin3i7bwhcqa67wcylak3xa387dvgf1y9057i" "5fd44724e22d" "vi")
-   ("02ifa94jfii5f166rwdvv8si3bazm4bcf4qhi59c8f1hxbavb52h" "081aeb1aa308" "zh-CN")
-   ("0qx9sh56pqc2x5qrh386cp1fi1gidhcmxxpvqkg9nh2jbizahznr" "9015a180602e" "zh-TW")))
-
 ;; We copy the official build id, which is defined at
 ;; tor-browser-build/rbm.conf (browser_release_date).
-(define %torbrowser-build-date "20240510190000")
+(define %torbrowser-build-date "20240903073000")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "13.0.16")
+(define %torbrowser-version "13.5.3")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "115.12.0esr-13.0-1-build1")
+(define %torbrowser-firefox-version "115.15.0esr-13.5-1-build3")
+
+;; See tor-browser-build/rbm.conf for the list.
+(define %torbrowser-locales (list "ar" "ca" "cs" "da" "de" "el" "es-ES" "fa" "fi" "fr"
+                                  "ga-IE" "he" "hu" "id" "is" "it" "ja" "ka" "ko" "lt"
+                                  "mk" "ms" "my" "nb-NO" "nl" "pl" "pt-BR" "ro" "ru"
+                                  "sq" "sv-SE" "th" "tr" "uk" "vi" "zh-CN" "zh-TW"))
+
+;; See browser/locales/l10n-changesets.json for the commit.
+(define firefox-locales
+  (let ((commit "d8d587117c7b9dcc6a4fbc38407ed2c831bb008f")
+        (revision "0"))
+    (package
+      (name "firefox-locales")
+      (version (git-version "0.0.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/mozilla-l10n/firefox-l10n")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "0a2ly29lli02jflqw78zjk7bp7h18fz935cc9csavi0cpdiixjv1"))))
+      (build-system copy-build-system)
+      (home-page "https://github.com/mozilla-l10n/firefox-l10n")
+      (synopsis "Firefox Locales")
+      (description "This package contains localized messages for all
+Firefox locales.")
+      (license license:mpl2.0))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define torbrowser-translation-base
@@ -168,11 +153,11 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "f28525699864f4e3d764c354130bd898ce5b20aa")))
+          (commit "daed2afc487d1b20efc17feb153156524c6f714b")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "1vf6nl7fdmlmg2gskf3w1xlsgcm0pxi54z2daz5nwr6q9gyi0lkf"))))
+      "0psmmgw9dnjwdhjbqkd69q5q7sdwyjcwagh93ffrjk0v7ybc79dq"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define torbrowser-translation-specific
@@ -180,11 +165,11 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "b5d79336411e5a59c4861341ef9aa7353e0bcad9")))
+          (commit "6374e3b09c0894b8452fa1ba0b99c807722fc805")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "0ahz69pxhgik7ynmdkbnx7v5l2v392i6dswjz057g4hwnd7d34fb"))))
+      "1wd9iwcj2h70bp017pcdhgfiw2bs8zi68kljmpnk69pssd6cn8l3"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -200,7 +185,7 @@
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "1kffam66bsaahzx212hw9lb03jwfr24hivzg067iyzilsldpc9c1"))))
+         "0laz6yrm310iidddnas2w1s5wad183n9axjkgrf5cm5paj615343"))))
     (arguments
      (list
       #:install-plan
@@ -214,6 +199,10 @@
     (description "This package contains fonts and configuration files for Tor
 Browser.")
     (license license:silofl1.1)))
+
+;;; A LLD wrapper that can be used as a (near) drop-in replacement to GNU ld.
+(define lld-as-ld-wrapper-16
+  (make-lld-wrapper lld-16 #:lld-as-ld? #t))
 
 (define* (make-torbrowser #:key
                           moz-app-name
@@ -238,10 +227,11 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "1b70zyjyai6kk4y1kkl8jvrs56gg7z31kkad6bmdpd8jw4n71grx"))))
+         "13b9ni6anv279drhbb5m95nnmgslrp6frsm0y4028nfqiprs7vj5"))))
     (build-system mozilla-build-system)
     (inputs
      (list go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
+           firefox-locales
            tor-client
            alsa-lib
            bash-minimal                 ;for wrap-program
@@ -293,8 +283,9 @@ Browser.")
       rust
       `(,rust "cargo")
       rust-cbindgen
-      llvm-15
-      clang-15
+      lld-as-ld-wrapper-16  ; for cargo rustc
+      llvm-16
+      clang-16
       perl
       node-lts
       python-wrapper
@@ -541,7 +532,7 @@ Browser.")
               (setenv "MOZBUILD_STATE_PATH"
                       (in-vicinity (getcwd) ".mozbuild"))
               (setenv "MOZ_CHROME_MULTILOCALE"
-                      (string-join (map car #$locales)))
+                      (string-join (list #$@locales)))
               ;; Make build reproducible.
               (setenv "MOZ_BUILD_DATE" #$build-date)))
           (add-before 'configure 'mozconfig
@@ -555,14 +546,14 @@ Browser.")
           ;; See tor-browser-build/projects/firefox/build.
           (add-before 'configure 'copy-firefox-locales
             (lambda _
-              (let ((l10ncentral ".mozbuild/l10n-central"))
+              (let ((l10ncentral ".mozbuild/l10n-central")
+                    (ff-locales #$(this-package-input "firefox-locales")))
                 (mkdir-p l10ncentral)
                 (for-each
                  (lambda (lang)
-                   (copy-recursively (cdr lang)
-                                     (in-vicinity l10ncentral
-                                                  (car lang))))
-                 #$locales))))
+                   (copy-recursively (string-append ff-locales "/" lang)
+                                     (in-vicinity l10ncentral lang)))
+                 (list #$@locales)))))
           (add-after 'copy-firefox-locales 'copy-basebrowser-locales
             (lambda _
               (let ((l10ncentral ".mozbuild/l10n-central"))
@@ -577,7 +568,7 @@ Browser.")
                      #f (string-join
                          '("mv"
                            "translation-base-browser/~a/base-browser.ftl"
-                           "~a/~a/browser/browser/"))
+                           "~a/~a/toolkit/toolkit/global/"))
                      lang l10ncentral lang))
                    (system
                     (format
@@ -586,7 +577,7 @@ Browser.")
                            "translation-base-browser/~a/*"
                            "~a/~a/browser/chrome/browser/"))
                      lang l10ncentral lang)))
-                 (map car #$locales)))))
+                 (list #$@locales)))))
           (add-after 'copy-basebrowser-locales 'copy-torbrowser-locales
             (lambda _
               (let ((l10ncentral ".mozbuild/l10n-central"))
@@ -601,7 +592,7 @@ Browser.")
                      #f (string-join
                          '("mv"
                            "translation-tor-browser/~a/tor-browser.ftl"
-                           "~a/~a/browser/browser/"))
+                           "~a/~a/toolkit/toolkit/global/"))
                      lang l10ncentral lang))
                    (system
                     (format
@@ -623,7 +614,7 @@ Browser.")
                      (format port "  locale/~a/ (chrome/locale/~a/*)~%"
                              lang lang)
                      (close port)))
-                 (map car #$locales)))))
+                 (list #$@locales)))))
           (replace 'configure
             (lambda _
               (invoke "./mach" "configure")))
@@ -632,14 +623,6 @@ Browser.")
               (substitute*
                   "toolkit/locales/en-US/toolkit/about/aboutAddons.ftl"
                 (("addons.mozilla.org") "gnuzilla.gnu.org"))))
-          (add-before 'build 'add-bridges ;see deploy.sh
-            (lambda _
-              (let ((port (open-file
-                           "browser/app/profile/000-tor-browser.js" "a")))
-                (display
-                 "#include ../../../tools/torbrowser/bridges.js" port)
-                (newline port)
-                (close port))))
           (replace 'build
             (lambda* (#:key (make-flags '()) (parallel-build? #t)
                       #:allow-other-keys)
@@ -739,7 +722,7 @@ Browser.")
                 (copy-recursively (in-vicinity #$assets "fontconfig")
                                   (in-vicinity lib "fontconfig"))
                 (substitute* (in-vicinity lib "fontconfig/fonts.conf")
-                  (("<dir>fonts</dir>")
+                  (("<dir prefix=\"cwd\">fonts</dir>")
                    (format #f "<dir>~a</dir>" (in-vicinity lib "fonts"))))
                 (delete-file-recursively (in-vicinity lib "fonts"))
                 (copy-recursively (in-vicinity #$assets "fonts")
@@ -805,11 +788,7 @@ Browser.")
                             "https://gnuzilla.gnu.org/mozzarella")
                     (format #t "pref(~s, ~s);~%"
                             "lightweightThemes.getMoreURL"
-                            "https://gnuzilla.gnu.org/mozzarella")
-                    ;; FIXME: https://github.com/NixOS/nixpkgs/issues/307095
-                    (format #t "pref(~s, ~a);~%"
-                            "widget.use-xdg-desktop-portal.file-picker"
-                            "1"))))))
+                            "https://gnuzilla.gnu.org/mozzarella"))))))
           (add-after 'autoconfig 'autoconfig-tor
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((lib (in-vicinity #$output "lib/torbrowser"))
