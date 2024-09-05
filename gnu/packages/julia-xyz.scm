@@ -506,6 +506,28 @@ not performance, so this package should be used for precision experiments
 only, not performance experiments.")
     (license license:expat)))
 
+(define-public julia-bijections
+  (package
+    (name "julia-bijections")
+    (version "0.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scheinerman/Bijections.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f58cvjvrjh6xzi6zzbakdicdhpkyzwdp15fg2y12vslgmab2k9h"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/scheinerman/Bijections.jl")
+    (synopsis "Bijection data type for Julia")
+    (description
+     "This package defines the @code{Bijection} data type.
+A @code{Bijection} data structure behaves similar to a @code{Dict},
+however it prevents assigning the same value to two different keys.")
+    (license license:expat)))
+
 (define-public julia-bioalignments
   (package
     (name "julia-bioalignments")
