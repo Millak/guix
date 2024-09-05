@@ -725,7 +725,7 @@ precision floating point numbers.")
               (sha256
                (base32
                 "0jxkxrnpys2j3rh8bzx0bmnh4w6xm28jd57rgxsjp0s863agpc6w"))))
-    (outputs '("out" "static"))
+    (outputs '("out" "static" "debug"))
     (build-system gnu-build-system)
     (arguments
      (list ;; FIXME: Setting CFLAGS=-fPIC is not only unnecessary, it's also
