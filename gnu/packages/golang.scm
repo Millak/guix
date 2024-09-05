@@ -2241,6 +2241,31 @@ Go.")
 incorporates ideas and concepts from Philipp Winter's ScrambleSuit protocol.")
     (license (list license:bsd-2 license:bsd-3))))
 
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel
+  (let ((commit "e64b1b3562f3ab50d06141ecd513a21ec74fe8c6")
+        (revision "0"))
+    (package
+      (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0nvd0qp1mdy7w32arnkhghxm5k2g6gy33cxlarxc6vdm4yh6v5nv"))))
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel"))
+      (home-page "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel")
+      (synopsis "Go WebTunnel Pluggable Transport")
+      (description "WebTunnel is a Go Pluggable Transport that attempts to imitate
+web browsing activities based on HTTP Upgrade (HTTPT).")
+      (license license:bsd-2))))
+
 (define-public go-github-com-sevlyar-go-daemon
   (package
     (name "go-github-com-sevlyar-go-daemon")
