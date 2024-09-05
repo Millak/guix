@@ -3462,20 +3462,20 @@ defined in RFC 2616.")
   (sbcl-package->ecl-package sbcl-chunga))
 
 (define-public sbcl-ciel
-  (let ((commit "6cc1cef5e37e9f495c8163271a5de48de99f348a")
+  (let ((commit "0b26d64dcd91a3a2aa962842629a853261dd30fe")
         (revision "0"))
     (package
       (name "sbcl-ciel")
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "0.2.1" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/ciel-lang/CIEL")
                (commit commit)))
-         (file-name (git-file-name "ciel" version))
+         (file-name (git-file-name "cl-ciel" version))
          (sha256
-          (base32 "1bwafbbsppxqvijf43dii55mpzrklh6faj2m5dhajg2f2m8qckgi"))))
+          (base32 "0gm8slnz4jw98rkijnh2dp6x629xdnfk8z7j35g03j6ypr56v06h"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
@@ -3485,12 +3485,11 @@ defined in RFC 2616.")
              sbcl-arrow-macros
              sbcl-bordeaux-threads
              sbcl-cl-ansi-text
-             sbcl-cl-ansi-text
              sbcl-cl-cron
              sbcl-cl-csv
+             sbcl-cl-ftp
              sbcl-cl-json-pointer
              sbcl-cl-ppcre
-             sbcl-cl-punch
              sbcl-cl-reexport
              sbcl-cl-str
              sbcl-clesh
@@ -3499,12 +3498,11 @@ defined in RFC 2616.")
              sbcl-cmd
              sbcl-dbi
              sbcl-defstar
-             sbcl-deploy
              sbcl-dexador
              sbcl-dissect
              sbcl-easy-routes
+             sbcl-file-finder
              sbcl-file-notify
-             sbcl-fn
              sbcl-for
              sbcl-fset
              sbcl-generic-cl
@@ -3515,20 +3513,23 @@ defined in RFC 2616.")
              sbcl-lquery
              sbcl-metabang-bind
              sbcl-modf
+             sbcl-moira
              sbcl-named-readtables
-             sbcl-nodgui
              sbcl-parse-float
              sbcl-parse-number
              sbcl-printv
+             sbcl-progressons
              sbcl-pythonic-string-reader
              sbcl-quicksearch
              sbcl-quri
              sbcl-repl-utilities
+             sbcl-secret-values
              sbcl-serapeum
              sbcl-shasht
              sbcl-shlex
              sbcl-spinneret
              sbcl-sxql
+             sbcl-termp
              sbcl-trivia
              sbcl-trivial-arguments
              sbcl-trivial-do
@@ -3537,12 +3538,23 @@ defined in RFC 2616.")
              sbcl-trivial-types
              sbcl-vgplot
              sbcl-which))
+      (outputs '("out" "image"))
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'create-asdf-configuration 'build-image
+              (lambda* (#:key outputs #:allow-other-keys)
+                (build-image
+                 (string-append (assoc-ref outputs "image") "/bin/ciel")
+                 outputs
+                 #:dependencies '("ciel")))))))
       (home-page "http://ciel-lang.org/")
       (synopsis "CIEL Is an Extended Lisp")
       (description
        "CIEL is a ready-to-use collection of libraries providing: a binary, to
 run CIEL scripts; a simple full-featured REPL for the terminal; a Lisp library
-and a core image .")
+and a core image.")
       (license license:expat))))
 
 (define-public cl-ciel
