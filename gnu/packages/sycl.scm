@@ -51,7 +51,7 @@
     (native-inputs (list clang-15 llvm-15 python spirv-tools))
     (inputs (list boost rocm-opencl-runtime spirv-headers))
     (arguments `(#:tests? #f)) ; no tests
-    (home-page "https://github.com/OpenSYCL/OpenSYCL")
+    (home-page "https://adaptivecpp.github.io/")
     (synopsis "Implementation of the SYCL programming language for accelerators")
     (description
      "AdaptiveCpp is aImplementation of SYCL and C++ standard parallelism
