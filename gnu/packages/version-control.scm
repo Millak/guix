@@ -55,6 +55,7 @@
 ;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
+;;; Copyright © 2024 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -657,21 +658,29 @@ everything from small to very large projects with speed and efficiency.")
                       ,(search-path-as-list
                         '("lib/perl5/site_perl")
                         '#$(delete-duplicates
-                            (append-map
-                             (compose last package-transitive-propagated-inputs)
-                             (list (this-package-input "perl-authen-sasl")
-                                   (this-package-input "perl-net-smtp-ssl")
-                                   (this-package-input
-                                    "perl-io-socket-ssl")))))))
+                            (let ((perl-inputs
+                                   (list (this-package-input "perl-authen-sasl")
+                                         (this-package-input "perl-net-smtp-ssl")
+                                         (this-package-input "perl-io-socket-ssl"))))
+                              (append perl-inputs
+                                      (map last
+                                           (append-map
+                                            package-transitive-propagated-inputs
+                                            perl-inputs))))))))
+
                   ;; Tell 'gitweb.cgi' where perl modules are.
                   (wrap-program (string-append out "/share/gitweb/gitweb.cgi")
                     `("PERL5LIB" ":" prefix
                       ,(search-path-as-list
                         '("lib/perl5/site_perl")
                         '#$(delete-duplicates
-                            (append-map
-                             (compose last package-transitive-propagated-inputs)
-                             (list (this-package-input "perl-cgi")))))))
+                            (let ((perl-inputs (list (this-package-input
+                                                      "perl-cgi"))))
+                              (append perl-inputs
+                                      (map last
+                                           (append-map
+                                            package-transitive-propagated-inputs
+                                            perl-inputs))))))))
 
                   ;; Tell 'git-submodule' where Perl is.
                   (wrap-program git-sm
