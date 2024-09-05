@@ -31992,6 +31992,7 @@ processes for Emacs.")
      (list python))
     (propagated-inputs
      (list emacs-ace-window
+           emacs-cfrs
            emacs-dash
            emacs-f
            emacs-ht
