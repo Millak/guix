@@ -186,6 +186,7 @@
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -7300,7 +7301,7 @@ to deprecate classes, functions or methods.")
      (list python-cryptography python-deprecated python-pyjwt
            python-pynacl python-requests))
     (native-inputs
-     (list python-httpretty python-pytest))
+     (list nss-certs-for-test python-httpretty python-pytest))
     (home-page "https://pygithub.readthedocs.io/en/latest/")
     (synopsis "Python library for the GitHub API")
     (description "This library allows managing GitHub resources such as
