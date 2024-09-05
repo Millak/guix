@@ -763,9 +763,11 @@ needed."
                    (urls  (map (cut string-append <> "/log")
                                (if (assoc-ref opts 'substitutes?)
                                    (or (assoc-ref opts 'substitute-urls)
-                                       ;; XXX: This does not necessarily match the
-                                       ;; daemon's substitute URLs.
-                                       %default-substitute-urls)
+                                       (substitute-urls store)
+                                       (begin
+                                         (warning (G_ "could not determine current \
+substitute URLs; using defaults~%"))
+                                         %default-substitute-urls))
                                    '())))
                    (items (filter-map (match-lambda
                                         (('argument . (? store-path? file))

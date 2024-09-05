@@ -13714,7 +13714,7 @@ guix build --log-file -e '(@@ (gnu packages guile) guile-2.0)'
 
 If a log is unavailable locally, and unless @option{--no-substitutes} is
 passed, the command looks for a corresponding log on one of the
-substitute servers (as specified with @option{--substitute-urls}).
+substitute servers.
 
 So for instance, imagine you want to see the build log of GDB on
 @code{aarch64}, but you are actually on an @code{x86_64} machine:
