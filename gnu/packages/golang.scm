@@ -46,6 +46,7 @@
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 Brennan Vincent <brennan@umanwizard.com>
+;;; Copyright © 2024 André Batista <nandre@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2197,7 +2198,7 @@ Go.")
 (define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
   (package
     (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird")
-    (version "0.1.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2206,7 +2207,7 @@ Go.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rifg5kgqp4c3b44j48fjmx00m00ai7fa4gaqrgphiqs1fc5586s"))))
+                "1bmljd81vc8b4kzmpgmx1n1vvjn5y1s2w01hjxwplmnchv9dndkl"))))
     (build-system go-build-system)
     (arguments
      `(#:unpack-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
@@ -2232,6 +2233,7 @@ Go.")
            go-github-com-refraction-networking-utls
            go-gitlab-com-yawning-edwards25519-extra
            go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel
            go-golang-org-x-crypto
            go-golang-org-x-net
            go-golang-org-x-text))
