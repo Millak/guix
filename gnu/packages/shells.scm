@@ -25,6 +25,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2024 Luís Henriques <henrix@camandro.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -820,25 +821,32 @@ A @code{andglob} program is also provided along with s.")
 (define-public oksh
   (package
     (name "oksh")
-    (version "0.5.9")
+    (version "7.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://connochaetos.org/oksh/oksh-"
-                           version ".tar.gz"))
+       (uri (string-append
+             "https://github.com/ibara/oksh/releases/download/oksh-"
+             version "/oksh-" version ".tar.gz"))
        (sha256
         (base32
-         "0ln9yf6pxngsviqszv8klnnvn8vcpplvj1njdn8xr2y8frkbw8r3"))))
+         "0pgdxvy8jgydsyzk7vcc93pm09bihqvrn3i35gz1ncg9z31rbf20"))))
     (build-system gnu-build-system)
     (arguments
-     `(; The test files are not part of the distributed tarball.
-       #:tests? #f))
-    (home-page "https://connochaetos.org/oksh")
-    (synopsis "Port of OpenBSD Korn Shell")
+     `(#:tests? #f)) ; there are no tests available
+    (home-page "https://github.com/ibara/oksh")
+    (synopsis "Portable OpenBSD Korn Shell")
     (description
-     "Oksh is a port of the OpenBSD Korn Shell.
-The OpenBSD Korn Shell is a cleaned up and enhanced ksh.")
-    (license license:gpl3+)))
+     "Oksh is a portable OpenBSD ksh.  Not an official OpenBSD project.
+Unlike other ports of OpenBSD ksh, this port is entirely self-contained
+and aims to be maximally portable across operating systems and C compilers.")
+    (license (list license:public-domain
+                   ;; asprintf.c, issetugid.c, reallocarray.c, sh.1,
+                   ;; strlcat.c, strlcpy.c, strtonum.c
+                   license:isc
+                   ;; confstr.c, siglist.c, signame.c, sys-queue.h, unvis.c,
+                   ;; vis.c, vis.h
+                   license:bsd-3))))
 
 (define-public loksh
   (package
