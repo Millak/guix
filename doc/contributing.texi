@@ -2194,6 +2194,18 @@ $ git format-patch -@var{NUMBER_COMMITS} -o outgoing \
       --cover-letter --base=auto
 @end example
 
+@quotation Note
+@code{git format-patch} accepts a wide range of
+@uref{https://git-scm.com/docs/gitrevisions, revision range} specifiers.
+For example, if you are working in a branch, you could select all commits
+in your branch starting at @code{master}.
+
+@example
+$ git format-patch master..@var{MY_BRANCH} -o outgoing \
+      --cover-letter --base=auto
+@end example
+@end quotation
+
 We can now send @emph{just} the cover letter to the
 @email{guix-patches@@gnu.org} address, which will create an issue
 that we can send the rest of the patches to.
