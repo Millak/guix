@@ -7222,59 +7222,63 @@ set.")
     (inputs
      (list openblas))
     (arguments
-     `(#:modules ((srfi srfi-1)
-                  ,@%default-gnu-modules)
-       #:configure-flags '("--enable-shared"
-                           "--disable-fortran"
-                           "--without-MPI"
-                           "--with-openmp"
-                           "--with-fei"
-                           "--with-lapack"
-                           "--with-blas")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'chdir-src
-           (lambda _ (chdir "src")))
-         (replace 'configure
-           (lambda* (#:key build target configure-flags
+     (list #:modules `((srfi srfi-1)
+                       ,@%default-gnu-modules)
+           #:configure-flags #~'("--enable-shared"
+                                 "--disable-fortran"
+                                 "--without-MPI"
+                                 "--with-openmp"
+                                 "--with-fei"
+                                 "--with-lapack"
+                                 "--with-blas")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'chdir-src
+                 (lambda _
+                   (chdir "src")))
+               (replace 'configure
+                 (lambda* (#:key build target configure-flags
                            #:allow-other-keys #:rest args)
-             (let* ((configure (assoc-ref %standard-phases 'configure)))
-               (apply configure
-                      (append args
-                              (list #:configure-flags
-                                    (cons (string-append
-                                           "--host=" (or target build))
-                                          configure-flags)))))))
-         (add-after 'build 'build-docs
-           (lambda _
-             (invoke "make" "-C" "docs")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "LD_LIBRARY_PATH"
-                       (string-append (getcwd) "/hypre/lib"))
-               (setenv "PATH"
-                       (string-append "." ":"
-                                      (getenv "PATH")))
-               (invoke "make" "check" "CHECKRUN=")
-               (for-each (lambda (filename)
-                           (let ((size (stat:size (stat filename))))
-                             (when (positive? size)
-                               (error (format #f
-                                       "~a size ~d; error indication~%"
-                                       filename size)))))
-                         (find-files "test" ".*\\.err$")))))
-         (add-after 'install 'install-docs
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Custom install because docs/Makefile doesn't honor ${docdir}.
-             (let* ((doc (assoc-ref outputs "doc"))
-                    (docdir (string-append doc "/share/doc/hypre-" ,version)))
-               (with-directory-excursion "docs"
-                 (for-each (lambda (base)
-                             (install-file (string-append base ".pdf") docdir)
-                             (copy-recursively (string-append base "-html")
-                                               (string-append docdir "/" base)))
-                           '("usr-manual" "ref-manual")))))))))
+                   (let* ((configure (assoc-ref %standard-phases 'configure)))
+                     (apply configure
+                            (append args
+                                    (list #:configure-flags
+                                          (cons (string-append "--host="
+                                                               (or target build))
+                                                configure-flags)))))))
+               (add-after 'build 'build-docs
+                 (lambda _
+                   (invoke "make" "-C" "docs")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "LD_LIBRARY_PATH"
+                             (string-append (getcwd) "/hypre/lib"))
+                     (setenv "PATH"
+                             (string-append "." ":" (getenv "PATH")))
+                     (invoke "make" "check" "CHECKRUN=")
+                     (for-each (lambda (filename)
+                                 (let ((size (stat:size (stat filename))))
+                                   (when (positive? size)
+                                     (error (format #f
+                                                    "~a size ~d; error indication~%"
+                                                    filename size)))))
+                               (find-files "test" ".*\\.err$")))))
+               (add-after 'install 'install-docs
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Custom install because docs/Makefile doesn't honor ${docdir}.
+                   (let* ((doc (assoc-ref outputs "doc"))
+                          (docdir (string-append doc "/share/doc/hypre-"
+                                                 #$version)))
+                     (with-directory-excursion "docs"
+                       (for-each (lambda (base)
+                                   (install-file (string-append base
+                                                                ".pdf") docdir)
+                                   (copy-recursively (string-append base
+                                                                    "-html")
+                                                     (string-append docdir
+                                                                    "/" base)))
+                                 '("usr-manual" "ref-manual")))))))))
     (home-page "https://computing.llnl.gov/projects\
 /hypre-scalable-linear-solvers-multigrid-methods")
     (synopsis "Library of solvers and preconditioners for linear equations")
@@ -7295,12 +7299,11 @@ problems.")
     (arguments
      (substitute-keyword-arguments (package-arguments hypre)
        ((#:configure-flags flags)
-        ``("--with-MPI"
-           ,@(delete "--without-MPI" ,flags)))
+        #~`("--with-MPI" ,@(delete "--without-MPI" #$flags)))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'check 'mpi-setup
-	     ,%openmpi-setup)))))
+        #~(modify-phases #$phases
+            (add-before 'check 'mpi-setup
+              #$%openmpi-setup)))))
     (synopsis "Parallel solvers and preconditioners for linear equations")
     (description
      "HYPRE is a software library of high performance preconditioners and
