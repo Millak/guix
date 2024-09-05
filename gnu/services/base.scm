@@ -21,6 +21,7 @@
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +68,8 @@
                           libc-utf8-locales-for-target
                           make-glibc-utf8-locales
                           tar canonical-package))
+  #:use-module ((gnu packages cross-base)
+                #:select (cross-libc))
   #:use-module ((gnu packages compression) #:select (gzip))
   #:use-module (gnu packages fonts)
   #:autoload   (gnu packages guile-xyz) (guile-netlink)
@@ -1317,7 +1320,7 @@ the tty to run, among other things."
                          ;; from 'glibc-final' instead of pulling in a second
                          ;; glibc copy.
                          (if target
-                             glibc
+                             (cross-libc target)
                              (canonical-package glibc))))))
 
 (define-record-type* <nscd-cache> nscd-cache make-nscd-cache
