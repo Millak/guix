@@ -3132,7 +3132,7 @@ std::variant (formerly boost::variant) for C++11/14.")
                 ((".*3rdparty/googletest.*\n") "")
                 ((".*config_compiler_and_linker.*\n") "")
                 (("gtest_main") "gtest gtest_main")))))))
-    (native-inputs (list googletest))
+    (native-inputs (list googletest gcc-12)) ; XXX: build fails with GCC 11
     (home-page "https://github.com/mpark/variant")
     (synopsis "Implementation of std::variant for C++11/14/17")
     (description
