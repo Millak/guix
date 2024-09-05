@@ -2690,6 +2690,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
            ladspa
            lcms
            libbs2b
+           libsixel
            mpg123
            rsound
            vulkan-headers
