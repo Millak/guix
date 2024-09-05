@@ -455,8 +455,7 @@ re-sign."
            python-sphinx
            python-pyyaml))
     (inputs
-     (list boost
-           eudev
+     (list eudev
            glib
            gst-plugins-base
            gnutls
