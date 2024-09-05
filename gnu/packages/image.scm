@@ -2832,7 +2832,10 @@ Graphics (PNGs), intended as an easy-to-use replacement for @code{libpng}.")
                                 "-Dlibcurl=disabled"
                                 "-Dgdk-pixbuf2=enabled")))
     (native-inputs (list pkg-config))
-    (inputs (list gdk-pixbuf libjpeg-turbo libpng python))
+    (inputs (list libjpeg-turbo libpng python))
+    ;; pkg-config's "Requires.private" need gdk-pixbuf. TODO: Remove it when
+    ;; we use pkgconf.
+    (propagated-inputs (list gdk-pixbuf))
     (home-page "https://github.com/libsixel/libsixel")
     (synopsis
      "Encoder and decoder implementation for DEC SIXEL graphics")
