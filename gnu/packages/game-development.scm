@@ -3092,7 +3092,7 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
 (define-public dhewm3
   (package
     (name "dhewm3")
-    (version "1.5.3")
+    (version "1.5.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url "https://github.com/dhewm/dhewm3")
@@ -3100,10 +3100,15 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zbwhrngmgb0969izmxididyx892qk7591aa9mbigakw6dvmlm84"))))
+                "16cvf78a7q00bkf74waj6gss09y4iqn3zl9srsfg6i7336gjm2wn"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ; No tests.
+           #:configure-flags
+           ;; Needed to fix 32bit builds.
+           #~(if (not #$(target-64bit?))
+                 (list "-DCMAKE_CXX_FLAGS=-D_FILE_OFFSET_BITS=64")
+                 '())
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'change-to-build-dir
