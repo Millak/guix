@@ -5633,6 +5633,34 @@ bytes in a chunk of memory.  Think of it like a much faster version of
     (supported-systems '("x86_64-linux"))
     (license license:expat)))
 
+(define-public julia-scientifictypesbase
+  (package
+    (name "julia-scientifictypesbase")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAI/ScientificTypesBase.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gkkyvighbwplbv3mcxdrall19zjsb9cwp0w2mr26sl6xbjxr8xc"))))
+    (build-system julia-build-system)
+    (native-inputs (list julia-tables))
+    (home-page "https://github.com/JuliaAI/ScientificTypesBase.jl")
+    (synopsis
+     "Base interface for dispatching on the 'scientific' type of data")
+    (description
+     "This package provides a Julia interface defining a collection
+of types (without instances) for implementing conventions about the scientific
+interpretation of data.  This package makes a distinction between the machine
+type and the scientific type of a Julia object.  A machine type refers to the
+Julia type being used to represent the object, for instance @code{Float64}.  The
+scientific type refers to how the object should be interpreted, for instance
+@code{Continuous} or @code{Multiclass{3}}.")
+    (license license:expat)))
+
 (define-public julia-scratch
   (package
     (name "julia-scratch")
