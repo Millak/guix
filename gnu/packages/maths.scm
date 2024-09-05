@@ -7185,6 +7185,7 @@ set.")
                   texlive-alphalph
                   texlive-capt-of
                   texlive-caption
+                  texlive-changepage
                   texlive-cmap
                   texlive-courier
                   texlive-enumitem
