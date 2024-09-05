@@ -6032,6 +6032,29 @@ statically sized arrays in Julia, using the abstract type
 linear algebra operations.")
     (license license:expat)))
 
+(define-public julia-staticarrayscore
+  (package
+    (name "julia-staticarrayscore")
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaArrays/StaticArraysCore.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dvi9c4abjzvdn6lyr6adpc8qf4432rg3p5z96a3rc3nlsvfns9y"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaArrays/StaticArraysCore.jl")
+    (synopsis "Common types and functions for static arrays")
+    (description
+     "This package provides definitions for most of the
+primary types and functions in @code{StaticArrays.jl}.  This enables
+downstream packages to implement new methods on these types without
+depending on the entirety of @code{StaticArrays.jl}.")
+    (license license:expat)))
+
 (define-public julia-statsapi
   (package
     (name "julia-statsapi")
