@@ -1242,6 +1242,34 @@ application suites.")
                 ;; related warnings (see:
                 ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/5169).
                 (("[ \t]*'inscription-markup.ui',") ""))
+              ;; These tests fail on an Apple M1 (aarch64) with the following errors:
+              ;; - MESA: error: ZINK: failed to choose pdev
+              ;; - libEGL warning: egl: failed to create dri2 screen
+              ;; - MESA: error: ZINK: failed to choose pdev
+              ;; - glx: failed to create drisw screen
+              #$@(if (target-aarch64?)
+                     #~((substitute* "testsuite/gsk/meson.build"
+                          (("'border-bottom-right',") "")
+                          (("'border-one-rounded',") "")
+                          (("'border-opacity',") "")
+                          (("'border-zero-width-color',") "")
+                          (("'borders-rotated',") "")
+                          (("'borders-scaled',") "")
+                          (("'clip-in-smaller-rounded-clip',") "")
+                          (("'css-background',") "")
+                          (("'empty-border',") "")
+                          (("'empty-inset-shadow',") "")
+                          (("'empty-outset-shadow',") "")
+                          (("'inset-shadow-multiple',") "")
+                          (("'outset-shadow-scale-offset',") "")
+                          (("'outset_shadow_offset_both',") "")
+                          (("'outset_shadow_offset_x',") "")
+                          (("'outset_shadow_offset_y',") "")
+                          (("'outset_shadow_rounded_top',") "")
+                          (("'outset_shadow_simple',") "")
+                          (("'shadow-offset-clip',") "")
+                          (("'shrink-rounded-border',") "")))
+                     #~())
               ;; XXX: These failures appear specific to i686 – investigate them.
               #$@(if (target-x86-32?)
                      #~((substitute* "testsuite/gsk/meson.build"
