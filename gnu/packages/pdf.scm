@@ -1072,11 +1072,18 @@ using a stylus.")
             (lambda _
               (invoke "cmake" "--build" "." "--target" "test-units")))
           (add-after 'install 'glib-or-gtk-wrap
-            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+          (add-after 'glib-or-gtk-wrap 'wrap-gdk-pixbuf
+            ;; This phase is necessary for xournalpp to load SVG icons.
+            (lambda _
+              (let ((pixbuf-module-file (getenv "GDK_PIXBUF_MODULE_FILE")))
+                (wrap-program (string-append #$output "/bin/xournalpp")
+                  `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-module-file)))))))))
     (native-inputs
      (list cppunit gettext-minimal googletest help2man pkg-config))
     (inputs
-     (list alsa-lib
+     (list adwaita-icon-theme
+           alsa-lib
            gtk+
            (librsvg-for-system)
            libsndfile
