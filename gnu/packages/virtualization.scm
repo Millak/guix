@@ -2473,57 +2473,56 @@ virtual machines.")
 (define-public bubblewrap
   (package
     (name "bubblewrap")
-    (version "0.8.0")
+    (version "0.10.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/containers/bubblewrap/"
-                                  "releases/download/v" version "/bubblewrap-"
-                                  version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/containers/bubblewrap/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fik7l8rm4yjkasskj7gw52s8jg3xfy152wqisw3s0xrklad2ylm"))
-               (patches (search-patches "bubblewrap-fix-locale-in-tests.patch"))))
-    (build-system gnu-build-system)
+                "0paahq4y8fmdnipahgymsshi3klmi60lvcqhhg1020z7n1gni0hx"))
+              (patches (search-patches "bubblewrap-fix-locale-in-tests.patch"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-test
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Tests try to access /var/tmp, which is not possible in our build
-             ;; environment.  Let's give them another directory.
-             ;; /tmp gets overriden in some tests, so we need another directory.
-             ;; the only possibility is the output directory.
-             (let ((tmp-dir (string-append (assoc-ref outputs "out") "/tmp")))
-               (mkdir-p tmp-dir)
-               (substitute* "tests/test-run.sh"
-                 (("/var/tmp") tmp-dir)
-                 ;; Tests create a temporary python script, so fix its shebang.
-                 (("/usr/bin/env python3") (which "python3"))
-                 ;; Tests call /usr/bin/env, so fix its path.
-                 (("/usr/bin/env") (which "env"))
-                 ;; Some tests try to access /usr, but that doesn't exist.
-                 ;; Give them /gnu instead.
-                 (("/usr") "/gnu")
-                 (("--ro-bind /bin /bin") "--ro-bind /gnu /bin")
-                 (("--ro-bind /sbin /sbin") "--ro-bind /gnu /sbin")
-                 (("--ro-bind /lib /lib") "--ro-bind /gnu /lib")
-                 (("  */bin/bash") (which "bash"))
-                 (("/bin/sh") (which "sh"))
-                 (("findmnt") (which "findmnt")))
-               (substitute* "tests/libtest.sh"
-                 (("/var/tmp") tmp-dir)
-                 (("/usr") "/gnu")
-                 (("--ro-bind /bin /bin") "--ro-bind /gnu /bin")
-                 (("--ro-bind /sbin /sbin") "--ro-bind /gnu /sbin")
-                 (("--ro-bind /lib /lib") "--ro-bind /gnu /lib")))
-             #t))
-         ;; Remove the directory we gave to tests to have a clean package.
-         (add-after 'check 'remove-tmp-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file-recursively (string-append (assoc-ref outputs "out") "/tmp"))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-test
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Tests try to access /var/tmp, which is not possible in our build
+                   ;; environment.  Let's give them another directory.
+                   ;; /tmp gets overriden in some tests, so we need another directory.
+                   ;; the only possibility is the output directory.
+                   (let ((tmp-dir (string-append (assoc-ref outputs "out") "/tmp")))
+                     (mkdir-p tmp-dir)
+                     (substitute* "tests/test-run.sh"
+                       (("/var/tmp") tmp-dir)
+                       ;; Tests create a temporary python script, so fix its shebang.
+                       (("/usr/bin/env python3") (which "python3"))
+                       ;; Tests call /usr/bin/env, so fix its path.
+                       (("/usr/bin/env") (which "env"))
+                       ;; Some tests try to access /usr, but that doesn't exist.
+                       ;; Give them /gnu instead.
+                       (("/usr") "/gnu")
+                       (("--ro-bind /bin /bin") "--ro-bind /gnu /bin")
+                       (("--ro-bind /sbin /sbin") "--ro-bind /gnu /sbin")
+                       (("--ro-bind /lib /lib") "--ro-bind /gnu /lib")
+                       (("  */bin/bash") (which "bash"))
+                       (("/bin/sh") (which "sh"))
+                       (("findmnt") (which "findmnt")))
+                     (substitute* "tests/libtest.sh"
+                       (("/var/tmp") tmp-dir)
+                       (("/usr") "/gnu")
+                       (("--ro-bind /bin /bin") "--ro-bind /gnu /bin")
+                       (("--ro-bind /sbin /sbin") "--ro-bind /gnu /sbin")
+                       (("--ro-bind /lib /lib") "--ro-bind /gnu /lib")))))
+               ;; Remove the directory we gave to tests to have a clean package.
+               (add-after 'check 'remove-tmp-dir
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (delete-file-recursively (string-append (assoc-ref outputs "out") "/tmp")))))))
     (inputs (list libcap))
-    (native-inputs (list python-wrapper util-linux))
+    (native-inputs (list python-wrapper util-linux pkg-config))
     (home-page "https://github.com/containers/bubblewrap")
     (synopsis "Unprivileged sandboxing tool")
     (description "Bubblewrap is aimed at running applications in a sandbox,
