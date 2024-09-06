@@ -785,6 +785,7 @@ through the pass command.")
                          (map (cut search-input-file inputs <>)
                               (list "bin/age"
                                     "bin/age-keygen"
+                                    "bin/cat"
                                     "bin/getopt"
                                     "bin/git"
                                     "bin/pkill"
@@ -798,7 +799,8 @@ through the pass command.")
          ("src/completion/pass.zsh-completion"
           "/share/zsh/site-functions/"))))
     (inputs
-     (list age age-keygen bash-minimal git procps qrencode sed tree util-linux))
+     (list age age-keygen coreutils-minimal git-minimal
+           procps qrencode sed tree util-linux))
     (home-page "https://github.com/FiloSottile/passage")
     (synopsis "Encrypted password manager")
     (description "This package provides an encrypted password manager, forked
