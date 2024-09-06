@@ -170,6 +170,7 @@ of C++20 coroutines in connection with certain asynchronous Qt actions.")
   (package
     (inherit qcoro-qt5)
     (name "qcoro-qt6")
+    (synopsis "C++ Coroutine Library for Qt6")
     (inputs (modify-inputs (package-inputs qcoro-qt5)
               (replace "qtbase" qtbase)
               (replace "qtdeclarative" qtdeclarative)
