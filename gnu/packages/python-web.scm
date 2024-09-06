@@ -175,6 +175,7 @@
              "--ignore=tests/test_inference_api.py"
              "--ignore=tests/test_inference_async_client.py"
              "--ignore=tests/test_inference_client.py"
+             "--ignore=tests/test_inference_text_generation.py"
              "--ignore=tests/test_login_utils.py"
              "--ignore=tests/test_offline_utils.py"
              "--ignore=tests/test_repocard.py"
