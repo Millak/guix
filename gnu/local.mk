@@ -2124,6 +2124,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/sbcl-aserve-add-HTML-5-elements.patch	\
   %D%/packages/patches/sbcl-aserve-fix-rfe12668.patch	\
   %D%/packages/patches/sbcl-burgled-batteries3-fix-signals.patch	\
+  %D%/packages/patches/sbcl-ciel-repl.patch			\
   %D%/packages/patches/sbcl-clml-fix-types.patch		\
   %D%/packages/patches/sbcl-eazy-gnuplot-skip-path-check.patch	\
   %D%/packages/patches/sbcl-fast-generic-functions-fix-sbcl-2.4.patch	\

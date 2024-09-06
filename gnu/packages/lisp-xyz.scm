@@ -3563,6 +3563,75 @@ and a core image.")
 (define-public ecl-ciel
   (sbcl-package->ecl-package sbcl-ciel))
 
+(define-public sbcl-ciel-repl
+  (let ((commit "0b26d64dcd91a3a2aa962842629a853261dd30fe")
+        (revision "0"))
+    (package
+      (name "sbcl-ciel-repl")
+      (version (git-version "0.2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ciel-lang/CIEL")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0gm8slnz4jw98rkijnh2dp6x629xdnfk8z7j35g03j6ypr56v06h"))
+         (patches (search-patches "sbcl-ciel-repl.patch"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-ciel
+             sbcl-cl-readline
+             sbcl-lisp-critic
+             sbcl-magic-ed))
+      (arguments
+       (list
+        #:asd-systems ''("ciel/repl")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; The built-in scripts require special care. They are
+            ;; read from src/scripts in the current directory.
+            ;; When the binary is built, the current directory is
+            ;; {out}/bin, so the scripts have to be copied there,
+            ;; but that copy must be deleted after the binary has been
+            ;; built, otherwise it would end up in the package.
+            (add-after 'create-asdf-configuration 'install-scripts
+              (lambda _
+                (let ((dir (string-append #$output "/bin/src/scripts")))
+                  (for-each (lambda (file)
+                              (install-file file dir))
+                            (find-files "src/scripts" "\\.lisp$")))))
+            (add-after 'install-scripts 'build-program
+              (lambda* (#:key outputs #:allow-other-keys)
+                (build-program
+                 (string-append #$output "/bin/ciel")
+                 outputs
+                 #:entry-program '((ciel::main))
+                 #:dependencies '("ciel/repl")
+                 #:compress? #t)))
+            (add-after 'build-program 'delete-scripts
+              (lambda _
+                (let ((dir (string-append #$output "/bin/src")))
+                  (delete-file-recursively dir))))
+            ;; Remove everything except the binary.
+            (add-after 'delete-scripts 'delete-lisp-files
+              (lambda _
+                (let ((dir (string-append #$output "/etc")))
+                  (delete-file-recursively dir))
+                (let ((dir (string-append #$output "/lib")))
+                  (delete-file-recursively dir))
+                (let ((dir (string-append #$output "/share")))
+                  (delete-file-recursively dir))
+                (let ((dir (string-append #$output "/.asd-files")))
+                  (delete-file-recursively dir)))))))
+      (home-page "http://ciel-lang.org/")
+      (synopsis "Terminal REPL for CIEL")
+      (description
+       "This package provides CIEL as a precompiled binary and a full-featured
+REPL for the terminal.")
+      (license license:expat))))
+
 (define-public sbcl-circular-streams
   (let ((commit "e770bade1919c5e8533dd2078c93c3d3bbeb38df")
         (revision "1"))

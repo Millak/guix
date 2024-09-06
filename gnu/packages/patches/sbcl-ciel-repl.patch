@@ -1,0 +1,31 @@
+The standard CIEL REPL includes Quicklisp. We remove it for packaging
+with Guix.
+
+The default Quicklisp-based build procedure removes one dependency
+relation from the system definition for ciel/repl and replaces it by
+an explicit load command using Quicklisp, as a workaround to some build
+issue. Fortunately we don't have this issue with Guix, so we go back
+to letting ASDF manage this dependency relation.
+
+--- a/repl.lisp
++++ b/repl.lisp
+@@ -1,8 +1,5 @@
+ ;; #!/usr/bin/sbcl --script
+-(load "~/quicklisp/setup")
+ 
+-(let ((*standard-output* (make-broadcast-stream)))
+-  (ql:quickload "cl-readline"))
+ (uiop:define-package :sbcli
+   (:use :common-lisp :trivial-package-local-nicknames)
+   (:import-from :magic-ed
+--- a/ciel.asd
++++ b/ciel.asd
+@@ -179,7 +179,7 @@
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ (asdf:defsystem "ciel/repl"
+   :description "readline REPL for CIEL with quality of life improvements."
+-  :depends-on (;; :ciel  ;; let's avoid, it could run side effects twice (like a defparameter set then reset).
++  :depends-on (:ciel
+                ;; deps
+                :cl-readline
+                :lisp-critic  ;; it would be nice to integrate it with Slime.
