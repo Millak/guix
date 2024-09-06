@@ -1457,7 +1457,7 @@ KDE Frameworks components.")
                          mesa-utils
                          pkg-config
                          qttools
-                         wayland-protocols-next
+                         wayland-protocols
                          xorg-server-for-tests
                          python-minimal
                          ;; for QtWaylandScanner

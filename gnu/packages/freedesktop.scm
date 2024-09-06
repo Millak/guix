@@ -1421,19 +1421,6 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
         . "https://wayland.freedesktop.org/releases.html")))
     (license license:expat)))
 
-(define-public wayland-protocols-next
-  (package (inherit wayland-protocols)
-           (name "wayland-protocols-next")
-           (version "1.36")
-           (source (origin
-                     (method url-fetch)
-                     (uri (string-append "https://gitlab.freedesktop.org/wayland/"
-                                         "wayland-protocols/-/releases/" version "/downloads/"
-                                         "wayland-protocols-" version ".tar.xz"))
-                     (sha256
-                      (base32
-                       "14kyxywpfkgpjpkrybs28q1s2prnz30k1b4zap5a3ybrbvh4vzbi"))))))
-
 (define-public wayland-utils
   (package
     (name "wayland-utils")
