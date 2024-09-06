@@ -203,7 +203,7 @@ locale supported by GLIBC."
 
           (setenv "PATH"
                   (string-append #+(file-append tar "/bin") ":"
-                                 #+(file-append xz "/bin") ":"
+                                 #+(file-append zstd "/bin") ":"
                                  #+(file-append gzip "/bin")))
           (unpack #:source #+(package-source glibc))
 
