@@ -456,6 +456,7 @@ asdf-build-system."
                       "gnu/packages/guile.scm"
                       "gnu/packages/ld-wrapper.in"
                       "gnu/packages/make-bootstrap.scm"
+                      "gnu/packages/multiprecision.scm"
                       "guix/build/gnu-build-system.scm"
                       "guix/build/utils.scm"
                       "guix/build-system/gnu.scm")))
