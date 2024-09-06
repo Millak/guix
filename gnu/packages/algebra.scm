@@ -41,6 +41,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fltk)
@@ -52,6 +53,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -1233,91 +1235,31 @@ xtensor provides:
            ;; Delete bundled external libraries.
            (for-each delete-file-recursively
                      '("extern" "hpcgap/extern"))
-           ;; Delete all packages except for a fixed list,
-           ;; given by their names up to version numbers.
+           ;; Delete packages that are known not to build.
+           ;; TODO: Investigate.
            (with-directory-excursion "pkg"
              (for-each delete-file-recursively
-               (lset-difference
-                 (lambda (all keep) (string-prefix? keep all))
-                 (scandir ".")
-                 '("." ".."
-                   ;; Necessary packages.
-                   "gapdoc"
-                   "primgrp"
-                   "smallgrp"   ; artistic2.0
-                   "transgrp"   ; artistic2.0 for data,
-                                ; gpl2 or gpl3 for code
-                   ;; Optional packages.
-                   "4ti2interface"
-                   "alnuth"
-                   "autodoc"
-                   "automata"
-                   "autpgrp"
-                   "cap"
-                   "crime"
-                   "crisp"      ; bsd-2
-                   "ctbllib"    ; gpl3+
-                   "datastructures"
-                   "examplesforhomalg"
-                   "factint"
-                   "fga"
-                   "format"
-                   "gauss"
-                   "gaussforhomalg"
-                   "generalizedmorphismsforcap"
-                   "gradedmodules"
-                   "gradedringforhomalg"
-                   "groupoids"
-                   "guarana"
-                   "homalg"
-                   "homalgtocas"
-                   "idrel"
-                   "images"     ; mpl2.0
-                   "intpic"
-                   "io"         ; gpl3+
-                   "ioforhomalg"
-                   "irredsol"   ; bsd-2
-                   "laguna"
-                   "liering"
-                   "linearalgebraforcap"
-                   "localizeringforhomalg"
-                   "mapclass"
-                   "matricesforhomalg"
-                   "modulepresentationsforcap"
-                   "modules"
-                   "monoidalcategories"
-                   "nconvex"
-                   "nilmat"
-                   "numericalsgps"
-                   "openmath"
-                   "orb"        ; gpl3+
-                   "polenta"
-                   "polycyclic"
-                   "radiroot"
-                   "recog"      ; gpl3+
-                   "repsn"
-                   "resclasses"
-                   "ringsforhomalg"
-                   "sco"
-                   "simpcomp"
-                   "sophus"
-                   "tomlib"
-                   "toolsforhomalg"
-                   "unipot"
-                   "utils"))))))))
+                       '("caratinterface" ; ./configure: /bin/sh: bad interpreter: No such file or directory
+                         "cddinterface" ; configure: error: could not use setoper.h
+                         "normalizinterface" ; tries to download normaliz
+                         "semigroups" ; bundled dependencies
+                         "xgap" ; make: /bin/sh: No such file or directory
+                        )))))))
     (build-system gnu-build-system)
     (inputs
-     (list gmp readline zlib))
+     (list gmp readline zlib
+           curl   ; for the curlinterface package
+           zeromq ; for the zeromqinterface package
+     ))
     (arguments
      `(#:configure-flags
        (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-packages
-           ;; Compile all packages that have not been deleted by the
-           ;; code snippet above.
            (lambda _
              (setenv "CONFIG_SHELL" (which "bash"))
+             (setenv "CC" "gcc")
              (with-directory-excursion "pkg"
                (invoke "../bin/BuildPackages.sh"))))
          (add-after 'build-packages 'build-doc
@@ -1339,13 +1281,9 @@ emphasis on computational group theory.  It provides a programming language,
 a library of thousands of functions implementing algebraic algorithms
 written in the GAP language as well as large data libraries of algebraic
 objects.")
-    ;; Some packages have different licenses (effectively forcing the
-    ;; combined work to be licensed as gpl3+); if this is the case, this
-    ;; is mentioned above next to their name.
-    ;; Some packages have no license mentioned explicitly; supposedly this
-    ;; means that the gpl2+ licence of GAP itself applies, but to be on the
-    ;; safe side, we drop them for now.
-    (license license:gpl2+)))
+    ;; gap itself is gpl2+, but some packages have different licenses.
+    ;; effectively forcing the combined work to be licensed as gpl3+.
+    (license license:gpl3+)))
 
 (define-public spectra
   (package
