@@ -72,6 +72,10 @@
 ;;; unit of source code interchange and versioning".  Modules are generally
 ;;; hosted in a repository.
 ;;;
+;;; Monorepo is a collection of modules within the same VCS source.  Each
+;;; module of monorepo may be released individually by assigning
+;;; "<subdir>/v<semver>" tag (see: https://go.dev/ref/mod#modules-overview).
+;;;
 ;;; At this point it should handle correctly modules which have only Go
 ;;; dependencies and are accessible from proxy.golang.org (or configured via
 ;;; GOPROXY).
