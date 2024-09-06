@@ -1216,7 +1216,7 @@ xtensor provides:
 (define-public gap
   (package
     (name "gap")
-    (version "4.12.2")
+    (version "4.13.1")
     (source
      (origin
        (method url-fetch)
@@ -1226,17 +1226,13 @@ xtensor provides:
                            version
                            ".tar.gz"))
        (sha256
-        (base32 "1a47slldnjq6mib69k3g8lqw6nyxdrwdd3gfjhj252mpbrs0h8v7"))
+        (base32 "1fmy3mzbw84f1cxrkjcw7wyssj48zhhwxa0a5l58x6gvlvdxp54p"))
        (modules '((guix build utils) (ice-9 ftw) (srfi srfi-1)))
        (snippet
         '(begin
            ;; Delete bundled external libraries.
            (for-each delete-file-recursively
                      '("extern" "hpcgap/extern"))
-           ;; Delete a failing test.
-           ;; FIXME: This might be fixed in the next release, see
-           ;; https://github.com/gap-system/gap/issues/3292
-           (delete-file "tst/testinstall/dir.tst")
            ;; Delete all packages except for a fixed list,
            ;; given by their names up to version numbers.
            (with-directory-excursion "pkg"
@@ -1313,10 +1309,8 @@ xtensor provides:
     (inputs
      (list gmp readline zlib))
     (arguments
-     `(#:modules ((ice-9 ftw)
-                  (srfi srfi-26)
-                  (guix build gnu-build-system)
-                  (guix build utils))
+     `(#:configure-flags
+       (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-packages
