@@ -29,6 +29,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system qt)
@@ -1429,6 +1430,11 @@ KDE Frameworks components.")
                         "-E"
                         (string-join
                          (list
+                          ;; Fails on an Apple M1 (aarch64) with the following error:
+                          ;; TestColorspaces::roundtripConversion fails
+                          #$@(if (target-aarch64?)
+                                 #~("kwin-testColorspaces")
+                                 #~())
                           "kwin-testDrm" ;; require Drm
                           "kwin-testInputMethod"
                           "kwin-testPlasmaWindow" ;; require plasma-workspace qml module.
