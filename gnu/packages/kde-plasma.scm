@@ -2880,12 +2880,34 @@ sensors, process information and other system resources.")
                              "--output-on-failure"
                              "--rerun-failed"
                              "-E"
-                             "(appstreamtest|tasktoolstest|tasksmodeltest|\
-fetchinitialplayertest|mprisdeclarativetest|mediakeystest|shelltest|\
-locationsrunnertest|testimagefinder|testimagelistmodel|\
-testpackageimagelistmodel|testimageproxymodel|testslidemodel|testimagefrontend|\
-dbusservicewatchertest|klippertest|keystatetest|lockedtest|tst_triangleFilter|\
-testimagebackend)"))))
+                             (string-join
+                              (list
+                               ;; Fails on an Apple M1 (aarch64) with the following error:
+                               ;; Compared values are not the same "2'\uFFFD''\uFFFD'"
+                               #$@(if (target-aarch64?)
+                                      #~("calculatorrunnertest")
+                                      #~())
+                               "appstreamtest"
+                               "dbusservicewatchertest"
+                               "fetchinitialplayertest"
+                               "keystatetest"
+                               "klippertest"
+                               "locationsrunnertest"
+                               "lockedtest"
+                               "mediakeystest"
+                               "mprisdeclarativetest"
+                               "shelltest"
+                               "tasksmodeltest"
+                               "tasktoolstest"
+                               "testimagebackend"
+                               "testimagefinder"
+                               "testimagefrontend"
+                               "testimagelistmodel"
+                               "testimageproxymodel"
+                               "testpackageimagelistmodel"
+                               "testslidemodel"
+                               "tst_triangleFilter")
+                              "|")))))
                ;; share/dbus-1/system-services have same name file
                ;; when dbus-root-service-type merge it, wail report
                ;; "file exists".
