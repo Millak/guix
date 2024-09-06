@@ -464,18 +464,20 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "3.1.0")
+    (version "3.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/qutebrowser/"
-                           "qutebrowser/releases/download/v" version "/"
-                           "qutebrowser-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/qutebrowser/qutebrowser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0prf9c7nx4aizfczjb0fpsn3alz210i6wc7s2jwb1mh8r8fcq3ah"))))
+        (base32 "0xsywqay27lkhanvq9yd10qw0d6mhgj49wmnb1apqk7w6yzpy3gj"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-attrs))               ; for tests
+     (list python-attrs                 ; for tests
+           asciidoc))
     (inputs
      (list bash-minimal
            python-colorama
