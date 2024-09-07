@@ -1667,13 +1667,13 @@ from knitr Rmarkdown.")
 (define-public r-microbenchmark
   (package
     (name "r-microbenchmark")
-    (version "1.4.10")
+    (version "1.5.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "microbenchmark" version))
               (sha256
                (base32
-                "10dlp4295jb5l7lhz80f4mkz3jccv02v277z666wx3bhfaz43k04"))))
+                "0pvn94zfv50imz5g39wyqbqaa7fkl0h5sy98ic9as4b842lr47ix"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/microbenchmark/")
     (synopsis "Accurate timing functions for R")
