@@ -318,6 +318,33 @@ defining and using monads and useful monadic functions.")
     (home-page "https://github.com/clojure/algo.monads")
     (license license:epl1.0)))
 
+(define-public clojure-core-cache
+  (package
+    (name "clojure-core-cache")
+    (version "1.1.234")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/clojure/core.cache")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jiq022kd5jdpmxz884rvg5317xmx7g3gnidkpcfsamchyfh5qxq"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '("docs")))
+    (propagated-inputs (list clojure-data-priority-map))
+    (synopsis "Clojure caching library")
+    (description
+     "Caching library for Clojure implementing various cache strategies such
+as First-in-first-out, Least-recently-used, Least-used, Time-to-live, Naive
+cache and Naive cache backed with soft references.")
+    (home-page "https://github.com/clojure/core.cache")
+    (license license:epl1.0)))
+
 (define-public clojure-core-match
   (package
     (name "clojure-core-match")
