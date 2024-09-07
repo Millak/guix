@@ -397,6 +397,32 @@ CSV data.  @code{data.csv} follows the RFC4180 specification but is more
 relaxed.")
     (license license:epl1.0)))
 
+(define-public clojure-data-json
+  (package
+    (name "clojure-data-json")
+    (version "2.5.0")
+    (home-page "https://github.com/clojure/data.json")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04k3fr9y1gp337h0d2zxam3aa3hl046r2g2qiizn7aq0rq6311p9"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()))
+    (native-inputs (list clojure-test-check))
+    (synopsis "Clojure library for reading and writing JSON data")
+    (description "@code{data.json} is a Clojure library for reading and
+writing JSON data.  @code{data.xml} is compliant with the JSON spec and has no
+external dependencies")
+    (license license:epl1.0)))
+
 (define-public clojure-data-xml
   (package
     (name "clojure-data-xml")
