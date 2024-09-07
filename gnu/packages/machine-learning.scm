@@ -5862,6 +5862,26 @@ definite approximations of Optimal Transport (Wasserstein) distances.
 @end itemize")
     (license license:expat)))
 
+(define-public rust-esaxx-rs-0.1
+  (package
+    (name "rust-esaxx-rs")
+    (version "0.1.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "esaxx-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rm6vm5yr7s3n5ly7k9x9j6ra5p2l2ld151gnaya8x03qcwf05yq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/Narsil/esaxx-rs")
+    (synopsis "Wrapper for sentencepiece's esaxxx library")
+    (description
+     "This package provides a wrapper around sentencepiece's esaxxx library.")
+    (license license:asl2.0)))
+
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
