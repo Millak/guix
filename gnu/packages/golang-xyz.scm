@@ -1934,6 +1934,60 @@ more complicated parallel cases.")
 encoding/decoding.  It has no dependencies.")
     (license license:expat)))
 
+(define-public go-github-com-dgraph-io-ristretto
+  (package
+    (name "go-github-com-dgraph-io-ristretto")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dgraph-io/ristretto")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mjni3zaxvjvw5c7nh4sij13sslg92x9xi3ykxzbv2s6g2ynigss"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests fail on 32 bit architecure:
+      ;;
+      ;; cannot use 12 << 30 (untyped int constant 12884901888) as int value
+      ;; in assignment (overflows).
+      ;;
+      ;; cannot use 4340958203495 (untyped int constant) as int value in
+      ;; argument to z.KeyToHash (overflows)
+      #:tests? (target-64bit?)
+      #:import-path "github.com/dgraph-io/ristretto"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-benchmarks-and-contrib
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "benchmarks")
+                (delete-file-recursively "contrib"))))
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cespare-xxhash-v2
+           go-github-com-dgryski-go-farm
+           go-github-com-dustin-go-humanize
+           go-github-com-golang-glog
+           go-github-com-pkg-errors
+           go-golang-org-x-sys))
+    (home-page "https://github.com/dgraph-io/ristretto")
+    (synopsis "Memory-bound cache in Golang")
+    (description
+     "Ristretto is a concurrent, fixed size, in-memory cache with a dual focus
+on throughput and hit ratio performance.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public go-github-com-dimchansky-utfbom
   (package
     (name "go-github-com-dimchansky-utfbom")
