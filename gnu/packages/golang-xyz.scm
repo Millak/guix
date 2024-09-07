@@ -823,6 +823,33 @@ newlines until a non-newline.")
        "This library provides unit multipliers and functions for Go.")
       (license license:expat))))
 
+(define-public go-github-com-andreasbriese-bbloom
+  (package
+    (name "go-github-com-andreasbriese-bbloom")
+    (version "0.0.0-20190825152654-46b345b51c96")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AndreasBriese/bbloom")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "021c0pl7r4pc9yslqhbjg9wr6dm03lnzf94a0b9c0hmg0bhhkln9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/AndreasBriese/bbloom"))
+    (home-page "https://github.com/AndreasBriese/bbloom")
+    (synopsis "Bitset Bloom filter for Golang")
+    (description
+     "This package implements a fast bloom filter with real @code{bitset} and
+JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
+    ;; XXX: It may be included to guix licenses: CC0 1.0 UNIVERSAL
+    ;; <http://creativecommons.org/publicdomain/zero/1.0/>
+    ;; Dual licence: MIT (Expat) and CC0 1.0 UNIVERSAL.
+    (license license:expat)))
+
 (define-public go-github-com-anmitsu-go-shlex
   (package
     (name "go-github-com-anmitsu-go-shlex")
