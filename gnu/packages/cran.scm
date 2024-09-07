@@ -32756,14 +32756,14 @@ Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish and Turkish.")
 (define-public r-quanteda
   (package
     (name "r-quanteda")
-    (version "4.0.2")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quanteda" version))
        (sha256
         (base32
-         "1s046p3bnf36z2mqh5ijirq7jygqj5clal3r0l3f89gr0466a75j"))))
+         "01j10gy1svzsz3d2yqg4mbdq7mlgkf1ymzkzjprs6mn91qb0b0ng"))))
     (properties `((upstream-name . "quanteda")))
     (build-system r-build-system)
     (propagated-inputs
@@ -32773,7 +32773,6 @@ Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish and Turkish.")
            r-magrittr
            r-matrix
            r-rcpp
-           r-rcpparmadillo
            r-snowballc
            r-stopwords
            r-stringi
