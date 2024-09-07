@@ -370,6 +370,33 @@ It supports Clojure 1.5.1 and later as well as ClojureScript.")
     (home-page "https://github.com/clojure/core.match")
     (license license:epl1.0)))
 
+(define-public clojure-core-memoize
+  (package
+    (name "clojure-core-memoize")
+    (version "1.1.266")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/clojure/core.memoize")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nys79zrvcnwgyxb91zlyl3nb4p6r6y4n5rbdvzqkvsxxazi9ji0"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '("docs")))
+    (propagated-inputs (list clojure-core-cache))
+    (synopsis "Memoization framework for Clojure")
+    (description
+     "A manipulable, pluggable, memoization framework for Clojure implementing
+some common memoization caching strategies, such as First-in-first-out,
+Least-recently-used, Least-used and Time-to-live.")
+    (home-page "https://github.com/clojure/core.memoize")
+    (license license:epl1.0)))
+
 (define-public clojure-data-codec
   (package
     (name "clojure-data-codec")
