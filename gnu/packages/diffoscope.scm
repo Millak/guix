@@ -253,7 +253,7 @@ install.")
 (define-public reprotest
   (package
     (name "reprotest")
-    (version "0.7.27")
+    (version "0.7.28")
     (source
      (origin
        (method git-fetch)
@@ -262,7 +262,7 @@ install.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z5i53dy4ax4gbidcqmwqq0686n1g397c79bsscfs94s2y35fsns"))))
+        (base32 "06jm82w05qsx3wskch3fm5mpkpj5jmq7r4yram4ixprxc5j8flg8"))))
     (inputs
      (list python-debian python-distro python-libarchive-c python-rstr))
     (native-inputs
@@ -281,15 +281,6 @@ install.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         ;; Neither glibc-locales nor glibc-utf8-locales have the C.UTF-8
-         ;; locale or several other locales used in reprotest.
-         (add-after 'unpack 'adjust-locales
-           (lambda _
-             (substitute* "reprotest/build.py"
-               (("'C.UTF-8'") "'en_US.UTF-8'"))
-             (substitute* "reprotest/lib/adt_testbed.py"
-               (("export LANG=C.UTF-8") "export LANG=en_US.UTF-8"))
-             #t))
          (add-after 'install 'install-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((mandir1 (string-append
