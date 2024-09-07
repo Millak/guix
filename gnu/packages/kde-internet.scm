@@ -4,6 +4,7 @@
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Superfly Johnson <superfly.johnson@yahoo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -226,14 +227,14 @@ This package is part of the KDE networking module.")
 (define-public konversation
   (package
     (name "konversation")
-    (version "24.05.2")
+    (version "24.08.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konversation-" version ".tar.xz"))
        (sha256
-        (base32 "1migcrl2d3i4iadijhpap0mm2cd7irp3g2962flll41mv5nhzwsl"))))
+        (base32 "1807i5sj5n1w75x66ii0cm192g3b7z6zqvw7y3l9nlf61ksqfrfi"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools qttools))
