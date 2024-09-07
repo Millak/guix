@@ -24341,13 +24341,13 @@ classes.")
 (define-public r-clarabel
   (package
     (name "r-clarabel")
-    (version "0.9.0")
+    (version "0.9.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clarabel" version))
        (sha256
-        (base32 "1g66y8s4v7qzm92dhnsmng28sm4lf6wggb4kc6arvp75z0i315jh"))))
+        (base32 "1qfchpxd0hnw4vcs6vbkkrf0rqrrjr85j1hvpka466aqpdsl2qsa"))))
     (properties `((upstream-name . "clarabel")))
     (build-system r-build-system)
     (arguments
