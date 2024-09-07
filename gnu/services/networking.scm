@@ -10,7 +10,7 @@
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
@@ -94,6 +94,7 @@
             dhcp-client-configuration-config-file
             dhcp-client-configuration-shepherd-provision
             dhcp-client-configuration-shepherd-requirement
+            dhcp-client-configuration-version
 
             dhcpd-service-type
             dhcpd-configuration
@@ -323,70 +324,78 @@
   (config-file dhcp-client-configuration-config-file
                (default #f))
   (interfaces   dhcp-client-configuration-interfaces
-                (default 'all)))                  ;'all | list of strings
+                (default 'all))         ;'all | list of strings
+  (version dhcp-client-configuration-version ;"4", "6", or "4o6"
+           (default "4")))
 
 (define dhcp-client-shepherd-service
   (match-lambda
     ((? dhcp-client-configuration? config)
-     (let ((package (dhcp-client-configuration-package config))
-           (requirement (dhcp-client-configuration-shepherd-requirement config))
-           (provision (dhcp-client-configuration-shepherd-provision config))
-           (interfaces (dhcp-client-configuration-interfaces config))
-           (config-file (dhcp-client-configuration-config-file config))
-           (pid-file "/var/run/dhclient.pid"))
-       (list (shepherd-service
-              (documentation "Set up networking via DHCP.")
-              (requirement `(user-processes udev ,@requirement))
-              (provision provision)
+     (match-record config <dhcp-client-configuration>
+                   (package shepherd-requirement shepherd-provision
+                            interfaces config-file version)
+       ;; Version the PID file to avoid conflicts in case multiple DHCP
+       ;; clients are run concurrently.
+       (let ((pid-file (if (string=? "4" version)
+                           "/var/run/dhclient.pid"
+                           (string-append "/var/run/dhclient-" version ".pid"))))
+         (list (shepherd-service
+                (documentation "Set up networking via DHCP.")
+                (requirement `(user-processes udev ,@shepherd-requirement))
+                (provision shepherd-provision)
 
-              ;; XXX: Running with '-nw' ("no wait") avoids blocking for a minute when
-              ;; networking is unavailable, but also means that the interface is not up
-              ;; yet when 'start' completes.  To wait for the interface to be ready, one
-              ;; should instead monitor udev events.
-              (start #~(lambda _
-                         (define dhclient
-                           (string-append #$package "/sbin/dhclient"))
+                ;; XXX: Running with '-nw' ("no wait") avoids blocking for a
+                ;; minute when networking is unavailable, but also means that
+                ;; the interface is not up yet when 'start' completes.  To
+                ;; wait for the interface to be ready, one should instead
+                ;; monitor udev events.
+                (start #~(lambda _
+                           (define dhclient
+                             (string-append #$package "/sbin/dhclient"))
 
-                         ;; When invoked without any arguments, 'dhclient' discovers all
-                         ;; non-loopback interfaces *that are up*.  However, the relevant
-                         ;; interfaces are typically down at this point.  Thus we perform
-                         ;; our own interface discovery here.
-                         (define valid?
-                           (lambda (interface)
-                             (and (arp-network-interface? interface)
-                                  (not (loopback-network-interface? interface))
-                                  ;; XXX: Make sure the interfaces are up so that
-                                  ;; 'dhclient' can actually send/receive over them.
-                                  ;; Ignore those that cannot be activated.
-                                  (false-if-exception
-                                   (set-network-interface-up interface)))))
-                         (define ifaces
-                           (filter valid?
-                                   #$(match interfaces
-                                       ('all
-                                        #~(all-network-interface-names))
-                                       (_
-                                        #~'#$interfaces))))
+                           ;; When invoked without any arguments, 'dhclient'
+                           ;; discovers all non-loopback interfaces *that are
+                           ;; up*.  However, the relevant interfaces are
+                           ;; typically down at this point.  Thus we perform
+                           ;; our own interface discovery here.
+                           (define valid?
+                             (lambda (interface)
+                               (and (arp-network-interface? interface)
+                                    (not (loopback-network-interface? interface))
+                                    ;; XXX: Make sure the interfaces are up so
+                                    ;; that 'dhclient' can actually
+                                    ;; send/receive over them.  Ignore those
+                                    ;; that cannot be activated.
+                                    (false-if-exception
+                                     (set-network-interface-up interface)))))
+                           (define ifaces
+                             (filter valid?
+                                     #$(match interfaces
+                                         ('all
+                                          #~(all-network-interface-names))
+                                         (_
+                                          #~'#$interfaces))))
 
-                         (define config-file-args
-                           (if #$config-file
-                               (list "-cf" #$config-file)
-                               '()))
+                           (define config-file-args
+                             (if #$config-file
+                                 (list "-cf" #$config-file)
+                                 '()))
 
-                         (false-if-exception (delete-file #$pid-file))
-                         (let ((pid (fork+exec-command
-                                     ;; By default dhclient uses a
-                                     ;; pre-standardization implementation of
-                                     ;; DDNS, which is incompatable with
-                                     ;; non-ISC DHCP servers; thus, pass '-I'.
-                                     ;; <https://kb.isc.org/docs/aa-01091>.
-                                     `(,dhclient "-nw" "-I"
-                                                 "-pf" ,#$pid-file
-                                                 ,@config-file-args
-                                                 ,@ifaces))))
-                           (and (zero? (cdr (waitpid pid)))
-                                (read-pid-file #$pid-file)))))
-              (stop #~(make-kill-destructor))))))
+                           (false-if-exception (delete-file #$pid-file))
+                           (let ((pid (fork+exec-command
+                                       ;; By default dhclient uses a
+                                       ;; pre-standardization implementation of
+                                       ;; DDNS, which is incompatable with
+                                       ;; non-ISC DHCP servers; thus, pass '-I'.
+                                       ;; <https://kb.isc.org/docs/aa-01091>.
+                                       `(,dhclient "-nw" "-I"
+                                                   #$(string-append "-" version)
+                                                   "-pf" ,#$pid-file
+                                                   ,@config-file-args
+                                                   ,@ifaces))))
+                             (and (zero? (cdr (waitpid pid)))
+                                  (read-pid-file #$pid-file)))))
+                (stop #~(make-kill-destructor)))))))
     (package
      (warning (G_ "'dhcp-client' service now expects a \
 'dhcp-client-configuration' record~%"))
