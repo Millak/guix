@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -995,3 +996,30 @@ is first loaded.")
 provided by the Clojure Core reader and more.  It adds metadata such as column
 and line numbers not only to lists, but also to symbols, vectors and maps.")
     (license license:epl1.0)))
+
+(define-public http-kit
+  (package
+    (name "http-kit")
+    (version "2.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/http-kit/http-kit")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1361bpb4sn3dbp215s7gf1bcrb45lgx3lk6lix7bndw9lahr5ank"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:java-source-dirs '("src/java")
+       #:source-dirs '("src")
+       #:doc-dirs '()
+       #:tests? #f))                    ;XXX: too many unpackaged dependencies
+    (synopsis
+     "High-performance, event-driven HTTP client and server for Clojure")
+    (description "This package provides a minimalist, event-driven,
+high-performance Clojure HTTP client and server library with WebSocket and
+asynchronous support.")
+    (home-page "https://github.com/http-kit/http-kit")
+    (license license:asl2.0)))
