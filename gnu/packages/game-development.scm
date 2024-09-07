@@ -28,7 +28,7 @@
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 dan <i@dan.games>
-;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -2102,7 +2102,7 @@ scripted in a Python-like language.")
 (define-public godot
   (package
     (name "godot")
-    (version "4.2.2")
+    (version "4.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2111,7 +2111,7 @@ scripted in a Python-like language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wm0pla6f6gvk21gbm5kiihinn05dvvprk0242m6s8c78wy60wka"))
+                "1hqjlhjhxyp1kll7s68b34kisvba1d5dsr804flc0bw4f47l2sdz"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
@@ -2165,6 +2165,7 @@ scripted in a Python-like language.")
                               "stb_rect_pack"
                               "thorvg"
                               "tinyexr"
+                              "ufbx"
                               "vhacd"
                               "volk"
                               "vulkan"
@@ -2211,10 +2212,10 @@ scripted in a Python-like language.")
               ;; Scons does not use the environment variables by default,
               ;; but this substitution makes it do so.
               (substitute* "SConstruct"
-                (("env_base = Environment\\(tools=custom_tools\\)")
+                (("env = Environment\\(tools=custom_tools\\)")
                  (string-append
-                  "env_base = Environment(tools=custom_tools)\n"
-                  "env_base = Environment(ENV=os.environ)")))))
+                  "env = Environment(tools=custom_tools)\n"
+                  "env = Environment(ENV=os.environ)")))))
           (add-after 'scons-use-env 'fix-dlopen-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((files '("drivers/alsa/asound-so_wrap.c"
