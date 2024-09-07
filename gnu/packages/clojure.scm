@@ -634,6 +634,31 @@ about your function that should hold true for all inputs.  This lets you write
 concise, powerful tests.")
     (license license:epl1.0)))
 
+(define-public clojure-tools-analyzer
+  (package
+    (name "clojure-tools-analyzer")
+    (version "1.2.0")
+    (home-page "https://github.com/clojure/tools.analyzer")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05v4i8qs5d51lh113phib0brkysphxa2d71khm840586432knyaa"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()))
+    (synopsis "Analyzer for Clojure code")
+    (description "Analyzer for Clojure code, written in Clojure, which
+produces an abstract syntax tree in the EDN ( Extensible Data Notation)
+format.")
+    (license license:epl1.0)))
+
 (define-public clojure-tools-macro
   (package
     (name "clojure-tools-macro")
