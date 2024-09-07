@@ -42839,13 +42839,13 @@ API.")
 (define-public r-spacetime
   (package
     (name "r-spacetime")
-    (version "1.3-1")
+    (version "1.3-2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "spacetime" version))
               (sha256
                (base32
-                "1kr12pbi6hqns30kqy4jv5pcm3lgfcfyc2gwaak1jbg894csahhr"))))
+                "01dvih9f7m7vmjv057d1lls5kyxq5h87mmxaby566r9b2svrx0fn"))))
     (properties `((upstream-name . "spacetime")))
     (build-system r-build-system)
     (propagated-inputs (list r-intervals r-lattice r-sp r-xts r-zoo))
