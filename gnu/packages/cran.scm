@@ -21323,14 +21323,14 @@ decomposition is shared between datasets.")
 (define-public r-strucchange
   (package
     (name "r-strucchange")
-    (version "1.5-3")
+    (version "1.5-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "strucchange" version))
        (sha256
         (base32
-         "11hgz64snlwhfqsmqajmkciflwkz1wficxr340wqvk38iw1b9ina"))))
+         "066pbldj1a0hdhrzszqp8ad71krj7w5dbqxmgp8kk5d76r6wd6vq"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-sandwich r-zoo))
