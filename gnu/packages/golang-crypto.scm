@@ -550,6 +550,50 @@ one-time authenticator as specified in
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-decred-dcrd-crypto-blake256
+  (package
+    (name "go-github-com-decred-dcrd-crypto-blake256")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/decred/dcrd")
+             (commit (go-version->git-ref
+                      ;; XXX: While waiting on consensus:
+                      ;; - https://issues.guix.gnu.org/52362
+                      ;; - https://issues.guix.gnu.org/63001
+                      ;; - https://issues.guix.gnu.org/63647
+                      ;; - https://issues.guix.gnu.org/69827
+                      (string-append "crypto/blake256/v" version)))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mjzlyz2a3516g46kv421nacjd7p4g9l8ih4i7xijvsi480s5pja"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packed as separated
+            ;; packages.
+            (for-each
+             delete-file-recursively
+             (list "addrmgr" "bech32" "blockchain/standalone" "certgen"
+                   "chaincfg/chainhash" "chaincfg" "connmgr" "container/lru"
+                   "crypto/blake256/internal/_asm" "crypto/rand"
+                   "crypto/ripemd160" "database" "dcrec/edwards" "dcrec" "dcrjson"
+                   "dcrutil" "gcs" "hdkeychain" "math/uint256" "mixing" "peer"
+                   "rpc/jsonrpc/types" "rpcclient" "txscript" "wire"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/decred/dcrd/crypto/blake256"
+      #:unpack-path "github.com/decred/dcrd"))
+    (home-page "https://github.com/decred/dcrd")
+    (synopsis "BLAKE-256/BLAKE-224 crypto hash functions implementation")
+    (description
+     "Package blake256 implements BLAKE-256 and BLAKE-224 with SSE2, SSE4.1,
+and AVX acceleration and zero allocations.")
+    (license license:isc)))
+
 (define-public go-github-com-dvsekhvalnov-jose2go
   (package
     (name "go-github-com-dvsekhvalnov-jose2go")
