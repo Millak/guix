@@ -1449,12 +1449,19 @@ while also supporting native scrolling and @command{tmux} control mode
         (base32 "1vq0igfq1hj017ivfkd03zbb620qhvcjn9vd56c5dr4r1j7jiz98"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'set-env-variables
-                    (lambda _
-                      (setenv "CC"
-                              ,(cc-for-target)))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-env-variables
+            (lambda _
+              (setenv "CC"
+                      #$(cc-for-target))))
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("gtk-update-icon-cache") (which "true"))
+                (("update-desktop-database") (which "true"))))))))
     (inputs (list dbus
                   dconf
                   gettext-minimal
