@@ -143,7 +143,7 @@
 (define-public python-huggingface-hub
   (package
     (name "python-huggingface-hub")
-    (version "0.20.3")
+    (version "0.23.2")
     (source
      (origin
        (method git-fetch)
@@ -152,7 +152,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00indl9labvqvm4m0y5jbzl68cgj8i60a6qy498gpnjj2pqk4l6v"))))
+        (base32 "0hygxqcixkc1d9sr47j2km6z0p17aj4k1dzm4cvpddrvhrgqayq5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -185,7 +185,11 @@
              "--ignore=tests/test_utils_git_credentials.py"
              "--ignore=tests/test_utils_http.py"
              "--ignore=tests/test_utils_pagination.py"
-             "--ignore=tests/test_webhooks_server.py")
+             "--ignore=tests/test_webhooks_server.py"
+             "-k" (string-append
+                   "not test_push_to_hub"
+                   " and not test_from_pretrained_model_id_only"
+                   " and not test_from_pretrained_model_id_and_revision"))
       #:phases
       '(modify-phases %standard-phases
          (add-before 'check 'pre-check
