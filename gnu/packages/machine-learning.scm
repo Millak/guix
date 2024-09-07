@@ -80,7 +80,10 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages crates-check)
+  #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-tls)
+  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages documentation)
@@ -5907,6 +5910,51 @@ definite approximations of Optimal Transport (Wasserstein) distances.
 @url{https://github.com/google/sentencepiece,sentencepiece}
 Dart::@code{DoubleArray} struct and it's Normalizer.  This crate is highly
 specialized and not intended for general use.")
+    (license license:asl2.0)))
+
+(define-public rust-hf-hub-0.3
+  (package
+    (name "rust-hf-hub")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hf-hub" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cnpivy9fn62lm1fw85kmg3ryvrx8drq63c96vq94gabawshcy1b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; require network connection
+       #:cargo-inputs
+       (("rust-dirs" ,rust-dirs-5)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-indicatif" ,rust-indicatif-0.17)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-ureq" ,rust-ureq-2))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-tokio-test" ,rust-tokio-test-0.4))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl))
+    (home-page "https://github.com/huggingface/hf-hub")
+    (synopsis "Interact with HuggingFace in Rust")
+    (description
+     "This crates aims ease the interaction with
+@url{https://huggingface.co/,huggingface}.  It aims to be compatible with
+@url{https://github.com/huggingface/huggingface_hub/,huggingface_hub}
+python package, but only implements a smaller subset of functions.")
     (license license:asl2.0)))
 
 (define-public python-hmmlearn
