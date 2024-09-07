@@ -42895,13 +42895,13 @@ supports @command{sf} and @command{stars}.")
 (define-public r-automap
   (package
     (name "r-automap")
-    (version "1.1-9")
+    (version "1.1-12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "automap" version))
               (sha256
                (base32
-                "0hrsdynjxv0n5n1pbdk05rgrcwfd0g5p9pgdbicx4ljk73nhl1zk"))))
+                "1lz60na443pf6k9ndzqyylllw2fz8b658j6m3ykfpia0k6fbpx55"))))
     (properties `((upstream-name . "automap")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2
