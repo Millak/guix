@@ -449,7 +449,7 @@ with the @command{autotrace} utility or as a C library, @code{libautotrace}.")
 (define-public embree
   (package
     (name "embree")
-    (version "3.13.5")
+    (version "4.3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -458,7 +458,7 @@ with the @command{autotrace} utility or as a C library, @code{libautotrace}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kcvz7g6j56anv9zjyd3gidxl46vipw0gg82lns12m45cd43iwxm"))))
+                "1p8xlzz8lvcg2laz164snp9hf4nnn4ynfxxc4sf6skg78y86hxbc"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ; no tests (apparently)
