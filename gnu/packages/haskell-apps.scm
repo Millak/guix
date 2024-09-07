@@ -297,7 +297,7 @@ to @code{cabal repl}).")
 (define-public git-annex
   (package
     (name "git-annex")
-    (version "10.20240808")
+    (version "10.20240831")
     (source
      (origin
        ;; hackage release doesn't include everything needed for extra bits.
@@ -307,7 +307,7 @@ to @code{cabal repl}).")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06pk4gzj6snspid5a01s1vqh305ca02is3ap86w41icrngnly4n4"))))
+        (base32 "1g6paxjpdjmzr623p7cf6chh42g5azwlzlnxgljhyhdmz6bxj5fr"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "git-annex")))
     (arguments
@@ -398,6 +398,8 @@ to @code{cabal repl}).")
                     (bin (string-append out "/bin")))
                (symlink (string-append bin "/git-annex")
                         (string-append bin "/git-annex-shell"))
+               (symlink (string-append bin "/git-annex")
+                        (string-append bin "/git-remote-annex"))
                (symlink (string-append bin "/git-annex")
                         (string-append bin "/git-remote-tor-annex"))))))))
     (inputs
