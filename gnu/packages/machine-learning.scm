@@ -6228,6 +6228,70 @@ tokenizers = ~s"
 tokenizers, @code{rust-tokenizers}.")
     (license license:asl2.0)))
 
+(define-public python-transformers
+  (package
+    (name "python-transformers")
+    (version "4.44.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "transformers" version))
+       (sha256
+        (base32 "09h84wqqk2bgi4vr9d1m3dsliard99l53n96wic405gfjb61gain"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Missing inputs.
+     (list #:test-flags
+           '(list "--ignore=tests/test_modeling_tf_common.py"
+                  "--ignore=tests/test_configuration_common.py"
+                  "--ignore=tests/test_pipeline_mixin.py"
+                  "--ignore=tests/test_sequence_feature_extraction_common.py")))
+    ;; The imported package contains ~60 more inputs, but they don't seem
+    ;; necessary to build a minimal version of the package.
+    (propagated-inputs
+     (list python-filelock
+           python-huggingface-hub
+           python-numpy
+           python-pytorch
+           python-pyyaml
+           python-regex
+           python-requests
+           python-safetensors
+           python-tokenizers
+           python-tqdm))
+    (native-inputs
+     (list python-parameterized-next
+           python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/huggingface/transformers")
+    (synopsis "Machine Learning for PyTorch and TensorFlow")
+    (description
+     "This package provides easy download of thousands of pretrained models to
+perform tasks on different modalities such as text, vision, and audio.
+
+These models can be applied on:
+@itemize
+@item Text, for tasks like text classification, information extraction,
+question answering, summarization, translation, and text generation, in over
+100 languages.
+@item Images, for tasks like image classification, object detection, and
+segmentation.
+@item Audio, for tasks like speech recognition and audio classification.
+@end itemize
+
+Transformer models can also perform tasks on several modalities combined, such
+as table question answering, optical character recognition, information
+extraction from scanned documents, video classification, and visual question
+answering.
+
+This package provides APIs to quickly download and use those pretrained models
+on a given text, fine-tune them on your own datasets and then share them with
+the community.  At the same time, each Python module defining an architecture
+is fully standalone and can be modified to enable quick research experiments.
+
+Transformers is backed by the three most popular deep learning libraries —
+Jax, PyTorch and TensorFlow — with a seamless integration between them.")
+    (license license:asl2.0)))
+
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
