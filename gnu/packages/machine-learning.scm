@@ -5882,6 +5882,33 @@ definite approximations of Optimal Transport (Wasserstein) distances.
      "This package provides a wrapper around sentencepiece's esaxxx library.")
     (license license:asl2.0)))
 
+(define-public rust-spm-precompiled-0.1
+  (package
+    (name "rust-spm-precompiled")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "spm_precompiled" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09pkdk2abr8xf4pb9kq3rk80dgziq6vzfk7aywv3diik82f6jlaq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.13)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))
+    (home-page "https://github.com/huggingface/spm_precompiled")
+    (synopsis "Emulate sentencepiece's DoubleArray")
+    (description
+     "This crate aims to emulate
+@url{https://github.com/google/sentencepiece,sentencepiece}
+Dart::@code{DoubleArray} struct and it's Normalizer.  This crate is highly
+specialized and not intended for general use.")
+    (license license:asl2.0)))
+
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
