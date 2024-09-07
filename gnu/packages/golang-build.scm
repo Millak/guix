@@ -18,6 +18,7 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -58,6 +59,31 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-golang-glog
+  (package
+    (name "go-github-com-golang-glog")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/glog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a9ybpgp6grlpbhg2559sh54pxc9qfkhr4zvylw8qv1bny8c90q0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/golang/glog"))
+    (home-page "https://github.com/golang/glog")
+    (synopsis "Leveled execution logs for Golang")
+    (description
+     "This package implements logging analogous to C++ package
+@url{https://github.com/google/glog,glog} INFO/ERROR/V setup.  It provides
+functions that have a name matched by regex:.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-golang-protobuf
   (package
     (name "go-github-com-golang-protobuf")
