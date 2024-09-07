@@ -12300,6 +12300,17 @@ Fisher's method), and Sidak correction.")
         (base32
          "165vp2ygry8ibcpxjbyfvfrjbv98syln12kkyzci2ygp84r5sv1r"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'build-reproducibly
+           (lambda _
+             (substitute* "R/buildModel.R"
+               (("Sys.time\\(\\)")
+                "if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
+ as.numeric(Sys.getenv(\"SOURCE_DATE_EPOCH\"))\
+} else { Sys.time() }\n")))))))
     (propagated-inputs
      (list r-curl r-jsonlite r-ttr r-xts r-zoo))
     (home-page "https://cran.r-project.org/web/packages/quantmod/")
