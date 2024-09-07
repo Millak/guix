@@ -42864,21 +42864,21 @@ matching or aggregation, retrieving coordinates, print, summary, etc.")
 (define-public r-gstat
   (package
     (name "r-gstat")
-    (version "2.1-1")
+    (version "2.1-2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gstat" version))
               (sha256
                (base32
-                "09ax28di93r4r334qwdp84i95809lkr6587w4xlgpvsma7k0bcj8"))))
+                "1zvfljlpgvydvjhdhyc9g8c39a3ba347l8hvc6nv27j0w7kyplr6"))))
     (properties `((upstream-name . "gstat")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-fnn
            r-lattice
-           r-sp
            r-sf
            r-sftime
+           r-sp
            r-spacetime
            r-stars
            r-zoo))
