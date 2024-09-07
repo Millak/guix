@@ -99,7 +99,9 @@
                  (string-append "'" (search-input-file inputs "/bin/metacity-message"))))
               (substitute* "src/jarabe/intro/window.py"
                 (("ssh-keygen")
-                 (search-input-file inputs "/bin/ssh-keygen")))
+                 (search-input-file inputs "/bin/ssh-keygen"))
+                ;; ssh-keygen no longer supports dsa.
+                (("-t dsa") "-t rsa"))
               (substitute* "src/jarabe/journal/model.py"
                 (("xdg-user-dir")
                  (search-input-file inputs "/bin/xdg-user-dir")))
@@ -346,7 +348,13 @@ and metadata, and the journal with querying and full text search.")
                 (("'unzip', '-o'")
                  (string-append "'"
                                 (search-input-file inputs "/bin/unzip")
-                                "', '-o'")))))
+                                "', '-o'")))
+              ;; ssh-keygen no longer supports DSA.
+              (substitute* "src/sugar3/profile.py"
+                (("(.*)magic = 'ssh-dss '" m indent)
+                 (string-append m "\n" indent "magicrsa = 'ssh-rsa '\n"))
+                (("if not line.startswith\\(magic\\)")
+                 "if not line.startswith(magic) and not line.startswith(magicrsa)"))))
           (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (wrap-program (search-input-file outputs "bin/sugar-activity3")
