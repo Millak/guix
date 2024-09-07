@@ -227,7 +227,7 @@ interface} named 'ikhal'.")
 (define-public remind
   (package
     (name "remind")
-    (version "3.3.7")
+    (version "5.0.5")
     (source
      (origin
        (method url-fetch)
@@ -238,7 +238,9 @@ interface} named 'ikhal'.")
                                         ".")
                            ".tar.gz"))
        (sha256
-        (base32 "0gca7f5gc0zr111c28hxw4hycz1hr9z7s912bpzm92g1s4llxjc7"))))
+        (base32 "0yc0lfrl0zzc1bn5fkigararg44bdryis7vjnm8vzs21as9r0dbz"))))
+    (properties
+     `((output-synopsis "tcl" "graphical front-end to Remind calendar program")))
     (build-system gnu-build-system)
     (outputs (list "out"
                    "tcl"))           ; more than doubles the closure by >110 MiB
@@ -255,24 +257,24 @@ interface} named 'ikhal'.")
                   (let ((from (string-append out "/" file))
                         (to   (string-append tcl "/" file)))
                     (mkdir-p (dirname to))
-                    (rename-file from to)
-                    ;; For simplicity, wrap all scripts with the same variables
-                    ;; even though, e.g., inetutils is not needed by cm2rem.tcl.
-                    ;; XXX Using WRAP-SCRIPT currently breaks tkremind.
-                    (wrap-program to
-                      `("PATH" ":" prefix
-                        ,(map (lambda (dir)
-                                (string-append dir "/bin"))
-                              (append (list out tcl)
-                                      (map (lambda (input)
-                                             (assoc-ref inputs input))
-                                           (list "tcl" "tk" "inetutils")))))
-                      `("TCLLIBPATH" " " =
-                        (,(getenv "TCLLIBPATH"))))))
-                (list "bin/cm2rem.tcl"
-                      "bin/tkremind"))))))))
+                    (rename-file from to)))
+                (list "bin/tkremind"
+                      "share/man/man1/tkremind.1"
+                      "share/pixmaps/tkremind.png"
+                      "share/applications/tkremind.desktop"))
+               (wrap-program (string-append tcl "/bin/tkremind")
+                 `("PATH" ":" prefix
+                   ,(map (lambda (dir)
+                           (string-append dir "/bin"))
+                         (append (list out tcl)
+                                 (map (lambda (input)
+                                        (assoc-ref inputs input))
+                                      (list "tcl" "tk" "inetutils")))))
+                 `("TCLLIBPATH" " " =
+                   (,(getenv "TCLLIBPATH"))))))))))
     (inputs
      (list bash-minimal inetutils tcl tcllib tk))
+    (native-inputs (list tzdata-for-tests))       ;required for some tests
     (home-page "https://dianne.skoll.ca/projects/remind/")
     (synopsis "Sophisticated calendar and alarm program")
     (description
