@@ -801,7 +801,8 @@ host names."
       (documentation "Initialize the machine's host name.")
       (provision '(host-name))
       (start #~(lambda _
-                 (sethostname #$name)))
+                 (sethostname #$name)
+                 #$name))
       (one-shot? #t)))
    (description "Initialize the machine's host name.")))
 
