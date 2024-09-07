@@ -23,6 +23,7 @@
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
+;;; Copyright © 2024 Superfly Johnson <superfly.johnson@yahoo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1031,6 +1032,31 @@ MurmurHash} revision (aka MurmurHash3).")))
     (description "This package provides AES Cipher Block Chaining CipherText
 Stealing encryption and decryption methods.")
     (license license:asl2.0)))
+
+(define-public go-github-com-jzelinskie-whirlpool
+  (package
+    (name "go-github-com-jzelinskie-whirlpool")
+    (version "0.0.0-20201016144138-0675e54bb004")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jzelinskie/whirlpool")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w74h9dz8pkwal3aqymymsq2zgl7d16dw1kxa7dfkad167g3s1mz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jzelinskie/whirlpool"))
+    (home-page "https://github.com/jzelinskie/whirlpool")
+    (synopsis "Cryptographic hashing library")
+    (description
+     "Package whirlpool implements the ISO/IEC 10118-3:2004 whirlpool
+cryptographic hash as specified in
+@url{http://www.larc.usp.br/~pbarreto/WhirlpoolPage.html}.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-libp2p-go-libp2p-crypto
   (let ((commit "7240b40a3ddc47c4d17c15baabcbe45e5219171b")
