@@ -41,6 +41,7 @@
 ;;; Copyright © 2024 Suhail <suhail@bayesians.ca>
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1434,54 +1435,45 @@ while also supporting native scrolling and @command{tmux} control mode
   (deprecated-package "wterm" foot))
 
 (define-public tilix
-  (let ((commit "8726e9e9426e6b05c8cadfe7fe5205e8cbc910e3")
-        (revision "0"))
-    (package
-      (name "tilix")
-      ;; No release in over a year so include commits that fix glibc related
-      ;; build issues.
-      (version (git-version "1.9.5" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/gnunn1/tilix")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0vbjfk6zn9r56nxhlgy77szv7ai061ds53hsz9zba0v9kyzzcdml"))))
-      (build-system meson-build-system)
-      (arguments
-       `(#:glib-or-gtk? #t
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'set-env-variables
-             (lambda _
-               (setenv "CC" ,(cc-for-target))))
-           (add-after 'unpack 'skip-gtk-update-icon-cache
-             (lambda _
-               (substitute* "meson_post_install.py"
-                 (("gtk-update-icon-cache") (which "true"))
-                 (("update-desktop-database") (which "true"))))))))
-      (inputs
-       (list dbus
-             dconf
-             gsettings-desktop-schemas
-             gtk+
-             gtkd
-             ldc
-             libsecret
-             libunwind
-             vte))
-      (native-inputs
-       (list appstream
-             gettext-minimal
-             (list glib "bin")
-             ldc
-             pkg-config))
-      (home-page "https://gnunn1.github.io/tilix-web/")
-      (synopsis "Tiling terminal emulator")
-      (description "Tilix is a tiling terminal emulator following the
+  (package
+    (name "tilix")
+    (version "1.9.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gnunn1/tilix")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vq0igfq1hj017ivfkd03zbb620qhvcjn9vd56c5dr4r1j7jiz98"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'set-env-variables
+                    (lambda _
+                      (setenv "CC"
+                              ,(cc-for-target)))))))
+    (inputs (list dbus
+                  dconf
+                  gettext-minimal
+                  gsettings-desktop-schemas
+                  gtkd
+                  gtk+
+                  libsecret
+                  libunwind
+                  vte))
+    (native-inputs (list appstream
+                         desktop-file-utils
+                         `(,glib "bin")
+                         `(,gtk+ "bin")
+                         ldc
+                         pkg-config))
+    (home-page "https://gnunn1.github.io/tilix-web/")
+    (synopsis "Tiling terminal emulator")
+    (description
+     "Tilix is a tiling terminal emulator following the
 Gnome Human Interface Guidelines.  Its features include:
 @enumerate
 @item Layout terminals in any fashion by splitting them horizontally or
@@ -1493,7 +1485,7 @@ windows.
 terminal are replicated to the others.
 @item Supports notifications when processes are completed out of view.
 @end enumerate")
-    (license license:mpl2.0))))
+    (license license:mpl2.0)))
 
 (define-public tio
   (package
