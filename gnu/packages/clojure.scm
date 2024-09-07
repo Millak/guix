@@ -318,6 +318,40 @@ defining and using monads and useful monadic functions.")
     (home-page "https://github.com/clojure/algo.monads")
     (license license:epl1.0)))
 
+(define-public clojure-core-async
+  (package
+    (name "clojure-core-async")
+    (version "1.6.681")
+    (home-page "https://github.com/clojure/core.async")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j9yz14hy2qs8g3flsqkn1sx9c0qlr5mmpy6ab1zml9yhbw5arzg"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()
+       #:phases
+       (modify-phases %standard-phases
+         ;; Remove ClojureScript code, we are only supporting Clojure for now.
+         (add-after 'unpack 'delete-cljs
+           (lambda _
+             (delete-file-recursively "src/main/clojure/cljs")
+             (delete-file-recursively "src/test/cljs"))))))
+    (propagated-inputs (list clojure-tools-analyzer-jvm))
+    (synopsis "Facilities for async programming and communication in Clojure")
+    (description "The core.async library adds support for asynchronous
+programming using channels to Clojure.  It provides facilities for independent
+threads of activity, communicating via queue-like channels inspired by Hoare’s
+work on Communicating Sequential Processes (CSP).")
+    (license license:epl1.0)))
+
 (define-public clojure-core-cache
   (package
     (name "clojure-core-cache")
