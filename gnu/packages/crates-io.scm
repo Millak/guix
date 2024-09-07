@@ -41135,6 +41135,34 @@ proc_macro attributes or derives.  This package provides implementation
 details to @code{rust-macro-rules-attribute}.")
     (license license:expat)))
 
+(define-public rust-macro-rules-attribute-0.2
+  (package
+    (name "rust-macro-rules-attribute")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "macro_rules_attribute" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04waa4qm28adwnxsxhx9135ki68mwkikr6m5pi5xhcy0gcgjg0la"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-macro-rules-attribute-proc-macro"
+         ,rust-macro-rules-attribute-proc-macro-0.2)
+        ("rust-paste" ,rust-paste-1))
+       #:cargo-development-inputs
+       (("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://crates.io/crates/macro_rules_attribute")
+    (synopsis "Use declarative macros in Rust")
+    (description
+     "This package provides the ability to use Rust declarative macros as
+proc_macro attributes or derives.")
+    (license license:expat)))
+
 (define-public rust-macrotest-1
   (package
     (name "rust-macrotest")
