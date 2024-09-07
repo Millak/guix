@@ -423,6 +423,35 @@ writing JSON data.  @code{data.xml} is compliant with the JSON spec and has no
 external dependencies")
     (license license:epl1.0)))
 
+(define-public clojure-data-priority-map
+  (package
+    (name "clojure-data-priority-map")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/clojure/data.priority-map")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0aynzrdl0w08q89nd069lcx8s6msqmwrpqnya63jv1l2pn3w6ij4"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()))
+    (synopsis "Priority map implementation in Clojure")
+    (description
+     "A priority map is very similar to a sorted map, but whereas a sorted map
+produces a sequence of the entries sorted by key, a priority map produces the
+entries sorted by value.  In addition to supporting all the functions a sorted
+map supports, a priority map can also be thought of as a queue of [item
+priority] pairs.  To support usage as a versatile priority queue, priority
+maps also support conj/peek/pop operations.")
+    (home-page "https://github.com/clojure/data.priority-map")
+    (license license:epl1.0)))
+
 (define-public clojure-data-xml
   (package
     (name "clojure-data-xml")
