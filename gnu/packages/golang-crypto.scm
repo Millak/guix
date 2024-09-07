@@ -500,6 +500,56 @@ cryptographic algorithms targeting Post-Quantum (PQ) and Elliptic Curve
 Cryptography (ECC).")
     (license license:bsd-3)))
 
+(define-public go-github-com-davidlazar-go-crypto
+  (package
+    (name "go-github-com-davidlazar-go-crypto")
+    (version "0.0.0-20200604182044-b73af7476f6c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/davidlazar/go-crypto")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10lbh8ask8hswgz2bavi6gq00dqc3y7apvkha1dhnbicwj9jqf38"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/davidlazar/go-crypto"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Run all tests, workaround for go-build-system's lack of Go
+          ;; modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/davidlazar/go-crypto")
+    (synopsis "Cryptographic packages for Golang")
+    (description
+     "This package produces a collection of cryptographic utilities,
+including the following:
+@itemize
+@item @code{drbg}: a cryptographically secure pseudorandom number generator as
+specified in
+@url{https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-90Ar1.pdf,NIST SP
+800-90A}
+@item @code{encoding/base32}: a compact base32 encoder
+@item @code{secretkey}: user-friendly secret keys that can be used with
+secretbox
+@item @code{salsa20}: a streaming interface (cipher.Stream) for the Salsa20
+stream cipher
+@item @code{poly1305}: a streaming interface (hash.Hash) for the Poly1305
+one-time authenticator as specified in
+@url{http://cr.yp.to/mac/poly1305-20050329.pdf, poly1305}
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-dvsekhvalnov-jose2go
   (package
     (name "go-github-com-dvsekhvalnov-jose2go")
