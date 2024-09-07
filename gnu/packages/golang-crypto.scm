@@ -594,6 +594,32 @@ one-time authenticator as specified in
 and AVX acceleration and zero allocations.")
     (license license:isc)))
 
+(define-public go-github-com-dgryski-go-farm
+  (package
+    (name "go-github-com-dgryski-go-farm")
+    (version "0.0.0-20200201041132-a6ae2369ad13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dgryski/go-farm")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qbz4a4fv3853ix974x02q1129kc4xxf0c92ib5sdpsq04zjbqv8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dgryski/go-farm"))
+    (home-page "https://github.com/dgryski/go-farm")
+    (synopsis "Farmhash implementation in Golang")
+    (description
+     "FarmHash provides hash functions for strings and other data.  The
+functions mix the input bits thoroughly but are not suitable for cryptography.
+It is implemented as a mechanical translation of the non-SSE4/non-AESNI hash
+functions from @url{https://github.com/google/farmhash,Google's FarmHash}.")
+    (license license:expat)))
+
 (define-public go-github-com-dvsekhvalnov-jose2go
   (package
     (name "go-github-com-dvsekhvalnov-jose2go")
