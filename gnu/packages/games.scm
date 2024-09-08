@@ -499,7 +499,8 @@ Doom clone shooter game.")
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "--disable-uninstall"))) ;pointless (and broken) in Guix
+           #~(list "--disable-games"        ;don't nest everything in ‘games/’
+                   "--disable-uninstall"))) ;pointless (and broken) in Guix
     (native-inputs (list pkg-config))
     (inputs (list libxml2
                   (sdl-union (list sdl sdl-image sdl-mixer))
