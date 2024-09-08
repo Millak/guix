@@ -3055,6 +3055,47 @@ clients that speak the Gemini protocol.")
 @@url{https://github.com/makeworld-the-better-one/go-gemini,go-gemini}.")
     (license license:expat)))
 
+(define-public go-github-com-marten-seemann-tcp
+  (package
+    (name "go-github-com-marten-seemann-tcp")
+    (version "0.0.0-20210406111302-dfbc87cc63fd")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/marten-seemann/tcp")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l03l7vx5j641bsgqzlcdshmsi7m1x0yny8i81hx5c5fbg5c25zx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/marten-seemann/tcp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "_test\\.go$")
+                  ;;  couldn't initialize from a wrapped conn: unknown
+                  ;;  connection type
+                  (("TestWrappedConn") "OffTestWrappedConn")
+                  ;; Get "https://golang.org/robots.txt": dial tcp: lookup
+                  ;; golang.org on [::1]:53: read udp [::1]:56806->[::1]:53:
+                  ;; read: connection refused
+                  (("TestInfo") "OffTestInfo"))))))))
+    (native-inputs
+     (list go-golang-org-x-net))
+    (propagated-inputs
+     (list go-github-com-mikioh-tcp))
+    (home-page "https://github.com/marten-seemann/tcp")
+    (synopsis "TCP-level socket options implementation in Golang")
+    (description
+     "This package provides a TCP-level socket options that allow manipulation
+of TCP connection facilities.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-mattbaird-jsonpatch
   (package
     (name "go-github-com-mattbaird-jsonpatch")
