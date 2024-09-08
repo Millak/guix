@@ -24,7 +24,7 @@
 ;;; Copyright © 2016 Steve Webber <webber.sl@gmail.com>
 ;;; Copyright © 2017 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@hyperbola.info>
 ;;; Copyright © 2017, 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017–2023 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2019 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -3356,35 +3356,32 @@ properly.")
         (base32 "1pwqf7r9bqb2p3xrw9i7y8pgr1401fy3mnnqpb1qkhmdl3gqi9hb"))
        (modules '((guix build utils)))
        (snippet
-        ;; Unbundle fonts.
         '(begin
-           (delete-file-recursively "fonts")
-           #t))))
+           (delete-file-recursively "fonts"))))) ;remove bundled fonts
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags '("CC=gcc")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'set-paths 'set-sdl-paths
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (setenv "CPATH"
-                              (string-append
-                               (search-input-directory inputs "include/SDL2")
-                               ":" (or (getenv "CPATH") "")))))
-                  (add-after 'patch-source-shebangs 'patch-makefile
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Replace /usr with package output directory.
-                      (substitute* "Makefile"
-                        (("/usr") (assoc-ref outputs "out")))))
-                  (add-before 'install 'make-install-dirs
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((prefix (assoc-ref outputs "out")))
-                        ;; Create directories that the makefile assumes exist.
-                        (mkdir-p (string-append prefix "/bin"))
-                        (mkdir-p (string-append prefix "/share/applications"))
-                        (mkdir-p (string-append prefix "/share/pixmaps")))))
-                  ;; No configure script.
-                  (delete 'configure))
-       #:tests? #f)) ;; No check target.
+     (list
+      #:make-flags #~(list "CC=gcc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'set-paths 'set-sdl-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CPATH"
+                      (string-append
+                       (search-input-directory inputs "include/SDL2")
+                       ":" (or (getenv "CPATH") "")))))
+          (add-after 'patch-source-shebangs 'patch-Makefile-prefix
+            (lambda _
+              (substitute* "Makefile"
+                (("/usr") #$output))))
+          (add-before 'install 'create-directories
+            (lambda _
+              ;; Create directories that the makefile assumes exist.
+              (mkdir-p (string-append #$output "/bin"))
+              (mkdir-p (string-append #$output "/share/applications"))
+              (mkdir-p (string-append #$output "/share/pixmaps"))))
+          (delete 'configure))          ;no configure script
+      #:tests? #f)) ;no test suite
     (native-inputs (list pkg-config))
     (inputs (list (sdl-union (list sdl2 sdl2-image sdl2-mixer))))
     (home-page "https://github.com/nevat/abbayedesmorts-gpl")
