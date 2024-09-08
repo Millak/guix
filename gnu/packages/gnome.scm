@@ -9318,7 +9318,7 @@ Libadwaita.")
 (define-public gnome-control-center
   (package
     (name "gnome-control-center")
-    (version "44.4")
+    (version "46.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9326,10 +9326,7 @@ Libadwaita.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0mz134argczbkfnxzqsfa1vydx3v44wrldcczyzjanvrq7ia7hli"))
-              (patches
-               (search-patches
-                "gnome-control-center-firmware-security.patch"))))
+                "1fbcwkm1av0026sbx4yqh0a63dv4h6v4bj6byca5j6gf3mynrp4p"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -9338,13 +9335,13 @@ Libadwaita.")
       #~(modify-phases %standard-phases
           (add-before 'configure 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "panels/datetime/tz.h"
+              (substitute* "panels/system/datetime/tz.h"
                 (("/usr/share/zoneinfo/zone.tab")
                  (search-input-file inputs "share/zoneinfo/zone.tab")))
               (substitute* "tests/datetime/test-endianess.c"
                 (("/usr/share/locale")
                  (search-input-directory inputs "share/locale")))
-              (substitute* "panels/region/cc-region-panel.c"
+              (substitute* "panels/system/region/cc-region-page.c"
                 (("\"gkbd-keyboard-display")
                  (string-append "\"" (search-input-file
                                       inputs "bin/gkbd-keyboard-display"))))
@@ -9394,7 +9391,7 @@ Libadwaita.")
            colord-gtk
            cups
            dconf
-           gcr-3
+           gcr
            gnome-bluetooth
            gnome-desktop
            gnome-online-accounts
@@ -9404,14 +9401,15 @@ Libadwaita.")
            grilo
            gsound
            ibus
+           json-glib
            libadwaita
-           libgnomekbd
            libgudev
            libgtop
            libnma
            libpwquality
            (librsvg-for-system)             ;for loading SVG files
            libsecret
+           libsoup
            libxml2
            libwacom
            mesa
@@ -9421,6 +9419,7 @@ Libadwaita.")
            polkit
            pulseaudio
            samba
+           tecla
            tzdata
            udisks
            upower))
