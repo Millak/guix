@@ -2930,7 +2930,7 @@ desired local properties.")
 (define-public f3d
   (package
     (name "f3d")
-    (version "2.4.0")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
@@ -2939,7 +2939,7 @@ desired local properties.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vls3jbq8r5ph937a2d1i8dv2zjhjjm9cmfgyap5424z7k5anv40"))
+        (base32 "0r5rddnh58hgakh7nkjiz530mcxyc6kzxfsjxkncpw7w7dxjpys3"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
