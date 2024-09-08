@@ -4,7 +4,7 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
 ;;; Copyright © 2016, 2017, 2019, 2021, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Meiyo Peng <meiyo.peng@gmail.com>
@@ -90,6 +90,8 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages samba)
+  #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xml))
@@ -995,14 +997,37 @@ private network between hosts on the internet.")
         (base32 "01hd7z7gxkc2bjxndnv5dw1x98qcakxli9k8w285iq2b7d786f7f"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
+     (list #:modules
+           `((guix build pyproject-build-system)
+             (guix build utils)
+             (ice-9 match)
+             (srfi srfi-26))
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-FHS-file-names
                  (lambda _
                    (substitute* "sshuttle/client.py"
                      (("/usr/bin/env") (which "env")))
                    (substitute* "sshuttle/ssh.py"
-                     (("/bin/sh") "sh")))))))
+                     (("/bin/sh") "sh"))))
+               (add-after 'install 'install-documentation
+                 (lambda _
+                   (with-directory-excursion "docs"
+                     (invoke "make" "info" "man")
+                     (with-directory-excursion "_build"
+                       (define (install-man-page file)
+                         (match (string-split file #\.)
+                           ((_ ... section)
+                            (install-file file
+                                          (string-append #$output
+                                                         "/share/man/man"
+                                                         section)))))
+
+                       (for-each install-man-page
+                                 (find-files "man" "\\.[0-9]$"))
+                       (for-each (cut install-file <>
+                                      (string-append #$output "/share/info"))
+                                 (find-files "texinfo" "\\.info$")))))))))
     (native-inputs
      (list python-setuptools-scm
            ;; For tests only.
@@ -1010,7 +1035,10 @@ private network between hosts on the internet.")
            python-mock
            python-poetry-core
            python-pytest-cov
-           python-pytest-runner))
+           python-pytest-runner
+           ;; For documentation only.
+           python-sphinx
+           texinfo))
     (home-page "https://github.com/sshuttle/sshuttle")
     (synopsis "VPN that transparently forwards connections over SSH")
     (description "sshuttle creates an encrypted virtual private network (VPN)
