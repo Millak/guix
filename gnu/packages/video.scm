@@ -5495,8 +5495,8 @@ programmers to access a standard API to open and decompress media files.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                     "http://ftp.aegisub.org/pub/archives/releases/source/"
-                     name "-" version ".tar.xz"))
+                     "https://github.com/Aegisub/Aegisub/releases/download/v"
+                     version "/aegisub-" version ".tar.xz"))
               (sha256
                (base32
                 "11b83qazc8h0iidyj1rprnnjdivj1lpphvpa08y53n42bfa36pn5"))
