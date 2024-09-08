@@ -2518,12 +2518,16 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
     (build-system gnu-build-system)
     (native-inputs (list flex bison))
     (arguments
-     `(#:make-flags (list (string-append "PREFIX=" %output)
-                          (string-append "CC=" ,(cc-for-target))
-                          "HOST=_LINUX"
-                          "OPT_CFLAGS=-Wall -fno-strict-aliasing")
-       #:tests? #f                      ; no 'check' target
-       #:phases (modify-phases %standard-phases (delete 'configure))))
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target))
+              "HOST=_LINUX"
+              "OPT_CFLAGS=-Wall -fno-strict-aliasing")
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))        ;no configure script
     (home-page "https://acpica.org/")
     (synopsis "Tools for the development and debugging of ACPI tables")
     (description
@@ -2536,7 +2540,7 @@ debugging ACPI tables.
 
 This package contains only the user-space tools needed for ACPI table
 development, not the kernel implementation of ACPI.")
-    (license license:gpl2)))            ; dual GPLv2/ACPICA Licence
+    (license license:gpl2)))            ;dual GPLv2/ACPICA Licence
 
 (define-public s-tui
   (package
