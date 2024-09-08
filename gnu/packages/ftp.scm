@@ -222,8 +222,11 @@ output.
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://download.filezilla-project.org/client/"
-                           "FileZilla_" version "_src.tar.bz2"))
+       (uri (list (string-append "https://qbilinux.org/pub/source/"
+                                 "FileZilla_" version "_src.tar.bz2")
+                  (string-append "https://downloads.sourceforge.net/project/"
+                            "portableapps/Source/FileZilla/"
+                            "FileZilla_" version "_src.tar.bz2")))
        (sha256
         (base32 "04lcffmvl1356iyc14pikq3z6jikj6qn0v0zd57lgsm0biihjrx7"))))
     (build-system gnu-build-system)
