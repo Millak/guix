@@ -981,7 +981,7 @@ and much more.")
 (define-public 4ti2
   (package
     (name "4ti2")
-    (version "1.6.9")
+    (version "1.6.10")
     (source
      (origin
        (method url-fetch)
@@ -991,7 +991,7 @@ and much more.")
                                        version)
                            "/4ti2-" version ".tar.gz"))
        (sha256
-        (base32 "0rj92x6p9m3la5gasjbj7sa569im527ffmka5y2sv1amgd3fflrh"))))
+        (base32 "0sx8n4acmqx086a5cfkdkqxnjrlr7nsihnzxwi1vcij2n6z93hgp"))))
     (build-system gnu-build-system)
     (native-inputs
      (list (@ (gnu packages base) which))) ; for the tests
