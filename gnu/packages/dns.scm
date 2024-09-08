@@ -144,7 +144,7 @@ protocol.")
 (define-public ldns
   (package
     (name "ldns")
-    (version "1.8.3")
+    (version "1.8.4")
     (source
      (origin
        (method url-fetch)
@@ -152,12 +152,11 @@ protocol.")
         (string-append "https://www.nlnetlabs.nl/downloads/"
                        "ldns/ldns-" version ".tar.gz"))
        (sha256
-        (base32 "0q3q1svyxpj2g5wdkfy1ndb14m9fzffwyskflpihfabb0g8jvxy3"))
+        (base32 "0is25vgf4qncvhwf0jy79gk8m6a5fxm4d5byfv6z3bxsjisr12w3"))
        (patches
-        (search-patches
-         ;; To create make-flag variables,
-         ;; for splitting installation of drill and examples.
-         "ldns-drill-examples.patch"))))
+        ;; This patch adds the Guix-specific {drill,examples}{bin,man}dir make
+        ;; flags used below.
+        (search-patches "ldns-drill-examples.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "drill" "examples" "pyldns"))
     (arguments
