@@ -108,19 +108,6 @@ in the Mozilla clients.")
                (base32
                 "15b83ipjxrmw0909l5qqz13pbarhp50d6i58vgjx4720y4bw7pjm"))))))
 
-(define-public nspr-4.32
-  (package
-    (inherit nspr)
-    (version "4.32")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v"
-                   version "/src/nspr-" version ".tar.gz"))
-             (sha256
-              (base32
-               "0v3zds1id71j5a5si42a658fjz8nv2f6zp6w4gqrqmdr6ksz8sxv"))))))
-
 ;; nss should track ESRs, but currently doesn't.  3.102.1 is the current ESR.
 
 (define-public nss
