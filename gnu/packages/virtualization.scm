@@ -2372,7 +2372,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
               (wrap-program (string-append #$output "/bin/skopeo")
                 `("PATH" suffix
                   ;; We need at least newuidmap, newgidmap and mount.
-                  ("/run/setuid-programs"))))))))
+                  ("/run/privileged/bin"))))))))
     (home-page "https://github.com/containers/skopeo")
     (synopsis "Interact with container images and container image registries")
     (description
