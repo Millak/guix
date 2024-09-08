@@ -497,6 +497,9 @@ Doom clone shooter game.")
                (base32
                 "0cpxvzbssyf45fmanp1d6l992wln8zkjx4z2flgx27fg1rqdw5zn"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-uninstall"))) ;pointless (and broken) in Guix
     (native-inputs (list pkg-config))
     (inputs (list libxml2
                   (sdl-union (list sdl sdl-image sdl-mixer))
