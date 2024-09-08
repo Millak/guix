@@ -1299,7 +1299,7 @@ but it works for any C/C++ project.")
 (define-public actionlint
   (package
     (name "actionlint")
-    (version "1.6.26")
+    (version "1.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1308,7 +1308,7 @@ but it works for any C/C++ project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0j4ni2cryvqn3qim1r6q6sargh0wig6l4vjjwc40cgqvvkrdla04"))))
+                "0h84gb2mfhsrv1vqb3s2ff9j43zhg0ga49af6h2wdssbrs7w3vcy"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/rhysd/actionlint/cmd/actionlint"
