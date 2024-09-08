@@ -3128,6 +3128,35 @@ supported by HTTP PATCH method, allowing for standards based partial updates
 via REST APIs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-mdlayher-socket
+  (package
+    (name "go-github-com-mdlayher-socket")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/socket")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bq6sphsffjqqk2v9wy8qkv5yf0r6d72pklapgy3znqlnpgvnqab"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/socket"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-golang-org-x-net go-golang-org-x-sync go-golang-org-x-sys))
+    (home-page "https://github.com/mdlayher/socket")
+    (synopsis "Low-level network connection type with async I/O and deadline support")
+    (description
+     "This package provides a low-level network connection type which
+integrates with Go's runtime network poller to provide asynchronous I/O and
+deadline support.")
+    (license license:expat)))
+
 (define-public go-github-com-microcosm-cc-bluemonday
   (package
     (name "go-github-com-microcosm-cc-bluemonday")
