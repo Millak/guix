@@ -2586,6 +2586,24 @@ setups,Queueing disciplines, Traffic classes and Packet classifiers may all be
 controlled.  It is based on netlink messages.")
     (license license:expat)))
 
+(define-public go-github-com-jsimonetti-rtnetlink-v2
+  (package
+    (inherit go-github-com-jsimonetti-rtnetlink)
+    (name "go-github-com-jsimonetti-rtnetlink-v2")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jsimonetti/rtnetlink")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lgx3kip6hiigahcnvjy7d1qqxbm2vnfh2m3zrpfkqkh03dl39x4"))))
+    (arguments
+     (list
+      #:import-path "github.com/jsimonetti/rtnetlink/v2"))))
+
 (define-public go-github-com-json-iterator-go
   (package
     (name "go-github-com-json-iterator-go")
