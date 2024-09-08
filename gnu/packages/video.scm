@@ -225,7 +225,7 @@
 (define-public ani-cli
   (package
     (name "ani-cli")
-    (version "4.8")
+    (version "4.9")
     (source
      (origin
        (method git-fetch)
@@ -234,7 +234,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xfcn51yyzjc7gr2xzhz2i1i500ad1877dmdadipfdlfcs4l4yxy"))))
+        (base32 "0ihiiwxgimf9q6hd4g9xxmxps8ngrwl4vwvd8mymmb7dcjjrwfzg"))))
     (build-system gnu-build-system)
     (arguments
      (list
