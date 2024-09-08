@@ -786,6 +786,58 @@ other applications that need to directly deal with input devices.")
                "-Ddebug-gui=false"    ;requires gtk+@3
                ,flags))))))
 
+(define-public libei
+  (package
+    (name "libei")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/libinput/libei.git")
+                    (commit version)))
+              (sha256
+               (base32
+                "0idbl20ax060s7m435rszfv7c0bvpinjvq45qbqwvcvp0hg8r9y8"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   ;; Unbundle munit, we provide it as input.
+                   (substitute* "test/meson.build"
+                     (("subproject\\('munit'")
+                      "# subproject('munit'")
+                     ((", fallback: \\['munit', 'munit_dep'\\]")
+                      ""))
+                   (delete-file-recursively "subprojects")))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags #~'("-Ddocumentation=api" ;protocol requires hugo
+                            "-Dsd-bus-provider=libelogind")))
+    (inputs
+     (list elogind libevdev libxkbcommon))
+    (propagated-inputs
+     ;; liboeffis-1.0.pc requires.private libelogind
+     (list elogind))
+    (native-inputs
+     (list doxygen
+           libxml2
+           munit
+           pkg-config
+           python
+           python-attrs
+           python-black
+           python-dbusmock
+           python-jinja2
+           python-pytest
+           python-structlog
+           valgrind/interactive))
+    (home-page "https://libinput.pages.freedesktop.org/libei/")
+    (synopsis "Emulated Input protocol implementation")
+    (description
+     "Libei provides a client and server implementation of the @acronym{EI,
+Emulated Input} protocol for Wayland compositors.")
+    (license license:x11)))
+
 (define-public libxdg-basedir
   (package
     (name "libxdg-basedir")
