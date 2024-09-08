@@ -3151,6 +3151,37 @@ Domain Name Service}.  The API follows the less-is-more principle, by
 presenting a small interface.")
     (license license:bsd-3)))
 
+(define-public go-github-com-mikioh-tcpopt
+  (package
+    (name "go-github-com-mikioh-tcpopt")
+    (version "0.0.0-20190314235656-172688c1accc")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mikioh/tcpopt")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qdr0vmriy0wf6zg7hpq75g3b4nvp2p4gsc6xqvqg298v42zbrqj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mikioh/tcpopt"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; It inroduce cycle with go-github-com-mikioh-tcp.
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "example_test.go")))))))
+    (home-page "https://github.com/mikioh/tcpopt")
+    (synopsis "Encoding and decoding of TCP-level socket options in Golang")
+    (description
+     "This package implements an encoding and decoding of TCP-level socket
+options.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-multiformats-go-multiaddr
   (package
     (name "go-github-com-multiformats-go-multiaddr")
