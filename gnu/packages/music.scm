@@ -147,6 +147,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-viewers)
@@ -2699,7 +2700,10 @@ special variant of additive synthesis.")
      ;;   'org.gnome.desktop.interface' is not installed
      (list gsettings-desktop-schemas))
     (native-inputs
-     (list intltool pkg-config))
+     (list intltool
+           pkg-config
+           ;; For generating the documentation.
+           pandoc))
     (home-page "https://amsynth.github.io")
     (synopsis "Analog modeling synthesizer")
     (description
