@@ -11537,7 +11537,7 @@ accessibility infrastructure.")
 (define-public orca
   (package
     (name "orca")
-    (version "44.2")
+    (version "46.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -11546,11 +11546,17 @@ accessibility infrastructure.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "11jn925ga970y74did96ms78pc3lshkd9rd8v82i6zdzigxa7yvd"))))
-    (build-system glib-or-gtk-build-system)
+                "0ppx7svqpjhljf8by3x9xvm46b3gw6f6m7r2gj2k172g3adjjqwg"))))
+    (build-system meson-build-system)
     (arguments
-     '(#:phases
+     '(#:glib-or-gtk? #t
+       #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           (lambda _
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false"))))
          (add-before 'configure 'qualify-programs
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((xkbcomp (string-append
