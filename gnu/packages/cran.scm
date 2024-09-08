@@ -11114,6 +11114,19 @@ multivariate function estimation using smoothing splines.")
         (base32
          "0ha8mijnzlz1cxsjk502j2gzspd8fnk3j79bvnqm871225ghi5a2"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Do not embed the PID of the build process.
+         (add-after 'unpack 'build-reproducibly
+           (lambda _
+             (setenv "GUIX_BUILD" "yes")
+             (substitute* '("R/onload.R" "R/app.R")
+               (("\\<- Sys\\.getpid\\(\\)")
+                (lambda _
+                  (string-append
+                   "<- if (Sys.getenv(\"GUIX_BUILD\") == \"\") { Sys.getpid() } else { 12345 }")))))))))
     (home-page "https://github.com/r-lib/cli#readme")
     (synopsis "Helpers for developing command line interfaces")
     (description "This package provides a suite of tools designed to build
