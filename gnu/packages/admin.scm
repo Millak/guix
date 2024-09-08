@@ -2629,30 +2629,13 @@ system is under heavy load.")
                                   "/share/stress-ng/example-jobs")
                    (string-append "BASHDIR=" #$output
                                   "/share/bash-completion/completions"))
+           ;; There is also a fast-test-all that very briefly runs every single
+           ;; stressor, but its utility is questionable compared to its cost.
+           ;; See this package's git history for details & which tests to skip.
            #:test-target "lite-test"
            #:phases
            #~(modify-phases %standard-phases
-               (delete 'configure)      ; no configure script
-               (add-after 'check 'check-a-little-harder
-                 ;; XXX Guix supports only one #:test-target.  Run more tests.
-                 (lambda* (#:key tests? #:allow-other-keys #:rest args)
-                   (when tests?
-                     (substitute* "debian/tests/fast-test-all"
-                       (("^EXCLUDE=\"" exclude=)
-                        (string-append
-                         exclude=
-                         (string-join
-                          '("fpunch"    ;fails for reasons not investigated
-                            "prio-inv"  ;requires elevated privileges
-                            "ptrace")   ;fails if host kernel denies ptracing
-                          " ") " "))
-                       ;; There's a commented list of ‘tests that can lock up
-                       ;; some kernels or are CPU/arch specific’.  Uncomment it.
-                       (("#(EXCLUDE=)" _ uncomment) uncomment)
-                       ;; Make it so that both lists are appended, with spaces.
-                       (("EXCLUDE=\"") "EXCLUDE+=\" "))
-                     (apply (assoc-ref %standard-phases 'check)
-                            `(,@args #:test-target "fast-test-all"))))))))
+               (delete 'configure))))   ;no configure script
     (inputs
      (list keyutils
            kmod
