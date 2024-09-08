@@ -604,7 +604,13 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
              (display (make-string indent #\space) port))
            (let ((column (if newline? indent column)))
              (print tail
-                    (keyword? item)      ;keep #:key value next to one another
+                    (and (keyword? item) ;keep #:key VALUE next to one another
+                         ;; An exception to which is a G-expression immediately
+                         ;; following a package argument such as #:phases.
+                         (match tail
+                           ((('gexp . _) . _)
+                            (not (prefix? '(list arguments package) context)))
+                           (_ #t)))
                     (blank? item)
                     (loop indent column
                           (or newline? delimited?)
