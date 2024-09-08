@@ -5051,7 +5051,7 @@ remote SMTP server.")
 (define-public aerc
   (package
     (name "aerc")
-    (version "0.18.1")
+    (version "0.18.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5060,7 +5060,7 @@ remote SMTP server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gj8m8xvqaf0lsnk4h1n9d0qhwi8d3mm0w9zhw16v888n7rll9fb"))))
+                "0y34cv2vcwhr0vbd1ax2hv9rmv79dp9i02y2xqyr23krfb5bp197"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~rjarry/aerc"
