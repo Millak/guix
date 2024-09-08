@@ -4079,6 +4079,45 @@ procedures, and procedures created with it have predictable behavior when
 applied to surplus arguments.")
     (license license:expat)))
 
+(define-public guile-srfi-235
+  (let ((version "1.0.0")
+        (revision "1")
+        (commit "643a44aa9d6872962257995ecb0a31eb06a71d88"))
+    (package
+      (name "guile-srfi-235")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url
+                "https://github.com/scheme-requests-for-implementation/srfi-235")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1slkcr67ad12ipkbhjdzjhbnsyvq5wi7cssvgv110fr2dy4rciwp"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'move-create-and-delete-files
+                       (lambda _
+                         (substitute* "srfi/235.sld"
+                           (("srfi 235")
+                            "srfi srfi-235"))
+                         (rename-file "srfi/235.sld" "srfi/srfi-235.scm"))))))
+      (native-inputs (list guile-3.0))
+      (home-page
+       "https://github.com/scheme-requests-for-implementation/srfi-235")
+      (synopsis "Combinators for Guile Scheme")
+      (description
+       "This SRFI contains various procedures that accept and return procedures, as
+well as a few others, drawn from an earlier version of Chicken.
+Common Lisp has a few of them too, and more come from the Standard
+Prelude from Programming Praxis.  Using these procedures helps to keep
+code terse and reduce the need for ad hoc lambdas.")
+      (license license:expat))))
+
 (define-public emacsy
   (package
     (name "emacsy")
