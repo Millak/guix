@@ -11555,9 +11555,12 @@ play; it will look for them at @file{~/.local/share/vcmi} folder.")
         (base32 "0vis217hhnb9fbs9sf8mmcm71qp44kr3xqmffc1gdiixvi90c781"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
-    (native-inputs (list autoconf  ; autom4te used in ./bootstrap
-                         automake  ; aclocal used in ./bootstrap
-                         cppcheck))
+    (arguments
+     ;; The test suite doesn't test the built game, but merely runs cppcheck &
+     ;; clang-format.  Useful for the maintainers; not for distributions.
+     (list #:tests? #f))
+    (native-inputs (list autoconf       ;autom4te used in ./bootstrap
+                         automake))     ;aclocal used in ./bootstrap
     (inputs (list freealut openal sdl2))
     (home-page "https://github.com/moggers87/apricots")
     (synopsis "Arcade airplane game")
