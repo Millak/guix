@@ -1735,9 +1735,7 @@ functionality to display information about the most commonly used services.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0niigjpy8xxrnw3v9b3bsksw2q3yy3qsa2xx0aazwpycw5zrff83"))
-         ;; This patch can be removed once hwdata in Guix supports pkg-config
-         (patches (search-patches "wlroots-hwdata-fallback.patch"))))
+        (base32 "0niigjpy8xxrnw3v9b3bsksw2q3yy3qsa2xx0aazwpycw5zrff83"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
