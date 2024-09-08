@@ -246,7 +246,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
 (define glib
   (package
     (name "glib")
-    (version "2.78.0")
+    (version "2.82.1")
     (source
      (origin
        (method url-fetch)
@@ -255,7 +255,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                        name "/" (string-take version 4) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "0c3vagxl77wma85qinbj974jvw96n5bvch2m7hqcwxq8fa5spsj4"))
+        (base32 "19l98kdv6d4363minliw0imvxh4qfdw5im988knf8bpm1d2391j7"))
        (patches
         (search-patches "glib-appinfo-watch.patch"
                         "glib-skip-failing-test.patch"))
@@ -495,7 +495,8 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
            python-wrapper
            tzdata-for-tests))           ;for tests/gdatetime.c
     (inputs
-     (list ;; "python", "python-wrapper" and "bash-minimal"
+     (list
+      ;; "python", "python-wrapper" and "bash-minimal"
       ;; are for the 'patch-shebangs' phase, to make
       ;; sure the installed scripts end up with a correct shebang
       ;; when cross-compiling.
