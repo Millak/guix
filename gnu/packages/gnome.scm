@@ -14112,7 +14112,7 @@ historical battery usage and related statistics.")
 (define-public gnome-remote-desktop
   (package
     (name "gnome-remote-desktop")
-    (version "44.2")
+    (version "46.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -14120,30 +14120,18 @@ historical battery usage and related statistics.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "13kvr1f2vk0qfqr9alpz7wb542b5d5i9ypk74rnn7jsz3csgv7vs"))))
+                "156pfx61mfwjr413w0zawb0pshh2ypl2k29ajys9wqyl25pnbih8"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
            #~'("-Dsystemd=false"
                ;; RDP support requires CUDA (ffnvcodec)
                "-Drdp=false"
-               ;; This is for the RDP back-end
-               "-Dfdk_aac=false"
                ;; Enable VNC support
                "-Dvnc=true")
            #:glib-or-gtk? #t
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'shorten-vnc-test
-                 (lambda _
-                   ;; The VNC test sets up the connection, parses a message
-                   ;; from the server, and then waits forever.  This
-                   ;; modification lets it succeed once it has parsed a
-                   ;; message from the server.
-                   (substitute* "tests/test-client-vnc.c"
-                     (("while \\(TRUE\\)")
-                      "int ret = 0; while (ret == 0)")
-                     (("int ret;") ""))))
                (delete 'check)
                (add-after 'install 'check
                  (assoc-ref %standard-phases
@@ -14172,6 +14160,7 @@ historical battery usage and related statistics.")
      (list cairo
            glib
            libdrm
+           libei
            libepoxy
            libgudev
            libnotify
@@ -14182,6 +14171,7 @@ historical battery usage and related statistics.")
              '(gnu packages vnc))
             'libvnc)
            pipewire
+           wireplumber
            tpm2-tss))
     (native-inputs
      (list asciidoc
@@ -14197,7 +14187,8 @@ historical battery usage and related statistics.")
            pkg-config
            python
            python-dbus
-           python-pygobject))
+           python-pygobject
+           xdg-desktop-portal-gnome))
     (home-page "https://gitlab.gnome.org/GNOME/gnome-remote-desktop")
     (synopsis "Share GNOME desktop with remote sessions")
     (description "This package provides a remote desktop server for GNOME.")
