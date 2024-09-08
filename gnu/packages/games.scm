@@ -3344,7 +3344,7 @@ properly.")
 (define-public abbaye
   (package
     (name "abbaye")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)
@@ -3353,11 +3353,7 @@ properly.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pwqf7r9bqb2p3xrw9i7y8pgr1401fy3mnnqpb1qkhmdl3gqi9hb"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (delete-file-recursively "fonts"))))) ;remove bundled fonts
+        (base32 "16zxmz7z6jfawh68q8k9s1iwbl2f9jr3qaiqlkwpz8vmpqw2s47x"))))
     (build-system gnu-build-system)
     (arguments
      (list
