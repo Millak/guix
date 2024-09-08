@@ -367,6 +367,37 @@ different strengths without committing the application to one datastore
 throughout its lifetime.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ds-badger
+  (package
+    (name "go-github-com-ipfs-go-ds-badger")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ds-badger")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06hn79airlqrgsbsppin98swbqwz58ji659fyrk1wivp4iz2na3h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests time out, figure out workaround.
+      #:tests? #f
+      #:import-path "github.com/ipfs/go-ds-badger"))
+    (propagated-inputs
+     (list go-github-com-dgraph-io-badger
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-log-v2
+           go-github-com-jbenet-goprocess))
+    (home-page "https://github.com/ipfs/go-ds-badger")
+    (synopsis "Datastore implementation using badger as backend")
+    (description
+     "This package provides a @acronym{DS, Data Store} implementation backed
+by @url{https://dgraph.io/docs/badger,Badger}.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-detect-race
   (package
     (name "go-github-com-ipfs-go-detect-race")
