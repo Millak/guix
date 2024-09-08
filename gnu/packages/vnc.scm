@@ -1,4 +1,4 @@
-;; GNU Guix --- Functional package management for GNU
+;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Todor Kondić <tk.code@protonmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>

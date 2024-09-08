@@ -1,3 +1,4 @@
+;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2016 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>

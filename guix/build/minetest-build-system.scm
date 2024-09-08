@@ -1,3 +1,4 @@
+;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.

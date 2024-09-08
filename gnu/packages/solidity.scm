@@ -1,3 +1,4 @@
+;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2022 Zhu Zihao  <all_but_last@163.com>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
