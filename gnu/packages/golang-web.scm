@@ -3151,6 +3151,39 @@ Domain Name Service}.  The API follows the less-is-more principle, by
 presenting a small interface.")
     (license license:bsd-3)))
 
+(define-public go-github-com-mikioh-tcpinfo
+  (package
+    (name "go-github-com-mikioh-tcpinfo")
+    (version "0.0.0-20190314235526-30a79bb1804b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mikioh/tcpinfo")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "053dwvlawhhm7ly2vhjziqdifnqp12dav6rsbxbcivjjzyzw987f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mikioh/tcpinfo"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; It inroduce cycle with go-github-com-mikioh-tcp.
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "example_test.go")))))))
+    (propagated-inputs
+     (list go-github-com-mikioh-tcpopt))
+    (home-page "https://github.com/mikioh/tcpinfo")
+    (synopsis "Encoding and decoding of TCP-level socket options")
+    (description
+     "This package implements an encoding and decoding of TCP-level socket
+options regarding connection information.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-mikioh-tcpopt
   (package
     (name "go-github-com-mikioh-tcpopt")
