@@ -2686,7 +2686,7 @@ with.  It implies that no decision is made against significant concerns
 and these concerns are actively resolved with proposals that work for
 everyone.
 
-A contributor (which may or may not have commit access) wishing to block
+A contributor (who may or may not have commit access) wishing to block
 a proposal bears a special responsibility for finding alternatives,
 proposing ideas/code or explain the rationale for the status quo to
 resolve the deadlock.  To learn what consensus decision making means and
