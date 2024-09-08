@@ -3772,6 +3772,29 @@ storing only one copy of each unique string in memory.  All functions may be
 called concurrently with themselves and each other.")
     (license license:expat)))
 
+(define-public go-github-com-josharian-native
+  (package
+    (name "go-github-com-josharian-native")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/josharian/native")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wa4yzc3r06qjklqjf4n30zx9v660w8hmxkmybzwk03fmlv2rcyj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/josharian/native"))
+    (home-page "https://github.com/josharian/native")
+    (synopsis "Native Golang @code{encoding/binary.ByteOrder} enchantment")
+    (description
+     "This package provides an easy access to native byte order.")
+    (license license:expat)))
+
 (define-public go-github-com-jpillora-backoff
   (let ((commit "fab01a9d9810a410d2d95a0a697f0afb604658f9")
         (revision "1"))
