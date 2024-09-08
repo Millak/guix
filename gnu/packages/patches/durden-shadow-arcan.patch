@@ -1,7 +1,7 @@
 From 157524b7cb76c5044a27f4a9e373ee04a9da3c71 Mon Sep 17 00:00:00 2001
 From: Ahmad Draidi <a.r.draidi@redscript.org>
 Date: Tue, 9 Apr 2024 18:26:52 +0400
-Subject: [PATCH] Use arcan from setuid-programs if available
+Subject: [PATCH] Use arcan from privileged-programs if available
 
 ---
  distr/durden | 10 ++++++++--
@@ -14,8 +14,8 @@ index ab431ce..8672556 100755
 @@ -1,5 +1,11 @@
  #!/bin/sh
  
-+if [ -n "$(command -v /run/setuid-programs/arcan 2>/dev/null)" ]; then
-+	ARCAN_CMD="/run/setuid-programs/arcan"
++if [ -n "$(command -v /run/privileged/bin/arcan 2>/dev/null)" ]; then
++	ARCAN_CMD="/run/privileged/bin/arcan"
 +else
 +	ARCAN_CMD="@ARCAN_STORE_PATH@"
 +fi
