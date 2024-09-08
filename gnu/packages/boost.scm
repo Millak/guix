@@ -394,32 +394,35 @@ Boost.Thread.")
       (license (license:x11-style "https://www.boost.org/LICENSE_1_0.txt")))))
 
 (define-public boost-signals2
-  (package
-    (name "boost-signals2")
-    (version (package-version boost))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/boostorg/signals2")
-                    (commit (string-append "boost-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1prhj98jgvkj2m3ia5lcgxnl1a4h13cyzqd55skjn983rivi6090"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((source (assoc-ref %build-inputs "source")))
-           (copy-recursively (string-append source "/include")
-                             (string-append %output "/include"))))))
-    (home-page "https://github.com/boostorg/signals2")
-    (synopsis "Boost.Signals2 library")
-    (description "The Boost.Signals2 library is an implementation of a managed
+  ;; Don't use the ‘boost-x.y.z’ tags; they are not immutable upstream.
+  (let ((commit "2ecf1b53bc970dd2b5e5d0f36fe8adf5d2181638")
+        (revision "0"))
+    (package
+      (name "boost-signals2")
+      (version (git-version (package-version boost) revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/boostorg/signals2")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "101ayw7dz4gdvva2yzyrfad69w4xbvv3man83xwqjbkib3a92ca8"))))
+      (build-system trivial-build-system)
+      (arguments
+       `(#:modules ((guix build utils))
+         #:builder
+         (begin
+           (use-modules (guix build utils))
+           (let ((source (assoc-ref %build-inputs "source")))
+             (copy-recursively (string-append source "/include")
+                               (string-append %output "/include"))))))
+      (home-page "https://github.com/boostorg/signals2")
+      (synopsis "Boost.Signals2 library")
+      (description "The Boost.Signals2 library is an implementation of a managed
 signals and slots system.")
-    (license (license:x11-style "https://www.boost.org/LICENSE_1_0.txt"))))
+      (license (license:x11-style "https://www.boost.org/LICENSE_1_0.txt")))))
 
 
 (define-public boost-mpi
