@@ -24,7 +24,6 @@
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system privilege)
-  #:use-module (gnu system setuid)
   #:use-module (gnu system shadow)
   #:use-module (gnu system pam)
   #:use-module ((gnu packages glib) #:select (dbus))
@@ -390,7 +389,7 @@ tuples, are all set as environment variables when the bus daemon launches it."
     (($ <polkit-configuration> polkit packages)
      `(("polkit-1" ,(polkit-directory (cons polkit packages)))))))
 
-(define polkit-setuid-programs
+(define polkit-privileged-programs
   (match-lambda
     (($ <polkit-configuration> polkit)
      (map file-like->setuid-program
@@ -410,8 +409,8 @@ tuples, are all set as environment variables when the bus daemon launches it."
                                            polkit-configuration-polkit))
                        (service-extension etc-service-type
                                           polkit-etc-files)
-                       (service-extension setuid-program-service-type
-                                          polkit-setuid-programs)))
+                       (service-extension privileged-program-service-type
+                                          polkit-privileged-programs)))
 
                 ;; Extensions are lists of packages that provide polkit rules
                 ;; or actions under share/polkit-1/{actions,rules.d}.
