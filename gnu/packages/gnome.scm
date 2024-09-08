@@ -7785,7 +7785,7 @@ such as gzip tarballs.")
 (define-public gnome-session
   (package
     (name "gnome-session")
-    (version "44.0")
+    (version "46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7794,23 +7794,22 @@ such as gzip tarballs.")
               (patches (search-patches "gnome-session-support-elogind.patch"))
               (sha256
                (base32
-                "1ipjvcjabifqgmrz65m3vwmhk99nbm8jcxcikyg5w4r6cnljky6c"))))
+                "0m4sgfzpkrhpy9bpmjiig3h8sypsmdl25zlil7hw82q9yr565qf6"))))
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-gnome-session
-           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-             ;; Make sure 'gnome-session' finds the 'gsettings' program.
-             (wrap-program (search-input-file outputs "bin/gnome-session")
-               `("PATH" ":" prefix
-                 (,(dirname (search-input-file (or native-inputs inputs)
-                                               "bin/gdbus"))))))))
-       #:configure-flags
-       '("-Delogind=true"
-         "-Dsystemd=false"
-         "-Dsystemd_session=disable"
-         "-Dsystemd_journal=false")))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list (string-append "-Dsystemduserunitdir="
+                             #$output "/share/systemd"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-gnome-session
+            (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
+              ;; Make sure 'gnome-session' finds the 'gsettings' program.
+              (wrap-program (search-input-file outputs "bin/gnome-session")
+                `("PATH" ":" prefix
+                  (,(dirname (search-input-file (or native-inputs inputs)
+                                                "bin/gdbus"))))))))))
     (build-system meson-build-system)
     (native-inputs
      (list docbook-xml-4.1.2
