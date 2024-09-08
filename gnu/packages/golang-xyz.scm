@@ -1934,6 +1934,67 @@ more complicated parallel cases.")
 encoding/decoding.  It has no dependencies.")
     (license license:expat)))
 
+(define-public go-github-com-dgraph-io-badger
+  (package
+    (name "go-github-com-dgraph-io-badger")
+    (version "1.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dgraph-io/badger")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y37di0da6jciv1mwj0d8kv2xf56sribmwbcmd6ma65c5h6mdch9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dgraph-io/badger"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-failing-tests
+            (lambda* (#:key unpack-path tests? #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "histogram_test.go$")
+                  ;; conversion from int64 to string yields a string of one
+                  ;; rune, not a string of digits (did you mean
+                  ;; fmt.Sprint(x)?).
+                  ;; See: <https://github.com/dgraph-io/badger/issues/2103>.
+                  (("\"testing\"") (string-append "\"testing\"\n\"fmt\""))
+                  (("string") "fmt.Sprint")))))
+          (add-after 'patch-failing-tests 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\_test.go$")
+                  (("TestBuildKeyValueSizeHistogram")
+                   "OffTestBuildKeyValueSizeHistogram")))))
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-andreasbriese-bbloom
+           go-github-com-dgraph-io-ristretto
+           go-github-com-dustin-go-humanize
+           go-github-com-golang-protobuf
+           go-github-com-pkg-errors
+           go-github-com-spf13-cobra
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://dgraph.io/docs/badger")
+    (synopsis "Key-value database in Golang")
+    (description
+     "BadgerDB implements an embeddable, key-value (KV) database, written in
+pure Go.  It is designed to be highly performant for both reads and writes
+simultaneously.  It uses @acronym{Multi-Version Concurrency Control, MVCC},
+supports concurrent serializable transactions.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-dgraph-io-ristretto
   (package
     (name "go-github-com-dgraph-io-ristretto")
