@@ -5086,12 +5086,11 @@ remote SMTP server.")
                         (string-append
                          "\"" (search-input-file inputs "bin/sh")
                          "\"")))
-                     (when (assoc-ref inputs "zoxide")
-                       (substitute* "commands/z.go"
-                         (("\"zoxide\"")
-                          (string-append
-                           "\"" (search-input-file inputs "bin/zoxide")
-                           "\""))))
+                     (let ((zoxide (search-input-file inputs "bin/zoxide")))
+                       (when zoxide
+                         (substitute* "commands/z.go"
+                           (("\"zoxide\"")
+                            (string-append "\"" zoxide "\"")))))
                      (substitute* (list "lib/crypto/gpg/gpg.go"
                                         "lib/crypto/gpg/gpg_test.go"
                                         "lib/crypto/gpg/gpgbin/keys.go"
