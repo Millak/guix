@@ -398,6 +398,33 @@ throughout its lifetime.")
 by @url{https://dgraph.io/docs/badger,Badger}.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ds-leveldb
+  (package
+    (name "go-github-com-ipfs-go-ds-leveldb")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ds-leveldb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hi7vmjpzzh00zcf0638rvgiqj4j8difz5kzr0pilr0z6zcb7dq3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ds-leveldb"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-datastore go-github-com-syndtr-goleveldb))
+    (home-page "https://github.com/ipfs/go-ds-leveldb")
+    (synopsis "Implementation of go-datastore using leveldb")
+    (description
+     "This package implements the
+@url{https://github.com/ipfs/go-datastore,go-datastore} interface using a
+LevelDB backend.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-detect-race
   (package
     (name "go-github-com-ipfs-go-detect-race")
