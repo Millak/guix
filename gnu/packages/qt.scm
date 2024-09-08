@@ -5587,7 +5587,7 @@ authentication on behalf of its clients.")
 (define-public clazy
   (package
     (name "clazy")
-    (version "1.11")
+    (version "1.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5596,7 +5596,7 @@ authentication on behalf of its clients.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1y0n1jknq566z1rifkgdm1yqb0mw564lp51jidfz7q9w91spijci"))))
+                "1y0g1j9ib1b0likjizw70hibky20gxxirqls6hf4crc214279v0m"))))
     (build-system cmake-build-system)
     (native-inputs (list python))
     (inputs (list clang llvm))
