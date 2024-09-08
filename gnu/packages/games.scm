@@ -488,19 +488,28 @@ Doom clone shooter game.")
 (define-public armagetronad
   (package
     (name "armagetronad")
-    (version "0.2.9.1.1")
+    (version "0.2.9.2.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/armagetronad/stable/"
                                   version "/armagetronad-" version ".tbz"))
               (sha256
                (base32
-                "0cpxvzbssyf45fmanp1d6l992wln8zkjx4z2flgx27fg1rqdw5zn"))))
+                "0a6rlp2lj5bp7pg1yf8brjyb3mw7nqp3amj19wvz3xni21bbc31k"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "--disable-games"        ;don't nest everything in ‘games/’
-                   "--disable-uninstall"))) ;pointless (and broken) in Guix
+           #~(list "--disable-games"      ;don't nest everything in ‘games/’
+                   "--disable-uninstall") ;pointless (and broken) in Guix
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'omit-broken-symlinks
+                 ;; v0.2.9.2.0 added relative_path() which I think broke
+                 ;; install_link().  It now creates a broken armagetronad-master
+                 ;; symlink that causes the 'validate-runpath phase to fail.
+                 (lambda _
+                   (substitute* "batch/sysinstall.in"
+                     (("^install_link .*BINDIR.*") "")))))))
     (native-inputs (list pkg-config))
     (inputs (list libxml2
                   (sdl-union (list sdl sdl-image sdl-mixer))
