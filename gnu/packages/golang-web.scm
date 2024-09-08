@@ -3151,6 +3151,44 @@ Domain Name Service}.  The API follows the less-is-more principle, by
 presenting a small interface.")
     (license license:bsd-3)))
 
+(define-public go-github-com-mikioh-tcp
+  (package
+    (name "go-github-com-mikioh-tcp")
+    (version "0.0.0-20190314235350-803a9b46060c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mikioh/tcp")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mwldbqkl6j4lzxar5pnvi946w0iifmw43rmanbwzp7ngx27fz5a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mikioh/tcp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "_test\\.go$")
+                  ;;  Get "https://golang.org/robots.txt": dial tcp: lookup
+                  ;;  golang.org on [::1]:53: read udp [::1]:47181->[::1]:53:
+                  ;;  read: connection refused.
+                  (("TestInfo") "OffTestInfo"))))))))
+    (native-inputs
+     (list go-golang-org-x-net))
+    (propagated-inputs
+     (list go-github-com-mikioh-tcpinfo))
+    (home-page "https://github.com/mikioh/tcp")
+    (synopsis "TCP-level socket options implementation in Golang")
+    (description
+     "This package implements a TCP-level socket options that allow
+manipulation of TCP connection facilities.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-mikioh-tcpinfo
   (package
     (name "go-github-com-mikioh-tcpinfo")
