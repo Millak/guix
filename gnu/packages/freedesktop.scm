@@ -1342,7 +1342,7 @@ Python.")
 (define-public wayland
   (package
     (name "wayland")
-    (version "1.22.0")
+    (version "1.23.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gitlab.freedesktop.org/" name
@@ -1350,7 +1350,7 @@ Python.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0hjq8b1cprxpxcv2klgir1hd63vy5hrqilp9v317394qlqgayh0m"))))
+                "1vg5h6d94hglh7724q6wx9dpg4y0afvxksankp1hwbcy76lb4kw6"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
