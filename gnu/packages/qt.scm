@@ -4128,14 +4128,14 @@ contain over 620 classes.")
 (define-public python-pyqt5-sip
   (package
     (name "python-pyqt5-sip")
-    (version "12.11.1")
+    (version "12.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyQt5_sip" version))
        (sha256
         (base32
-         "0sa3vad8r7qm98k4ngimwjp87bh2f9f2vv19cnzb3vb11zdgplwp"))))
+         "00mpzkm3d2v33klmi2mhyl22img721brr2lzsgcysp1v6v7xygyj"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f)) ;; No test code.
