@@ -3128,6 +3128,46 @@ supported by HTTP PATCH method, allowing for standards based partial updates
 via REST APIs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-mdlayher-netlink
+  (package
+    (name "go-github-com-mdlayher-netlink")
+    (version "1.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/netlink")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pxd0qn73jr9n64gkp2kd8q8x7xgssm3v8a68vkh88al55g8jkma"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/netlink"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "_test\\.go$")
+                  ;; failed to start command "ip": exec: "ip": executable file
+                  ;; not found in $PATH
+                  (("TestIntegrationConnSetBuffersSyscallConn")
+                   "OffTestIntegrationConnSetBuffersSyscallConn"))))))))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-josharian-native
+           go-github-com-mdlayher-socket
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/mdlayher/netlink")
+    (synopsis "Low-level access to Linux netlink sockets")
+    (description
+     "This package provides a low-level access to Linux netlink
+sockets (AF_NETLINK).")
+    (license license:expat)))
+
 (define-public go-github-com-mdlayher-socket
   (package
     (name "go-github-com-mdlayher-socket")
