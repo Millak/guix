@@ -11544,7 +11544,7 @@ play; it will look for them at @file{~/.local/share/vcmi} folder.")
 (define-public apricots
   (package
     (name "apricots")
-    (version "0.2.7")
+    (version "0.2.8")
     (source
      (origin
        (method git-fetch)
@@ -11552,7 +11552,7 @@ play; it will look for them at @file{~/.local/share/vcmi} folder.")
              (url "https://github.com/moggers87/apricots")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0vis217hhnb9fbs9sf8mmcm71qp44kr3xqmffc1gdiixvi90c781"))
+        (base32 "01mqdybmn5rp8ifx619bx0pki9ryj5cvv2iwpsnn8ngggd6smh9x"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -11561,7 +11561,7 @@ play; it will look for them at @file{~/.local/share/vcmi} folder.")
      (list #:tests? #f))
     (native-inputs (list autoconf       ;autom4te used in ./bootstrap
                          automake))     ;aclocal used in ./bootstrap
-    (inputs (list freealut openal sdl2))
+    (inputs (list alure openal sdl2))
     (home-page "https://github.com/moggers87/apricots")
     (synopsis "Arcade airplane game")
     (description "@code{apricots} is a game where you fly a little plane
