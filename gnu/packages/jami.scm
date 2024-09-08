@@ -81,6 +81,65 @@
 (define %jami-nightly-version "20240524.0")
 (define %jami-daemon-commit "fd2f2815448ce4072dcbc3995950788573d63f3b")
 
+(define webrtc-audio-processing/jami
+  ;; libjami still requires an 0.x version of this package.  Remove it when
+  ;; libjami moves on, and don't forget to delete the patch.
+  (package
+    (name "webrtc-audio-processing")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "http://freedesktop.org/software/pulseaudio/"
+                       "webrtc-audio-processing/webrtc-audio-processing-"
+                       version ".tar.xz"))
+       (sha256
+        (base32 "1gsx7k77blfy171b6g3m0k0s0072v6jcawhmx1kjs9w5zlwdkzd0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (if (or (target-riscv64?)
+             (target-powerpc?))
+         (list
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'patch-source
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((patch-file
+                         #$(local-file
+                            (search-patch
+                             "webrtc-audio-processing-big-endian.patch"))))
+                    (invoke "patch" "--force" "-p1" "-i" patch-file)
+                    (substitute* "webrtc/typedefs.h"
+                      (("defined\\(__aarch64__\\)" all)
+                       (string-append
+                        ;; powerpc-linux
+                        "(defined(__PPC__) && __SIZEOF_SIZE_T__ == 4)\n"
+                        "#define WEBRTC_ARCH_32_BITS\n"
+                        "#define WEBRTC_ARCH_BIG_ENDIAN\n"
+                        ;; powerpc64-linux
+                        "#elif (defined(__PPC64__) && defined(_BIG_ENDIAN))\n"
+                        "#define WEBRTC_ARCH_64_BITS\n"
+                        "#define WEBRTC_ARCH_BIG_ENDIAN\n"
+                        ;; aarch64-linux
+                        "#elif " all
+                        ;; riscv64-linux
+                        " || (defined(__riscv) && __riscv_xlen == 64)"
+                        ;; powerpc64le-linux
+                        " || (defined(__PPC64__) && defined(_LITTLE_ENDIAN))"))))))))
+         '()))
+    (native-inputs
+     (if (or (target-riscv64?)
+             (target-powerpc?))
+         (list
+          (local-file (search-patch "webrtc-audio-processing-big-endian.patch"))
+          patch)
+         '()))
+    (home-page (package-home-page webrtc-audio-processing))
+    (synopsis (package-synopsis webrtc-audio-processing))
+    (description (package-description webrtc-audio-processing))
+    (license (package-license webrtc-audio-processing))))
+
 (define-public libjami
   (package
     (name "libjami")
@@ -158,7 +217,7 @@
            sdbus-c++
            speex
            speexdsp
-           webrtc-audio-processing
+           webrtc-audio-processing/jami
            yaml-cpp))
     (native-inputs
      (list autoconf
