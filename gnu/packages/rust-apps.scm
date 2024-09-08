@@ -140,8 +140,10 @@
                        ("rust-syslog" ,rust-syslog-6)
                        ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/containers/aardvark-dns")
-    (synopsis "Container-focused DNS server")
-    (description "This package provides a container-focused DNS server.")
+    (synopsis "Container-focused DNS A/AAAA record server")
+    (description
+     "Aardvark-dns is an authoritative DNS server for A/AAAA container
+records.  It can forward other requests to configured resolvers.")
     (license license:asl2.0)))
 
 (define-public agate
