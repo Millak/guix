@@ -8996,7 +8996,7 @@ library.")
 (define-public gdm
   (package
     (name "gdm")
-    (version "44.1")
+    (version "46.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9004,11 +9004,10 @@ library.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "03avvkrm2jd0731ggh9cjnkhrfysqp4slrq0km3gqa3xpqx6n9k8"))
+                "12r6ppsdq9f0rlhfwldwhilshb1blp6m0944rm872lqn5914bqsf"))
               (patches
                (search-patches
                 "gdm-default-session.patch"
-                "gdm-elogind-support.patch"
                 "gdm-remove-hardcoded-xwayland-path.patch"
                 "gdm-wayland-session-wrapper-from-env.patch"
                 "gdm-pass-gdk-pixbuf-loader-env.patch"))))
@@ -9055,6 +9054,10 @@ library.")
                  (search-input-file inputs "bin/dbus-run-session")))))
           (add-before 'configure 'pre-configure
             (lambda* (#:key inputs #:allow-other-keys)
+              ;; We don't want to write to other packages.
+              (substitute* "meson.build"
+                (("if dconf_dep\\.found\\(\\)" all)
+                 (string-append all " and false")))
               ;; We don't have <systemd/sd-daemon.h>.
               (substitute* '("common/gdm-log.c"
                              "daemon/gdm-server.c"
@@ -9206,23 +9209,22 @@ logo='~a'~%" icon))))))
            pkg-config))
     (inputs
      (list accountsservice
-           check                        ;for testing
+           at-spi2-core
+           check                        ; for testing
            dbus
+           dconf                        ; for wrap-accessibility-dependencies
            egl-wayland
            elogind
            eudev
            gnome-session
+           gnome-control-center
            gnome-settings-daemon
            gtk+
            iso-codes/pinned
+           json-glib
            libcanberra
            libgudev
-           linux-pam
-
-           ;; accessibility dependencies
-           at-spi2-core
-           dconf
-           gnome-control-center))
+           linux-pam))
     (synopsis "Display manager for GNOME")
     (home-page "https://wiki.gnome.org/Projects/GDM/")
     (description
