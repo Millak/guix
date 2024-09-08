@@ -86,7 +86,7 @@ USER."
            (setenv "WSLPATH" (getenv "PATH"))
 
            ;; /run is mounted with the nosuid flag by WSL.  This prevents
-           ;; running the /run/setuid-programs.  Remount it without this flag
+           ;; /run/privileged/bin from working.  Remount it without this flag
            ;; as a workaround.  See:
            ;; https://github.com/microsoft/WSL/issues/8716.
            (mount #f "/run" #f
