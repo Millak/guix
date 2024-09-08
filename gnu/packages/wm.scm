@@ -1726,7 +1726,7 @@ functionality to display information about the most commonly used services.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.17.4")
+    (version "0.18.0")
     (source
      (origin
        (method git-fetch)
@@ -1735,7 +1735,7 @@ functionality to display information about the most commonly used services.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0niigjpy8xxrnw3v9b3bsksw2q3yy3qsa2xx0aazwpycw5zrff83"))))
+        (base32 "13avi2805wrfkghgc7ar273p61svmm85k3g3hg9bf2gaxsz6f91f"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -1782,9 +1782,23 @@ Wayland compositor")
 modules for building a Wayland compositor.")
     (license license:expat)))  ; MIT license
 
-(define-public wlroots-0.16
+(define-public wlroots-0.17
   (package
     (inherit wlroots)
+    (version "0.17.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/wlroots/wlroots")
+             (commit version)))
+       (file-name (git-file-name "wlroots" version))
+       (sha256
+        (base32 "0niigjpy8xxrnw3v9b3bsksw2q3yy3qsa2xx0aazwpycw5zrff83"))))))
+
+(define-public wlroots-0.16
+  (package
+    (inherit wlroots-0.17)
     (name "wlroots-0.16")
     (version "0.16.2")
     (source
@@ -1796,12 +1810,12 @@ modules for building a Wayland compositor.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1m12nv6avgnz626h3giqp6gcx44w1wq6z0jy780mx8z255ic7q15"))))
-    (propagated-inputs (modify-inputs (package-propagated-inputs wlroots)
+    (propagated-inputs (modify-inputs (package-propagated-inputs wlroots-0.17)
                          (delete libdisplay-info)))))
 
 (define-public wlroots-0.15
   (package
-    (inherit wlroots)
+    (inherit wlroots-0.16)
     (name "wlroots-0.15")
     (version "0.15.1")
     (source
@@ -1929,7 +1943,7 @@ narrow the items to those matching the tokens in the input.")
                   pcre2
                   swaybg
                   wayland
-                  wlroots))
+                  wlroots-0.17))
     (native-inputs
      (cons* linux-pam mesa pkg-config scdoc wayland-protocols
             (if (%current-target-system)
@@ -3230,7 +3244,7 @@ shows a notification for the user on the screen.")
                 (("/etc/") (string-append #$output "/etc/"))
                 (("/usr/share/") (string-append #$output "/usr/share/"))))))))
     (native-inputs (list pkg-config scdoc))
-    (inputs (list libevdev pango wlroots))
+    (inputs (list libevdev pango wlroots-0.17))
     (home-page "https://github.com/project-repo/cagebreak")
     (synopsis "Tiling wayland compositor inspired by ratpoison")
     (description
@@ -3329,7 +3343,7 @@ read and write, and compatible with JSON.")
            libxcb
            libxml2
            pango
-           wlroots))
+           wlroots-0.17))
     (home-page "https://labwc.github.io")
     (synopsis "Window-stacking compositor for Wayland")
     (description
@@ -3948,7 +3962,7 @@ battery efficient---polling is only done when absolutely necessary.")
                        "07x6dapv2xyg0cn44dd2faw5gpk7mwfpbkpld9kyiaa9d44362z1"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list glm libxml2 wlroots libevdev))
+    (inputs (list glm libxml2 wlroots-0.17 libevdev))
     (home-page "https://github.com/WayfireWM/wf-config")
     (synopsis "Library for managing configuration files for Wayfire")
     (description "The package provides a library for managing the
