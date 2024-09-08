@@ -2556,6 +2556,36 @@ geared towards parsing MIME encoded emails.")
 transforms one JSON document into another through a JMESPath expression.")
     (license license:asl2.0)))
 
+(define-public go-github-com-jsimonetti-rtnetlink
+  (package
+    (name "go-github-com-jsimonetti-rtnetlink")
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jsimonetti/rtnetlink")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19m8fcrcbw98gc191snfsi6qhb80jxnjhxzy8gppcwwg6732wmm1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jsimonetti/rtnetlink"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-mdlayher-netlink go-golang-org-x-sys))
+    (home-page "https://github.com/jsimonetti/rtnetlink")
+    (synopsis "Low-level access to the Linux rtnetlink API")
+    (description
+     "This package allows the kernel's routing tables to be read and
+altered. Network routes, IP addresses, Link parameters, Neighbor
+setups,Queueing disciplines, Traffic classes and Packet classifiers may all be
+controlled.  It is based on netlink messages.")
+    (license license:expat)))
+
 (define-public go-github-com-json-iterator-go
   (package
     (name "go-github-com-json-iterator-go")
