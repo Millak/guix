@@ -510,7 +510,7 @@ Features:
             (uri (string-append "https://www.ijg.org/files/jpegsrc.v"
                    version ".tar.gz"))
             (sha256 (base32
-                     "0clwys9lcqlxqgcw8s1gwfm5ix2zjlqpklmd3mbvqmj5ibj51jwr"))))
+                     "0spshb0126m70xpgkqwxic8rw1z6ywlrv2kfx3h37ibczfnac0r3"))))
    (build-system gnu-build-system)
    (synopsis "Library for handling JPEG files")
    (description
