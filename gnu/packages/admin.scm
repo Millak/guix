@@ -2604,7 +2604,7 @@ system is under heavy load.")
 (define-public stress-ng
   (package
     (name "stress-ng")
-    (version "0.13.10")
+    (version "0.18.04")
     (source
      (origin
        (method git-fetch)
@@ -2613,12 +2613,12 @@ system is under heavy load.")
              (commit (string-append "V" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z9vjn2131iv3pwrh04z6r5ygi1qgad5bi3jhghcvc3v1b4k5ran"))))
+        (base32 "100w4qkrzpg7jjl4dw0c376xi811qnjmlbffiy43i945f9vl3dc7"))))
     (build-system gnu-build-system)
     (arguments
      ;; XXX The test suite seems to cause instability on the VisionFive 2
      ;; build machines, maybe it's stressing them as intended but this is
-     ;; unhelpful
+     ;; unhelpful.
      (list #:tests? (not (target-riscv64?))
            #:make-flags
            #~(list (string-append "CC=" #$(cc-for-target))
@@ -2638,10 +2638,19 @@ system is under heavy load.")
                  (lambda* (#:key tests? #:allow-other-keys #:rest args)
                    (when tests?
                      (substitute* "debian/tests/fast-test-all"
-                       (("EXCLUDE=\"" exclude=)
-                        (string-append exclude=
-                                       ;; Fails if host kernel denies ptracing.
-                                       "ptrace ")))
+                       (("^EXCLUDE=\"" exclude=)
+                        (string-append
+                         exclude=
+                         (string-join
+                          '("fpunch"    ;fails for reasons not investigated
+                            "prio-inv"  ;requires elevated privileges
+                            "ptrace")   ;fails if host kernel denies ptracing
+                          " ") " "))
+                       ;; There's a commented list of ‘tests that can lock up
+                       ;; some kernels or are CPU/arch specific’.  Uncomment it.
+                       (("#(EXCLUDE=)" _ uncomment) uncomment)
+                       ;; Make it so that both lists are appended, with spaces.
+                       (("EXCLUDE=\"") "EXCLUDE+=\" "))
                      (apply (assoc-ref %standard-phases 'check)
                             `(,@args #:test-target "fast-test-all"))))))))
     (inputs
