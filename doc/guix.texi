@@ -54176,6 +54176,7 @@ an example of a service and its configuration that you could add to the
 @subsection Media Home Services
 
 @cindex kodi
+
 The @uref{https://kodi.tv, Kodi media center} can be run as a daemon on
 a media server.  With the @code{(gnu home services kodi)} service, you
 can configure Kodi to run upon login.
@@ -55096,6 +55097,36 @@ cons-cells.
 Ditto, but keys are mouse events (integers).  Constants
 @code{%ev-code-mouse-*} described above can be used as helpers to define
 mouse bindings.
+@end table
+@end deftp
+
+@cindex jellyfin
+
+The @code{home-jellyfin-mpv-shim-service-type} in the @code{(gnu home
+services media)} module runs a cast client for the
+@uref{https://jellyfin.org/, Jellyfin} media system.
+
+To enable, add this to your home services:
+
+@lisp
+(service home-jellyfin-mpv-shim-service-type)
+@end lisp
+
+The service starts only if @code{jellyfin-mpv-shim} has been configured
+with a remote server and credentials.  This must be done manually, by
+launching @code{jellyfin-mpv-shim}.  After configuring the server, the
+service will start automatically when you log in.
+
+@defvar home-jellyfin-mpv-shim-service-type
+Type of the service which launches Jellyfin MPV Shim.
+@end defvar
+
+@deftp {Data Type} home-jellyfin-mpv-shim-configuration
+Available @code{home-jellyfin-mpv-shim-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{jellyfin-mpv-shim}) (type: package)
+The Jellyfin MPV Shim package to use.
 @end table
 @end deftp
 
