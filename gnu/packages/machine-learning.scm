@@ -1450,6 +1450,61 @@ storing tensors safely, named safetensors.  They aim to be safer than their
 unsupervised text tokenizer.")
     (license license:asl2.0)))
 
+(define-public python-sentence-transformers
+  (package
+    (name "python-sentence-transformers")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sentence_transformers" version))
+       (sha256
+        (base32 "1xmzbyrlp6wa7adf42n67c544db17nz95b10ri603lf4gi9jqgca"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list
+        ;; Missing fixture / train or test data.
+        ;; Requires internet access.
+        "--ignore=tests/test_sentence_transformer.py"
+        "--ignore=tests/test_train_stsb.py"
+        "--ignore=tests/test_compute_embeddings.py"
+        "--ignore=tests/test_cross_encoder.py"
+        "--ignore=tests/test_model_card_data.py"
+        "--ignore=tests/test_multi_process.py"
+        "--ignore=tests/test_pretrained_stsb.py"
+        "-k" (string-append
+              "not test_LabelAccuracyEvaluator"
+              " and not test_ParaphraseMiningEvaluator"
+              " and not test_cmnrl_same_grad"
+              " and not test_paraphrase_mining"
+              " and not test_simple_encode"))))
+    (propagated-inputs (list python-huggingface-hub
+                             python-numpy
+                             python-pillow
+                             python-pytorch
+                             python-scikit-learn
+                             python-scipy
+                             python-tqdm
+                             python-transformers))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://www.SBERT.net")
+    (synopsis "Multilingual text embeddings")
+    (description "This framework provides an easy method to compute dense
+vector representations for sentences, paragraphs, and images.  The models are
+based on transformer networks like BERT / RoBERTa / XLM-RoBERTa and achieve
+state-of-the-art performance in various tasks.  Text is embedded in vector
+space such that similar text are closer and can efficiently be found using
+cosine similarity.
+
+This package provides easy access to pretrained models for more than 100
+languages, fine-tuned for various use-cases.
+
+Further, this framework allows an easy fine-tuning of custom embeddings
+models, to achieve maximal performance on your specific task.")
+    (license license:asl2.0)))
+
 (define-public python-spacy-legacy
   (package
     (name "python-spacy-legacy")
