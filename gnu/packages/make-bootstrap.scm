@@ -760,6 +760,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                     "language/elisp"
                     "oop"
                     "scripts"
+                    "sxml"
                     "texinfo"
                     "web"))))
     (name "guile-static-initrd")))
