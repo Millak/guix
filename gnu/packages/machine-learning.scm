@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022, 2023, 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Kiran Shila <me@kiranshila.com>
 ;;; Copyright © 2022 Wiktor Zelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
@@ -53,6 +53,7 @@
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix svn-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -78,6 +79,8 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cran)
+  #:use-module (gnu packages crates-check)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages documentation)
@@ -1295,6 +1298,34 @@ and not test_wmt22_references")
     (description
      "This is a package for hassle-free computation of shareable, comparable,
 and reproducible BLEU, chrF, and TER scores for natural language processing.")
+    (license license:asl2.0)))
+
+(define-public rust-safetensors
+  (package
+    (name "rust-safetensors")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "safetensors" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fbx56wikqcvqb4y0ym0cys68lj0v3cpanhsy5i13fkz5jr7dvcc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-memmap2" ,rust-memmap2-0.9)
+        ("rust-proptest" ,rust-proptest-1))))
+    (home-page "https://github.com/huggingface/safetensors")
+    (synopsis "Simple and safe way to store and distribute tensors")
+    (description
+     "This package provides a fast (zero-copy) and safe (dedicated) format for
+storing tensors safely, named safetensors.  They aim to be safer than their
+@code{PyTorch} counterparts.")
     (license license:asl2.0)))
 
 (define-public python-sentencepiece
