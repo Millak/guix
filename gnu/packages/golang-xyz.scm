@@ -4477,21 +4477,19 @@ language, namely support for record length-delimited message streaming.")
     (license license:asl2.0)))
 
 (define-public go-github-com-mgutz-ansi
-  (let ((commit "9520e82c474b0a04dd04f8a40959027271bab992")
-        (revision "0"))
     (package
       (name "go-github-com-mgutz-ansi")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20200706080929-d51e80ef957d")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url
                 "https://github.com/mgutz/ansi")
-               (commit commit)))
+               (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "00bz22314j26736w1f0q4jy9d9dfaml17vn890n5zqy3cmvmww1j"))))
+          (base32 "1yfj9fj1m7wfvlmf328w8awyvqsvjmyv9yfsnv9r8al9i9wrv3j5"))))
       (build-system go-build-system)
       (arguments
        (list #:import-path "github.com/mgutz/ansi"))
@@ -4502,7 +4500,7 @@ language, namely support for record length-delimited message streaming.")
       (description
        "This package provides @code{ansi}, a Go module that can generate ANSI
 colored strings.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-mitchellh-colorstring
   (package
