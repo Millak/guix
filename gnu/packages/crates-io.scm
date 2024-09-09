@@ -63236,6 +63236,29 @@ Rust.")
        ("rust-rand" ,rust-rand-0.3)
        ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))))
 
+(define-public rust-rayon-cond-0.3
+  (package
+    (name "rust-rayon-cond")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rayon-cond" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ybxppq84p3q60h9rng9j3dm79f6970hn4wljyf31lpgan5m77q5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-either" ,rust-either-1)
+                       ("rust-itertools" ,rust-itertools-0.11)
+                       ("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/cuviper/rayon-cond")
+    (synopsis "Experimental iterator wrapper")
+    (description
+     "This package provides a Rust experimental iterator wrapper that is
+conditionally parallel or serial.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rayon-core-1
   (package
     (name "rust-rayon-core")
