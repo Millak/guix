@@ -361,16 +361,18 @@ also known as DXTn or DXTC) for Mesa.")
       #~(list
          #$@(cond
              ((target-aarch64?)
+              ;; This includes more drivers than "auto": asahi, r300, r600
               '("-Dgallium-drivers=asahi,etnaviv,freedreno,kmsro,lima,\
-nouveau,panfrost,r300,r600,svga,swrast,tegra,v3d,vc4,virgl,zink"))
+nouveau,panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
              ((target-arm32?)
+              ;; This includes more drivers than "auto": r300, r600
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
-panfrost,r300,r600,svga,swrast,tegra,v3d,vc4,virgl,zink"))
+panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
              ((or (target-ppc64le?) (target-ppc32?) (target-riscv64?))
-              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,svga,swrast,virgl,zink"))
+              ;; This include more drivers than "auto": svga
+              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,svga,softpipe,llvmpipe,virgl,zink"))
              (else
-              '("-Dgallium-drivers=crocus,iris,nouveau,r300,r600,radeonsi,\
-svga,swrast,virgl,zink")))
+              '("-Dgallium-drivers=auto")))
          ;; Enable various optional features.  TODO: opencl requires libclc,
          ;; omx requires libomxil-bellagio
          "-Dplatforms=x11,wayland"
@@ -385,16 +387,15 @@ svga,swrast,virgl,zink")))
          "-Dgbm=enabled"
          "-Dshared-glapi=enabled"
 
-         ;; Explicitly enable Vulkan on some architectures.
          #$@(cond
              ((or (target-x86-32?) (target-x86-64?))
+              ;; This doesn't include nouveau (which is in "auto") as it needs
+              ;; rust.
+              ;; TODO: Enable nouveau/NVK.
               '("-Dvulkan-drivers=intel,intel_hasvk,amd,swrast"))
-             ((or (target-ppc64le?) (target-ppc32?))
-              '("-Dvulkan-drivers=amd,swrast"))
              ((target-aarch64?)
+              ;; This differs from "auto" which only includes swrast and intel
               '("-Dvulkan-drivers=freedreno,amd,broadcom,swrast"))
-             ((target-riscv64?)
-              '("-Dvulkan-drivers=amd,swrast"))
              (else
               '("-Dvulkan-drivers=auto")))
 
