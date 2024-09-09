@@ -20,9 +20,12 @@
 
 (define-module (gnu packages freeipmi)
   #:use-module (guix packages)
+  #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (guix licenses)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages gnupg))
 
 (define-public freeipmi
@@ -38,13 +41,32 @@
                "1dgd2izbp6mqk7l0bgw9fkpvl4mjz672p8baz3ac9k5pfrfaqg8s"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-static"
-                           ,@(if (%current-target-system)
-                               ;; We cannot check for these devices
-                               ;; when cross compiling.
-                               `("ac_cv_file__dev_random=yes"
-                                 "ac_cv_file__dev_urandom=yes")
-                               '()))))
+     (append (if (and (%current-target-system)
+                      (target-riscv64?))
+                 (list #:phases
+                       #~(modify-phases %standard-phases
+                           (add-after 'unpack 'update-config-scripts
+                             (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                               ;; Replace outdated config.guess and config.sub.
+                               (for-each (lambda (file)
+                                           (install-file
+                                            (search-input-file
+                                             (or native-inputs inputs)
+                                             (string-append "/bin/" file)) "config"))
+                                         '("config.guess" "config.sub"))))))
+                 '())
+             `(#:configure-flags '("--disable-static"
+                                   ,@(if (%current-target-system)
+                                         ;; We cannot check for these devices
+                                         ;; when cross compiling.
+                                         `("ac_cv_file__dev_random=yes"
+                                           "ac_cv_file__dev_urandom=yes")
+                                         '())))))
+    (native-inputs
+     (if (and (%current-target-system)
+              (target-riscv64?))
+         (list config)
+         '()))
     (inputs
      (list libgcrypt))
     (home-page "https://www.gnu.org/software/freeipmi/")
