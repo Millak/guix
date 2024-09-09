@@ -16831,9 +16831,11 @@ additional support for working with ASDF projects.")
        (list emacs-sly))
       (arguments
        '(#:include (cons* "\\.lisp$" "\\.asd$" %default-include)
-         #:phases (modify-phases %standard-phases
-                    ;; Byte compilation of the autoload file fails.
-                    (delete 'enable-autoloads-compilation))))
+         #:phases
+         ;; The package provides autoloads.
+         (modify-phases %standard-phases
+           (delete 'make-autoloads)
+           (delete 'enable-autoloads-compilation))))
       (synopsis "Named-readtables support for SLY")
       (description
        "@command{sly-named-readtables} is an external contrib for SLY that
