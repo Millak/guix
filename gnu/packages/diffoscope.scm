@@ -266,17 +266,17 @@ install.")
     (inputs
      (list python-debian python-distro python-libarchive-c python-rstr))
     (native-inputs
-     `(("diffoscope" ,diffoscope)
-       ("help2man" ,help2man)
-       ("libfaketime" ,libfaketime)
-       ("python-coverage" ,python-coverage)
-       ("python-docutils" ,python-docutils)
-       ("python-magic " ,python-magic)
-       ("python-pytest " ,python-pytest)
-       ("python-tlsh" ,python-tlsh)
-       ("python-tox" ,python-tox)
-       ("unzip" ,unzip)
-       ("xxd" ,xxd)))
+     (list diffoscope
+           help2man
+           libfaketime
+           python-coverage
+           python-docutils
+           python-magic
+           python-pytest
+           python-tlsh
+           python-tox
+           unzip
+           xxd))
     (build-system python-build-system)
     (arguments
      `(#:phases
