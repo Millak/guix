@@ -916,7 +916,7 @@ sub-directory.")
     (inputs
      (list perl))
     (native-inputs
-     (list perl-test-simple perl-test-output perl-capture-tiny
+     (list perl perl-test-simple perl-test-output perl-capture-tiny
            perl-io-stringy))
     (home-page "https://www.gnu.org/software/stow/")
     (synopsis "Managing installed software packages")
