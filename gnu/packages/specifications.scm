@@ -139,6 +139,42 @@ well-established cryptographic hash functions, addressing size + encoding
 considerations.")
       (license (list license:expat license:cc-by-sa3.0)))))
 
+(define-public specification-runtime-spec
+  (package
+    (name "specification-runtime-spec")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/opencontainers/runtime-spec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "102smpg308dq984f6zkjzwq5jz8jbfswiwfwxcrp1hh197jydxf9"))))
+    (build-system copy-build-system)
+    (outputs '("out" "golang-src"))
+    (arguments
+     (list
+      #:install-plan
+      #~'(("./schema" "share/runtime-spec/schema")
+          ("." "share/doc/" #:include-regexp ("\\.md$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'copy-src
+            (lambda _
+              (copy-recursively "specs-go"
+               (string-append #$output:golang-src
+                              "/src/github.com"
+                              "/opencontainers/runtime-spec/specs-go")))))))
+    (home-page "https://opencontainers.org/")
+    (synopsis "OCI Runtime Specification")
+    (description
+     "The Open Container Initiative develops specifications for standards on
+Operating System process and application containers.  This package provides
+documentation, schemas and source of Golang module.")
+    (license license:asl2.0)))
+
 (define-public specification-specreduce-data
   (let ((commit "dcba1c601348ee3a5797ae2d84a068d83393058e")
         (revision "0"))
