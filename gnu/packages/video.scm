@@ -2871,7 +2871,7 @@ Jellyfin.  It has support for various media files without transcoding.")
 (define-public gallery-dl
   (package
     (name "gallery-dl")
-    (version "1.27.3")
+    (version "1.27.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mikf/gallery-dl"
@@ -2879,7 +2879,7 @@ Jellyfin.  It has support for various media files without transcoding.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "08j9spy3vzqc8xq5a8cps073qxf46mn9jfsz750p09i2fipfgf90"))))
+                "13qq16fi6zq356qbnwb8a898m7gq20r67j2lmb4g37389yqvkk6v"))))
     (build-system python-build-system)
     (inputs (list python-requests ffmpeg))
     (home-page "https://github.com/mikf/gallery-dl")
