@@ -7557,6 +7557,26 @@ detecting specific uses of Ruby, e.g. when using rails, and using a
 appropriate console.")
     (license license:gpl3+)))
 
+(define-public emacs-chruby-el
+  (let ((version "1.0")
+        (commit "42bc6d521f832eca8e2ba210f30d03ad5529788f")
+        (revision "0"))
+    (package
+      (name "emacs-chruby-el")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/plexus/chruby.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256 (base32 "06pvjw40qk017py9km26vjrh90acycnkr5r04nxf664qqkjlg2mc"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/plexus/chruby.el")
+      (synopsis "Emacs support for the Chruby version switcher for Ruby")
+      (description "This packages lets you switch Ruby versions using chruby.")
+      (license license:gpl3+))))
+
 ;; Package has no release.  Version is extracted from "Version:" keyword in
 ;; main file.
 (define-public emacs-zeno-theme
