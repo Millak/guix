@@ -904,14 +904,14 @@ sub-directory.")
 (define-public stow
   (package
     (name "stow")
-    (version "2.4.0")
+    (version "2.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/stow/stow-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "07bn3n5n8spl2vabgyl8db5dyp690qn3x92ij4ynvayyck7ngvbg"))))
+                "02vqi0mwvs3z3bgyn2411bgnjxlw2qip56kax2zh6wr0zisiwrra"))))
     (build-system gnu-build-system)
     (inputs
      (list perl))
