@@ -10256,7 +10256,7 @@ return value is the sub.")
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Sub-Override")
     (synopsis "Perl extension to override a subroutine")
-    (description "A @code{Sub::Override}} module that makes it easy to override
+    (description "A @code{Sub::Override} module that makes it easy to override
 +subroutines.  Particularly useful for mocking in tests.")
     (license (package-license perl))))
 
