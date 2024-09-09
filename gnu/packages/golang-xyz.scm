@@ -2281,6 +2281,45 @@ program's running, don't expect consistent results between platforms
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-elastic-gosigar
+  (package
+    (name "go-github-com-elastic-gosigar")
+    (version "0.14.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elastic/gosigar")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g7si935p23brvq29y7f6rasj2cbpdhrp7z0mk21q98hsa3qs60a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/elastic/gosigar"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "_test\\.go$")
+                  ;; error: open /etc/mtab: no such file or directory.
+                  (("TestFileSystemList") "OffTestFileSystemList"))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pkg-errors go-golang-org-x-sys))
+    (home-page "https://github.com/elastic/gosigar")
+    (synopsis "Gathers system and per process statistics")
+    (description
+     "Go sigar is a golang implementation of the
+@url{https://github.com/hyperic/sigar,sigar API}.  The Go version of sigar
+has a very similar interface, but is being written from scratch in pure
+go/cgo, rather than cgo bindings for libsigar.  This package provides an
+alternative fork of @url{https://github.com/cloudfoundry/gosigar}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-elliotchance-orderedmap
   (package
     (name "go-github-com-elliotchance-orderedmap")
