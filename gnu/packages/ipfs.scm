@@ -849,6 +849,101 @@ their levels to be controlled individually.")
      "Metrics interface for IPFS (Kubo).")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-libp2p
+  (package
+    (name "go-github-com-libp2p-go-libp2p")
+    (version "0.34.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0423h149ziyka9cai1sdsl1bnycphs3h4xa3b3rc6108gfrzzil2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-libp2p"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-embed-go-libp2p-asn-util
+            (lambda _
+              (delete-file
+               "src/github.com/libp2p/go-libp2p-asn-util/sorted-network-list.bin")
+              (copy-file
+               (string-append
+                #$(this-package-input "go-github-com-libp2p-go-libp2p-asn-util")
+                "/src/github.com/libp2p/go-libp2p-asn-util/sorted-network-list.bin")
+               "src/github.com/libp2p/go-libp2p-asn-util/sorted-network-list.bin"))))))
+    (propagated-inputs
+     (list go-github-com-benbjohnson-clock
+           go-github-com-davidlazar-go-crypto
+           go-github-com-decred-dcrd-dcrec-secp256k1-v4
+           go-github-com-flynn-noise
+           go-github-com-google-gopacket
+           go-github-com-gorilla-websocket
+           go-github-com-hashicorp-golang-lru-arc-v2
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-ds-badger
+           go-github-com-ipfs-go-ds-leveldb
+           go-github-com-ipfs-go-log-v2
+           go-github-com-jbenet-go-temp-err-catcher
+           go-github-com-klauspost-compress
+           go-github-com-libp2p-go-buffer-pool
+           go-github-com-libp2p-go-flow-metrics
+           go-github-com-libp2p-go-libp2p-asn-util
+           go-github-com-libp2p-go-msgio
+           go-github-com-libp2p-go-nat
+           go-github-com-libp2p-go-netroute
+           go-github-com-libp2p-go-reuseport
+           go-github-com-libp2p-go-yamux-v4
+           go-github-com-libp2p-zeroconf-v2
+           go-github-com-marten-seemann-tcp
+           go-github-com-mikioh-tcpinfo
+           go-github-com-mr-tron-base58
+           go-github-com-multiformats-go-base32
+           go-github-com-multiformats-go-multiaddr
+           go-github-com-multiformats-go-multiaddr-dns
+           go-github-com-multiformats-go-multiaddr-fmt
+           go-github-com-multiformats-go-multibase
+           go-github-com-multiformats-go-multicodec
+           go-github-com-multiformats-go-multihash
+           go-github-com-multiformats-go-multistream
+           go-github-com-multiformats-go-varint
+           go-github-com-pbnjay-memory
+           go-github-com-pion-datachannel
+           go-github-com-pion-ice-v2
+           go-github-com-pion-logging
+           go-github-com-pion-sctp
+           go-github-com-pion-stun
+           go-github-com-pion-webrtc-v3
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-quic-go-quic-go
+           go-github-com-quic-go-webtransport-go
+           go-github-com-raulk-go-watchdog
+           go-github-com-stretchr-testify
+           go-go-uber-org-fx
+           go-go-uber-org-goleak
+           go-go-uber-org-mock
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-tools
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/libp2p/go-libp2p")
+    (synopsis "LIBP2P networking stack implementation in Golang")
+    (description
+     "This package provides a networking stack and library modularized out of
+@url{https://github.com/ipfs/ipfs,The IPFS Project} as specified in
+@url{https://github.com/libp2p/specs,libp2p}.")
+    (license license:expat)))
+
 (define-public go-github-com-whyrusleeping-cbor-gen
   (package
     (name "go-github-com-whyrusleeping-cbor-gen")
