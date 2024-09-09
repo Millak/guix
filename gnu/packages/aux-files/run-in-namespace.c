@@ -652,6 +652,7 @@ main (int argc, char *argv[])
   char self[PATH_MAX];
   size = readlink ("/proc/self/exe", self, sizeof self - 1);
   assert (size > 0);
+  self[size] = '\0';
 
   /* SELF is something like "/home/ludo/.local/gnu/store/…-foo/bin/ls" and we
      want to extract "/home/ludo/.local/gnu/store".  */
