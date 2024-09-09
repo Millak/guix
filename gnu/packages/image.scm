@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2014, 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
@@ -2830,7 +2830,8 @@ Graphics (PNGs), intended as an easy-to-use replacement for @code{libpng}.")
       #:configure-flags #~(list "--buildtype=plain"
                                 "-Dtests=enabled"
                                 "-Dlibcurl=disabled"
-                                "-Dgdk-pixbuf2=enabled")))
+                                "-Dgdk-pixbuf2=enabled"
+                                "-Dbashcompletiondir=etc/bash_completion.d")))
     (native-inputs (list pkg-config))
     (inputs (list libjpeg-turbo libpng python))
     ;; pkg-config's "Requires.private" need gdk-pixbuf. TODO: Remove it when
