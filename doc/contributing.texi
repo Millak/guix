@@ -2191,7 +2191,7 @@ with @command{git format-patch}.
 
 @example
 $ git format-patch -@var{NUMBER_COMMITS} -o outgoing \
-      --cover-letter --base=auto
+      --cover-letter
 @end example
 
 @quotation Note
@@ -2202,7 +2202,7 @@ in your branch starting at @code{master}.
 
 @example
 $ git format-patch master..@var{MY_BRANCH} -o outgoing \
-      --cover-letter --base=auto
+      --cover-letter
 @end example
 @end quotation
 
