@@ -302,33 +302,33 @@ them in detail for later analysis.")
     (license (list license:gpl3+ license:gpl2+))))
 
 (define-public trydiffoscope
- (package
-   (name "trydiffoscope")
-   (version "67.0.8")
-   (source
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://salsa.debian.org/reproducible-builds/trydiffoscope.git")
-            (commit version)))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32
-        "0k698g4fws63rnav4pvfsf1hfds867xan59mmv5zw71r58lm6cxb"))))
+  (package
+    (name "trydiffoscope")
+    (version "67.0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://salsa.debian.org/reproducible-builds/trydiffoscope.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0k698g4fws63rnav4pvfsf1hfds867xan59mmv5zw71r58lm6cxb"))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((share (string-append (assoc-ref outputs "out") "/share/")))
-               (mkdir-p (string-append share "/man/man1/" ))
-               (invoke "rst2man.py"
-                       "trydiffoscope.1.rst"
-                       (string-append share "/man/man1/trydiffoscope.1"))
-               (mkdir-p (string-append share "/doc/" ,name "-" ,version))
-               (install-file "./README.rst"
-                          (string-append share "/doc/" ,name "-" ,version)))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-doc
+                 (lambda _
+                   (let* ((share (string-append #$output "/share/")))
+                     (mkdir-p (string-append share "/man/man1/"))
+                     (invoke "rst2man.py" "trydiffoscope.1.rst"
+                             (string-append share "/man/man1/trydiffoscope.1"))
+                     (mkdir-p (string-append
+                               share "/doc/" #$name "-" #$version))
+                     (install-file
+                      "./README.rst"
+                      (string-append share "/doc/" #$name "-" #$version))))))))
     (propagated-inputs
      (list python-requests))
     (native-inputs
