@@ -89097,6 +89097,28 @@ including Canonical and Compatible Decomposition and Recomposition, as
 described in Unicode Standard Annex #15.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unicode-normalization-alignments-0.1
+  (package
+    (name "rust-unicode-normalization-alignments")
+    (version "0.1.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unicode-normalization-alignments" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pk2f3arh3qvdsmrsiri0gr5y5vqpk2gv1yjin0njvh4zbj17xj3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-smallvec" ,rust-smallvec-1))))
+    (home-page "https://github.com/n1t0/unicode-normalization")
+    (synopsis "Normalize Unicode strings ")
+    (description
+     "This crate provides functions for normalization of Unicode strings, including
+Canonical and Compatible Decomposition and Recomposition, as described in
+Unicode Standard Annex #15.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unicode-reverse-1
   (package
     (name "rust-unicode-reverse")
