@@ -5789,6 +5789,38 @@ without configuration, but if desired, everything can be customized down to the
 smallest detail.")
     (license license:expat)))
 
+(define-public go-github-com-raulk-go-watchdog
+  (package
+    (name "go-github-com-raulk-go-watchdog")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/raulk/go-watchdog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mpvphqihxmcnz66a3yisk18pm2yxpcg81pnkd80ax80fyvzwl0z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/raulk/go-watchdog"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-benbjohnson-clock
+           go-github-com-containerd-cgroups
+           go-github-com-elastic-gosigar
+           go-github-com-opencontainers-runtime-spec))
+    (home-page "https://github.com/raulk/go-watchdog")
+    (synopsis "Go memory watchdog")
+    (description
+     "Package watchdog runs a singleton memory watchdog in the process, which
+watches memory utilization and forces Go GC in accordance with a user-defined
+policy.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public go-github-com-rcrowley-go-metrics
   (let ((commit "cac0b30c2563378d434b5af411844adff8e32960")
         (revision "2"))
