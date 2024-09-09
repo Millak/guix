@@ -317,7 +317,7 @@ is a list, it recursively searches it until it locates the last item of TREE."
   (let ((upower-package (compose list upower-configuration-upower)))
     (service-type (name 'upower)
                   (description
-                   "Run @command{upowerd}}, a system-wide monitor for power
+                   "Run @command{upowerd}, a system-wide monitor for power
 consumption and battery levels, with the given configuration settings.  It
 implements the @code{org.freedesktop.UPower} D-Bus interface, and is notably
 used by GNOME.")
