@@ -18508,6 +18508,7 @@ extensions developed by technical users.")
                          "lack-response"
                          "lack-component"
                          "lack-util"
+                         "lack-util-writer-stream"
                          "lack-middleware-backtrace"
                          "lack-middleware-static")
          ;; XXX: Component :CLACK not found
