@@ -594,6 +594,67 @@ one-time authenticator as specified in
 and AVX acceleration and zero allocations.")
     (license license:isc)))
 
+(define-public go-github-com-decred-dcrd-dcrec-secp256k1-v4
+  (package
+    (name "go-github-com-decred-dcrd-dcrec-secp256k1-v4")
+    (version "4.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/decred/dcrd")
+             (commit (go-version->git-ref
+                      ;; XXX: While waiting on consensus:
+                      ;; - https://issues.guix.gnu.org/52362
+                      ;; - https://issues.guix.gnu.org/63001
+                      ;; - https://issues.guix.gnu.org/63647
+                      ;; - https://issues.guix.gnu.org/69827
+                      (string-append "dcrec/secp256k1/v" version)))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19yqrrspm6n1x7wa1chqj0j95bc5w02ygddr06ajzf6x7i7q09q5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packed as separated
+            ;; packages.  Delete any intersecting ones to prevent "Permission
+            ;; denied" when they are in use as inputs.
+            (for-each delete-file-recursively (list "crypto/blake256"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; It needs to be github.com/decred/dcrd/dcrec/secp256k1/v4
+      #:import-path "github.com/decred/dcrd/dcrec/secp256k1"
+      #:unpack-path "github.com/decred/dcrd"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'adjust-import-path
+            (lambda* (#:key import-path #:allow-other-keys)
+              (let* ((origin (string-append #$output "/src/" import-path) )
+                     (tmp (string-append #$output "/src/" "_tmp"))
+                     (import-path (string-append origin "/v4")))
+                (format #t "Adjusting paths: ~a~%~a~%~a~%" origin tmp import-path)
+                (mkdir tmp)
+                (copy-recursively origin tmp)
+                (delete-file-recursively origin)
+                (mkdir-p import-path)
+                (rename-file tmp import-path)))))))
+    (propagated-inputs
+     (list go-github-com-decred-dcrd-crypto-blake256))
+    (home-page "https://github.com/decred/dcrd")
+    (synopsis "Optimized secp256k1 elliptic curve operations")
+    (description
+     "This package provides an optimized pure Go implementation of elliptic
+curve cryptography operations over the secp256k1 curve as well as data
+structures and functions for working with public and private secp256k1 keys as
+cpecified in the @url{https://www.secg.org/sec2-v2.pdf} standard.
+
+In addition, sub packages are provided to produce, verify, parse, and
+serialize ECDSA signatures and EC-Schnorr-DCRv0 (a custom Schnorr-based
+signature scheme specific to Decred) signatures.  See the README.md files in
+the relevant sub packages for more details about those aspects.")
+    (license license:isc)))
+
 (define-public go-github-com-dgryski-go-farm
   (package
     (name "go-github-com-dgryski-go-farm")
