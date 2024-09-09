@@ -1523,6 +1523,60 @@ levels that works by wrapping the standard @code{log} library.")
      "Readline is a pure Go implementation of a GNU-Readline like library.")
     (license license:expat)))
 
+(define-public go-github-com-containerd-cgroups
+  (package
+    (name "go-github-com-containerd-cgroups")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/cgroups")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14nf5nc65vsnijaairs5v96h98y8f0sy35bpxbpmxxn4dfnz9x0y"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodule(s) with their own go.mod files and packed as
+            ;; separated packages:
+            ;;
+            ;; - github.com/containerd/cgroups/cmd cgctl
+            (delete-file-recursively "cmd")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/cgroups"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "_test\\.go$")
+                  ;; expected error "controller is not supported" but received
+                  ;; "cgroups: cannot find cgroup mount destination"
+                  (("TestSystemd240") "OffTestSystemd240"))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-goleak))
+    (propagated-inputs
+     (list go-github-com-coreos-go-systemd-v22
+           go-github-com-docker-go-units
+           go-github-com-godbus-dbus-v5
+           go-github-com-gogo-protobuf
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-sirupsen-logrus
+           go-golang-org-x-sys))
+    (home-page "https://containerd.io/")
+    (synopsis "Cgroups for Golang")
+    (description
+     "This package implements a functinoality for creating, managing,
+inspecting, and destroying cgroups. The resources format for settings on the
+cgroup uses the OCI runtime-spec found
+@url{https://github.com/opencontainers/runtime-spec,here}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-fifo
   (package
     (name "go-github-com-containerd-fifo")
