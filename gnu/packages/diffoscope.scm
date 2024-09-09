@@ -279,20 +279,20 @@ install.")
            xxd))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((mandir1 (string-append
-                              (assoc-ref outputs "out") "/share/man/man1"))
-                    (docdir (string-append
-                             (assoc-ref outputs "out") "/share/doc/" ,name "-" ,version)))
-               (invoke "make" "-C" "doc")
-               (mkdir-p mandir1)
-               (install-file "doc/reprotest.1" mandir1)
-               (mkdir-p docdir)
-               (install-file "./README.rst" docdir)
-               (install-file "./README-dev.rst" docdir)))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-doc
+                 (lambda _
+                   (let* ((mandir1 (string-append
+                                    #$output "/share/man/man1"))
+                          (docdir (string-append
+                                   #$output "/share/doc/" #$name "-" #$version)))
+                     (invoke "make" "-C" "doc")
+                     (mkdir-p mandir1)
+                     (install-file "doc/reprotest.1" mandir1)
+                     (mkdir-p docdir)
+                     (install-file "./README.rst" docdir)
+                     (install-file "./README-dev.rst" docdir)))))))
     (home-page "https://salsa.debian.org/reproducible-builds/reprotest")
     (synopsis "Build software and check it for reproducibility")
     (description "Reprotest builds the same source code twice in different
