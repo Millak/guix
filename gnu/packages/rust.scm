@@ -1050,6 +1050,10 @@ safety and thread safety guarantees.")
                (("features = \\[\"fs\"" all)
                 (string-append all ", \"use-libc\""))))))))))
 
+(define-public rust-1.81
+  (rust-bootstrapped-package rust-1.80 "1.81.0"
+   "19yggj1qivdhf68gx2652cfi7nxjkdgy39wh7h6facpzppz4h947"))
+
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
   (map (lambda (str)
@@ -1064,7 +1068,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.80))
+  (let ((base-rust rust-1.81))
     (package
       (inherit base-rust)
       (properties (append
@@ -1131,7 +1135,10 @@ safety and thread safety guarantees.")
                       '("fn fetch_downloads_with_git2_first_")))
                  (substitute* "src/tools/cargo/tests/testsuite/build.rs"
                    ,@(make-ignore-test-list
-                      '("fn build_with_symlink_to_path_dependency_with_build_script_in_git")))))
+                      '("fn build_with_symlink_to_path_dependency_with_build_script_in_git")))
+                 (substitute* "src/tools/cargo/tests/testsuite/publish_lockfile.rs"
+                   ,@(make-ignore-test-list
+                      '("fn note_resolve_changes")))))
              (add-after 'unpack 'disable-tests-requiring-mercurial
                (lambda _
                  (with-directory-excursion "src/tools/cargo/tests/testsuite/cargo_init"
@@ -1219,7 +1226,12 @@ safety and thread safety guarantees.")
                    ;; string "rustc"
                    ,@(make-ignore-test-list
                       '("fn config_fingerprint"
-                        "fn features_fingerprint")))))
+                        "fn features_fingerprint")))
+                 (substitute* "src/tools/cargo/tests/testsuite/git_auth.rs"
+                   ;; This checks for a specific networking error message
+                   ;; that's different from the one we see in the builder
+                   ,@(make-ignore-test-list
+                      '("fn net_err_suggests_fetch_with_cli")))))
              (add-after 'unpack 'patch-command-exec-tests
                ;; This test suite includes some tests that the stdlib's
                ;; `Command` execution properly handles in situations where
