@@ -51869,6 +51869,7 @@ Format (MCF).")
                             ("rust-subtle" ,rust-subtle-2)
                             ("rust-rand-core" ,rust-rand-core-0.6))))))
 
+;; WARNING: This package is a dependency of mesa.
 (define-public rust-paste-1
   (package
     (name "rust-paste")
@@ -56703,6 +56704,7 @@ in your code.")
      "Support for nested proc-macro-hack invocations.")
     (license (list license:expat license:asl2.0))))
 
+;; WARNING: This package is a dependency of mesa.
 (define-public rust-proc-macro2-1
   (package
     (name "rust-proc-macro2")
@@ -60144,6 +60146,7 @@ transport protocol in Rust.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tracing" ,rust-tracing-0.1))))))
 
+;; WARNING: This package is a dependency of mesa.
 (define-public rust-quote-1
   (package
     (name "rust-quote")
@@ -76953,6 +76956,7 @@ library that supports a wide range of audio formats.  This package contains Xiph
 codecs and formats.")
     (license license:mpl2.0)))
 
+;; WARNING: This package is a dependency of mesa.
 (define-public rust-syn-2
   (package
     (name "rust-syn")
@@ -86613,6 +86617,7 @@ membership for characters in Rust.")
 according to Unicode Standard Annex #31.")
     (license (list license:expat license:asl2.0))))
 
+;; WARNING: This package is a dependency of mesa.
 (define-public rust-unicode-ident-1
   (package
     (name "rust-unicode-ident")
