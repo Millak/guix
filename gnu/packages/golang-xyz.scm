@@ -5394,6 +5394,35 @@ syslog, file and memory.  Multiple backends can be utilized with different log
 levels per backend and logger.")
     (license license:bsd-3)))
 
+;; XXX: Find a way to source from specification-runtime-spec.
+(define-public go-github-com-opencontainers-runtime-spec
+  (package
+    (name "go-github-com-opencontainers-runtime-spec")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/opencontainers/runtime-spec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "102smpg308dq984f6zkjzwq5jz8jbfswiwfwxcrp1hh197jydxf9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/opencontainers/runtime-spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+          (delete 'check))))
+    (home-page "https://github.com/opencontainers/runtime-spec")
+    (synopsis "OCI specs implementation in Golang")
+    (description
+     "This package provides a collection Golang implementation defined in
+specification-runtime-spec.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-openprinting-goipp
   (package
     (name "go-github-com-openprinting-goipp")
