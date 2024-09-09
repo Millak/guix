@@ -55,13 +55,13 @@
                                              (string-append "/bin/" file)) "config"))
                                          '("config.guess" "config.sub"))))))
                  '())
-             `(#:configure-flags '("--disable-static"
-                                   ,@(if (%current-target-system)
-                                         ;; We cannot check for these devices
-                                         ;; when cross compiling.
-                                         `("ac_cv_file__dev_random=yes"
-                                           "ac_cv_file__dev_urandom=yes")
-                                         '())))))
+             (list #:configure-flags #~'("--disable-static"
+                                         #$@(if (%current-target-system)
+                                                ;; We cannot check for these devices
+                                                ;; when cross compiling.
+                                                `("ac_cv_file__dev_random=yes"
+                                                  "ac_cv_file__dev_urandom=yes")
+                                                '())))))
     (native-inputs
      (if (and (%current-target-system)
               (target-riscv64?))
