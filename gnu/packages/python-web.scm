@@ -5865,7 +5865,7 @@ correct URLs for Python according to RFCs 3986 and 3987.")
     (home-page "https://github.com/twisted/treq")
     (synopsis "Requests-like API built on top of twisted.web's Agent")
     (description "This package provides an HTTP library inspired by
-@code{requests}} but written on top of Twisted's @code{Agents}.  It offers a
+@code{requests} but written on top of Twisted's @code{Agents}.  It offers a
 high level API for making HTTP requests when using Twisted.")
     (license license:expat)))
 
