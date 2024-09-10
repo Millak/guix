@@ -53,10 +53,12 @@
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
@@ -813,7 +815,7 @@ of graphs.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list gd))
+     (list fontconfig freetype gd libjpeg-turbo libpng zlib))
     (home-page "https://www.mcternan.me.uk/mscgen/")
     (synopsis "Message Sequence Chart Generator")
     (description "Mscgen is a small program that parses Message Sequence Chart
