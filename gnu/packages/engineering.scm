@@ -3134,13 +3134,13 @@ interpolation toolkit.")
 (define-public python-motulator
   (package
     (name "python-motulator")
-    (version "0.3.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "motulator" version))
        (sha256
-        (base32 "01qv4d4rgkwk653vz1qz1nmakniv86572j5ikrxwd63rwv5ckggf"))))
+        (base32 "1kh13zfa4w73q04pny2w2zgym47fp8xy7glwfx82fdx4fihk7dv7"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; there are no tests
