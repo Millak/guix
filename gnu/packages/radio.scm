@@ -2081,7 +2081,7 @@ NanoVNA vector network analyzers.")
 (define-public direwolf
   (package
     (name "direwolf")
-    (version "1.6")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
@@ -2090,7 +2090,7 @@ NanoVNA vector network analyzers.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xmz64m02knbrpasfij4rrq53ksxna5idxwgabcw4n2b1ig7pyx5"))))
+        (base32 "0zhigg0slb8gmv622ayaj0nba5kxcgdyadgv0lmyqaw2mvlmrg2m"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib hamlib))
