@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Andrew Miloradovsky <andrew@interpretmath.pw>
 ;;; Copyright © 2022 Christian Gelinek <cgelinek@radlogic.com.au>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -467,18 +468,19 @@ a hardware description and verification language.")
 (define-public systemc
   (package
     (name "systemc")
-    (version "2.3.3")
+    (version "3.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://accellera.org/images/downloads/standards/"
-             "systemc/systemc-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/accellera-official/systemc")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0gvv3xmhiwx1izmzy06yslzqzh6ygrgmw53xqfmyvbz5a6ivk0ap"))))
+        (base32 "1v5fg3h9ffdzq9f6zplvr9all00ssc1gpdvbg129xahkrbl53kvw"))))
     (native-inputs (list perl))
-    (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--enable-debug")))
+    (build-system cmake-build-system)
+    (arguments '(#:test-target "check"))
     (home-page "https://accellera.org/community/systemc")
     (synopsis "Library for event-driven simulation")
     (description
