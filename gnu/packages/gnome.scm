@@ -799,15 +799,7 @@ patterns.")
           (add-after 'unpack 'unpack-libgd
             (lambda _
               (copy-recursively
-               #$(origin
-                   (method git-fetch)
-                   (uri (git-reference
-                         (url "https://gitlab.gnome.org/GNOME/libgd")
-                         (commit "c7c7ff4e05d3fe82854219091cf116cce6b19de0")))
-                   (file-name (git-file-name "libgd" version))
-                   (sha256
-                    (base32
-                     "16yld0ap7qj1n96h4f2sqkjmibg7xx5xwkqxdfzam2nmyfdlrrrs")))
+               #$(this-package-native-input "libgd-checkout")
                "subprojects/libgd"))))))
     (inputs (list glib
                   gnome-autoar
@@ -821,6 +813,15 @@ patterns.")
     (native-inputs (list desktop-file-utils ;for update-desktop-database
                          gettext-minimal
                          `(,glib "bin")
+                         (origin
+                           (method git-fetch)
+                           (uri (git-reference
+                                 (url "https://gitlab.gnome.org/GNOME/libgd")
+                                 (commit "c7c7ff4e05d3fe82854219091cf116cce6b19de0")))
+                           (file-name "libgd-checkout")
+                           (sha256
+                            (base32
+                             "16yld0ap7qj1n96h4f2sqkjmibg7xx5xwkqxdfzam2nmyfdlrrrs")))
                          itstool
                          pkg-config
                          python))
