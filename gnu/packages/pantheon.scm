@@ -2,6 +2,7 @@
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2023 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2023, 2024 altadil <Altadil@protonmail.com>
+;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages pantheon)
+  #:use-module (gnu packages calendar)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -134,6 +136,64 @@ in apps built for the Pantheon desktop.")
     (description "Calculator is an application for performing simple
 arithmetic.  It is the default calculator application in the Pantheon
 desktop.")
+    (license license:gpl3)))
+
+(define-public pantheon-calendar
+  (package
+    (name "pantheon-calendar")
+    (version "8.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elementary/calendar")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1bynv5gnfs4sdr5ngd1c8jh42fkiw4gl5064fb579hws2jniy540"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      ;; Tests involve checking environment variable against particular TZ.
+      #:tests? #f
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'set-environment-variables
+            (lambda _
+              ;; Disable compiling schemas and updating desktop databases
+              (setenv "DESTDIR" "/")))
+          (add-after 'install 'install-symlinks
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((bin (string-append #$output
+                                         "/bin/io.elementary.calendar"))
+                     (link (string-append #$output "/bin/pantheon-calendar")))
+                (symlink bin link)))))))
+    (inputs
+     (list clutter
+           evolution-data-server-3.44
+           folks-with-libsoup2
+           geoclue
+           geocode-glib-with-libsoup2
+           granite-6
+           glib
+           gtk
+           libchamplain
+           libgee
+           libhandy
+           libical
+           libportal))
+    (native-inputs
+     (list cmake
+           `(,glib "bin") ; for glib-compile-schemas
+           gettext-minimal
+           pkg-config
+           vala))
+    (home-page "https://github.com/elementary/calendar")
+    (synopsis "Desktop calendar")
+    (description "This package provides a desktop calendar app designed for
+elementary OS.")
     (license license:gpl3)))
 
 (define-public pantheon-photos
