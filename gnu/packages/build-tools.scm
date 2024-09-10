@@ -919,14 +919,7 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
                                         "Scripts.txt"
                                         "Blocks.txt")
                         (list
-                         #$(origin
-                             (method url-fetch)
-                             (uri (string-append
-                                   "https://www.unicode.org/Public/"
-                                   "3.0-Update1/PropList-3.0.1.txt"))
-                             (sha256
-                              (base32
-                               "0k6wyijyzdl5g3nibcwfm898kfydx1pqaz28v7fdvnzdvd5fz7lh"))))
+                         #$(this-package-native-input "PropList.txt"))
                         (find-ucd-files "BidiMirroring.txt"
                                         "EastAsianWidth.txt"
                                         "LineBreak.txt"
@@ -959,6 +952,15 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
       bash-minimal python perl clisp
       ;; Unicode data:
       ucd
+      (origin
+        (method url-fetch)
+        (uri (string-append
+              "https://www.unicode.org/Public/"
+              "3.0-Update1/PropList-3.0.1.txt"))
+        (file-name "PropList.txt")
+        (sha256
+         (base32
+          "0k6wyijyzdl5g3nibcwfm898kfydx1pqaz28v7fdvnzdvd5fz7lh")))
       ;; Programs for the tests:
       cppi indent git-minimal/pinned autoconf))
     (home-page "https://www.gnu.org/software/gnulib/")
