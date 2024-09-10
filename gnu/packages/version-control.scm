@@ -56,6 +56,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2024 Javier Olaechea <pirata@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4187,20 +4188,20 @@ commit messages for style.")
 (define-public hut
   (package
     (name "hut")
-    (version "0.4.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.sr.ht/~emersion/hut")
+             (url "https://git.sr.ht/~xenrox/hut")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0klp7qlii07j8ka9g91m5xg3ybg6cq0p5lp1ibfihq2p4kwqj57m"))))
+        (base32 "14cia976i2jdzyzw4wk9fhkh6zqgmb09ryf31ys24smmfcdfxyf1"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "git.sr.ht/~emersion/hut"
+      #:import-path "git.sr.ht/~xenrox/hut"
       #:phases
       #~(modify-phases %standard-phases
           (replace 'build
@@ -4220,11 +4221,11 @@ commit messages for style.")
      (list go-git-sr-ht-emersion-go-scfg
            go-git-sr-ht-emersion-gqlclient
            go-github-com-dustin-go-humanize
+           go-github-com-google-shlex
            go-github-com-juju-ansiterm
            go-github-com-spf13-cobra
-           go-golang-org-x-oauth2
            go-golang-org-x-term))
-    (home-page "https://git.sr.ht/~emersion/hut")
+    (home-page "https://git.sr.ht/~xenrox/hut")
     (synopsis "CLI tool for sr.ht")
     (description "@command{hut} is a CLI tool for
 @uref{https://sr.ht/~sircmpwn/sourcehut/, sr.ht}.  It helps you interact with
