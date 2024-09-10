@@ -11491,7 +11491,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
 (define-public vcmi
   (package
     (name "vcmi")
-    (version "1.5.1")
+    (version "1.5.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11500,7 +11500,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s3a23p9k081ccbkhvifx2rhg6rv82fkrsbjh6allmmsa1lhq6fd"))
+                "0jgxhq6rz43ild16lmpcf6xbzdhilxpbvknlxy92sxfazyarcg07"))
               (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
     (build-system cmake-build-system)
     (arguments
@@ -11518,9 +11518,8 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
            minizip
            pkg-config
            python
-           ;; XXX: Build currently fails with qtbase-6 and qttools-6
-           qtbase-5
-           qttools-5
+           qtbase
+           qttools
            sdl2
            sdl2-mixer
            sdl2-image
