@@ -28,7 +28,7 @@
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2021, 2024 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2021, 2022, 2023 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2022, 2023, 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
@@ -26775,6 +26775,38 @@ definition.")
 
 (define-public ecl-slot-extra-options
   (sbcl-package->ecl-package sbcl-slot-extra-options))
+
+(define-public sbcl-micros
+  (let ((commit "9fc7f1e5b0dbf1b9218a3f0aca7ed46e90aa86fd")
+        (revision "0"))
+    (package
+      (name "sbcl-micros")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lem-project/micros")
+               (commit commit)))
+         (sha256
+          (base32 "1p0s7a723w56vcgrbc7hgmkhnmjcb8nmc59im2wx9inm1la6mcbc"))
+         (file-name (git-file-name "micros" version))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-rove))
+      (synopsis "SLIME/SWANK fork for the Lem editor")
+      (description
+       "Micros is a SLIME/SWANK implementation forked for use by the Lem
+editor.")
+      (home-page "https://github.com/lem-project/micros")
+      (license license:expat))))
+
+(define-public cl-micros
+  (sbcl-package->cl-source-package sbcl-micros))
+
+;; TODO: Enable when the following issue is fixed:
+;; https://github.com/lem-project/micros/issues/17
+;; (define-public ecl-micros
+;;   (sbcl-package->ecl-package sbcl-micros))
 
 (define-public sbcl-slynk
   ;; Update together with emacs-sly.
