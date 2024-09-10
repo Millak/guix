@@ -6830,7 +6830,7 @@ astronomical fields.  SkyMaker is part of the
            nlopt
            openssl
            qtbase-5
-           qtcharts
+           qtcharts-5
            qtlocation-5
            qtmultimedia-5
            qtpositioning

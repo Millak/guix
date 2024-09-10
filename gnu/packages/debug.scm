@@ -997,7 +997,7 @@ engineering.")
            (lambda _
              (chdir "src"))))))
     (inputs
-     (list qtbase-5 qtcharts))
+     (list qtbase-5 qtcharts-5))
     (synopsis "GUI frontend for GDB")
     (description "This package provides a frontend to GDB, the GNU debugger.")
     (home-page "https://github.com/epasveer/seer")

@@ -2727,7 +2727,7 @@ information and perform area based monitoring.")
     (description "The Qt Purchasing module provides and in-app API for
 purchasing goods and services.")))
 
-(define-public qtcharts
+(define-public qtcharts-5
   (package
     (inherit qtsvg-5)
     (name "qtcharts")

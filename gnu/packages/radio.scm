@@ -2411,7 +2411,7 @@ receiver.")
            mpg123
            rtl-sdr
            qtbase-5
-           qtcharts
+           qtcharts-5
            qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
@@ -2702,7 +2702,7 @@ voice formats.")
            opus
            pulseaudio
            qtbase-5
-           qtcharts
+           qtcharts-5
            qtdeclarative-5
            qtgamepad
            qtgraphicaleffects

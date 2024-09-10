@@ -151,7 +151,7 @@ well as CD-ROM images.")
                     libatcore
                     qt3d-5
                     qtbase-5
-                    qtcharts
+                    qtcharts-5
                     qtdeclarative-5
                     qtmultimedia-5
                     qtserialport-5))
@@ -743,7 +743,7 @@ combinations are distinct enough to be readable and accessible.")
                   "1830r6ylpn3l7y2frl8cih5cpjgbkfrib9jq7jklf8aszhlsihf2"))))
       (build-system qt-build-system)
       (native-inputs (list extra-cmake-modules))
-      (inputs (list qtcharts qtdeclarative-5 qtserialport-5))
+      (inputs (list qtcharts-5 qtdeclarative-5 qtserialport-5))
       (home-page "https://invent.kde.org/libraries/atcore")
       (synopsis "Library for connection and management of 3D printers")
       (description

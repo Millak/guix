@@ -253,7 +253,7 @@ of categories with some of the activities available in that category.
      (list openssl
            python-wrapper
            qtbase-5
-           qtcharts
+           qtcharts-5
            qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
