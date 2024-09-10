@@ -33017,39 +33017,38 @@ keypresses mapped in firefox to the action described in the function name.")
       (license (list license:gpl3+)))))
 
 (define-public emacs-exwm-firefox
-  (let ((commit "ba4044cf57f99656bbe1974278336b6abcb15497")) ;version bump
-    (package
-      (name "emacs-exwm-firefox")
-      (version "1.2")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://codeberg.org/emacs-weirdware/exwm-firefox.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1x9hc94a5wygyw714q98jbk4kjvys2ra94qdc2cbgkm6iq982rvq"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'chdir
-              (lambda _ (chdir "lisp"))))
-        #:tests? #true
-        #:test-command #~(list "emacs" "-Q" "--batch"
-                               "-l" "../test/exwm-firefox--tests.el"
-                               "-l" "exwm-firefox.el"
-                               "-f" "ert-run-tests-batch-and-exit")))
-      (inputs (list emacs-exwm emacs-exwm-firefox-core emacs-s))
-      (home-page "https://codeberg.org/emacs-weirdware/exwm-firefox")
-      (synopsis "Enhanced support for Firefox under EXWM")
-      (description
-       "This package adds enhanced support for Firefox (and forks
+  (package
+    (name "emacs-exwm-firefox")
+    (version "1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/emacs-weirdware/exwm-firefox.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jrnsnygi9kwq17dfjpjksmijx39w7ccsk4gzk5l2cg7ncydsja2"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "lisp"))))
+      #:tests? #true
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-l" "../test/exwm-firefox--tests.el"
+                             "-l" "exwm-firefox.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
+    (inputs (list emacs-exwm emacs-exwm-firefox-core emacs-s))
+    (home-page "https://codeberg.org/emacs-weirdware/exwm-firefox")
+    (synopsis "Enhanced support for Firefox under EXWM")
+    (description
+     "This package adds enhanced support for Firefox (and forks
 based on Firefox) under EXWM.  Keybindings intentionally mirror other Emacs
 navigation controls.")
-      (license (list license:gpl3+)))))
+    (license (list license:gpl3+))))
 
 (define-public emacs-exwm-ss
   (let ((commit "b11d3df7a50c39b4e1b92ef8a6685cf80b53912c")
