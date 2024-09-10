@@ -1373,7 +1373,7 @@ collaboration using typical untrusted file hosts or services.")
               (lambda* (#:key inputs #:allow-other-keys)
                 ;; Unpack the source of git into the 'git' directory.
                 (invoke "tar" "--strip-components=1" "-C" "git" "-xf"
-                        (assoc-ref inputs "git-source"))))
+                        #$(this-package-input "git-source.tar.xz"))))
             (add-after 'unpack 'patch-absolute-file-names
               (lambda* (#:key inputs outputs #:allow-other-keys)
                 (define (quoted-file-name input path)
@@ -1428,29 +1428,30 @@ collaboration using typical untrusted file hosts or services.")
        ;; For building manpage.
        (list asciidoc))
       (inputs
-       `( ;; Building cgit requires a Git source tree.
-         ("git-source"
-          ,(origin
-             (method url-fetch)
-             ;; cgit is tightly bound to git.  Use GIT_VER from the Makefile,
-             ;; which may not match the current (package-version git).
-             (uri "mirror://kernel.org/software/scm/git/git-2.46.2.tar.xz")
-             (sha256
-              (base32 "18rcmvximgyg3v1a9papi9djfamiak0ys5cmgx7ll29nhp3a3s2y"))))
-         ("bash-minimal" ,bash-minimal)
-         ("openssl" ,openssl)
-         ("python" ,python)
-         ("python-docutils" ,python-docutils)
-         ("python-markdown" ,python-markdown)
-         ("python-pygments" ,python-pygments)
-         ("zlib" ,zlib)
-         ;; bzip2, groff, gzip and xz are inputs (not native inputs)
-         ;; since they are actually substituted into cgit source and
-         ;; referenced by the built package output.
-         ("bzip2" ,bzip2)
-         ("groff" ,groff)
-         ("gzip" ,gzip)
-         ("xz" ,xz)))
+       (list (origin
+               (method url-fetch)
+               ;; Building cgit requires a Git source tree.
+               ;; cgit is tightly bound to git.  Use GIT_VER from the Makefile,
+               ;; which may not match the current (package-version git).
+               (uri "mirror://kernel.org/software/scm/git/git-2.46.2.tar.xz")
+               (sha256
+                (base32
+                 "18rcmvximgyg3v1a9papi9djfamiak0ys5cmgx7ll29nhp3a3s2y"))
+               (file-name "git-source.tar.xz"))
+             bash-minimal
+             openssl
+             python
+             python-docutils
+             python-markdown
+             python-pygments
+             zlib
+             ;; bzip2, groff, gzip and xz are inputs (not native inputs)
+             ;; since they are actually substituted into cgit source and
+             ;; referenced by the built package output.
+             bzip2
+             groff
+             gzip
+             xz))
       (home-page "https://git.zx2c4.com/cgit/")
       (synopsis "Web frontend for git repositories")
       (description
