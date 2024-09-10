@@ -2085,6 +2085,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/qmk-firmware-fix-hacker-dvorak.patch 	\
   %D%/packages/patches/qtwayland-dont-recreate-callbacks.patch	\
   %D%/packages/patches/qtwayland-cleanup-callbacks.patch	\
+  %D%/packages/patches/qtwayland-6-update-wayland-xml.patch	\
   %D%/packages/patches/ragel-char-signedness.patch		\
   %D%/packages/patches/randomjungle-disable-static-build.patch	\
   %D%/packages/patches/rapidcheck-fix-libs.patch		\
