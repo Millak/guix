@@ -513,16 +513,16 @@ using different abstraction levels.")
        (sha256
         (base32 "1q9facgfdwwmf2ax65aznhqmk8qfisq9k5p8wrxrw6qqy38vl0k2"))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("bison" ,bison)
-       ("flex" ,flex)
-       ("gettext" ,gettext-minimal)
-       ("python" ,python)
-       ;; And a couple of extras for the test suite:
-       ("cmake" ,cmake-minimal)
-       ("gdb" ,gdb/pinned)
-       ("which" ,which)))
+     (list autoconf
+           automake
+           bison
+           flex
+           gettext-minimal
+           python
+           ;; And a couple of extras for the test suite:
+           cmake-minimal
+           gdb/pinned
+           which))
     (inputs
      (list help2man perl python systemc))
     (build-system gnu-build-system)
