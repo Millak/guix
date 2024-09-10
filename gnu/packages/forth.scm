@@ -75,7 +75,15 @@ included.")
         (sha256
           (base32 "0a39pv7529llsa3f48fmvwvlcp3f9v8qkn5ziw2l6kxf0qvli3lm"))))
     (build-system trivial-build-system)
-    (native-inputs (list xxd))
+    (native-inputs (list xxd
+                         (origin
+                           (method url-fetch)
+                           (uri (string-append
+                                 "https://dacvs.neocities.org/SF/system"
+                                 version "fs.txt"))
+                           (sha256
+                            (base32
+                             "17v1pp64s6n8q8w3kg48nd7zdcx2208y4svr5fpfms5lkyzg7z1m")))))
     (arguments
       (list
         #:modules '((guix build utils))
@@ -84,14 +92,8 @@ included.")
             (use-modules (guix build utils)
                          (ice-9 textual-ports))
             (let* ((sforth.dmp #$(package-source this-package))
-                   (system.fs  #$(origin
-                                   (method url-fetch)
-                                   (uri (string-append
-                                          "https://dacvs.neocities.org/SF/system"
-                                          version "fs.txt"))
-                                   (sha256
-                                    (base32
-                                     "17v1pp64s6n8q8w3kg48nd7zdcx2208y4svr5fpfms5lkyzg7z1m"))))
+                   (system.fs  #$(this-package-native-input
+                                  (string-append "system" version "fs.txt")))
                    (xxd        (string-append (assoc-ref %build-inputs "xxd")
                                               "/bin/xxd"))
                    (bin        (string-append (assoc-ref %outputs "out") "/bin")))
