@@ -456,15 +456,7 @@ integration tests...\n")
             (lambda _
               (symlink "." "dmd")  ;to please the build system expected layout
               (copy-recursively
-               #$(origin
-                   (method git-fetch)
-                   (uri (git-reference
-                         (url "https://github.com/dlang/phobos")
-                         (commit (string-append "v" version))))
-                   (file-name (git-file-name "phobos" version))
-                   (sha256
-                    (base32
-                     "1yw7nb5d78cx9m7sfibv7rfc7wj3w0dw9mfk3d269qpfpnwzs4n9")))
+               #$(this-package-native-input (git-file-name "phobos" version))
                "phobos")
               (chdir "phobos")))
           (add-after 'copy-phobos-source-and-chdir 'adjust-phobos-install-dirs
@@ -519,7 +511,16 @@ integration tests...\n")
                  "lib")
                 (("\\.\\./src/(phobos|druntime/import)")
                  "include/dmd")))))))
-    (native-inputs (list gdmd which))
+    (native-inputs (list gdmd which
+                         (origin
+                           (method git-fetch)
+                           (uri (git-reference
+                                 (url "https://github.com/dlang/phobos")
+                                 (commit (string-append "v" version))))
+                           (file-name (git-file-name "phobos" version))
+                           (sha256
+                            (base32
+                             "1yw7nb5d78cx9m7sfibv7rfc7wj3w0dw9mfk3d269qpfpnwzs4n9")))))
     (home-page "https://github.com/dlang/dmd")
     (synopsis "Reference D Programming Language compiler")
     (description "@acronym{DMD, Digital Mars D compiler} is the reference
