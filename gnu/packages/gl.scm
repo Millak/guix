@@ -348,6 +348,10 @@ also known as DXTn or DXTC) for Mesa.")
             python-pyyaml
             python-wrapper
             (@ (gnu packages base) which))
+      (if (target-arm?)
+          ;; Needed for etnaviv.
+          (list python-pycparser)
+          '())
       (if (%current-target-system)
           (list cmake-minimal-cross
                 pkg-config-for-build
@@ -362,11 +366,11 @@ also known as DXTn or DXTC) for Mesa.")
          #$@(cond
              ((target-aarch64?)
               ;; This includes more drivers than "auto": asahi, r300, r600
-              '("-Dgallium-drivers=asahi,etnaviv,freedreno,kmsro,lima,\
-nouveau,panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
+              '("-Dgallium-drivers=asahi,etnaviv,freedreno,lima,nouveau,\
+panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
              ((target-arm32?)
               ;; This includes more drivers than "auto": r300, r600
-              '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
+              '("-Dgallium-drivers=etnaviv,freedreno,lima,nouveau,\
 panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
              ((or (target-ppc64le?) (target-ppc32?) (target-riscv64?))
               ;; This include more drivers than "auto": svga

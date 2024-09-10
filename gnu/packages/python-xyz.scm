@@ -10987,6 +10987,7 @@ data, and scientific formats.")
 a multithreaded image-processing system with low memory needs.")
     (license license:expat)))
 
+;; WARNING: This package is a dependency of mesa.
 (define-public python-pycparser
   (package
     (name "python-pycparser")
