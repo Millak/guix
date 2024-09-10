@@ -52,6 +52,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freeipmi)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages maths)
@@ -646,7 +647,29 @@ single-instruction multiple-data (SIMD) intrinsics.")
    (arguments
     (list #:configure-flags
           #~(list (string-append "--with-hwloc="
-                                 (ungexp (this-package-input "hwloc") "lib")))))
+                                 (ungexp (this-package-input "hwloc") "lib")))
+
+          ;; Don't keep a reference to GCC.
+          #:disallowed-references (and (not (%current-target-system))
+                                       (list (canonical-package gcc)))
+
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-before 'configure 'strip-pmix-cc-absolute
+                (lambda _
+                  ;; The 'pmix_info' program prints the 'configure' command
+                  ;; line, compiler absolute file name, etc., which causes it
+                  ;; to keep references to many build-time packages.  Scrub
+                  ;; these.
+                  (substitute* "configure"
+                    (("PMIX_CC_ABSOLUTE=\"(.*)\"" _ cc)
+                     (string-append "PMIX_CC_ABSOLUTE=\"$(basename \""
+                                    cc "\")\"\n")))))
+              (add-after 'configure 'strip-pmix-config-header
+                (lambda _
+                  (substitute* "src/include/pmix_config.h"
+                    (("#define PMIX_CONFIGURE_CLI .*")
+                     "#define PMIX_CONFIGURE_CLI \"[scrubbed]\"\n")))))))
    (inputs (list libevent `(,hwloc "lib")))
    (native-inputs (list perl python))
    (synopsis "PMIx library")
