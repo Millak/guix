@@ -2756,6 +2756,50 @@ QWidgets, QGraphicsWidget, or QML types.  Users can easily create impressive
 graphs by selecting one of the charts themes.")
     (license license:gpl3)))
 
+(define-public qtcharts
+  (package
+    (name "qtcharts")
+    (version "6.7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "1nlv4z2rvhrn1f1f7n6qdag7lmkpl3idnj6ph572qzwb8lvs9xh0"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-display
+            (lambda _
+              ;; Make Qt render "offscreen", required for tests.
+              (setenv "QT_QPA_PLATFORM" "offscreen")))
+          (add-after 'install 'delete-installed-tests
+            (lambda _
+              (delete-file-recursively (string-append #$output "/tests"))))
+          (delete 'check) ;; move after the install phase
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'set-QML_IMPORT_PATH
+            (lambda _
+              (setenv
+               "QML_IMPORT_PATH"
+               (string-append #$output "/lib/qt6/qml:"
+                              (getenv "QML_IMPORT_PATH"))))))))
+    (native-inputs
+     (list perl pkg-config qtdeclarative))
+    (inputs (list qtbase qtdeclarative))
+    (synopsis "Qt Charts module")
+    (description "The Qt Charts module provides a set of easy to use chart
+components.  It uses the Qt Graphics View Framework, therefore charts can be
+easily integrated to modern user interfaces.  Qt Charts can be used as
+QWidgets, QGraphicsWidget, or QML types.  Users can easily create impressive
+graphs by selecting one of the charts themes.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
+
 (define-public qtdatavis3d
   (package
     (inherit qtsvg-5)
