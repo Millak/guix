@@ -268,16 +268,8 @@ application-centers for distributions.")
             (lambda _
               (delete-file "autogen.sh")
               (copy-recursively
-               #$(origin
-                   (method git-fetch)
-                   (uri
-                    (git-reference
-                     (url "https://gitlab.freedesktop.org/gstreamer/common.git")
-                     (commit "52adcdb89a9eb527df38c569539d95c1c7aeda6e")))
-                   (file-name (git-file-name "common" "latest.52adcdb"))
-                   (sha256
-                    (base32
-                     "1zlm1q1lgcb76gi82rial5bwy2j9sz1x6x48ijhiz89cml7xxd1r")))
+               #$(this-package-native-input
+                  (git-file-name "common" "latest.52adcdb"))
                "common")))
           (add-after 'unpack 'disable-problematic-tests
             (lambda _
@@ -301,7 +293,17 @@ application-centers for distributions.")
            libxslt
            perl
            pkg-config
-           python-wrapper))
+           python-wrapper
+           (origin
+             (method git-fetch)
+             (uri
+              (git-reference
+               (url "https://gitlab.freedesktop.org/gstreamer/common.git")
+               (commit "52adcdb89a9eb527df38c569539d95c1c7aeda6e")))
+             (file-name (git-file-name "common" "latest.52adcdb"))
+             (sha256
+              (base32
+               "1zlm1q1lgcb76gi82rial5bwy2j9sz1x6x48ijhiz89cml7xxd1r")))))
     (inputs
      (list glib
            gtk+
