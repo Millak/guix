@@ -5786,7 +5786,7 @@ documents.")
            python-prov
            python-pydot
            python-psutil
-           python-rdflib
+           python-rdflib-6
            python-requests
            python-ruamel.yaml
            python-schema-salad

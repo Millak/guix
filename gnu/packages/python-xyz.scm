@@ -25010,7 +25010,7 @@ manipulation, or @code{stdout}.")
                 (("\\.serialize\\(format=\"nt\"\\)")
                  ".serialize(format=\"nt\", encoding=\"utf-8\")")))))))
     (propagated-inputs
-     (list python-dateutil python-lxml python-networkx python-rdflib))
+     (list python-dateutil python-lxml python-networkx python-rdflib-6))
     (native-inputs
      (list graphviz python-pydot))
     (home-page "https://github.com/trungdong/prov")
