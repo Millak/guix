@@ -2770,7 +2770,7 @@ displayed on the other side of the bus.")
 (define-public gtk-layer-shell
   (package
     (name "gtk-layer-shell")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -2779,7 +2779,7 @@ displayed on the other side of the bus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cf1fjlsplslmabpvyfdnvngkn5wfsk6jd7gbq6h74x0n9hczf37"))))
+        (base32 "05p9pmgzn8wacvlp7v4f1d8qqdnhr4l6jyclzfijnh1rsva0857n"))))
     (build-system meson-build-system)
     (arguments `(#:configure-flags (list "-Dtests=true")))
     (native-inputs (list pkg-config gobject-introspection vala))
