@@ -2323,13 +2323,13 @@ Server Protocol (LSP) for Qt.")
   (package
     (inherit qtsvg-5)
     (name "qtlocation")
-    (version "5.15.10")
+    (version "5.15.15")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0cvcpf0grwqnk6jxhrwm9xxm3dyc6lqvmb1np7fvkhkzjimx45l8"))))
+                "0ja5rs1z9lx9hns7m1mg1lndl04arhjajqbdg29j446q5xlzkpk2"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f)             ; TODO: Enable the tests
