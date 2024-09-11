@@ -1679,13 +1679,13 @@ integrate QML code with JavaScript and C++.")
   (package
     (inherit qtsvg-5)
     (name "qtconnectivity")
-    (version "5.15.10")
+    (version "5.15.15")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1sdrw67djfr8qi5wx3qhg8asq2c6f3v3mal3sms7dp7a2l1irnrz"))))
+                "1c0myr277jvax10yygffvj3qf435bin2a3dk871m7kvfb4hl80bd"))))
     (native-inputs
      (list perl pkg-config qtdeclarative-5))
     (inputs
