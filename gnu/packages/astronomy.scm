@@ -2320,13 +2320,13 @@ astronomy and astrophysics.")
     ;; In case of changing the source method git-fetch, consider to check the
     ;; tag as it's not following the PyPI version, see
     ;; <https://github.com/astropy/astropy-iers-data/issues/17>.
-    (version "0.2024.8.12.0.32.58")
+    (version "0.2024.9.16.0.32.21")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy_iers_data" version))
        (sha256
-        (base32 "1xw4s6vyl29miccbs3ylyichj1rcmzmya3lmh27f173n7k2zb5g0"))))
+        (base32 "0i63yxw4xfgv1dwaq89xd34xlsnx0n5njcm4adln2gk2ia3gxxig"))))
     (build-system pyproject-build-system)
     (arguments
      (list
