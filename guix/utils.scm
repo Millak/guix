@@ -973,7 +973,8 @@ VERSIONS.  For example:
 (define (compressed-file? file)
   "Return true if FILE denotes a compressed file."
   (->bool (member (file-extension file)
-                  '("gz" "bz2" "xz" "lz" "lzma" "tgz" "tbz2" "zip"))))
+                  '("gz" "bz2" "xz" "lz" "lzma" "tgz" "tbz2" "tzst"
+                    "zip" "zst"))))
 
 (define* (string-replace-substring str substr replacement
                                    #:optional
