@@ -111,6 +111,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 format)
   #:use-module (srfi srfi-1))
 
 (define-public alfa
@@ -600,6 +601,67 @@ in FITS files.")
              "cfitsio-" version ".tar.gz"))
        (sha256
         (base32 "098x1l8ijwsjp2ivp3v7pamrmpgwj5xmgb4yppm9w3w044zxr8b6"))))))
+
+(define* (healpix-source #:key version sha256-base32-hash)
+    ;; The sources of HEALPix containing 6 independent packages (Fortran90,
+    ;; IDL, C, C++, java and python) and distributed togather libsharp.
+     (origin
+       (method url-fetch)
+       (uri
+        (let* ((name "Healpix")
+               (version-list (string-split version #\.))
+               (name+version (format #f "~a_~{~a.~a~a~}" name version-list)))
+          (string-append "mirror://sourceforge/healpix/"
+                         name+version "/" name+version "_" "2022Jul28.tar.gz")))
+       (sha256
+        (base32 sha256-base32-hash ))))
+
+(define-public healpix
+  (package
+    (name "healpix")
+    (version "3.8.2")
+    (source
+     (healpix-source
+      #:version version
+      #:sha256-base32-hash "09x1lafq01gzk16yvmz2pdhrxnqfjp3b2p9hlgy0dbrdg82ryqj7"))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:make-flags
+      #~(list "shared"
+              "AR=ar -rsv"
+              "OPT=-O2 -Wall"
+              "PIC=-fPIC"
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "CFITSIO_INCDIR="
+                             #$(this-package-input "cfitsio") "/include")
+              (string-append "CFITSIO_LIBDIR="
+                             #$(this-package-input "cfitsio") "/lib")
+              (string-append "INCDIR=" #$output "/include")
+              (string-append "LIBDIR=" #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ; no configure
+          (add-after 'unpack 'chdir-c
+            (lambda _
+              (chdir "src/C/subs")))
+          (add-before 'install 'set-output-directories
+            (lambda _
+              (mkdir-p (string-append #$output "/include"))
+              (mkdir-p (string-append #$output "/lib")))))))
+    (native-inputs
+     (list pkg-config autoconf automake))
+    (inputs
+     (list cfitsio))
+    (home-page "https://healpix.jpl.nasa.gov/")
+    (synopsis "Representation of spherical data")
+    (description
+     "@acronym{HEALPix, Hierarchical Equal Area isoLatitude Pixelation} of a
+sphere produces a subdivision of a spherical surface in which each pixel
+covers the same surface area as every other pixel.  This package provides the
+dynamic library for the C language implementation of HEALPix.")
+    (license license:gpl2+)))
 
 (define-public erfa
   (package
