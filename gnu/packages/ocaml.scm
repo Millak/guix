@@ -8404,10 +8404,10 @@ convenience functions for vectors and matrices.")
                (base32
                 "06ag9b88ihhr7yd3s9l0ac7ysig02fmlmsswybbsvz71ni0mb105"))))
     (build-system dune-build-system)
+    (arguments
+     (list #:package "cairo2"))
     (inputs
-     `(("cairo" ,cairo)
-       ("gtk+-2" ,gtk+-2)
-       ("lablgtk" ,lablgtk)))
+     `(("cairo" ,cairo)))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/Chris00/ocaml-cairo")
