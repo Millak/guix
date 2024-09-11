@@ -2518,13 +2518,13 @@ ECMAScript and Qt.")))
   (package
     (inherit qtsvg-5)
     (name "qtquickcontrols")
-    (version "5.15.10")
+    (version "5.15.15")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1szgm7d8d2lllq19iyf4ggif933bprgsgmp4wzyg0mwq21rnwsm0"))))
+                "0anf0r7ryj1c3z97kxpkd6qvbn3fg3hcgzy65vnkwm3fbb13095h"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
