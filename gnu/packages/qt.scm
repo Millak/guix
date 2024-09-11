@@ -1317,13 +1317,13 @@ HostData=lib/qt5
   (package
     (inherit qtsvg-5)
     (name "qtimageformats")
-    (version "5.15.10")
+    (version "5.15.15")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1cniah8v8y514i68bmwgfi3xn3hzgpywcdnzrv789mk7qi48l92g"))
+                "0ga51fgvyxshjif1r0g8sbghainskhbckj1qb4if6cbx8wb9myir"))
               (modules '((guix build utils)))
               (snippet
                '(begin
