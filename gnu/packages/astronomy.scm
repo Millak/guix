@@ -718,6 +718,40 @@ applications of EyE include adaptive filtering, feature detection and cosmetic
 corrections.")
     (license license:cecill)))
 
+(define-public libsharp
+  (package
+    (name "libsharp")
+    (version "3.8.2")
+    (source
+     (healpix-source
+      #:version version
+      #:sha256-base32-hash "09x1lafq01gzk16yvmz2pdhrxnqfjp3b2p9hlgy0dbrdg82ryqj7"))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-libsharp
+            (lambda _
+              (chdir "src/common_libraries/libsharp"))))))
+    (home-page "https://healpix.sourceforge.io/")
+    (synopsis "Efficient spherical harmonic transforms at arbitrary spins")
+    (description
+     "This package provides a librari for spherical harmonic
+transforms (SHTs), which evolved from the libpsht library, addressing several
+of its shortcomings, such as adding MPI support for distributed memory systems
+and SHTs of fields with arbitrary spin, but also supporting new developments
+in CPU instruction sets like the Advanced Vector Extensions (AVX) or fused
+multiply-accumulate (FMA) instructions.  The library is implemented in
+portable C99 and provides an interface that can be easily accessed from other
+programming languages such as C++, Fortran, Python etc.  Generally, libsharp's
+performance is at least on par with that of its predecessor; however,
+significant improvements were made to the algorithms for scalar SHTs, which
+are roughly twice as fast when using the same CPU capabilities.
+
+Supporting paper is availalbe at https://arxiv.org/abs/1303.4945")
+    (license license:gpl2+)))
+
 (define-public psfex
   (package
     (name "psfex")
