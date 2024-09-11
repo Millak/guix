@@ -11,7 +11,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2019, 2020 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2019, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@member.fsf.org>
 ;;; Copyright © 2020 Brian Leung <bkleung89@gmail.com>
@@ -374,7 +374,7 @@ to @code{cabal repl}).")
          (add-after 'install 'install-more
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (bash (string-append out "/etc/bash_completions.d"))
+                    (bash (string-append out "/etc/bash_completion.d"))
                     (fish (string-append out "/share/fish/vendor_completions.d"))
                     (zsh (string-append out "/share/zsh/site-functions")))
              (setenv "PREFIX" out)
