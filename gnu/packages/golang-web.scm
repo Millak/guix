@@ -377,23 +377,23 @@ functions.")
 (define-public go-github-com-aws-aws-sdk-go-v2
   (package
     (name "go-github-com-aws-aws-sdk-go-v2")
-    (version "1.17.3")
+    (version "1.30.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/aws/aws-sdk-go-v2")
-             (commit "v1.17.3")))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a07xab1cn96iff7zvp5a82fzhqwl0i4bhplkm2h1qbkxgldn6x0"))))
+        (base32 "1mxm3j8xwlzjqhdw515kwzzhnfr325s08ry73chjbdw6qb940lb1"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go-v2"))
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
-     (list go-github-com-aws-smithy-go
-           go-github-com-google-go-cmp
-           go-github-com-jmespath-go-jmespath))
+     (list go-github-com-jmespath-go-jmespath
+           go-github-com-aws-smithy-go))
     (home-page "https://github.com/aws/aws-sdk-go-v2")
     (synopsis "AWS SDK for Go v2")
     (description
