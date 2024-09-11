@@ -2252,13 +2252,13 @@ application).")
   (package
     (inherit qtsvg-5)
     (name "qtwebglplugin")
-    (version "5.15.10")
+    (version "5.15.15")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "12kcvq5y5rpivxrn0p43gdkk3yysdi7bk904jgd3wk67gl0bda8r"))))
+                "12lxrpxam4dr0qs8g3zcydi4jnpizngxnyvwbi2i7fw2qcgxg6g6"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
