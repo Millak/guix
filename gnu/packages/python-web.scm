@@ -9537,3 +9537,27 @@ hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
     (description "Python module to query and edit data stored in a
 @url{https://netbox.dev,NetBox} instance.")
     (license license:asl2.0)))
+
+(define-public python-waybackpack
+  (package
+    (name "python-waybackpack")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "waybackpack" version))
+       (sha256
+        (base32 "16lcr2hv7gmp199fh3psrnv68j20pfxria8v6gchrpl1jqx9f923"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; would require network (and SSL certificates)
+    (propagated-inputs (list python-requests))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/jsvine/waybackpack")
+    (synopsis
+     "Command-line tool that lets you download the entire Wayback Machine
+archive for a given URL.")
+    (description
+     "This package provides a library and a command-line tool that lets
+you download the entire Wayback Machine archive for a given URL.")
+    (license license:expat)))
