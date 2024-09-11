@@ -1217,13 +1217,13 @@ came with the @{qtgraphicaleffects} Qt 5 package.")
   (package
     (inherit qtbase-5)
     (name "qtsvg")
-    (version "5.15.10")
+    (version "5.15.15")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1s2a00vqq0njwmd34pas7gmmlb9cjjq5dra1s1wpfxlabf1y64yg"))))
+                "0jyh6c5p4ffj7hcr1hzwx5fmkvxqnl5m8ingk582l77v7g2n6ysp"))))
     (propagated-inputs `())
     (native-inputs (list perl))
     (inputs
