@@ -4251,6 +4251,40 @@ allocator.  This is primarily useful for long lived buffers that usually sit emp
 length-delimited slices.  It's helpful for building wire protocols.")
     (license license:expat)))
 
+(define-public go-github-com-liyue201-gostl
+  (package
+    (name "go-github-com-liyue201-gostl")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/liyue201/gostl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dxzh791agir21dp1jmfa1bvqc23byz93fx3jlm94brlgm9zdkd3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/liyue201/gostl"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/liyue201/gostl")
+    (synopsis "Data structure and algorithm library for Go")
+    (description
+     "@code{gostl} is a data structure and algorithm library for Go, designed
+to provide functions similar to C++ STL.")
+    (license license:expat)))
+
 (define-public go-github-com-logrusorgru-aurora
   (package
     (name "go-github-com-logrusorgru-aurora")
