@@ -2731,13 +2731,13 @@ purchasing goods and services.")))
   (package
     (inherit qtsvg-5)
     (name "qtcharts")
-    (version "5.15.10")
+    (version "5.15.15")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0ax1qab1ibibk2bbwmlmsni7j4y821jzvcvrr63iz6pcw94vwx6h"))))
+                "0i8arrg9w71xj26wpy4hjgi37a17qbdkw8g1rh80h55r1nw6n9vi"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
