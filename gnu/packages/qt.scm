@@ -2715,13 +2715,13 @@ information and perform area based monitoring.")
   (package
     (inherit qtsvg-5)
     (name "qtpurchasing")
-    (version "5.15.10")
+    (version "5.15.15")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0gzxzcr9x45nd90481hdbj5shvaax00qjr1kx3lkcp13187pyacb"))))
+                "0i48clv6vzha9m869ylp6a0s6wyqqbil3d6z2qn80dv1j8x45q2r"))))
     (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Purchasing module")
     (description "The Qt Purchasing module provides and in-app API for
