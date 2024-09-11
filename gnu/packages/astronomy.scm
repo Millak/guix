@@ -663,6 +663,36 @@ covers the same surface area as every other pixel.  This package provides the
 dynamic library for the C language implementation of HEALPix.")
     (license license:gpl2+)))
 
+(define-public healpix-cxx
+  (package
+    (inherit healpix)
+    (name "healpix-cxx")
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-cxx
+            (lambda _
+              (chdir "src/cxx")))
+          (add-after 'chdir-cxx 'adjust-unit-tests
+            (lambda _
+              (substitute* "configure.ac"
+                ;; Run unit tests using serial harness, taken from
+                ;; <https://salsa.debian.org/debian-astro-team/healpix-cxx/>.
+                (("foreign subdir-objects -Wall -Werror")
+                 "foreign serial-tests subdir-objects -Wall -Werror"))))
+           (replace 'bootstrap
+             (lambda _
+               (invoke "aclocal")
+               (invoke "automake" "--add-missing")
+               (invoke "autoconf"))))))
+    (inputs (modify-inputs (package-inputs healpix)
+              (prepend libsharp zlib)))
+    (description
+     (string-replace-substring (package-description healpix)
+                    "C language"
+                    "C++ language"))))
+
 (define-public erfa
   (package
     (name "erfa")
