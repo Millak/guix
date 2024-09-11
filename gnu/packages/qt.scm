@@ -3090,14 +3090,14 @@ using the Enchant spell-checking library.")
   (package
     (inherit qtsvg-5)
     (name "qtwebengine")
-    (version "5.15.10")
+    (version "5.15.15")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "1rz6vbmr1aydmixayazmpsy7v2naq25l72q1gmvrhf9yf69584q8"))
+         "07z9fn80h0wiagxpanwc8510klzdhivp29z75r45fz88ynw1gni5"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
