@@ -2362,7 +2362,7 @@ ExtraLight, Light, Book, Medium, Semibold, Bold & ExtraBold")
 (define-public font-culmus
   (package
     (name "font-culmus")
-    (version "0.133")
+    (version "0.140")
     (source
      (origin
        (method url-fetch)
@@ -2371,7 +2371,7 @@ ExtraLight, Light, Book, Medium, Semibold, Bold & ExtraBold")
                            version ".tar.gz"))
        (sha256
         (base32
-         "02akysgsqhi15cck54xcacm16q5raf4l7shgb8fnj7xr3c1pbfyp"))))
+         "0fn79vndpa45gqr4mjmxzwy910x4ls1s6wbnycyf44bhpz4b4z5s"))))
     (build-system font-build-system)
     (arguments
      `(#:license-file-regexp "^GNU-GPL|LICENSE"
@@ -2379,22 +2379,10 @@ ExtraLight, Light, Book, Medium, Semibold, Bold & ExtraBold")
        (modify-phases %standard-phases
          (add-before 'install 'build
            (lambda _
-             (let ((compile
-                    (lambda (name ext)
-                      (invoke
-                       "fontforge" "-lang=ff"
-                       "-c" (string-append "Open('" name "');"
-                                           "Generate('"
-                                           (basename name "sfd") ext
-                                           "')")))))
-               ;; This part based on the fonts shipped in the non-source package.
-               (for-each (lambda (name)
-                           (compile name "ttf"))
-                         (find-files "." "^[^Nachlieli].*\\.sfd$"))
-               (for-each (lambda (name)
-                           (compile name "otf"))
-                         (find-files "." "^Nachlieli.*\\.sfd$"))
-               #t))))))
+             (for-each (lambda (font)
+                         (invoke "./GenerateOTF.py" font)
+                         (invoke "./GenerateTTF.py" font))
+                       (find-files "." "\\.sfd$")))))))
     (native-inputs
      (list fontforge))
     (home-page "https://culmus.sourceforge.io/")
