@@ -1897,7 +1897,7 @@ crowded star fields.")
 (define-public siril
   (package
     (name "siril")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method git-fetch)
@@ -1905,7 +1905,7 @@ crowded star fields.")
              (url "https://gitlab.com/free-astro/siril")
              (commit version)))
        (sha256
-        (base32 "0gkd8w2bpwq4ibl3vawx008yrm5k6zlj77lp98fflffcf7cj8hr5"))
+        (base32 "1nh5zk7isf7a0akkxq56n0lw8i18f7w3r27pa16fpcivmbv6xcx2"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
