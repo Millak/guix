@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Matthew Jordan <matthewjordandevops@yandex.com>
 ;;; Copyright © 2016 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2016, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -812,7 +812,10 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      ;; See 'src/cmd/dist/notgo117.go' in the source code distribution,
      ;; as well as the upstream discussion of this topic:
      ;; https://go.dev/issue/44505
-     (alist-replace "go" (list go-1.17) (package-native-inputs go-1.17)))))
+     ;; We continue to use gccgo-12 since it provides go-1.18.
+     (if (member (%current-system) (package-supported-systems go-1.4))
+         (alist-replace "go" (list go-1.17) (package-native-inputs go-1.17))
+         (package-native-inputs go-1.17)))))
 
 (define-public go-1.21
   (package
