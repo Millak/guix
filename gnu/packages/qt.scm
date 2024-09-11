@@ -1473,13 +1473,13 @@ xmlpatternsvalidator.")))
   (package
     (inherit qtsvg-5)
     (name "qtdeclarative")
-    (version "5.15.10")
+    (version "5.15.15")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1x1xsdlxwpdxzrapk5q0adjwh48c6awd8nj4j51ig6y49hy4r6r3"))
+                "06mc0ik45757zww7wap941cnsvmijba1wk5r5d6d55yag91fspzz"))
               (patches (search-patches "qtdeclarative-5-disable-qmlcache.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
