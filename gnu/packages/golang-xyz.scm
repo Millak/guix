@@ -7283,6 +7283,112 @@ XOR, as in kademlia.")
 @code{MemoryInfo}.")
     (license license:expat)))
 
+(define-public go-github-com-workiva-go-datastructures
+  (package
+    (name "go-github-com-workiva-go-datastructures")
+    (version "1.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Workiva/go-datastructures")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09k5zg0ma8z5bcfwk3viccaxzrrk5pyfhk5hkr9x34vgcnlk0jx7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Workiva/go-datastructures"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs (list go-github-com-tinylib-msgp))
+    (home-page "https://github.com/Workiva/go-datastructures")
+    (synopsis "Collection of Go data structures")
+    (description
+     "@code{go-datastructures} is a collection of useful, performant, and
+thread-safe Go data structures.
+
+It includes:
+@itemize
+@item Augmented Tree - Interval tree for collision in n-dimensional
+ranges.  Implemented via a red-black augmented tree.
+
+@item Bitarray - Bitarray used to detect existence without having to resort to
+hashing with hashmaps.  Requires entities have a uint64 unique identifier.  Two
+implementations exist, regular and sparse.
+
+@item Futures - A helpful tool to send a @emph{broadcast} message to
+listeners.
+
+@item Queue - Package contains both a normal and priority queue.  Both
+implementations never block on send and grow as much as necessary.
+
+@item Fibonacci Heap - A standard Fibonacci heap providing the usual
+operations.  Can be useful in executing Dijkstra or Prim's algorithms in the
+theoretically minimal time.
+
+@item Range Tree - Useful to determine if n-dimensional points fall within an
+n-dimensional range.
+
+@item Set - Set implementation which accepts items of type @code{interface{}}
+and includes only a few methods.
+
+@item Threadsafe - A package that is meant to contain some commonly used items
+but in a threadsafe way.
+
+@item AVL Tree - This is an example of a branch copy immutable
+@acronym{Adelson-Velsky and Landis,AVL} @acronym{Balanced Binary Search
+Trees,BBST}.
+
+@item X-Fast Trie - An interesting design that treats integers as words and
+uses a trie structure to reduce time complexities by matching prefixes.
+
+@item Y-Fast Trie - An extension of the X-Fast trie in which an X-Fast trie is
+combined with some other ordered data structure to reduce space consumption
+and improve CRUD types of operations.
+
+@item Fast Integer Hashmap - A datastructure used for checking existence but
+without knowing the bounds of your data.  If you have a limited small bounds,
+the bitarray package might be a better choice.
+
+@item Skiplist - An ordered structure that provides amortized logarithmic
+operations but without the complication of rotations that are required by
+BSTs.
+
+@item Sort - The sort package implements a multithreaded bucket sort that can
+be up to 3x faster than the native Golang sort package.
+
+@item Numerics - Early work on some nonlinear optimization problems.  The
+initial implementation allows a simple use case with either linear or
+nonlinear constraints.
+
+@item B+ Tree - Initial implementation of a B+ tree.  Delete method still
+needs added as well as some performance optimization.
+
+@item Immutable B Tree - A btree based on two principles, immutability and
+concurrency.
+
+@item Ctrie - A concurrent, lock-free hash array mapped trie with efficient
+non-blocking snapshots.
+
+@item Dtrie - A persistent hash trie that dynamically expands or shrinks to
+provide efficient memory allocation.
+
+@item Persistent List - A persistent, immutable linked list.
+
+@item Simple Graph - A mutable, non-persistent undirected graph where parallel
+edges and self-loops are not permitted.
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-github-com-xhit-go-str2duration-v2
   (package
     (name "go-github-com-xhit-go-str2duration-v2")
