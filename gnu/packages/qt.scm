@@ -2804,13 +2804,13 @@ graphs by selecting one of the charts themes.")
   (package
     (inherit qtsvg-5)
     (name "qtdatavis3d")
-    (version "5.15.10")
+    (version "5.15.15")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1lhy6l0hlm8mc21k7bwzkgnj6nn6x1f0h2imk8wqjjcvb5g605g5"))))
+                "124w3badhqcmwgwsm6phqa7ha4zjh68gh4zv50zbi2j1dwcfqif0"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
