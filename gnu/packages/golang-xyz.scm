@@ -6309,6 +6309,30 @@ slices, JSON and other data.")
 storage system.")
     (license license:bsd-2)))
 
+(define-public go-github-com-tannerryan-ring
+  (package
+    (name "go-github-com-tannerryan-ring")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tannerryan/ring")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07q5qcg2wv696nnw3rrgc49mqijapdwp3xsscaxb5867bz79s841"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tannerryan/ring"))
+    (home-page "https://github.com/tannerryan/ring")
+    (synopsis "High performance bloom filter")
+    (description
+     "@code{ring} provides a high performance and thread safe Go implementation of a
+@url{https://en.wikipedia.org/wiki/Bloom_filter, bloom filter}.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-teambition-rrule-go
   (package
     (name "go-github-com-teambition-rrule-go")
