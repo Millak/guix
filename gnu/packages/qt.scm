@@ -2968,13 +2968,13 @@ message.")
   (package
     (inherit qtsvg-5)
     (name "qtvirtualkeyboard")
-    (version "5.15.10")
+    (version "5.15.15")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1a1xnk1kmq1k8r1rsa29fq7m3vy2f0fqhy8k46q3ssn32skzlwa5"))))
+                "1511p8j86d896rnbvy7lqzfawzghxczy0w8kfxrhghxcfsrb61y6"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f) ; TODO: pass 2 fail test
