@@ -33505,6 +33505,13 @@ and frame grabber interface.")
                 (("^(CMAKE_DEFAULT_EXECUTABLE = ).*" _ head)
                  (format #f "~a ~s~%" head
                          (search-input-file inputs "bin/cmake"))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Some tests try to access the network before being skipped.
+              ;; Skip them by default.
+              (substitute* "tests/test_setup.py"
+                (("pytest\\.mark\\.skipif\\(not is_site_reachable.*")
+                 "pytest.mark.isolated()\n"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
