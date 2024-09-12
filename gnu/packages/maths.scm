@@ -8,7 +8,7 @@
 ;;; Copyright © 2015–2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018, 2020, 2021 Kei Kebreau <kkebreau@posteo.net>
@@ -812,7 +812,7 @@ numbers.")
 (define-public sleef
   (package
     (name "sleef")
-    (version "3.5.1")
+    (version "3.6.1")
     (source
      (origin
        (method git-fetch)
@@ -821,17 +821,15 @@ numbers.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jybqrl2dvjxzg30xrhh847s375n2jr1pix644wi6hb5wh5mx3f7"))))
+        (base32 "14y1zf621zp0333vs29pc7pcc31gsrrs3q49b6qmd1kz6c7a7fp2"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:build-type "Release"
       #:configure-flags
-      #~(list "-DCMAKE_BUILD_TYPE=Release"
-              (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib")
-              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output))))
-    ;; XXX: Removed mpfr because of https://github.com/shibatch/sleef/issues/458
+      #~(list "-DSLEEF_BUILD_SHARED_LIBS=ON")))
     (inputs
-     (list fftw gmp openssl-1.1))
+     (list fftw gmp mpfr openssl))
     (home-page "https://sleef.org/")
     (synopsis "SIMD library for evaluating elementary functions and DFT")
     (description
