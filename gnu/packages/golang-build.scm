@@ -637,6 +637,36 @@ cancelation for groups of goroutines working on subtasks of a common task
 support for low-level interaction with the operating system.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-telemetry
+  (package
+    (name "go-golang-org-x-telemetry")
+    (version "0.0.0-20240912191618-22fe4a1e7b9c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/telemetry")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05gvxiv0yqfclckm2ysavbfy1jpz8v71r2glrcvhjq8wzw90g9gz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-skip" "TestStart|TestConcurrentStart")
+      #:import-path "golang.org/x/telemetry"))
+    (propagated-inputs
+     (list go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://go.googlesource.com/telemetry")
+    (synopsis "Go Telemetry")
+    (description
+     "This repository holds the Go Telemetry server code and libraries, used
+for hosting @url{https://telemetry.go.dev,telemetry.go.dev} and instrumenting
+Go toolchain programs with opt-in telemetry.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-term
   (package
     (name "go-golang-org-x-term")
