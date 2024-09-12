@@ -614,19 +614,6 @@ the Nix package manager.")
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (delete 'set-font-path)
-           (add-after 'unpack 'change-default-guix
-             (lambda _
-               ;; We need to tell 'guix-daemon' which 'guix' command to use.
-               ;; Here we use a questionable hack where we hard-code root's
-               ;; current guix, which could be wrong (XXX).  Note that scripts
-               ;; like 'guix perform-download' do not run as root so we assume
-               ;; that they have access to /var/guix/profiles/per-user/root.
-               (substitute* "nix/libstore/globals.cc"
-                 (("guixProgram = (.*)nixBinDir + \"/guix\"" _ before)
-                  (string-append "guixProgram = " before
-                                 "/var/guix/profiles/per-user/root\
-/current-guix/bin/guix")))
-               #t))
            (replace 'build
              (lambda _
                (invoke "make" "nix/libstore/schema.sql.hh")
