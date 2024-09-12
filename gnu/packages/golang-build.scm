@@ -748,7 +748,7 @@ time.")
 (define-public go-golang-org-x-tools
   (package
     (name "go-golang-org-x-tools")
-    (version "0.24.0")
+    (version "0.25.0")
     (source
      (origin
        (method git-fetch)
@@ -757,7 +757,7 @@ time.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "007n9bmhxn2yspvmcdbj8h0l132vhakszv4i0bd65cvravskcw8y"))
+        (base32 "12r0cwsq898vka7jkxwjv1s8y8z2gxzq8z15ssl37y85hhcadkl8"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -784,12 +784,13 @@ time.")
                           ;; - godoc
 
                           ;; FIXME: Figure out why they are failing:
+                          ;; "./go/analysis/..."
+                          ;; "./go/callgraph/..."
+                          ;; "./go/packages/..."
+                          ;; "./go/ssa/..."
                           ;; "./internal/..."
                           ;; "./present/..."
                           ;; "./refactor/eg/..."
-                          ;; "./go/ssa/..."
-                          ;; "./go/packages/..."
-                          ;; "./go/analysis/..."
 
                           "./blog/..."  ;
                           "./container/..."
@@ -797,7 +798,6 @@ time.")
                           "./cover/..."
                           "./go/ast/..."
                           "./go/buildutil/..."
-                          "./go/callgraph/..."
                           "./go/cfg/..."
                           "./go/expect/..."
                           "./go/gccgoexportdata/..."
@@ -812,7 +812,8 @@ time.")
                           "./refactor/satisfy/..."
                           "./txtar/..."))))))))
     (native-inputs
-     (list gccgo-14))
+     (list gccgo-14
+           go-github-com-google-go-cmp))
     (propagated-inputs
      (list go-github-com-yuin-goldmark
            go-golang-org-x-mod
