@@ -475,6 +475,21 @@ Embree is meant to increase performance of photo-realistic rendering
 applications.")
     (license license:asl2.0)))
 
+(define-public embree-3
+  (package
+    (inherit embree)
+    (name "embree")
+    (version "3.3.15")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/embree/embree")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1kcvz7g6j56anv9zjyd3gidxl46vipw0gg82lns12m45cd43iwxm"))))))
+
 (define-public openvdb
   (package
     (name "openvdb")

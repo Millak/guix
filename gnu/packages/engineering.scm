@@ -3845,7 +3845,7 @@ perform various useful functions such as:
      `(("boost" ,boost)
        ("cgal" ,cgal)
        ("eigen" ,eigen)
-       ("embree" ,embree)
+       ("embree" ,embree-3)
        ("glfw" ,glfw-3.4)
        ("gmp" ,gmp)
        ("mesa" ,mesa)
