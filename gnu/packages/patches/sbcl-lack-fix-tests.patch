@@ -1,0 +1,243 @@
+Remove tests that cannot be run. Some depend on clack, which in turn
+depends on lack. Others refer to systems that don't exist
+(names starting with "t-").
+
+--- a/lack-component.asd
++++ b/lack-component.asd
+@@ -2,7 +2,6 @@
+   :version "0.2.0"
+   :author "Eitaro Fukamachi"
+   :license "MIT"
+-  :components ((:file "src/component"))
+-  :in-order-to ((test-op (test-op "t-lack-component"))))
++  :components ((:file "src/component")))
+ 
+ (register-system-packages "lack-component" '(:lack.component))
+diff --git a/lack-middleware-accesslog.asd b/lack-middleware-accesslog.asd
+index c593988..21a4e70 100644
+--- a/lack-middleware-accesslog.asd
++++ b/lack-middleware-accesslog.asd
+@@ -6,7 +6,6 @@
+                "local-time")
+   :components ((:module "src"
+                 :components
+-                ((:file "middleware/accesslog"))))
+-  :in-order-to ((test-op (test-op "t-lack-middleware-accesslog"))))
++                ((:file "middleware/accesslog")))))
+ 
+ (register-system-packages "lack-middleware-accesslog" '(:lack.middleware.accesslog))
+diff --git a/lack-middleware-auth-basic.asd b/lack-middleware-auth-basic.asd
+index 9206d22..6862f33 100644
+--- a/lack-middleware-auth-basic.asd
++++ b/lack-middleware-auth-basic.asd
+@@ -6,7 +6,6 @@
+                "split-sequence")
+   :components ((:module "src"
+                 :components
+-                ((:file "middleware/auth/basic"))))
+-  :in-order-to ((test-op (test-op "t-lack-middleware-auth-basic"))))
++                ((:file "middleware/auth/basic")))))
+ 
+ (register-system-packages "lack-middleware-auth-basic" '(:lack.middleware.auth.basic))
+diff --git a/lack-middleware-backtrace.asd b/lack-middleware-backtrace.asd
+index 8df7f9f..cf73f81 100644
+--- a/lack-middleware-backtrace.asd
++++ b/lack-middleware-backtrace.asd
+@@ -3,7 +3,6 @@
+   :author "Eitaro Fukamachi"
+   :license "MIT"
+   :depends-on ("uiop")
+-  :components ((:file "src/middleware/backtrace"))
+-  :in-order-to ((test-op (test-op "t-lack-middleware-backtrace"))))
++  :components ((:file "src/middleware/backtrace")))
+ 
+ (register-system-packages "lack-middleware-backtrace" '(:lack.middleware.backtrace))
+diff --git a/lack-middleware-csrf.asd b/lack-middleware-csrf.asd
+index 105d3bb..fcf46f7 100644
+--- a/lack-middleware-csrf.asd
++++ b/lack-middleware-csrf.asd
+@@ -6,7 +6,6 @@
+                "lack-util")
+   :components ((:module "src"
+                 :components
+-                ((:file "middleware/csrf"))))
+-  :in-order-to ((test-op (test-op "t-lack-middleware-csrf"))))
++                ((:file "middleware/csrf")))))
+ 
+ (register-system-packages "lack-middleware-csrf" '(:lack.middleware.csrf))
+diff --git a/lack-middleware-session.asd b/lack-middleware-session.asd
+index 92b1568..bed4c89 100644
+--- a/lack-middleware-session.asd
++++ b/lack-middleware-session.asd
+@@ -19,7 +19,6 @@
+                   :pathname "session"
+                   :components
+                   ((:file "state")
+-                   (:file "state/cookie"))))))
+-  :in-order-to ((test-op (test-op "t-lack-middleware-session"))))
++                   (:file "state/cookie")))))))
+ 
+ (register-system-packages "lack-middleware-session" '(:lack.middleware.session))
+diff --git a/lack-middleware-static.asd b/lack-middleware-static.asd
+index a0ce627..107a386 100644
+--- a/lack-middleware-static.asd
++++ b/lack-middleware-static.asd
+@@ -7,7 +7,6 @@
+                "alexandria")
+   :components ((:module "src"
+                 :components
+-                ((:file "middleware/static"))))
+-  :in-order-to ((test-op (test-op "t-lack-middleware-static"))))
++                ((:file "middleware/static")))))
+ 
+ (register-system-packages "lack-middleware-static" '(:lack.middleware.static))
+diff --git a/lack-request.asd b/lack-request.asd
+index 5efa05c..240b421 100644
+--- a/lack-request.asd
++++ b/lack-request.asd
+@@ -9,7 +9,6 @@
+   :components ((:module "src"
+                 :components
+                 ((:file "request" :depends-on ("media-type"))
+-                 (:file "media-type"))))
+-  :in-order-to ((test-op (test-op "t-lack-request"))))
++                 (:file "media-type")))))
+ 
+ (register-system-packages "lack-request" '(:lack.request))
+diff --git a/lack-session-store-dbi.asd b/lack-session-store-dbi.asd
+index 00e7d1e..825a96c 100644
+--- a/lack-session-store-dbi.asd
++++ b/lack-session-store-dbi.asd
+@@ -7,7 +7,6 @@
+                "marshal"
+                "trivial-utf-8"
+                "cl-base64")
+-  :components ((:file "src/middleware/session/store/dbi"))
+-  :in-order-to ((test-op (test-op "t-lack-session-store-dbi"))))
++  :components ((:file "src/middleware/session/store/dbi")))
+ 
+ (register-system-packages "lack-session-store-dbi" '(:lack.session.store.dbi))
+diff --git a/lack-session-store-redis.asd b/lack-session-store-redis.asd
+index 96b0504..57e4046 100644
+--- a/lack-session-store-redis.asd
++++ b/lack-session-store-redis.asd
+@@ -7,7 +7,6 @@
+                "marshal"
+                "cl-base64"
+                "trivial-utf-8")
+-  :components ((:file "src/middleware/session/store/redis"))
+-  :in-order-to ((test-op (test-op "t-lack-session-store-redis"))))
++  :components ((:file "src/middleware/session/store/redis")))
+ 
+ (register-system-packages "lack-session-store-redis" '(:lack.session.store.redis))
+diff --git a/lack-util.asd b/lack-util.asd
+index 0391a1b..1318c04 100644
+--- a/lack-util.asd
++++ b/lack-util.asd
+@@ -5,7 +5,6 @@
+   :depends-on ((:feature (:or :windows :mswindows :win32 :cormanlisp) "ironclad")
+                (:feature (:not (:or :windows :mswindows :win32 :cormanlisp)) "cl-isaac")
+ 	       "bordeaux-threads")
+-  :components ((:file "src/util"))
+-  :in-order-to ((test-op (test-op "t-lack-util"))))
++  :components ((:file "src/util")))
+ 
+ (register-system-packages "lack-util" '(:lack.util))
+diff --git a/lack.asd b/lack.asd
+index e213c10..dde71cf 100644
+--- a/lack.asd
++++ b/lack.asd
+@@ -43,8 +43,6 @@
+                "lack/middleware/auth/basic"
+                "lack/session/store/redis"
+                "lack/session/store/dbi"
+-               "clack"
+-               "clack-test"
+                "hunchentoot"
+                "dexador"
+                "cl-cookie"
+@@ -60,7 +58,6 @@
+   :serial t
+   :components ((:file "builder")
+                (:file "util")
+-               (:file "request")
+                (:file "component")
+                (:file "media-type")
+                (:module "middleware"
+diff --git a/tests/request.lisp b/tests/request.lisp
+deleted file mode 100644
+index 3fd26e0..0000000
+--- a/tests/request.lisp
++++ /dev/null
+@@ -1,71 +0,0 @@
+-(defpackage #:lack/tests/request
+-  (:use #:cl
+-        #:rove
+-        #:lack/request
+-        #:clack.test
+-        #:flexi-streams)
+-  (:import-from #:dexador)
+-  (:import-from #:alexandria
+-                #:alist-hash-table))
+-(in-package #:lack/tests/request)
+-
+-(defparameter *request*
+-  (make-request `(:content-type "application/x-www-form-urlencoded; charset=utf-8"
+-                  :content-length 20
+-                  :uri-scheme :http
+-                  :query-string "ediweitz=weitzedi&name=eitaro&q=C%2B%2B"
+-                  :raw-body
+-                  ,(flex:make-flexi-stream
+-                    (flex:make-in-memory-input-stream
+-                     #(110 97 109 101 61 230 183 177 231 148 186 232 139 177 229 164 170 233 131 142))
+-                    :external-format :utf-8)
+-                  :headers ,(alexandria:alist-hash-table
+-                             '(("referer" . "http://github.com/fukamachi/clack")
+-                               ("user-agent" . "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-US)")
+-                               ("accept" . "text/html")
+-                               ("cookie" . "hoge=1;fuga=semi;colon"))
+-                             :test 'equal))))
+-
+-(deftest lack-request
+-  (ok (typep *request* 'request))
+-
+-  (ok (request-env *request*) "request-env")
+-
+-  (ok (equal (request-content-type *request*) "application/x-www-form-urlencoded; charset=utf-8")
+-      "request-content-type")
+-
+-  (ok (equalp (request-query-parameters *request*)
+-              '(("ediweitz" . "weitzedi") ("name" . "eitaro") ("q" . "C++")))
+-      "request-query-parameters")
+-
+-  (ok (equalp (request-body-parameters *request*)
+-              `(("name" . ,(flex:octets-to-string
+-                            #(230 183 177 231 148 186 232 139 177 229 164 170 233 131 142)
+-                            :external-format :utf-8))))
+-      "request-body-parameters")
+-
+-  (ok (equalp (request-cookies *request*)
+-              '(("hoge" . "1") ("fuga" . "semi") ("colon")))
+-      "request-cookies")
+-
+-  (ok (request-accepts-p *request* "text/html"))
+-
+-  (ng (request-accepts-p *request* "application/json"))
+-
+-  (testing-app "make-request"
+-      (lambda (env)
+-        (make-request env)
+-        `(200 nil (,(third (assoc "file" (request-body-parameters (make-request env)) :test #'string=)))))
+-    (multiple-value-bind (body status)
+-        (dex:post (localhost)
+-                  :content
+-                  `(("file" . ,(asdf:system-relative-pathname :lack #P"data/jellyfish.jpg"))))
+-      (ok (eql status 200))
+-      (ok (equal body "jellyfish.jpg")))
+-
+-    (multiple-value-bind (body status)
+-        (dex:post (localhost)
+-                  :content
+-                  `(("file" . ,(asdf:system-relative-pathname :lack #P"data/jellyfish.jpg"))))
+-      (ok (eql status 200))
+-      (ok (equal body "jellyfish.jpg")))))

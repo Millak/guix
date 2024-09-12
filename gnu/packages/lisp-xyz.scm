@@ -18515,41 +18515,61 @@ extensions developed by technical users.")
 ;;   (sbcl-package->ecl-package sbcl-kons-9))
 
 (define-public sbcl-lack
-  (let ((commit "abff8efeb0c3a848e6bb0022f2b8b7fa3a1bc88b")
+  (let ((commit "35d3a8e03cab9204eec88c7dfe4d5366fc2ea922")
         (revision "1"))
     (package
       (name "sbcl-lack")
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "0.3.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/fukamachi/lack")
                (commit commit)))
-         (file-name (git-file-name "lack" version))
+         (file-name (git-file-name "cl-lack" version))
          (sha256
-          (base32 "1avh4ygcj9xcx4m17nj0wnxxaisk26w4ljs2bibzxaln24x7pi85"))))
+          (base32 "1yrhhzn8ywdjxwpaxzlnsm2lslhy45r89brn8gh5n08mdyjlp4l2"))
+         (patches (search-patches "sbcl-lack-fix-tests.patch"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
-       (list sbcl-prove))
+       (list sbcl-cl-cookie
+             sbcl-dexador
+             sbcl-hunchentoot
+             sbcl-prove))
       (inputs
-       `(("circular-streams" ,sbcl-circular-streams)
-         ("http-body" ,sbcl-http-body)
-         ("ironclad" ,sbcl-ironclad)
-         ("local-time" ,sbcl-local-time)
-         ("quri" ,sbcl-quri)
-         ("trivial-mimes" ,sbcl-trivial-mimes)))
+       (list sbcl-alexandria
+             sbcl-anypool
+             sbcl-bordeaux-threads
+             sbcl-circular-streams
+             sbcl-cl-base64
+             sbcl-cl-isaac
+             sbcl-cl-redis
+             sbcl-dbi
+             sbcl-http-body
+             sbcl-ironclad
+             sbcl-local-time
+             sbcl-quri
+             sbcl-trivial-mimes
+             sbcl-trivial-rfc-1123))
       (arguments
        '(#:asd-systems '("lack"
+                         "lack-app-directory"
+                         "lack-app-file"
+                         "lack-component"
+                         "lack-middleware-accesslog"
+                         "lack-middleware-auth-basic"
+                         "lack-middleware-backtrace"
+                         "lack-middleware-csrf"
+                         "lack-middleware-dbpool"
+                         "lack-middleware-mount"
+                         "lack-middleware-session"
+                         "lack-middleware-static"
                          "lack-request"
                          "lack-response"
-                         "lack-component"
+                         "lack-session-store-dbi"
+                         "lack-session-store-redis"
                          "lack-util"
-                         "lack-util-writer-stream"
-                         "lack-middleware-backtrace"
-                         "lack-middleware-static")
-         ;; XXX: Component :CLACK not found
-         #:tests? #f))
+                         "lack-util-writer-stream")))
       (home-page "https://github.com/fukamachi/lack")
       (synopsis "Lack, the core of Clack")
       (description
@@ -18557,7 +18577,7 @@ extensions developed by technical users.")
 constructed of modular components.  It was originally a part of Clack, however
 it's going to be rewritten as an individual project since Clack v2 with
 performance and simplicity in mind.")
-      (license license:llgpl))))
+      (license license:expat))))
 
 (define-public cl-lack
   (sbcl-package->cl-source-package sbcl-lack))
