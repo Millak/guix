@@ -2528,6 +2528,34 @@ Microsoft AD PAC authorization data.")
 geared towards parsing MIME encoded emails.")
     (license license:expat)))
 
+(define-public go-github-com-jlaffaye-ftp
+  (package
+    (name "go-github-com-jlaffaye-ftp")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jlaffaye/ftp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z9d1dxhx351158a22a08qbnfql7a1cajg6v3zm82m2rnp17ahir"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jlaffaye/ftp"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-hashicorp-go-multierror))
+    (home-page "https://github.com/jlaffaye/ftp")
+    (synopsis "FTP client package for Go")
+    (description
+     "Package ftp implements a @acronym{File Transfer Protocol,FTP} client as
+described in @url{https://www.rfc-editor.org/rfc/rfc959,RFC 959}.")
+    (license license:isc)))
+
 (define-public go-github-com-jmespath-go-jmespath
   (package
     (name "go-github-com-jmespath-go-jmespath")
