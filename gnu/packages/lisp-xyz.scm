@@ -1163,6 +1163,43 @@ computer known.")
 (define-public cl-antik
   (sbcl-package->cl-source-package sbcl-antik))
 
+(define-public sbcl-anypool
+  (let ((commit "5389ec945882e87f2fc1d3e852c91aaf176556e5")
+        (revision "1"))
+    (package
+      (name "sbcl-anypool")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fukamachi/anypool")
+               (commit commit)))
+         (file-name (git-file-name "cl-anypool" version))
+         (sha256
+          (base32 "1ffssc5fzh7gj0z94xxfb3mk5cwja65lrhxyfgib15a6yxqf1kk1"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-rove))
+      (inputs
+       (list sbcl-bordeaux-threads
+             sbcl-cl-speedy-queue))
+      (arguments
+       '(#:asd-systems '("anypool"
+                         "anypool/middleware")))
+      (home-page "https://github.com/fukamachi/anypool")
+      (synopsis "General-purpose connection pooling library")
+      (description
+       "This package provides a general-purpose connection pooling library for
+Common Lisp.")
+      (license license:bsd-2))))
+
+(define-public cl-anypool
+  (sbcl-package->cl-source-package sbcl-anypool))
+
+(define-public ecl-anypool
+  (sbcl-package->ecl-package sbcl-anypool))
+
 (define-public sbcl-april
   (let ((commit "bdd74f168ec82f28fe4ab692f2c0af39441a5701")
         (revision "3"))
