@@ -667,6 +667,36 @@ for hosting @url{https://telemetry.go.dev,telemetry.go.dev} and instrumenting
 Go toolchain programs with opt-in telemetry.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-telemetry-config
+  (package
+    (name "go-golang-org-x-telemetry-config")
+    (version "0.31.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/telemetry")
+             (commit (go-version->git-ref version
+                                          #:subdir "config"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b5f3kf58wam741m7vfalv4n47djn6whxr4lf9w1jpjgaa6kq3an"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "golang.org/x/telemetry/config"
+      #:unpack-path "golang.org/x/telemetry"))
+    (home-page "https://golang.org/x/telemetry")
+    (synopsis "Subset of telemetry data for Golang telemetry")
+    (description
+     "The config package holds the config.json file defining the Go telemetry
+upload configuration and contains no actual Go code, and exists only so the
+config.json file can be served by module proxies.
+
+An upload configuration specifies the set of values that are permitted in
+telemetry uploads: GOOS, GOARCH, Go version, and per-program counters.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-term
   (package
     (name "go-golang-org-x-term")
