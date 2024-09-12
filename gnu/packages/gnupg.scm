@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014, 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2021, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -87,6 +87,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (ice-9 match)
   #:use-module (guix build-system meson)
   #:use-module (srfi srfi-1))
@@ -634,32 +635,20 @@ distributed separately.")
 (define-public python-pygpgme
   (package
     (name "python-pygpgme")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pygpgme" version))
        (sha256
         (base32
-         "1q82p3gs6lwq8j8dxk4pvrwk3jpww1zqcjrzznl9clh10z28gn2z"))
-       ;; Unfortunately, we have to disable some tests due to some gpg-agent
-       ;; goofiness... see:
-       ;;   https://bugs.launchpad.net/pygpgme/+bug/999949
-       (patches (search-patches "pygpgme-disable-problematic-tests.patch"
-                                "python-pygpgme-fix-pinentry-tests.patch"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'make-build
-           (lambda _ (invoke "make" "build")))
-         (replace 'check
-           (lambda _ (invoke "make" "check"))))))
-    (build-system python-build-system)
+         "1px1c5nqsls3fxg0zkyd9sgc5rxpdagvsadnp8fd5bmgrrjka5ws"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list gnupg-1))
+     (list gnupg))
     (inputs
      (list gpgme))
-    (home-page "https://launchpad.net/pygpgme")
+    (home-page "https://github.com/jhenstridge/pygpgme")
     (synopsis "Python module for working with OpenPGP messages")
     (description
      "PyGPGME is a Python module that lets you sign, verify, encrypt and

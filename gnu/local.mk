@@ -1979,7 +1979,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/pulseview-glib-2.68.patch		\
   %D%/packages/patches/pybugz-encode-error.patch		\
   %D%/packages/patches/pybugz-stty.patch			\
-  %D%/packages/patches/pygpgme-disable-problematic-tests.patch  \
   %D%/packages/patches/pyqt-configure.patch			\
   %D%/packages/patches/pytest-fix-unstrable-exception-test.patch	\
   %D%/packages/patches/python-2-deterministic-build-info.patch	\
@@ -2024,7 +2023,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-paste-remove-timing-test.patch	\
   %D%/packages/patches/python-pyan3-fix-absolute-path-bug.patch \
   %D%/packages/patches/python-pyan3-fix-positional-arguments.patch \
-  %D%/packages/patches/python-pygpgme-fix-pinentry-tests.patch	\
   %D%/packages/patches/python-pysmt-fix-pow-return-type.patch	\
   %D%/packages/patches/python-pysmt-fix-smtlib-serialization-test.patch	\
   %D%/packages/patches/python-pytorch-fix-codegen.patch		\
