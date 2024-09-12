@@ -7960,53 +7960,6 @@ Features:
 @end itemize")
     (license license:expat)))
 
-(define-public python-msrest
-  (package
-    (name "python-msrest")
-    (version "0.6.21")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "msrest" version))
-       (sha256
-        (base32 "1n389m3hcsyjskzimq4j71nyw9pjkrp0n5wg1q2c4bfwpv3inrkj"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest"
-                       "-k"
-                       ;; These attempt to connect to bing.com.
-                       (string-append
-                        "not test_basic_aiohttp"
-                        " and not test_basic_async_requests"
-                        " and not test_conf_async_requests"
-                        " and not test_conf_async_trio_requests"
-                        " and not test_basic_aiohttp"
-                        " and not test_basic_async_requests"
-                        " and not test_conf_async_requests"
-                        " and not test_conf_async_trio_requests"))))))))
-    (propagated-inputs
-     (list python-aiohttp
-           python-certifi
-           python-isodate
-           python-requests
-           python-requests-oauthlib))
-    (native-inputs
-     (list python-httpretty
-           python-pytest
-           python-pytest-aiohttp
-           python-pytest-asyncio
-           python-pytest-trio))
-    (home-page "https://github.com/Azure/msrest-for-python")
-    (synopsis "AutoRest swagger generator Python client runtime")
-    (description "This package provides the runtime library @code{msrest} for
-AutoRest-generated Python clients.")
-    (license license:expat)))
-
 (define-public python-azure-nspkg
   (package
     (name "python-azure-nspkg")
