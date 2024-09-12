@@ -258,7 +258,8 @@ without modification.")
        ((#:phases phases)
         `(modify-phases ,phases
            ;; No loadable modules.
-           (delete 'move-development-files)))))))
+           (delete 'move-development-files)))))
+    (synopsis "The GNU Bourne-Again SHell, stripped down for non-interactive use")))
 
 (define-public static-bash
   ;; Statically-linked Bash that contains nothing but the 'bash' binary and
