@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -449,8 +450,8 @@ theorems between the two libraries.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/coq/bignums")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/coq/bignums")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
@@ -461,15 +462,15 @@ theorems between the two libraries.")
     (inputs
      (list camlp5))
     (arguments
-     `(#:tests? #f ; No test target.
-       #:make-flags
-       (list (string-append "COQLIBINSTALL=" (assoc-ref %outputs "out")
-                            "/lib/coq/user-contrib")
-             (string-append "COQPLUGININSTALL=" (assoc-ref %outputs "out")
-                            "/lib/ocaml/site-lib/"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:tests? #f ; No test target.
+           #:make-flags
+           #~(list (string-append "COQLIBINSTALL=" #$output
+                                  "/lib/coq/user-contrib")
+                   (string-append "COQPLUGININSTALL=" #$output
+                                  "/lib/ocaml/site-lib/"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (home-page "https://github.com/coq/bignums")
     (synopsis "Coq library for arbitrary large numbers")
     (description "Bignums is a coq library of arbitrary large numbers.  It
