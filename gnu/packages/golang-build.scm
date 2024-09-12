@@ -806,20 +806,18 @@ Go programming language.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-xerrors
-  (let ((commit "104605ab7028f4af38a8aff92ac848a51bd53c5d")
-        (revision "1"))
     (package
       (name "go-golang-org-x-xerrors")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20200804184101-5ec99f83aff1")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://go.googlesource.com/xerrors")
-               (commit commit)))
+               (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "051xfwx95vq7yhmsy8p9rq0qw67bzvimhz1icjssahwrjndm7h92"))))
+          (base32 "1dbzc3gmf2haazpv7cgmv97rq40g2xzwbglc17vas8dwhgwgwrzb"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path "golang.org/x/xerrors"))
@@ -827,7 +825,7 @@ Go programming language.")
       (synopsis "Go 1.13 error values")
       (description "This package holds the transition packages for the new Go
 1.13 error values.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public go-google-golang-org-protobuf
   (package
