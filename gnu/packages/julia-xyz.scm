@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2021-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -1877,7 +1877,7 @@ be passed to in-place differentiation methods instead of an output buffer.")
 (define-public julia-diffrules
   (package
     (name "julia-diffrules")
-    (version "1.12.2")
+    (version "1.15.1")
     (source
      (origin
        (method git-fetch)
@@ -1886,7 +1886,7 @@ be passed to in-place differentiation methods instead of an output buffer.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l983kzy01y7qqw42pi0ihpvx3yzfnwrhcmk38avw7y513qlm7vf"))))
+        (base32 "0gbsi9bl3nk9v0wd0d1prwwxpg57632nwdcj6n6qyv21y2vqzajq"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-irrationalconstants
