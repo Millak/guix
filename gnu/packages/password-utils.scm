@@ -795,9 +795,11 @@ through the pass command.")
        #:install-plan
        '(("src/passage" "/bin/")
          ("src/completion/pass.bash-completion"
-          "/share/bash-completion/completions/")
+          "/etc/bash-completion.d/passage")
+         ("src/completion/pass.fish-completion"
+          "/share/fish/vendor_completions.d/passage")
          ("src/completion/pass.zsh-completion"
-          "/share/zsh/site-functions/"))))
+          "/share/zsh/site-functions/_passage"))))
     (inputs
      (list age age-keygen coreutils-minimal git-minimal
            procps qrencode sed tree util-linux))
