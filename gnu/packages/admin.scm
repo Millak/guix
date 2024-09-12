@@ -5737,7 +5737,7 @@ on a GUI toolkit.")
 (define-public libseat
   (package
     (name "libseat")
-    (version "0.7.0")
+    (version "0.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5746,7 +5746,7 @@ on a GUI toolkit.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10f8387yy5as547xjjhl0cna6iywdgjmw0iq2nvcs8q6vlpnik4v"))))
+                "02wzrgp8di6hqmicnm2fim6jnvbn62wy248ikvdvrhiywrb7i931"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlibseat-logind=elogind"
