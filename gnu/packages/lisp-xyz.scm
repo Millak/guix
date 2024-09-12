@@ -10376,11 +10376,11 @@ similar to the standard hash-table interface.")
   (sbcl-package->ecl-package sbcl-clache))
 
 (define-public sbcl-clack
-  (let ((commit "6fd0279424f7ba5fd4f92d69a1970846b0b11222")
-        (revision "2"))
+  (let ((commit "4916ebb243d42d1b52f8030db146215033b1b71e")
+        (revision "1"))
     (package
       (name "sbcl-clack")
-      (version (git-version "2.0.0" revision commit))
+      (version (git-version "2.1.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -10389,29 +10389,30 @@ similar to the standard hash-table interface.")
                (commit commit)))
          (file-name (git-file-name "cl-clack" version))
          (sha256
-          (base32 "0sfmvqmsg9z13x0v77448rpdqgyprdq739nsbrjw9a28hv9jmkg9"))))
+          (base32 "0kgymwvv1ghzvl4jryl3fxf0kf44i6z19izcf1rf0k4cidx093a7"))))
       (build-system asdf-build-system/sbcl)
       (arguments
+       ;; Only the handler for hunchentoot is included. The other
+       ;; two Web servers supported by clack, toot and wookie,
+       ;; have not yet been packaged for Guix.
        '(#:asd-systems '("clack"
-                         "clack-handler-fcgi"
-                         "clack-socket"
-                         "clack-handler-hunchentoot")))
+                         "clack-handler-hunchentoot"
+                         "clack-socket")))
       (inputs
        (list sbcl-alexandria
              sbcl-bordeaux-threads
-             sbcl-cl-fastcgi
              sbcl-flexi-streams
              sbcl-hunchentoot
              sbcl-lack
-             sbcl-quri
              sbcl-split-sequence
+             sbcl-slime-swank
              sbcl-usocket))
       (home-page "https://github.com/fukamachi/clack")
       (synopsis "Web Application Environment for Common Lisp")
       (description
        "Clack is a web application environment for Common Lisp inspired by
 Python's WSGI and Ruby's Rack.")
-      (license license:llgpl))))
+      (license license:expat))))
 
 (define-public cl-clack
   (sbcl-package->cl-source-package sbcl-clack))
