@@ -560,13 +560,7 @@ one-time authenticator as specified in
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/decred/dcrd")
-             (commit (go-version->git-ref
-                      ;; XXX: While waiting on consensus:
-                      ;; - https://issues.guix.gnu.org/52362
-                      ;; - https://issues.guix.gnu.org/63001
-                      ;; - https://issues.guix.gnu.org/63647
-                      ;; - https://issues.guix.gnu.org/69827
-                      (string-append "crypto/blake256/v" version)))))
+             (commit (go-version->git-ref version #:subdir "crypto/blake256"))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1mjzlyz2a3516g46kv421nacjd7p4g9l8ih4i7xijvsi480s5pja"))
@@ -604,13 +598,7 @@ and AVX acceleration and zero allocations.")
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/decred/dcrd")
-             (commit (go-version->git-ref
-                      ;; XXX: While waiting on consensus:
-                      ;; - https://issues.guix.gnu.org/52362
-                      ;; - https://issues.guix.gnu.org/63001
-                      ;; - https://issues.guix.gnu.org/63647
-                      ;; - https://issues.guix.gnu.org/69827
-                      (string-append "dcrec/secp256k1/v" version)))))
+             (commit (go-version->git-ref version #:subdir "dcrec/secp256k1"))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "19yqrrspm6n1x7wa1chqj0j95bc5w02ygddr06ajzf6x7i7q09q5"))
