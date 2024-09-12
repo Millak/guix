@@ -1645,7 +1645,7 @@ standard GNU style syntax for options.")
 (define-public folly
   (package
     (name "folly")
-    (version "2023.11.06.00")
+    (version "2024.09.09.00")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1654,18 +1654,20 @@ standard GNU style syntax for options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0z0jhkma2qacc2kc27qsiwqwqkv07i9mwpc4vwcbawyzdajq6hd0"))))
+                "17fdigkaxivbrww5yhz9fh25d8pirqjp126zbv4kg4qsprywfww5"))))
     (build-system cmake-build-system)
     (arguments
-     '(;; Tests must be explicitly enabled
-       ;;#:configure-flags '("-DBUILD_TESTS=ON")))
-       ;; Leave tests disabled; see https://github.com/facebook/folly/issues/1456
-       #:tests? #f))
+     (list
+      ;; Tests must be explicitly enabled
+      ;;#:configure-flags #~(list "-DBUILD_TESTS=ON")
+      ;; Leave tests disabled; see https://github.com/facebook/folly/issues/2246
+      #:tests? #f))
     (propagated-inputs
      (list boost gflags glog liburing))
     (inputs
      (list bzip2
            double-conversion
+           fast-float
            fmt
            libaio
            libevent
