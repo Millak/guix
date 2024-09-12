@@ -2629,18 +2629,17 @@ CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
     (license license:bsd-3)))
 
 (define fast-float-test-files
-  (let ((commit "97a0b2e638feb479387554cf253e346500541e7e"))
+  (let ((name "fast-float-test-files")
+        (version "1.0.0"))
    (origin
     (method git-fetch)
     (uri (git-reference
-          (url (string-append "https://github.com/fastfloat"
-                              "/supplemental_test_files.git"))
-          (commit "97a0b2e638feb479387554cf253e346500541e7e")))
-    (file-name (string-append "fast-float-test-files-"
-                              (string-take commit 8)))
+          (url "https://github.com/fastfloat/supplemental_test_files")
+          (commit version)))
+    (file-name (git-file-name name version))
     (sha256
      (base32
-      "0dxbiyzyh7i847i89ablfzypfc3ckhm7f74w98jsh73v1mppmxlf")))))
+      "0z0z7qy3pxv6bhg2apvs8gp3mnixbxk92a9f7vby01p26zq1lnwl")))))
 
 (define-public fast-float
   (package
