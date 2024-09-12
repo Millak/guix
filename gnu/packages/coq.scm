@@ -582,18 +582,18 @@ uses Ltac to synthesize the substitution operation.")
     (native-inputs
      (list ocaml coq camlp5))
     (arguments
-     `(#:test-target "test-suite"
-       #:make-flags (list (string-append "COQLIBINSTALL="
-                                         (assoc-ref %outputs "out")
-                                         "/lib/coq/user-contrib")
-                          (string-append "COQPLUGININSTALL="
-                                         (assoc-ref %outputs "out")
-                                         "/lib/ocaml/site-lib/"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "sh" "./configure.sh"))))))
+     (list #:test-target "test-suite"
+           #:make-flags #~(list (string-append "COQLIBINSTALL="
+                                               #$output
+                                               "/lib/coq/user-contrib")
+                                (string-append "COQPLUGININSTALL="
+                                               #$output
+                                               "/lib/ocaml/site-lib/"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (invoke "sh" "./configure.sh"))))))
     (home-page "https://mattam82.github.io/Coq-Equations/")
     (synopsis "Function definition plugin for Coq")
     (description "Equations provides a notation for writing programs
