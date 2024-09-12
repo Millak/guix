@@ -12,6 +12,7 @@
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -408,6 +409,26 @@ and workspaces that can be used in the compiler environment of your choice.")
        (append python-sphinx
                texinfo)))
     (properties (alist-delete 'hidden? (package-properties cmake-minimal)))))
+
+(define-public cmake-3.30
+  (package
+    (inherit cmake)
+    (version "3.30.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://cmake.org/files/v"
+                                  (version-major+minor version)
+                                  "/cmake-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1r48zym4dy4mvwzk704zh1vx9gb4a910f424ypvis28mcxdy2pbd"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs cmake)
+       ;; Avoid circular dependency with (gnu packages debug).  Note: cppdap
+       ;; is built with cmake, so when the default cmake is updated to this
+       ;; version this circular dependency will need to be worked around.
+       (prepend (module-ref (resolve-interface '(gnu packages debug))
+                            'cppdap))))))
 
 (define-public cmake-minimal-cross
   (package
