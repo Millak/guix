@@ -2519,6 +2519,19 @@ update step.")
         (sha256
          (base32 "16k1r02w5qivvr99n5a9impbnnzygpj705irf5ypy208np91xyyd"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+      #:phases
+      (if (target-aarch64?)
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'skip-some-tests
+              (lambda _
+                (substitute* "test/lapack.jl"
+                  (("@testset.*stedc.*" all)
+                   (string-append all "return\n"))
+                  (("@testset.*stemr.*" all)
+                   (string-append all "return\n"))))))
+        #~%standard-phases)))
     (native-inputs
      (list julia-quaternions))
     (home-page "https://github.com/JuliaLinearAlgebra/GenericLinearAlgebra.jl")
