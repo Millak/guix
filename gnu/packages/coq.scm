@@ -568,7 +568,7 @@ uses Ltac to synthesize the substitution operation.")
 (define-public coq-equations
   (package
     (name "coq-equations")
-    (version "1.3-8.17")
+    (version "1.3-8.18")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -577,7 +577,7 @@ uses Ltac to synthesize the substitution operation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0g68h4c1ijpphixvl9wkd7sibds38v4236dpvvh194j5ii42vnn8"))))
+                "1akxf2vafwyz6fi1djlc3g8mwxrjv0a99x4b08jwrbwxypv4xiph"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml coq camlp5))
