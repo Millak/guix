@@ -2644,7 +2644,7 @@ CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
 (define-public fast-float
   (package
     (name "fast-float")
-    (version "6.0.0")
+    (version "6.1.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2653,7 +2653,7 @@ CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xf4gbllha760cr0ri53zsja46dypj45lj070ijb5f78xavfd8f8"))))
+                "1y6mj2rw0dr89ddhk33gj1l76dfk4ai00kx9i22i6rjr0qylqhih"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -2676,7 +2676,7 @@ CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
     (description "@code{fast_float} is a header-only C++ library for parsing
 floating point numbers from strings.  It implements the C++ from_chars
 functions for the float and double types.")
-    (license (list license:asl2.0 license:expat)))) ; dual licensed
+    (license (list license:asl2.0 license:boost1.0 license:expat)))) ; triple licensed
 
 (define-public pocketfft-cpp
   (let ((commit "daa8bb18327bc5c7d22c69428c25cf5dc64167d3")
