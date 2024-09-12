@@ -87,7 +87,7 @@ functions that have a name matched by regex:.")
 (define-public go-github-com-golang-protobuf
   (package
     (name "go-github-com-golang-protobuf")
-    (version "1.5.3")
+    (version "1.5.4")
     (source
      (origin
        (method git-fetch)
@@ -96,13 +96,31 @@ functions that have a name matched by regex:.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03f1w2cd4s8a3xhl61x7yjx81kbzlrjpvnnwmbhqnz814yi7h43i"))))
+        (base32 "1bk7sa9ymi87hd2fv9jamxnxb3qjriamf2nsm8avp6ka37mrkz01"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/golang/protobuf"
       #:phases
       #~(modify-phases %standard-phases
+          ;; TODO: Implement it in go-build-system.
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module of embed file which is symlinked during setup
+          ;; environment phase, but easy resolved after coping file from the
+          ;; store to the build directory of the current package, see details
+          ;; in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-after 'unpack 'fix-embed-files
+            (lambda _
+              (for-each (lambda (file)
+                          (let ((file-store-path (readlink file)))
+                            (delete-file file)
+                            (copy-recursively file-store-path file)))
+                        (find-files "src" ".*(editions_defaults.binpb)$"))))
           ;; XXX: Workaround for go-build-system's lack of Go modules
           ;; support.
           (delete 'build)
@@ -111,6 +129,8 @@ functions that have a name matched by regex:.")
               (when tests?
                 (with-directory-excursion (string-append "src/" import-path)
                   (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
     (propagated-inputs
      (list go-google-golang-org-protobuf))
     (home-page "https://github.com/golang/protobuf")
