@@ -62,6 +62,7 @@
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config
+           (libc-utf8-locales-for-target)
            ;; XXX: To be removed with the next release of Smalltalk.
            autoconf
            automake
