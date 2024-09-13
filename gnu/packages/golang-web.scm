@@ -1953,17 +1953,15 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
     (license license:expat)))
 
 (define-public go-github-com-golang-groupcache
-  (let ((commit "41bb18bfe9da5321badc438f91158cd790a33aa3")
-        (revision "3"))
     (package
       (name "go-github-com-golang-groupcache")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20210331224755-41bb18bfe9da")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/golang/groupcache")
-               (commit commit)))
+               (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
           (base32 "07amgr8ji4mnq91qbsw2jlcmw6hqiwdf4kzfdrj8c4b05w4knszc"))))
@@ -1979,7 +1977,7 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
 as a replacement for memcached in many cases.  It provides a data loading
 mechanism with caching and de-duplication that works across a set of peer
 processes.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-github-com-google-go-github
   (package
