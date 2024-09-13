@@ -516,30 +516,27 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
       #:import-path "github.com/prometheus/statsd_exporter"
       #:phases
       #~(modify-phases %standard-phases
-          ;; FIXME: pattern landing_page.css: cannot embed irregular file
-          ;; landing_page.css
+          ;; TODO: Implement it in go-build-system.
           ;;
           ;; This happens due to Golang can't determine the valid directory of
-          ;; the module which is sourced during setup environment phase, but
-          ;; easy resolved after coping to expected directory "vendor" within
-          ;; the current package, see details in Golang source:
+          ;; the module of embed file which is symlinked during setup
+          ;; environment phase, but easy resolved after coping file from the
+          ;; store to the build directory of the current package, see details
+          ;; in Golang source:
           ;;
           ;; - URL: <https://github.com/golang/go/blob/>
           ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
           ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-before 'build 'copy-input-to-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (mkdir "vendor")
-                (copy-recursively
-                 (string-append
-                  #$(this-package-input "go-github-com-prometheus-exporter-toolkit")
-                  "/src/github.com")
-                 "vendor/github.com"))))
-          (add-before 'install 'remove-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "vendor")))))))
+          (add-before 'build 'fix-embed-files
+            (lambda _
+              (for-each (lambda (file)
+                          (let ((file-store-path (readlink file)))
+                            (delete-file file)
+                            (copy-recursively file-store-path file)))
+                        (find-files "src" (string-append
+                                           ".*(editions_defaults.binpb"
+                                           "|landing_page.css"
+                                           "|landing_page.html)$"))))))))
     (native-inputs
      (list go-github-com-stvp-go-udp-testing))
     (propagated-inputs
