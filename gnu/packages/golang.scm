@@ -3112,16 +3112,16 @@ command-line parsers.")
     (name "gopls")
     ;; XXX: Starting from 0.14.0 gppls needs golang.org/x/telemetry, which
     ;; needs to be discussed if it may be included in Guix.
-    (version "0.13.2")
+    (version "0.16.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://go.googlesource.com/tools")
-             (commit (string-append "gopls/v" version))))
+             (commit (go-version->git-ref version #:subdir "gopls"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qym2c0xvv6vcgwh0kz8sw094r88lzrl08xpvmg08lrqi00ma6kx"))))
+        (base32 "1l6mkh4v0f602spw3zdmkxqizk32zvgpfy461sinqwhlag8v8v3a"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3132,17 +3132,16 @@ command-line parsers.")
       #~(modify-phases %standard-phases
           (add-before 'unpack 'override-tools
             (lambda _
+              ;; XXX: Write a procedure deleting all but current module source
+              ;; to cover case with monorepo.
               (delete-file-recursively "src/golang.org/x/tools"))))))
     (native-inputs
      (list go-github-com-google-go-cmp
-           go-github-com-jba-printsrc
            go-github-com-jba-templatecheck
-           go-github-com-sergi-go-diff
            go-golang-org-x-mod
            go-golang-org-x-sync
-           go-golang-org-x-sys
+           go-golang-org-x-telemetry
            go-golang-org-x-text
-           go-golang-org-x-tools
            go-golang-org-x-vuln
            go-gopkg-in-yaml-v3
            go-honnef-co-go-tools
