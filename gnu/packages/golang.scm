@@ -7682,7 +7682,7 @@ using shell-style rules for quoting and commenting.")
 (define-public go-github-com-google-btree
   (package
     (name "go-github-com-google-btree")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -7691,7 +7691,7 @@ using shell-style rules for quoting and commenting.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cqa8ck26p3wqz877hcvmfss17xm8wcbwd68shxv795ppahpdd9b"))))
+        (base32 "1k3jfj24sp4qk494wxj055vf5fjwskiydscy4a42s5jiwgcjr9gz"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/google/btree"))
