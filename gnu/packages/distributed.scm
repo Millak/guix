@@ -83,17 +83,3 @@ resources).  It supports virtualized, parallel, and GPU-based applications.")
     (home-page "https://boinc.berkeley.edu/")
     ;; BOINC is distributed as LGPL3+, with some individual modules under GPL3+.
     (license (list license:lgpl3+ license:gpl3+))))
-
-(define-public boinc-server
-  ;; XXX The server and client packages duplicate many files such as /lib.
-  ;; TODO: consolidate them?
-  (package (inherit boinc-client)
-    (name "boinc-server")
-    (arguments
-     (list
-      #:configure-flags
-      #~(list "--disable-client"
-              "--disable-manager")
-      #:parallel-build? #f))
-    (inputs (list curl `(,mariadb "dev") openssl zlib))
-    (propagated-inputs (list perl python-wrapper))))
