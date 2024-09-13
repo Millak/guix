@@ -1251,7 +1251,6 @@ for and start applications.")
            xfce4-battery-plugin
            xfce4-clipman-plugin
            xfce4-pulseaudio-plugin
-           xfce4-volumed-pulse
            xfce4-xkb-plugin))
     (propagated-inputs
      ;; Default font that applications such as IceCat require.
