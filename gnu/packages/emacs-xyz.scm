@@ -31,7 +31,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Mike Gerwitz <mtg@gnu.org>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Sohom Bhattacharjee <soham.bhattacharjee15@gmail.com>
 ;;; Copyright © 2018, 2019 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018, 2019, 2020, 2021 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -17654,6 +17654,29 @@ programming and reproducible research.")
 receive little if no maintenance and there is no guaranty that they are
 compatible with the Org stable version.")
     (license license:gpl3+)))
+
+(define-public emacs-org-texlive-collection
+  (package
+    (inherit emacs-org)
+    (name "emacs-org-texlive-collection")
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (native-inputs '())
+    (inputs '())
+    (propagated-inputs
+     (list texlive-amsmath
+           texlive-capt-of
+           texlive-graphics             ;for graphicx, rotating
+           texlive-hyperref
+           texlive-titling
+           texlive-tools                ;for longtable
+           texlive-ulem
+           texlive-wrapfig
+           texlive-scheme-small))      ;for amsfonts, fontspec, inputenc, etc.
+    (synopsis "Basic TexLive packages for Org-mode LaTeX export")
+    (description "This meta-package propagates the TexLive packages minimally
+required by the Org-mode produced LaTeX output.")))
 
 (define-public emacs-org-contacts
   ;; XXX: Upstream does not tag version bumps. Commit below matches latest
