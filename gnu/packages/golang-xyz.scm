@@ -2077,6 +2077,25 @@ encoding/decoding.  It has no dependencies.")
       #:import-path "github.com/dgraph-io/badger"
       #:phases
       #~(modify-phases %standard-phases
+          ;; TODO: Implement it in go-build-system.
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module of embed file which is symlinked during setup
+          ;; environment phase, but easy resolved after coping file from the
+          ;; store to the build directory of the current package, see details
+          ;; in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-after 'unpack 'fix-embed-files
+            (lambda _
+              (for-each (lambda (file)
+                          (let ((file-store-path (readlink file)))
+                            (delete-file file)
+                            (copy-recursively file-store-path file)))
+                        (find-files "src" (string-append
+                                           ".*(editions_defaults.binpb)$")))))
           (add-after 'unpack 'patch-failing-tests
             (lambda* (#:key unpack-path tests? #:allow-other-keys)
               (with-directory-excursion (string-append "src/" unpack-path)
@@ -2087,18 +2106,14 @@ encoding/decoding.  It has no dependencies.")
                   ;; See: <https://github.com/dgraph-io/badger/issues/2103>.
                   (("\"testing\"") (string-append "\"testing\"\n\"fmt\""))
                   (("string") "fmt.Sprint")))))
-          (add-after 'patch-failing-tests 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  (("TestBuildKeyValueSizeHistogram")
-                   "OffTestBuildKeyValueSizeHistogram")))))
           ;; XXX: Replace when go-build-system supports nested path.
           (replace 'check
             (lambda* (#:key import-path tests? #:allow-other-keys)
               (when tests?
                 (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+                  (invoke "go" "test" "-v"
+                          "-skip" "TestBuildKeyValueSizeHistogram"
+                          "./..." ))))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
