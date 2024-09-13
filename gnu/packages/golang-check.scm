@@ -384,32 +384,32 @@ when comparing complex types like structures and maps.")
     (license license:bsd-3)))
 
 (define-public go-github-com-google-go-cmdtest
-    (package
-      (name "go-github-com-google-go-cmdtest")
-      (version "0.4.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/google/go-cmdtest")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0zkghc60ymxmg19j90r6j7clq3xifh5m9kg1bgr4zpr5sv148x72"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/google/go-cmdtest"))
-      (propagated-inputs
-       (list go-github-com-google-renameio go-github-com-google-go-cmp))
-      (home-page "https://github.com/google/go-cmdtest")
-      (synopsis "Testing for your CLI")
-      (description
-       "The cmdtest package simplifies testing of command-line interfaces.  It
+  (package
+    (name "go-github-com-google-go-cmdtest")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/go-cmdtest")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zkghc60ymxmg19j90r6j7clq3xifh5m9kg1bgr4zpr5sv148x72"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/go-cmdtest"))
+    (propagated-inputs
+     (list go-github-com-google-renameio go-github-com-google-go-cmp))
+    (home-page "https://github.com/google/go-cmdtest")
+    (synopsis "Testing for your CLI")
+    (description
+     "The cmdtest package simplifies testing of command-line interfaces.  It
 provides a simple, cross-platform, shell-like language to express command
 execution.  It can compare actual output with the expected output, and can
 also update a file with new \"golden\" output that is deemed correct.")
-      (license license:asl2.0)))
+    (license license:asl2.0)))
 
 (define-public go-github-com-google-gofuzz
   (let ((commit "fd52762d25a41827db7ef64c43756fd4b9f7e382")
