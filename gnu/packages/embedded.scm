@@ -201,9 +201,9 @@ embedded-4_9-branch/")
                 (files '("arm-none-eabi/include")))
                (search-path-specification
                 (variable "CROSS_CPLUS_INCLUDE_PATH")
-                (files '("arm-none-eabi/include"
-                         "arm-none-eabi/include/c++"
-                         "arm-none-eabi/include/c++/arm-none-eabi")))
+                (files '("arm-none-eabi/include/c++"
+                         "arm-none-eabi/include/c++/arm-none-eabi"
+                         "arm-none-eabi/include")))
                (search-path-specification
                 (variable "CROSS_LIBRARY_PATH")
                 (files '("arm-none-eabi/lib")))))))))
@@ -423,9 +423,9 @@ embedded-7-branch/")
                        (files '("arm-none-eabi/include")))
                       (search-path-specification
                        (variable "CROSS_CPLUS_INCLUDE_PATH")
-                       (files '("arm-none-eabi/include"
-                                "arm-none-eabi/include/c++"
-                                "arm-none-eabi/include/c++/arm-none-eabi")))
+                       (files '("arm-none-eabi/include/c++"
+                                "arm-none-eabi/include/c++/arm-none-eabi"
+                                "arm-none-eabi/include")))
                       (search-path-specification
                        (variable "CROSS_LIBRARY_PATH")
                        (files '("arm-none-eabi/lib")))))))))
