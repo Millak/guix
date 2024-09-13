@@ -17622,7 +17622,10 @@ passive voice.")
     (description "Org is an Emacs mode for keeping notes, maintaining TODO
 lists, and project planning with a fast and effective lightweight markup
 language.  It also is an authoring system with unique support for literate
-programming and reproducible research.")
+programming and reproducible research.  If you work with the LaTeX output
+capabilities of Org-mode, you may want to install the
+@code{emacs-org-texlive-collection} meta-package, which propagates the TexLive
+components required by the produced @file{.tex} file.")
     (license license:gpl3+)))
 
 (define-public emacs-org-contrib
