@@ -3112,16 +3112,16 @@ command-line parsers.")
     (name "go-golang-org-x-vuln")
     ;; XXX: Newer version of govulncheck requires golang.org/x/telemetry,
     ;; which needs to be discussed if it may be included in Guix.
-    (version "0.0.0-20230110180137-6ad3e3d07815")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://go.googlesource.com/vuln")
-             (commit (go-version->git-ref version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fhz27ni8bs872rgvqq700qacak9v45zy0fh2hilq21sk6dks72r"))))
+        (base32 "0izm18r8ksx4n10an9nxyflc8cgr766qrwfmx5nbk702x80prln9"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3142,9 +3142,9 @@ command-line parsers.")
     (propagated-inputs
      (list go-github-com-google-go-cmdtest
            go-github-com-google-go-cmp
-           go-golang-org-x-exp
            go-golang-org-x-mod
            go-golang-org-x-sync
+           go-golang-org-x-telemetry
            go-golang-org-x-tools))
     (home-page "https://golang.org/x/vuln")
     (synopsis "Go Vulnerability Management")
@@ -3162,9 +3162,7 @@ the @url{https://vuln.go.dev,Go Vulnerability Database}.")
       #:tests? #f
       #:install-source? #f
       #:import-path "golang.org/x/vuln/cmd/govulncheck"
-      #:unpack-path "golang.org/x/vuln"))
-    (native-inputs
-     (list coreutils-minimal))))
+      #:unpack-path "golang.org/x/vuln"))))
 
 (define-public gopls
   (package
