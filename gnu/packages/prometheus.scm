@@ -405,20 +405,33 @@ from the default AWS credential chain.")
       #:import-path "github.com/prometheus/exporter-toolkit"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Some tests require network set up.
-                  (("TestServerBehaviour") "OffTestServerBehaviour")
-                  (("TestConfigReloading") "OffTestConfigReloading")))))
+          (add-after 'unpack 'fix-embed-editions-defaults-binpb
+            (lambda _
+              (let* ((import-path "google.golang.org/protobuf")
+                     (subdir "internal/editiondefaults")
+                     (embed-file "editions_defaults.binpb")
+                     (embed-file-path
+                      (string-append "src/"
+                                     import-path "/"
+                                     subdir "/"
+                                     embed-file)))
+                (delete-file-recursively embed-file-path)
+                (copy-file
+                 (string-append
+                  #$(this-package-native-input "go-google-golang-org-protobuf")
+                  "/" embed-file-path)
+                 embed-file-path))))
           ;; XXX: Workaround for go-build-system's lack of Go modules support.
           (delete 'build)
           (replace 'check
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (when tests?
                 (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+                  (invoke "go" "test" "-v"
+                          "-skip" "TestServerBehaviour|TestConfigReloading"
+                          "./..."))))))))
+    (native-inputs
+     (list go-google-golang-org-protobuf))
     (propagated-inputs
      (list go-github-com-alecthomas-kingpin-v2
            go-github-com-coreos-go-systemd-v22
