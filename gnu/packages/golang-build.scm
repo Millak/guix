@@ -955,6 +955,52 @@ time.")
 Go programming language.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-vuln
+  (package
+    (name "go-golang-org-x-vuln")
+    ;; XXX: Newer version of govulncheck requires golang.org/x/telemetry,
+    ;; which needs to be discussed if it may be included in Guix.
+    (version "1.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/vuln")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0izm18r8ksx4n10an9nxyflc8cgr766qrwfmx5nbk702x80prln9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; it tires to download modules from the network
+      #:import-path "golang.org/x/vuln"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v"
+                          "./doc/..."
+                          "./internal/..."
+                          "./scan/..."))))))))
+    (propagated-inputs
+     (list go-github-com-google-go-cmdtest
+           go-github-com-google-go-cmp
+           go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-golang-org-x-telemetry
+           go-golang-org-x-tools))
+    (home-page "https://golang.org/x/vuln")
+    (synopsis "Go Vulnerability Management")
+    (description
+     "This repository contains packages for accessing and analyzing data from
+the @url{https://vuln.go.dev,Go Vulnerability Database}.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-xerrors
   (package
     (name "go-golang-org-x-xerrors")
@@ -1015,6 +1061,21 @@ language and platform neutral, extensible mechanism for serializing structured
 data.  It is a successor to @code{go-github-com-golang-protobuf} with an
 improved and cleaner API.")
     (license license:bsd-3)))
+
+;;;
+;;; Executables:
+;;;
+
+(define-public govulncheck
+  (package
+    (inherit go-golang-org-x-vuln)
+    (name "govulncheck")
+    (arguments
+     (list
+      #:tests? #f
+      #:install-source? #f
+      #:import-path "golang.org/x/vuln/cmd/govulncheck"
+      #:unpack-path "golang.org/x/vuln"))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
