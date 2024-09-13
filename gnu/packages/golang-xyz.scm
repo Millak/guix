@@ -6191,7 +6191,7 @@ is undetermined, a customizable spinner is shown.")
 (define-public go-github-com-sergi-go-diff
   (package
     (name "go-github-com-sergi-go-diff")
-    (version "1.2.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -6200,7 +6200,7 @@ is undetermined, a customizable spinner is shown.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cbj8nshllq102iiav0k1s01b8gwbkzj674g71n938qqna32y2pa"))))
+        (base32 "0c7lsa3kjxbrx66r93d0pvx1408b80ignpi39fzka1qc0ylshw32"))))
     (build-system go-build-system)
     (arguments
      (list
