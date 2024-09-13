@@ -493,9 +493,14 @@ embedded-7-branch/")
                "--disable-tls"
                "--disable-plugin"
                "--with-newlib"
+               ,(string-append "--libdir="
+                               (assoc-ref %outputs "out")
+                               "/arm-none-eabi/lib")
                ,(string-append "--with-gxx-include-dir="
                                (assoc-ref %outputs "out")
-                               "/arm-none-eabi/include/c++")))))
+                               "/arm-none-eabi/include/c++")))
+           ((#:strip-directories _ #f)
+            ''("arm-none-eabi/lib"))))
         (native-inputs
          `(("newlib" ,newlib)
            ("xgcc" ,xgcc)
