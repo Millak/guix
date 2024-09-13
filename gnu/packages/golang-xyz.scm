@@ -3254,6 +3254,32 @@ execution.")
      "The chardet package ports character set detection from ICU to Go.")
     (license license:expat)))
 
+(define-public go-github-com-google-goterm
+  (package
+    (name "go-github-com-google-goterm")
+    (version "0.0.0-20200907032337-555d40f16ae2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/goterm")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0809sf02dhg2bjhsz43pmlb5d7nbsnwxls3lw01zw5p7ri9bqwfb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/goterm/term"
+      #:unpack-path "github.com/google/goterm"))
+    (home-page "https://github.com/google/goterm/")
+    (synopsis "PTY creation and termios get/set attributes")
+    (description
+     "The term package implements PTY creation and termios get/set attributes.
+It also contains some convenience functions for colors, SSH to and from
+termios translations, readCh, reading passwords, etc.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-google-subcommands
   (package
     (name "go-github-com-google-subcommands")
