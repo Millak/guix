@@ -5370,16 +5370,14 @@ a cron spec parser and job runner.")
     (license license:bsd-3)))
 
 (define-public go-github-com-google-goterm
-  (let ((commit "fc88cf888a3fa99ecc23d1efc1a44284268457d3")
-        (revision "1"))
     (package
       (name "go-github-com-google-goterm")
-      (version (git-version "0.0.1" revision commit))
+      (version "0.0.0-20200907032337-555d40f16ae2")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/google/goterm")
-                      (commit commit)))
+                      (commit (go-version->git-ref version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
@@ -5393,7 +5391,7 @@ a cron spec parser and job runner.")
       (description "The term package implements PTY creation and termios get/set
 attributes.  It also contains some convenience functions for colors, SSH to
 and from termios translations, readCh, reading passwords, etc.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define (go-gotest-tools-source version sha256-base32-hash)
   (origin
