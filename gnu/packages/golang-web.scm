@@ -5601,9 +5601,9 @@ Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
 
-(define-public go-mvdan-cc-xurls
+(define-public go-mvdan-cc-xurls-v2
   (package
-    (name "go-mvdan-cc-xurls")
+    (name "go-mvdan-cc-xurls-v2")
     (version "2.5.0")
     (source
      (origin
@@ -5711,7 +5711,7 @@ go-github-com-tdewolff-minify-v2 source.")))
 
 (define-public xurls
   (package
-    (inherit go-mvdan-cc-xurls)
+    (inherit go-mvdan-cc-xurls-v2)
     (name "xurls")
     (arguments
      (list

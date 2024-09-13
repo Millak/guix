@@ -399,7 +399,7 @@ and its related documentation.")
            go-golang-org-x-oauth2
            go-golang-org-x-term
            go-golang-org-x-text
-           go-mvdan-cc-xurls))
+           go-mvdan-cc-xurls-v2))
     (home-page "https://miniflux.app/")
     (synopsis "Minimalist and opinionated feed reader")
     (description

@@ -3637,7 +3637,7 @@ a text snippet), using @code{libphonenumber}.")
                          go-golang-org-x-net
                          go-golang-org-x-term
                          go-golang-org-x-time
-                         go-mvdan-cc-xurls
+                         go-mvdan-cc-xurls-v2
                          scdoc))
     (home-page "https://sr.ht/~delthas/senpai")
     (synopsis "Modern terminal IRC client")
