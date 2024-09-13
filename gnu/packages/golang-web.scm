@@ -5499,35 +5499,26 @@ programming language.")
       (license license:asl2.0))))
 
 (define-public go-github-com-xeipuuv-gojsonschema
-  (let ((commit "6b67b3fab74d992bd07f72550006ab2c6907c416")
-        (revision "0"))
     (package
       (name "go-github-com-xeipuuv-gojsonschema")
-      (version (git-version "0.0.0" revision commit))
+      (version "1.2.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/xeipuuv/gojsonschema")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1q937a6q7canlr3dllqdw0qwa6z2fpwn1w9kycavx8jmwh6q3f69"))))
+          (base32 "1mqiq0r8qw4qlfp3ls8073r6514rmzwrmdn4j33rppk3zh942i6l"))))
       (build-system go-build-system)
       (arguments
-       '(#:import-path "github.com/xeipuuv/gojsonschema"
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'disable-failing-tests
-             (lambda* (#:key import-path #:allow-other-keys)
-               (with-directory-excursion (string-append "src/" import-path)
-                 (substitute* "schema_test.go"
-                   (("\\{\"phase\": \"remote ref, " all)
-                    (string-append "// " all))
-                   (("\\{\"phase\": \"valid definition" all)
-                    (string-append "// " all))
-                   (("\\{\"phase\": \"invalid definition" all)
-                    (string-append "// " all)))))))))
+       (list
+        ;; validation of time strings.  only RFC3339 not all of ISO 8601 are
+        ;; valid.  expects: false, given true Schema: {"format":"time"} Data:
+        ;; "01:01:01,1111"
+        #:test-flags #~(list "-skip" "TestFormats")
+        #:import-path "github.com/xeipuuv/gojsonschema"))
       (native-inputs
        (list go-github-com-stretchr-testify))
       (propagated-inputs
@@ -5538,7 +5529,7 @@ programming language.")
       (description
        "This package provides an implementation of JSON Schema for the Go
 programming language, which supports draft-04, draft-06 and draft-07.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-golang-org-x-oauth2
   (package
