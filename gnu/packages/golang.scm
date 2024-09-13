@@ -3239,21 +3239,19 @@ containers.")
       (license license:asl2.0))))
 
 (define-public go-github-com-jonboulle-clockwork
-  (let ((commit "e3653ace2d63753697e0e5b07b9393971c0bba9d")
-        (revision "0"))
     (package
       (name "go-github-com-jonboulle-clockwork")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.4.0")
       (source
         (origin
           (method git-fetch)
           (uri (git-reference
                  (url "https://github.com/jonboulle/clockwork")
-                 (commit commit)))
+                 (commit (string-append "v" version))))
           (file-name (git-file-name name version))
           (sha256
             (base32
-              "1avzqhks12a8x2yzpvjsf3k0gv9cy7zx2z88hn0scacnxkphisvc"))))
+              "1j1k9chzy5pb76r4r1k0vr5fbkvna564v6dzjflhapwsr7jpjgwf"))))
       (build-system go-build-system)
       (arguments
         '(#:import-path "github.com/jonboulle/clockwork"))
@@ -3262,7 +3260,7 @@ containers.")
       (description
        "Replace uses of the @code{time} package with the
 @code{clockwork.Clock} interface instead.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-github-com-spf13-afero
   (package
