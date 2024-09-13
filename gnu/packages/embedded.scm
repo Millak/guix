@@ -247,10 +247,7 @@ embedded-4_9-branch/")
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-references-to-/bin/sh
              (lambda _
-               (substitute* '("libgloss/arm/cpu-init/Makefile.in"
-                              "libgloss/arm/Makefile.in"
-                              "libgloss/libnosys/Makefile.in"
-                              "libgloss/Makefile.in")
+               (substitute* (find-files "libgloss" "^Makefile\\.in$")
                  (("/bin/sh") (which "sh")))
                #t)))))
       (native-inputs
@@ -430,12 +427,11 @@ embedded-7-branch/")
                        (variable "CROSS_LIBRARY_PATH")
                        (files '("arm-none-eabi/lib")))))))))
 
-(define make-newlib-arm-none-eabi-7-2018-q2-update
+(define make-base-newlib-arm-none-eabi-7-2018-q2-update
   ;; This is the same commit as used for the 7-2018-q2-update release
   ;; according to the release.txt.
-  (mlambda ()
-    (let ((base (make-newlib-arm-none-eabi))
-          (commit "3ccfb407af410ba7e54ea0da11ae1e40b554a6f4")
+  (mlambda (base)
+    (let ((commit "3ccfb407af410ba7e54ea0da11ae1e40b554a6f4")
           (revision "0"))
       (package
         (inherit base)
@@ -464,15 +460,13 @@ embedded-7-branch/")
            ("xgcc" ,(make-gcc-arm-none-eabi-7-2018-q2-update))
            ("texinfo" ,texinfo)))))))
 
-(define-public make-newlib-nano-arm-none-eabi-7-2018-q2-update
+(define make-newlib-arm-none-eabi-7-2018-q2-update
   (mlambda ()
-    (let ((base (make-newlib-arm-none-eabi-7-2018-q2-update)))
-      (package
-        (inherit base)
-        (name "newlib-nano")
-        (arguments
-         (package-arguments base))
-        (synopsis "Newlib variant for small systems with limited memory")))))
+    (make-base-newlib-arm-none-eabi-7-2018-q2-update (make-newlib-arm-none-eabi))))
+
+(define make-newlib-nano-arm-none-eabi-7-2018-q2-update
+  (mlambda ()
+    (make-base-newlib-arm-none-eabi-7-2018-q2-update (make-newlib-nano-arm-none-eabi))))
 
 
 (define make-libstdc++-arm-none-eabi
