@@ -78,22 +78,27 @@
   #:export (make-gcc-arm-none-eabi-4.9
             make-gcc-arm-none-eabi-6
             make-gcc-arm-none-eabi-7-2018-q2-update
+            make-gcc-arm-none-eabi-12.3.rel1
 
             make-gcc-vc4
 
             make-newlib-arm-none-eabi
             make-newlib-arm-none-eabi-7-2018-q2-update
+            make-newlib-arm-none-eabi-12.3.rel1
 
             make-newlib-nano-arm-none-eabi
             make-newlib-nano-arm-none-eabi-7-2018-q2-update
+            make-newlib-nano-arm-none-eabi-12.3.rel1
 
             make-arm-none-eabi-toolchain-4.9
             make-arm-none-eabi-toolchain-6
             make-arm-none-eabi-toolchain-7-2018-q2-update
+            make-arm-none-eabi-toolchain-12.3.rel1
 
             make-arm-none-eabi-nano-toolchain-4.9
             make-arm-none-eabi-nano-toolchain-6
             make-arm-none-eabi-nano-toolchain-7-2018-q2-update
+            make-arm-none-eabi-nano-toolchain-12.3.rel1
 
             make-gdb-arm-none-eabi
 
@@ -469,11 +474,102 @@ embedded-7-branch/")
     (make-base-newlib-arm-none-eabi-7-2018-q2-update (make-newlib-nano-arm-none-eabi))))
 
 
+;;; The following definitions are for the "12.3.rel1" variant of the
+;;; ARM cross toolchain as offered on https://developer.arm.com
+(define-public make-gcc-arm-none-eabi-12.3.rel1
+  (mlambda ()
+    (let ((base (make-gcc-arm-none-eabi-7-2018-q2-update))
+          (xgcc-base (cross-gcc "arm-none-eabi"
+                                #:xgcc gcc-12
+                                #:xbinutils (cross-binutils "arm-none-eabi"))))
+      (package
+        (inherit base)
+        (version "12.3.rel1")
+        (source
+         (origin
+           (inherit (package-source xgcc-base))
+           (method git-fetch)
+           (uri (git-reference
+                 (url "git://gcc.gnu.org/git/gcc.git")
+                 (commit "0f54a73b998b72f7c8452a63730ec3b16fc47854")))
+           (sha256
+            (base32 "0r6q0m3d8g3k3rkmnqjw8aw5fcnsrmywf4ispdkxmk1al3whk1vk"))))
+        (arguments
+         (substitute-keyword-arguments (package-arguments base)
+           ((#:phases phases)
+            #~(modify-phases #$phases
+                (replace 'expand-version-string
+                  (lambda _
+                    (make-file-writable "gcc/DEV-PHASE")
+                    (with-output-to-file "gcc/DEV-PHASE"
+                      (lambda ()
+                        (display "12.3.rel1")))))))
+           ((#:configure-flags flags)
+            #~(cons* "--with-multilib-list=aprofile,rmprofile"
+                     "--with-headers=yes"
+                     "--enable-checking=release"
+                     "--with-gnu-as"
+                     "--with-gnu-ld"
+                     (filter
+                      (lambda (flag)
+                        (not (member flag
+                                     '("--with-multilib-list=rmprofile"
+                                       "--enable-plugins"
+                                       "--disable-libffi"))))
+                      #$flags)))))))))
+
+(define make-base-newlib-arm-none-eabi-12.3.rel1
+  (mlambda (original-base)
+    (let ((base (make-base-newlib-arm-none-eabi-7-2018-q2-update original-base))
+          (commit "4c7d0dfec5793cbf5cf3930b91f930479126d8ce")
+          (revision "0"))
+      (package
+        (inherit base)
+        (version (git-version "4.3.0" revision commit))
+        (source
+         (origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "http://sourceware.org/git/newlib-cygwin.git")
+                 (commit commit)))
+           (sha256
+            (base32
+             "0drs9v8avh4y2h5bs0ixjn9x662jzkkikx8z034wgl41dxmn6786"))))
+        (arguments (substitute-keyword-arguments (package-arguments base)
+                     ((#:configure-flags flags)
+                      #~(cons* "--enable-newlib-mb"
+                               "--enable-newlib-reent-check-verify"
+                               "--enable-newlib-register-fini"
+                               #$flags))))))))
+
+(define make-newlib-arm-none-eabi-12.3.rel1
+  (mlambda ()
+    (make-base-newlib-arm-none-eabi-12.3.rel1 (make-newlib-arm-none-eabi))))
+
+(define make-newlib-nano-arm-none-eabi-12.3.rel1
+  (mlambda ()
+    (make-base-newlib-arm-none-eabi-12.3.rel1 (make-newlib-nano-arm-none-eabi))))
+
+
 (define make-libstdc++-arm-none-eabi
   (mlambda (xgcc newlib)
-    (let ((libstdc++ (make-libstdc++ xgcc)))
+    (let* ((libstdc++ (make-libstdc++ xgcc))
+           (src (package-source libstdc++)))
       (package
         (inherit libstdc++)
+        (source
+         (origin
+           (inherit src)
+           (patches (append
+                     ; libstdc++ cannot be linked with since the configure phase
+                     ; cannot detect properly the presence of getentropy function.
+                     ; The function is inside of a header, but it's not present in the resulting
+                     ; newlib. configure will conclude getentropy is present,
+                     ; random will use getentropy, and any linking with random will fail.
+                     (if (version>=? (package-version xgcc) "12.0")
+                         (search-patches "newlib-getentropy.patch")
+                         '())
+                     (origin-patches src)))))
         (name "libstdc++-arm-none-eabi")
         (arguments
          (substitute-keyword-arguments (package-arguments libstdc++)
@@ -625,6 +721,18 @@ languages are C and C++.")
     (make-arm-none-eabi-toolchain
      (make-gcc-arm-none-eabi-7-2018-q2-update)
      (make-newlib-nano-arm-none-eabi-7-2018-q2-update))))
+
+(define make-arm-none-eabi-toolchain-12.3.rel1
+  (mlambda ()
+    (make-arm-none-eabi-toolchain
+     (make-gcc-arm-none-eabi-12.3.rel1)
+     (make-newlib-arm-none-eabi-12.3.rel1))))
+
+(define make-arm-none-eabi-nano-toolchain-12.3.rel1
+  (mlambda ()
+    (make-arm-none-eabi-toolchain
+     (make-gcc-arm-none-eabi-12.3.rel1)
+     (make-newlib-nano-arm-none-eabi-12.3.rel1))))
 
 (define make-gdb-arm-none-eabi
   (mlambda ()
