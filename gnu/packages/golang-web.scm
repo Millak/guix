@@ -5567,6 +5567,79 @@ programming language.")
 programming language, which supports draft-04, draft-06 and draft-07.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel
+  (package
+    (name "go-go-opentelemetry-io-otel")
+    (version "1.30.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mpkwz2ryah5j2fb835pdw9084nwhr6fj3jig2mnvwwnsymp2bvy"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packed as separated
+            ;; packages:
+            (for-each
+             delete-file-recursively
+             ;; Do not sort the list, it needs to be formatted with
+             ;; the longest path to go.mod first, shell snippet to
+             ;; produce the list:
+             ;; find . -type f -name go.mod -printf "%d %p\n" | sort -rn
+             (list "exporters/otlp/otlptrace/otlptracehttp"
+                   "exporters/otlp/otlptrace/otlptracegrpc"
+                   "exporters/otlp/otlpmetric/otlpmetrichttp"
+                   "exporters/otlp/otlpmetric/otlpmetricgrpc"
+                   "exporters/otlp/otlplog/otlploghttp"
+                   "exporters/otlp/otlplog/otlploggrpc"
+                   "exporters/stdout/stdouttrace"
+                   "exporters/stdout/stdoutmetric"
+                   "exporters/stdout/stdoutlog"
+                   "exporters/otlp/otlptrace"
+                   "sdk/metric"
+                   "sdk/log"
+                   "internal/tools"
+                   "exporters/zipkin"
+                   "exporters/prometheus"
+                   "example/zipkin"
+                   "example/prometheus"
+                   "example/passthrough"
+                   "example/otel-collector"
+                   "example/opencensus"
+                   "example/namedtracer"
+                   "example/dice"
+                   "bridge/opentracing"
+                   "bridge/opencensus"
+                   ;; "trace"  - introduces a cycle, keep it
+                   "sdk"
+                   "schema"
+                   ;; "metric" - introduces a cycle, keep it
+                   "log"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr
+           go-github-com-go-logr-stdr
+           go-github-com-google-go-cmp))
+    (home-page "https://opentelemetry.io/")
+    (synopsis "OpenTelemetry implementation for Golang")
+    (description
+     "Package otel provides global access to the @code{OpenTelemetry} API.
+The subpackages of the otel package provide an implementation of the
+@code{OpenTelemetry} API.  This package contains 3 Golang modules:
+go.opentelemetry.io/otel, go.opentelemetry.io/otel/metric and
+go.opentelemetry.io/otel/trace.")
+    (license license:asl2.0)))
+
 (define-public go-golang-org-x-oauth2
   (package
     (name "go-golang-org-x-oauth2")
