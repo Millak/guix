@@ -973,7 +973,6 @@ Go programming language.")
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f ; it tires to download modules from the network
       #:import-path "golang.org/x/vuln"
       #:phases
       #~(modify-phases %standard-phases
