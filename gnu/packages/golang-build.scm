@@ -140,6 +140,30 @@ functions that have a name matched by regex:.")
 serialization format.")
     (license license:bsd-3)))
 
+(define-public go-github-com-google-btree
+  (package
+    (name "go-github-com-google-btree")
+    (version "1.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/btree")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k3jfj24sp4qk494wxj055vf5fjwskiydscy4a42s5jiwgcjr9gz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/btree"))
+    (home-page "https://github.com/google/btree")
+    (synopsis "Simple, ordered, in-memory data structure for Go programs")
+    (description
+     "This package provides an in-memory B-Tree implementation for Go, useful
+as an ordered, mutable data structure.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-google-go-cmdtest
   (package
     (name "go-github-com-google-go-cmdtest")
