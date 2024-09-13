@@ -483,8 +483,17 @@ embedded-7-branch/")
         (name "libstdc++-arm-none-eabi")
         (arguments
          (substitute-keyword-arguments (package-arguments libstdc++)
+           ((#:make-flags flags #f)
+            #~(cons* "CFLAGS=-g -O2 -fdata-sections -ffunction-sections"
+                     "CXXFLAGS=-g -O2 -fdata-sections -ffunction-sections"
+                     (or #$flags '())))
            ((#:configure-flags _)
-            ``("--target=arm-none-eabi"
+            ``(; This is more of a hack. This option doesn't really seem
+               ; to change what subdir is used eventually, but without it there is
+               ; error: Link tests are not allowed after GCC_NO_EXECUTABLES with
+               ; The 12.3 toolchain
+               "--with-target-subdir=\".\""
+               "--target=arm-none-eabi"
                "--host=arm-none-eabi"
                "--disable-libstdcxx-pch"
                "--enable-multilib"
@@ -506,21 +515,64 @@ embedded-7-branch/")
            ("xgcc" ,xgcc)
            ,@(package-native-inputs libstdc++)))))))
 
+(define make-libstdc++-nano-arm-none-eabi
+  (mlambda (xgcc newlib-nano)
+    (let ((base (make-libstdc++-arm-none-eabi xgcc newlib-nano)))
+      (package
+        (inherit base)
+        (name "libstdc++-nano-arm-none-eabi")
+        (arguments (substitute-keyword-arguments (package-arguments base)
+                     ((#:make-flags flags)
+                      #~(map (lambda (flag)
+                               (if (or (string-prefix? "CFLAGS=" flag)
+                                       (string-prefix? "CXXFLAGS=" flag))
+                                   (string-append flag " -fno-exceptions")
+                                   flag))
+                             #$flags))
+                     ((#:phases phases)
+                      #~(modify-phases #$phases
+                          (add-after 'install 'hardlink-libstdc++
+                            ;; XXX: Most arm toolchains offer both *.a and *_nano.a as
+                            ;; newlib and newlib-nano respectively.  The headers are
+                            ;; usually arm-none-eabi/include/newlib.h for newlib and
+                            ;; arm-none-eabi/include/newlib-nano/newlib.h for newlib-nano.
+                            ;; We have two different toolchain packages for each which
+                            ;; works but is a little strange.
+                            (lambda* (#:key outputs #:allow-other-keys)
+                              (let ((out (assoc-ref outputs "out")))
+                                ;; The nano.specs file says that newlib-nano files should
+                                ;; end in "_nano.a" instead of just ".a".  Note that this
+                                ;; applies to all the multilib folders too.
+                                (for-each
+                                 (lambda (file)
+                                   (link file
+                                         (string-append
+                                          ;; Strip ".a" off the end
+                                          (substring file 0 (- (string-length file) 2))
+                                          ;; Add "_nano.a" onto the end
+                                          "_nano.a")))
+                                 (find-files
+                                  out "^(libstdc\\+\\+.a|libsupc\\+\\+.a)$")))))))))))))
+
 (define make-arm-none-eabi-toolchain
   (mlambda (xgcc newlib)
     "Produce a cross-compiler toolchain package with the compiler XGCC and the
 C library variant NEWLIB."
-    (let ((newlib-with-xgcc
-           (package
-             (inherit newlib)
-             (native-inputs
-              (alist-replace "xgcc" (list xgcc)
-                             (package-native-inputs newlib))))))
+    (let* ((nano? (string=? (package-name newlib)
+                            "newlib-nano"))
+           (newlib-with-xgcc
+            (package
+              (inherit newlib)
+              (native-inputs
+               (alist-replace "xgcc" (list xgcc)
+                              (package-native-inputs newlib)))))
+           (libstdc++
+            (if nano?
+                (make-libstdc++-nano-arm-none-eabi xgcc newlib-with-xgcc)
+                (make-libstdc++-arm-none-eabi xgcc newlib-with-xgcc))))
       (package
         (name (string-append "arm-none-eabi"
-                             (if (string=? (package-name newlib-with-xgcc)
-                                           "newlib-nano")
-                                 "-nano" "")
+                             (if nano? "-nano" "")
                              "-toolchain"))
         (version (package-version xgcc))
         (source #f)
@@ -537,7 +589,7 @@ C library variant NEWLIB."
                              directories))))))
         (propagated-inputs
          `(("binutils" ,(cross-binutils "arm-none-eabi"))
-           ("libstdc++" ,(make-libstdc++-arm-none-eabi xgcc newlib-with-xgcc))
+           ("libstdc++" ,libstdc++)
            ("gcc" ,xgcc)
            ("newlib" ,newlib-with-xgcc)))
         (synopsis "Complete GCC tool chain for ARM bare metal development")
