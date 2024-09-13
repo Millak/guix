@@ -1953,31 +1953,30 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
     (license license:expat)))
 
 (define-public go-github-com-golang-groupcache
-    (package
-      (name "go-github-com-golang-groupcache")
-      (version "0.0.0-20210331224755-41bb18bfe9da")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/golang/groupcache")
-               (commit (go-version->git-ref version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "07amgr8ji4mnq91qbsw2jlcmw6hqiwdf4kzfdrj8c4b05w4knszc"))))
-      (build-system go-build-system)
-      (arguments
-       (list #:import-path "github.com/golang/groupcache"))
-      (propagated-inputs
-       (list go-github-com-golang-protobuf))
-      (home-page "https://github.com/golang/groupcache")
-      (synopsis "Groupcache is a caching and cache-filling library")
-      (description
-       "Groupcache is a caching and cache-filling library, intended
-as a replacement for memcached in many cases.  It provides a data loading
-mechanism with caching and de-duplication that works across a set of peer
-processes.")
-      (license license:asl2.0)))
+  (package
+    (name "go-github-com-golang-groupcache")
+    (version "0.0.0-20210331224755-41bb18bfe9da")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/groupcache")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07amgr8ji4mnq91qbsw2jlcmw6hqiwdf4kzfdrj8c4b05w4knszc"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/golang/groupcache"))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf))
+    (home-page "https://github.com/golang/groupcache")
+    (synopsis "Groupcache is a caching and cache-filling library")
+    (description
+     "Groupcache is a caching and cache-filling library, intended as a
+replacement for memcached in many cases.  It provides a data loading mechanism
+with caching and de-duplication that works across a set of peer processes.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-google-go-github
   (package
