@@ -25408,6 +25408,36 @@ Rucksack with some enhancements.")
 (define-public ecl-rutils
   (sbcl-package->ecl-package sbcl-rutils))
 
+(define-public sbcl-s-base64
+  (let ((commit "ed473e220133ca0e8b5b96618ea2972dec9de6cd")
+        (revision "0"))
+    (package
+      (name "sbcl-s-base64")
+      (version (git-version "2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/svenvc/s-base64")
+               (commit commit)))
+         (file-name (git-file-name "cl-s-base64" version))
+         (sha256
+          (base32 "0zrr8zhnkdy97c5g54605nhjlf7fly79ylr1yf6wwyssia04cagg"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/svenvc/s-base64")
+      (synopsis "Common Lisp package to encode and decode base64")
+      (description
+       "This package provides a Common Lisp implementation of Base64 encoding
+and decoding.  Base64 encoding is a technique to encode binary data in a
+portable, safe printable, 7-bit ASCII format.")
+      (license license:llgpl))))
+
+(define-public cl-s-base64
+  (sbcl-package->cl-source-package sbcl-s-base64))
+
+(define-public ecl-s-base64
+  (sbcl-package->ecl-package sbcl-s-base64))
+
 (define-public sbcl-s-sysdeps
   ;; No release since 2013.
   (let ((commit "7f8de283b7fbd8b038fdf08493063a736db36ce7")
