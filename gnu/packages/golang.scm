@@ -5290,28 +5290,6 @@ a cron spec parser and job runner.")
        "This is a fork of another go-libvterm library for use with aerc.")
       (license license:expat))))
 
-(define-public go-github-com-google-uuid
-  (package
-    (name "go-github-com-google-uuid")
-    (version "1.6.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/google/uuid")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "131d01minir79dq6d4jq55018343yidl5cs2bfhynx1klnr7ssam"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/google/uuid"))
-    (home-page "https://github.com/google/uuid/")
-    (synopsis "Generate and inspect UUIDs based on RFC 4122 and DCE 1.1")
-    (description "The uuid package generates and inspects UUIDs based on RFC
-4122 and DCE 1.1: Authentication and Security Services.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-google-gopacket
   (package
     (name "go-github-com-google-gopacket")
