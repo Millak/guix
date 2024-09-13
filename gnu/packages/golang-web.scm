@@ -2051,6 +2051,33 @@ GitHub API v3.")
        ((#:import-path _ "github.com/google/go-github/v26/github")
         "github.com/google/go-github/v33/github")))))
 
+(define-public go-github-com-google-go-querystring
+  (package
+    (name "go-github-com-google-go-querystring")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/go-querystring")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15k460c23nsmqd1nx3mvrnazws8bpb1gafrmffx7vf91m200mnwa"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/go-querystring/query"
+      #:unpack-path "github.com/google/go-querystring"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (home-page "https://github.com/google/go-querystring/")
+    (synopsis "Library for encoding structs into URL query parameters")
+    (description
+     "@code{go-querystring} is Go library for encoding structs into URL query
+parameters.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-google-safehtml
   (package
     (name "go-github-com-google-safehtml")
