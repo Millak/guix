@@ -1184,6 +1184,33 @@ high-throughput sequence analysis.  The package is primarily useful to
 developers of other R packages who wish to make use of HTSlib.")
       (license license:lgpl2.0+))))
 
+(define-public r-scdesign2
+  (let ((commit "554f2c4b1a7ee6cc04969a287df9b3b77d7bb2fe")
+        (revision "1"))
+    (package
+      (name "r-scdesign2")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/JSB-UCLA/scDesign2")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09zkz6qdcx54092ab6761ja3pclax9xzana8dk8qvxrdbjshb8p7"))))
+      (properties `((upstream-name . "scDesign2")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-mass r-pscl))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/JSB-UCLA/scDesign2")
+      (synopsis "Statistical simulator for scRNA-seq with gene correlation")
+      (description
+       "This package offers a flexible statistical simulator for scRNA-seq data.
+It can generate data that captures gene correlation.  Additionally, it allows
+for varying the number of cells and sequencing depth.")
+      (license license:expat))))
+
 (define-public r-scenic
   (let ((commit "cedf8490a634da550cea2c831544e5f7f14467d2")
         (revision "1"))
