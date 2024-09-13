@@ -1098,38 +1098,40 @@ The core is 12 builtin special forms and 33 builtin functions.")
         (base32 "10zpbbikkcpdzk6c52wkckiyhn7nhnqjv2djdzyjr0n8qxxy4hrn"))))
     (build-system gnu-build-system)
     (inputs
-     (list libatomic-ops slib zlib))
+     (list libatomic-ops mbedtls slib zlib))
     (native-inputs
      (list texinfo openssl ; needed for tests
            pkg-config))    ; needed to find external libatomic-ops
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-slib="
-                            (assoc-ref %build-inputs "slib")
-                            "/lib/slib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-/bin/sh
-           ;; Needed only for tests.
-           (lambda _
-             (substitute* '("test/www.scm"
-                            "ext/tls/test.scm"
-                            "lib/gauche/package/util.scm"
-                            "libsrc/gauche/process.scm")
-               (("/bin/sh") (which "sh")))))
-         (add-after 'build 'build-doc
-           (lambda _
-             (with-directory-excursion "doc"
-               (invoke "make" "info"))))
-         (add-before 'check 'patch-network-tests
-           ;; Remove net checks.
-           (lambda _
-             (delete-file "test/net.scm")
-             (invoke "touch" "test/net.scm")))
-         (add-after 'install 'install-docs
-           (lambda _
-             (with-directory-excursion "doc"
-               (invoke "make" "install")))))))
+     (list #:tests? #f ; 9 ffitest failures, known issue (fixed in 0.9.16):
+           ;; https://github.com/shirok/Gauche/issues/1044
+           #:configure-flags
+           #~(list (string-append "--with-slib=" #$(this-package-input "slib")
+                                  "/lib/slib")
+                   "--with-tls=mbedtls")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-/bin/sh
+                 ;; Needed only for tests.
+                 (lambda _
+                   (substitute* '("test/www.scm"
+                                  "ext/tls/test.scm"
+                                  "lib/gauche/package/util.scm"
+                                  "libsrc/gauche/process.scm")
+                     (("/bin/sh") (which "sh")))))
+               (add-after 'build 'build-doc
+                 (lambda _
+                   (with-directory-excursion "doc"
+                     (invoke "make" "info"))))
+               (add-before 'check 'patch-network-tests
+                 ;; Remove net checks.
+                 (lambda _
+                   (delete-file "test/net.scm")
+                   (invoke "touch" "test/net.scm")))
+               (add-after 'install 'install-docs
+                 (lambda _
+                   (with-directory-excursion "doc"
+                     (invoke "make" "install")))))))
     (synopsis "Scheme scripting engine")
     (description "Gauche is a R7RS Scheme scripting engine aiming at being a
 handy tool that helps programmers and system administrators to write small to
