@@ -3181,39 +3181,30 @@ editor.")
 optimized for performance yet simple to use.")
       (license license:expat))))
 
-(define-public go-github-com-tomnomnom-gron
+(define-public gron
   (package
     (name "gron")
     (version "0.7.1")
-    (home-page "https://github.com/tomnomnom/gron")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url home-page)
+             (url "https://github.com/tomnomnom/gron")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1sj34b6yv0qigy3aq7qmwf8bqxp1a8qh9p10lzkpw58s1c0iyh36"))))
     (build-system go-build-system)
     (arguments
-     (let ((import-path "github.com/tomnomnom/gron"))
-       `(#:import-path ,import-path
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'check 'remove-non-source
-             (lambda _
-               (for-each (lambda (dir)
-                           (delete-file-recursively
-                            (string-append "src/" ,import-path dir)))
-                         '("/docs" "/script" "/testdata"))
-               #t))))))
-    (inputs
-     `(("github.com/fatih/color" ,go-github-com-fatih-color)
-       ("github.com/mattn/go-colorable" ,go-github-com-mattn-go-colorable)
-       ("github.com/mattn/go-isatty" ,go-github-com-mattn-go-isatty)
-       ("github.com/nwidger/jsoncolor" ,go-github-com-nwidger-jsoncolor)
-       ("github.com/pkg/errors" ,go-github-com-pkg-errors)))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/tomnomnom/gron"))
+    (native-inputs
+     (list go-github-com-fatih-color
+           go-github-com-mattn-go-colorable
+           go-github-com-nwidger-jsoncolor
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/tomnomnom/gron")
     (synopsis "Transform JSON to make it easier to grep")
     (description
      "This package transforms JSON into discrete assignments to make it easier
