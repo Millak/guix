@@ -5534,7 +5534,7 @@ programming language, which supports draft-04, draft-06 and draft-07.")
 (define-public go-golang-org-x-oauth2
   (package
     (name "go-golang-org-x-oauth2")
-    (version "0.21.0")
+    (version "0.23.0")
     (source
      (origin
        (method git-fetch)
@@ -5543,7 +5543,7 @@ programming language, which supports draft-04, draft-06 and draft-07.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pzpa9jqrfxxhxi1w7n5ljnvr9qfw42hzavz62fc9i6z9vk2466k"))))
+        (base32 "00r6qryh9nfnfq8q8h12hvqp0mhflhl68qyknrmzmw5ww52ghm9b"))))
     (build-system go-build-system)
     (arguments
      (list
