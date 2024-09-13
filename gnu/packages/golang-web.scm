@@ -5499,37 +5499,37 @@ programming language.")
       (license license:asl2.0))))
 
 (define-public go-github-com-xeipuuv-gojsonschema
-    (package
-      (name "go-github-com-xeipuuv-gojsonschema")
-      (version "1.2.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/xeipuuv/gojsonschema")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1mqiq0r8qw4qlfp3ls8073r6514rmzwrmdn4j33rppk3zh942i6l"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        ;; validation of time strings.  only RFC3339 not all of ISO 8601 are
-        ;; valid.  expects: false, given true Schema: {"format":"time"} Data:
-        ;; "01:01:01,1111"
-        #:test-flags #~(list "-skip" "TestFormats")
-        #:import-path "github.com/xeipuuv/gojsonschema"))
-      (native-inputs
-       (list go-github-com-stretchr-testify))
-      (propagated-inputs
-       (list go-github-com-xeipuuv-gojsonreference
-             go-github-com-xeipuuv-gojsonpointer))
-      (home-page "https://github.com/xeipuuv/gojsonschema")
-      (synopsis "Implementation of JSON Schema for Go")
-      (description
-       "This package provides an implementation of JSON Schema for the Go
+  (package
+    (name "go-github-com-xeipuuv-gojsonschema")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xeipuuv/gojsonschema")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mqiq0r8qw4qlfp3ls8073r6514rmzwrmdn4j33rppk3zh942i6l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; validation of time strings.  only RFC3339 not all of ISO 8601 are
+      ;; valid.  expects: false, given true Schema: {"format":"time"} Data:
+      ;; "01:01:01,1111"
+      #:test-flags #~(list "-skip" "TestFormats")
+      #:import-path "github.com/xeipuuv/gojsonschema"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-xeipuuv-gojsonreference
+           go-github-com-xeipuuv-gojsonpointer))
+    (home-page "https://github.com/xeipuuv/gojsonschema")
+    (synopsis "Implementation of JSON Schema for Go")
+    (description
+     "This package provides an implementation of JSON Schema for the Go
 programming language, which supports draft-04, draft-06 and draft-07.")
-      (license license:asl2.0)))
+    (license license:asl2.0)))
 
 (define-public go-golang-org-x-oauth2
   (package
