@@ -6214,31 +6214,6 @@ This makes it virtually free to implement mocks and testing over
 file system operations.")
     (license license:asl2.0)))
 
-(define-public go-github-com-jba-printsrc
-  (package
-    (name "go-github-com-jba-printsrc")
-    (version "0.2.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jba/printsrc")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1gyy3kmb5a5i710wkv3b7ah7i7sz5sdc7v3sab5m4rxch1sd2fpj"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/jba/printsrc"
-       ;; TODO: Open bug; expecting time.Local, but when local=UTC, we get time.UTC
-       #:tests? #f))
-    (home-page "https://github.com/jba/printsrc")
-    (synopsis "Prints Go values as sourcecode")
-    (description
-     "Package printsrc prints Go values as Go source.  It strives to render
-legal Go source code, and returns an error when detects that it cannot.")
-    (license license:expat)))
-
 (define-public go-github-com-jba-templatecheck
   (package
     (name "go-github-com-jba-templatecheck")
