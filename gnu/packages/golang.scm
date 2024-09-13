@@ -3238,30 +3238,6 @@ information about the resource usage and performance characteristics of running
 containers.")
       (license license:asl2.0))))
 
-(define-public go-github-com-jonboulle-clockwork
-  (package
-    (name "go-github-com-jonboulle-clockwork")
-    (version "0.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jonboulle/clockwork")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1j1k9chzy5pb76r4r1k0vr5fbkvna564v6dzjflhapwsr7jpjgwf"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/jonboulle/clockwork"))
-    (home-page "https://github.com/jonboulle/clockwork")
-    (synopsis "Fake clock library for Go")
-    (description
-     "Replace uses of the @code{time} package with the @code{clockwork.Clock}
-interface instead.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-spf13-afero
   (package
     (name "go-github-com-spf13-afero")
