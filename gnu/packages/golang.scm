@@ -6243,10 +6243,7 @@ temporal directories.")
      (list
       ;; XXX: panic: runtime error: makeslice: cap out of range
       #:tests? (target-64bit?)
-      #:import-path "github.com/go-git/go-git-fixtures/v4"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'reset-gzip-timestamps))))
+      #:import-path "github.com/go-git/go-git-fixtures/v4"))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
