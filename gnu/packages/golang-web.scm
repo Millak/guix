@@ -1635,6 +1635,66 @@ Initiative,OAI} specification documents from local or remote locations.
 Supports JSON and YAML documents.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-openapi-runtime
+  (package
+    (name "go-github-com-go-openapi-runtime")
+    (version "0.28.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-openapi/runtime")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h8yqc6bb8mzb8jvr3m08fyws1gbrhbry6k5vj2cx2xdi50kqiy5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/runtime"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: Implement it in go-build-system.
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module of embed file which is symlinked during setup
+          ;; environment phase, but easy resolved after coping file from the
+          ;; store to the build directory of the current package, see details
+          ;; in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-after 'unpack 'fix-embed-files
+            (lambda _
+              (for-each (lambda (file)
+                          (let ((file-store-path (readlink file)))
+                            (delete-file file)
+                            (copy-recursively file-store-path file)))
+                        (find-files "src" "\\.json$")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-docker-go-units
+           go-github-com-go-openapi-analysis
+           go-github-com-go-openapi-errors
+           go-github-com-go-openapi-loads
+           go-github-com-go-openapi-spec
+           go-github-com-go-openapi-strfmt
+           go-github-com-go-openapi-swag
+           go-github-com-go-openapi-validate
+           go-github-com-opentracing-opentracing-go
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk
+           go-golang-org-x-sync
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/go-openapi/runtime")
+    (synopsis "OpenAPI runtime interfaces")
+    (description
+     "OpenAPI toolkit runtime component for use in code generation or as
+untyped usage.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-openapi-spec
   (package
     (name "go-github-com-go-openapi-spec")
