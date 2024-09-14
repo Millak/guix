@@ -3922,9 +3922,9 @@ of machine readable.  This helps improve code quality and helps you spot
 defects faster.")
     (license license:expat)))
 
-(define-public go-github-go-git
+(define-public go-github-com-go-git-go-git-v5
   (package
-    (name "go-github-go-git")
+    (name "go-github-com-go-git-go-git-v5")
     (version "5.1.0")
     (source (origin
               (method git-fetch)

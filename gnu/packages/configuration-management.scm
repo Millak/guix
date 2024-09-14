@@ -115,6 +115,7 @@
            go-github-com-bmatcuk-doublestar-v2
            go-github-com-charmbracelet-glamour
            go-github-com-coreos-go-semver
+           go-github-com-go-git-go-git-v5
            go-github-com-google-go-github-v33
            go-github-com-google-renameio
            go-github-com-masterminds-sprig-v3
@@ -130,7 +131,6 @@
            go-github-com-twpayne-go-vfsafero
            go-github-com-twpayne-go-xdg-v3
            go-github-com-zalando-go-keyring
-           go-github-go-git
            go-go-etcd-io-bbolt
            go-golang-org-x-oauth2
            go-golang-org-x-sys
