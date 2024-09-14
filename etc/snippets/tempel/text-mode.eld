@@ -1,5 +1,3 @@
--*- mode: lisp-data -*-
-
 text-mode :when (bound-and-true-p git-commit-mode)
 
 (add\ "gnu: Add "

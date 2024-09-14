@@ -19,6 +19,21 @@
                          (locate-dominating-file default-directory
                                                  ".dir-locals.el")))
 
+     ;; TempEl
+     (eval . (with-eval-after-load
+                 'tempel
+               (if (stringp tempel-path)
+                   (setq tempel-path (list tempel-path)))
+               (let ((guix-tempel-snippets
+                      (concat
+                       (expand-file-name
+                        "etc/snippets/tempel"
+                        (locate-dominating-file default-directory
+                                                ".dir-locals.el"))
+                       "/*.eld")))
+                 (unless (member guix-tempel-snippets tempel-path)
+                   (add-to-list 'tempel-path guix-tempel-snippets)))))
+
      ;; YASnippet
      (eval . (with-eval-after-load
                  'yasnippet

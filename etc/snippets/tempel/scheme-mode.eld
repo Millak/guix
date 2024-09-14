@@ -1,5 +1,3 @@
--*- mode: lisp-data -*-
-
 scheme-mode
 
 (package...
