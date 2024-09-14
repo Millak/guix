@@ -4959,6 +4959,42 @@ resource sharing,CORS} related requests as defined by
 @url{http://www.w3.org/TR/cors/,http://www.w3.org/TR/cors/}.")
     (license license:expat)))
 
+(define-public go-github-com-rs-xid
+  (package
+    (name "go-github-com-rs-xid")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rs/xid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dck1girg54kgwjms0vsizaxasc8rj6pby4rlz7m07xffa3pp45c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rs/xid"))
+    (home-page "https://github.com/rs/xid")
+    (synopsis "Globally Unique ID Generator")
+    (description
+     "Package xid is a globally unique id generator suited for web scale.
+Features:
+@itemize
+@item zize: 12 bytes (96 bits), smaller than UUID, larger than snowflake
+@item base32 hex encoded by default (20 chars when transported as printable
+string, still sortable)
+@item mon configured, you don't need set a unique machine and/or data center
+id
+@item k-ordered
+@item embedded time with 1 second precision
+@item unicity guaranteed for 16,777,216 (24 bits) unique ids per second and
+per host/process
+@item lock-free (i.e.: unlike UUIDv1 and v2)
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-sherclockholmes-webpush-go
   (package
     (name "go-github-com-sherclockholmes-webpush-go")
