@@ -4851,7 +4851,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
 (define-public phantomsocks
   (package
     (name "phantomsocks")
-    (version "0.0.0-20240125140126-2576269ca69a")
+    (version "0.0.0-20240729085950-7928f8eff406")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4860,7 +4860,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kbcr6580a9pi0a3wssnfr3mnxqq2k9w1fg4khikn82lqaljab2f"))))
+                "1bx3ln650yrywrqpz78xphs141zfsg2h5cr8j9411ilifzr8r4ib"))))
     (build-system go-build-system)
     (arguments
      (list #:install-source? #f
