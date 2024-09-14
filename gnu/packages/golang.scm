@@ -5760,7 +5760,7 @@ maps (because they are not addressable using Go reflection).")
 matching and globbing with support for \"doublestar\" patterns.")
     (license license:expat)))
 
-;; For chezmoi-1.8.10
+;; For chezmoi-1.8.11
 (define-public go-github-com-bmatcuk-doublestar-v2
   (package
     (inherit go-github-com-bmatcuk-doublestar)
@@ -5780,6 +5780,25 @@ matching and globbing with support for \"doublestar\" patterns.")
       #:tests? #f ; tests have more broken parts
       #:unpack-path "github.com/bmatcuk/doublestar/v2"
       #:import-path "github.com/bmatcuk/doublestar/v2"))))
+
+(define-public go-github-com-bmatcuk-doublestar-v3
+  (package
+    (inherit go-github-com-bmatcuk-doublestar)
+    (name "go-github-com-bmatcuk-doublestar-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bmatcuk/doublestar")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "011h07mlmscbxxjr3h30fjjb4dw3gb245nzczaq520r112xlidhj"))))
+    (arguments
+     (list
+      #:tests? #f ; tests have more broken parts
+      #:import-path "github.com/bmatcuk/doublestar/v3"))))
 
 (define-public go-github-com-bmatcuk-doublestar-v4
   (package
