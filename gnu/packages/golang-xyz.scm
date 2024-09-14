@@ -6289,6 +6289,35 @@ Included are the following:
 @end itemize\n")
     (license license:bsd-3)))
 
+(define-public go-github-com-rs-zerolog
+  (package
+    (name "go-github-com-rs-zerolog")
+    (version "1.33.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rs/zerolog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14g5sy9n18k18pvzccdcvj5rqi670yw478yqm4n30hrfsdkm5jbp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rs/zerolog"))
+    (propagated-inputs
+     (list go-github-com-coreos-go-systemd-v22
+           go-github-com-mattn-go-colorable
+           go-github-com-pkg-errors
+           go-github-com-rs-xid))
+    (home-page "https://github.com/rs/zerolog")
+    (synopsis "Zero Allocation JSON Logger")
+    (description
+     "Package zerolog provides a lightweight logging library dedicated to JSON
+logging.")
+    (license license:expat)))
+
 (define-public go-github-com-schollz-progressbar-v3
   (package
     (name "go-github-com-schollz-progressbar-v3")
