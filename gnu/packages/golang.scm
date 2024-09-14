@@ -6056,9 +6056,9 @@ errors (warnings).")
     (description "Gcfg reads INI-style configuration files into Go structs.")
     (license license:bsd-3)))
 
-(define-public go-github-com-go-git-go-billy
+(define-public go-github-com-go-git-go-billy-v5
   (package
-    (name "go-github-com-go-git-go-billy")
+    (name "go-github-com-go-git-go-billy-v5")
     (version "5.5.0")
     (source (origin
               (method git-fetch)

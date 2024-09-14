@@ -3957,7 +3957,7 @@ defects faster.")
      (list go-github-com-alcortesm-tgz
            go-github-com-emirpasic-gods
            go-github-com-go-git-gcfg
-           go-github-com-go-git-go-billy
+           go-github-com-go-git-go-billy-v5
            go-github-com-go-git-go-git-fixtures-v4
            go-github-com-imdario-mergo
            go-github-com-jbenet-go-context
