@@ -539,7 +539,7 @@ design}.")
                                          (string-join disabled-tests
                                                       " and not "))))))))))
     (native-inputs
-     (list git-minimal
+     (list git-minimal/pinned
            pre-commit
            python-autopep8
            python-black
