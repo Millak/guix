@@ -851,7 +851,7 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
             ("CONFIG_BPF_SYSCALL" . #t))
           '())
     ,@(if (version>=? version "5.13")
-          '(("BPF_UNPRIV_DEFAULT_OFF" . #t))
+          '(("CONFIG_BPF_UNPRIV_DEFAULT_OFF" . #t))
           '())
     ("CONFIG_NET_CLS_BPF" . m)         ;classify packets based on BPF filters
     ("CONFIG_NET_ACT_BPF" . m)         ;to execute BPF code on packets
