@@ -6225,35 +6225,6 @@ can manipulate a @file{ssh_config} file from a program.")
 temporal directories.")
       (license license:expat))))
 
-(define-public go-github-com-go-git-go-git-fixtures-v4
-  (package
-    (name "go-github-com-go-git-go-git-fixtures-v4")
-    (version "4.3.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/go-git/go-git-fixtures")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1d6qs2mzbhz95aflpjh6ijywvb4ys73jvk2v30mickax3gmm2vlw"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      ;; XXX: panic: runtime error: makeslice: cap out of range
-      #:tests? (target-64bit?)
-      #:import-path "github.com/go-git/go-git-fixtures/v4"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-github-com-go-git-go-billy
-           go-gopkg-in-check-v1))
-    (home-page "https://github.com/go-git/go-git-fixtures/")
-    (synopsis "Fixtures used by @code{go-git}")
-    (description "This package provides fixtures used by @code{go-git}.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-pkg-diff
   (package
     (name "go-github-com-pkg-diff")
