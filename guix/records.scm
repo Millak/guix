@@ -665,7 +665,7 @@ to thunked values.  Raise a syntax violation when the field is not found."
 
 (define-syntax match-record
   (syntax-rules ()
-    "Bind each FIELD of a RECORD of the given TYPE to it's FIELD name.
+    "Bind each FIELD of a RECORD of the given TYPE to its FIELD name.
 The order in which fields appear does not matter.  A syntax error is raised if
 an unknown field is queried."
     ((_ record type (fields ...) body ...)
