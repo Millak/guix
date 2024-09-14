@@ -1145,7 +1145,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.14.5")
+    (version "4.16.1")
     (source
      (origin
        (method url-fetch)
@@ -1153,7 +1153,7 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0kg286za53qhl6ngw4rrvbpm3q04g30qf2q77sck7c86y2wz4ism"))
+        (base32 "0p11k5afy3g9d6p402zrn9izkypwzlb51y9qanibzyc1sjmiwslj"))
        (patches
         (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))
        (modules '((guix build utils)))))
@@ -1170,11 +1170,7 @@ application suites.")
          "-Dcloudproviders=enabled"     ;for cloud-providers support
          "-Dtracker=enabled"            ;for filechooser search support
          "-Dcolord=enabled"             ;for color printing support
-         #$@(if (%current-target-system)
-                ;; If true, gtkdoc-scangobj will try to execute a
-                ;; cross-compiled binary.
-                '("-Dgtk_doc=false")
-                '("-Dgtk_doc=true"))
+         "-Ddocumentation=true"
          "-Dman-pages=true")
       #:test-options #~(list "--setup=x11" ;defaults to wayland
                              ;; Use the same test options as upstream uses for
@@ -1184,6 +1180,7 @@ application suites.")
                              "--no-suite=flaky"
                              "--no-suite=headless" ; requires mutter…
                              "--no-suite=gsk-compare-broadway"
+                             "--no-suite=needs-udmabuf"
                              ;; These seem to fail on aarch64, and Debian has
                              ;; also disabled these, see:
                              ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1050075
@@ -1223,29 +1220,14 @@ application suites.")
                 (("[ \t]*'empty-text.node',") "")
                 (("[ \t]*'testswitch.node',") "")
                 (("[ \t]*'widgetfactory.node',") "")
-                ;; The unaligned-offscreen test fails for unknown reasons, also
-                ;; on different distributions (see:
-                ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/4889).
-                (("  'unaligned-offscreen',") "")
                 ;; This test, 'gtk:tools / validate', started failing for
                 ;; unknown reasons after updating mesa to 23.3.1 and xorgproto
                 ;; to 2023.2.
                 ((" 'validate',") "")
-                ;; XXX: These test failures come newly from 4.14.
-                ;; Not all of them are reported upstream yet, but the text nodes
-                ;; are mentioned in
-                ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/6647>.
-                (("'glyph-subpixel-position',") "")
-                (("'subpixel-positioning',") "")
-                (("'subpixel-positioning-hidpi-nogl-nocairo',") "")
-                (("'text.*\\.node',") "")
-                (("'text-mixed-color-colrv1',") ""))
+                ;; XXX: Figure out why this fails and report upstream.
+                ((".*'memorytexture',.*") ""))
               (substitute* "testsuite/reftests/meson.build"
-                (("[ \t]*'label-wrap-justify.ui',") "")
-                ;; The inscription-markup.ui fails due to /etc/machine-id
-                ;; related warnings (see:
-                ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/5169).
-                (("[ \t]*'inscription-markup.ui',") ""))
+                (("[ \t]*'label-wrap-justify.ui',") ""))
               ;; These tests fail on an Apple M1 (aarch64) with the following errors:
               ;; - MESA: error: ZINK: failed to choose pdev
               ;; - libEGL warning: egl: failed to create dri2 screen
