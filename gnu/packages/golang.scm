@@ -6228,7 +6228,7 @@ temporal directories.")
 (define-public go-github-com-go-git-go-git-fixtures
   (package
     (name "go-github-com-go-git-go-git-fixtures")
-    (version "4.0.1")
+    (version "4.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6237,7 +6237,7 @@ temporal directories.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "002yb1s2mxq2xijkl39ip1iyc3l52k23ikyi9ijfl4bgqxy79ljg"))))
+                "1d6qs2mzbhz95aflpjh6ijywvb4ys73jvk2v30mickax3gmm2vlw"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -6248,8 +6248,10 @@ temporal directories.")
       #~(modify-phases %standard-phases
           (delete 'reset-gzip-timestamps))))
     (native-inputs
-     (list go-github-com-alcortesm-tgz go-github-com-go-git-go-billy
-           go-golang-org-x-sys go-gopkg-in-check-v1))
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-git-go-billy
+           go-gopkg-in-check-v1))
     (home-page "https://github.com/go-git/go-git-fixtures/")
     (synopsis "Fixtures used by @code{go-git}")
     (description "This package provides fixtures used by @code{go-git}.")
