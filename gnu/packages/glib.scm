@@ -1161,6 +1161,7 @@ libraries.  Examples include gtk+, webkit, libsoup and many more.")
         (string-append
          "https://telepathy.freedesktop.org/releases/telepathy-glib/"
          "telepathy-glib-" version ".tar.gz"))
+       (patches (search-patches "telepathy-glib-fix-test.patch"))
        (sha256
         (base32
          "1w3kja8j3gz2apal79bi3hq44xk5g78aphrqbw983l6df7bp98xh"))))
