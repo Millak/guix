@@ -5335,6 +5335,31 @@ Authentication Modules, PAM} application API.")
      "This package provides a cancelable reader for Go.")
     (license license:expat)))
 
+(define-public go-github-com-muesli-combinator
+  (package
+    (name "go-github-com-muesli-combinator")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/muesli/combinator")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rjw1rl1v38pn6lmyaz7yhgrwkyh22d6974lj33x1c86q0xpaw4d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/muesli/combinator"))
+    (home-page "https://github.com/muesli/combinator")
+    (synopsis "Cancelable reader for Go")
+    (description
+     "@code{combinator} generates a slice of all possible value combinations
+for any given struct and a set of its potential member values.  This can be
+used to generate extensive test matrixes among other things.")
+    (license license:expat)))
+
 (define-public go-github-com-muesli-reflow
   (package
     (name "go-github-com-muesli-reflow")
