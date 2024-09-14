@@ -366,7 +366,12 @@ Python 3.3 and later, rather than on Python 2.")
                 (("\\$\\(basename")
                  (string-append "$(" (search-input-file inputs "bin/basename")))
                 (("sed -e")
-                 (string-append (search-input-file inputs "bin/sed") " -e")))))
+                 (string-append (search-input-file inputs "bin/sed") " -e")))
+
+              ;; git-send-email invokes the editor via 'sh'; patch it.
+              (substitute* "git-send-email.perl"
+                (("'sh'")
+                 (format #f "'~a'" (search-input-file inputs "bin/sh"))))))
           (add-after 'configure 'patch-makefiles
             (lambda _
               (substitute* "Makefile"
