@@ -2239,7 +2239,7 @@ visualize your public Git repositories on a web interface.")
                         " and not test_healthy_venv_creator"
                         " and not test_r_hook and not test_r_inline"))))))))
     (native-inputs
-     `(("git" ,git-minimal)
+     `(("git" ,git-minimal/pinned)
        ("python-covdefaults" ,python-covdefaults)
        ("python-coverage" ,python-coverage)
        ("python-distlib" ,python-distlib)
