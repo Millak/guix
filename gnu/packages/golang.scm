@@ -6056,37 +6056,6 @@ errors (warnings).")
     (description "Gcfg reads INI-style configuration files into Go structs.")
     (license license:bsd-3)))
 
-(define-public go-github-com-go-git-go-billy-v5
-  (package
-    (name "go-github-com-go-git-go-billy-v5")
-    (version "5.5.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/go-git/go-billy")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1r7hfwc6lqnb7jhbbmicdlb3yipjyazq3pndpffw026fcq7jhxg1"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/go-git/go-billy/v5"))
-    (propagated-inputs
-     (list go-github-com-cyphar-filepath-securejoin
-           go-golang-org-x-sys))
-    (native-inputs
-     (list go-github-com-onsi-gomega
-           go-gopkg-in-check-v1))
-    (home-page "https://github.com/go-git/go-billy/")
-    (synopsis "File system abstraction for Go")
-    (description "Billy implements an interface based on the OS's standard
-library to develop applications without depending on the underlying storage.
-This makes it virtually free to implement mocks and testing over
-file system operations.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-jba-templatecheck
   (package
     (name "go-github-com-jba-templatecheck")

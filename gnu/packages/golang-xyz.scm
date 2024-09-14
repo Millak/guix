@@ -2926,6 +2926,38 @@ Differentiation between text and binary files}.
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-go-git-go-billy-v5
+  (package
+    (name "go-github-com-go-git-go-billy-v5")
+    (version "5.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-git/go-billy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r7hfwc6lqnb7jhbbmicdlb3yipjyazq3pndpffw026fcq7jhxg1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-git/go-billy/v5"))
+    (native-inputs
+     (list go-github-com-onsi-gomega
+           go-gopkg-in-check-v1))
+    (propagated-inputs
+     (list go-github-com-cyphar-filepath-securejoin
+           go-golang-org-x-sys))
+    (home-page "https://github.com/go-git/go-billy/")
+    (synopsis "File system abstraction for Go")
+    (description
+     "Billy implements an interface based on the OS's standard library to
+develop applications without depending on the underlying storage.  This makes
+it virtually free to implement mocks and testing over file system
+operations.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-git-go-git-fixtures-v4
   (package
     (name "go-github-com-go-git-go-git-fixtures-v4")
