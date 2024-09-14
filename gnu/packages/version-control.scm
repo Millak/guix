@@ -3958,7 +3958,7 @@ defects faster.")
            go-github-com-emirpasic-gods
            go-github-com-go-git-gcfg
            go-github-com-go-git-go-billy
-           go-github-com-go-git-go-git-fixtures
+           go-github-com-go-git-go-git-fixtures-v4
            go-github-com-imdario-mergo
            go-github-com-jbenet-go-context
            go-github-com-kevinburke-ssh-config

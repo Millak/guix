@@ -6225,9 +6225,9 @@ can manipulate a @file{ssh_config} file from a program.")
 temporal directories.")
       (license license:expat))))
 
-(define-public go-github-com-go-git-go-git-fixtures
+(define-public go-github-com-go-git-go-git-fixtures-v4
   (package
-    (name "go-github-com-go-git-go-git-fixtures")
+    (name "go-github-com-go-git-go-git-fixtures-v4")
     (version "4.3.1")
     (source (origin
               (method git-fetch)
