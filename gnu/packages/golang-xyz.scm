@@ -1836,6 +1836,39 @@ submodules:
 metrics to Graphite.")
     (license license:bsd-2)))
 
+(define-public go-github-com-cyphar-filepath-securejoin
+  (package
+    (name "go-github-com-cyphar-filepath-securejoin")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cyphar/filepath-securejoin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10clm1hfzndwhi7lwz5ph72apxwbxr3vg4nln5xsrrx26j6qv6v2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-shuffle=on" "-v")
+      #:import-path "github.com/cyphar/filepath-securejoin"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/cyphar/filepath-securejoin")
+    (synopsis "Alternative Golang @code{filepath.SecureJoin} implementation")
+    (description
+     "Package securejoin is an implementation of the
+hopefully-soon-to-be-included @code{SecureJoin} helper that is meant to be
+part of the \"path/filepath\" package.  The purpose of this project is to
+provide a @code{PoC} implementation to make the @code{SecureJoin} proposal
+(@url{https://github.com/golang/go/issues/20126,https://github.com/golang/go/issues/20126})
+more tangible.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-d4l3k-messagediff
   (package
     (name "go-github-com-d4l3k-messagediff")
