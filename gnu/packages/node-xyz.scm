@@ -1136,6 +1136,7 @@ both @file{stderr} and to a timestamped file.")
        (uri (git-reference
              (url "https://github.com/serialport/node-serialport")
              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "0x7zm59a5ff5yygjyw15xs3r5m3rb8av1yfrh4snn44mrwq87yg8"))))
     (inputs
