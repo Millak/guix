@@ -9741,6 +9741,7 @@ correct movement and editing than you would otherwise have.")
               (uri (git-reference
                     (url "https://github.com/emacs-compat/compat")
                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0rw4j8caiyah7k6pml8bwxd9zs6q7mlqq3lvrm013vimw2js3d12"))))
