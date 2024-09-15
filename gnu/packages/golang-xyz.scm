@@ -8184,6 +8184,20 @@ correctly.")))
       #:unpack-path "github.com/libp2p/go-msgio"))
     (synopsis "CLI tool to wrap messages with msgio header.")))
 
+(define-public go-msgp
+  (package
+    (inherit go-github-com-tinylib-msgp)
+    (name "go-msgp")
+    (arguments
+     (list
+      #:install-source? #f
+      #:tests? #f
+      #:import-path "github.com/tinylib/msgp"))
+    (description
+     (string-append (package-description go-github-com-tinylib-msgp)
+                    " This package provides an command line interface (CLI)
+tool."))))
+
 (define-public go-numcpus
   (package
     (inherit go-github-com-tklauser-numcpus)
