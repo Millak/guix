@@ -12536,8 +12536,8 @@ interface.")
               (invoke "makeinfo" "orderless.texi")
               (install-file "orderless.info"
                             (string-append #$output "/share/info")))))))
-    (native-inputs
-     (list texinfo))
+    (native-inputs (list texinfo))
+    (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/oantolin/orderless")
     (synopsis "Emacs completion style that matches multiple regexps in any order")
     (description "This package provides an orderless completion style that
