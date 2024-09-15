@@ -20057,6 +20057,7 @@ methods from a given list.")
        (uri (git-reference
              (url "https://github.com/liuyinz/mini-echo.el")
              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "0f9jwiy6syl8y0g0q11g9m6x1v4fmn8gahg0l3y2ygkz9kdwkpd3"))))
     (build-system emacs-build-system)
