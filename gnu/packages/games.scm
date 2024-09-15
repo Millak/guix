@@ -8107,9 +8107,45 @@ You can save humanity and get programming skills!")
         (base32 "0i4hyg72z84fc6ca2ic9q82q5cbgrbd7bynl3kpkypxvyasq08wz"))
        (patches (search-patches "gzdoom-search-in-installed-share.patch"
                                 "gzdoom-find-system-libgme.patch"))
-       (modules '((guix build utils)))
+       (modules '((guix build utils)
+                  (ice-9 regex)))
        (snippet
         '(begin
+           ;; Remove files which mustn't be commercially redistributed.  See
+           ;; <https://zdoom.org/wiki/License#Commercial_use>, the ‘Contribution
+           ;; Guidelines’ at <https://github.com/ZDoom>, and Guix issue #73435.
+           (for-each
+            (lambda (directory)
+              (delete-file-recursively directory)
+              (substitute* "CMakeLists.txt"
+                (((string-append "add_subdirectory\\([[:blank:]]*"
+                                 directory
+                                 "[[:blank:]]*\\)"))
+                 "")))
+            '( ;; "wadsrc_extra"        ;game_support.pk3
+              "wadsrc_bm"))             ;brightmaps.pk3
+
+           ;; Removing game_support.pk3 entirely would break Freedoom & remove
+           ;; users' ability to play commercial games, despite owning (only) the
+           ;; non-functional data.  That can't be right.  Out of an abundance of
+           ;; caution, remove anything from the PK3 that could conceivably be
+           ;; derived from copyrightable data that's not freely redistributable.
+           (display "Keeping only the following game_support.pk3 files:\n")
+           (let* ((regexps (list "/font\\.inf$"
+                                 "/harmony/.*\\.(txt|zs)$"
+                                 "/(iwadinfo|mapinfo|sprofs)\\.txt$"
+                                 "\\.z$"))
+                  (regexp* (format #f "(~{~a~^|~})" regexps))
+                  (regexp  (make-regexp regexp* regexp/icase)))
+             (define (keep-file? file stat)
+               (let ((keep? (regexp-exec regexp file)))
+                 (when keep?
+                   (format #t "  ~a~%" file))
+                 keep?))
+
+             (for-each delete-file (find-files "wadsrc_extra/static"
+                                               (negate keep-file?))))
+
            ;; Remove some bundled libraries.  XXX There are more, but removing
            ;; them would require, at least, patching the build system.
            (with-directory-excursion "libraries"
