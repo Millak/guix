@@ -457,7 +457,7 @@ compile does not support generics.")
 (define-public go-golang-org-x-mod
   (package
     (name "go-golang-org-x-mod")
-    (version "0.20.0")
+    (version "0.21.0")
     (source
      (origin
        (method git-fetch)
@@ -466,7 +466,7 @@ compile does not support generics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vrzahgr08idiz9g2ksngwsjhyaa0rryn4vh0lm54kkxgv9pcv7f"))))
+        (base32 "1rk4vbdrdmiaacx50a1q31hydidwl9rnlcl7rim3f535vyw01fxk"))))
     (build-system go-build-system)
     (arguments
      (list
