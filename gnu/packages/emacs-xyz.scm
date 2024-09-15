@@ -12784,7 +12784,7 @@ library with Eglot instead of Yasnippet.")
 (define-public emacs-eglot-jl
   (package
     (name "emacs-eglot-jl")
-    (version "2.3.0")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -12795,7 +12795,7 @@ library with Eglot instead of Yasnippet.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "144q4fj3am165vf1vx2ljlsmpn8vvvs1b95qi3rxlwqskkx0lig3"))))
+         "1xy6lssg5x8m2d5802in2b5nl5wrcxz4pilw85kk0mc8640kg2ma"))))
     (build-system emacs-build-system)
     (arguments (list #:include #~(cons "\\.(jl|toml)$" %default-include)))
     (propagated-inputs (list emacs-eglot))
