@@ -33678,7 +33678,7 @@ all of your projects, then override or add variables on a per-project basis.")
 (define-public emacs-casual-dired
   (package
     (name "emacs-casual-dired")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
        (method git-fetch)
@@ -33687,7 +33687,7 @@ all of your projects, then override or add variables on a per-project basis.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "024dyyk05r9kpvjizcr3lqn5kz4kwv8vkp66h2q2bf0k03vaj40c"))))
+        (base32 "0dhhd72snhsmmhh5g9314fprdlrkrzlxha0vsnmrgyc2kqsnv6md"))))
     (build-system emacs-build-system)
     (arguments
      (list
