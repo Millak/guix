@@ -1389,7 +1389,7 @@ exec -a \"$0\" \"~a\" \"$@\""
                       (prepend curl libffi `(,nghttp2 "lib") zlib)))
       (native-inputs (cons*
                       ;; Keep in sync with the llvm used to build rust.
-                      `("clang-source" ,(package-source clang-runtime-15))
+                      `("clang-source" ,(package-source clang-runtime-17))
                       ;; Add test inputs.
                       `("gdb" ,gdb/pinned)
                       `("procps" ,procps)
