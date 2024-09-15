@@ -34614,14 +34614,14 @@ deletion of the frame.")
 (define-public emacs-xclip
   (package
     (name "emacs-xclip")
-    (version "1.11")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "xclip-" version ".tar"))
        (sha256
-        (base32 "0hgblj8ng7vfsdb7g1mm9m2qhzfprycdd77836l59prpak5kp55q"))))
+        (base32 "0raqlpskjrkxv7a0q5ikq8dqf2h21g0vcxdw03vqcah2v43zxflx"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/xclip.html")
     (synopsis "Copy and paste GUI clipboard from Emacs in text terminal")
