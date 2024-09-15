@@ -30214,7 +30214,7 @@ user.")
 (define-public sbcl-uax-15
   (package
     (name "sbcl-uax-15")
-    (version "0.1.1")
+    (version "0.1.3")
     (source
      (origin
        (method git-fetch)
@@ -30223,13 +30223,13 @@ user.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "uax-15" version))
        (sha256
-        (base32 "0p2ckw7mzxhwa9vbwj2q2dzayz9dl94d9yqd2ynp0pc5v8i0n2fr"))))
+        (base32 "0kkr3sw3hqsb8ciyn8dzb1cfz260fk1y39vydc98gsfrn6nqh3vw"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      `(#:asd-systems
        '("uax-15")))
     (native-inputs
-     (list sbcl-fiveam))
+     (list sbcl-parachute))
     (inputs
      `(("cl-ppcre" ,sbcl-cl-ppcre)
        ("split-sequence" ,sbcl-split-sequence)))
