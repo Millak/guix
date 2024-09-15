@@ -13425,6 +13425,7 @@ line program.")
        (uri (git-reference
              (url "https://github.com/ruby/elisp-ruby-electric")
              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "1p0l0fsn0jcgb4raimyc4d1wpfksrfhn0rkwdazadvm6s8baydf7"))))
     (build-system emacs-build-system)
