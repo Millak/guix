@@ -80896,14 +80896,14 @@ introspection APIs.")
 (define-public rust-time-0.3
   (package
     (name "rust-time")
-    (version "0.3.34")
+    (version "0.3.36")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "time" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jc7wgprzqjhzd0nqkbmdlnjwyddnswmjw86ni2vq55v45jqn968"))))
+        (base32 "11g8hdpahgrf1wwl2rpsg5nxq3aj7ri6xr672v4qcij6cgjqizax"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included
