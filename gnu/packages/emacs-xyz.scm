@@ -2999,6 +2999,7 @@ compile}.")
          (uri (git-reference
                (url "https://github.com/flymake/emacs-flymake-perlcritic")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32 "1n2682ly8pw8sjj7bix4qjjxc5x396m6sxbv0k6vs93z4i1gy2qm"))))
       (build-system emacs-build-system)
