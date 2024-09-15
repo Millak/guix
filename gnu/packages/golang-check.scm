@@ -219,6 +219,31 @@ style).
 @end itemize")
     (license license:isc)))
 
+(define-public go-github-com-dgryski-go-ddmin
+  (package
+    (name "go-github-com-dgryski-go-ddmin")
+    (version "0.0.0-20210904190556-96a6d69f1034")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dgryski/go-ddmin")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rgv4km7nffsjlyc4jkzy68mzhy38l7fdv7h5szv36wri7cx7n77"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dgryski/go-ddmin"))
+    (home-page "https://github.com/dgryski/go-ddmin")
+    (synopsis "Delta-minimization algorithm in Golang")
+    (description
+     "Package ddmin implements the
+@url{https://users.cs.utah.edu/~regehr/papers/mintest.pdf, delta-minimization}
+test minimization algorithm.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-elgris-jsondiff
   (package
     (name "go-github-com-elgris-jsondiff")
