@@ -20552,7 +20552,7 @@ a point.  The plugin provides visual feedback for marked regions.")
 (define-public emacs-key-chord
   (package
     (name "emacs-key-chord")
-    (version "0.7.1.1")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
