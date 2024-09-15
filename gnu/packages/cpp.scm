@@ -2471,11 +2471,11 @@ validation.")
                 "038i9nmk85vpxvs546w6cyci0ppdrrp5wnlv1kffxw29x71a3g5l"))))))
 
 (define-public bloomberg-bde-tools
-  (let ((commit "f63dfe9114cd7df29623bd01f644b9f654253972"))
+  (let ((commit "23217675939d434537ef74b91f71b63054e36572"))
     (package
       (name "bloomberg-bde-tools")
       ;; Recent releases are not tagged so commit must be used for checkout.
-      (version "3.118.0.0")
+      (version "4.13.0.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -2484,7 +2484,7 @@ validation.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1a5sw4xjwd222na3zkflm2gkmzhnfq17i8qapyaxszpiayf3hw6v"))
+                  "1x440fa8fghigipn6w8zdr60kkvxrkxs2n9a5hf3y33b8aygh8iv"))
                 (patches
                  (search-patches
                   "bloomberg-bde-tools-fix-install-path.patch"))))
