@@ -762,6 +762,30 @@ provides convenience wrappers for registering latency instrumented functions
 with Go's builtin http server.")
     (license license:bsd-3)))
 
+(define-public go-github-com-circonus-labs-circonus-gometrics-v3
+  (package
+    (inherit go-github-com-circonus-labs-circonus-gometrics)
+    (name "go-github-com-circonus-labs-circonus-gometrics-v3")
+    (version "3.4.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/circonus-labs/circonus-gometrics")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wdnhj1xwm5p5wp76afs08aq30hkpgnq4802d6ylnpb3n46v0lj4"))))
+    (build-system go-build-system)
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-circonus-labs-circonus-gometrics)
+       ((#:import-path _) "github.com/circonus-labs/circonus-gometrics/v3")))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs
+                     go-github-com-circonus-labs-circonus-gometrics)
+       (prepend go-github-com-circonus-labs-go-apiclient)))))
+
 (define-public go-github-com-circonus-labs-go-apiclient
   (package
     (name "go-github-com-circonus-labs-go-apiclient")
