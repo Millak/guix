@@ -411,13 +411,14 @@ Boost.Thread.")
           (base32 "101ayw7dz4gdvva2yzyrfad69w4xbvv3man83xwqjbkib3a92ca8"))))
       (build-system trivial-build-system)
       (arguments
-       `(#:modules ((guix build utils))
-         #:builder
-         (begin
-           (use-modules (guix build utils))
-           (let ((source (assoc-ref %build-inputs "source")))
-             (copy-recursively (string-append source "/include")
-                               (string-append %output "/include"))))))
+       (list
+        #:modules '((guix build utils))
+        #:builder
+        #~(begin
+            (use-modules (guix build utils))
+            (let ((source (assoc-ref %build-inputs "source")))
+              (copy-recursively (string-append source "/include")
+                                (string-append %output "/include"))))))
       (home-page "https://github.com/boostorg/signals2")
       (synopsis "Boost.Signals2 library")
       (description "The Boost.Signals2 library is an implementation of a managed
