@@ -4980,6 +4980,36 @@ for Go.")
 Caching.")
     (license license:asl2.0)))
 
+(define-public go-github-com-pquerna-ffjson
+  (package
+    (name "go-github-com-pquerna-ffjson")
+    (version "0.0.0-20190930134022-aa0246cd15f7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pquerna/ffjson")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mxmrvqmiinqhlaxncaqznxwfspf3p8bmg9vniz40dw5jpv24cwb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pquerna/ffjson"))
+    (home-page "https://github.com/pquerna/ffjson")
+    (synopsis "Faster JSON for Golang")
+    (description
+     "This package implements functinality to generate static
+@code{MarshalJSON} and @code{UnmarshalJSON} functions for structures in Go.
+The generated functions reduce the reliance upon runtime reflection to do
+serialization and are generally 2 to 3 times faster.  In cases where
+@@code{ffjson} doesn't understand a Type involved, it falls back to
+@@code{encoding/json}, meaning it is a safe drop in replacement.  By using
+@code{ffjson} your JSON serialization just gets faster with no additional code
+changes.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-puerkitobio-goquery
   (package
     (name "go-github-com-puerkitobio-goquery")
