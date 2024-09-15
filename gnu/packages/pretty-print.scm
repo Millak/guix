@@ -180,6 +180,7 @@ different programming languages.")
        (uri (git-reference
              (url "https://github.com/fmtlib/fmt")
              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "1v9k57zj34axagkxwkmg73gs9h15i6c8nv9hsgwjwmi82pinv8r0"))))
     (build-system cmake-build-system)
