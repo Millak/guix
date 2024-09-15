@@ -20552,7 +20552,7 @@ a point.  The plugin provides visual feedback for marked regions.")
 (define-public emacs-key-chord
   (package
     (name "emacs-key-chord")
-    (version "0.7")
+    (version "0.7.1.1")
     (source
      (origin
        (method git-fetch)
@@ -20562,7 +20562,7 @@ a point.  The plugin provides visual feedback for marked regions.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0r3zvq1z79csgcq0mgifdakx0z0li3haxk4wxvijwxllfb9kn22g"))))
+         "1ikg1kfyb8rgms5yvvg4117kmzw2jlq8h1wyq2l93my99c5qwm2g"))))
     (build-system emacs-build-system)
     (home-page "https://www.emacswiki.org/emacs/key-chord.el")
     (synopsis "Map pairs of simultaneously pressed keys to Emacs commands")
