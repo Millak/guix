@@ -411,7 +411,7 @@ compile does not support generics.")
 (define-public go-golang-org-x-image
   (package
     (name "go-golang-org-x-image")
-    (version "0.19.0")
+    (version "0.20.0")
     (source
      (origin
        (method git-fetch)
@@ -420,7 +420,7 @@ compile does not support generics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nb1wvy0xr0s9xylzf336vghkblkp5b9sq2hqh6wdav1awnpry90"))))
+        (base32 "0bn85bqpwkznny3lrnlfk05s2p917rbq0kplz36xyv490a74pi7l"))))
     (build-system go-build-system)
     (arguments
      (list
