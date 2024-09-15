@@ -5936,6 +5936,31 @@ levels per backend and logger.")
 specification-runtime-spec.")
     (license license:asl2.0)))
 
+(define-public go-github-com-openhistogram-circonusllhist
+  (package
+    (name "go-github-com-openhistogram-circonusllhist")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openhistogram/circonusllhist")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ngngjzl3nd30csqvp0gp2qa1hsskl3rh4fgslygvf4p34s42jxk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/openhistogram/circonusllhist"))
+    (home-page "https://github.com/circonus-labs/circonusllhist")
+    (synopsis "OpenHistogram log-linear histograms in Golang")
+    (description
+     "Package circllhist provides an implementation of Circonus fixed
+log-linear histogram data structure.  This allows tracking of histograms in a
+composable way such that accurate error can be reasoned about.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-openprinting-goipp
   (package
     (name "go-github-com-openprinting-goipp")
