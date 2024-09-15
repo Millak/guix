@@ -39958,7 +39958,7 @@ Validator service and displays the results in a buffer in Compilation mode.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dsa6769lphyyv7yg92vkkpk395w52q4m7hdn8xy7s6lh5c6a955"))))
+                "0rlqwj6whxbvzgkf78d8arjva49aphj4bd2wkpv8djykcmi8nf6m"))))
     (build-system emacs-build-system)
     (home-page "http://github.com/k-talo/volatile-highlights.el")
     (synopsis "Emacs minor mode for visual feedback on some operations")
