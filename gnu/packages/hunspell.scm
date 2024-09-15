@@ -273,28 +273,25 @@ spell-checking library.")
       (version "0.1")
       (source
        (origin
-	 (method git-fetch)
-	 (uri (git-reference
-	       (url "https://git.thanosapollo.org/hunspell-dict-el")
-	       (commit commit)))
-	 (sha256
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.thanosapollo.org/hunspell-dict-el")
+               (commit commit)))
+         (sha256
           (base32 "0z9nyfy50c0bjvvm42xwd3npjpp07a9slm3gfgvxanyqm7djrmb1"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases
-	 (modify-phases %standard-phases
-	   (delete 'build)
-           (delete 'configure)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (share (string-append out "/share/hunspell/")))
-		 (install-file "el_GR.aff" share)
-		 (install-file "el_GR.dic" share)
-		 #t))))
-	 #:tests? #f))
-      (native-inputs
-       (list hunspell ispell perl))
+       `(#:phases (modify-phases %standard-phases
+                    (delete 'build)
+                    (delete 'configure)
+                    (replace 'install
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        (let* ((out (assoc-ref outputs "out"))
+                               (share (string-append out "/share/hunspell/")))
+                          (install-file "el_GR.aff" share)
+                          (install-file "el_GR.dic" share) #t))))
+         #:tests? #f))
+      (native-inputs (list hunspell ispell perl))
       (synopsis "Hunspell Greek/Hellenic dictionary")
       (description "This package provides a dictionary for the Hunspell
 spell-checking library.")
