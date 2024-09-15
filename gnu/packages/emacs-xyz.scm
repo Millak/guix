@@ -24256,7 +24256,7 @@ work Nicolas Rougier.")
                 "0b3ixh8cqp9id1q1h2l6pl05n7vzk7ffp3ms5kxg8bvbn1l3c77l"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-org emacs-dash emacs-s))
+     (list emacs-compat emacs-dash emacs-org emacs-s))
     (home-page "https://github.com/alphapapa/org-make-toc")
     (synopsis "Maintain a table of contents for an Org file")
     (description "This package facilitates the creation and maintenance of
