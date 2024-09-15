@@ -277,6 +277,7 @@ spell-checking library.")
          (uri (git-reference
                (url "https://git.thanosapollo.org/hunspell-dict-el")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32 "0z9nyfy50c0bjvvm42xwd3npjpp07a9slm3gfgvxanyqm7djrmb1"))))
       (build-system gnu-build-system)
