@@ -6464,6 +6464,29 @@ Included are the following:
 logging.")
     (license license:expat)))
 
+(define-public go-github-com-ryanuber-columnize
+  (package
+    (name "go-github-com-ryanuber-columnize")
+    (version "2.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ryanuber/columnize")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xxzzgvfabc2qx6n313vis8l4npkggiy5kjflv0arm2y7xnv73qj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ryanuber/columnize"))
+    (home-page "https://github.com/ryanuber/columnize")
+    (synopsis "Column formatted output for golang")
+    (description
+     "This package implements column-formatted output for Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-schollz-progressbar-v3
   (package
     (name "go-github-com-schollz-progressbar-v3")
