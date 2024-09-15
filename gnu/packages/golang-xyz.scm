@@ -7290,6 +7290,31 @@ string.  The string can be a string retorned for @code{time.Duration} or a
 similar string with weeks or days too.")
     (license license:bsd-3)))
 
+(define-public go-github-com-xlab-treeprint
+  (package
+    (name "go-github-com-xlab-treeprint")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xlab/treeprint")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00k1xj3rwqa5f6n9fks8bh1m7vzssdjwxnam9kzy0rlbc74lgkl3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xlab/treeprint"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/xlab/treeprint")
+    (synopsis "ASCII tree composing tool")
+    (description
+     "This package provides a simple ASCII tree composing tool.")
+    (license license:expat)))
+
 (define-public go-github-com-yuin-gopher-lua
   (package
     (name "go-github-com-yuin-gopher-lua")
