@@ -1966,6 +1966,40 @@ impossible to merge back upstream.")
 (define-public ecl-binpack
   (sbcl-package->ecl-package sbcl-binpack))
 
+(define-public sbcl-birch
+  (let ((commit "30cd24260675c6c4e276daaf28be8d02ac15dd8f")
+        (revision "0"))
+    (package
+      (name "sbcl-birch")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jorams/birch")
+               (commit commit)))
+         (file-name (git-file-name "cl-birch" version))
+         (sha256
+          (base32 "1b24xng92ra7420s3zy44pybk4h7xg4kjwdk35arl46badgi28r1"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-alexandria
+                    sbcl-cl+ssl
+                    sbcl-flexi-streams
+                    sbcl-split-sequence
+                    sbcl-usocket))
+      (native-inputs (list sbcl-prove))
+      (home-page "https://github.com/jorams/birch")
+      (synopsis "Common Lisp IRC client library")
+      (description "Birch is a simple Common Lisp IRC client library.  It
+makes use of CLOS for event handling.")
+      (license (list license:expat)))))
+
+(define-public cl-birch
+  (sbcl-package->cl-source-package sbcl-birch))
+
+(define-public ecl-birch
+  (sbcl-package->ecl-package sbcl-birch))
+
 (define-public sbcl-bit-smasher
   ;; No release.
   (let ((commit "c2dcb3b5ec0e485484be681fe17c4e81e58790d9"))
