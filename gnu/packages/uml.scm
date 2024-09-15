@@ -39,6 +39,7 @@
               (uri (git-reference
                     (url "https://github.com/plantuml/plantuml/")
                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0h6hk34x5qc8cyqlw90wnakji8w6n9bykpr3dygvfwg2kvw5rhlv"))))
