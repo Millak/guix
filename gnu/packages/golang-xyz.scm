@@ -3326,6 +3326,49 @@ non-blocking @code{TryLock} function to allow locking without blocking
 execution.")
     (license license:bsd-3)))
 
+(define-public go-github-com-gofrs-uuid
+  (package
+    (name "go-github-com-gofrs-uuid")
+    (version "4.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gofrs/uuid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13n5q70sdw39f2j9ya5l6n7475fv5b1vns7skv56yjh04chwl7p3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gofrs/uuid"))
+    (home-page "https://github.com/gofrs/uuid")
+    (synopsis "UUID package for Golang")
+    (description
+     "Package uuid provides implementations of the Universally Unique Identifier
+(UUID), as specified in RFC-4122 and the Peabody RFC Draft (revision 03).")
+    (license license:expat)))
+
+(define-public go-github-com-gofrs-uuid-v5
+  (package
+    (inherit go-github-com-gofrs-uuid)
+    (name "go-github-com-gofrs-uuid-v5")
+    (version "5.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gofrs/uuid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fkyclwji4llkpcwwvpn00fc68mawdlz8ssf2x1vrmv33gps4icl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gofrs/uuid/v5"))))
+
 (define-public go-github-com-gogs-chardet
   (package
     (name "go-github-com-gogs-chardet")
