@@ -9335,18 +9335,18 @@ user.")
 (define-public emacs-subed
   (package
     (name "emacs-subed")
-    (version "1.2.14")
+    (version "1.2.15")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.nongnu.org/nongnu/subed-"
                                   version ".tar"))
               (sha256
                (base32
-                "0kzb054radxq9hqviadmbr4cln39yp7yz4inq4ip52rd3qdm8vy4"))))
+                "08b1ln5idclxr8jdq7san05lf3sm3iqg56v7h0yjdsxfjaqbw00a"))))
     (arguments
      (list
       #:tests? #t
-      #:test-command #~(list "make" "test-only")))
+      #:test-command #~(list "buttercup" "-L" ".")))
     (native-inputs (list emacs-buttercup))
     (inputs (list ffmpeg))
     (build-system emacs-build-system)
