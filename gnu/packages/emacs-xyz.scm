@@ -19021,7 +19021,7 @@ on Dired and image-mode.")
 (define-public emacs-diredfl
   (package
     (name "emacs-diredfl")
-    (version "0.4")
+    (version "0.5")
     (source
      (origin
        (method git-fetch)
@@ -19031,7 +19031,7 @@ on Dired and image-mode.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zb2lz7rp58zqvpniqcsmqabi7nqg2d8bfd0hgmq68bn2hd25b5z"))))
+        (base32 "125a49ibbaicp6kxv0ja9mz9paryqgz30xhl0pk3kvnm8z40hlr6"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/purcell/diredfl/")
     (synopsis "Extra Emacs font lock rules for a more colourful Dired")
