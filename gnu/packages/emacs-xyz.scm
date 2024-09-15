@@ -500,7 +500,7 @@ input via a small child-frame spawned at the position of the cursor.")
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
-    (version "0.31.1.1")
+    (version "0.31.1")
     (source
      (origin
        (method git-fetch)
