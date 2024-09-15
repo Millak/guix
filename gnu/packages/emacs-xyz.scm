@@ -24244,16 +24244,16 @@ work Nicolas Rougier.")
 (define-public emacs-org-make-toc
   (package
     (name "emacs-org-make-toc")
-    (version "0.5")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/alphapapa/org-make-toc")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "180ji6nnj6qj0rs1rdp1zlcrfsqf7ikb44ym8icbp5d6al2s4hnr"))))
+                "0b3ixh8cqp9id1q1h2l6pl05n7vzk7ffp3ms5kxg8bvbn1l3c77l"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-org emacs-dash emacs-s))
