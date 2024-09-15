@@ -4650,7 +4650,7 @@ while paused.")
   (package
     (name "emacs-async")
     (home-page "https://github.com/jwiegley/emacs-async")
-    (version "1.9.8")
+    (version "1.9.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4659,7 +4659,7 @@ while paused.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "191bjmwg5bgih1322n4q4i2jxx7aa3cb9lx0ymkwc3r2bdhkn0lp"))))
+                "0krg7n8l3yv1fnixnx6j5imdh10jpfabm6ym9s1s610hp47gpfaz"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
