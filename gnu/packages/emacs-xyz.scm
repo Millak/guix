@@ -1478,6 +1478,7 @@ its mode line.")
          (uri (git-reference
                (url "https://github.com/fritzgrabo/project-tab-groups.git")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32 "1zg9kxyjz942ib9lii0in67hwqil2xlz78vjm1qqypw3zaivhh7p"))))
       (build-system emacs-build-system)
