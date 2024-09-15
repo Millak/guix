@@ -18387,7 +18387,7 @@ are common in Chromium-derived projects.")
 (define-public emacs-gnosis
   (package
     (name "emacs-gnosis")
-    (version "0.4.1")
+    (version "0.4.3")
     (source
      (origin
        (method git-fetch)
@@ -18396,7 +18396,7 @@ are common in Chromium-derived projects.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c8gal7lfibaryb5w85zcmzpmvifdjp959v5bcjxjl37cdws0cnd"))))
+        (base32 "0kp4vwzldcyf7c8dqjrfrqgwkfysiy8n8zc4c1j1p72p0m4rxwv8"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat emacs-emacsql))
     (home-page "https://thanosapollo.org/projects/gnosis")
