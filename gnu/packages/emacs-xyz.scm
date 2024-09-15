@@ -20050,7 +20050,7 @@ methods from a given list.")
 (define-public emacs-mini-echo
   (package
     (name "emacs-mini-echo")
-    (version "0.11.1")
+    (version "0.13.1")
     (source
      (origin
        (method git-fetch)
@@ -20058,7 +20058,7 @@ methods from a given list.")
              (url "https://github.com/liuyinz/mini-echo.el")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1n00jpr6hyv1hwx36whpim6kzrybk236fhzj6dgnm6icarfmfzfa"))))
+        (base32 "0f9jwiy6syl8y0g0q11g9m6x1v4fmn8gahg0l3y2ygkz9kdwkpd3"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-dash emacs-hide-mode-line))
     (home-page "https://github.com/liuyinz/mini-echo.el")
