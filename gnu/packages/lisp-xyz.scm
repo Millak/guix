@@ -23814,7 +23814,7 @@ are provided.")
 (define-public sbcl-postmodern
   (package
     (name "sbcl-postmodern")
-    (version "1.32.9")
+    (version "1.33.12")
     (source
      (origin
        (method git-fetch)
@@ -23823,10 +23823,10 @@ are provided.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "137jci4hn4vlxf48y39k0di27kc89kvxy3brmn3vl9xq56sy6mhz"))))
+        (base32 "14js3pz0jbvf11liqbrxhndb98vasib4bzkv7im87mysxzk8glqz"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
-     (list sbcl-fiveam))
+     (list sbcl-fiveam sbcl-trivial-octet-streams))
     (inputs
      `(("alexandria" ,sbcl-alexandria)
        ("bordeaux-threads" ,sbcl-bordeaux-threads)
