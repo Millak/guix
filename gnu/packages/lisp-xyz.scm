@@ -30514,6 +30514,36 @@ the abstraction and portability layer as thin as possible.")
 (define-public ecl-usocket
   (sbcl-package->ecl-package sbcl-usocket))
 
+(define-public sbcl-utf8-input-stream
+  (let ((commit "d33b57a4d439c2f0877e5513be45eb6940d92c68")
+        (revision "0"))
+    (package
+      (name "sbcl-utf8-input-stream")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/veer66/utf8-input-stream")
+               (commit commit)))
+         (file-name (git-file-name "cl-utf8-input-stream" version))
+         (sha256
+          (base32 "06fk8fsz9nngdfjymg93h1l5m4yhfg4w8as68zlaj698xf9ry3i5"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-babel sbcl-trivial-gray-streams))
+      (home-page "https://github.com/veer66/utf8-input-stream")
+      (synopsis "UTF-8 string input stream over a binary stream for Common
+Lisp")
+      (description "This package provides a UTF-8 string input stream over a
+binary stream for Common Lisp.")
+      (license license:expat))))
+
+(define-public cl-utf8-input-stream
+  (sbcl-package->cl-source-package sbcl-utf8-input-stream))
+
+(define-public ecl-utf8-input-stream
+  (sbcl-package->ecl-package sbcl-utf8-input-stream))
+
 (define-public sbcl-utils-kt
   (let ((commit "4adfe2889036ab5ffdd3cc2182ca2cc692bf11ff"))
     (package
