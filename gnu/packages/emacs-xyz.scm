@@ -14402,6 +14402,7 @@ builtin JavaScript mode.")
          (uri (git-reference
                (url "https://github.com/emacsorphanage/qt-pro-mode")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32 "07054hzl7gd0wfibcqvij2wx9zji330gsryn53qad9gyalvlavpa"))))
       (build-system emacs-build-system)
