@@ -12609,14 +12609,14 @@ completion using Consult.")
 (define-public emacs-consult-denote
   (package
     (name "emacs-consult-denote")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/consult-denote-"
                            version ".tar"))
        (sha256
-        (base32 "0yhf9fifas87rs4wdapszbpx1xqyq44izjq7vzpyvdlh5a5fhhx1"))))
+        (base32 "0kvxjglh8cij22qzqbxaf8zrp75cph4536iqncp1rq789i0mjkzm"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-consult emacs-denote))
     (home-page "https://github.com/protesilaos/consult-denote")
