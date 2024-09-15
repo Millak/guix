@@ -726,14 +726,14 @@ type of floppy disk")
 (define-public gparted
   (package
     (name "gparted")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gparted/gparted/gparted-"
                            version "/gparted-" version ".tar.gz"))
        (sha256
-        (base32 "1pm8jah6lakv83zm3isx4bgmi5xdwaqkjxmiv7qky224m4kfm59w"))))
+        (base32 "0nzaqvbdwq3daddby79k9rh3d560g5kaxqamkasxqka9rsrm37wv"))))
     (build-system glib-or-gtk-build-system)
     (arguments
       ;; Tests require access to files outside the build container, such
