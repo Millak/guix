@@ -2487,6 +2487,35 @@ the Go standard library, but returns a client that does not share any state
 with other clients.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-go-retryablehttp
+  (package
+    (name "go-github-com-hashicorp-go-retryablehttp")
+    (version "0.7.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-retryablehttp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11bqzz3244vpa91l5bx8pp5pajbcg4qxrl8ic2x0qgwbrjfz362x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-retryablehttp"))
+    (propagated-inputs
+     (list go-github-com-hashicorp-go-hclog
+           go-github-com-hashicorp-go-cleanhttp))
+    (home-page "https://github.com/hashicorp/go-retryablehttp")
+    (synopsis "Retryable HTTP client in Golang")
+    (description
+     "Package retryablehttp provides a familiar HTTP client interface with
+automatic retries and exponential backoff.  It is a thin wrapper over the
+standard @code{net/http} client library and exposes nearly the same public
+API.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hjson-hjson-go-v4
   (package
     (name "go-github-com-hjson-hjson-go-v4")
