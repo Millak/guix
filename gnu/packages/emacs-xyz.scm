@@ -3434,6 +3434,7 @@ terminals.")
        (uri (git-reference
              (url "https://github.com/ybiquitous/rbs-mode")
              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "1ibn8246q0yqdnf3qdww9rvzac9gla7gzjj0n5j5x08brgj5ll2h"))))
     (build-system emacs-build-system)
