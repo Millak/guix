@@ -19806,7 +19806,7 @@ in Emacs.")
 (define-public emacs-php-mode
   (package
     (name "emacs-php-mode")
-    (version "1.25.1")
+    (version "1.26.1")
     (home-page "https://github.com/emacs-php/php-mode")
     (source
      (origin
@@ -19816,7 +19816,7 @@ in Emacs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pxv4c63dma1il6w8vl2485yddp0ngm3gvfdqwjjszanfdxa4fg1"))))
+        (base32 "12skkn3i5qvlfnifgyp3sm4yjikphckj98y73vhxn73zzbn2lw6m"))))
     (build-system emacs-build-system)
     (arguments
      (list
