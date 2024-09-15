@@ -2498,11 +2498,11 @@ validation.")
       (license license:asl2.0))))
 
 (define-public bloomberg-bde
-  (let ((commit "77a0f39d538c20ae28bece9a81cac99a9e1df95d"))
+  (let ((commit "445a8ac4223b90ee0a46749b87ffbbd21788e132"))
     (package
       (name "bloomberg-bde")
       ;; Recent releases are not tagged so commit must be used for checkout.
-      (version "3.118.0.1")
+      (version "4.14.0.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -2511,7 +2511,7 @@ validation.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0nw5clkc9yipd03kijh4c8lxi9zkxfxcjhszl1xzwvgz8xmpampf"))
+                  "1hf09d4fcn77s1vv6qrh0sa0rv9wijpk55km6p3zi2ymkb2cha3c"))
                 (patches
                  (search-patches
                   "bloomberg-bde-cmake-module-path.patch"))
@@ -2525,24 +2525,12 @@ validation.")
                     ;; Delete failing tests.
                     (for-each
                      delete-file
-                     (list "groups/bal/ball/ball_asyncfileobserver.t.cpp"
-                           "groups/bal/ball/ball_fileobserver2.t.cpp"
-                           "groups/bal/ball/ball_recordstringformatter.t.cpp"
-                           "groups/bal/balst/balst_stacktraceresolver_filehelper.t.cpp"
+                     (list "groups/bal/balcl/balcl_commandline.t.cpp"
+                           "groups/bal/balst/balst_resolver_filehelper.t.cpp"
+                           "groups/bal/balst/balst_stacktraceprintutil.t.cpp"
                            "groups/bal/balst/balst_stacktraceutil.t.cpp"
-                           "groups/bdl/bdlmt/bdlmt_eventscheduler.t.cpp"
-                           "groups/bdl/bdlmt/bdlmt_timereventscheduler.t.cpp"
-                           "groups/bdl/bdls/bdls_filesystemutil.t.cpp"
                            "groups/bsl/bslh/bslh_hash.t.cpp"
-                           "groups/bsl/bslh/bslh_hashpair.t.cpp"
-                           "groups/bsl/bsls/bsls_platform.t.cpp"
-                           "groups/bsl/bsls/bsls_stackaddressutil.t.cpp"
-                           "groups/bsl/bsls/bsls_stopwatch.t.cpp"
-                           "groups/bsl/bsls/bsls_timeutil.t.cpp"
-                           "groups/bsl/bslstl/bslstl_deque.1.t.cpp"
-                           "groups/bsl/bslstl/bslstl_deque.2.t.cpp"
-                           "groups/bsl/bslstl/bslstl_deque.3.t.cpp"
-                           "groups/bsl/bslstl/bslstl_function_invokerutil.t.cpp"))
+                           "groups/bsl/bsls/bsls_timeutil.t.cpp"))
                     #t))))
       (build-system cmake-build-system)
       (arguments
