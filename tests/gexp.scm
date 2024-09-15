@@ -944,6 +944,33 @@
          (and (file=? (string-append dir "/a/b/c") q-scm* stat)
               (file=? (string-append dir "/p/q") plain* stat)))))))
 
+(test-assert "imported-files does not create symlinks"
+  ;; 'imported-files' should always produce a directory with regular files,
+  ;; whether or not it's going through 'imported-files/derivation'.
+  ;; See <https://issues.guix.gnu.org/73275>.
+  (call-with-temporary-directory
+   (lambda (directory)
+     (symlink (search-path %load-path "guix/store.scm")
+              (in-vicinity directory "store.scm"))
+
+     (run-with-store %store
+       (mlet* %store-monad
+           ((files1 -> `(("x" . ,(in-vicinity directory "store.scm"))))
+            (files2 -> `(,@files1
+                         ("y" . ,(plain-file "foo.scm" "#t"))))
+            (import1 (imported-files files1))
+            (import2-drv (imported-files files2))
+            (import2 -> (derivation->output-path import2-drv))
+            (_ (built-derivations (list import2-drv))))
+         (return (and (eq? (stat:type (lstat (in-vicinity import1 "x")))
+                           'regular)
+                      (eq? (stat:type (lstat (in-vicinity import2 "x")))
+                           'regular)
+                      (file=? (in-vicinity import1 "x")
+                              (search-path %load-path "guix/store.scm"))
+                      (file=? (in-vicinity import2 "x")
+                              (search-path %load-path "guix/store.scm")))))))))
+
 (test-equal "gexp-modules & ungexp"
   '((bar) (foo))
   ((@@ (guix gexp) gexp-modules)

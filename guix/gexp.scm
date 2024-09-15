@@ -1629,7 +1629,7 @@ as returned by 'local-file' for example."
              (_ #f))
            files)
       (imported-files/derivation files #:name name
-                                 #:symlink? derivation?
+                                 #:symlink? #f    ;like 'interned-file-tree'
                                  #:system system #:guile guile)
       (interned-file-tree `(,name directory
                                   ,@(file-mapping->tree files)))))
