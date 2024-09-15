@@ -360,6 +360,46 @@ reflect.DeepEqual but returns a list of differences.  This is helpful
 when comparing complex types like structures and maps.")
     (license license:expat)))
 
+(define-public go-github-com-golang-mock
+  (package
+    (name "go-github-com-golang-mock")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/mock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hara8j0x431njjhqxfrg1png7xa1gbrpwza6ya4mwlx76hppap4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/golang/mock"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v"
+                          ;; Network access required
+                          "-skip" "TestFileParser|TestImportsOfFile"
+                          "./..."))))))))
+    (propagated-inputs
+     (list go-golang-org-x-tools go-golang-org-x-mod))
+    (home-page "https://github.com/golang/mock")
+    (synopsis "Mocking framework for Golang")
+    (description
+     "gomock is a mocking framework for the @url{http://golang.org/,Go
+programming language}.  It integrates well with Go's built-in @code{testing}
+package, but can be used in other contexts too.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-golangplus-testing
   (package
     (name "go-github-com-golangplus-testing")
