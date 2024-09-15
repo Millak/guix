@@ -8116,65 +8116,60 @@ You can save humanity and get programming skills!")
              (delete-file-recursively "bzip2")
              (delete-file-recursively "game-music-emu")
              (delete-file-recursively "jpeg")
-             (delete-file-recursively "zlib"))
-           #t))))
+             (delete-file-recursively "zlib"))))))
     (arguments
-     '(#:tests? #f
-       #:configure-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list
-          (string-append
-           "-DCMAKE_CXX_FLAGS:="
-           "-DSHARE_DIR=\\\"" out "/share/\\\" "
-           "-DGUIX_OUT_PK3=\\\"" out "/share/games/doom\\\"")
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list
+         (string-append
+          "-DCMAKE_CXX_FLAGS:="
+          "-DSHARE_DIR=\\\"" #$output "/share/\\\" "
+          "-DGUIX_OUT_PK3=\\\"" #$output "/share/games/doom\\\"")
 
-          ;; The build requires some extra convincing not to use the bundled
-          ;; libgme previously deleted in the soure snippet.
-          "-DFORCE_INTERNAL_GME=OFF"
+         ;; The build requires some extra convincing not to use the bundled
+         ;; libgme previously deleted in the soure snippet.
+         "-DFORCE_INTERNAL_GME=OFF"
 
-          ;; Link libraries at build time instead of loading them at run time.
-          "-DDYN_OPENAL=OFF"
-          "-DDYN_FLUIDSYNTH=OFF"
-          "-DDYN_GTK=OFF"
-          "-DDYN_MPG123=OFF"
-          "-DDYN_SNDFILE=OFF"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-referenced-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((fluid-3 (assoc-ref inputs "fluid-3"))
-                   (timidity++ (assoc-ref inputs "timidity++"))
-                   (out (assoc-ref outputs "out")))
-
-               (substitute*
-                   "src/CMakeLists.txt"
-                 (("COMMAND /bin/sh")
-                  (string-append "COMMAND " (which "sh"))))
-
-               (substitute*
-                   "libraries/zmusic/mididevices/music_fluidsynth_mididevice.cpp"
-                 (("/usr/share/sounds/sf2/FluidR3_GM.sf2")
-                  (string-append fluid-3 "/share/soundfonts/FluidR3Mono_GM.sf3")))
-
-               (substitute*
-                   "libraries/zmusic/mididevices/music_timiditypp_mididevice.cpp"
-                 (("exename = \"timidity\"")
-                  (string-append "exename = \"" timidity++ "/bin/timidity\"")))
-               #t))))))
+         ;; Link libraries at build time instead of loading them at run time.
+         "-DDYN_OPENAL=OFF"
+         "-DDYN_FLUIDSYNTH=OFF"
+         "-DDYN_GTK=OFF"
+         "-DDYN_MPG123=OFF"
+         "-DDYN_SNDFILE=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-file-names
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/CMakeLists.txt"
+                (("COMMAND /bin/sh")
+                 (string-append "COMMAND " (which "sh"))))
+              (substitute*
+                  "libraries/zmusic/mididevices/music_fluidsynth_mididevice.cpp"
+                (("/usr/share/sounds/sf2/FluidR3_GM.sf2")
+                 (search-input-file inputs
+                                    "share/soundfonts/FluidR3Mono_GM.sf3")))
+              (substitute*
+                  "libraries/zmusic/mididevices/music_timiditypp_mididevice.cpp"
+                (("(exename = \")(timidity)(\".*)" _ prefix exe suffix)
+                 (string-append prefix
+                                (search-input-file inputs
+                                                   (string-append "bin/" exe))
+                                suffix))))))))
     (build-system cmake-build-system)
-    (inputs `(("bzip2" ,bzip2)
-              ("fluid-3" ,fluid-3)
-              ("fluidsynth" ,fluidsynth)
-              ("gtk+3" ,gtk+)
-              ("libgme" ,libgme)
-              ("libjpeg" ,libjpeg-turbo)
-              ("libsndfile" ,libsndfile)
-              ("mesa" ,mesa)
-              ("mpg123" ,mpg123)
-              ("openal" ,openal)
-              ("sdl2" ,sdl2)
-              ("timidity++" ,timidity++)
-              ("zlib" ,zlib)))
+    (inputs (list bzip2
+                  fluid-3
+                  fluidsynth
+                  gtk+
+                  libgme
+                  libjpeg-turbo
+                  libsndfile
+                  mesa
+                  mpg123
+                  openal
+                  sdl2
+                  timidity++
+                  zlib))
     (native-inputs (list pkg-config unzip))
     (synopsis "Modern Doom 2 source port")
     (description "GZdoom is a port of the Doom 2 game engine, with a modern
