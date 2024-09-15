@@ -762,6 +762,34 @@ provides convenience wrappers for registering latency instrumented functions
 with Go's builtin http server.")
     (license license:bsd-3)))
 
+(define-public go-github-com-circonus-labs-go-apiclient
+  (package
+    (name "go-github-com-circonus-labs-go-apiclient")
+    (version "0.7.24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/circonus-labs/go-apiclient")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ysfycnjmqkn1prlz68k2nkrkk3570q5gx0d6vdvvwfhvlisj4c7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/circonus-labs/go-apiclient"))
+    (propagated-inputs
+     (list go-github-com-hashicorp-go-retryablehttp
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/circonus-labs/go-apiclient")
+    (synopsis "Circonus API Client for Golang")
+    (description
+     "Package apiclient provides methods for interacting with the Circonus
+API.  See the full Circonus API Documentation at
+@url{https://login.circonus.com/resources/api} for more information.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-coder-websocket
   (package
     (name "go-github-com-coder-websocket")
