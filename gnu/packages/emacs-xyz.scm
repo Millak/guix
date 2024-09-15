@@ -586,21 +586,32 @@ API key.")
 (define-public emacs-chatgpt-shell
   (package
     (name "emacs-chatgpt-shell")
-    (version "1.3.1")
+    (version "1.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/xenodium/chatgpt-shell")
-                    (commit "1de7bfa6a34f20cca813006282d9a8f2ef291f95")))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rabpp70qlmc47lmp2v7ckvfjhy6wkk881fxpbv2dchzhn77qk5r"))))
+                "1cpfjy47h4xnrk1g7hgxyxc5dwz30xy89ch37ab38nvaqv5ajlqd"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; This phase prevents build phase failure.
+               (add-before 'build 'generate-empty-config-file
+                 (lambda _
+                   (setenv "HOME" (getcwd))
+                   (mkdir-p ".emacs.d")
+                   (call-with-output-file ".emacs.d/.chatgpt-shell.el"
+                     (lambda (port)
+                       (display "nil" port))))))))
     (home-page "https://github.com/xenodium/chatgpt-shell")
-    (synopsis "ChatGPT and DALL-E Emacs shells + Org Babel")
+    (synopsis "ChatGPT and DALL-E Emacs shells and Org Babel libraries")
     (description
-     "chatgpt-shell is a comint-based ChatGPT shell for Emacs.")
+     "Chatgpt Shell is a Comint-based ChatGPT shell for Emacs.")
     (license license:gpl3+)))
 
 (define-public emacs-geiser-guile
