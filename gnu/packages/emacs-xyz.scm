@@ -17645,7 +17645,7 @@ components required by the produced @file{.tex} file.")
 (define-public emacs-org-contrib
   (package
     (name "emacs-org-contrib")
-    (version "0.5")
+    (version "0.6")
     (source
      (origin
        (method git-fetch)
@@ -17654,7 +17654,7 @@ components required by the produced @file{.tex} file.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iwzxaxn4nc78xn8g13xk081fbqmkxw1hsjvlkpms43xzwpdig5a"))))
+        (base32 "08m3aa8vsrlkacbvindjwqzviv5r8i9a0vzsrl8rx01xq5b0zd42"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
