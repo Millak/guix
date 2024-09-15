@@ -4260,6 +4260,35 @@ encoding table that uses only URI-compatible characters.")
 (define-public ecl-cl-base64
   (sbcl-package->ecl-package sbcl-cl-base64))
 
+(define-public sbcl-cl-bnf
+  (let ((commit "ce009e3d60697bc376116e988f29ec0cbb1e9c84")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-bnf")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/diasbruno/cl-bnf")
+               (commit commit)))
+         (file-name (git-file-name "cl-bnf" version))
+         (sha256
+          (base32 "0aa7hnkj71f37lxzlhsppwcmk3yv42hclq08c4jrdnv8jmdb8r0l"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-flexi-streams sbcl-utf8-input-stream))
+      (home-page "https://github.com/diasbruno/cl-bnf")
+      (synopsis "BNF parser in Common Lisp")
+      (description "This package provides a @acronym{BNF, Backus–Naur form}
+parser in Common Lisp.")
+      (license (list license:expat)))))
+
+(define-public cl-bnf
+  (sbcl-package->cl-source-package sbcl-cl-bnf))
+
+(define-public ecl-cl-bnf
+  (sbcl-package->ecl-package sbcl-cl-bnf))
+
 (define-public sbcl-cl-cairo2
   (let ((commit "41ae45aac86553c46f4bb460f80e1fb620930f5b")
         (revision "1"))
