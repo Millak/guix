@@ -4123,6 +4123,38 @@ used to read GeoLite2 and GeoIP2 databases, @code{geoip2} provides a
 higher-level API for doing so.")
     (license license:isc)))
 
+(define-public go-github-com-pascaldekloe-goe
+  (package
+    (name "go-github-com-pascaldekloe-goe")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pascaldekloe/goe")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mszfjcc29b6nvw3hs8w33iy6zx6ih5v2jlard0dsrgkpvsx5c81"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pascaldekloe/goe"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (home-page "https://github.com/pascaldekloe/goe")
+    (synopsis "Enterprise tooling for Golang")
+    (description
+     "Common enterprise features for the Go programming language.")
+    (license license:cc0)))
+
 (define-public go-github-com-pion-datachannel
   (package
     (name "go-github-com-pion-datachannel")
