@@ -1601,35 +1601,25 @@ prototyped in @url{https://github.com/xeipuuv/gojsonreference}.")
       #:import-path "github.com/go-openapi/loads"
       #:phases
       #~(modify-phases %standard-phases
-          ;; FIXME: pattern schemas/*.json: cannot embed irregular file
-          ;; schemas/jsonschema-draft-04.json
+          ;; TODO: Implement it in go-build-system.
           ;;
           ;; This happens due to Golang can't determine the valid directory of
-          ;; the module which is sourced during setup environment phase, but
-          ;; easy resolved after coping to expected directory "vendor" within
-          ;; the current package, see details in Golang source:
+          ;; the module of embed file which is symlinked during setup
+          ;; environment phase, but easy resolved after coping file from the
+          ;; store to the build directory of the current package, see details
+          ;; in Golang source:
           ;;
           ;; - URL: <https://github.com/golang/go/blob/>
           ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
           ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-before 'build 'copy-input-to-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (mkdir "vendor")
-                (copy-recursively
-                 (string-append
-                  #$(this-package-input "go-github-com-go-openapi-spec")
-                  "/src/github.com")
-                 "vendor/github.com")
-                (copy-recursively
-                 (string-append
-                  #$(this-package-input "go-github-com-go-openapi-analysis")
-                  "/src/github.com")
-                 "vendor/github.com"))))
-          (add-before 'install 'remove-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "vendor")))))))
+          (add-after 'unpack 'fix-embed-files
+            (lambda _
+              (for-each (lambda (file)
+                          (let ((file-store-path (readlink file)))
+                            (delete-file file)
+                            (copy-recursively file-store-path file)))
+                        (find-files "src"
+                                    "^(jsonschema-draft-04|schema)\\.json$")))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
