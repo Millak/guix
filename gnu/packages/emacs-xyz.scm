@@ -13002,7 +13002,7 @@ regardless of @code{highlight-symbol-idle-delay}.
 (define-public emacs-symbol-overlay
   (package
     (name "emacs-symbol-overlay")
-    (version "4.2")
+    (version "4.3")
     (source
      (origin
        (method git-fetch)
@@ -13011,7 +13011,7 @@ regardless of @code{highlight-symbol-idle-delay}.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10n0871xzycifyqp73xnbqmrgy60imlb26yhm3p6vfj3d84mg1b2"))))
+        (base32 "0xqzn4j27xny3gmjan9phcl60zipp49p79nv57i7mpz8y0qahc59"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/wolray/symbol-overlay")
     (synopsis "Highlight symbols and perform various search operations on them")
