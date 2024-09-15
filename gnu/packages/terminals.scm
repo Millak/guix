@@ -1504,6 +1504,7 @@ terminal are replicated to the others.
        (uri (git-reference
              (url "https://github.com/tio/tio")
              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "050zm7nh9niag1amjql859cj3xc9gbidk3zz546h6fhhh3vykmfl"))))
     (build-system meson-build-system)
