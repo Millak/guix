@@ -6174,6 +6174,31 @@ processes.")
      (list go-github-com-stretchr-testify))
     (propagated-inputs '())))
 
+(define-public go-github-com-philhofer-fwd
+  (package
+    (name "go-github-com-philhofer-fwd")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/philhofer/fwd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "083zlvna3mz37p91r4h8r7yvjqcvsgr9l5p0zidmk3ajq6gxds1p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/philhofer/fwd"))
+    (home-page "https://github.com/philhofer/fwd")
+    (synopsis "Buffered Reader/Writer for Goalng")
+    (description
+     "Package fwd provides a buffered reader and writer.  Each has methods
+that help improve the encoding/decoding performance of some binary
+protocols.")
+    (license license:expat)))
+
 (define-public go-github-com-pierrec-cmdflag
   (package
     (name "go-github-com-pierrec-cmdflag")
