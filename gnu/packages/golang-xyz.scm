@@ -3560,6 +3560,59 @@ a command-line program @code{hclogvet} that can be used to check that the loggin
 methods on @code{hclog.Logger} are used correctly.")
     (license license:expat)))
 
+(define-public go-github-com-hashicorp-go-immutable-radix
+  (package
+    (name "go-github-com-hashicorp-go-immutable-radix")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-immutable-radix")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s7sf8y5lj8rx4gdymrz29gg6y2xwksfpgniaz32yzcmg3c817zb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-immutable-radix"))
+    (propagated-inputs
+     (list go-github-com-hashicorp-golang-lru
+           go-github-com-hashicorp-go-uuid))
+    (home-page "https://github.com/hashicorp/go-immutable-radix")
+    (synopsis "Immutable radix tree implementation in Golang")
+    (description
+     "This package implements an immutable
+@url{http://en.wikipedia.org/wiki/Radix_tree,radix tree}.  It only provides a
+single @code{Tree} implementation, optimized for sparse nodes.")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-go-immutable-radix-v2
+  (package
+    (inherit go-github-com-hashicorp-go-immutable-radix)
+    (name "go-github-com-hashicorp-go-immutable-radix-v2")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-immutable-radix")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sik2rg6xldk87aqzx9dmpg4f2cwkk7ypdwsjqq131npx7jszxzr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-immutable-radix/v2"))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs
+                     go-github-com-hashicorp-go-immutable-radix)
+       (prepend go-golang-org-x-exp)
+       (replace "go-github-com-hashicorp-golang-lru"
+         go-github-com-hashicorp-golang-lru-v2)))))
+
 (define-public go-github-com-hashicorp-go-multierror
   (package
     (name "go-github-com-hashicorp-go-multierror")
