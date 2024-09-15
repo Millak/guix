@@ -7080,6 +7080,39 @@ readability, or to compact JSON for smaller payloads.")
 document.")
     (license license:expat)))
 
+(define-public go-github-com-tinylib-msgp
+  (package
+    (name "go-github-com-tinylib-msgp")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tinylib/msgp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mplb420i9cmf40qwsqzd1plln52nl0x0b7nkxffyr0pdh9za79a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests require alternative Golang compiler
+      ;; <https://github.com/tinygo-org/tinygo>.
+      #:tests? #f
+      #:import-path "github.com/tinylib/msgp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build))))
+    (propagated-inputs
+     (list go-golang-org-x-tools go-github-com-philhofer-fwd))
+    (home-page "http://msgpack.org/")
+    (synopsis "MessagePack Code Generator")
+    (description
+     "This package provides a code generation tool for creating methods to
+serialize and de-serialize Go data structures to and from data interchange
+format - @url{https://en.wikipedia.org/wiki/MessagePack,MessagePack}.")
+    (license license:expat)))
+
 (define-public go-github-com-tklauser-go-sysconf
   (package
     (name "go-github-com-tklauser-go-sysconf")
