@@ -918,6 +918,28 @@ Any}.")
 client in Golang.")
     (license license:expat)))
 
+(define-public go-github-com-datadog-datadog-go-v5
+  (package
+    (inherit go-github-com-datadog-datadog-go)
+    (name "go-github-com-datadog-datadog-go-v5")
+    (version "5.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DataDog/datadog-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05cw8n2hv8sa6s4qi4xkkv75y9bzn5qdqx1hv5g9h49cw92rkcas"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-datadog-datadog-go)
+       ((#:import-path _) "github.com/DataDog/datadog-go/v5")))
+    (native-inputs
+     (modify-inputs (package-native-inputs go-github-com-datadog-datadog-go)
+       (append go-github-com-golang-mock)))))
+
 (define-public go-github-com-emersion-go-imap
   (package
     (name "go-github-com-emersion-go-imap")
