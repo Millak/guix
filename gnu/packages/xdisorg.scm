@@ -1538,6 +1538,7 @@ Escape key when Left Control is pressed and released on its own.")
               (uri (git-reference
                     (url "https://github.com/linuxwacom/libwacom")
                     (commit (string-append "libwacom-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "1z8p8k19j4snl90rh1j9m53m1wq4vamsdny3hq9azwmzwf3xf6bp"))))
