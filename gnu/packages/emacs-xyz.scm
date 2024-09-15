@@ -23877,7 +23877,7 @@ match your personal coding style.")
 (define-public emacs-epkg
   (package
     (name "emacs-epkg")
-    (version "4.0.0")
+    (version "4.0.1")
     (source
      (origin
        (method git-fetch)
@@ -23886,7 +23886,7 @@ match your personal coding style.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w06bpwbwsl3diypywfzrwp6l0kr3h34xja34xssym2bmdl11z8p"))))
+        (base32 "1sja71lzr1k1kh1332n03zy2gyjjywc3rip9ylmd85s9kg6im9hj"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
