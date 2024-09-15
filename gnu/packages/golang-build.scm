@@ -620,7 +620,7 @@ support for low-level interaction with the operating system.")
 (define-public go-golang-org-x-term
   (package
     (name "go-golang-org-x-term")
-    (version "0.23.0")
+    (version "0.24.0")
     (source
      (origin
        (method git-fetch)
@@ -629,7 +629,7 @@ support for low-level interaction with the operating system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pdv60bm4gfvgf98lyms92qm32zc4f4h4w1fagrhzllwflmsca8h"))))
+        (base32 "1sclnlbchqqlspm5l914xgs70yyjswarrrahkf8n44gkr2kbkw1x"))))
     (build-system go-build-system)
     (arguments '(#:import-path "golang.org/x/term"))
     (propagated-inputs
