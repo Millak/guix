@@ -700,6 +700,7 @@ Wayland, and Linux console environments alike.")
        (uri (git-reference
              (url "https://github.com/matterhorn-chat/matterhorn")
              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "08ng5axranilvfl9j3v0mjgpg76kzacrqj4c8x6pblpc3yxx02i5"))))
     (build-system haskell-build-system)
