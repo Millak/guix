@@ -318,9 +318,9 @@ programmatic functions.")
        (uri (git-reference
              (url "https://github.com/chuffed/chuffed")
              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-         (base32
-           "164brmwn71p9gb2441kh7b1gzmy2sg7bjv5z00wjs9nw41qc908g"))))
+        (base32 "164brmwn71p9gb2441kh7b1gzmy2sg7bjv5z00wjs9nw41qc908g"))))
     (build-system cmake-build-system)
     (arguments
       (list #:tests? #f ;no 'test' target
