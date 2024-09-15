@@ -881,6 +881,43 @@ Any}.")
            go-golang-org-x-net
            go-golang-org-x-oauth2))))
 
+(define-public go-github-com-datadog-datadog-go
+  (package
+    (name "go-github-com-datadog-datadog-go")
+    (version "4.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DataDog/datadog-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03dc3ld9zyynhmslzlciry6rs06hvd1c5finjip9vj300xaybazl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/DataDog/datadog-go"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/DataDog/datadog-go")
+    (synopsis "Golang client library to work with DataDog's API")
+    (description
+     "@code{datadog-go} is a library that provides a
+@url{https://docs.datadoghq.com/developers/dogstatsd/?code-lang=go,@code{DogStatsD}}
+client in Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-emersion-go-imap
   (package
     (name "go-github-com-emersion-go-imap")
