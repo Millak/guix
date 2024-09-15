@@ -722,6 +722,46 @@ and stop increasing when a certain threshold is met.")
     (description "This package provides a CSS parser and inliner.")
     (license license:expat)))
 
+(define-public go-github-com-circonus-labs-circonus-gometrics
+  (package
+    (name "go-github-com-circonus-labs-circonus-gometrics")
+    (version "2.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/circonus-labs/circonus-gometrics")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s2wir711h0k2h8xsypgpzshccnx8jkwjfni7n32l7wd8yng9ngs"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module name has been changed upstream, permament redirect:
+            ;; <https://github.com/circonus-labs/circonusllhist> ->
+            ;; <https://github.com/openhistogram/circonusllhist>.
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/circonus-labs/circonusllhist")
+               "github.com/openhistogram/circonusllhist"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-skip" "TestNew|TestFlushMetrics|TestPromOutput")
+      #:import-path "github.com/circonus-labs/circonus-gometrics"))
+    (propagated-inputs
+     (list go-github-com-hashicorp-go-retryablehttp
+           go-github-com-openhistogram-circonusllhist
+           go-github-com-pkg-errors
+           go-github-com-tv42-httpunix))
+    (home-page "https://github.com/circonus-labs/circonus-gometrics")
+    (synopsis "Circonus metrics tracking for Golang")
+    (description
+     "This library supports named counters, gauges and histograms.  It also
+provides convenience wrappers for registering latency instrumented functions
+with Go's builtin http server.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-coder-websocket
   (package
     (name "go-github-com-coder-websocket")
