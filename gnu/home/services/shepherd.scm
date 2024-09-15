@@ -91,9 +91,8 @@ as shepherd package."
                      (load file))))
                 '#$files))
 
-          #$@(if daemonize?
-                 `((action 'root 'daemonize))
-                 '())
+          #$(and daemonize?
+                 #~(perform-service-action root-service 'daemonize))
 
           (format #t "Starting services...~%")
           (let ((services-to-start
