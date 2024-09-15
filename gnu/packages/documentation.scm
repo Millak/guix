@@ -456,6 +456,7 @@ inspired by Dash.")
              (uri (git-reference
                    (url "https://github.com/morgan3d/markdeep")
                    (commit (string-append "v0" version))))
+             (file-name (git-file-name name version))
              (sha256
               (base32 "05bvw3993xh1260ckclwk4jw38hvgiff0b2940ryhbhz0p1k41l8"))))
     (build-system copy-build-system)
