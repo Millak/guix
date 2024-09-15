@@ -84,6 +84,7 @@
 ;;; Copyright © 2024 Sébastien Lerique <sl@eauchat.org>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
+;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11804,6 +11805,45 @@ on the pitch of the voice and the rhythm of singing.")
        "This package provides a set of udev rules for game controllers and
 virtual reality devices.")
       (license license:expat))))
+
+(define-public gemrb
+  (package
+    (name "gemrb")
+    (version "0.9.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gemrb/gemrb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wfmq4z2in18k4znshd7h1i496zlskbci49yp5d54mfxvyp534m5"))
+       ;; Remove the patch in the next version, as commit d339c0d fixes this
+       (patches (search-patches
+                 "gemrb-add-path-suffixes-for-vlc-headers.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags `("-DUSE_TESTS=ON" "-DOPENGL_BACKEND=OpenGL")))
+    (native-inputs (list python-3.10 glibc-locales googletest))
+    (inputs (list freetype
+                  libiconv
+                  libpng
+                  libvorbis
+                  openal
+                  sdl2
+                  sdl2-mixer
+                  vlc
+                  zlib))
+    (home-page "https://gemrb.org/")
+    (synopsis
+     "Portable open-source implementation of Bioware's Infinity Engine")
+    (description
+     "GemRB (Game Engine Made with preRendered Background) is a portable
+     open-source reimplementation of the Infinity Engine that underpinned
+     Baldur's Gate, Icewind Dale and Planescape: Torment.  It sports a
+     cleaner design, greater extensibility and several innovations.")
+    (license (list license:gpl2))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
