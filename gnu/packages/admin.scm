@@ -2513,6 +2513,7 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
        (uri (git-reference
              (url "https://github.com/acpica/acpica")
              (commit (string-append "version-" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "0dzrdhdgmmr6kqm95avvhr295kj8xi6iwm510lfwaylxzh34ln26"))))
     (build-system gnu-build-system)
