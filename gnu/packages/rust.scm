@@ -1418,10 +1418,10 @@ exec -a \"$0\" \"~a\" \"$@\""
           #~(modify-phases #$phases
               (add-after 'unpack 'unbundle-xz
                 (lambda _
-                  (delete-file-recursively "vendor/lzma-sys/xz-5.2")
+                  (delete-file-recursively "vendor/lzma-sys-0.1.20/xz-5.2")
                   ;; Remove the option of using the static library.
                   ;; This is necessary for building the sysroot.
-                  (substitute* "vendor/lzma-sys/build.rs"
+                  (substitute* "vendor/lzma-sys-0.1.20/build.rs"
                     (("!want_static && ") ""))))
               #$@(if (target-mingw? target)
                      `((add-after 'set-env 'patch-for-mingw
@@ -1446,7 +1446,9 @@ exec -a \"$0\" \"~a\" \"$@\""
                                     ":"))
                            ;; When building a rust-sysroot this crate is only used for
                            ;; the rust-installer.
-                           (substitute* "vendor/num_cpus/src/linux.rs"
+                           (substitute* '("vendor/num_cpus-1.13.0/src/linux.rs"
+                                          "vendor/num_cpus-1.13.1/src/linux.rs"
+                                          "vendor/num_cpus-1.16.0/src/linux.rs")
                              (("\\.ceil\\(\\)") ""))
                            ;; gcc doesn't recognize this flag.
                            (substitute*
@@ -1536,6 +1538,7 @@ ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target targe
               (replace 'install
                 (lambda _
                   (invoke "./x.py" "install" "library/std")))
+              (delete 'enable-profiling)
               (delete 'install-rust-src)
               (delete 'wrap-rust-analyzer)
               (delete 'wrap-rustc)))))
