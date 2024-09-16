@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Christina O'Donnell <cdo@mutix.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

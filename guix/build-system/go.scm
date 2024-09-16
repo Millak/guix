@@ -5,6 +5,7 @@
 ;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2024 Christina O'Donnell <cdo@mutix.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
