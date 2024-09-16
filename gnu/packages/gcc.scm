@@ -1225,8 +1225,9 @@ misnomer.")))
 (define-public libgccjit-12 (make-libgccjit gcc-12))
 (define-public libgccjit-14 (make-libgccjit gcc-14))
 
-;; Use the 'gcc' variable from above to track the same version.
-(define-public libgccjit (make-libgccjit gcc))
+;; This must match the 'gcc' variable, but it must also be 'eq?' to one of the
+;; libgccjit-* packages above.
+(define-public libgccjit libgccjit-11)
 
 (define (make-gccgo gcc)
   "Return a gccgo package based on GCC."
