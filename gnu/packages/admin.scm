@@ -2059,77 +2059,78 @@ system administrator.")
     (build-system gnu-build-system)
     (outputs (list "out"))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--docdir=" (assoc-ref %outputs "out")
-                            "/share/doc/" ,name "-" ,version)
+     (list #:configure-flags
+           #~(list (string-append "--docdir=" #$output
+                                  "/share/doc/" #$name "-" #$version)
 
-             "--with-logpath=/var/log/sudo.log"
-             "--with-rundir=/var/run/sudo" ; must be cleaned up at boot time
-             "--with-vardir=/var/db/sudo"
-             "--with-iologdir=/var/log/sudo-io"
+                   "--with-logpath=/var/log/sudo.log"
+                   "--with-rundir=/var/run/sudo" ; must be cleaned up at boot time
+                   "--with-vardir=/var/db/sudo"
+                   "--with-iologdir=/var/log/sudo-io"
 
-             ;; 'visudo.c' expects _PATH_MV to be defined, but glibc doesn't
-             ;; provide it.
-             (string-append "CPPFLAGS=-D_PATH_MV=\\\""
-                            (assoc-ref %build-inputs "coreutils")
-                            "/bin/mv\\\"")
+                   ;; 'visudo.c' expects _PATH_MV to be defined, but glibc doesn't
+                   ;; provide it.
+                   (string-append "CPPFLAGS=-D_PATH_MV=\\\""
+                                  (search-input-file %build-inputs "/bin/mv")
+                                  "\\\"")
 
-             ;; When cross-compiling, assume we have a working 'snprintf' and
-             ;; 'vsnprintf' (which we do, when using glibc).  The default
-             ;; choice fails with undefined references to 'sudo_snprintf' &
-             ;; co. when linking.
-             ,@(if (%current-target-system)
-                   '("ac_cv_have_working_snprintf=yes"
-                     "ac_cv_have_working_vsnprintf=yes")
-                   '()))
+                   ;; When cross-compiling, assume we have a working 'snprintf' and
+                   ;; 'vsnprintf' (which we do, when using glibc).  The default
+                   ;; choice fails with undefined references to 'sudo_snprintf' &
+                   ;; co. when linking.
+                   #$@(if (%current-target-system)
+                          '("ac_cv_have_working_snprintf=yes"
+                            "ac_cv_have_working_vsnprintf=yes")
+                          '()))
 
-       ;; Avoid non-determinism; see <http://bugs.gnu.org/21918>.
-       #:parallel-build? #f
+           ;; Avoid non-determinism; see <http://bugs.gnu.org/21918>.
+           #:parallel-build? #f
 
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'pre-configure
-           (lambda _
-             (substitute* "src/sudo_usage.h.in"
-               ;; Do not capture 'configure' arguments since we would
-               ;; unduly retain references, and also because the
-               ;; CPPFLAGS above would close the string literal
-               ;; prematurely.
-               (("@CONFIGURE_ARGS@") "\"\""))
-             (substitute* (find-files "." "Makefile\\.in")
-               ;; Allow installation as non-root.
-               (("-o [[:graph:]]+ -g [[:graph:]]+")
-                "")
-               ;; Don't try to create /etc/sudoers.
-               (("^install: (.*)install-sudoers(.*)" _ before after)
-                (string-append "install: " before after "\n"))
-               ;; Don't try to create /run/sudo.
-               (("\\$\\(DESTDIR\\)\\$\\(rundir\\)")
-                "$(TMPDIR)/dummy")
-               ;; Install example sudo{,_logsrvd}.conf to the right place.
-               (("\\$\\(DESTDIR\\)\\$\\(sysconfdir\\)")
-                "$(DESTDIR)/$(docdir)/examples")
-               ;; Don't try to create /var/db/sudo.
-               (("\\$\\(DESTDIR\\)\\$\\(vardir\\)")
-                "$(TMPDIR)/dummy"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'pre-configure
+                 (lambda _
+                   (substitute* "src/sudo_usage.h.in"
+                     ;; Do not capture 'configure' arguments since we would
+                     ;; unduly retain references, and also because the
+                     ;; CPPFLAGS above would close the string literal
+                     ;; prematurely.
+                     (("@CONFIGURE_ARGS@")
+                      "\"\""))
+                   (substitute* (find-files "." "Makefile\\.in")
+                     ;; Allow installation as non-root.
+                     (("-o [[:graph:]]+ -g [[:graph:]]+")
+                      "")
+                     ;; Don't try to create /etc/sudoers.
+                     (("^install: (.*)install-sudoers(.*)" _ before
+                       after)
+                      (string-append "install: " before after "\n"))
+                     ;; Don't try to create /run/sudo.
+                     (("\\$\\(DESTDIR\\)\\$\\(rundir\\)")
+                      "$(TMPDIR)/dummy")
+                     ;; Install example sudo{,_logsrvd}.conf to the right place.
+                     (("\\$\\(DESTDIR\\)\\$\\(sysconfdir\\)")
+                      "$(DESTDIR)/$(docdir)/examples")
+                     ;; Don't try to create /var/db/sudo.
+                     (("\\$\\(DESTDIR\\)\\$\\(vardir\\)")
+                      "$(TMPDIR)/dummy"))
 
-             ;; ‘Checking existing [/etc/]sudoers file for syntax errors’ is
-             ;; not the task of the build system, and fails.
-             (substitute* "plugins/sudoers/Makefile.in"
-               (("^pre-install:" match)
-                (string-append match "\ndisabled-" match))))))
+                   ;; ‘Checking existing [/etc/]sudoers file for syntax errors’ is
+                   ;; not the task of the build system, and fails.
+                   (substitute* "plugins/sudoers/Makefile.in"
+                     (("^pre-install:" match)
+                      (string-append match "\ndisabled-" match))))))
 
-       ;; XXX: The 'testsudoers' test series expects user 'root' to exist, but
-       ;; the chroot's /etc/passwd doesn't have it.  Turn off the tests.
-       #:tests? #f))
+           ;; XXX: The 'testsudoers' test series expects user 'root' to exist, but
+           ;; the chroot's /etc/passwd doesn't have it.  Turn off the tests.
+           #:tests? #f))
     (native-inputs
      (list groff))
     (inputs
-     `(("coreutils" ,coreutils)
-       ,@(if (target-hurd?)
-           '()
-           `(("linux-pam" ,linux-pam)))
-       ("zlib" ,zlib)))
+     (append (list coreutils zlib)
+             (if (target-hurd?)
+                 '()
+                 (list linux-pam))))
     (home-page "https://www.sudo.ws/")
     (synopsis "Run commands as root")
     (description
