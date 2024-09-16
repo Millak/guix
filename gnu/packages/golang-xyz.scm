@@ -5164,6 +5164,24 @@ other directories.  It is optimized for filewalking.")
       #:import-path "github.com/matttproud/golang_protobuf_extensions/v2"
       #:phases
       #~(modify-phases %standard-phases
+          ;; TODO: Implement it in go-build-system.
+          ;;
+          ;; This happens due to Golang can't determine the valid directory of
+          ;; the module of embed file which is symlinked during setup
+          ;; environment phase, but easy resolved after coping file from the
+          ;; store to the build directory of the current package, see details
+          ;; in Golang source:
+          ;;
+          ;; - URL: <https://github.com/golang/go/blob/>
+          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
+          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+          (add-after 'unpack 'fix-embed-files
+            (lambda _
+              (for-each (lambda (file)
+                          (let ((file-store-path (readlink file)))
+                            (delete-file file)
+                            (copy-recursively file-store-path file)))
+                        (find-files "src" ".*(editions_defaults.binpb)$"))))
           ;; XXX: Activate when go-build-system supports submodules.
           (delete 'build)
           ;; XXX: Replace when go-build-system supports nested path.
