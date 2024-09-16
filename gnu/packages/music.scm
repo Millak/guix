@@ -2700,10 +2700,12 @@ special variant of additive synthesis.")
      ;;   'org.gnome.desktop.interface' is not installed
      (list gsettings-desktop-schemas))
     (native-inputs
-     (list intltool
-           pkg-config
-           ;; For generating the documentation.
-           pandoc))
+     (append (list intltool
+                   pkg-config)
+             ;; For generating the documentation.
+             (if (supported-package? pandoc)
+                 (list pandoc)
+                 '())))
     (home-page "https://amsynth.github.io")
     (synopsis "Analog modeling synthesizer")
     (description
