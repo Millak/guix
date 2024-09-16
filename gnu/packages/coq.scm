@@ -753,21 +753,16 @@ subsume notations for finite sets.")
                 "02f4dv4rz72liciwxb2k7acwx6lgqz4381mqyq5854p3nbyn06aw"))))
     (build-system gnu-build-system)
     (arguments
-     `(;; No references to tests in Makefile.common.
-       ;; It doesn't appear as though tests will be included
-       ;; by the packaged project in the future.
-       #:tests? #f
-       #:make-flags ,#~(list (string-append "COQBIN="
-                                            #$(this-package-input "coq")
-                                            "/bin/")
-                             (string-append "COQMF_COQLIB="
-                                            (assoc-ref %outputs "out")
-                                            "/lib/ocaml/site-lib/coq")
-                             (string-append "COQLIBINSTALL="
-                                            (assoc-ref %outputs "out")
-                                            "/lib/coq/user-contrib"))
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure))))
+     (list ;; No references to tests in Makefile.common.
+           ;; It doesn't appear as though tests will be included
+           ;; by the packaged project in the future.
+           #:tests? #f
+           #:make-flags
+           #~(list (string-append "COQLIBINSTALL=" #$output
+                                  "/lib/coq/user-contrib"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (propagated-inputs (list coq coq-mathcomp which))
     (home-page "https://math-comp.github.io/")
     (synopsis "Small library to do epsilon - N reasoning")
