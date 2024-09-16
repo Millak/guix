@@ -6,6 +6,8 @@
 ;;; Copyright © 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2024 Christina O'Donnell <cdo@mutix.org>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -197,6 +199,7 @@ commit hash and its date rather than a proper release tag."
                    (outputs '("out"))
                    (search-paths '())
                    (install-source? #t)
+                   (embed-files ''())
                    (import-path "")
                    (unpack-path "")
                    (build-flags ''())
@@ -226,6 +229,7 @@ commit hash and its date rather than a proper release tag."
                     #:substitutable? #$substitutable?
                     #:goarch #$goarch
                     #:goos #$goos
+                    #:embed-files #$embed-files
                     #:search-paths '#$(sexp->gexp
                                        (map search-path-specification->sexp
                                             search-paths))
@@ -264,6 +268,7 @@ commit hash and its date rather than a proper release tag."
                          (system (%current-system))
                          (goarch (first (go-target target)))
                          (goos (last (go-target target)))
+                         (embed-files ''())
                          (guile #f)
                          (imported-modules %go-build-system-modules)
                          (modules '((guix build go-build-system)
@@ -297,6 +302,7 @@ commit hash and its date rather than a proper release tag."
                     #:target #$target
                     #:goarch #$goarch
                     #:goos #$goos
+                    #:embed-files #$embed-files
                     #:inputs %build-target-inputs
                     #:native-inputs %build-host-inputs
                     #:search-paths '#$(map search-path-specification->sexp
