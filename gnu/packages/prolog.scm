@@ -212,6 +212,11 @@ it.")
       #~(modify-phases %standard-phases
           ;; Upstream does not use a configure script.
           (delete 'configure)
+          (add-before 'build 'patch-package-version
+            (lambda _
+              (substitute* "Makefile"
+                (("\\$\\(shell git describe --abbrev=4 --dirty --always --tags\\)")
+                 (string-append "v" #$version)))))
           (replace 'install
             ;; Upstream does not provide an install target.
             (lambda _
