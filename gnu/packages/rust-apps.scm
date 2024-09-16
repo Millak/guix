@@ -2421,7 +2421,8 @@ colorized view to stdout.")
         (base32 "000w549v1bpw7r57xw656p40ywf1gimvxxx5cjnri2js0xg927x4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-aho-corasick" ,rust-aho-corasick-0.7)
         ("rust-clap" ,rust-clap-2)
         ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
