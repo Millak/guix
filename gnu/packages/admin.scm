@@ -2072,7 +2072,16 @@ system administrator.")
              ;; provide it.
              (string-append "CPPFLAGS=-D_PATH_MV=\\\""
                             (assoc-ref %build-inputs "coreutils")
-                            "/bin/mv\\\""))
+                            "/bin/mv\\\"")
+
+             ;; When cross-compiling, assume we have a working 'snprintf' and
+             ;; 'vsnprintf' (which we do, when using glibc).  The default
+             ;; choice fails with undefined references to 'sudo_snprintf' &
+             ;; co. when linking.
+             ,@(if (%current-target-system)
+                   '("ac_cv_have_working_snprintf=yes"
+                     "ac_cv_have_working_vsnprintf=yes")
+                   '()))
 
        ;; Avoid non-determinism; see <http://bugs.gnu.org/21918>.
        #:parallel-build? #f
