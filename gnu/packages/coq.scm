@@ -763,7 +763,8 @@ subsume notations for finite sets.")
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure))))
-    (propagated-inputs (list coq coq-mathcomp which))
+    (native-inputs (list coq which))
+    (propagated-inputs (list coq-mathcomp))
     (home-page "https://math-comp.github.io/")
     (synopsis "Small library to do epsilon - N reasoning")
     (description
