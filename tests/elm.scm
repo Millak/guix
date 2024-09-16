@@ -249,10 +249,8 @@ package definition."
                          version
                          (base32 ,(? string? hash))))
                 (build-system elm-build-system)
-                (propagated-inputs
-                 ,'`(("elm-core" ,elm-core)))
-                (inputs
-                 ,'`(("elm-json" ,elm-json)))
+                (propagated-inputs (list elm-core))
+                (inputs (list elm-json))
                 (home-page
                  "https://package.elm-lang.org/packages/elm-guix/demo/3.0.0")
                 (synopsis "A test for `(guix import elm)`")
