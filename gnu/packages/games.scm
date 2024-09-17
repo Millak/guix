@@ -9844,6 +9844,30 @@ certainly not least as a fun, realistic, and challenging desktop flight
 simulator.")
     (license license:gpl2+)))
 
+(define-public evtest-qt
+  (package
+    (name "evtest-qt")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Grumbel/evtest-qt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wfzkgq81764qzxgk0y5vvpxcrb3icvrr4dd4mj8njrqgbwmn0mw"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ;no test suite
+    (native-inputs (list tinycmmc))
+    (inputs (list qtbase-5))
+    (home-page "https://github.com/Grumbel/evtest-qt")
+    (synopsis "Evdev Joystick Tester")
+    (description "@command{evtest-qt} is a simple joystick tester for devices
+using the @code{evdev} generic input event interface.  It provides a list of
+attached joysticks and displays which buttons and axis are pressed.")
+    (license license:gpl3+)))
+
 (define-public jstest-gtk
   ;; There is no recent tagged release; use the latest commit.
   (let ((commit "60fe6ebdbc6719945be3f04988667dea569085be")
