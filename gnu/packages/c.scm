@@ -977,7 +977,7 @@ C programming language.")
   (package
     (name "aws-c-common")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.6.20")
+    (version "0.9.27")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -986,13 +986,15 @@ C programming language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "089grcj58n4xs41kmnpaqpwsalcisjbqqb5yqahxxyfx2lf1j9c9"))))
+                "1wzlxvcwr4s31c4q8nyj66x3za9s01xzq47ap2jwvr61c93pxcam"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
+     '(#:parallel-tests? #f
+       #:configure-flags
        '("-DBUILD_SHARED_LIBS=ON")))
+    (supported-systems '("armhf-linux" "aarch64-linux"
+                         "i686-linux" "x86_64-linux"))
     (synopsis "Amazon Web Services core C library")
-    (supported-systems '("i686-linux" "x86_64-linux"))
     (description
      "This library provides common C99 primitives, configuration, data
  structures, and error handling for the @acronym{AWS,Amazon Web Services} SDK.")
