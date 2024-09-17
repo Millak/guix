@@ -3442,7 +3442,7 @@ options.")
 (define-public go-github-com-multiformats-go-multiaddr
   (package
     (name "go-github-com-multiformats-go-multiaddr")
-    (version "0.12.3")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -3451,7 +3451,7 @@ options.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rn02yn7494r7ayn585bbsddprbn8wdccxs4n2k5dmll4dyd39mp"))))
+        (base32 "0029zjhndbisfsc2msd2h18pcw23rqvf40drkcf7nxic3y2vaff7"))))
     (build-system go-build-system)
     (arguments
      (list
