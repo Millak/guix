@@ -38,6 +38,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -5796,7 +5797,9 @@ pipelines.")
                 (with-directory-excursion "ci"
                   (apply invoke "python" test-flags))))))))
     (native-inputs
-     (list python-assay python-pandas))
+     (list nss-certs-for-test
+           python-assay
+           python-pandas))
     (propagated-inputs
      (list python-certifi
            python-jplephem
