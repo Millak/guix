@@ -1216,7 +1216,7 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
   (package
     (name "aws-lc")
     ;; Update only when updating aws-crt-cpp.
-    (version "1.0.2")
+    (version "1.34.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1225,25 +1225,12 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16y4iy2rqrmb7b1c394wyq7a5vbjb41599524my6b6q1vk1pi307"))))
+                "075a5z3qck0wqb7k2im8k7vj7rqn7r7v1j0i18l6k2n5pi52wypa"))))
     (build-system cmake-build-system)
     (arguments
      '(#:test-target "run_minimal_tests"
        #:configure-flags
-       '("-DBUILD_SHARED_LIBS=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? test-target parallel-tests? #:allow-other-keys)
-             (when tests?
-               ;; SSLTest.HostMatching fails due to an expired certificate.
-               ;; Fake the time to be that of the release.
-               (invoke "faketime" "2022-05-23"
-                       "make" test-target
-                       "-j" (if parallel-tests?
-                                (number->string (parallel-job-count))
-                                "1"))))))))
-    (native-inputs (list libfaketime))
+       '("-DBUILD_SHARED_LIBS=ON" "-DDISABLE_GO=ON")))
     (synopsis "General purpose cryptographic library")
     (description "AWS libcrypto (aws-lc) contains portable C implementations
 of algorithms needed for TLS and common applications, and includes optimized
