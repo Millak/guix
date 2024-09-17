@@ -2171,13 +2171,13 @@ objects.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "6.1.2")
+    (version "6.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "0fhx9zjsqp7z8z8phafpbwpb46idrbsamkfg42l8j0z94i73s452"))
+        (base32 "0w09fn7zy2nr5pvvqwmi3s3cm3y5pzxpn7wldz7bbxn1xp6k9j4s"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2195,15 +2195,13 @@ objects.")
      (list
       #:test-flags
       #~(list "--pyargs" "astropy"
-              "-n" "auto"
+              "--numprocesses" "auto"
               "-k" (string-append
                     ;; Skip tests that need remote data.
                     "not remote_data"
                     ;; ValueError: The truth value of an array with more than
                     ;; one element is ambiguous. Use a.any() or a.all()
-                    " and not test_table_comp[t16-t26]"
-                    ;; E Unreliable test timings! <...>
-                    " and not test_datetime_timedelta_roundtrip"))
+                    " and not test_table_comp[t16-t26]"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
