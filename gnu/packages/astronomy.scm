@@ -694,7 +694,8 @@ model-fitting photometry or morphological analyses.")
         (base32 "18aizbsmhwz99flz8n101mi0n0lk3m3qqzfvmxrmjwqvydfypjml"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-httpretty))
+     (list nss-certs-for-test
+           python-httpretty))
     (propagated-inputs
      (list python-mock
            python-requests
