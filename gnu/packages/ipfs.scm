@@ -852,7 +852,7 @@ their levels to be controlled individually.")
 (define-public go-github-com-libp2p-go-libp2p
   (package
     (name "go-github-com-libp2p-go-libp2p")
-    (version "0.34.1")
+    (version "0.36.3")
     (source
      (origin
        (method git-fetch)
@@ -861,7 +861,7 @@ their levels to be controlled individually.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0423h149ziyka9cai1sdsl1bnycphs3h4xa3b3rc6108gfrzzil2"))))
+        (base32 "1bpjqrb2zdp86va7ms36lpci1l6lgkx85rc3q13fmzks38mqqw8s"))))
     (build-system go-build-system)
     (arguments
      (list
