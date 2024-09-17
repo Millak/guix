@@ -1292,7 +1292,7 @@ Service (S3) protocol for object storage.")
   (package
     (name "aws-c-mqtt")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.7.10")
+    (version "0.10.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1301,7 +1301,7 @@ Service (S3) protocol for object storage.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qmzx8b4wcsq9s99q2zrhx1s3jdmfy8zs16qys9bqv45gspi3ybr"))))
+                "1sa5bxnva9qwx00a49l1pppz0gnkxbwam4g6r3gw7w6265kjrswb"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
