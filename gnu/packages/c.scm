@@ -1200,7 +1200,7 @@ specifications.")
   (package
     (name "aws-c-compression")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.2.14")
+    (version "0.2.19")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1209,7 +1209,7 @@ specifications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fs3zhhzxsb9nfcjpvfbcq79hal7si2ia1c09scab9a8m264f4vd"))))
+                "17ka9fbv41njrkby8ac13djy65y54k85mxms3cjl6khsnvil5gb6"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
