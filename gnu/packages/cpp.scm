@@ -1729,7 +1729,7 @@ to be useful for building network-based applications.")
     ;; Update only when updating aws-sdk-cpp, and when updating also update
     ;; versions of library dependencies linked from from
     ;; https://github.com/awslabs/aws-crt-cpp/tree/{aws-crt-cpp commit}/crt
-    (version "0.17.27")
+    (version "0.28.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1738,7 +1738,7 @@ to be useful for building network-based applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14g8pn7yii1klby7phcw08qnld1qv11vwmbdz8cs3mlpqahxrh4i"))))
+                "1jnj5q6jcw1nh74yzdbi99x338lc3v2wjlgvjnzclla4p66pi712"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
