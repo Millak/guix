@@ -9961,11 +9961,12 @@ attached joysticks and displays which buttons and axis are pressed.")
       (native-inputs (list pkg-config))
       (inputs (list gtkmm-3 libsigc++-2))
       (home-page "https://github.com/Grumbel/jstest-gtk/")
-      (synopsis "Simple joystick tester GUI")
+      (synopsis "Joydev Joystick Tester")
       (description "@command{jstest-gtk} is a simple joystick tester based on
-GTK.  It provides a list of attached joysticks, a way to display which buttons
-and axis are pressed, a way to remap axis and buttons and a way to calibrate
-joysticks.")
+GTK, for testing devices using the older @code{joydev} Linux joystick
+@acronym{API, Application Programming Interface}.  It provides a list of
+attached joysticks, a way to display which buttons and axis are pressed, a way
+to remap axis and buttons and a way to calibrate joysticks.")
       (license license:gpl3+))))
 
 (define-public jumpnbump
