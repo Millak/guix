@@ -1095,7 +1095,7 @@ event-driven, asynchronous network application protocols.")
   (package
     (name "aws-c-cal")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.5.17")
+    (version "0.7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1104,7 +1104,7 @@ event-driven, asynchronous network application protocols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gd7xfzv509vcysifzfa8j2rykkc1prhiry7953snblkzm7airm5"))))
+                "01h3ypypn3lbqm9r252zkh26wg8g7acl1slddy4vd59nfwqlwp7m"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -1112,10 +1112,7 @@ event-driven, asynchronous network application protocols.")
              (string-append "-DCMAKE_PREFIX_PATH="
                             (assoc-ref %build-inputs "aws-c-common")))))
     (propagated-inputs
-     (list aws-c-common))
-    (inputs
-     `(("openssl" ,openssl)
-       ("openssl:static" ,openssl "static")))
+     (list aws-c-common s2n))
     (synopsis "Amazon Web Services Crypto Abstraction Layer")
     (description "This library provides a C99 wrapper for hash, HMAC, and ECC
 cryptographic primitives for the @acronym{AWS,Amazon Web Services} SDK.")
