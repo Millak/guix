@@ -1440,6 +1440,26 @@ face properties and allows configuration of faces and colors.")
 some utility functions, and commands using that infrastructure.")
     (license license:gpl3+)))
 
+(define-public emacs-flymake
+  (package
+    (name "emacs-flymake")
+    (version "1.3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/"
+                           "flymake-" version ".tar"))
+       (sha256
+        (base32 "15ikzdqyh77cgx94jaigfrrzfvwvpca8s2120gi82i9aaiypr7jl"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-eldoc emacs-project))
+    (home-page "https://elpa.gnu.org/packages/flymake.html")
+    (synopsis "Universal on-the-fly syntax checker")
+    (description
+     "Flymake collects diagnostic information for multiple sources,
+called backends, and visually annotates the relevant portions in the buffer.")
+    (license license:gpl3+)))
+
 ;; Package has no release.  Version is extracted from "Version:" keyword in
 ;; main file.
 (define-public emacs-project-mode-line-tag
