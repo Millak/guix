@@ -23,6 +23,7 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages games)
+  #:use-module ((gnu services base) #:select (udev-service-type))
   #:use-module (gnu system shadow)
   #:use-module ((gnu system file-systems) #:select (file-system-mapping))
   #:use-module (gnu build linux-container)
@@ -61,10 +62,13 @@
   (service-type
    (name 'joycond)
    (description
-    "Run @command{joycond} for pairing Nintendo joycons via Bluetooth.")
+    "Run @command{joycond} for pairing Nintendo joycons via Bluetooth and
+install udev rules required to use the controller as an unprivileged user.")
    (extensions
     (list (service-extension shepherd-root-service-type
-                             joycond-shepherd-service)))
+                             joycond-shepherd-service)
+          (service-extension udev-service-type
+                             (compose list joycond-configuration-package))))
    (default-value (joycond-configuration))))
 
 

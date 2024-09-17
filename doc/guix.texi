@@ -39358,6 +39358,7 @@ like to serve.
 
 @subsubheading Joycond service
 @cindex joycond
+@cindex nintendo controllers
 The joycond service allows the pairing of Nintendo joycon game
 controllers over Bluetooth. (@pxref{Desktop Services} for setting up
 Bluetooth.)
@@ -39372,7 +39373,10 @@ The joycond package to use.
 @end deftp
 
 @defvar joycond-service-type
-Service type for the joycond service.
+Service type for the joycond service.  It also extends the
+@code{udev-service-type} with the @code{joycond} package (provided via
+the @code{joycond-configuration} configuration), so that joycond
+controllers can be detected and used by an unprivileged user.
 @end defvar
 
 @subsubheading The Battle for Wesnoth Service
