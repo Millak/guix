@@ -2462,7 +2462,8 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
            python-pyvo
            python-requests))
     (native-inputs
-     (list python-astropy-healpix
+     (list nss-certs-for-test
+           python-astropy-healpix
            python-matplotlib
            ;; python-mocpy : Not packed yet, optional
            python-pytest-astropy
