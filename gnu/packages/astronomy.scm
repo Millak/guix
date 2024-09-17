@@ -2217,7 +2217,8 @@ objects.")
                 (with-directory-excursion "/tmp"
                   (apply invoke "pytest" "-v" test-flags))))))))
     (native-inputs
-     (list pkg-config
+     (list nss-certs-for-test
+           pkg-config
            python-colorlog
            python-coverage
            python-cython-3
