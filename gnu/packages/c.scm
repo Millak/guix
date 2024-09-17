@@ -1123,7 +1123,7 @@ cryptographic primitives for the @acronym{AWS,Amazon Web Services} SDK.")
   (package
     (name "aws-c-sdkutils")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.1.2")
+    (version "0.1.19")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1132,7 +1132,7 @@ cryptographic primitives for the @acronym{AWS,Amazon Web Services} SDK.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14wpl3dxwjbbzas44v6m6m3ll89rgz34x9gb140qz624gwzs9v0v"))))
+                "12xpnx0qxnjc2gnbpxq0kx6dfyi650zlrl2ykfhn3z9h6gj0lz8s"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
