@@ -1066,7 +1066,7 @@ communication.")
   (package
     (name "aws-c-io")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.10.20")
+    (version "0.14.18")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1075,7 +1075,7 @@ communication.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07l5rfbm1irkigfv51sfygs992af8rxicmay97frbx6z21khdjnr"))))
+                "09m3n81jibn8fhg7z6dkhj7dc7sds9n3mbr3n7jgg64zpf0lx9kl"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
