@@ -2224,7 +2224,7 @@ compository, supporting the following featuers:
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.10.4")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -2233,7 +2233,7 @@ compository, supporting the following featuers:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0liiyz6212pmyhpsrb6773qf5b9b4kb76nggizygr9abfidbg5gw"))))
+        (base32 "1bw6d3bf8rm4mgrbcprxxljfxbyabbj2lwabk2z19r8lhfz38myy"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "--wrap-mode=nodownload")))
