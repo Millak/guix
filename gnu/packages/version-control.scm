@@ -57,6 +57,7 @@
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Javier Olaechea <pirata@gmail.com>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -103,6 +104,7 @@
   #:use-module (gnu packages cook)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-vcs)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
@@ -125,6 +127,8 @@
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages libbsd)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages man)
@@ -963,6 +967,56 @@ the date of the most recent commit that modified them
 \"foreign\" branch before merging
 @end itemize")
     (license license:gpl3+)))
+
+(define-public got
+  (package
+    (name "got")
+    (version "0.103")
+    (source (origin
+              (method url-fetch)
+              (uri
+                (string-append
+                  "https://gameoftrees.org/releases/portable/got-portable-"
+                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0y18961xrj4rja850i31gadiaps2qnkfb4jlramlz9akyf9mwh1j"))))
+    (inputs
+     (list libevent
+           `(,util-linux "lib")
+           zlib
+           libressl
+           libmd
+           libbsd
+           ncurses))
+    (native-inputs
+     (list pkg-config perl))
+    (arguments
+     `(;; disable runpath validation, courtesy: libbsd's special
+       ;; treatment of libmd, as it embeds path to libmd.so
+       #:validate-runpath? #f
+       ;; default values of GOT_*_PATH_* point to /usr/bin
+       #:make-flags
+       '("CFLAGS+=-DGOT_DIAL_PATH_SSH=\\\"ssh\\\""
+         "CFLAGS+=-DGOT_TAG_PATH_SSH_KEYGEN=\\\"ssh-keygen\\\""
+         "CFLAGS+=-DGOT_TAG_PATH_SIGNIFY=\\\"signify\\\"")
+      #:phases ,#~(modify-phases %standard-phases
+                    (add-after 'unpack 'patch-execv-to-execvp
+                      (lambda _
+                        ;; got sources has paths hardcoded to /usr/bin
+                        (substitute* "lib/dial.c"
+                          (("execv\\(GOT_DIAL_") "execvp(GOT_DIAL_")
+                          (("execv %s\", GOT_DIAL") "execvp %s\", GOT_DIAL"))
+                        (substitute* "lib/sigs.c"
+                          (("execv\\(GOT_TAG") "execvp(GOT_TAG")
+                          (("execv %s\", GOT_TAG") "execvp %s\", GOT_TAG")))))))
+    (build-system gnu-build-system)
+    (synopsis "Distributed version control system")
+    (description
+     "Game of Trees (Got) is a version control system which prioritizes ease of use
+and simplicity over flexibility.")
+    (license license:isc)
+    (home-page "https://gameoftrees.org/")))
 
 (define-public xdiff
   (let ((revision "0")
