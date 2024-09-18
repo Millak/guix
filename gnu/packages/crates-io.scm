@@ -38157,14 +38157,14 @@ algorithm and related formats (ZLIB, GZIP).")
 (define-public rust-libloading-0.8
   (package
     (name "rust-libloading")
-    (version "0.8.1")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libloading" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0q812zvfag4m803ak640znl6cf8ngdd0ilzky498r6pwvmvbcwf5"))
+        (base32 "194dvczq4sifwkzllfmw0qkgvilpha7m5xy90gd6i446vcpz4ya9"))
        (modules '((guix build utils)))
        (snippet
         '(begin (for-each delete-file
@@ -38173,10 +38173,11 @@ algorithm and related formats (ZLIB, GZIP).")
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))
+        ("rust-windows-targets" ,rust-windows-targets-0.48))
        #:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-static-assertions" ,rust-static-assertions-1))))
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-windows-sys" ,rust-windows-sys-0.52))))
     (home-page "https://github.com/nagisa/rust_libloading/")
     (synopsis "Safer binding to dynamic library loading utilities")
     (description "This package provides a safer binding to dynamic library
