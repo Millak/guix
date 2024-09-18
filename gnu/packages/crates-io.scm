@@ -61901,8 +61901,27 @@ Rust.")
 Arc and Rc APIs.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rctree-0.6
+  (package
+    (name "rust-rctree")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rctree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sd6vsa5p3j27v6f1v0l0afl3hn4an1jr3psky3024gcmdk7hgp0"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/RazrFalcon/rctree")
+    (synopsis "'DOM-like' tree implemented using reference counting")
+    (description "This package provides a @code{DOM-like} tree implemented using
+reference counting.")
+    (license license:expat)))
+
 (define-public rust-rctree-0.5
   (package
+    (inherit rust-rctree-0.6)
     (name "rust-rctree")
     (version "0.5.0")
     (source
@@ -61911,13 +61930,7 @@ Arc and Rc APIs.")
        (uri (crate-uri "rctree" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0kvzahkwriawhjjb08ai7rfi77px7rpx5h83hjcx6dccyxzf4hiv"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/RazrFalcon/rctree")
-    (synopsis "DOM-like tree implemented using reference counting")
-    (description "This package provides a @code{DOM-like} tree implemented using
-reference counting.")
-    (license license:expat)))
+        (base32 "0kvzahkwriawhjjb08ai7rfi77px7rpx5h83hjcx6dccyxzf4hiv"))))))
 
 (define-public rust-rctree-0.4
   (package
