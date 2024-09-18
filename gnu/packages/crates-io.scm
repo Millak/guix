@@ -40417,17 +40417,17 @@ explosion.")
 image together with its neighboring pixels.")
     (license license:expat)))
 
-(define-public rust-lopdf-0.31
+(define-public rust-lopdf-0.32
   (package
     (name "rust-lopdf")
-    (version "0.31.0")
+    (version "0.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lopdf" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0npqs454hz7z8ycldyi154fxmra0vkmp5xbjbzm346sb32vf3j07"))))
+        (base32 "0aw7diz39z3mk22k0mp7jk7qiaaagfvggzly1baqg2jf4vpf8xg7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
@@ -40454,6 +40454,39 @@ image together with its neighboring pixels.")
     (description
      "This package provides a Rust library for PDF document manipulation.")
     (license license:expat)))
+
+(define-public rust-lopdf-0.31
+  (package
+    (inherit rust-lopdf-0.32)
+    (name "rust-lopdf")
+    (version "0.31.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lopdf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0npqs454hz7z8ycldyi154fxmra0vkmp5xbjbzm346sb32vf3j07"))))
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-image" ,rust-image-0.24)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-md5" ,rust-md5-0.7)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-pom" ,rust-pom-3)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-weezl" ,rust-weezl-0.1))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-shellexpand" ,rust-shellexpand-3)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-lopdf-0.29
   (package
