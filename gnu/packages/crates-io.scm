@@ -70705,8 +70705,31 @@ Rust's serde.")
        (("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-servo-arc-0.3
+  (package
+    (name "rust-servo-arc")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "servo_arc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i0s9786np106yl6w29bfzwnj29rqak912skcdxcf04yjlddfdnh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
+    (home-page "https://github.com/servo/servo")
+    (synopsis "Fork of std::sync::Arc with some extra functionality")
+    (description
+     "This package provides a fork of @code{std::sync::Arc} with some extra
+functionality and without weak references.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-servo-arc-0.2
   (package
+    (inherit rust-servo-arc-0.3)
     (name "rust-servo-arc")
     (version "0.2.0")
     (source
@@ -70716,18 +70739,11 @@ Rust's serde.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hgp453zvrj7ry501jhxlcph0hc42gc26zyfwn8ys3yziwps8anm"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-nodrop" ,rust-nodrop-0.1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
-    (home-page "https://github.com/servo/servo")
-    (synopsis "Fork of std::sync::Arc with some extra functionality")
-    (description
-     "This package provides a fork of @code{std::sync::Arc} with some extra
-functionality and without weak references.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
 
 (define-public rust-servo-arc-0.1
   (package
