@@ -85003,14 +85003,14 @@ etc. distance calculations and string search.")
 (define-public rust-trybuild2-1
   (package
     (name "rust-trybuild2")
-    (version "1.1.0")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "trybuild2" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0z5nv6skmzz4d74sbrsrd7smyhs76sh8dwz4pd1kbvjpzq2l3v8i"))))
+                "1hnvvi9f2l2x7xi92ca3mw58hm58qsk8ak9znrb2xsfr3k1v2yly"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -85022,7 +85022,8 @@ etc. distance calculations and string search.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-termcolor" ,rust-termcolor-1))
-       #:cargo-development-inputs (("rust-automod" ,rust-automod-1))))
+       #:cargo-development-inputs (("rust-automod" ,rust-automod-1)
+                                   ("rust-rustversion" ,rust-rustversion-1))))
     (home-page "https://github.com/GuillaumeGomez/trybuild2")
     (synopsis "Test harness for ui tests of compiler diagnostics")
     (description
