@@ -38132,6 +38132,28 @@ org-roam")
 using org mode; faster than org-roam.")
     (license license:gpl3+)))
 
+(define-public emacs-org-super-links
+  (package
+    (name "emacs-org-super-links")
+    (version "0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/toshism/org-super-links.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "025hlb8nqhn63y51ddjsclvyj9ys0bh4r0lycyc2jwpy9v79n10q"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-org))
+    (synopsis "Create links with auto backlinks")
+    (description "This package provides functions that automatically create
+backlinks when inserting a link.")
+    (home-page "https://github.com/toshism/org-super-links")
+    (license license:gpl3+)))
+
 (define-public emacs-org-roam-bibtex
   (package
     (name "emacs-org-roam-bibtex")
