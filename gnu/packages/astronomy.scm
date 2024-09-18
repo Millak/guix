@@ -4132,18 +4132,18 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "0a47xf1zv71kv166z6rd9v75bw0jjmg70180af4yi4v4y7gnxvmm"))))
+        (base32 "0bgb0n1nqwnvd6bh0f1cnbk3j2yygch88l9834hmsns4rg1ak6j9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto"
+      #~(list "--numprocesses" "auto"
               ;; Disable tests requiring access to CRDS servers to download
               ;; ~500MiB of data.
               "-k" "not test_crds_selectors_vs_datamodel")
