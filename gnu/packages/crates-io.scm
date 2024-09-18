@@ -12524,14 +12524,14 @@ recovery.")
 (define-public rust-ciborium-0.2
   (package
     (name "rust-ciborium")
-    (version "0.2.1")
+    (version "0.2.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ciborium" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "09p9gr3jxys51v0fzwsmxym2p7pcz9mhng2xib74lnlfqzv93zgg"))))
+                "03hgfw4674im1pdqblcp77m7rc8x2v828si5570ga5q9dzyrzrj2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
