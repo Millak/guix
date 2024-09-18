@@ -5103,18 +5103,18 @@ Features:
 (define-public python-pysiaf
   (package
     (name "python-pysiaf")
-    (version "0.22.0")
+    (version "0.23.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pysiaf" version))
        (sha256
-        (base32 "08wb98k9k4f04455da5ns9rif8pl9r3ih537w1yj393hkjjiyzfz"))))
+        (base32 "16qbg5n2bw2wr3i8a040i7z7az3w0pn508y6xggy05viwdli6br8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto"
+      #~(list "--numprocesses" "auto"
               ;; Disable 2 failing tests, see
               ;; <https://github.com/spacetelescope/pysiaf/issues/338>
               "-k" (string-append "not test_write_jwst_siaf_xlsx"
@@ -5124,12 +5124,13 @@ Features:
            python-lxml
            python-matplotlib
            python-numpy
-           python-numpydoc
            python-openpyxl
            python-requests
            python-scipy))
     (native-inputs
-     (list python-pytest python-pytest-xdist))
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools-scm))
     (home-page "https://pysiaf.readthedocs.io/")
     (synopsis "Handling SIAF for space telescopes")
     (description
