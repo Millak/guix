@@ -3436,7 +3436,7 @@ setup(ext_modules=get_extensions())")))))
 (define-public python-regularizepsf
   (package
     (name "python-regularizepsf")
-    (version "0.3.4")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch) ; no tests data in the PyPI tarball
@@ -3445,7 +3445,7 @@ setup(ext_modules=get_extensions())")))))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "078nklks6hjq0hgv6wpbh2x1m2yh6kmzyfgdzd9q82lxpjy1vq0i"))))
+        (base32 "0b16lscrzd1lribwis19y6dh6qrgddhcinlc2lbwkzzqqkjdnyzi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3468,7 +3468,7 @@ setup(ext_modules=get_extensions())")))))
            python-numpy
            python-scikit-image
            python-scipy
-           python-sep))
+           python-sep-pjw))
     (native-inputs
      (list python-cython
            python-pytest
