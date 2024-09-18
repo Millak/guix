@@ -31,6 +31,7 @@
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
+;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1411,6 +1412,92 @@ bar.  It is also compatible with sway.")
 editor in less than 1024 lines of code with syntax higlighting, search and
 more.")
     (license (list license:expat license:asl2.0))))
+
+(define-public lsd
+  (package
+    (name "lsd")
+    (version "1.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lsd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06l0ynhny43q74dyb8m4r2j1w9xz29m0xrqmnpysm1f09bx3dzrj"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Don't depend on a specific minor version.
+                 (substitute* "Cargo.toml"
+                   (("([[:digit:]]\\.[[:digit:]]+)\\.\\*" _ version)
+                    version))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-chrono-humanize" ,rust-chrono-humanize-0.2)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-crossterm" ,rust-crossterm-0.27)
+                       ("rust-dirs" ,rust-dirs-5)
+                       ("rust-git2" ,rust-git2-0.18)
+                       ("rust-globset" ,rust-globset-0.4)
+                       ("rust-human-sort" ,rust-human-sort-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-lscolors" ,rust-lscolors-0.16)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+                       ("rust-sys-locale" ,rust-sys-locale-0.3)
+                       ("rust-term-grid" ,rust-term-grid-0.1)
+                       ("rust-terminal-size" ,rust-terminal-size-0.3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-uzers" ,rust-uzers-0.11)
+                       ("rust-version-check" ,rust-version-check-0.9)
+                       ("rust-vsort" ,rust-vsort-0.2)
+                       ("rust-wild" ,rust-wild-2)
+                       ("rust-windows" ,rust-windows-0.43)
+                       ("rust-xattr" ,rust-xattr-1)
+                       ("rust-xdg" ,rust-xdg-2)
+                       ("rust-yaml-rust" ,rust-yaml-rust-0.4))
+       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2)
+                                   ("rust-assert-fs" ,rust-assert-fs-1)
+                                   ("rust-predicates" ,rust-predicates-3)
+                                   ("rust-serial-test" ,rust-serial-test-2)
+                                   ("rust-tempfile" ,rust-tempfile-3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-shell-completion-dir
+           (lambda _
+             (setenv "SHELL_COMPLETIONS_DIR" "target/assets")))
+         (add-after 'install 'install-more
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (bash-completions-dir
+                      (string-append out "/etc/bash_completion.d"))
+                    (zsh-completions-dir
+                      (string-append share "/zsh/site-functions"))
+                    (fish-completions-dir
+                      (string-append share "/fish/vendor_completions.d")))
+               ;; The completions are generated in build.rs.
+               (install-file "target/assets/_lsd" zsh-completions-dir)
+               (install-file "target/assets/lsd.fish" fish-completions-dir)
+               (mkdir-p bash-completions-dir)
+               (copy-file "target/assets/lsd.bash"
+                          (string-append bash-completions-dir "/lsd"))))))))
+    (native-inputs (list libgit2-1.7
+                         pkg-config
+                         zlib
+                         ;; for tests
+                         git-minimal))
+    (home-page "https://github.com/lsd-rs/lsd")
+    (synopsis "Mostly ls compatible command with pretty colors")
+    (description
+     "This package provides An ls command with a lot of pretty colors
+and some other stuff.")
+    (license license:asl2.0)))
 
 (define-public macchina
   (package
