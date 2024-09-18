@@ -3050,7 +3050,8 @@ queues, resource pools, strings, etc.
     (arguments
      (list #:configure-flags
            #~(list "-DFTXUI_BUILD_TESTS:BOOL=ON"
-                   "-DFTXUI_BUILD_TESTS_FUZZER:BOOL=OFF")))
+                   "-DFTXUI_BUILD_TESTS_FUZZER:BOOL=OFF"
+                   "-DBUILD_SHARED_LIBS=ON")))
     (home-page "https://github.com/ArthurSonzogni/FTXUI")
     (synopsis "C++ Functional Terminal User Interface")
     (description
