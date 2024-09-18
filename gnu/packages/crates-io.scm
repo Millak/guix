@@ -20453,14 +20453,14 @@ strings.")
 (define-public rust-deranged-0.3
   (package
     (name "rust-deranged")
-    (version "0.3.9")
+    (version "0.3.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "deranged" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lqzxgxqa1jdsvh4r7fbckpxvvfr8b819vwzdzd2f166494x0chg"))))
+        (base32 "1d1ibqqnr5qdrpw8rclwrf1myn3wf0dygl04idf4j2s49ah6yaxl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-num-traits" ,rust-num-traits-0.2)
