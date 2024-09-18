@@ -5269,6 +5269,38 @@ well as ephemerides services
      (list  python-numpy))
     (synopsis "Python library for Source Extraction and Photometry")))
 
+(define-public python-sep-pjw
+  (package
+    (name "python-sep-pjw")
+    (version "1.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sep_pjw" version))
+       (sha256
+        (base32 "15jf16zycs1gz6jfkhmj7b8wdcpp8d5ikz15pmfkwq32a8mfdv8m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; numpy>=1.23.5
+               (("1.23.5") "1.23.2")))))))
+    (native-inputs
+     (list python-cython
+           python-pytest))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/PJ-Watson/sep-pjw")
+    (synopsis "Alternative fork of SEP library")
+    (description
+     "This package provides an alternative maintained fork of SEP python
+libary with bug fixtures.")
+    (license (list license:expat license:lgpl3+ license:bsd-3))))
+
 (define-public python-suntime
   (package
     (name "python-suntime")
