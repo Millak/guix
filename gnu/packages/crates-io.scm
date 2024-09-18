@@ -29699,14 +29699,14 @@ platforms.")
 (define-public rust-getrandom-0.2
   (package
     (name "rust-getrandom")
-    (version "0.2.12")
+    (version "0.2.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "getrandom" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1d8jb9bv38nkwlqqdjcav6gxckgwc9g30pm3qq506rvncpm9400r"))))
+        (base32 "1mzlnrb3dgyd1fb84gvw10pyr8wdqdl4ry4sr64i1s8an66pqmn4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
