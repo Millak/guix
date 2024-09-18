@@ -3343,24 +3343,24 @@ library.")
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-pangocairo-0.18
+(define-public rust-pangocairo-0.19
   (package
     (name "rust-pangocairo")
-    (version "0.18.0")
+    (version "0.19.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pangocairo" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "199qdgw5mf1vbqmslscy1qzz0szw2dcd21p6z61wzjngm64na0sp"))))
+        (base32 "1n8wrqy260zpfiifb2n10mbsv3kbrvxm1z7pv8b4w77c08yb9j74"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-cairo-rs" ,rust-cairo-rs-0.18)
-                       ("rust-glib" ,rust-glib-0.18)
+     `(#:cargo-inputs (("rust-cairo-rs" ,rust-cairo-rs-0.19)
+                       ("rust-glib" ,rust-glib-0.19)
                        ("rust-libc" ,rust-libc-0.2)
-                       ("rust-pango" ,rust-pango-0.18)
-                       ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.18))
+                       ("rust-pango" ,rust-pango-0.19)
+                       ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.19))
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
     (native-inputs (list pkg-config))
@@ -3370,6 +3370,27 @@ library.")
     (description
      "This package provides Rust bindings for the @code{PangoCairo} library.")
     (license license:expat)))
+
+(define-public rust-pangocairo-0.18
+  (package
+    (inherit rust-pangocairo-0.19)
+    (name "rust-pangocairo")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pangocairo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "199qdgw5mf1vbqmslscy1qzz0szw2dcd21p6z61wzjngm64na0sp"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cairo-rs" ,rust-cairo-rs-0.18)
+                       ("rust-glib" ,rust-glib-0.18)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango" ,rust-pango-0.18)
+                       ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.18))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-pangocairo-0.17
   (package
