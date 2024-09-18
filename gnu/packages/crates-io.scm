@@ -25942,14 +25942,14 @@ Rust.")
 (define-public rust-fastrand-2
   (package
     (name "rust-fastrand")
-    (version "2.0.1")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fastrand" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19flpv5zbzpf0rk4x77z4zf25in0brg8l7m304d3yrf47qvwxjr5"))))
+        (base32 "19nyzdq3ha4g173364y2wijmd6jlyms8qx40daqkxsnl458jmh78"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
