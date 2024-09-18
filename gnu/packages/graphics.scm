@@ -664,7 +664,7 @@ and export to various formats including the format used by Magicavoxel.")
 (define-public assimp
   (package
     (name "assimp")
-    (version "5.2.5")
+    (version "5.4.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -673,7 +673,7 @@ and export to various formats including the format used by Magicavoxel.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0j0pd279n6xyy95x782ha8j75kbx0ck7vs5wv3krhbyfim9bw64l"))))
+                "097fxq0frb2nl6bp8wz7kjx6vq4i4117wwq9fnxzkiij9xwv3cq9"))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))
