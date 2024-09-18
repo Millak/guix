@@ -27776,8 +27776,34 @@ values to other threads.")
     (description "This package provides bindings for Freetype used by Servo.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-freetype-rs-0.35
+  (package
+    (name "rust-freetype-rs")
+    (version "0.35.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "freetype-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gzfb9fax3d3s691ys99nfihpzwl7hacvxnwvlxg4sph1fzd5ymi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-freetype-sys" ,rust-freetype-sys-0.20)
+                       ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))
+    (inputs
+     (list freetype))
+    (home-page "https://github.com/PistonDevelopers/freetype-rs")
+    (synopsis "Bindings for FreeType font library")
+    (description "This package provides bindings for FreeType font library.")
+    (license license:expat)))
+
 (define-public rust-freetype-rs-0.32
   (package
+    (inherit rust-freetype-rs-0.35)
     (name "rust-freetype-rs")
     (version "0.32.0")
     (source
@@ -27787,20 +27813,13 @@ values to other threads.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1q54jimjgzwdb3xsp7rsvdmp6w54cak7bvc379mdabc2ciz3776m"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-freetype-sys" ,rust-freetype-sys-0.17)
         ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
-       (("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))
-    (inputs
-     (list freetype))
-    (home-page "https://github.com/PistonDevelopers/freetype-rs")
-    (synopsis "Bindings for FreeType font library")
-    (description "This package provides bindings for FreeType font library.")
-    (license license:expat)))
+       (("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))))
 
 (define-public rust-freetype-rs-0.26
   (package
