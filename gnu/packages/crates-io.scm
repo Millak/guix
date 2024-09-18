@@ -12574,19 +12574,19 @@ usage.")
 (define-public rust-ciborium-ll-0.2
   (package
     (name "rust-ciborium-ll")
-    (version "0.2.1")
+    (version "0.2.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ciborium-ll" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0az2vabamfk75m74ylgf6nzqgqgma5yf25bc1ripfg09ri7a5yny"))))
+                "1n8g4j5rwkfs3rzfi6g1p7ngmz6m5yxsksryzf5k72ll7mjknrjp"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs (("rust-hex" ,rust-hex-0.4))
-       #:cargo-inputs (("rust-ciborium-io" ,rust-ciborium-io-0.2)
-                       ("rust-half" ,rust-half-1))))
+     `(#:cargo-inputs (("rust-ciborium-io" ,rust-ciborium-io-0.2)
+                       ("rust-half" ,rust-half-2))
+       #:cargo-development-inputs (("rust-hex" ,rust-hex-0.4))))
     (home-page "https://github.com/enarx/ciborium")
     (synopsis "Low-level CBOR codec primitives")
     (description
