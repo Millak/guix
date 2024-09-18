@@ -91519,24 +91519,23 @@ library.")
        #:cargo-development-inputs
        (("rust-num-traits" ,rust-num-traits-0.2))))))
 
-(define-public rust-yeslogic-fontconfig-sys-4
+(define-public rust-yeslogic-fontconfig-sys-5
   (package
     (name "rust-yeslogic-fontconfig-sys")
-    (version "4.0.1")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "yeslogic-fontconfig-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wsgzlvgknvkjw3m02nvp3x47ccmvfri13mwqzssxgmw5g9pyrgc"))))
+        (base32 "0yiwnf2gapqaprp3icvv6b1jjh5d356vpis7pybskcd8k4wv5dpz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-const-cstr" ,rust-const-cstr-0.3)
-        ("rust-dlib" ,rust-dlib-0.5)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+     `(#:cargo-inputs (("rust-cstr" ,rust-cstr-0.2)
+                       ("rust-dlib" ,rust-dlib-0.5)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -91547,6 +91546,25 @@ library.")
      "This package provides a wrapper around the @code{Fontconfig} library,
 for locating fonts.")
     (license license:expat)))
+
+(define-public rust-yeslogic-fontconfig-sys-4
+  (package
+    (inherit rust-yeslogic-fontconfig-sys-5)
+    (name "rust-yeslogic-fontconfig-sys")
+    (version "4.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "yeslogic-fontconfig-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wsgzlvgknvkjw3m02nvp3x47ccmvfri13mwqzssxgmw5g9pyrgc"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-const-cstr" ,rust-const-cstr-0.3)
+        ("rust-dlib" ,rust-dlib-0.5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 (define-public rust-yeslogic-fontconfig-sys-3
   (package
