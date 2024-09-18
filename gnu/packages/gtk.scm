@@ -731,7 +731,10 @@ highlighting and other features typical of a source code editor.")
     (outputs '("out" "debug"))
     (arguments
      `(#:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
-       #:configure-flags '("-Dinstalled_tests=false" "-Dgtk_doc=true")
+       #:configure-flags '("-Dinstalled_tests=false"
+                           ,@(if (%current-target-system)
+                                 '()
+                                 '("-Dgtk_doc=true")))
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'disable-failing-tests
