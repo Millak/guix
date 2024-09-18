@@ -14,6 +14,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Daniel Ziltener <dziltener@lyrion.ch>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1426,6 +1427,30 @@ if they were just another Rust module.")
         ("rust-windows-interface" ,rust-windows-interface-0.44)
         ("rust-windows-targets" ,rust-windows-targets-0.42))))))
 
+(define-public rust-windows-0.43
+  (package
+    (inherit rust-windows-0.44)
+    (name "rust-windows")
+    (version "0.43.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i32alvc4n4l7abmv1fsvnd1lzw17f1cpr16kgx0sqz5wg82wrh4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-implement" ,rust-windows-implement-0.43)
+                       ("rust-windows-interface" ,rust-windows-interface-0.43)
+                       ("rust-windows-aarch64-gnullvm" ,rust-windows-aarch64-gnullvm-0.42)
+                       ("rust-windows-aarch64-msvc" ,rust-windows-aarch64-msvc-0.42)
+                       ("rust-windows-i686-gnu" ,rust-windows-i686-gnu-0.42)
+                       ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.42)
+                       ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.42)
+                       ("rust-windows-x86-64-gnullvm" ,rust-windows-x86-64-gnullvm-0.42)
+                       ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.42))))))
+
 (define-public rust-windows-0.39
   (package
     (inherit rust-windows-0.46)
@@ -2094,6 +2119,24 @@ Windows crate.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-windows-implement-0.43
+  (package
+    (inherit rust-windows-implement-0.48)
+    (name "rust-windows-implement")
+    (version "0.43.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-implement" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01zqmrdnz2j5qd4ahqjsz724mdabi577f400yywcahy7dl2rpqmp"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-windows-implement-0.39
   (package
     (inherit rust-windows-implement-0.46)
@@ -2221,6 +2264,24 @@ Windows crate.")
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-windows-interface-0.43
+  (package
+    (inherit rust-windows-interface-0.44)
+    (name "rust-windows-interface")
+    (version "0.43.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-interface" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06drakcacg4d680qa2sk62kqn7ini00xw3zz0hwqwx1my2z4z3dw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-windows-interface-0.39
   (package
