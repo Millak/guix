@@ -3076,9 +3076,16 @@ Carlo.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Break cycle: python-ndcube -> python-specutils -> python-ndcube, see
-      ;; <https://github.com/sunpy/ndcube/issues/733>.
-      #:test-flags #~(list "-k" "not test_rebin_specutils")
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Break cycle: python-ndcube -> python-specutils ->
+                    ;; python-ndcube, see
+                    ;; <https://github.com/sunpy/ndcube/issues/733>.
+                    "not test_rebin_specutils"
+                    ;; Introduced with astropy 6.1.3, see
+                    ;; <https://github.com/sunpy/ndcube/issues/758>.
+                    " and not test_2d[celestial_2d_ape14_wcs]"
+                    " and not test_2d[celestial_2d_fitswcs]"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'break-cycle
