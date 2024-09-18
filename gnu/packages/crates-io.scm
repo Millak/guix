@@ -2134,14 +2134,14 @@ writing colored text to a terminal.")
 (define-public rust-anyhow-1
   (package
     (name "rust-anyhow")
-    (version "1.0.86")
+    (version "1.0.89")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "anyhow" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nk301x8qhpdaks6a9zvcp7yakjqnczjmqndbg7vk4494d3d1ldk"))))
+        (base32 "1xh1vg89n56h6nqikcmgbpmkixjds33492klrp9m96xrbmhgizc6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
