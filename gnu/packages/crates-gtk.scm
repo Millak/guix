@@ -350,8 +350,34 @@
        (("rust-gtk-rs-lgpl-docs" ,rust-gtk-rs-lgpl-docs-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-cairo-sys-rs-0.19
+  (package
+    (name "rust-cairo-sys-rs")
+    (version "0.19.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cairo-sys-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0r0yp0lph77lm4blrn6fvdmz2i3r8ibkkjg6nmwbvvv4jq8v6fzx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.19)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52)
+                       ("rust-x11" ,rust-x11-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list cairo))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "FFI bindings to libcairo")
+    (description "This package provides FFI bindings to libcairo.")
+    (license license:expat)))
+
 (define-public rust-cairo-sys-rs-0.18
   (package
+    (inherit rust-cairo-sys-rs-0.19)
     (name "rust-cairo-sys-rs")
     (version "0.18.2")
     (source
@@ -361,19 +387,12 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0lfsxl7ylw3phbnwmz3k58j1gnqi6kc2hdc7g3bb7f4hwnl9yp38"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-system-deps" ,rust-system-deps-6)
                        ("rust-winapi" ,rust-winapi-0.3)
-                       ("rust-x11" ,rust-x11-2))))
-    (native-inputs (list pkg-config))
-    (inputs (list cairo))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "FFI bindings to libcairo")
-    (description "This package provides FFI bindings to libcairo.")
-    (license license:expat)))
+                       ("rust-x11" ,rust-x11-2))))))
 
 (define-public rust-cairo-sys-rs-0.17
   (package
