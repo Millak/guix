@@ -3587,27 +3587,20 @@ orbits described in TLE files.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "6.0.1")
+    (version "6.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "1yp7x26fzxs66bfvzaim8ns5q6514l66mbz5gabhlxb9pp8i6i85"))))
+        (base32 "0mzmq2ncqgq61c1maxwynrmzcyiafnlil5mx4vhy2cvdyacm8yc9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list
-         "--numprocesses" "auto"
-         "-k" (string-append
-               ;; XXX: Failed: DID NOT RAISE <class 'ModuleNotFoundError'>
-               ;; It struggles to find python-opencsv package info with
-               ;; 'importlib.metadata'
-               "not test_main_nonexisting_module"
-               " and not test_main_stdlib_module")
-         ;; Requries SpicePy not packed in Guix yet.
-         "--ignore=sunpy/coordinates/tests/test_spice.py")
+      #~(list "--numprocesses" "auto"
+              ;; Requries SpicePy not packed in Guix yet.
+              "--ignore=sunpy/coordinates/tests/test_spice.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
