@@ -3189,21 +3189,21 @@ library.")
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
-(define-public rust-pango-sys-0.18
+(define-public rust-pango-sys-0.19
   (package
     (name "rust-pango-sys")
-    (version "0.18.0")
+    (version "0.19.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pango-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1iaxalcaaj59cl9n10svh4g50v8jrc1a36kd7n9yahx8j7ikfrs3"))))
+        (base32 "182bcd6255v5yvnskbhxnb6kwak240z7sn54si2b5h46l17xl0zz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
-                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.19)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.19)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
@@ -3214,6 +3214,26 @@ library.")
     (synopsis "FFI bindings to libpango-1.0")
     (description "This package provides FFI bindings to @code{libpango-1.0}.")
     (license license:expat)))
+
+(define-public rust-pango-sys-0.18
+  (package
+    (inherit rust-pango-sys-0.19)
+    (name "rust-pango-sys")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pango-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1iaxalcaaj59cl9n10svh4g50v8jrc1a36kd7n9yahx8j7ikfrs3"))))
+    (arguments
+     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-pango-sys-0.17
   (package
