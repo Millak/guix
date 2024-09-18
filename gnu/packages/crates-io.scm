@@ -6201,16 +6201,15 @@ bytes or encoder from file extension.")
 (define-public rust-automod-1
   (package
     (name "rust-automod")
-    (version "1.0.11")
+    (version "1.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "automod" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "057sa45859nb8arbshkqc6va8b8jf5a8vx6zr739viibqbj989md"))))
+         "12rsa5barxi8v916hlvvpjyh43y5x2yjc2bg1xs6v960vccyxwzd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
