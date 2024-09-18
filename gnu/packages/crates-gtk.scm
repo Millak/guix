@@ -765,8 +765,37 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
+(define-public rust-gdk-pixbuf-sys-0.19
+  (package
+    (name "rust-gdk-pixbuf-sys")
+    (version "0.19.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk-pixbuf-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0y93g24mdgskvyhva46xv3qyb1cvj5xpi0yqnh7cb31wz2j0byjf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gio-sys" ,rust-gio-sys-0.19)
+                       ("rust-glib-sys" ,rust-glib-sys-0.19)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.19)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list gdk-pixbuf gtk+))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "FFI bindings to libgdk_pixbuf-2.0")
+    (description
+     "This package provides FFI bindings to @code{libgdk_pixbuf-2.0}.")
+    (license license:expat)))
+
 (define-public rust-gdk-pixbuf-sys-0.18
   (package
+    (inherit rust-gdk-pixbuf-sys-0.19)
     (name "rust-gdk-pixbuf-sys")
     (version "0.18.0")
     (source
@@ -776,7 +805,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1xya543c4ffd2n7aiwwrdxsyc9casdbasafi6ixcknafckm3k61z"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-gio-sys" ,rust-gio-sys-0.18)
@@ -786,13 +814,7 @@
         ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs
        (("rust-shell-words" ,rust-shell-words-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs (list pkg-config))
-    (inputs (list gdk-pixbuf gtk+))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "FFI bindings to libgdk_pixbuf-2.0")
-    (description "This package provides FFI bindings to @code{libgdk_pixbuf-2.0}.")
-    (license license:expat)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gdk-pixbuf-sys-0.17
   (package
