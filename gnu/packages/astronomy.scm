@@ -5193,23 +5193,17 @@ spectra, and data.")
 (define-public python-sbpy
   (package
     (name "python-sbpy")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sbpy" version))
        (sha256
-        (base32 "18f3056fgzpvjj43m845wl9znl4dqxs8f8qv3gpay7kik4l8a1fc"))))
+        (base32 "1xqi29rrh7v05zmvyl8gffrkrw5rlcxig1w6xw1v8f7ikydb5plv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; See <https://github.com/NASA-Planetary-Science/sbpy/issues/397>.
-      #~(list "--ignore=sbpy/spectroscopy/tests/test_specgrad.py"
-              ;; See <https://github.com/NASA-Planetary-Science/sbpy/issues/398>
-              "-k" (string-append "not test_from_fluxd"
-                                  " and not test_bandpass"
-                                  " and not test_spectral_density_vega_bp"))
+      #:test-flags #~(list "--numprocesses" "auto")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home-env
@@ -5224,6 +5218,7 @@ spectra, and data.")
            python-ginga
            python-numpy
            python-photutils
+           ;python-pyoorb ;not packed yet in Guix
            python-pyyaml
            python-scipy
            python-synphot))
