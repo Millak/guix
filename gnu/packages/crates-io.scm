@@ -12555,14 +12555,14 @@ recovery.")
 (define-public rust-ciborium-io-0.2
   (package
     (name "rust-ciborium-io")
-    (version "0.2.1")
+    (version "0.2.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ciborium-io" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0mi6ci27lpz3azksxrvgzl9jc4a3dfr20pjx7y2nkcrjalbikyfd"))))
+                "0my7s5g24hvp1rs1zd1cxapz94inrvqpdf1rslrvxj8618gfmbq5"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/enarx/ciborium")
     (synopsis "Simplified Read/Write traits")
