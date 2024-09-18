@@ -6187,7 +6187,7 @@ bytes or encoder from file extension.")
   (package
     (inherit rust-autocfg-1)
     (name "rust-autocfg")
-    (version "0.1.7")
+    (version "0.1.8")
     (source
       (origin
         (method url-fetch)
@@ -6195,8 +6195,8 @@ bytes or encoder from file extension.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1chwgimpx5z7xbag7krr9d8asxfqbh683qhgl9kn3hxk2l0djj8x"))))
-    (arguments '(#:skip-build? #t))))
+          "0y4vw4l4izdxq1v0rrhvmlbqvalrqrmk60v1z0dqlgnlbzkl7phd"))))
+    (arguments `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1))))))
 
 (define-public rust-automod-1
   (package
