@@ -33407,6 +33407,24 @@ usable by code.")
 machines are still at bay.")
     (license license:expat)))
 
+(define-public rust-human-sort-0.2
+  (package
+    (name "rust-human-sort")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "human-sort" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06b2rj4hd4h4rf3mp5qk89ymlxh5iv3cpmrfgramwvay634hj2hl"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/paradakh/human-sort")
+    (synopsis "Human sort (natural sort) implementation")
+    (description
+     "This package provides Human sort (natural sort) implementation.")
+    (license license:expat)))
+
 (define-public rust-humantime-serde-1
   (package
     (name "rust-humantime-serde")
