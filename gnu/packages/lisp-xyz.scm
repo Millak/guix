@@ -23821,25 +23821,25 @@ are provided.")
        (uri (git-reference
              (url "https://github.com/marijnh/Postmodern")
              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (file-name (git-file-name "cl-postmodern" version))
        (sha256
         (base32 "14js3pz0jbvf11liqbrxhndb98vasib4bzkv7im87mysxzk8glqz"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-fiveam sbcl-trivial-octet-streams))
     (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("bordeaux-threads" ,sbcl-bordeaux-threads)
-       ("cl-base64" ,sbcl-cl-base64)
-       ("cl-unicode" ,sbcl-cl-unicode)
-       ("closer-mop" ,sbcl-closer-mop)
-       ("global-vars" ,sbcl-global-vars)
-       ("ironclad" ,sbcl-ironclad)
-       ("local-time" ,sbcl-local-time)
-       ("md5" ,sbcl-md5)
-       ("split-sequence" ,sbcl-split-sequence)
-       ("uax-15" ,sbcl-uax-15)
-       ("usocket" ,sbcl-usocket)))
+     (list sbcl-alexandria
+           sbcl-bordeaux-threads
+           sbcl-cl-base64
+           sbcl-cl-unicode
+           sbcl-closer-mop
+           sbcl-global-vars
+           sbcl-ironclad
+           sbcl-local-time
+           sbcl-md5
+           sbcl-split-sequence
+           sbcl-uax-15
+           sbcl-usocket))
     (arguments
      ;; TODO: (Sharlatan-20210114T171037+0000) tests still failing but on other
      ;; step, some functionality in `local-time' prevents passing tests.
@@ -23897,23 +23897,7 @@ things together into a convenient programming interface")
   (sbcl-package->cl-source-package sbcl-postmodern))
 
 (define-public ecl-postmodern
-  (package
-    (inherit (sbcl-package->ecl-package sbcl-postmodern))
-    (arguments
-     `(#:tests? #f
-       #:asd-systems '("cl-postgres"
-                       "s-sql"
-                       "postmodern"
-                       "simple-date"
-                       "simple-date/postgres-glue")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build
-           (lambda _
-             (substitute* "cl-postgres.asd"
-               ((":or :sbcl :allegro :ccl :clisp" all)
-                (string-append all " :ecl")))
-             #t)))))))
+  (sbcl-package->ecl-package sbcl-postmodern))
 
 (define-public sbcl-pp-toml
   (let ((commit "54f7d08c939d18b24363342c98c19b6812d7afb9")
