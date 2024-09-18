@@ -41940,14 +41940,14 @@ async code in Rust.")
 (define-public rust-memchr-2
   (package
     (name "rust-memchr")
-    (version "2.7.1")
+    (version "2.7.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "memchr" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0jf1kicqa4vs9lyzj4v4y1p90q0dh87hvhsdd5xvhnp527sw8gaj"))))
+         (base32 "18z32bhxrax0fnjikv475z7ii718hq457qwmaryixfxsl2qrmjkq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
