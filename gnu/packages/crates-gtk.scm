@@ -592,8 +592,36 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
+(define-public rust-gdk-pixbuf-0.19
+  (package
+    (name "rust-gdk-pixbuf")
+    (version "0.19.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk-pixbuf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16c6kznkh3vi82843ays8awdm37fwjd1fblv6g3h64824shsnkk2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.19)
+                       ("rust-gio" ,rust-gio-0.19)
+                       ("rust-glib" ,rust-glib-0.19)
+                       ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gdk-pixbuf))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the GdkPixbuf library")
+    (description
+     "This package provides Rust bindings for the @code{GdkPixbuf} library.")
+    (license license:expat)))
+
 (define-public rust-gdk-pixbuf-0.18
   (package
+    (inherit rust-gdk-pixbuf-0.19)
     (name "rust-gdk-pixbuf")
     (version "0.18.5")
     (source
@@ -603,7 +631,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1v7svvl0g7zybndmis5inaqqgi1mvcc6s1n8rkb31f5zn3qzbqah"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.18)
@@ -612,13 +639,7 @@
         ("rust-libc" ,rust-libc-0.2)
         ("rust-once-cell" ,rust-once-cell-1))
        #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
-    (native-inputs (list pkg-config))
-    (inputs (list glib gdk-pixbuf))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the GdkPixbuf library")
-    (description "Rust bindings for the @code{GdkPixbuf} library.")
-    (license license:expat)))
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-gdk-pixbuf-0.17
   (package
