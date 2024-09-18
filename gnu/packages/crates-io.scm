@@ -44,6 +44,7 @@
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -81245,6 +81246,26 @@ template language.")
      `(#:cargo-inputs
        (("rust-kernel32-sys" ,rust-kernel32-sys-0.2)
         ("rust-winapi" ,rust-winapi-0.2))))))
+
+(define-public rust-term-grid-0.1
+  (package
+    (name "rust-term-grid")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "term_grid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kq2sy3b8329jrsrpcvijvyz4gbqjyvyy6c3n0wmmvda9y03w393"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/ogham/rust-term-grid")
+    (synopsis "Library for formatting strings into a grid layout")
+    (description
+     "This package provides Library for formatting strings into a grid layout.")
+    (license license:expat)))
 
 (define-public rust-term-size-1
   (package
