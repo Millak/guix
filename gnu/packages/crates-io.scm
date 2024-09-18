@@ -12306,14 +12306,14 @@ Encoding Standard.")
 (define-public rust-chrono-0.4
   (package
     (name "rust-chrono")
-    (version "0.4.34")
+    (version "0.4.38")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chrono" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12zk0ja924f55va2fs0qj34xaygq46fy92blmc7qkmcj9dj1bh2v"))))
+        (base32 "009l8vc5p8750vn02z30mblg4pv2qhkbfizhfwmzc6vpy5nr67x2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -12324,7 +12324,6 @@ Encoding Standard.")
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-pure-rust-locales" ,rust-pure-rust-locales-0.8)
         ("rust-rkyv" ,rust-rkyv-0.7)
-        ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
         ("rust-windows-targets" ,rust-windows-targets-0.52))
@@ -12333,7 +12332,7 @@ Encoding Standard.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-        ("rust-windows-bindgen" ,rust-windows-bindgen-0.52))
+        ("rust-windows-bindgen" ,rust-windows-bindgen-0.56))
        #:features '("unstable-locales")
        #:tests? #f))
     (home-page "https://github.com/chronotope/chrono")
