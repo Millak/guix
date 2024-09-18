@@ -38105,6 +38105,33 @@ as a plug-and-play solution for anyone already using Org mode for their
 personal wiki.")
       (license license:gpl3+))))
 
+(define-public emacs-org-node
+  (package
+    (name "emacs-org-node")
+    (version "0.8.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/meedstrom/org-node.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1binkkx86byw56zlignddrw7n0y0civ09wlch4yvxk9asdazkc0c"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-dash
+           emacs-org
+           emacs-persist
+           emacs-transient
+           ))
+    (home-page "https://github.com/meedstrom/org-node")
+    (synopsis "Non-hierarchical note-taking with Org-mode, faster than
+org-roam")
+    (description "This package provides a notetaking system like Roam,
+using org mode; faster than org-roam.")
+    (license license:gpl3+)))
+
 (define-public emacs-org-roam-bibtex
   (package
     (name "emacs-org-roam-bibtex")
