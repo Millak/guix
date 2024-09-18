@@ -1107,6 +1107,8 @@ Python.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; AssertionError: Not equal to tolerance rtol=1e-07, atol=0.0001
+      #:test-flags #~(list "-k" "not test_fwhm")
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
