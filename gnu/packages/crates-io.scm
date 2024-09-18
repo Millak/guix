@@ -90796,6 +90796,23 @@ updated when the crate version changes.")
        (("rust-rand" ,rust-rand-0.8)
         ("rust-sha2" ,rust-sha2-0.10))))))
 
+(define-public rust-vsort-0.2
+  (package
+    (name "rust-vsort")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vsort" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y7b0x18a2mpn7hk3qfybl2ksy08klwl3bps4yxsd7pr90dilcqi"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/juansc/vsort/")
+    (synopsis "GNU Version Sort Rust implementation")
+    (description "This package provides GNU Version Sort Rust implementation.")
+    (license license:expat)))
+
 (define-public rust-vswhom-0.1
   (package
     (name "rust-vswhom")
