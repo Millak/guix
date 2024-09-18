@@ -30221,18 +30221,16 @@ user.")
        (uri (git-reference
              (url "https://github.com/sabracrolleton/uax-15")
              (commit (string-append "v" version))))
-       (file-name (git-file-name "uax-15" version))
+       (file-name (git-file-name "cl-uax-15" version))
        (sha256
         (base32 "0kkr3sw3hqsb8ciyn8dzb1cfz260fk1y39vydc98gsfrn6nqh3vw"))))
     (build-system asdf-build-system/sbcl)
     (arguments
-     `(#:asd-systems
-       '("uax-15")))
+     `(#:asd-systems '("uax-15")))
     (native-inputs
      (list sbcl-parachute))
     (inputs
-     `(("cl-ppcre" ,sbcl-cl-ppcre)
-       ("split-sequence" ,sbcl-split-sequence)))
+     (list sbcl-cl-ppcre sbcl-split-sequence))
     (home-page "https://github.com/sabracrolleton/uax-15")
     (synopsis "Common Lisp implementation of unicode normalization functions")
     (description
