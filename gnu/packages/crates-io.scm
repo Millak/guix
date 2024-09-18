@@ -73196,14 +73196,14 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
   (package
     (inherit rust-snapbox-0.5)
     (name "rust-snapbox")
-    (version "0.4.16")
+    (version "0.4.17")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "snapbox" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1v732vpzkjyawwvcq2xdf5q4s6bxrqmqih8kgc5gada9vwq5l53k"))))
+                "114xa4v5icljaacmyj9i2jc8apq04ifihnx7xy4jikgvh1p1p0sb"))))
     (arguments
      `(#:cargo-inputs
        (("rust-anstream" ,rust-anstream-0.6)
@@ -73216,7 +73216,7 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
         ("rust-filetime" ,rust-filetime-0.2)
         ("rust-ignore" ,rust-ignore-0.4)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-libtest-mimic" ,rust-libtest-mimic-0.6)
+        ("rust-libtest-mimic" ,rust-libtest-mimic-0.7)
         ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
         ("rust-os-pipe" ,rust-os-pipe-1)
         ("rust-serde-json" ,rust-serde-json-1)
