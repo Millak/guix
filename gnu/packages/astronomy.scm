@@ -4068,13 +4068,13 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stcal" version))
        (sha256
-        (base32 "0vcq1462wdfi96qqsd5bidx38bbpnpcm18j6s761jz8ymi6vifap"))))
+        (base32 "1n843r19zyjm14iadfbi71ixpk0jrbhaj7h3szy1yhnhrfsrkwar"))))
     (build-system pyproject-build-system)
     (arguments
      (list
