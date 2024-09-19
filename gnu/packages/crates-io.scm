@@ -91166,14 +91166,14 @@ multi-character wildcard operator.")
 (define-public rust-winnow-0.6
   (package
     (name "rust-winnow")
-    (version "0.6.5")
+    (version "0.6.18")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "winnow" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1f0m48kfdvds456b1i1qd6ia9w3mckk2jf4q6z94snpdcw741ynz"))))
+        (base32 "0vrsrnf2nm9jsk1161x1vacmi3ns4h3h10fib91rs28zd6jbvab8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Cut the dependency graph.
