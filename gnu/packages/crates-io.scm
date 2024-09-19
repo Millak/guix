@@ -40258,7 +40258,7 @@ network interfaces/adapters.")
 (define-public rust-log-0.4
   (package
     (name "rust-log")
-    (version "0.4.21")
+    (version "0.4.22")
     (source
      (origin
        (method url-fetch)
@@ -40266,7 +40266,7 @@ network interfaces/adapters.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "074hldq1q8rlzq2s2qa8f25hj4s3gpw71w64vdwzjd01a4g8rvch"))))
+         "093vs0wkm1rgyykk7fjbqp2lwizbixac1w52gv109p5r4jh0p9x7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Not all test files included in release.
