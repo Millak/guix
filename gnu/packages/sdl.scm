@@ -617,7 +617,7 @@ directory.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gabomdq/SDL_GameControllerDB")
+               (url "https://github.com/mdqinc/SDL_GameControllerDB")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -625,7 +625,7 @@ directory.")
       (build-system copy-build-system)
       (arguments
        '(#:install-plan '(("gamecontrollerdb.txt" "share/sdl2/"))))
-      (home-page "https://github.com/gabomdq/SDL_GameControllerDB")
+      (home-page "https://github.com/mdqinc/SDL_GameControllerDB")
       (synopsis "SDL2 game controller database")
       (description
        "This package provides a community sourced database of game controller
