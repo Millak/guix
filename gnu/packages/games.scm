@@ -11430,6 +11430,45 @@ do so you need to explore the island, find food, build a shelter and try to
 get attention, so you get found.")
       (license license:cc-by4.0))))
 
+(define-public sdl-jstest
+  (package
+    (name "sdl-jstest")
+    (version "0.2.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Grumbel/sdl-jstest")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11qp4gkbb11n3wx74128fj56radgsvkj7nxhbh55rd3xad1hckh3"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; The test suite uses appstream-utils to validate the appdata.xml file,
+      ;; fails with "url-not-found".
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-gamecontroller-db
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (copy-file
+               (search-input-file (or native-inputs inputs)
+                                  "share/sdl2/gamecontrollerdb.txt")
+               "external/sdl_gamecontrollerdb/gamecontrollerdb.txt"))))))
+    (native-inputs
+     (list pkg-config sdl2-gamecontrollerdb tinycmmc))
+    (inputs (list ncurses sdl sdl2))
+    (home-page "https://github.com/Grumbel/sdl-jstest")
+    (synopsis "SDL Joystick Tester")
+    (description "The @command{sdl-jstest} and @command{sdl2-jstest} commands
+can list the available joystick controllers as found by the SDL or SDL2
+libraries, respectively.  It can show the available axes, buttons, hats and
+balls of a chosen controller, and can display the controller actions in real
+time in a visual fashion.")
+    (license license:gpl3+)))
+
 (define-public sdlpop
   (package
     (name "sdlpop")
