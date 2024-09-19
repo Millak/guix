@@ -74036,7 +74036,8 @@ initializers are available.")
        (uri (crate-uri "spin" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0b84m6dbzrwf2kxylnw82d3dr8w06av7rfkr8s85fb5f43rwyqvf"))))))
+        (base32 "0b84m6dbzrwf2kxylnw82d3dr8w06av7rfkr8s85fb5f43rwyqvf"))))
+    (arguments '())))
 
 (define-public rust-spin-0.4
   (package
