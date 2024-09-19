@@ -78463,14 +78463,14 @@ processors, disks, components and networks.")
 (define-public rust-system-deps-6
   (package
     (name "rust-system-deps")
-    (version "6.2.0")
+    (version "6.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "system-deps" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0c836abhh3k8yn5ymg8wx383ay7n731gkrbbp3gma352yq7mhb9a"))
+        (base32 "0j93ryw031n3h8b0nfpj5xwh3ify636xmv8kxianvlyyipmkbrd3"))
        (snippet
         #~(begin (delete-file "src/tests/lib/libteststatic.a")))))
     (build-system cargo-build-system)
@@ -78478,13 +78478,13 @@ processors, disks, components and networks.")
      `(#:tests? #f                      ;source is missing some test files
        #:cargo-inputs
        (("rust-cfg-expr" ,rust-cfg-expr-0.15)
-        ("rust-heck" ,rust-heck-0.4)
+        ("rust-heck" ,rust-heck-0.5)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
         ("rust-toml" ,rust-toml-0.8)
-        ("rust-version-compare" ,rust-version-compare-0.1))
+        ("rust-version-compare" ,rust-version-compare-0.2))
        #:cargo-development-inputs
        (("rust-assert-matches" ,rust-assert-matches-1)
-        ("rust-itertools" ,rust-itertools-0.11)
+        ("rust-itertools" ,rust-itertools-0.12)
         ("rust-lazy-static" ,rust-lazy-static-1))))
     (home-page "https://github.com/gdesmott/system-deps")
     (synopsis "Define system dependencies in @file{Cargo.toml}")
