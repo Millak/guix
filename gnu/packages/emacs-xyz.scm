@@ -20832,6 +20832,29 @@ one if it fails.")
 ")
       (license license:gpl3+))))
 
+(define-public emacs-eglot-booster
+  ;; Not tagged
+  (let ((commit "3f9159a8b7fe87e2f01280a2c4c98ca6dab49d13"))
+    (package
+      (name "emacs-eglot-booster")
+      (version "0.0.2")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jdtsmith/eglot-booster")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1aq5fpfasgm5lz8hk476c1zqyj33m024nx8w9qv4qrg88y5mq5n9"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/jdtsmith/eglot-booster")
+      (synopsis "Configuration to use LSP-booster with Eglot")
+      (description
+       "This package adds configuration to simplify using Emacs LSP booster
+with Eglot.")
+      (license license:gpl3+))))
+
 (define-public emacs-jabber
   ;; No releases available.
   (let ((commit "e766d84b81d5df6abc30fcbbb94f7c8640ea54e2")
