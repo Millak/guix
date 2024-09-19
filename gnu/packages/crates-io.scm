@@ -6046,6 +6046,31 @@ they're not available.")
      "This package provides a synchronization primitive for task wakeup.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-atomig-0.4
+  (package
+    (name "rust-atomig")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "atomig" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08f8mhww13dskj55rw37h9d2bwghqxvp7q70mg826y8zn4bjmbqf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-atomig-macro" ,rust-atomig-macro-0.3)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1))))
+    (home-page "https://github.com/LukasKalbertodt/atomig/")
+    (synopsis
+     "Generic and lock-free `std` atomics via `Atomic<T>`")
+    (description
+     "This package provides Generic, convenient and lock-free `std` atomics via
+@code{Atomic<T>}.  Can be used with many primitive types (including floats) and
+with custom types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-atomig-macro-0.3
   (package
     (name "rust-atomig-macro")
