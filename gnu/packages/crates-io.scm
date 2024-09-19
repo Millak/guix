@@ -67478,7 +67478,7 @@ deserialization framework.")
 (define-public rust-ryu-1
   (package
     (name "rust-ryu")
-    (version "1.0.15")
+    (version "1.0.18")
     (source
       (origin
         (method url-fetch)
@@ -67486,7 +67486,7 @@ deserialization framework.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0hfphpn1xnpzxwj8qg916ga1lyc33lc03lnf1gb3wwpglj6wrm0s"))))
+          "17xx2s8j1lln7iackzd9p0sv546vjq71i779gphjq923vjh5pjzk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
