@@ -39872,14 +39872,14 @@ Linux userspace APIs.")
 (define-public rust-libtest-mimic-0.7
   (package
     (name "rust-libtest-mimic")
-    (version "0.7.0")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libtest-mimic" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02y7l5bcwli37hl625bp6l0m95mry8cavwj3nkl55zgc8iplq3vz"))))
+        (base32 "0n4vdf4wz4zglammhdzgwxqal9v1a8gbj6rc4q22jfjvxm2xl2yc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
