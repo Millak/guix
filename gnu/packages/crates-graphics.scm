@@ -5653,14 +5653,14 @@ the platform-specific getters provided by winit, or another library.")
 (define-public rust-x11rb-protocol-0.13
   (package
     (name "rust-x11rb-protocol")
-    (version "0.13.0")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "x11rb-protocol" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0d3cc2dr5fcx8asgrm31d7lrxpnbqi6kl5v3r71gx7xxp3272gp6"))))
+        (base32 "0gfbxf2k7kbk577j3rjhfx7hm70kmwln6da7xyc4l2za0d2pq47c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
