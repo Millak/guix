@@ -46158,8 +46158,44 @@ nitrokey-test crate.")
     (description "Unified interface for Linux network state querying.")
     (license license:asl2.0)))
 
+(define-public rust-nix-0.29
+  (package
+    (name "rust-nix")
+    (version "0.29.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ikvn7s9r2lrfdm3mx1h7nbfjvcc6s9vxdzw7j5xfkd2qdnp9qki"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `nix::sys::aio`
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cfg-aliases" ,rust-cfg-aliases-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-memoffset" ,rust-memoffset-0.9)
+                       ("rust-pin-utils" ,rust-pin-utils-0.1))
+       #:cargo-development-inputs (("rust-assert-impl" ,rust-assert-impl-0.1)
+                                   ("rust-caps" ,rust-caps-0.5)
+                                   ("rust-parking-lot" ,rust-parking-lot-0.12)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-semver" ,rust-semver-1)
+                                   ("rust-sysctl" ,rust-sysctl-0.4)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/nix-rust/nix")
+    (synopsis "Rust friendly bindings to *nix APIs")
+    (description
+     "Nix seeks to provide friendly bindings to various *nix platform APIs.
+The goal is to not provide a 100% unified interface, but to unify what can be
+while still providing platform specific APIs.")
+    (license license:expat)))
+
 (define-public rust-nix-0.28
   (package
+    (inherit rust-nix-0.29)
     (name "rust-nix")
     (version "0.28.0")
     (source
@@ -46169,7 +46205,6 @@ nitrokey-test crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1r0rylax4ycx3iqakwjvaa178jrrwiiwghcw95ndzy72zk25c8db"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--all-features"
@@ -46205,14 +46240,7 @@ nitrokey-test crate.")
                                    ("rust-rand" ,rust-rand-0.8)
                                    ("rust-semver" ,rust-semver-1)
                                    ("rust-sysctl" ,rust-sysctl-0.4)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/nix-rust/nix")
-    (synopsis "Rust friendly bindings to *nix APIs")
-    (description
-     "Nix seeks to provide friendly bindings to various *nix platform APIs.
-The goal is to not provide a 100% unified interface, but to unify what can be
-while still providing platform specific APIs.")
-    (license license:expat)))
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-nix-0.27
   (package
