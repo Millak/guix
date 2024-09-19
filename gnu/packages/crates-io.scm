@@ -70807,14 +70807,14 @@ Rust's serde.")
 (define-public rust-serial-test-derive-3
   (package
     (name "rust-serial-test-derive")
-    (version "3.0.0")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serial_test_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04i240k9ml91nz2knj2qxaksm6qnqj65xm7p8wdsq880qynv8gxr"))))
+        (base32 "0rrx13r2kdahbgs9qfvbx63zgzafrjjpiq42vsy1zvxw4nrrvzl2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
