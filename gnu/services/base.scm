@@ -496,7 +496,10 @@ upon boot."
        (stop #~(lambda args
                  (define (known? mount-point)
                    (member mount-point
-                           (cons* "/proc" "/sys" '#$known-mount-points)))
+                           ;; Count file systems mounted by the initrd to as
+                           ;; "known" and not user-mounted file systems.
+                           (cons* "/" "/dev" "/proc" "/sys"
+                                  '#$known-mount-points)))
 
                  ;; Make sure we don't keep the user's mount points busy.
                  (chdir "/")
