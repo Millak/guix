@@ -1454,14 +1454,14 @@ if they were just another Rust module.")
 (define-public rust-windows-aarch64-gnullvm-0.52
   (package
     (name "rust-windows-aarch64-gnullvm")
-    (version "0.52.0")
+    (version "0.52.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "windows_aarch64_gnullvm" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1shmn1kbdc0bpphcxz0vlph96bxz0h1jlmh93s9agf2dbpin8xyb"))
+        (base32 "1lrcq38cr2arvmz19v32qaggvj8bh1640mdm9c2fr877h0hn591j"))
        (snippet
         '(delete-file "lib/libwindows.0.52.0.a"))))
     (build-system cargo-build-system)
