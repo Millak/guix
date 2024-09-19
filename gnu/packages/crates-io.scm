@@ -84525,14 +84525,14 @@ parser.")
 (define-public rust-toml-test-1
   (package
     (name "rust-toml-test")
-    (version "1.0.0")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "toml-test" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1h0lfd4bsix6c7mqlqg9r73dgc34b8kmh5vym20y2cgv6ll8khqy"))))
+        (base32 "1adb1yqg5nph2k9x6rz3y7zdfvjg6yxvc6a00i0gnkqmx60ndqpr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
