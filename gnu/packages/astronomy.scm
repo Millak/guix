@@ -6438,6 +6438,29 @@ the image to position on the sky.  Auxillary programs search star catalogs and
 manipulate images.")
     (license license:gpl2+)))
 
+(define-public webbpsf-data
+  (package
+    (name "webbpsf-data")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       ;; 70.1MiB archive
+       (uri "https://stsci.box.com/shared/static/qxpiaxsjwo15ml6m4pkhtk36c9jgj70k.gz")
+       (file-name (string-append "webbpsf-data-" version ".tar.gz"))
+       (sha256
+        (base32 "0b3qxp6mrm2dwsdnqnprf4yrp0zbncknildqmf28wgginwa5sch8"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("." "share/webbpsf-data"))))
+    (home-page "https://webbpsf.readthedocs.io/en/stable/installation.html")
+    (synopsis "JWST pupil shape, instrument throughputs, and aperture positions data files")
+    (description
+     "This package contains FIT and CSV files requried for WebbPSF
+installation and distributed separatly from it.")
+    (license license:bsd-3)))
+
 (define-public weightwatcher
   (package
     (name "weightwatcher")
