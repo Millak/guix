@@ -2627,14 +2627,14 @@ windows crate.")
 (define-public rust-windows-x86-64-msvc-0.52
   (package
     (name "rust-windows-x86-64-msvc")
-    (version "0.52.0")
+    (version "0.52.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "012wfq37f18c09ij5m6rniw7xxn5fcvrxbqd0wd8vgnl3hfn9yfz"))
+                "1v7rb5cibyzx8vak29pdrk8nx9hycsjs4w0jgms08qk49jl6v7sq"))
               (snippet
                '(delete-file "lib/windows.0.52.0.lib"))))
     (build-system cargo-build-system)
