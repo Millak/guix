@@ -82435,14 +82435,14 @@ operations.")
 (define-public rust-tokio-macros-2
   (package
     (name "rust-tokio-macros")
-    (version "2.2.0")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fwjy4vdx1h9pi4g2nml72wi0fr27b5m954p13ji9anyy8l1x2jv"))))
+        (base32 "0lnpg14h1v3fh2jvnc8cz7cjf0m7z1xgkwfpcyy632g829imjgb9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--release" "--lib")
