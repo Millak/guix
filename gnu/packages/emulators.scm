@@ -2286,6 +2286,72 @@ The Jolly Good API is a shared object or plugin @acronym{API, Application
 Programming Interface} for emulators.")
     (license license:zlib)))
 
+(define-public jgrf
+  (package
+    (name "jgrf")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/jgemu/jgrf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (snippet '(begin
+                          ;; TODO: Package md5.h and md5.c from
+                          ;; http://openwall.info/wiki/people/solar/software
+                          ;; /public-domain-source-code/md5,
+                          ;; remove these bundled files and set the
+                          ;; USE_EXTERNAL_MD5 Make flag to 1.
+                          ;; (delete-file "deps/md5.h")
+                          ;; (delete-file "deps/md5.c")
+                          (use-modules (guix build utils))
+                          (delete-file-recursively "deps/miniz")))
+              (sha256
+               (base32
+                "1ivc8jj0majvgi0rj9nn429bmh7wp2nf87hq8xg05fjqwalfy3bl"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                ;no test suite
+           #:make-flags
+           #~(list (string-append "AR=" #$(ar-for-target))
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "CXX=" #$(cxx-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
+    (native-inputs (list jg-api pkg-config))
+    (inputs
+     (list flac
+           libepoxy
+           libsamplerate
+           lzo
+           miniz
+           sdl2
+           soxr
+           speexdsp
+           zlib
+           `(,zstd "lib")))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "JOLLYGOOD_CORE_DIRS")
+            (files '("lib/jollygood")))
+           (search-path-specification
+            (variable "JOLLYGOOD_ASSET_DIRS")
+            (files '("share/jollygood")))))
+    (home-page "https://gitlab.com/jgemu/jgrf")
+    (synopsis "Jolly Good Reference Frontend")
+    (description "The Jolly Good Reference Frontend (accessible via the
+@command{jollygood} command) aims to be the simplest possible frontend to The
+Jolly Good API.  It may be used to run emulators built as shared objects, or
+as a \"white-label\" frontend for statically linked standalone emulators.")
+    ;; The main license is BSD-3; the bundled source licenses are also listed
+    ;; below.
+    (license (list license:bsd-3 ;this software, gltext.h, lodepng.c, lodepng.h
+                   license:expat ;ezmenu.h source, musl_memmem.c,
+                                        ;parson.h, parson.c, tconfig.h, tconfig.c
+                   license:public-domain ;md5.h, md5.c, parg.h, parg.c
+                   license:cc0))))
+
 (define-public zsnes
   (package
     (name "zsnes")
