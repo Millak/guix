@@ -2040,7 +2040,7 @@ more complicated parallel cases.")
   (package
     (inherit go-github-com-deckarep-golang-set)
     (name "go-github-com-deckarep-golang-set-v2")
-    (version "2.2.0")
+    (version "2.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2049,11 +2049,10 @@ more complicated parallel cases.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11bvia6cflq46nzc2hfgikgxyck7wskyi0i7ksy9r0d41l4jh4l9"))))
+        (base32 "1yvmra0hfcdzyyw51k0gnnd13zklvsacja0qkd0j1wjhpqmmfbcy"))))
     (arguments
      (list
-      #:import-path "github.com/deckarep/golang-set/v2"
-      #:unpack-path "github.com/deckarep/golang-set"))
+      #:import-path "github.com/deckarep/golang-set/v2"))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
