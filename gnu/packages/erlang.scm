@@ -637,7 +637,7 @@ Erlang.")
 (define-public rebar3
   (package
     (name "rebar3")
-    (version "3.23.0")
+    (version "3.24.0")
     (source
      (origin
        (method git-fetch)
@@ -646,7 +646,7 @@ Erlang.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jinjx3mk5j1kczxmblixbvhf24q0yfwih2ggs11x5ykmrqpbckl"))))
+        (base32 "1l73csyzxwinhrcsyb8hg2003v35yz6pv98inl3wg1j5587f071s"))))
     (build-system gnu-build-system)
     ;; TODO: remove vendored modules, install man-page, install lib(?)
     (arguments
@@ -672,29 +672,14 @@ Erlang.")
                     "eunit_formatters" "getopt" "hex_core" "erlware_commons"
                     "parse_trans" "relx" "ssl_verify_fun" "providers"))))
          (delete 'configure)
-         ;; By default rebar3 produces escripts with embedded ZIP archives
-         ;; with files with current timestamps which is not suitable for
-         ;; reproducible builds. We fix it by setting predefined timestamps.
+         ;; Due to changes in Erlang 27.1 related to handling ZIP-archives
+         ;; we still need to patch rebar to make it generate reproducible
+         ;; escripts.
          (add-before 'build 'make-escriptize-reproducible
            (lambda _
-             (let ((escriptize "apps/rebar/src/rebar_prv_escriptize.erl"))
-               (substitute* escriptize
-                 (("\\[dir_entries\\(filename:dirname\\(Filename1\\)\\),")
-                  (string-append "FilePath = filename:join(Dir, Filename),"
-                                 "{ok, FileInfo0} = file:read_file_info(FilePath),"
-                                 "DateTime = {{1970, 1, 1}, {0, 0, 1}},"
-                                 "FileInfo = FileInfo0#file_info{mtime = DateTime},"
-                                 "[dir_entries(filename:dirname(Filename1)),")))
-               (substitute* escriptize
-                 (((string-append
-                    "\\{Filename1, file_contents\\(filename:join\\(Dir, "
-                    "Filename\\)\\)\\}\\]."))
-                  "{Filename1, file_contents(FilePath), FileInfo}]."))
-               (substitute* escriptize
-                 (((string-append "\\[\\{FName,FBin\\} \\|\\| \\{FName,FBin\\} <- "
-                                  "Files, FBin =/= <<>>\\]\\."))
-                  (string-append "[{FName,FBin,FInfo} || {FName,FBin,FInfo} <- "
-                                 "Files, FBin =/= <<>>]."))))))
+             (substitute* "apps/rebar/src/rebar_prv_escriptize.erl"
+               (("mtime = DateTime")
+                "atime = DateTime,ctime = DateTime,mtime = DateTime"))))
          (replace 'build
            (lambda _
              (setenv "HOME" (getcwd))
