@@ -54311,21 +54311,20 @@ sourced from the Rust compiler.")
 (define-public rust-plist-1
   (package
     (name "rust-plist")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "plist" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vscdjj7xy1pz80n3lwcg1jhsydcf2nvj4lfxsqs46ixlv49qsg5"))))
+        (base32 "05hh3s44km2hyig48xjq580mj6s1r4yijzf6dcwmy3w0l7ligks2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.21)
+       (("rust-base64" ,rust-base64-0.22)
         ("rust-indexmap" ,rust-indexmap-2)
-        ("rust-line-wrap" ,rust-line-wrap-0.1)
-        ("rust-quick-xml" ,rust-quick-xml-0.31)
+        ("rust-quick-xml" ,rust-quick-xml-0.32)
         ("rust-serde" ,rust-serde-1)
         ("rust-time" ,rust-time-0.3))
        #:cargo-development-inputs
