@@ -9866,6 +9866,27 @@ reasonable.")
 library for wrapping text.")
     (license (list license:expat license:gpl3+))))
 
+(define-public rust-by-address-1
+  (package
+    (name "rust-by-address")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "by_address" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01idmag3lcwnnqrnnyik2gmbrr34drsi97q15ihvcbbidf2kryk4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=tests::test_thin_ptr_fail")))
+    (home-page "https://github.com/mbrubeck/by_address")
+    (synopsis "Wrapper for comparing and hashing pointers by address")
+    (description
+     "This package provides Wrapper for comparing and hashing pointers by address.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-byte-pool-0.2
   (package
     (name "rust-byte-pool")
