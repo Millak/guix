@@ -3313,18 +3313,18 @@ in AVIF format (powers the @code{cavif} tool).")
   (package
     (inherit rust-raw-window-handle-0.4)
     (name "rust-raw-window-handle")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "raw-window-handle" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "04c2wir7qq3g2b143yav52a1g5ack8ffqx2bpmrn9bc0dix1li0a"))))
+         "0xisj116xpaz1i2hci9jqfnccyixba1xryxl1gbdlj057la5b3z2"))))
     (arguments
-     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.4))))))
 
 (define-public rust-raw-window-metal-0.3
   (package
