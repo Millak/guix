@@ -84333,14 +84333,14 @@ serializing Rust structures.")
 (define-public rust-toml-edit-0.22
   (package
     (name "rust-toml-edit")
-    (version "0.22.9")
+    (version "0.22.21")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "toml_edit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1i3lhd5krd4ah3mgn4m73yla01l7rdlfpl5asy7jb1sikivvnh4f"))))
+        (base32 "1ky5dncf4g4l8hpqizws2ccp37rsvvc2pwynzwvacjf4fgp2q1rv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-indexmap" ,rust-indexmap-2)
@@ -84351,8 +84351,9 @@ serializing Rust structures.")
                        ("rust-winnow" ,rust-winnow-0.6))
        #:cargo-development-inputs
        (("rust-libtest-mimic" ,rust-libtest-mimic-0.7)
+        ("rust-proptest" ,rust-proptest-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-snapbox" ,rust-snapbox-0.4)
+        ("rust-snapbox" ,rust-snapbox-0.6)
         ("rust-toml-test-data" ,rust-toml-test-data-1)
         ("rust-toml-test-harness" ,rust-toml-test-harness-0.4))))
     (home-page "https://github.com/toml-rs/toml")
