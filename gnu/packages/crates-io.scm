@@ -24986,7 +24986,7 @@ abbreviation for Extended Unique Identifier.")
 (define-public rust-evdev-0.12
   (package
     (name "rust-evdev")
-    (version "0.12.1")
+    (version "0.12.2")
     (source
      (origin
        (method url-fetch)
@@ -24994,7 +24994,7 @@ abbreviation for Extended Unique Identifier.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1ww35bkqf060nl6x2vfg0frd6ql470c90l2ah68b3mngr3y5kv9b"))))
+         "19qh6r1z4v8ja6qqigjbg9vckbhlycc6wkqgzfz9fcln7almaq5b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
