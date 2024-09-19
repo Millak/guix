@@ -6046,6 +6046,27 @@ they're not available.")
      "This package provides a synchronization primitive for task wakeup.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-atomig-macro-0.3
+  (package
+    (name "rust-atomig-macro")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "atomig-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hvgrip2nqqlgpfz8p9zrs6iyrv8nyz0c5bgvm5mxim4ik4wh44s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/LukasKalbertodt/atomig/")
+    (synopsis "Helper crate for `atomig`")
+    (description "This package provides Helper crate for `atomig`.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-atty-0.2
   (package
     (name "rust-atty")
