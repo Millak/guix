@@ -16,6 +16,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1075,6 +1076,7 @@ using compilers other than GCC."
                     (lib     (string-append out "/lib/"))
                     (include (string-append out "/include/")))
                (install-file "libiberty.a" lib)
+               (install-file "../include/demangle.h" include)
                (install-file "../include/libiberty.h" include)))))))
     (inputs '())
     (outputs '("out"))
