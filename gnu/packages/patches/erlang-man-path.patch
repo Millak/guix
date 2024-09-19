@@ -9,10 +9,10 @@ as other man pages.)
 
 --- a/erts/etc/common/erlexec.c
 +++ b/erts/etc/common/erlexec.c
-@@ -709,8 +709,10 @@
- 			error("-man not supported on Windows");
- #else
- 			argv[i] = "man";
+@@ -728,8 +728,10 @@ int main(int argc, char **argv)
+                                 break;
+                             }
+                         }
 -			erts_snprintf(tmpStr, sizeof(tmpStr), "%s/man", rootdir);
 -			set_env("MANPATH", tmpStr);
 +			/*
