@@ -67739,6 +67739,38 @@ encodable types.")
     (description "This package provides a simple scanf()-like input for Rust.")
     (license license:expat)))
 
+(define-public rust-scc-2
+  (package
+    (name "rust-scc")
+    (version "2.1.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "scc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rhy3pxjhmhh2f2ab9mk8y8nw53zz18zjywwzkjzr2ls23dpm50c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-loom" ,rust-loom-0.7)
+                       ("rust-sdd" ,rust-sdd-3)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde-test" ,rust-serde-test-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/wvwwvwwv/scalable-concurrent-containers/")
+    (synopsis
+     "Containers and utilities for concurrent and asynchronous programming")
+    (description
+     "This package provides High performance containers and utilities for
+concurrent and asynchronous programming.")
+    (license license:asl2.0)))
+
 (define-public rust-sce-0.1
   (package
     (name "rust-sce")
