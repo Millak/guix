@@ -68432,6 +68432,29 @@ notifications.")
        (sha256
         (base32 "1j1ff6hhzcyh3m9c0adxnnjrasnvl1v6qaiv5vj2zgajz0hqml0c"))))))
 
+(define-public rust-sdd-3
+  (package
+    (name "rust-sdd")
+    (version "3.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sdd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g4alppkxrabhqfh9dfwngswnlhsv4jn6ys11dr9j04vbndbb9v0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-loom" ,rust-loom-0.7))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/wvwwvwwv/scalable-delayed-dealloc/")
+    (synopsis "Scalable lock-free delayed memory reclaimer")
+    (description
+     "This package provides Scalable lock-free delayed memory reclaimer.")
+    (license license:asl2.0)))
+
 (define-public rust-seahash-3
   (package
     (name "rust-seahash")
