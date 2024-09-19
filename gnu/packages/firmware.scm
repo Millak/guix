@@ -10,7 +10,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -508,7 +508,7 @@ provide OpenFirmware functionality on top of an already running system.")
 (define* (make-opensbi-package platform name #:optional (arch "riscv64"))
   (package
     (name name)
-    (version "1.3.1")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -517,7 +517,7 @@ provide OpenFirmware functionality on top of an already running system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "opensbi" version))
        (sha256
-        (base32 "01pr7fyg3gcb5pj6d48w2an3m4mfjs9b398x31drqxwqcaz0zn94"))))
+        (base32 "0mfjb9jzrmc6chsr16bjrfann67qjxiigz8q42ndf9lrp6nyigd9"))))
     (build-system gnu-build-system)
     (native-inputs
      (append
