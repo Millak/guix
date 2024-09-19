@@ -1596,6 +1596,7 @@ language.")
     (build-system go-build-system)
     (arguments
      (list
+      #:embed-files #~(list "jsonschema-draft-04\\.json" "schema\\.json")
       #:import-path "github.com/go-openapi/analysis"
       #:phases
       #~(modify-phases %standard-phases
@@ -1606,35 +1607,11 @@ language.")
                   ;; Tests requiring network access.
                   (("TestFlatten_RemoteAbsolute")
                    "OffTestFlatten_RemoteAbsolute")))))
-          ;; FIXME: pattern schemas/*.json: cannot embed irregular file
-          ;; schemas/jsonschema-draft-04.json
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module which is sourced during setup environment phase, but
-          ;; easy resolved after coping to expected directory "vendor" within
-          ;; the current package, see details in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-before 'build 'copy-input-to-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (mkdir "vendor")
-                (copy-recursively
-                 (string-append
-                  #$(this-package-input "go-github-com-go-openapi-spec")
-                  "/src/github.com")
-                 "vendor/github.com"))))
           (replace 'check
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (when tests?
                 (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./...")))))
-          (add-before 'install 'remove-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "vendor")))))))
+                  (invoke "go" "test" "-v" "./..."))))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -1749,28 +1726,8 @@ prototyped in @url{https://github.com/xeipuuv/gojsonreference}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/go-openapi/loads"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src"
-                                    "^(jsonschema-draft-04|schema)\\.json$")))))))
+      #:embed-files #~(list "jsonschema-draft-04\\.json" "schema\\.json")
+      #:import-path "github.com/go-openapi/loads"))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -1802,27 +1759,8 @@ Supports JSON and YAML documents.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/go-openapi/runtime"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" "\\.json$")))))))
+      #:embed-files #~(list "jsonschema-draft-04\\.json" "schema\\.json")
+      #:import-path "github.com/go-openapi/runtime"))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -1957,6 +1895,7 @@ projects.")
     (build-system go-build-system)
     (arguments
      (list
+      #:embed-files #~(list "jsonschema-draft-04\\.json" "schema\\.json")
       #:import-path "github.com/go-openapi/validate"
       #:phases
       #~(modify-phases %standard-phases
@@ -1967,41 +1906,7 @@ projects.")
                 (for-each delete-file
                           (list "benchmark_test.go"
                                 "example_validator_test.go"
-                                "doc_test.go")))))
-          ;; FIXME: pattern schemas/*.json: cannot embed irregular file
-          ;; schemas/jsonschema-draft-04.json
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module which is sourced during setup environment phase, but
-          ;; easy resolved after coping to expected directory "vendor" within
-          ;; the current package, see details in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-before 'build 'copy-input-to-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (mkdir "vendor")
-                (copy-recursively
-                 (string-append
-                  #$(this-package-input "go-github-com-go-openapi-loads")
-                  "/src/github.com")
-                 "vendor/github.com")
-                (copy-recursively
-                 (string-append
-                  #$(this-package-input "go-github-com-go-openapi-spec")
-                  "/src/github.com")
-                 "vendor/github.com")
-                (copy-recursively
-                 (string-append
-                  #$(this-package-input "go-github-com-go-openapi-analysis")
-                  "/src/github.com")
-                 "vendor/github.com"))))
-          (add-before 'install 'remove-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "vendor")))))))
+                                "doc_test.go"))))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -2169,27 +2074,7 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/golang/groupcache"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" ".*(editions_defaults.binpb)$")))))))
+      #:import-path "github.com/golang/groupcache"))
     (propagated-inputs
      (list go-github-com-golang-protobuf))
     (home-page "https://github.com/golang/groupcache")

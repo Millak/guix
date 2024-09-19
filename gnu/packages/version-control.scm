@@ -3686,6 +3686,7 @@ will reconstruct the object along its delta-base chain and return it.")
     (build-system go-build-system)
     (arguments
      (list
+      #:embed-files #~(list "children" "nodes" "text")
       #:import-path "github.com/git-lfs/git-lfs"
       #:install-source? #f
       #:phases
@@ -3695,13 +3696,6 @@ will reconstruct the object along its delta-base chain and return it.")
               (substitute* "src/github.com/git-lfs/git-lfs/lfs/hook.go"
                 (("/bin/sh")
                  (search-input-file inputs "bin/sh")))))
-          (add-after 'unpack 'fix-embed-x-net
-            (lambda _
-              (delete-file-recursively "src/golang.org/x/net/publicsuffix/data")
-              (copy-recursively
-               #$(file-append (this-package-input "go-golang-org-x-net")
-                              "/src/golang.org/x/net/publicsuffix/data")
-               "src/golang.org/x/net/publicsuffix/data")))
           ;; Only build the man pages if ruby-asciidoctor is available.
           #$@(if (this-package-native-input "ruby-asciidoctor")
                #~((add-before 'build 'man-gen

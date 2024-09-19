@@ -5899,6 +5899,7 @@ size of the terminal.")
     (build-system go-build-system)
     (arguments
      (list
+      #:embed-files #~(list ".*\\.xml")
       #:import-path "github.com/charmbracelet/glamour"
       #:phases
       #~(modify-phases %standard-phases
@@ -5912,31 +5913,7 @@ size of the terminal.")
                      #o644)
               (substitute* "src/github.com/charmbracelet/glamour/glamour_test.go"
                 (("	generate = false")
-                 "	generate = true"))))
-          ;; FIXME: Pattern embedded: cannot embed directory embedded:
-          ;; contains no embeddable files.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module which is sourced during setup environment phase, but
-          ;; easy resolved after coping to expected directory "vendor" within
-          ;; the current package, see details in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-before 'build 'copy-input-to-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (mkdir "vendor")
-                (copy-recursively
-                 (string-append
-                  #$(this-package-input "go-github-com-alecthomas-chroma-v2")
-                  "/src/github.com")
-                 "vendor/github.com"))))
-          (add-before 'install 'remove-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "vendor")))))))
+                 "	generate = true")))))))
     (propagated-inputs
      (list go-github-com-alecthomas-chroma-v2
            go-github-com-microcosm-cc-bluemonday
@@ -7763,16 +7740,8 @@ of the current user.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/ssgelm/cookiejarparser"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-embed-x-net
-            (lambda _
-              (delete-file-recursively "src/golang.org/x/net/publicsuffix/data")
-              (copy-recursively
-               #$(file-append (this-package-input "go-golang-org-x-net")
-                              "/src/golang.org/x/net/publicsuffix/data")
-               "src/golang.org/x/net/publicsuffix/data"))))))
+      #:embed-files #~(list "children" "nodes" "text")
+      #:import-path "github.com/ssgelm/cookiejarparser"))
     (propagated-inputs (list go-golang-org-x-net))
     (home-page "https://github.com/ssgelm/cookiejarparser")
     (synopsis "Parse a curl cookiejar with Go")

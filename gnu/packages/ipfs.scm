@@ -354,27 +354,7 @@ throughout its lifetime.")
      (list
       ;; XXX: Tests time out, figure out workaround.
       #:tests? #f
-      #:import-path "github.com/ipfs/go-ds-badger"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" ".*(editions_defaults.binpb)$")))))))
+      #:import-path "github.com/ipfs/go-ds-badger"))
     (propagated-inputs
      (list go-github-com-dgraph-io-badger
            go-github-com-ipfs-go-datastore
@@ -854,30 +834,8 @@ their levels to be controlled individually.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/libp2p/go-libp2p"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each
-               (lambda (file)
-                 (let ((file-store-path (readlink file)))
-                   (delete-file file)
-                   (copy-recursively file-store-path file)))
-               (find-files "src" (string-append
-                                  ".*(editions_defaults.binpb"
-                                  "|sorted-network-list.bin)$"))))))))
+      #:embed-files #~(list "sorted-network-list.bin")
+      #:import-path "github.com/libp2p/go-libp2p"))
     (propagated-inputs
      (list go-github-com-benbjohnson-clock
            go-github-com-davidlazar-go-crypto
@@ -1098,30 +1056,11 @@ types.")
     (build-system go-build-system)
     (arguments
      (list
+      #:embed-files #~(list "sorted-network-list.bin")
       #:unpack-path "github.com/ipfs/kubo"
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" (string-append
-                                           ".*(editions_defaults.binpb"
-                                           "|sorted-network-list.bin)$")))))
           ;; https://github.com/ipfs/kubo/blob/master/docs/command-completion.md
           (add-after 'install 'install-bashcompletion
             (lambda _

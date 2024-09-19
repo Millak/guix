@@ -2110,25 +2110,6 @@ encoding/decoding.  It has no dependencies.")
       #:import-path "github.com/dgraph-io/badger"
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" (string-append
-                                           ".*(editions_defaults.binpb)$")))))
           (add-after 'unpack 'patch-failing-tests
             (lambda* (#:key unpack-path tests? #:allow-other-keys)
               (with-directory-excursion (string-append "src/" unpack-path)
@@ -4595,24 +4576,6 @@ allocator.  This is primarily useful for long lived buffers that usually sit emp
       #:import-path "github.com/libp2p/go-msgio"
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" ".*(editions_defaults.binpb)$"))))
           ;; XXX: Replace when go-build-system supports nested path.
           (replace 'check
             (lambda* (#:key import-path tests? #:allow-other-keys)
@@ -5164,24 +5127,6 @@ other directories.  It is optimized for filewalking.")
       #:import-path "github.com/matttproud/golang_protobuf_extensions/v2"
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" ".*(editions_defaults.binpb)$"))))
           ;; XXX: Activate when go-build-system supports submodules.
           (delete 'build)
           ;; XXX: Replace when go-build-system supports nested path.
@@ -5776,33 +5721,8 @@ list of sentences.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/niklasfasching/go-org"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; FIXME: Pattern embedded: cannot embed directory embedded:
-          ;; contains no embeddable files.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module which is sourced during setup environment phase, but
-          ;; easy resolved after coping to expected directory "vendor" within
-          ;; the current package, see details in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-before 'build 'copy-input-to-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (mkdir "vendor")
-                (copy-recursively
-                 (string-append
-                  #$(this-package-input "go-github-com-alecthomas-chroma-v2")
-                  "/src/github.com")
-                 "vendor/github.com"))))
-          (add-before 'install 'remove-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "vendor")))))))
+      #:embed-files #~(list ".*\\.xml")
+      #:import-path "github.com/niklasfasching/go-org"))
     (propagated-inputs
      (list go-golang-org-x-net
            go-github-com-pmezard-go-difflib

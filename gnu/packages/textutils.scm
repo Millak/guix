@@ -1517,6 +1517,7 @@ of a Unix terminal to HTML code.")
     (arguments
      (list
       #:install-source? #f
+      #:embed-files #~(list ".*\\.gob")
       #:import-path "github.com/errata-ai/vale/cmd/vale"
       #:unpack-path "github.com/errata-ai/vale"
       #:phases
@@ -1536,26 +1537,6 @@ of a Unix terminal to HTML code.")
                   (("TestLocalZip") "OffTestLocalZip")
                   (("TestNoPkgFound") "OffTestNoPkgFound")
                   (("TestV3Pkg") "OffTestV3Pkg")))))
-          ;; FIXME: Pattern embedded: cannot embed directory embedded:
-          ;; contains no embeddable files.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module which is sourced during setup environment phase, but
-          ;; easy resolved after coping to expected directory "vendor" within
-          ;; the current package, see details in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-before 'build 'copy-input-to-vendor-directory
-            (lambda* (#:key unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (mkdir "vendor")
-                (copy-recursively
-                 (string-append
-                  #$(this-package-native-input "go-github-com-jdkato-twine")
-                  "/src/github.com")
-                 "vendor/github.com"))))
           ;; XXX: Workaround for go-build-system's lack of Go modules
           ;; support.
           (replace 'check
@@ -1563,11 +1544,7 @@ of a Unix terminal to HTML code.")
               (when tests?
                 (with-directory-excursion (string-append "src/" unpack-path)
                   (setenv "HOME" "/tmp")
-                  (invoke "go" "test" "-v" "./...")))))
-          (add-before 'install 'remove-vendor-directory
-            (lambda* (#:key unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (delete-file-recursively "vendor")))))))
+                  (invoke "go" "test" "-v" "./..."))))))))
     (native-inputs
      (list go-github-com-masterminds-sprig-v3
            go-github-com-adrg-strutil

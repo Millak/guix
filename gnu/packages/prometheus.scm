@@ -112,27 +112,7 @@ x/net/trace)} tracing wrappers @code{net.Conn}, both inbound
       ;; The project looks abandoned, tests failed with a new go-metrics, see
       ;; <https://github.com/nbrownus/go-metrics-prometheus/pull/2>.
       #:tests? #f
-      #:import-path "github.com/nbrownus/go-metrics-prometheus"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" ".*(editions_defaults.binpb)$")))))))
+      #:import-path "github.com/nbrownus/go-metrics-prometheus"))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -169,25 +149,6 @@ registry.")
       #:import-path "github.com/prometheus/client_golang"
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-before 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" (string-append
-                                           ".*(editions_defaults.binpb)$")))))
           (add-after 'unpack 'remove-examples-and-tutorials
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
@@ -278,25 +239,6 @@ Prometheus metrics.")
       #:import-path "github.com/prometheus/common"
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" (string-append
-                                           ".*(editions_defaults.binpb)$")))))
           ;; XXX: Workaround for go-build-system's lack of Go modules support.
           (delete 'build)
           (replace 'check
@@ -408,27 +350,7 @@ metrics.")
     (arguments
      (list
       #:import-path "github.com/prometheus/common/sigv4"
-      #:unpack-path "github.com/prometheus/common"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-after 'unpack 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" ".*(editions_defaults.binpb)$")))))))
+      #:unpack-path "github.com/prometheus/common"))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -463,22 +385,6 @@ from the default AWS credential chain.")
       #:import-path "github.com/prometheus/exporter-toolkit"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-embed-editions-defaults-binpb
-            (lambda _
-              (let* ((import-path "google.golang.org/protobuf")
-                     (subdir "internal/editiondefaults")
-                     (embed-file "editions_defaults.binpb")
-                     (embed-file-path
-                      (string-append "src/"
-                                     import-path "/"
-                                     subdir "/"
-                                     embed-file)))
-                (delete-file-recursively embed-file-path)
-                (copy-file
-                 (string-append
-                  #$(this-package-native-input "go-google-golang-org-protobuf")
-                  "/" embed-file-path)
-                 embed-file-path))))
           ;; XXX: Workaround for go-build-system's lack of Go modules support.
           (delete 'build)
           (replace 'check
@@ -572,29 +478,7 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
     (arguments
      (list
       #:import-path "github.com/prometheus/statsd_exporter"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; TODO: Implement it in go-build-system.
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module of embed file which is symlinked during setup
-          ;; environment phase, but easy resolved after coping file from the
-          ;; store to the build directory of the current package, see details
-          ;; in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-before 'build 'fix-embed-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((file-store-path (readlink file)))
-                            (delete-file file)
-                            (copy-recursively file-store-path file)))
-                        (find-files "src" (string-append
-                                           ".*(editions_defaults.binpb"
-                                           "|landing_page.css"
-                                           "|landing_page.html)$"))))))))
+      #:embed-files #~(list "landing_page.css" "landing_page.html")))
     (native-inputs
      (list go-github-com-stvp-go-udp-testing))
     (propagated-inputs

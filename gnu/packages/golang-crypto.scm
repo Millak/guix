@@ -137,33 +137,10 @@ can be ignored.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "filippo.io/age"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; FIXME: src/c2sp.org/CCTV/age/age.go:13:12: pattern testdata:
-          ;; cannot embed directory testdata: contains no embeddable files
-          ;;
-          ;; This happens due to Golang can't determine the valid directory of
-          ;; the module which is sourced during setup environment phase, but
-          ;; easy resolved after coping to expected directory "vendor" within
-          ;; the current package, see details in Golang source:
-          ;;
-          ;; - URL: <https://github.com/golang/go/blob/>
-          ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-          ;; - file: src/cmd/go/internal/load/pkg.go#L2059
-          (add-before 'build 'copy-input-to-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (mkdir "vendor")
-                (copy-recursively
-                 (string-append
-                  #$(this-package-native-input "go-c2sp-org-cctv-age")
-                  "/src/c2sp.org")
-                 "vendor/c2sp.org"))))
-          (add-before 'install 'remove-vendor-directory
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "vendor")))))))
+      #:embed-files #~(list "armor.*" "header_crlf" "hmac_.*" "scrypt.*"
+                            "stanza_.*" "stream_.*" "version_unsupported"
+                            "x25519.*" "x25519_.*")
+      #:import-path "filippo.io/age"))
     (native-inputs
      (list go-c2sp-org-cctv-age
            go-github-com-rogpeppe-go-internal))
