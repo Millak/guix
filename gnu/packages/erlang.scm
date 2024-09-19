@@ -49,7 +49,7 @@
 (define-public erlang
   (package
     (name "erlang")
-    (version "27.0.1")
+    (version "27.1")
     (source (origin
               (method git-fetch)
               ;; The tarball from http://erlang.org/download contains many
@@ -61,25 +61,20 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gzlvbbc1zm87910pnhi94mcpag1zxylhy7m2g4vhlmclyir7gd1"))
+                "099m8z5f9mq6hqv75hv73iydzmnpylcagss4ysrk9xg732xqcawb"))
               (patches (search-patches "erlang-man-path.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("perl" ,perl)
-
        ;; Erlang's documentation is distributed in a separate tarball.
        ("erlang-manpages"
-        ;; Manpages tarball is not released for 27.0.1, so we take it from the
-        ;; previous version. Details:
-        ;; https://erlangforums.com/t/patch-package-otp-27-0-1-released/3824/4
-        ,(let ((version "27.0"))
-           (origin
-             (method url-fetch)
-             (uri (string-append "https://github.com/erlang/otp/releases/download"
-                                 "/OTP-" version "/otp_doc_man_" version ".tar.gz"))
-             (sha256
-              (base32
-               "0f3w2152090860aci4a38d1bd19c5sslbwadwxc7sjza487fm8lm")))))))
+        ,(origin
+           (method url-fetch)
+           (uri (string-append "https://github.com/erlang/otp/releases/download"
+                               "/OTP-" version "/otp_doc_man_" version ".tar.gz"))
+           (sha256
+            (base32
+             "1d4v664z9z4d8sfp9304kflgmymbl74hcgjpbcqkbhzwcjk8jrn0"))))))
     (inputs
      (list ncurses openssl wxwidgets))
     (propagated-inputs
