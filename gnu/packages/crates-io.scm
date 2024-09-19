@@ -32177,8 +32177,33 @@ consistent, and reasonably well performing.")
      `(#:cargo-inputs
        (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))))
 
+(define-public rust-hermit-abi-0.4
+  (package
+    (name "rust-hermit-abi")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hermit-abi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1k1zwllx6nfq417hy38x4akw1ivlv68ymvnzyxs76ffgsqcskxpv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Only doc tests, which all fail.
+       #:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
+    (home-page "https://github.com/hermit-os/hermit-rs")
+    (synopsis "Hermit system calls definitions")
+    (description "This package provides Hermit system calls definitions.")
+    ;; The user can choose either license.
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-hermit-abi-0.3
   (package
+    (inherit rust-hermit-abi-0.4)
     (name "rust-hermit-abi")
     (version "0.3.9")
     (source (origin
@@ -32188,19 +32213,11 @@ consistent, and reasonably well performing.")
               (sha256
                (base32
                 "092hxjbjnq5fmz66grd9plxd0sh6ssg5fhgwwwqbrzgzkjwdycfj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
-    (home-page "https://github.com/hermitcore/rusty-hermit")
-    (synopsis "Small interface to call functions from RustyHermit")
-    (description
-     "Hermit-abi is small interface to call functions from the unikernel RustyHermit.
-It is used to build the target x86_64-unknown-hermit.")
-    ;; The user can choose either license.
-    (license (list license:expat license:asl2.0))))
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))))
 
 (define-public rust-hermit-abi-0.2
   (package
