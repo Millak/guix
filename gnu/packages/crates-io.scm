@@ -63048,21 +63048,21 @@ size and compilation time.")
 (define-public rust-regex-test-0.1
   (package
     (name "rust-regex-test")
-    (version "0.1.0")
+    (version "0.1.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "regex-test" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "012nj2qjkxlv5zmnk53hc5a95kdsz8ss469s0a6fp5xdqbpi9f8l"))))
+                "0qjf6j8fvwzwmqj5cvjjs11sm1w978vbpgba6as9iif4kf9z0h6s"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-bstr" ,rust-bstr-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-toml" ,rust-toml-0.7))))
+        ("rust-toml" ,rust-toml-0.8))))
     (home-page "https://github.com/rust-lang/regex/tree/master/regex-test")
     (synopsis "Infrastructure for testing regexes")
     (description
