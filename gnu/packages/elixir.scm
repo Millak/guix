@@ -41,7 +41,7 @@
 (define-public elixir
   (package
     (name "elixir")
-    (version "1.17.2")
+    (version "1.17.3")
     (source
      (origin
        (method git-fetch)
@@ -50,7 +50,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "063pfz6ljy22b4nyvk8pi8ggqb6nmzqcca08vnl3h9xgh1zzddpj"))
+        (base32 "171l6g304044yk6i0827hgl64vp122ygn1wa1xqdjhw08b5kl2pd"))
        (patches (search-patches "elixir-path-length.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -127,6 +127,14 @@
               (lambda* (#:key inputs #:allow-other-keys)
                 ;; Some tests require access to a home directory.
                 (setenv "HOME" "/tmp")))
+            ;; Temporarily skip several tests related to logger to pass
+            ;; under Erlang 27.1. For more info see:
+            ;; https://elixirforum.com/t/elixir-v1-17-3-released/66156/2
+            (add-before 'check 'disable-some-logger-tests-for-erlang-27.1+
+              (lambda _
+                (substitute* "lib/logger/test/logger/translator_test.exs"
+                  (("test \"translates Supervisor progress")
+                   "@tag :skip\n  test \"translates Supervisor progress"))))
             (delete 'configure)
             (add-after 'install 'wrap-programs
               (lambda* (#:key inputs outputs #:allow-other-keys)
