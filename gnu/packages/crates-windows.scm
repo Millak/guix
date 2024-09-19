@@ -2463,14 +2463,14 @@ windows crate.")
 (define-public rust-windows-x86-64-gnu-0.52
   (package
     (name "rust-windows-x86-64-gnu")
-    (version "0.52.0")
+    (version "0.52.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_gnu" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1zdy4qn178sil5sdm63lm7f0kkcjg6gvdwmcprd2yjmwn8ns6vrx"))
+                "0y0sifqcb56a56mvn7xjgs8g43p33mfqkd8wj1yhrgxzma05qyhl"))
               (snippet
                '(delete-file "lib/libwindows.0.52.0.a"))))
     (build-system cargo-build-system)
