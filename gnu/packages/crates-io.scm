@@ -87269,7 +87269,7 @@ in terms of displayed width.")
 (define-public rust-unicode-width-0.1
   (package
     (name "rust-unicode-width")
-    (version "0.1.11")
+    (version "0.1.13")
     (source
       (origin
         (method url-fetch)
@@ -87277,7 +87277,7 @@ in terms of displayed width.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "11ds4ydhg8g7l06rlmh712q41qsrd0j0h00n1jm74kww3kqk65z5"))))
+          "0p92vl8n7qc8mxz45xn6qbgi0259z96n32a158l6vj5bywwdadh3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
