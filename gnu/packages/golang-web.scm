@@ -508,16 +508,16 @@ credentials sources.")
 (define-public go-github-com-aws-smithy-go
   (package
     (name "go-github-com-aws-smithy-go")
-    (version "1.13.5")
+    (version "1.21.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/aws/smithy-go")
-             (commit "v1.13.5")))
+             (commit "v1.21.0")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rgyk0m2d3agknnlzjqvac1a61wwdq1pbck7vyl587m38n5zi2cz"))))
+        (base32 "1pcq9d154l41c4k23q6ri51ba5i2kc8ihrv4sgkv4q59cw70rspi"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/aws/smithy-go"))
