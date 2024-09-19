@@ -2301,7 +2301,10 @@ LLVM bitcode files.")
          (sha256
           (base32
            "1zh6yp8px9hla7v9i67a6anbph140f8ixxbsz65aj7fizksjs1h3"))
-         (patches (search-patches "clang-cling-13-libc-search-path.patch")))))))
+         (patches (search-patches
+                   "clang-cling-13-libc-search-path.patch"
+                   "clang-cling-runtime-13-glibc-2.36-compat.patch"
+                   "clang-cling-13-remove-crypt-interceptors.patch")))))))
 
 (define clang-cling-runtime
   (let ((base clang-runtime-13))
