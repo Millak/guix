@@ -2628,14 +2628,14 @@ graphics and video games.")
 (define-public rust-palette-0.7
   (package
     (name "rust-palette")
-    (version "0.7.5")
+    (version "0.7.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "palette" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ynr6q7629gpw6pg8w1wrsl31sq48nxh1bg4awyrhhk6nyj27z7b"))
+        (base32 "1rmn02mv6cb112504qyg7pyfa83c08hxpk5sw7jc5v659hc73gsc"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
