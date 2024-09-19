@@ -84144,14 +84144,14 @@ stream-based WebSocket implementation.")
 (define-public rust-toml-0.8
   (package
     (name "rust-toml")
-    (version "0.8.12")
+    (version "0.8.19")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "toml" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18rs8cbzmapwcxf0lpdwz84fmsgp9h5vv6xay5d4m2r0x12ibpg9"))))
+        (base32 "0knjd3mkxyb87qcs2dark3qkpadidap3frqfj5nqvhpxwfc1zvd1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-indexmap" ,rust-indexmap-2)
@@ -84162,7 +84162,7 @@ stream-based WebSocket implementation.")
        #:cargo-development-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-snapbox" ,rust-snapbox-0.4)
+        ("rust-snapbox" ,rust-snapbox-0.6)
         ("rust-toml-test-data" ,rust-toml-test-data-1)
         ("rust-toml-test-harness" ,rust-toml-test-harness-0.4))))
     (home-page "https://github.com/toml-rs/toml")
