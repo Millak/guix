@@ -84585,18 +84585,18 @@ parser.")
 (define-public rust-toml-test-harness-0.4
   (package
     (name "rust-toml-test-harness")
-    (version "0.4.8")
+    (version "0.4.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "toml-test-harness" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0pd02rdsq2bdw5cm89mqm0sw3yfpl4iddwg9ji31prfyc7bvir0v"))))
+               (base32 "1cpj0bcvddvk9vd84xkrk3lyibacxgi4dcxgn4klfp9jp5qm5mha"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ignore" ,rust-ignore-0.4)
-        ("rust-libtest-mimic" ,rust-libtest-mimic-0.6)
+        ("rust-libtest-mimic" ,rust-libtest-mimic-0.7)
         ("rust-toml-test" ,rust-toml-test-1)
         ("rust-toml-test-data" ,rust-toml-test-data-1))))
     (home-page "https://github.com/epage/toml-test-rs")
