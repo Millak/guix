@@ -43341,18 +43341,46 @@ streaming API for miniz_oxide.")
 library for Rust.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-mio-0.8
+(define-public rust-mio-1
   (package
     (name "rust-mio")
-    (version "0.8.10")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "mio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02gyaxvaia9zzi4drrw59k9s0j6pa5d1y2kv7iplwjipdqlhngcg"))))
+        (base32 "1v1cnnn44awxbcfm4zlavwgkvbyg7gp5zzjm8mqf1apkrwflvq40"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-hermit-abi" ,rust-hermit-abi-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-wasi" ,rust-wasi-0.11)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.9)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/tokio-rs/mio")
+    (synopsis "Lightweight non-blocking IO")
+    (description
+     "Mio is a fast, low-level I/O library for Rust focusing on non-blocking
+APIs and event notification for building I/O apps with as little overhead as
+possible over the OS abstractions.")
+    (license license:expat)))
+
+(define-public rust-mio-0.8
+  (package
+    (inherit rust-mio-1)
+    (name "rust-mio")
+    (version "0.8.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "034byyl0ardml5yliy1hmvx8arkmn9rv479pid794sm07ia519m4"))))
     (arguments
      (list #:cargo-inputs
            `(("rust-libc" ,rust-libc-0.2)
@@ -43361,14 +43389,7 @@ library for Rust.")
              ("rust-windows-sys" ,rust-windows-sys-0.48))
            #:cargo-development-inputs
            `(("rust-env-logger" ,rust-env-logger-0.9)
-             ("rust-rand" ,rust-rand-0.8))))
-    (home-page "https://github.com/tokio-rs/mio")
-    (synopsis "Lightweight non-blocking IO")
-    (description
-     "Mio is a fast, low-level I/O library for Rust focusing on non-blocking
-APIs and event notification for building I/O apps with as little overhead as
-possible over the OS abstractions.")
-    (license license:expat)))
+             ("rust-rand" ,rust-rand-0.8))))))
 
 (define-public rust-mio-0.7
   (package
