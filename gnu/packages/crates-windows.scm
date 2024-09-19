@@ -1806,6 +1806,25 @@ crate.")
                (base32
                 "12hx7qpsjg9p7jggfcplqa3mf1mzr7k7s5ybzqwg1zmg4fn2aizm"))))))
 
+(define-public rust-windows-i686-gnullvm-0.52
+  (package
+    (name "rust-windows-i686-gnullvm")
+    (version "0.52.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows_i686_gnullvm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rpdx1537mw6slcpqa0rm3qixmsb79nbhqy5fsm3q2q9ik9m5vhf"))
+       (snippet
+        '(delete-file "lib/libwindows.0.52.0.a"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Import lib for Windows")
+    (description "This package provides Import lib for Windows.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-i686-msvc-0.52
   (package
     (name "rust-windows-i686-msvc")
