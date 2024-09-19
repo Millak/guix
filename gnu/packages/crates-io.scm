@@ -55574,26 +55574,28 @@ convert SQL to Polars logical plans.")
 (define-public rust-polling-3
   (package
     (name "rust-polling")
-    (version "3.3.1")
+    (version "3.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "polling" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17hwk4g8qbdsyr0kqjddhw0l2v64pxhakkdlaqbc24xk99iglqyg"))))
+        (base32 "04b5zdgz0m9ydbzcr3f9a55749gqbj0y89d0nz9nrv0x636r09yc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
                        ("rust-concurrent-queue" ,rust-concurrent-queue-2)
+                       ("rust-hermit-abi" ,rust-hermit-abi-0.4)
                        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
                        ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-tracing" ,rust-tracing-0.1)
-                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))
        #:cargo-development-inputs (("rust-easy-parallel" ,rust-easy-parallel-3)
                                    ("rust-fastrand" ,rust-fastrand-2)
                                    ("rust-libc" ,rust-libc-0.2)
-                                   ("rust-signal-hook" ,rust-signal-hook-0.3))))
+                                   ("rust-signal-hook" ,rust-signal-hook-0.3)
+                                   ("rust-socket2" ,rust-socket2-0.5))))
     (home-page "https://github.com/smol-rs/polling")
     (synopsis "Portable interface to epoll, kqueue, event ports, and IOCP")
     (description
