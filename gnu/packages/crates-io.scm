@@ -68837,7 +68837,7 @@ statistical guarantees.")
     (description "Library to interface with Secret Service API.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-section-testing-0.0
+(define-public rust-section-testing-0.0.5
   (package
     (name "rust-section-testing")
     (version "0.0.5")

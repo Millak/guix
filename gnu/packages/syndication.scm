@@ -278,7 +278,7 @@ cards.")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3)
         ("rust-proptest" ,rust-proptest-1)
-        ("rust-section-testing" ,rust-section-testing-0.0))
+        ("rust-section-testing" ,rust-section-testing-0.0.5))
        #:phases
        (modify-phases %standard-phases
          ,@(if (not (assoc-ref inputs "asciidoctor"))
