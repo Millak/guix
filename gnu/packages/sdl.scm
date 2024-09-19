@@ -608,8 +608,8 @@ directory.")
     (properties '((upstream-name . "SDL2_ttf")))))
 
 (define-public sdl2-gamecontrollerdb
-  (let ((commit "9d0994523206c9d73925d78d185531c4c7331db7")
-        (revision "1"))
+  (let ((commit "414eaee7aacc0d2ccdf281663c3d3bc65a8dbedd")
+        (revision "2"))
     (package
       (name "sdl2-gamecontrollerdb")
       (version (git-version "0" revision commit))
@@ -621,7 +621,7 @@ directory.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "08rv3i6sh90ibphxnv9r6h1zjyq88x9hq3smvf6cnlqvirnam94s"))))
+          (base32 "04x3g7vshagxaklwm5hxawh1pk6j1h0rip9xccpgr1r3gpxqs5df"))))
       (build-system copy-build-system)
       (arguments
        '(#:install-plan '(("gamecontrollerdb.txt" "share/sdl2/"))))
