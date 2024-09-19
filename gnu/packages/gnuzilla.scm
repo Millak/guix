@@ -1684,13 +1684,11 @@ their corresponding VERSION, SOURCE and LOCALES variables."
                                               'thunderbird
                                               '#$project))))
                      (format #t "processing locale `~a'...~%" l)
-                     (if (eq? 'icecat '#$project)
-                         ;; XXX: For some reasons, for IceCat, there are some
-                         ;; parsing errors that cause the build system to
-                         ;; return an unclean exit code; use system* to ignore
-                         ;; errors.
-                         (system* "./mach" "build" (string-append "langpack-" l))
-                         (invoke "./mach" "build" (string-append "langpack-" l)))
+                     ;; XXX: For some reasons, on version 115, there are some
+                     ;; parsing errors that cause the build system to
+                     ;; return an unclean exit code; use system* to ignore
+                     ;; errors.
+                     (system* "./mach" "build" (string-append "langpack-" l))
                      (mkdir-p ext-dir)
                      (let ((xpi (find-file "obj" (string-append
                                                   "\\." l "\\.langpack\\.xpi$"))))
