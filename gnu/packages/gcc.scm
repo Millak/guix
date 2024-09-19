@@ -1065,6 +1065,7 @@ using compilers other than GCC."
     (name "libiberty")
     (arguments
      `(#:out-of-source? #t
+       #:make-flags '("CFLAGS=-O2 -g -fPIC")
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'chdir
