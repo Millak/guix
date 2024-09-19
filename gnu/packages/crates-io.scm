@@ -81951,6 +81951,24 @@ Fireball''.")
        #:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
                        ("rust-regex" ,rust-regex-1))))))
 
+(define-public rust-to-method-1
+  (package
+    (name "rust-to-method")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "to_method" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1s72l06fnb5kv6vm5ds0lilg1dyciyyis09ypi5kij0mrbpcxi67"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/whentze/to_method")
+    (synopsis "utility micro-crate for using Into more ergonomically.")
+    (description
+     "This package provides a utility micro-crate for using Into more ergonomically.")
+    (license license:cc0)))
+
 (define-public rust-to-shmem-0.0.0
   (package
     (name "rust-to-shmem")
