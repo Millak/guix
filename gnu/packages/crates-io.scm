@@ -88940,8 +88940,28 @@ If that fails, no determination is made, and calls return None.")
          (base32
           "1pf91pvj8n6akh7w6j5ypka6aqz08b3qpzgs0ak2kjf4frkiljwi"))))))
 
+(define-public rust-version-compare-0.2
+  (package
+    (name "rust-version-compare")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "version-compare" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12y9262fhjm1wp0aj3mwhads7kv0jz8h168nn5fb8b43nwf9abl5"))))
+    (build-system cargo-build-system)
+    (home-page "https://timvisee.com/projects/version-compare/")
+    (synopsis "Rust library to easily compare version numbers")
+    (description
+     "This package provides a Rust library to easily compare version numbers,
+and test them against various comparison operators.")
+    (license license:expat)))
+
 (define-public rust-version-compare-0.1
   (package
+    (inherit rust-version-compare-0.2)
     (name "rust-version-compare")
     (version "0.1.0")
     (source (origin
@@ -88950,14 +88970,7 @@ If that fails, no determination is made, and calls return None.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0wyasmnqqngvm54x0gsxbwpxznvn747jkp0dx1nnppy1j9xj927y"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/timvisee/version-compare")
-    (synopsis "Rust library to easily compare version numbers")
-    (description
-     "This package provides a Rust library to easily compare version
-numbers, and test them against various comparison operators.")
-    (license license:expat)))
+                "0wyasmnqqngvm54x0gsxbwpxznvn747jkp0dx1nnppy1j9xj927y"))))))
 
 (define-public rust-version-compare-0.0.11
   (package
