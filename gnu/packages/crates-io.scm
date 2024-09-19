@@ -70220,13 +70220,13 @@ of a C-like enum.")
 (define-public rust-serde-spanned-0.6
   (package
     (name "rust-serde-spanned")
-    (version "0.6.5")
+    (version "0.6.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "serde_spanned" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1hgh6s3jjwyzhfk3xwb6pnnr1misq9nflwq0f026jafi37s24dpb"))))
+               (base32 "0v9h2nlg8r7n7dkbgj1aw59g35kl869l652wc6zi2f4zawqinnzb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; unresolved import `toml`
