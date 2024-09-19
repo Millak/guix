@@ -3316,7 +3316,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
 (define-public rust-xremap
   (package
     (name "rust-xremap")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
@@ -3324,7 +3324,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "13pvlc40zha7c9ma30s32x65c8qciqcnsznw43crx3wymlaqc9sn"))))
+         "0a89vdldswd5zawln17gfrfqxjn4pacqlkn4hf5kn8r5znr0ap01"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '()
@@ -3336,7 +3336,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
         ("rust-derive-where" ,rust-derive-where-1)
         ("rust-env-logger" ,rust-env-logger-0.10)
         ("rust-evdev" ,rust-evdev-0.12)
-        ("rust-fork" ,rust-fork-0.1)
+        ("rust-fork" ,rust-fork-0.2)
         ("rust-indoc" ,rust-indoc-2)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
@@ -3360,19 +3360,19 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
                     (xremap (string-append out "/bin/xremap")))
                (mkdir-p (string-append share "/bash-completion/completions"))
                (with-output-to-file
-                   (string-append share "/bash-completion/completions/xremap")
+                 (string-append share "/bash-completion/completions/xremap")
                  (lambda _ (invoke xremap "--completions" "bash")))
                (mkdir-p (string-append share "/fish/vendor_completions.d"))
                (with-output-to-file
-                   (string-append share "/fish/vendor_completions.d/xremap.fish")
+                 (string-append share "/fish/vendor_completions.d/xremap.fish")
                  (lambda _ (invoke xremap "--completions" "fish")))
                (mkdir-p (string-append share "/zsh/site-functions"))
                (with-output-to-file
-                   (string-append share "/zsh/site-functions/_xremap")
+                 (string-append share "/zsh/site-functions/_xremap")
                  (lambda _ (invoke xremap "--completions" "zsh")))
                (mkdir-p (string-append share "/elvish/lib"))
                (with-output-to-file
-                   (string-append share "/elvish/lib/xremap")
+                 (string-append share "/elvish/lib/xremap")
                  (lambda _ (invoke xremap "--completions" "elvish")))))))))
     (home-page "https://github.com/k0kubun/xremap")
     (synopsis "Dynamic key remapp for X and Wayland")
