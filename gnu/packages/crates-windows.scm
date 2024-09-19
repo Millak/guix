@@ -2337,20 +2337,21 @@ if they were just another Rust module.")
 (define-public rust-windows-targets-0.52
   (package
     (name "rust-windows-targets")
-    (version "0.52.0")
+    (version "0.52.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows-targets" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1kg7a27ynzw8zz3krdgy6w5gbqcji27j1sz4p7xk2j5j8082064a"))))
+                "0wwrx625nwlfp7k93r2rra568gad1mwd888h1jwnl0vfg5r4ywlv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-windows-aarch64-gnullvm" ,rust-windows-aarch64-gnullvm-0.52)
         ("rust-windows-aarch64-msvc" ,rust-windows-aarch64-msvc-0.52)
         ("rust-windows-i686-gnu" ,rust-windows-i686-gnu-0.52)
+        ("rust-windows-i686-gnullvm" ,rust-windows-i686-gnullvm-0.52)
         ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.52)
         ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.52)
         ("rust-windows-x86-64-gnullvm" ,rust-windows-x86-64-gnullvm-0.52)
