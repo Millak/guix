@@ -238,9 +238,21 @@ standard library headers.")
            (lambda _
              (substitute* "dyninstAPI/src/linux.C"
                (("if\\(fgets\\(buffer, buffer_size, ldconfig\\)\\)")
-                "fgets(buffer, buffer_size, ldconfig); if (true)")))))))
+                "fgets(buffer, buffer_size, ldconfig); if (true)"))))
+         (add-after 'unpack 'adjust-supported-platform-name
+           (lambda _
+             ;; That file checks for "i386" but
+             ;; 'cmake_host_system_information' returns "i686" when targeting
+             ;; i686-linux.  Adjust accordingly.
+             (substitute* "cmake/DyninstPlatform.cmake"
+               (("\"i386\"") "\"i686\"")))))))
     (propagated-inputs
      (list elfutils libiberty boost tbb))
+
+    ;; Supported systems according to 'cmake/DyninstPlatform.cmake'.
+    (supported-systems '("x86_64-linux" "i686-linux"
+                         "aarch64-linux" "powerpc64le-linux"))
+
     (home-page "https://dyninst.org/")
     (synopsis "Dynamic instrumentation")
     (description "Dyninst is a collection of libraries for instrumenting,
