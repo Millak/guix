@@ -27756,18 +27756,17 @@ implementation that is more efficient for smaller hash keys.")
     (description "Unofficial implementation of Apache Arrow spec in safe Rust.")
     (license license:expat)))
 
-(define-public rust-fork-0.1
+(define-public rust-fork-0.2
   (package
     (name "rust-fork")
-    (version "0.1.22")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fork" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "124fbfwqka5xh2jndmlpgbl2ya7a9yf7q6adxvkja510b5xajb5z"))))
+        (base32 "0vb5557b03ghb1xmn86w9v57k5zjy2g475769xzw58845qq8pp05"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
@@ -27778,6 +27777,22 @@ implementation that is more efficient for smaller hash keys.")
      "This package provides library for creating a new process detached from
 the controling terminal (daemon) using the fork and setsid syscalls.")
     (license license:bsd-3)))
+
+(define-public rust-fork-0.1
+  (package
+    (inherit rust-fork-0.2)
+    (name "rust-fork")
+    (version "0.1.22")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fork" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "124fbfwqka5xh2jndmlpgbl2ya7a9yf7q6adxvkja510b5xajb5z"))))
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-form-urlencoded-1
   (package
