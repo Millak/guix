@@ -70646,23 +70646,24 @@ Rust's serde.")
 (define-public rust-serial-test-3
   (package
     (name "rust-serial-test")
-    (version "3.0.0")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serial_test" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1381b9z83a0a39sx0jrrf1q91m08s1yhjp648g5sgb1s5csdjflm"))))
+        (base32 "0zfpzr8jl7dpf4m8dk8fr9w1wfwhnjrccmyg46h41wmcw9zlhjsb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-dashmap" ,rust-dashmap-5)
-                       ("rust-document-features" ,rust-document-features-0.2)
+     `(#:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
                        ("rust-fslock" ,rust-fslock-0.2)
                        ("rust-futures" ,rust-futures-0.3)
-                       ("rust-lazy-static" ,rust-lazy-static-1)
                        ("rust-log" ,rust-log-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
                        ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-scc" ,rust-scc-2)
                        ("rust-serial-test-derive" ,rust-serial-test-derive-3))
        #:cargo-development-inputs (("rust-itertools" ,rust-itertools-0.10)
                                    ("rust-tokio" ,rust-tokio-1))))
