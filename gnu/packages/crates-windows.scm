@@ -1508,14 +1508,14 @@ if they were just another Rust module.")
 (define-public rust-windows-aarch64-msvc-0.52
   (package
     (name "rust-windows-aarch64-msvc")
-    (version "0.52.0")
+    (version "0.52.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_aarch64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1vvmy1ypvzdvxn9yf0b8ygfl85gl2gpcyvsvqppsmlpisil07amv"))
+                "0sfl0nysnz32yyfh773hpi49b1q700ah6y7sacmjbqjjn5xjmv09"))
               (snippet
                '(delete-file "lib/windows.0.52.0.lib"))))
     (build-system cargo-build-system)
