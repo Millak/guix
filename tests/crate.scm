@@ -3,7 +3,6 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;;
@@ -501,7 +500,7 @@
                        ('quasiquote
                         (#:skip-build? #t
                          #:cargo-inputs
-                         ('unquote (list rust-leaf-alice-0.7)))))
+                         (("rust-leaf-alice" ('unquote 'rust-leaf-alice-0.7))))))
                       (home-page "http://example.com")
                       (synopsis "summary")
                       (description "This package provides summary.")
@@ -607,7 +606,7 @@
                     (string-append name "-" version ".tar.gz"))
                    (sha256
                     (base32
-                     (? string? hash)))))
+                     (?  string? hash)))))
                 (build-system cargo-build-system)
                 (arguments ('quasiquote (#:skip-build? #t)))
                 (home-page "http://example.com")
@@ -650,7 +649,8 @@
                 (arguments
                  ('quasiquote (#:skip-build? #t
                                #:cargo-inputs
-                               ('unquote (list rust-leaf-bob-3)))))
+                               (("rust-leaf-bob"
+                                 ('unquote rust-leaf-bob-3))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
                 (description "This package provides summary.")
@@ -672,9 +672,12 @@
                 (arguments
                  ('quasiquote (#:skip-build? #t
                                #:cargo-inputs
-                               ('unquote (list rust-intermediate-b-1
-                                               rust-leaf-alice-0.7
-                                               rust-leaf-bob-3)))))
+                               (("rust-intermediate-b"
+                                 ('unquote rust-intermediate-b-1))
+                                ("rust-leaf-alice"
+                                 ('unquote 'rust-leaf-alice-0.7))
+                                ("rust-leaf-bob"
+                                 ('unquote rust-leaf-bob-3))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
                 (description "This package provides summary.")
@@ -695,12 +698,17 @@
                 (build-system cargo-build-system)
                 (arguments
                  ('quasiquote (#:cargo-inputs
-                               ('unquote (list rust-intermediate-a-1
-                                               rust-intermediate-b-1
-                                               rust-leaf-alice-0.7
-                                               rust-leaf-bob-3))
+                               (("rust-intermediate-a"
+                                 ('unquote rust-intermediate-a-1))
+                                ("rust-intermediate-b"
+                                 ('unquote rust-intermediate-b-1))
+                                ("rust-leaf-alice"
+                                 ('unquote 'rust-leaf-alice-0.7))
+                                ("rust-leaf-bob"
+                                 ('unquote rust-leaf-bob-3)))
                                #:cargo-development-inputs
-                               ('unquote (list rust-intermediate-c-1)))))
+                               (("rust-intermediate-c"
+                                 ('unquote rust-intermediate-c-1))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
                 (description "This package provides summary.")
@@ -728,7 +736,8 @@
                 (build-system cargo-build-system)
                 (arguments
                  ('quasiquote (#:cargo-development-inputs
-                               ('unquote (list rust-leaf-alice-0.7)))))
+                               (("rust-leaf-alice"
+                                 ('unquote rust-leaf-alice-0.7))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
                 (description "This package provides summary.")
@@ -807,9 +816,12 @@
                 (build-system cargo-build-system)
                 (arguments
                  ('quasiquote (#:cargo-inputs
-                               ('unquote (list rust-intermediate-b-1
-                                               rust-leaf-alice-0.7
-                                               rust-leaf-bob-3)))))
+                               (("rust-intermediate-b"
+                                 ('unquote rust-intermediate-b-1))
+                                ("rust-leaf-alice"
+                                 ('unquote 'rust-leaf-alice-0.7))
+                                ("rust-leaf-bob"
+                                 ('unquote rust-leaf-bob-3))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
                 (description "This package provides summary.")
@@ -830,12 +842,17 @@
                 (build-system cargo-build-system)
                 (arguments
                  ('quasiquote (#:cargo-inputs
-                               ('unquote (list rust-intermediate-a-1
-                                               rust-intermediate-b-1
-                                               rust-leaf-alice-0.7
-                                               rust-leaf-bob-3))
+                               (("rust-intermediate-a"
+                                 ('unquote rust-intermediate-a-1))
+                                ("rust-intermediate-b"
+                                 ('unquote rust-intermediate-b-1))
+                                ("rust-leaf-alice"
+                                 ('unquote 'rust-leaf-alice-0.7))
+                                ("rust-leaf-bob"
+                                 ('unquote rust-leaf-bob-3)))
                                #:cargo-development-inputs
-                               ('unquote (list rust-intermediate-c-1)))))
+                               (("rust-intermediate-c"
+                                 ('unquote rust-intermediate-c-1))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
                 (description "This package provides summary.")
@@ -946,10 +963,13 @@
             (build-system cargo-build-system)
             (arguments
              ('quasiquote (#:cargo-inputs
-                           ('unquote (list rust-leaf-bob-3))
+                           (("rust-leaf-bob"
+                             ('unquote 'rust-leaf-bob-3)))
                            #:cargo-development-inputs
-                           ('unquote (list rust-leaf-bob-3.0.2-yanked
-                                           rust-leaf-bob-4.0.0-yanked)))))
+                           (("rust-leaf-bob"
+                             ('unquote 'rust-leaf-bob-3.0.2-yanked))
+                            ("rust-leaf-bob"
+                             ('unquote 'rust-leaf-bob-4.0.0-yanked))))))
             (home-page "http://example.com")
             (synopsis "summary")
             (description "This package provides summary.")
@@ -1074,10 +1094,13 @@
                 (build-system cargo-build-system)
                 (arguments
                  ('quasiquote (#:cargo-inputs
-                               ('unquote (list rust-leaf-bob-3))
+                               (("rust-leaf-bob"
+                                 ('unquote 'rust-leaf-bob-3)))
                                #:cargo-development-inputs
-                               ('unquote (list rust-leaf-bob-3.0.2-yanked
-                                               rust-leaf-bob-4.0.0-yanked)))))
+                               (("rust-leaf-bob"
+                                 ('unquote 'rust-leaf-bob-3.0.2-yanked))
+                                ("rust-leaf-bob"
+                                 ('unquote 'rust-leaf-bob-4.0.0-yanked))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
                 (description "This package provides summary.")
