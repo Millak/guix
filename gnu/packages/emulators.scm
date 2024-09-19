@@ -2230,31 +2230,30 @@ from various forks of Gens, and improved platform portability.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0j054x38fwai61vj36sc04r3zkzay5acq2cgd9zqv5hs51s36g5b"))))
+        (base32 "0j054x38fwai61vj36sc04r3zkzay5acq2cgd9zqv5hs51s36g5b"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list "-C" "bsnes"
-                          ;; Remove march=native
-                          "local=false"
-                          (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:tests? #f                      ; No tests.
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure))))
-    (native-inputs
-     (list pkg-config))
+     (list
+      #:make-flags #~(list "-C" "bsnes"
+                           ;; Remove march=native
+                           "local=false"
+                           (string-append "prefix=" #$output))
+      #:tests? #f                       ;No tests.
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure))))
+    (native-inputs (list pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("ao" ,ao)
-       ("cairo" ,cairo)
-       ("eudev" ,eudev)
-       ("gtksourceview-2" ,gtksourceview-2)
-       ("libxrandr" ,libxrandr)
-       ("libxv" ,libxv)
-       ("openal" ,openal)
-       ("pulseaudio" ,pulseaudio)
-       ("sdl2" ,sdl2)))
-    (home-page "https://bsnes.dev/")
+     (list alsa-lib
+           ao
+           cairo
+           eudev
+           gtksourceview-2
+           libxrandr
+           libxv
+           openal
+           pulseaudio
+           sdl2))
+    (home-page "https://github.com/bsnes-emu/bsnes")
     (synopsis "Emulator for the Super Nintendo / Super Famicom systems")
     (description
      "bsnes is a Super Nintendo / Super Famicom emulator that focuses on
