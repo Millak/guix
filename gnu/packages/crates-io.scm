@@ -59715,8 +59715,41 @@ to write.")
          (base32
           "1q6za3v78hsspisc197bg3g7rpc989qycy8ypr8ap8igv10ikl51"))))))
 
+(define-public rust-quick-xml-0.32
+  (package
+    (name "rust-quick-xml")
+    (version "0.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quick-xml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hk9x4fij5kq1mnn7gmxz1hpv8s9wnnj4gx4ly7hw3mn71c6wfhx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-regex" ,rust-regex-1)
+                                   ("rust-serde-value" ,rust-serde-value-0.7)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-tokio-test" ,rust-tokio-test-0.4))))
+    (home-page "https://github.com/tafia/quick-xml")
+    (synopsis "High performance xml reader and writer")
+    (description
+     "This package provides a high performance XML reader and writer.")
+    (license license:expat)))
+
 (define-public rust-quick-xml-0.31
   (package
+    (inherit rust-quick-xml-0.32)
     (name "rust-quick-xml")
     (version "0.31.0")
     (source
@@ -59726,7 +59759,6 @@ to write.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0cravqanylzh5cq2v6hzlfqgxcid5nrp2snnb3pf4m0and2a610h"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
@@ -59742,12 +59774,7 @@ to write.")
         ("rust-serde-value" ,rust-serde-value-0.7)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-tokio-test" ,rust-tokio-test-0.4))))
-    (home-page "https://github.com/tafia/quick-xml")
-    (synopsis "High performance xml reader and writer")
-    (description
-     "This package provides a high performance XML reader and writer.")
-    (license license:expat)))
+        ("rust-tokio-test" ,rust-tokio-test-0.4))))))
 
 (define-public rust-quick-xml-0.30
   (package
