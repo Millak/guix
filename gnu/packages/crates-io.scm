@@ -57726,6 +57726,32 @@ trait of proptest.")
         ("rust-criterion" ,rust-criterion-0.2)
         ("rust-proptest" ,rust-proptest-0.9))))))
 
+(define-public rust-proptest-macro-0.1
+  (package
+    (name "rust-proptest-macro")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proptest-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dri79rqsf08vk5zhch0q4vls90pqxkfhqdpab8iw0g1zyvrxwip"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-convert-case" ,rust-convert-case-0.6)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-insta" ,rust-insta-1)
+        ("rust-prettyplease" ,rust-prettyplease-0.2))))
+    (home-page "https://proptest-rs.github.io/proptest/proptest/index.html")
+    (synopsis "Procedural macros for the proptest crate")
+    (description
+     "This package provides Procedural macros for the proptest crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-prost-0.12
   (package
     (name "rust-prost")
