@@ -3258,17 +3258,19 @@ in AVIF format (powers the @code{cavif} tool).")
 (define-public rust-raw-window-handle-0.6
   (package
     (name "rust-raw-window-handle")
-    (version "0.6.0")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "raw-window-handle" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0i5mxxfcgqmvmzg4f0lcz68g4xfd9jybhrdkxd2v37qv1q587aa2"))))
+        (base32 "0ff5c648hncwx7hm2a8fqgqlbvbl4xawb6v3xxv9wkpjyrr5arr0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))))
+     `(#:cargo-inputs (("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+       #:cargo-development-inputs
+       (("rust-static-assertions" ,rust-static-assertions-1))))
     (home-page "https://github.com/rust-windowing/raw-window-handle")
     (synopsis "Interoperability library for Rust Windowing applications")
     (description
