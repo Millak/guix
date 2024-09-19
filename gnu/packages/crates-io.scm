@@ -87674,7 +87674,7 @@ mile, ...).")
 (define-public rust-url-2
   (package
     (name "rust-url")
-    (version "2.5.0")
+    (version "2.5.2")
     (source
      (origin
        (method url-fetch)
@@ -87682,7 +87682,7 @@ mile, ...).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0cs65961miawncdg2z20171w0vqrmraswv2ihdpd8lxp7cp31rii"))))
+         "0v2dx50mx7xzl9454cl5qmpjnhkbahmn59gd3apyipbgyyylsy12"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -87693,7 +87693,8 @@ mile, ...).")
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://github.com/servo/rust-url")
     (synopsis "URL library for Rust, based on the WHATWG URL Standard")
     (description
