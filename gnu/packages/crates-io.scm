@@ -57507,14 +57507,19 @@ property-based testing and fuzzing.")
 (define-public rust-proptest-1
   (package
     (name "rust-proptest")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "proptest" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gzmw40pgmwzb7x6jsyr88z5w151snv5rp1g0dlcp1iw3h9pdd1i"))))
+        (base32 "13gm7mphs95cw4gbgk5qiczkmr68dvcwhp58gmiz33dq2ccm3hml"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -57523,6 +57528,7 @@ property-based testing and fuzzing.")
         ("rust-bitflags" ,rust-bitflags-2)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-proptest-macro" ,rust-proptest-macro-0.1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-chacha" ,rust-rand-chacha-0.3)
         ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
@@ -57532,7 +57538,8 @@ property-based testing and fuzzing.")
         ("rust-unarray" ,rust-unarray-0.1)
         ("rust-x86" ,rust-x86-0.52))
        #:cargo-development-inputs
-       (("rust-regex" ,rust-regex-1))))
+       (("rust-regex" ,rust-regex-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://altsysrq.github.io/proptest-book/proptest/index.html")
     (synopsis "Hypothesis-like property-based testing and shrinking")
     (description
