@@ -5528,14 +5528,14 @@ the platform-specific getters provided by winit, or another library.")
 (define-public rust-x11rb-0.13
   (package
     (name "rust-x11rb")
-    (version "0.13.0")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "x11rb" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06lzpmb67sfw37m0i9zz786hx6fklmykd9j3689blk3yijnmxwpq"))))
+        (base32 "04jyfm0xmc538v09pzsyr2w801yadsgvyl2p0p76hzzffg5gz4ax"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-as-raw-xcb-connection" ,rust-as-raw-xcb-connection-1)
