@@ -1,0 +1,58 @@
+init.lxc.static is only used as a fallback and breaks ‘strip-runpath’,
+so let's not build it.
+
+Index: lxc-6.0.1/src/lxc/cmd/meson.build
+===================================================================
+--- lxc-6.0.1.orig/src/lxc/cmd/meson.build
++++ lxc-6.0.1/src/lxc/cmd/meson.build
+@@ -62,19 +62,6 @@ cmd_lxc_update_config = configure_file(
+     output: 'lxc-update-config')
+ install_data(join_paths(project_build_root, 'src/lxc/cmd/lxc-update-config'), install_dir: bindir)
+ 
+-if sanitize == 'none' and libcap_static_linkable
+-    cmd_programs += executable(
+-        'init.lxc.static',
+-        cmd_lxc_init_sources,
+-        include_directories: liblxc_includes,
+-        link_with: [liblxc_static],
+-        link_args: ['-static'],
+-        c_args: ['-DNO_LXC_CONF'],
+-        dependencies: [libcap_static] + liblxc_dependency_headers,
+-        install_dir: sbindir,
+-        install: true)
+-endif
+-
+ cmd_programs += executable(
+     'init.lxc',
+     cmd_lxc_init_sources,
+Index: lxc-6.0.1/meson.build
+===================================================================
+--- lxc-6.0.1.orig/meson.build
++++ lxc-6.0.1/meson.build
+@@ -426,26 +426,11 @@ if want_capabilities
+     pkgconfig_libs += libcap
+     liblxc_dependencies += libcap
+ 
+-    libcap_static = dependency('libcap', required: false, static: true)
+-    if not libcap_static.found()
+-        # Compat with Ubuntu 14.04 which ships libcap w/o .pc file
+-        libcap_static = cc.find_library('cap', required: false, static: true)
+-    endif
+-
+     code = '''
+ int main(int argc, char *argv[]) { return 0; };
+ '''
+-    if libcap_static.found()
+-        libcap_static_linkable = cc.links(code, args: '-static', dependencies: libcap_static)
+-    else
+-        libcap_static_linkable = false
+-    endif
+-    srcconf.set10('HAVE_STATIC_LIBCAP', libcap_static_linkable)
+ else
+-    libcap_static = []
+-    libcap_static_linkable = false
+     srcconf.set10('HAVE_LIBCAP', false)
+-    srcconf.set10('HAVE_STATIC_LIBCAP', false)
+ endif
+ 
+ libutil = cc.find_library('util', required: false)

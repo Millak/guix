@@ -36,6 +36,7 @@
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,6 +57,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages apparmor)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
@@ -1350,7 +1352,7 @@ all common programming languages.  Vala bindings are also provided.")
 (define-public lxc
   (package
     (name "lxc")
-    (version "4.0.12")
+    (version "6.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1358,30 +1360,23 @@ all common programming languages.  Vala bindings are also provided.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1vyk2j5w9gfyh23w3ar09cycyws16mxh3clbb33yhqzwcs1jy96v"))))
-    (build-system gnu-build-system)
+                "1q3p3zzm338pmc97z6ly8cjginkyljxqbk1c37l2xa46vfy8zcyc"))
+              (patches (search-patches "lxc-no-static-bin.patch"))))
+    (build-system meson-build-system)
     (native-inputs
      (list pkg-config docbook2x))
     (inputs
-     (list gnutls libcap libseccomp libselinux))
+     (list apparmor dbus gnutls libcap libseccomp libselinux))
     (arguments
      (list #:configure-flags
-           #~(list (string-append "--docdir=" #$output "/share/doc/"
+           #~(list (string-append "-Ddoc-path=" #$output "/share/doc/"
                                   #$name "-" #$version)
-                   "--sysconfdir=/etc"
-                   "--localstatedir=/var")
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'install
-                 (lambda _
-                   (invoke "make" "install"
-                           (string-append "bashcompdir=" #$output
-                                          "/etc/bash_completion.d")
-                           ;; Don't install files into /var and /etc.
-                           "LXCPATH=/tmp/var/lib/lxc"
-                           "localstatedir=/tmp/var"
-                           "sysconfdir=/tmp/etc"
-                           "sysconfigdir=/tmp/etc/default"))))))
+                   "-Ddistrosysconfdir=/etc"
+                   "-Dinit-script=sysvinit"
+                   "-Dinstall-state-dirs=false"
+                   "-Dinstall-init-files=false"
+                   "-Dspecfile=false"
+                   "-Db_lto=false")))
     (synopsis "Linux container tools")
     (home-page "https://linuxcontainers.org/")
     (description
