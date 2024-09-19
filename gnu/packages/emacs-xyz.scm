@@ -17700,26 +17700,27 @@ compatible with the Org stable version.")
 
 (define-public emacs-org-texlive-collection
   (package
-    (inherit emacs-org)
     (name "emacs-org-texlive-collection")
     (source #f)
+    (version (package-version emacs-org))
     (build-system trivial-build-system)
     (arguments (list #:builder #~(mkdir #$output)))
     (native-inputs '())
     (inputs '())
     (propagated-inputs
-     (list texlive-amsmath
-           texlive-capt-of
-           texlive-graphics             ;for graphicx, rotating
-           texlive-hyperref
-           texlive-titling
-           texlive-tools                ;for longtable
+     (list texlive-capt-of
+           ;; The latexrecommended collection provides fontspec, amsmath,
+           ;; hyperref, graphicx, tools, etc.
+           texlive-collection-latexrecommended
+           texlive-soul
+           texlive-standalone
            texlive-ulem
-           texlive-wrapfig
-           texlive-scheme-small))      ;for amsfonts, fontspec, inputenc, etc.
-    (synopsis "Basic TexLive packages for Org-mode LaTeX export")
-    (description "This meta-package propagates the TexLive packages minimally
-required by the Org-mode produced LaTeX output.")))
+           texlive-wrapfig))
+    (home-page (package-home-page emacs-org))
+    (synopsis "Basic TeX Live packages for Org mode LaTeX export")
+    (description "This meta-package propagates the TeX Live packages minimally
+required by the LaTeX output produced by Org mode.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
 (define-public emacs-org-contacts
   ;; XXX: Upstream does not tag version bumps. Commit below matches latest
