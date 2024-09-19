@@ -6054,6 +6054,67 @@ between image and reference catalogs. Currently only aligning images with
 @url{https://aeolus.services, Aeolus}")
     (license license:expat)))
 
+(define-public python-webbpsf
+  (package
+    (name "python-webbpsf")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "webbpsf" version))
+       (sha256
+        (base32 "1084vbk2q3kybxgvh8f2zbsi2w2z8zapsfjkgd6km4yhwqv1wl4a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" "auto"
+              "-k" (string-append
+                    ;; Test requiring network access
+                    "not test_monthly_trending_plot_auto_opdtable"
+                    " and not test_monthly_trending_plot_opdtable_param"
+                    " and not test_delta_wfe_around_time"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-env
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "WEBBPSF_PATH"
+                      (string-append #$(this-package-input "webbpsf-data")
+                                     "/share/webbpsf-data")))))))
+    (propagated-inputs
+     (list python-astropy
+           python-astroquery
+           python-matplotlib
+           python-numpy
+           python-photutils
+           python-poppy
+           python-pysiaf
+           python-scipy
+           python-synphot))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-pytest-astropy
+           python-pytest-xdist
+           python-setuptools-scm))
+    (inputs
+     (list
+      ;; Requried for installation, see
+      ;; <https://webbpsf.readthedocs.io/en/stable/installation.html>, no
+      ;; licence provided. "To run WebbPSF, you must download these files and
+      ;; tell WebbPSF where to find them using the WEBBPSF_PATH environment
+      ;; variable."
+      webbpsf-data))
+    (home-page "https://webbpsf.readthedocs.io/")
+    (synopsis "James Webb Space Telescope PSF simulation tool")
+    (description
+     "WebbPSF produces simulated PSFs for the James Webb Space Telescope,
+NASA's flagship infrared space telescope.  WebbPSF can simulate images for any
+of the four science instruments plus the fine guidance sensor, including both
+direct imaging, coronagraphic, and spectroscopic modes.")
+    (license license:bsd-3)))
+
 (define-public python-wiimatch
   (package
     (name "python-wiimatch")
