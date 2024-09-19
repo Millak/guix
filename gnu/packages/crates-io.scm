@@ -73533,41 +73533,41 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
                (base32
                 "0c79lnjcs9yp62y665swv5y5y6088qc256bfr3s7xcnb0izfl7f0"))))))
 
-(define-public rust-snapbox-0.5
+(define-public rust-snapbox-0.6
   (package
     (name "rust-snapbox")
-    (version "0.5.14")
+    (version "0.6.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "snapbox" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16rppi1ick3jswkp1l9g6wyzjyariw2bg8fqixs773pwr8gi0zgk"))))
+        (base32 "0jnndxckagxzvi52q0ldclz075kdpk4hxq7b22y3rg2867mp62w4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
-                       ("rust-anstyle" ,rust-anstyle-1)
-                       ("rust-anstyle-svg" ,rust-anstyle-svg-0.1)
-                       ("rust-backtrace" ,rust-backtrace-0.3)
-                       ("rust-content-inspector" ,rust-content-inspector-0.2)
-                       ("rust-document-features" ,rust-document-features-0.2)
-                       ("rust-dunce" ,rust-dunce-1)
-                       ("rust-escargot" ,rust-escargot-0.5)
-                       ("rust-filetime" ,rust-filetime-0.2)
-                       ("rust-ignore" ,rust-ignore-0.4)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-libtest-mimic" ,rust-libtest-mimic-0.7)
-                       ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
-                       ("rust-os-pipe" ,rust-os-pipe-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-similar" ,rust-similar-2)
-                       ("rust-snapbox-macros" ,rust-snapbox-macros-0.3)
-                       ("rust-tempfile" ,rust-tempfile-3)
-                       ("rust-wait-timeout" ,rust-wait-timeout-0.2)
-                       ("rust-walkdir" ,rust-walkdir-2)
-                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+     `(#:cargo-inputs
+       (("rust-anstream" ,rust-anstream-0.6)
+        ("rust-anstyle" ,rust-anstyle-1)
+        ("rust-anstyle-svg" ,rust-anstyle-svg-0.1)
+        ("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-content-inspector" ,rust-content-inspector-0.2)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-dunce" ,rust-dunce-1)
+        ("rust-escargot" ,rust-escargot-0.5)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
+        ("rust-os-pipe" ,rust-os-pipe-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-similar" ,rust-similar-2)
+        ("rust-snapbox-macros" ,rust-snapbox-macros-0.3)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-wait-timeout" ,rust-wait-timeout-0.2)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-windows-sys" ,rust-windows-sys-0.59))
        #:cargo-development-inputs (("rust-automod" ,rust-automod-1))))
     (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
     (synopsis "Snapshot testing toolbox")
@@ -73583,6 +73583,44 @@ output from
 
 It is also flexible enough to build your own test harness like @code{trycmd}.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-snapbox-0.5
+  (package
+    (inherit rust-snapbox-0.6)
+    (name "rust-snapbox")
+    (version "0.5.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "snapbox" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16rppi1ick3jswkp1l9g6wyzjyariw2bg8fqixs773pwr8gi0zgk"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anstream" ,rust-anstream-0.6)
+        ("rust-anstyle" ,rust-anstyle-1)
+        ("rust-anstyle-svg" ,rust-anstyle-svg-0.1)
+        ("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-content-inspector" ,rust-content-inspector-0.2)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-dunce" ,rust-dunce-1)
+        ("rust-escargot" ,rust-escargot-0.5)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-ignore" ,rust-ignore-0.4)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libtest-mimic" ,rust-libtest-mimic-0.7)
+        ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
+        ("rust-os-pipe" ,rust-os-pipe-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-similar" ,rust-similar-2)
+        ("rust-snapbox-macros" ,rust-snapbox-macros-0.3)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-wait-timeout" ,rust-wait-timeout-0.2)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-automod" ,rust-automod-1))))))
 
 (define-public rust-snapbox-0.4
   (package
