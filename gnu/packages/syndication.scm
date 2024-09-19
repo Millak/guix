@@ -228,14 +228,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.35")
+    (version "2.36")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "1i5nil0lwa621ixxp1vwkic56sxsqp46pyq1xw7lrr1qrbv07w7l"))))
+        (base32 "0yh3ryi11rw4fcg0wdn93yrs5d75i5p1bfvkgnxpzpy9ghwpm9k1"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
