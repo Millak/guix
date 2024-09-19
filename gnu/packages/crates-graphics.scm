@@ -2702,17 +2702,18 @@ on correctness, flexibility and ease of use.")
 (define-public rust-palette-derive-0.7
   (package
     (name "rust-palette-derive")
-    (version "0.7.5")
+    (version "0.7.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "palette_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vcxjslri6f24zgv3n6ixhzb21a8z23fa6h42s8ss2zcvc10g2g8"))))
+        (base32 "0c0xhpk1nqyq4jr2m8xnka7w47vqzc7m2vq9ih8wxyjv02phs0zm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-find-crate" ,rust-find-crate-0.6)
+     `(#:cargo-inputs (("rust-by-address" ,rust-by-address-1)
+                       ("rust-find-crate" ,rust-find-crate-0.6)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))))
