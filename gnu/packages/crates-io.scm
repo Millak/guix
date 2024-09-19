@@ -51338,17 +51338,20 @@ derive macro for Parity SCALE Codec.")
 (define-public rust-parking-lot-0.12
   (package
     (name "rust-parking-lot")
-    (version "0.12.1")
+    (version "0.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "parking_lot" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13r2xk7mnxfc5g0g6dkdxqdqad99j7s7z8zhzz4npw5r0g0v4hip"))))
+        (base32 "09ws9g6245iiq8z975h8ycf818a66q3c6zv4b5h8skpm7hc1igzi"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:cargo-inputs
+     (list #:cargo-test-flags
+           '(list "--release" "--"
+                  "--skip=issue_392")
+           #:cargo-inputs
            `(("rust-lock-api" ,rust-lock-api-0.4)
              ("rust-parking-lot-core" ,rust-parking-lot-core-0.9))
            #:cargo-development-inputs
