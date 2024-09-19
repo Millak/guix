@@ -88234,8 +88234,33 @@ for formatting strings into a grid layout.")
     (arguments
      `(#:cargo-inputs (("rust-unicode-width" ,rust-unicode-width-0.1))))))
 
+(define-public rust-uzers-0.12
+  (package
+    (name "rust-uzers")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uzers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pcpi9v90nr3q2y3i4pkac9c20r1nzaimvcm7vajmn770ksizy2d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.11)
+                                   ("rust-serial-test" ,rust-serial-test-3))))
+    (home-page "https://github.com/rustadopt/uzers-rs")
+    (synopsis "Library for getting information on Unix users and groups")
+    (description
+     "This package provides a library for getting information on Unix users
+and groups.  A more maintained fork of the @code{rust-users} crate.")
+    (license license:expat)))
+
 (define-public rust-uzers-0.11
   (package
+    (inherit rust-uzers-0.12)
     (name "rust-uzers")
     (version "0.11.3")
     (source
@@ -88245,17 +88270,10 @@ for formatting strings into a grid layout.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0qrzbhncbv4s52lgyzs2pxn1b6gmx9k7h1rdwdwix44cgvf87lkn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
                        ("rust-log" ,rust-log-0.4))
-       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.7))))
-    (home-page "https://github.com/rustadopt/uzers-rs")
-    (synopsis "Library for getting information on Unix users and groups")
-    (description
-     "This package provides a library for getting information on Unix users
-and groups.  A more maintained fork of the @code{rust-users} crate.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.7))))))
 
 (define-public rust-v-frame-0.3
   (package
