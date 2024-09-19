@@ -2,6 +2,7 @@
 ;;; Copyright © 2021, 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)
@@ -202,9 +204,7 @@ standard library headers.")
 (define-public dyninst
   (package
     (name "dyninst")
-    ;; Newer versions are not promoted on main home page.
-    ;; Upgrade to 12.0.1 if anyone require a newer version.
-    (version "10.2.1")
+    (version "13.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -212,9 +212,8 @@ standard library headers.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1m04pg824rqx647wvk9xl33ri8i6mm0vmrz9924li25dxbr4zqd5"))
-              (patches
-               (search-patches "dyninst-fix-glibc-compatibility.patch"))))
+               (base32
+                "0vkd9z6zwvn13ynfys2fg5yanv7n9pl7x5z8m1lcnmnb0kwgi035"))))
 
     (build-system cmake-build-system)
     (arguments
@@ -238,10 +237,10 @@ standard library headers.")
          (add-after 'unpack 'patch-bad-logic
            (lambda _
              (substitute* "dyninstAPI/src/linux.C"
-               (("if\\(\\!fgets\\(buffer, 512, ldconfig\\)\\)")
-                "fgets(buffer, 512, ldconfig); if (false)")))))))
+               (("if\\(fgets\\(buffer, buffer_size, ldconfig\\)\\)")
+                "fgets(buffer, buffer_size, ldconfig); if (true)")))))))
     (propagated-inputs
-     (list elfutils boost tbb-2020))
+     (list elfutils libiberty boost tbb))
     (home-page "https://dyninst.org/")
     (synopsis "Dynamic instrumentation")
     (description "Dyninst is a collection of libraries for instrumenting,
