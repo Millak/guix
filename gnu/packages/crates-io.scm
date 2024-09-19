@@ -69683,6 +69683,32 @@ programs in rust.")
                        ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs (("rust-serde-derive" ,rust-serde-derive-1))))))
 
+(define-public rust-serde-norway-0.9
+  (package
+    (name "rust-serde-norway")
+    (version "0.9.38")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde_norway" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ddyv4chvy60bnih4d8kx302a4a1qkjkj1fjk8qq290iyq4p3va6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-ryu" ,rust-ryu-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-unsafe-libyaml" ,rust-unsafe-libyaml-0.2))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-indoc" ,rust-indoc-2)
+                                   ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/cafkafk/serde-yaml")
+    (synopsis "YAML data format for Serde")
+    (description "This package provides YAML data format for Serde.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-path-to-error-0.1
   (package
     (name "rust-serde-path-to-error")
