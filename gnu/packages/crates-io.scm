@@ -44297,28 +44297,40 @@ quick compile time, and minimal dependencies.")
         ("rust-random-fast-rng" ,rust-random-fast-rng-0.1)
         ("rust-randomize" ,rust-randomize-4))))))
 
+(define-public rust-nasm-rs-0.3
+  (package
+    (name "rust-nasm-rs")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nasm-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nfrmnfvc1rcpghi14zbrdx3x5jr7gl2pv873pn440wyshdzmz0j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-jobserver" ,rust-jobserver-0.1))))
+    (home-page "https://github.com/medek/nasm-rs")
+    (synopsis "Run NASM during your Cargo build")
+    (description "This package provides NASM during your Cargo build.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-nasm-rs-0.2
   (package
+    (inherit rust-nasm-rs-0.3)
     (name "rust-nasm-rs")
     (version "0.2.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "nasm-rs" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "1lgc3gg32hj4pcbfp07vzwy013smdm27469fyy4rqgyil3x46vx7"))))
-    (build-system cargo-build-system)
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nasm-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lgc3gg32hj4pcbfp07vzwy013smdm27469fyy4rqgyil3x46vx7"))))
     (arguments
-      `(#:cargo-inputs
-        (("rust-arrayvec" ,rust-arrayvec-0.5)
-         ("rust-rayon" ,rust-rayon-1))))
-    (home-page "https://github.com/medek/nasm-rs")
-    (synopsis "Run NASM during your Cargo build")
-    (description "Run NASM during your Cargo build.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.5)
+                       ("rust-rayon" ,rust-rayon-1))))))
 
 (define-public rust-nalgebra-0.32
   (package
