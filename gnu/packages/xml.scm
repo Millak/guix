@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015-2018, 2020-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2020-2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Raimon Grau <raimonster@gmail.com>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -125,6 +125,7 @@ the entire document.")
   (package
     (name "expat")
     (version "2.5.0")
+    (replacement expat/fixed)
     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
               (origin
                 (method url-fetch)
@@ -159,6 +160,17 @@ the entire document.")
 stream-oriented parser in which an application registers handlers for
 things the parser might find in the XML document (like start tags).")
     (license license:expat)))
+
+(define-public expat/fixed
+ (hidden-package
+  (package
+    (inherit expat)
+    (replacement expat/fixed)
+    (source (origin
+              (inherit (package-source expat))
+              (patches (search-patches "expat-CVE-2024-45490.patch"
+                                       "expat-CVE-2024-45491.patch"
+                                       "expat-CVE-2024-45492.patch")))))))
 
 (define-public libebml
   (package

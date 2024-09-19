@@ -1205,6 +1205,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/esmtp-add-lesmtp.patch		\
   %D%/packages/patches/eudev-rules-directory.patch		\
   %D%/packages/patches/exercism-disable-self-update.patch	\
+  %D%/packages/patches/expat-CVE-2024-45490.patch	\
+  %D%/packages/patches/expat-CVE-2024-45491.patch	\
+  %D%/packages/patches/expat-CVE-2024-45492.patch	\
   %D%/packages/patches/extempore-unbundle-external-dependencies.patch	\
   %D%/packages/patches/extundelete-e2fsprogs-1.44.patch		\
   %D%/packages/patches/fail2ban-0.11.2_CVE-2021-32749.patch	\
