@@ -2260,6 +2260,32 @@ from various forks of Gens, and improved platform portability.")
 performance, features, and ease of use.")
     (license license:gpl3)))
 
+(define-public jg-api
+  (package
+    (name "jg-api")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/jgemu/jg")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0117cvfvzhrm9fxnryhbnf9r0f8ij4ahhfqiqp5yv11bz2wcyhqh"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags #~(list (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)))) ;no configure phase
+    (home-page "https://gitlab.com/jgemu/jg")
+    (synopsis "Emulators Plugin API")
+    (description "This package provides the Jolly Good API C and C++ headers.
+The Jolly Good API is a shared object or plugin @acronym{API, Application
+Programming Interface} for emulators.")
+    (license license:zlib)))
+
 (define-public zsnes
   (package
     (name "zsnes")
