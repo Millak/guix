@@ -12005,8 +12005,28 @@ that need to represent UTF-16 data as 8-bit characters.")
      `(#:skip-build? #t
        #:cargo-inputs (("rust-nom" ,rust-nom-3))))))
 
+(define-public rust-cfg-aliases-0.2
+  (package
+    (name "rust-cfg-aliases")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cfg_aliases" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "092pxdc1dbgjb6qvh83gk56rkic2n2ybm4yvy76cgynmzi3zwfk1"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/katharostech/cfg_aliases")
+    (synopsis "Utility to help you with long winded @code{#[cfg()]} checks")
+    (description
+     "CFG Aliases is a tiny utility to help save you a lot of effort with long
+winded @code{#[cfg()]} checks.")
+    (license license:expat)))
+
 (define-public rust-cfg-aliases-0.1
   (package
+    (inherit rust-cfg-aliases-0.2)
     (name "rust-cfg-aliases")
     (version "0.1.1")
     (source
@@ -12015,14 +12035,7 @@ that need to represent UTF-16 data as 8-bit characters.")
        (uri (crate-uri "cfg_aliases" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17p821nc6jm830vzl2lmwz60g3a30hcm33nk6l257i1rjdqw85px"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/katharostech/cfg_aliases")
-    (synopsis "Utility to help you with long winded @code{#[cfg()]} checks")
-    (description
-     "CFG Aliases is a tiny utility to help save you a lot of effort with long
-winded @code{#[cfg()]} checks.")
-    (license license:expat)))
+        (base32 "17p821nc6jm830vzl2lmwz60g3a30hcm33nk6l257i1rjdqw85px"))))))
 
 (define-public rust-cfg-expr-0.15
   (package
