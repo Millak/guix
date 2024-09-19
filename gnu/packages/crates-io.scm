@@ -87380,14 +87380,14 @@ clear display in the output.")
 (define-public rust-unsafe-libyaml-0.2
   (package
     (name "rust-unsafe-libyaml")
-    (version "0.2.10")
+    (version "0.2.11")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "unsafe-libyaml" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0jsyc1kqc536wpgx1js61lwj86crniqw16lyvh02va4m1f9r0k5b"))))
+                "0qdq69ffl3v5pzx9kzxbghzn0fzn266i1xn70y88maybz9csqfk7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; use of undeclared crate or module `unsafe_libyaml_test_suite`
