@@ -2352,6 +2352,80 @@ as a \"white-label\" frontend for statically linked standalone emulators.")
                    license:public-domain ;md5.h, md5.c, parg.h, parg.c
                    license:cc0))))
 
+(define-public jg-bsnes
+  (package
+    (name "jg-bsnes")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/jgemu/bsnes")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              ;; XXX: Some source dependencies are bundled and are not easy to
+              ;; unbundle due to the build system building an object combining
+              ;; their sources directly (see:
+              ;; https://gitlab.com/jgemu/bsnes/-/issues/6).
+              ;; - byuuML (no build system)
+              ;; - gb (the 'Core' sources of SameBoy)
+              ;; - libco (no build system)
+              ;; - snes_spc (also modified by this project)
+              (snippet '(begin
+                          (use-modules (guix build utils))
+                          (delete-file-recursively "deps/libsamplerate")))
+              (sha256
+               (base32
+                "0z1ka4si8vcb0j6ih087cni18vpgfd3qnaw24awycxz23xc0jkdv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags
+           #~(list (string-append "AR=" #$(ar-for-target))
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "CXX=" #$(cxx-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)))) ;no configure script
+    (native-inputs (list jg-api pkg-config))
+    (inputs (list libsamplerate))
+    (home-page "https://gitlab.com/jgemu/bsnes")
+    (synopsis "Jolly Good Fork of bsnes")
+    (description "@code{bsnes-jg} is a cycle accurate emulator for the Super
+Famicom/Super Nintendo Entertainment System, including support for the Super
+Game Boy, BS-X Satellaview, and Sufami Turbo.  @code{bsnes-jg} is a fork of
+@code{bsnes} v115, Many changes have been made post-fork:
+@itemize
+@item Higher quality resampler with settings
+@item Improved performance without loss of accuracy
+@item Portability improvements
+@item Removal of accuracy-reducing hacks and unnecessary code
+@item Significant increase in standards compliance
+@item Translation to the C++ Standard Library (ISO C++11)
+@end itemize
+
+In particular, it uses much less @acronym{CPU, Central Processing Unit}
+compared to the original @code{bsnes} (though not as little as @code{zsnes}).
+
+The supported file formats are:
+@itemize @file
+@item .sfc
+@item .smc
+@item .bs
+@item .st
+@item .fig
+@item .swc
+@end itemize
+
+This is intended to be used with the Jolly Good Reference Frontend
+@command{jollygood} command from the @code{jgrf} package.")
+    ;; The project license is GPL3+.  The bundled source licenses are also
+    ;; listed below.
+    (license (list license:gpl3+
+                   license:bsd-3        ;byuuML
+                   license:expat        ;gb
+                   license:isc          ;libco
+                   license:lgpl2.1+))))
+
 (define-public zsnes
   (package
     (name "zsnes")
