@@ -2809,6 +2809,39 @@ attempting to maintain ISTP compliance
 @end itemize")
     (license license:expat)))
 
+(define-public python-ci-watson
+  (package
+    (name "python-ci-watson")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ci_watson" version))
+       (sha256
+        (base32 "1qb5iyb053k1711ic93rcm0z344dc6h8vg8fpkbqpg5z6q0v2b0y"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pypojrect-toml
+            (lambda _
+              (substitute* "setup.cfg"
+                ;; ImportError: Error importing plugin " no:legacypath": No
+                ;; module named ' no:legacypath'
+                (("-p no:legacypath") "")))))))
+    (propagated-inputs
+     (list python-crds
+           python-pytest
+           python-requests))
+    (native-inputs
+     (list python-pytest-astropy-header))
+    (home-page "https://github.com/spacetelescope/ci_watson")
+    (synopsis "Helper functions for STScI software")
+    (description
+     "This package contains a helper functionality to test ROMAN and JWST.")
+    (license license:bsd-3)))
+
 (define-public python-cmyt
   (package
     (name "python-cmyt")
