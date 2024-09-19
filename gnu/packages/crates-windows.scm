@@ -1809,14 +1809,14 @@ crate.")
 (define-public rust-windows-i686-msvc-0.52
   (package
     (name "rust-windows-i686-msvc")
-    (version "0.52.0")
+    (version "0.52.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_i686_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "16kvmbvx0vr0zbgnaz6nsks9ycvfh5xp05bjrhq65kj623iyirgz"))
+                "0rkcqmp4zzmfvrrrx01260q3xkpzi6fzi2x2pgdcdry50ny4h294"))
               (snippet
                '(delete-file "lib/windows.0.52.0.lib"))))
     (build-system cargo-build-system)
