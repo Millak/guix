@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -200,7 +201,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "9.8p1")
+   (version "9.9p1")
    (source
     (origin
       (method url-fetch)
@@ -208,7 +209,7 @@ a server that supports the SSH-2 protocol.")
                           "openssh-" version ".tar.gz"))
       (patches (search-patches "openssh-trust-guix-store-directory.patch"))
       (sha256
-       (base32 "1wrrb8zrfj9wa9nbpx310kl2k05gm4gxsl5hvycx9dbrlc1d12yx"))))
+       (base32 "00kcjs7vm1vha3xvgrkb0qv7v6pwskb1avkfk2qiazzqpz6znhxk"))))
    (build-system gnu-build-system)
    (arguments
     (list
