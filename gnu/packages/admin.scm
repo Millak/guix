@@ -68,6 +68,8 @@
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2024 nathan <nathan_mail@nborghese.com>
+;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4916,7 +4918,8 @@ tcpdump and snoop.")
      (list
       #:configure-flags
       #~(list (string-append "--with-slibdir=" #$output "/lib")
-              (string-append "--with-ssbindir=" #$output "/sbin"))
+              (string-append "--with-ssbindir=" #$output "/sbin")
+              "--with-cryptsetup")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-file-names
@@ -4945,15 +4948,15 @@ tcpdump and snoop.")
     (native-inputs
      (list perl pkg-config))
     (inputs
-     (list cryptsetup
-           libhx
-           libxml2
-           linux-pam
-           lvm2
-           openssl
-           pcre2
-           `(,util-linux "lib")
-           util-linux))
+     (append
+      (cons cryptsetup (libcryptsetup-propagated-inputs))
+      (list libhx
+            libxml2
+            linux-pam
+            openssl
+            pcre2
+            util-linux
+            eudev)))
     (home-page "https://inai.de/projects/pam_mount/")
     (synopsis "PAM module to mount volumes for a user session")
     (description
