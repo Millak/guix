@@ -1428,6 +1428,65 @@ across many files.")
     (description "Multidimensional data visualization across files.")
     (license license:bsd-3)))
 
+(define-public python-healpy
+  (package
+    (name "python-healpy")
+    ;; The latest version depends on custom fork of HEALPix with changes not
+    ;; ported to upstream yet, see
+    ;; <https://github.com/healpy/healpy/issues/949>.
+    (version "1.16.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "healpy" version))
+       (sha256
+        (base32 "1w99cgszh2mzcn5x8p0gdzn3r96vyfdnvbwm20a1l9fdiy16xcha"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Disable tests requiring network access.
+      #~(list "-k" (string-append "not test_astropy_download_file"
+                                  " and not test_pixelweights_local_datapath"
+                                  " and not test_rotate_map_polarization_alms"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: It's not compatible with pytest-8, enable when newer version
+          ;; is available.
+          (add-after 'unpack 'disable-doctest
+            (lambda _
+            (substitute* "pyproject.toml"
+              (("--doctest-plus") ""))))
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list nss-certs-for-test
+           pkg-config
+           python-cython-3
+           python-pytest-8
+           python-pytest-astropy-header
+           python-pytest-cython
+           ;python-pytest-doctestplus
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-colorlog
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (inputs
+     (list cfitsio
+           healpix-cxx
+           libsharp))
+    (home-page "http://healpy.readthedocs.org/")
+    (synopsis "Healpix tools package for Python")
+    (description
+     "healpy is a Python package to handle pixelated data on the sphere.  It
+is based on the Hierarchical Equal Area isoLatitude Pixelization (HEALPix)
+scheme and builds with the HEALPix C++ library.")
+    (license license:gpl2+)))
+
 (define-public python-pvextractor
   (package
     (name "python-pvextractor")
