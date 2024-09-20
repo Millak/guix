@@ -3301,7 +3301,7 @@ notifies the user using any notification daemon implementing
 (define-public waypipe
   (package
     (name "waypipe")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -3310,12 +3310,17 @@ notifies the user using any notification daemon implementing
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pf1q8kyqyqa7gxar99i35q9np0k4vsf7xlrg12gyzc5k36lhknf"))))
+        (base32 "0pj7l3ix0pp0sfqxfa2hxql0f30vz6hh01fq5kzhs831b632i3z0"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config scdoc
            ;; For tests
            python))
+    (inputs (list lz4 libva mesa libdrm ffmpeg))
+    (arguments
+     (list #:configure-flags
+           #~(list "-Dwith_lz4=enabled" "-Dwith_vaapi=enabled"
+                   "-Dwith_dmabuf=enabled" "-Dwith_video=enabled")))
     (home-page "https://gitlab.freedesktop.org/mstoeckl/waypipe")
     (synopsis "Proxy for Wayland protocol applications")
     (description
