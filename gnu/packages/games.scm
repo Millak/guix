@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015 David Thompson <dthompson2@worcester.edu>
-;;; Copyright © 2014-2023 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014-2024 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
 ;;; Copyright © 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -171,6 +171,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages javascript)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages less)
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libcanberra)
@@ -485,6 +486,46 @@ mouse and joystick control, and original music.")
       (description "Anarch is a small, completely public domain, 90s-style
 Doom clone shooter game.")
       (license license:cc0))))
+
+(define-public antimicrox
+  (package
+    (name "antimicrox")
+    (version "3.4.1")
+    (home-page "https://github.com/AntiMicroX/antimicrox")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04yb5nppn751asbihr90sqk5imamc937886lc24cihhgp0sila8y"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;Tests are unmaintained
+      #:configure-flags #~(list "-DCHECK_FOR_UPDATES=NO" "-DWITH_TESTS=NO"
+                                #$(string-append "-DANTIMICROX_PKG_VERSION="
+                                                 version))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-installation-target
+                     (lambda _
+                       (substitute* "CMakeLists.txt"
+                         (("/usr(/lib/udev/rules.d)" _ lib)
+                          (string-append #$output lib))))))))
+    (native-inputs (list extra-cmake-modules gettext-minimal itstool qttools))
+    (inputs (list libxtst libx11 qtbase sdl2))
+    (synopsis "Control your system with a gamepad")
+    (description
+     "AntiMicroX is a graphical program used to map gamepad keys to keyboard, mouse,
+scripts, and macros under both X.org and Wayland.  With it you can control
+your system using a gamepad or play games that don't natively support
+gamepads.  It can also be used for generating SDL2 configurations.
+
+For unprivileged access to input events, this package provides udev rules for
+use with @code{udev-service-type}.")
+    (license license:gpl3+)))
 
 (define-public armagetronad
   (package
