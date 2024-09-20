@@ -2256,13 +2256,13 @@ data by providing clean labels during training.")
 (define-public python-cma
   (package
     (name "python-cma")
-    (version "3.4.0")
+    (version "4.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cma" version))
               (sha256
                (base32
-                "0v0gs46n4ividm9viml09sllxw2cymxlp8nm2lvvwwcqp5lxksx1"))))
+                "198kdy2lxslml0g0s1sgc2zq1fsf2dh9s60lwshgrwivk1bcwa7x"))))
     (build-system python-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
