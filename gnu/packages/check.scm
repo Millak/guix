@@ -3798,6 +3798,7 @@ provides a simple way to achieve this.")
          (sha256
           (base32 "1s2qva1amhs887jcdj12ppxk9kkfvy25xy7vzhkwb7rljr3gj713"))
          (modules '((guix build utils)))
+         (patches (search-patches "rapidcheck-fix-libs.patch"))
          (snippet
           #~(begin
               (make-file-writable "ext/CMakeLists.txt")

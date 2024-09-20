@@ -1,0 +1,27 @@
+From c4f558b0990571759fdaf976eb35ee1eb0d934a0 Mon Sep 17 00:00:00 2001
+From: Robert Hensing <robert@roberthensing.nl>
+Date: Tue, 25 Jun 2024 20:57:41 +0200
+Subject: [PATCH] Add -lrapidcheck to pkg-config module
+
+This adds the library to rapidcheck.pc, so that it doesn't have
+to be specified manually in projects that consume it.
+
+The other modules don't need it because they have rapidcheck in
+their Requires field.
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d55fdc51..046df2fd 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -128,7 +128,7 @@ set(PKG_CONFIG_DESCRIPTION_SUMMARY "C++ framework for property based testing ins
+ set(PKG_CONFIG_VERSION)
+ set(PKG_CONFIG_LIBDIR "\${prefix}/lib")
+ set(PKG_CONFIG_INCLUDEDIR "\${prefix}/include")
+-set(PKG_CONFIG_LIBS)
++set(PKG_CONFIG_LIBS "-L\${libdir} -lrapidcheck")
+ set(PKG_CONFIG_CFLAGS "-I\${includedir}")
+ 
+ configure_file(
