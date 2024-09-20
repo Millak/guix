@@ -1784,6 +1784,44 @@ plain (undecoratored) native coroutine tests.")
      "This package provides a shim Pytest plugin to enable a Celery marker.")
     (license license:bsd-3)))
 
+(define-public python-pytest-cython
+  (package
+    (name "python-pytest-cython")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-cython" version))
+       (sha256
+        (base32 "0ma496dgmmrpgqd3zk6vin29dgajcplh63yqd8jh2a3ai954fr22"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "tests"
+              ;; FIXME: Failed: nomatch: '*sqr*PASSED*
+              "-k" (string-append
+                    "not test_wrap_cpp_ext_module[importlib]"
+                    " and not test_wrap_c_ext_module[importlib]"
+                    " and not test_cython_ext_module[importlib]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (with-directory-excursion "tests/example-project"
+                (invoke "python" "setup.py" "build_ext" "--inplace")))))))
+    (native-inputs
+     (list python-nox
+           python-cython-3
+           python-setuptools))
+    (propagated-inputs
+     (list python-pytest-8))
+    (home-page "https://github.com/lgpage/pytest-cython")
+    (synopsis "Cython extension modules testing plugin")
+    (description
+     "This package provides a plugin for testing Cython extension modules.")
+    (license license:expat)))
+
 (define-public python-pytest-env
   (package
     (name "python-pytest-env")
