@@ -18513,7 +18513,8 @@ bgzipped text file that contains a pair of genomic coordinates per line.")
                 (("dynamic = \\[\"version\"\\]")
                  (string-append "version = \"" #$version "\""))))))))
     (native-inputs
-     (list python-fsspec
+     (list (libc-utf8-locales-for-target)         ;tests need "en_US.utf8"
+           python-fsspec
            python-mock
            python-numpy
            python-pytest
