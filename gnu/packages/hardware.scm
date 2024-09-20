@@ -1366,7 +1366,7 @@ Simply put, it is a USB device whitelisting tool.")
 (define-public screentest
   (package
     (name "screentest")
-    (version "2.1")
+    (version "3.0")
     (source
      (origin
        (method git-fetch)
@@ -1375,19 +1375,13 @@ Simply put, it is a USB device whitelisting tool.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gv3xj9sbk1wsyijfw9xjnvy8pg7j4arjnma2r2kfi18qy32wd30"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list glib gtk+-2))
-    (native-inputs
-     (list autoconf
-           intltool
-           libtool
-           `(,glib "bin")
-           automake
-           pkg-config))
+        (base32 "00422jbl8l10iw82m9m8sikaa9fwlnj7mgzvmnnazyq383aa1dkm"))))
+    (build-system meson-build-system)
+    (inputs (list glib gtk+))
+    (native-inputs (list gettext-minimal pkg-config))
     (synopsis "Simple screen testing tool")
-    (description "This is a program for testing the quality of CRT/LCD
+    (description
+     "This is a program for testing the quality of CRT/LCD
 screens.  It displays various patterns and allows you to estimate the quality
 of your CRT/LCD monitor.")
     (home-page "https://github.com/TobiX/screentest")
