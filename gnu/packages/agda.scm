@@ -269,7 +269,7 @@ try agda-prelude instead.")
 (define-public agda-cubical
   (package
     (name "agda-cubical")
-    (version "0.6")
+    (version "0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -278,7 +278,7 @@ try agda-prelude instead.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zq0z328zcjmm43mrv2ks27i1dnbylcf8mhzja2hd4gvz1kq1ays"))))
+                "1c6axx3xx9ga7pl5294xqwklgbw96irxj0n74a1bxafhcx2lmfm0"))))
     (build-system agda-build-system)
     (arguments
      (list
