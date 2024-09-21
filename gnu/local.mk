@@ -2292,6 +2292,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/wacomtablet-add-missing-includes.patch	\
   %D%/packages/patches/wacomtablet-qt5.15.patch			\
   %D%/packages/patches/warsow-qfusion-fix-bool-return-type.patch	\
+  %D%/packages/patches/waybar-0.11.0-fix-tray-icons.patch	\
   %D%/packages/patches/wcstools-extend-makefiles.patch	\
   %D%/packages/patches/wdl-link-libs-and-fix-jnetlib.patch	\
   %D%/packages/patches/webkitgtk-adjust-bubblewrap-paths.patch	\

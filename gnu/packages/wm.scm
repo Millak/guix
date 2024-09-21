@@ -2233,7 +2233,8 @@ compository, supporting the following featuers:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bw6d3bf8rm4mgrbcprxxljfxbyabbj2lwabk2z19r8lhfz38myy"))))
+        (base32 "1bw6d3bf8rm4mgrbcprxxljfxbyabbj2lwabk2z19r8lhfz38myy"))
+       (patches (search-patches "waybar-0.11.0-fix-tray-icons.patch"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "--wrap-mode=nodownload")))
