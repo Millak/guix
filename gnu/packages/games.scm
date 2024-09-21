@@ -6343,7 +6343,7 @@ colors, pictures, and sounds.")
 (define-public moonlight-qt
   (package
     (name "moonlight-qt")
-    (version "5.0.1")
+    (version "6.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6352,7 +6352,7 @@ colors, pictures, and sounds.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g1y736vw36lmh2bjymsf4b4ypr76x9lqz7frzpj7sn0vb9y5315"))))
+                "06fxf3m26k036asxjkkykk5q96nincwmpiqm953m7zgr9224gidx"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -6398,11 +6398,11 @@ NVIDIA Shield.")
 
 (define-public moonlight-common
   ;; Used as submodule in https://github.com/moonlight-stream/moonlight
-  (let ((commit "5de4a5b85a28d8d639482a1a105c3a06eb67a2fd")
+  (let ((commit "8599b6042a4ba27749b0f94134dd614b4328a9bc")
         (revision "1"))
     (package
       (name "moonlight-common")
-      (version (git-version "5.0.1" revision commit))
+      (version (git-version "6.1.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -6412,7 +6412,7 @@ NVIDIA Shield.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "05jm0vhyb6pizd8yj89rp6ak7bf5j9w06rrmbxh8jccxwqjgll92"))))
+                  "19k8rs2p51zs0h3wj22xw8bgj9c0ma0dc6y7qk5pk75p8ymqp9d3"))))
       (build-system cmake-build-system)
       (arguments
        (list #:tests? #f
