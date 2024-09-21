@@ -32014,38 +32014,36 @@ positioning, and keyboard input.")
 (define-public python-readme-renderer
   (package
     (name "python-readme-renderer")
-    (version "34.0")
+    (version "41.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "readme_renderer" version))
         (sha256
          (base32
-          "1c75h9znffc2lh4j56yg23l5ifj5l8fbdq3kfigi8vbh45zx3d6z"))))
-    (build-system python-build-system)
+            "1xvkf2i075rdqkwdrcrw4xglziqd7qs5lb2rbxr5snizi7ji2jsg"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'loosen-cmarkgfm-dependency
-                    (lambda _
-                      ;; Permit newer versions of cmarkgfm.
-                      (substitute* "setup.py"
-                        (("cmarkgfm>=0\\.5\\.0,<0\\.7\\.0")
-                         "cmarkgfm>=0.5.0"))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        ;; The GFM tests fail due to slight differences in the
-                        ;; generated vs expected HTML due to using a more
-                        ;; recent bleach version (see:
-                        ;; https://github.com/pypa/readme_renderer/issues/234).
-                        (invoke "pytest" "-vv" "-k" "not GFM")))))))
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; These tests fail due to slight differences in the generated
+              ;; vs expected HTML, e.g. because of difference in whitespace or
+              ;; line breaks. (See also
+              ;; https://github.com/pypa/readme_renderer/issues/234).
+              "not test_md_fixtures[test_CommonMark_008.md]"
+              " and not test_rst_fixtures[test_rst_008.rst]"
+              " and not GFM"))))
     (propagated-inputs
-     (list python-bleach python-docutils python-pygments
-
+     (list python-bleach
+           python-docutils
+           python-pygments
            ;; Optional dependencies.
            python-cmarkgfm))           ;required by postorius
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-pytest
+           python-wheel))
     (home-page "https://github.com/pypa/readme_renderer")
     (synopsis "Render README files in Warehouse")
     (description
