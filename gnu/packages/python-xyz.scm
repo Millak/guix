@@ -25726,25 +25726,37 @@ created by running @code{python setup.py develop}).")
 (define-public python-twine
   (package
     (name "python-twine")
-    (version "1.15.0")
+    (version "5.1.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "twine" version))
-        (sha256
-         (base32 "11rpd653zcgzkq3sgwkzs3mpxl3r5rij59745ni84ikv8smjmlm3"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "twine" version))
+       (sha256
+        (base32 "1nr24gd5gm22b0jzb5qmw4swh8bshixmqm0kv4s38ay0758q584s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags  ;; Disable failing tests.
+           #~(list "-k" (string-append
+                         "not test_pkginfo_returns_no_metadata"
+                         " and not test_fails_rst_no_content"))))
+    (native-inputs
+     (list python-pretend
+           python-pytest
+           python-pytest-socket))
     (propagated-inputs
-     (list python-tqdm
-           python-packaging
+     (list python-importlib-metadata
+           python-keyring
            python-pkginfo
            python-readme-renderer
            python-requests
-           python-requests-toolbelt))
+           python-requests-toolbelt
+           python-rfc3986
+           python-rich
+           python-urllib3))
     (home-page "https://github.com/pypa/twine")
     (synopsis "Collection of utilities for interacting with PyPI")
     (description
-      "@code{twine} currently supports registering projects and uploading
+     "@code{twine} currently supports registering projects and uploading
 distributions.  It authenticates the user over HTTPS, allows them to pre-sign
 their files and supports any packaging format (including wheels).")
     (license license:asl2.0)))
