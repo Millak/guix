@@ -2306,7 +2306,14 @@ LLVM bitcode files.")
          (file-name (git-file-name "llvm-cling" version))
          (sha256
           (base32
-           "05libb4mc385n8sq0bilalvidwzzrcyiqsfkn7j179kkx66a8rzy")))))))
+           "05libb4mc385n8sq0bilalvidwzzrcyiqsfkn7j179kkx66a8rzy"))))
+      (arguments
+       ;; This reduces the package size on disk from 547 MiB to 311 MiB.
+       ;; Cling is intended to be used as a REPL on the host machine, not as a
+       ;; cross-compiling toolchain.
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:configure-flags cf ''())
+          #~(cons* "-DLLVM_TARGETS_TO_BUILD=host;NVPTX" #$cf)))))))
 
 (define clang-cling-runtime
   (let ((base clang-runtime-16))
