@@ -1073,9 +1073,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/clang-17.0-libc-search-path.patch	\
   %D%/packages/patches/clang-17.0-link-dsymutil-latomic.patch	\
   %D%/packages/patches/clang-18.0-libc-search-path.patch	\
-  %D%/packages/patches/clang-cling-13-libc-search-path.patch	\
-  %D%/packages/patches/clang-cling-13-remove-crypt-interceptors.patch	\
-  %D%/packages/patches/clang-cling-runtime-13-glibc-2.36-compat.patch	\
   %D%/packages/patches/clang-runtime-asan-build-fixes.patch	\
   %D%/packages/patches/clang-runtime-esan-build-fixes.patch	\
   %D%/packages/patches/clang-runtime-12-remove-crypt-interceptors.patch \
@@ -1090,7 +1087,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/clasp-hide-event-ids.patch		\
   %D%/packages/patches/classpath-aarch64-support.patch		\
   %D%/packages/patches/classpath-miscompilation.patch		\
-  %D%/packages/patches/cling-use-shared-library.patch		\
   %D%/packages/patches/clitest-grep-compat.patch		\
   %D%/packages/patches/clog-fix-shared-build.patch		\
   %D%/packages/patches/clucene-pkgconfig.patch			\

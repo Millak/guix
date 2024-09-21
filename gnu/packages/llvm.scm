@@ -67,6 +67,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm-meta)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages mpi)
@@ -85,6 +86,11 @@
   #:use-module (ice-9 match)
   #:export (make-lld-wrapper
             system->llvm-target))
+
+;; Lazily resolve the gcc-toolchain to avoid a circular dependency.
+(define gcc-toolchain*
+  (delay (module-ref (resolve-interface '(gnu packages commencement))
+                     'gcc-toolchain)))
 
 (define* (system->llvm-target #:optional
                               (system (or (and=> (%current-target-system)
@@ -2281,15 +2287,15 @@ LLVM bitcode files.")
     (properties `((hidden? . #t)
                   ,@(package-properties llvm-13)))))
 
+(define llvm-cling-base llvm-16)
+
 (define llvm-cling
-  ;; To determine which version of LLVM a given release of Cling should use,
-  ;; consult the
-  ;; https://raw.githubusercontent.com/root-project/cling/master/LastKnownGoodLLVMSVNRevision.txt
-  ;; file.
-  (let ((base llvm-15))                 ;for a DYLIB build
+  (let ((base llvm-cling-base))
     (package/inherit base
       (name "llvm-cling")
-      (version "13-20240318-01")
+      ;; Use the latest tag for the major LLVM version currently targeted by
+      ;; Cling (often mentioned in Cling's release notes).
+      (version "16-20240621-02")
       (source
        (origin
          (inherit (package-source base))
@@ -2300,14 +2306,10 @@ LLVM bitcode files.")
          (file-name (git-file-name "llvm-cling" version))
          (sha256
           (base32
-           "1zh6yp8px9hla7v9i67a6anbph140f8ixxbsz65aj7fizksjs1h3"))
-         (patches (search-patches
-                   "clang-cling-13-libc-search-path.patch"
-                   "clang-cling-runtime-13-glibc-2.36-compat.patch"
-                   "clang-cling-13-remove-crypt-interceptors.patch")))))))
+           "05libb4mc385n8sq0bilalvidwzzrcyiqsfkn7j179kkx66a8rzy")))))))
 
 (define clang-cling-runtime
-  (let ((base clang-runtime-13))
+  (let ((base clang-runtime-16))
     (package/inherit base
       (name "clang-cling-runtime")
       (version (package-version llvm-cling))
@@ -2316,9 +2318,6 @@ LLVM bitcode files.")
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
-              (add-after 'unpack 'change-directory
-                (lambda _
-                  (chdir "compiler-rt")))
               (add-after 'install 'delete-static-libraries
                 ;; This reduces the size from 22 MiB to 4 MiB.
                 (lambda _
@@ -2327,22 +2326,11 @@ LLVM bitcode files.")
                 (replace "llvm" llvm-cling))))))
 
 (define clang-cling
-  (let ((base clang-13))
+  (let ((base clang-16))
     (package/inherit base
       (name "clang-cling")
       (version (package-version llvm-cling))
       (source (package-source llvm-cling))
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases '%standard-phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'change-directory
-                (lambda _
-                  (chdir "clang")))
-              (add-after 'install 'delete-static-libraries
-                ;; This reduces the size by half, from 220 MiB to 112 MiB.
-                (lambda _
-                  (for-each delete-file (find-files #$output "\\.a$"))))))))
       (propagated-inputs
        (modify-inputs (package-propagated-inputs base)
          (replace "llvm" llvm-cling)
@@ -2351,7 +2339,7 @@ LLVM bitcode files.")
 (define-public cling
   (package
     (name "cling")
-    (version "1.0")
+    (version "1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2360,15 +2348,14 @@ LLVM bitcode files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17n66wf5yg1xjc94d6yb8g2gydjz0b8cj4a2pn6xrygdvhh09vv1"))
-              ;; Patch submitted upstream here:
-              ;; https://github.com/root-project/cling/pull/433.
-              (patches (search-patches "cling-use-shared-library.patch"))))
+                "13ghbqjppvbmkhjgfk9xggxh17xpmx18ghdqgkkg9a3mh19hf69h"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:build-type "Release"            ;keep the build as lean as possible
-      #:tests? #f                       ;FIXME: 78 tests fail (out of ~200)
+      ;; FIXME: 79 tests fail, out of ~200 (see:
+      ;; https://github.com/root-project/cling/issues/534)
+      #:tests? #f
       #:test-target "check-cling"
       #:configure-flags
       #~(list (string-append "-DCLING_CXX_PATH="
@@ -2405,7 +2392,7 @@ LLVM bitcode files.")
                                 #$(first
                                    (take (string-split
                                           (package-version clang-cling) #\-)
-                                         1)) ".0.0" ;e.g. 13.0.0
+                                         1)) ;e.g. 16.0.6 -> 16
                                 "\");")))
               ;; Check for the 'lit' command for the tests, not 'lit.py'
               ;; (see: https://github.com/root-project/cling/issues/432).
@@ -2418,6 +2405,12 @@ LLVM bitcode files.")
               (substitute* "test/lit.cfg"
                 (("config.llvm_tools_dir \\+ '")
                  "config.cling_obj_root + '/bin"))))
+          (add-before 'check 'set-CLANG
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              ;; Otherwise, lit fails with "fatal: couldn't find 'clang'
+              ;; program, try setting CLANG in your environment".
+              (setenv "CLANG" (search-input-file (or native-inputs inputs)
+                                                 "bin/clang"))))
           (add-after 'install 'delete-static-libraries
             ;; This reduces the size from 17 MiB to 5.4 MiB.
             (lambda _
@@ -2441,7 +2434,7 @@ LLVM bitcode files.")
               (substitute* (string-append #$output "/bin/cling")
                 (("\"\\$0\"")
                  "\"${0##*/}\"")))))))
-    (native-inputs (list python python-lit))
+    (native-inputs (list clang-cling python python-lit))
     (inputs (list clang-cling (force gcc-toolchain*) llvm-cling libxcrypt))
     (home-page "https://root.cern/cling/")
     (synopsis "Interactive C++ interpreter")
