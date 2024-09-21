@@ -237,7 +237,7 @@ try agda-prelude instead.")
 (define-public agda-categories
   (package
     (name "agda-categories")
-    (version "0.1.7.2")
+    (version "0.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -246,10 +246,10 @@ try agda-prelude instead.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xwgm2mfl2pxipsv31bin8p14y1yhd9n27lv3clvsxd4z9yc034m"))
+                "0a9mz9zyifkm03ss00iixa7b844m3gyvsx92al410hqj6v3r02qr"))
               (patches (search-patches "agda-categories-remove-incompatible-flags.patch"
                                        "agda-categories-use-find.patch"
-                                       "agda-categories-use-stdlib-1.7.3.patch"))))
+                                       "agda-categories-use-newer-stdlib.patch"))))
     (build-system agda-build-system)
     (arguments
      (list

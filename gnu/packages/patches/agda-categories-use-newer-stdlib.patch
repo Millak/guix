@@ -1,0 +1,21 @@
+Use newer stdlib.
+
+From: Josselin Poiret <dev@jpoiret.xyz>
+
+---
+ agda-categories.agda-lib | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/agda-categories.agda-lib b/agda-categories.agda-lib
+index 5b19c405..4d63d415 100644
+--- a/agda-categories.agda-lib
++++ b/agda-categories.agda-lib
+@@ -1,4 +1,4 @@
+ name: agda-categories
+-depend: standard-library-2.0
++depend: standard-library
+ include: src/
+
+-- 
+2.41.0
+

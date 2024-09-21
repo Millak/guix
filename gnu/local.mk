@@ -940,7 +940,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/aegisub-make43.patch			\
   %D%/packages/patches/agda-categories-remove-incompatible-flags.patch	\
   %D%/packages/patches/agda-categories-use-find.patch	\
-  %D%/packages/patches/agda-categories-use-stdlib-1.7.3.patch	\
+  %D%/packages/patches/agda-categories-use-newer-stdlib.patch	\
   %D%/packages/patches/agda-libdirs-env-variable.patch	\
   %D%/packages/patches/agda-use-sphinx-5.patch	\
   %D%/packages/patches/agda-stdlib-use-runhaskell.patch	\
