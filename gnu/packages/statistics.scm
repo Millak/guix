@@ -21,6 +21,7 @@
 ;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2108,7 +2109,7 @@ and Vega-Lite examples.")
 (define-public python-altair
   (package
     (name "python-altair")
-    (version "5.0.1")
+    (version "5.3.0")
     (source (origin
               (method git-fetch)        ; no tests in PyPI
               (uri (git-reference
@@ -2117,15 +2118,27 @@ and Vega-Lite examples.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r74v5n51br9pjhxdzrr62cdgnwkapci93aifnl8dqmfpizfpd7d"))))
+                "1lx3pkphi36pljns6jjxhyn9fbrana8f1y6gcg4yca48nvwlfssl"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; First two open an external connection.
-     ;; Last introduces a circular dependency on altair-viewer.
-     (list #:test-flags #~(list "-k" (string-append
-                                      "not test_from_and_to_json_roundtrip"
-                                      " and not test_render_examples_to_chart"
-                                      " and not test_save_html"))))
+     (list #:test-flags
+           ;; XXX: This test file requires hard to package python-anywidgets.
+           #~(list "--ignore=tests/test_jupyter_chart.py"
+                   "-k" (string-join
+                         (list
+                          ;; these tests open an external connection.
+                          "not test_from_and_to_json_roundtrip"
+                          "test_render_examples_to_chart"
+                          ;; introduces a circular dependency on altair-viewer.
+                          "not test_save_html"
+                          ;; these tests require the vl-convert vega compiler
+                          "test_vegalite_compiler"
+                          "test_to_dict_with_format_vega"
+                          "test_to_json_with_format_vega"
+                          "test_to_url"
+                          "test_renderer_with_none_embed_options"
+                          "test_jupyter_renderer_mimetype")
+                         " and not "))))
     (propagated-inputs (list python-jinja2
                              python-jsonschema
                              python-numpy
