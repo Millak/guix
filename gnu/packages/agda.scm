@@ -297,8 +297,8 @@ agda-stdlib but using cubical methods.")
 (define-public agda-1lab
   ;; Upstream doesn't do releases (yet).  Use a commit that builds with 2.6.4,
   ;; since they use Agda HEAD.
-  (let* ((revision "2")
-         (commit "549fdb1c948a975e90e70f871993a4a4239aa280"))
+  (let* ((revision "3")
+         (commit "afcf848d367f906d6d07d1612fbd41d7dd8c978e"))
     (package
       (name "agda-1lab")
       (version (git-version "0.0" revision commit))
@@ -311,7 +311,7 @@ agda-stdlib but using cubical methods.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1k4zj8dibyplakpxaw4a8hpsaqhakynjb83dqxrva4h4ssj6gkqj"))))
+           "12ax3n9111dkzm7nm3kwnvgslzsybyh740vml7l089in89f979wn"))))
       (build-system agda-build-system)
       (arguments
        ;; Check files individually first, to avoid running out of heap :(
