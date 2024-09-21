@@ -2390,12 +2390,6 @@ LLVM bitcode files.")
               (substitute* "lib/Interpreter/CIFactory.cpp"
                 (("\\bsed\\b")
                  (which "sed"))
-                ;; This ensures that the default C++ library used by Cling is
-                ;; that of the compiler that was used to build it, rather
-                ;; than that of whatever g++ happens to be on PATH.
-                (("ReadCompilerIncludePaths\\(CLING_CXX_RLTV")
-                 (format #f "ReadCompilerIncludePaths(~s"
-                         (search-input-file inputs "bin/g++")))
                 ;; Cling uses libclang's CompilerInvocation::GetResourcesPath
                 ;; to resolve Clang's library prefix, but this fails on Guix
                 ;; because it is relative to the output of cling rather than
@@ -2427,9 +2421,28 @@ LLVM bitcode files.")
           (add-after 'install 'delete-static-libraries
             ;; This reduces the size from 17 MiB to 5.4 MiB.
             (lambda _
-              (for-each delete-file (find-files #$output "\\.a$")))))))
+              (for-each delete-file (find-files #$output "\\.a$"))))
+          (add-after 'install 'wrap-with-include-paths
+            ;; Cling is sensitive to miss-matched include directives; ensure
+            ;; the GCC includes used match that of the GCC used to build
+            ;; Cling.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gcc-toolchain #$(this-package-input "gcc-toolchain")))
+                (wrap-program (string-append #$output "/bin/cling")
+                  `("C_INCLUDE_PATH" prefix
+                   (,(string-append gcc-toolchain "/include")))
+                  `("CPLUS_INCLUDE_PATH" prefix
+                    (,(string-append gcc-toolchain "/include/c++")
+                     ,(string-append gcc-toolchain "/include")))))))
+          (add-after 'wrap-with-include-paths 'fix-wrapper
+            (lambda _
+              ;; When -a $0 is used, the cling executable segfauts (see:
+              ;; https://issues.guix.gnu.org/73405).
+              (substitute* (string-append #$output "/bin/cling")
+                (("\"\\$0\"")
+                 "\"${0##*/}\"")))))))
     (native-inputs (list python python-lit))
-    (inputs (list clang-cling llvm-cling libxcrypt))
+    (inputs (list clang-cling (force gcc-toolchain*) llvm-cling libxcrypt))
     (home-page "https://root.cern/cling/")
     (synopsis "Interactive C++ interpreter")
     (description "Cling is an interactive C++17 standard compliant
