@@ -200,7 +200,7 @@ come from Agda's standard library.")
 (define-public agda-stdlib
   (package
     (name "agda-stdlib")
-    (version "1.7.3")
+    (version "2.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -209,11 +209,11 @@ come from Agda's standard library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y6rns64rrkh8hw7mamcf6797329pi4ravpak5zijpnkzdagmlmy"))))
+                "1n742qvlxaj4dprnknvzrr876af6yjfwa4ps1dr4v1h814sg0xz0"))))
     (build-system agda-build-system)
     (arguments
      (list
-      #:plan '(("^\\./README.agda$" "-i."))
+      #:plan '(("^\\./doc/README.agda$" "-idoc/"))
       #:gnu-and-haskell? #t
       #:phases
       #~(modify-phases %standard-phases
@@ -221,7 +221,8 @@ come from Agda's standard library.")
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (invoke
                (search-input-file (or native-inputs inputs) "/bin/runhaskell")
-               "GenerateEverything.hs"))))))
+               "GenerateEverything.hs"
+               "--out-dir" "doc/"))))))
     (native-inputs (list ghc-filemanip))
     (synopsis "The Agda Standard Library")
     (description
