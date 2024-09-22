@@ -5744,6 +5744,34 @@ programming language.")
 programming language, which supports draft-04, draft-06 and draft-07.")
     (license license:asl2.0)))
 
+(define-public go-github-com-xtaci-smux
+  (package
+    (name "go-github-com-xtaci-smux")
+    (version "1.5.30")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xtaci/smux")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i4h672vmg2b4p8hkbhpsp8p2nk4d3qm6vf76yly389l2zb7h4l3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xtaci/smux"))
+    (home-page "https://github.com/xtaci/smux")
+    (synopsis "Introduction")
+    (description
+     "Smux (@strong{S}imple @strong{MU}ltiple@strong{X}ing) is a multiplexing
+library for Golang.  It relies on an underlying connection to provide
+reliability and ordering, such as TCP or
+@url{https://github.com/xtaci/kcp-go,KCP}, and provides stream-oriented
+multiplexing.  The original intention of this library is to power the
+connection management for @url{https://github.com/xtaci/kcp-go,kcp-go}.")
+    (license license:expat)))
+
 (define-public go-go-opentelemetry-io-otel
   (package
     (name "go-go-opentelemetry-io-otel")
