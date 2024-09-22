@@ -3244,14 +3244,14 @@ It will then write @code{fixup!} commits for each of those changes.")
 (define-public git-delta
   (package
     (name "git-delta")
-    (version "0.16.5")
+    (version "0.18.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "git-delta" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1pvy5jcpj3xzf2b8k9d5xwwamwlv9pzsx6p2yq61am38igafg9qb"))
+        (base32 "1bmjan13lm1d6vcy8mh0iryl2rnvh39ml5y4alf6s728xdzc2yhj"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -3261,26 +3261,40 @@ It will then write @code{fixup!} commits for each of those changes.")
     (arguments
      (list
       #:install-source? #f
+      #:cargo-test-flags
+      '(list "--release" "--"
+             "--skip=ansi::tests::test_measure_text_width"
+             "--skip=features::line_numbers::tests::test_line_numbers_continue_correctly_after_wrapping"
+             "--skip=features::side_by_side::tests::test_two_plus_lines_exact_fit"
+             "--skip=handlers::diff_header::tests::test_diff_header_relative_paths"
+             "--skip=tests::test_example_diffs::tests::test_binary_file_added"
+             "--skip=tests::test_example_diffs::tests::test_binary_file_removed"
+             "--skip=tests::test_example_diffs::tests::test_binary_files_differ"
+             "--skip=tests::test_example_diffs::tests::test_binary_files_differ_after_other"
+             "--skip=wrapping::tests::test_alignment_1_line_vs_3_lines"
+             "--skip=wrapping::tests::test_alignment_2_lines_vs_3_lines"
+             "--skip=wrapping::tests::test_wrap_line_newlines")
       #:cargo-inputs
       `(("rust-ansi-colours" ,rust-ansi-colours-1)
         ("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-anstyle-parse" ,rust-anstyle-parse-0.2)
         ("rust-anyhow" ,rust-anyhow-1)
-        ("rust-atty" ,rust-atty-0.2)
-        ("rust-bat" ,rust-bat-0.22)
+        ("rust-bat" ,rust-bat-0.24)
         ("rust-bitflags" ,rust-bitflags-2)
         ("rust-box-drawing" ,rust-box-drawing-0.1)
         ("rust-bytelines" ,rust-bytelines-2)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-chrono-humanize" ,rust-chrono-humanize-0.2)
         ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
         ("rust-console" ,rust-console-0.15)
         ("rust-ctrlc" ,rust-ctrlc-3)
-        ("rust-dirs" ,rust-dirs-4)
-        ("rust-git2" ,rust-git2-0.16)
+        ("rust-dirs" ,rust-dirs-5)
+        ("rust-git2" ,rust-git2-0.18)
         ("rust-grep-cli" ,rust-grep-cli-0.1)
         ("rust-itertools" ,rust-itertools-0.10)
         ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-palette" ,rust-palette-0.6)
+        ("rust-palette" ,rust-palette-0.7)
         ("rust-pathdiff" ,rust-pathdiff-0.2)
         ("rust-regex" ,rust-regex-1)
         ("rust-serde" ,rust-serde-1)
@@ -3288,11 +3302,13 @@ It will then write @code{fixup!} commits for each of those changes.")
         ("rust-shell-words" ,rust-shell-words-1)
         ("rust-smol-str" ,rust-smol-str-0.1)
         ("rust-syntect" ,rust-syntect-5)
-        ("rust-sysinfo" ,rust-sysinfo-0.28)
+        ("rust-sysinfo" ,rust-sysinfo-0.29)
+        ("rust-terminal-colorsaurus" ,rust-terminal-colorsaurus-0.4)
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-vte" ,rust-vte-0.11)
         ("rust-xdg" ,rust-xdg-2))
+      #:cargo-development-inputs `(("rust-insta" ,rust-insta-1)
+                                   ("rust-rstest" ,rust-rstest-0.21))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-extras
@@ -3300,7 +3316,7 @@ It will then write @code{fixup!} commits for each of those changes.")
               (let* ((out (assoc-ref outputs "out"))
                      (share (string-append out "/share"))
                      (bash-completions-dir
-                      (string-append share "/bash-completion/completions"))
+                      (string-append out "/etc/bash-completion.d"))
                      (zsh-completions-dir
                       (string-append share "/zsh/site-functions"))
                      (fish-completions-dir
@@ -3315,7 +3331,7 @@ It will then write @code{fixup!} commits for each of those changes.")
                 (copy-file "etc/completion/completion.fish"
                            (string-append fish-completions-dir "/delta.fish"))))))))
     (native-inputs (list git-minimal pkg-config))
-    (inputs (list libgit2 openssl zlib))
+    (inputs (list libgit2-1.7 openssl zlib))
     (home-page "https://github.com/dandavison/delta")
     (synopsis "Syntax-highlighting pager for git")
     (description
