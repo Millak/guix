@@ -17,10 +17,9 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
 index af7d24c21..66bec8fdf 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -2647,6 +2647,9 @@ if (TG_OWT_USE_PROTOBUF)
-     list(APPEND export_targets proto)
- endif()
- 
+@@ -2647,5 +2647,8 @@ if (APPLE)
+     libyuv
+ )
 +if (LIBSRTP_FOUND)
 +    target_compile_definitions(tg_owt PRIVATE HAVE_LIBSRTP)
 +endif()

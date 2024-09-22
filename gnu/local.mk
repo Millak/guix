@@ -2198,6 +2198,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/texinfo-headings-single.patch		\
   %D%/packages/patches/texinfo-5-perl-compat.patch		\
   %D%/packages/patches/telegram-desktop-allow-disable-libtgvoip.patch   \
+  %D%/packages/patches/telegram-desktop-unbundle-cppgir.patch   \
+  %D%/packages/patches/telegram-desktop-unbundle-gsl.patch      \
   %D%/packages/patches/telegram-purple-adjust-test.patch	\
   %D%/packages/patches/teuchos-remove-duplicate-using.patch	\
   %D%/packages/patches/texi2html-document-encoding.patch	\

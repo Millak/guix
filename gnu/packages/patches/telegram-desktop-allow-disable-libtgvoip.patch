@@ -47,10 +47,9 @@ diff --git a/Telegram/SourceFiles/calls/calls_call.cpp b/Telegram/SourceFiles/ca
 index 5fe9ac677..bebf48e70 100644
 --- a/Telegram/SourceFiles/calls/calls_call.cpp
 +++ b/Telegram/SourceFiles/calls/calls_call.cpp
-@@ -39,8 +39,10 @@ class InstanceImpl;
+@@ -39,7 +39,9 @@ class InstanceImpl;
  class InstanceV2Impl;
  class InstanceV2ReferenceImpl;
- class InstanceV2_4_0_0Impl;
 +#ifndef TDESKTOP_DISABLE_LEGACY_TGVOIP
  class InstanceImplLegacy;
  void SetLegacyGlobalServerConfig(const std::string &serverConfig);
@@ -58,10 +57,9 @@ index 5fe9ac677..bebf48e70 100644
  } // namespace tgcalls
  
  namespace Calls {
-@@ -56,7 +58,9 @@ const auto Register = tgcalls::Register<tgcalls::InstanceImpl>();
+@@ -56,6 +58,8 @@ const auto Register = tgcalls::Register<tgcalls::InstanceImpl>();
  const auto RegisterV2 = tgcalls::Register<tgcalls::InstanceV2Impl>();
  const auto RegV2Ref = tgcalls::Register<tgcalls::InstanceV2ReferenceImpl>();
- const auto RegisterV240 = tgcalls::Register<tgcalls::InstanceV2_4_0_0Impl>();
 +#ifndef TDESKTOP_DISABLE_LEGACY_TGVOIP
  const auto RegisterLegacy = tgcalls::Register<tgcalls::InstanceImplLegacy>();
 +#endif
