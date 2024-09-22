@@ -30649,20 +30649,19 @@ shell style patterns.")
 (define-public rust-globset-0.4
   (package
     (name "rust-globset")
-    (version "0.4.14")
+    (version "0.4.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "globset" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qab0c1drpybgm4nc92lf8b46x0ap44c9y4k23rndgc5bfdkpnjp"))))
+        (base32 "06gv8a5mg5q724lhdq4hp6zmv923whzm7mgpkghz3rs6crlcxw8m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-aho-corasick" ,rust-aho-corasick-1)
         ("rust-bstr" ,rust-bstr-1)
-        ("rust-fnv" ,rust-fnv-1)
         ("rust-log" ,rust-log-0.4)
         ("rust-regex-automata" ,rust-regex-automata-0.4)
         ("rust-regex-syntax" ,rust-regex-syntax-0.8)
