@@ -64460,6 +64460,33 @@ contains the API endpoint response objects.")
 procedural macro to implement fixtures and table based tests.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rstest-0.20
+  (package
+    (inherit rust-rstest-0.21)
+    (name "rust-rstest")
+    (version "0.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w7nkivvbvz2nvlr926w2pc6sfdcq3ki35gplsb88pwcjm8ry197"))))
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `rstest_test`
+       #:cargo-inputs (("rust-futures" ,rust-futures-0.3)
+                       ("rust-futures-timer" ,rust-futures-timer-3)
+                       ("rust-rstest-macros" ,rust-rstest-macros-0.20)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4))
+       #:cargo-development-inputs (("rust-actix-rt" ,rust-actix-rt-2)
+                                   ("rust-async-std" ,rust-async-std-1)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-rstest" ,rust-rstest-0.19)
+                                   ("rust-temp-testdir" ,rust-temp-testdir-0.2)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-unindent" ,rust-unindent-0.2))))))
+
 (define-public rust-rstest-0.19
   (package
     (inherit rust-rstest-0.21)
