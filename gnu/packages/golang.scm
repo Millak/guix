@@ -2252,7 +2252,7 @@ web browsing activities based on HTTP Upgrade (HTTPT).")
 (define-public go-github-com-sevlyar-go-daemon
   (package
     (name "go-github-com-sevlyar-go-daemon")
-    (version "0.1.5")
+    (version "0.1.6")
     (source
      (origin
        (method git-fetch)
@@ -2261,14 +2261,8 @@ web browsing activities based on HTTP Upgrade (HTTPT).")
          (url "https://github.com/sevlyar/go-daemon")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (modules '((guix build utils)))
-       (snippet
-        ;; XXX: Remove when updating
-        '(begin
-           (substitute* "compilation_test.go"
-             ((".*\"darwin/386\".*") ""))))
        (sha256
-        (base32 "1y3gnxaifykcjcbzx91lz9bc93b95w3xj4rjxjbii26pm3j7gqyk"))))
+        (base32 "1x2sn871g10jihga6jvng7ys1988dgj24wlkxzdzca6mvzysj80b"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/sevlyar/go-daemon"))
