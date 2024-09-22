@@ -8037,6 +8037,32 @@ also provides V-style logging controlled by the @code{-v} and
 defined in @url{https://editorconfig.org/,https://editorconfig.org/}.")
     (license license:bsd-3)))
 
+(define-public go-rsc-io-binaryregexp
+  (package
+    (name "go-rsc-io-binaryregexp")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rsc/binaryregexp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kar0myy85waw418zslviwx8846zj0m9cmqkxjx0fvgjdi70nc4b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "rsc.io/binaryregexp"))
+    (home-page "https://pkg.go.dev/rsc.io/binaryregexp")
+    (synopsis "Golang regexp for binary/latin-1 data")
+    (description
+     "Package regexp implements regular expression search.  The syntax of the
+regular expressions accepted is the same general syntax used by Perl, Python,
+and other languages.  More precisely, it is the syntax accepted by RE2 and
+described at https://golang.org/s/re2syntax, except for @code{\\C.}")
+    (license license:bsd-3)))
+
 (define-public go-zgo-at-jfmt
   (package
     (name "go-zgo-at-jfmt")
