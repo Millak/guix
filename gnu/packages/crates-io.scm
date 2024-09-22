@@ -2589,23 +2589,23 @@ coverage-guided, mutation-based fuzzers.")
 (define-public rust-arc-swap-1
   (package
     (name "rust-arc-swap")
-    (version "1.6.0")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "arc-swap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19n9j146bpxs9phyh48gmlh9jjsdijr9p9br04qms0g9ypfsvp5x"))))
+        (base32 "0mrl9a9r9p9bln74q6aszvf22q1ijiw089jkrmabfqkbj31zixv9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-adaptive-barrier" ,rust-adaptive-barrier-1)
-        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-criterion" ,rust-criterion-0.5)
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
-        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-itertools" ,rust-itertools-0.12)
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-parking-lot" ,rust-parking-lot-0.12)
