@@ -2443,29 +2443,6 @@ writers can be supplied for alternate environments.")
      "The datacounter package provides counters for Go readers and writers.")
     (license license:expat)))
 
-(define-public go-github-com-emersion-go-textwrapper
-  (package
-    (name "go-github-com-emersion-go-textwrapper")
-    (version "0.0.0-20200911093747-65d896831594")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/emersion/go-textwrapper")
-                    (commit (go-version->git-ref version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1lh9d7zvj6gm1rr6sv5xlagklgx9d666hq5srd37a4sdcjkbiqmq"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/emersion/go-textwrapper"))
-    (home-page "https://github.com/emersion/go-textwrapper")
-    (synopsis "Text-wrapping writer for Go")
-    (description
-     "The textwrapper package provides a writer that wraps long text lines to
-a specified length.")
-    (license license:expat)))
-
 (define-public go-github-com-aki237-nscjar
   (let ((commit "e2df936ddd6050d30dd90c7214c02b5019c42f06")
         (revision "0"))
