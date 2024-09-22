@@ -30244,14 +30244,14 @@ debugging format.")
   (package
     (inherit rust-gimli-0.28)
     (name "rust-gimli")
-    (version "0.27.2")
+    (version "0.27.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "gimli" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1d5v6jjchf4872jynjsg5ni4vankm1341bas8qindygb6g9962md"))))
+                "0bpdnkyzi3vp2r0wglwrncbk451zhp46mdl83f6xj4gsmy20kj5n"))))
     (arguments
      `(#:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
@@ -30263,7 +30263,7 @@ debugging format.")
        #:cargo-development-inputs
        (("rust-crossbeam" ,rust-crossbeam-0.8)
         ("rust-getopts" ,rust-getopts-0.2)
-        ("rust-memmap2" ,rust-memmap2-0.5)
+        ("rust-memmap2" ,rust-memmap2-0.6)
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-object" ,rust-object-0.30)
         ("rust-rayon" ,rust-rayon-1)
