@@ -6934,8 +6934,74 @@ c6e7d37.  However, this package works only up to 128 bytes.")
 dependencies.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-bat-0.24
+  (package
+    (name "rust-bat")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bat" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11nc2iv2qhd1bs16yijqq934864ybnmg485rny70scy26xb9xk4x"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ansi-colours" ,rust-ansi-colours-1)
+                       ("rust-bincode" ,rust-bincode-1)
+                       ("rust-bugreport" ,rust-bugreport-0.5)
+                       ("rust-bytesize" ,rust-bytesize-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clircle" ,rust-clircle-0.4)
+                       ("rust-console" ,rust-console-0.15)
+                       ("rust-content-inspector" ,rust-content-inspector-0.2)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-etcetera" ,rust-etcetera-0.8)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-git2" ,rust-git2-0.18)
+                       ("rust-globset" ,rust-globset-0.4)
+                       ("rust-grep-cli" ,rust-grep-cli-0.1)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.49)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-os-str-bytes" ,rust-os-str-bytes-6)
+                       ("rust-path-abs" ,rust-path-abs-0.5)
+                       ("rust-plist" ,rust-plist-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-run-script" ,rust-run-script-0.10)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+                       ("rust-shell-words" ,rust-shell-words-1)
+                       ("rust-syntect" ,rust-syntect-5)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-walkdir" ,rust-walkdir-2)
+                       ("rust-wild" ,rust-wild-2))
+       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2)
+                                   ("rust-expect-test" ,rust-expect-test-1)
+                                   ("rust-nix" ,rust-nix-0.26)
+                                   ("rust-predicates" ,rust-predicates-3)
+                                   ("rust-serial-test" ,rust-serial-test-2)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-wait-timeout" ,rust-wait-timeout-0.2))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.7 openssl zlib))
+    (home-page "https://github.com/sharkdp/bat")
+    (synopsis "Library providing syntax highlighting for text")
+    (description
+     "This package provides the @command{bat} syntax highlighter as a library to
+use for syntax highlighting in other crates.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-bat-0.22
   (package
+    (inherit rust-bat-0.24)
     (name "rust-bat")
     (version "0.22.1")
     (source
@@ -6945,7 +7011,6 @@ dependencies.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0pdnbblvf2dkmnf6yybmysgmlw4j79j7c6mylcc8317h0xsymzgv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ansi-colours" ,rust-ansi-colours-1)
@@ -6984,13 +7049,7 @@ dependencies.")
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-wait-timeout" ,rust-wait-timeout-0.2))))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2 openssl zlib))
-    (home-page "https://github.com/sharkdp/bat")
-    (synopsis "Library providing syntax highlighting for text")
-    (description
-     "This package provides the @command{bat} syntax highlighter as a library to
-use for syntax highlighting in other crates.")
-    (license (list license:expat license:asl2.0))))
+    (inputs (list libgit2 openssl zlib))))
 
 (define-public rust-bat-0.18
   (package
