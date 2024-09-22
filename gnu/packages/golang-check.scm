@@ -1147,6 +1147,34 @@ makes extraction of setup/teardown behavior (as well as invoking the system
 under test) much simpler.")
     (license license:expat)))
 
+(define-public go-github-com-smarty-assertions
+  (package
+    (name "go-github-com-smarty-assertions")
+    (version "1.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smarty/assertions")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kbl6h76mjvqkgszx81allhjzy8j331dbsb090rx134swbqs0pxc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smarty/assertions"))
+    (home-page "https://github.com/smarty/assertions")
+    (synopsis "Fluent assertion-style functions")
+    (description
+     "Package assertions contains the implementations for all assertions which
+are referenced in goconvey's
+@url{https://github.com/smartystreets/goconvey,@code{convey}} package and
+gunit @url{github.com/smarty/gunit,@code{gunit}} for use with the
+@code{So(...)}  method.  They can also be used in traditional Go test
+functions and even in applications.")
+    (license license:expat)))
+
 (define-public go-go-etcd-io-gofail
   (package
     (name "go-go-etcd-io-gofail")
