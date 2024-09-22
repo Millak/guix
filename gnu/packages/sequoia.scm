@@ -231,24 +231,30 @@ than just headers; it requires tight integration with the MUA.")
     (description "This package contains sequoia's private key store server.")
     (license license:lgpl2.0+)))
 
-(define-public rust-sequoia-keystore-backend-0.2
+(define-public rust-sequoia-keystore-backend-0.6
   (package
     (name "rust-sequoia-keystore-backend")
-    (version "0.2.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-keystore-backend" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07v6rc27v0di2v59mixshhc4fkkf1ig0yqkzgqz0v2si4z8slv3s"))))
+        (base32 "15nzpqgpnnbmpcdldzgzx5v0ifgm1njqhvzsh40cg3c02p7xyz40"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-blanket" ,rust-blanket-0.3)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
                        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-                       ("rust-thiserror" ,rust-thiserror-1))
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1))
        #:cargo-development-inputs
        (("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
     (native-inputs (list clang pkg-config))
