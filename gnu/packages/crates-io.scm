@@ -52564,14 +52564,14 @@ library.")
 (define-public rust-pcre2-0.2
   (package
     (name "rust-pcre2")
-    (version "0.2.6")
+    (version "0.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pcre2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19w80j4f87hzdxbh5iilhbmx0vv02aybxr1ximbd7hszxal577ac"))))
+        (base32 "0avb52h3ppw6kp9ynlw988c745am9j7px2cdsm0la10qmi1mrr9v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
