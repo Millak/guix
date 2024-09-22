@@ -3012,14 +3012,14 @@ files.")
 (define-public swayhide
   (package
     (name "swayhide")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "swayhide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0x172ffj0lfmbv5nix708l1mfsizxzy74gpxp5amvx0bbaq0p78s"))))
+        (base32 "0synzfd35494vlp2wnqmqbzgc0vg2ivn90hnxvk6qak0w65xhxcv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
