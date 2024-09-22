@@ -724,6 +724,30 @@ checksum, used in the zlib compression format.")
         (base32 "0zpdsrfq5bd34941gmrlamnzjfbsx0x586afb7b0jqhr8g1lwapf"))))
     (build-system cargo-build-system)))
 
+(define-public rust-adler2-2
+  (package
+    (name "rust-adler2")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "adler2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09r6drylvgy8vv8k20lnbvwq8gp09h7smfn6h1rxsy15pgh629si"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://github.com/oyvindln/adler2")
+    (synopsis "Implementation of the Adler-32 checksum")
+    (description
+     "This package provides a simple clean-room implementation of the Adler-32
+checksum.")
+    (license (list license:bsd-0 license:expat license:asl2.0))))
+
 (define-public rust-adler32-1
   (package
     (name "rust-adler32")
