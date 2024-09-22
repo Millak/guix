@@ -77367,6 +77367,29 @@ values without proliferating generics.")
     (arguments
      `(#:cargo-inputs (("rust-is-terminal" ,rust-is-terminal-0.4))))))
 
+(define-public rust-suppositions-0.1
+  (package
+    (name "rust-suppositions")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "suppositions" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n03ipkqgpvdmjcz9xp9d6yyf58rq7c5g4ki76k848a18r59m9qm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-hex-slice" ,rust-hex-slice-0.1)
+                       ("rust-log" ,rust-log-0.3)
+                       ("rust-rand" ,rust-rand-0.3))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.4))))
+    (home-page "https://github.com/cstorey/suppositions")
+    (synopsis "Property testing with automagic shrinking")
+    (description
+     "This package provides property testing with automagic shrinking.")
+    (license license:asl2.0)))
+
 (define-public rust-sval-2
   (package
     (name "rust-sval")
