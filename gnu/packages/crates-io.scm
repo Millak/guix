@@ -114,6 +114,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages sequoia)
   #:use-module (gnu packages serialization)
@@ -52851,6 +52852,30 @@ library.")
     (synopsis "Low level bindings to PCRE2")
     (description "Low level bindings to PCRE2.")
     (license (list license:expat license:unlicense))))
+
+(define-public rust-pcsc-sys-1
+  (package
+    (name "rust-pcsc-sys")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pcsc-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00vlrfv3kcr49ajbzzr1b4ls7g28f97mj9vdjdzick9c1yl9p7mh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list pcsc-lite))
+    (home-page "https://github.com/bluetech/pcsc-rust")
+    (synopsis "Low-level bindings to the PC/SC C API")
+    (description
+     "This package provides Low-level bindings to the PC/SC C API.")
+    (license license:expat)))
 
 (define-public rust-pdcurses-sys-0.7
   (package
