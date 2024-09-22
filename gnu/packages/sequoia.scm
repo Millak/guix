@@ -42,6 +42,27 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls))
 
+(define-public rust-card-backend-0.2
+  (package
+    (name "rust-card-backend")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "card-backend" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ra2zfcs0n4msw4j0hmv8f3bpfz49x5c704i93f6a844k2if6gmx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://gitlab.com/openpgp-card/openpgp-card")
+    (synopsis "Card backend trait, for use with the openpgp-card crate")
+    (description
+     "This package provides the card backend trait, for use with the
+openpgp-card crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-card-backend-pcsc-0.5
   (package
     (name "rust-card-backend-pcsc")
