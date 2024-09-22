@@ -2249,30 +2249,6 @@ incorporates ideas and concepts from Philipp Winter's ScrambleSuit protocol.")
 web browsing activities based on HTTP Upgrade (HTTPT).")
       (license license:bsd-2))))
 
-(define-public go-github-com-sevlyar-go-daemon
-  (package
-    (name "go-github-com-sevlyar-go-daemon")
-    (version "0.1.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/sevlyar/go-daemon")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1x2sn871g10jihga6jvng7ys1988dgj24wlkxzdzca6mvzysj80b"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/sevlyar/go-daemon"))
-    (propagated-inputs
-     (list go-golang-org-x-sys))
-    (home-page "https://github.com/sevlyar/go-daemon")
-    (synopsis "Library for writing system daemons")
-    (description "Go-Daemon is a library for writing system daemons in Go.")
-    (license license:expat)))
-
 (define-public go-github-com-keybase-go-ps
   (let ((commit "91aafc93ba19d1988cff338c1929d35b6c6f5b50")
         (revision "0"))

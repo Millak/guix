@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Guix Together <jgart@dismail.de>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2021 Ramana Radhakrishnan <ramana.radhakrishnan@arm.com>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 raingloom <raingloom@riseup.net>
@@ -43,8 +44,8 @@
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Luis Higino <luishenriquegh2701@gmail.com>
-;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Spencer Peters <spencerpeters@protonmail.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -6522,6 +6523,31 @@ synchronizing plain text:
 @item perform fuzzy matching of text
 @item apply patches onto text
 @end itemize")
+    (license license:expat)))
+
+(define-public go-github-com-sevlyar-go-daemon
+  (package
+    (name "go-github-com-sevlyar-go-daemon")
+    (version "0.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sevlyar/go-daemon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x2sn871g10jihga6jvng7ys1988dgj24wlkxzdzca6mvzysj80b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sevlyar/go-daemon"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/sevlyar/go-daemon")
+    (synopsis "Library for writing system daemons")
+    (description
+     "Go-Daemon is a library for writing system daemons in Go.")
     (license license:expat)))
 
 (define-public go-github-com-shirou-gopsutil
