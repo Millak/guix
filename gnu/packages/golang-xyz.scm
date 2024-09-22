@@ -6362,6 +6362,31 @@ routines querying a database but without sending too much queries in order to
 not overload the given database.")
     (license license:expat)))
 
+(define-public go-github-com-rogpeppe-fastuuid
+  (package
+    (name "go-github-com-rogpeppe-fastuuid")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rogpeppe/fastuuid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "028acdg63zkxpjz3l639nlhki2l0canr2v5jglrmwa1wpjqcfff8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rogpeppe/fastuuid"))
+    (home-page "https://github.com/rogpeppe/fastuuid")
+    (synopsis "192-bit UUID generator in Golang")
+    (description
+     "Package fastuuid provides UUID generation of 192 bit universally unique
+identifiers.  It also provides simple support for 128-bit RFC-4122 V4 UUID
+strings.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-rogpeppe-go-internal
   (package
     (name "go-github-com-rogpeppe-go-internal")
