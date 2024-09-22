@@ -49376,41 +49376,29 @@ file formats.")
   (package
     (inherit rust-object-0.29)
     (name "rust-object")
-    (version "0.28.2")
+    (version "0.28.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "object" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1wgv6gx69rpn4jjqs24kvafwsic1q06iaafs5mb9hy34hp7c3x89"))))
+         "0964501nlfh806mik3f9v6n05mx74qa0w7byvn0sqpwm5lprhb74"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=read::coff::coff_extended_relocations")
        #:cargo-inputs
-       (("rust-compiler-builtins"
-         ,rust-compiler-builtins-0.1)
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-crc32fast" ,rust-crc32fast-1)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-hashbrown" ,rust-hashbrown-0.11)
         ("rust-indexmap" ,rust-indexmap-1)
         ("rust-memchr" ,rust-memchr-2)
-        ("rust-rustc-std-workspace-alloc"
-         ,rust-rustc-std-workspace-alloc-1)
-        ("rust-rustc-std-workspace-core"
-         ,rust-rustc-std-workspace-core-1)
-        ("rust-wasmparser" ,rust-wasmparser-0.57))
-       #:cargo-development-inputs
-       (("rust-memmap" ,rust-memmap-0.7))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version-requirements
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("1.6.\\*")
-                ,(package-version rust-indexmap-1)))
-             #t)))))))
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-wasmparser" ,rust-wasmparser-0.57))))))
 
 (define-public rust-object-0.27
   (package
