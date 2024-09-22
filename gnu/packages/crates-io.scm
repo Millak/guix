@@ -49323,14 +49323,14 @@ file formats.")
   (package
     (inherit rust-object-0.32)
     (name "rust-object")
-    (version "0.30.3")
+    (version "0.30.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "object" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0fdl7qjsz1j9kl3j7f4656fswzrqpyj2kgaizhknmjrx7mfjd1pa"))))
+                "11f3cfd7b54ij1rwvrp9837nhszjdndxr4f4iyxazkyrhq5nid03"))))
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
