@@ -3284,3 +3284,60 @@ ordered erase operations.")
 the std::optional for C++11/14/17, with support for monadic operations added in
 C++23.")
     (license license:cc0)))
+
+(define-public cpp-ada-url-parser
+  (package
+    (name "cpp-ada-url-parser")
+    (version "2.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ada-url/ada")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xvvjlia627ajl966gdxzy2b1j0jiimx7zx8ypmffwx0k6x72qam"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DCPM_LOCAL_PACKAGES_ONLY=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-deps
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("cmake/CPM.cmake")
+                 (string-append #$(this-package-native-input
+                                   "cpm-cmake")
+                                "/lib/cmake/CPM.cmake"))
+                ;; We force CPM to find system packages rather than using git
+                ;; to download them.
+                (("Git_FOUND") "TRUE")
+                (("(simdjson@)[0-9.]*" _ simdjson)
+                 (string-append simdjson
+                                #$(package-version (this-package-native-input
+                                                    "simdjson")))))
+              (substitute* "tools/cli/CMakeLists.txt"
+                (("(VERSION\\s)[0-9.]*" _ a)
+                 (string-append a
+                                #$(package-version (this-package-native-input
+                                                    "cxxopts")))))))
+          (add-after 'patch-deps 'python-zipfile-disable-strict-timestamps
+            (lambda _
+              (substitute* "singleheader/amalgamate.py"
+                (("zipfile.ZIP_DEFLATED")
+                 "zipfile.ZIP_DEFLATED, strict_timestamps=False")))))))
+    (native-inputs (list cpm-cmake
+                         cxxopts
+                         fmt-10
+                         googletest
+                         python
+                         simdjson))
+    (home-page "https://github.com/ada-url/ada")
+    (synopsis "URL parser")
+    (description
+     "Ada is a fast and spec-compliant URL parser written in C++.
+Specification for URL parser can be found from the WHATWG website.")
+    (license license:gpl3+)))
