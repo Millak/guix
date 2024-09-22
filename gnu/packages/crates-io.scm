@@ -30189,17 +30189,17 @@ permitted in ordinary Rust.")
     ;; Either license can be chosen at the users option.
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-gimli-0.28
+(define-public rust-gimli-0.31
   (package
     (name "rust-gimli")
-    (version "0.28.1")
+    (version "0.31.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gimli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lv23wc8rxvmjia3mcxc6hj9vkqnv1bqq0h8nzjcgf71mrxx6wa2"))))
+        (base32 "0r1d55xdi1k2l5ah9p0n23i93pm47cl8apjm8rwgqd1j7yi5w21j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -30216,6 +30216,29 @@ permitted in ordinary Rust.")
      "This package provides a library for reading and writing the DWARF
 debugging format.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gimli-0.28
+  (package
+    (inherit rust-gimli-0.31)
+    (name "rust-gimli")
+    (version "0.28.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gimli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lv23wc8rxvmjia3mcxc6hj9vkqnv1bqq0h8nzjcgf71mrxx6wa2"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
+        ("rust-indexmap" ,rust-indexmap-2)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
+       #:cargo-development-inputs
+       (("rust-test-assembler" ,rust-test-assembler-0.1))))))
 
 (define-public rust-gimli-0.27
   (package
