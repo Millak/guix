@@ -3032,14 +3032,14 @@ intended to be a high-level library for any DNS record resolution, see
 (define-public rust-hickory-server-0.24
   (package
     (name "rust-hickory-server")
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hickory-server" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1dbwsrmxgf9nxkn3cp5fpjw96wywrzihbirjax25dd6wqidv9fsg"))))
+        (base32 "0dqcwk7vy87517l3v7j109fjg8jk46isjwbwdkdkz6vbalyf9q4v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -3081,7 +3081,7 @@ intended to be a high-level library for any DNS record resolution, see
                        ("rust-hickory-resolver" ,rust-hickory-resolver-0.24)
                        ("rust-http" ,rust-http-0.2)
                        ("rust-openssl" ,rust-openssl-0.10)
-                       ("rust-rusqlite" ,rust-rusqlite-0.29)
+                       ("rust-rusqlite" ,rust-rusqlite-0.31)
                        ("rust-rustls" ,rust-rustls-0.21)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1)
