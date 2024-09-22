@@ -3025,7 +3025,22 @@ files.")
      `(#:install-source? #f
        #:cargo-inputs
        (("rust-exitcode" ,rust-exitcode-1)
-        ("rust-swayipc" ,rust-swayipc-2))))
+        ("rust-swayipc" ,rust-swayipc-2))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out  (assoc-ref outputs "out"))
+                    (bash (string-append out "/etc/bash_completion.d/"))
+                    (fish (string-append out "/share/fish/vendor_completions.d/"))
+                    (zsh  (string-append out "/share/zsh/site-functions/")))
+               (mkdir-p bash)
+               (mkdir-p zsh)
+               (copy-file "completions/swayhide.bash"
+                          (string-append bash "swayhide"))
+               (copy-file "completions/swayhide.zsh"
+                          (string-append zsh "_swayhide"))
+               (install-file "completions/swayhide.fish" fish)))))))
     (home-page "https://github.com/NomisIV/swayhide/")
     (synopsis "Swallow windows on swaywm")
     (description "swayhide hides the currently active terminal (by moving it
