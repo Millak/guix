@@ -534,8 +534,46 @@ syntax (e.g.  EasyList, EasyPrivacy) filter parsing and matching.")
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-tokio" ,rust-tokio-1))))))
 
+(define-public rust-addr2line-0.24
+  (package
+    (name "rust-addr2line")
+    (version "0.24.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "addr2line" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xfkfsk45dwps3jq4n5ikk7v15i6g51cpnnivxgl1ga28j71vyzm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `auxiliary`
+       #:cargo-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-cpp-demangle" ,rust-cpp-demangle-0.4)
+        ("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
+        ("rust-gimli" ,rust-gimli-0.31)
+        ("rust-memmap2" ,rust-memmap2-0.9)
+        ("rust-object" ,rust-object-0.36)
+        ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-typed-arena" ,rust-typed-arena-2))
+       #:cargo-development-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                                   ("rust-findshlibs" ,rust-findshlibs-0.10)
+                                   ("rust-libtest-mimic" ,rust-libtest-mimic-0.7))))
+    (home-page "https://github.com/gimli-rs/addr2line")
+    (synopsis "Symbolication library written in Rust, using gimli")
+    (description
+     "This package provides a cross-platform symbolication library written in
+Rust, using gimli.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-addr2line-0.21
   (package
+    (inherit rust-addr2line-0.24)
     (name "rust-addr2line")
     (version "0.21.0")
     (source
@@ -545,7 +583,6 @@ syntax (e.g.  EasyList, EasyPrivacy) filter parsing and matching.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1jx0k3iwyqr8klqbzk6kjvr496yd94aspis10vwsj5wy7gib4c4a"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `auxiliary`
        #:cargo-inputs
@@ -563,13 +600,7 @@ syntax (e.g.  EasyList, EasyPrivacy) filter parsing and matching.")
                                    ("rust-clap" ,rust-clap-4)
                                    ("rust-findshlibs" ,rust-findshlibs-0.10)
                                    ("rust-libtest-mimic" ,rust-libtest-mimic-0.6)
-                                   ("rust-typed-arena" ,rust-typed-arena-2))))
-    (home-page "https://github.com/gimli-rs/addr2line")
-    (synopsis "Symbolication library written in Rust, using gimli")
-    (description
-     "This package provides a cross-platform symbolication library written in
-Rust, using gimli.")
-    (license (list license:asl2.0 license:expat))))
+                                   ("rust-typed-arena" ,rust-typed-arena-2))))))
 
 (define-public rust-addr2line-0.19
   (package
