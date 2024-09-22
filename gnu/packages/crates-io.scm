@@ -80270,6 +80270,33 @@ writing colored text to a terminal.")
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-unicode-width" ,rust-unicode-width-0.1))))))
 
+(define-public rust-terminal-colorsaurus-0.4
+  (package
+    (name "rust-terminal-colorsaurus")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "terminal-colorsaurus" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bm4pxzhj2qnyifnf799angmp78g4i0ncilgbbdfmsfdqlfvp6az"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-mio" ,rust-mio-1)
+                       ("rust-rgb" ,rust-rgb-0.8)
+                       ("rust-terminal-trx" ,rust-terminal-trx-0.2))))
+    (home-page "https://github.com/bash/terminal-colorsaurus")
+    (synopsis "Determines the background and foreground color of the terminal")
+    (description
+     "This package provides code to determine the background and foreground
+color of the terminal.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-terminal-size-0.3
   (package
     (name "rust-terminal-size")
