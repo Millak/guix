@@ -2812,14 +2812,14 @@ transfer coding.")
 (define-public rust-hickory-client-0.24
   (package
     (name "rust-hickory-client")
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hickory-client" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0bj6g69h86d7mbclrwaj7cgl1plr6pvllv8qn69xmpgh9h90hgkz"))))
+        (base32 "0m8vnqgqg9vaanpphqccm9p8iqc0bm2kc0kvhmx9by6q10xnifds"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
