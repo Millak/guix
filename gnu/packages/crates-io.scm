@@ -52956,6 +52956,31 @@ library.")
     (description "Low level bindings to PCRE2.")
     (license (list license:expat license:unlicense))))
 
+(define-public rust-pcsc-2
+  (package
+    (name "rust-pcsc")
+    (version "2.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pcsc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "027a2s8lp6w025aa758s84qszcwkyg92s1mhvplrqzbbh5zrvva5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-pcsc-sys" ,rust-pcsc-sys-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list pcsc-lite))
+    (home-page "https://github.com/bluetech/pcsc-rust")
+    (synopsis "Bindings to the PC/SC API for smart card communication")
+    (description
+     "This package provides Bindings to the PC/SC API for smart card communication.")
+    (license license:expat)))
+
 (define-public rust-pcsc-sys-1
   (package
     (name "rust-pcsc-sys")
