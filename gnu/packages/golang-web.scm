@@ -4860,6 +4860,32 @@ are supported. @acronym{TLV, tag-length-value} parsers extensions comming with
 this library support AWS, Azure and GCP.")
     (license license:asl2.0)))
 
+(define-public go-github-com-pkg-browser
+  (package
+    (name "go-github-com-pkg-browser")
+    (version "0.0.0-20240102092130-5ac0b6a4141c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pkg/browser")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05m0baqy1grd42by3vgih55473fa98cz2psyakbmf0swg8f949pn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pkg/browser"))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/pkg/browser")
+    (synopsis "Helpers to open files, readers, and URLs in a browser window")
+    (description
+     "Package browser provides helpers to open files, readers, and urls in a
+browser window.  The choice of which browser is started is entirely client
+dependant.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-pkg-sftp
   (package
     (name "go-github-com-pkg-sftp")
