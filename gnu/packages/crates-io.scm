@@ -15005,14 +15005,14 @@ Rust compiler.")
 (define-public rust-completest-pty-0.5
   (package
     (name "rust-completest-pty")
-    (version "0.5.0")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "completest-pty" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11fib7yly355yjkzjp8bj5rqvv83xlm7mrkbc6bqyq3zw9r14v9a"))))
+        (base32 "04s30kz6rvi4d7grx8my5siwmfiv6sm09ib152yj5ccxk4mg5lpv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-completest" ,rust-completest-0.4)
