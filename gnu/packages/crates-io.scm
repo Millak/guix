@@ -68575,14 +68575,14 @@ single-cell matrices.")
 (define-public rust-schemars-0.8
   (package
     (name "rust-schemars")
-    (version "0.8.20")
+    (version "0.8.21")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "schemars" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0aby31lm1jwlj5hlw5lqq7xyzhc6vrmghdjq995f5asbl7p8q8dh"))))
+          (base32 "14lyx04388wgbilgcm0nl75w6359nw16glswfqv7x2rpi9329h09"))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
