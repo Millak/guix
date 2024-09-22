@@ -64692,6 +64692,38 @@ table-based tests.")
         ("rust-maplit" ,rust-maplit-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
+(define-public rust-rstest-macros-0.19
+  (package
+    (inherit rust-rstest-macros-0.21)
+    (name "rust-rstest-macros")
+    (version "0.19.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09ackagv8kc2v4xy0s7blyg4agij9bz9pbb31l5h4rqzrirdza84"))))
+    (arguments
+     `(#:cargo-test-flags '("--release" "--" "--skip=rstest")
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-relative-path" ,rust-relative-path-1)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-unicode-ident" ,rust-unicode-ident-1))
+       #:cargo-development-inputs
+       (("rust-actix-rt" ,rust-actix-rt-2)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-maplit" ,rust-maplit-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rstest" ,rust-rstest-0.18)
+        ("rust-rstest-reuse" ,rust-rstest-reuse-0.6)
+        ("rust-rstest-test" ,rust-rstest-test-0.11))))))
+
 (define-public rust-rstest-macros-0.18
   (package
     (inherit rust-rstest-macros-0.21)
