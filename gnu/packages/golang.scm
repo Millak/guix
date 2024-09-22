@@ -2342,28 +2342,6 @@ management interface.  It can be used to monitor and control an OpenVPN process
 running with its management port enabled.")
       (license license:expat))))
 
-(define-public go-github-com-emersion-go-autostart
-    (package
-      (name "go-github-com-emersion-go-autostart")
-      (version "0.0.0-20210130080809-00ed301c8e9a")
-      (source
-       (origin
-         (method git-fetch)
-         (uri
-          (git-reference
-           (url "https://github.com/emersion/go-autostart")
-           (commit (go-version->git-ref version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0cqqvbzn32xv5lknfygrx01rx2sc6pi833k7008nlk9lsfgry06v"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/emersion/go-autostart"))
-      (home-page "https://github.com/emersion/go-autostart")
-      (synopsis "Autostart library in Go")
-      (description "Go-Autostart is a Go library to run a command after login.")
-      (license license:expat)))
-
 (define-public go-github-com-dchest-siphash
   (package
     (name "go-github-com-dchest-siphash")

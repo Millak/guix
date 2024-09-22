@@ -2536,6 +2536,29 @@ O(1) for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
         #~(modify-phases %standard-phases
             (delete 'remove-submodule)))))))
 
+(define-public go-github-com-emersion-go-autostart
+  (package
+    (name "go-github-com-emersion-go-autostart")
+    (version "0.0.0-20210130080809-00ed301c8e9a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-autostart")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cqqvbzn32xv5lknfygrx01rx2sc6pi833k7008nlk9lsfgry06v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-autostart"))
+    (home-page "https://github.com/emersion/go-autostart")
+    (synopsis "Autostart library in Go")
+    (description
+     "Go-Autostart is a Go library to run a command after login.")
+    (license license:expat)))
+
 (define-public go-github-com-emersion-go-ical
   (package
     (name "go-github-com-emersion-go-ical")
