@@ -995,14 +995,14 @@ This Guix package is built to use the nettle cryptographic library.")
 (define-public sequoia-sqv
   (package
     (name "sequoia-sqv")
-    (version "1.1.0")
+    (version "1.2.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "sequoia-sqv" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0vzqahx7dk1wh2vp7lbzjgah8v7fqpvdf0dq0dydi9695ffm99lc"))))
+          (base32 "0nizac02bwl5cdmcvn3vjjxdhcy431mnsijyswnq101p764dlkl2"))))
     (build-system cargo-build-system)
     (inputs
      (list nettle openssl))
@@ -1013,10 +1013,46 @@ This Guix package is built to use the nettle cryptographic library.")
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-sequoia-policy-config" ,rust-sequoia-policy-config-0.6))
        #:cargo-development-inputs
-       (("rust-assert-cli" ,rust-assert-cli-0.6))))
+       (("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-predicates" ,rust-predicates-3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-asset-out-dir
+           (lambda _
+             (setenv "ASSET_OUT_DIR" "target/assets")))
+         (add-after 'install 'install-more
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (bash-completions-dir
+                     (string-append out "/etc/bash_completion.d"))
+                    (zsh-completions-dir
+                     (string-append share "/zsh/site-functions"))
+                    (fish-completions-dir
+                     (string-append share "/fish/vendor_completions.d"))
+                    (elvish-completions-dir
+                     (string-append share "/elvish/lib"))
+                    (man1 (string-append share "/man/man1")))
+               ;; The completions are generated in build.rs.
+               (mkdir-p bash-completions-dir)
+               (mkdir-p elvish-completions-dir)
+               (for-each (lambda (file)
+                           (install-file file man1))
+                         (find-files "target/assets/man-pages" "\\.1$"))
+               (copy-file "target/assets/shell-completions/sqv.bash"
+                          (string-append bash-completions-dir "/sqv"))
+               (install-file "target/assets/shell-completions/_sqv"
+                             zsh-completions-dir)
+               (install-file "target/assets/shell-completions/sqv.fish"
+                             fish-completions-dir)
+               (copy-file "target/assets/shell-completions/sqv.elv"
+                          (string-append elvish-completions-dir "/sqv"))))))))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Simple OpenPGP signature verification program")
     (description "@code{sqv} verifies detached OpenPGP signatures.  It is a
