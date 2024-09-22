@@ -1060,9 +1060,9 @@ such as readers and writers that fail after N consecutive reads/writes.")
 execution when a test fails.")
     (license license:expat)))
 
-(define-public go-github.com-smartystreets-assertions
+(define-public go-github-com-smartystreets-assertions
   (package
-    (name "go-github.com-smartystreets-assertions")
+    (name "go-github-com-smartystreets-assertions")
     (version "1.13.0")
     (source
      (origin
@@ -1109,7 +1109,8 @@ functions for writing tests in Go.")
     (arguments
      '(#:import-path "github.com/smartystreets/goconvey"))
     (propagated-inputs
-     (list go-github-com-jtolds-gls go-github.com-smartystreets-assertions))
+     (list go-github-com-jtolds-gls
+           go-github-com-smartystreets-assertions))
     (home-page "https://github.com/smartystreets/goconvey")
     (synopsis "Go testing tool with both a web and terminal user interface")
     (description "GoConvey is a testing tool for Go. It integrates with go
