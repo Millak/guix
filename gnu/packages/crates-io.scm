@@ -32762,6 +32762,24 @@ provided for each type.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-winutil" ,rust-winutil-0.1))))))
 
+(define-public rust-hostname-validator-1
+  (package
+    (name "rust-hostname-validator")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hostname-validator" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qh5sxkckalibc28029ndnfd7w0s8mwvb68d82xbb25gr55acn7m"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/pop-os/hostname-validator")
+    (synopsis "Validate hostnames according to IETF RFC 1123")
+    (description
+     "This package provides a way to validate hostnames according to IETF RFC 1123.")
+    (license license:expat)))
+
 (define-public rust-hound-3
   (package
     (name "rust-hound")
