@@ -368,14 +368,14 @@ paging.")
 (define-public cargo-machete
   (package
     (name "cargo-machete")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri name version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1an8d88njnk8hfsnwnx52zlzdmijscv7m20as1ci986rxz3vgpcl"))))
+        (base32 "0n45j6q36zjw149a84wz2yyygfhcjsnvfaiskwph00684fzlbnbm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ;Error: No such file or directory (os error 2)
