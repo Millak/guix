@@ -753,6 +753,31 @@ targets")
 implementation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-oid-0.2
+  (package
+    (name "rust-oid")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "oid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hh61lx2kr0ca2rvkhf5j94asxxvb6pfwfxm06hdn4w8b4y906cw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-serde-xml-rs" ,rust-serde-xml-rs-0.4)
+                                   ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://labs.unnecessary.engineering/oid")
+    (synopsis
+     "Library for building, parsing, and formating Object Identifiers (OIDs)")
+    (description
+     "This package provides a Rust-native library for building, parsing, and
+formating Object Identifiers (OIDs).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-oid-registry-0.6
   (package
     (name "rust-oid-registry")
