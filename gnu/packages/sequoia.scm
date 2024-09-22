@@ -813,17 +813,17 @@ Although the above appear simple to parse, RFC 2822's whitespace and comment
 rules are rather complex.  This crate implements the whole grammar." )
     (license license:gpl3)))
 
-(define-public rust-sequoia-wot-0.11
+(define-public rust-sequoia-wot-0.12
   (package
     (name "rust-sequoia-wot")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-wot" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hb17adcqz357ci3d4v57pmywy4giq8591p1vb7p83h56zdk0sfi"))))
+        (base32 "1nrx1cn58d8lkp2g0ahw2320zmil3ryxl13inpwf61v4vqi5svj8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
@@ -831,9 +831,7 @@ rules are rather complex.  This crate implements the whole grammar." )
                             ;; Not all files included.
                             "--skip=gpg_trust_roots")
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-anyhow" ,rust-anyhow-1)
                        ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-clap" ,rust-clap-4)
                        ("rust-clap" ,rust-clap-4)
                        ("rust-clap-complete" ,rust-clap-complete-4)
                        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
@@ -841,7 +839,7 @@ rules are rather complex.  This crate implements the whole grammar." )
                        ("rust-dot-writer" ,rust-dot-writer-0.1)
                        ("rust-enumber" ,rust-enumber-0.3)
                        ("rust-num-cpus" ,rust-num-cpus-1)
-                       ("rust-sequoia-cert-store" ,rust-sequoia-cert-store-0.5)
+                       ("rust-sequoia-cert-store" ,rust-sequoia-cert-store-0.6)
                        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
                        ("rust-sequoia-policy-config" ,rust-sequoia-policy-config-0.6)
                        ("rust-thiserror" ,rust-thiserror-1))
@@ -995,10 +993,10 @@ This Guix package is built to use the nettle cryptographic library.")
 
 (define-public sequoia-wot
   (package
-    (inherit rust-sequoia-wot-0.11)
+    (inherit rust-sequoia-wot-0.12)
     (name "sequoia-wot")
     (arguments
-     (substitute-keyword-arguments (package-arguments rust-sequoia-wot-0.11)
+     (substitute-keyword-arguments (package-arguments rust-sequoia-wot-0.12)
        ((#:install-source? _ #t) #f)
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
