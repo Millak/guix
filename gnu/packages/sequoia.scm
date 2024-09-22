@@ -37,9 +37,38 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls))
+
+(define-public rust-card-backend-pcsc-0.5
+  (package
+    (name "rust-card-backend-pcsc")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "card-backend-pcsc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ddv3jkcyy2vfc6jmlsh87yxcgkhcppp1g9sv670asqvgdq0pfv8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-card-backend" ,rust-card-backend-0.2)
+                       ("rust-iso7816-tlv" ,rust-iso7816-tlv-0.4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-pcsc" ,rust-pcsc-2))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list pcsc-lite))
+    (home-page "https://gitlab.com/openpgp-card/openpgp-card")
+    (synopsis "PCSC card backend, e.g. for use with the openpgp-card crate")
+    (description
+     "This package provides a PCSC card backend, e.g. for use with the
+openpgp-card crate.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-openpgp-cert-d-0.3
   (package
