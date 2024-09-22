@@ -13473,14 +13473,14 @@ stream of tokens.")
   (package
     (inherit rust-clap-lex-0.6)
     (name "rust-clap-lex")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "clap_lex" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "06vcvpvp65qggc5agbirzqk2di00gxg6vazzc3qlwzkw70qxm9id"))))))
+                "0qgrlq509vr49wq91jh50f9pm5f8lxmv1rcbklxnsg4nprxcaz6d"))))))
 
 (define-public rust-clap-lex-0.3
   (package
