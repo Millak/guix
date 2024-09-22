@@ -143,6 +143,34 @@ than just headers; it requires tight integration with the MUA.")
     (description "This package provides a certificate database interface.")
     (license license:lgpl2.0+)))
 
+(define-public rust-sequoia-directories-0.1
+  (package
+    (name "rust-sequoia-directories")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-directories" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m9plvzm61571y1vzsp3jkba2mgbxgwckrbpmcbqdky5c24x87dh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-directories" ,rust-directories-5)
+                       ("rust-same-file" ,rust-same-file-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             (setenv "HOME" (getcwd)))))))
+    (home-page "https://sequoia-pgp.org/")
+    (synopsis "Directories used by Sequoia")
+    (description "This package provides Directories used by Sequoia.")
+    (license license:lgpl2.0+)))
+
 (define-public rust-sequoia-gpg-agent-0.4
   (package
     (name "rust-sequoia-gpg-agent")
