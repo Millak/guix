@@ -68646,21 +68646,21 @@ Rust code.")
 (define-public rust-schemars-derive-0.8
   (package
     (name "rust-schemars-derive")
-    (version "0.8.20")
+    (version "0.8.21")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "schemars_derive" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "1lzlj36qcjjpynadbi4x152i5pd2wbv42p8n3bin5ycgrv6a3m9y"))))
+          (base32 "03ncmrkldfmdc9skmlyysx2vqdlyyz91r5mbavw77zwaay4fbvmi"))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
         (("rust-proc-macro2" ,rust-proc-macro2-1)
          ("rust-quote" ,rust-quote-1)
          ("rust-serde-derive-internals" ,rust-serde-derive-internals-0.29)
-         ("rust-syn" ,rust-syn-1))
+         ("rust-syn" ,rust-syn-2))
         #:cargo-development-inputs
         (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
     (home-page "https://graham.cool/schemars/")
