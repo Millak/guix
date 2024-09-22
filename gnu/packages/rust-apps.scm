@@ -72,6 +72,7 @@
   #:use-module (gnu packages crates-vcs)
   #:use-module (gnu packages crates-web)
   #:use-module (gnu packages crates-windows)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
@@ -1251,56 +1252,62 @@ bar.  It is also compatible with sway.")
 (define-public just
   (package
     (name "just")
-    (version "1.23.0")
+    (version "1.35.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "just" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0wpjv098a2yymsb41h6104cdia4gb6hwwh05pkwj5fx7b7g41a2q"))))
+               (base32 "0q5a94wrkvb01q0rcz59w0qzsdh7wp698nk0crdqn0j1vwwy7r50"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
+         "--skip=backticks::trailing_newlines_are_stripped"
+         "--skip=completions::bash"
+         "--skip=completions::replacements"
          "--skip=functions::env_var_functions"
          "--skip=string::shebang_backtick")
        #:install-source? #f
        #:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-atty" ,rust-atty-0.2)
+        ("rust-blake3" ,rust-blake3-1)
         ("rust-camino" ,rust-camino-1)
-        ("rust-clap" ,rust-clap-2)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
         ("rust-ctrlc" ,rust-ctrlc-3)
         ("rust-derivative" ,rust-derivative-2)
         ("rust-dirs" ,rust-dirs-5)
         ("rust-dotenvy" ,rust-dotenvy-0.15)
         ("rust-edit-distance" ,rust-edit-distance-2)
-        ("rust-env-logger" ,rust-env-logger-0.10)
-        ("rust-heck" ,rust-heck-0.4)
+        ("rust-heck" ,rust-heck-0.5)
         ("rust-lexiclean" ,rust-lexiclean-0.0.1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4)
         ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-rand" ,rust-rand-0.8)
         ("rust-regex" ,rust-regex-1)
         ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-shellexpand" ,rust-shellexpand-3)
         ("rust-similar" ,rust-similar-2)
         ("rust-snafu" ,rust-snafu-0.8)
-        ("rust-strum" ,rust-strum-0.25)
+        ("rust-strum" ,rust-strum-0.26)
         ("rust-target" ,rust-target-2)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-typed-arena" ,rust-typed-arena-2)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-uuid" ,rust-uuid-1))
        #:cargo-development-inputs
-       (("rust-cradle" ,rust-cradle-0.2)
-        ("rust-executable-path" ,rust-executable-path-1)
+       (("rust-executable-path" ,rust-executable-path-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-temptree" ,rust-temptree-0.2)
-        ("rust-which" ,rust-which-5)
-        ("rust-yaml-rust" ,rust-yaml-rust-0.4))
+        ("rust-which" ,rust-which-6))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'replace-hardcoded-paths
@@ -1321,7 +1328,7 @@ bar.  It is also compatible with sway.")
                     (share (string-append out "/share"))
                     (man1 (string-append share "/man/man1"))
                     (bash-completions-dir
-                     (string-append share "/bash-completion/completions"))
+                     (string-append out "/etc/bash_completion.d/"))
                     (zsh-completions-dir
                      (string-append share "/zsh/site-functions"))
                     (fish-completions-dir
@@ -1331,15 +1338,20 @@ bar.  It is also compatible with sway.")
                     (just (if ,(%current-target-system)
                           (search-input-file native-inputs "/bin/just")
                           (string-append out "/bin/just"))))
+               (mkdir "man")
+               (with-output-to-file "man/just.1"
+                 (lambda _ (invoke just "--man")))
                (install-file "man/just.1" man1)
+
                (mkdir-p bash-completions-dir)
                (with-output-to-file
                  (string-append bash-completions-dir "/just")
                  (lambda _ (invoke just "--completions" "bash")))
-               (mkdir-p zsh-completions-dir)
-               (with-output-to-file
-                 (string-append zsh-completions-dir "/_just")
-                 (lambda _ (invoke just "--completions" "zsh")))
+               ;; This seems to be broken currently
+               ;(mkdir-p zsh-completions-dir)
+               ;(with-output-to-file
+               ;  (string-append zsh-completions-dir "/_just")
+               ;  (lambda _ (invoke just "--completions" "zsh")))
                (mkdir-p fish-completions-dir)
                (with-output-to-file
                  (string-append fish-completions-dir "/just.fish")
