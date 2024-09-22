@@ -95,6 +95,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages hardware)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages jemalloc)
@@ -86193,6 +86194,30 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
         ("rust-shlex" ,rust-shlex-1)
         ("rust-snapbox" ,rust-snapbox-0.4)
         ("rust-toml-edit" ,rust-toml-edit-0.14))))))
+
+(define-public rust-tss-esapi-sys-0.5
+  (package
+    (name "rust-tss-esapi-sys")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tss-esapi-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dfmrbbm2834hzimvj78rhya59mv7wfhnrrfz3aw8bhwb29d2p2k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.66)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.12))))
+    (native-inputs (list pkg-config))
+    (inputs (list tpm2-tss))
+    (home-page "https://github.com/parallaxsecond/rust-tss-esapi")
+    (synopsis "FFI wrapper around TSS 2.0 Enhanced System API")
+    (description
+     "This package provides FFI wrapper around TSS 2.0 Enhanced System API.")
+    (license license:asl2.0)))
 
 (define-public rust-tstr-0.2
   (package
