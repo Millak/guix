@@ -5080,6 +5080,31 @@ AsyncSeek if the inner type does.")
     (description "This package provides async filesystem primitives.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-async-generic-1
+  (package
+    (name "rust-async-generic")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-generic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a8fd84qj7zw7sdk1qmaqcww5mhrg7jzr7fhx6wn00la37d8lm40"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-async-trait" ,rust-async-trait-0.1))))
+    (home-page "https://github.com/scouten/async-generic")
+    (synopsis "Code that can be both async and synchronous without duplicating it")
+    (description
+     "This package provides a way to write code that can be both async and
+synchronous without duplicating it.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-async-global-executor-2
   (package
     (name "rust-async-global-executor")
