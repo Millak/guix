@@ -101,23 +101,24 @@ and decoding of Autocrypt headers and setup messages.  Note: Autocrypt is more
 than just headers; it requires tight integration with the MUA.")
     (license license:lgpl2.0+)))
 
-(define-public rust-sequoia-cert-store-0.5
+(define-public rust-sequoia-cert-store-0.6
   (package
     (name "rust-sequoia-cert-store")
-    (version "0.5.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-cert-store" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rjakcnhwdvwrm0952rpi9ky8cxvv5bnmylval49s3a087jqcm76"))))
+        (base32 "14f3zhkh0hrjmkv6ksvyr29z6mfq1hadqzqsvhp3xwlf9y66bhjg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
                        ("rust-crossbeam" ,rust-crossbeam-0.8)
                        ("rust-dirs" ,rust-dirs-5)
+                       ("rust-gethostname" ,rust-gethostname-0.4)
                        ("rust-num-cpus" ,rust-num-cpus-1)
                        ("rust-openpgp-cert-d" ,rust-openpgp-cert-d-0.3)
                        ("rust-rayon" ,rust-rayon-1)
@@ -126,8 +127,11 @@ than just headers; it requires tight integration with the MUA.")
                        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-tokio" ,rust-tokio-1))
-       #:cargo-development-inputs (("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rusty-fork" ,rust-rusty-fork-0.3)
+                                   ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
                                    ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs
      (list clang pkg-config))
