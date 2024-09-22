@@ -52588,14 +52588,14 @@ library.")
 (define-public rust-pcre2-sys-0.2
   (package
     (name "rust-pcre2-sys")
-    (version "0.2.8")
+    (version "0.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pcre2-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bl6bjivwdpc3di1klymxrbilmpcsvlff7m2ffw6ai1s4nssgf15"))
+        (base32 "12hxy54i8amdnmcm034hqdc7iryd20n8aqg1hw5w540vzcc5s3sm"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "upstream")))))
