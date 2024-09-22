@@ -1621,3 +1621,22 @@ that uses asynchronous and future-based APIs.")
 introspection annotations into a set of C++ files defining suitable
 namespaces, classes and other types that together form a C++ binding.")
     (license license:expat)))
+
+;; telegram-desktop requires a more recent version of cppgir
+(define-public cppgir-for-telegram-desktop
+  (let ((commit "9c4f5820d94d62ab451501f016bfea97156518f4")
+        (revision "0"))
+    (package
+      (inherit cppgir)
+      (name "cppgir-for-telegram-desktop")
+      (version (git-version "2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://gitlab.com/mnauw/cppgir")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1fa9nf4yljfarihaqj5kd98yysrky7q316mh6l5b1rq39ga15k9b")))))))
