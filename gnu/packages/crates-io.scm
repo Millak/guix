@@ -50133,35 +50133,6 @@ the default program configured on the system.")
        #:cargo-development-inputs
        (("rust-version-sync" ,rust-version-sync-0.9))))))
 
-(define-public rust-openpgp-cert-d-0.1
-  (package
-    (name "rust-openpgp-cert-d")
-    (version "0.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "openpgp-cert-d" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "10sqs3k1cd2yrnbyqrpq0qfslzg3qq7jalspkkqxm9828lp2manc"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f      ; Not all files included.
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-dirs" ,rust-dirs-4)
-        ("rust-fd-lock" ,rust-fd-lock-3)
-        ("rust-sha1collisiondetection" ,rust-sha1collisiondetection-0.2)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs
-       (("rust-assert-fs" ,rust-assert-fs-1)
-        ("rust-predicates" ,rust-predicates-2))))
-    (home-page "https://gitlab.com/sequoia-pgp/pgp-cert-d")
-    (synopsis "Shared OpenPGP Certificate Directory")
-    (description "Shared OpenPGP Certificate Directory")
-    (license license:expat)))
-
 (define-public rust-openssl-macros-0.1
   (package
     (name "rust-openssl-macros")
