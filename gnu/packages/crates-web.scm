@@ -2925,14 +2925,14 @@ DNS protocol library for all Hickory DNS projects.")
 (define-public rust-hickory-recursor-0.24
   (package
     (name "rust-hickory-recursor")
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hickory-recursor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "146ifrml22hjydrw16qgfw32kv3v9wvvl4dqh45pg6fymxvw8xgi"))))
+        (base32 "1a44l02v2ymxj10zkf46iak4y872zgwi9wyjp0710655jp1wgpg2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-recursion" ,rust-async-recursion-1)
