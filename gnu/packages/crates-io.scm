@@ -86392,6 +86392,45 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
         ("rust-snapbox" ,rust-snapbox-0.4)
         ("rust-toml-edit" ,rust-toml-edit-0.14))))))
 
+(define-public rust-tss-esapi-7
+  (package
+    (name "rust-tss-esapi")
+    (version "7.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tss-esapi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pxfa790qp71dny4nca7bi9d88bc7xqx7z4gkx9wnffpvsa6bfm9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Unclear how to run the tests inside the build container.
+       #:cargo-inputs (("rust-bitfield" ,rust-bitfield-0.14)
+                       ("rust-enumflags2" ,rust-enumflags2-0.7)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-hostname-validator" ,rust-hostname-validator-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-mbox" ,rust-mbox-0.7)
+                       ("rust-num-derive" ,rust-num-derive-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-oid" ,rust-oid-0.2)
+                       ("rust-picky-asn1" ,rust-picky-asn1-0.8)
+                       ("rust-picky-asn1-x509" ,rust-picky-asn1-x509-0.12)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tss-esapi-sys" ,rust-tss-esapi-sys-0.5)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-sha2" ,rust-sha2-0.10))))
+    (native-inputs (list pkg-config))
+    (inputs (list tpm2-tss))
+    (home-page "https://github.com/parallaxsecond/rust-tss-esapi")
+    (synopsis "Rust-native wrapper around TSS 2.0 Enhanced System API")
+    (description
+     "This package provides Rust-native wrapper around TSS 2.0 Enhanced System API.")
+    (license license:asl2.0)))
+
 (define-public rust-tss-esapi-sys-0.5
   (package
     (name "rust-tss-esapi-sys")
