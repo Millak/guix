@@ -30926,14 +30926,14 @@ language and scheme definition language (sometimes called IDL).")
 (define-public rust-grep-0.3
   (package
     (name "rust-grep")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fa9x7q3l5z0bg91wzw1jfpk5rmh60h8bswbsxjcp1p6q5704avf"))))
+        (base32 "1rij3x9xi70xmiqgjcp3iib4hrvmgcn22cvgm14xfa2ffd4yg2ih"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-grep-cli" ,rust-grep-cli-0.1)
