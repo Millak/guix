@@ -70268,15 +70268,14 @@ formats:
 (define-public rust-serde-bytes-0.11
   (package
     (name "rust-serde-bytes")
-    (version "0.11.11")
+    (version "0.11.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde_bytes" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yj2kj2hcphabzrydpa4dndfm9clh8cy6iv4fc4dw2ijwm7vw5js"))))
+        (base32 "0sjwczchd9p4ak4m644jpkv4r181zr8yj14fdjll1fq6rc2caz1q"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
