@@ -13,6 +13,7 @@
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2024 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
   #:use-module (guix deprecation)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
   #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages)
@@ -520,3 +522,26 @@ C/C++ projects.  It features:
     (description "The tinycmmc package contains a small collection of reusable
 CMake modules.")
     (license license:zlib)))
+
+(define-public cpm-cmake
+  (package
+    (name "cpm-cmake")
+    (version "0.38.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cpm-cmake/CPM.cmake")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qbbhdq6cz2y7qfyy1k11i98d13s229r3phd5y3n5maq51ky8bgb"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("cmake/CPM.cmake" "lib/cmake/CPM.cmake"))))
+    (home-page "https://github.com/cpm-cmake/CPM.cmake")
+    (synopsis "Package manager for CMake")
+    (description "CPM.cmake is a cross-platform CMake script that adds
+dependency management capabilities to CMake.")
+    (license license:expat)))
