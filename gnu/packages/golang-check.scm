@@ -1092,9 +1092,9 @@ execution when a test fails.")
 functions for writing tests in Go.")
     (license license:expat)))
 
-(define-public go-github.com-smartystreets-goconvey
+(define-public go-github-com-smartystreets-goconvey
   (package
-    (name "go-github.com-smartystreets-goconvey")
+    (name "go-github-com-smartystreets-goconvey")
     (version "1.6.3")
     (source
      (origin

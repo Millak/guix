@@ -6204,7 +6204,7 @@ Pion}.")
     (propagated-inputs
      (list go-github-com-urfave-cli
            go-github-com-warpfork-go-wish
-           go-github.com-smartystreets-goconvey
+           go-github-com-smartystreets-goconvey
            go-gopkg-in-yaml-v2))
     (home-page "https://github.com/polydawn/refmt/")
     (synopsis "Object mapping for Go language")

@@ -7421,7 +7421,7 @@ aware of your profiles and configuration in ~/.aws/config.")
                 "1dm9ydqyflasp5li22kb0w73s6kp2swii8naqfhnz64v171gmm5v"))))
     (build-system go-build-system)
     (native-inputs
-     (list go-github.com-smartystreets-goconvey))
+     (list go-github-com-smartystreets-goconvey))
     (arguments
      '(#:import-path "gopkg.in/ini.v1"
        #:phases %standard-phases))
