@@ -999,14 +999,14 @@ using AES-NI for high performance.")
 (define-public rust-aho-corasick-1
   (package
     (name "rust-aho-corasick")
-    (version "1.1.2")
+    (version "1.1.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "aho-corasick" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1w510wnixvlgimkx1zjbvlxh6xps2vjgfqgwf5a6adlbjp5rv5mj"))))
+                "05mrpkvdgp5d20y2p989f187ry9diliijgwrs254fs9s1m1x6q4f"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
