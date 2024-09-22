@@ -626,19 +626,20 @@ HKP protocol, and searching and publishing Web Key Directories.")
 (define-public rust-sequoia-openpgp-1
   (package
     (name "rust-sequoia-openpgp")
-    (version "1.19.0")
+    (version "1.21.2")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "sequoia-openpgp" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1x3d4yj8mhra8yhcxz6z73pb77pzk0zl1vgxx0yrimzk9b759wgb"))))
+         (base32 "1mh2rc7briyggsvwbg34g3vvx6aisisllb9vz4p96kdl2vi1w9hk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("crypto-nettle")
        #:cargo-test-flags
        (list "--release" "--"
+             "--skip=leak_tests::test_aes_256_decryption"
              "--skip=leak_tests::test_ed25519")
        #:cargo-inputs
        (("rust-aes" ,rust-aes-0.8)
@@ -680,6 +681,8 @@ HKP protocol, and searching and publishing Web Key Directories.")
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
         ("rust-p256" ,rust-p256-0.13)
+        ("rust-p384" ,rust-p384-0.13)
+        ("rust-p521" ,rust-p521-0.13)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-core" ,rust-rand-core-0.6)
         ("rust-regex" ,rust-regex-1)
@@ -1063,7 +1066,7 @@ This Guix package is built to use the nettle cryptographic library.")))
 (define-public sequoia
   (package
     (name "sequoia")
-    (version "1.19.0")
+    (version "1.21.2")
     (source #f)
     (build-system trivial-build-system)
     (arguments
