@@ -43,14 +43,14 @@
 (define-public rust-openpgp-cert-d-0.3
   (package
     (name "rust-openpgp-cert-d")
-    (version "0.3.1")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "openpgp-cert-d" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kk2mr4rsib04cygv7jg55wvdxivakggqsfrn4apnaxxl5aknb0c"))))
+        (base32 "01b3wac69jz0wkf9lq8a3rlh502glw31k8daba1j0vwclln06yvw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
