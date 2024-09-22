@@ -31030,14 +31030,14 @@ the regex engine it uses pluggable.")
 (define-public rust-grep-pcre2-0.1
   (package
     (name "rust-grep-pcre2")
-    (version "0.1.7")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep-pcre2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zwb5acalq7rvy70z4gsarqmrfaqmf9016yvxz5f573434idai02"))))
+        (base32 "0imybpfr9vpwna4qw30gxp9bs9j52f5152p06ak6x1sz0dp8cvyq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-grep-matcher" ,rust-grep-matcher-0.1)
