@@ -31108,14 +31108,14 @@ provides standard printing of search results, similar to grep itself.")
 (define-public rust-grep-regex-0.1
   (package
     (name "rust-grep-regex")
-    (version "0.1.12")
+    (version "0.1.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep-regex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0393d2ydvq8qdgss8k7pbnfdns7ramlhxjk7pifdldd8bh9vnj7p"))))
+        (base32 "0zhzz5hffx30ff7xi3p4m3amg5c4rr2i7a6kdfifg5ijgry19pcy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
