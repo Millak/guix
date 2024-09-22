@@ -86050,13 +86050,13 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
   (package
     (inherit rust-trycmd-0.15)
     (name "rust-trycmd")
-    (version "0.14.19")
+    (version "0.14.21")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "trycmd" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1yz4prkmnb1y406p0aq3r8yf11alj8i94yvnz3k07c9glir9607d"))))
+               (base32 "1mb8x5xi79gjbrahw6l3i9llxcgcn070wy1vrmkzybwk2kv1846l"))))
     (arguments
      `(#:cargo-inputs
        (("rust-anstream" ,rust-anstream-0.6)
@@ -86070,7 +86070,7 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-shlex" ,rust-shlex-1)
         ("rust-snapbox" ,rust-snapbox-0.4)
-        ("rust-toml-edit" ,rust-toml-edit-0.20))))))
+        ("rust-toml-edit" ,rust-toml-edit-0.22))))))
 
 (define-public rust-trycmd-0.13
   (package
