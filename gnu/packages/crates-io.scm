@@ -32648,6 +32648,26 @@ compile time.")
      `(#:cargo-inputs
        (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.4))))))
 
+(define-public rust-hex-slice-0.1
+  (package
+    (name "rust-hex-slice")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hex-slice" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k3ck81m9lz5wz3c7qqj3j3m5xa5pr599n41gbq58i91w04a74al"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-suppositions" ,rust-suppositions-0.1))))
+    (home-page "https://github.com/cstorey/hex-slice/")
+    (synopsis "Extends the std::fmt::*Hex traits to slices")
+    (description
+     "This package provides extends the std::fmt::*Hex traits to slices.")
+    (license license:expat)))
+
 (define-public rust-hexf-parse-0.2
   (package
     (name "rust-hexf-parse")
