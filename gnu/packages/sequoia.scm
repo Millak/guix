@@ -91,6 +91,35 @@ openpgp-card crate.")
 openpgp-card crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-openpgp-card-0.5
+  (package
+    (name "rust-openpgp-card")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "openpgp-card" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hdlzziz9d8i55hj55jbvzidwp9q45krhb1pmz2f52hpq1mv302y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-card-backend" ,rust-card-backend-0.2)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-hex-slice" ,rust-hex-slice-0.1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-secrecy" ,rust-secrecy-0.8)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.4))))
+    (home-page "https://gitlab.com/openpgp-card/openpgp-card")
+    (synopsis "Client implementation for the OpenPGP card specification")
+    (description
+     "This package provides a client implementation for the @code{OpenPGP} card
+specification.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-openpgp-cert-d-0.3
   (package
     (name "rust-openpgp-cert-d")
