@@ -2395,7 +2395,7 @@ which can evaluate Jsonnet files and expressions.")))
 (define-public simdjson
   (package
     (name "simdjson")
-    (version "3.1.0")
+    (version "3.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2404,7 +2404,7 @@ which can evaluate Jsonnet files and expressions.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0q784bm8xbz3p782dw02cdds6m71wk3acy94vva8krc9g88142ws"))))
+                "1qv7lvls7x9aw6mlnwfgchbajsxh6qygp09wpkb2w6mjdbidmi0h"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; tests require downloading dependencies
