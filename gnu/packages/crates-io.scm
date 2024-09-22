@@ -86016,17 +86016,18 @@ etc. distance calculations and string search.")
 (define-public rust-trycmd-0.15
   (package
     (name "rust-trycmd")
-    (version "0.15.0")
+    (version "0.15.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trycmd" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05sklyyprn2a365jzby0zn7z97p6mpgi2yzlr2s506m80cvdnkj6"))))
+        (base32 "0p26ya9vrwc8063lxhsfafb308lc4hh7gzxkld9arx80pvcjb318"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
+                       ("rust-automod" ,rust-automod-1)
                        ("rust-escargot" ,rust-escargot-0.5)
                        ("rust-glob" ,rust-glob-0.3)
                        ("rust-humantime" ,rust-humantime-2)
@@ -86036,7 +86037,7 @@ etc. distance calculations and string search.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-json" ,rust-serde-json-1)
                        ("rust-shlex" ,rust-shlex-1)
-                       ("rust-snapbox" ,rust-snapbox-0.5)
+                       ("rust-snapbox" ,rust-snapbox-0.6)
                        ("rust-toml-edit" ,rust-toml-edit-0.22))))
     (home-page "https://github.com/assert-rs/trycmd")
     (synopsis "Snapshot testing for a herd of CLI tests")
