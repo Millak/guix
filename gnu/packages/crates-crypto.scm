@@ -4067,14 +4067,14 @@ for x86.")
 (define-public rust-primeorder-0.13
   (package
     (name "rust-primeorder")
-    (version "0.13.1")
+    (version "0.13.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "primeorder" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1ddz0d0fzzcpdlsj6c6989va8ykf702g3zmf7dszfa0y6rski3fg"))))
+                "1rp16710mxksagcjnxqjjq9r9wf5vf72fs8wxffnvhb6i6hiqgim"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
