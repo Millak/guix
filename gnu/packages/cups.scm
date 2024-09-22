@@ -356,17 +356,11 @@ applications''.  These must be installed separately.")
 (define cups-minimal/fixed
   (package
     (inherit cups-minimal)
-    (version "2.4.10")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/OpenPrinting/cups")
-             (commit (string-append "v" version))))
-       ;; Avoid NAME confusion: these are the complete CUPS sources.
-       (file-name (git-file-name "cups" version))
-       (sha256
-        (base32 "0mqx302mnk728h9sq5lknfv3ip7mfv44x3cqrjpndcdffd0ppnsw"))))))
+       (inherit (package-source cups-minimal))
+       (patches
+        (search-patches "cups-minimal-Address-PPD-injection-issues.patch"))))))
 
 (define-public cups
   (package/inherit cups-minimal
