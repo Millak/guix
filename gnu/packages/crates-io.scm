@@ -40921,8 +40921,34 @@ image together with its neighboring pixels.")
 key-value pairs.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lscolors-0.19
+  (package
+    (name "rust-lscolors")
+    (version "0.19.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lscolors" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "115bffi44w028n26vqxyknwn9pzp0axz8839846cg0dl32yg7xam"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aho-corasick" ,rust-aho-corasick-1)
+                       ("rust-ansi-term" ,rust-ansi-term-0.12)
+                       ("rust-crossterm" ,rust-crossterm-0.27)
+                       ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
+                       ("rust-owo-colors" ,rust-owo-colors-4))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/sharkdp/lscolors")
+    (synopsis "Colorize paths using the LS_COLORS environment variable")
+    (description
+     "Colorize paths using the LS_COLORS environment variable.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lscolors-0.17
   (package
+    (inherit rust-lscolors-0.19)
     (name "rust-lscolors")
     (version "0.17.0")
     (source
@@ -40932,17 +40958,11 @@ key-value pairs.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "08z5jslgigvnpc1gj2i8r9pi8yn4m0pf8dzf3rk9grdidbzlyc2k"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
                        ("rust-crossterm" ,rust-crossterm-0.27)
                        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50))
-       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/sharkdp/lscolors")
-    (synopsis "Colorize paths using the LS_COLORS environment variable")
-    (description
-     "Colorize paths using the LS_COLORS environment variable.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-lscolors-0.16
   (package
