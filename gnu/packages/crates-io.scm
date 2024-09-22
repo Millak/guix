@@ -13074,14 +13074,14 @@ command to Clap.")
 (define-public rust-clap-complete-fig-4
   (package
     (name "rust-clap-complete-fig")
-    (version "4.3.1")
+    (version "4.5.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "clap_complete_fig" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "17yfrdxy555fv56y0n69r4kgd2iwpq4mgz6k5rn5lc2i1b9y3zlr"))))
+                "0sy88ybw33ba7qj02caxr9jv03wq1f8rdbrbqw81i5gkiwn1156l"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -13089,7 +13089,7 @@ command to Clap.")
         ("rust-clap-complete" ,rust-clap-complete-4))
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-4)
-        ("rust-snapbox" ,rust-snapbox-0.4))))
+        ("rust-snapbox" ,rust-snapbox-0.6))))
     (home-page "https://github.com/clap-rs/clap/tree/master/clap_complete_fig")
     (synopsis "Generator library used with clap for Fig completion scripts")
     (description
