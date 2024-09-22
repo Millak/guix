@@ -2860,14 +2860,14 @@ into other software that also use those libraries.")
 (define-public rust-hickory-proto-0.24
   (package
     (name "rust-hickory-proto")
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hickory-proto" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kxvdzmwwi1d6wsp9bcs91ipmwxcyhpwbvz3an9h0q28ryy6y6h9"))))
+        (base32 "04p5jqp4mb1cp0vxgfwqlgrgpn45xjcsjss3g92ddw724228ns87"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
