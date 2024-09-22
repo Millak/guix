@@ -267,6 +267,34 @@ Bernstein.  The most common ChaCha variant is ChaCha20 (20 rounds).  ChaCha20
 is standardized in RFC 7539.")
       (license license:expat))))
 
+(define-public go-github-com-aead-ecdh
+  (package
+    (name "go-github-com-aead-ecdh")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aead/ecdh")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b0ps5wzm0q0skzikp91l8slgaw5s9z42g4wnmc69am5gw7h4mpd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aead/ecdh"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/aead/ecdh")
+    (synopsis "Elliptic Cureves Deffie-Hellman key exchange implementation in Golang")
+    (description
+     "Package ecdh implements the Diffie-Hellman key exchange using elliptic
+curves (ECDH).  It directly provides ECDH implementations for the NIST curves
+P224, P256, P384, and Bernstein's Cruve25519.  The same logic is available in
+Go 1.20 @code{crypto/ecdh} standard package.")
+    (license license:expat)))
+
 (define-public go-github-com-aperturerobotics-jacobsa-crypto
   (let ((commit "b1eb679742a8deed015a4406384eea6bd985d08a")
         (revision "0"))
