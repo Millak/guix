@@ -6652,7 +6652,7 @@ effort.")
 (define-public rust-backtrace-0.3
   (package
     (name "rust-backtrace")
-    (version "0.3.69")
+    (version "0.3.74")
     (source
      (origin
        (method url-fetch)
@@ -6660,22 +6660,20 @@ effort.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0dsq23dhw4pfndkx2nsa1ml2g31idm7ss7ljxp8d57avygivg290"))))
+         "06pfif7nwx66qf2zaanc2fcq7m64i91ki9imw9xd3bnz5hrwp0ld"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
-       (("rust-addr2line" ,rust-addr2line-0.21)
-        ("rust-cc" ,rust-cc-1)
+       (("rust-addr2line" ,rust-addr2line-0.24)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-cpp-demangle" ,rust-cpp-demangle-0.4)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-miniz-oxide" ,rust-miniz-oxide-0.7)
-        ("rust-object" ,rust-object-0.32)
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.8)
+        ("rust-object" ,rust-object-0.36)
         ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
-        ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-1)
-        ("rust-winapi" ,rust-winapi-0.3))
+        ("rust-windows-targets" ,rust-windows-targets-0.52))
        #:cargo-development-inputs
        (("rust-libloading" ,rust-libloading-0.7))))
     (home-page "https://github.com/rust-lang/backtrace-rs")
