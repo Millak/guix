@@ -13382,22 +13382,23 @@ stream of tokens.")
 (define-public rust-clap-mangen-0.2
   (package
     (name "rust-clap-mangen")
-    (version "0.2.11")
+    (version "0.2.23")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "clap_mangen" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0cbp5cnh25qnd6l6mqs3v6ky524vxyyf7assfzg8ba83v48xkjvb"))))
+                "1ssfnb9fihhdf3xjlxslhqsrnlc4h8v8vkag4zildspv9pyiax7i"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-clap" ,rust-clap-4)
         ("rust-roff" ,rust-roff-0.2))
        #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-4)
-        ("rust-snapbox" ,rust-snapbox-0.4))))
+       (("rust-automod" ,rust-automod-1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-snapbox" ,rust-snapbox-0.6))))
     (home-page "https://github.com/clap-rs/clap/tree/master/clap_mangen")
     (synopsis "Manpage generator for clap")
     (description "This package provides a manpage generator for clap.")
