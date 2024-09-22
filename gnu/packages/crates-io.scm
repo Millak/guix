@@ -31054,14 +31054,14 @@ the regex engine it uses pluggable.")
 (define-public rust-grep-printer-0.2
   (package
     (name "rust-grep-printer")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep-printer" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cnf70gjnybfql0lmpr32dslb4xhxgc6h0dxwnv3ivla7jh14g3l"))))
+        (base32 "1zhkw3agp0sy2y37chvg0rylj1xk6kvyr0mbhd6sm4d8wh5124n1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
