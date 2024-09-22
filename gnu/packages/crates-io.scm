@@ -35835,6 +35835,32 @@ stream runs in a TTY.")
 Windows Subsystem for Linux.")
     (license license:expat)))
 
+(define-public rust-iso7816-tlv-0.4
+  (package
+    (name "rust-iso7816-tlv")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "iso7816-tlv" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0immb18gxx8sycf4k3ks2qxhz8sl8ra5s9wa4a8dccd84j6x4q3n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-untrusted" ,rust-untrusted-0.9))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3)
+                                   ("rust-rand-core" ,rust-rand-core-0.6)
+                                   ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+                                   ("rust-static-alloc" ,rust-static-alloc-0.2))))
+    (home-page "https://github.com/jkowalsk/iso7816-tlv")
+    (synopsis
+     "Tools and utilities for handling TLV data as defined in ISO/IEC 7816-4")
+    (description
+     "This package provides tools and utilities for handling TLV data as defined
+in ISO/IEC 7816-4.")
+    (license license:isc)))
+
 (define-public rust-iso8601-0.6
   (package
     (name "rust-iso8601")
