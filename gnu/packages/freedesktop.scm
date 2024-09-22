@@ -39,6 +39,7 @@
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -136,6 +137,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages virtualization)
   #:use-module (gnu packages w3m)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
@@ -2986,7 +2988,7 @@ compatible with the well-known scripts of the same name.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.16.0")
+    (version "1.18.4")
     (source
      (origin
        (method url-fetch)
@@ -2995,18 +2997,21 @@ compatible with the well-known scripts of the same name.")
              version "/xdg-desktop-portal-" version ".tar.xz"))
        (sha256
         (base32
-         "06cczlh39kc41rvav06v37sad827y61rffy3v29i918ibj8sahav"))))
-    (build-system gnu-build-system)
+         "0r8y8qmzcfj7b7brqcxr9lg8pavfds815ffvj0kqc378fhgaln5q"))
+       ;; Disable portal tests since they try to use fuse.
+       (patches (search-patches "xdg-desktop-portal-disable-portal-tests.patch"))))
+    (build-system meson-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
        ("glib:bin" ,glib "bin")
-       ("which" ,which)
-       ("gettext" ,gettext-minimal)))
+       ("gettext" ,gettext-minimal)
+       ("python" ,python)
+       ("python-dbusmock" ,python-dbusmock)
+       ("python-pytest" ,python-pytest)
+       ("python-pytest-xdist" ,python-pytest-xdist)))
     (inputs
-     `(("gdk-pixbuf" ,gdk-pixbuf)
+     `(("bubblewrap" ,bubblewrap)
+       ("gdk-pixbuf" ,gdk-pixbuf)
        ("glib" ,glib)
        ("flatpak" ,flatpak)
        ("fontconfig" ,fontconfig)
@@ -3018,7 +3023,7 @@ compatible with the well-known scripts of the same name.")
        ("fuse" ,fuse)))
     (arguments
      `(#:configure-flags
-       (list "--with-systemd=no")
+       (list "-Dsystemd=disabled")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'po-chmod
