@@ -14220,21 +14220,21 @@ and well formatted error reports for all kinds of errors.")
 (define-public rust-color-print-proc-macro-0.3
   (package
     (name "rust-color-print-proc-macro")
-    (version "0.3.5")
+    (version "0.3.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "color-print-proc-macro" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0gq00lg9irnzag890m85w3j1p8rpmsns2fa48051swka8mk7iqsp"))))
+                "14yvvhlfsl1zskxl28f4jvwdimkdd8dxgzbgq2kirjzkqn01mzvp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-nom" ,rust-nom-7)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://gitlab.com/yolenoyer/color-print")
     (synopsis "Implementation for the package color-print")
     (description "Implementation for the package color-print.")
