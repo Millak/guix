@@ -898,6 +898,39 @@ grammars and BER/DER encodings, for example.")
     (description "This package provides an ASN.1-DER subset for serde.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-picky-asn1-x509-0.12
+  (package
+    (name "rust-picky-asn1-x509")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "picky-asn1-x509" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0232vn4i6x2w1hzysn983an6x0fqzak1ix0h4grryjb83bvj0prc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-base64" ,rust-base64-0.21)
+                       ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+                       ("rust-oid" ,rust-oid-0.2)
+                       ("rust-picky-asn1" ,rust-picky-asn1-0.8)
+                       ("rust-picky-asn1-der" ,rust-picky-asn1-der-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-widestring" ,rust-widestring-1)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-expect-test" ,rust-expect-test-1)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/Devolutions/picky-rs")
+    (synopsis "Provides ASN1 types defined by X.509 related RFCs")
+    (description
+     "This package provides ASN1 types defined by X.509 related RFCs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rcgen-0.12
   (package
     (name "rust-rcgen")
