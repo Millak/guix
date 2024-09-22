@@ -75497,6 +75497,28 @@ management.")
        #:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1))))))
 
+(define-public rust-static-alloc-0.2
+  (package
+    (name "rust-static-alloc")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "static-alloc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07p6s9njqc1v6jpr0vlw55ps4v32wp3df27fxjg565nf6ph7aacb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-alloc-traits" ,rust-alloc-traits-0.1)
+                       ("rust-atomic-polyfill" ,rust-atomic-polyfill-1))))
+    (home-page "https://github.com/HeroicKatora/static-alloc")
+    (synopsis "Bump allocator on static memory for the alloc-traits crate")
+    (description
+     "This package provides a bump allocator on static memory for the alloc-traits
+crate.")
+    (license (list license:expat license:asl2.0 license:zlib))))
+
 (define-public rust-static-assertions-1
   (package
     (name "rust-static-assertions")
