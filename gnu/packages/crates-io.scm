@@ -31084,24 +31084,22 @@ provides standard printing of search results, similar to grep itself.")
   (package
     (inherit rust-grep-printer-0.2)
     (name "rust-grep-printer")
-    (version "0.1.6")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep-printer" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0wnw8khcvris8canv1dp58qh6vph18fml9qsnrsmdpxf9ni73hh5"))))
+         "0sjsv4v7a88arckc880ns3mbn2y2p38mpnkh9dviznj9ixbm2ig1"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.13)
-        ("rust-bstr" ,rust-bstr-0.2)
+       (("rust-base64" ,rust-base64-0.20)
+        ("rust-bstr" ,rust-bstr-1)
         ("rust-grep-matcher" ,rust-grep-matcher-0.1)
         ("rust-grep-searcher" ,rust-grep-searcher-0.1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-termcolor" ,rust-termcolor-1))
        #:cargo-development-inputs
