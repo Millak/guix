@@ -21,6 +21,7 @@
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2024 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -72,6 +73,7 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sqlite)
@@ -1592,3 +1594,30 @@ authors who want to manage concurrent code.
 Dex also provides Fibers which allow writing synchronous looking code in C
 that uses asynchronous and future-based APIs.")
     (license license:lgpl2.1+)))
+
+(define-public cppgir
+  (package
+    (name "cppgir")
+    (version "2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://gitlab.com/mnauw/cppgir")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cj4myqzb28hgb7zlxlba9y8n4ysxkvv2y9wy6f7ps58mr18h7bl"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DINTERNAL_EXPECTED=OFF")))
+    (inputs (list boost fmt expected-lite))
+    (home-page "https://gitlab.com/mnauw/cppgir")
+    (synopsis "C++ bindings generator for GObject introspection")
+    (description "cppgir processes @file{.gir} files derived from GObject
+introspection annotations into a set of C++ files defining suitable
+namespaces, classes and other types that together form a C++ binding.")
+    (license license:expat)))
