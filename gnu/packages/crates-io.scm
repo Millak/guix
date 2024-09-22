@@ -27542,8 +27542,42 @@ collections for equality.")
 crate.")
     (license license:asl2.0)))
 
+(define-public rust-flume-0.11
+  (package
+    (name "rust-flume")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "flume" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10girdbqn77wi802pdh55lwbmymy437k7kklnvj12aaiwaflbb2m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; cannot find value `_IS_BIASED` in this scope
+       #:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-sink" ,rust-futures-sink-0.3)
+                       ("rust-nanorand" ,rust-nanorand-0.7)
+                       ("rust-spin" ,rust-spin-0.9))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-waker-fn" ,rust-waker-fn-1))))
+    (home-page "https://github.com/zesterer/flume")
+    (synopsis "Fast multi-producer channel")
+    (description
+     "This package provides a fast multi-producer channel.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-flume-0.10
   (package
+    (inherit rust-flume-0.11)
     (name "rust-flume")
     (version "0.10.14")
     (source
@@ -27553,7 +27587,6 @@ crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0xvm1wpzkjvf99jxy9jp3dxw5nipa9blg7j0ngvxj0rl3i2b8mqn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-futures-core" ,rust-futures-core-0.3)
@@ -27569,12 +27602,7 @@ crate.")
         ("rust-futures" ,rust-futures-0.3)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-waker-fn" ,rust-waker-fn-1))))
-    (home-page "https://github.com/zesterer/flume")
-    (synopsis "Fast multi-producer channel")
-    (description
-     "This package provides a fast multi-producer channel.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-waker-fn" ,rust-waker-fn-1))))))
 
 (define-public rust-flume-0.9
   (package
