@@ -1277,6 +1277,25 @@ options to use calloc or a mutable global variable for pre-zeroed memory.")
 be used with the stdlib.")
     (license license:bsd-3)))
 
+(define-public rust-alloc-traits-0.1
+  (package
+    (name "rust-alloc-traits")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "alloc-traits" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10z4rmykwnp8ps5r5n34190h6gmzpj1f67fqildi1z8r6f2m8bbb"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/HeroicKatora/static-alloc")
+    (synopsis "Traits to replace or supplement the alloc module in no_std")
+    (description
+     "This package provides Traits to replace or supplement the alloc module
+in no_std.")
+    (license license:expat)))
+
 (define-public rust-allocator-api2-0.2
   (package
     (name "rust-allocator-api2")
