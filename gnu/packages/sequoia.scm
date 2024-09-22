@@ -33,6 +33,7 @@
   #:use-module (gnu packages crates-web)
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages hardware)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages nettle)
@@ -496,6 +497,46 @@ private key store.")
     (description
      "This package provides a soft key (in-memory key) backend for Sequoia's
 private key store.")
+    (license license:lgpl2.0+)))
+
+(define-public rust-sequoia-keystore-tpm-0.1
+  (package
+    (name "rust-sequoia-keystore-tpm")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-keystore-tpm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00cc468mf9wvkrkdzc1lhjg8a1a0qgfdj046kk09x1nfzlbm5ggh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-openpgp-cert-d" ,rust-openpgp-cert-d-0.3)
+        ("rust-sequoia-ipc" ,rust-sequoia-ipc-0.35)
+        ("rust-sequoia-keystore-backend" ,rust-sequoia-keystore-backend-0.6)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-sequoia-tpm" ,rust-sequoia-tpm-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (native-inputs (list clang pkg-config))
+    (inputs (list nettle tpm2-tss))
+    (home-page "https://sequoia-pgp.org/")
+    (synopsis "TPM backend for Sequoia's private key store")
+    (description
+     "This package provides a TPM backend for Sequoia's private key store.")
     (license license:lgpl2.0+)))
 
 (define-public rust-sequoia-net-0.28
