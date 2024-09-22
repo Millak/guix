@@ -43458,21 +43458,21 @@ float parser.")
     (description "Rust bindings for the minimp3 library.")
     (license license:expat)))
 
-(define-public rust-miniz-oxide-0.7
+(define-public rust-miniz-oxide-0.8
   (package
     (name "rust-miniz-oxide")
-    (version "0.7.1")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "miniz_oxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ivl3rbbdm53bzscrd01g60l46lz5krl270487d8lhjvwl5hx0g7"))))
+        (base32 "1wadxkg6a6z4lr7kskapj5d8pxlx7cp1ifw4daqnkzqjxych5n72"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-adler" ,rust-adler-1)
+       (("rust-adler2" ,rust-adler2-2)
         ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
@@ -43484,6 +43484,26 @@ float parser.")
 @code{flate2} with the @code{rust_backend} feature provides an easy to use
 streaming API for miniz_oxide.")
     (license (list license:expat license:zlib license:asl2.0))))
+
+(define-public rust-miniz-oxide-0.7
+  (package
+    (inherit rust-miniz-oxide-0.8)
+    (name "rust-miniz-oxide")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "miniz_oxide" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ivl3rbbdm53bzscrd01g60l46lz5krl270487d8lhjvwl5hx0g7"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-adler" ,rust-adler-1)
+        ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-simd-adler32" ,rust-simd-adler32-0.3))))))
 
 (define-public rust-miniz-oxide-0.6
   (package
