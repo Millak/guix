@@ -366,6 +366,39 @@ using Amazon's Signature Verification V4 signing procedure, using credentials
 from the default AWS credential chain.")
     (license license:asl2.0)))
 
+(define-public go-github-com-prometheus-community-pro-bing
+  (package
+    (name "go-github-com-prometheus-community-pro-bing")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus-community/pro-bing")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yz4cf1qrm1jrzw2yd5p08663hynk4ihlf5mi2fn6irnzh343a7b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests requiring network setup.
+      #:test-flags
+      #~(list "-skip" (string-append "TestNewPingerValid"
+                                     "|TestSetIPAddr"
+                                     "|TestSetResolveTimeout"))
+      #:import-path "github.com/prometheus-community/pro-bing"))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-golang-org-x-net
+           go-golang-org-x-sync))
+    (home-page "https://github.com/prometheus-community/pro-bing")
+    (synopsis "Continuous probers Golang library")
+    (description
+     "This package implements @acronym{Internet Control Message
+Protocol,ICMP} echo (ping) functionality.")
+    (license license:expat)))
+
 (define-public go-github-com-prometheus-exporter-toolkit
   (package
     (name "go-github-com-prometheus-exporter-toolkit")
