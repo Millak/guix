@@ -78560,6 +78560,38 @@ information to the kernel using the sysctl interface.")
 processors, disks, components and networks.")
     (license license:expat)))
 
+(define-public rust-sysinfo-0.29
+  (package
+    (inherit rust-sysinfo-0.30)
+    (name "rust-sysinfo")
+    (version "0.29.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sysinfo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rp6911qqjppvvbh72j27znscrawfvplqlyrj9n0y1n24g27ywnd"))))
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; These files aren't available in the build environment.
+             "--skip=test::check_system_info"
+             "--skip=test::check_uid_gid"
+             "--skip=test_networks"
+             "--skip=test_wait_non_child"
+             "--skip=test_process_disk_usage")
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-ntapi" ,rust-ntapi-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-sysinfo-0.28
   (package
     (inherit rust-sysinfo-0.30)
