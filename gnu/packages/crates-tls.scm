@@ -870,6 +870,34 @@ grammars and BER/DER encodings, for example.")
     (description "This package provides ASN.1 simple types.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-picky-asn1-der-0.4
+  (package
+    (name "rust-picky-asn1-der")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "picky-asn1-der" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gvrhb2nx17cnigsvbvjq69xg0zy27iabglknfnjvm1nkqx8gxsx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-picky-asn1" ,rust-picky-asn1-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-bytes" ,rust-serde-bytes-0.11))
+       #:cargo-development-inputs
+       (("rust-base64" ,rust-base64-0.21)
+        ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+        ("rust-oid" ,rust-oid-0.2)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11))))
+    (home-page "https://github.com/Devolutions/picky-rs")
+    (synopsis "ASN.1-DER subset for serde")
+    (description "This package provides an ASN.1-DER subset for serde.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rcgen-0.12
   (package
     (name "rust-rcgen")
