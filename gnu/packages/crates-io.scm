@@ -14987,14 +14987,14 @@ Rust compiler.")
 (define-public rust-completest-0.4
   (package
     (name "rust-completest")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "completest" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hag3094ybxv5m1fcj6mgzg36c6vrywszq8cgynk10cgr90y0ac2"))))
+        (base32 "1nsxyiz1dnwy2pk5n17lbhiijgcy9rc4g5sr1w2als0kwvzy23a1"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/assert-rs/completest")
     (synopsis "Run completions for your program")
