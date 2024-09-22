@@ -3022,7 +3022,8 @@ files.")
         (base32 "0synzfd35494vlp2wnqmqbzgc0vg2ivn90hnxvk6qak0w65xhxcv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-exitcode" ,rust-exitcode-1)
         ("rust-swayipc" ,rust-swayipc-2))))
     (home-page "https://github.com/NomisIV/swayhide/")
