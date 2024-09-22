@@ -66359,7 +66359,7 @@ It is automatically published using the compiler repository at
 (define-public rust-rustc-demangle-0.1
   (package
     (name "rust-rustc-demangle")
-    (version "0.1.23")
+    (version "0.1.24")
     (source
       (origin
         (method url-fetch)
@@ -66367,7 +66367,7 @@ It is automatically published using the compiler repository at
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0xnbk2bmyzshacjm2g1kd4zzv2y2az14bw3sjccq5qkpmsfvn9nn"))))
+          "07zysaafgrkzy2rjgwqdj2a8qdpsm6zv6f5pgpk9x0lm40z9b6vi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
