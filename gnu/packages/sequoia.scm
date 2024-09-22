@@ -813,6 +813,39 @@ Although the above appear simple to parse, RFC 2822's whitespace and comment
 rules are rather complex.  This crate implements the whole grammar." )
     (license license:gpl3)))
 
+(define-public rust-sequoia-tpm-0.1
+  (package
+    (name "rust-sequoia-tpm")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-tpm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xh0m7yybkwpc0f858da27y82a2vlsdfch35hjaykih5lf4xmdri"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-env-logger" ,rust-env-logger-0.11)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+                       ("rust-structopt" ,rust-structopt-0.3)
+                       ("rust-tss-esapi" ,rust-tss-esapi-7)
+                       ("rust-tss-esapi-sys" ,rust-tss-esapi-sys-0.5))
+       #:cargo-development-inputs
+       (("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
+    (native-inputs (list clang pkg-config))
+    (inputs (list nettle tpm2-tss))
+    (home-page "https://sequoia-pgp.org/")
+    (synopsis "Machinery for working with TPM from Sequoia")
+    (description
+     "This package provides machinery for working with TPM from Sequoia.")
+    (license (list license:lgpl2.0+ license:asl2.0))))
+
 (define-public rust-sequoia-wot-0.12
   (package
     (name "rust-sequoia-wot")
