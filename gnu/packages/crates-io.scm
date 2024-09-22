@@ -13006,8 +13006,30 @@ interoperation between crates in Rust.")
          (base32
           "0ls8zcqi5bmmrvrk3b6r1ym4wlivinbv590d2dvg2xn9f44mbpl1"))))))
 
+(define-public rust-clap-cargo-0.14
+  (package
+    (name "rust-clap-cargo")
+    (version "0.14.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap-cargo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gmlr0cahj7nfzcqfc16z76rb8ar3nnidm9snx4bi5psrrlymci3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.18)
+                       ("rust-clap" ,rust-clap-4))))
+    (home-page "https://github.com/crate-ci/clap-cargo")
+    (synopsis "Re-usable CLI flags for `cargo` plugins")
+    (description "This package provides re-usable CLI flags for `cargo` plugins.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clap-cargo-0.12
   (package
+    (inherit rust-clap-cargo-0.14)
     (name "rust-clap-cargo")
     (version "0.12.0")
     (source
@@ -13017,15 +13039,10 @@ interoperation between crates in Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1r2f4ad1vpaljrfbyfsv986qiwmll0iask4sdvwllka658s22grq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
                        ("rust-cargo-metadata" ,rust-cargo-metadata-0.17)
-                       ("rust-clap" ,rust-clap-4))))
-    (home-page "https://github.com/crate-ci/clap-cargo")
-    (synopsis "Re-usable CLI flags for `cargo` plugins")
-    (description "This package provides re-usable CLI flags for `cargo` plugins.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-clap" ,rust-clap-4))))))
 
 (define-public rust-clap-complete-command-0.5
   (package
