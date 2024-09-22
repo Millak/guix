@@ -1355,7 +1355,7 @@ contents:
   #!location/of/bin/bash
   export PATH=\"/gnu/.../bar/bin\"
   export CERT_PATH=\"$CERT_PATH${CERT_PATH:+:}/gnu/.../baz/certs:/qux/certs\"
-  exec -a $0 location/of/.foo-real \"$@\"
+  exec -a \"${0##*/}\" location/of/.foo-real \"$@\"
 
 This is useful for scripts that expect particular programs to be in $PATH, for
 programs that expect particular shared libraries to be in $LD_LIBRARY_PATH, or
@@ -1432,7 +1432,7 @@ with definitions for VARS. If it is not, SH will be used as interpreter."
         (call-with-output-file prog-tmp
           (lambda (port)
             (format port
-                    "#!~a~%~a~%exec -a \"$0\" \"~a\" \"$@\"~%"
+                    "#!~a~%~a~%exec -a \"${0##*/}\" \"~a\" \"$@\"~%"
                     sh
                     (string-join (map export-variable vars/filtered) "\n")
                     (canonicalize-path wrapped-file))))
