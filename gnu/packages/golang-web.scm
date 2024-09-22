@@ -973,6 +973,54 @@ Any}.")
            go-golang-org-x-net
            go-golang-org-x-oauth2))))
 
+(define-public go-github-com-cretz-bine
+  (package
+    ;; This package can be used with CGO to statically compile Tor.  This
+    ;; package expects <https://github.com/cretz/tor-static> to be cloned at
+    ;; $GOPATH/src/github.com/cretz/tor-static as if it was fetched with go
+    ;; get.  If you use go modules the expected path would be
+    ;; $GOPATH/pkg/mod/github.com/cretz/tor-static libs.  See
+    ;; <https://github.com/cretz/bine/blob/v0.2.0/process/embedded/process.go#L7>.
+    (name "go-github-com-cretz-bine")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cretz/bine")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16h7j7v4qbwb7zjsbc1p3b67xji7hgis95znz9cj8fw3rqxwvkcs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cretz/bine"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-golang-org-x-net))
+    (home-page "https://github.com/cretz/bine")
+    (synopsis "Accessing and embedding Tor clients and servers from Golang")
+    (description
+     "Bine is a toolkit to assist in creating Tor clients and servers.
+Features:
+@itemize
+@item full support for the Tor controller API
+@item support for @code{net.Conn} and @code{net.Listen} style APIs
+@item supports statically compiled Tor to embed Tor into the binary
+@item supports v3 onion services
+@item support for embedded control socket in Tor >= 0.3.5
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-datadog-datadog-go
   (package
     (name "go-github-com-datadog-datadog-go")
