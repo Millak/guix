@@ -1588,7 +1588,17 @@ wide-block encryption mode developed by Halevi and Rogaway.")
         (base32 "0n24h5ffgc3735y0mmp6dbhxdfm9fk13i26fqxxw7i75qnmvjvyg"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/shadowsocks/go-shadowsocks2"))
+     (list
+      #:import-path "github.com/shadowsocks/go-shadowsocks2"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-riobard-go-bloom
            go-golang-org-x-crypto))
