@@ -17761,21 +17761,20 @@ message passing.")
 (define-public rust-crossbeam-queue-0.3
   (package
     (name "rust-crossbeam-queue")
-    (version "0.3.8")
+    (version "0.3.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossbeam-queue" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1p9s6n4ckwdgxkb7a8ay9zjzmgc8ppfbxix2vr07rwskibmb7kyi"))))
+        (base32 "0d8y8y3z48r9javzj67v3p2yfswd278myz1j9vzc4sp7snslc0yz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))
+       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))
        #:cargo-development-inputs
-       (("rust-rand" ,rust-rand-0.6))))
+       (("rust-rand" ,rust-rand-0.8))))
     (home-page
      "https://github.com/crossbeam-rs/crossbeam/tree/master/crossbeam-utils")
     (synopsis "Concurrent queues in Rust")
