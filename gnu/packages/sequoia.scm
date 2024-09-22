@@ -142,28 +142,26 @@ than just headers; it requires tight integration with the MUA.")
     (description "This package provides a certificate database interface.")
     (license license:lgpl2.0+)))
 
-(define-public rust-sequoia-ipc-0.33
+(define-public rust-sequoia-ipc-0.35
   (package
     (name "rust-sequoia-ipc")
-    (version "0.33.0")
+    (version "0.35.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-ipc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0h4b675m6r9r64ibv472fsyqkfh9xbx2wz4jaa4v01ivgsd7k3r1"))))
+        (base32 "1qryibvxs7fgbfi55sxsmh6kpim41rz06sslfb0n2cr3jn5cpbl9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
                        ("rust-buffered-reader" ,rust-buffered-reader-1)
                        ("rust-capnp-rpc" ,rust-capnp-rpc-0.19)
-                       ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
                        ("rust-ctor" ,rust-ctor-0.2)
                        ("rust-dirs" ,rust-dirs-5)
                        ("rust-fs2" ,rust-fs2-0.4)
-                       ("rust-futures" ,rust-futures-0.3)
                        ("rust-lalrpop" ,rust-lalrpop-0.17)
                        ("rust-lalrpop-util" ,rust-lalrpop-util-0.17)
                        ("rust-lazy-static" ,rust-lazy-static-1)
@@ -177,10 +175,9 @@ than just headers; it requires tight integration with the MUA.")
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-tokio-util" ,rust-tokio-util-0.7)
                        ("rust-winapi" ,rust-winapi-0.3))
-       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
-                                   ("rust-quickcheck" ,rust-quickcheck-1)
-                                   ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-                                   ("rust-tokio" ,rust-tokio-1))))
+       #:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
     (native-inputs
      (list clang pkg-config))
     (inputs
