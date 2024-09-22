@@ -67734,8 +67734,36 @@ sub-processes using a fork-like interface.")
        (("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-ruzstd-0.7
+  (package
+    (name "rust-ruzstd")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ruzstd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08ffshmfmmcgijcg4w517clpsxwknga89inxjw4hgb1s2f797hwr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-twox-hash" ,rust-twox-hash-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/KillingSpark/zstd-rs")
+    (synopsis "Decoder for the zstd compression format")
+    (description
+     "This package provides a decoder for the zstd compression format.")
+    (license license:expat)))
+
 (define-public rust-ruzstd-0.5
   (package
+    (inherit rust-ruzstd-0.7)
     (name "rust-ruzstd")
     (version "0.5.0")
     (source
@@ -67745,7 +67773,6 @@ sub-processes using a fork-like interface.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ga8jciw7ka3mxrzl39skmsbdslajghzglcil10g0z4rh65fpi2q"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -67763,12 +67790,7 @@ sub-processes using a fork-like interface.")
                        ("rust-derive-more" ,rust-derive-more-0.99)
                        ("rust-twox-hash" ,rust-twox-hash-1))
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
-                                   ("rust-rand" ,rust-rand-0.8))))
-    (home-page "https://github.com/KillingSpark/zstd-rs")
-    (synopsis "Decoder for the zstd compression format")
-    (description
-     "This package provides a decoder for the zstd compression format.")
-    (license license:expat)))
+                                   ("rust-rand" ,rust-rand-0.8))))))
 
 (define-public rust-ruzstd-0.4
   (package
