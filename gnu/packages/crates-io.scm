@@ -32634,32 +32634,49 @@ provided for each type.")
        (sha256
         (base32 "1b2h0lvksn8748764x46729ygpz8grack24spin0k29ssmr6yabr"))))))
 
+(define-public rust-hostname-0.4
+  (package
+    (name "rust-hostname")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hostname" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fpjr3vgi64ly1ci8phdqjbha4k22c65c94a9drriiqnmk4cgizr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-windows" ,rust-windows-0.52))
+       #:cargo-development-inputs (("rust-version-sync" ,rust-version-sync-0.9))))
+    (home-page "https://github.com/svartalf/hostname")
+    (synopsis "Cross-platform system's host name functions")
+    (description
+     "This package provides Cross-platform system's host name functions.")
+    (license license:expat)))
+
 (define-public rust-hostname-0.3
   (package
+    (inherit rust-hostname-0.4)
     (name "rust-hostname")
     (version "0.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "hostname" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
           "0rz8yf70cvzl3nry71m4bz9w6x4j9kdz3qng6pnwhk2h20z1qwrw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-match-cfg" ,rust-match-cfg-0.1)
         ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
-       (("rust-version-sync" ,rust-version-sync-0.8))))
-    (home-page "https://github.com/svartalf/hostname")
-    (synopsis "Get hostname for Rust")
-    (description
-     "Get hostname for Rust.")
-    (license license:expat)))
+       (("rust-version-sync" ,rust-version-sync-0.8))))))
 
 (define-public rust-hostname-0.1
   (package
