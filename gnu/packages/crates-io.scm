@@ -924,7 +924,7 @@ using AES-NI for high performance.")
   (package
     (inherit rust-ahash-0.7)
     (name "rust-ahash")
-    (version "0.4.7")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
@@ -932,7 +932,7 @@ using AES-NI for high performance.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0vm13qaz4nzj0gd397d36wpyav05bflg6m2nbhs82nb0ns6lm7vk"))))
+         "129290b8lz7fw8gzdq7k2jrm6yqgv6dsb1sc1gfy1pl2rqm26lq4"))))
     (arguments
      `(#:cargo-inputs
        (("rust-const-random" ,rust-const-random-0.1))
