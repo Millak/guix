@@ -42403,6 +42403,29 @@ async code in Rust.")
      "This package provides MaybeUninit for friends of backwards compatibility.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-mbox-0.7
+  (package
+    (name "rust-mbox")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mbox" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pn67fg52nwi2pk2j1nqlwgh477ygsz3znf6kxkqqkmwmnp45l96"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
+    (home-page "https://github.com/kennytm/mbox")
+    (synopsis "Malloc-based box")
+    (description
+     "This package provides malloc-based box.  Supports wrapping pointers or
+null-terminated strings returned from malloc as a Rust type, which will be
+free'd on drop.")
+    (license license:expat)))
+
 (define-public rust-memchr-2
   (package
     (name "rust-memchr")
