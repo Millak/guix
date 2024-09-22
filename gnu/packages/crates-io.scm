@@ -42380,14 +42380,14 @@ file IO.")
 (define-public rust-memmap2-0.9
   (package
     (name "rust-memmap2")
-    (version "0.9.3")
+    (version "0.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "memmap2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14kwkwh1cr790dhrdwzyjxp2f5k1jp7w1swc7z38py0vhdbkmza5"))))
+        (base32 "0krpvvkpg4i3l05cv3q2xk24a1vj5c86gbrli2wzhj1qkpnpwgzx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
