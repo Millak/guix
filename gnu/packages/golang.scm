@@ -1242,7 +1242,7 @@ cluster segmentation algorithm.")
            go-github-com-kataras-golog
            go-github-com-mufti1-interconv
            go-github-com-opentracing-opentracing-go
-           go-github-com-operatorfoundation-monolith-go
+           go-github-com-operatorfoundation-monolith-go-1.0.4
            go-github-com-operatorfoundation-obfs4
            go-github-com-operatorfoundation-shapeshifter-ipc
            go-github-com-shadowsocks-go-shadowsocks2
@@ -1671,6 +1671,23 @@ configuration file.")
     (synopsis "Byte sequences library")
     (description "Monolith-Go is a Go library for working with byte sequences.")
     (license license:expat)))
+
+;; To build bitmask 0.21.11, remove when it's updated.
+(define-public go-github-com-operatorfoundation-monolith-go-1.0.4
+  (package
+    (inherit go-github-com-operatorfoundation-monolith-go)
+    (name "go-github-com-operatorfoundation-monolith-go")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/OperatorFoundation/monolith-go")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "066bqlgw5h7a3kxswqlv734asb7nw2y6snsn09yqk0ixj23qw22s"))))))
 
 (define-public go-github-com-dpotapov-go-spnego
   (let ((commit "298b63a544303a239753d04314aada5bdbad7e4a")
