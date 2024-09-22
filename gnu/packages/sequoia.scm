@@ -418,6 +418,46 @@ than just headers; it requires tight integration with the MUA.")
     (description "This package contains traits for private key store backends.")
     (license license:lgpl2.0+)))
 
+(define-public rust-sequoia-keystore-openpgp-card-0.1
+  (package
+    (name "rust-sequoia-keystore-openpgp-card")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-keystore-openpgp-card" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sr3hyxvq6nc319k134iwf4z3m9lx48r40j44xbsrp7mcknxz7w8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-card-backend-pcsc" ,rust-card-backend-pcsc-0.5)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-openpgp-card" ,rust-openpgp-card-0.5)
+        ("rust-openpgp-cert-d" ,rust-openpgp-cert-d-0.3)
+        ("rust-rsa" ,rust-rsa-0.9)
+        ("rust-sequoia-keystore-backend" ,rust-sequoia-keystore-backend-0.6)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (native-inputs (list clang pkg-config))
+    (inputs (list nettle pcsc-lite))
+    (home-page "https://sequoia-pgp.org/")
+    (synopsis "OpenPGP card backend for Sequoia's private key store")
+    (description
+     "This package provides an @code{OpenPGP} card backend for Sequoia's
+private key store.")
+    (license license:lgpl2.0+)))
+
 (define-public rust-sequoia-keystore-softkeys-0.6
   (package
     (name "rust-sequoia-keystore-softkeys")
