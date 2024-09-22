@@ -69509,6 +69509,32 @@ statistical guarantees.")
     (description "This package provides low-level bindings to libseccomp.")
     (license license:lgpl2.1)))
 
+(define-public rust-secrecy-0.8
+  (package
+    (name "rust-secrecy")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "secrecy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07p9h2bpkkg61f1fzzdqqbf74kwv1gg095r1cdmjzzbcl17cblcv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://github.com/iqlusioninc/crates/")
+    (synopsis
+     "Wrapper types and traits for secret management")
+    (description
+     "This package provides wrapper types and traits for secret management which
+help ensure they aren't accidentally copied, logged, or otherwise exposed (as
+much as possible), and also ensure secrets are securely wiped from memory when
+dropped.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-secret-service-3
   (package
     (name "rust-secret-service")
