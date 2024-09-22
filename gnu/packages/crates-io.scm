@@ -78920,28 +78920,48 @@ processors, disks, components and networks.")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-syslog-6
+(define-public rust-syslog-7
   (package
     (name "rust-syslog")
-    (version "6.1.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "syslog" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vzrwwv3v9bwfinp7yz4kcdxxs00ikz89gzl61fj3qfcridyjd3l"))))
+        (base32 "044z9mq055a9k6k8i8d725ixww2pqybz6pa5a78bfy9kl401b7q1"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-hostname" ,rust-hostname-0.4)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/Geal/rust-syslog")
+    (synopsis "Syslog message formatter and writer")
+    (description
+     "This package provides Syslog message formatter and writer, supporting
+UNIX sockets, UDP and TCP exporters.")
+    (license license:expat)))
+
+(define-public rust-syslog-6
+  (package
+    (inherit rust-syslog-7)
+    (name "rust-syslog")
+    (version "6.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "syslog" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lvs8ld2ps38yll29fryqwr45axm55vf46b5zvx24lbrbddykiyz"))))
     (arguments
      `(#:cargo-inputs (("rust-error-chain" ,rust-error-chain-0.12)
                        ("rust-hostname" ,rust-hostname-0.3)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-time" ,rust-time-0.3))))
-    (home-page "https://github.com/Geal/rust-syslog")
-    (synopsis "Send log messages to syslog")
-    (description "Rust crate to send messages to Syslog.")
-    (license license:expat)))
+                       ("rust-time" ,rust-time-0.3))))))
 
 (define-public rust-syslog-4
   (package
