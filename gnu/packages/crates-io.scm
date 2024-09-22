@@ -52705,6 +52705,27 @@ path.")
 library.")
     (license license:expat)))
 
+(define-public rust-pcg-mwc-0.2
+  (package
+    (name "rust-pcg-mwc")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pcg-mwc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z6cpz8x387iqcx8kjnqfihgggi0yngqx73zwjz132y56f38a5i2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/tkaitchuck/Mwc256XXA64")
+    (synopsis "Non-cryptographic psudo random number generator")
+    (description
+     "This package provides a fast non-cryptographic psudo random number generator.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pciid-parser-0.6
   (package
     (name "rust-pciid-parser")
