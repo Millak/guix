@@ -3345,6 +3345,42 @@ secp384r1) elliptic curve as defined in SP 800-186 with support for ECDH, ECDSA
 signing/verification, and general purpose curve arithmetic support.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-p521-0.13
+  (package
+    (name "rust-p521")
+    (version "0.13.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "p521" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cl5y2aypa1vxg181a0na3abndz1981pfdp2zkyml88z3wbf5j8g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base16ct" ,rust-base16ct-0.2)
+                       ("rust-ecdsa" ,rust-ecdsa-0.16)
+                       ("rust-elliptic-curve" ,rust-elliptic-curve-0.13)
+                       ("rust-hex-literal" ,rust-hex-literal-0.4)
+                       ("rust-primeorder" ,rust-primeorder-0.13)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-serdect" ,rust-serdect-0.2)
+                       ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs (("rust-blobby" ,rust-blobby-0.3)
+                                   ("rust-ecdsa" ,rust-ecdsa-0.16)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.4)
+                                   ("rust-primeorder" ,rust-primeorder-0.13)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-rand-core" ,rust-rand-core-0.6))))
+    (home-page
+     "https://github.com/RustCrypto/elliptic-curves/tree/master/p521")
+    (synopsis
+     "Pure Rust implementation of the NIST P-521 (a.k.a. secp521r1) elliptic curve")
+    (description
+     "This package provides Pure Rust implementation of the NIST P-521 (a.k.a.
+secp521r1) elliptic curve as defined in SP 800-186.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-pbkdf2-0.12
   (package
     (name "rust-pbkdf2")
