@@ -80328,6 +80328,30 @@ writing colored text to a terminal.")
            `(("rust-libc" ,rust-libc-0.2)
              ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-terminal-trx-0.2
+  (package
+    (name "rust-terminal-trx")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "terminal-trx" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cvq92v3px99dskhjw6lrznjakvpxsg3kkdmc7z1my7lwwvbi9ap"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))
+       #:cargo-development-inputs
+       (("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/bash/terminal-trx")
+    (synopsis "Provides a handle to the terminal of the current process")
+    (description
+     "This package provides a handle to the terminal of the current process.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-terminfo-0.8
   (package
     (name "rust-terminfo")
