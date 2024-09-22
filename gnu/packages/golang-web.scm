@@ -5744,6 +5744,29 @@ programming language.")
 programming language, which supports draft-04, draft-06 and draft-07.")
     (license license:asl2.0)))
 
+(define-public go-github-com-xtaci-lossyconn
+  (package
+    (name "go-github-com-xtaci-lossyconn")
+    (version "0.0.0-20200209145036-adba10fffc37")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xtaci/lossyconn")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pizmd8py5x8yjqp6fz2y0kpvd1za3rbp7whyyh69zyk1a305fam"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xtaci/lossyconn"))
+    (home-page "https://github.com/xtaci/lossyconn")
+    (synopsis "Lossy connection simulator")
+    (description
+     "Package lossyconn is a lossy connection simulator for Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-xtaci-smux
   (package
     (name "go-github-com-xtaci-smux")
