@@ -745,16 +745,15 @@ This package is the community maintained fork of @code{exa}.")
 (define-public fd
   (package
     (name "fd")
-    (version "9.0.0")
+    (version "10.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fd-find" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1is6xrsnbiy4la3lrmxzl3pzzkygnx9mp8h5k8gfrc29bq8m7891"))))
+         "0d5zv6pmxxsblbvk4pzxjbj072d2bg3byhss57699y2s37xdw26y"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -779,10 +778,10 @@ This package is the community maintained fork of @code{exa}.")
         ("rust-ignore" ,rust-ignore-0.4)
         ("rust-jemallocator" ,rust-jemallocator-0.5)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-lscolors" ,rust-lscolors-0.16)
-        ("rust-nix" ,rust-nix-0.27)
+        ("rust-lscolors" ,rust-lscolors-0.19)
+        ("rust-nix" ,rust-nix-0.29)
         ("rust-normpath" ,rust-normpath-1)
-        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.49)
+        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
         ("rust-regex" ,rust-regex-1)
         ("rust-regex-syntax" ,rust-regex-syntax-0.8)
         ("rust-version-check" ,rust-version-check-0.9))
