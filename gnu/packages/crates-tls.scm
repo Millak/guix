@@ -845,6 +845,31 @@ grammars and BER/DER encodings, for example.")
      `(#:skip-build? #t
        #:cargo-inputs (("rust-der-parser" ,rust-der-parser-6))))))
 
+(define-public rust-picky-asn1-0.8
+  (package
+    (name "rust-picky-asn1")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "picky-asn1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04mjb35z1g3dny8hjj6893fh8g6pskyhifcq58gf4sy16c7ylpi9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `picky_asn1_der`
+       #:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-oid" ,rust-oid-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://github.com/Devolutions/picky-rs")
+    (synopsis "Provide ASN.1 simple types")
+    (description "This package provides ASN.1 simple types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rcgen-0.12
   (package
     (name "rust-rcgen")
