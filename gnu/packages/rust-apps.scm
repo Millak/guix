@@ -1702,14 +1702,14 @@ container management applications.")
 (define-public ripgrep
   (package
     (name "ripgrep")
-    (version "14.1.0")
+    (version "14.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ripgrep" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1n3zb5jfb8pv65jm4zmrcxlgpppkpd9pmcpg1ifvv13sqhxbrg6p"))))
+        (base32 "1n81lnfzy556f63pgnizay2sgx8fgn4mmailbybjfiaqvhr80yzp"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -1734,7 +1734,7 @@ container management applications.")
                        (let* ((out (assoc-ref outputs "out"))
                               (share (string-append out "/share"))
                               (bash-completions-dir
-                                (string-append share "/bash-completion/completions"))
+                                (string-append out "/etc/bash_completion.d/"))
                               (zsh-completions-dir
                                 (string-append share "/zsh/site-functions"))
                               (fish-completions-dir
