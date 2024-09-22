@@ -31132,14 +31132,14 @@ provides standard printing of search results, similar to grep itself.")
 (define-public rust-grep-searcher-0.1
   (package
     (name "rust-grep-searcher")
-    (version "0.1.13")
+    (version "0.1.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep-searcher" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0m1w35d9wnpv157g0adj3grqw0nkacqxv14mhgc65v4vyvj6llxs"))))
+        (base32 "1nici6klcniqph272i323rlrwl60vqqk4kb0sq3s3q627x5w3dmr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
