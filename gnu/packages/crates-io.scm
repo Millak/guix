@@ -888,18 +888,19 @@ high performance.")
 (define-public rust-ahash-0.7
   (package
     (name "rust-ahash")
-    (version "0.7.6")
+    (version "0.7.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ahash" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0isw672fiwx8cjl040jrck6pi85xcszkz6q0xsqkiy6qjl31mdgw"))))
+        (base32 "1y9014qsy6gs9xld4ch7a6xi9bpki8vaciawxq4p75d8qvh7f549"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-const-random" ,rust-const-random-0.1)
+       (("rust-atomic-polyfill" ,rust-atomic-polyfill-1)
+        ("rust-const-random" ,rust-const-random-0.1)
         ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-serde" ,rust-serde-1)
