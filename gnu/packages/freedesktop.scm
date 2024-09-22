@@ -3001,26 +3001,6 @@ compatible with the well-known scripts of the same name.")
        ;; Disable portal tests since they try to use fuse.
        (patches (search-patches "xdg-desktop-portal-disable-portal-tests.patch"))))
     (build-system meson-build-system)
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib:bin" ,glib "bin")
-       ("gettext" ,gettext-minimal)
-       ("python" ,python)
-       ("python-dbusmock" ,python-dbusmock)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-xdist" ,python-pytest-xdist)))
-    (inputs
-     `(("bubblewrap" ,bubblewrap)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("glib" ,glib)
-       ("flatpak" ,flatpak)
-       ("fontconfig" ,fontconfig)
-       ("json-glib" ,json-glib)
-       ("libportal" ,libportal)
-       ("dbus" ,dbus)
-       ("geoclue" ,geoclue)
-       ("pipewire" ,pipewire)
-       ("fuse" ,fuse)))
     (arguments
      `(#:configure-flags
        (list "-Dsystemd=disabled")
@@ -3034,6 +3014,26 @@ compatible with the well-known scripts of the same name.")
                        (find-files "po" "\\.po$"))))
          (add-after 'unpack 'set-home-directory
            (lambda _ (setenv "HOME" "/tmp"))))))
+    (inputs
+     (list bubblewrap
+           dbus
+           flatpak
+           fontconfig
+           fuse
+           gdk-pixbuf
+           geoclue
+           glib
+           json-glib
+           libportal
+           pipewire))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config
+           python
+           python-dbusmock
+           python-pytest
+           python-pytest-xdist))
     (native-search-paths
      (list (search-path-specification
             (variable "XDG_DESKTOP_PORTAL_DIR")
