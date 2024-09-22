@@ -64662,6 +64662,36 @@ table-based tests.")
      "This package provides the procedural macro crate for @code{rstest}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rstest-macros-0.20
+  (package
+    (inherit rust-rstest-macros-0.21)
+    (name "rust-rstest-macros")
+    (version "0.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fmgmwkd95ljsm6czad4fgbpnn1zlik7gbd6lwz0nk0hvxj2s4z6"))))
+    (arguments
+     `(#:tests? #f      ; unresolved import `rstest`
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-proc-macro-crate" ,rust-proc-macro-crate-3)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-relative-path" ,rust-relative-path-1)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-unicode-ident" ,rust-unicode-ident-1))
+       #:cargo-development-inputs
+       (("rust-actix-rt" ,rust-actix-rt-2)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-maplit" ,rust-maplit-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
+
 (define-public rust-rstest-macros-0.18
   (package
     (inherit rust-rstest-macros-0.21)
