@@ -13436,15 +13436,17 @@ with Clap to generate Fig completion scripts.")
 (define-public rust-clap-lex-0.7
   (package
     (name "rust-clap-lex")
-    (version "0.7.0")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap_lex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kh1sckgq71kay2rrr149pl9gbsrvyccsq6xm5xpnq0cxnyqzk4q"))))
+        (base32 "15zcrc2fa6ycdzaihxghf48180bnvzsivhf0fmah24bnnaf76qhl"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-automod" ,rust-automod-1))))
     (home-page "https://github.com/clap-rs/clap/tree/master/clap_lex")
     (synopsis "Command line parser for Clap")
     (description
