@@ -42438,6 +42438,24 @@ file IO.")
        (("rust-owning-ref" ,rust-owning-ref-0.4)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-memmap2-0.6
+  (package
+    (inherit rust-memmap2-0.9)
+    (name "rust-memmap2")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "memmap2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wm8avdjma6j3x5fjdqwxcj89h52pzmwanw46xkn9rnz9albna3d"))))
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
+       #:cargo-development-inputs (("rust-owning-ref" ,rust-owning-ref-0.4)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-memmap2-0.5
   (package
     (inherit rust-memmap2-0.7)
