@@ -14197,14 +14197,14 @@ and well formatted error reports for all kinds of errors.")
 (define-public rust-color-print-0.3
   (package
     (name "rust-color-print")
-    (version "0.3.5")
+    (version "0.3.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "color-print" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0p9xlsmpnahxsji2pr73ms14alxwlkr0998fnfqvkfhlzxr871bs"))))
+                "1h58sxz6nmx7p5q6cp529gnjgpclaks72mkshws8k27k1z347r8y"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
