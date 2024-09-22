@@ -1175,6 +1175,30 @@ gunit @url{github.com/smarty/gunit,@code{gunit}} for use with the
 functions and even in applications.")
     (license license:expat)))
 
+(define-public go-github-com-smarty-gunit
+  (package
+    (name "go-github-com-smarty-gunit")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smarty/gunit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13bcb1aq8yshmi5inn7np5lyqhsyy5hksridi8bxbjq35xrknskr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smarty/gunit"))
+    (home-page "https://github.com/smarty/gunit")
+    (synopsis "Golang xUnit-style test fixture test adapter")
+    (description
+     "Package gunit provides @code{testing} package hooks and convenience
+functions for writing tests in an @code{xUnit} style.")
+    (license license:expat)))
+
 (define-public go-go-etcd-io-gofail
   (package
     (name "go-go-etcd-io-gofail")
