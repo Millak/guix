@@ -13203,7 +13203,7 @@ how to behave across the three main input sources")
 (define-public rust-clap-4
   (package
     (name "rust-clap")
-    (version "4.5.4")
+    (version "4.5.18")
     (source
      (origin
        (method url-fetch)
@@ -13211,17 +13211,19 @@ how to behave across the three main input sources")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1828wm9qws5gh2xnimnvmp2vria6d6hsxnqmhnm84dwjcxm0dg4h"))))
+         "1lsxa59bgfxaag1q65ndp801h7vw9dffsly0zzx1mb13nd1nm5dh"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-clap-builder" ,rust-clap-builder-4)
              ("rust-clap-derive" ,rust-clap-derive-4))
            #:cargo-development-inputs
-           `(("rust-humantime" ,rust-humantime-2)
+           `(("rust-automod" ,rust-automod-1)
+             ("rust-clap-cargo" ,rust-clap-cargo-0.14)
+             ("rust-humantime" ,rust-humantime-2)
              ("rust-rustversion" ,rust-rustversion-1)
              ("rust-shlex" ,rust-shlex-1)
-             ("rust-snapbox" ,rust-snapbox-0.5)
+             ("rust-snapbox" ,rust-snapbox-0.6)
              ("rust-trybuild" ,rust-trybuild-1)
              ("rust-trycmd" ,rust-trycmd-0.15))))
     (home-page "https://clap.rs/")
