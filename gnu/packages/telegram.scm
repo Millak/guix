@@ -400,6 +400,18 @@ Telegram project, for its use in telegram desktop client.")
     (base32
      "0ayrrhfdwrf4260h9fsirkhhfrcvc3qqnh6h9wj3ixij2lq0wwqb"))))
 
+(define libprisma-for-telegram-desktop
+  (origin
+   (method git-fetch)
+   (uri (git-reference
+         (url "https://github.com/desktop-app/libprisma")
+         (commit "23b0d70f9709da9b38561d5706891a134d18df76")))
+   (file-name
+    (git-file-name "libprisma-for-telegram-desktop" "5.3.2"))
+   (sha256
+    (base32
+     "0fg4x4ikj7f3706bmfvkwq4smxc98qr3cgpm25w48n4ys6wfgadg"))))
+
 (define-public telegram-desktop
   (package
     (name "telegram-desktop")
