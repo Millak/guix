@@ -7779,9 +7779,9 @@ Go.")
     (description "Go library for ini files")
     (license license:asl2.0)))
 
-(define-public go-gopkg-in-natefinch-lumberjack.v2
+(define-public go-gopkg-in-natefinch-lumberjack-v2
   (package
-    (name "go-gopkg-in-natefinch-lumberjack.v2")
+    (name "go-gopkg-in-natefinch-lumberjack-v2")
     (version "2.1")
     (source
      (origin

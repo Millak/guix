@@ -1695,7 +1695,7 @@ trezord as a regular user instead of needing to it run as root.")
      (list go-github-com-gorilla-csrf
            go-github-com-gorilla-handlers
            go-github-com-gorilla-mux
-           go-gopkg-in-natefinch-lumberjack.v2))
+           go-gopkg-in-natefinch-lumberjack-v2))
     (home-page "https://trezor.io")
     (synopsis "Trezor Communication Daemon aka Trezor Bridge (written in Go)")
     (description "This allows a Trezor hardware wallet to communicate to the
