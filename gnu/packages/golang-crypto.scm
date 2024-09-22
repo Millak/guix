@@ -1576,8 +1576,7 @@ wide-block encryption mode developed by Halevi and Rogaway.")
 (define-public go-github-com-shadowsocks-go-shadowsocks2
   (package
     (name "go-github-com-shadowsocks-go-shadowsocks2")
-    ;; Version > 0.1.3 requires go-toolchain v1.16.
-    (version "0.1.3")
+    (version "0.1.5")
     (source
      (origin
        (method git-fetch)
@@ -1586,16 +1585,13 @@ wide-block encryption mode developed by Halevi and Rogaway.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wzy3ml4ld83iawcl6p313bskzs6zjhz8vlg8kpwgn71cnbv4pvi"))))
+        (base32 "0n24h5ffgc3735y0mmp6dbhxdfm9fk13i26fqxxw7i75qnmvjvyg"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/shadowsocks/go-shadowsocks2"))
     (propagated-inputs
      (list go-github-com-riobard-go-bloom
-           go-golang-org-x-crypto
-           go-golang-org-x-net
-           go-golang-org-x-sys
-           go-golang-org-x-text))
+           go-golang-org-x-crypto))
     (home-page "https://github.com/shadowsocks/go-shadowsocks2")
     (synopsis "Shadowsocks tunnel proxy")
     (description "Go-ShadowSocks is a Go implementation of the Shadowsocks
