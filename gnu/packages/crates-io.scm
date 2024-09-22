@@ -13311,14 +13311,14 @@ Command Line Argument Parser.")
 (define-public rust-clap-builder-4
   (package
     (name "rust-clap-builder")
-    (version "4.5.2")
+    (version "4.5.18")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "clap_builder" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1d7p4hph4fyhaphkf0v5zv0kq4lz25a9jq2f901yrq3afqp9w4mf"))))
+                "06wnncyif421qgrkd73hhhfych773avpx903b1nhhd0nsinicwjd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
