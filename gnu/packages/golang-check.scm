@@ -1095,7 +1095,7 @@ functions for writing tests in Go.")
 (define-public go-github-com-smartystreets-goconvey
   (package
     (name "go-github-com-smartystreets-goconvey")
-    (version "1.6.3")
+    (version "v1.8.1")
     (source
      (origin
        (method git-fetch)
@@ -1104,13 +1104,14 @@ functions for writing tests in Go.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ph18rkl3ns3fgin5i4j54w5a69grrmf3apcsmnpdn1wlrbs3dxh"))))
+        (base32 "0s9s7yd4jfwgirnz46kw1sfhgcgsdzfxlca6q16i6ixaqczfaap9"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/smartystreets/goconvey"))
     (propagated-inputs
      (list go-github-com-jtolds-gls
-           go-github-com-smartystreets-assertions))
+           go-github-com-smarty-assertions
+           go-golang-org-x-tools))
     (home-page "https://github.com/smartystreets/goconvey")
     (synopsis "Go testing tool with both a web and terminal user interface")
     (description "GoConvey is a testing tool for Go. It integrates with go
