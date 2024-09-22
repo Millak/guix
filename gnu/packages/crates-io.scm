@@ -846,14 +846,14 @@ the Rust programming language.")
 (define-public rust-ahash-0.8
   (package
     (name "rust-ahash")
-    (version "0.8.7")
+    (version "0.8.11")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ahash" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "008xw6gigwnf0q01ic4ar2y4dqfnzn3kyys6vd4cvfa3imjakhvp"))))
+                "04chdfkls5xmhp1d48gnjsmglbqibizs3bpbj6rsj604m10si7g8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -869,12 +869,14 @@ the Rust programming language.")
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-fnv" ,rust-fnv-1)
         ("rust-fxhash" ,rust-fxhash-0.2)
-        ("rust-hashbrown" ,rust-hashbrown-0.12)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-no-panic" ,rust-no-panic-0.1)
+        ("rust-pcg-mwc" ,rust-pcg-mwc-0.2)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-seahash" ,rust-seahash-4)
-        ("rust-serde-json" ,rust-serde-json-1))))
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smallvec" ,rust-smallvec-1))))
     (home-page "https://github.com/tkaitchuck/ahash")
     (synopsis
      "Non-cryptographic hash function using AES-NI")
