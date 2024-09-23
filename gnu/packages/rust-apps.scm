@@ -1345,11 +1345,10 @@ bar.  It is also compatible with sway.")
                (with-output-to-file
                  (string-append bash-completions-dir "/just")
                  (lambda _ (invoke just "--completions" "bash")))
-               ;; This seems to be broken currently
-               ;(mkdir-p zsh-completions-dir)
-               ;(with-output-to-file
-               ;  (string-append zsh-completions-dir "/_just")
-               ;  (lambda _ (invoke just "--completions" "zsh")))
+               (mkdir-p zsh-completions-dir)
+               (with-output-to-file
+                 (string-append zsh-completions-dir "/_just")
+                 (lambda _ (invoke just "--completions" "zsh")))
                (mkdir-p fish-completions-dir)
                (with-output-to-file
                  (string-append fish-completions-dir "/just.fish")
