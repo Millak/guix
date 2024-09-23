@@ -117,9 +117,11 @@
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
 (define librewolf-source
-  (let* ((ff-src (firefox-source-origin "129.0.1" "0wy0fn0pavlhlkdybr59hhbn5ng0zn56mxa7gsknf8f2whiyipwx"))
-         (version "129.0.1-1")
-         (lw-src (librewolf-source-origin version "0pvv3v23q31hdjvqi1f3cqfyjrb8dbrrbfwxj2wacak1g0mzbxf4")))
+  (let* ((ff-src (firefox-source-origin "130.0"
+                  "0w4z3fq5zhm63a0wmhvmqrj263bvy962dir25q3z0x5hx6hjawh2"))
+         (lw-src (librewolf-source-origin
+                  "130.0.1-1"
+                  "0f80pihn375bdjhjmmg2v1w96wpn76zb60ycy39wafwh1dnzybrd")))
 
     (origin
       (method computed-origin-method)
@@ -163,11 +165,6 @@
                (substitute* '("Makefile")
                  (("^ff_source_tarball:=.*")
                   (string-append "ff_source_tarball:=" #+ff-src)))
-
-               ;; Remove encoding_rs patch, it doesn't build with Rust 1.75.
-               (substitute* '("assets/patches.txt")
-                 (("patches/encoding_rs.patch\\\n$")
-                  ""))
 
                ;; Stage locales.
                (begin
@@ -215,13 +212,17 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20240817075827")
+(define %librewolf-build-id "20240922110507")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "129.0.1-1")
-    (source librewolf-source)
+    (version "130.0.1-1")
+    (source
+     (origin
+      (inherit librewolf-source)
+      (patches
+       (search-patches "librewolf-add-paths-to-rdd-allowlist.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -318,6 +319,22 @@
                          (substitute* "dom/media/platforms/ffmpeg/FFmpegRuntimeLinker.cpp"
                            (("libavcodec\\.so")
                             libavcodec)))))
+                   (add-after 'unpack 'neuter-genai
+                     (lambda* _
+                       ;; Don't compile the code in.
+                       (substitute* "browser/components/moz.build"
+                         (("\"genai\",") ""))
+                       ;; Lock the preferences so they can't be enabled.
+                       (substitute* "lw/librewolf.cfg"
+                         (("defaultPref\\(\"browser\\.ml\\.")
+                          "lockPref(\"browser.ml."))
+                       ;; Correct a preference typo
+                       ;; see https://codeberg.org/librewolf/issues/issues/1919#issuecomment-2325954
+                       ;; Remove this in the next update.
+                       (substitute* "lw/librewolf.cfg"
+                                    (("browser\\.ml\\.enabled")
+                                     "browser.ml.enable"))
+                       ))
                    (add-after 'patch-source-shebangs 'patch-cargo-checksums
                      (lambda _
                        (use-modules (guix build cargo-utils))
@@ -575,26 +592,12 @@
                                        ;; For U2F and WebAuthn
                                        "eudev")))
 
-                              ;; VA-API is run in the RDD (Remote Data Decoder) sandbox
-                              ;; and must be explicitly given access to files it needs.
-                              ;; Rather than adding the whole store (as Nix had
-                              ;; upstream do, see
-                              ;; <https://github.com/NixOS/nixpkgs/pull/165964> and
-                              ;; linked upstream patches), we can just follow the
-                              ;; runpaths of the needed libraries to add everything to
-                              ;; LD_LIBRARY_PATH.  These will then be accessible in the
-                              ;; RDD sandbox.
-                              (rdd-whitelist (map (cut string-append <> "/")
-                                                  (delete-duplicates (append-map
-                                                                      runpaths-of-input
-                                                                      '("mesa"
-                                                                        "ffmpeg")))))
                               (gtk-share (string-append (assoc-ref inputs
                                                                    "gtk+")
                                                         "/share")))
                          (wrap-program (car (find-files lib "^librewolf$"))
                            `("LD_LIBRARY_PATH" prefix
-                             (,@libs ,@rdd-whitelist))
+                             ,libs)
                            `("XDG_DATA_DIRS" prefix
                              (,gtk-share))
                            `("MOZ_LEGACY_PROFILES" =
