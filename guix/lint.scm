@@ -7,7 +7,7 @@
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2017, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2020, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Timothy Sample <samplet@ngyro.com>
@@ -96,6 +96,7 @@
   #:export (check-description-style
             check-inputs-should-be-native
             check-inputs-should-not-be-an-input-at-all
+            check-inputs-should-use-a-minimal-variant
             check-input-labels
             check-wrapper-inputs
             check-patch-file-names
@@ -593,6 +594,21 @@ of a package, and INPUT-NAMES, a list of package specifications such as
            (make-warning
             package
             (G_ "'~a' should probably not be an input at all")
+            (list input)
+            #:field 'inputs))
+         (package-input-intersection (package-direct-inputs package)
+                                     input-names))))
+
+(define (check-inputs-should-use-a-minimal-variant package)
+  ;; Emit a warning if some inputs of PACKAGE should likely be replaced
+  ;; with their minimal variant.
+  (let ((input-names '("bash"
+                       "cmake"
+                       "gettext")))
+    (map (lambda (input)
+           (make-warning
+            package
+            (G_ "'~a' should probably switched for its minimal variant")
             (list input)
             #:field 'inputs))
          (package-input-intersection (package-direct-inputs package)
@@ -1978,6 +1994,10 @@ them for PACKAGE."
      (name        'inputs-should-not-be-input)
      (description "Identify inputs that shouldn't be inputs at all")
      (check       check-inputs-should-not-be-an-input-at-all))
+   (lint-checker
+     (name        'inputs-should-be-minimal)
+     (description "Identify inputs that should use their minimal variant")
+     (check       check-inputs-should-use-a-minimal-variant))
    (lint-checker
      (name        'input-labels)
      (description "Identify input labels that do not match package names")
