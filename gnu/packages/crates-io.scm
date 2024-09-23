@@ -14206,14 +14206,14 @@ sets of intervals.")
 (define-public rust-color-eyre-0.6
   (package
     (name "rust-color-eyre")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "color-eyre" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "014j49slcblg6cnsh974k9yjmi1khbm4dpmqdm1zii58rj1parjs"))
+        (base32 "1m9shifr9sdw0drszzyhvaq5jysrsiki44bl7m1gfdzj8rg6y52m"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  ;; https://github.com/eyre-rs/eyre/pull/175
@@ -14241,7 +14241,7 @@ sets of intervals.")
         ("rust-tracing" ,rust-tracing-0.1)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
-    (home-page "https://github.com/yaahc/color-eyre")
+    (home-page "https://github.com/eyre-rs/eyre")
     (synopsis "Error report handler for panics")
     (description
      "An error report handler for panics and eyre::Reports for colorful, consistent,
