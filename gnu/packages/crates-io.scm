@@ -14213,11 +14213,19 @@ sets of intervals.")
        (uri (crate-uri "color-eyre" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "014j49slcblg6cnsh974k9yjmi1khbm4dpmqdm1zii58rj1parjs"))))
+        (base32 "014j49slcblg6cnsh974k9yjmi1khbm4dpmqdm1zii58rj1parjs"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; https://github.com/eyre-rs/eyre/pull/175
+                 ;; gimli-symbolize was deprecated in backtrace in ~2022
+                 ;; and was folded into backtrace's std feature set.
+                 (substitute* "Cargo.toml"
+                   ((".*gimli-symbolize.*") ""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--release" "--"
-                            "--skip=test_error_backwards_compatibility")
+                            "--skip=test_error_backwards_compatibility"
+                            "--skip=test_panic_backwards_compatibility")
        #:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
                        ("rust-color-spantrace" ,rust-color-spantrace-0.2)
                        ("rust-eyre" ,rust-eyre-0.6)
