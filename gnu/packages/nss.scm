@@ -333,7 +333,7 @@ security standards.")
   (package
    (inherit nss)
    (name "nss-rapid")
-   (version "3.103")
+   (version "3.104")
    (source (origin
              (inherit (package-source nss))
              (uri (let ((version-with-underscores
@@ -344,7 +344,7 @@ security standards.")
                      "nss-" version ".tar.gz")))
              (sha256
               (base32
-               "0qp9rs226rr6gh51b42cdbydr4mj80cli3bfqhh7bp3jyxbvcjkv"))))
+               "13mca2y92sm05kxb40qvlkq8l93ghmrhh0s3iawpc7idc8ik4xp2"))))
    (arguments
     (substitute-keyword-arguments (package-arguments nss)
       ((#:phases phases)
