@@ -1299,7 +1299,7 @@ but it works for any C/C++ project.")
 (define-public actionlint
   (package
     (name "actionlint")
-    (version "1.7.1")
+    (version "1.7.2")
     (source
      (origin
        (method git-fetch)
@@ -1308,13 +1308,17 @@ but it works for any C/C++ project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h84gb2mfhsrv1vqb3s2ff9j43zhg0ga49af6h2wdssbrs7w3vcy"))))
+        (base32 "1rgsxv4clgfyl4gr8bjk81p4b87c6hr34flxzw6011h0vjc54n7x"))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
+      #:build-flags
+      #~(list (string-append
+               "-ldflags=-X github.com/rhysd/actionlint.version=" #$version))
       #:import-path "github.com/rhysd/actionlint/cmd/actionlint"
       #:unpack-path "github.com/rhysd/actionlint"))
+    ;; XXX: Install Man page, wrap with shellcheck and pyflakes.
     (native-inputs
      (list go-github-com-fatih-color
            go-github-com-mattn-go-colorable
