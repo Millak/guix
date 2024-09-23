@@ -1300,28 +1300,30 @@ but it works for any C/C++ project.")
   (package
     (name "actionlint")
     (version "1.7.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rhysd/actionlint")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0h84gb2mfhsrv1vqb3s2ff9j43zhg0ga49af6h2wdssbrs7w3vcy"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rhysd/actionlint")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h84gb2mfhsrv1vqb3s2ff9j43zhg0ga49af6h2wdssbrs7w3vcy"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/rhysd/actionlint/cmd/actionlint"
-       #:unpack-path "github.com/rhysd/actionlint"
-       #:install-source? #f))
-    (inputs (list go-github-com-fatih-color
-                  go-github-com-mattn-go-colorable
-                  go-github-com-mattn-go-runewidth
-                  go-github-com-robfig-cron
-                  go-golang-org-x-sync
-                  go-golang-org-x-sync
-                  go-gopkg-in-yaml-v3))
-    (native-inputs (list go-github-com-google-go-cmp))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/rhysd/actionlint/cmd/actionlint"
+      #:unpack-path "github.com/rhysd/actionlint"))
+    (native-inputs
+     (list go-github-com-fatih-color
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-runewidth
+           go-github-com-robfig-cron
+           go-golang-org-x-sync
+           go-golang-org-x-sync
+           go-github-com-google-go-cmp
+           go-gopkg-in-yaml-v3))
     (home-page "https://rhysd.github.io/actionlint/")
     (synopsis "Static checker for GitHub Actions workflow files")
     (description
