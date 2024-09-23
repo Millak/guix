@@ -25735,32 +25735,29 @@ like Don libes expect.")
 (define-public rust-eyre-0.6
   (package
     (name "rust-eyre")
-    (version "0.6.8")
+    (version "0.6.12")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "eyre" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1sy7x8p74jfx1mvj4ifl0lxkxaqvmswdgdr84y1dqb6055d6nasc"))))
+                "1v1a3vb9gs5zkwp4jzkcfnpg0gvyp4ifydzx37f4qy14kzcibnbw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags (list "--release" "--"
-                                "--skip=macros::bail"
-                                "--skip=macros::ensure")
-       #:cargo-inputs (("rust-indenter" ,rust-indenter-0.3)
+     `(#:cargo-inputs (("rust-indenter" ,rust-indenter-0.3)
                        ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-pyo3" ,rust-pyo3-0.13))
+                       ("rust-pyo3" ,rust-pyo3-0.20))
        #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
                                    ("rust-backtrace" ,rust-backtrace-0.3)
                                    ("rust-futures" ,rust-futures-0.3)
-                                   ("rust-pyo3" ,rust-pyo3-0.13)
+                                   ("rust-pyo3" ,rust-pyo3-0.20)
                                    ("rust-rustversion" ,rust-rustversion-1)
-                                   ("rust-syn" ,rust-syn-1)
+                                   ("rust-syn" ,rust-syn-2)
                                    ("rust-thiserror" ,rust-thiserror-1)
                                    ("rust-trybuild" ,rust-trybuild-1))))
     (native-inputs (list python))
-    (home-page "https://github.com/yaahc/eyre")
+    (home-page "https://github.com/eyre-rs/eyre")
     (synopsis "Trait object based error handling type")
     (description
      "This library provides @code{eyre::Report}, a trait object based error
