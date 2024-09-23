@@ -633,9 +633,20 @@ to run without any changes.")
     (arguments
      (list #:configure-flags
            #~(list (string-append "--with-ssl="
-                                  #$(this-package-input "openssl")))))
+                                  #$(this-package-input "openssl")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-fetchmailconf
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/fetchmailconf")
+                    `("GUIX_PYTHONPATH" ":"
+                      prefix (,(getenv "GUIX_PYTHONPATH")))))))))
     (inputs
-     (list openssl))
+     (list openssl
+           ;; Needed for fetchmailconf
+           bash-minimal
+           python-future
+           python-wrapper))
     (home-page "https://www.fetchmail.info/")
     (synopsis "Remote-mail retrieval and forwarding utility")
     (description
