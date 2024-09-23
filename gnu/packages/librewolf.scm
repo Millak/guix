@@ -40,7 +40,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-
 (define-module (gnu packages librewolf)
   #:use-module ((srfi srfi-1) #:hide (zip))
   #:use-module (guix build-system gnu)
@@ -116,12 +115,13 @@
 
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define librewolf-source
-  (let* ((ff-src (firefox-source-origin "130.0"
-                  "0w4z3fq5zhm63a0wmhvmqrj263bvy962dir25q3z0x5hx6hjawh2"))
+(define* (make-librewolf-source #:key version firefox-hash librewolf-hash)
+  (let* ((ff-src (firefox-source-origin
+                  (car (string-split version #\-))
+                  firefox-hash))
          (lw-src (librewolf-source-origin
-                  "130.0.1-1"
-                  "0f80pihn375bdjhjmmg2v1w96wpn76zb60ycy39wafwh1dnzybrd")))
+                  version
+                  librewolf-hash)))
 
     (origin
       (method computed-origin-method)
@@ -220,7 +220,10 @@
     (version "130.0.1-1")
     (source
      (origin
-      (inherit librewolf-source)
+      (inherit (make-librewolf-source
+                #:version version
+                #:firefox-hash "0w4z3fq5zhm63a0wmhvmqrj263bvy962dir25q3z0x5hx6hjawh2"
+                #:librewolf-hash "0f80pihn375bdjhjmmg2v1w96wpn76zb60ycy39wafwh1dnzybrd"))
       (patches
        (search-patches "librewolf-add-paths-to-rdd-allowlist.patch"))))
     (build-system gnu-build-system)
