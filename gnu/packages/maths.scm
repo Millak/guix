@@ -2363,8 +2363,9 @@ sharing of scientific data.")
        ((#:configure-flags flags)
         `(cons* "CC=mpicc" "CXX=mpicxx"
                 "--enable-parallel-tests"
-                ;; Shared libraries not supported with parallel IO.
-                "--disable-shared" "--with-pic"
+                ;; NetCDF supports both parallel and shared library building
+                ;; See https://docs.unidata.ucar.edu/nug/current/getting_and_building_netcdf.html#build_parallel
+                "--enable-shared" "--with-pic"
                 ,flags))
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
