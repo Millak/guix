@@ -2,6 +2,7 @@
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2016, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,9 +26,13 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages python))
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-science))
 
 (define-public iso-codes/official
   ;; This package variant is intended for ‘external’ use, such as users running
@@ -100,6 +105,45 @@ information.")
               (sha256
                (base32
                 "0a77b9aid68vakhsa3l3lx2jav5q9fp7vn50mwmzkr2lkr2l4k41"))))))
+
+(define-public python-country-converter
+  (package
+    (name "python-country-converter")
+    (version "1.2")
+    (source
+     (origin
+       (method git-fetch) ;no test data in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/IndEcol/country_converter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i1nlbahfwgx1f5q4ib32539xmc694834s0flzp0wlki0hwzd4rd"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-pandas))
+    (home-page "https://github.com/IndEcol/country_converter")
+    (synopsis "Auto conversion from different country name standards")
+    (description
+     "The country converter (coco) automates the conversion from different
+standards and version of country names.  Internally, coco is based on a table
+specifying the different ISO and UN standards per country together with the
+official name and a regular expression which aim to match all English versions
+of a specific country name.  In addition, coco includes classification based
+on UN-, EU-, OECD-membership, UN regions specifications, continents and
+various MRIO and IAM databases.
+
+Supported classification schemas: APEC, BASIC, BRIC, CC41, CIS, Cecilia 2050
+classification, DACcode, EEA membership, EU membership, EXIOBASE 1
+classification, EXIOBASE 2 classification, EXIOBASE 3 classification, Eora,
+FAOcode, G20, G7, GBDcode, GWcode, IEA, IMAGE, IOC ISO 3166-1 alpha-2, ISO
+3166-1 alpha-3, ISO 3166-1 numeric, MESSAGE 11-region classification, OECD
+membership, REMIND, Schengen region, UN membership, UN numeric code, UN
+region, WIOD classification, ccTLD.")
+    (license license:gpl3)))
 
 (define-public python-iso639
   (package
