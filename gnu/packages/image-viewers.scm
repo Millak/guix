@@ -700,7 +700,7 @@ Poppler-Qt5 binding, PDF documents.")
 (define-public qview
   (package
     (name "qview")
-    (version "5.0")
+    (version "6.1")
     (source
      (origin
        (method git-fetch)
@@ -709,32 +709,31 @@ Poppler-Qt5 binding, PDF documents.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ck4mvhzc4m72n010n43d8ipjczzk6ya637rgfyi7bzb4gv0f3am"))))
+        (base32 "1c719ivzdm0m8apbqx8h0wi796k5myrm4q3vl16vxwzjcx5ball7"))))
     (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
+      #:tests? #f ; test code doesn't compile
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
-            (lambda* (#:key outputs #:allow-other-keys)
-              (invoke "qmake" (string-append "PREFIX=" #$output))))
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (invoke "qmake" (string-append "PREFIX=" #$output))
+              (substitute* "Makefile"
+                (("[[:graph:]]+/bin/lrelease")
+                 (search-input-file inputs "/bin/lrelease")))))
           ;; Don't phone home or show "Checking for updates..." in the About
           ;; menu.
           (add-before 'build 'disable-auto-update
             (lambda _
               (substitute* "src/qvaboutdialog.cpp"
                 (("qvApp->checkUpdates\\(\\);") "")
-                (("updateText\\(\\);") ""))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion "tests"
-                  (invoke "qmake" "tests.pro")
-                  (invoke "make" "tests"))))))))
+                (("updateText\\(\\);") "")))))))
     (native-inputs
-     (list qttools-5))
+     (list qttools))
     (inputs
-     (list qtbase-5 qtimageformats-5 qtsvg-5))
+     (list qtbase qtimageformats qtsvg))
     (home-page "https://interversehq.com/qview/")
     (synopsis "Convenient and minimal image viewer")
     (description "qView is a Qt image viewer designed with visually
