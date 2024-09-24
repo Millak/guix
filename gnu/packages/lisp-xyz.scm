@@ -31053,8 +31053,8 @@ has a small codebase that's easy to understand and use.")
   (sbcl-package->ecl-package sbcl-vom))
 
 (define-public sbcl-websocket-driver
-  (let ((commit "df94496ecb525d086eeada4f5875975515b7212e")
-        (revision "0"))
+  (let ((commit "17ba5535fb1c4fe43e7e8ac786e8b61a174fcba3")
+        (revision "1"))
     (package
      (name "sbcl-websocket-driver")
      (version (git-version "0.2.0" revision commit))
@@ -31067,7 +31067,7 @@ has a small codebase that's easy to understand and use.")
              (commit commit)))
        (file-name (git-file-name "cl-websocket-driver" version))
        (sha256
-        (base32 "0y852sqdnxfma6kw833by4wkgbgbv4ppzawjk8pk3y1pmh6is83y"))))
+        (base32 "1lj6xarr62199ladkml7qpgi86w94j4djrp54v9ch0zakni3rhj2"))))
      (build-system asdf-build-system/sbcl)
      (inputs
       (list sbcl-babel
