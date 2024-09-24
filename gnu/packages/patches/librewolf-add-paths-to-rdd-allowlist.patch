@@ -1,0 +1,11 @@
+--- a/security/sandbox/linux/broker/SandboxBrokerPolicyFactory.cpp
++++ b/security/sandbox/linux/broker/SandboxBrokerPolicyFactory.cpp
+@@ -920,6 +920,8 @@
+   policy->AddDir(rdonly, "/usr/lib64");
+   policy->AddDir(rdonly, "/run/opengl-driver/lib");
+   policy->AddDir(rdonly, "/nix/store");
++  policy->AddDir(rdonly, "/gnu/store");
++  policy->AddDir(rdonly, "/run/current-system/profile/lib");
+
+   // Bug 1647957: memory reporting.
+   AddMemoryReporting(policy.get(), aPid);
