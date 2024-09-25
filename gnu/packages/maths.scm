@@ -7702,7 +7702,7 @@ s-expression-based format.")
 (define-public z3
   (package
     (name "z3")
-    (version "4.8.17")
+    (version "4.13.0")
     (home-page "https://github.com/Z3Prover/z3")
     (source (origin
               (method git-fetch)
@@ -7711,7 +7711,7 @@ s-expression-based format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vvb09q7w7zd29qc4qjysrrhyylszm1wf6azkff004ixwn026b05"))))
+                "0j46lckf3zgx2xjay7z6nvlgh47gisbbl4s3m5zn280a13fwz1ih"))))
     (build-system cmake-build-system)
     (arguments
      (list
