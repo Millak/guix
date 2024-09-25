@@ -3424,7 +3424,7 @@ using @command{dmenu}.")
 (define-public fuzzel
   (package
     (name "fuzzel")
-    (version "1.10.2")
+    (version "1.11.0")
     (home-page "https://codeberg.org/dnkl/fuzzel")
     (source (origin
               (method git-fetch)
@@ -3432,7 +3432,9 @@ using @command{dmenu}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "024gnddvabf5dwkdffr6qnnia810w1jqn4ll9fvbcaimybgpvs13"))))
+                "1z4n1i9rdhfcmfsvb5bvsqy8x8fg51kfiakyqnp200n1nl0kd9ll"))
+              (patches
+                (search-patches "fuzzel-fix-gcc-error.patch"))))
     (build-system meson-build-system)
     (arguments
      (list #:build-type "release"
