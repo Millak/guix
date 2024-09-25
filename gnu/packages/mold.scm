@@ -35,7 +35,7 @@
 (define-public mold
   (package
     (name "mold")
-    (version "2.33.0")
+    (version "2.34.0")
     (source
      (origin
        (method git-fetch)
@@ -44,7 +44,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wsb0aiqia3jfc9k3h2d446y0mzmaq6rz9xkjf9125npdygm7kpb"))
+        (base32 "0n8ygaxsda9ybc1jc7ap7grbziah403wjm2hmmcxzahm52v6czs0"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -62,25 +62,25 @@
       #~(modify-phases %standard-phases
           (add-before 'configure 'force-system-xxhash
             (lambda _
-              (substitute* "common/common.h"
+              (substitute* "lib/common.h"
                 (("#include \"../third-party/xxhash/xxhash.h\"")
                  "#include <xxhash.h>"))))
           (add-before 'configure 'fix-compiler-name-in-test
             (lambda _
-              (substitute* "test/elf/common.inc"
+              (substitute* "test/common.inc"
                 (("CC=\"\\$\\{TEST_CC:-cc\\}\"") "CC=gcc")
                 (("CXX=\"\\$\\{TEST_CXX:-c\\+\\+\\}\"")
                  "CXX=g++"))))
           (add-before 'configure 'skip-tbb-lto-test
             (lambda _
               ;; This test needs tbb 2021.9.0 or newer
-              (delete-file "test/elf/lto-version-script.sh")))
+              (delete-file "test/lto-version-script.sh")))
           (add-before 'configure 'disable-rpath-test
             (lambda _
               ;; This test fails because mold expect the RUNPATH as-is,
               ;; but compiler in Guix will insert the path of gcc-lib and
               ;; glibc into the output binary.
-              (delete-file "test/elf/rpath.sh"))))))
+              (delete-file "test/rpath.sh"))))))
     (inputs (list mimalloc tbb xxhash zlib `(,zstd "lib")))
     (home-page "https://github.com/rui314/mold")
     (synopsis "Fast linker")
