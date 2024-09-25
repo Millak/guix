@@ -31659,6 +31659,26 @@ constant expressions.")
     (description "This package provides an Emacs interface for Docker.")
     (license license:gpl3+)))
 
+(define-public emacs-kubed
+  (package
+    (name "emacs-kubed")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/eshelyaron/kubed.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0m389r7qmiynrxm19v68k2fmn1g4qd3f7xibqccsfsayj1xzxgqp"))))
+    (build-system emacs-build-system)
+    (synopsis "Kubernetes control")
+    (description "This packages provides a Kubernetes control interface
+within emacs.")
+    (home-page "https://eshelyaron.com/man/kubed/")
+    (license license:gpl3+)))
+
 (define-public emacs-dockerfile-mode
   (package
     (name "emacs-dockerfile-mode")
