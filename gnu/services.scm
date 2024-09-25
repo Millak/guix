@@ -665,9 +665,14 @@ information is missing, return the empty list (for channels) and possibly
            (delete-file-recursively "/var/run")
            (delete-file-recursively "/run")
 
+           ;; Note: The second argument to 'mkdir' is and'ed with umask,
+           ;; hence the 'chmod' calls.
            (mkdir "/tmp" #o1777)
+           (chmod "/tmp" #o1777)
            (mkdir "/var/run" #o755)
-           (mkdir "/run" #o755))))))
+           (chmod "/var/run" #o755)
+           (mkdir "/run" #o755)
+           (chmod "/var/run" #o755))))))
 
 (define cleanup-service-type
   ;; Service that cleans things up in /tmp and similar.

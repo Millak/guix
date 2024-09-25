@@ -296,6 +296,10 @@ info --version")
                                     (operating-system-user-accounts os))))
               (stat:perms (marionette-eval `(stat ,root-home) marionette))))
 
+          (test-equal "permissions on /tmp"
+            #o1777
+            (stat:perms (marionette-eval '(lstat "/tmp") marionette)))
+
           (test-equal "ownership and permissions of /var/empty"
             '(0 0 #o555)
             (let ((st (marionette-eval `(stat "/var/empty") marionette)))
