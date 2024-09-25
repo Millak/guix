@@ -1337,8 +1337,8 @@ collaboration using typical untrusted file hosts or services.")
    (license license:gpl3+)))
 
 (define-public cgit
-  (let ((commit "9811bf07ef6868cdf5618cbbd8b9db5ada936622")
-        (rev "5"))
+  (let ((commit "2a13177f3dce660954b1ce78bc83338fe64f6b33")
+        (rev "6"))
     (package
       (name "cgit")
       ;; Update the ‘git-source’ input as well.
@@ -1350,7 +1350,7 @@ collaboration using typical untrusted file hosts or services.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1ga73789lixd7l7f1vs7vi8c0lvqjzq036k64lyrv7v6r7yxpn5p"))
+                  "0g02rghwx6gda15ip1pd3rli6smis1mrcb904zlxfqmm6dlc7lca"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
@@ -1426,9 +1426,9 @@ collaboration using typical untrusted file hosts or services.")
              (method url-fetch)
              ;; cgit is tightly bound to git.  Use GIT_VER from the Makefile,
              ;; which may not match the current (package-version git).
-             (uri "mirror://kernel.org/software/scm/git/git-2.46.0.tar.xz")
+             (uri "mirror://kernel.org/software/scm/git/git-2.46.2.tar.xz")
              (sha256
-              (base32 "15bzq9m6c033qiz5q5gw1nqw4m452vvqax30wbms6z4bl9i384kz"))))
+              (base32 "18rcmvximgyg3v1a9papi9djfamiak0ys5cmgx7ll29nhp3a3s2y"))))
          ("bash-minimal" ,bash-minimal)
          ("openssl" ,openssl)
          ("python" ,python)
