@@ -2948,39 +2948,37 @@ includes a complete LAPACK implementation.")
       (license license:bsd-3))))
 
 (define-public scasp
-  (let ((commit "89a427aa04ec6346425a40111c99b310901ffe51")
-        (revision "1"))
-    (package
-      (name "scasp")
-      (version (git-version "0.21.11.26" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/SWI-Prolog/sCASP")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1ijqv9xr3imrdmz6nq7zqwsmmaxn638icig19m8900m7mjfpizs4"))))
-      (build-system copy-build-system)
-      (arguments
-       (list
-        #:install-plan #~`(("scasp" "bin/")
-                           ("prolog" "lib/swipl/library"))
-        #:modules `((guix build copy-build-system)
-                    ((guix build gnu-build-system) #:prefix gnu:)
-                    (guix build utils)
-                    (ice-9 regex))
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'install 'build (assoc-ref gnu:%standard-phases 'build))
-            (add-after 'build 'check (assoc-ref gnu:%standard-phases 'check)))))
-      (native-inputs (list swi-prolog))
-      (home-page "https://github.com/SWI-Prolog/sCASP")
-      (synopsis "Interpreter for ASP programs with constraints")
-      (description "@code{s(CASP)} is a top-down interpreter for ASP programs
+  (package
+    (name "scasp")
+    (version "1.1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SWI-Prolog/sCASP")
+                    (commit (string-append "V" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1m4fs1ywich9cwj55miqp5zxs7c1fw9wvy7lcj5rkrgcanks5qk4"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~`(("scasp" "bin/")
+                         ("prolog" "lib/swipl/library"))
+      #:modules `((guix build copy-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils)
+                  (ice-9 regex))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'build (assoc-ref gnu:%standard-phases 'build))
+          (add-after 'build 'check (assoc-ref gnu:%standard-phases 'check)))))
+    (native-inputs (list swi-prolog))
+    (home-page "https://github.com/SWI-Prolog/sCASP")
+    (synopsis "Interpreter for ASP programs with constraints")
+    (description "@code{s(CASP)} is a top-down interpreter for ASP programs
 with constraints.")
-      (license license:asl2.0))))
+    (license license:asl2.0)))
 
 (define-public ceres
   (package
