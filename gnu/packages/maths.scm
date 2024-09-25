@@ -9247,86 +9247,84 @@ symbolic reasoning engines that need to reason about polynomial constraints.")
    (license license:lgpl3+)))
 
 (define-public lingeling
-  (let ((commit "72d2b13eea5fbd95557a3d0d199cd98dfbdc76ee")
-        (revision "1"))
-    (package
-     (name "lingeling")
-     (version (git-version "sc2022" revision commit))
-     (source (origin
+  (package
+    (name "lingeling")
+    (version "1.0.0")
+    (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/arminbiere/lingeling")
-                    (commit commit)))
+                    (commit (string-append "rel-" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16s30x8s2cw6icchwm65zj56ph4qwz6i07g3hwkknvajisvjq85c"))))
-     (build-system gnu-build-system)
-     (arguments
-      (list #:test-target "test"
-            #:modules `((ice-9 match)
-                        ,@%default-gnu-modules)
-            #:configure-flags #~(list "--aiger=.")
-            #:phases
-            #~(modify-phases %standard-phases
-                (add-after 'unpack 'unpack-aiger
-                  (lambda* (#:key inputs #:allow-other-keys)
-                    (invoke #$(ar-for-target) "x"
-                            (search-input-file inputs "lib/libaiger.a")
-                            "aiger.o")
-                    (copy-file
-                     (search-input-file inputs "include/aiger/aiger.h")
-                     "aiger.h")))
-                (add-after 'unpack 'hard-code-commit
-                  (lambda _
-                    (substitute* "mkconfig.sh"
-                      (("`\\./getgitid`") #$commit))))
-                (add-after 'unpack 'patch-source
-                  (lambda* (#:key inputs #:allow-other-keys)
-                    (substitute* (list "treengeling.c" "lgldimacs.c")
-                      (("\"(gunzip|xz|bzcat|7z)" all cmd)
-                       (string-append
-                        "\""
-                        (search-input-file inputs (string-append "bin/" cmd)))))))
-                (replace 'configure
-                  (lambda* (#:key configure-flags #:allow-other-keys)
-                    (apply invoke "./configure.sh" configure-flags)))
-                (replace 'install
-                  (lambda* (#:key outputs #:allow-other-keys)
-                    (let ((bin (string-append (assoc-ref outputs "out")
-                                              "/bin")))
-                      (mkdir-p bin)
-                      (for-each
-                       (lambda (file)
-                         (install-file file bin))
-                       '("blimc" "ilingeling" "lglddtrace" "lglmbt"
-                         "lgluntrace" "lingeling" "plingeling"
-                         "treengeling")))))
-                (add-after 'install 'wrap-path
-                  (lambda* (#:key outputs #:allow-other-keys)
-                    (with-directory-excursion (string-append
-                                               (assoc-ref outputs "out")
-                                               "/bin")
-                      (for-each
-                       (lambda (file)
-                         (wrap-program
-                          file
+                "0hszkhyni7jcw580f41rrrnwz42x56sqvd8zpcjdagvdiag76lc1"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "test"
+           #:modules `((ice-9 match)
+                       ,@%default-gnu-modules)
+           #:configure-flags #~(list "--aiger=.")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'unpack-aiger
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (invoke #$(ar-for-target) "x"
+                           (search-input-file inputs "lib/libaiger.a")
+                           "aiger.o")
+                   (copy-file
+                    (search-input-file inputs "include/aiger/aiger.h")
+                    "aiger.h")))
+               (add-after 'unpack 'hard-code-commit
+                 (lambda _
+                   (substitute* "mkconfig.sh"
+                     (("`\\./getgitid`") ""))))
+               (add-after 'unpack 'patch-source
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* (list "treengeling.c" "lgldimacs.c")
+                     (("\"(gunzip|xz|bzcat|7z)" all cmd)
+                      (string-append
+                       "\""
+                       (search-input-file inputs (string-append "bin/" cmd)))))))
+               (replace 'configure
+                 (lambda* (#:key configure-flags #:allow-other-keys)
+                   (apply invoke "./configure.sh" configure-flags)))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((bin (string-append (assoc-ref outputs "out")
+                                             "/bin")))
+                     (mkdir-p bin)
+                     (for-each
+                      (lambda (file)
+                        (install-file file bin))
+                      '("blimc" "ilingeling" "lglddtrace" "lglmbt"
+                        "lgluntrace" "lingeling" "plingeling"
+                        "treengeling")))))
+               (add-after 'install 'wrap-path
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (with-directory-excursion (string-append
+                                              (assoc-ref outputs "out")
+                                              "/bin")
+                     (for-each
+                      (lambda (file)
+                        (wrap-program
+                            file
                           '("PATH" suffix
                             #$(map (lambda (input)
                                      (file-append (this-package-input input) "/bin"))
                                    '("gzip" "bzip2" "xz" "p7zip")))))
-                       ;; These programs use sprintf on buffers with magic
-                       ;; values to construct commands (yes, eww), so we
-                       ;; can't easily substitute* them.
-                       '("lglddtrace" "lgluntrace" "lingeling" "plingeling"))))))))
-     (inputs (list `(,aiger "static") bash-minimal gzip bzip2 xz p7zip))
-     (home-page "http://fmv.jku.at/lingeling")
-     (synopsis "SAT solver")
-     (description "This package provides a range of SAT solvers, including
+                      ;; These programs use sprintf on buffers with magic
+                      ;; values to construct commands (yes, eww), so we
+                      ;; can't easily substitute* them.
+                      '("lglddtrace" "lgluntrace" "lingeling" "plingeling"))))))))
+    (inputs (list `(,aiger "static") bash-minimal gzip bzip2 xz p7zip))
+    (home-page "http://fmv.jku.at/lingeling")
+    (synopsis "SAT solver")
+    (description "This package provides a range of SAT solvers, including
 the sequential @command{lingeling} and its parallel variants
 @command{plingeling} and @command{treengeling}.  A bounded model checker is
 also included.")
-     (license license:expat))))
+    (license license:expat)))
 
 (define-public louvain-community
   (let ((commit "8cc5382d4844af127b1c1257373740d7e6b76f1e")
