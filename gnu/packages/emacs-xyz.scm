@@ -23747,6 +23747,27 @@ equivalent Emacs Lisp type.  This is a low level API, and won't be useful to
 end users.")
     (license license:gpl2+)))
 
+(define-public emacs-pgmacs
+  (package
+    (name "emacs-pgmacs")
+    (version "0.42")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/emarsden/pgmacs.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0pf8y64hka1fl47dphmh4xgxiwfsd0g4q2fazq5yc48zwr9nsf02"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-pg))
+    (synopsis "emacs PostgreSQL client")
+    (description "This package provides a PostgreSQL client in emacs.")
+    (home-page "https://github.com/emarsden/pgmacs")
+    (license license:gpl3+)))
+
 (define-public emacs-finalize
   (package
   (name "emacs-finalize")
