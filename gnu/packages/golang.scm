@@ -3329,30 +3329,6 @@ GNU extensions} to the POSIX recommendations for command-line options.")
 all types of configuration needs and formats.")
     (license license:expat)))
 
-(define-public go-github-com-fsnotify-fsnotify
-  (package
-    (name "go-github-com-fsnotify-fsnotify")
-    (version "1.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/fsnotify/fsnotify")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1h7vs21lkj4bqbw5a6mqykaf56y181r0nja7c8pzajkvbsc39y8m"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/fsnotify/fsnotify"))
-    (propagated-inputs
-     `(("golang.org/x/sys" ,go-golang-org-x-sys)))
-    (home-page "https://github.com/fsnotify/fsnotify")
-    (synopsis "File system notifications for Go")
-    (description "File system notifications for Go")
-    (license license:bsd-3)))
-
 (define-public go-github-com-nxadm-tail
   (package
     (name "go-github-com-nxadm-tail")
