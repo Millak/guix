@@ -9059,7 +9059,7 @@ researchers and developers alike to get started on SAT.")
 (define-public kissat
   (package
     (name "kissat")
-    (version "3.0.0")
+    (version "4.0.1")
     (source
      (origin
        (method git-fetch)
@@ -9069,7 +9069,7 @@ researchers and developers alike to get started on SAT.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "04x4w760srbdi4zci0s747qxk717x5d2x59ixraxh5104s9nyn8b"))))
+         "0acg61cfcjg13if2i375cyl4xvwmabhfhi9z8pnw971046am6bzv"))))
     (build-system gnu-build-system)
     (inputs (list xz gzip lzip bzip2 p7zip))
     (arguments
@@ -9094,7 +9094,7 @@ researchers and developers alike to get started on SAT.")
                  "bool found = true;"))
               (substitute* "test/testmain.c"
                 ;; SIGINT is ignored inside invoke.
-                (("^SIGNAL\\(SIGINT\\)") ""))))
+                (("^[ \t]*SIGNAL[ \t]*\\(SIGINT\\)") ""))))
           (replace 'configure
             (lambda* (#:key configure-flags #:allow-other-keys)
               ;; The configure script does not support standard GNU options.
