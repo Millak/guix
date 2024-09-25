@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021 raingloom <raingloom@riseup.net>
+;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Guix Together <jgart@dismail.de>
@@ -2398,6 +2399,30 @@ Implements string conversion functionality for unit prefixes.
      "This package provides a fork of Golang's @code{encoding/json} with the
 scanner API made public.")
     (license license:bsd-3)))
+
+(define-public go-github-com-dustin-go-humanize
+  (package
+    (name "go-github-com-dustin-go-humanize")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dustin/go-humanize")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iyhd90pnmxh64nhsh6k02c1b1glpmhh4whga9jgb9g0i5hz3sya"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dustin/go-humanize"))
+    (home-page "https://github.com/dustin/go-humanize")
+    (synopsis "Humane unit formatter")
+    (description
+     "@code{go-humanize} provides formatters for units to human friendly
+sizes.  It converts boring ugly numbers to human-friendly strings and back.")
+    (license license:expat)))
 
 (define-public go-github-com-edsrzf-mmap-go
   (package

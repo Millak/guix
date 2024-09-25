@@ -23,6 +23,7 @@
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages texinfo)
   #:use-module (guix licenses)
   #:use-module (guix packages)
