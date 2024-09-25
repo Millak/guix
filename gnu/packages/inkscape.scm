@@ -204,7 +204,8 @@ endif()~%~%"
                           (("add_pdfinput_test\\(font-(spacing|style) 1 draw-all" all)
                            (string-append "#" all))))))
                   '())
-           #$@(if (target-x86-32?)
+           #$@(if (or (target-x86-32?)
+                      (target-arm32?))
                   '((add-after 'unpack 'fix-32bit-size_t-format
                       (lambda _
                         ;; Fix an error due to format type mismatch with 32-bit size_t.
