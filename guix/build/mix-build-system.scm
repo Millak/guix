@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Pierre-Henry Fröhring <contact@phfrohring.com>
 ;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -92,7 +93,15 @@ See: https://hexdocs.pm/mix/1.15.7/Mix.html#module-environment-variables"
   (setenv "MIX_EXS" mix-exs)
   (setenv "MIX_HOME" (getcwd))
   (setenv "MIX_PATH" (or mix-path ""))
-  (setenv "MIX_REBAR3" (string-append (assoc-ref inputs "rebar3") "/bin/rebar3")))
+  (setenv "MIX_REBAR3" (string-append (assoc-ref inputs "rebar3") "/bin/rebar3"))
+  ;; Add Erlang dependencies in Elixir's load path.
+  (setenv "ERL_LIBS"
+          (string-join (search-path-as-list
+                        `("lib/erlang/lib")
+                        (map (match-lambda
+                               ((label . package) package))
+                             inputs))
+                       ":")))
 
 (define* (set-elixir-version #:key inputs #:allow-other-keys)
   "Store the version number of the Elixir input in a parameter."
