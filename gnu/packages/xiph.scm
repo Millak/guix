@@ -272,7 +272,17 @@ It currently supports:
               "0w2v40kmvl741vmycv8h5s10n7arbs12n2b1p10z8j13saffcn3c"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:parallel-tests? #f))
+    `(#:parallel-tests? #f
+      ;; Unfortunately we need to make some changes to work around an
+      ;; assembly generation errors when building for armhf-linux.
+      #:phases
+      ,@(if (target-arm32?)
+            `((modify-phases %standard-phases
+                (add-before 'configure 'patch-configure
+                  (lambda _
+                    (substitute* "configure"
+                      (("-O3") "-O2"))))))
+            '(%standard-phases))))
    ;; FIXME: configure also looks for xmms, input could be added once it exists
    (propagated-inputs (list libogg)) ; required by flac.pc
    (synopsis "Free lossless audio codec")
