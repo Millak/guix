@@ -38169,7 +38169,7 @@ personal wiki.")
 (define-public emacs-org-node
   (package
     (name "emacs-org-node")
-    (version "0.8.6")
+    (version "1.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -38178,14 +38178,14 @@ personal wiki.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1binkkx86byw56zlignddrw7n0y0civ09wlch4yvxk9asdazkc0c"))))
+                "0l6xk760sjj384fv06ihiv5shq08ly17ap1vla7d307d7nag9c1n"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash
+           emacs-llama
            emacs-org
            emacs-persist
-           emacs-transient
-           ))
+           emacs-transient))
     (home-page "https://github.com/meedstrom/org-node")
     (synopsis "Non-hierarchical note-taking with Org-mode, faster than
 org-roam")
