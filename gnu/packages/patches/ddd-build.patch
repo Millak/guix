@@ -1,0 +1,24 @@
+Add missing '-I' flag.
+
+--- old/ddd/Makefile.am	(revision 7508)
++++ new/ddd/Makefile.am	(working copy)
+@@ -655,7 +655,7 @@
+ LIBXFT = @XFT_LIBS@ -lfontconfig
+
+ # Freetype2 headers
+-XFTINCLUDE = @XFT_INCLUDE@
++XFTINCLUDE = -I@XFT_INCLUDE@
+
+ # X Miscellaneous  Utilities needed for Athena and Motif >= 2.0 (lXmu)
+ LIBXMU = @XMU_LIBS@
+--- old/ddd/Makefile.in	(revision 7508)
++++ new/ddd/Makefile.in	(working copy)
+@@ -1307,7 +1307,7 @@
+ LIBXFT = @XFT_LIBS@ -lfontconfig
+
+ # Freetype2 headers
+-XFTINCLUDE = @XFT_INCLUDE@
++XFTINCLUDE = -I@XFT_INCLUDE@
+
+ # X Miscellaneous  Utilities needed for Athena and Motif >= 2.0 (lXmu)
+ LIBXMU = @XMU_LIBS@

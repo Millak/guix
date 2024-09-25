@@ -52,6 +52,7 @@
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages glib)
@@ -1006,23 +1007,24 @@ engineering.")
 (define-public ddd
   (package
     (name "ddd")
-    (version "3.4.0")
+    (version "3.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/ddd/ddd-" version ".tar.gz"))
+              (patches (search-patches "ddd-build.patch"))
               (sha256
                (base32
-                "03sqsfiri5p130cmmzh2wikg0gisql496rvdhr1qaidh1f5bqk2x"))))
+                "12gfyh139rim49m56lxm36ckdyiiz4n3la3y6ik1aqgrqfk1fxdq"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:tests? #f                  ;tests require manual intervention
-           ;; Avoid "friend declaration specifies default arguments and isn’t
-           ;; a definition" errors.
-           #:configure-flags #~(list "CXXFLAGS=-fpermissive")))
+     (list #:tests? #f                 ;tests require manual intervention
+           #:configure-flags
+           #~(list (string-append "--with-freetype-includes="
+                   #$(this-package-input "freetype") "/include/freetype2"))))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config bison flex perl))
     (inputs
-     (list motif ncurses gdb))
+     (list libxaw libxft freetype motif ncurses gdb))
     (synopsis "Graphical front-end for GDB and other debuggers")
     (description "GNU DDD, the Data Display Debugger, is a graphical front-end
 for command-line debuggers.  Many back-end debuggers are supported, notably
