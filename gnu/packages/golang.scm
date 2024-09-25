@@ -6908,7 +6908,7 @@ the External Data Representation (XDR) standard protocol as specified in RFC
 (define-public go-github-com-dustin-go-humanize
   (package
     (name "go-github-com-dustin-go-humanize")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -6918,7 +6918,7 @@ the External Data Representation (XDR) standard protocol as specified in RFC
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1kqf1kavdyvjk7f8kx62pnm7fbypn9z1vbf8v2qdh3y7z7a0cbl3"))))
+         "1iyhd90pnmxh64nhsh6k02c1b1glpmhh4whga9jgb9g0i5hz3sya"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/dustin/go-humanize"))
