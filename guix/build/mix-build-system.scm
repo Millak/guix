@@ -40,6 +40,9 @@
 ;; minor version number of the Elixir used in the build.
 (define %elixir-version (make-parameter "X.Y"))
 
+(define %git-version-rx
+  (make-regexp "^(.*)-[0-9]+(\\.[0-9]+)?(\\.[0-9]+)?-[0-9]+\\..+$"))
+
 (define* (elixir-libdir path #:optional (version (%elixir-version)))
   "Return the path where all libraries under PATH for a specified Elixir
 VERSION are installed."
@@ -133,10 +136,12 @@ We do not want to copy them to the installation directory."
 
 (define (package-name->elixir-name name+ver)
   "Convert the Guix package NAME-VER to the corresponding Elixir name-version
-format.  Example: elixir-a-pkg-1.2.3 -> a_pkg"
+format.  Example: elixir-a-pkg-1.2.3 -> a_pkg or elixir-a-pkg-0.0.0-0.e51e36e
+-> a_pkg"
+  (define git-version? (regexp-exec %git-version-rx name+ver))
   ((compose
     (cute string-join <> "_")
-    (cute drop-right <> 1)
+    (cute drop-right <> (if git-version? 2 1))
     (cute string-split <> #\-))
    (strip-prefix name+ver)))
 
