@@ -31,6 +31,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -99,7 +100,7 @@ Features include:
 (define-public tuba
   (package
     (name "tuba")
-    (version "0.6.3")
+    (version "0.8.4")
     (source
      (origin
        (method git-fetch)
@@ -108,7 +109,7 @@ Features include:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s1iq9bwv6wp4dyvrdjdbmj9sqj9zxa0c78swcw7nhmm3fksh3vz"))))
+        (base32 "1s36z85s14fp9gicvifvwm2wg13rpb02aqsaz25rx3wg4m0bs83f"))))
     (build-system meson-build-system)
     (arguments
       (list
@@ -134,7 +135,8 @@ Features include:
            gsettings-desktop-schemas    ; for the org.gnome.system.proxy schema
            pkg-config))
     (inputs
-     (list gst-plugins-bad
+     (list bash-minimal     ; for wrap-program
+           gst-plugins-bad
            gst-plugins-base
            gst-plugins-good
            gstreamer
