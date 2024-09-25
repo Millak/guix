@@ -2459,6 +2459,42 @@ of the Nestopia emulator.")
     (license (list license:gpl2+        ;this project
                    license:lgpl2.1+)))) ;nes_ntsc source files
 
+(define-public jg-cega
+  (package
+    (name "jg-cega")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/jgemu/cega")
+                    (commit version)))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "deps/"))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10qxfch08850zivxf4s1mhh0clx4h1cfn440acm6d7glb6wbv822"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
+    (native-inputs (list jg-api pkg-config))
+    (inputs (list speexdsp))
+    (home-page "https://gitlab.com/jgemu/cega")
+    (synopsis "Jolly Good SG-1000, SMS, Game Gear, and Mega Drive/Genesis \
+emulator")
+    (description "Cega is a cycle accurate emulator for the Sega SG-1000,
+Master System, and Game Gear written specifically for The Jolly Good API.
+Mega Drive emulation is in an experimental state.")
+    (license (list license:mpl2.0
+                   license:expat        ;src/emu2413, src/m68k
+                   license:bsd-3        ;src/ymfm
+                   license:zlib))))     ;src/z80.h
+
 (define-public zsnes
   (package
     (name "zsnes")
