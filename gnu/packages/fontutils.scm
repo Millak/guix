@@ -62,6 +62,7 @@
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages mc)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -2055,6 +2056,29 @@ It currently provides bidirectional text support (using FriBiDi),
 shaping (using HarfBuzz), and proper script itemization.  As a result, Raqm
 can support most writing systems covered by Unicode.")
     (license license:expat)))
+
+
+(define-public fontopia
+  (package
+    (name "fontopia")
+    (version "2.0")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "mirror://gnu/fontopia/fontopia-"
+                                 version ".tar.gz"))
+             (sha256
+              (base32 "0wv7bd7gdm1ma4xgq9av73ic3xhpwyszj6g6c6311xjk26xm9ahd"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list gnudos))
+    (home-page "https://www.gnu.org/software/fontopia/")
+    (synopsis "Text-based, console font editor")
+    (description
+     "GNU fontopia is an easy-to-use, text-based, console font editor.  You can
+edit the fonts that your GNU/Linux kernel is using to display your text on text-
+based (vs graphical) terminals.")
+    (license license:gpl3+)))
+
 
 (define-public lcdf-typetools
   (package
