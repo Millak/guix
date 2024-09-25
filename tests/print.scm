@@ -61,8 +61,13 @@
                (base32
                 "070pwb7brdcn1mfvplkd56vjc7lbz4iznzkqvfsakvgbv68k71ah"))))
     (build-system (@ (guix build-system gnu) gnu-build-system))
+
+    ;; Note: For this test, pick variables that do not have aliases; otherwise
+    ;; 'package->code' might pick one of the other variable names in a
+    ;; non-deterministic fashion.
     (inputs (list (@ (gnu packages base) coreutils)
-                  `(,(@ (gnu packages base) glibc) "debug")))
+                  `(,(@ (gnu packages base) gnu-make) "debug")))
+
     (home-page "http://gnu.org")
     (synopsis "Dummy")
     (description "This is a dummy package.")
