@@ -2426,6 +2426,39 @@ This is intended to be used with the Jolly Good Reference Frontend
                    license:isc          ;libco
                    license:lgpl2.1+))))
 
+(define-public jg-nestopia
+  (package
+    (name "jg-nestopia")
+    (version "1.52.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/jgemu/nestopia")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19qg9hgh25aaym7b81v5g7165v4fyymas6dmzc4z867mzaphbn6s"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags
+           #~(list (string-append "AR=" #$(ar-for-target))
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "CXX=" #$(cxx-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)))) ;no configure script
+    (native-inputs (list jg-api pkg-config))
+    (home-page "https://gitlab.com/jgemu/nestopia")
+    (synopsis "Jolly Good Fork of Nestopia")
+    (description "Nestopia JG is an emulator for the Nintendo Entertainment
+System/Famicom, including support for the Famicom Disk System and VS. System.
+Though originally a fork, Nestopia JG has become the de facto upstream branch
+of the Nestopia emulator.")
+    (license (list license:gpl2+        ;this project
+                   license:lgpl2.1+)))) ;nes_ntsc source files
+
 (define-public zsnes
   (package
     (name "zsnes")
