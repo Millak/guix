@@ -465,6 +465,10 @@ Telegram project, for its use in telegram desktop client.")
              (ice-9 match))
            #:configure-flags
            #~(list
+              ;; Do not generate the debug symbols to reduce link time memory
+              ;; requirements from 25 GiB to 1.3 GiB.  This also nearly halves
+              ;; the build time.
+              "-DCMAKE_BUILD_TYPE=Release"
               ;; Client applications must provide their own API-ID and API-HASH,
               ;; see also <https://core.telegram.org/api/obtaining_api_id>.
               ;; Here, we snarf the keys from the official Snaps, which are
