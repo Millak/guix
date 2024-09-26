@@ -9695,7 +9695,7 @@ easy, safe, and automatic.")
                  (search-input-file inputs "bin/bash")))))
           (add-after 'unpack 'disable-failing-tests
             (lambda _
-              #$@(if (target-x86-32?)
+              #$@(if (not (target-64bit?))
                      ;; On 32-bit systems, the far away dates are incorrect,
                      ;; and the floats are not parsed exactly.
                      '((substitute*
