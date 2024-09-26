@@ -1952,7 +1952,7 @@ queues header library based on circular buffer with @code{std::atomic}.")
 (define-public magic-enum
   (package
     (name "magic-enum")
-    (version "0.9.5")
+    (version "0.9.6")
     (home-page "https://github.com/Neargye/magic_enum")
     (source (origin
               (method git-fetch)
@@ -1962,7 +1962,7 @@ queues header library based on circular buffer with @code{std::atomic}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14ys5sn2v1mai8bclvi81cp65g6jblqpdsi94639hphca5v8gka3"))))
+                "15lxn4sjwygxyq4am3jbwl0m7lb0fw8w39fghgm7a8klcwavv4yn"))))
     (build-system cmake-build-system)
     (synopsis "C++17 header only library for compile time reflection of enums")
     (description "Magic Enum offers static reflection of enums, with
