@@ -733,6 +733,30 @@ integrates with the default test runner, so you can use it with the standard
 output capturing, mocking, and much more.")
     (license license:expat)))
 
+(define-public go-github-com-matryer-is
+  (package
+    (name "go-github-com-matryer-is")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matryer/is")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04wgh8j2n19a5a4p8jjnya6yl5dm07kbbcz8gq6gj980bd9fk1ir"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/matryer/is"))
+    (home-page "https://github.com/matryer/is")
+    (synopsis "Lightweight testing mini-framework for Golang")
+    (description
+     "Package is provides a lightweight extension to the standard library's
+testing capabilities.")
+    (license license:expat)))
+
 (define-public go-github-com-onsi-ginkgo
   (package
     (name "go-github-com-onsi-ginkgo")
