@@ -4369,6 +4369,42 @@ evaluated first but otherwise the order of evaluation of multiplications and
 additions is not changed.")
     (license license:expat)))
 
+(define-public julia-multivariatepolynomials
+  (package
+    (name "julia-multivariatepolynomials")
+    (version "0.5.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAlgebra/MultivariatePolynomials.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dz5ap8jg3sgk67diak9xxzgzgx98kv7b0yrc4yzsnlpkiknw64q"))))
+    (build-system julia-build-system)
+    (arguments
+     (list
+      #:tests? #f ; circular dependency with DynamicPolynomials
+      #:julia-package-name "MultivariatePolynomials"
+      #:julia-package-uuid "102ac46a-7ee4-5c85-9060-abc95bfdeaa3"
+      #:julia-package-dependencies
+      #~(list '("LinearAlgebra" . "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"))))
+    (propagated-inputs
+     (list julia-chainrulescore
+           julia-datastructures
+           julia-mutablearithmetics))
+    (home-page "https://github.com/JuliaAlgebra/MultivariatePolynomials.jl")
+    (synopsis "Package providing an interface for multivariate polynomials")
+    (description
+     "This package provides an interface for manipulating multivariate polynomials.
+Implementing algorithms on polynomials using this interface will allow the algorithm
+to work for all polynomials implenting this interface.  The interface contains
+functions for accessing the coefficients, monomials, defining arithmetic operations
+on them, rational functions, division with remainder, calculus and differentiation,
+and evaluation and substitution.")
+    (license license:expat)))
+
 (define-public julia-mutablearithmetics
   (package
     (name "julia-mutablearithmetics")
