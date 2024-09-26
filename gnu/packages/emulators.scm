@@ -3726,6 +3726,50 @@ on a Commodore C64, C128 etc.")
     ;; zlib license with an (non-)advertising clause.
     (license license:zlib)))
 
+(define-public freedisksysrom
+  ;; There is no release; use the latest commit.
+  (let ((commit "0d5f95f109bb3aadf2bb9510bfda13879bbd5266")
+        (revision "0"))
+    (package
+      (name "freedisksysrom")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jamesathey/FreeDiskSysROM")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0bmzmh3aq76jr31wn5lxvqvy9lpildxzqrvvqg1xxk5pvfjl8bip"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ;no configure script
+            (replace 'build
+              (lambda _
+                (invoke "asm6f" "freedisksys.asm")))
+            (replace 'install
+              (lambda _
+                (let ((libexec (string-append #$output "/libexec")))
+                  (install-file "freedisksys.bin" libexec)
+                  (with-directory-excursion libexec
+                    (symlink "freedisksys.bin" "disksys.rom"))))))))
+      (native-inputs (list asm6f))
+      (home-page "https://github.com/jamesathey/FreeDiskSysROM")
+      (synopsis "Implementation of the Famicom Disk System BIOS")
+      (description "FreeDiskSysROM aims to provide a replacement for the
+original @acronym{FDS, Famicom Disk System} BIOS (often referred to as
+@file{disksys.rom}) that can be freely redistributed and that is capable of
+running all published FDS software.  FreeDiskSysROM is not currently fully
+completed and may not be sufficient for some FDS software.  To track its
+status, consult
+@url{https://github.com/jamesathey/FreeDiskSysROM?tab=readme-ov-file#apis}.")
+      (license license:lgpl3+))))
+
 (define-public qtrvsim
   (package
     (name "qtrvsim")
