@@ -18542,6 +18542,48 @@ building block for higher level libraries.")
 (define-public ecl-json-streams
   (sbcl-package->ecl-package sbcl-json-streams))
 
+(define-public sbcl-jsonrpc
+  (let ((commit "4abbd305bae7827ad39048f956887db11505ad50")
+        (revision "0"))
+    (package
+      (name "sbcl-jsonrpc")
+      (version (git-version "0.3.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cxxxr/jsonrpc")
+               (commit commit)))
+         (file-name (git-file-name "jsonrpc" version))
+         (sha256
+          (base32 "08fz50wmbjic9m31av1fq4a3v5ahry58c8z2bmn3ib52k6nnjrk2"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-rove))
+      (inputs (list sbcl-clack
+                    sbcl-http-body
+                    sbcl-lack
+                    sbcl-yason
+                    sbcl-bordeaux-threads
+                    sbcl-event-emitter
+                    sbcl-alexandria
+                    sbcl-dissect
+                    sbcl-trivial-timeout
+                    sbcl-chanl
+                    sbcl-vom
+                    sbcl-usocket
+                    sbcl-websocket-driver))
+      (home-page "https://github.com/cxxxr/jsonrpc")
+      (synopsis "JSON-RPC 2.0 server/client for Common Lisp")
+      (description
+       "This package provides a JSON-RPC 2.0 server/client for Common Lisp.")
+      (license license:bsd-2))))
+
+(define-public cl-jsonrpc
+  (sbcl-package->cl-source-package sbcl-jsonrpc))
+
+(define-public ecl-jsonrpc
+  (sbcl-package->ecl-package sbcl-jsonrpc))
+
 (define-public sbcl-jsown
   (let ((commit "744c4407bef58dfa876d9da0b5c0205d869e7977"))
     (package
