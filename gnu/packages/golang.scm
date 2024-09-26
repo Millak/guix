@@ -6608,7 +6608,15 @@ modifying them.")
       (synopsis "Text parsing, with lexers, parsers, and related tools")
       (description
        "This package provides Go modules focused on text parsing, with lexers,
-parsers, and related tools.")
+parsers, and related tools.
+
+Included modules are:
+@itemize
+@item github.com/tekwizely/go-parsing
+@item github.com/tekwizely/go-parsing/lexer
+@item github.com/tekwizely/go-parsing/lexer/token
+@item github.com/tekwizely/go-parsing/parser
+@end itemize")
       (license license:expat)))
 
 (define-public go-github-com-akosmarton-papipes
