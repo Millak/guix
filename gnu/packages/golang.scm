@@ -3378,7 +3378,7 @@ updating files, like @command{tail -f}.")
 (define-public go-github-com-subosito-gotenv
   (package
     (name "go-github-com-subosito-gotenv")
-    (version "1.2.0")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -3388,12 +3388,14 @@ updating files, like @command{tail -f}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0mav91j7r4arjkpq5zcf9j74f6pww8ic53x43wy7kg3ibw31yjs5"))))
+         "0h7kb9mc67rl16kvls2d16pimdrz59l5x4l002qsv2p2766mpjif"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/subosito/gotenv"))
     (native-inputs
      (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-text))
     (home-page "https://github.com/subosito/gotenv")
     (synopsis "Go library for loading environment variables from files")
     (description "Go library for loading environment variables from files")
