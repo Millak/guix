@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,7 +34,7 @@
 (define-public run
   (package
     (name "run")
-    (version "0.7.2")
+    (version "0.11.2")
     (source
      (origin
        (method git-fetch)
@@ -42,17 +43,21 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17n11lqhywq4z62w2rakdq80v7mxf83rgln19vj4v4nxpwd2hjjw"))))
+        (base32 "1p9hyc3zrjh58nqdc2j2qnkcyg7z8av2q7fb49ycs4292awl0zka"))))
     (build-system go-build-system)
-    (propagated-inputs
-     (list go-github-com-tekwizely-go-parsing))
     (arguments
-     `(#:import-path "github.com/tekwizely/run"))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/tekwizely/run"))
+    (native-inputs
+     (list go-github-com-goreleaser-fileglob
+           go-github-com-subosito-gotenv
+           go-github-com-tekwizely-go-parsing))
+    (home-page "https://github.com/TekWizely/run")
     (synopsis "Easily manage and invoke small scripts and wrappers")
     (description
      "Run is a tool to easily manage and invoke small scripts and wrappers by
 using a Runfile.")
-    (home-page "https://github.com/TekWizely/run")
     (license license:expat)))
 
 (define-public task-spooler
