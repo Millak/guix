@@ -24,6 +24,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Feng Shu <tumashu@163.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +46,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
@@ -1359,22 +1361,30 @@ borgmatic is powered by borg.")
 (define-public vorta
   (package
     (name "vorta")
-    (version "0.8.7")
+    (version "0.9.1")
+    ;; The test folder is not included in the PyPI archive.
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "vorta" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/borgbase/vorta")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yv2z2djbl7aq3fa9m3ihzv9i99a5ahsxz7dlzwvvf4a7pmhc6b2"))))
-    (build-system python-build-system)
+                "0lhqikwrydnys24yic6xaqidwacdibx48cl0066xv9xnsjanfsf0"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-k" "not test_excludes"
+              "--ignore=tests/integration"
+              "--ignore=tests/unit")
       #:imported-modules `((guix build qt-utils)
                            (guix build cmake-build-system)
                            (guix build qt-build-system)
-                           ,@%python-build-system-modules)
+                           ,@%pyproject-build-system-modules)
       #:modules '((guix build utils)
-                  (guix build python-build-system)
+                  (guix build pyproject-build-system)
                   ((guix build qt-build-system) #:prefix qt:))
       #:phases
       #~(modify-phases %standard-phases
@@ -1384,15 +1394,16 @@ borgmatic is powered by borg.")
                 (("which\\('borg'\\)")
                  (string-append "which('" #$(this-package-input "borg")
                                 "/bin/borg')")))))
-          ;; XXX This phase tries to write to $HOME
-          (add-before 'sanity-check 'set-HOME
+          ;; XXX The test suite tries to write to $HOME.
+          (add-before 'check 'set-HOME
             (lambda _
               (setenv "HOME" "/tmp")))
           ;; Otherwise, the user interface's icons will be missing.
           (add-after 'wrap 'qt-wrap
             (assoc-ref qt:%standard-phases 'qt-wrap)))))
     (native-inputs
-     (list python-pytest-mock
+     (list python-platformdirs
+           python-pytest-mock
            python-pytest-qt
            python-pytest-runner
            python-setuptools-git))
@@ -1404,11 +1415,11 @@ borgmatic is powered by borg.")
            python-paramiko
            python-peewee
            python-psutil
-           python-pyqt
+           python-pyqt-6
            python-secretstorage
            ;; This is included so that the qt-wrap phase picks it up.
-           qtsvg-5))
-    (home-page "https://github.com/borgbase/vorta")
+           qtsvg))
+    (home-page "https://vorta.borgbase.com")
     (synopsis "Graphical backup client based on BorgBackup")
     (description "Vorta is a graphical backup client based on the Borg backup
 tool.  It supports the use of remote backup repositories.  It can perform
