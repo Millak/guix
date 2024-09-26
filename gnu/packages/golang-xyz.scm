@@ -3556,6 +3556,36 @@ color (24-bit, RGB)
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-goreleaser-fileglob
+  (package
+    (name "go-github-com-goreleaser-fileglob")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/goreleaser/fileglob")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c4p98prb0gf8a8789lxp1qw0v6anlqk5b1ff2r861gv2nclp8dx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/goreleaser/fileglob"))
+    (native-inputs
+     (list go-github-com-caarlos0-testfs
+           go-github-com-matryer-is))
+    (propagated-inputs
+     (list go-github-com-gobwas-glob))
+    (home-page "https://github.com/goreleaser/fileglob")
+    (synopsis "Golang file globbing library")
+    (description
+     "This package provides a filesystem glob API.  It uses @code{gobwas/glob}
+underneath and returns only matching files or direcories, depending on the
+configuration.")
+    (license license:expat)))
+
 (define-public go-github-com-hashicorp-errwrap
   (package
     (name "go-github-com-hashicorp-errwrap")
