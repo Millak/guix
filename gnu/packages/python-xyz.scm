@@ -27698,18 +27698,16 @@ Public Suffix List's private domains as well.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "15mab6a7ph2rviy5f2ypid6qdbb583fvaf5zhd6q0nrggxx0kkcm"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'build 'build-doc
-                 (lambda _
-                   (invoke "make" "-C" "docs")))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     ;; This test fails. It tries to open a network socket.
-                     (invoke "pytest" "-vv" "-k" "not test_error_message")))))))
+     (list
+      ;; This test fails. It tries to open a network socket.
+      #:test-flags #~(list "-k" "not test_error_message")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-doc
+            (lambda _
+              (invoke "make" "-C" "docs"))))))
     (native-inputs
      (list python-pytest
            python-pytest-runner
