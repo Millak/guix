@@ -3009,7 +3009,13 @@ modification time.")
     (arguments
      (list
       #:phases #~(modify-phases %standard-phases
-                   (delete 'configure))
+                   (delete 'configure)
+                   ;; fix cross-compiling.
+                   (add-after 'unpack 'don-t-use-install-s
+                     (lambda _
+                       (substitute* "fnc.bld.mk"
+                         (("install -s")
+                          "install")))))
       #:tests? #f                       ; no tests
       #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
                            (string-append "PREFIX=" #$output))))
