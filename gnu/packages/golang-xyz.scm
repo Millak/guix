@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Ramana Radhakrishnan <ramana.radhakrishnan@arm.com>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
@@ -7022,6 +7023,39 @@ storage system.")
      "This package provides a functionality to work with recurrence rules for
 calendar dates.  It offers a complete implementation of the
 @url{https://www.ietf.org/rfc/rfc2445.txt,RFC 2445} specification.")
+    (license license:expat)))
+
+;; XXX: Maybe split it into dedicated packages per module to easy importer.
+(define-public go-github-com-tekwizely-go-parsing
+  (package
+    (name "go-github-com-tekwizely-go-parsing")
+    (version "0.0.0-20221001173913-aa6d6749ea2d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tekwizely/go-parsing")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hz4jwvav1ccvigmlxgg50pal3nxklbl0psf7wdzwr1vzmzmj3n3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tekwizely/go-parsing"))
+    (home-page "https://github.com/tekwizely/go-parsing")
+    (synopsis "Text parsing, with lexers, parsers, and related tools")
+    (description
+     "This package provides Go modules focused on text parsing, with lexers,
+parsers, and related tools.
+
+Included modules are:
+@itemize
+@item github.com/tekwizely/go-parsing
+@item github.com/tekwizely/go-parsing/lexer
+@item github.com/tekwizely/go-parsing/lexer/token
+@item github.com/tekwizely/go-parsing/parser
+@end itemize")
     (license license:expat)))
 
 (define-public go-github-com-thejerf-suture

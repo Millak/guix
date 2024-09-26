@@ -25,7 +25,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages mail)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go))
