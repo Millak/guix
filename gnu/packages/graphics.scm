@@ -963,7 +963,8 @@ exception-handling library.")
                         (("elliptical-arc-test") "")
                         (("self-intersections-test") ""))))))
               ;; See https://gitlab.com/inkscape/lib2geom/-/issues/63
-              ((target-aarch64?)
+              ((or (target-aarch64?)
+                   (target-riscv64?))
                #~((add-after 'unpack 'fix-aarch64-faulty-test
                     (lambda _
                       (substitute* "tests/CMakeLists.txt"
