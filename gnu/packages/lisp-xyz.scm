@@ -18040,6 +18040,38 @@ transcribing mathematical formulas into Lisp.")
 (define-public ecl-inheriting-readers
   (sbcl-package->ecl-package sbcl-inheriting-readers))
 
+(define-public sbcl-inquisitor
+  (let ((commit "423fa9bdd4a68a6ae517b18406d81491409ccae8")
+        (revision "0"))
+    (package
+      (name "sbcl-inquisitor")
+      (version (git-version "0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/t-sin/inquisitor/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08rkmqnwlq6v84wcz9yp31j5lxrsy33kv3dh7n3ccsg4kc54slzw"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-prove sbcl-babel))
+      (inputs (list sbcl-flexi-streams sbcl-alexandria sbcl-anaphora))
+      (home-page "https://github.com/t-sin/inquisitor")
+      (synopsis
+       "Encoding/end-of-line detection and external-format abstraction for Common Lisp")
+      (description
+       "Inquisitor is a cross-implementation library provding
+encoding/end-of-line detection and external-format abstraction for Common Lisp.")
+      (license license:expat))))
+
+(define-public cl-inquisitor
+  (sbcl-package->cl-source-package sbcl-inquisitor))
+
+(define-public ecl-inquisitor
+  (sbcl-package->ecl-package sbcl-inquisitor))
+
 (define-public sbcl-interface
   (let ((commit "6d8bd74214053debcbc0b174d65ea73c271c1563")
         (revision "0"))
