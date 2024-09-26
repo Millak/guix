@@ -2974,7 +2974,7 @@ excellent pavucontrol.")
 (define-public gromit-mpx
   (package
     (name "gromit-mpx")
-    (version "1.4.2")
+    (version "1.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2983,11 +2983,11 @@ excellent pavucontrol.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p3jivard85cvand9c5ksy1qwp8zcaczfd55b4xppg4xliqfcafs"))))
+                "12ginc9rpn66g1n0w5lxxfzyq4zlpvrpp8a87pvr8zkgcrbkhz4c"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; No tests.
-    (native-inputs (list pkg-config))
-    (inputs (list gtk+ libappindicator))
+    (native-inputs (list pkg-config gettext-minimal))
+    (inputs (list gtk+ libappindicator lz4))
     (home-page "https://github.com/bk138/gromit-mpx")
     (synopsis "On-screen annotation tool")
     (description
