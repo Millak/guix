@@ -1186,11 +1186,7 @@ failure."
     (match (search-path %load-path file)
       (#f #f)
       ((? string? file)
-       ;; If there are relative names in %LOAD-PATH, FILE can be relative and
-       ;; needs to be canonicalized.
-       (if (string-prefix? "/" file)
-           (dirname file)
-           (canonicalize-path (dirname file)))))))
+       (dirname (canonicalize-path file))))))
 
 (define-syntax current-source-directory
   (lambda (s)
@@ -1206,7 +1202,7 @@ be determined."
           ;; run time rather than expansion time is necessary to allow files
           ;; to be moved on the file system.
           (if (string-prefix? "/" file-name)
-              (dirname file-name)
+              (dirname (canonicalize-path file-name))
               #`(absolute-dirname #,file-name)))
          ((or ('filename . #f) #f)
           ;; raising an error would upset Geiser users

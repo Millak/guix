@@ -314,6 +314,37 @@
        (string=? (local-file-absolute-file-name file)
                  (in-vicinity directory "the-unique-file.txt"))))))
 
+(test-assert "local-file, load through symlink"
+  ;; See <https://issues.guix.gnu.org/72867>.
+  (call-with-temporary-directory
+   (lambda (tmp-dir)
+     (with-directory-excursion tmp-dir
+       ;; create content file
+       (call-with-output-file "content"
+         (lambda (port) (display "Hi!" port)))
+       ;; Create a module that calls 'local-file' with the "content" file and
+       ;; returns its absolute file name.  An error is raised if the "content"
+       ;; file can't be found.
+       (call-with-output-file "test-local-file.scm"
+         (lambda (port) (display "\
+(define-module (test-local-file)
+  #:use-module (guix gexp))
+(define file (local-file \"content\" \"test-file\"))
+(local-file-absolute-file-name file)" port)))
+       (mkdir "dir")
+       (symlink "../test-local-file.scm" "dir/test-local-file.scm")
+       ;; 'local-file' in turn calls 'current-source-directory' which has an
+       ;; 'if' branching condition depending on whether 'file-name' is
+       ;; absolute or relative file name.  To test both of these branches we
+       ;; execute 'test-local-file.scm' symlink first as a module (corresponds
+       ;; to relative file name):
+       (dynamic-wind
+         (lambda () (set! %load-path (cons "dir" %load-path)))
+         (lambda () (resolve-module '(test-local-file) #:ensure #f))
+         (lambda () (set! %load-path (cdr %load-path))))
+       ;; and then as a regular code (corresponds to absolute file name):
+       (load (string-append tmp-dir "/dir/test-local-file.scm"))))))
+
 (test-assert "one plain file"
   (let* ((file     (plain-file "hi" "Hello, world!"))
          (exp      (gexp (display (ungexp file))))
