@@ -222,23 +222,8 @@ standard library headers.")
        ;; source.
        #:configure-flags
        (list "-DSTERILE_BUILD=ON")
-       ;; NOTE: dyninst needs to search for shared libraries that are linked
-       ;; against the instrumented binary in order to rebuild the entire
-       ;; program.  For this purpose, one can use LD_LIBRARY_PATH or
-       ;; DYNISNT_REWRITER_PATHS environment variables to add paths for dyinst
-       ;; to search.  However, dyninst also tries to be smart by executing
-       ;; ldconfig, which is not portable.  If ldconfig is not available on
-       ;; the system, dyinst wrongly assumes that the shared libraries can not
-       ;; be found, even though it can.  This bad logic is still there with
-       ;; newer versions of dyinst.  Thus, this substitution makes the bad
-       ;; code path unreachable.
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-bad-logic
-           (lambda _
-             (substitute* "dyninstAPI/src/linux.C"
-               (("if\\(fgets\\(buffer, buffer_size, ldconfig\\)\\)")
-                "fgets(buffer, buffer_size, ldconfig); if (true)"))))
          (add-after 'unpack 'adjust-supported-platform-name
            (lambda _
              ;; That file checks for "i386" but
