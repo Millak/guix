@@ -119,6 +119,30 @@ value and call @code{t.Fatal()} if the assertion fails.")
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-caarlos0-testfs
+  (package
+    (name "go-github-com-caarlos0-testfs")
+    (version "0.4.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/caarlos0/testfs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g7acw554f2d4y35qipdz5c627w83jxmq1z32d7nkpchzj0y7rf1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/caarlos0/testfs"))
+    (home-page "https://github.com/caarlos0/testfs")
+    (synopsis "Golang @code{fs.FS} implementation to be used inside tests")
+    (description
+     "Package testfs provides a simple @code{fs.FS} which is contained in a
+test (using testing.TB's @code{TempDir}) and with a few helper methods.")
+    (license license:expat)))
+
 (define-public go-github-com-cheekybits-is
   (let ((commit "68e9c0620927fb5427fda3708222d0edee89eae9")
         (revision "0"))
