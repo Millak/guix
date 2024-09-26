@@ -2922,76 +2922,6 @@ formulas.")
 (define-public ecl-cells
   (sbcl-package->ecl-package sbcl-cells))
 
-(define libasyncprocess
-  (let ((commit "9690530fc92b59636d9f17d821afa7697e7c8ca4")
-        (revision "0"))
-    (package
-      (name "libasyncprocess")
-      (version (git-version "0.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/lem-project/async-process")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1m2sfgfg6c0gqqy1pqsahsiw3j25y473mfw7sx0akkqbhwhm7mjb"))
-         (modules '((guix build utils)))
-         (snippet
-          ;; Delete precompiled artifacts.
-          `(begin
-             (for-each delete-file-recursively
-                       (list "static"
-                             "static_old0001-819cbf6"))))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (replace 'bootstrap
-              (lambda _
-                (invoke "libtoolize")
-                (invoke "aclocal")
-                (invoke "autoheader")
-                (invoke "automake" "-a")
-                (invoke "autoconf"))))))
-      (native-inputs (list autoconf automake libtool))
-      (home-page "https://github.com/lem-project/async-process")
-      (synopsis "C library component for @code{cl-async-process}")
-      (description
-       "This package provides the C library component for @code{cl-async-process}.")
-      (license license:expat))))
-
-(define-public sbcl-async-process
-  (package
-    (inherit libasyncprocess)
-    (name "sbcl-async-process")
-    (build-system asdf-build-system/sbcl)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "src/async-process.lisp"
-                (("libasyncprocess\\.so")
-                 (search-input-file inputs
-                                    "/lib/async-process/libasyncprocess.so"))))))))
-    (inputs
-     (modify-inputs (package-inputs libasyncprocess)
-       (prepend libasyncprocess sbcl-cffi)))
-    (home-page "https://github.com/lem-project/async-process")
-    (synopsis "Asynchronous process execution for Common Lisp")
-    (description "This library provides an asynchronous process
-execution mechanism for Common Lisp.")))
-
-(define-public cl-async-process
-  (sbcl-package->cl-source-package sbcl-async-process))
-
-(define-public ecl-async-process
-  (sbcl-package->ecl-package sbcl-async-process))
-
 (define-public sbcl-cephes
   (let ((commit "d87146fa38c8425ffb5fe425eee5eb3e818bacd4")
         (revision "0"))
@@ -4179,6 +4109,76 @@ to cl-async.")
 
 (define-public ecl-cl-async-future
   (sbcl-package->ecl-package sbcl-cl-async-future))
+
+(define libasyncprocess
+  (let ((commit "9690530fc92b59636d9f17d821afa7697e7c8ca4")
+        (revision "0"))
+    (package
+      (name "libasyncprocess")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lem-project/async-process")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1m2sfgfg6c0gqqy1pqsahsiw3j25y473mfw7sx0akkqbhwhm7mjb"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Delete precompiled artifacts.
+          `(begin
+             (for-each delete-file-recursively
+                       (list "static"
+                             "static_old0001-819cbf6"))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'bootstrap
+              (lambda _
+                (invoke "libtoolize")
+                (invoke "aclocal")
+                (invoke "autoheader")
+                (invoke "automake" "-a")
+                (invoke "autoconf"))))))
+      (native-inputs (list autoconf automake libtool))
+      (home-page "https://github.com/lem-project/async-process")
+      (synopsis "C library component for @code{cl-async-process}")
+      (description
+       "This package provides the C library component for @code{cl-async-process}.")
+      (license license:expat))))
+
+(define-public sbcl-async-process
+  (package
+    (inherit libasyncprocess)
+    (name "sbcl-async-process")
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/async-process.lisp"
+                (("libasyncprocess\\.so")
+                 (search-input-file inputs
+                                    "/lib/async-process/libasyncprocess.so"))))))))
+    (inputs
+     (modify-inputs (package-inputs libasyncprocess)
+       (prepend libasyncprocess sbcl-cffi)))
+    (home-page "https://github.com/lem-project/async-process")
+    (synopsis "Asynchronous process execution for Common Lisp")
+    (description "This library provides an asynchronous process
+execution mechanism for Common Lisp.")))
+
+(define-public cl-async-process
+  (sbcl-package->cl-source-package sbcl-async-process))
+
+(define-public ecl-async-process
+  (sbcl-package->ecl-package sbcl-async-process))
 
 (define-public sbcl-cl-autowrap
   (let ((revision "2")
