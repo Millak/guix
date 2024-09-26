@@ -601,6 +601,9 @@ This package provides the core library and elements.")
                    ((target-x86-32?)
                     #~((substitute* "tests/check/meson.build"
                          ((".*'libs/libsabi\\.c'.*") ""))))
+                   ((target-arm32?)
+                    #~((substitute* "tests/check/meson.build"
+                         ((".*'orc_adder.*") ""))))
                    ((target-riscv64?)
                     #~((substitute* "tests/check/meson.build"
                          ((".*'libs/gstglcolorconvert\\.c'.*") "")
