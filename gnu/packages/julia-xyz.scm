@@ -6055,6 +6055,37 @@ downstream packages to implement new methods on these types without
 depending on the entirety of @code{StaticArrays.jl}.")
     (license license:expat)))
 
+(define-public julia-statisticaltraits
+  (package
+    (name "julia-statisticaltraits")
+    (version "3.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAI/StatisticalTraits.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1im2j3h8xlja8c4pz22xn4lgb2r7zx50284iwbl72sclhrmjzfkz"))))
+    (build-system julia-build-system)
+    (arguments
+     (list
+      #:julia-package-name "StatisticalTraits"
+      #:julia-package-uuid "64bff920-2084-43da-a3e6-9bb72801c0c9"
+      #:julia-package-dependencies
+      #~(list '("SparseArrays" . "2f01184e-e22b-5df5-ae63-d93ebab69eaf")
+              '("Test" . "8dfed614-e22c-5e08-85e1-65c5234f0b40"))))
+    (propagated-inputs (list julia-scientifictypesbase))
+    (home-page "https://github.com/JuliaAI/StatisticalTraits.jl")
+    (synopsis "Implementations of traits possessed by statistical objects")
+    (description
+     "This package provides fall-back implementations for a collection
+of traits possessed by statistical objects.  A @code{trait} is a function with a single
+arguments that is a Julia type, which might encode type metadata for inspection or
+for use in function dispatch.")
+    (license license:expat)))
+
 (define-public julia-statsapi
   (package
     (name "julia-statsapi")
