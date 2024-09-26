@@ -14342,6 +14342,72 @@ droplet sequencing.  It has been particularly tailored for Drop-seq.")
 communication networks from scRNA-seq data.")
       (license license:gpl3))))
 
+(define-public r-cellchat-2
+  (let ((commit "b05405af0f4f2cac99f2211e888d42de4c5a9d59")
+        (revision "1"))
+    (package
+      (name "r-cellchat")
+      (version (git-version "2.1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jinworks/CellChat")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "14s7bl70xi21ivqr1c3qx6kjf1ndlyxag880xldqkfsqpksvyvkc"))
+         (snippet '(for-each delete-file
+                             '("src/CellChat.so" "src/CellChat_Rcpp.o"
+                               "src/RcppExports.o")))))
+      (properties `((upstream-name . "CellChat")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-biocgenerics
+                               r-biocneighbors
+                               r-bslib
+                               r-circlize
+                               r-colorspace
+                               r-complexheatmap
+                               r-cowplot
+                               r-dplyr
+                               r-fnn
+                               r-future
+                               r-future-apply
+                               r-ggalluvial
+                               r-ggnetwork
+                               r-ggplot2
+                               r-ggpubr
+                               r-ggrepel
+                               r-igraph
+                               r-irlba
+                               r-magrittr
+                               r-matrix
+                               r-nmf
+                               r-patchwork
+                               r-pbapply
+                               r-plotly
+                               r-plyr
+                               r-rcolorbrewer
+                               r-rcpp
+                               r-rcppeigen
+                               r-reshape2
+                               r-reticulate
+                               r-rspectra
+                               r-scales
+                               r-shape
+                               r-shiny
+                               r-sna
+                               r-stringr
+                               r-svglite))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/jinworks/CellChat")
+      (synopsis
+       "Inference of cell-cell communication from single-cell and transcriptomics")
+      (description
+       "This R tool infers, visualizes, and analyzes cell-cell communication networks.
+It supports scRNA-seq and spatially resolved transcriptomics data.")
+      (license license:gpl3))))
+
 (define-public r-copykat
   (let ((commit                         ;no tag
          "256de33dfc1b80a1a0ac9e098c5557f95a4e0d53")
