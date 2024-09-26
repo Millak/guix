@@ -6583,6 +6583,47 @@ Lisp.")
 (define-public ecl-cl-i18n
   (sbcl-package->ecl-package sbcl-cl-i18n))
 
+(define-public sbcl-cl-iconv
+  (let ((commit "54900c3f00e19da15a9c65451bddde839d0a7f75")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-iconv")
+      (version (git-version "0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/quek/cl-iconv")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1lpw95c02inifhdh9kkab9q92i5w9zd788dww1wly2p0a6kyx9wg"))))
+      (build-system asdf-build-system/sbcl)
+      ;; The project is called cl-iconv but the system is declared as iconv.
+      (arguments
+       '(#:asd-systems '("iconv")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "iconv.lisp"
+                 (("libiconv.so")
+                  (search-input-file inputs "/lib/libiconv.so"))))))))
+      (native-inputs (list sbcl-ptester))
+      (inputs (list libiconv sbcl-cffi))
+      (home-page "https://github.com/quek/cl-iconv")
+      (synopsis "iconv library for Common Lisp")
+      (description
+       "This package provides CFFI bindings to convert between different
+character encodings using iconv.")
+      (license license:bsd-3))))
+
+(define-public cl-iconv
+  (sbcl-package->cl-source-package sbcl-cl-iconv))
+
+(define-public ecl-cl-iconv
+  (sbcl-package->ecl-package sbcl-cl-iconv))
+
 (define-public sbcl-cl-indentify
   (let ((commit "eb770f434defa4cd41d84bca822428dfd0dbac53"))
     (package
