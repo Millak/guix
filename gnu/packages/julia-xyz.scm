@@ -4372,7 +4372,7 @@ additions is not changed.")
 (define-public julia-mutablearithmetics
   (package
     (name "julia-mutablearithmetics")
-    (version "0.2.20")
+    (version "1.4.6")
     (source
       (origin
         (method git-fetch)
@@ -4381,10 +4381,16 @@ additions is not changed.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1isyj8h4nx96cr6892d154v8pw1nhr7mjyz5bd6ffr2mkzb2bq4f"))))
+         (base32 "0wh4pvvzzs0l1q5h01004kq9k45n411330pw84gj8akcn7njn2z4"))))
     (build-system julia-build-system)
     (arguments
      (list
+      #:julia-package-name "MutableArithmetics"
+      #:julia-package-uuid "d8a4904e-b15c-11e9-3269-09a3773c0cb0"
+      #:julia-package-dependencies
+      #~(list '("LinearAlgebra" . "37e2e46d-f89d-539d-b4ee-838fcccc9c8e")
+              '("SparseArrays" . "2f01184e-e22b-5df5-ae63-d93ebab69eaf")
+              '("Test" . "8dfed614-e22c-5e08-85e1-65c5234f0b40"))
       #:phases
       (if (target-x86-32?)
           #~(modify-phases %standard-phases
