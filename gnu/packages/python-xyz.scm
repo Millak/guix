@@ -27688,17 +27688,16 @@ Public Suffix List's private domains as well.")
 (define-public python-tldr
   (package
     (name "python-tldr")
-    (version "3.2.0")
+    (version "3.3.0")
     (source
      (origin
-       ;; There's no test in PyPI.
-       (method git-fetch)
+       (method git-fetch) ; there's no test in PyPI
        (uri (git-reference
              (url "https://github.com/tldr-pages/tldr-python-client")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hkjsnz03p9pdfgk85wampha4pyr82bwmnj8hj6kigc784ddy2ag"))))
+        (base32 "15mab6a7ph2rviy5f2ypid6qdbb583fvaf5zhd6q0nrggxx0kkcm"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -27712,9 +27711,13 @@ Public Suffix List's private domains as well.")
                      ;; This test fails. It tries to open a network socket.
                      (invoke "pytest" "-vv" "-k" "not test_error_message")))))))
     (native-inputs
-     (list python-pytest python-pytest-runner python-sphinx-argparse))
-    (inputs
-     (list python-argcomplete python-colorama python-termcolor python-shtab))
+     (list python-pytest
+           python-pytest-runner
+           python-sphinx-argparse))
+    (propagated-inputs
+     (list python-colorama
+           python-termcolor
+           python-shtab))
     (home-page "https://github.com/tldr-pages/tldr-python-client")
     (synopsis "Python command-line client for tldr pages")
     (description "This package provides the @code{tldr} command allowing users
