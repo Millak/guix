@@ -6589,20 +6589,18 @@ modifying them.")
     (license license:zlib)))
 
 (define-public go-github-com-tekwizely-go-parsing
-  (let ((commit "1548cfb17df54d365ce9febed0677c06a40a8ceb")
-        (revision "0"))
     (package
       (name "go-github-com-tekwizely-go-parsing")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20221001173913-aa6d6749ea2d")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/tekwizely/go-parsing")
-               (commit commit)))
+               (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0bv5amka8hb9crc7qvlzi2kbycqrnh9d46b9wgcs8wqzl0z7w609"))))
+          (base32 "0hz4jwvav1ccvigmlxgg50pal3nxklbl0psf7wdzwr1vzmzmj3n3"))))
       (build-system go-build-system)
       (arguments
        `(#:import-path "github.com/tekwizely/go-parsing"))
@@ -6611,7 +6609,7 @@ modifying them.")
       (description
        "This package provides Go modules focused on text parsing, with lexers,
 parsers, and related tools.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-akosmarton-papipes
   (let ((commit "3c63b4919c769c9c2b2d07e69a98abb0eb47fe64")
