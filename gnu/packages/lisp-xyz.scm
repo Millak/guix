@@ -2524,6 +2524,37 @@ can contain any kind of values.")
 (define-public ecl-bst
   (sbcl-package->ecl-package sbcl-bst))
 
+(define-public sbcl-bt-semaphore
+  (let ((commit "46b4bf315590f510d2d4ec5ca8908efbe68007e9")
+        (revision "0"))
+    (package
+      (name "sbcl-bt-semaphore")
+      (version (git-version "0.6.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/r-moeritz/bt-semaphore")
+               (commit commit)))
+         (sha256
+          (base32 "0rl7yp36225z975hg069pywwlpchwn4086cgxwsi2db5mhghpr7l"))
+         (file-name (git-file-name "cl-bt-semaphore" version))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-bordeaux-threads))
+      (native-inputs (list sbcl-clunit))
+      (synopsis "Semaphore implementation for @code{bordeaux-threads}")
+      (description
+       "@code{bt-semaphore} is a semaphore implementation for use with
+@code{bordeaux-threads}.")
+      (home-page "https://github.com/r-moeritz/bt-semaphore")
+      (license license:expat))))
+
+(define-public cl-bt-semaphore
+  (sbcl-package->cl-source-package sbcl-bt-semaphore))
+
+(define-public ecl-bt-semaphore
+  (sbcl-package->ecl-package sbcl-bt-semaphore))
+
 (define-public sbcl-bubble-operator-upwards
   (let ((commit "846275a318b960de81b62caecb1e31930f70aef6")
         (revision "0"))
