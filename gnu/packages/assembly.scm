@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Simon South <simon@simonsouth.net>
@@ -121,6 +121,56 @@ microprocessors and microcontrollers, including devices from Intel, Motorola,
 MOS Technology, Hitachi, Fujitsu, NEC, Texas Instruments, Zilog and many other
 manufacturers.")
       (license (list license:gpl2 license:gpl3)))))
+
+(define-public asm6f
+  (package
+    (name "asm6f")
+    (version "1.6_freem02")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/freem/asm6f")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vz2mbnnm71sns0f08qjlg5rsw2kykg2v6bah073hfi6zzkqw52p"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no substantial test suite
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;no configure phase
+          (replace 'install
+            (lambda _
+              (install-file "asm6f" (string-append #$output "/bin"))))
+          (add-after 'install 'install-readme
+            (lambda _
+              (install-file "readme.txt"
+                            (string-append #$output "/share/doc/asm6f/")))))))
+    (home-page "https://github.com/freem/asm6f")
+    (synopsis "ASM6 6502 assembler fork for NES/Famicom")
+    (description "ASM6f is a fork of ASM6, primarily targeted at NES/Famicom
+development.
+@itemize
+@item Support for some illegal/undocumented opcodes
+@item FCEUX-compatible @file{.nl} output files
+@item Output of Lua-compatible symbol files
+@item New @code{IGNORENL} and @code{ENDINL} directives
+@item Support for iNES original and 2.0 header insertion
+@item Output of @file{.cdl} files, for use with FCEUX/Mesen
+@item Output of Mesen-compatible symbol files (both old and new formats)
+@item Generic +/- labels do not break @@local scope
+@item Support for @code{a:} prefix to force absolute addressing for
+zero-page addresses.
+@end itemize")
+    ;; The "license" reads: "This is free software.  You may use, modify, and
+    ;; / or redistribute any part of this software in any fashion."  A more
+    ;; explicit license clarification has been requested (see:
+    ;; https://github.com/freem/asm6f/issues/59).
+    (license (license:non-copyleft "file://readme-original.txt"))))
 
 (define-public nasm
   (package
