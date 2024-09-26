@@ -19408,6 +19408,41 @@ BTCPay, Paypal, and Stripe.")
 (define-public ecl-lisp-pay
   (sbcl-package->ecl-package sbcl-lisp-pay))
 
+(define-public sbcl-lisp-preprocessor
+  (let ((commit "cbed5952f3d98c84448c52d12255df9580451383")
+        (revision "0"))
+    (package
+      (name "sbcl-lisp-preprocessor")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cxxxr/lisp-preprocessor/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0v0qhawcvgbxk06nfwyvcqwmqvzn2svq80l2rb12myr0znschhpi"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-rove))
+      (inputs
+       (list
+        sbcl-alexandria
+        sbcl-trivial-gray-streams
+        sbcl-split-sequence
+        sbcl-trivia
+        sbcl-cl-ppcre))
+      (home-page "https://github.com/cxxxr/lisp-preprocessor")
+      (synopsis "Common Lisp embedded template engine")
+      (description "This package provices an embedded template engine for Common Lisp.")
+      (license license:expat))))
+
+(define-public cl-lisp-preprocessor
+  (sbcl-package->cl-source-package sbcl-lisp-preprocessor))
+
+(define-public ecl-lisp-preprocessor
+  (sbcl-package->ecl-package sbcl-lisp-preprocessor))
+
 (define-public sbcl-lisp-stat
   (let ((commit "357a0d2b5f68a5ff925776235c2b7455e12b78ba")
         (revision "0"))
