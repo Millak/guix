@@ -3,7 +3,7 @@
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2019 Andrius Štikonas <andrius@stikonas.eu>
@@ -492,10 +492,9 @@ the standard javac executable.")))
             (for-each (lambda (tool)
                         (with-output-to-file (string-append bin tool)
                           (lambda _
-                            #$@(if (string-prefix? "armhf" (or (%current-system)
-                                                               (%current-target-system)))
+                            #$@(if (target-arm32?)
                                    `((format #t "#!~a/bin/sh
-~a/bin/jamvm -Xnocompact -classpath ~a/share/classpath/tools.zip \
+~a/bin/jamvm -classpath ~a/share/classpath/tools.zip \
 gnu.classpath.tools.~a.~a $@"
                                              bash jamvm classpath tool
                                              (if (string=? "native2ascii" tool)
