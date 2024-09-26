@@ -205,16 +205,18 @@ dependencies, so it should be self-contained."
   #t)
 
 (define* (fix-embed-files #:key embed-files #:allow-other-keys)
-  "Golang can't determine the valid directory of the module of embed file
-which is symlinked during setup environment phase, but easy resolved after
-coping file from the store to the build directory of the current package. Take
-a list of files or regexps matching files from EMBED-FILES paramter, failover
-to 'editions_defaults.binpb' which is a part of <github.com/golang/protobuf>."
-  ;; see details in Golang source:
+  "Golang cannot determine the valid directory of the module of an embed file
+which is symlinked during setup environment phase, but easily resolved after
+copying the file from the store to the build directory of the current package.
+Take a list of files or regexps matching files from EMBED-FILES parameter,
+fail over to 'editions_defaults.binpb' which is a part of
+<github.com/golang/protobuf>."
+  ;; For the details, consult the Golang source:
   ;;
-  ;; - URL: <https://github.com/golang/go/blob/>
+  ;; - URL: <https://raw.githubusercontent.com/golang/go/>
   ;; - commit: 82c14346d89ec0eeca114f9ca0e88516b2cda454
-  ;; - file: src/cmd/go/internal/load/pkg.go#L2059
+  ;; - file: src/cmd/go/internal/load/pkg.go
+  ;; - line: 2059
   (let ((embed-files (format #f "^(~{~a|~}~a)$"
                              embed-files
                              "editions_defaults.binpb")))
