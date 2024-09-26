@@ -82,6 +82,7 @@
             %pseudo-terminal-file-system
             %tty-gid
             %immutable-store
+            %runtime-variable-data
             %control-groups
             %elogind-file-systems
 
@@ -448,6 +449,17 @@ TARGET in the other system."
     (check? #f)
     (flags '(read-only bind-mount no-atime))))
 
+(define %runtime-variable-data
+  (file-system
+    (type "tmpfs")
+    (mount-point "/run")
+    (device "tmpfs")
+    (flags '(no-suid no-dev strict-atime))
+    (options "mode=0755,nr_inodes=800k,size=20%")
+    (needed-for-boot? #t)
+    (check? #f)
+    (create-mount-point? #t)))
+
 (define %control-groups
   ;; The cgroup2 file system.
   (list (file-system
@@ -497,7 +509,8 @@ TARGET in the other system."
         %debug-file-system
         %shared-memory-file-system
         %efivars-file-system
-        %immutable-store))
+        %immutable-store
+        %runtime-variable-data))
 
 (define %base-live-file-systems
   ;; This is the bare minimum to use live file-systems.
