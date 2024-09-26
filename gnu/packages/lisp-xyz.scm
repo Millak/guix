@@ -9139,6 +9139,37 @@ to serve as a building block for such an interface.")
 (define-public ecl-cl-rmath
   (sbcl-package->ecl-package sbcl-cl-rmath))
 
+(define-public sbcl-cl-setlocale
+  (let ((commit "f660d07dac72bc3e99caae1c6c8a789991e2694c")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-setlocale")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/shamazmazum/cl-setlocale")
+               (commit commit)))
+         (file-name (git-file-name "cl-setlocale" version))
+         (sha256
+          (base32 "0g1b89yj6n42ayf2074krk3h9yvglqxn54a6i3sxgpsqww2ll2a1"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (inputs (list sbcl-cffi))
+      (home-page "https://github.com/shamazmazum/cl-setlocale")
+      (synopsis "Common Lisp wrapper around setlocale")
+      (description
+       "This library provides a tiny Common Lisp wrapper around setlocale(3)
+and can be used in conjunction with other FFI wrappers like cl-charms.")
+      (license license:bsd-2))))
+
+(define-public cl-setlocale
+  (sbcl-package->cl-source-package sbcl-cl-setlocale))
+
+(define-public ecl-cl-setlocale
+  (sbcl-package->ecl-package sbcl-cl-setlocale))
+
 (define-public sbcl-cl-slice
   (let ((commit "c531683f287216aebbb0affbe090611fa1b5d697")
         (revision "1"))
