@@ -87,6 +87,20 @@ information.")
               (("(Taiwan), [^\"]*" _ name) name))))))
      (synopsis "Various ISO standards as used by GNU@tie{}Guix"))))
 
+(define-public iso-codes
+  (package
+    (inherit iso-codes/pinned)
+    (version "4.17.0")
+    (source (origin
+              (inherit (package-source iso-codes/pinned))
+              (uri (git-reference
+                    (url (package-home-page iso-codes/pinned))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name (package-name iso-codes/pinned) version))
+              (sha256
+               (base32
+                "0a77b9aid68vakhsa3l3lx2jav5q9fp7vn50mwmzkr2lkr2l4k41"))))))
+
 (define-public python-iso639
   (package
     (name "python-iso639")
