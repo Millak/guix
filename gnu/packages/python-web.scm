@@ -8686,33 +8686,38 @@ regular expressions.")
 (define-public python-scrapy
   (package
     (name "python-scrapy")
-    (version "2.11.1")
+    (version "2.11.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Scrapy" version))
+       (uri (pypi-uri "scrapy" version))
        (sha256
-        (base32 "1giyyzwcybmh0yf3aq44hhmf9m4k40rva418pxljpr93fjf06fkk"))))
+        (base32 "07a0nfzkz4vr1353456lavvw36l9s2ia7x91l7mzygzwhi9mdgfz"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
-           ;; Tests fail with DNS lookup or need a display.
+           ;; Tests requiring a display.
            #~(list "-k" (string-append
                          "not " (string-join
-                                 (list "test_SCRAPY_CHECK_set"
-                                       "test_check_all_default_contracts"
-                                       "test_check_cb_kwargs_contract"
-                                       "test_check_returns_items_contract"
-                                       "test_check_returns_requests_contract"
-                                       "test_check_scrapes_contract"
-                                       "test_pformat"
+                                 (list "test_pformat"
                                        "test_pformat_old_windows"
                                        "test_pformat_windows")
-                                 " and not ")))))
+                                 " and not ")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   (substitute* "setup.py"
+                     ;; "defusedxml>=0.7.1"
+                     (("0.7.1") "0.6.0"))))
+               (add-before 'check 'prepare-test-environment
+                 (lambda _
+                   (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-botocore              ; Optional: For S3FeedStorage class.
            python-cryptography
            python-cssselect
+           python-defusedxml
            python-itemadapter
            python-itemloaders
            python-lxml
@@ -8728,10 +8733,11 @@ regular expressions.")
            python-w3lib
            python-zope-interface))
     (native-inputs
-     (list python-pexpect
+     (list nss-certs-for-test
+           python-pexpect
+           python-pyftpdlib
            python-pytest
            python-pytest-xdist
-           python-pyftpdlib
            python-sybil
            python-testfixtures
            python-uvloop))
