@@ -1496,6 +1496,31 @@ core allowing the lowRES NX programs to be used with libretro frontends such
 as RetroArch.")
     (license license:zlib)))
 
+(define-public retroarch-assets
+  (package
+    (name "retroarch-assets")
+    (version "1.19.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libretro/retroarch-assets")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i496x0lkqard5i9045yf438kivwd6f6za8p9fil8w1rfrhk2knz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags #~(list (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'build)))) ;no compilation required
+    (home-page "https://www.libretro.com/")
+    (synopsis "RetroArch menu assets")
+    (description "The RetroArch assets are the user interface elements used to
+generate the various User Experience (UX) environments.")
+    (license license:cc-by4.0)))
+
 (define-public retroarch
   (package
     (name "retroarch")
