@@ -1,0 +1,92 @@
+Upstream-status: https://github.com/libretro/RetroArch/issues/17079
+
+diff --git a/Makefile.common b/Makefile.common
+index 8ba76cf6c7..e9e8b8a643 100644
+--- a/Makefile.common
++++ b/Makefile.common
+@@ -1869,6 +1869,7 @@ endif
+ 
+ ifeq ($(HAVE_SPIRV_CROSS), 1)
+    DEFINES += -DHAVE_SPIRV_CROSS
++ifeq ($(HAVE_BUILTINSPIRV_CROSS), 1)
+    INCLUDE_DIRS += -I$(DEPS_DIR)/SPIRV-Cross
+    OBJ += $(DEPS_DIR)/SPIRV-Cross/spirv_cross.o
+    OBJ += $(DEPS_DIR)/SPIRV-Cross/spirv_cfg.o
+@@ -1877,6 +1878,13 @@ ifeq ($(HAVE_SPIRV_CROSS), 1)
+    OBJ += $(DEPS_DIR)/SPIRV-Cross/spirv_msl.o
+    OBJ += $(DEPS_DIR)/SPIRV-Cross/spirv_parser.o
+    OBJ += $(DEPS_DIR)/SPIRV-Cross/spirv_cross_parsed_ir.o
++else
++   CXXFLAGS += $(SPIRV_CROSS_CFLAGS)
++   LIBS += -lspirv-cross-core \
++           -lspirv-cross-glsl \
++           -lspirv-cross-reflect \
++           -lspirv-cross-msl
++endif
+ endif
+ 
+ ifeq ($(WANT_WGL), 1)
+diff --git a/qb/config.libs.sh b/qb/config.libs.sh
+index 2daa6b5e45..649a62690d 100644
+--- a/qb/config.libs.sh
++++ b/qb/config.libs.sh
+@@ -32,7 +32,10 @@ CLIB=-lc
+ PTHREADLIB=-lpthread
+ SOCKETLIB=-lc
+ SOCKETHEADER=
+-INCLUDES='usr/include usr/local/include'
++TR='tr'
++INCLUDES="$(echo $C_INCLUDE_PATH | $TR ':' ' ') \
++$(echo $CPLUS_INCLUDE_PATH | $TR ':' ' ') \
++usr/include usr/local/include"
+ SORT='sort'
+ EXTRA_GL_LIBS=''
+ VC_PREFIX=''
+@@ -625,6 +628,7 @@ check_enabled CXX GLSLANG glslang 'The C++ compiler is' false
+ check_enabled CXX SPIRV_CROSS SPIRV-Cross 'The C++ compiler is' false
+ 
+ check_enabled GLSLANG BUILTINGLSLANG 'builtin glslang' 'glslang is' true
++check_enabled SPIRV_CROSS BUILTINSPIRV_CROSS 'builtin spirv-cross' 'spirv-cross is' true
+ 
+ if [ "$HAVE_GLSLANG" != no ]; then
+    check_header cxx GLSLANG \
+@@ -657,6 +661,27 @@ if [ "$HAVE_GLSLANG" != no ]; then
+    fi
+ fi
+ 
++if [ "$HAVE_SPIRV_CROSS" != no ]; then
++   check_lib cxx SPIRV_CROSS -lspirv-cross-core '' '' 'spirv_cross.hpp' 'spirv_cross'
++   check_lib cxx SPIRV_CROSS_GLSL -lspirv-cross-glsl
++   check_lib cxx SPIRV_CROSS_MSL -lspirv-cross-msl
++   check_lib cxx SPIRV_CROSS_REFLECT -lspirv-cross-reflect
++   if [ "$HAVE_SPIRV_CROSS" = no ] ||
++      [ "$HAVE_SPIRV_CROSS_GLSL" = no ] ||
++      [ "$HAVE_SPIRV_CROSS_MSL" = no ] ||
++      [ "$HAVE_SPIRV_CROSS_REFLECT" = no ]; then
++      if [ "$HAVE_BUILTINSPIRV_CROSS" != yes ]; then
++         die : "Notice: System spirv-cross libraries not found, \
++disabling spirv-cross support"
++         HAVE_SPIRV_CROSS=no
++      else
++         HAVE_SPIRV_CROSS=yes
++      fi
++   else
++      HAVE_SPIRV_CROSS=yes
++   fi
++fi
++
+ if [ "$HAVE_CRTSWITCHRES" != no ]; then
+    if [ "$HAVE_CXX11" = 'no' ]; then
+       HAVE_CRTSWITCHRES=no
+diff --git a/qb/config.params.sh b/qb/config.params.sh
+index 1f1ea15637..a1653cb3cf 100644
+--- a/qb/config.params.sh
++++ b/qb/config.params.sh
+@@ -191,6 +191,7 @@ C89_GLSLANG=no
+ HAVE_BUILTINGLSLANG=auto   # Bake in glslang support
+ C89_BUILTINGLSLANG=no
+ HAVE_SPIRV_CROSS=auto      # SPIRV-Cross support (requires C++11)
++HAVE_BUILTINSPIRV_CROSS=auto    # Use bundled SPIRV-Cross source
+ C89_SPIRV_CROSS=no
+ HAVE_METAL=no              # Metal support (macOS-only)
+ C89_METAL=no

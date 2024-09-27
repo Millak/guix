@@ -1587,9 +1587,38 @@ physical device and the RetroPad virtual controller.")
        (uri (git-reference
              (url "https://github.com/libretro/RetroArch")
              (commit (string-append "v" version))))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils)
+                         (ice-9 ftw)
+                         (srfi srfi-26))
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            ;; Remove as much bundled sources as possible, shaving off about
+            ;; 65 MiB.
+            (delete-all-but "deps"
+                            "feralgamemode" ;used in platform_unix.c
+                            "mbedtls"       ;further refined below
+                            "yxml")         ;used in rxml.c
+            ;; This is an old root certificate used in net_socket_ssl_mbed.c,
+            ;; not actually from mbedtls.
+            (delete-all-but "deps/mbedtls" "cacert.h")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15nh4y4vpf4n1ryhiy4fwvzn5xz5idzfzn9fsi5v9hzp25vbjmrm"))))
+        (base32 "15nh4y4vpf4n1ryhiy4fwvzn5xz5idzfzn9fsi5v9hzp25vbjmrm"))
+       (patches (search-patches "retroarch-unbundle-spirv-cross.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1626,7 +1655,20 @@ physical device and the RetroPad virtual controller.")
                "--disable-builtinbearssl"
                "--disable-builtinzlib"
                "--disable-builtinflac"
-               "--disable-builtinglslang"))))))
+               "--disable-builtinglslang"
+               "--disable-builtinspirv_cross"
+               ;; These are disabled to avoid requiring the bundled
+               ;; dependencies.
+               "--disable-7zip"
+               "--disable-cheevos"
+               "--disable-crtswitchres"
+               "--disable-discord"
+               "--disable-dr_mp3"
+               "--disable-ibxm"
+               "--disable-stb_font"
+               "--disable-stb_image"
+               "--disable-stb_vorbis"
+               "--disable-xdelta"))))))
     (inputs
      (list alsa-lib
            eudev
@@ -1648,6 +1690,7 @@ physical device and the RetroPad virtual controller.")
            python
            qtbase-5
            sdl2
+           spirv-cross
            spirv-headers
            spirv-tools
            v4l-utils
@@ -1669,7 +1712,10 @@ the easy creation of emulators, games and multimedia applications that can plug
 straight into any libretro-compatible frontend.  RetroArch is the official
 reference frontend for the libretro API, currently used by most as a modular
 multi-system game/emulator system.")
-    (license license:gpl3+)))
+    (license (list license:gpl3+         ;for RetroArch itself
+                   license:asl2.0        ;SPIRV-Cross
+                   license:expat         ;yxml
+                   license:bsd-3))))     ;feragamemode
 
 (define-public wasm4
   (package
