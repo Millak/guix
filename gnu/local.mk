@@ -1122,6 +1122,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/clucene-contribs-lib.patch               \
   %D%/packages/patches/cube-nocheck.patch			\
   %D%/packages/patches/cups-minimal-Address-PPD-injection-issues.patch	\
+  %D%/packages/patches/curl-CVE-2024-8096.patch			\
   %D%/packages/patches/curl-use-ssl-cert-env.patch		\
   %D%/packages/patches/curlftpfs-fix-error-closing-file.patch	\
   %D%/packages/patches/curlftpfs-fix-file-names.patch		\
