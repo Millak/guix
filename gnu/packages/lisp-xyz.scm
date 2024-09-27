@@ -19174,6 +19174,39 @@ needed.  The low-level command API is fully mapped however.")
 (define-public ecl-legit
   (sbcl-package->ecl-package sbcl-legit))
 
+(define-public sbcl-lem-mailbox
+  (let ((commit "12d629541da440fadf771b0225a051ae65fa342a")
+        (revision "0"))
+    (package
+      (name "sbcl-lem-mailbox")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lem-project/lem-mailbox")
+               (commit commit)))
+         (sha256
+          (base32 "1qh9yq9ks0paplmbx0vj4nynx86igkv9kli396plpg9vc14qdgl5"))
+         (file-name (git-file-name "cl-lem-mailbox" version))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-rove))
+      (inputs
+       (list sbcl-bordeaux-threads
+             sbcl-bt-semaphore
+             sbcl-queues))
+      (synopsis "ANSI CL adaptation of the SBCL mailbox utility")
+      (description
+       "This package provides an ANSI CL adaptation of the SBCL mailbox utilty.")
+      (home-page "https://github.com/lem-project/lem-mailbox")
+      (license license:expat))))
+
+(define-public cl-lem-mailbox
+  (sbcl-package->cl-source-package sbcl-lem-mailbox))
+
+(define-public ecl-lem-mailbox
+  (sbcl-package->ecl-package sbcl-lem-mailbox))
+
 (define-public sbcl-let-over-lambda
   (let ((commit "481b2e3ab4646186451dfdd2062113203287d520")
         (revision "1"))
