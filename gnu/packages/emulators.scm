@@ -1632,6 +1632,7 @@ physical device and the RetroPad virtual controller.")
            eudev
            ffmpeg
            flac
+           fontconfig
            freetype
            glslang
            libxinerama
@@ -1649,6 +1650,7 @@ physical device and the RetroPad virtual controller.")
            sdl2
            spirv-headers
            spirv-tools
+           v4l-utils
            vulkan-loader
            wayland
            zlib))
