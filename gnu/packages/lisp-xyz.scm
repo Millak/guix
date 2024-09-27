@@ -17685,6 +17685,46 @@ bound to whatever value was in the same place in the URL (as a string).")
 (define-public ecl-hunchenissr-routes
   (sbcl-package->ecl-package sbcl-hunchenissr-routes))
 
+(define-public sbcl-hunchensocket
+  (let ((commit "faf2c08452f18763e541bc7f121760669ac0f41a")
+        (revision "0"))
+    (package
+      (name "sbcl-hunchensocket")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/joaotavora/hunchensocket/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vhd009lwl62l1czmhsalblxmyz4x9v3nspjflpajwm1db5rnd7h"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiasco))
+      (inputs
+       (list
+        sbcl-hunchentoot
+        sbcl-alexandria
+        sbcl-cl-base64
+        sbcl-sha1
+        sbcl-flexi-streams
+        sbcl-chunga
+        sbcl-trivial-utf-8
+        sbcl-trivial-backtrace
+        sbcl-cl-fad))
+      (home-page "https://github.com/joaotavora/hunchensocket")
+      (synopsis "RFC6455 compliant WebSockets for Common Lisp")
+      (description
+       "This library provides a WebSockets extension for the Huchentoot web server.")
+      (license license:expat))))
+
+(define-public cl-hunchensocket
+  (sbcl-package->cl-source-package sbcl-hunchensocket))
+
+(define-public ecl-hunchensocket
+  (sbcl-package->ecl-package sbcl-hunchensocket))
+
 (define-public sbcl-hunchentoot
   ;; NOTE: (Sharlatan-20220520T213309+0100): The latest commit fixed tests,
   ;; switch to the version tag when release is ready.
