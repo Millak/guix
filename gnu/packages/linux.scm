@@ -8976,8 +8976,10 @@ comparing system environments.")
                (if-supported psm2))))
     (arguments
      (list #:configure-flags
-           #~(list "--enable-efa"
-                   "--enable-verbs")))
+           #~(append (if #$(target-64bit?)
+                           (list "--enable-efa")
+                           '())
+                     (list "--enable-verbs"))))
     (home-page "https://ofiwg.github.io/libfabric/")
     (synopsis "Open Fabric Interfaces")
     (description
