@@ -34057,6 +34057,36 @@ instructions up to AVX-512 and SHA (including 3dnow!+, XOP, FMA3, FMA4, TBM
 and BMI2).")
       (license license:bsd-2))))
 
+(define-public python-cart
+  (package
+    (name "python-cart")
+    (version "1.2.2")
+    (source
+     (origin
+       ;; No source releases available on pypi, hence fetching from GitHub.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CybercentreCanada/cart")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zycv620iljrsval5rai1wsn0hr25ddx9xhjsyy6xxrgprfxvlfi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "python" "-m" "unittest" "discover")))))))
+    (propagated-inputs (list python-pycryptodome))
+    (home-page "https://github.com/CybercentreCanada/cart")
+    (synopsis "Library for interacting with the CaRT file format")
+    (description
+     "This Python library implements the CaRT file format which is commonly
+used to store and transmit information about computer malware and associated
+metadata.")
+    (license license:bsd-2)))
+
 (define-public python-ailment
   (package
     (name "python-ailment")
