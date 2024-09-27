@@ -96,6 +96,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sphinx)
@@ -3845,6 +3846,30 @@ assembler framework.  It supports a wide-range of different architectures
 and offers an intuitive architecture-neutral API for interacting with
 assembly for these architectures.")
     (license license:gpl2)))
+
+;; can be removed once Guix upgrades to Python 3.11.
+(define-public python-backports-strenum
+  (package
+    (name "python-backports-strenum")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "backports_strenum" version))
+       (sha256
+        (base32 "0514yj1391k6pbs2cch6i57hidwb3236wngh2ivlk6186h3j9ibp"))))
+    (native-inputs (list python-poetry-core))
+    (build-system pyproject-build-system)
+    ;; TODO: Running tests requires a new version of poetry in Guix.
+    (arguments
+     (list
+      #:tests? #f))
+    (home-page "https://github.com/clbarnes/backports.strenum")
+    (synopsis "Backport of additions to the 'strenum' module")
+    (description
+     "Provides a backport of Python's @code{StrEnum} class which was introduced in
+Python 3.11 for Python >=3.8.6.")
+    (license license:expat)))
 
 (define-public python-archinfo
   (package
