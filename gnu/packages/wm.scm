@@ -2412,7 +2412,7 @@ wlr-output-management-unstable-v1 protocol.")
 (define-public stumpwm
   (package
     (name "stumpwm")
-    (version "22.11")
+    (version "23.11")
     (source
      (origin
        (method git-fetch)
@@ -2421,7 +2421,7 @@ wlr-output-management-unstable-v1 protocol.")
              (commit version)))
        (file-name (git-file-name "stumpwm" version))
        (sha256
-        (base32 "1wxgddmkgmpml44a3m6bd8y529b13jz14apxxipmij10wzpgay6d"))))
+        (base32 "0akrkxwmlk2596b0kl3q0nfi81ypfrpyyyf65vw7px5x17gsnq5i"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-fiasco
