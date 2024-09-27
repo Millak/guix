@@ -964,7 +964,8 @@ exception-handling library.")
                         (("self-intersections-test") ""))))))
               ;; See https://gitlab.com/inkscape/lib2geom/-/issues/63
               ((or (target-aarch64?)
-                   (target-riscv64?))
+                   (target-riscv64?)
+                   (target-ppc64le?))
                #~((add-after 'unpack 'fix-aarch64-faulty-test
                     (lambda _
                       (substitute* "tests/CMakeLists.txt"
