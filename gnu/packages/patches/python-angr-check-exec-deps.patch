@@ -8,11 +8,11 @@ For Guix, this files as the glibc shared objects cannot be found.
 Additionally, we don't really want to execute pre-compiled binaries
 on Guix, hence we disable those tests.
 
-diff --git a/tests/test_ctype_locale.py b/tests/test_ctype_locale.py
-index 08cb89836..2b9233558 100644
---- a/tests/test_ctype_locale.py
-+++ b/tests/test_ctype_locale.py
-@@ -14,7 +14,7 @@ test_location = os.path.dirname(os.path.abspath(__file__))
+diff --git a/tests/procedures/glibc/test_ctype_locale.py b/tests/procedures/glibc/test_ctype_locale.py
+index ac3e1ee16..1fb0fd095 100755
+--- a/tests/procedures/glibc/test_ctype_locale.py
++++ b/tests/procedures/glibc/test_ctype_locale.py
+@@ -15,7 +15,7 @@ test_location = os.path.join(bin_location, "tests")
  
  
  class TestCtypeLocale(unittest.TestCase):
@@ -21,7 +21,7 @@ index 08cb89836..2b9233558 100644
      def test_ctype_b_loc(self):
          """
          test_ctype_locale.test_ctype_b_loc
-@@ -60,7 +60,7 @@ class TestCtypeLocale(unittest.TestCase):
+@@ -61,7 +61,7 @@ class TestCtypeLocale(unittest.TestCase):
          output = subprocess.check_output(bin_path, shell=True)
          assert result == output
  
@@ -30,7 +30,7 @@ index 08cb89836..2b9233558 100644
      def test_ctype_tolower_loc(self):
          """
          test_ctype_locale.test_ctype_tolower_loc
-@@ -109,7 +109,7 @@ class TestCtypeLocale(unittest.TestCase):
+@@ -110,7 +110,7 @@ class TestCtypeLocale(unittest.TestCase):
          output = subprocess.check_output(bin_path, shell=True)
          assert result == output
  
@@ -39,50 +39,24 @@ index 08cb89836..2b9233558 100644
      def test_ctype_toupper_loc(self):
          """
          test_ctype_locale.test_ctype_toupper_loc
-diff --git a/tests/test_signed_div.py b/tests/test_signed_div.py
-index 59cb9b8d1..994ed9c65 100644
---- a/tests/test_signed_div.py
-+++ b/tests/test_signed_div.py
-@@ -1,6 +1,7 @@
- import angr
- import subprocess
- import sys
-+import pytest
- 
- import logging
- 
-@@ -13,7 +14,7 @@ import os
- test_location = os.path.dirname(os.path.realpath(__file__))
- 
- 
--@skipUnless(sys.platform.startswith("linux"), "linux only")
-+@pytest.mark.skip(reason="test executes pre-compiled binaries")
- def test_signed_div():
-     test_bin = os.path.join(test_location, "..", "..", "binaries", "tests", "x86_64", "test_signed_div")
-     b = angr.Project(test_bin, auto_load_libs=False)
-diff --git a/tests/test_sscanf.py b/tests/test_sscanf.py
-index 29d2c8403..ea799b310 100644
---- a/tests/test_sscanf.py
-+++ b/tests/test_sscanf.py
-@@ -1,3 +1,4 @@
-+import pytest
- import angr
- import subprocess
- import sys
-@@ -14,7 +15,7 @@ test_location = os.path.dirname(os.path.realpath(__file__))
+diff --git a/tests/procedures/libc/test_sscanf.py b/tests/procedures/libc/test_sscanf.py
+index 7c2da6f5e..e20952f54 100755
+--- a/tests/procedures/libc/test_sscanf.py
++++ b/tests/procedures/libc/test_sscanf.py
+@@ -14,7 +14,7 @@ test_location = os.path.join(bin_location, "tests")
  
  
  class TestSscanf(unittest.TestCase):
 -    @unittest.skipUnless(sys.platform.startswith("linux"), "linux only")
 +    @unittest.skip("test executes pre-compiled binaries")
      def test_sscanf(self):
-         test_bin = os.path.join(test_location, "..", "..", "binaries", "tests", "x86_64", "sscanf_test")
+         test_bin = os.path.join(test_location, "x86_64", "sscanf_test")
          b = angr.Project(test_bin, auto_load_libs=False)
-diff --git a/tests/test_strtol.py b/tests/test_strtol.py
-index 6c29cab22..f36181407 100644
---- a/tests/test_strtol.py
-+++ b/tests/test_strtol.py
-@@ -11,7 +11,7 @@ class TestStrtol(unittest.TestCase):
+diff --git a/tests/procedures/libc/test_strtol.py b/tests/procedures/libc/test_strtol.py
+index 4d7982b86..8818ced3b 100755
+--- a/tests/procedures/libc/test_strtol.py
++++ b/tests/procedures/libc/test_strtol.py
+@@ -15,7 +15,7 @@ class TestStrtol(unittest.TestCase):
      # pylint: disable=no-self-use
  
      @slow_test
@@ -91,3 +65,24 @@ index 6c29cab22..f36181407 100644
      def test_strtol(self, threads=None):
          test_bin = os.path.join(bin_location, "tests", "x86_64", "strtol_test")
          # disabling auto_load_libs increases the execution time of the test case.
+diff --git a/tests/sim/exec_insn/test_signed_div.py b/tests/sim/exec_insn/test_signed_div.py
+index 46581020f..d5acc5370 100755
+--- a/tests/sim/exec_insn/test_signed_div.py
++++ b/tests/sim/exec_insn/test_signed_div.py
+@@ -2,6 +2,7 @@
+ # pylint: disable=missing-class-docstring,no-self-use,line-too-long
+ __package__ = __package__ or "tests.sim.exec_insn"  # pylint:disable=redefined-builtin
+ 
++import pytest
+ import os
+ import subprocess
+ import sys
+@@ -16,7 +17,7 @@ test_location = os.path.join(bin_location, "tests")
+ 
+ 
+ class TestSignedDiv(TestCase):
+-    @skipUnless(sys.platform.startswith("linux"), "linux only")
++    @pytest.mark.skip(reason="test executes pre-compiled binaries")
+     def test_signed_div(self):
+         test_bin = os.path.join(test_location, "x86_64", "test_signed_div")
+         b = angr.Project(test_bin, auto_load_libs=False)

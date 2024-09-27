@@ -34419,19 +34419,18 @@ mangled symbols, which can be used for directly extracting type information.")
 (define-public python-angr
   (package
     (name "python-angr")
-    (version "9.2.46")
+    (version "9.2.112")
     (source
      (origin
        ;; Fetching from Git as pypi release doesn't include all test files.
        (method git-fetch)
-       (patches (search-patches "python-angr-addition-type-error.patch"
-                                "python-angr-check-exec-deps.patch"))
+       (patches (search-patches "python-angr-check-exec-deps.patch"))
        (uri (git-reference
              (url "https://github.com/angr/angr")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18y9wyf7va7gvp9zd6lhw82j9a2x2ajsvbawh96xnxzml0jwlwjm"))))
+        (base32 "1179926xbfh2930laz33p90vj532jk7g2qylzzpw1185yhlf9cis"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -34439,9 +34438,18 @@ mangled symbols, which can be used for directly extracting type information.")
                    (add-after 'unpack 'patch-tests
                      (lambda* (#:key inputs #:allow-other-keys)
                        (let ((coreutils (assoc-ref inputs "coreutils")))
-                         (substitute* "tests/test_vault.py"
-                           (("/bin/false")
-                            (which "false")))
+                         ;; The constraint exists because of a capstone bug for which
+                         ;; we backport a patch, hence we can relax the constraint.
+                         ;;
+                         ;; See https://github.com/angr/angr/issues/4656
+                         (substitute* "setup.cfg"
+                          (("capstone==5.0.0.post1")
+                           "capstone"))
+                         ;; Relax constraint on python-rich, the constraint is too strict,
+                         ;; angr work well with our packaged version of python-rich.
+                         (substitute* "setup.cfg"
+                           (("rich>=13.1.0")
+                            "rich"))
                          (substitute* "tests/common.py"
                            (("\\[\"cc\"\\]")
                             "[\"gcc\"]")))))
@@ -34480,11 +34488,13 @@ mangled symbols, which can be used for directly extracting type information.")
                              python-itanium-demangler
                              python-pycparser
                              python-pyvex
-                             python-progressbar2
+                             python-pyformlang
+                             python-rich
                              python-rpyc
                              python-sortedcontainers
                              python-sqlalchemy
                              python-sympy
+                             python-unique-log-filter
                              unicorn))
     (native-inputs `(("python-pytest" ,python-pytest)
                      ("python-pytest-xdist" ,python-pytest-xdist)
@@ -34502,7 +34512,7 @@ mangled symbols, which can be used for directly extracting type information.")
                                                                     version))))
                          (file-name (git-file-name "angr-binaries" version))
                          (sha256 (base32
-                                  "1f286b2239zavxzwg1184hj1zs380cr9qr549mvy3vywvm8bsmgr"))))))
+                                  "0bxzf6alkczv9r0151ksvcwyksnw8077acz1wd8drbxw0zl0qnmr"))))))
     (home-page "https://github.com/angr/angr")
     (synopsis "Multi-architecture binary analysis toolkit")
     (description
