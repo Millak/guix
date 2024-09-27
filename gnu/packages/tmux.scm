@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,12 +37,14 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages sphinx))
 
 (define-public tmux
@@ -49,18 +52,19 @@
     (name "tmux")
     (version "3.5")
     (source (origin
-             (method url-fetch)
-             (uri (string-append
-                    "https://github.com/tmux/tmux/releases/download/"
-                    version "/tmux-" version ".tar.gz"))
-             (sha256
-              (base32
-               "03wmh5q3sd87njjdnqadi8jvq1icha1wiwi29993zng7wx11kq1g"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tmux/tmux")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bdah5b8fbxwba3z7i46yx5vcvhwmn7yvdh3wn0in1ijnn7mj97h"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent ncurses))
     (native-inputs
-     (list bison))
+     (list autoconf automake bison pkg-config))
     (home-page "https://github.com/tmux/tmux/wiki")
     (synopsis "Terminal multiplexer")
     (description
