@@ -23859,6 +23859,27 @@ creating a tag.")
      parse many formal languages.")
     (license license:gpl2)))
 
+(define-public python-pyformlang
+  (package
+    (name "python-pyformlang")
+    (version "1.0.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyformlang" version))
+       (sha256
+        (base32 "0szgy4pqfixmswjs37qgma4qa3bsadpp3l1xflrpfi10aa8hh2sp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-networkx python-numpy python-pydot))
+    (home-page "https://github.com/Aunsiels/pyformlang")
+    (synopsis "Framework for interacting with formal grammars")
+    (description
+     "This package provides a framework for working with formal
+language grammars.  The library was originally developed for educational
+purposes and therefore implements many textbook algorithms regarding the
+manipulation and interaction with formal grammars.")
+    (license license:expat)))
+
 (define-public python-incremental
   (package
     (name "python-incremental")
