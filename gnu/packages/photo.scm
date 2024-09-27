@@ -598,7 +598,7 @@ photographic equipment.")
            gsettings-desktop-schemas
            gtk+
            imath
-           iso-codes          ;optional, for language names in the preferences
+           iso-codes/pinned          ;optional, for language names in the preferences
            json-glib
            lcms
            lensfun                   ;optional, for the lens distortion plugin

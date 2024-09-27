@@ -206,7 +206,7 @@ by the different predictive algorithms.")
            gtk+-2
            gtk+
            icu4c
-           iso-codes
+           iso-codes/pinned
            json-c
            libxkbfile
            libxml2
@@ -245,7 +245,7 @@ built-in.")
       ("gettext"    ,gettext-minimal)
       ("gtk2"       ,gtk+-2)
       ("gtk3"       ,gtk+)
-      ("iso-codes"  ,iso-codes)))
+      ("iso-codes"  ,iso-codes/pinned)))
    (home-page "https://fcitx-im.org/wiki/Configtool")
    (synopsis "Graphic Fcitx configuration tool")
    (description

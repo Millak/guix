@@ -195,7 +195,7 @@
            dconf
            glib
            gtk+
-           iso-codes
+           iso-codes/pinned
            json-glib
            libnotify
            libx11

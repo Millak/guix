@@ -1069,7 +1069,7 @@ application suites.")
            cups
            graphene
            harfbuzz
-           iso-codes
+           iso-codes/pinned
            json-glib-minimal
            libxml2
            rest))
@@ -1361,7 +1361,7 @@ application suites.")
            gst-plugins-bad              ;provides gstreamer-player
            gst-plugins-base             ;provides gstreamer-gl
            harfbuzz
-           iso-codes
+           iso-codes/pinned
            json-glib
            libcloudproviders            ;for cloud-providers support
            libgudev                     ;for gstreamer-gl

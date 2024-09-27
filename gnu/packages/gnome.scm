@@ -1825,7 +1825,7 @@ client devices can handle.")
     (inputs
      (list gcr-3
            (if (supported-package? gtk) gtk gtk+)
-           iso-codes
+           iso-codes/pinned
            mobile-broadband-provider-info
            network-manager))
     (synopsis "Network Manager's applet library")
@@ -2318,7 +2318,7 @@ offline sources, providing a centralized place for managing your contacts.")
      (list gsettings-desktop-schemas
            gtk
            gtk+
-           iso-codes
+           iso-codes/pinned
            libseccomp
            libx11
            xkeyboard-config))
@@ -4905,7 +4905,7 @@ GLib and GObject, and integrates JSON with GLib data types.")
      ;; Required by libxklavier.pc.
      (list glib libxml2))
     (inputs
-     (list iso-codes libxi libxkbfile xkbcomp xkeyboard-config))
+     (list iso-codes/pinned libxi libxkbfile xkbcomp xkeyboard-config))
     (home-page "https://www.freedesktop.org/wiki/Software/LibXklavier/")
     (synopsis "High-level API for X Keyboard Extension")
     (description
@@ -7322,7 +7322,7 @@ almost all of them.")
            gst-plugins-base
            gst-plugins-good
            gstreamer
-           iso-codes
+           iso-codes/pinned
            json-glib
            libadwaita
            libarchive
@@ -9178,7 +9178,7 @@ logo='~a'~%" icon))))))
            gnome-session
            gnome-settings-daemon
            gtk+
-           iso-codes
+           iso-codes/pinned
            libcanberra
            libgudev
            linux-pam
@@ -11502,7 +11502,7 @@ that support the Assistive Technology Service Provider Interface (AT-SPI).")
              (setenv "ASPELL_DICT_DIR"
                      (search-input-directory inputs "/lib/aspell")))))))
     (inputs
-     (list iso-codes))
+     (list iso-codes/pinned))
     (native-inputs
      (list `(,glib "bin")
            gobject-introspection
@@ -11842,7 +11842,7 @@ and uncluttered interface for the management of password databases.")
            gst-plugins-good
            gstreamer
            gtk+
-           iso-codes
+           iso-codes/pinned
            libcanberra
            libdiscid
            libmusicbrainz
@@ -12784,7 +12784,7 @@ non-privileged user.")
            gspell
            gsound
            gtk+
-           iso-codes
+           iso-codes/pinned
            json-glib
            libcanberra
            libgee
@@ -13248,7 +13248,7 @@ provided there is a DBus service present:
            gst-plugins-good
            gstreamer
            gtk+
-           iso-codes
+           iso-codes/pinned
            pocketsphinx
            pulseaudio
            sphinxbase))
@@ -13645,7 +13645,7 @@ developed with the aim of being used with the Librem 5 phone.")
     (build-system meson-build-system)
     (native-inputs
      (list intltool
-           iso-codes
+           iso-codes/pinned
            `(,glib "bin")
            gnome-common
            gettext-minimal

@@ -2051,7 +2051,7 @@ the KDE Plasma 6 desktop.")
                   libxkbfile
                   libxcursor
                   libxkbcommon))
-    (propagated-inputs (list iso-codes kirigami kcmutils plasma-workspace))
+    (propagated-inputs (list iso-codes/pinned kirigami kcmutils plasma-workspace))
     (arguments
      (list #:qtbase qtbase
            #:phases
@@ -2726,7 +2726,7 @@ sensors, process information and other system resources.")
                   dbus
                   fontconfig
                   icu4c
-                  iso-codes
+                  iso-codes/pinned
                   plasma-activities
                   plasma-activities-stats
                   karchive

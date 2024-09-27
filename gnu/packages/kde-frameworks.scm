@@ -1129,7 +1129,7 @@ other special events for a geographical region.")
     (native-inputs
      (list extra-cmake-modules python-minimal tzdata-for-tests))
     (inputs
-     (list qtbase qtdeclarative iso-codes))
+     (list qtbase qtdeclarative iso-codes/pinned))
     (arguments
      (list
       #:phases
@@ -1173,7 +1173,7 @@ translation scripting.")
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list qtbase-5 qtdeclarative-5 qtscript iso-codes))))
+     (list qtbase-5 qtdeclarative-5 qtscript iso-codes/pinned))))
 
 (define-public kidletime
   (package
@@ -2359,7 +2359,7 @@ integrated it into your application's other widgets.")
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules
                          ;; for test
-                         iso-codes))
+                         iso-codes/pinned))
     (inputs (list qtdeclarative))
     (propagated-inputs
      (list ;; As required by KF6ContactsConfig.cmake.

@@ -68,7 +68,7 @@ changes in the ISO standard and will not work with outdated
 information.")
     (license license:gpl2+)))           ; some bits use the lgpl2
 
-(define-public iso-codes
+(define-public iso-codes/pinned
   ;; This package should be used universally within Guix, e.g., as an input to
   ;; other Guix packages or in the Guix System installer's country selector.
   (hidden-package

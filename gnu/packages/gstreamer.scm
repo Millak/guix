@@ -562,7 +562,7 @@ This package provides the core library and elements.")
      (list alsa-lib
            cdparanoia
            graphene
-           iso-codes
+           iso-codes/pinned
            libjpeg-turbo
            libogg
            libpng

@@ -146,10 +146,10 @@ been performed at build time."
 
   (let* ((supported-locales #~(supported-locales->locales
                                #+(glibc-supported-locales)))
-         (iso-codes #~(string-append #$iso-codes "/share/iso-codes/json/"))
-         (iso639-3 #~(string-append #$iso-codes "iso_639-3.json"))
-         (iso639-5 #~(string-append #$iso-codes "iso_639-5.json"))
-         (iso3166 #~(string-append #$iso-codes "iso_3166-1.json"))
+         (iso-codes #~(string-append #$iso-codes/pinned "/share/iso-codes/json/"))
+         (iso639-3 #~(string-append #$iso-codes/pinned "iso_639-3.json"))
+         (iso639-5 #~(string-append #$iso-codes/pinned "iso_639-5.json"))
+         (iso3166 #~(string-append #$iso-codes/pinned "iso_3166-1.json"))
          (locales-file (build-compiled-file
                         locales-name
                         #~`(quote ,#$supported-locales)))
@@ -437,9 +437,9 @@ purposes."
             ;; (e.g., "French" is always displayed as "français", but
             ;; "Belgium" could be translated to Dutch, French, or German.)
             (bindtextdomain "iso_639-3"           ;languages
-                            #+(file-append iso-codes "/share/locale"))
+                            #+(file-append iso-codes/pinned "/share/locale"))
             (bindtextdomain "iso_3166-1"          ;territories
-                            #+(file-append iso-codes "/share/locale"))
+                            #+(file-append iso-codes/pinned "/share/locale"))
 
             ;; Likewise for XKB keyboard layout names.
             (bindtextdomain "xkeyboard-config"

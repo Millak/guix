@@ -244,7 +244,7 @@ themes for both gtk+-2 and gtk+-3.")
            yelp-tools
            gtk-doc/stable))
     (inputs
-     (list gtk+ libxrandr iso-codes startup-notification))
+     (list gtk+ libxrandr iso-codes/pinned startup-notification))
     (propagated-inputs
      (list dconf)) ; mate-desktop-2.0.pc
     (home-page "https://mate-desktop.org/")
@@ -1432,7 +1432,7 @@ can be used as backgrounds in the MATE Desktop environment.")
            gtk+
            gtksourceview-4
            gdk-pixbuf
-           iso-codes
+           iso-codes/pinned
            libcanberra
            libx11
            libsm

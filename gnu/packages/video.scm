@@ -6155,7 +6155,7 @@ video from a Wayland session.")
            python-pycairo ; Required or else clicking on a subtitle line fails.
            python-chardet ; Optional: Character encoding detection.
            gtkspell3 ; Optional: Inline spell-checking.
-           iso-codes ; Optional: Translations.
+           iso-codes/pinned ; Optional: Translations.
            gstreamer
            gst-libav
            gst-plugins-base

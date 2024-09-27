@@ -111,7 +111,7 @@ client.")
        ("gdk-pixbuf" ,gdk-pixbuf)
        ("gettext" ,gettext-minimal)
        ("glib" ,glib)
-       ("iso-codes" ,iso-codes)
+       ("iso-codes" ,iso-codes/pinned)
        ("json-c" ,json-c)
        ("libevent" ,libevent)
        ("libuuid" ,util-linux "lib")
@@ -469,7 +469,7 @@ including input methods previous bundled inside Fcitx 4:
            xkeyboard-config
            libxkbfile
            gettext-minimal
-           iso-codes))
+           iso-codes/pinned))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (home-page "https://github.com/fcitx/fcitx5-configtool")
