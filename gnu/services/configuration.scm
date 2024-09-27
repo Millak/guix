@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -460,8 +461,12 @@ DEFAULT."
                            (para ,@field-docs)
                            ,@(append-map
                               generate
-                              (or (assq-ref sub-documentation field-name)
-                                  '())))))
+                              (filter-map
+                                (match-lambda
+                                  ((name config)
+                                   (and (eq? name field-name)
+                                        config)))
+                                sub-documentation)))))
                fields)))))))
   (stexi->texi `(*fragment* . ,(generate documentation-name))))
 

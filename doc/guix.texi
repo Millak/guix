@@ -44702,7 +44702,9 @@ available for the configuration record.
 @var{sub-documentation} is a @code{(@var{field-name}
 @var{configuration-name})} tuple.  @var{field-name} is the name of the
 field which takes another configuration record as its value, and
-@var{configuration-name} is the name of that configuration record.
+@var{configuration-name} is the name of that configuration record.  The
+same value may be used for multiple @var{field-name}s, in case a field
+accepts different types of configurations.
 
 @var{sub-documentation} is only needed if there are nested configuration
 records.  For example, the @code{getmail-configuration} record
