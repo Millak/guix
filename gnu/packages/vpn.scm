@@ -835,7 +835,7 @@ others.")
 (define-public openfortivpn
   (package
     (name "openfortivpn")
-    (version "1.17.3")
+    (version "1.23.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -844,14 +844,10 @@ others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0an58f0qcyxdx3d5zb5m8vi45a0251b950b5lh16572n8z2g6s2l"))))
+                "1p1vwfhrygf4sap2gifvi1lbw58pacxh8pd9h8mk4gbixvnnzzry"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake pkg-config))
-    (inputs
-     ;; ppp < 2.5.0 is required due to
-     ;; <https://github.com/adrienverge/openfortivpn/pull/1148>.
-     (list openssl ppp-2.4.9))
+    (native-inputs (list autoconf automake pkg-config))
+    (inputs (list openssl ppp))
     (home-page "https://github.com/adrienverge/openfortivpn")
     (synopsis "Client for PPP+SSL VPN tunnel services")
     (description "Openfortivpn is a client for PPP+SSL VPN tunnel services.  It
