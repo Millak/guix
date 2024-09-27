@@ -34061,13 +34061,13 @@ and BMI2).")
   (package
     (name "python-ailment")
     ;; Must be the same version as python-angr.
-    (version "9.2.46")
+    (version "9.2.112")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ailment" version))
        (sha256
-        (base32 "073fcssbjis1ckwv2w0dcz2dfl6715bj4d4qdhspajj911mvng2f"))))
+        (base32 "1rv8rwvdm7fc9mf8z5hqb54dsj0n7jlnwghd12ll0b2jmh2ix8mn"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
