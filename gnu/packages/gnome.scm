@@ -13024,7 +13024,7 @@ It uses pandoc as back-end for parsing Markdown.")
 (define-public libratbag
   (package
     (name "libratbag")
-    (version "0.16")
+    (version "0.18")
     (source
      (origin
        (method git-fetch)
@@ -13033,7 +13033,7 @@ It uses pandoc as back-end for parsing Markdown.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jjf6xc3a37icp5dvbxla3ai9is2ns31m0llbfq1bmb6dk8cd4n0"))))
+        (base32 "09rmzbvh3q996r5vcdiirr56xzzwi5njay26hp50nyk1bq68l1bl"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
