@@ -34115,14 +34115,13 @@ it was loader by the operating system's loader.")
   (package
     (name "python-pyvex")
     ;; Must be the same version as python-angr.
-    (version "9.2.46")
+    (version "9.2.112")
     (source
      (origin
        (method url-fetch)
-       (patches (search-patches "python-pyvex-remove-angr-dependency.patch"))
        (uri (pypi-uri "pyvex" version))
        (sha256
-        (base32 "1v64rn7gxy6fg065bgsy38z6r494k5ri5r6sn4g08hjj32ihx1ka"))))
+        (base32 "0z1jiflp7h07mfc26am3v7v5z2n6mw9hkfylbs86qgpm93qcf6i3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
