@@ -30369,6 +30369,45 @@ concept of a source-form to report where the error or warning is located.")
   ;; can be loaded on ECL.
   (sbcl-package->ecl-package sbcl-trivial-with-current-source-form))
 
+(define-public sbcl-trivial-ws
+  (let ((commit "ebf1ec0ea26bdac4007e98e89f3a621dbfb4390a")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-ws")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ceramic/trivial-ws/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0qmsf0dhmyhjgqjzdgj2yb1nkrijwp4p1j411613i45xjc2zd6m7"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-prove
+             sbcl-find-port))
+      (inputs
+       (list sbcl-hunchensocket
+             sbcl-websocket-driver
+             sbcl-cl-async))
+      (home-page "https://github.com/ceramic/trivial-ws")
+      (synopsis "Common Lisp library for using WebSockets")
+      (description
+       "This package implements a simple interface for using WebSockets via Common Lisp.")
+      (license license:expat))))
+
+(define-public cl-trivial-ws
+  (sbcl-package->cl-source-package sbcl-trivial-ws))
+
+(define-public ecl-trivial-ws
+  (package
+    (inherit (sbcl-package->ecl-package sbcl-trivial-ws))
+    (arguments
+     ;; https://github.com/ceramic/trivial-ws/issues/7
+     (list #:tests? #f))))
+
 (define-public sbcl-trivialib-type-unify
   (let ((commit "62492ebf04db567dcf435ae84c50b7b8202ecf99")
         (revision "1"))
