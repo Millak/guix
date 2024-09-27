@@ -31033,6 +31033,36 @@ as JSON objects.  With JSON we can make our logs more readable by machines and
 we can stop writing custom parsers for syslog-type records.")
     (license license:bsd-3)))
 
+(define-public python-unique-log-filter
+  (package
+    (name "python-unique-log-filter")
+    (version "0.1.0")
+    (source
+     ;; The version on pypi does not include test files.
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/twizmwazin/unique_log_filter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "036mh6nqskck2fa1q2inasqxb9wcz2p09qcpldnnffzcy1a6kzba"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "python" "test_unique_log_filter.py")))))))
+    (native-inputs (list python-flit-core))
+    (home-page "https://github.com/twizmwazin/unique_log_filter")
+    (synopsis "Log filter that removes duplicate log messages")
+    (description
+     "This library provides a filter for the @code{logging} module
+from the Python standard library which allows removing duplicate log
+messages.")
+    (license license:bsd-2)))
+
 (define-public python-daiquiri
   (package
     (name "python-daiquiri")
