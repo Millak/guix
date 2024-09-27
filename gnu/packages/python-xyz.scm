@@ -34180,7 +34180,7 @@ to enable all kinds of binary analysis tasks.")
   (package
     (name "python-claripy")
     ;; Must be the same version as python-angr.
-    (version "9.2.46")
+    (version "9.2.112")
     (source
      (origin
        ;; Fetching from Git as pypi release doesn't include all test files.
@@ -34190,13 +34190,13 @@ to enable all kinds of binary analysis tasks.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nmawpi1596d9plafrp2db36cjsidy2fagkzkja51jwlx2m1ngai"))
+        (base32 "0c6q6imxjwhxn87d9yz8zvyrszk94r25w8x0g1lr6mrpa9bx7wai"))
        (modules '((guix build utils)))
        (snippet '(begin
                    (substitute* "setup.cfg"
                      ;; Relax the z3 version constraint.
                      ;; See https://github.com/angr/claripy/commit/d1fe2df
-                     (("z3-solver==4.10.2.0")
+                     (("z3-solver==4.13.0.0")
                       ""))))))
     (build-system pyproject-build-system)
     (arguments
