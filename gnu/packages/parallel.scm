@@ -678,6 +678,8 @@ single-instruction multiple-data (SIMD) intrinsics.")
 libraries and programming models with portable and well-defined access to
 commonly needed services in distributed and parallel computing systems.")
    (home-page "https://pmix.org/")
+   ;; configure: WARNING: PMIx does not support 32 bit builds.
+   (supported-systems %64bit-supported-systems)
    ;; The provided license is kind of BSD-style but specific.
    (license (license:fsf-free "https://github.com/openpmix/openpmix?tab=License-1-ov-file#License-1-ov-file"))))
 
