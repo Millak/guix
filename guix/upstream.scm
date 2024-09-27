@@ -48,6 +48,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
@@ -226,15 +227,26 @@ correspond to the same version."
 (define %updaters
   ;; The list of publically-known updaters, alphabetically sorted.
   (delay
-    (sort (fold-module-public-variables (lambda (obj result)
-                                          (if (upstream-updater? obj)
-                                              (cons obj result)
-                                              result))
-                                        '()
-                                        (importer-modules))
-          (lambda (updater1 updater2)
-            (string<? (symbol->string (upstream-updater-name updater1))
-                      (symbol->string (upstream-updater-name updater2)))))))
+    (let* ((updaters
+            (sort (fold-module-public-variables
+                   (lambda (obj result)
+                     (if (upstream-updater? obj)
+                         (cons obj result)
+                         result))
+                   '()
+                   (importer-modules))
+                  (lambda (updater1 updater2)
+                    (string<?
+                     (symbol->string (upstream-updater-name updater1))
+                     (symbol->string (upstream-updater-name updater2))))))
+           (generic-updaters rest (partition
+                                   (compose (cut string-prefix? "generic" <>)
+                                            symbol->string
+                                            upstream-updater-name)
+                                   updaters)))
+      ;; Ensure the generic updaters are tried last, as otherwise they could
+      ;; return less accurate results.
+      (append rest generic-updaters))))
 
 ;; Tests need to mock this variable so mark it as "non-declarative".
 (set! %updaters %updaters)
