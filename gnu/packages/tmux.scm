@@ -9,6 +9,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,7 +47,7 @@
 (define-public tmux
   (package
     (name "tmux")
-    (version "3.4")
+    (version "3.5")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -54,7 +55,7 @@
                     version "/tmux-" version ".tar.gz"))
              (sha256
               (base32
-               "1ahr7si3akr55hadyms3p36f1pbwavpkbfxpsq55ql5zl3gbh6jm"))))
+               "03wmh5q3sd87njjdnqadi8jvq1icha1wiwi29993zng7wx11kq1g"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent ncurses))
