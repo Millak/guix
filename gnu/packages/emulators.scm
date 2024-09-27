@@ -1592,43 +1592,41 @@ physical device and the RetroPad virtual controller.")
         (base32 "15nh4y4vpf4n1ryhiy4fwvzn5xz5idzfzn9fsi5v9hzp25vbjmrm"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (etc (string-append out "/etc"))
-                    (vulkan (assoc-ref inputs "vulkan-loader"))
-                    (wayland-protocols (assoc-ref inputs "wayland-protocols")))
-               ;; Hard-code some store file names.
-               (substitute* "gfx/common/vulkan_common.c"
-                 (("libvulkan.so") (string-append vulkan "/lib/libvulkan.so")))
-               (substitute* "gfx/common/wayland/generate_wayland_protos.sh"
-                 (("/usr/local/share/wayland-protocols")
-                 (string-append wayland-protocols "/share/wayland-protocols")))
+     (list
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Hard-code some store file names.
+              (substitute* "gfx/common/vulkan_common.c"
+                (("libvulkan.so")
+                 (search-input-file inputs "lib/libvulkan.so")))
+              (substitute* "gfx/common/wayland/generate_wayland_protos.sh"
+                (("/usr/local/share/wayland-protocols")
+                 (search-input-directory inputs "share/wayland-protocols")))
 
-               ;; Without HLSL, we can still enable GLSLANG and Vulkan support.
-               (substitute* "qb/config.libs.sh"
-                 (("[$]HAVE_GLSLANG_HLSL") "notcare"))
+              ;; Without HLSL, we can still enable GLSLANG and Vulkan support.
+              (substitute* "qb/config.libs.sh"
+                (("[$]HAVE_GLSLANG_HLSL") "notcare"))
 
-               ;; The configure script does not yet accept the extra arguments
-               ;; (like ‘CONFIG_SHELL=’) passed by the default configure phase.
-               (invoke
-                 "./configure"
-                 ,@(if (string-prefix? "armhf" (or (%current-target-system)
+              ;; The configure script does not yet accept the extra arguments
+              ;; (like ‘CONFIG_SHELL=’) passed by the default configure phase.
+              (invoke
+               "./configure"
+               #$@(if (string-prefix? "armhf" (or (%current-target-system)
                                                   (%current-system)))
-                       '("--enable-neon" "--enable-floathard")
-                       '())
-                 (string-append "--prefix=" out)
-                 ;; Non-free software are available through the core updater,
-                 ;; disable it.  See <https://issues.guix.gnu.org/38360>.
-                 "--disable-update_cores"
-                 "--disable-builtinmbedtls"
-                 "--disable-builtinbearssl"
-                 "--disable-builtinzlib"
-                 "--disable-builtinflac"
-                 "--disable-builtinglslang")))))))
+                      '("--enable-neon" "--enable-floathard")
+                      '())
+               (string-append "--prefix=" #$output)
+               ;; Non-free software are available through the core updater,
+               ;; disable it.  See <https://issues.guix.gnu.org/38360>.
+               "--disable-update_cores"
+               "--disable-builtinmbedtls"
+               "--disable-builtinbearssl"
+               "--disable-builtinzlib"
+               "--disable-builtinflac"
+               "--disable-builtinglslang"))))))
     (inputs
      (list alsa-lib
            eudev
