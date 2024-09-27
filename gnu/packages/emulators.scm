@@ -1618,7 +1618,8 @@ physical device and the RetroPad virtual controller.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "15nh4y4vpf4n1ryhiy4fwvzn5xz5idzfzn9fsi5v9hzp25vbjmrm"))
-       (patches (search-patches "retroarch-unbundle-spirv-cross.patch"))))
+       (patches (search-patches "retroarch-improved-search-paths.patch"
+                                "retroarch-unbundle-spirv-cross.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1651,6 +1652,8 @@ physical device and the RetroPad virtual controller.")
                ;; Non-free software are available through the core updater,
                ;; disable it.  See <https://issues.guix.gnu.org/38360>.
                "--disable-update_cores"
+               ;; The assets are provided via the `retroarch-assets' package.
+               "--disable-update_assets"
                "--disable-builtinmbedtls"
                "--disable-builtinbearssl"
                "--disable-builtinzlib"
@@ -1669,6 +1672,10 @@ physical device and the RetroPad virtual controller.")
                "--disable-stb_image"
                "--disable-stb_vorbis"
                "--disable-xdelta"))))))
+    (native-inputs
+     (list pkg-config
+           wayland-protocols
+           which))
     (inputs
      (list alsa-lib
            eudev
@@ -1697,13 +1704,27 @@ physical device and the RetroPad virtual controller.")
            vulkan-loader
            wayland
            zlib))
-    (native-inputs
-     (list pkg-config wayland-protocols which))
     (native-search-paths
      (list (search-path-specification
             (variable "LIBRETRO_DIRECTORY")
-            (separator #f)              ; single entry
-            (files '("lib/libretro")))))
+            (separator #f)              ;single entry
+            (files '("lib/libretro")))
+           (search-path-specification
+            (variable "LIBRETRO_ASSETS_DIRECTORY")
+            (separator #f)              ;single entry
+            (files '("share/libretro/assets")))
+           (search-path-specification
+            (variable "LIBRETRO_AUTOCONFIG_DIRECTORY")
+            (separator #f)              ;single entry
+            (files '("share/libretro/autoconfig")))
+           (search-path-specification
+            (variable "LIBRETRO_VIDEO_FILTER_DIRECTORY")
+            (separator #f)              ;single entry
+            (files '("share/libretro/filters/video")))
+           (search-path-specification
+            (variable "LIBRETRO_VIDEO_SHADER_DIRECTORY")
+            (separator #f)              ;single entry
+            (files '("share/libretro/shaders")))))
     (home-page "https://www.libretro.com/")
     (synopsis "Reference frontend for the libretro API")
     (description

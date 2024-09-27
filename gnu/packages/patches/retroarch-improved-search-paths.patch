@@ -1,0 +1,298 @@
+Allows discovery of assets file via the LIBRETRO_ASSETS_DIRECTORY environment
+variable.
+
+Upstream-status: https://github.com/libretro/RetroArch/pull/17054
+
+diff --git a/configuration.c b/configuration.c
+index 5808a3f21c..0cc2909102 100644
+--- a/configuration.c
++++ b/configuration.c
+@@ -3573,6 +3573,11 @@ static bool config_load_file(global_t *global,
+ {
+    unsigned i;
+    char tmp_str[PATH_MAX_LENGTH];
++   char* libretro_directory                        = NULL;
++   char* libretro_assets_directory                 = NULL;
++   char* libretro_autoconfig_directory             = NULL;
++   char* libretro_video_filter_directory           = NULL;
++   char* libretro_video_shader_directory           = NULL;
+    static bool first_load                          = true;
+    bool without_overrides                          = false;
+    unsigned msg_color                              = 0;
+@@ -3848,12 +3853,6 @@ static bool config_load_file(global_t *global,
+          strlcpy(path_settings[i].ptr, tmp_str, PATH_MAX_LENGTH);
+    }
+ 
+-#if !IOS
+-   if (config_get_path(conf, "libretro_directory", tmp_str, sizeof(tmp_str)))
+-      configuration_set_string(settings,
+-            settings->paths.directory_libretro, tmp_str);
+-#endif
+-
+ #ifdef RARCH_CONSOLE
+    if (conf)
+       video_driver_load_settings(global, conf);
+@@ -3861,6 +3860,20 @@ static bool config_load_file(global_t *global,
+ 
+    /* Post-settings load */
+ 
++   libretro_directory = getenv("LIBRETRO_DIRECTORY");
++   if (libretro_directory) {
++      configuration_set_string(settings,
++            settings->paths.directory_libretro, libretro_directory);
++      configuration_set_string(settings,
++            settings->paths.path_libretro_info, libretro_directory);
++   }
++
++   libretro_autoconfig_directory = getenv("LIBRETRO_AUTOCONFIG_DIRECTORY");
++   if (libretro_autoconfig_directory)
++       configuration_set_string(settings,
++				settings->paths.directory_autoconfig,
++				libretro_autoconfig_directory);
++
+    if (     (rarch_flags & RARCH_FLAGS_HAS_SET_USERNAME)
+          && (override_username))
+    {
+@@ -4032,15 +4045,27 @@ static bool config_load_file(global_t *global,
+       *settings->paths.path_menu_wallpaper = '\0';
+    if (string_is_equal(settings->paths.path_rgui_theme_preset, "default"))
+       *settings->paths.path_rgui_theme_preset = '\0';
+-   if (string_is_equal(settings->paths.directory_video_shader, "default"))
++   libretro_video_shader_directory = getenv("LIBRETRO_VIDEO_SHADER_DIRECTORY");
++   if (libretro_video_shader_directory) { /* override configuration value */
++      configuration_set_string(settings, settings->paths.directory_video_shader,
++			       libretro_video_shader_directory);
++   } else if (string_is_equal(settings->paths.directory_video_shader, "default"))
+       *settings->paths.directory_video_shader = '\0';
+-   if (string_is_equal(settings->paths.directory_video_filter, "default"))
++   libretro_video_filter_directory = getenv("LIBRETRO_VIDEO_FILTER_DIRECTORY");
++   if (libretro_video_filter_directory) { /* override configuration value */
++       configuration_set_string(settings, settings->paths.directory_video_filter,
++				libretro_video_filter_directory);
++   } else if (string_is_equal(settings->paths.directory_video_filter, "default"))
+       *settings->paths.directory_video_filter = '\0';
+    if (string_is_equal(settings->paths.directory_audio_filter, "default"))
+       *settings->paths.directory_audio_filter = '\0';
+    if (string_is_equal(settings->paths.directory_core_assets, "default"))
+       *settings->paths.directory_core_assets = '\0';
+-   if (string_is_equal(settings->paths.directory_assets, "default"))
++   libretro_assets_directory = getenv("LIBRETRO_ASSETS_DIRECTORY");
++   if (libretro_assets_directory) { /* override configuration value */
++      configuration_set_string(settings,
++           settings->paths.directory_assets, libretro_assets_directory);
++   } else if (string_is_equal(settings->paths.directory_assets, "default"))
+       *settings->paths.directory_assets = '\0';
+ #ifdef _3DS
+    if (string_is_equal(settings->paths.directory_bottom_assets, "default"))
+diff --git a/docs/retroarch.6 b/docs/retroarch.6
+index 7478040e17..f864e0e0d5 100644
+--- a/docs/retroarch.6
++++ b/docs/retroarch.6
+@@ -1,6 +1,6 @@
+ .\" retroarch.6:
+ 
+-.TH  "RETROARCH" "6" "November 1, 2011" "RETROARCH" "System Manager's Manual: retroarch"
++.TH  "RETROARCH" "6" "September 28, 2024" "RETROARCH" "System Manager's Manual: retroarch"
+ 
+ .SH NAME
+ 
+@@ -239,3 +239,36 @@ Disables all kinds of content patching.
+ .TP
+ \fB-D, --detach\fR
+ Detach from the current console. This is currently only relevant for Microsoft Windows.
++
++.SH ENVIRONMENT
++\fBretroarch\fR honors the following environment variables:
++
++.TP
++\fBLIBRETRO_DIRECTORY\fR
++Specify the directory where RetroArch looks for core and info files,
++overriding the value of the "libretro_directory" configuration file
++option.
++
++.TP
++\fBLIBRETRO_ASSETS_DIRECTORY\fR
++Specify the directory where RetroArch looks for assets, overriding
++the value of the "assets_directory" configuration file
++option.
++
++.TP
++\fBLIBRETRO_AUTOCONFIG_DIRECTORY\fR
++Specify the directory where RetroArch looks for controller
++auto-configuration files, overriding the value of the
++"joypad_autoconfig_dir" configuration file option.
++
++.TP
++\fBLIBRETRO_VIDEO_FILTER_DIRECTORY\fR
++Specify the directory where RetroArch looks for video filters,
++overriding the value of the "video_filter_dir" configuration file
++option.
++
++.TP
++\fBLIBRETRO_VIDEO_SHADER_DIRECTORY\fR
++Specify the directory where RetroArch looks for video shaders,
++overriding the value of the "video_shader_dir" configuration file
++option.
+diff --git a/frontend/drivers/platform_unix.c b/frontend/drivers/platform_unix.c
+index c157d355a1..ddf0b5ca87 100644
+--- a/frontend/drivers/platform_unix.c
++++ b/frontend/drivers/platform_unix.c
+@@ -1324,6 +1324,10 @@ static void frontend_unix_get_env(int *argc,
+ {
+    unsigned i;
+    const char* libretro_directory = getenv("LIBRETRO_DIRECTORY");
++   const char* libretro_assets_directory = getenv("LIBRETRO_ASSETS_DIRECTORY");
++   const char* libretro_autoconfig_directory = getenv("LIBRETRO_AUTOCONFIG_DIRECTORY");
++   const char* libretro_video_filter_directory = getenv("LIBRETRO_VIDEO_FILTER_DIRECTORY");
++   const char* libretro_video_shader_directory = getenv("LIBRETRO_VIDEO_SHADER_DIRECTORY");
+ #ifdef ANDROID
+    int32_t major, minor, rel;
+    char device_model[PROP_VALUE_MAX]  = {0};
+@@ -1765,12 +1769,20 @@ static void frontend_unix_get_env(int *argc,
+             "cores", sizeof(g_defaults.dirs[DEFAULT_DIR_CORE_INFO]));
+    else
+ #endif
+-   fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_CORE_INFO], base_path,
+-         "cores", sizeof(g_defaults.dirs[DEFAULT_DIR_CORE_INFO]));
++   if (!string_is_empty(libretro_directory))
++      strlcpy(g_defaults.dirs[DEFAULT_DIR_CORE_INFO], libretro_directory,
++            sizeof(g_defaults.dirs[DEFAULT_DIR_CORE_INFO]));
++   else
++      fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_CORE_INFO], base_path,
++            "cores", sizeof(g_defaults.dirs[DEFAULT_DIR_CORE_INFO]));
+ #endif
+-   fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG], base_path,
+-         "autoconfig", sizeof(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG]));
+-
++   if (!string_is_empty(libretro_autoconfig_directory))
++      strlcpy(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG],
++	    libretro_autoconfig_directory,
++            sizeof(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG]));
++   else
++       fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG], base_path,
++            "autoconfig", sizeof(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG]));
+ #ifdef ASSETS_DIR
+    if (path_is_directory(ASSETS_DIR "/assets"))
+       fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_ASSETS],
+@@ -1778,7 +1790,10 @@ static void frontend_unix_get_env(int *argc,
+             "assets", sizeof(g_defaults.dirs[DEFAULT_DIR_ASSETS]));
+    else
+ #endif
+-   if (path_is_directory("/usr/local/share/retroarch/assets"))
++   if (!string_is_empty(libretro_assets_directory))
++      strlcpy(g_defaults.dirs[DEFAULT_DIR_ASSETS], libretro_assets_directory,
++	      sizeof(g_defaults.dirs[DEFAULT_DIR_ASSETS]));
++   else if (path_is_directory("/usr/local/share/retroarch/assets"))
+       fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_ASSETS],
+             "/usr/local/share/retroarch",
+             "assets", sizeof(g_defaults.dirs[DEFAULT_DIR_ASSETS]));
+@@ -1838,7 +1853,11 @@ static void frontend_unix_get_env(int *argc,
+             "filters/video", sizeof(g_defaults.dirs[DEFAULT_DIR_VIDEO_FILTER]));
+    else
+ #endif
+-   if (path_is_directory("/usr/local/share/retroarch/filters/video"))
++   if (!string_is_empty(libretro_video_filter_directory))
++      strlcpy(g_defaults.dirs[DEFAULT_DIR_VIDEO_FILTER],
++	      libretro_video_filter_directory,
++	      sizeof(g_defaults.dirs[DEFAULT_DIR_VIDEO_FILTER]));
++   else if (path_is_directory("/usr/local/share/retroarch/filters/video"))
+       fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_VIDEO_FILTER],
+             "/usr/local/share/retroarch",
+             "filters/video", sizeof(g_defaults.dirs[DEFAULT_DIR_VIDEO_FILTER]));
+@@ -1872,8 +1891,13 @@ static void frontend_unix_get_env(int *argc,
+          "records", sizeof(g_defaults.dirs[DEFAULT_DIR_RECORD_OUTPUT]));
+    fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_DATABASE], base_path,
+          "database/rdb", sizeof(g_defaults.dirs[DEFAULT_DIR_DATABASE]));
+-   fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_SHADER], base_path,
+-         "shaders", sizeof(g_defaults.dirs[DEFAULT_DIR_SHADER]));
++   if (!string_is_empty(libretro_video_shader_directory))
++       strlcpy(g_defaults.dirs[DEFAULT_DIR_SHADER],
++	       libretro_video_shader_directory,
++	       sizeof(g_defaults.dirs[DEFAULT_DIR_SHADER]));
++   else
++       fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_SHADER], base_path,
++             "shaders", sizeof(g_defaults.dirs[DEFAULT_DIR_SHADER]));
+    fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_CHEATS], base_path,
+          "cheats", sizeof(g_defaults.dirs[DEFAULT_DIR_CHEATS]));
+    fill_pathname_join(g_defaults.dirs[DEFAULT_DIR_OVERLAY], base_path,
+diff --git a/frontend/drivers/platform_win32.c b/frontend/drivers/platform_win32.c
+index 26ed25c04f..0cc9a9dc95 100644
+--- a/frontend/drivers/platform_win32.c
++++ b/frontend/drivers/platform_win32.c
+@@ -565,24 +565,38 @@ static void frontend_win32_env_get(int *argc, char *argv[],
+ {
+    const char *tmp_dir = getenv("TMP");
+    const char *libretro_directory = getenv("LIBRETRO_DIRECTORY");
++   const char *libretro_assets_directory = getenv("LIBRETRO_ASSETS_DIRECTORY");
++   const char* libretro_autoconfig_directory = getenv("LIBRETRO_AUTOCONFIG_DIRECTORY");
++   const char* libretro_video_filter_directory = getenv("LIBRETRO_VIDEO_FILTER_DIRECTORY");
++   const char* libretro_video_shader_directory = getenv("LIBRETRO_VIDEO_SHADER_DIRECTORY");
+    if (!string_is_empty(tmp_dir))
+       fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_CACHE],
+          tmp_dir, sizeof(g_defaults.dirs[DEFAULT_DIR_CACHE]));
+ 
+    gfx_set_dwm();
+ 
+-   fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_ASSETS],
+-      ":\\assets", sizeof(g_defaults.dirs[DEFAULT_DIR_ASSETS]));
++   if (!string_is_empty(libretro_assets_directory))
++      strlcpy(g_defaults.dirs[DEFAULT_DIR_ASSETS], libretro_assets_directory,
++	      sizeof(g_defaults.dirs[DEFAULT_DIR_ASSETS]));
++   else
++       fill_pathname_expand_special(
++	   g_defaults.dirs[DEFAULT_DIR_ASSETS],
++	   ":\\assets", sizeof(g_defaults.dirs[DEFAULT_DIR_ASSETS]));
+    fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_AUDIO_FILTER],
+       ":\\filters\\audio", sizeof(g_defaults.dirs[DEFAULT_DIR_AUDIO_FILTER]));
+-   fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_VIDEO_FILTER],
+-      ":\\filters\\video", sizeof(g_defaults.dirs[DEFAULT_DIR_VIDEO_FILTER]));
++   if (!string_is_empty(libretro_video_filter_directory))
++       strlcpy(g_defaults.dirs[DEFAULT_DIR_VIDEO_FILTER],
++	       libretro_video_filter_directory,
++	       sizeof(g_defaults.dirs[DEFAULT_DIR_VIDEO_FILTER]));
++   else
++       fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_VIDEO_FILTER],
++           ":\\filters\\video", sizeof(g_defaults.dirs[DEFAULT_DIR_VIDEO_FILTER]));
+    fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_CHEATS],
+       ":\\cheats", sizeof(g_defaults.dirs[DEFAULT_DIR_CHEATS]));
+    fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_DATABASE],
+       ":\\database\\rdb", sizeof(g_defaults.dirs[DEFAULT_DIR_DATABASE]));
+    fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_PLAYLIST],
+-      ":\\playlists", sizeof(g_defaults.dirs[DEFAULT_DIR_ASSETS]));
++      ":\\playlists", sizeof(g_defaults.dirs[DEFAULT_DIR_PLAYLIST]));
+    fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_RECORD_CONFIG],
+       ":\\config\\record", sizeof(g_defaults.dirs[DEFAULT_DIR_RECORD_CONFIG]));
+    fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_RECORD_OUTPUT],
+@@ -605,12 +619,26 @@ static void frontend_win32_env_get(int *argc, char *argv[],
+    else
+       fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_CORE],
+             ":\\cores", sizeof(g_defaults.dirs[DEFAULT_DIR_CORE]));
+-   fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_CORE_INFO],
+-      ":\\info", sizeof(g_defaults.dirs[DEFAULT_DIR_CORE_INFO]));
+-   fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG],
+-      ":\\autoconfig", sizeof(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG]));
+-   fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_SHADER],
+-      ":\\shaders", sizeof(g_defaults.dirs[DEFAULT_DIR_SHADER]));
++   if (!string_is_empty(libretro_directory))
++      strlcpy(g_defaults.dirs[DEFAULT_DIR_CORE_INFO], libretro_directory,
++            sizeof(g_defaults.dirs[DEFAULT_DIR_CORE_INFO]));
++   else
++       fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_CORE_INFO],
++           ":\\info", sizeof(g_defaults.dirs[DEFAULT_DIR_CORE_INFO]));
++   if (!string_is_empty(libretro_autoconfig_directory))
++      strlcpy(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG],
++	      libretro_autoconfig_directory,
++	      sizeof(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG]));
++   else
++       fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG],
++             ":\\autoconfig", sizeof(g_defaults.dirs[DEFAULT_DIR_AUTOCONFIG]));
++   if (!string_is_empty(libretro_video_filter_directory))
++      strlcpy(g_defaults.dirs[DEFAULT_DIR_SHADER],
++	      libretro_video_shader_directory,
++	      sizeof(g_defaults.dirs[DEFAULT_DIR_SHADER]));
++   else
++       fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_SHADER],
++             ":\\shaders", sizeof(g_defaults.dirs[DEFAULT_DIR_SHADER]));
+    fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_CORE_ASSETS],
+       ":\\downloads", sizeof(g_defaults.dirs[DEFAULT_DIR_CORE_ASSETS]));
+    fill_pathname_expand_special(g_defaults.dirs[DEFAULT_DIR_SCREENSHOT],
