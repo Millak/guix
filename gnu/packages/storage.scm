@@ -63,17 +63,18 @@
 (define-public ceph
   (package
     (name "ceph")
-    (version "17.2.5")
+    (version "17.2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.ceph.com/tarballs/ceph-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "16mjj6cyrpdn49ig82mmrv984vqfdf24d6i4n9sghfli8z0nj8in"))
+                "1612424yrf39dz010ygz8k5x1vc8731549ckfj1r39dg00m62klp"))
               (patches
                (search-patches
-                "ceph-disable-cpu-optimizations.patch"))
+                "ceph-disable-cpu-optimizations.patch"
+                "ceph-fix-for-newer-boost.patch" ))
               (modules '((guix build utils)))
               (snippet
                '(for-each delete-file-recursively
