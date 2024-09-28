@@ -476,7 +476,7 @@ that the application cannot open the specified MIME type.")
 (define (home-xdg-mime-applications-xdg-files config)
   `(("mimeapps.list"
      ,(mixed-text-file
-       "xdg-mime-appplications"
+       "xdg-mime-applications"
        (serialize-configuration
         config
         home-xdg-mime-applications-configuration-fields)))))
