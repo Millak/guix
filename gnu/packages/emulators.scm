@@ -1477,19 +1477,16 @@ emulation community.  It provides highly accurate emulation.")
                 "0b0vg3iz342dpkffvf7frsnqh8inj8yzi8550bsx8vnbpq5r2ay5"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                    ; no tests
-       #:make-flags (list "-C" "platform/LibRetro"
-                          (string-append "CC=" ,(cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)          ; no configure script
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (libretrodir (string-append out "/lib/libretro")))
-               (install-file "platform/LibRetro/lowresnx_libretro.so"
-                             libretrodir)
-               #t))))))
+     (list #:tests? #f                  ;no test suite
+           #:make-flags #~(list "-C" "platform/LibRetro"
+                                (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ;no configure script
+               (replace 'install
+                 (lambda _
+                   (install-file "platform/LibRetro/lowresnx_libretro.so"
+                                 (string-append #$output "/lib/libretro")))))))
     (home-page "https://lowresnx.inutilis.com/")
     (synopsis "Libretro core for LowRES NX")
     (description "LowRES NX is a simulated retro game console, which can be
