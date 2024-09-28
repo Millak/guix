@@ -127,13 +127,13 @@ engine that uses Wayland for graphics output.")
 (define-public webkitgtk
   (package
     (name "webkitgtk")
-    (version "2.44.1")
+    (version "2.46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "0qamkk9db8m6x4qv5y10lihc18yzgrgbn6ldqw00ckghn1ci8ns2"))
+               (base32 "0fpl7mm8bbjavgmskvsgmmxzi280hm0figah1ib5208r1w237m6l"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
@@ -270,6 +270,7 @@ engine that uses Wayland for graphics output.")
            mesa
            openjpeg
            sqlite
+           sysprof
            woff2
            wpebackend-fdo
            xdg-dbus-proxy))
