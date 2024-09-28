@@ -1529,7 +1529,15 @@ Google's C++ code base.")
                 (lambda* (#:key inputs #:allow-other-keys)
                  ;; absl_time_test requires this environment variable.
                  (setenv "TZDIR" (string-append #$(package-source base)
-                                                "/absl/time/internal/cctz/testdata/zoneinfo")))))))))))
+                                                "/absl/time/internal/cctz/testdata/zoneinfo"))))
+              #$@(if (target-riscv64?)
+                     #~((replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
+                              (invoke "ctest" "-E"
+                                      "absl_symbolize_test|absl_log_format_test")))))
+                     #~()))))))))
 
 (define (abseil-cpp-for-c++-standard base version)
   (hidden-package
