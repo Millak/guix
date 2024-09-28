@@ -677,14 +677,14 @@ precision floating point numbers.")
 (define-public gsl
   (package
     (name "gsl")
-    (version "2.7.1")
+    (version "2.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gsl/gsl-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0jxkxrnpys2j3rh8bzx0bmnh4w6xm28jd57rgxsjp0s863agpc6w"))))
+                "141i8ag2qazyqqk17bfr2l7mr1asxm1da7avi5a66b332pnyx6ba"))))
     (outputs '("out" "static" "debug"))
     (build-system gnu-build-system)
     (arguments
