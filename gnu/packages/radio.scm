@@ -2809,7 +2809,7 @@ software-defined radio receivers.")
 (define-public wfview
   (package
     (name "wfview")
-    (version "1.62")
+    (version "1.64")
     (source
      (origin
        (method git-fetch)
@@ -2818,7 +2818,7 @@ software-defined radio receivers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rrj6h5k8plq4m6fd2yxargfhqcwkxv6bdp4rmgh6bs4prl4wvwd"))))
+        (base32 "0gsijp2h72bdq0jiw8lcfdyp6rwjizngg7wjgkbdm4m05y7c5nj1"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -2829,7 +2829,13 @@ software-defined radio receivers.")
             (lambda _
               (substitute* "wfview.pro"
                 (("\\.\\./wfview/")
-                 "../"))
+                 "../")
+                (("!win32:DEFINES \\+= HOST=.* UNAME=.*")
+                 "!win32:DEFINES += HOST=\\\\\\\"guix\\\\\\\" UNAME=\\\\\\\"build\\\\\\\"")
+                (("\\$\\(shell git -C .* HEAD\\)")
+                 "")
+                (("!win32:LIBS \\+= -L\\./ -lopus")
+                 "!win32:LIBS += -L./ -lopus -lqcustomplot"))
               (substitute* '("wfmain.cpp")
                 (("/usr/share")
                  (string-append #$output "/share")))))
@@ -2840,10 +2846,9 @@ software-defined radio receivers.")
               (invoke "qmake"
                       (string-append "PREFIX=" #$output)
                       "../wfview.pro"))))))
-    ;; XXX: During the build it complains on missing git and hostname commands
-    ;; but it successfully finishes the build.
     (inputs
      (list eigen
+           eudev
            hidapi
            opus
            portaudio
