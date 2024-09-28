@@ -688,17 +688,7 @@ precision floating point numbers.")
     (outputs '("out" "static" "debug"))
     (build-system gnu-build-system)
     (arguments
-     (list ;; FIXME: Setting CFLAGS=-fPIC is not only unnecessary, it's also
-           ;; harmful because it removes the default '-O2 -g', meaning that the
-           ;; library ends up being compiled as -O0.  Consequently, some
-           ;; numerical tests fail, notably on i686-linux.  TODO: Remove
-           ;; 'CFLAGS=-fPIC' for all systems and revisit or remove
-           ;; 'disable-failing-tests' phases accordingly.
-           #:make-flags (if (and (not (%current-target-system))
-                                 (string=? (%current-system) "i686-linux"))
-                            #~'()
-                            #~(list "CFLAGS=-fPIC"))
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                #$@(cond
                    ((and (target-riscv64?)
