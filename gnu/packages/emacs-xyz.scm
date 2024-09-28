@@ -39234,6 +39234,40 @@ language.  Auto-dictionary then sets @code{ispell-dictionary} to use the
 detected language.")
     (license license:gpl2+)))
 
+(define-public emacs-persid
+  (let ((commit "cf84a4340bd3e5b16b4412e98c4243da9f72503a")
+        (revision "2"))
+    (package
+      (name "emacs-persid")
+      (version (git-version "0.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rougier/persid")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "16nij3sv1fgpbxz7z3z4vdwxavz5hbad2y0585vp24h3zxhqq74y"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/rougier/persid")
+      (synopsis "Persistent Identifier Library")
+      (description "This package provides a library to manipulate
+persistent identifiers that are used to locate scholar resources
+online.  The library knows about the following formats:
+@itemize
+@item isbn: @url{https://isbn.org, International Standard Book Number}
+@item issn: @url{https://www.issn.org, International Standard Serial Number}
+@item doi: @url{https://www.doi.org, Digital Object identifier}
+@item pmid: @url{https://pubmed.ncbi.nlm.nih.gov, PubMed}
+@item pmcid: @url{https://www.ncbi.nlm.nih.gov/pmc, PubMed Central}
+@item arxiv: @url{https://arxiv.org, Cornell University}
+@end itemize
+
+Given an identifier in one of the known formats, the libray can query
+information about the resources and format it as a bibtex entry.")
+      (license license:gpl3+))))
+
 (define-public emacs-persist
   (package
     (name "emacs-persist")
