@@ -1495,6 +1495,62 @@ core allowing the lowRES NX programs to be used with libretro frontends such
 as RetroArch.")
     (license license:zlib)))
 
+(define-public libretro-mupen64plus-nx
+  ;; There are no proper release; use the latest commit of the master branch
+  ;; (their stable branch).
+  (let ((commit "9d940bacb95c4d86733f42b67b57fc83046a6d39")
+        (revision "0"))
+    (package
+      (name "libretro-mupen64plus-nx")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/libretro/mupen64plus-libretro-nx")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0s3l62mfkbzmv8g1y4r40iayfwdz68rq6l6khc0d8kw08qk7ggl9"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "CXX=" #$(cxx-for-target))
+                (string-append "GIT_VERSION=" #$version)
+                (string-append "PREFIX=" #$output)
+                "LLE=1"
+                "HAVE_THR_AL=1"         ;for the angrylion video plugin
+                "HAVE_PARALLEL_RDP=1"
+                "HAVE_PARALLEL_RSP=1"
+                "SYSTEM_MINIZIP=1"
+                "SYSTEM_LIBPNG=1"
+                "SYSTEM_XXHASH=1"
+                "SYSTEM_ZLIB=1")
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (replace 'install
+              (lambda _
+                (install-file "mupen64plus_next_libretro.so"
+                              (string-append #$output "/lib/libretro/")))))))
+      (native-inputs (list nasm pkg-config))
+      (inputs (list mesa libpng minizip unzip xxhash zlib))
+      (home-page "https://github.com/libretro/mupen64plus-libretro-nx")
+      (synopsis "Improved Mupen64Plus libretro core")
+      (description "Mupen64Plus-Next is a N64 emulation library for the
+libretro API, based on Mupen64Plus.  It incorporates the following projects:
+@itemize
+@item @url{https://github.com/mupen64plus/mupen64plus-core, mupen64plus}
+@item @url{https://github.com/gonetz/GLideN64, GLideN64}
+@item @url{https://github.com/cxd4/rsp, cxd4}
+@item @url{https://github.com/Themaister/parallel-rsp, parallel-rsp}
+@item @url{https://github.com/ata4/angrylion-rdp-plus, angrylion-rdp-plus}
+@end itemize")
+      (license license:gpl2+))))
+
 (define-public retroarch-assets
   (package
     (name "retroarch-assets")
