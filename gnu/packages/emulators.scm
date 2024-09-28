@@ -1652,6 +1652,8 @@ physical device and the RetroPad virtual controller.")
                ;; Non-free software are available through the core updater,
                ;; disable it.  See <https://issues.guix.gnu.org/38360>.
                "--disable-update_cores"
+               "--disable-update_core_info"
+               "--disable-online_updater"
                ;; The assets are provided via the `retroarch-assets' package.
                "--disable-update_assets"
                "--disable-builtinmbedtls"
