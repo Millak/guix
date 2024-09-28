@@ -102,14 +102,14 @@ the WPE-flavored port of WebKit.")
 (define-public wpebackend-fdo
   (package
     (name "wpebackend-fdo")
-    (version "1.12.0")
+    (version "1.14.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://wpewebkit.org/releases/"
                                   "wpebackend-fdo-" version ".tar.xz"))
               (sha256
                (base32
-                "1b3l02dns1yxw3rq18cv00qan4hp95mxw5b3ssc0fh93ap0wjfb2"))))
+                "0v6wb60m1f628b78dlr2j03xz14r1gdz70iyvf8h51asb511h4hh"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f))                    ;no tests
