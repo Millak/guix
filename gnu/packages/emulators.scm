@@ -112,6 +112,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages web)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -1520,6 +1521,33 @@ as RetroArch.")
     (description "The RetroArch assets are the user interface elements used to
 generate the various User Experience (UX) environments.")
     (license license:cc-by4.0)))
+
+(define-public retroarch-core-info
+  ;; Use the latest commit, to get recent additions such as bsnes-jg.
+  (let ((commit "c0e7b76d02504754de67a1318f93089f1e29f15f")
+        (revision "0"))
+    (package
+      (name "retroarch-core-info")
+      (version (git-version "1.19.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/libretro/libretro-core-info")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "11xpy3zhy2smp4a70fc0r1b76mvmjyabkaaipifsxm3j25drki5z"))))
+      (build-system copy-build-system)
+      (arguments
+       (list #:install-plan #~'(("." "lib/libretro/"
+                                 #:include-regexp ("\\.info$")))))
+      (home-page "https://github.com/libretro/libretro-core-info")
+      (synopsis "Libretro core info files")
+      (description "This is a versioned snapshot of the files containing
+metadata about each known libretro core.  The snapshot is taken from the
+@url{https://github.com/libretro/libretro-super, libretro-super} repository.")
+      (license license:expat))))
 
 (define-public retroarch
   (package
