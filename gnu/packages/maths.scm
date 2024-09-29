@@ -9436,6 +9436,35 @@ a satisfiable formula.  The backbone is the set of literals that are set to
 true in all models.")
       (license license:expat))))
 
+(define cadiback-for-cryptominisat
+  (let ((commit "ea65a9442fc2604ee5f4ffd0f0fdd0bf481d5b42")
+        (revision "1"))
+    (package
+      (inherit cadiback)
+      (name "cadiback-for-cryptominisat")
+      (version (git-version "0.2.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/meelgroup/cadiback")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "1zznrlj4zp1mc7s4pfw11aq773q2lr9yl6pph630zg5mqijaim5g"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments cadiback)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'patch-build-files 'fix-prefix
+                (lambda _
+                  (substitute* "makefile.in"
+                    (("/usr") #$output))))
+              (replace 'install
+                (lambda args
+                  (mkdir-p (string-append #$output "/include"))
+                  (mkdir-p (string-append #$output "/lib"))
+                  (apply (assoc-ref %standard-phases 'install) args))))))))))
+
 (define-public louvain-community
   (let ((commit "8cc5382d4844af127b1c1257373740d7e6b76f1e")
         (revision "1"))
