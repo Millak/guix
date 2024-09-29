@@ -9378,6 +9378,64 @@ also included.")
 clause learning.")
     (license license:expat)))
 
+(define-public cadiback
+  (let ((commit "789329d8fcda851085ed72f1b07d8c3f46243b8a")
+        (revision "1"))
+    (package
+      (name "cadiback")
+      ;; Note: version taken from VERSION file
+      (version (git-version "0.2.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/arminbiere/cadiback")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "137jxf9g7c1979pcgcqgfff1mqk5hs41a84780px8gpcrh469cks"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:test-target "test"
+             #:modules `(((guix build copy-build-system) #:prefix copy:)
+                         (guix build gnu-build-system)
+                         (guix build utils)
+                         (ice-9 regex))
+             #:imported-modules %copy-build-system-modules
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-build-files
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "configure"
+                       (("\\$CADICAL/src") "$CADICAL/include/cadical")
+                       (("\\$CADICAL/build") "$CADICAL/lib"))
+                     (substitute* "generate"
+                       (("\\[ -d .git \\]" all) (string-append ": " all))
+                       (("GITID=.*") (string-append "GITID=\"" #$commit "\"")))
+                     (substitute* "makefile.in"
+                       (("\\.\\./cadical/build")
+                        (dirname
+                         (search-input-file inputs "lib/libcadical.a")))
+                       (("\\.\\./cadical/src")
+                        (search-input-directory inputs "include/cadical")))))
+                 (replace 'configure
+                   (lambda* (#:key configure-flags #:allow-other-keys)
+                     (setenv "CADICAL" #$(this-package-input "cadical"))
+                     (apply invoke "./configure" configure-flags)))
+                 (replace 'install
+                   (lambda args
+                     (apply
+                      (assoc-ref copy:%standard-phases 'install)
+                      #:install-plan
+                      `(("." "bin" #:include ("cadiback")))
+                      args))))))
+      (inputs (list cadical))
+      (home-page "https://github.com/arminbiere/cadiback")
+      (synopsis "Backbone extractor for cadical")
+      (description "This package provides a tool to determine the backbone of
+a satisfiable formula.  The backbone is the set of literals that are set to
+true in all models.")
+      (license license:expat))))
+
 (define-public louvain-community
   (let ((commit "8cc5382d4844af127b1c1257373740d7e6b76f1e")
         (revision "1"))
