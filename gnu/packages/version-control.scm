@@ -3425,13 +3425,15 @@ specific files and directories.")
   (package
     (name "src")
     (version "1.32")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://www.catb.org/~esr/src/src-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0r9i399kkagpwj08nwf1f7c6lr50xjzzgmzwyjjy6ppgcc53a809"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/esr/src.git/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kxbmpjr98kfacjidizxcghl541fwnf8yzfvwfq5f9zbv42p8l41"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3453,8 +3455,10 @@ specific files and directories.")
               (invoke "git" "config" "--global" "user.email" "guix")
               (invoke "./srctest"))))))
     (native-inputs
-     ;; For testing.
-     (list git perl))
+     (list asciidoc
+           ;; For testing.
+           git
+           perl))
     (inputs
      (list bash-minimal
            cssc
