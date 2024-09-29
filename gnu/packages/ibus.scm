@@ -2,7 +2,7 @@
 ;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
-;;; Copyright © 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2020, 2021 Peng Mei Yu <pengmeiyu@riseup.net>
 ;;; Copyright © 2020 kanichos <kanichos@yandex.ru>
@@ -13,6 +13,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Charles <charles@charje.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +62,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages iso-codes)
+  #:use-module (gnu packages language)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages perl)
@@ -379,6 +381,54 @@ ZhuYin (Bopomofo) input method based on libpinyin for IBus.")
 Chinese pinyin input methods.")
     (home-page "https://github.com/libpinyin/libpinyin")
     (license gpl2+)))
+
+(define-public ibus-chewing
+  (package
+    (name "ibus-chewing")
+    (version "2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/chewing/ibus-chewing")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fgscxb8nhli4g8d3yy0wxzbk9bcyj6bvmqrzbddkvgikmanj36b"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; Settings schema 'org.freedesktop.IBus.Chewing' is not installed
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-for-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; IBus requires write access to the HOME directory.
+                (setenv "HOME" (getcwd))
+                ;; MESA: error: ZINK: failed to choose pdev
+                (setenv "GALLIUM_DRIVER" "llvmpipe")
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1")))))))
+    (inputs
+     (list glib
+           gtk
+           ibus
+           libadwaita
+           libchewing))
+    (native-inputs
+     (list dbus
+           gettext-minimal
+           gobject-introspection
+           `(,glib "bin")
+           pkg-config
+           xorg-server-for-tests))
+    (home-page "https://chewing.im/")
+    (synopsis "Chewing engine for IBus")
+    (description "IBus-Chewing is an IBus front-end of Chewing, an intelligent
+Chinese input method for Zhuyin (BoPoMoFo) users.")
+    (license gpl2)))
 
 (define-public ibus-anthy
   (package
