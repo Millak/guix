@@ -9326,6 +9326,58 @@ the sequential @command{lingeling} and its parallel variants
 also included.")
     (license license:expat)))
 
+(define-public cadical
+  (package
+    (name "cadical")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/arminbiere/cadical")
+                    (commit (string-append "rel-" version))))
+              (file-name (git-file-name name version))
+              (patches (search-patches "cadical-add-shared-library.patch"))
+              (sha256
+               (base32 "1dzjah3z34v89ka48hncwqkxrwl4xqn9947p0ipf39lxshrq91xa"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "test"
+           #:modules `(((guix build copy-build-system) #:prefix copy:)
+                       (guix build gnu-build-system)
+                       (guix build utils)
+                       (ice-9 regex))
+           #:imported-modules %copy-build-system-modules
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda* (#:key configure-flags #:allow-other-keys)
+                   (setenv "CXXFLAGS" "-DPIC -fPIC")
+                   (apply invoke "./configure" configure-flags)))
+               (replace 'check
+                 (lambda args
+                   ;; Tests are incorrectly linked upstream.
+                   ;; Since we don't install them, just work around this in the
+                   ;; check phase.
+                   (setenv "LD_LIBRARY_PATH" (string-append (getcwd) "/build"))
+                   (apply (assoc-ref %standard-phases 'check) args)
+                   (unsetenv "LD_LIBRARY_PATH")))
+               (replace 'install
+                 (lambda args
+                   (apply
+                    (assoc-ref copy:%standard-phases 'install)
+                    #:install-plan
+                    `(("build" "bin" #:include ("cadical" "mobical"))
+                      ("build" "lib" #:include-regexp ("libcadical\\.(a|so)$"))
+                      ("src" "include" #:include ("cadical.h"))
+                      ;; Internal headers used by cadiback.
+                      ("src" "include/cadical" #:include-regexp ("\\.hpp$")))
+                    args))))))
+    (home-page "https://github.com/arminbiere/cadical")
+    (synopsis "SAT solver")
+    (description "This package provides a SAT solver based on conflict-driven
+clause learning.")
+    (license license:expat)))
+
 (define-public louvain-community
   (let ((commit "8cc5382d4844af127b1c1257373740d7e6b76f1e")
         (revision "1"))

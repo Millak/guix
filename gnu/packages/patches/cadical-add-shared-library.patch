@@ -1,0 +1,49 @@
+From fcb865786b524917aa9d3df8745aca66716794bf Mon Sep 17 00:00:00 2001
+From: Mate Soos <soos.mate@gmail.com>
+Date: Sun, 2 Jun 2024 21:50:06 -0400
+Subject: [PATCH] Also add a dynamic library
+
+---
+Liliana Marie Prikler <liliana.prikler@gmail.com>:
+  Added -L.
+  Squashed fix for cadical and mobical.
+
+ makefile.in | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/makefile.in b/makefile.in
+index 291cb3e3..d179f591 100644
+--- a/makefile.in
++++ b/makefile.in
+@@ -34,7 +34,7 @@ COMPILE=$(CXX) $(CXXFLAGS) -I$(DIR) -I$(ROOT)/src
+ 
+ #--------------------------------------------------------------------------#
+ 
+-all: libcadical.a cadical mobical
++all: libcadical.so libcadical.a cadical mobical
+ 
+ #--------------------------------------------------------------------------#
+ 
+@@ -54,10 +54,10 @@ contrib/%.o: $(ROOT)/contrib/%.cpp $(ROOT)/contrib/%.hpp $(ROOT)/src/*.hpp makef
+ # tester 'mobical') and the library are the main build targets.
+ 
+ cadical: src/cadical.o libcadical.a makefile
+-	$(COMPILE) -o $@ $< -L. -lcadical $(LIBS)
++	$(COMPILE) -static -o $@ $< -L. -lcadical $(LIBS)
+ 
+ mobical: src/mobical.o libcadical.a makefile $(LIBS)
+-	$(COMPILE) -o $@ $< -L. -lcadical
++	$(COMPILE) -static -o $@ $< -L. -lcadical
+ 
+ libcadical.a: $(OBJ_SOLVER) $(OBJ_CONTRIB) makefile
+ 	ar rc $@ $(OBJ_SOLVER) $(OBJ_CONTRIB)
+@@ -62,5 +62,8 @@ mobical: src/mobical.o libcadical.a makefile $(LIBS)
+ libcadical.a: $(OBJ_SOLVER) $(OBJ_CONTRIB) makefile
+ 	ar rc $@ $(OBJ_SOLVER) $(OBJ_CONTRIB)
+ 
++libcadical.so: $(OBJ_SOLVER) $(OBJ_CONTRIB) $(LIBS) makefile
++	$(COMPILE) -shared -o $@ $(OBJ_SOLVER) $(OBJ_CONTRIB) $(LIBS)
++
+ #--------------------------------------------------------------------------#
+ 
+ # Note that 'build.hpp' is generated and resides in the build directory.
