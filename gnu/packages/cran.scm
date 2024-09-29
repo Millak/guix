@@ -10379,8 +10379,7 @@ impute compatibly with the substantive model.")
        (method url-fetch)
        (uri (cran-uri "pan" version))
        (sha256
-        (base32
-         "0liwcym035174h6c4b9ddmqxa3vkpkk3alyr9psk8yhv7i61hzp3"))))
+        (base32 "0liwcym035174h6c4b9ddmqxa3vkpkk3alyr9psk8yhv7i61hzp3"))))
     (build-system r-build-system)
     (native-inputs (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/pan/")
