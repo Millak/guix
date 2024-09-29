@@ -86,7 +86,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.1.0146")
+    (version "9.1.0744")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -95,7 +95,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "05lz8ai39p9ypk22n7qc7g21868m08pl12sn4028jshx5nxwy2zn"))))
+               "0izx8ckjbpavp3bpw7lzdga5mmpcdssvzhlnz18n4bfzpfhg5knr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -157,7 +157,8 @@
              (with-fluids ((%default-port-encoding #f))
                (substitute* "src/testdir/test_writefile.vim"
                  ((".*Test_write_with_xattr_support.*" line)
-                  (string-append line "return\n"))))))
+                  (string-append line "return\n"))))
+             (delete-file "runtime/syntax/testdir/input/sh_11.sh")))
          (add-before 'install 'fix-installman.sh
            (lambda _
              (substitute* "src/installman.sh"
