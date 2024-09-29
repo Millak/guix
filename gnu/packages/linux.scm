@@ -7384,7 +7384,7 @@ not as a replacement for it.")
     (home-page "https://github.com/KDAB/hotspot")
     (synopsis "Performance analysis GUI for Linux perf")
     (description "Hotspot is a standalone GUI for performance data analysis.
-It aims to be similar to KCachegrind, but for data collected with the
+It aims to be similar to KCachegrind, but for data collected with
 @command{perf}, a profiler for use with the kernel Linux.  Its main feature is
 graphically visualizing a @file{perf.data} file.")
     (license (list license:gpl2+ license:gpl3+)))) ;dual licensed
