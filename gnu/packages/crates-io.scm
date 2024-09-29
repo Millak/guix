@@ -61078,8 +61078,27 @@ transport protocol in Rust.")
          "0yhnnix4dzsv8y4wwz4csbnqjfh73al33j35msr10py6cl5r4vks"))))
     (arguments '())))
 
+(define-public rust-quoted-printable-0.5
+  (package
+    (name "rust-quoted-printable")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quoted_printable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wvwq6w6rdsx1yxzr7ckspff0qk0q9252dzmxrd4c0kv97c9n334"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/staktrace/quoted-printable")
+    (synopsis "Simple encoder/decoder for quoted-printable data")
+    (description
+     "This package provides a simple encoder/decoder for quoted-printable data.")
+    (license license:bsd-0)))
+
 (define-public rust-quoted-printable-0.4
   (package
+    (inherit rust-quoted-printable-0.5)
     (name "rust-quoted-printable")
     (version "0.4.8")
     (source
@@ -61088,14 +61107,7 @@ transport protocol in Rust.")
        (uri (crate-uri "quoted_printable" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jcyi10gh2xzjvxls8r58gwc9yavw3iighkgnb1jwrjij8hncf2s"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/staktrace/quoted-printable")
-    (synopsis "Simple encoder/decoder for quoted-printable data")
-    (description
-     "This package provides a simple encoder/decoder for quoted-printable
-data.")
-    (license license:bsd-0)))
+        (base32 "0jcyi10gh2xzjvxls8r58gwc9yavw3iighkgnb1jwrjij8hncf2s"))))))
 
 (define-public rust-r2d2-0.8
   (package
