@@ -388,7 +388,7 @@ LZ4 data blocks.  The implementation is based on the reference C
 (define-public go-github-com-ulikunitz-xz
   (package
     (name "go-github-com-ulikunitz-xz")
-    (version "0.5.11")
+    (version "0.5.12")
     (source
      (origin
        (method git-fetch)
@@ -397,7 +397,7 @@ LZ4 data blocks.  The implementation is based on the reference C
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hbs3x7s7d5ch6ipaqi265w0fwpijs0j19xdbhbjjsyr4khxbqd0"))))
+        (base32 "09n4zawzycab4mmk20sv0490xrx9ighv25g5hj578vsjgzz842n1"))))
     (build-system go-build-system)
     (arguments
      (list
