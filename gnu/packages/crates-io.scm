@@ -43483,15 +43483,14 @@ file's MIME type by its extension.")
 (define-public rust-miniflux-api-0.3
   (package
     (name "rust-miniflux-api")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "miniflux_api" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r0bd907v2abv40i0c0xaj87ik4w9d3syn1f4byy0ssv55dw7mdq"))))
+        (base32 "19lhzn3mmq5iifmld6lr81nx4yj4ll4k76gzpypb21p5b1xag667"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;tests use the network
