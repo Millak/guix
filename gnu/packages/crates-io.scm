@@ -12538,18 +12538,18 @@ clauses.")
 (define-public rust-charset-0.1
   (package
     (name "rust-charset")
-    (version "0.1.3")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "charset" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0iidr9d5a0jghkaj0888skm3c6368ff07nxmzwmwr8hj3afhgs8q"))))
+        (base32 "0zkwcw525qwcqsdf74l9d2r6m69yxfxb4kgywp3q9fklgjq2gygi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.13)
+       (("rust-base64" ,rust-base64-0.22)
         ("rust-encoding-rs" ,rust-encoding-rs-0.8)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
