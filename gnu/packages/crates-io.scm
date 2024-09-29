@@ -2210,6 +2210,28 @@ writing colored text to a terminal.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-any-all-workaround-0.1
+  (package
+    (name "rust-any-all-workaround")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "any_all_workaround" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11ifmzawvvi6d4r1lk0dkdnbswf574npgkika4535k7j6l3s9zl8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; `#![feature]` may not be used on the stable release channel
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1))))
+    (home-page "https://docs.rs/any_all_workaround/")
+    (synopsis "Workaround for bad LLVM codegen for boolean reductions on 32-bit ARM")
+    (description
+     "This package provides Workaround for bad LLVM codegen for boolean
+reductions on 32-bit ARM.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-anyhow-1
   (package
     (name "rust-anyhow")
