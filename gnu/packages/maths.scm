@@ -9499,7 +9499,7 @@ community detection algorithm.")
 (define-public cryptominisat
   (package
     (name "cryptominisat")
-    (version "5.11.4")
+    (version "5.11.22")
     (source
      (origin
        (method git-fetch)
@@ -9509,7 +9509,12 @@ community detection algorithm.")
       (file-name (git-file-name name version))
       (sha256
        (base32
-        "1izjn44phjp9670s7bxrdx4p0r59idqwv3bm6sr0qnlqlha5z4zc"))))
+        "1c85gfqvy90yhh9jwmiiz2bz4i86prgpfyx1gbzl42hn2ixkcjgm"))
+      (modules '((guix build utils)))
+      (snippet
+       #~(begin
+           (substitute* "src/backbone.cpp"
+             (("\"\\.\\./cadiback/cadiback\\.h\"") "<cadiback.h>"))))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -9533,7 +9538,15 @@ community detection algorithm.")
                  "find_package(GTest REQUIRED)")
                 (("add_subdirectory\\(\\$\\{PROJECT_SOURCE_DIR\\}/utils/.*\\)")
                  "")))))))
-    (inputs (list boost louvain-community python python-numpy sqlite zlib))
+    (inputs (list boost
+                  cadical
+                  cadiback-for-cryptominisat
+                  gmp
+                  louvain-community
+                  python
+                  python-numpy
+                  sqlite
+                  zlib))
     (native-inputs (list googletest lingeling python python-wrapper python-lit))
     (synopsis "Incremental SAT solver")
     (description
