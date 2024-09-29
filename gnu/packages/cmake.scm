@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2024 Charles <charles@charje.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,6 +55,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
@@ -439,6 +441,46 @@ and workspaces that can be used in the compiler environment of your choice.")
     (native-search-paths '())
     (search-paths
      (package-native-search-paths cmake-minimal))))
+
+(define-public corrosion
+  (package
+    (name "corrosion")
+    (version "0.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/corrosion-rs/corrosion")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1sm1jhdrqzp3f36f7grh900wp7pk9l1zim49hrk87ac6frfmg8xx"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "ctest" "-E"
+                         (string-append
+                           "(" (string-join
+                                 (list "cbindgen_rust2cpp"
+                                       "rustup_proxy"
+                                       "hostbuild"
+                                       "parse_target_triple")
+                                 "|")
+                           ")"))))))))
+    (native-inputs
+     (list rust
+           `(,rust "cargo")))
+    (home-page "https://corrosion-rs.github.io/corrosion/")
+    (synopsis "Tool for integrating Rust into an existing CMake project")
+    (description "Corrosion, formerly known as cmake-cargo, is a tool for
+integrating Rust into an existing CMake project.  Corrosion can automatically
+import executables, static libraries, and dynamic libraries from a workspace
+or package manifest (Cargo.toml file).")
+    (license license:expat)))
 
 (define-public emacs-cmake-mode
   (package
