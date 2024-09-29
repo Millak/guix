@@ -34842,8 +34842,7 @@ download images.")
        (uri (string-append "http://www.rforge.net/Rserve/snapshot/Rserve_"
                            version ".tar.gz"))
        (sha256
-        (base32
-         "017kkzv9lxlz9qhg3gprrf1wcyflxrif6wjk27x9b4bdzylw6bsx"))))
+        (base32 "0z1xvx8ifvlwfl3rf1wwhpbwp4ivh7sn71xhlqihqpsclpmljg8p"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
