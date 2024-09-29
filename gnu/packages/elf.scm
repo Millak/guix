@@ -28,6 +28,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages elf)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -319,6 +320,32 @@ static analysis of the ELF binaries at hand.")
      "PatchELF allows the ELF \"interpreter\" and RPATH of an ELF binary to be
 changed.")
     (license gpl3+)))
+
+;; Newer patchelf may break binaries.  e.g. When setting RUNPATH for a Go
+;; program.
+;; See also: https://github.com/NixOS/patchelf/issues/482
+(define-public patchelf-0.16
+  (package
+    (inherit patchelf)
+    (name "patchelf")
+    (version "0.16.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/NixOS/patchelf/releases/download/"
+                    version
+                    "/patchelf-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0zdby3gpmm8q4735pviaq92zj41i2rdnhwhyrsb3sinc9hzmz4db"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments patchelf)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'fix-tests 'skip-empty-rpath-test
+              (lambda _
+                (substitute* "tests/set-empty-rpath.sh"
+                  (("^\\$\\{SCRATCH\\}\\/simple.$") ""))))))))))
 
 (define-public libdwarf
   (package
