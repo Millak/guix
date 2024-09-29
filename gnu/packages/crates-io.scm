@@ -41766,22 +41766,21 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
 (define-public rust-mailparse-0.14
   (package
     (name "rust-mailparse")
-    (version "0.14.0")
+    (version "0.14.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "mailparse" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1al0yb9wgy26ihd0gm4x1dk9rsv23wrmp2qw1lk4f04cbw7mfmkb"))))
+                "0mwpkxi41ak8pabknmvj49dpsbs0q6w7w12f0lp49avcjaa6a29d"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f          ; Doc tests fail.
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-charset" ,rust-charset-0.1)
         ("rust-data-encoding" ,rust-data-encoding-2)
-        ("rust-quoted-printable" ,rust-quoted-printable-0.4))
-       #:cargo-development-inputs (("rust-ouroboros" ,rust-ouroboros-0.14))))
+        ("rust-quoted-printable" ,rust-quoted-printable-0.5))
+       #:cargo-development-inputs (("rust-ouroboros" ,rust-ouroboros-0.17))))
     (home-page "https://github.com/staktrace/mailparse/blob/master/README.md")
     (synopsis "Simple parser for MIME e-mail messages")
     (description
