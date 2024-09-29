@@ -23046,14 +23046,14 @@ floating-point primitives to an @code{io::Write}.")
 (define-public rust-dtparse-2
   (package
     (name "rust-dtparse")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "dtparse" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fg8h07m0z38c6i556dfmgnhl18i8w37cl235iyfzc9l3kz7r325"))))
+        (base32 "1mqz4164mc4xyq73c22wf900v8cn4sy63nalrkr5mlr614y41yr3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
