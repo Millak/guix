@@ -3449,11 +3449,12 @@ specific files and directories.")
                 (wrap-program prog
                   `("PATH" ":" prefix (,(dirname rcs)))))))
           (replace 'check
-            (lambda _
-              (setenv "HOME" (getenv "TMPDIR"))
-              (invoke "git" "config" "--global" "user.name" "guix")
-              (invoke "git" "config" "--global" "user.email" "guix")
-              (invoke "./srctest"))))))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" (getenv "TMPDIR"))
+                (invoke "git" "config" "--global" "user.name" "guix")
+                (invoke "git" "config" "--global" "user.email" "guix")
+                (invoke "./srctest")))))))
     (native-inputs
      (list asciidoc
            ;; For testing.
