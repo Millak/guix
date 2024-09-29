@@ -13586,7 +13586,7 @@ hydras with one column per group of heads.")))
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/ivy-" version ".tar"))
        (sha256
-        (base32 "1zjksh0jvxyqhzgwmh9i26gaip6c04q400xckh730r2gjs287pjj"))))
+        (base32 "1h9gfkkcw9nfw85m0mh08qfmi2y0jkvdk54qx0iy5p04ysmhs6k1"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list))
