@@ -4892,8 +4892,7 @@ character vector.")
        (method url-fetch)
        (uri (cran-uri "googlesheets" version))
        (sha256
-        (base32
-         "11q07nxys72wkxx9mawmjyf20gvwvrb7h3gpa73h6lgh2vgrwnv8"))))
+        (base32 "13n6vkdcbz78sbxq5xrj0zhq0dpriz6cyq13v3raa92152l88rm5"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cellranger
