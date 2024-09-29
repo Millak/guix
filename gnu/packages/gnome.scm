@@ -12349,7 +12349,7 @@ higher level porcelain stuff.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0m135v2qm5kaa2jki0y2lbh0wa69bqfh9a4cm7db153v7smrj3jv"))))
+                "0c152c1vrkckqkfq3862c02fxp2scv7f7lqv6k6p35mb9ml32ail"))))
     (build-system meson-build-system)
     (arguments
      (list
