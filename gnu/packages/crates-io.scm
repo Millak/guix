@@ -41791,20 +41791,23 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
   (package
     (inherit rust-mailparse-0.14)
     (name "rust-mailparse")
-    (version "0.13.5")
+    (version "0.13.8")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "mailparse" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1qacyzfl3wsl745b92w9gj0mjg43rcwg99l96rmg8l1sq5pm4vy0"))))
+                "0cka4vpk7dpyx22l3csff8c82wkwkz2py9wrjms5fmc3a257dblc"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=parse_mail")
        #:cargo-inputs
-       (("rust-base64" ,rust-base64-0.13)
-        ("rust-charset" ,rust-charset-0.1)
-        ("rust-quoted-printable" ,rust-quoted-printable-0.4))))))
+       (("rust-charset" ,rust-charset-0.1)
+        ("rust-data-encoding" ,rust-data-encoding-2)
+        ("rust-quoted-printable" ,rust-quoted-printable-0.4))
+       #:cargo-development-inputs (("rust-ouroboros" ,rust-ouroboros-0.14))))))
 
 (define-public rust-malloc-buf-1
   (package
