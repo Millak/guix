@@ -41659,23 +41659,22 @@ lexer.")
 (define-public rust-magic-crypt-3
   (package
     (name "rust-magic-crypt")
-    (version "3.1.8")
+    (version "3.1.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "magic-crypt" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jb4m8wqxm2qkg9gcflxa0sg1d33a1a0r876h47njg43h494zjfk"))))
+        (base32 "0lxh2yr4wynp8k7669hlaca1g2m6smz50pv6a35jsvr9kmgzjhkc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-aes-soft" ,rust-aes-soft-0.6)
-        ("rust-base64" ,rust-base64-0.13)
-        ("rust-block-modes" ,rust-block-modes-0.7)
+       (("rust-aes" ,rust-aes-0.7)
+        ("rust-base64" ,rust-base64-0.21)
+        ("rust-block-modes" ,rust-block-modes-0.8)
         ("rust-crc-any" ,rust-crc-any-2)
-        ("rust-des" ,rust-des-0.6)
+        ("rust-des" ,rust-des-0.7)
         ("rust-digest" ,rust-digest-0.9)
         ("rust-md-5" ,rust-md-5-0.9)
         ("rust-sha2" ,rust-sha2-0.9)
