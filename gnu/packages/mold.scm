@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,7 +55,11 @@
     (build-system cmake-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-DMOLD_USE_SYSTEM_MIMALLOC=ON"
+      ;; Mold only uses mimalloc on 64-bit systems, even with the
+      ;; configure flag set, saying it is unstable on 32-bit systems.
+      #:configure-flags #~(list #$@(if (target-64bit?)
+                                       '("-DMOLD_USE_SYSTEM_MIMALLOC=ON")
+                                       '("-DMOLD_USE_MIMALLOC=OFF"))
                                 "-DMOLD_USE_SYSTEM_TBB=ON"
                                 "-DBUILD_TESTING=ON")
       #:phases
@@ -81,7 +85,12 @@
               ;; but compiler in Guix will insert the path of gcc-lib and
               ;; glibc into the output binary.
               (delete-file "test/rpath.sh"))))))
-    (inputs (list mimalloc tbb xxhash zlib `(,zstd "lib")))
+    (inputs
+     (append
+       (if (target-64bit?)
+           (list mimalloc)
+           '())
+       (list tbb xxhash zlib `(,zstd "lib"))))
     (home-page "https://github.com/rui314/mold")
     (synopsis "Fast linker")
     (description
