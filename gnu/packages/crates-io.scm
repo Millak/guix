@@ -9331,7 +9331,7 @@ devices and kernels.")
 (define-public rust-brotli-decompressor-2
   (package
     (name "rust-brotli-decompressor")
-    (version "2.3.2")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
@@ -9339,7 +9339,7 @@ devices and kernels.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "102v89h9z0p45j5fsjna97761nxx9nxz9ccpwxma6p5zad32vbar"))))
+         "0kyyh9701dwqzwvn2frff4ww0zibikqd1s1xvl7n1pfpc3z4lbjf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; not all test files included
