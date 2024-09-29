@@ -8,6 +8,8 @@
 ;;; Copyright © 2022 Milran <milranmike@protonmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Charles <charles@charje.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,6 +33,9 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cmake)
+  #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages emacs)
@@ -63,6 +68,7 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (guix packages)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
@@ -264,55 +270,63 @@ Random Cage Fighting Birds, Cool Music etc.")
 (define-public libchewing
   (package
     (name "libchewing")
-    (version "0.5.1")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/chewing/libchewing.git")
-         (commit
-          (string-append "v" version))))
-       (file-name
-        (git-file-name name version))
+       (uri (git-reference
+             (url "https://github.com/chewing/libchewing")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "04d09w6xdd08v6laj9y4qmqsijw5i2jvshcilhh4vg6cfnfgl2my"))))
-    (build-system gnu-build-system)
+        (base32 "1n0w9niff46w7vncs699gj4y2xghn1sbl0f4mg5x33dcapqd14sg"))))
+    (build-system cargo-build-system)
     (arguments
-     `(;; test-easy-symbol and test-fullshape fail with multiple cores.
-       #:parallel-tests? #f
+     `(#:modules ((guix build cargo-build-system)
+                  (guix build utils)
+                  ((guix build cmake-build-system) #:prefix cmake:))
+       #:imported-modules ((guix build cmake-build-system)
+                           ,@%cargo-build-system-modules)
+       #:install-source? #f
+       ;; Keep the vendor-dir outside of cmake's directories.
+       #:vendor-dir "../guix-vendor"
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+        ("rust-der" ,rust-der-0.7)
+        ("rust-directories" ,rust-directories-5)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rusqlite" ,rust-rusqlite-0.29))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
+         (add-after 'unpack 'allow-older-version-of-clap-mangen
            (lambda _
-             (substitute* "test/Makefile.am"
-               (("	test-bopomofo ")
-                "")
-               (("	test-config ")
-                "")
-               (("	test-reset ")
-                "")
-               (("	test-symbol ")
-                "")
-               (("	test-keyboardless ")
-                "")
-               (("	test-special-symbol ")
-                "")
-               (("	test-keyboard ")
-                "")
-               (("	test-regression ")
-                "")
-               (("	test-userphrase ")
-                ""))
-             #t)))))
+             (substitute* "tools/Cargo.toml"
+               (("0.2.12") "0.2.11"))))
+         (add-after 'configure 'cmake-configure
+           (lambda args
+             (apply (assoc-ref cmake:%standard-phases 'configure)
+                    ;; For the tests.
+                    (append args (list #:out-of-source? #f)))))
+         (add-after 'unpack 'work-around-genkeystroke
+           (lambda _
+             ;; Remove this phase when we can find ncurses with cmake.
+             (substitute* "tests/CMakeLists.txt"
+               (("CURSES_FOUND") "FALSE"))))
+         (replace 'build
+           (assoc-ref cmake:%standard-phases 'build))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys #:rest args)
+             (when tests?
+               ((assoc-ref cmake:%standard-phases 'check)))))
+         (replace 'install
+           (assoc-ref cmake:%standard-phases 'install)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("texinfo" ,texinfo)))
+     (list corrosion cmake-minimal))
     (inputs
      (list ncurses sqlite))
     (synopsis "Chinese phonetic input method")
