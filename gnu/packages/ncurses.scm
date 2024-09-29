@@ -354,6 +354,16 @@ of your system.")
     (home-page (string-append "https://web.archive.org/web/20211113222004/"
                               "http://www.clifford.at/stfl/"))
     (synopsis "Structured terminal forms library")
-    (description "Stfl is a library which implements a curses-based widget
-set for text terminals.")
+    (description "@acronym{STFL, Structured Terminal Forms Language} is a
+language for easily describing @acronym{GUIs, Graphical User Interfaces}.
+@acronym{STFL, Structured Terminal Forms Library} is also the name of this
+library which translates those descriptions into a curses-based widget set for
+text terminals.
+
+STFL descriptions do not contain any concrete layouting information, such as x/y
+coordinates of widgets.  Instead, container widgets such as vertical and
+horizontal boxes, as well as tables, are used to group widgets.  The actual
+layouting work is done by the STFL library.  This allows STFL GUIs to handle
+terminals of different sizes and terminal resize events transparently for the
+application programmer.")
     (license lgpl3+)))
