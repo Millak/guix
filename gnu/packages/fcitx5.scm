@@ -4,6 +4,7 @@
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2022 dan <i@dan.games>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Charles <charles@charje.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,7 @@
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages language)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
@@ -367,6 +369,35 @@ for Qt based application.")
     (synopsis "Anthy Japanese language input for Fcitx 5")
     (description "Fcitx5-Anthy provides Japanese input support to Fcitx5 using
 the Anthy input method.")
+    (license license:gpl2+)))
+
+(define-public fcitx5-chewing
+  (package
+    (name "fcitx5-chewing")
+    (version "5.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fcitx/fcitx5-chewing")
+                    (commit version)))
+              (sha256
+               (base32 "011psyvvcbrw062zw807lm33n827qza7mqaagf8zb0cz3hh1qwm9"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'pre-check
+                 (lambda _ (setenv "HOME" (getcwd)))))))
+    (inputs (list libchewing))
+    (native-inputs
+     (list extra-cmake-modules
+           pkg-config
+           gettext-minimal
+           fcitx5))
+    (home-page "https://github.com/fcitx/fcitx5-chewing")
+    (synopsis "Chewing wrapper for Fcitx")
+    (description "This provides libchewing input method support for fcitx5.")
     (license license:gpl2+)))
 
 (define-public fcitx5-chinese-addons
