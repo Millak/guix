@@ -9305,7 +9305,7 @@ Bresenham's line algorithm.")
 (define-public rust-brotli-3
   (package
     (name "rust-brotli")
-    (version "3.3.4")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
@@ -9313,15 +9313,14 @@ Bresenham's line algorithm.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0s7z0nrv04wxniwijh5iig1w31sphc6lz38zc8lr7qlarkdv3851"))))
+         "14f34ml3i8qbnh4hhlv5r6j10bkx420gspsl1cgznl1wqrdx4h6n"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-alloc-no-stdlib" ,rust-alloc-no-stdlib-2)
         ("rust-alloc-stdlib" ,rust-alloc-stdlib-0.2)
         ("rust-brotli-decompressor" ,rust-brotli-decompressor-2)
-        ("rust-packed-simd" ,rust-packed-simd-0.3)
-        ("rust-sha2" ,rust-sha2-0.8))))
+        ("rust-sha2" ,rust-sha2-0.10))))
     (home-page "https://github.com/dropbox/rust-brotli")
     (synopsis "Brotli compressor and decompressor")
     (description "This package provides a brotli compressor and decompressor
