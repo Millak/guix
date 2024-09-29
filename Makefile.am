@@ -431,6 +431,11 @@ AUX_FILES =						\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/findclass.php			\
   gnu/packages/aux-files/guix.vim			\
+  gnu/packages/aux-files/linux-libre/6.11-arm.conf	\
+  gnu/packages/aux-files/linux-libre/6.11-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/6.11-i686.conf	\
+  gnu/packages/aux-files/linux-libre/6.11-x86_64.conf	\
+  gnu/packages/aux-files/linux-libre/6.11-riscv.conf	\
   gnu/packages/aux-files/linux-libre/6.10-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.10-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.10-i686.conf	\
