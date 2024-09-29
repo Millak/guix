@@ -41491,14 +41491,14 @@ implementation of LZMA and xz stream encoding/decoding.")
 (define-public rust-lzzzz-1
   (package
     (name "rust-lzzzz")
-    (version "1.0.4")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lzzzz" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1g0kmzbbdsv9k4dbaxd0a1k1n3c3lwx5mhg4j5m6wxq440vd2540"))))
+        (base32 "1ggphn3ca5527jjq778z8hslqgmqymykgwcj63307b62r6hcr55c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1))
