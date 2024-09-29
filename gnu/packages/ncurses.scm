@@ -323,11 +323,13 @@ of your system.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append "http://www.clifford.at/stfl/stfl-"
+        ;; The original home page has been taken over by gamblespammers.
+        ;; Luckily, the original is archived and even includes the tarball.
+        (uri (string-append "https://web.archive.org/web/20211113222004/"
+                            "http://www.clifford.at/stfl/stfl-"
                             version ".tar.gz"))
         (sha256
-         (base32
-          "1460d5lc780p3q38l3wc9jfr2a7zlyrcra0li65aynj738cam9yl"))))
+         (base32 "1460d5lc780p3q38l3wc9jfr2a7zlyrcra0li65aynj738cam9yl"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no test target
@@ -336,7 +338,7 @@ of your system.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure) ; there is no configure script
-         ;; in our ncurses, the headers are in /include
+         ;; In our ncurses, the headers are in /include.
          (add-before 'build 'patch-ncursesw
            (lambda _
              (substitute* "stfl_internals.h"
@@ -349,7 +351,8 @@ of your system.")
                (symlink "libstfl.so" (string-append lib "/libstfl.so.0"))))))))
     (inputs (list ncurses))
     (native-inputs (list ncurses swig))
-    (home-page "https://www.clifford.at/stfl/")
+    (home-page (string-append "https://web.archive.org/web/20211113222004/"
+                              "http://www.clifford.at/stfl/"))
     (synopsis "Structured terminal forms library")
     (description "Stfl is a library which implements a curses-based widget
 set for text terminals.")
