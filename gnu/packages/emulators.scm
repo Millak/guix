@@ -1549,6 +1549,34 @@ metadata about each known libretro core.  The snapshot is taken from the
 @url{https://github.com/libretro/libretro-super, libretro-super} repository.")
       (license license:expat))))
 
+(define-public retroarch-joypad-autoconfig
+  (package
+    (name "retroarch-joypad-autoconfig")
+    (version "1.19.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libretro/retroarch-joypad-autoconfig")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1gg4nc2wjqz72z40diqbanfkfalvb9hhb8scwn51v2w704rm634b"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no meaningful test suite
+           #:make-flags #~(list (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)))) ;no configure script
+    (home-page "https://github.com/libretro/retroarch-joypad-autoconfig")
+    (synopsis "RetroArch joypad autoconfig files")
+    (description "This package provides joypad autoconfig files for RetroArch,
+the reference frontend for the libretro API.  The autoconfig files are used to
+recognize input devices and automatically setup default mappings between the
+physical device and the RetroPad virtual controller.")
+    (license license:expat)))
+
 (define-public retroarch
   (package
     (name "retroarch")
