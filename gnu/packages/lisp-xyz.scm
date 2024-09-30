@@ -3664,7 +3664,17 @@ and a core image.")
   (sbcl-package->cl-source-package sbcl-ciel))
 
 (define-public ecl-ciel
-  (sbcl-package->ecl-package sbcl-ciel))
+  ;; Remove the "image" output and the build phase "build-image"
+  ;; (which fails because ECL has no support for images).
+  (let ((pkg (sbcl-package->ecl-package sbcl-ciel)))
+    (package
+      (inherit pkg)
+      (outputs '("out"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (delete 'build-image))))))))
 
 (define-public sbcl-ciel-repl
   (let ((commit "0b26d64dcd91a3a2aa962842629a853261dd30fe")
