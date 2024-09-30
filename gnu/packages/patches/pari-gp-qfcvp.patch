@@ -1,0 +1,19 @@
+commit 9086c5ce165bdff6ac0e63b641279f6d9e44f4a7
+Author: Bill Allombert <Bill.Allombert@math.u-bordeaux.fr>
+Date:   Tue Oct 1 23:54:34 2024 +0200
+
+    qfcvp: fix prototype code [#2575]
+
+diff --git a/src/functions/linear_algebra/qfcvp b/src/functions/linear_algebra/qfcvp
+index 5ee883390a..7be5fa9570 100644
+--- a/src/functions/linear_algebra/qfcvp
++++ b/src/functions/linear_algebra/qfcvp
+@@ -1,7 +1,7 @@
+ Function: qfcvp
+ Section: linear_algebra
+ C-Name: qfcvp0
+-Prototype: GGDGDGD0,L,p
++Prototype: GGDGDGD0,L,
+ Help: qfcvp(x,t,{B},{m},{flag=0}): x being a square and symmetric
+  matrix representing a positive definite quadratic form, and t a vector of
+  the same dimension, this function deals with the vectors of whose squared
