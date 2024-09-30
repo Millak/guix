@@ -2223,136 +2223,138 @@ Version: ~a
 Libs: -L${libdir} -lskia
 Cflags: -I${includedir}~%" #$output #$version)))))
             (replace 'check
-              (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                (let ((icu #$(this-package-native-input "icu4c-for-skia")))
-                  ;; Unbundle SPIRV-Tools dependency.
-                  (substitute* "BUILD.gn"
-                    (("deps \\+= \\[ \"//third_party/externals/spirv-tools:spvtools_val\" \\]")
-                      "libs += [ \"SPIRV-Tools\" ]"))
-                  (substitute* "src/sksl/SkSLCompiler.cpp"
-                    (("\"spirv-tools/libspirv.hpp\"")
-                     "<libspirv.hpp>"))
-                  ;; Configure ICU dependency.
-                  (substitute* "third_party/icu/BUILD.gn"
-                    (("data_dir = \"\\.\\./externals/icu/\"")
-                     (string-append "data_dir = \"" icu "/share/data/\""))
-                    (("script = \"\\.\\./externals/icu/scripts/")
-                     (string-append "script = \"" icu "/share/scripts/"))
-                    (("\\.\\./externals/icu/common/icudtl\\.dat")
-                     (string-append icu "/share/data/icudtl.dat"))
-                    (("sources = icu_sources")
-                     "")
-                    (("sources \\+= \\[ \"\\$data_assembly\" \\]")
-                     "sources = [ \"$data_assembly\" ]"))
-                  ;; Enable system libraries without is_official_build=true.
-                  ;; This is necessary because is_official_build prevents from
-                  ;; building dm.
-                  (for-each
-                   (lambda (libname)
-                     (let ((snake (string-join (string-split libname #\-) "_")))
-                       (substitute*
-                           (string-append "third_party/" libname "/BUILD.gn")
-                         (((string-append "skia_use_system_"
-                                          snake
-                                          " = is_official_build.*"))
-                          (string-append "skia_use_system_" snake " = true")))))
-                   '("zlib" "libjpeg-turbo" "harfbuzz" "libpng" "libwebp"))
-                  ;; Configure with gn.
-                  (invoke "gn" "gen" "out/Debug"
-                          (string-append
-                           "--args="
-                           "cc=\"gcc\" "              ;defaults to 'cc'
-                           "skia_compile_sksl_tests=false " ; disable some tests
-                           "skia_use_perfetto=false " ; disable performance tests
-                           "skia_use_wuffs=false "  ; missing performance tool
-                           "skia_use_system_expat=true " ; use system expat library
-                           "skia_use_system_zlib=true " ; use system zlib library
-                           ;; Specify where to locate the includes.
-                           "extra_cflags=["
-                           (string-join
-                            (map
-                             (lambda (lib)
-                               (string-append
-                                "\"-I"
-                                (search-input-directory
-                                 inputs
-                                 (string-append "include/" lib)) "\""))
-                             '("harfbuzz"
-                               "freetype2"
-                               "spirv-tools"
-                               "spirv"
-                               "unicode"))
-                            ",")
-                           "] "
-                           ;; Otherwise the validate-runpath phase fails.
-                           "extra_ldflags=["
-                           "\"-Wl,-rpath=" #$output "/lib\""
-                           "] "
-                           ;; Disabled, otherwise the build system attempts to
-                           ;; download the SDK at build time.
-                           "skia_use_dng_sdk=false "
-                           "skia_use_runtime_icu=true "))
-                  ;; Build dm testing tool.
-                  (symlink
-                   (string-append #$(this-package-native-input "gn") "/bin/gn")
-                   "./bin/gn")
-                  (invoke "ninja" "-C" "out/Debug" "dm")
-                  ;; The test suite requires an X server.
-                  (let ((xvfb (search-input-file (or native-inputs inputs)
-                                                 "bin/Xvfb"))
-                        (display ":1"))
-                    (setenv "DISPLAY" display)
-                    (system (string-append xvfb " " display " &")))
-                  ;; Run tests.
-                  (invoke "out/Debug/dm" "-v"
-                          "-w" "dm_output"
-                          "--codecWritePath" "dm_output"
-                          "--simpleCodec"
-                          "--skip"
-                          ;; The underscores are part of the dm syntax for
-                          ;; skipping tests.
-                          ;; These tests fail with segmentation fault.
-                          "_" "_" "_" "Codec_trunc"
-                          "_" "_" "_" "AnimCodecPlayer"
-                          "_" "_" "_" "Codec_partialAnim"
-                          "_" "_" "_" "Codec_InvalidImages"
-                          "_" "_" "_" "Codec_GifInterlacedTruncated"
-                          ;; This test started failing possibly after mesa
-                          ;; being updated to 23.2.1 and possibly only on some
-                          ;; hardware.
-                          "_" "_" "_" "SkRuntimeBlender_GPU"
-                          "_" "_" "_" "SkText_UnicodeText_Flags"
-                          "_" "_" "_" "SkParagraph_FontStyle"
-                          "_" "_" "_" "flight_animated_image"
-                          ;; These tests fail because of Codec/Sk failure.
-                          "_" "_" "_" "AndroidCodec_computeSampleSize"
-                          "_" "_" "_" "AnimatedImage_invalidCrop"
-                          "_" "_" "_" "AnimatedImage_scaled"
-                          "_" "_" "_" "AnimatedImage_copyOnWrite"
-                          "_" "_" "_" "AnimatedImage"
-                          "_" "_" "_" "BRD_types"
-                          "_" "_" "_" "Codec_frames"
-                          "_" "_" "_" "Codec_partial"
-                          "_" "_" "_" "Codec_partialWuffs"
-                          "_" "_" "_" "Codec_requiredFrame"
-                          "_" "_" "_" "Codec_rewind"
-                          "_" "_" "_" "Codec_incomplete"
-                          "_" "_" "_" "Codec_InvalidAnimated"
-                          "_" "_" "_" "Codec_ossfuzz6274"
-                          "_" "_" "_" "Codec_gif_out_of_palette"
-                          "_" "_" "_" "Codec_xOffsetTooBig"
-                          "_" "_" "_" "Codec_gif"
-                          "_" "_" "_" "Codec_skipFullParse"
-                          "_" "_" "_" "AndroidCodec_animated_gif"
-                          ;; These fail for unknown reasons.
-                          "_" "_" "_" "Gif"
-                          "_" "_" "_" "Wuffs_seek_and_decode"
-                          "_" "_" "_" "Skottie_Shaper_ExplicitFontMgr"
-                          "8888" "skp" "_" "_"
-                          "8888" "lottie" "_" "_"
-                          "gl" "skp" "_" "_"
-                          "gl" "lottie" "_" "_"
-                          "_" "_" "_" "ES2BlendWithNoTexture")))))))
+              (lambda* (#:key tests? inputs native-inputs #:allow-other-keys)
+                (if tests?
+                  (let ((icu #$(this-package-native-input "icu4c-for-skia")))
+                    ;; Unbundle SPIRV-Tools dependency.
+                    (substitute* "BUILD.gn"
+                      (("deps \\+= \\[ \"//third_party/externals/spirv-tools:spvtools_val\" \\]")
+                       "libs += [ \"SPIRV-Tools\" ]"))
+                    (substitute* "src/sksl/SkSLCompiler.cpp"
+                      (("\"spirv-tools/libspirv.hpp\"")
+                       "<libspirv.hpp>"))
+                    ;; Configure ICU dependency.
+                    (substitute* "third_party/icu/BUILD.gn"
+                      (("data_dir = \"\\.\\./externals/icu/\"")
+                       (string-append "data_dir = \"" icu "/share/data/\""))
+                      (("script = \"\\.\\./externals/icu/scripts/")
+                       (string-append "script = \"" icu "/share/scripts/"))
+                      (("\\.\\./externals/icu/common/icudtl\\.dat")
+                       (string-append icu "/share/data/icudtl.dat"))
+                      (("sources = icu_sources")
+                       "")
+                      (("sources \\+= \\[ \"\\$data_assembly\" \\]")
+                       "sources = [ \"$data_assembly\" ]"))
+                    ;; Enable system libraries without is_official_build=true.
+                    ;; This is necessary because is_official_build prevents from
+                    ;; building dm.
+                    (for-each
+                     (lambda (libname)
+                       (let ((snake (string-join (string-split libname #\-) "_")))
+                         (substitute*
+                             (string-append "third_party/" libname "/BUILD.gn")
+                           (((string-append "skia_use_system_"
+                                            snake
+                                            " = is_official_build.*"))
+                            (string-append "skia_use_system_" snake " = true")))))
+                     '("zlib" "libjpeg-turbo" "harfbuzz" "libpng" "libwebp"))
+                    ;; Configure with gn.
+                    (invoke "gn" "gen" "out/Debug"
+                            (string-append
+                             "--args="
+                             "cc=\"gcc\" "                    ;defaults to 'cc'
+                             "skia_compile_sksl_tests=false " ; disable some tests
+                             "skia_use_perfetto=false " ; disable performance tests
+                             "skia_use_wuffs=false " ; missing performance tool
+                             "skia_use_system_expat=true " ; use system expat library
+                             "skia_use_system_zlib=true " ; use system zlib library
+                             ;; Specify where to locate the includes.
+                             "extra_cflags=["
+                             (string-join
+                              (map
+                               (lambda (lib)
+                                 (string-append
+                                  "\"-I"
+                                  (search-input-directory
+                                   inputs
+                                   (string-append "include/" lib)) "\""))
+                               '("harfbuzz"
+                                 "freetype2"
+                                 "spirv-tools"
+                                 "spirv"
+                                 "unicode"))
+                              ",")
+                             "] "
+                             ;; Otherwise the validate-runpath phase fails.
+                             "extra_ldflags=["
+                             "\"-Wl,-rpath=" #$output "/lib\""
+                             "] "
+                             ;; Disabled, otherwise the build system attempts to
+                             ;; download the SDK at build time.
+                             "skia_use_dng_sdk=false "
+                             "skia_use_runtime_icu=true "))
+                    ;; Build dm testing tool.
+                    (symlink
+                     (string-append #$(this-package-native-input "gn") "/bin/gn")
+                     "./bin/gn")
+                    (invoke "ninja" "-C" "out/Debug" "dm")
+                    ;; The test suite requires an X server.
+                    (let ((xvfb (search-input-file (or native-inputs inputs)
+                                                   "bin/Xvfb"))
+                          (display ":1"))
+                      (setenv "DISPLAY" display)
+                      (system (string-append xvfb " " display " &")))
+                    ;; Run tests.
+                    (invoke "out/Debug/dm" "-v"
+                            "-w" "dm_output"
+                            "--codecWritePath" "dm_output"
+                            "--simpleCodec"
+                            "--skip"
+                            ;; The underscores are part of the dm syntax for
+                            ;; skipping tests.
+                            ;; These tests fail with segmentation fault.
+                            "_" "_" "_" "Codec_trunc"
+                            "_" "_" "_" "AnimCodecPlayer"
+                            "_" "_" "_" "Codec_partialAnim"
+                            "_" "_" "_" "Codec_InvalidImages"
+                            "_" "_" "_" "Codec_GifInterlacedTruncated"
+                            ;; This test started failing possibly after mesa
+                            ;; being updated to 23.2.1 and possibly only on some
+                            ;; hardware.
+                            "_" "_" "_" "SkRuntimeBlender_GPU"
+                            "_" "_" "_" "SkText_UnicodeText_Flags"
+                            "_" "_" "_" "SkParagraph_FontStyle"
+                            "_" "_" "_" "flight_animated_image"
+                            ;; These tests fail because of Codec/Sk failure.
+                            "_" "_" "_" "AndroidCodec_computeSampleSize"
+                            "_" "_" "_" "AnimatedImage_invalidCrop"
+                            "_" "_" "_" "AnimatedImage_scaled"
+                            "_" "_" "_" "AnimatedImage_copyOnWrite"
+                            "_" "_" "_" "AnimatedImage"
+                            "_" "_" "_" "BRD_types"
+                            "_" "_" "_" "Codec_frames"
+                            "_" "_" "_" "Codec_partial"
+                            "_" "_" "_" "Codec_partialWuffs"
+                            "_" "_" "_" "Codec_requiredFrame"
+                            "_" "_" "_" "Codec_rewind"
+                            "_" "_" "_" "Codec_incomplete"
+                            "_" "_" "_" "Codec_InvalidAnimated"
+                            "_" "_" "_" "Codec_ossfuzz6274"
+                            "_" "_" "_" "Codec_gif_out_of_palette"
+                            "_" "_" "_" "Codec_xOffsetTooBig"
+                            "_" "_" "_" "Codec_gif"
+                            "_" "_" "_" "Codec_skipFullParse"
+                            "_" "_" "_" "AndroidCodec_animated_gif"
+                            ;; These fail for unknown reasons.
+                            "_" "_" "_" "Gif"
+                            "_" "_" "_" "Wuffs_seek_and_decode"
+                            "_" "_" "_" "Skottie_Shaper_ExplicitFontMgr"
+                            "8888" "skp" "_" "_"
+                            "8888" "lottie" "_" "_"
+                            "gl" "skp" "_" "_"
+                            "gl" "lottie" "_" "_"
+                            "_" "_" "_" "ES2BlendWithNoTexture"))
+                  (format #t "test suite not run~%")))))))
   (native-inputs (list gn libjpeg-turbo ninja pkg-config python-wrapper
                        spirv-tools spirv-headers
                        icu4c-for-skia glu xorg-server-for-tests))
