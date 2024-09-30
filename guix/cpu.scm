@@ -167,7 +167,8 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                                    ("lm" "sse3" => "k8-sse3")
                                    ("longmode" => "k8")
                                    ("lm" => "k8")))
-                    (if-flags ("avx512f" => "znver4")
+                    (if-flags ("avx512vp2intersect" => "znver5")
+                              ("avx512f" => "znver4")
                               ("vaes" => "znver3")
                               ("clwb" => "znver2")
                               ("clzero" => "znver1")
@@ -312,7 +313,7 @@ CPUs for compilers which don't allow for more focused optimizing."
     ((or "graniterapids-d" "graniterapids" "tigerlake" "sapphirerapids"
          "cooperlake" "icelake-server" "icelake-client" "cannonlake" "knm"
          "knl" "skylake-avx512"
-         "znver4")
+         "znver5" "znver4")
      "x86-64-v4")
     ((or "pantherlake" "clearwaterforest" "arrowlake-s" "sierraforest"
          "alderlake" "skylake" "broadwell" "haswell"
