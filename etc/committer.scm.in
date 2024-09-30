@@ -301,8 +301,9 @@ corresponding to the top-level definition containing the staged changes."
                       (format port
                               "[~a]: ~a~%" field
                               (break-string
-                               (match (list (map symbol->string removed)
-                                            (map symbol->string added))
+                               ;; A dependency can be a list of (pkg output).
+                               (match (list (map object->string removed)
+                                            (map object->string added))
                                  ((() added)
                                   (format #f "Add ~a."
                                           (listify added)))
