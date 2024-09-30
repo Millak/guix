@@ -645,6 +645,10 @@ Go.  It also includes runtime support libraries for these languages.")
   (append %gcc-12-x86_64-micro-architectures
           '("graniterapids")))                    ;Intel
 
+(define %gcc-14-x86_64-micro-architectures
+  (append %gcc-13-x86_64-micro-architectures
+          '("znver5")))                           ;AMD
+
 (define-public gcc-7
   (package
     (inherit gcc-6)
@@ -839,7 +843,15 @@ It also includes runtime support libraries for these languages.")
                       (add-before 'configure 'pre-x86-configure
                         (lambda _
                           (substitute* "gcc/config/i386/t-linux64"
-                            (("\\.\\./lib64") "../lib"))))))))))
+                            (("\\.\\./lib64") "../lib"))))))))
+    (properties
+     `((compiler-cpu-architectures
+        ("aarch64" ,@%gcc-13-aarch64-micro-architectures)
+        ("armhf" ,@%gcc-13-armhf-micro-architectures)
+        ("i686" ,@%gcc-13-x86_64-micro-architectures)
+        ("powerpc64le" ,@%gcc-10-ppc64le-micro-architectures)
+        ("x86_64" ,@%gcc-14-x86_64-micro-architectures))
+       ,@(package-properties gcc-11)))))
 
 
 ;; Note: When changing the default gcc version, update
