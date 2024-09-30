@@ -223,7 +223,6 @@ for it."
                                                           ".gz"))
                                   (file-zst (string-append directory "/" link
                                                            ".zst")))
-                              (and (or (file-exists? file-gz)
-                                       (file-exists? file-zst) file)
-                                   file)))))
+                              (or (and (file-exists? file-gz) file-gz)
+                                  (and (file-exists? file-zst) file-zst))))))
        (man-files directory)))
