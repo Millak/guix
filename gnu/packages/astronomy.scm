@@ -582,6 +582,21 @@ in FITS files.")
     (license (license:non-copyleft "file://License.txt"
                                    "See License.txt in the distribution."))))
 
+;;; The version is required for gnuastro.  It fails on check phase with a
+;;; newer version.
+(define-public cfitsio-4.4
+  (package
+    (inherit cfitsio)
+    (version "4.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/"
+             "cfitsio-" version ".tar.gz"))
+       (sha256
+        (base32 "098x1l8ijwsjp2ivp3v7pamrmpgwj5xmgb4yppm9w3w044zxr8b6"))))))
+
 (define-public erfa
   (package
     (name "erfa")
@@ -1747,7 +1762,7 @@ different kinds of input files.")
     (arguments
      '(#:configure-flags '("--disable-static")))
     (inputs
-     (list cfitsio
+     (list cfitsio-4.4
            curl
            gsl
            libgit2
