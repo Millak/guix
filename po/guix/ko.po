@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-07-01 18:36+0000\n"
+"PO-Revision-Date: 2024-09-27 04:01+0000\n"
 "Last-Translator: 김인수 <simmon@nplob.com>\n"
 "Language-Team: Korean <https://translate.fedoraproject.org/projects/guix/guix/ko/>\n"
 "Language: ko\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.7.2\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -4568,7 +4568,7 @@ msgstr ""
 #: guix/scripts/import/stackage.scm:130 guix/scripts/import/texlive.scm:101
 #, scheme-format
 msgid "too few arguments~%"
-msgstr ""
+msgstr "너무 적은 인수~%"
 
 #: guix/scripts/import/minetest.scm:117 guix/scripts/import/cran.scm:137
 #: guix/scripts/import/elpa.scm:118 guix/scripts/import/cpan.scm:89
@@ -6966,7 +6966,7 @@ msgstr ""
 #: guix/scripts/container/exec.scm:90
 #, scheme-format
 msgid "no command specified~%"
-msgstr ""
+msgstr "지정된 명령이 없습니다~%"
 
 #: guix/scripts/container/exec.scm:93
 #, scheme-format
