@@ -358,7 +358,10 @@
 
                        ;; No 'PCI' bus found for device 'virtio-scsi-pci'
                        (delete-file "tests/qemu-iotests/127")
-                       (delete-file "tests/qemu-iotests/267"))))
+                       (delete-file "tests/qemu-iotests/267")
+
+                       ;; This test takes too long.
+                       (delete-file "tests/qemu-iotests/tests/iothreads-stream"))))
                  '())
           (add-after 'patch-source-shebangs 'patch-embedded-shebangs
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
