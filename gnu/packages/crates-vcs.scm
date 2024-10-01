@@ -1749,8 +1749,35 @@ to interact with Git credentials helpers.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-date-0.9
+  (package
+    (name "rust-gix-date")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-date" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19f8qg9rcnis0r1iyvrjwhydnppzq44vk2xvlvvxls0yy1x4pj1m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                        ("rust-document-features" ,rust-document-features-0.2)
+                        ("rust-itoa" ,rust-itoa-1)
+                        ("rust-jiff" ,rust-jiff-0.1)
+                        ("rust-serde" ,rust-serde-1)
+                        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Part of Gitoxide, this crate parses dates the way Git does")
+    (description
+     "Part of Gitoxide, this crate parses dates the way Git does.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-date-0.8
   (package
+    (inherit rust-gix-date-0.9)
     (name "rust-gix-date")
     (version "0.8.5")
     (source
@@ -1768,12 +1795,7 @@ to interact with Git credentials helpers.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-time" ,rust-time-0.3))
-       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Part of Gitoxide, this crate parses dates the way Git does")
-    (description
-     "Part of Gitoxide, this crate parses dates the way git does.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))))
 
 (define-public rust-gix-date-0.5
   (package
