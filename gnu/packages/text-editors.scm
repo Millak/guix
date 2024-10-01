@@ -25,7 +25,7 @@
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
-;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022, 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
@@ -55,6 +55,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system asdf)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -92,6 +93,8 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libbsd)
+  #:use-module (gnu packages lisp-check)
+  #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages ncurses)
@@ -143,6 +146,88 @@ interactively and via shell scripts.  Its method of command input allows
 complex tasks to be performed in an automated way.  GNU ed offers several
 extensions over the standard utility.")
     (license license:gpl3+)))
+
+(define-public lem
+  (let ((commit "3f2f0adb6db2dbed57b5cccca34f47ab9d5a2314")
+        (revision "0"))
+    (package
+      (name "lem")
+      (version (git-version "2.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lem-project/lem/")
+               (commit commit)))
+         (sha256
+          (base32 "00b4wn75ssywrhr4b7h4vk7hyd6dac2618339k56vg9vwni1bbxi"))
+         (file-name (git-file-name name version))
+         (snippet
+          #~(begin
+              (use-modules (guix build utils))
+              (delete-file-recursively "roswell")))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'create-asdf-configuration 'build-program
+              (lambda* (#:key outputs #:allow-other-keys)
+                (build-program
+                 (string-append (assoc-ref outputs "out") "/bin/lem")
+                 outputs
+                 #:dependencies '("lem-ncurses" "lem-sdl2")
+                 #:entry-program '((lem:main) 0)))))))
+      (native-inputs
+       (list sbcl-cl-ansi-text
+             sbcl-rove
+             sbcl-trivial-package-local-nicknames))
+      (inputs
+       (list
+        sbcl-alexandria
+        sbcl-trivia
+        sbcl-trivial-gray-streams
+        sbcl-trivial-types
+        sbcl-cl-ppcre
+        sbcl-closer-mop
+        sbcl-iterate
+        sbcl-lem-mailbox
+        sbcl-inquisitor
+        sbcl-babel
+        sbcl-bordeaux-threads
+        sbcl-yason
+        sbcl-log4cl
+        sbcl-split-sequence
+        sbcl-cl-str
+        sbcl-dexador
+        sbcl-3bmd
+        sbcl-micros
+        sbcl-lisp-preprocessor
+        sbcl-trivial-ws
+        sbcl-trivial-open-browser
+        sbcl-sdl2
+        sbcl-sdl2-ttf
+        sbcl-sdl2-image
+        sbcl-trivial-main-thread
+        sbcl-cffi
+        sbcl-cl-charms
+        sbcl-cl-setlocale
+        sbcl-log4cl
+        sbcl-jsonrpc
+        sbcl-usocket
+        sbcl-quri
+        sbcl-cl-change-case
+        sbcl-async-process
+        sbcl-cl-iconv
+        sbcl-esrap
+        sbcl-parse-number
+        sbcl-cl-package-locks
+        sbcl-slime-swank
+        sbcl-trivial-utf-8))
+      (home-page "http://lem-project.github.io/")
+      (synopsis "Integrated IDE/editor for Common Lisp")
+      (description "Lem is a Common Lisp editor/IDE with high expansibility.")
+      (license license:expat))))
 
 (define-public vis
   (package
