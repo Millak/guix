@@ -3143,8 +3143,8 @@ continued fractions.")
   (sbcl-package->ecl-package sbcl-cf))
 
 (define-public sbcl-cffi
-  (let ((commit "33970351e71bb5f12ba56fc40270089e948ae112")
-        (revision "1"))
+  (let ((commit "32c90d4a9a01e809f591276c058e5b3c7f39b154")
+        (revision "2"))
     (package
       (name "sbcl-cffi")
       (version (git-version "0.24.1" revision commit))
@@ -3156,7 +3156,7 @@ continued fractions.")
                (commit commit)))
          (file-name (git-file-name "cl-cffi" version))
          (sha256
-          (base32 "1h7cw15f08gm6m4yz8hk7qkfwp7mwwnykjc5py6dhjakv0wh1g37"))))
+          (base32 "1b2j32rapgw8rn7m9sm2k8r8x9jds7vshkm90i5lw9v4xnp8x4m7"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list libffi
@@ -3168,7 +3168,11 @@ continued fractions.")
              sbcl-bordeaux-threads
              sbcl-rt))
       (arguments
-       (list #:phases
+       (list ;; Some tests will not work on riscv64 because a function of SBCL
+             ;; is not implemented yet for riscv.
+             ;; See <https://bugs.launchpad.net/sbcl/+bug/2069265>
+             #:tests? (not (target-riscv64?))
+             #:phases
              #~(modify-phases %standard-phases
                  (add-after 'unpack 'fix-paths
                    (lambda* (#:key inputs #:allow-other-keys)
