@@ -5071,7 +5071,18 @@ remote SMTP server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y34cv2vcwhr0vbd1ax2hv9rmv79dp9i02y2xqyr23krfb5bp197"))))
+                "0y34cv2vcwhr0vbd1ax2hv9rmv79dp9i02y2xqyr23krfb5bp197"))
+              (patches
+                (list
+                  ;; patch from upstream to fix encoding problem with sending
+                  ;; gpg-signed messages
+                  ;; see https://todo.sr.ht/~rjarry/aerc/79
+                  (origin
+                    (method url-fetch)
+                    (uri "https://git.sr.ht/~rjarry/aerc/commit/7346d20.patch")
+                    (file-name "aerc-fix-gpg-signed-message-encoding.patch")
+                    (sha256 (base32
+                              "14avr323sr9qipf9d7npqwrzq37i9946z9m6jdkzi8n9rs6zwzq9")))))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~rjarry/aerc"
