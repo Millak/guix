@@ -610,6 +610,11 @@ with reliability taking precedence over efficiency if necessary.")
                (else
                 ;; bootstrapping
                 #~(lambda* (#:key native-inputs inputs #:allow-other-keys)
+                     ;; Make sure we're building for the correct machine type.
+                     (setenv "MACH"
+                             #$@(if (nix-system->native-chez-machine-type)
+                                    #~(#$(nix-system->native-chez-machine-type))
+                                    #~(#$(nix-system->pbarch-machine-type))))
                     (invoke
                      (search-input-file (or native-inputs inputs)
                                         "/opt/racket-vm/bin/racket")
