@@ -1900,7 +1900,7 @@ astronomy-specific functionality")
         (base32 "1xms896ds70sbym1cr5lrbjl4i8vixy3mcc6qsg1b3ppvky76vmn"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list ;; python-astrodendro ; optional, not packed
+     (list python-astrodendro
            python-astropy
            python-dill
            python-echo
@@ -1912,22 +1912,19 @@ astronomy-specific functionality")
            python-numpy
            python-openpyxl
            python-pandas
-           ;; python-pyavm ; optional, not packed
+           python-pyavm
            python-pillow
            python-scikit-image
            python-scipy
-           python-setuptools
+           python-setuptools ; to load extenral plugins, glue/main.py.
            python-shapely
            python-spectral-cube
            python-xlrd))
     (native-inputs
-     (list python-h5py
-           python-objgraph
-           python-pytest
-           python-pytest-cov
+     (list python-pytest
            python-pytest-mpl
-           python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-wheel))
     (home-page "http://glueviz.org")
     (synopsis "Multidimensional data visualization project")
     (description
