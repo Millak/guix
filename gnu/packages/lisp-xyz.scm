@@ -4152,8 +4152,8 @@ to cl-async.")
   (sbcl-package->ecl-package sbcl-cl-async-future))
 
 (define libasyncprocess
-  (let ((commit "9690530fc92b59636d9f17d821afa7697e7c8ca4")
-        (revision "0"))
+  (let ((commit "8067007e283745b94a36a51320b41b65ac296e24")
+        (revision "1"))
     (package
       (name "libasyncprocess")
       (version (git-version "0.0.1" revision commit))
@@ -4165,7 +4165,7 @@ to cl-async.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1m2sfgfg6c0gqqy1pqsahsiw3j25y473mfw7sx0akkqbhwhm7mjb"))
+          (base32 "0691z0vs5c65m24p1yi12iy27j59layzvzyy1yl19704x05442qh"))
          (modules '((guix build utils)))
          (snippet
           ;; Delete precompiled artifacts.
