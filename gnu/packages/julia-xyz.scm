@@ -808,7 +808,7 @@ methods.")
 (define-public julia-categoricalarrays
   (package
     (name "julia-categoricalarrays")
-    (version "0.10.7")
+    (version "0.10.8")
     (source
      (origin
        (method git-fetch)
@@ -817,7 +817,7 @@ methods.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17fix7wlwqbif5jbcrbi0a0ghdl3429km3l6lqa962p7jf1gjd2d"))))
+        (base32 "1yd0xky84n858di7ggs4vffil33pf9knw01z64n5v961i4qs8saw"))))
     (build-system julia-build-system)
     (arguments
      (list
