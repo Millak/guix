@@ -4258,6 +4258,50 @@ execution mechanism for Common Lisp.")))
 (define-public ecl-cl-autowrap
   (sbcl-package->ecl-package sbcl-cl-autowrap))
 
+(define-public sbcl-cl-base16
+  (let ((commit "ae4b7f416c0c91f6323e901be912c0f7378fe3da")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-base16")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tpine/cl-base16")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0m7ndmk4xhizn3q3ywjvw8sg4pfgp6lrd0wac5d1bf7wbw6afh5q"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-git-executable
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "builder.lisp"
+                  (("\"git")
+                   (string-append "\"" (search-input-file inputs
+                                                          "/bin/git")))))))))
+      (inputs
+       (list git
+             sbcl-cl-yaml
+             sbcl-cl-mustache
+             sbcl-cl-slug
+             sbcl-trivial-shell))
+      (synopsis "Common Lisp base 16 implementation")
+      (description
+       "This package provides an implementation of a base 16 builder for Common Lisp.")
+      (home-page "https://github.com/tpine/cl-base16")
+      (license license:gpl3+))))
+
+(define-public cl-base16
+  (sbcl-package->cl-source-package sbcl-cl-base16))
+
+(define-public ecl-cl-base16
+  (sbcl-package->ecl-package sbcl-cl-base16))
+
 (define-public sbcl-cl-base32
   (let ((commit "8cdee06fab397f7b0a19583b57e7f0c98405be85")
         (revision "1"))
