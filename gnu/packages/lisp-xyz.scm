@@ -9602,7 +9602,7 @@ ability to store all Common Lisp data types into streams.")
 (define-public sbcl-cl-str
   (package
     (name "sbcl-cl-str")
-    (version "0.19")
+    (version "0.21")
     (home-page "https://github.com/vindarel/cl-str")
     (source (origin
               (method git-fetch)
@@ -9610,7 +9610,7 @@ ability to store all Common Lisp data types into streams.")
                     (url home-page)
                     (commit version)))
               (sha256
-               (base32 "1jyza2jhn7w6fl4w87pv0m87z5ia48m6dqw12k0mdh7l3mgjq839"))
+               (base32 "0r9niyvkj7jyc93rxys6pgqazzpl1ybfryjn8jig721xhjxrsblm"))
               (file-name (git-file-name name version))))
     (build-system asdf-build-system/sbcl)
     (inputs
