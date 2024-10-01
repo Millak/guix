@@ -18669,8 +18669,8 @@ building block for higher level libraries.")
   (sbcl-package->ecl-package sbcl-json-streams))
 
 (define-public sbcl-jsonrpc
-  (let ((commit "4abbd305bae7827ad39048f956887db11505ad50")
-        (revision "0"))
+  (let ((commit "a43dd933838bb9596a2bf40e821af0bafd3d5356")
+        (revision "1"))
     (package
       (name "sbcl-jsonrpc")
       (version (git-version "0.3.2" revision commit))
@@ -18682,7 +18682,7 @@ building block for higher level libraries.")
                (commit commit)))
          (file-name (git-file-name "jsonrpc" version))
          (sha256
-          (base32 "08fz50wmbjic9m31av1fq4a3v5ahry58c8z2bmn3ib52k6nnjrk2"))))
+          (base32 "1wsc6bv8xpzad0lgrlldzrpb9r4aksnw7ss2ifwa7ykbzfxcr8gi"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs (list sbcl-rove))
       (inputs (list sbcl-clack
