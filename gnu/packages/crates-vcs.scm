@@ -905,8 +905,40 @@ and correct.  Interact with Git repositories just like Git would.")
         ("rust-serial-test" ,rust-serial-test-2)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
+(define-public rust-gix-actor-0.32
+  (package
+    (name "rust-gix-actor")
+    (version "0.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-actor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rc662dyhxipvz3c181h7rif3y627lb0ky83s1nadi25rl9f66gw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; use of undeclared crate or module `gix_testtools`
+       #:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-date" ,rust-gix-date-0.9)
+        ("rust-gix-utils" ,rust-gix-utils-0.1)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-winnow" ,rust-winnow-0.6))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Part of Gitoxide, a way to identify Git actors")
+    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
+package provides a way to identify Git actors.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-actor-0.29
   (package
+    (inherit rust-gix-actor-0.32)
     (name "rust-gix-actor")
     (version "0.29.1")
     (source
@@ -929,12 +961,7 @@ and correct.  Interact with Git repositories just like Git would.")
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-winnow" ,rust-winnow-0.5))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Part of Gitoxide, a way to identify Git actors")
-    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
-package provides a way to identify Git actors.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-gix-actor-0.28
   (package
