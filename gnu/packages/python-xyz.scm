@@ -11512,6 +11512,26 @@ The output of all running processes is collected by honcho and
 displayed.")
     (license license:expat)))
 
+(define-public python-hsluv
+  (package
+    (name "python-hsluv")
+    (version "5.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hsluv" version))
+       (sha256
+        (base32 "0bmpd7qxcvin8szblilxmw50v7mygf6a6i180h82123s893gk092"))))
+    (build-system pyproject-build-system)
+    (home-page "https://www.hsluv.org")
+    (synopsis "Human-friendly HSL colour space implemented in Python")
+    (description
+     "Human-friendly @acronym{Hue Saturation Lightness,HSL}.  HSLuv extends
+@url{http://en.wikipedia.org/wiki/CIELUV,CIELUV} with a new saturation
+component that allows you to span all the available chroma as a neat
+percentage.")
+    (license license:expat)))
+
 (define-public python-pebble
   (package
     (name "python-pebble")
