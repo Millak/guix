@@ -1040,7 +1040,9 @@ framework and makes it easy to undo any monkey patching.  The fixtures are:
      (list
       #:test-flags #~(list "-m" "mpl_image_compare")))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-jinja2
            python-matplotlib
