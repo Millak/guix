@@ -1955,8 +1955,33 @@ crate.")
                (base32
                 "0r0z8s1wcdwd20azsdfilf2a6bz68xkavl990wy64hyc8f51bmai"))))))
 
+(define-public rust-windows-implement-0.58
+  (package
+    (name "rust-windows-implement")
+    (version "0.58.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-implement" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16spr5z65z21qyv379rv2mb1s5q2i9ibd1p2pkn0dr9qr535pg9b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "The implement macro for the windows crate")
+    (description
+     "This package provides The @code{implement} macro for the
+Windows crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-implement-0.52
   (package
+    (inherit rust-windows-implement-0.58)
     (name "rust-windows-implement")
     (version "0.52.0")
     (source
@@ -1970,12 +1995,7 @@ crate.")
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-2))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "The implement macro for the windows crate")
-    (description "This package provides the @code{implement} macro for the
-windows crate.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-syn" ,rust-syn-2))))))
 
 (define-public rust-windows-implement-0.48
   (package
