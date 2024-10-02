@@ -2112,14 +2112,14 @@ This package is part of Gitoxide, a pure Rust implementation of Git.")
 (define-public rust-gix-features-0.38
   (package
     (name "rust-gix-features")
-    (version "0.38.1")
+    (version "0.38.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-features" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0drbqqn7bxf4zqbnc34zf5ls6ih1flrr79vs6sh4g8i0gl1m8hnv"))))
+        (base32 "0sfw6zs3qgmlqjkj4cvyfz6q6dgdlw1d16c7yckwgyg5kyn4aw5c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
