@@ -2160,6 +2160,44 @@ export the simulated X-ray events to other software packages to simulate the
 end products of specific X-ray observatories.")
     (license license:bsd-3)))
 
+(define-public python-sirilic
+  (package
+    (name "python-sirilic")
+    (version "1.15.12")
+    (source
+     (origin
+       (method git-fetch) ; not published on PyPI
+       (uri (git-reference
+             (url "https://gitlab.com/free-astro/sirilic")
+             (commit (string-append "V" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08j7gkyc5jd3kavffdxcr9b1ckmsswsvm61f301kvdqk2xcsh0gb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests
+    (native-inputs
+     (list nss-certs-for-test))
+    (propagated-inputs
+     (list python-requests
+           python-wxpython))
+    (home-page "https://siril.org/tutorials/pysiril/")
+    (synopsis "Acquisition files preparation software to proces with SiriL")
+    (description
+     "SiriLic (SiriL's Interactif Companion) is a software for preparing
+acquisition files (raw, Biases, Flat and Dark) for processing with SiriL
+software.
+
+Features:
+@itemize
+@item structuring the SiriL working directory into sub-folders
+@item convert Raw, Biases , Dark or Flat files into SiriL sequence
+@item automatically generate the SiriL script according to the files present
+and the options
+@item batch process multiple channel and sessions
+@end itemize")
+    (license license:gpl3)))
+
 (define-public python-sncosmo
   (package
     (name "python-sncosmo")
