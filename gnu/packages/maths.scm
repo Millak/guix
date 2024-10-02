@@ -2350,6 +2350,37 @@ Together, the interface, library, and format support the creation, access, and
 sharing of scientific data.")
     (license (license:x11-style "file://COPYRIGHT"))))
 
+(define-public pnetcdf
+  (package
+    (name "pnetcdf")
+    (version "1.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://parallel-netcdf.github.io/Release/pnetcdf-"
+             version ".tar.gz"))
+       (sha256
+        (base32
+         "14f4nbcnw80y59cl0kjpxqqfaxzzd62kixnhb6ihp6aigb3z385b"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-shared"
+                   (string-append "--with-mpi=" #$(this-package-input "openmpi")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'mpi-setup
+                 #$%openmpi-setup))))
+    (inputs (list openmpi))
+    (native-inputs (list m4))
+    (home-page "https://parallel-netcdf.github.io/")
+    (synopsis "Parallel I/O Library for NetCDF File Access")
+    (description "PnetCDF is a high-performance parallel I/O library for accessing
+Unidata's NetCDF, files in classic formats, specifically the formats of CDF-1, 2, and
+5.")
+    (license (license:x11-style "file://COPYRIGHT"))))
+
 (define-public netcdf-parallel-openmpi
   (package (inherit netcdf)
     (name "netcdf-parallel-openmpi")
