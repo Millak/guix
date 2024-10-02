@@ -602,6 +602,210 @@ in FITS files.")
        (sha256
         (base32 "098x1l8ijwsjp2ivp3v7pamrmpgwj5xmgb4yppm9w3w044zxr8b6"))))))
 
+(define-public erfa
+  (package
+    (name "erfa")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/liberfa/erfa")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hxjbcvdlq4871r17fphbaf3bd8dsjagp1rdb3j8v6kr4f1dil9n"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list automake autoconf libtool pkg-config))
+    (home-page "https://github.com/liberfa/erfa")
+    (synopsis "Essential Routines for Fundamental Astronomy")
+    (description
+     "The @acronym{ERFA, Essential Routines for Fundamental Astronomy} C library
+contains key algorithms for astronomy, and is based on the @acronym{SOFA,
+Standards of Fundamental Astronomy} library published by the @acronym{IAU,
+International Astronomical Union}.")
+    (license license:bsd-3)))
+
+(define-public eye
+  (package
+    (name "eye")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/eye")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j8rpgz3fjp6fw0qmxgfqycf3n01fzxds4w12vgyrhbnk658ia41"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CPPFLAGS=-fcommon")))    ; fix build with GCC 10
+    (home-page "https://www.astromatic.net/software/eye")
+    (synopsis "Small image feature detector using machine learning")
+    (description
+     "In @acronym{EyE, Enhance Your Extraction} an artificial neural network
+connected to pixels of a moving window (@dfn{retina}) is trained to associate
+these input stimuli to the corresponding response in one or several output
+image(s).  The resulting filter can be loaded in SExtractor to operate
+complex, wildly non-linear filters on astronomical images.  Typical
+applications of EyE include adaptive filtering, feature detection and cosmetic
+corrections.")
+    (license license:cecill)))
+
+(define-public glnemo2
+  (package
+    (name "glnemo2")
+    (version "1.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.lam.fr/jclamber/glnemo2")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jmmxszh8d2jmfghig36nhykff345mqnpssfa64d0r7l9cnfp3cn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f        ; No test target
+      #:configure-flags #~(list "CPPFLAGS=-fcommon")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-libraries-paths
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                ;; There is some not straightforward logic on how to set
+                ;; the installation prefix for the project; inherit it
+                ;; from the build-system default flags.
+                (("CMAKE_INSTALL_PREFIX  \"/usr\"")
+                 "CMAKE_INSTALL_PREFIX")
+                (("/usr/include/CCfits")
+                 (string-append
+                  #$(this-package-input "ccfits") "/include/CCfits"))
+                (("/usr/include/tirpc")
+                 (string-append
+                  #$(this-package-input "libtirpc") "/include/tirpc"))
+                ;; It tries to detect library in two "predictable" paths,
+                ;; required during the link phase.
+                (("/usr/lib64/libtirpc.so")
+                 (string-append
+                  #$(this-package-input "libtirpc") "/lib/libtirpc.so"))))))))
+    (inputs
+     (list ccfits
+           cfitsio
+           glm
+           glu
+           hdf5
+           libtirpc
+           qtbase-5
+           zlib))
+    (home-page "https://projets.lam.fr/projects/glnemo2/wiki/Wiki")
+    (synopsis "3D interactive visualization program for n-body like particles")
+    (description
+     "GLNEMO2 is an interactive 3D visualization program which displays
+particles positions of the different components (gas, stars, disk, dark
+matter halo, bulge) of an N-body snapshot.  It is a tool for running
+N-body simulations from isolated galaxies to cosmological simulations.
+It has a graphical user interface (based on QT 5.X API), uses a fast
+3D engine (OPenGL and GLSL), and is generic with the possibility to load
+different kinds of input files.")
+    (license license:cecill)))
+
+(define-public gnuastro
+  (package
+    (name "gnuastro")
+    (version "0.22")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/gnuastro/gnuastro-"
+                           version ".tar.lz"))
+       (sha256
+        (base32
+         "15rljx1mx9dyvni17qpj7y9gv086cvmjf9f5j34m1pbiyn989fqz"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("--disable-static")))
+    (inputs
+     (list cfitsio-4.4
+           curl
+           gsl
+           libgit2
+           libjpeg-turbo
+           libtiff
+           wcslib
+           zlib))
+    (native-inputs
+     (list libtool lzip))
+    (home-page "https://www.gnu.org/software/gnuastro/")
+    (synopsis "Astronomy utilities")
+    (description "The GNU Astronomy Utilities (Gnuastro) is a suite of
+programs for the manipulation and analysis of astronomical data.")
+    (license license:gpl3+)))
+
+(define-public gpredict
+  ;; The latest tag, 2.3, has no major difference with 2.2.1 and is dated for
+  ;; 2018. Additionally, there is some activity on the master branch.
+  (package
+    (name "gpredict")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/csete/gpredict/releases"
+                           "/download/v" version
+                           "/gpredict-" version ".tar.bz2"))
+       (sha256
+        (base32 "0hwf97kng1zy8rxyglw04x89p0bg07zq30hgghm20yxiw2xc8ng7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "CFLAGS=-O2 -g -fcommon")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; Remove reference to non-existent file.
+              (substitute* "po/POTFILES.in"
+                (("src/gtk-sat-tree\\.c") "")))))))
+    (native-inputs
+     (list gettext-minimal intltool pkg-config))
+    (inputs
+     (list curl glib goocanvas gtk+))
+    (home-page "https://oz9aec.dk/gpredict/")
+    (synopsis "Satellite tracking and orbit prediction application")
+    (description
+     "Gpredict is a real-time satellite tracking and orbit prediction
+application.  It can track a large number of satellites and display their
+position and other data in lists, tables, maps, and polar plots (radar view).
+Gpredict can also predict the time of future passes for a satellite, and
+provide you with detailed information about each pass.
+
+Some core features of Gpredict include:
+
+@itemize
+@item Tracking of a large number of satellites only limited by the physical
+memory and processing power of the computer
+@item Display the tracking data in lists, maps, polar plots and any
+combination of these
+@item Have many modules open at the same either in a notebook or in their own
+windows.  The modules can also run in full-screen mode
+@item You can use many ground stations
+@item Predict upcoming passes
+@item Gpredict can run in real-time, simulated real-time (fast forward and
+backward), and manual time control
+@item Detailed information both the real time and non-real time modes
+@item Doppler tuning of radios via Hamlib rigctld
+@item Antenna rotator control via Hamlib rotctld
+@end itemize")
+    (license license:gpl2+)))
+
 (define* (healpix-source #:key version sha256-base32-hash)
     ;; The sources of HEALPix containing 6 independent packages (Fortran90,
     ;; IDL, C, C++, java and python) and distributed togather libsharp.
@@ -692,61 +896,6 @@ dynamic library for the C language implementation of HEALPix.")
      (string-replace-substring (package-description healpix)
                     "C language"
                     "C++ language"))))
-
-(define-public erfa
-  (package
-    (name "erfa")
-    (version "2.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/liberfa/erfa")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1hxjbcvdlq4871r17fphbaf3bd8dsjagp1rdb3j8v6kr4f1dil9n"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list automake autoconf libtool pkg-config))
-    (home-page "https://github.com/liberfa/erfa")
-    (synopsis "Essential Routines for Fundamental Astronomy")
-    (description
-     "The @acronym{ERFA, Essential Routines for Fundamental Astronomy} C library
-contains key algorithms for astronomy, and is based on the @acronym{SOFA,
-Standards of Fundamental Astronomy} library published by the @acronym{IAU,
-International Astronomical Union}.")
-    (license license:bsd-3)))
-
-(define-public eye
-  (package
-    (name "eye")
-    (version "1.4.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/astromatic/eye")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1j8rpgz3fjp6fw0qmxgfqycf3n01fzxds4w12vgyrhbnk658ia41"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list "CPPFLAGS=-fcommon")))    ; fix build with GCC 10
-    (home-page "https://www.astromatic.net/software/eye")
-    (synopsis "Small image feature detector using machine learning")
-    (description
-     "In @acronym{EyE, Enhance Your Extraction} an artificial neural network
-connected to pixels of a moving window (@dfn{retina}) is trained to associate
-these input stimuli to the corresponding response in one or several output
-image(s).  The resulting filter can be loaded in SExtractor to operate
-complex, wildly non-linear filters on astronomical images.  Typical
-applications of EyE include adaptive filtering, feature detection and cosmetic
-corrections.")
-    (license license:cecill)))
 
 (define-public imppg
   (package
@@ -2171,98 +2320,6 @@ instruments.")
     (description
      "This package provides an image processing toolbox for Solar Physics.")
     (license license:bsd-2)))
-
-(define-public glnemo2
-  (package
-    (name "glnemo2")
-    (version "1.21.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.lam.fr/jclamber/glnemo2")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1jmmxszh8d2jmfghig36nhykff345mqnpssfa64d0r7l9cnfp3cn"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:tests? #f        ; No test target
-      #:configure-flags #~(list "CPPFLAGS=-fcommon")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-libraries-paths
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                ;; There is some not straightforward logic on how to set
-                ;; the installation prefix for the project; inherit it
-                ;; from the build-system default flags.
-                (("CMAKE_INSTALL_PREFIX  \"/usr\"")
-                 "CMAKE_INSTALL_PREFIX")
-                (("/usr/include/CCfits")
-                 (string-append
-                  #$(this-package-input "ccfits") "/include/CCfits"))
-                (("/usr/include/tirpc")
-                 (string-append
-                  #$(this-package-input "libtirpc") "/include/tirpc"))
-                ;; It tries to detect library in two "predictable" paths,
-                ;; required during the link phase.
-                (("/usr/lib64/libtirpc.so")
-                 (string-append
-                  #$(this-package-input "libtirpc") "/lib/libtirpc.so"))))))))
-    (inputs
-     (list ccfits
-           cfitsio
-           glm
-           glu
-           hdf5
-           libtirpc
-           qtbase-5
-           zlib))
-    (home-page "https://projets.lam.fr/projects/glnemo2/wiki/Wiki")
-    (synopsis "3D interactive visualization program for n-body like particles")
-    (description
-     "GLNEMO2 is an interactive 3D visualization program which displays
-particles positions of the different components (gas, stars, disk, dark
-matter halo, bulge) of an N-body snapshot.  It is a tool for running
-N-body simulations from isolated galaxies to cosmological simulations.
-It has a graphical user interface (based on QT 5.X API), uses a fast
-3D engine (OPenGL and GLSL), and is generic with the possibility to load
-different kinds of input files.")
-    (license license:cecill)))
-
-(define-public gnuastro
-  (package
-    (name "gnuastro")
-    (version "0.22")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnu/gnuastro/gnuastro-"
-                           version ".tar.lz"))
-       (sha256
-        (base32
-         "15rljx1mx9dyvni17qpj7y9gv086cvmjf9f5j34m1pbiyn989fqz"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags '("--disable-static")))
-    (inputs
-     (list cfitsio-4.4
-           curl
-           gsl
-           libgit2
-           libjpeg-turbo
-           libtiff
-           wcslib
-           zlib))
-    (native-inputs
-     (list libtool lzip))
-    (home-page "https://www.gnu.org/software/gnuastro/")
-    (synopsis "Astronomy utilities")
-    (description "The GNU Astronomy Utilities (Gnuastro) is a suite of
-programs for the manipulation and analysis of astronomical data.")
-    (license license:gpl3+)))
 
 (define-public phd2
   (package
@@ -4754,63 +4811,6 @@ implementing calibration pipeline software.")
 PYSYNPHOT, utilizing Astropy covering instrument specific portions of the old
 packages for HST.")
     (license license:bsd-3)))
-
-(define-public gpredict
-  ;; The latest tag, 2.3, has no major difference with 2.2.1 and is dated for
-  ;; 2018. Additionally, there is some activity on the master branch.
-  (package
-    (name "gpredict")
-    (version "2.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/csete/gpredict/releases"
-                           "/download/v" version
-                           "/gpredict-" version ".tar.bz2"))
-       (sha256
-        (base32 "0hwf97kng1zy8rxyglw04x89p0bg07zq30hgghm20yxiw2xc8ng7"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags #~(list "CFLAGS=-O2 -g -fcommon")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-tests
-            (lambda _
-              ;; Remove reference to non-existent file.
-              (substitute* "po/POTFILES.in"
-                (("src/gtk-sat-tree\\.c") "")))))))
-    (native-inputs
-     (list gettext-minimal intltool pkg-config))
-    (inputs
-     (list curl glib goocanvas gtk+))
-    (home-page "https://oz9aec.dk/gpredict/")
-    (synopsis "Satellite tracking and orbit prediction application")
-    (description
-     "Gpredict is a real-time satellite tracking and orbit prediction
-application.  It can track a large number of satellites and display their
-position and other data in lists, tables, maps, and polar plots (radar view).
-Gpredict can also predict the time of future passes for a satellite, and
-provide you with detailed information about each pass.
-
-Some core features of Gpredict include:
-
-@itemize
-@item Tracking of a large number of satellites only limited by the physical
-memory and processing power of the computer
-@item Display the tracking data in lists, maps, polar plots and any
-combination of these
-@item Have many modules open at the same either in a notebook or in their own
-windows.  The modules can also run in full-screen mode
-@item You can use many ground stations
-@item Predict upcoming passes
-@item Gpredict can run in real-time, simulated real-time (fast forward and
-backward), and manual time control
-@item Detailed information both the real time and non-real time modes
-@item Doppler tuning of radios via Hamlib rigctld
-@item Antenna rotator control via Hamlib rotctld
-@end itemize")
-    (license license:gpl2+)))
 
 (define-public scamp
   (package
