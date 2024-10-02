@@ -5513,8 +5513,31 @@ provides a crate for parsing and serialization of gix-url's.")
 feature toggles.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-validate-0.9
+  (package
+    (name "rust-gix-validate")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-validate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11kckcqaihbik9pzx08dzl81k6965isnpqiyb42b8msfnvdvmwl1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Validation functions for various kinds of names in Git")
+    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
+package contains validation functions for various kinds of names in Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-validate-0.8
   (package
+    (inherit rust-gix-validate-0.9)
     (name "rust-gix-validate")
     (version "0.8.4")
     (source
@@ -5527,12 +5550,7 @@ feature toggles.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Rust validation functions for various kinds of names in Git")
-    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
-package contains validation functions for various kinds of names in Git.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-validate-0.7
   (package
