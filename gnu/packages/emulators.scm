@@ -3351,6 +3351,44 @@ This is intended to be used with the Jolly Good Reference Frontend
                    license:isc          ;libco
                    license:lgpl2.1+))))
 
+(define-public libretro-bsnes-jg
+  ;; There aren't any release yet; use the latest commit.
+  (let ((commit "0d42dea0cb20aba8bfec05b928e4aed2b295352a")
+        (revision "0"))
+    (package
+      (inherit jg-bsnes)
+      (name "libretro-bsnes-jg")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (inherit (package-source jg-bsnes))
+                (uri (git-reference
+                      (url "https://git.libretro.com/libretro/bsnes-jg")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1dq2ypf4g4karayc9sgqn74bfnnsq2f4b3r615xyczchdaf2mi1n"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments jg-bsnes)
+         ((#:make-flags flags)
+          #~(cons* #$(string-append "GIT_VERSION=" version)
+                   (string-append "prefix=" #$output)
+                   #$flags))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "libretro")))
+              (add-after 'chdir 'unbundle-libsamplerate
+                (lambda _
+                  (substitute* "Makefile.common"
+                    (("LIBS \\+= -lm")
+                     "LIBS += -lm -lsamplerate")
+                    ((".*\\$\\(CORE_DIR)/deps/libsamplerate/.*")
+                     ""))))))))
+      (home-page "https://git.libretro.com/libretro/bsnes-jg")
+      (synopsis "libretro port of bsnes-jg"))))
+
 (define-public jg-nestopia
   (package
     (name "jg-nestopia")
