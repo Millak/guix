@@ -2081,6 +2081,30 @@ that path, and along the spectral axis, producing a position-velocity or
 position-frequency slice.")
     (license license:bsd-3)))
 
+(define-public python-pysiril
+  (package
+    (name "python-pysiril")
+    (version "0.0.17")
+    (source
+     (origin
+       (method git-fetch) ; not published on PyPI
+       (uri (git-reference
+             (url "https://gitlab.com/free-astro/pysiril")
+             (commit (string-append
+                      "V" (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w8zc6gm8a18l4rvjv22a0l6m2c45bzj1f2m6sbshaq9z30bm0vv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests
+    (home-page "https://siril.org/tutorials/pysiril/")
+    (synopsis "Python interface to SiriL")
+    (description
+     "This package provides an extending scripting capabilities, present
+natively in Siril.")
+    (license license:gpl3)))
+
 (define-public python-pyxsim
   (package
     (name "python-pyxsim")
