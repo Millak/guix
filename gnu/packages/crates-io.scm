@@ -36753,6 +36753,48 @@ strings and byte slices for sets of ASCII characters or bytes.")
         (base32 "1sq6d6c9vi44gkr566w2f1d4n6mmrjx8gjdwgnhkgcsg051j391j"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-jiff-0.1
+  (package
+    (name "rust-jiff")
+    (version "0.1.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jiff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yrkf8l6w0vy289vh3l2w49p3ayg7wc1cq6ziw93q4m6hs8lhica"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;275 tests fail
+       #:cargo-inputs (("rust-jiff-tzdb" ,rust-jiff-tzdb-0.1)
+                       ("rust-jiff-tzdb-platform" ,rust-jiff-tzdb-platform-0.1)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-chrono-tz" ,rust-chrono-tz-0.9)
+        ("rust-hifitime" ,rust-hifitime-3)
+        ("rust-insta" ,rust-insta-1)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde_json" ,rust-serde-json-1)
+        ("rust-tabwriter" ,rust-tabwriter-1)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-tzfile" ,rust-tzfile-0.1)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/BurntSushi/jiff")
+    (synopsis "Date-time library that provides high level datetime primitives")
+    (description
+     "This package provides a date-time library with high-level primitives that
+are designed to be difficult to misuse and have reasonable performance.  It's
+heavily inspired by the Temporal project.")
+    (license (list license:unlicense license:expat))))
+
 (define-public rust-jiff-tzdb-0.1
   (package
     (name "rust-jiff-tzdb")
