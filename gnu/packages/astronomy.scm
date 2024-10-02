@@ -1647,6 +1647,47 @@ simulated Astronomical data in Python.")
 mining in astronomy.")
     (license license:bsd-2)))
 
+(define-public python-coolest
+  (package
+    (name "python-coolest")
+    (version "0.1.9")
+    (source
+     (origin
+       (method git-fetch) ; no tests in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/aymgal/COOLEST")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mfkgfp6f0ay6kndh7vk8l0g2ijr32k55x3pmj15lp9kd8k3ln4r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Cycle with python-lenstronomy.
+      #~(list "--ignore=test/api/profiles/light_test.py"
+              "--ignore=test/api/profiles/mass_test.py")))
+    (native-inputs
+     (list python-pytest
+           python-scikit-image))
+    (propagated-inputs
+     (list python-astropy
+           python-getdist
+           python-jsonpickle
+           python-numpy
+           python-pandas
+           python-scipy))
+    (home-page "https://github.com/aymgal/COOLEST")
+    (synopsis "Strong Gravitational Lensing Analyses")
+    (description
+     "The COde-independent Organized LEns STandard (COOLEST) defines a set of
+conventions to be shared across the strong lensing community, in order to
+consistently store, share and improve lens modeling analyses.  In short, this
+project provides tools to manipulate lens models as a single, human-readable
+JSON template file alongside Python routines for visualizing and comparing
+lens models possibly obtained from different modeling codes.")
+    (license  license:gpl3)))
+
 (define-public python-extinction
   (package
     (name "python-extinction")
