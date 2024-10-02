@@ -165,25 +165,53 @@ extensions over the standard utility.")
          (snippet
           #~(begin
               (use-modules (guix build utils))
-              (delete-file-recursively "roswell")))))
+              (delete-file-recursively "roswell")
+              ;; Delete precompiled shared object files.
+              (delete-file-recursively "extensions/terminal/lib")))))
       (build-system asdf-build-system/sbcl)
       (arguments
        (list
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-shared-object-files
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((libvterm-lib (assoc-ref inputs "libvterm"))
+                       (lib-dir (string-append libvterm-lib "/lib"))
+                       (shared-lib-dir (string-append (assoc-ref outputs "out")
+                                                      "/lib"))
+                       (shared-lib (string-append shared-lib-dir
+                                                  "/terminal.so")))
+
+                  (substitute* "extensions/terminal/ffi.lisp"
+                    (("terminal.so") shared-lib)))))
             (add-after 'create-asdf-configuration 'build-program
               (lambda* (#:key outputs #:allow-other-keys)
                 (build-program
                  (string-append (assoc-ref outputs "out") "/bin/lem")
                  outputs
                  #:dependencies '("lem-ncurses" "lem-sdl2")
-                 #:entry-program '((lem:main) 0)))))))
+                 #:entry-program '((lem:main) 0))))
+            (add-after 'build 'build-terminal-library
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((libvterm-lib (assoc-ref inputs "libvterm"))
+                       (lib-dir (string-append libvterm-lib "/lib"))
+                       (shared-lib-dir (string-append (assoc-ref outputs "out")
+                                                      "/lib"))
+                       (shared-lib (string-append shared-lib-dir
+                                                  "/terminal.so")))
+                  (mkdir-p shared-lib-dir)
+                  (invoke "gcc" "extensions/terminal/terminal.c"
+                          "-L" lib-dir "-lvterm"
+                          "-Wl,-Bdynamic"
+                          "-o" shared-lib
+                          "-fPIC" "-shared")))))))
       (native-inputs
        (list sbcl-cl-ansi-text
              sbcl-rove
              sbcl-trivial-package-local-nicknames))
       (inputs
        (list
+        libvterm
         sbcl-alexandria
         sbcl-trivia
         sbcl-trivial-gray-streams
