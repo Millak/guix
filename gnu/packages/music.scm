@@ -2953,7 +2953,8 @@ is subjective.")
                                 "TuxGuitar-gm-utils"
                                 "TuxGuitar-alsa"
                                 "TuxGuitar-midi"
-                                "TuxGuitar-midi-ui")))))
+                                "TuxGuitar-midi-ui"
+                                "TuxGuitar-compat")))))
          (add-after 'build 'build-jni
            (lambda _
              (setenv "CC" "gcc")
