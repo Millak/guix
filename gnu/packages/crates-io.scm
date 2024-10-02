@@ -12643,8 +12643,39 @@ Encoding Standard.")
 Python @code{arrow.humanize}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-chrono-tz-0.9
+  (package
+    (name "rust-chrono-tz")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "chrono-tz" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fvicqrlmdsjkrgxr7bxfd62i9w2qi2b6iv4w85av5syvqlqnsck"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-chrono-tz-build" ,rust-chrono-tz-build-0.3)
+        ("rust-phf" ,rust-phf-0.11)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-uncased" ,rust-uncased-0.9))
+       #:cargo-development-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/chronotope/chrono-tz")
+    (synopsis "TimeZone implementations for chrono from the IANA database")
+    (description
+     "Chrono-TZ is a library that provides implementors of the TimeZone trait
+for @code{rust-chrono}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-chrono-tz-0.8
   (package
+    (inherit rust-chrono-tz-0.9)
     (name "rust-chrono-tz")
     (version "0.8.5")
     (source
@@ -12665,13 +12696,7 @@ Python @code{arrow.humanize}.")
         ("rust-uncased" ,rust-uncased-0.9))
        #:cargo-development-inputs
        (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-serde-test" ,rust-serde-test-1))))
-    (home-page "https://github.com/chronotope/chrono-tz")
-    (synopsis "TimeZone implementations for rust-chrono from the IANA database")
-    (description
-     "Chrono-TZ is a library that provides implementors of the TimeZone trait
-for @code{rust-chrono}.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-test" ,rust-serde-test-1))))))
 
 (define-public rust-chrono-tz-0.6
   (package
