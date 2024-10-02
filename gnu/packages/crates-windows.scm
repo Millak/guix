@@ -2236,6 +2236,25 @@ Windows crate.")
        (sha256
         (base32 "03h0c6qs1yyl0z69p4k1hdq636j868qdxnri1dy47nprjvckacbm"))))))
 
+(define-public rust-windows-result-0.2
+  (package
+    (name "rust-windows-result")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-result" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03mf2z1xcy2slhhsm15z24p76qxgm2m74xdjp8bihyag47c4640x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-targets" ,rust-windows-targets-0.52))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows error handling")
+    (description "This package provides Windows error handling.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-sys-0.59
   (package
     (name "rust-windows-sys")
