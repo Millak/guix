@@ -2502,8 +2502,36 @@ file system utilities for Gitoxide.")
      `(#:cargo-inputs (("rust-gix-features" ,rust-gix-features-0.30))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gix-glob-0.16
+  (package
+    (name "rust-gix-glob")
+    (version "0.16.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-glob" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04gijbam0k2vdshm2m0d6hg0hvv7ky4dgr9p4y2l02hapi5qp43l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-features" ,rust-gix-features-0.38)
+        ("rust-gix-path" ,rust-gix-path-0.10)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Gitoxide project crate dealing with pattern matching")
+    (description
+     "This package provides a crate from the Gitoxide project dealing with pattern
+matching.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-glob-0.15
   (package
+    (inherit rust-gix-glob-0.16)
     (name "rust-gix-glob")
     (version "0.15.1")
     (source
@@ -2520,13 +2548,7 @@ file system utilities for Gitoxide.")
                        ("rust-document-features" ,rust-document-features-0.2)
                        ("rust-gix-features" ,rust-gix-features-0.37)
                        ("rust-gix-path" ,rust-gix-path-0.10)
-                       ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Gitoxide project crate dealing with pattern matching")
-    (description
-     "This package provides a crate of the gitoxide project dealing with pattern
-matching.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-gix-glob-0.14
   (package
