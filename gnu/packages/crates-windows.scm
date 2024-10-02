@@ -407,6 +407,26 @@ network configuration for Windows.")
 kernel32.")
     (license license:expat)))
 
+(define-public rust-known-folders-1
+  (package
+    (name "rust-known-folders")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "known-folders" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z4jlxfqv1jqp9g5m1dr23zpjpl5kpbqgdqfk8jnxd681isa3ndp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/artichoke/known-folders-rs")
+    (synopsis "Safe wrapper around the Known Folders API on Windows")
+    (description
+     "This package provides a safe wrapper around the Known Folders API on Windows.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-miow-0.6
   (package
     (name "rust-miow")
