@@ -12718,8 +12718,34 @@ for @code{rust-chrono}.")
         ("rust-parse-zoneinfo" ,rust-parse-zoneinfo-0.3)
         ("rust-serde" ,rust-serde-1))))))
 
+(define-public rust-chrono-tz-build-0.3
+  (package
+    (name "rust-chrono-tz-build")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "chrono-tz-build" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1c8ixwwwsn9kgs1dr5mz963p0fgw9j9p7fzb3w2c7y8xhkp8l20c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-parse-zoneinfo" ,rust-parse-zoneinfo-0.3)
+        ("rust-phf" ,rust-phf-0.11)
+        ("rust-phf-codegen" ,rust-phf-codegen-0.11)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-uncased" ,rust-uncased-0.9))))
+    (home-page "https://github.com/chronotope/chrono-tz")
+    (synopsis "Internal build script for chrono-tz Rust package")
+    (description "This package contains the internal build script for
+the chrono-tz Rust crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-chrono-tz-build-0.2
   (package
+    (inherit rust-chrono-tz-build-0.3)
     (name "rust-chrono-tz-build")
     (version "0.2.1")
     (source
@@ -12736,13 +12762,7 @@ for @code{rust-chrono}.")
         ("rust-phf" ,rust-phf-0.11)
         ("rust-phf-codegen" ,rust-phf-codegen-0.11)
         ("rust-regex" ,rust-regex-1)
-        ("rust-uncased" ,rust-uncased-0.9))))
-    (home-page "https://github.com/chronotope/chrono-tz")
-    (synopsis "Internal build script for chrono-tz Rust package")
-    (description
-     "This package contains the internal build script for
-chrono-tz Rust crate.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-uncased" ,rust-uncased-0.9))))))
 
 (define-public rust-chrono-tz-build-0.0.3
   (package
