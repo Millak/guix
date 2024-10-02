@@ -2157,6 +2157,32 @@ and Vega-Lite examples.")
      "Vega-Altair is a declarative statistical visualization library for Python.")
     (license license:expat)))
 
+(define-public python-getdist
+  (package
+    (name "python-getdist")
+    (version "1.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "getdist" version))
+       (sha256
+        (base32 "0hqq6zdm9byalypgb47ifxv67q1xgfgiq5aw0md2jndla4b546bq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy
+           python-packaging
+           python-pyyaml
+           python-scipy))
+    (home-page "https://github.com/cmbant/getdist")
+    (synopsis "GetDist Monte Carlo sample analysis, plotting and GUI")
+    (description
+     "GetDist is a Python package for analysing Monte Carlo samples, including
+correlated samples from Markov Chain Monte Carlo (MCMC).")
+    (license license:lgpl3)))
+
 (define-public python-hdmedians
   (package
     (name "python-hdmedians")
