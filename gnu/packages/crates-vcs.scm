@@ -3893,22 +3893,27 @@ feature pre-selected.")
 (define-public rust-gix-path-0.10
   (package
     (name "rust-gix-path")
-    (version "0.10.7")
+    (version "0.10.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-path" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "10w7abk2wcp0w2y943sdlsic3xc91d6qr29zjinilsbmykq3qqi3"))))
+        (base32 "1by7zbdccrqpb824164hyqs7lyz3axp8jihjkyydraw8s3mlzz7b"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+     `(#:tests? #f ;undeclared crate gix_testtools
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-gix-trace" ,rust-gix-trace-0.1)
                        ("rust-home" ,rust-home-0.5)
                        ("rust-once-cell" ,rust-once-cell-1)
                        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+       #:cargo-development-inputs
+       (("rust-known-folders" ,rust-known-folders-1)
+        ("rust-serial-test" ,rust-serial-test-3)
+        ("rust-windows" ,rust-windows-0.58)
+        ("rust-winreg" ,rust-winreg-0.52))))
     (home-page "https://github.com/Byron/gitoxide")
     (synopsis
      "Part of the Gitoxide project, this crate deals with paths and their conversions")
