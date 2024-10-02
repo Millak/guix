@@ -35109,14 +35109,14 @@ over in-place and buffer-to-buffer modes of operation.")
 (define-public rust-insta-1
   (package
     (name "rust-insta")
-    (version "1.34.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "insta" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1z7v6mzm1djv9sn1k9j796xl2i3llwzj82klcz1cybsbwc5n0r2x"))
+        (base32 "0q5b0ssw8ilj0ni6s2swpd1spv78q5yxp594fxl1i13kg8fa94v5"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
