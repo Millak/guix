@@ -3614,6 +3614,45 @@ displays a table of current bandwidth usage by pairs of hosts.")
     (home-page "http://www.ex-parrot.com/~pdw/iftop/")
     (license license:gpl2+)))
 
+(define-public nettop
+  (let ((revision "0")
+        (commit "689d6557196e9fcc92cffba82e00fac0386419e5"))
+    (package
+      (name "nettop")
+      (version (git-version "0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Emanem/nettop")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0f6qkj4p4c0gap16ncnhkm802vi6dr7z9rjfz7gzvzhm7jg08aj8"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(begin
+             (substitute* "Makefile"
+               (("-lcurses" _) "-lncurses"))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; no make check
+        #:make-flags #~(list "release")
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ; no configure script
+            (replace 'install           ; no install target
+              (lambda _
+                (let ((out (string-append #$output "/bin")))
+                  (install-file "nettop" out)))))))
+      (inputs (list libpcap ncurses))
+      (synopsis "Monitor network usage by process and host")
+      (description "nettop is a traffic visualizer for the terminal that
+summarizes network bandwidth by process and remote host.")
+      (home-page "https://github.com/Emanem/nettop")
+      (license license:gpl3+))))
+
 (define-public munge
   (package
     (name "munge")
