@@ -3479,22 +3479,30 @@ and from numpy arrays.")
 (define-public python-pynsee
   (package
     (name "python-pynsee")
-    (version "0.1.7")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynsee" version))
        (sha256
-        (base32 "0wd1xhkjpll8mzrrhnqxrand32p338j2zfw3h1gxacf31iwxhips"))))
+        (base32 "1w084ynwdd9f4wpcnakqc0nxcbj9gr8vppv4rd258i3dp1qq4sw5"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))  ; XXX: Tests require network access.
-    (propagated-inputs (list python-appdirs
-                             python-pandas
-                             python-requests
-                             python-shapely
-                             python-tqdm
-                             python-unidecode
-                             python-urllib3))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-appdirs
+           python-openpyxl
+           python-pandas
+           python-platformdirs
+           python-pyarrow
+           python-requests
+           python-shapely
+           python-tqdm
+           python-unidecode
+           python-urllib3
+           python-xlrd))
     (home-page "https://pynsee.readthedocs.io")
     (synopsis
      "Tools to Easily Search and Download French Data From INSEE and IGN APIs")
