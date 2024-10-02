@@ -2255,6 +2255,27 @@ Windows crate.")
     (description "This package provides Windows error handling.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-strings-0.1
+  (package
+    (name "rust-windows-strings")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-strings" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "042dxvi3133f7dyi2pgcvknwkikk47k8bddwxbq5s0l6qhjv3nac"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-result" ,rust-windows-result-0.2)
+                       ("rust-windows-targets" ,rust-windows-targets-0.52))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Rust for Windows strings provides common string types")
+    (description "This package provides common string types when using
+Rust for Windows.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-sys-0.59
   (package
     (name "rust-windows-sys")
