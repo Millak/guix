@@ -5635,14 +5635,14 @@ provides a crate for parsing and serialization of gix-url's.")
 (define-public rust-gix-utils-0.1
   (package
     (name "rust-gix-utils")
-    (version "0.1.11")
+    (version "0.1.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-utils" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14lg6k6v3pqb9y3zq3j1r9l1ycx5grcrl9wiy1vrhzr79hnl6rh0"))))
+        (base32 "1p6lschmdrg1j9cd3rm6q96dyrvivzi2305d7ck1588gzpvjs69m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
