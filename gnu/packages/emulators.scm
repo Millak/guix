@@ -118,7 +118,8 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system qt))
+  #:use-module (guix build-system qt)
+  #:use-module (guix build-system trivial))
 
 (define-public vice
   (package
@@ -1577,9 +1578,9 @@ recognize input devices and automatically setup default mappings between the
 physical device and the RetroPad virtual controller.")
     (license license:expat)))
 
-(define-public retroarch
+(define-public retroarch-minimal
   (package
-    (name "retroarch")
+    (name "retroarch-minimal")
     (version "1.19.1")
     (source
      (origin
@@ -1739,6 +1740,23 @@ multi-system game/emulator system.")
                    license:asl2.0        ;SPIRV-Cross
                    license:expat         ;yxml
                    license:bsd-3))))     ;feragamemode
+
+(define-public retroarch
+  (package
+    (inherit retroarch-minimal)
+    (name "retroarch")
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list retroarch-minimal
+           ;; We cannot simply hard-code the resource paths, as they'd written
+           ;; to ~/.config/retroarch.cfg and never updated (going stale),
+           ;; which is problematic.  The environment variables overrides the
+           ;; configuration file values.
+           retroarch-assets
+           retroarch-core-info
+           retroarch-joypad-autoconfig))))
 
 (define-public wasm4
   (package
