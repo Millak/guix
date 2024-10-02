@@ -748,6 +748,133 @@ applications of EyE include adaptive filtering, feature detection and cosmetic
 corrections.")
     (license license:cecill)))
 
+(define-public libnova
+  (package
+    (name "libnova")
+    (version "0.16")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.code.sf.net/p/libnova/libnova.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0icwylwkixihzni0kgl0j8dx3qhqvym6zv2hkw2dy6v9zvysrb1b"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-git-version
+            (lambda _
+              (substitute* "./git-version-gen"
+                (("/bin/sh") (which "sh"))))))))
+    (native-inputs
+     (list autoconf automake libtool))
+    (home-page "https://libnova.sourceforge.net/")
+    (synopsis "Celestial mechanics, astrometry and astrodynamics library")
+    (description
+     "Libnova is a general purpose, double precision, Celestial Mechanics,
+Astrometry and Astrodynamics library.")
+    (license (list license:lgpl2.0+
+                   license:gpl2+)))) ; examples/transforms.c & lntest/*.c
+
+(define-public libpasastro
+  (package
+    (name "libpasastro")
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pchev/libpasastro")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1na3gyb3nzb5gdgccs1653j2gnz6w3v1mqzhyhkx3yqw8bs3q5x0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests provided
+      #:make-flags
+      #~(list
+         ;; Keep OS detection for the case when Hurd would be suitable to try.
+         #$@(if (target-linux?) '("OS_TARGET=linux") '())
+         ;; Enable buildtime CPU detection where supported,
+         ;; and set a suitable CPU target variable.
+         #$@(match (or (%current-target-system)
+                       (%current-system))
+              ("i686-linux"
+               '("CPU_TARGET=i386"))
+              ("x86_64-linux"
+               '("CPU_TARGET=x86_64"))
+              ;; There is no a case for RISCV in upstream, attempt to treat it
+              ;; as ARM.
+              ((or "armhf-linux" "aarch64-linux" "riscv64")
+               '("CPU_TARGET=armv7l"))
+              (_ '()))
+         (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (home-page "https://github.com/pchev/libpasastro")
+    (synopsis "Interface to astronomy library for use from Pascal program")
+    (description
+     "This package provides shared libraries to interface Pascal program with
+standard astronomy libraries:
+
+@itemize
+@item @code{libpasgetdss.so}: Interface with GetDSS to work with DSS images.
+@item @code{libpasplan404.so}: Interface with Plan404 to compute planets position.
+@item @code{libpaswcs.so}: Interface with libwcs to work with FITS WCS.
+@item @code{libpasspice.so}: To work with NAIF/SPICE kernel.
+@end itemize")
+      (license license:gpl2+)))
+
+(define-public libsep
+  (package
+    (name "libsep")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kbarbary/sep")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sag96am6r1ffh9860yq40js874362v3132ahlm6sq7padczkicf"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (chdir "../source")
+                         (invoke "make"
+                                 (string-append "CC=" #$(cc-for-target))
+                                 "test")))))))
+    (native-inputs
+     (list python-wrapper))
+    (home-page "https://github.com/kbarbary/sep")
+    (synopsis "Astronomical source extraction and photometry library")
+    (description
+     "SEP makes the core algorithms of
+@url{https://www.astromatic.net/software/sextractor/, sextractor} available as
+a library of stand-alone functions and classes.  These operate directly on
+in-memory arrays (no FITS files or configuration files).  The code is derived
+from the Source Extractor code base (written in C) and aims to produce results
+compatible with Source Extractor whenever possible.  SEP consists of a C
+library with no dependencies outside the standard library, and a Python module
+that wraps the C library in a Pythonic API.  The Python wrapper operates on
+NumPy arrays with NumPy as its only dependency.")
+    (license (list license:expat license:lgpl3+ license:bsd-3))))
+
 (define-public libsharp
   (package
     (name "libsharp")
@@ -781,6 +908,78 @@ are roughly twice as fast when using the same CPU capabilities.
 
 Supporting paper is availalbe at https://arxiv.org/abs/1303.4945")
     (license license:gpl2+)))
+
+(define-public libskry
+  (package
+    (name "libskry")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/GreatAttractor/libskry")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14kwng0j8wqzlb0gqg3ayq36l15dpz7kvxc56fa47j55b376bwh6"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (list
+        (string-append
+         "LIBAV_INCLUDE_PATH=" (assoc-ref %build-inputs "ffmpeg") "/include"))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure) ;; no configure provided
+         (delete 'check) ;; no tests provided
+         (replace 'install
+           ;; The Makefile lacks an ‘install’ target.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib"))
+                    (include (string-append out "/include")))
+               (copy-recursively "bin" lib)
+               (copy-recursively "include" include))
+             #t)))))
+    (inputs
+     (list ffmpeg-4))
+    (home-page "https://github.com/GreatAttractor/libskry")
+    (synopsis "Astronimical lucky imaging library")
+    (description
+     "@code{libskry} implements the lucky imaging principle of astronomical
+imaging: creating a high-quality still image out of a series of many
+thousands) low quality ones")
+    (license license:gpl3+)))
+
+(define-public libxisf
+  (package
+    (name "libxisf")
+    (version "0.2.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitea.nouspiro.space/nou/libXISF")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bvf3x0xdipkg28c75j6jav3b2llbqvfa6lkwiacxxlzmj0226s2"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DUSE_BUNDLED_LIBS=OFF")))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list lz4 pugixml zlib))
+    (home-page "https://nouspiro.space/?page_id=306")
+    (synopsis "Astronomical library to load and write XISF file format")
+    (description
+     "LibXISF is C++ library that can read and write @acronym{XISF,Extensible
+Image Serialization Format} files produced by @url{https://pixinsight.com/,
+PixInsight}.  It implements
+@url{https://pixinsight.com/doc/docs/XISF-1.0-spec/XISF-1.0-spec.html, XISF
+1.0 specification}.")
+    (license license:gpl3+)))
 
 (define-public psfex
   (package
@@ -4459,204 +4658,6 @@ implementing calibration pipeline software.")
 PYSYNPHOT, utilizing Astropy covering instrument specific portions of the old
 packages for HST.")
     (license license:bsd-3)))
-
-(define-public libnova
-  (package
-    (name "libnova")
-    (version "0.16")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.code.sf.net/p/libnova/libnova.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0icwylwkixihzni0kgl0j8dx3qhqvym6zv2hkw2dy6v9zvysrb1b"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-git-version
-            (lambda _
-              (substitute* "./git-version-gen"
-                (("/bin/sh") (which "sh"))))))))
-    (native-inputs
-     (list autoconf automake libtool))
-    (synopsis "Celestial mechanics, astrometry and astrodynamics library")
-    (description "Libnova is a general purpose, double precision, Celestial
-Mechanics, Astrometry and Astrodynamics library.")
-    (home-page "https://libnova.sourceforge.net/")
-    (license (list license:lgpl2.0+
-                   license:gpl2+)))) ; examples/transforms.c & lntest/*.c
-
-(define-public libsep
-  (package
-    (name "libsep")
-    (version "1.2.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kbarbary/sep")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0sag96am6r1ffh9860yq40js874362v3132ahlm6sq7padczkicf"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
-                           (string-append "PREFIX=" #$output))
-      #:phases #~(modify-phases %standard-phases
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (chdir "../source")
-                         (invoke "make"
-                                 (string-append "CC=" #$(cc-for-target))
-                                 "test")))))))
-    (native-inputs
-     (list python-wrapper))
-    (home-page "https://github.com/kbarbary/sep")
-    (synopsis "Astronomical source extraction and photometry library")
-    (description
-     "SEP makes the core algorithms of
-@url{https://www.astromatic.net/software/sextractor/, sextractor} available as a
-library of stand-alone functions and classes.  These operate directly on
-in-memory arrays (no FITS files or configuration files).  The code is derived
-from the Source Extractor code base (written in C) and aims to produce results
-compatible with Source Extractor whenever possible.  SEP consists of a C library
-with no dependencies outside the standard library, and a Python module that
-wraps the C library in a Pythonic API.  The Python wrapper operates on NumPy
-arrays with NumPy as its only dependency.")
-    (license (list license:expat license:lgpl3+ license:bsd-3))))
-
-(define-public libskry
-  (package
-    (name "libskry")
-    (version "0.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/GreatAttractor/libskry")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "14kwng0j8wqzlb0gqg3ayq36l15dpz7kvxc56fa47j55b376bwh6"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags
-       (list
-        (string-append
-         "LIBAV_INCLUDE_PATH=" (assoc-ref %build-inputs "ffmpeg") "/include"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ;; no configure provided
-         (delete 'check) ;; no tests provided
-         (replace 'install
-           ;; The Makefile lacks an ‘install’ target.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib"))
-                    (include (string-append out "/include")))
-               (copy-recursively "bin" lib)
-               (copy-recursively "include" include))
-             #t)))))
-    (inputs
-     (list ffmpeg-4))
-    (home-page "https://github.com/GreatAttractor/libskry")
-    (synopsis "Astronimical lucky imaging library")
-    (description
-     "@code{libskry} implements the lucky imaging principle of astronomical
-imaging: creating a high-quality still image out of a series of many thousands)
-low quality ones")
-    (license license:gpl3+)))
-
-(define-public libpasastro
-  (package
-    (name "libpasastro")
-    (version "1.4.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pchev/libpasastro")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1na3gyb3nzb5gdgccs1653j2gnz6w3v1mqzhyhkx3yqw8bs3q5x0"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f ; no tests provided
-      #:make-flags
-      #~(list
-         ;; Keep OS detection for the case when Hurd would be suitable to try.
-         #$@(if (target-linux?) '("OS_TARGET=linux") '())
-         ;; Enable buildtime CPU detection where supported,
-         ;; and set a suitable CPU target variable.
-         #$@(match (or (%current-target-system)
-                       (%current-system))
-              ("i686-linux"
-               '("CPU_TARGET=i386"))
-              ("x86_64-linux"
-               '("CPU_TARGET=x86_64"))
-              ;; There is no a case for RISCV in upstream, attempt to treat it
-              ;; as ARM.
-              ((or "armhf-linux" "aarch64-linux" "riscv64")
-               '("CPU_TARGET=armv7l"))
-              (_ '()))
-         (string-append "PREFIX=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure))))
-    (home-page "https://github.com/pchev/libpasastro")
-    (synopsis "Interface to astronomy library for use from Pascal program")
-    (description
-     "This package provides shared libraries to interface Pascal program with
-standard astronomy libraries:
-
-@itemize
-@item @code{libpasgetdss.so}: Interface with GetDSS to work with DSS images.
-@item @code{libpasplan404.so}: Interface with Plan404 to compute planets position.
-@item @code{libpaswcs.so}: Interface with libwcs to work with FITS WCS.
-@item @code{libpasspice.so}: To work with NAIF/SPICE kernel.
-@end itemize")
-      (license license:gpl2+)))
-
-(define-public libxisf
-  (package
-    (name "libxisf")
-    (version "0.2.12")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitea.nouspiro.space/nou/libXISF")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bvf3x0xdipkg28c75j6jav3b2llbqvfa6lkwiacxxlzmj0226s2"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:configure-flags #~(list "-DUSE_BUNDLED_LIBS=OFF")))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list lz4 pugixml zlib))
-    (home-page "https://nouspiro.space/?page_id=306")
-    (synopsis "Astronomical library to load and write XISF file format")
-    (description
-     "LibXISF is C++ library that can read and write @acronym{XISF,Extensible
-Image Serialization Format} files produced by @url{https://pixinsight.com/,
-PixInsight}.  It implements
-@url{https://pixinsight.com/doc/docs/XISF-1.0-spec/XISF-1.0-spec.html, XISF
-1.0 specification}.")
-    (license license:gpl3+)))
 
 (define-public missfits
   (package
