@@ -31743,6 +31743,46 @@ higher performance on different key space sizes.")
                                    ("rust-tiny-http" ,rust-tiny-http-0.11))))
     (native-inputs (list protobuf))))
 
+(define-public rust-hifitime-3
+  (package
+    (name "rust-hifitime")
+    (version "3.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hifitime" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wy256hc7a33sag0hzz64ql1lpg5kvzyyknqpwalzf402bppln3w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--offline" "--"
+                            "--skip=leap_seconds_file::leap_second_fetch"
+                            "--skip=test_leap_seconds_file")
+       #:cargo-inputs
+       (("rust-der" ,rust-der-0.7)
+        ("rust-js-sys" ,rust-js-sys-0.3)
+        ("rust-lexical-core" ,rust-lexical-core-0.8)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-pyo3" ,rust-pyo3-0.20)
+        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-tabled" ,rust-tabled-0.15)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-web-sys" ,rust-web-sys-0.3))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-iai" ,rust-iai-0.1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://nyxspace.com/")
+    (synopsis "Ultra-precise date and time handling in Rust")
+    (description
+     "This package provides Ultra-precise date and time handling in Rust for
+scientific applications with leap second support.")
+    (license license:asl2.0)))
+
 (define-public rust-home-0.5
   (package
     (name "rust-home")
