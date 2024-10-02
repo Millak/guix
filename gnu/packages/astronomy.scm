@@ -748,6 +748,126 @@ applications of EyE include adaptive filtering, feature detection and cosmetic
 corrections.")
     (license license:cecill)))
 
+(define-public imppg
+  (package
+    (name "imppg")
+    (version "0.6.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/GreatAttractor/imppg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a6wb1a9adwd01dmy0r03xxp8iz9y7mvh30088ajilhj4lf90vxa"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list ;; No test provided
+      #:tests? #f))
+    (native-inputs
+     (list boost pkg-config))
+    (inputs
+     (list cfitsio freeimage glew wxwidgets-3.0))
+    (home-page "https://github.com/GreatAttractor/imppg")
+    (synopsis "Astronomical Image Post-Proccessor (ImPPG)")
+    (description
+     "ImPPG performs Lucy-Richardson deconvolution, unsharp masking,
+brightness normalization and tone curve adjustment.  It can also apply
+previously specified processing settings to multiple images.  All operations
+are performed using 32-bit floating-point arithmetic.
+
+Supported input formats: FITS, BMP, JPEG, PNG, TIFF (most of bit depths and
+compression methods), TGA and more.  Images are processed in grayscale and can
+be saved as: BMP 8-bit; PNG 8-bit; TIFF 8-bit, 16-bit, 32-bit
+floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
+32-bit floating-point.")
+    (license license:gpl3+)))
+
+(define-public indi-2.0
+  (package
+    (name "indi")
+    (version "2.0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/indilib/indi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08wmw7mrxx1zc89yka3c52djmpvlb8zimq8yzs95gh3p7r5jfpq9"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:parallel-tests? #f  ; Socket address collisions between tests
+      #:configure-flags
+      #~(list "-DINDI_BUILD_UNITTESTS=ON"
+              "-DINDI_BUILD_INTEGTESTS=ON"
+              "-DCMAKE_INSTALL_LIBDIR=lib"
+              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+              (string-append "-DUDEVRULES_INSTALL_DIR=" #$output "/lib/udev/rules.d"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-udev-rules
+            (lambda _
+              (substitute* (list "drivers/auxiliary/99-indi_auxiliary.rules"
+                                 "drivers/video/80-dbk21-camera.rules")
+                (("/bin/sh") (which "sh"))
+                (("/sbin/modprobe")
+                 (string-append #$(this-package-input "kmod") "/bin/modprobe")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "integs"
+                  (invoke "ctest" "-V" "--output-on-failure"))
+                (with-directory-excursion "test"
+                  (invoke "ctest" "-V"))))))))
+    (native-inputs
+     (list googletest))
+    (inputs
+     (list cfitsio
+           curl
+           fftw
+           gsl
+           kmod
+           libev
+           libjpeg-turbo
+           libnova
+           libtiff
+           libusb
+           zlib))
+    (home-page "https://www.indilib.org")
+    (synopsis "Library for astronimical intrumentation control")
+    (description
+     "INDI (Instrument-Neutral Device Interface) is a distributed XML-based
+control protocol designed to operate astronomical instrumentation.  INDI is
+small, flexible, easy to parse, scalable, and stateless.  It supports common
+DCS functions such as remote control, data acquisition, monitoring, and a lot
+more.")
+    (license (list license:bsd-3
+                   license:gpl2+
+                   license:lgpl2.0+
+                   license:lgpl2.1+))))
+
+(define-public indi-1.9
+  (package
+    (inherit indi-2.0)
+    (version "1.9.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/indilib/indi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "indi" version))
+       (sha256
+        (base32 "1vfcas59nlw8v7n6qhxhcm4isf5wk0crip5rmsallq3bsv3zznfr"))))))
+
+(define-public indi
+  ;; Default version of INDI..
+  indi-1.9)
+
 (define-public libnova
   (package
     (name "libnova")
@@ -979,6 +1099,43 @@ Image Serialization Format} files produced by @url{https://pixinsight.com/,
 PixInsight}.  It implements
 @url{https://pixinsight.com/doc/docs/XISF-1.0-spec/XISF-1.0-spec.html, XISF
 1.0 specification}.")
+    (license license:gpl3+)))
+
+(define-public missfits
+  (package
+    (name "missfits")
+    (version "2.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/missfits")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12ndvrr3l5j7ph2i5f3qf0wqmv5ymsyjzxnnypqajsvliw72iprh"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; Address this link error:
+         ;; ld: ... multiple definition of ... first defined here
+         "CPPFLAGS=-fcommon")))
+    (home-page "https://www.astromatic.net/software/missfits")
+    (synopsis "FITS files Maintenance program")
+    (description
+     "MissFITS is a program that performs basic maintenance and packaging tasks
+on FITS files:
+
+@itemize
+@item add/edit FITS header keywords
+@item split/join @acronym{MEF, Multi-Extension-FITS} files
+@item unpack/pack FITS data-cubes
+@item create/check/update FITS checksums, using
+@uref{http://www.adass.org/adass/proceedings/adass94/seamanr.html,
+R. Seaman's protocol}
+@end itemize\n")
     (license license:gpl3+)))
 
 (define-public psfex
@@ -2014,67 +2171,6 @@ instruments.")
     (description
      "This package provides an image processing toolbox for Solar Physics.")
     (license license:bsd-2)))
-
-(define-public wcslib
-  (package
-    (name "wcslib")
-    (version "8.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
-                           "wcslib-" version ".tar.bz2"))
-       (sha256
-        (base32 "0cvqppjf7gk0f3rs9cc46h5fffv2l8ylrb234r9fbx0px0525632"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (delete-file-recursively "C/flexed")))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list (string-append "--with-cfitsiolib="
-                             #$(this-package-input "cfitsio") "/lib")
-              (string-append "--with-cfitsioinc="
-                             #$(this-package-input "cfitsio") "/include"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'install-license-files) ; installed by ‘make install’
-          (add-before 'configure 'patch-/bin/sh
-            (lambda _
-              (substitute* "makedefs.in"
-                (("/bin/sh") "sh")))))))
-    ;; TODO: Fix build with gfortran and pack missing optional pgplot.
-    ;; (inputs (list gfortran pgplot))
-    (inputs
-     (list cfitsio))
-    (native-inputs
-     (list flex))
-    (home-page "https://www.atnf.csiro.au/people/mcalabre/WCS")
-    (synopsis "Library which implements the FITS WCS standard")
-    (description "The FITS \"World Coordinate System\" (@dfn{WCS}) standard
-defines keywords and usage that provide for the description of astronomical
-coordinate systems in a @dfn{FITS} (Flexible Image Transport System) image
-header.")
-    (license license:lgpl3+)))
-
-;;; The version is required for julia-wcs-jll and julia-wcs.  They do not
-;;; support version higher than 7.x.
-(define-public wcslib-7.12
-  (package
-    (inherit wcslib)
-    (version "7.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
-                           "wcslib-" version ".tar.bz2"))
-       (sha256
-        (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (delete-file-recursively "C/flexed")))))
-    (properties '((hidden? . #t)))))
 
 (define-public glnemo2
   (package
@@ -4659,43 +4755,6 @@ PYSYNPHOT, utilizing Astropy covering instrument specific portions of the old
 packages for HST.")
     (license license:bsd-3)))
 
-(define-public missfits
-  (package
-    (name "missfits")
-    (version "2.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/astromatic/missfits")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "12ndvrr3l5j7ph2i5f3qf0wqmv5ymsyjzxnnypqajsvliw72iprh"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list
-         ;; Address this link error:
-         ;; ld: ... multiple definition of ... first defined here
-         "CPPFLAGS=-fcommon")))
-    (home-page "https://www.astromatic.net/software/missfits")
-    (synopsis "FITS files Maintenance program")
-    (description
-     "MissFITS is a program that performs basic maintenance and packaging tasks
-on FITS files:
-
-@itemize
-@item add/edit FITS header keywords
-@item split/join @acronym{MEF, Multi-Extension-FITS} files
-@item unpack/pack FITS data-cubes
-@item create/check/update FITS checksums, using
-@uref{http://www.adass.org/adass/proceedings/adass94/seamanr.html,
-R. Seaman's protocol}
-@end itemize\n")
-    (license license:gpl3+)))
-
 (define-public gpredict
   ;; The latest tag, 2.3, has no major difference with 2.2.1 and is dated for
   ;; 2018. Additionally, there is some activity on the master branch.
@@ -4867,126 +4926,6 @@ convenient access to metadata from a regular web browser
        "This is a library implementing the simplified perturbations model.
 It can be used to calculate the trajectory of satellites.")
       (license license:asl2.0))))
-
-(define-public imppg
-  (package
-    (name "imppg")
-    (version "0.6.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/GreatAttractor/imppg")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0a6wb1a9adwd01dmy0r03xxp8iz9y7mvh30088ajilhj4lf90vxa"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list ;; No test provided
-      #:tests? #f))
-    (native-inputs
-     (list boost pkg-config))
-    (inputs
-     (list cfitsio freeimage glew wxwidgets-3.0))
-    (home-page "https://github.com/GreatAttractor/imppg")
-    (synopsis "Astronomical Image Post-Proccessor (ImPPG)")
-    (description
-     "ImPPG performs Lucy-Richardson deconvolution, unsharp masking,
-brightness normalization and tone curve adjustment.  It can also apply
-previously specified processing settings to multiple images.  All operations
-are performed using 32-bit floating-point arithmetic.
-
-Supported input formats: FITS, BMP, JPEG, PNG, TIFF (most of bit depths and
-compression methods), TGA and more.  Images are processed in grayscale and can
-be saved as: BMP 8-bit; PNG 8-bit; TIFF 8-bit, 16-bit, 32-bit
-floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
-32-bit floating-point.")
-    (license license:gpl3+)))
-
-(define-public indi-2.0
-  (package
-    (name "indi")
-    (version "2.0.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/indilib/indi")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "08wmw7mrxx1zc89yka3c52djmpvlb8zimq8yzs95gh3p7r5jfpq9"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:parallel-tests? #f  ; Socket address collisions between tests
-      #:configure-flags
-      #~(list "-DINDI_BUILD_UNITTESTS=ON"
-              "-DINDI_BUILD_INTEGTESTS=ON"
-              "-DCMAKE_INSTALL_LIBDIR=lib"
-              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
-              (string-append "-DUDEVRULES_INSTALL_DIR=" #$output "/lib/udev/rules.d"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-udev-rules
-            (lambda _
-              (substitute* (list "drivers/auxiliary/99-indi_auxiliary.rules"
-                                 "drivers/video/80-dbk21-camera.rules")
-                (("/bin/sh") (which "sh"))
-                (("/sbin/modprobe")
-                 (string-append #$(this-package-input "kmod") "/bin/modprobe")))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion "integs"
-                  (invoke "ctest" "-V" "--output-on-failure"))
-                (with-directory-excursion "test"
-                  (invoke "ctest" "-V"))))))))
-    (native-inputs
-     (list googletest))
-    (inputs
-     (list cfitsio
-           curl
-           fftw
-           gsl
-           kmod
-           libev
-           libjpeg-turbo
-           libnova
-           libtiff
-           libusb
-           zlib))
-    (home-page "https://www.indilib.org")
-    (synopsis "Library for astronimical intrumentation control")
-    (description
-     "INDI (Instrument-Neutral Device Interface) is a distributed XML-based
-control protocol designed to operate astronomical instrumentation.  INDI is
-small, flexible, easy to parse, scalable, and stateless.  It supports common
-DCS functions such as remote control, data acquisition, monitoring, and a lot
-more.")
-    (license (list license:bsd-3
-                   license:gpl2+
-                   license:lgpl2.0+
-                   license:lgpl2.1+))))
-
-(define-public indi-1.9
-  (package
-    (inherit indi-2.0)
-    (version "1.9.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/indilib/indi")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "indi" version))
-       (sha256
-        (base32 "1vfcas59nlw8v7n6qhxhcm4isf5wk0crip5rmsallq3bsv3zznfr"))))))
-
-(define-public indi
-  ;; Default version of INDI..
-  indi-1.9)
 
 (define-public python-jplephem
   (package
@@ -6558,6 +6497,67 @@ any arbitrary astrometric projection defined in the WCS standard.")
 an API for performing input and output operations on different kinds of
 n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
       (license license:cecill))))
+
+(define-public wcslib
+  (package
+    (name "wcslib")
+    (version "8.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
+                           "wcslib-" version ".tar.bz2"))
+       (sha256
+        (base32 "0cvqppjf7gk0f3rs9cc46h5fffv2l8ylrb234r9fbx0px0525632"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "C/flexed")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-cfitsiolib="
+                             #$(this-package-input "cfitsio") "/lib")
+              (string-append "--with-cfitsioinc="
+                             #$(this-package-input "cfitsio") "/include"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'install-license-files) ; installed by ‘make install’
+          (add-before 'configure 'patch-/bin/sh
+            (lambda _
+              (substitute* "makedefs.in"
+                (("/bin/sh") "sh")))))))
+    ;; TODO: Fix build with gfortran and pack missing optional pgplot.
+    ;; (inputs (list gfortran pgplot))
+    (inputs
+     (list cfitsio))
+    (native-inputs
+     (list flex))
+    (home-page "https://www.atnf.csiro.au/people/mcalabre/WCS")
+    (synopsis "Library which implements the FITS WCS standard")
+    (description "The FITS \"World Coordinate System\" (@dfn{WCS}) standard
+defines keywords and usage that provide for the description of astronomical
+coordinate systems in a @dfn{FITS} (Flexible Image Transport System) image
+header.")
+    (license license:lgpl3+)))
+
+;;; The version is required for julia-wcs-jll and julia-wcs.  They do not
+;;; support version higher than 7.x.
+(define-public wcslib-7.12
+  (package
+    (inherit wcslib)
+    (version "7.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
+                           "wcslib-" version ".tar.bz2"))
+       (sha256
+        (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "C/flexed")))))
+    (properties '((hidden? . #t)))))
 
 (define-public wcstools
   (package
