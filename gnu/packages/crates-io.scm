@@ -36668,6 +36668,24 @@ strings and byte slices for sets of ASCII characters or bytes.")
         (base32 "1sq6d6c9vi44gkr566w2f1d4n6mmrjx8gjdwgnhkgcsg051j391j"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-jiff-tzdb-0.1
+  (package
+    (name "rust-jiff-tzdb")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jiff-tzdb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ls6mpzy0bhckpv681cxlm61cpq21rxldgdrfg3c9iahb1bmwcwi"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/BurntSushi/jiff/tree/master/jiff-tzdb")
+    (synopsis "The entire Time Zone Database embedded into your binary")
+    (description
+     "This package provides The entire Time Zone Database embedded into your binary.")
+    (license (list license:unlicense license:expat))))
+
 (define-public rust-jiter-0.0.6
   (package
     (name "rust-jiter")
