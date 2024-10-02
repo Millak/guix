@@ -2386,6 +2386,7 @@ Unidata's NetCDF, files in classic formats, specifically the formats of CDF-1, 2
     (name "netcdf-parallel-openmpi")
     (inputs
      `(("mpi" ,openmpi)
+       ("pnetcdf" ,pnetcdf)
        ,@(alist-replace "hdf5" (list hdf5-parallel-openmpi)
                         (package-inputs netcdf))))
     ;; TODO: Replace pkg-config references in nc-config with absolute references
@@ -2394,6 +2395,8 @@ Unidata's NetCDF, files in classic formats, specifically the formats of CDF-1, 2
        ((#:configure-flags flags)
         `(cons* "CC=mpicc" "CXX=mpicxx"
                 "--enable-parallel-tests"
+                ;; Enable support of CDF-1, 2 and 5 formats.
+                "--enable-pnetcdf"
                 ;; NetCDF supports both parallel and shared library building
                 ;; See https://docs.unidata.ucar.edu/nug/current/getting_and_building_netcdf.html#build_parallel
                 "--enable-shared" "--with-pic"
