@@ -79607,7 +79607,7 @@ Rust @code{struct}s and @code{enum}s.")
 (define-public rust-tabwriter-1
   (package
     (name "rust-tabwriter")
-    (version "1.2.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
@@ -79616,7 +79616,7 @@ Rust @code{struct}s and @code{enum}s.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "048i0mj3b07zlry9m5fl706y5bzdzgrswymqn32drakzk7y5q81n"))))
+          "1xp5j7v8jsk92zcmiyh4ya9akhrchjvc595vwcvxrxk49wn2h9x3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
