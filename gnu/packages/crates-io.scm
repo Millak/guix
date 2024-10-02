@@ -87491,6 +87491,33 @@ localtime, gmtime and mktime.")
      "This package provides static, #![no_std] time zone information for tz-rs.")
     (license license:expat-0)))
 
+(define-public rust-tzfile-0.1
+  (package
+    (name "rust-tzfile")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tzfile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bjrlhi0wy5560vwjszksyzbxidvfdr01911mp3y8dr55b22577m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; 31 online tests fail
+       #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-chrono" ,rust-chrono-0.4))
+       #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4)
+                                   ("rust-chrono-tz" ,rust-chrono-tz-0.5)
+                                   ("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page "https://github.com/kennytm/tzfile")
+    (synopsis "chrono::TimeZone implementation using system time-zone database")
+    (description
+     "This package provides a chrono::@code{TimeZone} implementation using
+system tz database.")
+    (license license:expat)))
+
 (define-public rust-ubyte-0.10
   (package
     (name "rust-ubyte")
