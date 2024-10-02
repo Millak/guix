@@ -2481,8 +2481,33 @@ Git filters in Rust.")
                        ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))))
 
+(define-public rust-gix-fs-0.11
+  (package
+    (name "rust-gix-fs")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-fs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xc5z6w5s9rr0rgf7aab8hqg0dnblhk543crw30d19pykhjfdgzj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-2)
+                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "File system specific utilities to Gitoxide`")
+    (description
+     "Gitoxide is a pure Rust implementation of Git.  This package provides
+file system utilities for Gitoxide.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-fs-0.9
   (package
+    (inherit rust-gix-fs-0.11)
     (name "rust-gix-fs")
     (version "0.9.1")
     (source
@@ -2492,16 +2517,10 @@ Git filters in Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1pgcmp17qizq2zk0s7cn08kd9jhq9rlkk2fbpx5l6dsm00xc4mbm"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-features" ,rust-gix-features-0.37)
                        ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "File system utilities for Gitoxide")
-    (description
-     "Gitoxide is a pure Rust implementation of Git.  This package provides
-file system utilities for Gitoxide.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-gix-fs-0.8
