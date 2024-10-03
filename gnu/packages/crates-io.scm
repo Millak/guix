@@ -25713,6 +25713,31 @@ testing.")
 like Don libes expect.")
     (license license:expat)))
 
+(define-public rust-extract-map-0.1
+  (package
+    (name "rust-extract-map")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "extract_map" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s695n5yzs7wwyvaphkkscr8lfv7h94xsczg49a9qa37nnd51xxb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-gat-lending-iterator" ,rust-gat-lending-iterator-0.1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/GnomedDev/extract_map")
+    (synopsis "HashMap for memory efficent storage of value types")
+    (description
+     "This package provides a @code{HashMap} for memory efficent storage of value
+types which contain their own keys.")
+    (license license:expat)))
+
 (define-public rust-eyeball-0.8
   (package
     (name "rust-eyeball")
