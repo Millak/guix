@@ -1683,14 +1683,14 @@ Gitoxide project.  Gitoxide is a pure Rust implementation of Git.")
 (define-public rust-gix-config-value-0.14
   (package
     (name "rust-gix-config-value")
-    (version "0.14.6")
+    (version "0.14.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-config-value" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0158q089kc151h3n0wk43fg4s28v0cjscll2r1w3mcx9n41n5l7v"))))
+        (base32 "133gpqyrg22c2kxsiv4ncp0rwwyxzkbq63y6xaccbpm0z9ln3xq3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
