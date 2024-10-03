@@ -4013,14 +4013,14 @@ pkt-line serialization format.")
 (define-public rust-gix-packetline-blocking-0.17
   (package
     (name "rust-gix-packetline-blocking")
-    (version "0.17.3")
+    (version "0.17.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-packetline-blocking" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xx2kd51hbrrhsrixka0sc2chcyh6k090bjppzrjc3m57vfzd3na"))))
+        (base32 "0h3bansw7mp2p6id78lwlrs4pm8nclmql07qbxpxv657p822705r"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
