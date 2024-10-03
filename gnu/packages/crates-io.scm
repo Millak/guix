@@ -79717,6 +79717,24 @@ provides both a library for wrapping Rust @code{Writer}s and a small program
 that exposes the same functionality at the command line.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-tagptr-0.2
+  (package
+    (name "rust-tagptr")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tagptr" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05r4mwvlsclx1ayj65hpzjv3dn4wpi8j4xm695vydccf9k7r683v"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/oliver-giersch/tagptr")
+    (synopsis "Strongly typed atomic and non-atomic tagged pointers")
+    (description
+     "This package provides strongly typed atomic and non-atomic tagged pointers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-take-mut-0.2
   (package
     (name "rust-take-mut")
