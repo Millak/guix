@@ -47954,6 +47954,27 @@ tokens.")
     (description "Correct by construction non-empty vector.")
     (license license:expat)))
 
+(define-public rust-nonmax-0.5
+  (package
+    (name "rust-nonmax")
+    (version "0.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nonmax" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lfvyfz4falgmc9g1cbfi2wkys9wka2nfmdyga87zikf636ml2k1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bindcode" ,rust-bincode-1))))
+    (home-page "https://github.com/LPGhatguy/nonmax")
+    (synopsis "Numeric types that cannot hold maximum values")
+    (description
+     "This package provides numeric types that cannot hold maximum values.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-noop-proc-macro-0.3
   (package
     (name "rust-noop-proc-macro")
