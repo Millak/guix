@@ -1579,167 +1579,169 @@ physical device and the RetroPad virtual controller.")
     (license license:expat)))
 
 (define-public retroarch-minimal
-  (package
-    (name "retroarch-minimal")
-    (version "1.19.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/libretro/RetroArch")
-             (commit (string-append "v" version))))
-       (snippet
-        #~(begin
-            (use-modules (guix build utils)
-                         (ice-9 ftw)
-                         (srfi srfi-26))
-            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            (define (delete-all-but directory . preserve)
-              (define (directory? x)
-                (and=> (stat x #f)
-                       (compose (cut eq? 'directory <>) stat:type)))
-              (with-directory-excursion directory
-                (let* ((pred
-                        (negate (cut member <> (append '("." "..") preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (lambda (item)
-                              (if (directory? item)
-                                  (delete-file-recursively item)
-                                  (delete-file item)))
-                            items))))
-            ;; Remove as much bundled sources as possible, shaving off about
-            ;; 65 MiB.
-            (delete-all-but "deps"
-                            "feralgamemode" ;used in platform_unix.c
-                            "mbedtls"       ;further refined below
-                            "yxml")         ;used in rxml.c
-            ;; This is an old root certificate used in net_socket_ssl_mbed.c,
-            ;; not actually from mbedtls.
-            (delete-all-but "deps/mbedtls" "cacert.h")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "15nh4y4vpf4n1ryhiy4fwvzn5xz5idzfzn9fsi5v9hzp25vbjmrm"))
-       (patches (search-patches "retroarch-improved-search-paths.patch"
-                                "retroarch-unbundle-spirv-cross.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ; no tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'configure
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Hard-code some store file names.
-              (substitute* "gfx/common/vulkan_common.c"
-                (("libvulkan.so")
-                 (search-input-file inputs "lib/libvulkan.so")))
-              (substitute* "gfx/common/wayland/generate_wayland_protos.sh"
-                (("/usr/local/share/wayland-protocols")
-                 (search-input-directory inputs "share/wayland-protocols")))
+  (let ((commit "48b71d5cf8a070e785e2302d8fe241a7c2180fdd")
+        (revision "1"))
+    (package
+      (name "retroarch-minimal")
+      (version "1.19.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/libretro/RetroArch")
+               (commit commit)))
+         (snippet
+          #~(begin
+              (use-modules (guix build utils)
+                           (ice-9 ftw)
+                           (srfi srfi-26))
+              ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+              (define (delete-all-but directory . preserve)
+                (define (directory? x)
+                  (and=> (stat x #f)
+                         (compose (cut eq? 'directory <>) stat:type)))
+                (with-directory-excursion directory
+                  (let* ((pred
+                          (negate (cut member <> (append '("." "..") preserve))))
+                         (items (scandir "." pred)))
+                    (for-each (lambda (item)
+                                (if (directory? item)
+                                    (delete-file-recursively item)
+                                    (delete-file item)))
+                              items))))
+              ;; Remove as much bundled sources as possible, shaving off about
+              ;; 65 MiB.
+              (delete-all-but "deps"
+                              "feralgamemode" ;used in platform_unix.c
+                              "mbedtls"       ;further refined below
+                              "yxml")         ;used in rxml.c
+              ;; This is an old root certificate used in net_socket_ssl_mbed.c,
+              ;; not actually from mbedtls.
+              (delete-all-but "deps/mbedtls" "cacert.h")))
+         (patches (search-patches "retroarch-improved-search-paths.patch"
+                                  "retroarch-unbundle-spirv-cross.patch"))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "13hgg4pxkpwlcmmyp9npr9k9cb94waqiyjpy2jzs8m9rc7xl2ap9"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Hard-code some store file names.
+                (substitute* "gfx/common/vulkan_common.c"
+                  (("libvulkan.so")
+                   (search-input-file inputs "lib/libvulkan.so")))
+                (substitute* "gfx/common/wayland/generate_wayland_protos.sh"
+                  (("/usr/local/share/wayland-protocols")
+                   (search-input-directory inputs "share/wayland-protocols")))
 
-              ;; Without HLSL, we can still enable GLSLANG and Vulkan support.
-              (substitute* "qb/config.libs.sh"
-                (("[$]HAVE_GLSLANG_HLSL") "notcare"))
+                ;; Without HLSL, we can still enable GLSLANG and Vulkan support.
+                (substitute* "qb/config.libs.sh"
+                  (("[$]HAVE_GLSLANG_HLSL") "notcare"))
 
-              ;; The configure script does not yet accept the extra arguments
-              ;; (like ‘CONFIG_SHELL=’) passed by the default configure phase.
-              (invoke
-               "./configure"
-               #$@(if (string-prefix? "armhf" (or (%current-target-system)
-                                                  (%current-system)))
-                      '("--enable-neon" "--enable-floathard")
-                      '())
-               (string-append "--prefix=" #$output)
-               ;; Non-free software are available through the core updater,
-               ;; disable it.  See <https://issues.guix.gnu.org/38360>.
-               "--disable-update_cores"
-               "--disable-update_core_info"
-               "--disable-online_updater"
-               ;; The assets are provided via the `retroarch-assets' package.
-               "--disable-update_assets"
-               "--disable-builtinmbedtls"
-               "--disable-builtinbearssl"
-               "--disable-builtinzlib"
-               "--disable-builtinflac"
-               "--disable-builtinglslang"
-               "--disable-builtinspirv_cross"
-               ;; These are disabled to avoid requiring the bundled
-               ;; dependencies.
-               "--disable-7zip"
-               "--disable-cheevos"
-               "--disable-crtswitchres"
-               "--disable-discord"
-               "--disable-dr_mp3"
-               "--disable-ibxm"
-               "--disable-stb_font"
-               "--disable-stb_image"
-               "--disable-stb_vorbis"
-               "--disable-xdelta"))))))
-    (native-inputs
-     (list pkg-config
-           wayland-protocols
-           which))
-    (inputs
-     (list alsa-lib
-           eudev
-           ffmpeg
-           flac
-           fontconfig
-           freetype
-           glslang
-           libxinerama
-           libxkbcommon
-           libxml2
-           libxrandr
-           libxv
-           mbedtls-lts
-           mesa
-           openal
-           openssl
-           pulseaudio
-           python
-           qtbase-5
-           sdl2
-           spirv-cross
-           spirv-headers
-           spirv-tools
-           v4l-utils
-           vulkan-loader
-           wayland
-           zlib))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "LIBRETRO_DIRECTORY")
-            (separator #f)              ;single entry
-            (files '("lib/libretro")))
-           (search-path-specification
-            (variable "LIBRETRO_ASSETS_DIRECTORY")
-            (separator #f)              ;single entry
-            (files '("share/libretro/assets")))
-           (search-path-specification
-            (variable "LIBRETRO_AUTOCONFIG_DIRECTORY")
-            (separator #f)              ;single entry
-            (files '("share/libretro/autoconfig")))
-           (search-path-specification
-            (variable "LIBRETRO_VIDEO_FILTER_DIRECTORY")
-            (separator #f)              ;single entry
-            (files '("share/libretro/filters/video")))
-           (search-path-specification
-            (variable "LIBRETRO_VIDEO_SHADER_DIRECTORY")
-            (separator #f)              ;single entry
-            (files '("share/libretro/shaders")))))
-    (home-page "https://www.libretro.com/")
-    (synopsis "Reference frontend for the libretro API")
-    (description
-     "Libretro is a simple but powerful development interface that allows for
+                ;; The configure script does not yet accept the extra arguments
+                ;; (like ‘CONFIG_SHELL=’) passed by the default configure phase.
+                (invoke
+                 "./configure"
+                 #$@(if (string-prefix? "armhf" (or (%current-target-system)
+                                                    (%current-system)))
+                        '("--enable-neon" "--enable-floathard")
+                        '())
+                 (string-append "--prefix=" #$output)
+                 ;; Non-free software are available through the core updater,
+                 ;; disable it.  See <https://issues.guix.gnu.org/38360>.
+                 "--disable-update_cores"
+                 "--disable-update_core_info"
+                 "--disable-online_updater"
+                 ;; The assets are provided via the `retroarch-assets' package.
+                 "--disable-update_assets"
+                 "--disable-builtinmbedtls"
+                 "--disable-builtinbearssl"
+                 "--disable-builtinzlib"
+                 "--disable-builtinflac"
+                 "--disable-builtinglslang"
+                 "--disable-builtinspirv_cross"
+                 ;; These are disabled to avoid requiring the bundled
+                 ;; dependencies.
+                 "--disable-7zip"
+                 "--disable-cheevos"
+                 "--disable-crtswitchres"
+                 "--disable-discord"
+                 "--disable-dr_mp3"
+                 "--disable-ibxm"
+                 "--disable-stb_font"
+                 "--disable-stb_image"
+                 "--disable-stb_vorbis"
+                 "--disable-xdelta"))))))
+      (native-inputs
+       (list pkg-config
+             wayland-protocols
+             which))
+      (inputs
+       (list alsa-lib
+             eudev
+             ffmpeg
+             flac
+             fontconfig
+             freetype
+             glslang
+             libxinerama
+             libxkbcommon
+             libxml2
+             libxrandr
+             libxv
+             mbedtls-lts
+             mesa
+             openal
+             openssl
+             pulseaudio
+             python
+             qtbase-5
+             sdl2
+             spirv-cross
+             spirv-headers
+             spirv-tools
+             v4l-utils
+             vulkan-loader
+             wayland
+             zlib))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "LIBRETRO_DIRECTORY")
+              (separator #f)            ;single entry
+              (files '("lib/libretro")))
+             (search-path-specification
+              (variable "LIBRETRO_ASSETS_DIRECTORY")
+              (separator #f)            ;single entry
+              (files '("share/libretro/assets")))
+             (search-path-specification
+              (variable "LIBRETRO_AUTOCONFIG_DIRECTORY")
+              (separator #f)            ;single entry
+              (files '("share/libretro/autoconfig")))
+             (search-path-specification
+              (variable "LIBRETRO_VIDEO_FILTER_DIRECTORY")
+              (separator #f)            ;single entry
+              (files '("share/libretro/filters/video")))
+             (search-path-specification
+              (variable "LIBRETRO_VIDEO_SHADER_DIRECTORY")
+              (separator #f)            ;single entry
+              (files '("share/libretro/shaders")))))
+      (home-page "https://www.libretro.com/")
+      (synopsis "Reference frontend for the libretro API")
+      (description
+       "Libretro is a simple but powerful development interface that allows for
 the easy creation of emulators, games and multimedia applications that can plug
 straight into any libretro-compatible frontend.  RetroArch is the official
 reference frontend for the libretro API, currently used by most as a modular
 multi-system game/emulator system.")
-    (license (list license:gpl3+         ;for RetroArch itself
-                   license:asl2.0        ;SPIRV-Cross
-                   license:expat         ;yxml
-                   license:bsd-3))))     ;feragamemode
+      (license (list license:gpl3+      ;for RetroArch itself
+                     license:asl2.0     ;SPIRV-Cross
+                     license:expat      ;yxml
+                     license:bsd-3))))) ;feragamemode
 
 (define-public retroarch
   (package
