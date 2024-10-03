@@ -275,6 +275,47 @@ over difference logic.")
 and goals over linear (in)equations.")
     (license license:expat)))
 
+(define-public clingcon
+  (package
+    (name "clingcon")
+    (version "5.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/clingcon")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "third_party")))
+              (sha256
+               (base32
+                "0050qp5gpznigpm743br8yhjg62gl739xmzkfr70hlqm1xrj0sa7"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-cmake
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("add_subdirectory\\(third_party\\)")
+                      "find_package(Catch2 3 REQUIRED)"))
+                   ;; We use libwide-integer as a header-only library, so there
+                   ;; is no library to link
+                   (substitute* "libclingcon/CMakeLists.txt"
+                     (("target_link_libraries\\(.* libwide-integer\\)" all)
+                      (string-append "#" all))))))))
+    (home-page "https://potassco.org/clingcon")
+    (inputs (list clingo wide-integer))
+    (native-inputs (list catch2-3))
+    (synopsis "Constraint answer set solver")
+    (description "Clingcon is an answer set solver for constraint logic
+It extends Clingo with constraint solving capacities for constraints over
+finite domain integer variables, using techniques from the area of SMT,
+like conflict-driven learning and theory propagation.")
+    (license license:expat)))
+
 (define-public plasp
   (package
     (name "plasp")
