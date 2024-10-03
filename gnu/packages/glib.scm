@@ -612,14 +612,14 @@ be used when cross-compiling."
 (define gobject-introspection
   (package
     (name "gobject-introspection")
-    (version "1.78.1")
+    (version "1.82.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnome/sources/"
                    "gobject-introspection/" (version-major+minor version)
                    "/gobject-introspection-" version ".tar.xz"))
              (sha256
-              (base32 "1d0vhi83q0xc7kg3zn32wy7n16f3dd5blicyh5v8w9gpkbcsnyxx"))
+              (base32 "029gr80q8749dhcpmf5x1w48adinihb634qyqimz4js210clqnhg"))
              (patches (search-patches
                        "gobject-introspection-cc.patch"
                        "gobject-introspection-girepository.patch"
