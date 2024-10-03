@@ -43690,6 +43690,40 @@ file's MIME type by its extension.")
         ("rust-phf-codegen" ,rust-phf-codegen-0.7)
         ("rust-unicase" ,rust-unicase-1))))))
 
+(define-public rust-mini-moka-0.10
+  (package
+    (name "rust-mini-moka")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mini-moka" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00yqhslppnrl2a54rrrp03xb65d2knbb1s5yvs3g6qgjcnmxy9f3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-dashmap" ,rust-dashmap-5)
+        ("rust-skeptic" ,rust-skeptic-0.13)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-tagptr" ,rust-tagptr-0.2)
+        ("rust-triomphe" ,rust-triomphe-0.1))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-skeptic" ,rust-skeptic-0.13)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/moka-rs/mini-moka")
+    (synopsis "Lighter edition of Moka, a fast and concurrent cache library")
+    (description
+     "This package provides a lighter edition of Moka, a fast and concurrent cache
+library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-miniflux-api-0.3
   (package
     (name "rust-miniflux-api")
