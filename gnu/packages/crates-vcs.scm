@@ -4189,14 +4189,14 @@ part of Gitoxide, a Rust implementation of Git.")
 (define-public rust-gix-prompt-0.8
   (package
     (name "rust-gix-prompt")
-    (version "0.8.4")
+    (version "0.8.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-prompt" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1n2m39if2wkxdgs3p2w8p5arv822sqaj6p7cbp9fbdg7gjqmwcpm"))))
+        (base32 "1cg6dw1an3bxwsz43gwwlg9riydwv62k6afivbc30sxlrmjyizbl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-command" ,rust-gix-command-0.3)
@@ -4205,7 +4205,7 @@ part of Gitoxide, a Rust implementation of Git.")
                        ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-expectrl" ,rust-expectrl-0.7)
-                                   ("rust-serial-test" ,rust-serial-test-2))))
+                                   ("rust-serial-test" ,rust-serial-test-3))))
     (home-page "https://github.com/Byron/gitoxide")
     (synopsis "Handles prompts in the terminal as part of Gitoxide")
     (description
