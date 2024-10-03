@@ -465,7 +465,8 @@ asdf-build-system."
   (team 'games
         #:name "Games and Toys"
         #:description "Packaging programs for amusement."
-        #:scope (list "gnu/packages/games.scm"
+        #:scope (list "gnu/packages/emulators.scm"
+                      "gnu/packages/games.scm"
                       "gnu/packages/game-development.scm"
                       "gnu/packages/minetest.scm"
                       "gnu/packages/esolangs.scm" ; granted, rather niche
