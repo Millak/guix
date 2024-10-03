@@ -402,7 +402,8 @@ used in the image."
             (file-system (partition-file-system partition)))
         (cond
          ((member 'esp flags) "0xEF")
-         ((string-prefix? "ext" file-system) "0x83")
+         ((or (string=? file-system "btrfs")
+              (string-prefix? "ext" file-system)) "0x83")
          ((or (string=? file-system "vfat")
               (string=? file-system "fat16")) "0x0E")
          ((string=? file-system "fat32") "0x0C")
@@ -421,7 +422,8 @@ used in the image."
             (file-system (partition-file-system partition)))
         (cond
          ((member 'esp flags) "U")
-         ((string-prefix? "ext" file-system) "L")
+         ((or (string=? file-system "btrfs")
+              (string-prefix? "ext" file-system)) "L")
          ((or (string=? file-system "vfat")
               (string=? file-system "fat16")
               (string=? file-system "fat32")) "F")
@@ -453,6 +455,8 @@ used in the image."
                (let ((initializer (or #$(partition-initializer partition)
                                       initialize-root-partition))
                      (inputs '#+(cond
+                                  ((string=? type "btrfs")
+                                   (list btrfs-progs fakeroot))
                                   ((string-prefix? "ext" type)
                                    (list e2fsprogs fakeroot))
                                   ((or (string=? type "vfat")
