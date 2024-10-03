@@ -87493,6 +87493,29 @@ implementation is incomplete.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-typesize-derive-0.1
+  (package
+    (name "rust-typesize-derive")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typesize-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a0ypva9lwmyfgvng2iq87j2gw2ishhm2jbysmmnh9yclk18hplh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/GnomedDev/typesize")
+    (synopsis "Internal proc-macro crate for typesize")
+    (description
+     "This package provides internal proc-macro Crate for the Typesize crate.")
+    (license license:expat)))
+
 (define-public rust-typetag-0.2
   (package
     (name "rust-typetag")
