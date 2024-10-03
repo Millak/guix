@@ -5652,8 +5652,41 @@ package is used to traverse Git commit graphs and trees.")
         ("rust-gix-object" ,rust-gix-object-0.30)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-url-0.27
+  (package
+    (name "rust-gix-url")
+    (version "0.27.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-url" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "128c2rp6780qspiqasmyd6a3gdmcmq6kl19axllf28pvhig0qa7x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+         ("rust-document-features" ,rust-document-features-0.2)
+         ("rust-gix-features" ,rust-gix-features-0.38)
+         ("rust-gix-path" ,rust-gix-path-0.10)
+         ("rust-home" ,rust-home-0.5)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-thiserror" ,rust-thiserror-1)
+         ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "This crate implements parsing and serialization of gix-url for Gitoxide")
+    (description
+     "This package is part of Gitoxide a Rust implementation of Git.  It
+provides a crate for parsing and serialization of gix-url's.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-url-0.26
   (package
+    (inherit rust-gix-url-0.27)
     (name "rust-gix-url")
     (version "0.26.1")
     (source
@@ -5663,7 +5696,6 @@ package is used to traverse Git commit graphs and trees.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0i6wjjaq1yhxqk9gbriv9raldhs04yy91ipys4qs4lkmxg61f3wg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
@@ -5674,14 +5706,7 @@ package is used to traverse Git commit graphs and trees.")
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
-       (("rust-assert-matches" ,rust-assert-matches-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "This crate implements parsing and serialization of gix-url for Gitoxide")
-    (description
-     "This package is part of Gitoxide a Rust implementation of Git.  It
-provides a crate for parsing and serialization of gix-url's.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-assert-matches" ,rust-assert-matches-1))))))
 
 (define-public rust-gix-url-0.25
   (package
