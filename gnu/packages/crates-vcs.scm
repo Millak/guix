@@ -2947,8 +2947,35 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
                        ("rust-hashbrown" ,rust-hashbrown-0.14)
                        ("rust-parking-lot" ,rust-parking-lot-0.12))))))
 
+(define-public rust-gix-ignore-0.11
+  (package
+    (name "rust-gix-ignore")
+    (version "0.11.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-ignore" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dzs6zlwj8105ynmbiszf319i7x3a3lpav0gda8gaq44b6bcsiz4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-glob" ,rust-gix-glob-0.16)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "This Gitoxide crate handles .gitignore files")
+    (description
+     "This crate is part of Gitoxide, it handles @code{.gitignore} files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-ignore-0.10
   (package
+    (inherit rust-gix-ignore-0.11)
     (name "rust-gix-ignore")
     (version "0.10.1")
     (source
@@ -2958,19 +2985,13 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hr6zmh9gx1qx0rwzj1m44sn8plw5wspyi7kf9zdpbk01i2cwmpk"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
                        ("rust-gix-glob" ,rust-gix-glob-0.15)
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-unicode-bom" ,rust-unicode-bom-2))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "This Gitoxide crate handles .gitignore files")
-    (description
-     "This crate is part of Gitoxide, it handles @code{.gitignore} files.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-unicode-bom" ,rust-unicode-bom-2))))))
 
 (define-public rust-gix-ignore-0.9
   (package
