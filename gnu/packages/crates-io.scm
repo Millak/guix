@@ -20481,8 +20481,28 @@ verifying the contents.")
      "Decimal floating point arithmetic for Rust.")
     (license license:asl2.0)))
 
+(define-public rust-defer-0.2
+  (package
+    (name "rust-defer")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "defer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1s7qig25n27rajvsn013sb8k6bgdv67936yz5dwb37yzr1qp234k"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/andrewhickman/defer/")
+    (synopsis
+     "Utility to defer excecution of code")
+    (description
+     "Utility to defer excecution of code, inspired by Go's defer statement.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-defer-0.1
   (package
+    (inherit rust-defer-0.2)
     (name "rust-defer")
     (version "0.1.0")
     (source
@@ -20492,11 +20512,6 @@ verifying the contents.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1pmcz4av2wvw8zrccmac86dsyy34qlwacdhajp1qjpjx6jk0axk4"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/andrewhickman/defer/")
-    (synopsis "Utility to defer excecution of code")
-    (description
-     "Utility to defer excecution of code, inspired by go's defer statement.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-defer-drop-1
