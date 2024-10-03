@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Ethan R. Jones <doubleplusgood23@gmail.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
-;;; Copyright © 2018, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020, 2022 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
@@ -1367,6 +1367,11 @@ hierarchies and multiple types of execution resources.")
 
     ;; Code exhibits integer size mismatches when compiled on 32-bit systems.
     (supported-systems %64bit-supported-systems)
+
+    ;; This code can benefit from SIMD optimizations; tuning gives an effect
+    ;; equivalent to setting the 'KOKKOS_ARCH_NATIVE' CMake flag, except for
+    ;; the configuration metadata recorded in 'Kokkos_Core.cpp'.
+    (properties '((tunable? . #t)))
 
     (license license:asl2.0))) ; With LLVM exception
 
