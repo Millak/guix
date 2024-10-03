@@ -1988,8 +1988,45 @@ to interact with Git credentials helpers.")
        #:cargo-development-inputs
        (("rust-once-cell" ,rust-once-cell-1))))))
 
+(define-public rust-gix-diff-0.46
+  (package
+    (name "rust-gix-diff")
+    (version "0.46.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-diff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0v1k7ld1b4xinq3dhvia4g9dck7b5x22h68wifrzh07z1zcazjcj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-gix-command" ,rust-gix-command-0.3)
+        ("rust-gix-filter" ,rust-gix-filter-0.13)
+        ("rust-gix-fs" ,rust-gix-fs-0.11)
+        ("rust-gix-hash" ,rust-gix-hash-0.14)
+        ("rust-gix-object" ,rust-gix-object-0.44)
+        ("rust-gix-path" ,rust-gix-path-0.10)
+        ("rust-gix-tempfile" ,rust-gix-tempfile-14)
+        ("rust-gix-trace" ,rust-gix-trace-0.1)
+        ("rust-gix-worktree" ,rust-gix-worktree-0.36)
+        ("rust-imara-diff" ,rust-imara-diff-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Calculate differences between various Git objects")
+    (description
+      "Calculate differences between various Git objects.  This
+package is a part of Gitoxide, a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-diff-0.39
   (package
+    (inherit rust-gix-diff-0.46)
     (name "rust-gix-diff")
     (version "0.39.1")
     (source
@@ -1999,7 +2036,6 @@ to interact with Git credentials helpers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0fmrkrs2d3sfkrr0k0mvglmhhz3igh2q9w772xpnhbf4z1a08spx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
@@ -2015,12 +2051,7 @@ to interact with Git credentials helpers.")
                        ("rust-gix-worktree" ,rust-gix-worktree-0.29)
                        ("rust-imara-diff" ,rust-imara-diff-0.1)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Calculate differences between various Git objects")
-    (description "Calculate differences between various Git objects.  This
-package is a part of Gitoxide, a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-diff-0.38
   (package
