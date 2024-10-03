@@ -32,6 +32,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
@@ -236,6 +237,42 @@ satisfiability checking (SAT).")
     (synopsis "Solver for answer set programs modulo difference constraints")
     (description "Clingo-DL is an extension to Clingo that models constraints
 over difference logic.")
+    (license license:expat)))
+
+(define-public clingo-lpx
+  (package
+    (name "clingo-lpx")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/clingo-lpx")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "third_party")))
+              (sha256
+               (base32
+                "1i184gy18k0mpqywbgziwl5wzkwwcdks81axndk4x6hjy878vhww"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DCLINGOLPX_BUILD_TESTS=on"
+                                     "-DPYCLINGOLPX_ENABLE=off")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-cmake
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("add_subdirectory\\(third_party\\)")
+                      "find_package(Catch2 3 REQUIRED)")))))))
+    (home-page "https://github.com/potassco/clingo-lpx")
+    (inputs (list clingo flint))
+    (native-inputs (list catch2-3))
+    (synopsis "Simplex solver")
+    (description "Clingo-LPX is an extension to Clingo that models constraints
+and goals over linear (in)equations.")
     (license license:expat)))
 
 (define-public plasp
