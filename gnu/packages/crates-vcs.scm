@@ -4260,8 +4260,39 @@ Git.  This crate deals with paths and their conversions")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gix-pathspec-0.7
+  (package
+    (name "rust-gix-pathspec")
+    (version "0.7.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-pathspec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ssw9k2kq7hcn5xn9nby4gvq2628clxapf331r6l3d1jjlivy8sx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-bstr" ,rust-bstr-1)
+        ("rust-gix-attributes" ,rust-gix-attributes-0.22)
+        ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+        ("rust-gix-glob" ,rust-gix-glob-0.16)
+        ("rust-gix-path" ,rust-gix-path-0.10)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-serial-test" ,rust-serial-test-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Capabilities to handle Git's pathspecs")
+    (description
+     "This package provides capabilities for handling Git's pathspecs.  It is
+part of Gitoxide, a Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-pathspec-0.5
   (package
+    (inherit rust-gix-pathspec-0.7)
     (name "rust-gix-pathspec")
     (version "0.5.1")
     (source
@@ -4271,7 +4302,6 @@ Git.  This crate deals with paths and their conversions")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0iqj3l4z29sg2z4bb21dn3n58wd1jgl6ydpnradzh13wa7lhxnqc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-bstr" ,rust-bstr-1)
@@ -4281,13 +4311,7 @@ Git.  This crate deals with paths and their conversions")
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1)
-                                   ("rust-serial-test" ,rust-serial-test-2))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Capabilities to handle Git's pathspecs")
-    (description
-     "This package provides capabilities for handling Git's pathspecs.  It is
-part of Gitoxide, a Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-serial-test" ,rust-serial-test-2))))))
 
 (define-public rust-gix-pathspec-0.4
   (package
