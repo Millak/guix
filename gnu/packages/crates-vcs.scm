@@ -3428,8 +3428,36 @@ package provides git style lock files.")
 implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-mailmap-0.24
+  (package
+    (name "rust-gix-mailmap")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-mailmap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xsj6w3azbcd3qx3pln9f4jabndm7kl59jxlnajy2095xk425mfp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-actor" ,rust-gix-actor-0.32)
+        ("rust-gix-date" ,rust-gix-date-0.9)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Functions for parsing mailmap files in Gitoxide")
+    (description
+     "This package contains functions for parsing mailmap files.  It's part of
+Gitoxide, a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-mailmap-0.21
   (package
+    (inherit rust-gix-mailmap-0.24)
     (name "rust-gix-mailmap")
     (version "0.21.1")
     (source
@@ -3439,20 +3467,13 @@ implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "05sscbs0qzn40syp0v7s2xrjx10pdfqqg53axr8xrggcmv1mm1dv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
                        ("rust-gix-actor" ,rust-gix-actor-0.29)
                        ("rust-gix-date" ,rust-gix-date-0.8)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Functions for parsing mailmap files in Gitoxide")
-    (description
-     "This package contains functions for parsing mailmap files.  It's part of
-Gitoxide, a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-mailmap-0.20
   (package
