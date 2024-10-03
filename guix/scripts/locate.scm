@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Antoine R. Dumont <antoine.romain.dumont@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -600,7 +600,7 @@ Locate FILE and return the list of packages that contain it.\n"))
 ;;;
 
 (define-command (guix-locate . args)
-  (category packaging)
+  (category main)
   (synopsis "search for packages providing a given file")
 
   (define age-update-threshold
