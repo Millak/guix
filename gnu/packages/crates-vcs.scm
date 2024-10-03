@@ -5704,8 +5704,38 @@ provides an implementation of the Git transport layer.")
         ("rust-blocking" ,rust-blocking-1)
         ("rust-maybe-async" ,rust-maybe-async-0.2))))))
 
+(define-public rust-gix-traverse-0.41
+  (package
+    (name "rust-gix-traverse")
+    (version "0.41.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-traverse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "105prigk1pq7g3i3hvwh4y9rhc35ycl84cg9f9ag6kafz6da6383"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.24)
+        ("rust-gix-date" ,rust-gix-date-0.9)
+        ("rust-gix-hash" ,rust-gix-hash-0.14)
+        ("rust-gix-hashtable" ,rust-gix-hashtable-0.5)
+        ("rust-gix-object" ,rust-gix-object-0.44)
+        ("rust-gix-revwalk" ,rust-gix-revwalk-0.15)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Ways to traverse Git commit graphs and trees for Gix")
+    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
+package is used to traverse Git commit graphs and trees.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-traverse-0.36
   (package
+    (inherit rust-gix-traverse-0.41)
     (name "rust-gix-traverse")
     (version "0.36.2")
     (source
@@ -5715,7 +5745,6 @@ provides an implementation of the Git transport layer.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0qbiq230wj8ak60zzg613pgflwnvsyj71x9liys0k957bd29w435"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-commitgraph" ,rust-gix-commitgraph-0.23)
                        ("rust-gix-date" ,rust-gix-date-0.8)
@@ -5724,12 +5753,7 @@ provides an implementation of the Git transport layer.")
                        ("rust-gix-object" ,rust-gix-object-0.40)
                        ("rust-gix-revwalk" ,rust-gix-revwalk-0.11)
                        ("rust-smallvec" ,rust-smallvec-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Ways to traverse Git commit graphs and trees for Gix")
-    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
-package is used to traverse Git commit graphs and trees.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-traverse-0.35
   (package
