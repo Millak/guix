@@ -87493,6 +87493,43 @@ implementation is incomplete.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-typesize-0.1
+  (package
+    (name "rust-typesize")
+    (version "0.1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typesize" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nv4p49nyrrxf5zkbyzbzy2442jn3rh8h5slyjgnmbv8cb0fbv2x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-dashmap" ,rust-dashmap-5)
+        ("rust-extract-map" ,rust-extract-map-0.1)
+        ("rust-halfbrown" ,rust-halfbrown-0.2)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
+        ("rust-mini-moka" ,rust-mini-moka-0.10)
+        ("rust-nonmax" ,rust-nonmax-0.5)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-secrecy" ,rust-secrecy-0.8)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-simd-json" ,rust-simd-json-0.13)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-typesize-derive" ,rust-typesize-derive-0.1)
+        ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/GnomedDev/typesize")
+    (synopsis
+     "Library to fetch an accurate estimate of the total memory usage of a value")
+    (description
+     "This package provides a library to fetch an accurate estimate of the total
+memory usage of a value.")
+    (license license:expat)))
+
 (define-public rust-typesize-derive-0.1
   (package
     (name "rust-typesize-derive")
