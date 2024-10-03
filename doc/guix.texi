@@ -48348,7 +48348,8 @@ and @code{"ext4"}.
 @item @code{file-system-options} (default: @code{'()})
 The partition file system creation options that should be passed to the
 partition creation tool, as a list of strings.  This is only supported
-when creating @code{"ext4"} partitions.
+when creating @code{"vfat"}, @code{"fat16"}, @code{"fat32"} or
+@code{"ext4"} partitions.
 
 See the @code{"extended-options"} man page section of the
 @code{"mke2fs"} tool for a more complete reference.

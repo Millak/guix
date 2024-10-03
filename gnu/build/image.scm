@@ -105,17 +105,21 @@ turn doesn't take any constant overhead into account, force a 1-MiB minimum."
   "Handle the creation of VFAT partition images.  See 'make-partition-image'."
   (let ((size (partition-size partition))
         (label (partition-label partition))
-        (flags (partition-flags partition)))
+        (flags (partition-flags partition))
+        (fs-options (partition-file-system-options partition)))
     (apply invoke "fakeroot" "mkdosfs" "-n" label "-C" target
-                          "-F" (number->string fs-bits)
-                          (size-in-kib
-                           (if (eq? size 'guess)
-                               (estimate-partition-size root)
-                               size))
-                    ;; u-boot in particular needs the formatted block
-                    ;; size and the physical block size to be equal.
-                    ;; TODO: What about 4k blocks?
-                    (if (member 'esp flags) (list "-S" "512") '()))
+           "-F" (number->string fs-bits)
+           (size-in-kib
+            (if (eq? size 'guess)
+                (estimate-partition-size root)
+                size))
+           ;; u-boot in particular needs the formatted block
+           ;; size and the physical block size to be equal.
+           ;; TODO: What about 4k blocks?
+           (if (and (member 'esp flags)
+                    (not (member "-S" fs-options)))
+               (append (list "-S" "512") fs-options)
+               fs-options))
     (for-each (lambda (file)
                 (unless (member file '("." ".."))
                   (invoke "mcopy" "-bsp" "-i" target
