@@ -22,6 +22,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -635,14 +636,14 @@ BIND and djbdns---whilst using relatively little memory.")
 (define-public unbound
   (package
     (name "unbound")
-    (version "1.21.0")
+    (version "1.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.unbound.net/downloads/unbound-"
                            version ".tar.gz"))
        (sha256
-        (base32 "08a5l5z0c99433pqg2i7x5d9m6as7c2z3sv4zakdy6zqn3bagp77"))))
+        (base32 "0ipam47nnh86v1wbjvk337wch6pcplbk353yr39kcav24cyd4dih"))))
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
