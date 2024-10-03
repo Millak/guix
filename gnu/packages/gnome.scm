@@ -702,7 +702,7 @@ focused on simplicity.  It offers few advanced features such as:
            pkg-config
            python-pygobject
            python-wrapper
-           vala-0.52))
+           vala))
     (inputs (list icu4c))
     (propagated-inputs (list glib))
     (synopsis "Model to synchronize multiple instances over DBus")
