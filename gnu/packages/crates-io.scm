@@ -29634,6 +29634,25 @@ derived from an internal hasher used in FireFox and Rustc.")
 time, for nonorderable alphabets.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gat-lending-iterator-0.1
+  (package
+    (name "rust-gat-lending-iterator")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gat-lending-iterator" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1is3jhr615ip1jiiwwh727xswilxssp8b58cgahgq5k20ms13by9"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Crazytieguy/gat-lending-iterator")
+    (synopsis "Library for iterators who's items can reference the iterator")
+    (description
+     "This package provides a library for iterators who's items can mutably
+reference the iterator.")
+    (license license:expat)))
+
 (define-public rust-gat-std-0.1
   (package
     (name "rust-gat-std")
