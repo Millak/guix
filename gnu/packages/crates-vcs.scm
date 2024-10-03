@@ -2145,6 +2145,42 @@ package is a part of Gitoxide, a pure Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-dir-0.8
+  (package
+    (name "rust-gix-dir")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-dir" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "166xgf5i4z5bi1jazh5kp2bdvqpbqgb2mh97b8f9ldb1cq3sklqf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;looking for undeclared gix-testtools
+       #:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-gix-discover" ,rust-gix-discover-0.35)
+        ("rust-gix-fs" ,rust-gix-fs-0.11)
+        ("rust-gix-ignore" ,rust-gix-ignore-0.11)
+        ("rust-gix-index" ,rust-gix-index-0.35)
+        ("rust-gix-object" ,rust-gix-object-0.44)
+        ("rust-gix-path" ,rust-gix-path-0.10)
+        ("rust-gix-pathspec" ,rust-gix-pathspec-0.7)
+        ("rust-gix-trace" ,rust-gix-trace-0.1)
+        ("rust-gix-utils" ,rust-gix-utils-0.1)
+        ("rust-gix-worktree" ,rust-gix-worktree-0.36)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Gitoxide project crate that deals with directory walks")
+    (description
+     "This package is part of the Gitoxide project.  This crate deals with
+directory walking.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-discover-0.35
   (package
     (name "rust-gix-discover")
