@@ -4929,14 +4929,14 @@ Gitoxide, a pure Rust implementation of Git.")
 (define-public rust-gix-sec-0.10
   (package
     (name "rust-gix-sec")
-    (version "0.10.6")
+    (version "0.10.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-sec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18brd8k370ddq19fbq04fkq8ry84b1ar0xz90gfj0fv49ac2gp7x"))))
+        (base32 "0pvs9viknryhjgi67y8dcp16s9wb79fsnvr7wpnbndx760pxbr0g"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
