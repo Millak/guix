@@ -19898,8 +19898,39 @@ custom derives.")
     (description "This package provides a d-ary heap.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-dashmap-6
+  (package
+    (name "rust-dashmap")
+    (version "6.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dashmap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kvnw859xvrqyd1lk89na6797yvl5bri4wi9j0viz2a4j54wqhah"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
+        ("rust-lock-api" ,rust-lock-api-0.4)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-parking-lot-core" ,rust-parking-lot-core-0.9)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-typesize" ,rust-typesize-0.1))))
+    (home-page "https://github.com/xacrimon/dashmap")
+    (synopsis "Blazing fast concurrent HashMap for Rust")
+    (description
+     "This package provides Blazing fast concurrent @code{HashMap} for Rust.")
+    (license license:expat)))
+
 (define-public rust-dashmap-5
   (package
+    (inherit rust-dashmap-6)
     (name "rust-dashmap")
     (version "5.5.3")
     (source
@@ -19909,7 +19940,6 @@ custom derives.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0miqnlxi501vfbv6mw5jbmzgnj0wjrch3p4abvpd59s9v30lg1wp"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
@@ -19919,12 +19949,7 @@ custom derives.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-parking-lot-core" ,rust-parking-lot-core-0.9)
         ("rust-rayon" ,rust-rayon-1)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/xacrimon/dashmap")
-    (synopsis "Blazing fast concurrent HashMap for Rust")
-    (description "This package implements a blazing fast concurrent HashMap
-for Rust.")
-    (license license:expat)))
+        ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-dashmap-4
   (package
