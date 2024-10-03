@@ -3054,8 +3054,56 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-unicode-bom" ,rust-unicode-bom-2))))))
 
+(define-public rust-gix-index-0.35
+  (package
+    (name "rust-gix-index")
+    (version "0.35.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-index" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bfjbrwmg8w9hi5bv47db272ks8b3385zrkn45l1fh248hr21m0c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#: cargo-test-flags
+       (list "--release" "--"
+             "--skip=access::tests::entry_by_path_with_conflicting_file")
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-gix-bitmap" ,rust-gix-bitmap-0.2)
+        ("rust-gix-features" ,rust-gix-features-0.38)
+        ("rust-gix-fs" ,rust-gix-fs-0.11)
+        ("rust-gix-hash" ,rust-gix-hash-0.14)
+        ("rust-gix-lock" ,rust-gix-lock-14)
+        ("rust-gix-object" ,rust-gix-object-0.44)
+        ("rust-gix-traverse" ,rust-gix-traverse-0.41)
+        ("rust-gix-utils" ,rust-gix-utils-0.1)
+        ("rust-gix-validate" ,rust-gix-validate-0.9)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-memmap2" ,rust-memmap2-0.9)
+        ("rust-rustix" ,rust-rustix-0.38)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Part of Gitoxide, this crate implements the Git index file")
+    (description
+     "Part of Gitoxide, a pure Rust implementation of Rust.  This package's
+crate implements the Git index file.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-index-0.28
   (package
+    (inherit rust-gix-index-0.35)
     (name "rust-gix-index")
     (version "0.28.2")
     (source
@@ -3065,7 +3113,6 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0y47r8830i6fw7djq6la8rn7badk8dvg50mqgxzi7m68yqyycl4y"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        (list "--release" "--"
@@ -3088,13 +3135,7 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
                        ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-smallvec" ,rust-smallvec-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Part of Gitoxide, this crate implements the Git index file")
-    (description
-     "Part of Gitoxide, a pure Rust implementation of Rust.  This package's
-crate implements the Git index file.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-index-0.27
   (package
