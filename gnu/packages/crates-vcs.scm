@@ -2145,8 +2145,44 @@ package is a part of Gitoxide, a pure Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-discover-0.35
+  (package
+    (name "rust-gix-discover")
+    (version "0.35.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-discover" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ljnv5c2q1xpwpw45qhli0hydl7ba52dfpw1dv16ndv7jmmkcxq5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-dunce" ,rust-dunce-1)
+        ("rust-gix-fs" ,rust-gix-fs-0.11)
+        ("rust-gix-hash" ,rust-gix-hash-0.14)
+        ("rust-gix-path" ,rust-gix-path-0.10)
+        ("rust-gix-ref" ,rust-gix-ref-0.47)
+        ("rust-gix-sec" ,rust-gix-sec-0.10)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-defer" ,rust-defer-0.2)
+        ("rust-is-ci" ,rust-is-ci-1)
+        ("rust-serial-test" ,rust-serial-test-3)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Discover Git repositories and check if a directory is a Git repository")
+    (description
+     "Discover Git repositories and check if a directory is a repository.
+This package is part of Gitoxide, a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-discover-0.28
   (package
+    (inherit rust-gix-discover-0.35)
     (name "rust-gix-discover")
     (version "0.28.1")
     (source
@@ -2156,7 +2192,6 @@ package is a part of Gitoxide, a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mj29906cd3qn9q6am0fc2k2g63jvz3cqim652fqjgfwds4v5mxq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-dunce" ,rust-dunce-1)
@@ -2168,14 +2203,7 @@ package is a part of Gitoxide, a pure Rust implementation of Git.")
        #:cargo-development-inputs (("rust-defer" ,rust-defer-0.1)
                                    ("rust-is-ci" ,rust-is-ci-1)
                                    ("rust-serial-test" ,rust-serial-test-2)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Discover Git repositories and check if a directory is a Git repository")
-    (description
-     "Discover Git repositories and check if a directory is a repository.
-This package is part of Gitoxide, a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gix-discover-0.27
   (package
