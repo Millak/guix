@@ -19721,6 +19721,40 @@ inspired by Haskell package @code{Data.List}.")
 (define-public ecl-listopia
   (sbcl-package->ecl-package sbcl-listopia))
 
+(define-public sbcl-literate-lisp
+  (let ((commit "76d4d2c16ab08296d58e0ef3c41861b615e697c0")
+        (revision "1"))
+    (package
+      (name "sbcl-literate-lisp")
+      (version (git-version "0.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jingtaozf/literate-lisp")
+               (commit commit)))
+         (file-name (git-file-name "cl-literate-lisp" version))
+         (sha256
+          (base32 "0smxf0a62dnwcfxsbsdkx4n5nqx9dlxdz6c2vfivxpqld6d6ap02"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-fad
+             sbcl-cl-ppcre
+             sbcl-iterate))
+      (native-inputs
+       (list sbcl-fiveam))
+      (home-page "https://github.com/jingtaozf/literate-lisp")
+      (synopsis "Load Common Lisp code blocks from Org-mode files")
+      (description "This package extends the Common Lisp reader
+syntax such that is accepts Org files as Lisp source code files.")
+      (license license:expat))))
+
+(define-public cl-literate-lisp
+  (sbcl-package->cl-source-package sbcl-literate-lisp))
+
+(define-public ecl-literate-lisp
+  (sbcl-package->ecl-package sbcl-literate-lisp))
+
 (define-public sbcl-livesupport
   (let ((commit "71e6e412df9f3759ad8378fabb203913d82e228a")
 	(revision "1"))
