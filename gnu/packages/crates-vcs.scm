@@ -5091,8 +5091,41 @@ a pure Rust implementation of Git.")
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-revision-0.29
+  (package
+    (name "rust-gix-revision")
+    (version "0.29.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revision" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07jyh9vabfbkva99m0mavsk68v3asp1k0c48as9dn35c36r22ims"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-date" ,rust-gix-date-0.9)
+        ("rust-gix-hash" ,rust-gix-hash-0.14)
+        ("rust-gix-hashtable" ,rust-gix-hashtable-0.5)
+        ("rust-gix-object" ,rust-gix-object-0.44)
+        ("rust-gix-revwalk" ,rust-gix-revwalk-0.15)
+        ("rust-gix-trace" ,rust-gix-trace-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "This Gitoxide crate finds names for revisions and parsing specifications")
+    (description
+     "This package is part of Gitoxide, a pure Rust implementation of Git.  It
+handles finding names and parsing specifications.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-revision-0.25
   (package
+    (inherit rust-gix-revision-0.29)
     (name "rust-gix-revision")
     (version "0.25.1")
     (source
@@ -5102,7 +5135,6 @@ a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "17ydyj6f75zsz6ygmh3im4631cdx5b58spxi9myr7g1k6vgy2y5a"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
@@ -5113,14 +5145,7 @@ a pure Rust implementation of Git.")
                        ("rust-gix-revwalk" ,rust-gix-revwalk-0.11)
                        ("rust-gix-trace" ,rust-gix-trace-0.1)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "This Gitoxide crate finds names for revisions and parsing specifications")
-    (description
-     "This package is part of Gitoxide, a pure Rust implementation of Git.  It
-handles finding names and parsing specifications.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-revision-0.24
   (package
