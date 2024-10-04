@@ -193,7 +193,7 @@ when jobs finish.")
 (define-public slurm
   (package
     (name "slurm")
-    (version "23.02.6")
+    (version "23.11.10")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -201,9 +201,7 @@ when jobs finish.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "08rz3r1rlnb3pmfdnbh542gm44ja0fdy8rkj4vm4lclc48cvqp2a"))
-              (patches
-               (search-patches "slurm-23-salloc-fallback-shell.patch"))
+                "0gf7x85bzpkrx87mb16wyiyvkjxqq01sbajsjxwrspyi2v675hgr"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -300,12 +298,28 @@ by managing a queue of pending work.")
 ;; As noted in the link, YY.MM is the release scheme, and the 'maintenance'
 ;; digit does not introduce incompatibilities.
 
+(define-public slurm-23.02
+  (package
+   (inherit slurm)
+   (version "23.02.6")
+    (source (origin
+             (inherit (package-source slurm))
+             (method url-fetch)
+             (uri (string-append
+                   "https://download.schedmd.com/slurm/slurm-"
+                   version ".tar.bz2"))
+             (patches
+              (search-patches "slurm-23-salloc-fallback-shell.patch"))
+             (sha256
+              (base32
+               "08rz3r1rlnb3pmfdnbh542gm44ja0fdy8rkj4vm4lclc48cvqp2a"))))))
+
 (define-public slurm-22.05
   (package
-    (inherit slurm)
+    (inherit slurm-23.02)
     (version "22.05.1")
     (source (origin
-              (inherit (package-source slurm))
+              (inherit (package-source slurm-23.02))
               (method url-fetch)
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
