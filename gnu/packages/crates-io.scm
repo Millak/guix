@@ -40865,6 +40865,31 @@ network interfaces/adapters.")
        (("rust-scopeguard" ,rust-scopeguard-0.3)
         ("rust-owning-ref" ,rust-owning-ref-0.4))))))
 
+(define-public rust-lockfree-object-pool-0.1
+  (package
+    (name "rust-lockfree-object-pool")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lockfree-object-pool" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bjm2g1g1avab86r02jb65iyd7hdi35khn1y81z4nba0511fyx4k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-criterion-plot" ,rust-criterion-plot-0.5)
+        ("rust-object-pool" ,rust-object-pool-0.5)
+        ("rust-sharded-slab" ,rust-sharded-slab-0.1))))
+    (home-page "https://github.com/EVaillant/lockfree-object-pool")
+    (synopsis "Thread-safe object pool collection")
+    (description
+     "This package provides a thread-safe object pool collection with automatic return
+and attach/detach semantics.")
+    (license license:boost1.0)))
+
 (define-public rust-log-0.4
   (package
     (name "rust-log")
