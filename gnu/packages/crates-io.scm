@@ -94185,8 +94185,67 @@ implementation that works everywhere, even WASM!")
     (description "This crate provides custom derive support for Zeroize.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-zip-2
+  (package
+    (name "rust-zip")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zip" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "151lrzswjkhwzlr6dkmgbi4s51sa8dr496n6mwiswms0xa444pnw"))
+       (modules '((guix build utils)))
+       (snippet
+         ;; loosen version requirement for rust-clap-4
+         '(begin (substitute* "Cargo.toml"
+                   (("version = \"=") "version = \"^"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;;tests missing
+       #:cargo-inputs
+       (("rust-aes" ,rust-aes-0.8)
+        ("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-bzip2" ,rust-bzip2-0.4)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-constant-time-eq" ,rust-constant-time-eq-0.3)
+        ("rust-crc32fast" ,rust-crc32fast-1)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-deflate64" ,rust-deflate64-0.1)
+        ("rust-displaydoc" ,rust-displaydoc-0.2)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-hmac" ,rust-hmac-0.12)
+        ("rust-indexmap" ,rust-indexmap-2)
+        ("rust-lzma-rs" ,rust-lzma-rs-0.3)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-pbkdf2" ,rust-pbkdf2-0.12)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-zeroize" ,rust-zeroize-1)
+        ("rust-zopfli" ,rust-zopfli-0.8)
+        ("rust-zstd" ,rust-zstd-0.13))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-bencher" ,rust-bencher-0.1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-tempdir" ,rust-tempdir-0.3)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
+    (home-page "https://github.com/zip-rs/zip2")
+    (synopsis "Library to support reading and writing Zip files")
+    (description
+     "Rust library for reading and writing Zip files.")
+    (license license:expat)))
+
 (define-public rust-zip-0.6
   (package
+    (inherit rust-zip-2)
     (name "rust-zip")
     (version "0.6.6")
     (source
@@ -94196,7 +94255,6 @@ implementation that works everywhere, even WASM!")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0qcjbqfvbwxi5g9wbymf2r05cvziic2qqj4xy64q3hp48vi980vn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-aes" ,rust-aes-0.8)
@@ -94217,13 +94275,7 @@ implementation that works everywhere, even WASM!")
         ("rust-time" ,rust-time-0.3)
         ("rust-walkdir" ,rust-walkdir-2))))
     (native-inputs (list pkg-config))
-    (inputs (list (list zstd "lib")))
-    (home-page "https://github.com/zip-rs/zip")
-    (synopsis
-     "Library to support the reading and writing of zip files")
-    (description
-     "Library to support the reading and writing of zip files.")
-    (license license:expat)))
+    (inputs (list (list zstd "lib")))))
 
 (define-public rust-zip-0.5
   (package
