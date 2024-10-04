@@ -87084,8 +87084,34 @@ or dashboards.")
        #:cargo-development-inputs (("rust-argh" ,rust-argh-0.1)
                                    ("rust-rand" ,rust-rand-0.8))))))
 
+(define-public rust-tui-react-0.23
+  (package
+    (name "rust-tui-react")
+    (version "0.23.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tui-react" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1inc78yngwkambrpcs1alallndysnzdq6p8pd7c12cqgw00sf519"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-ratatui" ,rust-ratatui-0.26)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/Byron/tui-crates")
+    (synopsis "TUI widgets using a React-like paradigm")
+    (description
+     "This package provides TUI widgets using a React-like paradigm, that allows
+mutable component state and render properties.")
+    (license license:expat)))
+
 (define-public rust-tui-react-0.22
   (package
+    (inherit rust-tui-react-0.23)
     (name "rust-tui-react")
     (version "0.22.0")
     (source
@@ -87095,18 +87121,11 @@ or dashboards.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "04b5av7fpg46bz3zbgqxdwkrx42lcfcap1afxhd6qrnlw9rwvyig"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
                        ("rust-ratatui" ,rust-ratatui-0.25)
                        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1))))
-    (home-page "https://github.com/Byron/tui-crates")
-    (synopsis "TUI widgets using a react-like paradigm")
-    (description
-     "TUI widgets using a react-like paradigm, allowing mutable component state and
-render properties.")
-    (license license:expat)))
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))))))
 
 (define-public rust-tui-react-0.20
   (package
