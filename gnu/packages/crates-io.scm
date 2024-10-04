@@ -34062,14 +34062,15 @@ variant of this library is available separately as @code{im}.")
 (define-public rust-imara-diff-0.1
   (package
     (name "rust-imara-diff")
-    (version "0.1.5")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "imara-diff" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1f0caw8bizfhrvyvzqix7ffmfnaynlyz7caljs5ipj8gsw51v379"))))
+        (base32
+          "008abq9x276wsak6xl27r309pz1f6li3f82p2qscsi5xaaia37gw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Do not pull in old copies of rust-gix.
