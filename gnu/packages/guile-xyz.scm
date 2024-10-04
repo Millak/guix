@@ -4494,56 +4494,64 @@ feature-set, fully programmable in Guile Scheme.")
 (define-public guile-cv
   (package
     (name "guile-cv")
-    (version "0.2.1")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/guile-cv/guile-cv-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0qdf0s2h1xj5lbhnc1pfw69i3zg08pqy2y6869b92ydfis8r82j9"))))
+                "00620zxm1rxlws7vn1zp2zzcb6y6r3szzj6b4b9fyjb86k972izb"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'prepare-build
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "configure"
-               (("SITEDIR=\"\\$datadir/guile-cv\"")
-                "SITEDIR=\"$datadir/guile/site/$GUILE_EFFECTIVE_VERSION\"")
-               (("SITECCACHEDIR=\"\\$libdir/guile-cv/")
-                "SITECCACHEDIR=\"$libdir/"))
-             (substitute* "cv/init.scm"
-               (("\\(dynamic-link \"libvigra_c\"\\)")
-                (string-append "(dynamic-link \""
-                               (assoc-ref inputs "vigra-c")
-                               "/lib/libvigra_c\")"))
-               (("\\(dynamic-link \"libguile-cv\"\\)")
-                (format #f "~s"
-                        `(dynamic-link
-                          (format #f "~alibguile-cv"
-                                  (if (getenv "GUILE_CV_UNINSTALLED")
-                                      ""
-                                      ,(format #f "~a/lib/"
-                                               (assoc-ref outputs "out"))))))))
-             (setenv "GUILE_CV_UNINSTALLED" "1")
-             ;; Only needed to satisfy the configure script.
-             (setenv "LD_LIBRARY_PATH"
-                     (string-append (assoc-ref inputs "vigra-c") "/lib"))
-             #t)))))
+     (list
+      #:make-flags
+      #~(list "GUILE_AUTO_COMPILE=0") ; to prevent guild warnings
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-guile-site-directory
+            (lambda _
+              (substitute* "configure.ac"
+                (("SITEDIR=\"\\$datadir/guile-cv\"")
+                 "SITEDIR=\"$datadir/guile/site/$GUILE_EFFECTIVE_VERSION\"")
+                (("SITECCACHEDIR=\"\\$libdir/guile-cv/")
+                 "SITECCACHEDIR=\"$libdir/"))))
+          (add-after 'unpack 'substitute-libs
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "cv/init.scm"
+                (("\\(dynamic-link \"libvigra_c\"\\)")
+                 (string-append "(dynamic-link \""
+                                (assoc-ref inputs "vigra-c")
+                                "/lib/libvigra_c\")"))
+                (("\\(dynamic-link \"libguile-cv\"\\)")
+                 (format #f "~s"
+                         `(dynamic-link
+                           (format #f "~alibguile-cv"
+                                   (if (getenv "GUILE_CV_UNINSTALLED")
+                                       ""
+                                       ,(string-append #$output "/lib/")))))))
+              (setenv "GUILE_CV_UNINSTALLED" "1")
+              ;; Only needed to satisfy the configure script.
+              (setenv "LD_LIBRARY_PATH"
+                      (string-append (assoc-ref inputs "vigra-c") "/lib")))))))
     (inputs
-     (list vigra vigra-c guile-2.2))
+     (list vigra vigra-c guile-3.0))
     (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg
-                    (list texlive-booktabs
-                          texlive-iwona
-                          texlive-lm
-                          texlive-siunitx
-                          texlive-standalone
-                          texlive-xcolor)))
-       ("pkg-config" ,pkg-config)))
+     (list (texlive-updmap.cfg
+            (list texlive-booktabs
+                  texlive-iwona
+                  texlive-lm
+                  texlive-siunitx
+                  texlive-standalone
+                  texlive-xcolor))
+           pkg-config
+           autoconf
+           automake
+           texinfo
+           libtool
+           gettext-minimal))
     (propagated-inputs
-     `(("guile-lib" ,guile2.2-lib)))
+     (list guile-lib))
     (home-page "https://www.gnu.org/software/guile-cv/")
     (synopsis "Computer vision library for Guile")
     (description "Guile-CV is a Computer Vision functional programming library
