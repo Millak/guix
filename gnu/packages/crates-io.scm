@@ -94227,6 +94227,37 @@ implementation that works everywhere, even WASM!")
     (native-inputs '())
     (inputs '())))
 
+(define-public rust-zopfli-0.8
+  (package
+    (name "rust-zopfli")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zopfli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ip9azz9ldk19m0m1hdppz3n5zcz0cywbg1vx59g4p5c3cwry0g5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bumpalo" ,rust-bumpalo-3)
+        ("rust-crc32fast" ,rust-crc32fast-1)
+        ("rust-lockfree-object-pool" ,rust-lockfree-object-pool-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-simd-adler32" ,rust-simd-adler32-0.3))
+       #:cargo-development-inputs
+       (("rust-miniz-oxide" ,rust-miniz-oxide-0.7)
+       ("rust-proptest" ,rust-proptest-1)
+       ("rust-proptest-derive", rust-proptest-derive-0.4))))
+    (home-page "https://github.com/zopfli-rs/zopfli")
+    (synopsis
+      "Rust implementation of the Zopfli compression algorithm")
+    (description
+     "This package provides a Rust implementation of the Zopfli compression algorithm.")
+    (license license:asl2.0)))
+
 (define-public rust-zoneinfo-compiled-0.5
   (package
     (name "rust-zoneinfo-compiled")
