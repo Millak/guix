@@ -32413,23 +32413,25 @@ By default it uses the open Python vulnerability database Safety DB.")
        (sha256
         (base32
          "0l6a8ngzpx363q2jskxxkx6psfhqrvc4js80dmn16r3vw6m2cb40"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-tests
+            (lambda _
+              ;; Disable test requiring network access
+              (substitute* "tests.py"
+                (("test_basic_conversion_from_http_url")
+                 "skip_test_basic_conversion_from_http_url")))))))
+    (native-inputs
+     (list python-poetry-core
+           (texlive-updmap.cfg
+            (list texlive-etoolbox texlive-lm texlive-xcolor))))
     (inputs
      (list pandoc python-pandocfilters))
     (propagated-inputs
-     `(("wheel" ,python-wheel)))
-    (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-lm texlive-xcolor)))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'disable-tests
-           (lambda _
-             ;; Disable test requiring network access
-             (substitute* "tests.py"
-               (("test_basic_conversion_from_http_url")
-                "skip_test_basic_conversion_from_http_url"))
-             #t)))))
+     (list python-wheel))
     (home-page "https://github.com/bebraw/pypandoc")
     (synopsis "Python wrapper for pandoc")
     (description "pypandoc is a thin Python wrapper around pandoc
