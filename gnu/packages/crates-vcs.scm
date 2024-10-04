@@ -5456,8 +5456,47 @@ Gitoxide, a pure Rust implementation of Git.")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gix-status-0.13
+  (package
+    (name "rust-gix-status")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-status" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1spznjc0s41cnyzfhvm37yr0fpx0fjiima6cwjk1c34zcfx3a3gp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-gix-diff" ,rust-gix-diff-0.46)
+        ("rust-gix-dir" ,rust-gix-dir-0.8)
+        ("rust-gix-features" ,rust-gix-features-0.38)
+        ("rust-gix-filter" ,rust-gix-filter-0.13)
+        ("rust-gix-fs" ,rust-gix-fs-0.11)
+        ("rust-gix-hash" ,rust-gix-hash-0.14)
+        ("rust-gix-index" ,rust-gix-index-0.35)
+        ("rust-gix-object" ,rust-gix-object-0.44)
+        ("rust-gix-path" ,rust-gix-path-0.10)
+        ("rust-gix-pathspec" ,rust-gix-pathspec-0.7)
+        ("rust-gix-worktree" ,rust-gix-worktree-0.36)
+        ("rust-portable-atomic" ,rust-portable-atomic-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Gitoxide project crate that provides @code{git status} functionality")
+    (description
+     "This Gitoxide project crate provides @code{git status} functionality.
+Gitoxide is a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-status-0.4
   (package
+    (inherit rust-gix-status-0.13)
     (name "rust-gix-status")
     (version "0.4.1")
     (source
@@ -5467,7 +5506,6 @@ Gitoxide, a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "07diw4dvb49m3ip1vh1vn7fx4sdapysbwc5vhzxmc15c9dl70gwh"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-filetime" ,rust-filetime-0.2)
@@ -5479,13 +5517,7 @@ Gitoxide, a pure Rust implementation of Git.")
                        ("rust-gix-object" ,rust-gix-object-0.40)
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-gix-worktree" ,rust-gix-worktree-0.29)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Provides @code{git status} functionality")
-    (description
-     "This package provides @code{git status} functionality to Gitoxide, a
-Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-status-0.3
   (package
