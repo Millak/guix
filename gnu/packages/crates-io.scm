@@ -58141,8 +58141,61 @@ pseudo-filesystem.")
 information.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-prodash-29
+  (package
+    (name "rust-prodash")
+    (version "29.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prodash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09g3zx6bhp96inzvgny7hlcqwn1ph1hmwk3hpqvs8q8c0bbdhrm2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-async-io" ,rust-async-io-2)
+        ("rust-bytesize" ,rust-bytesize-1)
+        ("rust-crosstermion" ,rust-crosstermion-0.14)
+        ("rust-ctrlc" ,rust-ctrlc-3)
+        ("rust-dashmap" ,rust-dashmap-6)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-lite" ,rust-futures-lite-2)
+        ("rust-human-format" ,rust-human-format-1)
+        ("rust-humantime" ,rust-humantime-2)
+        ("rust-is-terminal" ,rust-is-terminal-0.4)
+        ("rust-jiff" ,rust-jiff-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-ratatui" ,rust-ratatui-0.26)
+        ("rust-signal-hook" ,rust-signal-hook-0.3)
+        ("rust-tui-react" ,rust-tui-react-0.23)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-argh" ,rust-argh-0.1)
+        ("rust-async-executor" ,rust-async-executor-1)
+        ("rust-async-io" ,rust-async-io-2)
+        ("rust-blocking" ,rust-blocking-1)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-env-logger" ,rust-env-logger-0.11)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-is-terminal" ,rust-is-terminal-0.4)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/Byron/prodash")
+    (synopsis
+     "Dashboard for visualizing progress of asynchronous and possibly blocking tasks")
+    (description
+     "This package provides a dashboard for visualizing progress of asynchronous and
+possibly blocking tasks.")
+    (license license:expat)))
+
 (define-public rust-prodash-28
   (package
+    (inherit rust-prodash-29)
     (name "rust-prodash")
     (version "28.0.0")
     (source
@@ -58152,7 +58205,6 @@ information.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0y9d16s79168rc5k2djjb16vjcx27yargbfb6xz6m2mq4r6jcjkl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-io" ,rust-async-io-2)
                        ("rust-bytesize" ,rust-bytesize-1)
@@ -58183,12 +58235,6 @@ information.")
                                    ("rust-is-terminal" ,rust-is-terminal-0.4)
                                    ("rust-once-cell" ,rust-once-cell-1)
                                    ("rust-rand" ,rust-rand-0.8))))
-    (home-page "https://github.com/Byron/prodash")
-    (synopsis
-     "Dashboard for visualizing progress of asynchronous and possibly blocking tasks")
-    (description
-     "This package provides a dashboard for visualizing the progress of asynchronous
-and possibly blocking tasks.")
     (license license:expat)))
 
 (define-public rust-prodash-26
