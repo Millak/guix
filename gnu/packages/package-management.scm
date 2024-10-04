@@ -767,7 +767,7 @@ which are indicated in the file name.")
 (define-public guix-modules
   (package
     (name "guix-modules")
-    (version "0.1.0")
+    (version "0.2.0")
     (home-page "https://gitlab.inria.fr/guix-hpc/guix-modules")
     (source (origin
               (method git-fetch)
@@ -776,7 +776,7 @@ which are indicated in the file name.")
               (file-name (string-append "guix-modules-" version "-checkout"))
               (sha256
                (base32
-                "1ckvrrmkgzz93i35sj1372wxs7ln4gzszpri1pcdf473z0p7nh7w"))))
+                "0k3mz2d1qjx7nclg7mgk77rwvyjsmz3j0hpzihvmznx5bly8wg92"))))
     (build-system guile-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
