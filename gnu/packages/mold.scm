@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,7 +36,7 @@
 (define-public mold
   (package
     (name "mold")
-    (version "2.34.0")
+    (version "2.34.1")
     (source
      (origin
        (method git-fetch)
@@ -44,7 +45,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n8ygaxsda9ybc1jc7ap7grbziah403wjm2hmmcxzahm52v6czs0"))
+        (base32 "0s5mlnchw8sz3mafifiwhjswp91j5ja6ds946w21qws5sbwx15y7"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
