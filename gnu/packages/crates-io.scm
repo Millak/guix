@@ -50010,6 +50010,32 @@ file formats.")
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-wasmparser" ,rust-wasmparser-0.57))))))
 
+(define-public rust-object-pool-0.5
+  (package
+    (name "rust-object-pool")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "object-pool" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s4d6bap4b4fazz4izgqvrc6si4fdrbz2fdr09hci7nhjrqkx6pf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags       ; Skip the doctests.
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs (("rust-parking-lot" ,rust-parking-lot-0.11))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-criterion-plot" ,rust-criterion-plot-0.4))))
+    (home-page "https://github.com/CJP10/object-pool")
+    (synopsis
+     "Thread-safe object pool with automatic return and attach/detach semantics")
+    (description
+     "This package provides a thread-safe object pool with automatic return and
+attach/detach semantics.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-object-store-0.9
   (package
     (name "rust-object-store")
