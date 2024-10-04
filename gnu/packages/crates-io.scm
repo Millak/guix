@@ -18319,8 +18319,39 @@ abstractions around common WinAPI calls.")
        #:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-crosstermion-0.14
+  (package
+    (name "rust-crosstermion")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crosstermion" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i7caxqlz174zj6pll85vp4avhhzzy00vfdivry3v5hq3phgzf1v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ansiterm" ,rust-ansiterm-0.12)
+        ("rust-async-channel" ,rust-async-channel-2)
+        ("rust-crossterm" ,rust-crossterm-0.27)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-lite" ,rust-futures-lite-2)
+        ("rust-ratatui" ,rust-ratatui-0.26)
+        ("rust-tui-react" ,rust-tui-react-0.23))))
+    (home-page "https://github.com/Byron/tui-crates")
+    (synopsis
+      "Unification of crossterm and termion behind a common facade")
+    (description
+      "The unification of crossterm and termion behind a common facade for use with
+feature flags.")
+    (license license:expat)))
+
 (define-public rust-crosstermion-0.13
   (package
+    (inherit rust-crosstermion-0.14)
     (name "rust-crosstermion")
     (version "0.13.0")
     (source
@@ -18330,7 +18361,6 @@ abstractions around common WinAPI calls.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1q877s6rfm4n4amsg79ihxi583lhmlnq57hj9sg1ph2ddyw1a120"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-ansiterm" ,rust-ansiterm-0.12)
                        ("rust-async-channel" ,rust-async-channel-2)
@@ -18340,11 +18370,6 @@ abstractions around common WinAPI calls.")
                        ("rust-futures-lite" ,rust-futures-lite-2)
                        ("rust-ratatui" ,rust-ratatui-0.25)
                        ("rust-tui-react" ,rust-tui-react-0.22))))
-    (home-page "https://github.com/Byron/tui-crates")
-    (synopsis "Unification of crossterm and termion behind a common facade")
-    (description
-     "The unification of crossterm and termion behind a common facade for use with
-feature flags.")
     (license license:expat)))
 
 (define-public rust-crosstermion-0.11
