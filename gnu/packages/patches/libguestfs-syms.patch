@@ -1,0 +1,44 @@
+diff -urN a/lib/Makefile.am b/lib/Makefile.am
+
+Without this patch the build phase fails during linking with:
+
+ld:./libguestfs.syms: file format not recognized; treating as linker script
+ld:./libguestfs.syms:23: syntax error
+collect2: error: ld returned 1 exit status
+make[3]: *** [Makefile:1252: libguestfs.la] Error 1
+make[3]: *** Waiting for unfinished jobs....
+Wide character in print at /tmp/guix-build-libguestfs-1.53.6.drv-0/libguestfs-1.50.1/podwrapper.pl line 633.
+touch stamp-guestfs.pod
+make[3]: Leaving directory '/tmp/guix-build-libguestfs-1.53.6.drv-0/libguestfs-1.50.1/lib'
+make[2]: *** [Makefile:1161: all] Error 2
+make[2]: Leaving directory '/tmp/guix-build-libguestfs-1.53.6.drv-0/libguestfs-1.50.1/lib'
+make[1]: *** [Makefile:1083: all-recursive] Error 1
+make[1]: Leaving directory '/tmp/guix-build-libguestfs-1.53.6.drv-0/libguestfs-1.50.1'
+make: *** [Makefile:989: all] Error 2
+error: in phase 'build': uncaught exception:
+
+--- a/lib/Makefile.am	2023-07-20 17:35:16.489080853 +0200
++++ b/lib/Makefile.am	2023-07-20 17:35:47.305793499 +0200
+@@ -160,8 +160,7 @@
+ # Force libtool to name the library 'libguestfs.so.0.$(MAX_PROC_NR).0'.
+ # Include the version script to limit which symbols are exported.
+ libguestfs_la_LDFLAGS = \
+-	-version-info $(MAX_PROC_NR):0:$(MAX_PROC_NR) \
+-	$(VERSION_SCRIPT_FLAGS)$(srcdir)/libguestfs.syms
++	-version-info $(MAX_PROC_NR):0:$(MAX_PROC_NR)
+ 
+ if HAVE_FUSE
+ # XXX Unfortunately FUSE_CFLAGS defines _FILE_OFFSET_BITS=64.
+diff -urN a/lib/Makefile.in b/lib/Makefile.in
+--- a/lib/Makefile.in	2023-07-20 17:35:16.489080853 +0200
++++ b/lib/Makefile.in	2023-07-20 17:36:05.474213641 +0200
+@@ -1109,8 +1109,7 @@
+ # Force libtool to name the library 'libguestfs.so.0.$(MAX_PROC_NR).0'.
+ # Include the version script to limit which symbols are exported.
+ libguestfs_la_LDFLAGS = \
+-	-version-info $(MAX_PROC_NR):0:$(MAX_PROC_NR) \
+-	$(VERSION_SCRIPT_FLAGS)$(srcdir)/libguestfs.syms
++	-version-info $(MAX_PROC_NR):0:$(MAX_PROC_NR)
+ 
+ @HAVE_LIBVIRT_TRUE@libvirt_is_version_SOURCES = libvirt-is-version.c
+ @HAVE_LIBVIRT_TRUE@libvirt_is_version_LDADD = \

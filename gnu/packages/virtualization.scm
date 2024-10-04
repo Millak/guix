@@ -61,6 +61,7 @@
   #:use-module (gnu packages apparmor)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages attr)
+  #:use-module (gnu packages augeas)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
@@ -68,11 +69,13 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cluster)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages containers)
+  #:use-module (gnu packages cpio)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
@@ -84,6 +87,7 @@
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages figlet)
+  #:use-module (gnu packages file)
   #:use-module (gnu packages firmware)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fonts)
@@ -96,6 +100,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell)
@@ -3011,3 +3016,125 @@ is as much trouble as parsing the original binary format.  Instead it makes the
 file available through a C API, or through a separate program to export the
 hive as XML.")
     (license license:lgpl2.1)))
+
+(define-public libguestfs-minimal
+  (package
+    (name "libguestfs-minimal")
+    (version "1.53.6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://libguestfs.org/download/"
+                                  (version-major+minor version)
+                                  "-stable/libguestfs-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0vssarc3n4kv26fyjmkrrcvh55v41fhycba43pij3rc2izl72s2y"))
+              (patches
+               (search-patches "libguestfs-syms.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-appliance"
+                   "--disable-daemon"
+                   "--disable-static"
+                   "--disable-erlang"
+                   "--disable-golang"
+                   "--disable-haskell"
+                   "--disable-java"
+                   "--disable-lua"
+                   ;; FIXME: Perl bindings have wrong rpath and break the
+                   ;; validate-runpath phase.  Temporarily disable them until
+                   ;; a way is found to correctly patch perl/Build.PL.in.
+                   "--disable-perl"
+                   "--disable-php"
+                   "--with-distro=\"Guix System\""
+                   "--with-readline"
+                   (string-append "LDFLAGS=-Wl,-rpath," %output "/lib"))
+           #:make-flags #~`("REALLY_INSTALL=yes")
+           #:phases
+           #~(let* ((lib (string-append #$output "/lib"))
+                    (lib/ocaml (string-append lib "/ocaml")))
+               (modify-phases %standard-phases
+                 (add-after 'unpack 'patch-makefiles
+                   (lambda _
+                     (for-each patch-shebang
+                               (find-files "."))
+                     (substitute* "ocaml/Makefile.in"
+                       (("\\$\\(DESTDIR\\)\\$\\(OCAMLLIB\\)")
+                        lib/ocaml))
+                     ;; FIXME: Perl bindings have broken runpath,
+                     ;; this substitution doesn't seem to work.
+                     (substitute* "perl/Build.PL.in"
+                       (("extra_linker_flags => \\[")
+                        (string-append "extra_linker_flags => [
+        '-L" #$output "/lib',")))))
+                 (replace 'check
+                   (lambda* (#:key tests? make-flags #:allow-other-keys)
+                     (when tests?
+                       (apply invoke `("make" ,@make-flags "check-direct")))))
+                 (replace 'install
+                   (lambda* (#:key make-flags #:allow-other-keys)
+                     (mkdir-p "temp-build-dir")
+                     (apply invoke `("make" ,@make-flags "INSTALLDIRS=vendor"
+                                     "install"))))
+                 (add-after 'install 'wrap-binaries
+                   (lambda _
+                     (let ((bin (string-append #$output "/bin")))
+                       (for-each
+                        (lambda (binary)
+                          (use-modules (srfi srfi-1))
+                          (wrap-program binary
+                            `("PERL5LIB" ":" prefix
+                              (,(string-append #$output
+                                               "/lib/perl5/site_perl")))
+                            `("PATH" ":" prefix
+                              ,(search-path-as-list
+                                '("bin")
+                                (map second
+                                     '#$(package-inputs this-package))))))
+                        (find-files bin)))))
+                 (replace 'validate-documentation-location
+                   (lambda _
+                     (let ((man-dir
+                            (string-append #$output "/man"))
+                           (info-dir
+                            (string-append #$output "/info")))
+                       (for-each (lambda (d)
+                                   (invoke "rm" "-rf" d))
+                                 (list man-dir info-dir)))))))))
+    (native-inputs (list augeas
+                         bison
+                         cpio
+                         flex
+                         gettext-minimal
+                         gperf
+                         libtool
+                         ocaml
+                         ocaml-findlib
+                         ncurses
+                         perl
+                         perl-getopt-long
+                         perl-module-build
+                         pkg-config
+                         po4a
+                         xorriso
+                         xz
+                         zstd))
+    (inputs
+     (list file
+           fuse
+           jansson
+           hivex
+           libtirpc
+           pcre2
+           readline
+           qemu))
+    (home-page "https://libguestfs.org/")
+    (synopsis "Access and modify virtual machine disk images")
+    (description
+     "@code{libguestfs} is a set of tools for accessing and modifying virtual
+machine (VM) disk images.  You can use this for viewing and editing files inside
+guests, scripting changes to VMs, monitoring disk used/free statistics, creating
+guests, P2V, V2V, performing backups, cloning VMs, building VMs, formatting
+disks, resizing disks, and much more.")
+    (license (list license:gpl2+ license:lgpl2.1+))))
