@@ -61,6 +61,7 @@
   #:use-module (gnu packages apparmor)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages attr)
+  #:use-module (gnu packages apparmor)
   #:use-module (gnu packages augeas)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -81,6 +82,7 @@
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages dbm)
   #:use-module (gnu packages debian)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages dns)
@@ -103,6 +105,7 @@
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages haskell-check)
@@ -113,6 +116,7 @@
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
   #:use-module (gnu packages multiprecision)
@@ -3138,3 +3142,89 @@ guests, scripting changes to VMs, monitoring disk used/free statistics, creating
 guests, P2V, V2V, performing backups, cloning VMs, building VMs, formatting
 disks, resizing disks, and much more.")
     (license (list license:gpl2+ license:lgpl2.1+))))
+
+(define-public libguestfs
+  (package/inherit libguestfs-minimal
+    (name "libguestfs")
+    (arguments
+     (substitute-keyword-arguments (package-arguments libguestfs-minimal)
+       ((#:configure-flags flags)
+        #~(append
+           (filter
+            (lambda (flag)
+              (not (string-prefix? "LDFLAGS" flag)))
+            #$flags)
+           (list
+            "--enable-vala=yes"
+            (string-append "--with-python-installdir="
+                           #$output "/lib/python"
+                           #$(version-major+minor
+                              (package-version python))
+                           "/site-packages")
+            (string-append "LDFLAGS=-Wl,-rpath," %output "/lib"))))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'patch-makefiles 'patch-additional-makefiles
+              (lambda _
+                (let* ((current-system (or #$(%current-target-system)
+                                           #$(%current-system)))
+                       (lib (string-append #$output "/lib"))
+                       (share (string-append #$output "/share"))
+                       (completions
+                        (string-append share "/bash-completion/completions"))
+                       (lib/lua (string-append lib "/lua"))
+                       (lib/ocaml (string-append lib "/ocaml"))
+                       (ruby-version
+                        #$(package-version
+                           (this-package-native-input "ruby")))
+                       (ruby-libdir
+                        (string-append lib
+                                       "/ruby/site_ruby/"
+                                       ruby-version))
+                       (ruby-archdir
+                        (string-append ruby-libdir "/" current-system)))
+                  (substitute* "m4/guestfs-bash-completion.m4"
+                    (("`pkg-config --variable=completionsdir bash-completion`")
+                     completions))
+                  (substitute* "ocaml/Makefile.am"
+                    (("\\$\\(DESTDIR\\)\\$\\(OCAMLLIB\\)")
+                     lib/ocaml))
+                  (substitute* "lua/Makefile.am"
+                    (("\\$\\(DESTDIR\\)\\$\\(lualibdir\\)")
+                     lib/lua))
+                  (substitute* "ruby/Makefile.am"
+                    (("\\$\\(DESTDIR\\)\\$\\(RUBY_ARCHDIR\\)")
+                     ruby-archdir)
+                    (("\\$\\(DESTDIR\\)\\$\\(RUBY_LIBDIR\\)")
+                     ruby-libdir))
+                  ;; The ‘validate-runpath’ phase fails to find libguestfs.so.0.
+                  (substitute* "ruby/ext/guestfs/extconf.rb.in"
+                    (("create_header")
+                     (string-append "
+$LDFLAGS += \" -Wl,-rpath=" #$output "/lib \"
+create_header"))))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libguestfs-minimal)
+       (prepend autoconf
+                automake
+                bash-completion
+                cdrtools
+                gobject-introspection
+                python
+                ruby
+                util-linux
+                vala)))
+    (inputs
+     (modify-inputs (package-inputs libguestfs-minimal)
+       (prepend acl
+                bdb
+                fuse
+                gmp
+                libapparmor
+                libcap
+                libcap-ng
+                libconfig
+                libvirt
+                libxcrypt
+                numactl
+                yajl)))))
