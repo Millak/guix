@@ -41737,6 +41737,34 @@ Server Protocol.")
      "This package provides Simple interface for LZMA compression and decompression.")
     (license license:expat)))
 
+(define-public rust-lzma-rs-0.3
+  (package
+    (name "rust-lzma-rs")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lzma-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0phif4pnjrn28zcxgz3a7z86hhx5gdajmkrndfw4vrkahd682zi9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-crc" ,rust-crc-3)
+        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-log" ,rust-log-0.4))
+       #:cargo-development-inputs
+       (("rust-rust-lzma" ,rust-rust-lzma-0.5)))) ;; called rust-lzma in crates-io
+    (native-inputs
+      (list pkg-config xz))
+    (home-page "https://github.com/gendx/lzma-rs")
+    (synopsis "Codec for LZMA, LZMA2 and XZ written in pure Rust")
+    (description
+     "This package provides a codec for LZMA, LZMA2 and XZ written in pure Rust.")
+    (license license:expat)))
+
 (define-public rust-lzma-sys-0.1
   (package
     (name "rust-lzma-sys")
