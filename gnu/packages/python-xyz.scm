@@ -9925,6 +9925,39 @@ Python code against some of the style conventions in
 @url{http://www.python.org/dev/peps/pep-0008/,PEP 8}.")
     (license license:expat)))
 
+(define-public python-pycollada
+  (package
+    (name "python-pycollada")
+    (version "0.8")
+    (source
+     (origin
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/pycollada/pycollada")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0by8b46gji9npsgnx91cvzjrfcsm7r4d23gvn7h2h9ninaxlv7zw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy
+           python-dateutil))
+    (home-page "https://pycollada.readthedocs.io")
+    (synopsis "Reading and writing collada documents library")
+    (description
+     "This package implements a functionality for creating, editing and
+loading @url{https://www.khronos.org/collada/,COLLADA},which is a
+COLLAborative Design Activity for establishing an interchange file format for
+interactive 3D applications.
+
+The library allows you to load a COLLADA file and interact with it as a python
+object.  In addition, it supports creating a collada python object from
+scratch, as well as in-place editing.")
+    (license license:bsd-3)))
+
 (define-public python-pyct
   (package
     (name "python-pyct")
