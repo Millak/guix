@@ -78,6 +78,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -170,7 +171,7 @@ such as mate-panel and xfce4-panel.")
 (define cairo
   (package
     (name "cairo")
-    (version "1.18.0")
+    (version "1.18.2")
     (source
      (origin
        (method url-fetch)
@@ -178,7 +179,7 @@ such as mate-panel and xfce4-panel.")
         (string-append "https://cairographics.org/releases/cairo-"
                        version ".tar.xz"))
        (sha256
-        (base32 "0r0by563s75xyzz0d0j1nmjqmdrk2x9agk7r57p3v8vqp4v0ffi4"))))
+        (base32 "0nnli5cghygbl9bvlbjls7nspnrrzx1y1pbd7p649s154js9nax6"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f ; see http://lists.gnu.org/archive/html/bug-guix/2013-06/msg00085.html
