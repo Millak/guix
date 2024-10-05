@@ -212,7 +212,7 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20240922110507")
+(define %librewolf-build-id "20241003201141")
 
 (define-public librewolf
   (package
@@ -324,9 +324,6 @@
                             libavcodec)))))
                    (add-after 'unpack 'neuter-genai
                      (lambda* _
-                       ;; Don't compile the code in.
-                       (substitute* "browser/components/moz.build"
-                         (("\"genai\",") ""))
                        ;; Lock the preferences so they can't be enabled.
                        (substitute* "lw/librewolf.cfg"
                          (("defaultPref\\(\"browser\\.ml\\.")
