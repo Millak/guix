@@ -243,7 +243,7 @@ eases debugging of D-Bus services by printing various debug information when
 the @code{DBUS_VERBOSE} environment variable is set to @samp{1}.  For more
 information, refer to the @samp{dbus-daemon(1)} man page.")))
 
-(define glib
+(define glib-minimal
   (package
     (name "glib")
     (version "2.82.1")
@@ -531,6 +531,21 @@ functions for strings and common data structures.")
     (license license:lgpl2.1+)
     (properties '((hidden? . #t)))))
 
+(define glib
+  (let ((base glib-minimal))
+    (package/inherit base
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (prepend gobject-introspection-minimal)))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              ;; GI tests require installed libraries
+              (delete 'check)
+              (add-after 'install 'check
+                (assoc-ref #$phases 'check)))))))))
+
 (define-public glib-with-documentation
   ;; glib's doc must be built in a separate package since it requires gtk-doc,
   ;; which in turn depends on glib.
@@ -609,7 +624,7 @@ be used when cross-compiling."
         (string-append name target-suffix))
       (rename-file native-name target-name)))
 
-(define gobject-introspection
+(define gobject-introspection-minimal
   (package
     (name "gobject-introspection")
     (version "1.82.0")
@@ -666,15 +681,14 @@ be used when cross-compiling."
      `(,@(if (%current-target-system)
            `(("python" ,python))
            '())
-       ("glib" ,glib "bin")
+       ("glib" ,glib-minimal "bin")
        ("pkg-config" ,pkg-config)
        ("bison" ,bison)
        ("flex" ,flex)))
     (inputs
-     `(("python" ,python)
-       ("zlib" ,zlib)))
+     (list python zlib))
     (propagated-inputs
-     (list glib
+     (list glib-minimal
            ;; In practice, GIR users will need libffi when using
            ;; gobject-introspection.
            libffi))
@@ -697,6 +711,16 @@ provide bindings to call into the C library.")
       license:lgpl2.0+
       ;; For tools.
       license:gpl2+))))
+
+(define gobject-introspection
+  (let ((base gobject-introspection-minimal))
+    (package/inherit base
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "glib" glib)))
+      (propagated-inputs
+       (modify-inputs (package-propagated-inputs base)
+         (replace "glib" glib))))))
 
 (define intltool
   (package
