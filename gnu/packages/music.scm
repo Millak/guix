@@ -4641,11 +4641,11 @@ simulation of an overdrive or distortion pedal for guitars.")
     (license license:gpl3+)))
 
 (define-public gx-vbass-preamp-lv2
-  (let ((commit "eb999b0ca0ef4da40a59e458a9ab6e7042b96c99")
-        (revision "2"))
+  (let ((commit "f6a01c22fea71b155a797853c23653137ac89c1c")
+        (revision "3"))
     (package (inherit gx-guvnor-lv2)
       (name "gx-vbass-preamp-lv2")
-      (version (string-append "0-" revision "." (string-take commit 9)))
+      (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -4653,10 +4653,24 @@ simulation of an overdrive or distortion pedal for guitars.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0firap073ldw4nrykkd7jvyyj0jbl1nslxyzjj4kswazp99x7d9h"))
-                (file-name (string-append name "-" version "-checkout"))))
+                  "1ssa2xkppn7cn8lfvglb6brm5qsd7kysmabfj34qrqbywf5hdisw"))
+                (file-name (git-file-name name version))))
+      (arguments
+       (list
+        ;; The check target is used only to output a warning.
+        #:tests? #false
+        #:make-flags
+        #~(list (string-append "DESTDIR=" #$output)
+                (string-append "CC=" #$(cc-for-target)))
+        #:phases
+        '(modify-phases %standard-phases
+           (replace 'configure
+             (lambda _
+               (substitute* "Makefile"
+                 (("INSTALL_DIR = .*") "INSTALL_DIR=/lib/lv2\n")
+                 (("install : all") "install :")))))))
       (inputs
-       (list lv2 gtk+-2))
+       (list lv2 gtk+))
       (native-inputs
        (list pkg-config))
       (home-page "https://github.com/brummer10/GxVBassPreAmp.lv2")
