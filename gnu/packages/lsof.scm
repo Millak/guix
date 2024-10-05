@@ -25,6 +25,7 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -56,23 +57,24 @@
                          procps ;for ps
                          util-linux)) ;for unshare
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'fix-configure-ac-version
-                    ;; see https://github.com/lsof-org/lsof/commit/932a0b3b1992497e23fd9b8d31116b9ca9b0f98d
-                    ;; to fix tests/case-01-version.bash test fail.
-                    (lambda _
-                      (substitute* "configure.ac"
-                        (("4\\.99\\.0")
-                         "4.99.3"))))
-                  (add-before 'bootstrap 'disable-failing-tests
-                    (lambda _
-                      (substitute* "Makefile.am"
-                        ;; Fails with ‘ERROR!!! client gethostbyaddr() failure’.
-                        (("(TESTS \\+=.*) tests/LTsock" _ prefix)
-                         prefix)
-                        ;; Fails because /proc not mounted in sandbox
-                        (("\tdialects/linux/tests/case-20-epoll.bash \\\\")
-                         "\\")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-configure-ac-version
+                 ;; see https://github.com/lsof-org/lsof/commit/932a0b3b1992497e23fd9b8d31116b9ca9b0f98d
+                 ;; to fix tests/case-01-version.bash test fail.
+                 (lambda _
+                   (substitute* "configure.ac"
+                     (("4\\.99\\.0")
+                      "4.99.3"))))
+               (add-before 'bootstrap 'disable-failing-tests
+                 (lambda _
+                   (substitute* "Makefile.am"
+                     ;; Fails with ‘ERROR!!! client gethostbyaddr() failure’.
+                     (("(TESTS \\+=.*) tests/LTsock" _ prefix)
+                      prefix)
+                     ;; Fails because /proc not mounted in sandbox
+                     (("\tdialects/linux/tests/case-20-epoll.bash \\\\")
+                      "\\")))))))
     (synopsis "Display information about open files")
     (description
      "Lsof stands for LiSt Open Files, and it does just that.
