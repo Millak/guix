@@ -36,7 +36,7 @@
 (define-public lsof
   (package
     (name "lsof")
-    (version "4.98.0")
+    (version "4.99.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -45,17 +45,25 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cjmhd01p5a9cy52lirv1rkidrzhyn366f4h212jcf1cmp8xh0hd"))))
+                "1v32407al4j0hhcph95lv4xvr9h012lii29iyq41iwj39zwfavax"))))
     (build-system gnu-build-system)
     (native-inputs (list automake
                          autoconf
                          groff ;for soelim
+                         libtool
                          perl
                          pkg-config
                          procps ;for ps
                          util-linux)) ;for unshare
     (arguments
      `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-configure-ac-version
+                    ;; see https://github.com/lsof-org/lsof/commit/932a0b3b1992497e23fd9b8d31116b9ca9b0f98d
+                    ;; to fix tests/case-01-version.bash test fail.
+                    (lambda _
+                      (substitute* "configure.ac"
+                        (("4\\.99\\.0")
+                         "4.99.3"))))
                   (add-before 'bootstrap 'disable-failing-tests
                     (lambda _
                       (substitute* "Makefile.am"
