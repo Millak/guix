@@ -4046,6 +4046,18 @@ installed on your machine and launch it.")
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-elixir-mode emacs-dash emacs-company emacs-pkg-info))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-server
+            (lambda _
+              (let ((server (string-append #$output
+                                           "/share/emacs/site-lisp/"
+                                           "alchemist-1.8.2/alchemist-server")))
+                (mkdir-p server)
+                (copy-recursively "alchemist-server" server)
+                (delete-file-recursively (string-append server "/test"))))))))
     (home-page "http://www.github.com/tonini/alchemist.el")
     (synopsis "Elixir tooling integration into Emacs")
     (description
