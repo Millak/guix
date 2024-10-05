@@ -104,6 +104,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system linux-module)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
@@ -4355,6 +4356,33 @@ Window Capture source.
 
 This may help improve your viewers watching experience, and allows you to use
 your host privately.")
+    (license license:gpl2+)))
+
+(define-public kvmfr-linux-module
+  (package
+    (name "kvmfr-linux-module")
+    (version "B6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://looking-glass.io/artifact/" version
+                                  "/source"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15d7wwbzfw28yqbz451b6n33ixy50vv8acyzi8gig1mq5a8gzdib"))
+              (patches (search-patches "kvmfr-linux-module-fix-build.patch"))))
+    (build-system linux-module-build-system)
+    (inputs (list bash-minimal))
+    (arguments
+     (list
+      #:tests? #f ;there are none.
+      #:source-directory "module"))
+    (home-page "https://looking-glass.io/")
+    (synopsis
+     "Linux Kernel module to interface with Looking Glass")
+    (description
+     "This kernel module implements a basic interface to the IVSHMEM device for
+Looking Glass.")
     (license license:gpl2+)))
 
 (define-public obs-move-transition
