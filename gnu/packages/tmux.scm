@@ -50,7 +50,7 @@
 (define-public tmux
   (package
     (name "tmux")
-    (version "3.5")
+    (version "3.5a")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -59,7 +59,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bdah5b8fbxwba3z7i46yx5vcvhwmn7yvdh3wn0in1ijnn7mj97h"))))
+                "14alj3jyy0biyrr5ci39aaw223qq8987r4lg4f0shqvq52kwgmb7"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent ncurses))
