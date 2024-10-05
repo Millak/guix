@@ -194,7 +194,7 @@ TRIPLET."
                       (test-options ''())
                       (glib-or-gtk? #f)
                       (parallel-build? #t)
-                      (parallel-tests? #f)
+                      (parallel-tests? #t)
                       (validate-runpath? #t)
                       (patch-shebangs? #t)
                       (strip-binaries? #t)
