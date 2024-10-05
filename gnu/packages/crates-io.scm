@@ -17285,14 +17285,15 @@ final xor value.  It has many built-in CRC functions.")
 (define-public rust-crc32fast-1
   (package
     (name "rust-crc32fast")
-    (version "1.4.0")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crc32fast" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ahy259ypc955l5ak24hdlgllb6vm6y2pvwr6qrlyisbg255m1dk"))))
+        (base32
+          "1czp7vif73b8xslr3c9yxysmh9ws2r8824qda7j47ffs9pcnjxx9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1))
