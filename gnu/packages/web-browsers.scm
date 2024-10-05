@@ -22,6 +22,7 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -571,18 +572,18 @@ GUI.  It is based on PyQt6 and QtWebEngine.")
        (file-name (git-file-name name version))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     '(#:tests? #f                      ; no tests
-       #:make-flags (list "CC=gcc"
-                          "DESTDIR="
-                          (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'fix-config-mk
-           (lambda* _
-             (substitute* "config.mk"
-               (("webkit2gtk-4\\.1")
-                "webkit2gtk-4.0")))))))
+     (list #:tests? #f                      ; no tests
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                "DESTDIR="
+                                (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'fix-config-mk
+                 (lambda* _
+                   (substitute* "config.mk"
+                     (("webkit2gtk-4\\.1")
+                      "webkit2gtk-4.0")))))))
     (inputs
      `(("glib-networking" ,glib-networking)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
