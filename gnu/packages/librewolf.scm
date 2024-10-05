@@ -212,7 +212,7 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20241003201141")
+(define %librewolf-build-id "20241005085731")
 
 (define-public librewolf
   (package
@@ -223,9 +223,7 @@
       (inherit (make-librewolf-source
                 #:version version
                 #:firefox-hash "0w4z3fq5zhm63a0wmhvmqrj263bvy962dir25q3z0x5hx6hjawh2"
-                #:librewolf-hash "0f80pihn375bdjhjmmg2v1w96wpn76zb60ycy39wafwh1dnzybrd"))
-      (patches
-       (search-patches "librewolf-add-paths-to-rdd-allowlist.patch"))))
+                #:librewolf-hash "0f80pihn375bdjhjmmg2v1w96wpn76zb60ycy39wafwh1dnzybrd"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -592,12 +590,26 @@
                                        ;; For U2F and WebAuthn
                                        "eudev")))
 
+                              ;; VA-API is run in the RDD (Remote Data Decoder) sandbox
+                              ;; and must be explicitly given access to files it needs.
+                              ;; Rather than adding the whole store (as Nix had
+                              ;; upstream do, see
+                              ;; <https://github.com/NixOS/nixpkgs/pull/165964> and
+                              ;; linked upstream patches), we can just follow the
+                              ;; runpaths of the needed libraries to add everything to
+                              ;; LD_LIBRARY_PATH.  These will then be accessible in the
+                              ;; RDD sandbox.
+                              (rdd-whitelist (map (cut string-append <> "/")
+                                                  (delete-duplicates (append-map
+                                                                      runpaths-of-input
+                                                                      '("mesa"
+                                                                        "ffmpeg")))))
                               (gtk-share (string-append (assoc-ref inputs
                                                                    "gtk+")
                                                         "/share")))
                          (wrap-program (car (find-files lib "^librewolf$"))
                            `("LD_LIBRARY_PATH" prefix
-                             ,libs)
+                             (,@libs ,@rdd-whitelist))
                            `("XDG_DATA_DIRS" prefix
                              (,gtk-share))
                            `("MOZ_LEGACY_PROFILES" =
