@@ -51,6 +51,7 @@
     (description "musl is a simple and lightweight C standard library.  It
 strives to be correct in the sense of standards-conformance and safety.")
     (home-page "https://musl.libc.org")
+    (properties `((release-monitoring-url . ,home-page)))
     ;; Musl as a whole is released under the Expat license.  Parts of it are
     ;; derived from various third-party projects that are released under
     ;; non-copyleft licenses.  See the COPYRIGHT file for details.
