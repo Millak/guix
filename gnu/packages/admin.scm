@@ -3544,7 +3544,7 @@ throughput (in the same interval).")
 (define-public dool
   (package
     (name "dool")
-    (version "1.3.0")
+    (version "1.3.3")
     (source
      (origin
        (method git-fetch)
@@ -3553,7 +3553,7 @@ throughput (in the same interval).")
              (commit (string-append "v" version))))
        (file-name (git-file-name "dool" version))
        (sha256
-        (base32 "1728wxy338gf2l06b0b4j9j8vihadw5whzzj7mi9p3by633h5s8m"))))
+        (base32 "0y5y5c07hgj6v2nvimnwc8myx43li8ib40hdvz7q4q1pdqx3r0jl"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -3562,7 +3562,6 @@ throughput (in the same interval).")
           (add-after 'unpack 'remove-symlinks-and-snap-packaging
             ;; Remove symlinks that make 'ensure-no-mtimes-pre-1980 fail.
             (lambda _
-              (delete-file "examples/dstat.py")
               (delete-file-recursively "packaging/snap")))
           (delete 'build)
           (replace 'install
@@ -3579,7 +3578,7 @@ throughput (in the same interval).")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "./dool" "--version")
-                (invoke "./dool" "-taf" "1" "5")))))))
+                (invoke "./dool" "-ta" "1" "5")))))))
     (synopsis "Command line system resource monitoring tool")
     (description "Dool is a command line tool to monitor many aspects of your
 system: CPU, Memory, Network, Load Average, etc.  It also includes a robust
