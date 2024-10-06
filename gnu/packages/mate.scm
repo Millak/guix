@@ -961,6 +961,7 @@ icons on the MATE desktop.  It works on local and remote file systems.")
            fontconfig
            freetype
            glib
+           gsettings-desktop-schemas
            gtk+
            libappindicator
            libcanberra
