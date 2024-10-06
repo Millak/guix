@@ -44,7 +44,8 @@
      (list #:tests? #f                      ; musl has no tests
            #:configure-flags
            #~(list "--enable-wrapper=all"
-                   (string-append "--syslibdir=" #$output "/lib"))))
+                   (string-append "--syslibdir=" #$output "/lib"))
+           #:license-file-regexp "COPYRIGHT"))
     (inputs (list bash-minimal))
     (synopsis "Small C standard library")
     (description "musl is a simple and lightweight C standard library.  It
