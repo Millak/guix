@@ -19,12 +19,14 @@
 (define-module (guix import composer)
   #:use-module (ice-9 match)
   #:use-module (json)
-  #:use-module (guix hash)
   #:use-module (guix base32)
   #:use-module (guix build git)
   #:use-module (guix build utils)
   #:use-module (guix build-system)
   #:use-module (guix build-system composer)
+  #:use-module ((guix diagnostics) #:select (warning))
+  #:use-module (guix hash)
+  #:use-module (guix i18n)
   #:use-module (guix import json)
   #:use-module (guix import utils)
   #:use-module ((guix licenses) #:prefix license:)
@@ -113,7 +115,7 @@ package NAME with optional VERSION, or #f on failure."
          (if version
              (assoc-ref packages version)
              (cdr
-              (reduce
+              (fold
                (lambda (new cur-max)
                  (match new
                    (((? valid-version? version) . tail)
@@ -217,13 +219,8 @@ dependencies, or #f and the empty list on failure."
 (define (guix-package->composer-name package)
   "Given a Composer PACKAGE built from Packagist, return the name of the
 package in Packagist."
-  (let ((upstream-name (assoc-ref
-                         (package-properties package)
-                         'upstream-name))
-        (name (package-name package)))
-    (if upstream-name
-      upstream-name
-      (guix-name->composer-name name))))
+  (or (assoc-ref (package-properties package) 'upstream-name)
+      (guix-name->composer-name (package-name package))))
 
 (define (string->license str)
   "Convert the string STR into a license object."
@@ -243,8 +240,14 @@ package in Packagist."
    (eq? (package-build-system package) composer-build-system)
    (string-prefix? "php-" (package-name package))))
 
-(define* (latest-release package #:key (version #f))
-  "Return an <upstream-source> for the latest release of PACKAGE."
+(define (dependency->input dependency type)
+  (upstream-input
+   (name dependency)
+   (downstream-name (php-package-name dependency))
+   (type type)))
+
+(define* (import-release package #:key (version #f))
+  "Return an <upstream-source> for VERSION or the latest release of PACKAGE."
   (let* ((php-name (guix-package->composer-name package))
          (composer-package (composer-fetch php-name #:version version)))
     (if composer-package
@@ -252,7 +255,12 @@ package in Packagist."
          (package (composer-package-name composer-package))
          (version (composer-package-version composer-package))
          (urls (list (composer-source-url
-                      (composer-package-source composer-package)))))
+                      (composer-package-source composer-package))))
+         (inputs (append
+                  (map (cut dependency->input <> 'regular)
+                       (composer-package-require composer-package))
+                  (map (cut dependency->input <> 'native)
+                       (composer-package-dev-require composer-package)))))
         (begin
           (warning (G_ "failed to parse ~a~%") php-name)
           #f))))
@@ -262,7 +270,7 @@ package in Packagist."
    (name 'composer)
    (description "Updater for Composer packages")
    (pred php-package?)
-   (import latest-release)))
+   (import import-release)))
 
 (define* (composer-recursive-import package-name #:optional version)
   (recursive-import package-name
