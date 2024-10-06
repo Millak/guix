@@ -94228,6 +94228,28 @@ implementation that works everywhere, even WASM!")
     (native-inputs '())
     (inputs '())))
 
+(define-public rust-zlib-rs-0.3
+  (package
+    (name "rust-zlib-rs")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zlib-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06kkjpqddvb5n8c24mmd3lmmcsy2yfwfsjyni8dggysayfd7r50b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-libz-sys" ,rust-libz-sys-1)
+                       ("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/trifectatechfoundation/zlib-rs")
+    (synopsis "Memory-safe zlib implementation written in Rust")
+    (description
+     "This package provides a memory-safe zlib implementation written in Rust.")
+    (license license:zlib)))
+
 (define-public rust-zopfli-0.8
   (package
     (name "rust-zopfli")
