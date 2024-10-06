@@ -771,10 +771,7 @@ of index files."
                 (number->string server-names-hash-bucket-max-size)
                 ";\n")
                "")
-           "\n"
-           (map emit-nginx-upstream-config upstream-blocks)
-           (map emit-nginx-server-config server-blocks)
-           (match extra-content
+	   (match extra-content
              ((? list? extra-content)
               (map (lambda (line)
                      `("    " ,line "\n"))
@@ -782,7 +779,10 @@ of index files."
              ;; XXX: For compatibility strings and gexp's are inserted
              ;; directly.
              (_ extra-content))
-           "\n}\n"))))
+           "\n"
+           (map emit-nginx-upstream-config upstream-blocks)
+           (map emit-nginx-server-config server-blocks)
+           "}\n"))))
 
 (define %nginx-accounts
   (list (user-group (name "nginx") (system? #t))
