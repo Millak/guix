@@ -27500,14 +27500,14 @@ test multiple times.")
 (define-public rust-flate2-1
   (package
     (name "rust-flate2")
-    (version "1.0.28")
+    (version "1.0.34")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "flate2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03llhsh4gqdirnfxxb9g2w9n0721dyn4yjir3pz7z4vjaxb3yc26"))))
+        (base32 "1w1nf2ap4q1sq1v6v951011wcvljk449ap7q7jnnjf8hvjs8kdd1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -27515,13 +27515,13 @@ test multiple times.")
         ("rust-crc32fast" ,rust-crc32fast-1)
         ("rust-libz-ng-sys" ,rust-libz-ng-sys-1)
         ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-libz-rs-sys" ,rust-libz-rs-sys-0.3)
         ("rust-miniz-oxide" ,rust-miniz-oxide-0.7))
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-rand" ,rust-rand-0.8))))
-    (home-page "https://github.com/alexcrichton/flate2-rs")
-    (synopsis
-     "Bindings to miniz.c for DEFLATE compression and decompression")
+    (home-page "https://github.com/rust-lang/flate2-rs")
+    (synopsis "Bindings to miniz.c for DEFLATE compression and decompression")
     (description
      "Bindings to miniz.c for DEFLATE compression and decompression exposed as
 Reader/Writer streams.  Contains bindings for zlib, deflate, and gzip-based
