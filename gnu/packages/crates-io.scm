@@ -22519,14 +22519,14 @@ for intentionally leaking memory")
 (define-public rust-displaydoc-0.2
   (package
     (name "rust-displaydoc")
-    (version "0.2.4")
+    (version "0.2.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "displaydoc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0p8pyg10csc782qlwx3znr6qx46ni96m1qh597kmyrf6s3s8axa8"))))
+                 "1q0alair462j21iiqwrr21iabkfnb13d6x5w95lkdg21q2xrqdlp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
