@@ -22057,6 +22057,12 @@ If @code{#t}, Tor will listen for control commands on the UNIX domain socket
 @file{/var/run/tor/control-sock}, which will be made writable by members of the
 @code{tor} group.
 
+@item @code{transport-plugins} (default: @code{'()})
+The list of @code{<tor-transport-plugin>} records to use.
+For any transport plugin you include in this list, appropriate
+configuration line to enable transport plugin will be automatically
+added to the default configuration file.
+
 @end table
 @end deftp
 
@@ -22083,6 +22089,68 @@ Association list of port to address mappings.  The following example:
 maps ports 22 and 80 of the Onion Service to the local ports 22 and 8080.
 
 @end table
+@end deftp
+
+@cindex pluggable transports, tor
+@deftp {Data Type} tor-transport-plugin
+Data type representing a Tor pluggable transport plugin in
+@code{tor-configuration}.  Plugguble transports are programs
+that disguise Tor traffic, which can be useful in case Tor is
+censored.  See the the Tor project's
+@url{https://tb-manual.torproject.org/circumvention/,
+documentation} and
+@url{https://spec.torproject.org/pt-spec/index.html,
+specification} for more information.
+
+Each transport plugin corresponds either to
+@code{ClientTransportPlugin ...} or to
+@code{ServerTransportPlugin ...} line in the default
+configuration file, see @command{man tor}.
+Available @code{tor-transport-plugin} fields are:
+
+@table @asis
+@item @code{role} (default: @code{'client})
+This must be either @code{'client} or @code{'server}.  Otherwise,
+an error is raised.  Set the @code{'server} value if you want to
+run a bridge to help censored users connect to the Tor network, see
+@url{https://community.torproject.org/relay/setup/bridge/,
+the Tor project's brige guide}.  Set the @code{'client} value
+if you want to connect to somebody else's bridge, see
+@url{https://bridges.torproject.org/, the Tor project's
+``Get Bridges'' page}.  In both cases the required
+additional configuration should be provided via
+@code{#:config-file} option of @code{tor-configuration}.
+@item @code{protocol} (default: @code{"obfs4"})
+A string that specifies a pluggable transport protocol.
+@item @code{program}
+This must be a ``file-like'' object or a string
+pointing to the pluggable transport plugin executable.
+This option allows the Tor daemon run inside the container
+to access the executable and all the references
+(e.g. package dependencies) attached to it.
+@end table
+
+Suppose you would like Tor daemon to use obfs4 type obfuscation and
+to connect to Tor network via obfs4 bridge (a nonpublic Tor relay with
+support for obfs4 type obfuscation). Then you may go to
+@url{https://bridges.torproject.org/, https://bridges.torproject.org/}
+and get there a couple of bridge lines (each starts with @code{obfs4 ...})
+and use these lines in tor-service-type configuration as follows:
+@lisp
+(service tor-service-type
+	 (tor-configuration
+	  (config-file (plain-file "torrc"
+				   "\
+UseBridges 1
+Bridge obfs4 ...
+Bridge obfs4 ..."))
+	  (transport-plugins
+	   (list (tor-transport-plugin
+		  (program
+		   (file-append
+		    go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
+		    "/bin/lyrebird")))))))
+@end lisp
 @end deftp
 
 The @code{(gnu services rsync)} module provides the following services:

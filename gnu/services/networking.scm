@@ -161,10 +161,16 @@
             tor-configuration-hidden-services
             tor-configuration-socks-socket-type
             tor-configuration-control-socket-path
+            tor-configuration-transport-plugins
             tor-onion-service-configuration
             tor-onion-service-configuration?
             tor-onion-service-configuration-name
             tor-onion-service-configuration-mapping
+	    tor-transport-plugin
+	    tor-transport-plugin?
+	    tor-plugin-role
+	    tor-plugin-protocol
+	    tor-plugin-program
             tor-hidden-service  ; deprecated
             tor-service-type
 
@@ -975,7 +981,9 @@ applications in communication.  It is used by Jami, for example.")))
   (socks-socket-type tor-configuration-socks-socket-type ; 'tcp or 'unix
                      (default 'tcp))
   (control-socket?  tor-configuration-control-socket-path
-                    (default #f)))
+                    (default #f))
+  (transport-plugins tor-configuration-transport-plugins
+                    (default '())))
 
 (define %tor-accounts
   ;; User account and groups for Tor.
@@ -1005,10 +1013,24 @@ Onion Service.")
 @end lisp
 maps ports 22 and 80 of the Onion Service to the local ports 22 and 8080."))
 
+(define-record-type* <tor-transport-plugin>
+  tor-transport-plugin make-tor-transport-plugin
+  tor-transport-plugin?
+  (role           tor-plugin-role
+		  (default 'client)
+		  (sanitize (lambda (value)
+			      (if (memq value '(client server))
+				  value
+				  (configuration-field-error #f 'role value)))))
+  (protocol       tor-plugin-protocol
+		  (default "obfs4"))
+  (program        tor-plugin-program))
+
 (define (tor-configuration->torrc config)
   "Return a 'torrc' file for CONFIG."
   (match-record config <tor-configuration>
-    (tor config-file hidden-services socks-socket-type control-socket?)
+    (tor config-file hidden-services socks-socket-type control-socket?
+         transport-plugins)
     (computed-file
      "torrc"
      (with-imported-modules '((guix build utils))
@@ -1047,6 +1069,20 @@ HiddenServicePort ~a ~a~%"
                                     (cons name mapping)))
                                  hidden-services))
 
+               (for-each (match-lambda
+                           ((role-string protocol program)
+                            (format port "\
+~aTransportPlugin ~a exec ~a~%"
+                                    role-string protocol program)))
+                         '#$(map (match-lambda
+                                   (($ <tor-transport-plugin> role protocol program)
+                                    (list (if (eq? role 'client)
+                                              "Client"
+                                              "Server")
+                                          protocol
+                                          program)))
+                                 transport-plugins))
+
                (display "\
 ### End of automatically generated lines.\n\n" port)
 
@@ -1059,20 +1095,27 @@ HiddenServicePort ~a ~a~%"
 (define (tor-shepherd-service config)
   "Return a <shepherd-service> running Tor."
   (let* ((torrc (tor-configuration->torrc config))
+         (transport-plugins (tor-configuration-transport-plugins config))
          (tor   (least-authority-wrapper
                  (file-append (tor-configuration-tor config) "/bin/tor")
                  #:name "tor"
-                 #:mappings (list (file-system-mapping
-                                   (source "/var/lib/tor")
-                                   (target source)
-                                   (writable? #t))
-                                  (file-system-mapping
-                                   (source "/var/run/tor")
-                                   (target source)
-                                   (writable? #t))
-                                  (file-system-mapping
-                                   (source torrc)
-                                   (target source)))
+                 #:mappings (append
+                             (list (file-system-mapping
+                                    (source "/var/lib/tor")
+                                    (target source)
+                                    (writable? #t))
+                                   (file-system-mapping
+                                    (source "/var/run/tor")
+                                    (target source)
+                                    (writable? #t))
+                                   (file-system-mapping
+                                    (source torrc)
+                                    (target source)))
+                             (map (lambda (plugin)
+				    (file-system-mapping
+				     (source (tor-plugin-program plugin))
+				     (target source)))
+				  transport-plugins))
                  #:namespaces (delq 'net %namespaces))))
     (list (shepherd-service
            (provision '(tor))
