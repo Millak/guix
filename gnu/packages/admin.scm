@@ -5013,7 +5013,7 @@ elogind's uaccess feature.")
 (define-public jc
   (package
     (name "jc")
-    (version "1.25.2")
+    (version "1.25.3")
     (source
      (origin
        ;; The PyPI tarball lacks the test suite.
@@ -5023,7 +5023,7 @@ elogind's uaccess feature.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17cik2jlj3ph7bsyn73gdp8d32nc56dmb96ijmzpwm0kdvd7sdj8"))))
+        (base32 "0ay5wh00fzblibvvcz3jh83n8mpkfsfqmix93fz9za5kf3gpk7na"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -5031,8 +5031,7 @@ elogind's uaccess feature.")
                ;; XXX Guix's America/Los_Angeles time zone is somehow broken.
                (add-before 'check 'hack-time-zone
                  (lambda _
-                   (substitute* (find-files "tests" "^test.*\\.py$")
-                     (("America/Los_Angeles") "PST8PDT")))))))
+                   (setenv "TZ" "PST8PDT"))))))
     (native-inputs (list python-pytest))
     (propagated-inputs
      (list python-pygments python-ruamel.yaml python-xmltodict))
