@@ -82466,14 +82466,15 @@ handle Unicode characters correctly.")
 (define-public rust-thiserror-1
   (package
     (name "rust-thiserror")
-    (version "1.0.56")
+    (version "1.0.64")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "thiserror" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1b9hnzngjan4d89zjs16i01bcpcnvdwklyh73lj16xk28p37hhym"))))
+        (base32
+          "114s8lmssxl0c2480s671am88vzlasbaikxbvfv8pyqrq6mzh2nm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
