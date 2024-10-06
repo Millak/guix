@@ -324,13 +324,14 @@ utility functions and modules all written in high-level Tcl.")
   (package
     (name "tklib")
     (version "0.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://core.tcl.tk/tklib/tarball/tklib-"
-                                  version ".tar.gz?uuid=tklib-0-6"))
-              (sha256
-               (base32
-                "03y0bzgwbh7nnyqkh8n00bbkq2fyblq39s3bdb6mawna0bbn0wwg"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://core.tcl.tk/tklib/tarball/tklib-"
+                           version ".tar.gz?uuid=tklib-0-6"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03y0bzgwbh7nnyqkh8n00bbkq2fyblq39s3bdb6mawna0bbn0wwg"))))
     (build-system gnu-build-system)
     (native-inputs
      (list tcl))
