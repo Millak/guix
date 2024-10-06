@@ -243,16 +243,19 @@ package in Packagist."
    (eq? (package-build-system package) composer-build-system)
    (string-prefix? "php-" (package-name package))))
 
-(define (latest-release package)
+(define* (latest-release package #:key (version #f))
   "Return an <upstream-source> for the latest release of PACKAGE."
   (let* ((php-name (guix-package->composer-name package))
-         (package (composer-fetch php-name))
-         (version (composer-package-version package))
-         (url (composer-source-url (composer-package-source package))))
-    (upstream-source
-     (package (package-name package))
-     (version version)
-     (urls (list url)))))
+         (composer-package (composer-fetch php-name #:version version)))
+    (if composer-package
+        (upstream-source
+         (package (composer-package-name composer-package))
+         (version (composer-package-version composer-package))
+         (urls (list (composer-source-url
+                      (composer-package-source composer-package)))))
+        (begin
+          (warning (G_ "failed to parse ~a~%") php-name)
+          #f))))
 
 (define %composer-updater
   (upstream-updater
