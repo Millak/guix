@@ -94432,14 +94432,15 @@ implementation that works everywhere, even WASM!")
 (define-public rust-zstd-safe-7
   (package
     (name "rust-zstd-safe")
-    (version "7.0.0")
+    (version "7.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zstd-safe" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gpav2lcibrpmyslmjkcn3w0w64qif3jjljd2h8lr4p249s7qx23"))))
+        (base32
+          "0nch85m5cr493y26yvndm6a8j6sd9mxpr2awrim3dslcnr6sp8sl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-zstd-sys" ,rust-zstd-sys-2))))
