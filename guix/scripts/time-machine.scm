@@ -52,8 +52,10 @@
 ;;;
 
 (define (show-help)
-  (display (G_ "Usage: guix time-machine [OPTION] -- COMMAND ARGS...
-Execute COMMAND ARGS... in an older version of Guix.\n"))
+  (display (G_ "Usage: guix time-machine [OPTION] [-- COMMAND ARGS...]
+Execute COMMAND ARGS... in an older version of Guix.
+
+If COMMAND is not provided, print path to the time-machine profile.\n"))
   (display (G_ "
   -C, --channels=FILE    deploy the channels defined in FILE"))
   (display (G_ "
@@ -179,22 +181,22 @@ to %OLDEST-POSSIBLE-COMMIT is not that of an ancestor."
             (ref          (assoc-ref opts 'ref))
             (substitutes?  (assoc-ref opts 'substitutes?))
             (authenticate? (assoc-ref opts 'authenticate-channels?)))
-       (if command-line
-           (let* ((directory
-                   (with-store store
-                     (with-status-verbosity (assoc-ref opts 'verbosity)
-                       (with-build-handler (build-notifier #:use-substitutes?
-                                                           substitutes?
-                                                           #:verbosity
-                                                           (assoc-ref opts 'verbosity)
-                                                           #:dry-run? #f)
-                         (set-build-options-from-command-line store opts)
-                         (cached-channel-instance store channels
-                                                  #:authenticate? authenticate?
-                                                  #:reference-channels
-                                                  %reference-channels
-                                                  #:validate-channels
-                                                  validate-guix-channel)))))
-                  (executable (string-append directory "/bin/guix")))
-             (apply execl (cons* executable executable command-line)))
-           (warning (G_ "no command specified; nothing to do~%")))))))
+       (let* ((directory
+               (with-store store
+                 (with-status-verbosity (assoc-ref opts 'verbosity)
+                   (with-build-handler (build-notifier #:use-substitutes?
+                                                       substitutes?
+                                                       #:verbosity
+                                                       (assoc-ref opts 'verbosity)
+                                                       #:dry-run? #f)
+                     (set-build-options-from-command-line store opts)
+                     (cached-channel-instance store channels
+                                              #:authenticate? authenticate?
+                                              #:reference-channels
+                                              %reference-channels
+                                              #:validate-channels
+                                              validate-guix-channel)))))
+              (executable (string-append directory "/bin/guix")))
+         (if command-line
+             (apply execl (cons* executable executable command-line))
+             (format #t "~a\n" directory)))))))

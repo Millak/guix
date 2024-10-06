@@ -4762,6 +4762,11 @@ Note that @command{guix time-machine} can trigger builds of channels and
 their dependencies, and these are controlled by the standard build
 options (@pxref{Common Build Options}).
 
+If @command{guix time-machine} is executed without any command, it
+prints the file name of the profile that would be used to execute the
+command.  This is sometimes useful if you need to get store file name of
+the profile---e.g., when you want to @command{guix copy} it.
+
 @node Inferiors
 @section Inferiors
 
