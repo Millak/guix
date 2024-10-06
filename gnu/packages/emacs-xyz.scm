@@ -16,7 +16,7 @@
 ;;; Copyright © 2016, 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016, 2017, 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2016-2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016-2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Clément Lassieur <clement@lassieur.org>
@@ -4912,6 +4912,34 @@ the ability to jump forward and backward to the next bookmark.")
     (description
      "This package displays a calendar view with various schedule data in the
 Emacs buffer.")
+    (license license:gpl3+)))
+
+(define-public emacs-varuga
+  (package
+    (name "emacs-varuga")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.systemreboot.net/varuga/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "01hlnhqhys8qzfwhza1ypc436zg5lhlkx5yy71bhmrbmyfzfh0fr"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #t))
+    (home-page "https://git.systemreboot.net/varuga/about/")
+    (synopsis "Send iCal calendar invites by email")
+    (description
+     "Varuga allows you to format and send iCal calendar invites using your
+Emacs mail client.  These invites are similar to those produced by Google
+Calendar or Outlook Calendar, and are compatible with them.
+
+Varuga populates a Message mode buffer with an iCal MIME part (using MML, the
+MIME Meta Language).  It also adds a plain text part listing the time of the
+event in various configured timezones.")
     (license license:gpl3+)))
 
 (define-public emacs-caml
