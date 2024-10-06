@@ -37157,26 +37157,22 @@ the jni-bindgen code generator for binding to JVM APIs from Rust.")
 (define-public rust-jobserver-0.1
   (package
     (name "rust-jobserver")
-    (version "0.1.28")
+    (version "0.1.32")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "jobserver" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1mji1wis4w76v3issgpah2x3j1k0ybq0cz3qgypg7pkdablscimb"))))
+        (base32 "1l2k50qmj84x9mn39ivjz76alqmx72jhm12rw33zx9xnpv5xpla8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
-       (("rust-futures" ,rust-futures-0.1)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-tokio-core" ,rust-tokio-core-0.1)
-        ("rust-tokio-process" ,rust-tokio-process-0.2))))
-    (home-page "https://github.com/alexcrichton/jobserver-rs")
+       (("rust-nix" ,rust-nix-0.28)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/rust-lang/jobserver-rs")
     (synopsis "GNU make jobserver for Rust")
     (description
      "An implementation of the GNU make jobserver for Rust.")
