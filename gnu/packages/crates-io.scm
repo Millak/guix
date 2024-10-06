@@ -94331,14 +94331,15 @@ implementation that works everywhere, even WASM!")
 (define-public rust-zstd-0.13
   (package
     (name "rust-zstd")
-    (version "0.13.0")
+    (version "0.13.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zstd" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0401q54s9r35x2i7m1kwppgkj79g0pb6xz3xpby7qlkdb44k7yxz"))))
+        (base32
+          "1ygkr6wspm9clbp7ykyl0rv69cfsf9q4lic9wcqiwn34lrwbgwpw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
