@@ -765,7 +765,7 @@ purposes developed at Queen Mary, University of London.")
 (define-public ardour
   (package
     (name "ardour")
-    (version "8.4")
+    (version "8.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -782,14 +782,13 @@ purposes developed at Queen Mary, University of London.")
 namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }")))))
               (sha256
                (base32
-                "17gh1yaaby17zwx43h5v8dsrcznks9pn8jddc3wadq13b5x7zb7a"))
-              (file-name (string-append name "-" version))))
+                "1wam4vq9l4g626x8rdvr6c3dqv8fc6llyxriiq77zyqc9sba3pjb"))
+              (file-name (git-file-name name version))))
     (build-system waf-build-system)
     (arguments
      (list
       #:configure-flags
-      '(list "--cxx11"                  ;required by gtkmm
-             "--optimize"
+      '(list "--optimize"
              "--no-phone-home"          ;don't contact ardour.org
              "--no-ytk"                 ;don't use bundled GTK2
              "--freedesktop"            ;build .desktop file
