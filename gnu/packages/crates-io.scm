@@ -20658,14 +20658,15 @@ written in rust.")
 (define-public rust-deflate64-0.1
   (package
     (name "rust-deflate64")
-    (version "0.1.6")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "deflate64" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1aagh5mmyr8p08if33hizqwiq2as90v9smla89nydq6pivsfy766"))))
+        (base32
+          "06scix17pa7wzzfsnhkycpcc6s04shs49cdaxx2k1sl0226jnsfs"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs (("rust-bytemuck" ,rust-bytemuck-1)
