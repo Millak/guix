@@ -1530,7 +1530,7 @@ and should be used with caution, especially on untested models.")
 (define-public corefreq
   (package
     (name "corefreq")
-    (version "1.96.5")
+    (version "1.98.4")
     (source
      (origin
        (method git-fetch)
@@ -1539,7 +1539,11 @@ and should be used with caution, especially on untested models.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15wi9v7zcd62ab03zji43l33f1mc70lsdvqylv33kfpaf3k72lm4"))))
+        (base32 "0mxp5h23y09674syaj5gpdifr53zvgjv7g7hargwg6897883qfln"))))
+    ;; The upstream Makefile is now such a proprietary mess that standard builds
+    ;; as performed by our linux-module-build-system are more or less impossible
+    ;; without heavy patching.  However, we still keep it as the main build
+    ;; system because lifting out LINUX-MODULE-BUILDER would be even messier.
     (build-system linux-module-build-system)
     (outputs (list "out" "linux-module"))
     (arguments
@@ -1550,30 +1554,52 @@ and should be used with caution, especially on untested models.")
                        (guix build utils))
            #:make-flags
            #~(list (string-append "CC=" #$(cc-for-target))
-               "OPTIM_LVL=3"
-               (string-append "PREFIX=" #$output))
-           #:tests? #f                      ; no test suite
+                   "OPTIM_LVL=3"
+                   (string-append "PREFIX=" #$output))
+           #:tests? #f                   ;no test suite
+           #:source-directory "../build" ;must contain modules.order
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'untangle-module-targets
-                 ;; Having to build everything in one pass would complicate the
-                 ;; definition.  Let each build system handle what it's good at.
+               (add-after 'unpack 'patch-Makefile
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((dir (search-input-directory
+                               inputs "lib/modules/build")))
+                     (substitute* "Makefile"
+                       (("^(KERNELREL \\?= ).*" _ =)
+                        (string-append = (dirname dir) "\n"))
+                       (("^(KERNELDIR \\?= ).*" _ =)
+                        (string-append = dir "\n"))
+                       (("^([[:space:]]+)(.* modules_install.*)"
+                         _ indent command)
+                        (string-append indent "@echo skipping " command))))))
+               (add-before 'build 'prepare
+                 (lambda* (#:key source-directory make-flags #:allow-other-keys)
+                   ;; Lazily fix another mismatch between what the kernel module
+                   ;; build system expects and what this package provides.
+                   (symlink "source/build" source-directory) ;$(BUILD)
+                   ;; Set up symbolic links inside $(BUILD), for some reason.
+                   (apply invoke "make" "prepare" make-flags)))
+               (replace 'build (assoc-ref gnu:%standard-phases 'build))
+               (add-before 'install 'resolve-symlink
+                 ;; The build system silently fails to install from a symlink.
                  (lambda _
-                   (substitute* "Makefile"
-                     ((".*MAKE.*KERNELDIR.*") ""))))
-               (add-after 'build 'gnu:build
-                 (assoc-ref gnu:%standard-phases 'build))
+                   (delete-file "../build")
+                   (copy-recursively "build" "../build")))
+               (add-before 'install 'create-output
+                 (lambda _
+                   ;; Avoid installing the corefreq binary as …/bin.
+                   (mkdir-p (string-append #$output "/bin"))))
                (add-after 'install 'gnu:install
                  (assoc-ref gnu:%standard-phases 'install))
                (add-after 'install 'separate-module
                  (lambda* (#:key outputs #:allow-other-keys)
                    ;; Adding INSTALL_MOD_PATH= to #:make-flags would still create an
                    ;; empty <out>/lib/modules directory, so just do it all by hand.
-                   (let* ((out    (assoc-ref outputs "out"))
+                   (let* ((output (assoc-ref outputs "out"))
                           (module (assoc-ref outputs "linux-module")))
-                     (mkdir-p (string-append module "/lib"))
-                     (rename-file (string-append out    "/lib/modules")
-                                  (string-append module "/lib/modules")))))
+                     (mkdir-p module)
+                     (rename-file (string-append output "/lib")
+                                  (string-append module "/lib")))))
                (add-after 'install 'install-README
                  ;; There is no proper documentation.  Provide something.
                  (lambda* (#:key outputs #:allow-other-keys)
