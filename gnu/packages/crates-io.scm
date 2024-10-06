@@ -12129,7 +12129,7 @@ types that works on stable Rust.")
 (define-public rust-cc-1
   (package
     (name "rust-cc")
-    (version "1.0.83")
+    (version "1.1.28")
     (source
      (origin
        (method url-fetch)
@@ -12137,16 +12137,17 @@ types that works on stable Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1l643zidlb5iy1dskc5ggqs4wqa29a02f44piczqc8zcnsq4y5zi"))))
+          "1hdzh7161ixzmk6znpzdx0ldqw1rlrk0d6xf3h7881xblfvf701f"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f
        #:cargo-inputs
        (("rust-jobserver" ,rust-jobserver-0.1)
-        ("rust-libc" ,rust-libc-0.2))
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-shlex" ,rust-shlex-1))
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/alexcrichton/cc-rs")
+    (home-page "https://github.com/rust-lang/cc-rs")
     (synopsis "Invoke the native C compiler")
     (description
      "This package provides a build-time dependency for Cargo build scripts to
