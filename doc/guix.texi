@@ -32342,7 +32342,16 @@ the default port is 80, and a different port can be specified
 explicitly.
 
 @item @code{extra-content}
-A string or list of strings to add to the upstream block.
+Additional content to be appended to the upstream block.  Can be a
+string or file-like object or list of thereof.  In case of list, each
+item is prefixed with indentation and suffixed with a new line.  Nested
+lists are flattened.
+
+@lisp
+(extra-content "include /etc/nginx/custom-config.conf;")
+(extra-content `("include /etc/nginx/custom-config.conf;"
+                 ("include " ,%custom-config.conf ";")))
+@end lisp
 
 @end table
 @end deftp

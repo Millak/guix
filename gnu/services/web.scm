@@ -704,8 +704,10 @@ of index files."
          (cons
           "\n"
           (map (lambda (line)
-                 (simple-format #f "      ~A\n" line))
-               (flatten extra-content)))
+                 `("      " ,line "\n"))
+               (if (list? extra-content)
+                   extra-content
+                   (list extra-content))))
          '()))
    "    }\n"))
 
