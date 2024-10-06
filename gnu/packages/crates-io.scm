@@ -40046,22 +40046,25 @@ known as zlib).")
                    license:expat))))
 
 (define-public rust-libz-ng-sys-1
+  ;; TODO: Unbundle zlib-ng.
   (package
     (name "rust-libz-ng-sys")
-    (version "1.1.8")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "libz-ng-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1wp0aya5hh76h1acspvrrsvq2fl0kyb8dpi6wy0zaswnm6bax6a3"))))
+    (version "1.1.16")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "libz-ng-sys" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0f54ffm7bzqdvmcxkv2as6ir9bgzhkaq0g1jgwkz2mns04d7adj4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cmake" ,rust-cmake-0.1)
         ("rust-libc" ,rust-libc-0.2))))
+    (native-inputs
+     (list cmake-minimal pkg-config zlib))
     (home-page "https://github.com/rust-lang/libz-sys")
     (synopsis "Low-level bindings to zlib-ng (libz-ng)")
     (description
