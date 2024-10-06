@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
@@ -331,6 +331,9 @@ will name the threaded machine type unless THREADS? is provided as #f."
         (srfi srfi-34))
       #:out-of-source? #t
       #:test-target "test" ; test-one test-some-fast test-some test test-more
+      ;; Tests take more than 30 hours on riscv64.
+      #:tests? (and (not (target-riscv64?))
+                    (not (%current-target-system)))
       #:configure-flags
       #~`(,@(let* ((chez+version (strip-store-file-name #$output))
                    (doc-dir (string-append #$output:doc
