@@ -29,6 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
@@ -1548,11 +1549,28 @@ used to bring up authentication dialogs.")
        (sha256
         (base32 "0929yk7g7103d18p400ysi19pqrxl3dyzg4l0mnw7a3azm7ri67y"))))
     (build-system glib-or-gtk-build-system)
+    (arguments
+     (list
+      #:imported-modules `((guix build python-build-system)
+                           ,@%glib-or-gtk-build-system-modules)
+      #:modules '((guix build utils)
+                  (guix build glib-or-gtk-build-system)
+                  ((guix build python-build-system) #:prefix python:))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/mozo")
+                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                       ,(python:site-packages inputs outputs)))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
      (list pkg-config))
     (inputs
      (list gettext-minimal
+           gtk+
            mate-menus
+           mate-panel
            python
            python-pygobject))
     (home-page "https://mate-desktop.org/")
