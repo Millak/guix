@@ -40068,6 +40068,26 @@ known as zlib).")
 high-performance zlib library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-libz-rs-sys-0.3
+  (package
+    (name "rust-libz-rs-sys")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libz-rs-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vsnvkff9i4qxnid1xl7wrmhz8alvqw9z5lnpimpzzgrxr4r56q0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-zlib-rs" ,rust-zlib-rs-0.3))))
+    (home-page "https://github.com/trifectatechfoundation/zlib-rs")
+    (synopsis "Memory-safe zlib implementation written in Rust")
+    (description
+     "This package provides a memory-safe zlib implementation written in Rust.")
+    (license license:zlib)))
+
 (define-public rust-lifeguard-0.6
   (package
     (name "rust-lifeguard")
