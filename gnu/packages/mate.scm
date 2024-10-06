@@ -951,38 +951,38 @@ icons on the MATE desktop.  It works on local and remote file systems.")
            xmodmap
            gobject-introspection))
     (inputs
-     `(("at-spi2-core" ,at-spi2-core)
-       ("cairo" ,cairo)
-       ("caja" ,caja)
-       ("dconf" ,dconf)
-       ("dbus" ,dbus)
-       ("dbus-glib" ,dbus-glib)
-       ("elogind" ,elogind)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("libappindicator" ,libappindicator)
-       ("libcanberra" ,libcanberra)
-       ("libgtop" ,libgtop)
-       ("libmatekbd" ,libmatekbd)
-       ("libx11" ,libx11)
-       ("libxcursor" ,libxcursor)
-       ("libxext" ,libxext)
-       ("libxi" ,libxi)
-       ("libxklavier" ,libxklavier)
-       ("libxml2" ,libxml2)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("marco" ,marco)
-       ("mate-desktop" ,mate-desktop)
-       ("mate-menus" ,mate-menus)
-       ("mate-settings-daemon" ,mate-settings-daemon)
-       ("pango" ,pango)
-       ("polkit" ,polkit)
-       ("startup-notification" ,startup-notification)
-       ("udisks" ,udisks)))
+     (list at-spi2-core
+           cairo
+           caja
+           dconf
+           dbus
+           dbus-glib
+           elogind
+           fontconfig
+           freetype
+           glib
+           gtk+
+           libappindicator
+           libcanberra
+           libgtop
+           libmatekbd
+           libx11
+           libxcursor
+           libxext
+           libxi
+           libxklavier
+           libxml2
+           libxrandr
+           libxrender
+           libxscrnsaver
+           marco
+           mate-desktop
+           mate-menus
+           mate-settings-daemon
+           pango
+           polkit
+           startup-notification
+           udisks))
     (propagated-inputs
      (list (librsvg-for-system)))        ;mate-slab.pc
     (home-page "https://mate-desktop.org/")
