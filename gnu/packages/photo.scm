@@ -823,14 +823,14 @@ a complete panorama and stitch any series of overlapping pictures.")
 (define-public rawtherapee
   (package
     (name "rawtherapee")
-    (version "5.10")
+    (version "5.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://rawtherapee.com/shared/source/"
                                   "rawtherapee-" version ".tar.xz"))
               (sha256
                (base32
-                "1nnjxc6xyfn1biys5hynsd21rny5r7zl5qvr2hhlmfjdslybb6d7"))))
+                "0977dnik78szwznl4knabigah0m394a4gdmjajcy4b8ixj6w3175"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -848,7 +848,9 @@ a complete panorama and stitch any series of overlapping pictures.")
               ;; See the file 'RELEASE_NOTES.txt' in the source distribution.
               "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
               "-DCMAKE_C_FLAGS=-O3 -fPIC"
-              "-DCACHE_NAME_SUFFIX=\"\"")))
+              "-DCACHE_NAME_SUFFIX=\"\""
+              "-DWITH_JXL=ON"
+              "-DWITH_SYSTEM_LIBRAW=ON")))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -864,8 +866,10 @@ a complete panorama and stitch any series of overlapping pictures.")
            libcanberra
            libiptcdata
            libjpeg-turbo
+           libjxl
            libpng
            (librsvg-for-system)
+           libraw
            libsigc++
            libtiff
            zlib))
