@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -25,6 +25,7 @@
                                      show-native-build-options-help)
   #:autoload   (guix transformations) (options->transformation
                                        transformation-option-key?
+                                       cacheable-transformation-option-key?
                                        show-transformation-options-help)
   #:autoload   (guix grafts) (%graft?)
   #:use-module (guix scripts)
@@ -417,11 +418,13 @@ return #f and #f."
        ;; Arbitrary expressions might be non-deterministic or otherwise depend
        ;; on external state so do not cache when they're used.
        (values #f #f))
-      ((((? transformation-option-key?) . _) . _)
+      ((((? transformation-option-key? key) . _) . rest)
        ;; Transformation options are potentially "non-deterministic", or at
-       ;; least depending on external state (with-source, with-commit, etc.),
-       ;; so do not cache anything when they're used.
-       (values #f #f))
+       ;; least depending on external state (with-source, with-commit, etc.).
+       ;; Cache only those that are known to be "cacheable".
+       (if (cacheable-transformation-option-key? key)
+           (loop rest system file (cons (first opts) specs))
+           (values #f #f)))
       ((('profile . _) . _)
        ;; If the user already specified a profile, there's nothing more to
        ;; cache.

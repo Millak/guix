@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Sarthak Shah <shahsarthakw@gmail.com>
 ;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
@@ -63,6 +63,7 @@
 
             show-transformation-options-help
             transformation-option-key?
+            cacheable-transformation-option-key?
             %transformation-options))
 
 ;;; Commentary:
@@ -938,6 +939,16 @@ are replaced by the specified upstream version."
     (with-latest . ,transform-package-latest)
     (with-version . ,transform-package-version)))
 
+(define %transformations-with-external-dependencies
+  ;; Subset of options that depend on external resources and that can thus be
+  ;; considered "non-deterministic" and non-cacheable.
+  '(with-source
+    with-branch
+    with-git-url
+    with-patch
+    with-latest
+    with-version))
+
 (define (transformation-procedure key)
   "Return the transformation procedure associated with KEY, a symbol such as
 'with-source', or #f if there is none."
@@ -951,6 +962,13 @@ are replaced by the specified upstream version."
 %TRANSFORMATION-OPTIONS) corresponding to a package transformation option.
 For example, (transformation-option-key? 'with-input) => #t."
   (->bool (transformation-procedure key)))
+
+(define (cacheable-transformation-option-key? key)
+  "Return true if KEY corresponds to a transformation option whose result can
+be cached--i.e., the transformation is deterministic and does not depend on
+external resources."
+  (and (transformation-option-key? key)
+       (not (memq key %transformations-with-external-dependencies))))
 
 
 ;;;
