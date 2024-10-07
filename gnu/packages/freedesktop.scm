@@ -1804,21 +1804,7 @@ Analysis and Reporting Technology) functionality.")
                 (("girdir = .*")
                  "girdir = $(datadir)/gir-1.0\n")
                 (("typelibsdir = .*")
-                 "typelibsdir = $(libdir)/girepository-1.0\n"))))
-          (add-after 'install 'wrap-udisksd
-            (lambda _
-              ;; Tell 'udisksd' where to find the 'mount' command.
-              (let ((utils #$(this-package-input "util-linux"))
-                    (cryptsetup #$(this-package-input "cryptsetup"))
-                    (parted #$(this-package-input "parted")))
-                (wrap-program (string-append #$output "/libexec/udisks2/udisksd")
-                  `("PATH" ":" prefix
-                    (,(string-append utils "/bin") ;for 'mount'
-                     ;; cryptsetup is required for setting encrypted
-                     ;; partitions, e.g. in gnome-disks
-                     ,(string-append cryptsetup "/sbin")
-                     "/run/current-system/profile/bin"
-                     "/run/current-system/profile/sbin")))))))))
+                 "typelibsdir = $(libdir)/girepository-1.0\n")))))))
     (home-page "https://www.freedesktop.org/wiki/Software/udisks/")
     (synopsis "Disk manager service")
     (description
