@@ -4401,6 +4401,8 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; See <https://github.com/radio-astro-tools/radio-beam/issues/129>.
+      #:tests? #f
       #:test-flags
       #~(list "-n" "auto")))
     (propagated-inputs
