@@ -4752,13 +4752,13 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "2.1.0")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "0bgb0n1nqwnvd6bh0f1cnbk3j2yygch88l9834hmsns4rg1ak6j9"))))
+        (base32 "08zkr0amc65dj2lr90d2r29cj23f8h0ms94qmmcgcq2r4xlpna10"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4784,7 +4784,9 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
            python-pytest-doctestplus
            python-pytest-xdist
            python-scipy
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/spacetelescope/stdatamodels")
     (synopsis
      "Core support for DataModel classes used in calibration pipelines")
