@@ -1750,7 +1750,7 @@ Analysis and Reporting Technology) functionality.")
 (define-public udisks
   (package
     (name "udisks")
-    (version "2.8.4")
+    (version "2.10.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1758,16 +1758,15 @@ Analysis and Reporting Technology) functionality.")
                     version "/udisks-" version ".tar.bz2"))
               (sha256
                (base32
-                "06cq52kp1nyy15qzylywy9s7hhhqc45k0s3y68crf0zsmjyng0yj"))))
+                "1klf5pcr9yg8g88mwwh3q2j0idfwd8hfr2q6nknhsm02yv638mxp"))))
     (build-system gnu-build-system)
     (native-inputs
      (list docbook-xml-4.3              ; to build the manpages
            docbook-xsl
+           gettext-minimal
            `(,glib "bin")               ; for glib-mkenums
-           gnome-common                 ; TODO: Why is this needed?
            gobject-introspection
            gtk-doc/stable
-           intltool
            pkg-config
            libxslt))
     (propagated-inputs
