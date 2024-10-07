@@ -3245,7 +3245,7 @@ Features include:
 (define-public git-annex-remote-rclone
   (package
     (name "git-annex-remote-rclone")
-    (version "0.6")
+    (version "0.8")
     (source
      (origin
        (method git-fetch)
@@ -3255,7 +3255,7 @@ Features include:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j0hlxji8d974fq7zd4xc02n0jpi31ylhxc7z4zp8iiwad5mkpxp"))))
+         "03m95620fp891ki6rsqw5nkydwx84nag5nhyvzfi3q64fpnpmb07"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
