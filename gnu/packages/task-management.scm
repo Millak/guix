@@ -439,24 +439,20 @@ on arbitrary tasks.  All the time data is saved in files residing in the
 (define-public todoman
   (package
     (name "todoman")
-    (version "4.1.0")
+    (version "4.4.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "todoman" version))
-        (sha256
-          (base32 "1j2h5cv8wnmw41fpz1ggsgi599qhk184cas9kgd92glj3m4alg6f"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "todoman" version))
+       (sha256
+        (base32 "1dlxmw919jvjxycf315vzs4f5q64gdjrp3988y8jkyivqywfwyqb"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-tests
-            (lambda _
-              (substitute* '("tests/test_cli.py" "tests/test_formatter.py")
-                (("tests\\.helpers") "helpers"))))
           (replace 'check
-            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+            (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "pytest" "--hypothesis-profile=ci"
                         "-vv" "tests" "-k"
@@ -466,20 +462,22 @@ on arbitrary tasks.  All the time data is saved in files residing in the
                          ;; Unknown failure
                          "and not test_default_command_args"))))))))
     (native-inputs
-      (list python-setuptools-scm
-            python-pytest
-            python-pytest-cov
-            python-freezegun))
+     (list python-freezegun
+           python-hypothesis
+           python-pytest
+           python-pytest-cov
+           python-pytest-runner
+           python-pytz))
     (propagated-inputs
-      (list python-atomicwrites
-            python-click
-            python-click-log
-            python-dateutil
-            python-humanize
-            python-icalendar
-            python-parsedatetime
-            python-pyxdg
-            python-urwid))
+     (list python-atomicwrites
+           python-click
+           python-click-log
+           python-dateutil
+           python-humanize
+           python-icalendar
+           python-parsedatetime
+           python-pyxdg
+           python-urwid))
     (home-page "https://todoman.readthedocs.io/")
     (synopsis "CalDav-based todo manager")
     (description "Todoman is a simple, standards-based, cli todo (aka: task)
