@@ -8856,16 +8856,15 @@ storage.")
   (package
     (inherit rust-block-padding-0.3)
     (name "rust-block-padding")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "block-padding" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0x6b2dgink7rc3755r8jl4kmndydy5563h3wz7z9jqrb25ygv2y9"))))))
+          "1bickjlmfw9iv63dp781n589rfybw879mik1va59833m1hvnqscd"))))))
 
 (define-public rust-block-padding-0.1
   (package
