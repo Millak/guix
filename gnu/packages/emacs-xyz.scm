@@ -4832,6 +4832,26 @@ code@{emacs-wiki.el}, it facilitates using hyperlinks and doing full-text
 searches.  Unlike code@{emacs-wiki.el}, it can be combined with any format.")
     (license license:gpl1+)))
 
+(define-public emacs-mediawiki-el
+  (package
+    (name "emacs-mediawiki-el")
+    (version "2.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/hexmode/mediawiki-el.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1d05jw2sa19rgzskvavh21bfmbh07yza1drfbgypsvay3nkjfd2z"))))
+    (build-system emacs-build-system)
+    (synopsis "emacs mediawiki editor")
+    (description "This package provides a way to edit mediawiki sites from
+within emacs.")
+    (home-page "https://github.com/hexmode/mediawiki-el")
+    (license license:agpl3+)))
+
 (define-public emacs-bm
   (package
     (name "emacs-bm")
