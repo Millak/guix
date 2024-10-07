@@ -6116,13 +6116,13 @@ orbit around the Earth.")
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
-    (version "0.8.8")
+    (version "0.8.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tweakwcs" version))
        (sha256
-        (base32 "148as0x1szk1wv13bwk947qs3rw5xj2286ccdbhzfzarng58a386"))))
+        (base32 "0a1ygsar9l6jybji9qibz6ja3picv9aiw2jmdcsqdfqhrppknqp7"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-astropy
@@ -6137,7 +6137,9 @@ orbit around the Earth.")
            python-pytest
            python-pytest-cov
            python-scipy
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://tweakwcs.readthedocs.io/en/latest/")
     (synopsis
      "Algorithms for matching and aligning catalogs and for tweaking the WCS")
