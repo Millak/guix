@@ -1207,24 +1207,29 @@ to create devices with respective mappings for the ATARAID sets discovered.")
     (native-inputs
      (list gobject-introspection
            pkg-config
-           python-wrapper
-           util-linux))
+           python-wrapper))
     (inputs
      (append
       (cons cryptsetup (libcryptsetup-propagated-inputs))
-      (list btrfs-progs
+      (list bcache-tools
+            btrfs-progs
             dosfstools
             dmraid
+            e2fsprogs
             eudev
             glib
+            gptfdisk
             kmod
             libbytesize
             libyaml
             lvm2
             mdadm
+            multipath-tools
             ndctl
             nss
+            ntfs-3g
             parted
+            util-linux
             volume-key
             xfsprogs)))
     (home-page "https://github.com/storaged-project/libblockdev")
