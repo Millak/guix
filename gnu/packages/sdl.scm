@@ -71,7 +71,7 @@
 (define-public sdl2
   (package
     (name "sdl2")
-    (version "2.30.1")
+    (version "2.30.8")
     (source (origin
               (method url-fetch)
               (uri
@@ -79,7 +79,7 @@
                               version ".tar.gz"))
               (sha256
                (base32
-                "0fj7gxc7rlzzrafnx9nmf7ws3paxy583fmx7bcbavi6gr3xmy881"))))
+                "0n006l1zds2av8a9p6m6l0mj7jwb3jbr6mq7j0nxg6vblxg2j31q"))))
     (build-system gnu-build-system)
     (arguments
      (list
