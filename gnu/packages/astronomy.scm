@@ -4000,18 +4000,18 @@ Virtual observatory (VO) using Python.")
 (define-public python-regions
   (package
     (name "python-regions")
-    (version "0.9")
+    (version "0.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "regions" version))
        (sha256
-        (base32 "0kvfdzqry3vcvphd7ldmppbgn3ab97hbfzwxfrlxls92yi41h3i6"))))
+        (base32 "10cswrknj3qh9i1daynlx4ild66lwcyra5rs03h8s9j4l275274n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto")
+      #~(list "--numprocesses" "auto")
       #:phases
       #~(modify-phases %standard-phases
           ;; setup.py was removed in 84c80a280431adda00641cda5264c7de18b43b2f
@@ -4044,6 +4044,7 @@ setup(ext_modules=get_extensions())")))))
            python-pytest-astropy
            python-pytest-runner
            python-pytest-xdist
+           python-setuptools
            python-setuptools-scm))
     (home-page "https://github.com/astropy/regions")
     (synopsis "Package for region handling")
