@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,13 +52,23 @@
             group-entry-gid
             group-entry-members
 
+            subid-entry
+            subid-entry?
+            subid-entry-name
+            subid-entry-start
+            subid-entry-count
+
             %password-lock-file
             write-group
             write-passwd
             write-shadow
+            write-subgid
+            write-subuid
             read-group
             read-passwd
             read-shadow
+            read-subgid
+            read-subuid
 
             %id-min
             %id-max
@@ -68,11 +79,12 @@
 
 ;;; Commentary:
 ;;;
-;;; This modules provides functionality equivalent to the C library's
+;;; This module provides functionality equivalent to the C library's
 ;;; <shadow.h>, <pwd.h>, and <grp.h> routines, as well as a subset of the
 ;;; functionality of the Shadow command-line tools.  It can parse and write
-;;; /etc/passwd, /etc/shadow, and /etc/group.  It can also take care of UID
-;;; and GID allocation in a way similar to what 'useradd' does.
+;;; /etc/passwd, /etc/shadow, /etc/group, /etc/subuid and /etc/subgid.  It can
+;;; also take care of UID and GID allocation in a way similar to what 'useradd'
+;;; does.  The same goes for sub UID and sub GID allocation.
 ;;;
 ;;; The benefit is twofold: less code is involved, and the ID allocation
 ;;; strategy and state preservation is made explicit.
@@ -225,6 +237,17 @@ each field."
                    (serialization list->comma-separated comma-separated->list)
                    (default '())))
 
+(define-database-entry <subid-entry>              ;<subid.h>
+  subid-entry make-subid-entry
+  subid-entry?
+  (serialization #\: subid-entry->string string->subid-entry)
+
+  (name            subid-entry-name)
+  (start           subid-entry-start
+                   (serialization number->string string->number))
+  (count           subid-entry-count
+                   (serialization number->string string->number)))
+
 (define %password-lock-file
   ;; The password database lock file used by libc's 'lckpwdf'.  Users should
   ;; grab this lock with 'with-file-lock' when they access the databases.
@@ -265,6 +288,10 @@ to it atomically and set the appropriate permissions."
   (database-writer "/etc/shadow" #o600 shadow-entry->string))
 (define write-group
   (database-writer "/etc/group" #o644 group-entry->string))
+(define write-subuid
+  (database-writer "/etc/subuid" #o644 subid-entry->string))
+(define write-subgid
+  (database-writer "/etc/subgid" #o644 subid-entry->string))
 
 (define (database-reader file string->entry)
   (lambda* (#:optional (file-or-port file))
@@ -287,6 +314,10 @@ to it atomically and set the appropriate permissions."
   (database-reader "/etc/shadow" string->shadow-entry))
 (define read-group
   (database-reader "/etc/group" string->group-entry))
+(define read-subuid
+  (database-reader "/etc/subuid" string->subid-entry))
+(define read-subgid
+  (database-reader "/etc/subgid" string->subid-entry))
 
 
 ;;;

@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,12 @@
             user-group-password
             user-group-id
             user-group-system?
+
+            subid-range
+            subid-range?
+            subid-range-name
+            subid-range-start
+            subid-range-count
 
             sexp->user-account
             sexp->user-group
@@ -84,6 +91,16 @@
   (id             user-group-id (default #f))
   (system?        user-group-system?              ; Boolean
                   (default #f)))
+
+(define-record-type* <subid-range>
+  subid-range make-subid-range
+  subid-range?
+  (name           subid-range-name)
+  (start          subid-range-start (default #f))    ; number
+  (count          subid-range-count                  ; number
+                  ; from find_new_sub_gids.c and
+                  ; find_new_sub_uids.c
+                  (default 65536)))
 
 (define (default-home-directory account)
   "Return the default home directory for ACCOUNT."

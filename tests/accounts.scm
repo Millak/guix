@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,6 +41,16 @@ hackers:x:65000:alice,charlie\n")
 root:" (crypt "secret" "$6$abc") ":17169::::::
 charlie:" (crypt "hey!" "$6$abc") ":17169::::::
 nobody:!:0::::::\n"))
+
+(define %subuid-sample
+  "\
+root:100000:300
+ada:100300:300\n")
+
+(define %subgid-sample
+  "\
+root:100000:600
+ada:100600:300\n")
 
 
 (test-begin "accounts")
@@ -133,6 +144,50 @@ nobody:!:0::::::\n"))
     (lambda (port)
       (write-shadow (call-with-input-string %shadow-sample
                       read-shadow)
+                    port))))
+
+(test-equal "write-subuid"
+  %subuid-sample
+  (call-with-output-string
+    (lambda (port)
+      (write-subuid (list (subid-entry
+                           (name "root")
+                           (start 100000)
+                           (count 300))
+                          (subid-entry
+                           (name "ada")
+                           (start 100300)
+                           (count 300)))
+                    port))))
+
+(test-equal "read-subuid + write-subuid"
+  %subuid-sample
+  (call-with-output-string
+    (lambda (port)
+      (write-subuid (call-with-input-string %subuid-sample
+                      read-subuid)
+                    port))))
+
+(test-equal "write-subgid"
+  %subgid-sample
+  (call-with-output-string
+    (lambda (port)
+      (write-subgid (list (subid-entry
+                           (name "root")
+                           (start 100000)
+                           (count 600))
+                          (subid-entry
+                           (name "ada")
+                           (start 100600)
+                           (count 300)))
+                    port))))
+
+(test-equal "read-subgid + write-subgid"
+  %subgid-sample
+  (call-with-output-string
+    (lambda (port)
+      (write-subgid (call-with-input-string %subgid-sample
+                      read-subgid)
                     port))))
 
 
