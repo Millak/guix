@@ -1191,19 +1191,26 @@ to create devices with respective mappings for the ATARAID sets discovered.")
                 "1ny2glwmb5dcdv2x0giinbyma9fhk59z8117k1kr15pm7yjk7jx5"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-configuration-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-configuration-directory
+            (lambda _
               (substitute* "src/lib/blockdev.c"
-                (("/etc/libblockdev/conf.d/" path) (string-append out path))))))
-         (add-after 'unpack 'patch-plugin-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (find-files "src/plugins" "\\.c$")
-               (("(gchar \\*arg.+\\{\")([^\"]+)" all start program)
-                ;; XXX: Use 'search-input-file' when available.
-                (string-append start (or (which program) program)))))))))
+                (("/etc/libblockdev/conf.d/" path)
+                 (string-append #$output path)))))
+          (add-after 'unpack 'patch-plugin-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "src/plugins" "\\.c$")
+                (("(gchar \\*arg.+\\{\")([^\"]+)" all start program)
+                 (string-append
+                  start (or (false-if-exception
+                             (search-input-file inputs
+                                                (string-append "bin/" program)))
+                            (false-if-exception
+                             (search-input-file inputs
+                                                (string-append "sbin/" program)))
+                            program)))))))))
     (native-inputs
      (list gobject-introspection
            pkg-config
