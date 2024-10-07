@@ -45,6 +45,9 @@
             subid-range-name
             subid-range-start
             subid-range-count
+            subid-range-end
+            subid-range-has-start?
+            subid-range-less
 
             sexp->user-account
             sexp->user-group
@@ -101,6 +104,33 @@
                   ; from find_new_sub_gids.c and
                   ; find_new_sub_uids.c
                   (default 65536)))
+
+(define (subid-range-end range)
+  "Returns the last subid referenced in RANGE."
+  (and
+   (subid-range-has-start? range)
+   (+ (subid-range-start range)
+      (subid-range-count range)
+      -1)))
+
+(define (subid-range-has-start? range)
+  "Returns #t when RANGE's start is a number."
+  (number? (subid-range-start range)))
+
+(define (subid-range-less a b)
+  "Returns #t when subid range A either starts before, or is more specific
+than B.  When it is not possible to determine whether a range is more specific
+w.r.t. another range their names are compared alphabetically."
+  (define start-a (subid-range-start a))
+  (define start-b (subid-range-start b))
+  (cond ((and (not start-a) (not start-b))
+         (string< (subid-range-name a)
+                  (subid-range-name b)))
+        ((and start-a start-b)
+         (< start-a start-b))
+        (else
+         (and start-a
+              (not start-b)))))
 
 (define (default-home-directory account)
   "Return the default home directory for ACCOUNT."

@@ -21,6 +21,7 @@
   #:use-module (gnu build accounts)
   #:use-module (gnu system accounts)
   #:use-module (srfi srfi-19)
+  #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-64)
   #:use-module (ice-9 vlist)
   #:use-module (ice-9 match))
@@ -193,6 +194,7 @@ ada:100600:300\n")
 
 (define allocate-groups (@@ (gnu build accounts) allocate-groups))
 (define allocate-passwd (@@ (gnu build accounts) allocate-passwd))
+(define allocate-subids (@@ (gnu build accounts) allocate-subids))
 
 (test-equal "allocate-groups"
   ;; Allocate GIDs in a stateless fashion.
@@ -256,6 +258,94 @@ ada:100600:300\n")
                    vlist-null
                    (list (group-entry (name "d")
                                       (gid (- %id-max 2))))))
+
+(test-equal "allocate-subids"
+  ;; Allocate sub IDs in a stateless fashion.
+  (list (subid-entry (name "root") (start %subordinate-id-min) (count 100))
+        (subid-entry (name "t") (start 100100) (count 899))
+        (subid-entry (name "x") (start 100999) (count 200)))
+  (allocate-subids (list
+                    (subid-range (name "x") (count 200))
+                    (subid-range (name "t") (count 899)))
+                   (list (subid-range (name "root")
+                                      (start %subordinate-id-min)
+                                      (count 100)))))
+
+(test-equal "allocate-subids with requested IDs ranges"
+  ;; Make sure the requested sub ID for "k" and "root" are honored.
+  (list (subid-entry (name "x") (start %subordinate-id-min) (count 200))
+        (subid-entry (name "k") (start (+ %subordinate-id-min 300)) (count 100))
+        (subid-entry (name "t") (start (+ %subordinate-id-min 500)) (count 899))
+        (subid-entry (name "root") (start (+ %subordinate-id-min 2500)) (count 100)))
+
+  (allocate-subids (list
+                    (subid-range (name "root") (start (+ %subordinate-id-min 2500)) (count 100))
+                    (subid-range (name "k") (start (+ %subordinate-id-min 300)) (count 100)))
+                   (list
+                    (subid-range (name "x") (start %subordinate-id-min) (count 200))
+                    (subid-range (name "t") (start (+ %subordinate-id-min 500)) (count 899)))))
+
+(test-assert "allocate-subids, impossible allocations - ranges must have start"
+  (guard (c ((specific-subid-range-expected-error? c)
+             #t))
+    (allocate-subids (list (subid-range (name "m"))) (list (subid-range (name "x"))))
+    #f))
+
+(test-assert "allocate-subids, impossible allocations - ranges must fall within allowed max min subids"
+  (guard (c ((invalid-subid-range-error? c)
+             #t))
+    (allocate-subids
+     (list (subid-range (name "m")
+                        (start (- %subordinate-id-min 1))
+                        (count
+                         (+ %subordinate-id-max %subordinate-id-min))))
+     (list
+      (subid-range (name "root") (start %subordinate-id-min))))
+    #f))
+
+(test-equal "allocate-subids with interleaving"
+  ;; Make sure the requested sub ID for "m" is honored and
+  ;; for "l" and "i" are correctly deduced.
+  (list (subid-entry (name "x") (start %subordinate-id-min) (count 200))
+        (subid-entry (name "m") (start (+ %subordinate-id-min 201)) (count 27))
+        (subid-entry (name "root") (start (+ %subordinate-id-min 231)) (count 100))
+        (subid-entry (name "i") (start (+ %subordinate-id-min 331)) (count 2))
+        (subid-entry (name "l") (start (+ %subordinate-id-min 333)) (count 1)))
+  (allocate-subids (list
+                    (subid-range (name "m") (start (+ %subordinate-id-min 201)) (count 27))
+                    (subid-range (name "l") (count 1))
+                    (subid-range (name "i") (count 2)))
+                   (list
+                    (subid-range (name "x") (start %subordinate-id-min) (count 200))
+                    (subid-range (name "root") (start (+ %subordinate-id-min 231)) (count 100)))))
+
+(test-assert "allocate-subids with interleaving, impossible interleaving - before"
+  (guard (c ((subordinate-id-overflow-error? c)
+             #t))
+    (allocate-subids
+     (list (subid-range (name "m") (start %subordinate-id-min) (count 16)))
+     (list
+      (subid-range (name "x") (start (+ 15 %subordinate-id-min)) (count 150))))
+    #f))
+
+(test-assert "allocate-subids with interleaving, impossible interleaving - after"
+  (guard (c ((subordinate-id-overflow-error? c)
+             #t))
+    (allocate-subids
+     (list (subid-range (name "m") (start %subordinate-id-min) (count 30)))
+     (list
+      (subid-range (name "x") (start (+ 29 %subordinate-id-min)) (count 150))))
+    #f))
+
+(test-assert "allocate-subids with interleaving, impossible interleaving - between"
+  (guard (c ((subordinate-id-overflow-error? c)
+             #t))
+    (allocate-subids
+     (list (subid-range (name "m") (start 100200) (count 500)))
+     (list
+      (subid-range (name "root") (start %subordinate-id-min) (count 100))
+      (subid-range (name "x") (start (+ %subordinate-id-min 500)) (count 100))))
+    #f))
 
 (test-equal "allocate-passwd"
   ;; Allocate UIDs in a stateless fashion.
@@ -374,6 +464,50 @@ ada:100600:300\n")
                               #:current-time
                               (lambda (type)
                                 (make-time type 0 (* 24 3600 100)))))
+    list))
+
+(test-equal "subuid+subgid-databases"
+  ;; The whole process.
+  (list (list (subid-entry (name "root")
+                           (start %subordinate-id-min)
+                           (count 100))
+              (subid-entry (name "alice")
+                           (start (+ %subordinate-id-min 100))
+                           (count 200))
+              (subid-entry (name "bob")
+                           (start (+ %subordinate-id-min 100 200))
+                           (count 200)))
+        (list
+         (subid-entry (name "root")
+                      (start %subordinate-id-min)
+                      (count 200))
+         (subid-entry (name "alice")
+                      (start (+ %subordinate-id-min 200))
+                      (count 400))
+         (subid-entry (name "charlie")
+                      (start (+ %subordinate-id-min 200 400))
+                      (count 300))))
+  (call-with-values
+      (lambda ()
+        (subuid+subgid-databases
+         (list (subid-range (name "root")
+                            (start %subordinate-id-min)
+                            (count 100))
+               (subid-range (name "alice")
+                            (start (+ %subordinate-id-min 100))
+                            (count 200))
+               (subid-range (name "bob")
+                            (count 200)))
+         (list
+          (subid-range (name "alice")
+                       (count 400))
+          (subid-range (name "charlie")
+                       (count 300)))
+         #:current-subgids
+         (list (subid-range (name "root")
+                            (start %subordinate-id-min)
+                            (count 200)))
+         #:current-subuids '()))
     list))
 
 (test-end "accounts")
