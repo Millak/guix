@@ -851,6 +851,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/samba.scm				\
   %D%/tests/security.scm			\
   %D%/tests/security-token.scm			\
+  %D%/tests/shadow.scm  			\
   %D%/tests/singularity.scm			\
   %D%/tests/ssh.scm				\
   %D%/tests/telephony.scm		        \

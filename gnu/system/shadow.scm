@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,10 @@
   #:use-module (guix modules)
   #:use-module (guix sets)
   #:use-module (guix ui)
+  #:use-module ((gnu build accounts)
+                #:select (%subordinate-id-count
+                          %subordinate-id-max
+                          %subordinate-id-min))
   #:use-module (gnu system accounts)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
@@ -77,7 +82,20 @@
             %base-user-accounts
 
             account-service-type
-            account-service))
+            account-service
+
+            subids-configuration
+            subids-configuration?
+            subids-configuration-add-root?
+            subids-configuration-subgids
+            subids-configuration-subuids
+
+            subids-extension
+            subids-extension?
+            subids-extension-subgids
+            subids-extension-subuids
+
+            subids-service-type))
 
 ;;; Commentary:
 ;;;
@@ -380,7 +398,7 @@ of user '~a' is undeclared")
 
 
 ;;;
-;;; Service.
+;;; Accounts Service.
 ;;;
 
 (define (user-group->gexp group)
@@ -520,5 +538,194 @@ as each account home directory.")))
 ACCOUNTS+GROUPS as its initial list of accounts and groups."
   (service account-service-type
            (append skeletons accounts+groups)))
+
+
+;;;
+;;; Subids Service.
+;;;
+
+(define* (%root-subid #:optional (start %subordinate-id-min) (count %subordinate-id-count))
+  (subid-range
+   (name "root")
+   (start start)
+   (count count)))
+
+(define-record-type* <subids-configuration>
+  subids-configuration make-subids-configuration
+  subids-configuration?
+  this-subids-configuration
+
+  (add-root?   subids-configuration-add-root?                 ; boolean
+               (default #t))
+  (subgids     subids-configuration-subgids                   ; list of <subid-range>
+               (default '()))
+  (subuids     subids-configuration-subuids                   ; list of <subid-range>
+               (default '())))
+
+(define (subid-range->gexp range)
+  "Turn RANGE, a <subid-range> object, into a list-valued gexp suitable for
+'activate-subuids+subgids'."
+  (define count (subid-range-count range))
+  #~`(#$(subid-range-name range)
+      #$(subid-range-start range)
+      #$(if (and (number? count)
+                 (> count 0))
+            count
+            %subordinate-id-count)))
+
+(define (assert-valid-subids ranges)
+  (cond ((>= (fold + 0 (map subid-range-count ranges))
+             (- %subordinate-id-max %subordinate-id-min -1))
+         (raise
+          (formatted-message
+           (G_
+            "The configured ranges are more than the ~a max allowed.")
+           (- %subordinate-id-max %subordinate-id-min -1))))
+        ((any (lambda (r)
+                (define start (subid-range-start r))
+                (and start
+                     (< start %subordinate-id-min)))
+              ranges)
+         (raise
+          (formatted-message
+           (G_
+            "One subid-range starts before the minimum allowed sub id ~a.")
+           %subordinate-id-min)))
+        ((any (lambda (r)
+                (define end (subid-range-end r))
+                (and end
+                     (> end %subordinate-id-max)))
+              ranges)
+         (raise
+          (formatted-message
+           (G_
+            "One subid-range ends after the maximum allowed sub id ~a.")
+           %subordinate-id-max)))
+        ((any (compose null? subid-range-name)
+              ranges)
+         (raise
+          (formatted-message
+           (G_
+            "One subid-range has a null name."))))
+        ((any (compose string-null? subid-range-name)
+              ranges)
+         (raise
+          (formatted-message
+           (G_
+            "One subid-range has a name equal to the empty string."))))
+        (else #t)))
+
+(define (delete-duplicate-ranges ranges)
+  (delete-duplicates ranges
+                     (lambda args
+                       (apply string=? (map subid-range-name ranges)))))
+
+(define (subids-activation config)
+  "Return a gexp that activates SUBUIDS+SUBGIDS, a list of <subid-range>
+objects."
+  (define (add-root-when-missing ranges)
+    (define sorted-ranges
+      (sort-list ranges subid-range-less))
+    (define root-missing?
+      (not
+       (find (lambda (r)
+               (string=? "root"
+                         (subid-range-name r)))
+             sorted-ranges)))
+    (define first-start
+      (and (> (length sorted-ranges) 0)
+           (subid-range-start (first sorted-ranges))))
+    (define first-has-start?
+      (number? first-start))
+    (define root-start
+      (if first-has-start?
+          (and
+           (> first-start %subordinate-id-min)
+           %subordinate-id-min)
+          %subordinate-id-min))
+    (define root-count
+      (if first-has-start?
+          (- first-start %subordinate-id-min)
+          %subordinate-id-count))
+    (if (and root-missing?
+             (subids-configuration-add-root? config))
+        (append (list (%root-subid root-start root-count))
+                sorted-ranges)
+        sorted-ranges))
+
+  (define subuids
+    (delete-duplicate-ranges (subids-configuration-subuids config)))
+
+  (define subuids-specs
+    (map subid-range->gexp (add-root-when-missing subuids)))
+
+  (define subgids
+    (delete-duplicate-ranges (subids-configuration-subgids config)))
+
+  (define subgids-specs
+    (map subid-range->gexp (add-root-when-missing subgids)))
+
+  (assert-valid-subids subgids)
+  (assert-valid-subids subuids)
+
+  ;; Add subuids and subgids.
+  (with-imported-modules (source-module-closure '((gnu system accounts)))
+    #~(begin
+        (use-modules (gnu system accounts))
+
+        (activate-subuids+subgids (map sexp->subid-range (list #$@subuids-specs))
+                                  (map sexp->subid-range (list #$@subgids-specs))))))
+
+(define-record-type* <subids-extension>
+  subids-extension make-subids-extension
+  subids-extension?
+  this-subids-extension
+
+  (subgids   subids-extension-subgids                   ; list of <subid-range>
+             (default '()))
+  (subuids   subids-extension-subuids                   ; list of <subid-range>
+             (default '())))
+
+(define append-subid-ranges
+  (lambda args
+    (delete-duplicate-ranges
+     (apply append args))))
+
+(define (subids-extension-merge a b)
+  (subids-extension
+   (subgids (append-subid-ranges
+             (subids-extension-subgids a)
+             (subids-extension-subgids b)))
+   (subuids (append-subid-ranges
+             (subids-extension-subuids a)
+             (subids-extension-subuids b)))))
+
+(define subids-service-type
+  (service-type (name 'subids)
+                ;; Concatenate <subid-range> lists.
+                (compose (lambda (args)
+                           (fold subids-extension-merge
+                                 (subids-extension)
+                                 args)))
+                (extend
+                 (lambda (config extension)
+                   (subids-configuration
+                    (inherit config)
+                    (subgids
+                     (append-subid-ranges
+                      (subids-configuration-subgids config)
+                      (subids-extension-subgids extension)))
+                    (subuids
+                     (append-subid-ranges
+                      (subids-configuration-subuids config)
+                      (subids-extension-subuids extension))))))
+                (extensions
+                 (list (service-extension activation-service-type
+                                          subids-activation)))
+                (default-value
+                  (subids-configuration))
+                (description
+                 "Ensure the specified sub UIDs and sub GIDs exist in
+/etc/subuid and /etc/subgid.")))
 
 ;;; shadow.scm ends here

@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,6 +41,7 @@
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:export (activate-users+groups
+            activate-subuids+subgids
             activate-user-home
             activate-etc
             activate-privileged-programs
@@ -228,6 +230,23 @@ group records) are all available."
               (chown directory 0 0)
               (chmod directory #o555))
             (duplicates (map user-account-home-directory system-accounts))))
+
+(define (activate-subuids+subgids subuids subgids)
+  "Make sure SUBUIDS (a list of subid range records) and SUBGIDS (a list of
+subid range records) are all available."
+
+  ;; Take same lock as Shadow while we read
+  ;; and write the databases.  This ensures there's no race condition with
+  ;; other tools that might be accessing it at the same time.
+  (with-file-lock "/etc/subgid.lock"
+    (let-values (((subuid subgid)
+                  (subuid+subgid-databases subuids subgids)))
+      (write-subgid subgid)))
+
+  (with-file-lock "/etc/subuid.lock"
+    (let-values (((subuid subgid)
+                  (subuid+subgid-databases subuids subgids)))
+      (write-subuid subuid))))
 
 (define (activate-user-home users)
   "Create and populate the home directory of USERS, a list of tuples, unless

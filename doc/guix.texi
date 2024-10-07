@@ -18848,6 +18848,13 @@ Note that the ``root'' account is not included here.  It is a
 special-case and is automatically added whether or not it is specified.
 @end defvar
 
+@cindex containers, subordinate IDs
+The Linux kernel also implements @dfn{subordinate user and group IDs},
+or ``subids'', which are used to map the ID of a user and group to
+several IDs inside separate name spaces---inside ``containers''.
+@xref{subordinate-user-group-ids, the subordinate user and group ID
+service}, for information on how to configure it.
+
 @node Keyboard Layout
 @section Keyboard Layout
 
@@ -41521,6 +41528,188 @@ Whether to allow grafting or not in the pack build.
 
 @end deftp
 
+
+@c %end of fragment
+
+@anchor{subordinate-user-group-ids}
+@cindex subordinate user and group IDs
+@cindex subid, subordinate user and group IDs
+@subsubheading Subordinate User and Group ID Service
+
+Among the virtualization facilities implemented by the Linux kernel is the
+concept of @dfn{subordinate IDs}.  Subordinate IDs allow for mapping user and group
+IDs inside process namespaces to user and group IDs of the host system.
+Subordinate user ID ranges (subuids) allow users to map virtual user IDs inside
+containers to the user ID of an unprivileged user of the host system.
+Subordinate group ID ranges (subgids), instead map virtual group IDs to the
+group ID of an unprivileged user on the host system.  You can access
+@code{subuid(5)} and @code{subgid(5)} Linux man pages for more details.
+
+The @code{(gnu system shadow)} module exposes the
+@code{subids-service-type}, its configuration record
+@code{subids-configuration} and its extension record
+@code{subids-extension}.
+
+With @code{subids-service-type}, subuids and subgids ranges can be reserved for
+users that desire so:
+
+@lisp
+(use-modules (gnu system shadow)     ;for 'subids-service-type'
+             (gnu system accounts)   ;for 'subid-range'
+             @dots{})
+
+(operating-system
+  ;; @dots{}
+  (services
+    (list
+      (simple-service 'alice-bob-subids
+                      subids-service-type
+                      (subids-extension
+                        (subgids
+                         (list
+                          (subid-range (name "alice"))))
+                        (subuids
+                         (list
+                          (subid-range (name "alice"))
+                          (subid-range (name "bob")
+                                       (start 100700)))))))))
+@end lisp
+
+Users (definitely other services), usually, are supposed to extend the service
+instead of adding subids directly to @code{subids-configuration}, unless the
+want to change the default behavior for root.  With default settings the
+@code{subids-service-type} adds, if it's not already there, a configuration
+for the root account to both @file{/etc/subuid} and @file{/etc/subgid}, possibly
+starting at the minimum possible subid.  Otherwise the root subuids and subgids
+ranges are fitted wherever possible.
+
+The above configuration will yield the following:
+
+@example
+# cat /etc/subgid
+root:100000:65536
+alice:165536:65536
+# cat /etc/subuid
+root:100000:700
+bob:100700:65536
+alice:166236:65536
+@end example
+
+@c %start of fragment
+
+@deftp {Data Type} subids-configuration
+
+With default settings the
+@code{subids-service-type} adds, if it's not already there, a configuration
+for the root account to both @file{/etc/subuid} and @file{/etc/subgid}, possibly
+starting at the minimum possible subid.  To disable the default behavior and
+provide your own definition for the root subid ranges you can set to @code{#f}
+the @code{add-root?} field:
+
+@lisp
+(use-modules (gnu system shadow)     ;for 'subids-service-type'
+             (gnu system accounts)   ;for 'subid-range'
+             @dots{})
+
+(operating-system
+  ;; @dots{}
+  (services
+    (list
+      (service subids-service-type
+               (subids-configuration
+                (add-root? #f)
+                (subgids
+                  (subid-range (name "root")
+                               (start 120000)
+                               (count 100)))
+                (subuids
+                  (subid-range (name "root")
+                               (start 120000)
+                               (count 100)))))
+      (simple-service 'alice-bob-subids
+                      subids-service-type
+                      (subids-extension
+                        (subgids
+                         (list
+                          (subid-range (name "alice"))))
+                        (subuids
+                         (list
+                          (subid-range (name "alice"))
+                          (subid-range (name "bob")
+                                       (start 100700)))))))))
+@end lisp
+
+Available @code{subids-configuration} fields are:
+
+@table @asis
+@item @code{add-root?} (default: @code{#t}) (type: boolean)
+Whether to automatically configure subuids and subgids for root.
+
+@item @code{subgids} (default: @code{'()}) (type: list-of-subid-ranges)
+The list of @code{subid-range}s that will be serialized to @code{/etc/subgid}.
+If a range doesn't specify a start it will be fitted based on its number of
+requrested subids.  If a range doesn't specify a count the default size
+of 65536 will be assumed.
+
+@item @code{subuids} (default: @code{'()}) (type: list-of-subid-ranges)
+The list of @code{subid-range}s that will be serialized to @code{/etc/subuid}.
+If a range doesn't specify a start it will be fitted based on its number of
+requrested subids.  If a range doesn't specify a count the default size
+of 65536 will be assumed.
+
+@end table
+
+@end deftp
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} subids-extension
+
+Available @code{subids-extension} fields are:
+
+@table @asis
+
+@item @code{subgids} (default: @code{'()}) (type: list-of-subid-ranges)
+The list of @code{subid-range}s that will be appended to
+@code{subids-configuration-subgids}.  Entries with the same name are deduplicated
+upon merging.
+
+@item @code{subuids} (default: @code{'()}) (type: list-of-subid-ranges)
+The list of @code{subid-range}s that will be appended to
+@code{subids-configuration-subuids}.  Entries with the same name are deduplicated
+upon merging.
+
+@end table
+
+@end deftp
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} subid-range
+
+The @code{subid-range} record is defined at @code{(gnu system accounts)}.
+Available fields are:
+
+@table @asis
+
+@item @code{name} (type: string)
+The name of the user or group that will own this range.
+
+@item @code{start} (default: @code{#f}) (type: integer)
+The first requested subid.  When false the first available subid with enough
+contiguous subids will be assigned.
+
+@item @code{count} (default: @code{#f}) (type: integer)
+The number of total allocated subids.  When #f the default of 65536 will be
+assumed .
+
+@end table
+
+@end deftp
 
 @c %end of fragment
 

@@ -51,6 +51,7 @@
 
             sexp->user-account
             sexp->user-group
+            sexp->subid-range
 
             default-shell))
 
@@ -159,3 +160,12 @@ user-account record."
                    (create-home-directory? create-home-directory?)
                    (shell shell) (password password)
                    (system? system?)))))
+
+(define (sexp->subid-range sexp)
+  "Take SEXP, a tuple as returned by 'subid-range->gexp', and turn it into a
+subid-range record."
+  (match sexp
+    ((name start count)
+     (subid-range (name name)
+                  (start start)
+                  (count count)))))
