@@ -6391,7 +6391,7 @@ analysis.  This package contains functionality for:
 (define-public python-zodipy
   (package
     (name "python-zodipy")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch) ;; no tests in the PyPI tarball
@@ -6400,7 +6400,7 @@ analysis.  This package contains functionality for:
              (commit (string-append "v." version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08hwicpv3wfpccr2cj1vxb8iy7av12yjs3prq0zw7qc89imrgrbn"))))
+        (base32 "1i7qdbxb9izsaciq4l3fz9irgxbsklxcfd33ap7w1spjk86mgv6x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
