@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Disseminate Dissent <disseminatedissent@protonmail.com>
@@ -29,6 +30,7 @@
 ;;; Copyright © 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1195,7 +1197,13 @@ to create devices with respective mappings for the ATARAID sets discovered.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
               (substitute* "src/lib/blockdev.c"
-               (("/etc/libblockdev/conf.d/" path) (string-append out path)))))))))
+                (("/etc/libblockdev/conf.d/" path) (string-append out path))))))
+         (add-after 'unpack 'patch-plugin-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* (find-files "src/plugins" "\\.c$")
+               (("(gchar \\*arg.+\\{\")([^\"]+)" all start program)
+                ;; XXX: Use 'search-input-file' when available.
+                (string-append start (or (which program) program)))))))))
     (native-inputs
      (list gobject-introspection
            pkg-config
