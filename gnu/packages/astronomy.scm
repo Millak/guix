@@ -2896,32 +2896,21 @@ astronomy and astrophysics.")
 (define-public python-astropy-iers-data
   (package
     (name "python-astropy-iers-data")
-    ;; In case of changing the source method git-fetch, consider to check the
-    ;; tag as it's not following the PyPI version, see
-    ;; <https://github.com/astropy/astropy-iers-data/issues/17>.
-    (version "0.2024.9.16.0.32.21")
+    (version "0.2024.10.14.0.32.55")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy_iers_data" version))
        (sha256
-        (base32 "0i63yxw4xfgv1dwaq89xd34xlsnx0n5njcm4adln2gk2ia3gxxig"))))
+        (base32 "1849jbmz1x6x783w9k08a9i3g4f722lqwlnszh4dyr50dyrfbrzg"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      ;; Dependencies cycle wit python-astropy, see
-      ;; <https://github.com/astropy/astropy-iers-data/issues/21>.
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-env-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+     (list #:tests? #f)) ; no tests
     (native-inputs
      (list python-hypothesis
-           python-pytest
-           python-pytest-remotedata
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://docs.astropy.org/en/latest/utils/iers.html")
     (synopsis "IERS Earth Rotation and Leap Second tables for the astropy core package")
     (description
