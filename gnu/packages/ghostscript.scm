@@ -73,6 +73,20 @@ Consortium standard (ICC), approved as ISO 15076-1.")
     (home-page "https://www.littlecms.com/")
     (properties '((cpe-name . "little_cms_color_engine")))))
 
+(define-public lcms-next
+  (package
+    (inherit lcms)
+    (name "lcms-next")
+    (version "2.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/lcms/lcms/"
+                           (version-major+minor version)
+                           "/lcms2-" (version-major+minor version) ".tar.gz"))
+       (sha256
+        (base32 "0lasskcj7k0sp0z7cpnwwisp826j51i1l7v322hcxd5rv15d6wyq"))))))
+
 (define-public libpaper
   (package
     (name "libpaper")
