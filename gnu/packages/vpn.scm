@@ -396,14 +396,14 @@ networks bypassing intermediate firewalls.")
 (define-public strongswan
   (package
     (name "strongswan")
-    (version "5.9.4")
+    (version "5.9.14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.strongswan.org/strongswan-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "063mi0kdlpd7r7s3py35yf80hvrv3nrdfvxpyn7ns25gqajg3za5"))
+        (base32 "0y1nqd7vb4s6wzvyrbmxpbglw9wcvcypvjffqiklrcscvbfjg03j"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
