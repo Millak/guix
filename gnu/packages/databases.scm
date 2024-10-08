@@ -195,7 +195,7 @@
 (define-public duckdb
   (package
     (name "duckdb")
-    (version "1.0.0")
+    (version "1.1.1")
     (source
       (origin
        (method git-fetch)
@@ -205,7 +205,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11yqgnf354g3fjj0rvsw8zzz915vf9i3jxmpchpwy09yzxd72cbg"))
+         "0s2zmrr7m0wb0gmspjcqpyglv8s0zx78k4283abm560ql87bgx30"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
