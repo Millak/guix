@@ -148,7 +148,7 @@
   ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
   (package
     (name "bitcoin-core")
-    (version "27.1")
+    (version "28.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -156,7 +156,7 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "1npk30c4s2xihm2vxmswl2x4baw5n23gsbaw5y8sx3qvjbym240c"))))
+                "0zzk5w88xzw07xcr18nwq2bbr4wqcvkacy97gyq2wq04wb8y42kh"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -171,7 +171,6 @@
            boost
            libevent
            miniupnpc
-           openssl
            qtbase-5
            sqlite))
     (arguments
@@ -213,7 +212,7 @@
               "python3" "./test/functional/test_runner.py"
               (string-append "--jobs=" (number->string (parallel-job-count))))
              #t)))))
-    (home-page "https://bitcoin.org/")
+    (home-page "https://bitcoincore.org/")
     (synopsis "Bitcoin peer-to-peer client")
     (description
      "Bitcoin is a digital currency that enables instant payments to anyone
