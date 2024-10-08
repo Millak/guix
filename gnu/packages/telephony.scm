@@ -409,7 +409,9 @@ multiplayer games.")
             (uri (string-append "mirror://gnu/sipwitch/sipwitch-"
                    version ".tar.gz"))
             (sha256 (base32
-                     "10lli9c703d7qbarzc0lgmz963ppncvnrklwrnri0s1zcmmahyia"))))
+                     "10lli9c703d7qbarzc0lgmz963ppncvnrklwrnri0s1zcmmahyia"))
+            (patches
+             (search-patches "sipwitch-fix-build-with-exosip5.patch"))))
    (build-system gnu-build-system)
    ;; The configure.ac uses pkg-config but in a kludgy way which breaks when
    ;; cross-compiling.  Among other issues there the program name "pkg-config"

@@ -1,0 +1,77 @@
+From 59c0063443ce0de7f93c34b6c29dd3f12e678848 Mon Sep 17 00:00:00 2001
+From: Fredrick Brennan <copypaste@kittens.ph>
+Date: Fri, 3 Nov 2023 20:57:59 -0400
+Subject: [PATCH] Fix build with 5.x series of libexosip2
+
+---
+ common/voip.cpp    | 5 +++--
+ utils/Makefile.am  | 3 ++-
+ utils/sipquery.cpp | 6 +++++-
+ 3 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/common/voip.cpp b/common/voip.cpp
+index d3ee15b..d0f6ebd 100644
+--- a/common/voip.cpp
++++ b/common/voip.cpp
+@@ -138,9 +138,10 @@ bool voip::make_prack_message(context_t ctx, tid_t tid, msg_t *msg)
+     if(!msg)
+         return false;
+ 
++    msg_t onexxmsg = NULL;
+     *msg = NULL;
+     eXosip_lock(ctx);
+-    eXosip_call_build_prack(ctx, tid, msg);
++    eXosip_call_build_prack(ctx, tid, onexxmsg, msg);
+     if(!*msg) {
+         eXosip_unlock(ctx);
+         return false;
+@@ -438,7 +439,7 @@ void voip::create(context_t *ctx, const char *agent, int f)
+ 
+ #ifdef  AF_INET6
+     if(family == AF_INET6)
+-        eXosip_enable_ipv6(1);
++        voip::option(*ctx, EXOSIP_OPT_ENABLE_IPV6, (void *)2);
+ #endif
+ }
+ 
+diff --git a/utils/Makefile.am b/utils/Makefile.am
+index dd2040f..ffe6d09 100644
+--- a/utils/Makefile.am
++++ b/utils/Makefile.am
+@@ -22,7 +22,8 @@ sipcontrol_SOURCES = sipcontrol.cpp
+ sipcontrol_LDADD = @LDFLAGS@ @SIPWITCH_LIBS@
+ 
+ sipquery_SOURCES = sipquery.cpp
+-sipquery_LDADD = @LDFLAGS@ @SIPWITCH_EXOSIP2@ @SIPWITCH_LIBS@
++sipquery_LDFLAGS = -L$(top_builddir)/common -lsipwitch
++sipquery_LDADD = @LDFLAGS@ @SIPWITCH_LIBS@ @SIPWITCH_EXOSIP2@
+ 
+ sippasswd_SOURCES = sippasswd.cpp
+ sippasswd_LDADD = @LDFLAGS@ @SIPWITCH_LIBS@
+diff --git a/utils/sipquery.cpp b/utils/sipquery.cpp
+index 5b83590..f99512d 100644
+--- a/utils/sipquery.cpp
++++ b/utils/sipquery.cpp
+@@ -50,6 +50,10 @@ static struct eXosip_t *context = NULL;
+ 
+ using namespace ucommon;
+ 
++#include "sipwitch/voip.h"
++
++using namespace sipwitch;
++
+ #if defined(_MSWINDOWS_) && defined(__GNUC__)
+ // binds addrinfo for mingw32 linkage since otherwise mingw32 cannot
+ // cannot link proper getaddrinfo/freeaddrinfo calls that eXosip uses.
+@@ -226,7 +230,7 @@ usage:
+ 
+ #ifdef  AF_INET6
+     if(family == AF_INET6) {
+-        eXosip_enable_ipv6(1);
++        sipwitch::voip::option(EXOSIP_CONTEXT, EXOSIP_OPT_ENABLE_IPV6, (void *)2);
+         if(binding == NULL)
+             binding = "::0";
+     }
+-- 
+2.42.0
+
