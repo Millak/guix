@@ -2663,7 +2663,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
 (define-public stellarium
   (package
     (name "stellarium")
-    (version "24.2")
+    (version "24.3")
     (source
      (origin
        (method git-fetch)
@@ -2672,7 +2672,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01iq1cxbhr3xknzpk4spflxj3msf9wk19b4lqlifi1pwaz18pb5n"))))
+        (base32 "0wwaddbqcia6jaz3lc1cf63pvi9bqj2cglp428i77jlfs3dfj45j"))))
     (build-system cmake-build-system)
     ;; TODO: Complete documentation build and split into dedicated outputs.
     (arguments
@@ -2705,7 +2705,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            qtlocation-5
            qtmultimedia-5
            qtpositioning
-           qtscript
+           qtscript ; the last v5 left to rename
            qtserialport-5
            qttranslations
            qtwebengine-5
