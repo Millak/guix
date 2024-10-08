@@ -1882,7 +1882,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/orangeduck-mpc-fix-pkg-config.patch	\
   %D%/packages/patches/orbit2-fix-array-allocation-32bit.patch \
   %D%/packages/patches/orpheus-cast-errors-and-includes.patch	\
-  %D%/packages/patches/osip-CVE-2017-7853.patch			\
   %D%/packages/patches/ots-no-include-missing-file.patch	\
   %D%/packages/patches/owncloud-disable-updatecheck.patch	\
   %D%/packages/patches/p7zip-CVE-2016-9296.patch		\
