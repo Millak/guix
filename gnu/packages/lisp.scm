@@ -29,6 +29,7 @@
 ;;; Copyright © 2024 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2024 bigbug <bigbookofbug@proton.me>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Omar Bassam <omar.bassam88@gmail.com>
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -64,6 +65,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system haskell)
   #:use-module (guix build-system trivial)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
@@ -917,6 +919,77 @@ languages shine.  You can also add Janet scripting to an application by
 embedding a single C file and two headers.  It can be easily ported to new
 platforms.  The entire language (core library, interpreter, compiler,
 assembler, PEG) is less than 1MB.")
+    (license license:expat)))
+
+(define-public jpm
+  (package
+    (name "jpm")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/janet-lang/jpm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05rdxigmiy7vf93s16a8n2029lq33073jccz1rjl4iisxj6piw4l"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'fix-paths
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "configs/linux_config.janet"
+                         (("/usr/local")
+                          #$output)
+                         (("\"cc\"")
+                          (string-append "\""
+                                         (search-input-file inputs "/bin/gcc")
+                                         "\""))
+                         (("\"c\\+\\+\"")
+                          (string-append "\""
+                                         (search-input-file inputs "/bin/g++")
+                                         "\""))
+                         (("\"git\"")
+                          (string-append "\""
+                                         (search-input-file inputs "/bin/git")
+                                         "\""))
+                         (("\"curl\"")
+                          (string-append "\""
+                                         (search-input-file inputs "/bin/curl")
+                                         "\"")))
+                       (substitute* "jpm/shutil.janet"
+                         (("cp")
+                          (string-append (search-input-file inputs "/bin/cp"))))
+                       (setenv "PREFIX"
+                               #$output)))
+                   (replace 'install
+                     (lambda _
+                       (for-each (lambda (dir)
+                                   (mkdir-p (string-append #$output "/" dir)))
+                                 '("lib/janet/jpm" "share/man/man1"))
+                       (invoke "janet" "bootstrap.janet"
+                               "configs/linux_config.janet")
+                       (wrap-program (string-append #$output "/bin/jpm")
+                         `("JANET_HEADERPATH" ":" =
+                           (,(string-append #$janet "/include/janet")))
+                         `("JANET_LIBPATH" ":" =
+                           (,(string-append #$janet "/lib")))))))))
+    (inputs (list bash-minimal
+                  coreutils-minimal
+                  curl
+                  gcc
+                  git-minimal/pinned))
+    (propagated-inputs (list janet))
+    (native-search-paths
+     (list $SSL_CERT_DIR $SSL_CERT_FILE))
+    (home-page "https://janet-lang.org/")
+    (synopsis "Janet Project Manager for the Janet programming language")
+    (description
+     "@code{jpm} is the Janet Project Manager tool.  It is a build
+tool and its main uses are installing dependencies, compiling C/C++ to native
+libraries, and other management tasks for Janet projects.")
     (license license:expat)))
 
 (define-public lisp-repl-core-dumper
