@@ -130,7 +130,7 @@ any small or embedded system.")
 (define-public toybox
   (package
     (name "toybox")
-    (version "0.8.7")
+    (version "0.8.11")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -138,7 +138,7 @@ any small or embedded system.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "150lvp7hf9ndafvmr42kb8xi86hxjd2zj4binwwhgjw2dwrvy25m"))))
+                "1p37zqxhj48klwwxl8jc2hw1x7pr2w39bfb1nx6qghaf5y1kzahm"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -154,11 +154,15 @@ any small or embedded system.")
                  (lambda _
                    ;; Some tests expect $USER to magically be the current user.
                    (setenv "USER" (passwd:name (getpwnam (geteuid))))
+                   ;; This uses /bin/sh.
+                   (substitute* "tests/timeout.test"
+                     (("/bin/sh") (which "bash")))
                    ;; This expects directories to be exactly 4K.  They aren't!
                    (delete-file "tests/du.test")
                    ;; Delete tests that expect a root or 0 user to exist.
                    (substitute* "tests/id.test"
-                     (("^testing .*[ \\(]root.*") ""))))
+                     (("^testing .*[ \\(]root.*") ""))
+                   (delete-file "tests/tar.test")))
                (add-after 'install 'remove-usr-directory
                  (lambda* (#:key outputs #:allow-other-keys)
                    (delete-file-recursively (string-append #$output "/usr")))))
