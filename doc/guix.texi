@@ -23169,9 +23169,9 @@ definition (@pxref{operating-system Reference, system-wide packages}).
 
 @anchor{wayland-gdm}
 GDM also supports Wayland: it can itself use Wayland instead of X11 for
-its user interface, and it can also start Wayland sessions.  The former is
-required for the latter, to enable, set @code{wayland?} to @code{#t} in
-@code{gdm-configuration}.
+its user interface, and it can also start Wayland sessions.  Wayland
+support is enabled by default.  To disable it, set @code{wayland?} to
+@code{#f} in @code{gdm-configuration}.
 
 @defvar gdm-service-type
 This is the type for the @uref{https://wiki.gnome.org/Projects/GDM/, GNOME
@@ -23232,7 +23232,7 @@ File name of the @code{dbus-daemon} executable.
 @item @code{gdm} (default: @code{gdm})
 The GDM package to use.
 
-@item @code{wayland?} (default: @code{#f})
+@item @code{wayland?} (default: @code{#t})
 When true, enables Wayland in GDM, necessary to use Wayland sessions.
 
 @item @code{wayland-session} (default: @code{gdm-wayland-session-wrapper})
