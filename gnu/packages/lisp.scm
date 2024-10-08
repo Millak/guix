@@ -30,6 +30,7 @@
 ;;; Copyright © 2024 bigbug <bigbookofbug@proton.me>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Omar Bassam <omar.bassam88@gmail.com>
+;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -965,22 +966,39 @@ assembler, PEG) is less than 1MB.")
                        (setenv "PREFIX"
                                #$output)))
                    (replace 'install
-                     (lambda _
+                     (lambda* (#:key inputs #:allow-other-keys)
                        (for-each (lambda (dir)
                                    (mkdir-p (string-append #$output "/" dir)))
                                  '("lib/janet/jpm" "share/man/man1"))
                        (invoke "janet" "bootstrap.janet"
                                "configs/linux_config.janet")
-                       (wrap-program (string-append #$output "/bin/jpm")
-                         `("JANET_HEADERPATH" ":" =
-                           (,(string-append #$janet "/include/janet")))
-                         `("JANET_LIBPATH" ":" =
-                           (,(string-append #$janet "/lib")))))))))
+                       (let ((gcc-toolchain (assoc-ref inputs "gcc-toolchain"))
+                             (core-min (assoc-ref inputs "coreutils-minimal")))
+                         (wrap-program (string-append #$output "/bin/jpm")
+                           `("JANET_HEADERPATH" ":" prefix
+                             (,(string-append #$janet "/include/janet")))
+                           `("JANET_LIBPATH" ":" prefix
+                             (,(string-append #$janet "/lib")))
+                           `("C_INCLUDE_PATH" ":" prefix
+                             (,(string-append gcc-toolchain "/include")))
+                           `("CPLUS_INCLUDE_PATH" ":" prefix
+                             (,(string-append gcc-toolchain "/include/c++")
+                              ,(string-append gcc-toolchain "/include")))
+                           `("LIBRARY_PATH" ":" prefix
+                             (,(string-append gcc-toolchain "/lib")
+                              ,(string-append gcc-toolchain "/lib64")))
+                           `("PATH" ":" prefix
+                             (,(string-append gcc-toolchain "/bin")
+                              ,(string-append core-min "/bin"))))))))))
     (inputs (list bash-minimal
                   coreutils-minimal
                   curl
                   gcc
-                  git-minimal/pinned))
+                  git-minimal/pinned
+                  ;; Lazily resolve the gcc-toolchain to avoid a circular
+                  ;; dependency.
+                  (module-ref (resolve-interface '(gnu packages commencement))
+                              'gcc-toolchain)))
     (propagated-inputs (list janet))
     (native-search-paths
      (list $SSL_CERT_DIR $SSL_CERT_FILE))
