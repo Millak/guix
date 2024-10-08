@@ -2318,8 +2318,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/x265-arm-flags.patch			\
   %D%/packages/patches/xdg-desktop-portal-disable-portal-tests.patch\
   %D%/packages/patches/xdg-desktop-portal-wlr-harcoded-length.patch\
-  %D%/packages/patches/xen-docs-use-predictable-ordering.patch	\
-  %D%/packages/patches/xen-remove-config.gz-timestamp.patch	\
   %D%/packages/patches/xf86-video-ark-remove-mibstore.patch	\
   %D%/packages/patches/xf86-video-nouveau-fixup-ABI.patch	\
   %D%/packages/patches/xf86-video-savage-xorg-compat.patch 	\

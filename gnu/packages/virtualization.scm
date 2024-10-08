@@ -2571,7 +2571,7 @@ DOS or Microsoft Windows.")
 (define-public xen
   (package
     (name "xen")
-    (version "4.14.6")               ; please update the mini-os input as well
+    (version "4.19.0")               ; please update the mini-os input as well
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2580,10 +2580,7 @@ DOS or Microsoft Windows.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cdzpxbihkdn4za8ly0lgkbxrafjzbxjflhfn83kyg4bam1vv7mn"))
-              (patches
-               (search-patches "xen-docs-use-predictable-ordering.patch"
-                               "xen-remove-config.gz-timestamp.patch"))))
+                "1r33ak7j6czcjxf5zxswfkppnv0w1n6hi262x9rk08bqyvcpxb23"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2618,6 +2615,9 @@ DOS or Microsoft Windows.")
               (string-append "BOOT_DIR=" #$output "/boot")
               (string-append "DEBUG_DIR=" #$output "/lib/debug")
               (string-append "EFI_DIR=" #$output "/lib/efi")
+              (string-append "SHLIB_libxenctrl=-Wl,-rpath=" #$output "/lib")
+              (string-append "SHLIB_libxenguest=-Wl,-rpath=" #$output "/lib")
+              (string-append "SHLIB_libxenstore=-Wl,-rpath=" #$output "/lib")
               "MINIOS_UPSTREAM_URL=")
       #:test-target "test"
       #:phases
@@ -2642,7 +2642,7 @@ DOS or Microsoft Windows.")
                                 (assoc-ref inputs "cross-libc") "/include")))
               ;; /var is not in /gnu/store, so don't try to create it.
               (substitute* '("tools/Makefile"
-                             "tools/xenstore/Makefile"
+                             "tools/xenstored/Makefile"
                              "tools/xenpaging/Makefile")
                 (("\\$\\(INSTALL_DIR\\) .*XEN_(DUMP|LOG|RUN|LIB|PAGING)_DIR.*")
                  "\n")
@@ -2746,14 +2746,14 @@ DOS or Microsoft Windows.")
                ;; at time of packaging, but upstream has unfortunately modified
                ;; existing tags in the past.  Also, not all Xen releases get a
                ;; new tag.  See <https://xenbits.xen.org/gitweb/?p=mini-os.git>.
-               (commit "f57858b7e8ef8dd48394dd08cec2bef3c9fb92f5")))
+               (commit "8b038c7411ae7e823eaf6d15d5efbe037a07197a")))
          (sha256
-          (base32 "04y7grxs47amvjcq1rq4jgk174rhid5m2z9w8wrv7rfd2xhazxy1"))
+          (base32 "1xgazvvhy5m9nabbmlwslynhk73k9a8wnzrjwjplj52f0cm10fjq"))
          (file-name (string-append name "-" version "-mini-os-git-checkout")))
        perl
        ;; TODO: markdown.
        pkg-config
-       python-2
+       python
        wget
        (cross-gcc "i686-linux-gnu"
                   #:xbinutils (cross-binutils "i686-linux-gnu")
