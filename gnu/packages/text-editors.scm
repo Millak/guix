@@ -200,7 +200,8 @@ extensions over the standard utility.")
                        (shared-lib (string-append shared-lib-dir
                                                   "/terminal.so")))
                   (mkdir-p shared-lib-dir)
-                  (invoke "gcc" "extensions/terminal/terminal.c"
+                  (invoke #$(cc-for-target)
+                          "extensions/terminal/terminal.c"
                           "-L" lib-dir "-lvterm"
                           "-Wl,-Bdynamic"
                           "-o" shared-lib
