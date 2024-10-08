@@ -429,7 +429,7 @@ a hardware description and verification language.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.11.3")
+    (version "1.14.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -438,7 +438,7 @@ a hardware description and verification language.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0rh6xwzr1drgwa04gx6w4r968yxlvfkvzg92950akf7wyxf331k7"))))
+                "1b71j8bps9zirvxhycrc9fhbr3f89si6h064xnly7gq06ggnv8n5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:out-of-source? #t
