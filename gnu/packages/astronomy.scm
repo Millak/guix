@@ -50,6 +50,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -2436,7 +2437,7 @@ crowded star fields.")
 (define-public siril
   (package
     (name "siril")
-    (version "1.2.4")
+    (version "1.3.3")
     (source
      (origin
        (method git-fetch)
@@ -2444,14 +2445,14 @@ crowded star fields.")
              (url "https://gitlab.com/free-astro/siril")
              (commit version)))
        (sha256
-        (base32 "1nh5zk7isf7a0akkxq56n0lw8i18f7w3r27pa16fpcivmbv6xcx2"))
+        (base32 "1fxjfr9kak9vb899xpgr1vmiv3cc2l4apyp0mn0ghg7mqlyl9qmw"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
-      #:imported-modules `(,@%meson-build-system-modules (guix build
-                                                               glib-or-gtk-build-system))
+      #:imported-modules `(,@%meson-build-system-modules
+                           (guix build glib-or-gtk-build-system))
       #:modules '((guix build meson-build-system)
                   ((guix build glib-or-gtk-build-system)
                    #:prefix glib-or-gtk:)
@@ -2469,22 +2470,42 @@ crowded star fields.")
                 `("GDK_PIXBUF_MODULE_FILE" =
                   (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
     (native-inputs
-     (list cmake git libconfig pkg-config))
+     (list cmake-minimal
+           git
+           (list glib "bin") ; for glib-compile-resources
+           libconfig
+           pkg-config))
     (inputs
-     (list cfitsio
-           (librsvg-for-system)
+     (list bash-minimal ;for wrap-program
+           cfitsio
+           curl
            exiv2
+           ffmpeg
            ffms2
            fftwf
-           gsl
            gdk-pixbuf
+           gsl
            gtk+
            json-glib
+           lcms-next
+
+           ;; XXX: It downloads script and data during start up, check if they
+           ;; may be presented as packages with wrapped environment variables
+           ;; src/io/siril_git.c
+           ;; <https://gitlab.com/free-astro/siril-scripts>
+           ;; <https://gitlab.com/free-astro/siril-spcc-database>.
+           libgit2
+
            libheif
-           bash-minimal ;for wrap-program
+           libjxl
            libraw
+           (librsvg-for-system)
            librtprocess
-           opencv))
+           libxisf
+           lz4
+           opencv
+           pugixml
+           wcslib))
     (home-page "https://siril.org/")
     (synopsis "Image processing software for amateur astronomy")
     (description
