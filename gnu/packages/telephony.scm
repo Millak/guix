@@ -377,17 +377,16 @@ to initiate and control SIP sessions.")
                  (upstream-name . "libosip2")))
    (home-page "https://www.gnu.org/software/osip/")))
 
-
 (define-public exosip
   (package
    (name "exosip")
-   (version "4.1.0")
+   (version "5.3.0")
    (source (origin
             (method url-fetch)
-            (uri (string-append "mirror://savannah/exosip/libeXosip2-"
+            (uri (string-append "mirror://savannah/exosip/libexosip2-"
                                 version ".tar.gz"))
             (sha256 (base32
-                     "17cna8kpc8nk1si419vgr6r42k2lda0rdk50vlxrw8rzg0xp2xrw"))))
+                     "1hn9xgy8ny04hjqd1rra7c4nz5nf9abdd5ghr7nmrsiicjc26y2v"))))
    (build-system gnu-build-system)
    (inputs (list osip))
    (synopsis "Sip abstraction library")
