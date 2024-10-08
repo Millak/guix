@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +44,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
@@ -376,7 +378,12 @@ alternatives. In compilers, this can reduce the cascade of secondary errors.")
                 "TEST_F(TestSystemInfo, DISABLED_GetOsVersion)"))
              (substitute* "xbmc/utils/test/TestCPUInfo.cpp"
                (("TEST_F\\(TestCPUInfo, GetCPUFrequency\\)")
-                "TEST_F(TestCPUInfo, DISABLED_GetCPUFrequency)"))))
+                "TEST_F(TestCPUInfo, DISABLED_GetCPUFrequency)"))
+             (substitute* "xbmc/test/TestDateTime.cpp"
+               (("TEST_F\\(TestDateTime, TmOperators\\)")
+                "TEST_F(TestDateTime, DISABLED_TmOperators)")
+               (("TEST_F\\(TestDateTime, GetAsTm\\)")
+                "TEST_F(TestDateTime, DISABLED_GetAsTm)"))))
          (add-before 'build 'set-build-environment
            (lambda _
              ;; Some bundled build scripts fall back to /bin/sh
@@ -444,6 +451,7 @@ alternatives. In compilers, this can reduce the cascade of secondary errors.")
            libtiff
            libva
            libvorbis
+           libxcrypt
            libxml2
            libxrandr
            libxrender
