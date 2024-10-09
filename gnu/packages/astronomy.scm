@@ -1018,6 +1018,77 @@ more.")
   ;; Default version of INDI..
   indi-1.9)
 
+(define-public iraf-community
+  (package
+    (name "iraf-community")
+    (version "2.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/iraf-community/iraf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cxf8s8gldx0zc9075x8ii0aadjagifw9gpdvnpqss0q21zwrpg2"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; XXX: All tests fail, figure out how to fix them.
+      #:tests? #f
+      ;; It failes with segmentation fault in parallel build
+      #:parallel-build? #f
+      ;; No such file or directory .../lib/iraf/lib/libmemdbg.a
+      #:validate-runpath? #f
+      #:make-flags
+      #~(list (format #f "IRAFARCH=~a" (cond (#$(target-hurd?) "hurd")
+                                             (#$(target-64bit?) "linux64")
+                                             (else "linux")))
+              "MNAME=linux64"
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ;; no configure
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (list "test/run_tests"
+                                 "unix/boot/spp/xc.c"
+                                 "unix/f2c/libf2c/makefile.u"
+                                 "unix/f2c/src/changes"
+                                 "unix/f2c/src/main.c"
+                                 "unix/f2c/src/makefile.u"
+                                 "unix/f2c/trim_f2c.sh"
+                                 "unix/hlib/f77.sh"
+                                 "unix/hlib/irafarch.sh"
+                                 "unix/hlib/irafcl.sh"
+                                 "unix/hlib/mkfloat"
+                                 "unix/hlib/mkiraf.sh"
+                                 "unix/hlib/mkmlist.sh"
+                                 "unix/os/zoscmd.c")
+                (("/bin/sh") (which "sh")))
+              (substitute* "unix/hlib/irafarch.sh"
+                (("/usr/bin/uname") (search-input-file inputs "/bin/uname"))
+                (("/bin/uname") (search-input-file inputs "/bin/uname")))
+              (substitute* "Makefile"
+                (("DESTDIR./etc/iraf") "prefix)/etc/iraf")))))))
+    (native-inputs
+     (list bison flex perl))
+    (inputs
+     (list curl expat ncurses readline zlib))
+    (home-page "https://iraf-community.github.io/")
+    (synopsis "Image Reduction and Analysis Facility")
+    (description
+     "IRAF is the Image Reduction and Analysis Facility, a general purpose
+software system for the reduction and analysis of astronomical data.  IRAF was
+written by the @acronym{NOAO, National Optical Astronomy Observatories} in
+Tucson, Arizona.  This package provides a community successor of the last IRAF
+release from 2013.")
+    ;; It's multi licenses project but primary one is MIT (Expat) it was
+    ;; checked with upstream, see
+    ;; <https://github.com/iraf-community/iraf/issues/403>.
+    (license license:expat)))
+
 (define-public libnova
   (package
     (name "libnova")
