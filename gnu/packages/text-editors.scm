@@ -205,7 +205,9 @@ extensions over the standard utility.")
                           "-L" lib-dir "-lvterm"
                           "-Wl,-Bdynamic"
                           "-o" shared-lib
-                          "-fPIC" "-shared")))))))
+                          "-shared"
+                          "-fPIC"
+                          "-lutil")))))))
       (native-inputs
        (list sbcl-cl-ansi-text
              sbcl-rove
