@@ -834,7 +834,8 @@ A @code{andglob} program is also provided along with s.")
          "0pgdxvy8jgydsyzk7vcc93pm09bihqvrn3i35gz1ncg9z31rbf20"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f)) ; there are no tests available
+     `(#:tests? #f   ; there are no tests available
+       #:license-file-regexp "LEGAL"))
     (home-page "https://github.com/ibara/oksh")
     (synopsis "Portable OpenBSD Korn Shell")
     (description
