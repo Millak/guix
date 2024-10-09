@@ -148,8 +148,8 @@ extensions over the standard utility.")
     (license license:gpl3+)))
 
 (define-public lem
-  (let ((commit "3f2f0adb6db2dbed57b5cccca34f47ab9d5a2314")
-        (revision "0"))
+  (let ((commit "80ab76c2946569a8a009fa0c0dcd29d29d9190a4")
+        (revision "1"))
     (package
       (name "lem")
       (version (git-version "2.2.0" revision commit))
@@ -160,7 +160,7 @@ extensions over the standard utility.")
                (url "https://github.com/lem-project/lem/")
                (commit commit)))
          (sha256
-          (base32 "00b4wn75ssywrhr4b7h4vk7hyd6dac2618339k56vg9vwni1bbxi"))
+          (base32 "1bqypfdq7m76i4ilm7xj2k7wnd67vqz7kg97x2q8y37v07vm1vjs"))
          (file-name (git-file-name name version))
          (snippet
           #~(begin
