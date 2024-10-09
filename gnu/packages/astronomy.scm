@@ -3312,13 +3312,13 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "11.18.4")
+    (version "12.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crds" version))
        (sha256
-        (base32 "1z6apmss8wym3lpp2mifqxz0i5vvi39g0i2agvw0lchcyzw3jvig"))))
+        (base32 "1xsw120npgf962p3s9rddi88ppmvr0hs6203dnv05wvq2jyfsymv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3338,7 +3338,9 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
            python-stsynphot
            python-requests))
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://hst-crds.stsci.edu")
     (synopsis "Calibration Reference Data System for HST and JWST")
     (description
