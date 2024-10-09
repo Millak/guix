@@ -18517,19 +18517,29 @@ minimal and fast API targeting the following uses:
 (define-public python-icalendar
   (package
     (name "python-icalendar")
-    (version "4.1.0")
+    (version "5.0.13")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "icalendar" version))
              (sha256
               (base32
-               "15dkq42rkqjdi17rpvmd1plnbwn4daby0nk1s1c3xi7w5v0bfj4p"))))
-    (build-system python-build-system)
+               "01lp0advx60z8wgng8aga1p1668ydn1r6d9qm3d622yfikg9yycj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "src/icalendar/tests")))))))
     (propagated-inputs
-     (list python-dateutil python-pytz))
-    (synopsis "Python library for parsing iCalendar files")
-    (description "The icalendar package is a parser/generator of iCalendar
-files for use with Python.")
+     (list python-dateutil python-pytz python-tzdata))
+    (native-inputs
+     (list python-pytest python-pytz))
+    (synopsis "Python library for parsing and generating iCalendar files")
+    (description
+     "@code{icalendar} is a Python library for parsing and generating iCalendar files.")
     (home-page "https://github.com/collective/icalendar")
     (license license:bsd-2)))
 
