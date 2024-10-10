@@ -4455,13 +4455,13 @@ of axis order, spatial projections, and spectral units that exist in the wild.
 (define-public python-specutils
   (package
     (name "python-specutils")
-    (version "1.16.0")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "specutils" version))
        (sha256
-        (base32 "1bv1f0bpyc8pgxywcmhd3rpmnx0l604iqn4cx6isa9jfp6gnd0z3"))))
+        (base32 "16fwazgk1cbqd9njrmwg4xyxg4qykv8c5mk5bzxwz1q5arjc8cy7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4471,6 +4471,11 @@ of axis order, spatial projections, and spectral units that exist in the wild.
       #:test-flags #~(list "-k" "not test_create_spectral_axis")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.cfg"
+                ;; numpy>=1.24
+                (("1.24") "1.23.2"))))
           (add-before 'check 'set-home-env
             (lambda _
               ;; Tests require HOME to be set.
@@ -4480,6 +4485,7 @@ of axis order, spatial projections, and spectral units that exist in the wild.
      (list ;; python-stdatamodels ; cycle with python-synphot, optional.
            python-asdf
            python-asdf-astropy
+           python-astropy
            python-gwcs
            python-ndcube
            python-numpy
@@ -4487,17 +4493,18 @@ of axis order, spatial projections, and spectral units that exist in the wild.
     (native-inputs
      (list python-matplotlib
            python-pytest-astropy
+           python-setuptools
            python-setuptools-scm
            python-spectral-cube))
     (home-page "https://specutils.readthedocs.io/")
     (synopsis "Package for spectroscopic astronomical data")
     (description
-     "@code{specutils} is a Python package for representing, loading, manipulating,
-and analyzing astronomical spectroscopic data.  The generic data containers and
-accompanying modules provide a toolbox that the astronomical community can use
-to build more domain-specific packages.  For more details about the underlying
-principles,
-see @url{https://github.com/astropy/astropy-APEs/blob/main/APE13.rst, APE13}.")
+     "@code{specutils} is a Python package for representing, loading,
+manipulating,and analyzing astronomical spectroscopic data.  The generic data
+containers and accompanying modules provide a toolbox that the astronomical
+community can use to build more domain-specific packages.  For more details
+about the underlying principles, see
+@url{https://github.com/astropy/astropy-APEs/blob/main/APE13.rst, APE13}.")
     (license license:bsd-3)))
 
 (define-public python-spherical-geometry
