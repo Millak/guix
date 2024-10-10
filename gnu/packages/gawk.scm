@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2016, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2018, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
@@ -136,7 +136,7 @@ block-scoped lexical variables."))))
 (define-public mawk
   (package
     (name "mawk")
-    (version "1.3.4-20200120")
+    (version "1.3.4-20240905")
     (home-page "https://invisible-island.net/mawk/mawk.html")
     (source (origin
               (method url-fetch)
@@ -144,7 +144,7 @@ block-scoped lexical variables."))))
                                   "/mawk-" version ".tgz"))
               (sha256
                (base32
-                "0dw2icf8bnqd9y0clfd9pkcxz4b2phdihwci13z914mf3wgcvm3z"))
+                "1q4rfcv7ppfw4fra8hp8z0s4qnsv1x598ny4xwb026zsgn96g6d3"))
               (modules '((guix build utils)))
               (snippet
                '(begin
