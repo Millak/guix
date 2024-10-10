@@ -15665,8 +15665,8 @@ port within a range.")
   (sbcl-package->ecl-package sbcl-find-port))
 
 (define-public sbcl-flamegraph
-  (let ((commit "1ed7a718eae88bd35e1649a1c716d46c59dc0a24")
-        (revision "0"))
+  (let ((commit "0b78cae83b1f5e71941c8804a6c1d945a11e4036")
+        (revision "1"))
     (package
       (name "sbcl-flamegraph")
       (version (git-version "0.0.0" revision commit))
@@ -15674,8 +15674,7 @@ port within a range.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               ;; This is a fork with fixes for latest SBCL.
-               (url "https://github.com/ruricolist/cl-flamegraph")
+               (url "https://github.com/40ants/cl-flamegraph")
                (commit commit)))
          (file-name (git-file-name "cl-flamegraph" version))
          (sha256
