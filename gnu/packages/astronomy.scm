@@ -2045,13 +2045,13 @@ position-frequency slice.")
 (define-public python-pyxsim
   (package
     (name "python-pyxsim")
-    (version "4.4.1")
+    (version "4.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyxsim" version))
        (sha256
-        (base32 "1vviy9hk2z3h0fi6c8207ps5pklsjn0a77pqq6wa4sa1n07clc8i"))))
+        (base32 "1zryblpcc2yfhk1ybhv35p4zkp04hqwdrslrwm6my0pichb30py6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2076,7 +2076,9 @@ position-frequency slice.")
            python-yt))
     (native-inputs
      (list python-cython-3
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://hea-www.cfa.harvard.edu/~jzuhone/pyxsim/")
     (synopsis "Simulating X-ray observations from astrophysical sources")
     (description
