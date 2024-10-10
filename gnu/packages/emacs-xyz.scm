@@ -4930,6 +4930,32 @@ Some of its major features include:
 @end itemize")
     (license license:gpl2+)))
 
+(define-public emacs-campus
+  (let ((commit "0a475cd7704001d8dc8280acb91a317db797933b")
+        (revision "0"))
+    (package
+      (name "emacs-campus")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/eshrh/campus-emacs")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "13vych4kk6adn15scl1s4znnbmfjvihfglxglrqqp2llzh0wsnlm"))))
+      (arguments (list #:tests? #f)) ; There are no tests.
+      (propagated-inputs (list emacs-dash emacs-s))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/eshrh/campus-emacs")
+      (synopsis "Simple and sane approach to repl programming")
+      (description
+       "Campus is a simple but effective improvement to the
+inferior-process repl development experience in Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-caps-lock
   (package
     (name "emacs-caps-lock")
