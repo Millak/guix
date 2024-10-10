@@ -7652,6 +7652,45 @@ Emacs, inspired by @code{Dracula} theme.")
 for the Zig programming language in Emacs.")
       (license license:gpl3+))))
 
+(define-public emacs-zk
+  (package
+    (name "emacs-zk")
+    (version "0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/localauthor/zk/")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0449zsahyzvjlhv27lkj33ybnq86j47paww779zd0qhq550hdnjs"))))
+    (arguments
+     (list
+      #:tests? #f ; There are no tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "zk.el"
+                (("\"grep")
+                 (string-append
+                  "\""
+                  (search-input-file inputs "/bin/grep")))
+                (("\"egrep")
+                 (string-append
+                  "\""
+                  (search-input-file inputs "/bin/egrep")))))))))
+    (propagated-inputs (list emacs-citar emacs-link-hint))
+    (inputs (list grep))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/localauthor/zk/")
+    (synopsis "Zettelkasten-style linked notes for Emacs")
+    (description
+     "Emacs packages for working with Zettelkasten-style linked notes.")
+    (license license:gpl3+)))
+
 (define-public emacs-znc
   (package
     (name "emacs-znc")
