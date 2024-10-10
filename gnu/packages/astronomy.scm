@@ -2114,6 +2114,51 @@ across many files.")
     (description "Multidimensional data visualization across files.")
     (license license:bsd-3)))
 
+(define-public python-halotools
+  (package
+    (name "python-halotools")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "halotools" version))
+       (sha256
+        (base32 "1fn74ljb4yv3nprgzaf9awiyjdvkmzf1a1n2kvajbax835qcs3bz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Tests are shaky in parallel.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-cython-3
+           python-extension-helpers
+           python-pytest
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-beautifulsoup4
+           python-h5py
+           python-numpy
+           python-requests
+           python-scipy))
+    (home-page "http://halotools.rtfd.org/")
+    (synopsis "N-body simulations and constrain models of cosmology evolution")
+    (description
+     "Halotools is a specialized python package for building and testing
+models of the galaxy-halo connection, and analyzing catalogs of dark matter
+halos.  The core feature of Halotools is a modular platform for creating mock
+universes of galaxies starting from a catalog of dark matter halos obtained
+from a cosmological simulation.")
+    (license license:bsd-3)))
+
 (define-public python-healpy
   (package
     (name "python-healpy")
