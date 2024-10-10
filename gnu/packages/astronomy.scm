@@ -5480,26 +5480,33 @@ well as ephemerides services
 (define-public python-sep-pjw
   (package
     (name "python-sep-pjw")
-    (version "1.3.5")
+    (version "1.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sep_pjw" version))
        (sha256
-        (base32 "15jf16zycs1gz6jfkhmj7b8wdcpp8d5ikz15pmfkwq32a8mfdv8m"))))
+        (base32 "0ji3khgswidnnqx34js9fyk39kgh4gvf7q8gk2f7r4acaabzja2v"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags #~(list "test.py")
+     (list
+      #:test-flags #~(list "test.py")
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               ;; numpy>=1.23.5
-               (("1.23.5") "1.23.2")))))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; numpy>=1.23.5
+                (("1.23.5") "1.23.2")
+                ;; TypeError: Configuration.__init__() got an unexpected
+                ;; keyword argument 'version_file'
+                (("version_file = .*") "")))))))
     (native-inputs
      (list python-cython
-           python-pytest))
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/PJ-Watson/sep-pjw")
