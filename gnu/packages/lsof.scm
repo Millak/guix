@@ -46,7 +46,8 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v32407al4j0hhcph95lv4xvr9h012lii29iyq41iwj39zwfavax"))))
+                "1v32407al4j0hhcph95lv4xvr9h012lii29iyq41iwj39zwfavax"))
+              (patches (search-patches "lsof-compat-linux-6.9.patch"))))
     (build-system gnu-build-system)
     (native-inputs (list automake
                          autoconf

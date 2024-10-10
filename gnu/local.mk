@@ -1739,6 +1739,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/llvm-9-fix-scev-miscompilation.patch	\
   %D%/packages/patches/lm-sensors-hwmon-attrs.patch		\
   %D%/packages/patches/lsh-fix-x11-forwarding.patch		\
+  %D%/packages/patches/lsof-compat-linux-6.9.patch		\
   %D%/packages/patches/lsof-fatal-test-failures.patch		\
   %D%/packages/patches/lua-CVE-2014-5461.patch                      \
   %D%/packages/patches/lua-pkgconfig.patch                      \

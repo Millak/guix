@@ -1,0 +1,67 @@
+This commit adds the patch that fixes:
+<https://github.com/lsof-org/lsof/issues/317>
+
+The issue was triggering the following error in the `test` phase that
+resulted in a build failure in Linux 6.9 or higher:
+
+    FAIL: lib/dialects/linux/tests/case-20-pidfd-pid.bash
+
+
+From c1678e3f6e4b4d984cb3078b7bf0c9e24bedb8ca Mon Sep 17 00:00:00 2001
+From: Jiajie Chen <c@jia.je>
+Date: Fri, 17 May 2024 15:22:35 +0800
+Subject: [PATCH] [linux] Maintain original output for pidfd in linux 6.9
+
+---
+ 00DIST                     |  3 +++
+ lib/dialects/linux/dproc.c | 13 +++++++++++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/00DIST b/00DIST
+index d5a0349..9a29611 100644
+--- a/00DIST
++++ b/00DIST
+@@ -5605,6 +5605,9 @@ Supplement	Regenerated the 4.04 distribution to correct a non-
+ 
+ 		[linux] Do not embed kernel version in CFLAGS (#314)
+ 
++		[linux] Linux 6.9 changed the pidfs appearence in procfs. Try
++		to maintain original output in lsof (#317)
++
+ 
+ Vic Abell <abe@purdue.edu>
+ July 14, 2018
+diff --git a/lib/dialects/linux/dproc.c b/lib/dialects/linux/dproc.c
+index cb6bb64..3a7a120 100644
+--- a/lib/dialects/linux/dproc.c
++++ b/lib/dialects/linux/dproc.c
+@@ -1273,6 +1273,10 @@ static int process_id(struct lsof_context *ctx, /* context */
+ #endif     /* defined(HASEPTOPTS) */
+                 if (rest && rest[0] == '[' && rest[1] == 'p')
+                     fdinfo_mask |= FDINFO_PID;
++                else if (Lf->ntype == N_REGLR && rest && *rest && strcmp(pbuf, "pidfd") == 0) {
++                    // https://github.com/lsof-org/lsof/issues/317
++                    fdinfo_mask |= FDINFO_PID;
++                }
+ 
+                 if ((av = get_fdinfo(ctx, pathi, fdinfo_mask, &fi)) &
+                     FDINFO_POS) {
+@@ -1338,6 +1342,15 @@ static int process_id(struct lsof_context *ctx, /* context */
+                     Lf->sf |= SELPTYINFO;
+                 }
+ #endif /* defined(HASEPTOPTS) && defined(HASPTYEPT) */
++                else if (Lf->ntype == N_REGLR && rest && *rest && Lf->nm &&
++                         strcmp(Lf->nm, "pidfd") == 0) {
++                    // https://github.com/lsof-org/lsof/issues/317
++                    // pidfd since Linux 6.9 becomes a regular file:
++                    // /proc/PID/fd/FD -> pidfd:[INODE]
++                    (void)snpf(rest, sizeof(pbuf) - (rest - pbuf),
++                                "[pidfd:%d]", fi.pid);
++                    enter_nm(ctx, rest);
++                }
+ 
+                 if (Lf->sf)
+                     link_lfile(ctx);
+-- 
+2.45.2
+
