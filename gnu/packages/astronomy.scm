@@ -5253,28 +5253,42 @@ N-Chilada and RAMSES AMR outputs.")
 (define-public python-pyregion
   (package
     (name "python-pyregion")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyregion" version))
        (sha256
-        (base32 "0l7qb7r8fnv46mdih4m5b8jaxixgpw6m7v37dpikjkblgh0vigaw"))))
+        (base32 "09a98v3zk1vdjns1q64al58mapr4cns3nlnyi6b26wqi888qfjg8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          ;; setup.py was removed in b26ec4fe88e29447dc8391fcdef7082a4f7876ce
+          ;; TODO: Check how to implement it in python-build-system.
+          (add-after 'unpack 'create-setup.py
+            (lambda _
+              (call-with-output-file "setup.py"
+                (lambda (port)
+                  (format port "from setuptools import setup
+from extension_helpers import get_extensions
+setup(ext_modules=get_extensions())")))))
           (add-before 'check 'build-extensions
             (lambda _
               ;; Cython extensions have to be built before running the tests.
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
-     (list python-astropy python-numpy python-pyparsing))
+     (list python-astropy
+           python-numpy
+           python-pyparsing))
     (native-inputs
      (list python-cython
+           python-extension-helpers
            python-pytest
+           python-pytest-astropy
            python-pytest-astropy-header
+           python-setuptools
            python-setuptools-scm))
     (home-page "https://github.com/astropy/pyregion")
     (synopsis "Python parser for ds9 region files")
