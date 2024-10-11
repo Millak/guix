@@ -550,20 +550,19 @@ Performance is achieved by using the LLVM JIT compiler.")
   (deprecated-package "guile-aiscm-next" guile-aiscm))
 
 (define-public llama-cpp
-  (let ((commit "a5735e4426b19a3ebd0c653ad8ac01420458ee95")
-        (revision "3"))
+  (let ((tag "b3907"))
     (package
       (name "llama-cpp")
-      (version (git-version "0.0.0" revision commit))
+      (version (string-append "0.0.0-" tag))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/ggerganov/llama.cpp")
-               (commit commit)))
-         (file-name (git-file-name name version))
+               (commit tag)))
+         (file-name (git-file-name name tag))
          (sha256
-          (base32 "0nx55wchwf204ld6jygfn37cjrzc4lspwn5v0qk8i6p92499bv0h"))))
+          (base32 "0vpqng1lq1r09vi7s1mhqgqgkxn69spp19c2s68i6kk3zbcl7i9b"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -616,16 +615,17 @@ Performance is achieved by using the LLVM JIT compiler.")
                                       (get-string-all input))))))
                       (chmod (string-append bin script) #o555)))
                   (mkdir-p bin)
-                  (make-script "convert-hf-to-gguf")
-                  (make-script "convert-llama-ggml-to-gguf")
-                  (make-script "convert-hf-to-gguf-update.py"))))
+                  (make-script "convert_hf_to_gguf")
+                  (make-script "convert_llama_ggml_to_gguf")
+                  (make-script "convert_hf_to_gguf_update.py"))))
             (add-after 'install-python-scripts 'wrap-python-scripts
               (assoc-ref python:%standard-phases 'wrap))
-            (add-after 'install 'install-main
-              (lambda _
-                (with-directory-excursion (string-append #$output "/bin")
-                    (symlink "main" "llama"))))
-            )))
+            (add-after 'install 'remove-tests
+              (lambda* (#:key outputs #:allow-other-keys)
+                (for-each delete-file (find-files
+                                       (string-append (assoc-ref outputs "out")
+                                                      "/bin")
+                                       "^test-")))))))
       (inputs (list python))
       (native-inputs (list pkg-config))
       (propagated-inputs
