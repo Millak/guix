@@ -2686,6 +2686,38 @@ role, and your gender.")
       (license:fsdg-compatible
         "https://nethack.org/common/license.html"))))
 
+(define-public netpanzer
+  (package
+    (name "netpanzer")
+    (version "0.9.0-RC-7") ;0.8.7 was released 8 years ago
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/netpanzer/netpanzer")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bc29cxjragbhgsg89sliyiqw289nd37wb1f9qarknir73ijnfac"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:tests? #f)) ;2/2 (trivial) tests fail, need filesystem access
+    (native-inputs (list pkg-config))
+    (inputs (list freetype
+                  lua
+                  physfs
+                  sdl2
+                  sdl2-mixer
+                  sdl2-ttf))
+    (home-page "https://github.com/netpanzer/netpanzer")
+    (synopsis "Online tactical warfare game")
+    (description
+     "NetPanzer is an online multiplayer tactical warfare game.  It is based
+on quick tactical action and unit management in real-time.  Battles progress
+constantly as destroyed players respawn with a set of new units.  Players can
+join or leave multiplayer games at any time.")
+    (license license:gpl2+)))
+
 (define-public pipewalker
   (package
     (name "pipewalker")
