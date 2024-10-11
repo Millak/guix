@@ -32,6 +32,7 @@
             home-shepherd-configuration?
             home-shepherd-configuration-shepherd
             home-shepherd-configuration-auto-start?
+            home-shepherd-configuration-silent?
             home-shepherd-configuration-services)
   #:re-export (shepherd-service
                shepherd-service?
@@ -58,6 +59,8 @@
                (default #t))
   (daemonize? home-shepherd-configuration-daemonize?
               (default #t))
+  (silent? home-shepherd-configuration-silent?
+            (default #t))
   (services home-shepherd-configuration-services
             (default '())))
 
@@ -107,7 +110,8 @@ as shepherd package."
     (scheme-file "shepherd.conf" config)))
 
 (define (launch-shepherd-gexp config)
-  (let* ((shepherd (home-shepherd-configuration-shepherd config)))
+  (let* ((shepherd (home-shepherd-configuration-shepherd config))
+         (silent? (home-shepherd-configuration-silent? config)))
     (if (home-shepherd-configuration-auto-start? config)
         (with-imported-modules '((guix build utils))
           #~(unless (file-exists?
@@ -125,6 +129,7 @@ as shepherd package."
                  #$(file-append shepherd "/bin/shepherd")
                  "--logfile"
                  (string-append log-dir "/shepherd.log")
+                 #$@(if silent? '("--silent") '())
                  "--config"
                  #$(home-shepherd-configuration-file config)))))
         #~"")))

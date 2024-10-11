@@ -46075,6 +46075,10 @@ The Shepherd package to use.
 @item auto-start? (default: @code{#t})
 Whether or not to start Shepherd on first login.
 
+@item silent? (default: @code{#t})
+When true, the @command{shepherd} process does not write
+anything to standard output when started automatically.
+
 @item services (default: @code{'()})
 A list of @code{<shepherd-service>} to start.
 You should probably use the service extension
