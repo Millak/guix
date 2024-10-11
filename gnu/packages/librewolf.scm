@@ -212,18 +212,18 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20241005085731")
+(define %librewolf-build-id "20241010143544")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "130.0.1-1")
+    (version "131.0.2-1")
     (source
      (origin
       (inherit (make-librewolf-source
                 #:version version
-                #:firefox-hash "0w4z3fq5zhm63a0wmhvmqrj263bvy962dir25q3z0x5hx6hjawh2"
-                #:librewolf-hash "0f80pihn375bdjhjmmg2v1w96wpn76zb60ycy39wafwh1dnzybrd"))))
+                #:firefox-hash "05knnwfxqd3mb6a5y2yh73sn4g648dxnz9kpkmpj9madr55863h4"
+                #:librewolf-hash "1knx485kdjv8d0rn5ai1x1jp0403dvxz9m7lpim1y2d2ilyi26x7"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -619,31 +619,22 @@
                    (add-after 'wrap-program 'install-desktop-entry
                      (lambda* (#:key outputs #:allow-other-keys)
                        (let* ((desktop-file
-                               "taskcluster/docker/firefox-snap/firefox.desktop")
+                               "toolkit/mozapps/installer/linux/rpm/mozilla.desktop")
                               (applications (string-append #$output
                                              "/share/applications")))
                          (substitute* desktop-file
-                           (("^Exec=firefox")
+                           (("^Exec=@MOZ_APP_NAME@")
                             (string-append "Exec="
-                                           #$output "/bin/librewolf"))
-                           ;; "Firefox" -> "LibreWolf" everywhere
-                           (("Firefox")
+                                           #$output "/bin/librewolf %u"))
+                           (("@MOZ_APP_DISPLAYNAME@")
                             "LibreWolf")
-                           ;; Remove non-Latin translations.
-                           (("^Name\\[(ar|bn)\\].*$")
-                            "")
-                           (("^Icon=.*")
+                           (("@MOZ_APP_REMOTINGNAME@")
+                            "LibreWolf")
+                           (("^Icon=@MOZ_APP_NAME@")
                             (string-append "Icon="
                              #$output
-                             "/share/icons/hicolor/128x128/apps/librewolf.png
-"))
-                           ;; These commands were changed.
-                           (("-NewWindow")
-                            "-new-window")
-                           (("-NewPrivateWindow")
-                            "-new-private-window")
-                           (("StartupNotify=true")
-                            "StartupNotify=true\nStartupWMClass=LibreWolf"))
+                             "/share/icons/hicolor/128x128/apps/librewolf.png")))
+
                          (copy-file desktop-file "librewolf.desktop")
                          (install-file "librewolf.desktop" applications))))
                    (add-after 'install-desktop-entry 'install-icons
