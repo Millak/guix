@@ -1253,25 +1253,30 @@ use 'plain-file' instead~%")
 
 (define %default-privileged-programs
   (let ((shadow (@ (gnu packages admin) shadow)))
-    (map file-like->setuid-program
-         (list (file-append shadow "/bin/passwd")
-               (file-append shadow "/bin/chfn")
-               (file-append shadow "/bin/sg")
-               (file-append shadow "/bin/su")
-               (file-append shadow "/bin/newgrp")
-               (file-append shadow "/bin/newuidmap")
-               (file-append shadow "/bin/newgidmap")
-               (file-append inetutils "/bin/ping")
-               (file-append inetutils "/bin/ping6")
-               (file-append sudo "/bin/sudo")
-               (file-append sudo "/bin/sudoedit")
-               (file-append fuse-2 "/bin/fusermount")
-               (file-append fuse "/bin/fusermount3")
+    (cons*
+     (privileged-program
+      (program (file-append inetutils "/bin/ping"))
+      (capabilities "cap_net_raw=ep"))
+     (privileged-program
+      (program (file-append inetutils "/bin/ping6"))
+      (capabilities "cap_net_raw=ep"))
+     (map file-like->setuid-program
+          (list (file-append shadow "/bin/passwd")
+                (file-append shadow "/bin/chfn")
+                (file-append shadow "/bin/sg")
+                (file-append shadow "/bin/su")
+                (file-append shadow "/bin/newgrp")
+                (file-append shadow "/bin/newuidmap")
+                (file-append shadow "/bin/newgidmap")
+                (file-append sudo "/bin/sudo")
+                (file-append sudo "/bin/sudoedit")
+                (file-append fuse-2 "/bin/fusermount")
+                (file-append fuse "/bin/fusermount3")
 
-               ;; To allow mounts with the "user" option, "mount" and "umount" must
-               ;; be setuid-root.
-               (file-append util-linux "/bin/mount")
-               (file-append util-linux "/bin/umount")))))
+                ;; To allow mounts with the "user" option, "mount" and "umount" must
+                ;; be setuid-root.
+                (file-append util-linux "/bin/mount")
+                (file-append util-linux "/bin/umount"))))))
 
 (define %setuid-programs
   ;; Do not add to this list or use it in new code!  It's defined only to ease
