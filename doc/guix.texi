@@ -46075,6 +46075,9 @@ The Shepherd package to use.
 @item auto-start? (default: @code{#t})
 Whether or not to start Shepherd on first login.
 
+@item daemonize? (default: @code{#t})
+Whether or not to run Shepherd in the background.
+
 @item silent? (default: @code{#t})
 When true, the @command{shepherd} process does not write
 anything to standard output when started automatically.

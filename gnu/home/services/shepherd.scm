@@ -32,6 +32,7 @@
             home-shepherd-configuration?
             home-shepherd-configuration-shepherd
             home-shepherd-configuration-auto-start?
+            home-shepherd-configuration-daemonize?
             home-shepherd-configuration-silent?
             home-shepherd-configuration-services)
   #:re-export (shepherd-service
