@@ -364,7 +364,7 @@ changed.")
 (define-public libdwarf
   (package
     (name "libdwarf")
-    (version "0.5.0")
+    (version "0.11.0")
     (source (origin
               (method git-fetch)
               ;; The archive at
@@ -376,7 +376,7 @@ changed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17sgjxx666nxvxn3g1xc8fj0b89jazq9v8ddp3j3ck0r257ki8n2"))))
+                "0j4r6558rsgx7fhwa46mqix4jlxyf6m4h8i2nsxcq8j30siq5b85"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-shared")))
