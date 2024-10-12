@@ -23549,7 +23549,7 @@ directories of plain text notes, inspired by Notational Velocity.")
 (define-public emacs-anzu
   (package
     (name "emacs-anzu")
-    (version "0.64")
+    (version "0.67")
     (source
      (origin
        (method git-fetch)
@@ -23558,7 +23558,7 @@ directories of plain text notes, inspired by Notational Velocity.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jfn5nm6r68wa0gn2k2zy6sdq6c8shw8x04ylzzm5cw7zm60jw0n"))))
+        (base32 "1jnqzywzqq8jzvqaiba5szmj9zbxx9kvdmnaldwgldi8yyiy7il4"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/syohex/emacs-anzu")
     (synopsis "Show number of matches in mode-line while searching")
