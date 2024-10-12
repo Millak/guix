@@ -9740,7 +9740,7 @@ build jobs.")
 (define-public emacs-zmq
   (package
     (name "emacs-zmq")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -9749,7 +9749,7 @@ build jobs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "171cm487jbdqi73lk7vc9dsrzhxqic0yvy1vvxwk3b9qx1m2ab6v"))))
+        (base32 "1my9gw15xdbw7wdv6xa29lw8vfxqjsypk2465zxic2825hs0wn07"))))
     (build-system emacs-build-system)
     (arguments
      (list
