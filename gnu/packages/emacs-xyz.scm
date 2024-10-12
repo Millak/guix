@@ -33801,7 +33801,7 @@ all of your projects, then override or add variables on a per-project basis.")
 (define-public emacs-casual-calc
   (package
     (name "emacs-casual-calc")
-    (version "1.11.3")
+    (version "1.11.4")
     (source
      (origin
        (method git-fetch)
@@ -33810,7 +33810,7 @@ all of your projects, then override or add variables on a per-project basis.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0640hq1nc5n7y6jzkbf0qn8lmprzhzllzkna9zbiqkia4jxcp9ws"))))
+        (base32 "1695vgysn17zhk5wnrfh1cqp8rzrfmcxg3vj80axs961qd1mrm9w"))))
     (build-system emacs-build-system)
     (arguments
      (list
