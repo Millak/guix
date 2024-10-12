@@ -9873,14 +9873,14 @@ commands and user options are usually not implemented here.")
 (define-public emacs-company
   (package
     (name "emacs-company")
-    (version "0.10.2")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "company-" version ".tar"))
        (sha256
-        (base32 "0j2qrnx2w2al4f2n37b89q0pkabh5ccv00gsknvgaylhy0za5gq9"))))
+        (base32 "00vmqra0fav0w4q13ngwpyqpxqah0ahfg7kp5l2nd0h2l8sp79qr"))))
     (build-system emacs-build-system)
     (arguments
      (list
