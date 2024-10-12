@@ -9443,14 +9443,14 @@ user.")
 (define-public emacs-subed
   (package
     (name "emacs-subed")
-    (version "1.2.15")
+    (version "1.2.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.nongnu.org/nongnu/subed-"
                                   version ".tar"))
               (sha256
                (base32
-                "08b1ln5idclxr8jdq7san05lf3sm3iqg56v7h0yjdsxfjaqbw00a"))))
+                "0fsxsp8g70mr36njmv2h3qrmp1mw3r4clrlzib33iq02wmw7q3rg"))))
     (arguments
      (list
       #:tests? #t
