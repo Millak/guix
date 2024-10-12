@@ -33882,7 +33882,7 @@ all of your projects, then override or add variables on a per-project basis.")
 (define-public emacs-casual-lib
   (package
     (name "emacs-casual-lib")
-    (version "1.1.3")
+    (version "1.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -33891,7 +33891,7 @@ all of your projects, then override or add variables on a per-project basis.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qzwzvrp94f2sw861q2jgjnil18m85nm0mryy92rdvijni2l0dj9"))))
+                "0s9yx9s1d4zr35j3pd6dnhldax1h0sgr5zrraqva4ysbflwlvy50"))))
     (build-system emacs-build-system)
     (arguments
      (list #:tests? #t
