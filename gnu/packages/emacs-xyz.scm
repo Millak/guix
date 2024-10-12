@@ -21577,8 +21577,8 @@ characters from end of lines.")
 (define-public emacs-opencl-mode
   ;; Upstream never makes any formal releases, there is only v1.0.
   ;; Use the latest commit instead.
-  (let ((commit "15091eff92c33ee0d1ece40eb99299ef79fee92d")
-        (revision "1"))
+  (let ((commit "204d5d9e0f5cb2cbe810f2933230eb08fe2c7695")
+        (revision "2"))
     (package
       (name "emacs-opencl-mode")
       (version (git-version "1.0" revision commit))
@@ -21589,7 +21589,7 @@ characters from end of lines.")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
-                 (base32 "1zn6rr48w0ai0sn51zzyp546va6flfgf9lm12vfrdb6kkiiiq403"))))
+                 (base32 "1x3h187r7waibrx5llsk6irb5afhqsrddb1f9hm3f9saks6n1ldv"))))
       (build-system emacs-build-system)
       (synopsis "Emacs major mode for editing OpenCL kernels")
       (description "This Emacs package provides the @code{opencl-mode} major
