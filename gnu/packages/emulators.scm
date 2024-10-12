@@ -2408,6 +2408,9 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
                         '("--enable-neon" "--enable-floathard")
                         '())
                  (string-append "--prefix=" #$output)
+                 ;; D-Bus support is required for 'suspend screensaver' option
+                 ;; to work.
+                 "--enable-dbus"
                  ;; Non-free software are available through the core updater,
                  ;; disable it.  See <https://issues.guix.gnu.org/38360>.
                  "--disable-update_cores"
@@ -2439,6 +2442,7 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
              which))
       (inputs
        (list alsa-lib
+             dbus
              eudev
              ffmpeg
              flac
