@@ -27119,7 +27119,7 @@ compilation/grep buffers.  Works with @code{wgrep}, @code{ack}, @code{ag},
 (define-public emacs-interactive-align
   (package
     (name "emacs-interactive-align")
-    (version "0.4.2")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -27129,7 +27129,7 @@ compilation/grep buffers.  Works with @code{wgrep}, @code{ack}, @code{ag},
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0bh03w91i622hbar5dcq631ndxx1y8kd3h655pgw1g0lqkv1mlnc"))))
+         "0aanl83k66nbp5dpsckmj4dgkclkr208nrbl7wmjnqlkg0qzgifz"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/mkcms/interactive-align/")
     (synopsis "Interactive align-regexp command in Emacs")
