@@ -16559,7 +16559,7 @@ implementation.")
 (define-public emacs-cider
   (package
     (name "emacs-cider")
-    (version "1.15.1")
+    (version "1.16.0")
     (source
      (origin
        (method git-fetch)
@@ -16568,7 +16568,7 @@ implementation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kzgkx6jcv2864c32qr9qvrxm66l6ncakcpw1j7vf24xi51cs9a1"))))
+        (base32 "1r90w7n10zyqspvm52bjbkalxzzp3jxwmbrfmifiyqzqrl0lyfrr"))))
     (build-system emacs-build-system)
     (arguments
      '(#:include (cons* "^lein\\.sh$" "^clojure\\.sh$" %default-include)
