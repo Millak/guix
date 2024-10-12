@@ -818,7 +818,7 @@ more, like escaping special characters.")
 (define-public libfastjson
   (package
     (name "libfastjson")
-    (version "0.99.9")
+    (version "1.2304.0")
     (source
      (origin
        (method git-fetch)
@@ -827,10 +827,9 @@ more, like escaping special characters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12rqcdqxazw8czzxbivdapdgj19pcswpw1jp2915sxbljis83g6q"))))
+        (base32 "0gmyzplnb4cfbg4yai0s8yi13xbaq606d5h50zwlkky712aklwss"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool))
+    (native-inputs (list autoconf automake libtool))
     (home-page "https://github.com/rsyslog/libfastjson")
     (synopsis "Fast JSON library for C")
     (description
