@@ -34474,7 +34474,7 @@ between \"frame-width\" and \"frame-height\", between \"public\",
 (define-public emacs-ediprolog
   (package
     (name "emacs-ediprolog")
-    (version "2.2")
+    (version "2.3")
     (source
      (origin
        (method url-fetch)
@@ -34482,7 +34482,7 @@ between \"frame-width\" and \"frame-height\", between \"public\",
              "https://elpa.gnu.org/packages/ediprolog-"
              version ".tar"))
        (sha256
-        (base32 "021jm5zdxrjg7xcja18vgc2v52rk17xi1k7xxw8q802nmixhy0js"))))
+        (base32 "02ynwqhkpv4wcz87zkr9188kjmhd8s9zkfiawn7gywb5jkki6nd0"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/ediprolog.html")
     (synopsis "Emacs Does Interactive Prolog")
