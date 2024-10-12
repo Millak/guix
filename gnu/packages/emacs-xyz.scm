@@ -35146,7 +35146,7 @@ simple but powerful Org contents.")
 (define-public emacs-ox-tufte
   (package
     (name "emacs-ox-tufte")
-    (version "4.2.0")
+    (version "4.2.1")
     (source
      (origin
        (method git-fetch)
@@ -35155,7 +35155,7 @@ simple but powerful Org contents.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rdainmx0xg6rfql7rai75x0v2r2s1snjy6b61jd53caif7aigbk"))))
+        (base32 "0jn0f5r3yy0kcrdspkpk7hhblfd41qf8ayi7z207albvkvyisl4i"))))
     (build-system emacs-build-system)
     (arguments
      (list
