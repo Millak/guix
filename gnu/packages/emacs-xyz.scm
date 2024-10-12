@@ -6891,7 +6891,7 @@ Emacs.")
 (define-public emacs-f
   (package
     (name "emacs-f")
-    (version "0.20.0")
+    (version "0.21.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6900,7 +6900,7 @@ Emacs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1a47xk3yp1rp17fqg7ldl3d3fb888h0fz3sysqfdz1bfdgs8a9bk"))))
+                "0ccrcfhqfbv9qff38sfym69mai7k7z89yndi6nip8wi5hpd2addc"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-s emacs-dash))
