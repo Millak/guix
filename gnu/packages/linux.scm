@@ -697,6 +697,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;;; Kernel headers.
 ;;;
 
+(define %linux-libre-timeout-properties
+  ;; Package properties for 'linux-libre' and 'linux-libre-headers' packages.
+  `((timeout . ,(* 8 3600))                       ;deblob takes >5h on AArch64
+    (max-silent-time . ,(* 3 3600))))             ;don't time out on blob scan
+
 (define (make-linux-libre-headers version gnu-revision hash-string)
   (make-linux-libre-headers* version gnu-revision
                              (origin
@@ -765,6 +770,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
        #:allowed-references ()
        #:tests? #f))
     (supported-systems (delete "i586-gnu" %supported-systems))
+    (properties %linux-libre-timeout-properties)
     (home-page "https://www.gnu.org/software/linux-libre/")
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
@@ -1129,7 +1135,7 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
     (description "GNU Linux-Libre is a free (as in freedom) variant of the
 Linux kernel.  It has been modified to remove all non-free binary blobs.")
     (license license:gpl2)
-    (properties '((max-silent-time . 10800))))) ;don't timeout on blob scan
+    (properties %linux-libre-timeout-properties)))
 
 
 ;;;
