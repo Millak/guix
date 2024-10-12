@@ -15997,7 +15997,7 @@ restrict the text width to 80 characters.")
 (define-public emacs-wucuo
   (package
     (name "emacs-wucuo")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
@@ -16006,7 +16006,7 @@ restrict the text width to 80 characters.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0za3mxssx48shdaqwn8akxrshkqn92dd0s06h6abqk9mfzdd67ng"))))
+        (base32 "0ivy3jaj9jml10jn020mma6x92j8q75q7wzbd23m9jl4w60bpqlq"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
