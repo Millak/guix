@@ -29533,7 +29533,7 @@ buffer displays recursive dir sizes.")
 (define-public emacs-dired-preview
   (package
     (name "emacs-dired-preview")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -29542,7 +29542,7 @@ buffer displays recursive dir sizes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sq3dvix7lx9am0alliq4l5zaz20nld7fr2rnsyxrjqqlahf9a91"))))
+                "0b4alhlksbckifdmjl6dqzq55dhqcsjzj5w52zhmsp8cx5is7214"))))
     (build-system emacs-build-system)
     (home-page "https://protesilaos.com/emacs/dired-preview")
     (synopsis "Automatically preview file at point in Dired")
