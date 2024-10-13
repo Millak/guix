@@ -349,21 +349,31 @@ according to time of day.")))
   (list
    (shepherd-service
     (provision '(unclutter))
-    (requirement '())
+    ;; Depend on 'x11-display', which sets 'DISPLAY' if an X11 server is
+    ;; available, and fails to start otherwise.
+    (requirement '(x11-display))
+    (modules '((srfi srfi-1)
+               (srfi srfi-26)))
     (one-shot? #t)
-    (start #~(make-forkexec-constructor
-              (list
-               #$(file-append
-                  (home-unclutter-configuration-unclutter config)
-                  "/bin/unclutter")
-               "-idle"
-               (number->string
-                #$(home-unclutter-configuration-idle-timeout config)))
-              #:log-file (string-append
-                          (or (getenv "XDG_STATE_HOME")
-                              (format #f "~a/.local/state"
-                                      (getenv "HOME")))
-                          "/log/unclutter.log"))))))
+    (start #~(lambda _
+               (fork+exec-command
+                (list
+                 #$(file-append
+                    (home-unclutter-configuration-unclutter config)
+                    "/bin/unclutter")
+                 "-idle"
+                 (number->string
+                  #$(home-unclutter-configuration-idle-timeout config)))
+                ;; Inherit the 'DISPLAY' variable set by 'x11-display'.
+                #:environment-variables
+                (cons (string-append "DISPLAY=" (getenv "DISPLAY"))
+                      (remove (cut string-prefix? "DISPLAY=" <>)
+                              (default-environment-variables)))
+                #:log-file (string-append
+                            (or (getenv "XDG_STATE_HOME")
+                                (format #f "~a/.local/state"
+                                        (getenv "HOME")))
+                            "/log/unclutter.log")))))))
 
 (define home-unclutter-service-type
   (service-type
