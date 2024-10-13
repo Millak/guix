@@ -2830,16 +2830,24 @@ the last played position, etc.")
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
                       (apps (string-append out "/share/applications"))
+                      (metainfo (string-append out "/share/metainfo"))
+                      (icons (string-append out "/share/icons"))
                       (desktop-base "jellyfin_mpv_shim/integration/")
                       (package-id
                        "com.github.iwalton3.jellyfin-mpv-shim"))
                  (for-each (lambda (size)
-                             (install-file (format #f
-                                                   "~ajellyfin-~a.png"
-                                                   desktop-base size) apps))
+                             (let ((dir (format
+                                         #f "~a/hicolor/~ax~a/apps/"
+                                         icons size size package-id)))
+                               (mkdir-p dir)
+                               (copy-file
+                                (format #f
+                                        "~ajellyfin-~a.png"
+                                        desktop-base size)
+                                (string-append dir package-id ".png"))))
                            '(256 128 64 48 32 16))
                  (install-file (string-append desktop-base package-id
-                                              ".appdata.xml") apps)
+                                              ".appdata.xml") metainfo)
                  (install-file (string-append desktop-base package-id
                                               ".desktop") apps)))))))
     (inputs (list `(,python "tk")
