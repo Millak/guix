@@ -72,38 +72,36 @@
 (define-public latex2html
   (package
     (name "latex2html")
-    (version "2022.2")
+    (version "2024")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/latex2html/latex2html")
-         (commit (string-append "v" version))))
+       (uri (git-reference
+             (url "https://github.com/latex2html/latex2html")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z71anjzxy5jsdlaqba4w9spncc6iycldarnr2z1dq8xmk6yhpjn"))))
+        (base32 "1h5ya6pvh87y7xf5c05plbvm35qnn5qd0fllnhp5kym43zmr4prh"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-configure
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (substitute* "configure"
-                     (("/usr/local")
-                      #$output)
-                     (("\\$\\{CONFIG_SHELL-/bin/sh\\}")
-                      (which "bash")))))
-               (replace 'configure
-                 (lambda _
-                   (invoke "./configure")))
-               (add-after 'configure 'patch-cfgcache
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (substitute* "cfgcache.pm"
-                     (("/usr/local")
-                      #$output)))))))
-    (inputs
-     (list perl))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-configure
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (substitute* "configure"
+                         (("/usr/local")
+                          #$output)
+                         (("\\$\\{CONFIG_SHELL-/bin/sh\\}")
+                          (which "bash")))))
+                   (replace 'configure
+                     (lambda _
+                       (invoke "./configure")))
+                   (add-after 'configure 'patch-cfgcache
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (substitute* "cfgcache.pm"
+                         (("/usr/local")
+                          #$output)))))))
+    (inputs (list perl))
     (synopsis "LaTeX documents to HTML")
     (description "LaTeX2HTML is a utility that converts LaTeX documents to web
 pages in HTML.")
