@@ -277,7 +277,7 @@ Graphviz and LaTeX.")
 (define-public xdot
   (package
     (name "xdot")
-    (version "1.3")
+    (version "1.4")
     (source
      (origin
        ;; PyPI tarball is missing some test files.
@@ -287,7 +287,7 @@ Graphviz and LaTeX.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00j147183yf6wp1rnlp26vvsnsz5v56qgffdpd2ijkpvphvyyiyi"))))
+        (base32 "1l34ahvcz90j3j7aspp9wqvxpq10mzgq7l0sanrj142ihdnbahvy"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -329,7 +329,8 @@ Graphviz and LaTeX.")
                        (when tests?
                          (add-installed-pythonpath inputs outputs)
                          (invoke "python" "test.py")))))))
-    (native-inputs (list gobject-introspection xorg-server-for-tests))
+    (native-inputs (list gobject-introspection xorg-server-for-tests
+                         python-packaging))
     (inputs (list at-spi2-core
                   bash-minimal
                   (librsvg-for-system)
