@@ -815,7 +815,8 @@ variable defined below.  It requires guile-json to be installed."
          "--disable-debug"
          "--disable-debug-symbols"
 
-         "--enable-rust-simd"
+         ;; TODO: Re-enable after updating to the 128 ESR.
+         ;"--enable-rust-simd"
          "--enable-release"
          "--enable-optimize"
          "--enable-strip"
