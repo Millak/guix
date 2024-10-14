@@ -705,7 +705,8 @@ It also includes runtime support libraries for these languages.")
             (sha256
              (base32
               "13ygjmd938m0wmy946pxdhz9i1wq7z4w10l6pvidak0xxxj9yxi7"))
-            (patches (search-patches "gcc-13.2.0-libstdc++-docbook-xsl-uri.patch"
+            (patches (search-patches "gcc-7-libsanitizer-fsconfig-command.patch"
+                                     "gcc-13.2.0-libstdc++-docbook-xsl-uri.patch"
                                      "gcc-13.2.0-libstdc++-info-install-fix.patch"
                                      "gcc-9-strmov-store-file-names.patch"
                                      "gcc-9-asan-fix-limits-include.patch"
