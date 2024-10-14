@@ -31,6 +31,7 @@ choice.
 * Coding Style::                Hygiene of the contributor.
 * Submitting Patches::          Share your work.
 * Tracking Bugs and Changes::   Keeping it all organized.
+* Teams::                       Coordinating efforts.
 * Making Decisions::            Collectively choosing the way forward.
 * Commit Access::               Pushing to the official repository.
 * Reviewing the Work of Others::  Some guidelines for sharing reviews.
@@ -2056,7 +2057,6 @@ When a bug is resolved, please close the thread by sending an email to
 @menu
 * Configuring Git::
 * Sending a Patch Series::
-* Teams::
 @end menu
 
 @node Configuring Git
@@ -2223,83 +2223,6 @@ $ git send-email -@var{NUMBER_COMMITS} -v@var{REVISION} \
 If need be, you may use @option{--cover-letter --annotate} to send
 another cover letter, e.g. for explaining what's changed since the last
 revision, and these changes are necessary.
-
-@node Teams
-@subsection Teams
-@cindex teams
-
-To organize work on Guix, including but not just development efforts,
-the project has a set of @dfn{teams}.  Each team has its own focus and
-interests and is the primary contact point for questions and
-contributions in those areas.  A team's primary mission is to coordinate
-and review the work of individuals in its scope (@pxref{Reviewing the
-Work of Others}); it can make decisions within its scope, in agreement
-with other teams whenever there is overlap or a close connection, and in
-accordance with other project rules such as seeking consensus
-(@pxref{Making Decisions}).
-
-As an example, the Python team is responsible for core Python packaging
-matters; it can decide to upgrade core Python packages in a dedicated
-@code{python-team} branch, in collaboration with any team whose scope is
-directly dependent on Python---e.g., the Science team---and following
-branching rules (@pxref{Managing Patches and Branches}).  The
-Documentation team helps review changes to the documentation and can
-initiate overarching documentation changes.  The Translations team
-organizes translation of Guix and its manual and coordinates efforts in
-that area.  The Core team is responsible for the development of core
-functionality and interfaces of Guix; because of its central nature,
-some of its work may require soliciting input from the community at
-large and seeking consensus before enacting decisions that would affect
-the entire community.
-
-Teams are defined in the @file{etc/teams.scm} file in the Guix
-repository.  The scope of each team is defined, when applicable, as a
-set of files or as a regular expression matching file names.
-
-@cindex team membership
-Anyone with interest in a team's domain and willing to contribute to its
-work can apply to become a member by contacting current members by
-email; commit access is not a precondition.  Membership is formalized by
-adding the person's name and email address to @file{etc/teams.scm}.
-Members who have not been participating in the team's work for one year
-or more may be removed; they are free to reapply for membership later.
-
-@cindex team creation
-One or more people may propose the creation of a new team by reaching
-out to the community by email at @email{guix-devel@@gnu.org}, clarifying
-the intended scope and purpose.  When consensus is reached on the
-creation of this team, someone with commit access formalizes its
-creation by adding it and its initial members to @file{etc/teams.scm}.
-
-To list existing teams, run the following command from a Guix checkout:
-
-@example
-$ ./etc/teams.scm list-teams
-id: mentors
-name: Mentors
-description: A group of mentors who chaperone contributions by newcomers.
-members:
-+ Charlie Smith <charlie@@example.org>
-@dots{}
-@end example
-
-@cindex mentoring
-You can run the following command to have the Mentors team put in
-CC of a patch series:
-
-@example
-$ git send-email --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org \
-  --header-cmd='etc/teams.scm cc-mentors-header-cmd' *.patch
-@end example
-
-The appropriate team or teams can also be inferred from the modified
-files.  For instance, if you want to send the two latest commits of the
-current Git repository to review, you can run:
-
-@example
-$ guix shell -D guix
-[env]$ git send-email --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org -2
-@end example
 
 @node Tracking Bugs and Changes
 @section Tracking Bugs and Changes
@@ -2705,6 +2628,83 @@ notifications that read like:
 @noindent
 where each RSS entry contains a link to the Cuirass build details page
 of the associated build.
+
+@node Teams
+@section Teams
+@cindex teams
+
+To organize work on Guix, including but not just development efforts,
+the project has a set of @dfn{teams}.  Each team has its own focus and
+interests and is the primary contact point for questions and
+contributions in those areas.  A team's primary mission is to coordinate
+and review the work of individuals in its scope (@pxref{Reviewing the
+Work of Others}); it can make decisions within its scope, in agreement
+with other teams whenever there is overlap or a close connection, and in
+accordance with other project rules such as seeking consensus
+(@pxref{Making Decisions}).
+
+As an example, the Python team is responsible for core Python packaging
+matters; it can decide to upgrade core Python packages in a dedicated
+@code{python-team} branch, in collaboration with any team whose scope is
+directly dependent on Python---e.g., the Science team---and following
+branching rules (@pxref{Managing Patches and Branches}).  The
+Documentation team helps review changes to the documentation and can
+initiate overarching documentation changes.  The Translations team
+organizes translation of Guix and its manual and coordinates efforts in
+that area.  The Core team is responsible for the development of core
+functionality and interfaces of Guix; because of its central nature,
+some of its work may require soliciting input from the community at
+large and seeking consensus before enacting decisions that would affect
+the entire community.
+
+Teams are defined in the @file{etc/teams.scm} file in the Guix
+repository.  The scope of each team is defined, when applicable, as a
+set of files or as a regular expression matching file names.
+
+@cindex team membership
+Anyone with interest in a team's domain and willing to contribute to its
+work can apply to become a member by contacting current members by
+email; commit access is not a precondition.  Membership is formalized by
+adding the person's name and email address to @file{etc/teams.scm}.
+Members who have not been participating in the team's work for one year
+or more may be removed; they are free to reapply for membership later.
+
+@cindex team creation
+One or more people may propose the creation of a new team by reaching
+out to the community by email at @email{guix-devel@@gnu.org}, clarifying
+the intended scope and purpose.  When consensus is reached on the
+creation of this team, someone with commit access formalizes its
+creation by adding it and its initial members to @file{etc/teams.scm}.
+
+To list existing teams, run the following command from a Guix checkout:
+
+@example
+$ ./etc/teams.scm list-teams
+id: mentors
+name: Mentors
+description: A group of mentors who chaperone contributions by newcomers.
+members:
++ Charlie Smith <charlie@@example.org>
+@dots{}
+@end example
+
+@cindex mentoring
+You can run the following command to have the Mentors team put in
+CC of a patch series:
+
+@example
+$ git send-email --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org \
+  --header-cmd='etc/teams.scm cc-mentors-header-cmd' *.patch
+@end example
+
+The appropriate team or teams can also be inferred from the modified
+files.  For instance, if you want to send the two latest commits of the
+current Git repository to review, you can run:
+
+@example
+$ guix shell -D guix
+[env]$ git send-email --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org -2
+@end example
 
 @node Making Decisions
 @section Making Decisions
