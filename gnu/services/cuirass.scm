@@ -384,6 +384,19 @@
   (private-key      cuirass-remote-worker-configuration-private-key ;string
                     (default #f)))
 
+(define %cuirass-remote-worker-accounts
+  ;; User account and group for the 'cuirass remote-worker' process.
+  (list (user-group
+         (name "cuirass-worker")
+         (system? #t))
+        (user-account
+         (name "cuirass-worker")
+         (group name)
+         (system? #t)
+         (comment "Cuirass worker privilege separation user")
+         (home-directory "/var/empty")
+         (shell (file-append shadow "/sbin/nologin")))))
+
 (define (cuirass-remote-worker-shepherd-service config)
   "Return a <shepherd-service> for the Cuirass remote worker service with
 CONFIG."
@@ -397,6 +410,7 @@ CONFIG."
            (start #~(make-forkexec-constructor
                      (list (string-append #$cuirass "/bin/cuirass")
                            "remote-worker"
+                           "--user=cuirass-worker" ;drop privileges early on
                            (string-append "--workers="
                                           #$(number->string workers))
                            #$@(if server
@@ -444,6 +458,8 @@ CONFIG."
    (extensions
     (list (service-extension shepherd-root-service-type
                              cuirass-remote-worker-shepherd-service)
+          (service-extension account-service-type
+                             (const %cuirass-remote-worker-accounts))
           (service-extension rottlog-service-type
                              cuirass-remote-worker-log-rotations)))
    (description
