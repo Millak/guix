@@ -67,6 +67,7 @@
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4170,7 +4171,7 @@ supports url redirection and retries, and also gzip and deflate decoding.")
            python-botocore
            python-s3transfer
            python-docutils-0.15
-           python-pyyaml
+           python-pyyaml-5
            python-rsa))
     (home-page "https://aws.amazon.com/cli/")
     (synopsis "Command line client for AWS")
