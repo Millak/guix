@@ -20486,10 +20486,12 @@ It should enable you to implement low-level X11 applications.")
                                (load-file "~/.exwm"))
                               ((not (featurep 'exwm))
                                (require 'exwm)
-                               (require 'exwm-config)
-                               (exwm-config-example)
+                               (exwm-enable)
                                (message (concat "exwm configuration not found. "
-                                                "Falling back to default configuration...")))))))
+                                                "Falling back to minimal configuration. "
+                                                "An example configuration can be found here "
+                                                "https://github.com/emacs-exwm/exwm"
+                                                "/wiki/Configuration-Example")))))))
                 (chmod exwm-executable #o555)))))))
     (home-page "https://github.com/ch11ng/exwm")
     (description
