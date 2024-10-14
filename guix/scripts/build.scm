@@ -760,15 +760,6 @@ needed."
                          (%graft?                  graft?))
             (let* ((mode  (assoc-ref opts 'build-mode))
                    (drv   (options->derivations store opts))
-                   (urls  (map (cut string-append <> "/log")
-                               (if (assoc-ref opts 'substitutes?)
-                                   (or (assoc-ref opts 'substitute-urls)
-                                       (substitute-urls store)
-                                       (begin
-                                         (warning (G_ "could not determine current \
-substitute URLs; using defaults~%"))
-                                         %default-substitute-urls))
-                                   '())))
                    (items (filter-map (match-lambda
                                         (('argument . (? store-path? file))
                                          ;; If FILE is a .drv that's not in
@@ -791,10 +782,19 @@ substitute URLs; using defaults~%"))
                      ;; Pass 'show-build-log' the output file names, not the
                      ;; derivation file names, because there can be several
                      ;; derivations leading to the same output.
-                     (for-each (cut show-build-log store <> urls)
-                               (delete-duplicates
-                                (append (map derivation->output-path drv)
-                                        items))))
+                     (let ((urls (map (cut string-append <> "/log")
+                                      (if (assoc-ref opts 'substitutes?)
+                                          (or (assoc-ref opts 'substitute-urls)
+                                              (substitute-urls store)
+                                              (begin
+                                                (warning (G_ "\
+could not determine current substitute URLs; using defaults~%"))
+                                                %default-substitute-urls))
+                                          '()))))
+                       (for-each (cut show-build-log store <> urls)
+                                 (delete-duplicates
+                                  (append (map derivation->output-path drv)
+                                          items)))))
                     ((assoc-ref opts 'derivations-only?)
                      (format #t "~{~a~%~}" (map derivation-file-name drv))
                      (for-each (cut register-root store <> <>)
