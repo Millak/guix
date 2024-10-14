@@ -640,7 +640,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Florian Pelz"
                        "pelzflorian@pelzflorian.de")
-  documentation translations)
+  translations)
 
 (define-member (person "Liliana Marie Prikler"
                        "liliana.prikler@gmail.com")
