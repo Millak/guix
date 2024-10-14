@@ -2010,7 +2010,7 @@ modes:
 (define-public nanovna-saver
   (package
     (name "nanovna-saver")
-    (version "0.6.3")
+    (version "0.6.4")
     (source
      (origin
        (method git-fetch)
@@ -2019,7 +2019,7 @@ modes:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "192lg3hmhr4r9b6an1k61d89fvar4kvqp3qjmpkb489c2zgaggll"))))
+        (base32 "07mih8jgpnnq101yqwv82sihbfjqi47dkvni34minbp19676q1bw"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cython python-setuptools-scm))
