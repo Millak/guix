@@ -781,12 +781,13 @@ the OpenCV-Python library.")
     (version "8.15.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/libvips/libvips/releases/download/v"
-             version "/vips-" version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libvips/libvips")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "182j20dw38f1nyfx8cf7cjsr0k4nl7lfk3wm2d0ddypa6vsxj9ry"))))
+        (base32 "0nxzhs4gwhpm4j9hlca8s97xh1b1p1cawnwdc69rmxkrf714hlgj"))))
     (build-system meson-build-system)
     (native-inputs
      (list gobject-introspection pkg-config))
