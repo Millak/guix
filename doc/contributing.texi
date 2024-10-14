@@ -31,6 +31,7 @@ choice.
 * Coding Style::                Hygiene of the contributor.
 * Submitting Patches::          Share your work.
 * Tracking Bugs and Changes::   Keeping it all organized.
+* Making Decisions::            Collectively choosing the way forward.
 * Commit Access::               Pushing to the official repository.
 * Reviewing the Work of Others::  Some guidelines for sharing reviews.
 * Updating the Guix Package::   Updating the Guix package definition.
@@ -2234,10 +2235,8 @@ contributions in those areas.  A team's primary mission is to coordinate
 and review the work of individuals in its scope (@pxref{Reviewing the
 Work of Others}); it can make decisions within its scope, in agreement
 with other teams whenever there is overlap or a close connection, and in
-accordance with other project rules such as seeking consensus.
-@c TODO: Currently ``consensus-based decision making'' is discussed
-@c under ``Commit Access''.  Move that elsewhere and refer to it from
-@c here.
+accordance with other project rules such as seeking consensus
+(@pxref{Making Decisions}).
 
 As an example, the Python team is responsible for core Python packaging
 matters; it can decide to upgrade core Python packages in a dedicated
@@ -2707,6 +2706,25 @@ notifications that read like:
 where each RSS entry contains a link to the Cuirass build details page
 of the associated build.
 
+@node Making Decisions
+@section Making Decisions
+
+@cindex decision making
+@cindex consensus seeking
+It is expected from all contributors, and even more so from committers,
+to help build consensus and make decisions based on consensus.  By using
+consensus, we are committed to finding solutions that everyone can live
+with.  It implies that no decision is made against significant concerns
+and these concerns are actively resolved with proposals that work for
+everyone.
+
+A contributor (who may or may not have commit access) wishing to block
+a proposal bears a special responsibility for finding alternatives,
+proposing ideas/code or explain the rationale for the status quo to
+resolve the deadlock.  To learn what consensus decision making means and
+understand its finer details, you are encouraged to read
+@url{https://www.seedsforchange.org.uk/consensus}.
+
 @node Commit Access
 @section Commit Access
 
@@ -2722,19 +2740,10 @@ they are ready to become a committer.  Commit access should not be
 thought of as a ``badge of honor'' but rather as a responsibility a
 contributor is willing to take to help the project.
 
-It is expected from all contributors, and even more so from committers,
-to help build consensus and make decisions based on consensus.  By using
-consensus, we are committed to finding solutions that everyone can live
-with.  It implies that no decision is made against significant concerns
-and these concerns are actively resolved with proposals that work for
-everyone.
-
-A contributor (who may or may not have commit access) wishing to block
-a proposal bears a special responsibility for finding alternatives,
-proposing ideas/code or explain the rationale for the status quo to
-resolve the deadlock.  To learn what consensus decision making means and
-understand its finer details, you are encouraged to read
-@url{https://www.seedsforchange.org.uk/consensus}.
+Committers are in a position where they enact technical decisions.  Such
+decisions must be made by @emph{actively building consensus} among
+interested parties and stakeholders.  @ref{Making Decisions}, for more
+on that.
 
 The following sections explain how to get commit access, how to be ready
 to push commits, and the policies and community expectations for commits
@@ -3007,6 +3016,8 @@ preference for the color of the shed at the expense of progress made on
 the project to keep bikes dry.}.  As a reviewer, try hard to explain the
 rationale for suggestions you make, and to understand and take into
 account the submitter's motivation for doing things in a certain way.
+In other words, build consensus with everyone involved (@pxref{Making
+Decisions}).
 @end enumerate
 
 @cindex LGTM, Looks Good To Me
