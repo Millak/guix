@@ -4061,6 +4061,34 @@ very eas to use.")
      (list
       #:import-path "github.com/klauspost/cpuid/v2"))))
 
+(define-public go-github-com-kpango-glg
+  (package
+    (name "go-github-com-kpango-glg")
+    (version "1.6.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kpango/glg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k6y8nvj0q8mz362490cmcx15rhcpyx4sf4rv153dgh46acd1phh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kpango/glg"))
+    (propagated-inputs
+     (list go-github-com-goccy-go-json
+           go-github-com-kpango-fastime
+           go-github-com-sirupsen-logrus
+           go-go-uber-org-zap))
+    (home-page "https://github.com/kpango/glg")
+    (synopsis "Lock-free logging library for Go")
+    (description
+     "@code{glg} is simple lock-free logging library for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-kpango-fastime
   (package
     (name "go-github-com-kpango-fastime")
