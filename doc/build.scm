@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -1061,8 +1061,7 @@ must be the Guix top-level source directory, from which PO files are taken."
                  (bindtextdomain "guix-manual"
                                  #+(guix-manual-text-domain source))
                  (bindtextdomain "iso_639-3"      ;language names
-                                 #+(file-append iso-codes/pinned
-                                                "/share/locale"))
+                                 #+(file-append iso-codes "/share/locale"))
                  (setenv "LANGUAGE" ,language)
                  (write (gettext ,str ,domain))))
 
@@ -1080,7 +1079,7 @@ must be the Guix top-level source directory, from which PO files are taken."
           (define %iso639-languages
             (vector->list
              (assoc-ref (call-with-input-file
-                            #+(file-append iso-codes/pinned
+                            #+(file-append iso-codes
                                            "/share/iso-codes/json/iso_639-3.json")
                           json->scm)
                         "639-3")))
