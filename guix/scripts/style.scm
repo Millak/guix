@@ -579,7 +579,7 @@ are put in alphabetical order."
         (option '(#\f "whole-file") #f #f
                 (lambda (opt name arg result)
                   (alist-cons 'whole-file? #t result)))
-        (option '(#\A "--alphabetical-sort") #f #f
+        (option '(#\A "alphabetical-sort") #f #f
                 (lambda (opt name arg result)
                   (alist-cons 'order? #t result)))
         (option '(#\S "styling") #t #f
