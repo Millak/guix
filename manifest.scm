@@ -51,4 +51,9 @@
               "mumi"
               "nss-certs"
               "openssl"              ;required if using 'smtpEncryption = tls'
-              "patman"))))
+              "patman"))
+       ;; For installer
+       (specifications->manifest
+        (list "guile-newt"
+              "guile-parted"
+              "guile-webutils"))))
