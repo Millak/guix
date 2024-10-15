@@ -11,7 +11,7 @@
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
 ;;; Copyright © 2016, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2020, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Raoul J.P. Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Adriano Peluso <catonano@gmail.com>
@@ -12239,6 +12239,25 @@ representation.")
 for use in reading and writing CPAN metadata files like META.yml and
 MYMETA.yml.")
     (license (package-license perl))))
+
+(define-public perl-yaml-syck
+  (package
+    (name "perl-yaml-syck")
+    (version "1.34")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/T/TO/TODDR/YAML-Syck-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0na1wg3d7ykzy5i44w6i1s37ymq6x0cvcc9gzvmri9xxmv65d4fc"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/YAML-Syck")
+    (synopsis "Fast, lightweight YAML loader and dumper")
+    (description "@code{YAML::Syck} provides a Perl interface to the libsyck
+data serialization library.  It exports the Dump and Load functions for
+converting Perl data structures to YAML strings, and the other way around.")
+    (license license:x11)))
 
 (define-public perl-module-build
   (package
