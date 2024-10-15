@@ -7689,8 +7689,8 @@ Emacs, inspired by @code{Dracula} theme.")
       (license license:gpl3+))))
 
 (define-public emacs-zig-mode
-  (let ((commit "dbc648f5bca8f3b9ca2cc7827f326f5530115144")
-        (revision "0"))
+  (let ((commit "f55e42536a3f34b81198b856595dc3a61867aa3e")
+        (revision "1"))
     (package
       (name "emacs-zig-mode")
       (version (git-version "0.0.8" revision commit))
@@ -7702,7 +7702,7 @@ Emacs, inspired by @code{Dracula} theme.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0hwkkwhc5b2pzyqa2h0xw8wxijsrp1fk70fhyv8hx19shzlc4la3"))))
+          (base32 "1s0p6dijg2zdzhw2mpyajwnsx6g28swgzpy63g8yn72718rq31kn"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -7711,6 +7711,7 @@ Emacs, inspired by @code{Dracula} theme.")
         #:test-command #~(list "emacs" "--batch"
                                "-l" "zig-mode.el"
                                "-f" "ert-run-tests-batch-and-exit")))
+      (propagated-inputs (list emacs-reformatter))
       (home-page "https://github.com/ziglang/zig-mode/")
       (synopsis "Zig mode for Emacs")
       (description
