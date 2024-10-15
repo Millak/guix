@@ -1420,7 +1420,7 @@ time, using templates, instead of calling @code{malloc()} or @code{new}.")
 (define-public infamous-plugins
   (package
     (name "infamous-plugins")
-    (version "0.3.0")
+    (version "0.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1429,7 +1429,7 @@ time, using templates, instead of calling @code{malloc()} or @code{new}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r72agk5nxf5k0mghcc2j90z43j5d9i7rqjmf49jfyqnd443isip"))))
+                "1ay66lly6bgqr3nzb0y4b29rgl5y1slk6wf73kr3xiw2p62bh582"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; there are no tests
@@ -1438,14 +1438,7 @@ time, using templates, instead of calling @code{malloc()} or @code{new}.")
          (add-after 'unpack 'remove-compiler-flags
            (lambda _
              (substitute* (find-files "." "CMakeLists.txt")
-               (("-msse2 -mfpmath=sse") ""))
-             #t))
-         (add-after 'unpack 'fix-build-with-newer-lv2
-           (lambda _
-             ;; https://github.com/ssj71/infamousPlugins/commit/4c7275b1fa8ea3296446421cbd29ec2df66588c0
-             (substitute* (find-files "src" ".*\\.cxx")
-               (("_LV2UI_Descriptor") "LV2UI_Descriptor"))
-             #t)))))
+               (("-msse2 -mfpmath=sse") "")))))))
     (inputs
      (list cairo fftwf lv2 ntk zita-resampler))
     (native-inputs
