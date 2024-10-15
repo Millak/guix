@@ -711,9 +711,25 @@ commonly needed services in distributed and parallel computing systems.")
               "0wiy0vk37v4db1jgxza8bci0cczcvj34dalzsrlz05dk45zb7dl3"))))
    (build-system gnu-build-system)
    (arguments
-    (list #:configure-flags #~(list (string-append "--with-hwloc="
-                                                   (assoc-ref %build-inputs "hwloc"))
-                                    (string-append "--with-pmix=" #$(this-package-input "openpmix")))))
+    (list #:configure-flags
+          #~(list (string-append "--with-hwloc="
+                                 (assoc-ref %build-inputs "hwloc"))
+                  (string-append "--with-pmix="
+                                 #$(this-package-input "openpmix")))
+
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'remove-absolute-references
+                (lambda _
+                  ;; Remove references to GCC, the shell, etc. (shown by
+                  ;; 'prte_info') to reduce the closure size.
+                  (substitute* "src/tools/prte_info/param.c"
+                    (("_ABSOLUTE")
+                     "")
+                    (("PRTE_CONFIGURE_CLI")
+                     "\"[elided to reduce closure]\"")))))
+
+          #:disallowed-references (list (canonical-package gcc))))
    (inputs (list libevent
                  `(,hwloc "lib")
                  openpmix))
