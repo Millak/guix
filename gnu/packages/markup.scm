@@ -13,6 +13,7 @@
 ;;; Copyright © 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -320,6 +321,31 @@ documents in the ms and man formats, LaTeX, gemini, and terminal output.")
      "Discount is a markdown implementation, written in C.  It provides a
 @command{markdown} command, and a library.")
     (home-page "https://www.pell.portland.or.us/~orc/Code/discount/")
+    (license license:bsd-3)))
+
+(define-public perl-text-markdown
+  (package
+    (name "perl-text-markdown")
+    (version "1.000031")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/B/BO/BOBTFISH/Text-Markdown-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "06y79lla8adkqhrs41xdddqjs81dcrh266b50mfbg37bxkawd4f1"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-list-moreutils
+                         perl-module-install
+                         perl-test-differences
+                         perl-test-exception))
+    (home-page "https://metacpan.org/release/Text-Markdown")
+    (synopsis "Convert Markdown syntax to (X)HTML")
+    (description "@code{Text::Markdown} is a Perl module that provides an
+alternate implementation of the Markdown implementation by John Gruber (see
+the markdown package).  It is a slower implementation, but better
+maintained.")
     (license license:bsd-3)))
 
 (define-public perl-text-markdown-discount
