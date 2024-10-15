@@ -4058,7 +4058,7 @@ installed on your machine and launch it.")
                 (mkdir-p server)
                 (copy-recursively "alchemist-server" server)
                 (delete-file-recursively (string-append server "/test"))))))))
-    (home-page "http://www.github.com/tonini/alchemist.el")
+    (home-page "https://www.github.com/tonini/alchemist.el")
     (synopsis "Elixir tooling integration into Emacs")
     (description
      "This package brings you all the Elixir tooling and power inside your Emacs
