@@ -6747,7 +6747,7 @@ It can also play and mix samples.")
 (define-public mamba
   (package
    (name "mamba")
-   (version "2.3")
+   (version "2.6")
    (source
     (origin
       (method git-fetch)
@@ -6759,7 +6759,7 @@ It can also play and mix samples.")
       (file-name (git-file-name name version))
       (sha256
        (base32
-        "12w85i86jbnihd7w81vhvg8hkn7r32hyk9m1pdh3bd44dcz34gqf"))))
+        "1dndyz3dza4k1a4abd53h9fr07ssmm5b7plbh4a74b3mf0dafpsb"))))
    (build-system gnu-build-system)
    (arguments
     (list #:tests? #f  ; no "check" target
@@ -6773,7 +6773,7 @@ It can also play and mix samples.")
     (list alsa-lib
           cairo
           fluidsynth
-          jack-1
+          jack-2
           liblo
           libsigc++-2
           libsmf
