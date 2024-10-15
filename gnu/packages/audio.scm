@@ -3789,22 +3789,23 @@ the Turtle syntax.")
 (define-public suil
   (package
     (name "suil")
-    (version "0.10.10")
+    (version "0.10.20")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.drobilla.net/suil-"
-                                  version ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "1ysbazqlbyxlzyr9zk7dj2mgb6pn0amllj2cd5g1m56wnzk0h3vm"))))
-    (build-system waf-build-system)
+                "0klkxzzx77bg0jwv3a7sn1ar30333y0bjg8b83zifpixwz9kwjik"))))
+    (build-system meson-build-system)
     (arguments
      `(#:tests? #f))                    ;no check target
     (inputs
      (list lv2
            gtk+-2
            gtk+
-           qtbase-5))
+           qtbase-5
+           qtx11extras))
     (native-inputs
      (list pkg-config))
     (home-page "https://drobilla.net/software/suil/")
