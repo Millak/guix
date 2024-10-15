@@ -53,7 +53,7 @@
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Javier Olaechea <pirata@gmail.com>
@@ -3191,7 +3191,7 @@ email header.")
 (define-public b4
   (package
     (name "b4")
-    (version "0.13.0")
+    (version "0.14.2")
     (source
      (origin
        (method git-fetch)
@@ -3201,7 +3201,7 @@ email header.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1dijszinn00r6d0lxii3jz36h2c23zavbgz1m8finp5v6kaiafcg"))))
+         "18pacf7brvkmvxwkrsjigq9ymrr289a82wg4f1f1n4xr3k7vyr9i"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? (not (%current-target-system)) ;git path hardcoded.
