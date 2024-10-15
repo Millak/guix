@@ -1461,19 +1461,22 @@ from (gnu system mapped-devices) and return it."
 
 (define (bootloader-configuration user-partitions)
   "Return the bootloader configuration field for USER-PARTITIONS."
-  (let* ((root-partition (find root-user-partition?
-                               user-partitions))
-         (root-partition-disk (user-partition-disk-file-name root-partition)))
-    `((bootloader-configuration
-       ,@(if (efi-installation?)
-             `((bootloader grub-efi-bootloader)
-               (targets (list ,(default-esp-mount-point))))
-             `((bootloader grub-bootloader)
-               (targets (list ,root-partition-disk))))
+  (let ((root-partition (find root-user-partition? user-partitions)))
+    (match user-partitions
+      (() '())
+      (_
+       (let ((root-partition-disk (user-partition-disk-file-name
+                                   root-partition)))
+         `((bootloader-configuration
+            ,@(if (efi-installation?)
+                  `((bootloader grub-efi-bootloader)
+                    (targets (list ,(default-esp-mount-point))))
+                  `((bootloader grub-bootloader)
+                    (targets (list ,root-partition-disk))))
 
-       ;; XXX: Assume we defined the 'keyboard-layout' field of
-       ;; <operating-system> right above.
-       (keyboard-layout keyboard-layout)))))
+            ;; XXX: Assume we defined the 'keyboard-layout' field of
+            ;; <operating-system> right above.
+            (keyboard-layout keyboard-layout))))))))
 
 (define (user-partition-missing-modules user-partitions)
   "Return the list of kernel modules missing from the default set of kernel

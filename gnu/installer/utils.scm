@@ -49,6 +49,7 @@
             run-external-command-with-handler
             run-external-command-with-handler/tty
             run-external-command-with-line-hooks
+            dry-run-command
             run-command
             %run-command-in-installer
 
@@ -221,6 +222,9 @@ in a pseudoterminal."
   (newline)
   (pause)
   succeeded?)
+
+(define (dry-run-command . args)
+  (format #t "dry-run-command: skipping: ~a\n" args))
 
 (define %run-command-in-installer
   (make-parameter

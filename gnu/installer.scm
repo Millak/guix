@@ -134,7 +134,8 @@ version of this file."
 (define* (compute-locale-step #:key
                               locales-name
                               iso639-languages-name
-                              iso3166-territories-name)
+                              iso3166-territories-name
+                              dry-run?)
   "Return a gexp that run the locale-page of INSTALLER, and install the
 selected locale. The list of locales, languages and territories passed to
 locale-page are computed in derivations named respectively LOCALES-NAME,
@@ -177,8 +178,11 @@ been performed at build time."
                ((installer-locale-page current-installer)
                 #:supported-locales #$locales-loader
                 #:iso639-languages #$iso639-loader
-                #:iso3166-territories #$iso3166-loader)))
-          (#$apply-locale result)
+                #:iso3166-territories #$iso3166-loader
+                #:dry-run? #$dry-run?)))
+          (if #$dry-run?
+              '()
+              (#$apply-locale result))
           result))))
 
 (define apply-keymap
@@ -188,7 +192,7 @@ been performed at build time."
        (kmscon-update-keymap (default-keyboard-model)
                              layout variant options))))
 
-(define* (compute-keymap-step context)
+(define (compute-keymap-step context dry-run?)
   "Return a gexp that runs the keymap-page of INSTALLER and install the
 selected keymap."
   #~(lambda (current-installer)
@@ -200,15 +204,16 @@ selected keymap."
                                    "/share/X11/xkb/rules/base.xml")))
                (lambda (models layouts)
                  ((installer-keymap-page current-installer)
-                  layouts '#$context)))))
+                  layouts '#$context #$dry-run?)))))
         (and result (#$apply-keymap result))
         result)))
 
-(define (installer-steps)
+(define* (installer-steps #:key dry-run?)
   (let ((locale-step (compute-locale-step
                       #:locales-name "locales"
                       #:iso639-languages-name "iso639-languages"
-                      #:iso3166-territories-name "iso3166-territories"))
+                      #:iso3166-territories-name "iso3166-territories"
+                      #:dry-run? dry-run?))
         (timezone-data #~(string-append #$tzdata
                                         "/share/zoneinfo/zone.tab")))
     #~(lambda (current-installer)
@@ -216,7 +221,7 @@ selected keymap."
          (lambda ()
            ((installer-parameters-page current-installer)
             (lambda _
-              (#$(compute-keymap-step 'param)
+              (#$(compute-keymap-step 'param dry-run?)
                current-installer)))))
         (list
          ;; Ask the user to choose a locale among those supported by
@@ -262,8 +267,10 @@ selected keymap."
           (id 'keymap)
           (description (G_ "Keyboard mapping selection"))
           (compute (lambda _
-                     (#$(compute-keymap-step 'default)
-                      current-installer)))
+                     (if #$dry-run?
+                         '("en" "US" #f)
+                         (#$(compute-keymap-step 'default dry-run?)
+                       current-installer))))
           (configuration-formatter keyboard-layout->configuration))
 
          ;; Ask the user to input a hostname for the system.
@@ -280,14 +287,18 @@ selected keymap."
           (id 'network)
           (description (G_ "Network selection"))
           (compute (lambda _
-                     ((installer-network-page current-installer)))))
+                     (if #$dry-run?
+                         '()
+                         ((installer-network-page current-installer))))))
 
          ;; Ask whether to enable substitute server discovery.
          (installer-step
           (id 'substitutes)
           (description (G_ "Substitute server discovery"))
           (compute (lambda _
-                     ((installer-substitutes-page current-installer)))))
+                     (if #$dry-run?
+                         '()
+                         ((installer-substitutes-page current-installer))))))
 
          ;; Prompt for users (name, group and home directory).
          (installer-step
@@ -313,7 +324,9 @@ selected keymap."
           (id 'partition)
           (description (G_ "Partitioning"))
           (compute (lambda _
-                     ((installer-partitioning-page current-installer))))
+                     (if #$dry-run?
+                         '()
+                         ((installer-partitioning-page current-installer)))))
           (configuration-formatter user-partitions->configuration))
 
          (installer-step
@@ -322,7 +335,7 @@ selected keymap."
           (compute
            (lambda (result prev-steps)
              ((installer-final-page current-installer)
-              result prev-steps))))))))
+              result prev-steps #$dry-run?))))))))
 
 (define (provenance-sexp)
   "Return an sexp representing the currently-used channels, for logging
@@ -343,7 +356,7 @@ purposes."
              `(channel ,(channel-name channel) ,url ,(channel-commit channel))))
           channels))))
 
-(define (installer-program)
+(define* (installer-program #:key dry-run?)
   "Return a file-like object that runs the given INSTALLER."
   (define init-gettext
     ;; Initialize gettext support, so that installer messages can be
@@ -377,7 +390,7 @@ purposes."
           (lambda ()
             (set-path-environment-variable "PATH" '("bin" "sbin") inputs)))))
 
-  (define steps (installer-steps))
+  (define steps (installer-steps #:dry-run? dry-run?))
   (define modules
     (scheme-modules*
      (string-append (current-source-directory) "/..")
@@ -425,9 +438,10 @@ purposes."
 
             ;; Enable core dump generation.
             (setrlimit 'core #f #f)
-            (call-with-output-file "/proc/sys/kernel/core_pattern"
-              (lambda (port)
-                (format port %core-dump)))
+            (unless #$dry-run?
+              (call-with-output-file "/proc/sys/kernel/core_pattern"
+                (lambda (port)
+                  (format port %core-dump))))
 
             ;; Initialize gettext support so that installers can use
             ;; (guix i18n) module.
@@ -466,24 +480,29 @@ purposes."
               (lambda ()
                 (parameterize
                     ((%run-command-in-installer
-                      (installer-run-command current-installer)))
+                      (if #$dry-run?
+                          dry-run-command
+                          (installer-run-command current-installer))))
                   (catch #t
                     (lambda ()
                       (define results
                         (run-installer-steps
                          #:rewind-strategy 'menu
                          #:menu-proc (installer-menu-page current-installer)
-                         #:steps steps))
+                         #:steps steps
+                         #:dry-run? #$dry-run?))
 
-                      (match (result-step results 'final)
-                        ('success
-                         ;; We did it!  Let's reboot!
-                         (sync)
-                         (stop-service 'root))
-                        (_
-                         ;; The installation failed, exit so that it is
-                         ;; restarted by login.
-                         #f)))
+                      (let ((result (result-step results 'final)))
+                        (unless #$dry-run?
+                         (match (result-step results 'final)
+                           ('success
+                            ;; We did it!  Let's reboot!
+                            (sync)
+                            (stop-service 'root))
+                           (_
+                            ;; The installation failed, exit so that it is
+                            ;; restarted by login.
+                            #f)))))
                     (const #f)
                     (lambda (key . args)
                       (installer-log-line "crashing due to uncaught exception: ~s ~s"

@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -106,7 +107,7 @@ a specific step, or restart the installer."))
     (newt-resume)
     install-ok?))
 
-(define (run-final-page result prev-steps)
+(define (run-final-page-install result prev-steps)
   (define (wait-for-clients)
     (unless (null? (current-clients))
       (installer-log-line "waiting with clients before starting final step")
@@ -133,3 +134,20 @@ a specific step, or restart the installer."))
     (if install-ok?
         (run-install-success-page)
         (run-install-failed-page))))
+
+(define (dry-run-final-page result prev-steps)
+  (installer-log-line "proceeding with final step -- dry-run")
+  (let* ((configuration   (format-configuration prev-steps result))
+         (user-partitions (result-step result 'partition))
+         (locale          (result-step result 'locale))
+         (users           (result-step result 'user))
+         (file            (configuration->file configuration))
+         (install-ok?     (run-config-display-page #:locale locale)))
+    (if install-ok?
+        (run-install-success-page)
+        (run-install-failed-page))))
+
+(define (run-final-page result prev-steps dry-run?)
+  (if dry-run?
+      (dry-run-final-page result prev-steps)
+      (run-final-page-install result prev-steps)))

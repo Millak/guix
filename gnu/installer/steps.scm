@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -84,7 +85,8 @@
 (define* (run-installer-steps #:key
                               steps
                               (rewind-strategy 'previous)
-                              (menu-proc (const #f)))
+                              (menu-proc (const #f))
+                              dry-run?)
   "Run the COMPUTE procedure of all <installer-step> records in STEPS
 sequentially, inside a the 'installer-step prompt.  When aborted to with a
 parameter of 'abort, fallback to a previous install-step, accordingly to the
@@ -191,10 +193,14 @@ computation is over."
   ;; prematurely.
   (sigaction SIGPIPE SIG_IGN)
 
-  (with-server-socket
-    (run '()
-         #:todo-steps steps
-         #:done-steps '())))
+  (if dry-run?
+      (run '()
+           #:todo-steps steps
+           #:done-steps '())
+      (with-server-socket
+        (run '()
+             #:todo-steps steps
+             #:done-steps '()))))
 
 (define (find-step-by-id steps id)
   "Find and return the step in STEPS whose id is equal to ID."

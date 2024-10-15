@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -92,7 +93,8 @@ symbol.")
 (define* (run-locale-page #:key
                           supported-locales
                           iso639-languages
-                          iso3166-territories)
+                          iso3166-territories
+                          dry-run?)
   "Run a page asking the user to select a locale language and possibly
 territory, codeset and modifier. Use SUPPORTED-LOCALES as the list of glibc
 available locales. ISO639-LANGUAGES is an association list associating a
@@ -212,4 +214,4 @@ glibc locale string and return it."
   ;; step, turn the result into a glibc locale string and return it.
   (result->locale-string
    supported-locales
-   (run-installer-steps #:steps locale-steps)))
+   (run-installer-steps #:steps locale-steps #:dry-run? dry-run?)))

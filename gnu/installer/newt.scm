@@ -158,17 +158,19 @@ report it by email to ~a.") uploaded-name %guix-bug-report-address)
                                       (term-signal term-sig)
                                       (stop-signal stop-sig)))))))))))
 
-(define (final-page result prev-steps)
-  (run-final-page result prev-steps))
+(define (final-page result prev-steps dry-run?)
+  (run-final-page result prev-steps dry-run?))
 
 (define* (locale-page #:key
                       supported-locales
                       iso639-languages
-                      iso3166-territories)
+                      iso3166-territories
+                      dry-run?)
   (run-locale-page
    #:supported-locales supported-locales
    #:iso639-languages iso639-languages
-   #:iso3166-territories iso3166-territories))
+   #:iso3166-territories iso3166-territories
+   #:dry-run? dry-run?))
 
 (define (timezone-page zonetab)
   (run-timezone-page zonetab))
@@ -179,8 +181,8 @@ report it by email to ~a.") uploaded-name %guix-bug-report-address)
 (define (menu-page steps)
   (run-menu-page steps))
 
-(define* (keymap-page layouts context)
-  (run-keymap-page layouts #:context context))
+(define (keymap-page layouts context dry-run?)
+  (run-keymap-page layouts #:context context #:dry-run? dry-run?))
 
 (define (network-page)
   (run-network-page))

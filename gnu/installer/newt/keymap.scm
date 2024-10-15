@@ -2,6 +2,7 @@
 ;;; Copyright © 2018, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -153,7 +154,7 @@ and #f."
          "grp:alt_shift_toggle"))
       (list layout variant #f)))
 
-(define* (run-keymap-page layouts #:key (context #f))
+(define* (run-keymap-page layouts #:key context dry-run?)
   "Run a page asking the user to select a keyboard layout and variant. LAYOUTS
 is a list of supported X11-KEYMAP-LAYOUT.  For non-Latin keyboard layouts, a
 second layout and toggle options will be added automatically.  Return a list
@@ -201,7 +202,7 @@ options."
                                      "xkeyboard-config")))))
       (toggleable-latin-layout layout variant)))
 
-  (let* ((result (run-installer-steps #:steps keymap-steps))
+  (let* ((result (run-installer-steps #:steps keymap-steps #:dry-run? dry-run?))
          (layout (result-step result 'layout))
          (variant (result-step result 'variant)))
     (and layout
