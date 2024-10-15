@@ -1971,12 +1971,19 @@ libpulse.")
     (build-system qt-build-system)
     (arguments
      (list
-      #:tests? #f ; FIXME: 1/2 tests fail.
       #:qtbase qtbase
       #:phases #~(modify-phases %standard-phases
-                   (replace 'check
+                   (delete 'check) ;; move after the install phase
+                   (add-after 'install 'check
                      (lambda* (#:key tests? #:allow-other-keys)
                        (when tests?
+                         (setenv "QML_IMPORT_PATH"
+                                 (string-append #$output "/lib/qt6/qml:"
+                                                (getenv "QML_IMPORT_PATH")))
+                         (setenv "QT_PLUGIN_PATH"
+                                 (string-append #$output "/lib/qt6/plugins:"
+                                                (getenv "QT_PLUGIN_PATH")))
+                         (setenv "HOME" (getcwd))
                          (invoke "dbus-launch" "ctest"
                                  "--rerun-failed" "--output-on-failure")))))))
     (native-inputs
