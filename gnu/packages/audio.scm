@@ -862,7 +862,7 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
            gtkmm-2
            hicolor-icon-theme
            hidapi
-           jack-1
+           jack-2
            libarchive
            libart-lgpl
            libgnomecanvasmm
