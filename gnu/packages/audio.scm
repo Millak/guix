@@ -874,7 +874,9 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
            libusb
            libvorbis
            libwebsockets
+           libxinerama
            libxml2
+           libxrandr
            lilv
            lrdf
            lv2
