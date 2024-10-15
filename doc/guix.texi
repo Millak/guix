@@ -41774,6 +41774,107 @@ invokation.
 
 @end deftp
 
+@c %end of fragment
+
+@cindex DLNA/UPnP
+@subsubheading DLNA/UPnP Services
+
+The @code{(gnu services upnp)} module offers services related to
+@acronym{UPnP, Universal Plug and Play} and @acronym{DLNA, Digital
+Living Network Alliance}, networking protocols that can be used for
+media streaming and device interoperability within a local network.  For
+now, this module provides the @code{readymedia-service-type}.
+
+@uref{https://sourceforge.net/projects/minidlna/, ReadyMedia} (formerly
+known as MiniDLNA) is a DLNA/UPnP-AV media server.  The project's
+daemon, @code{minidlnad}, can serve media files (audio, pictures, and
+video) to DLNA/UPnP-AV clients available on the network.
+@code{readymedia-service-type} is a Guix service that wraps around
+ReadyMedia's @code{minidlnad}.
+
+Consider the following configuration:
+@lisp
+(use-service-modules upnp @dots{})
+
+(operating-system
+  @dots{}
+  (services
+   (list (service readymedia-service-type
+                  (readymedia-configuration
+                   (media-directoriess
+                    (list (readymedia-media-directory
+                           (path "/media/audio")
+                           (types '(A)))
+                          (readymedia-media-directory
+                           (path "/media/video")
+                           (types '(V)))
+                          (readymedia-media-directory
+                           (path "/media/misc"))))
+                   (extra-config '(("notify_interval" . 60)))))
+         @dots{})))
+@end lisp
+
+This sets up the ReadyMedia daemon to serve files from the media folders
+specified in @code{media-directories}.  The @code{media-directories}
+field is mandatory.  All other fields (such as network ports and the
+server name) come with a predefined default and can be omitted.
+
+@c %start of fragment
+
+@deftp {Data Type} readymedia-configuration
+Available @code{readymedia-configuration} fields are:
+
+@table @asis
+@item @code{readymedia} (default: @code{readymedia}) (type: package)
+The ReadyMedia package to be used for the service.
+
+@item @code{friendly-name} (default: @code{#f}) (type: maybe-string)
+A custom name that will be displayed on connected clients.
+
+@item @code{media-directories} (type: list)
+The list of media folders to serve content from.  Each item is a
+@code{readymedia-media-directory}.
+
+@item @code{cache-directory} (default: @code{"/var/cache/readymedia"}) (type: string)
+A folder for ReadyMedia's cache files.  If not existing already, the
+folder will be created as part of the service activation and the
+ReadyMedia user will be assigned ownership.
+
+@item @code{log-directory} (default: @code{"/var/log/readymedia"}) (type: string)
+A folder for ReadyMedia's log files.  If not existing already, the
+folder will be created as part of the service activation and the
+ReadyMedia user will be assigned ownership.
+
+@item @code{port} (default: @code{#f}) (type: maybe-integer)
+A custom port that the service will be listening on.
+
+@item @code{extra-config} (default: @code{'()}) (type: alist)
+An association list of further options, as accepted by ReadyMedia.
+@end table
+
+@end deftp
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} readymedia-media-directory
+A @code{media-directories} entry includes a folder @code{path} and,
+optionally, the @code{types} of media files included within the
+folder.
+
+@table @asis
+@item @code{path} (type: string)
+The media folder location.
+
+@item @code{types} (default: @code{'()}) (type: list)
+A list indicating the types of file included in the media folder.
+Valid values are combinations of individual media types, i.e. symbol
+@code{A} for audio, @code{P} for pictures, @code{V} for video.  An
+empty list means that no type is specified.
+@end table
+
+@end deftp
 
 @c %end of fragment
 

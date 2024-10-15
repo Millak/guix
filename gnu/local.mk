@@ -756,6 +756,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/syncthing.scm			\
   %D%/services/sysctl.scm			\
   %D%/services/telephony.scm			\
+  %D%/services/upnp.scm				\
   %D%/services/version-control.scm              \
   %D%/services/vnc.scm				\
   %D%/services/vpn.scm				\
@@ -846,6 +847,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/singularity.scm			\
   %D%/tests/ssh.scm				\
   %D%/tests/telephony.scm		        \
+  %D%/tests/upnp.scm				\
   %D%/tests/version-control.scm			\
   %D%/tests/virtualization.scm			\
   %D%/tests/vnc.scm				\
