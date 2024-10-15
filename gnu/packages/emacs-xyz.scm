@@ -21851,7 +21851,7 @@ Event} protocol.")
 (define-public emacs-ement
   (package
     (name "emacs-ement")
-    (version "0.15.1")
+    (version "0.16")
     (source
      (origin
        (method git-fetch)
@@ -21860,7 +21860,7 @@ Event} protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wj0gzbx3m4j1h093nh8m65xmmhz2wjmlg39smxai44x7va27xmv"))))
+        (base32 "1nskmygjhg01dz4jwvs8ixxk0dn3wa9sx7vym6dbs1i11pd761xn"))))
     (build-system emacs-build-system)
     (arguments
      (list #:emacs emacs))              ;need libxml support
