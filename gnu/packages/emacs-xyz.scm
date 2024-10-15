@@ -146,6 +146,7 @@
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Spencer King <spencer.king@nursiapress.com>
+;;; Copyright © 2024 emma thompson <bigbookofbug@proton.me>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -2166,6 +2167,30 @@ then only the color of the mode line changes when a window becomes in-/active.")
       (description "Acme theme is an Emacs theme with an old-school vibe
 inspired by Plan 9 Acme and the Sam text editor.")
       (license license:gpl3+))))
+
+(define-public emacs-catppuccin-theme
+  (let ((commit "4441d5114fdcc2eb05186a974b4bbad7224e43b5")
+        (revision "1"))
+    (package
+      (name "emacs-catppuccin-theme")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+	       (url "https://github.com/catppuccin/emacs")
+	       (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1y2ads0w5l3mm0mxxbi2ppb6csq8hw2fd9cmak3myv13qzw92x3w"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/catppuccin/emacs")
+      (synopsis "Soothing pastel theme for Emacs")
+      (description
+       "Catppuccin is a soothing pastel theme for Emacs.  It provides
+different color palettes, such as @samp{frappe}, @samp{macchiato}, or
+@samp{latte}.")
+      (license license:expat))))
 
 (define-public emacs-theme-magic
   ;; No tagged release upstream, but the commit below correspond to the 0.2.3
