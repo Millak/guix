@@ -660,7 +660,8 @@ Internet).")
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
-           #:configure-flags #~(list "-DBUILD_TESTS=ON"
+           #:configure-flags #~(list "-DCMAKE_CXX_FLAGS=-fPIC"
+                                     "-DBUILD_TESTS=ON"
                                      "-DBUILD_WITH_QT6=ON")))
     (home-page "https://github.com/ksnip/kColorPicker")
     (synopsis "Color Picker with popup menu")
