@@ -107,23 +107,29 @@ formal verification.")
 (define-public iverilog
   (package
     (name "iverilog")
-    (version "11.0")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "ftp://ftp.icarus.com/pub/eda/verilog/v11/"
-                              "verilog-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1mamlrkpb2gb00g7xdddaknrvwi4jr4ng6cfjhwngzk3ddhqaiym"))))
+    (version "12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/steveicarus/iverilog")
+             (commit
+              (string-append "v" (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cm3ksxyyp8ihs0as5c2nk3a0y2db8dmrrw0f9an3sl255smxn17"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target)))))
-    (native-inputs
-     (list flex bison ghostscript zlib))   ; ps2pdf
-    (home-page "http://iverilog.icarus.com/")
+     (list
+      #:test-target "check"
+      #:make-flags #~(list (string-append "PREFIX="
+                                          #$output))
+      #:bootstrap-scripts #~(list "autoconf.sh")))
+    (native-inputs (list autoconf bison flex gperf))
+    (home-page "https://steveicarus.github.io/iverilog")
     (synopsis "FPGA Verilog simulation and synthesis tool")
-    (description "Icarus Verilog is a Verilog simulation and synthesis tool.
+    (description
+     "Icarus Verilog is a Verilog simulation and synthesis tool.
 It operates as a compiler, compiling source code written in Verilog
 (IEEE-1364) into some target format.
 For batch simulation, the compiler can generate an intermediate form
