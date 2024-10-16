@@ -465,7 +465,7 @@ purposes."
               (installer-init current-installer)
               (lambda ()
                 (parameterize
-                    ((run-command-in-installer
+                    ((%run-command-in-installer
                       (installer-run-command current-installer)))
                   (catch #t
                     (lambda ()

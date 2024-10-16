@@ -3,6 +3,7 @@
 ;;; Copyright © 2019-2020, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -363,7 +364,7 @@ fail. See rereadpt function in wipefs.c of util-linux for an explanation."
 
 (define (remove-logical-devices)
   "Remove all active logical devices."
-   ((run-command-in-installer) "dmsetup" "remove_all"))
+   ((%run-command-in-installer) "dmsetup" "remove_all"))
 
 (define (installer-root-partition-path)
   "Return the root partition path, or #f if it could not be detected."
@@ -1183,7 +1184,7 @@ list and return the updated list."
 
 (define (create-btrfs-file-system partition)
   "Create a btrfs file-system for PARTITION file-name."
-   ((run-command-in-installer) "mkfs.btrfs" "-f" partition))
+   ((%run-command-in-installer) "mkfs.btrfs" "-f" partition))
 
 (define (create-ext4-file-system partition)
   "Create an ext4 file-system for PARTITION file-name."
@@ -1192,32 +1193,32 @@ list and return the updated list."
   ;; up and adding new files would fail with ENOSPC despite there being plenty
   ;; of free space and inodes:
   ;; <https://blog.merovius.de/posts/2013-10-20-ext4-mysterious-no-space-left-on/>.
-  ((run-command-in-installer) "mkfs.ext4" "-F" partition
+  ((%run-command-in-installer) "mkfs.ext4" "-F" partition
    "-O" "large_dir"))
 
 (define (create-fat16-file-system partition)
   "Create a fat16 file-system for PARTITION file-name."
-   ((run-command-in-installer) "mkfs.fat" "-F16" partition))
+   ((%run-command-in-installer) "mkfs.fat" "-F16" partition))
 
 (define (create-fat32-file-system partition)
   "Create a fat32 file-system for PARTITION file-name."
-   ((run-command-in-installer) "mkfs.fat" "-F32" partition))
+   ((%run-command-in-installer) "mkfs.fat" "-F32" partition))
 
 (define (create-jfs-file-system partition)
   "Create a JFS file-system for PARTITION file-name."
-   ((run-command-in-installer) "jfs_mkfs" "-f" partition))
+   ((%run-command-in-installer) "jfs_mkfs" "-f" partition))
 
 (define (create-ntfs-file-system partition)
   "Create a JFS file-system for PARTITION file-name."
-   ((run-command-in-installer) "mkfs.ntfs" "-F" "-f" partition))
+   ((%run-command-in-installer) "mkfs.ntfs" "-F" "-f" partition))
 
 (define (create-xfs-file-system partition)
   "Create an XFS file-system for PARTITION file-name."
-   ((run-command-in-installer) "mkfs.xfs" "-f" partition))
+   ((%run-command-in-installer) "mkfs.xfs" "-f" partition))
 
 (define (create-swap-partition partition)
   "Set up swap area on PARTITION file-name."
-   ((run-command-in-installer) "mkswap" "-f" partition))
+   ((%run-command-in-installer) "mkswap" "-f" partition))
 
 (define (call-with-luks-key-file password proc)
   "Write PASSWORD in a temporary file and pass it to PROC as argument."
@@ -1246,9 +1247,9 @@ USER-PARTITION if it is encrypted, or the plain file-name otherwise."
      (lambda (key-file)
        (installer-log-line "formatting and opening LUKS entry ~s at ~s"
                label file-name)
-       ((run-command-in-installer) "cryptsetup" "-q" "luksFormat"
+       ((%run-command-in-installer) "cryptsetup" "-q" "luksFormat"
         file-name key-file)
-       ((run-command-in-installer) "cryptsetup" "open" "--type" "luks"
+       ((%run-command-in-installer) "cryptsetup" "open" "--type" "luks"
         "--key-file" key-file file-name label)))))
 
 (define (luks-ensure-open user-partition)
@@ -1262,14 +1263,14 @@ USER-PARTITION if it is encrypted, or the plain file-name otherwise."
        (lambda (key-file)
          (installer-log-line "opening LUKS entry ~s at ~s"
                              label file-name)
-         ((run-command-in-installer) "cryptsetup" "open" "--type" "luks"
+         ((%run-command-in-installer) "cryptsetup" "open" "--type" "luks"
           "--key-file" key-file file-name label))))))
 
 (define (luks-close user-partition)
   "Close the encrypted partition pointed by USER-PARTITION."
   (let ((label (user-partition-crypt-label user-partition)))
     (installer-log-line "closing LUKS entry ~s" label)
-    ((run-command-in-installer) "cryptsetup" "close" label)))
+    ((%run-command-in-installer) "cryptsetup" "close" label)))
 
 (define (format-user-partitions user-partitions)
   "Format the <user-partition> records in USER-PARTITIONS list with

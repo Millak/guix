@@ -50,7 +50,7 @@
             run-external-command-with-handler/tty
             run-external-command-with-line-hooks
             run-command
-            run-command-in-installer
+            %run-command-in-installer
 
             syslog-port
             %syslog-line-hook
@@ -222,13 +222,13 @@ in a pseudoterminal."
   (pause)
   succeeded?)
 
-(define run-command-in-installer
+(define %run-command-in-installer
   (make-parameter
    (lambda (. args)
      (raise
       (condition
        (&serious)
-       (&message (message "run-command-in-installer not set")))))))
+       (&message (message "%run-command-in-installer not set")))))))
 
 
 ;;;
