@@ -42,7 +42,7 @@
 (define-public book-sparc
   (package
     (name "book-sparc")
-    (version "2.1.0")
+    (version "2.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -50,24 +50,14 @@
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1ns2vs5yb9z1hj9gq5y55qz7c9azzhr866b665s8fq50q5m4yhbc"))
+                "08aswb6cb02c0yqpkyj4vmfjvdjsffxqcqabivgv2gcgn8mhi4wm"))
               (file-name (git-file-name name version))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   (substitute* "version.tex.in"
-                     (("@COMMIT@") ""))
-                   (substitute* "Makefile"
-                     (("all: sparc.pdf") "all: install")
-                     (("^sparc.pdf:") "install:")
-                     (("(cp out/sparc.pdf) sparc.pdf" all cp)
-                      (string-append
-                       "mkdir -p $(DESTDIR)$(PREFIX)/share/doc/book-sparc"
-                       " && " cp
-                       " $(DESTDIR)$(PREFIX)/share/doc/book-sparc/sparc.pdf")))))))
+              (modules '((guix build utils)))))
     (build-system gnu-build-system)
     (native-inputs
-     (list bash-minimal
+     (list autoconf
+           automake
+           bash-minimal
            fontconfig
            inkscape
            lilypond
@@ -76,6 +66,7 @@
            which))
     (inputs
      (list font-liberation
+           git
            texlive-acronym
            texlive-adjustbox
            texlive-biblatex
@@ -85,6 +76,7 @@
            texlive-chngcntr
            texlive-circuitikz
            texlive-collection-langcyrillic
+           texlive-fancyvrb
            texlive-fontspec
            texlive-glossaries
            texlive-glossaries-english
@@ -101,16 +93,33 @@
            texlive-textpos
            texlive-transparent
            texlive-trimspaces
+           texlive-upquote
            texlive-xetex))
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (delete 'check)
-               (delete 'configure)
-               (add-before 'build 'set-envs
-                 (lambda _
-                   (setenv "REPRODUCIBILITY" "yes")
-                   (setenv "PREFIX" #$output))))))
+   (arguments
+    (list #:tests? #f                   ; no tests
+          #:modules (append %default-gnu-imported-modules
+                            '((ice-9 regex)
+                              (srfi srfi-1)))
+          #:phases #~(modify-phases %standard-phases
+                       (add-before 'build 'configure-environment
+                         (lambda* (#:key inputs make-flags parallel-build?
+                                   #:allow-other-keys)
+                           (let* ((src (assoc-ref inputs "source"))
+                                  (rx  (make-regexp "/gnu/store/(.*)-book-sparc-.*"))
+                                  (src-hash (match:substring (regexp-exec rx src) 1))
+                                  (random-seed
+                                   (fold (lambda (ch prev)
+                                           (+ (char->integer ch)
+                                              prev))
+                                         0
+                                         (string->list src-hash))))
+                             (setenv "RANDOMSEED" (number->string random-seed))
+                             (setenv "REPRODUCIBILITY" "yes"))))
+                       (replace 'install
+                         (lambda _
+                           (let ((doc-dir (string-append #$output
+                                                         "/share/doc/sparc/")))
+                             (install-file "sparc.pdf" doc-dir)))))))
     (home-page "https://github.com/artyom-poptsov/SPARC")
     (synopsis "Book on combining art and technology")
     (description
