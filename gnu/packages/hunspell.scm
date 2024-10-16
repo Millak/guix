@@ -309,18 +309,17 @@ spell-checking library.")
                          (#\_ #\-)
                          (chr chr))
                        (string-downcase dict-name))))
-    (version "7.6.7.2")
+    (version "24.8.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url (string-append "https://anongit.freedesktop.org/git/"
-                                 "libreoffice/dictionaries.git/"))
+             (url "https://github.com/LibreOffice/dictionaries")
              (commit
               (string-append "libreoffice-" version))))
        (file-name (git-file-name "libreoffice-dictionaries" version))
        (sha256
-        (base32 "1f54z1kmpwv9s5a9jdgf97m43nhwbmsar0i6rri3qkgf3kkgz1f7"))))
+        (base32 "02dhpfrhp82p08hx89lfx2gjbyp0kk2vbapmb3g7fphc9pabpg9c"))))
     (build-system trivial-build-system)
     (native-inputs
      `(("source" ,source)))
