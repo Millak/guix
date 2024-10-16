@@ -22,6 +22,7 @@
 ;;; Copyright © 2023 Declan Tsien <declantsien@riseup.net>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 muradm <mail@muradm.net>
+;;; Copyright © 2024 Nigko Yerden <nigko.yerden@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
