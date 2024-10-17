@@ -2,6 +2,7 @@
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -950,10 +951,10 @@ the dump."
             ('exit-component
              (let ((result
                     (map (match-lambda
-                           ((edit checkbox filename)
+                           ((edit checkbox file-name)
                             (if (components=? edit argument)
-                                (abort-to-prompt prompt-tag filename)
-                                (cons filename (eq? #\x
+                                (abort-to-prompt prompt-tag file-name)
+                                (cons file-name (eq? #\x
                                                     (checkbox-value checkbox))))))
                          components)))
                (destroy-form-and-pop form)

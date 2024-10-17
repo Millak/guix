@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -283,11 +284,11 @@ values."
 
 (define (open-new-log-port)
   (define now (localtime (time-second (current-time))))
-  (define filename
+  (define file-name
     (format #f "/tmp/installer.~a.log"
             (strftime "%F.%T" now)))
-  (open filename (logior O_RDWR
-                         O_CREAT)))
+  (open file-name (logior O_RDWR
+                          O_CREAT)))
 
 (define installer-log-port
   (let ((port #f))
