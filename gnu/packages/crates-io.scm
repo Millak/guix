@@ -88249,8 +88249,39 @@ with the Unicode character database.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-udev-0.8
+  (package
+    (name "rust-udev")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "udev" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18f5vkhjcljw1p5gfvy61p1837n27d7h2l3x45pywa5y49p1q1ah"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Not all files included.
+                            "--skip=device::Device::from_devnum")
+       #:cargo-inputs (("rust-io-lifetimes" ,rust-io-lifetimes-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libudev-sys" ,rust-libudev-sys-0.1)
+                       ("rust-mio" ,rust-mio-0.6)
+                       ("rust-mio" ,rust-mio-0.7)
+                       ("rust-mio" ,rust-mio-0.8)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs (list eudev))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/Smithay/udev-rs")
+    (synopsis "libudev bindings for Rust")
+    (description "This package provides libudev bindings for Rust.")
+    (license license:expat)))
+
 (define-public rust-udev-0.7
   (package
+    (inherit rust-udev-0.8)
     (name "rust-udev")
     (version "0.7.0")
     (source
@@ -88267,11 +88298,7 @@ with the Unicode character database.")
                        ("rust-mio" ,rust-mio-0.6)
                        ("rust-mio" ,rust-mio-0.7)
                        ("rust-mio" ,rust-mio-0.8)
-                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (home-page "https://github.com/Smithay/udev-rs")
-    (synopsis "libudev bindings for Rust")
-    (description "This package provides libudev bindings for Rust.")
-    (license license:expat)))
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 (define-public rust-ufmt-0.2
   (package
