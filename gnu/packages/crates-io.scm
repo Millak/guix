@@ -40610,6 +40610,36 @@ harness used by @code{rustc --test}.")
     (description "This package provides FFI bindings to libudev.")
     (license license:expat)))
 
+(define-public rust-libusb1-sys-0.7
+  (package
+    (name "rust-libusb1-sys")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libusb1-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03yfx469d1ldpw2h21hy322f5a0h1ahlgy4s6yjipzy4gbg0l1fs"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "libusb")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=test_get_device_list"
+                            "--skip=test_init_and_exit")
+       #:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-vcpkg" ,rust-vcpkg-0.2))))
+    (inputs (list libusb))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/a1ien/rusb")
+    (synopsis "FFI bindings for libusb")
+    (description "This package provides FFI bindings for libusb.")
+    (license license:expat)))
+
 (define-public rust-listenfd-1
   (package
     (name "rust-listenfd")
