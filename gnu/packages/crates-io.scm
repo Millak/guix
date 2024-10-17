@@ -71947,6 +71947,36 @@ Rust's serde.")
 @code{serde_with}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-serde-with-macros-2
+  (package
+    (inherit rust-serde-with-macros-3)
+    (name "rust-serde-with-macros")
+    (version "2.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde_with_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pv9wy1aihsaklg83qac4q0ksimbxcwwk56lwla35l8p3f46y6w8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Not all files included.
+                            "--skip=test_serde_with_dependency")
+       #:cargo-inputs (("rust-darling" ,rust-darling-0.20)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-expect-test" ,rust-expect-test-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-version-sync" ,rust-version-sync-0.9))))))
+
 (define-public rust-serde-with-macros-1
   (package
     (inherit rust-serde-with-macros-3)
