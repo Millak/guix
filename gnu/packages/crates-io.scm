@@ -89703,6 +89703,30 @@ mile, ...).")
         (base32 "14sm5c8idb5jzib8dwf85p5yhd65vxjh946p80p49d2j6fsjw8y9"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-usb-ids-1
+  (package
+    (name "rust-usb-ids")
+    (version "1.2024.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "usb-ids" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qsgk1i2h5ngpbf17rx9m9c9pdfwli6psz8b4vxvcr1rhy0zmflg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nom" ,rust-nom-7)
+                       ("rust-phf" ,rust-phf-0.11)
+                       ("rust-phf-codegen" ,rust-phf-codegen-0.11)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1))))
+    (home-page "https://github.com/woodruffw/usb-ids.rs")
+    (synopsis "Rust wrappers for the USB ID Repository")
+    (description
+     "This package provides Rust wrappers for the USB ID Repository.")
+    (license license:expat)))
+
 (define-public rust-users-0.11
   (package
     (name "rust-users")
