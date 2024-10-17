@@ -88,6 +88,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kde)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages networking)
@@ -439,6 +440,81 @@ scripts")
 completion scripts for all major shells (@code{bash}, @code{fish}, @code{zsh})
 from a single, concise, @code{EBNF}-like grammar.")
     (license license:asl2.0)))
+
+(define-public cyme
+  (package
+    (name "cyme")
+    (version "1.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cyme" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qss8cpsdbxlljscd046a14d624k5kcawwlw9n9r60shk9gljqpj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-test-flags '("--release" "--"
+                            ;; Disable tests as they try to access host USB.
+                            "--skip=test_list"
+                            "--skip=test_list_filtering"
+                            "--skip=test_run"
+                            "--skip=test_tree"
+                            "--skip=test_tree_filtering"
+                            "--skip=test_lsusb_device"
+                            "--skip=test_lsusb_list"
+                            "--skip=test_lsusb_show"
+                            "--skip=test_lsusb_tree"
+                            "--skip=test_lsusb_tree_verbose"
+                            "--skip=test_lsusb_vidpid"
+                            ;; unable to find hwdb.bin database file
+                            "--skip=udev::hwdb::get")
+       #:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+                       ("rust-colored" ,rust-colored-2)
+                       ("rust-dirs" ,rust-dirs-4)
+                       ("rust-heck" ,rust-heck-0.4)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rusb" ,rust-rusb-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-with" ,rust-serde-with-2)
+                       ("rust-simple-logger" ,rust-simple-logger-4)
+                       ("rust-strum" ,rust-strum-0.24)
+                       ("rust-strum-macros" ,rust-strum-macros-0.24)
+                       ("rust-terminal-size" ,rust-terminal-size-0.2)
+                       ("rust-udev" ,rust-udev-0.8)
+                       ("rust-udevrs" ,rust-udevrs-0.3)
+                       ("rust-usb-ids" ,rust-usb-ids-1))
+       #:cargo-development-inputs
+       (("rust-assert-json-diff" ,rust-assert-json-diff-2)
+        ("rust-diff" ,rust-diff-0.1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-extras
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (install-file "doc/cyme.1" (string-append out "/share/man/man1"))
+                (mkdir-p (string-append out "/etc/bash_completion.d"))
+                (copy-file "doc/cyme.bash"
+                           (string-append out "/etc/bash_completion.d/cyme"))
+                (install-file "doc/cyme.fish"
+                              (string-append out "/share/fish/vendor_completions.d"))
+                (install-file "doc/_cyme"
+                              (string-append out "/share/zsh/site-functions"))))))))
+    (inputs (list libusb))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/tuna-f1sh/cyme")
+    (synopsis "List system USB buses and devices")
+    (description
+     "This package provides a CLI tool to list system USB buses and devices
+similar to lsusb.")
+    (license license:gpl3+)))
 
 (define-public diffr
   (package
