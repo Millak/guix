@@ -6641,66 +6641,70 @@ deployments.")
                 "0p2xf4a8bk2w8j9q20fazrc93fwcfhw8zcvdd8ssbahvlg2q78mb"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
-                               (string-append "CC=" ,(cc-for-target))
-                               ;; Use absolute path of GCC so it's found at runtime.
-                               (string-append "PTHREAD_CC="
-                                              (search-input-file %build-inputs
-                                                                 "/bin/gcc"))
-                               "--localstatedir=/var")
-       ,@(if (target-x86-32?)
-             '(#:make-flags
-               (list "CFLAGS+=-fexcess-precision=standard"))
-             '())
+     (append
+      (if (target-x86-32?)
+          '(#:make-flags
+            (list "CFLAGS+=-fexcess-precision=standard"))
+          '())
+      (list
+       #:configure-flags
+       #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+               (string-append "CC=" #$(cc-for-target))
+               ;; Use absolute path of GCC so it's found at runtime.
+               (string-append "PTHREAD_CC="
+                              (search-input-file %build-inputs
+                                                 "/bin/gcc"))
+               "--localstatedir=/var")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-absolute-file-names
-           (lambda _
-             (substitute* '("bin/varnishtest/vtc_varnish.c"
-                            "bin/varnishtest/vtc_process.c"
-                            "bin/varnishtest/vtc_haproxy.c"
-                            "bin/varnishtest/tests/u00014.vtc"
-                            "bin/varnishd/mgt/mgt_vcc.c")
-               (("/bin/sh") (which "bash")))
-             (let* ((rm (which "rm")))
-               (substitute* "bin/varnishd/mgt/mgt_shmem.c"
-                 (("rm -rf") (string-append rm " -rf")))
-               (substitute* "bin/varnishtest/vtc_main.c"
-                 (("/bin/rm") rm)))
-             (substitute* "bin/varnishtest/tests/u00000.vtc"
-               (("/bin/echo") (which "echo")))))
-         (add-after 'unpack 'remove-failing-tests
-           (lambda  _
-             ;; This test seems to fail because of
-             ;; Failed: Servname not supported for ai_socktype
-             (delete-file "bin/varnishtest/tests/b00085.vtc")))
-         (add-before 'install 'patch-Makefile
-           (lambda _
-             (substitute* "Makefile"
-               ;; Do not create /var/varnish during install.
-               (("^install-data-am: install-data-local") "install-data-am: "))))
-         (add-after 'install 'wrap-varnishd
-           ;; Varnish uses GCC to compile VCL, so wrap it with required GCC
-           ;; environment variables to avoid propagating them to profiles.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (varnishd (string-append out "/sbin/varnishd"))
-                    (PATH (string-append (assoc-ref inputs "binutils") "/bin"))
-                    (LIBRARY_PATH (string-append (assoc-ref inputs "libc") "/lib")))
-               (wrap-program varnishd
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'use-absolute-file-names
+             (lambda _
+               (substitute* '("bin/varnishtest/vtc_varnish.c"
+                              "bin/varnishtest/vtc_process.c"
+                              "bin/varnishtest/vtc_haproxy.c"
+                              "bin/varnishtest/tests/u00014.vtc"
+                              "bin/varnishd/mgt/mgt_vcc.c")
+                 (("/bin/sh") (which "bash")))
+               (let* ((rm (which "rm")))
+                 (substitute* "bin/varnishd/mgt/mgt_shmem.c"
+                   (("rm -rf") (string-append rm " -rf")))
+                 (substitute* "bin/varnishtest/vtc_main.c"
+                   (("/bin/rm") rm)))
+               (substitute* "bin/varnishtest/tests/u00000.vtc"
+                 (("/bin/echo") (which "echo")))))
+           (add-after 'unpack 'remove-failing-tests
+             (lambda _
+               ;; This test seems to fail because of
+               ;; Failed: Servname not supported for ai_socktype
+               (delete-file "bin/varnishtest/tests/b00085.vtc")))
+           (add-before 'install 'patch-Makefile
+             (lambda _
+               (substitute* "Makefile"
+                 ;; Do not create /var/varnish during install.
+                 (("^install-data-am: install-data-local")
+                  "install-data-am: "))))
+           (add-after 'install 'wrap-varnishd
+             ;; Varnish uses GCC to compile VCL, so wrap it with required GCC
+             ;; environment variables to avoid propagating them to profiles.
+             (lambda* (#:key inputs #:allow-other-keys)
+               (wrap-program (string-append #$output "/sbin/varnishd")
                  ;; Add binutils to PATH so gcc finds the 'as' executable.
-                 `("PATH" ":" prefix (,PATH))
+                 `("PATH" ":" prefix (,(dirname (which "as"))))
                  ;; Make sure 'crti.o' et.al is found.
-                 `("LIBRARY_PATH" ":" prefix (,LIBRARY_PATH)))))))))
+                 `("LIBRARY_PATH" ":" prefix
+                   (,(dirname
+                      (search-input-file inputs "lib/libc.so")))))))))))
     (native-inputs
-     (list pkg-config python-sphinx python-docutils))
+     (list pkg-config
+           python-sphinx
+           python-docutils))
     (inputs
      (list bash-minimal
-           coreutils
+           coreutils-minimal
            jemalloc
            ncurses
            pcre2
-           python
+           python-minimal
            readline))
     (synopsis "Web application accelerator")
     (description
