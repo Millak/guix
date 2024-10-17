@@ -1597,31 +1597,31 @@ started automatically on the first call via D-Bus.")
 (define-public dwl
   (package
     (name "dwl")
-    (version "0.4")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/djpohly/dwl")
+                    (url "https://codeberg.org/dwl/dwl")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pj0h3zd2f60hxpavpmgzid1sj7hf9m5cgclbackljqq4gpwlvir"))))
+                "1j7lmp6k80g54hrsmwixh8ahpnbax4khgiybg8lhlvmq93618a3z"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags
-       (list
-        (string-append "CC=" ,(cc-for-target))
-        (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure
+     (list #:tests? #f                  ; no tests
+           #:make-flags
+           #~(list
+              #$(string-append "CC=" (cc-for-target))
+                (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))   ; no configure
     (native-inputs
      (list pkg-config))
     (inputs
-     (list wlroots-0.16))
-    (home-page "https://github.com/djpohly/dwl")
+     (list wlroots))
+    (home-page "https://codeberg.org/dwl/dwl")
     (synopsis "Dynamic window manager for Wayland")
     (description
      "@command{dwl} is a compact, hackable compositor for Wayland based on
