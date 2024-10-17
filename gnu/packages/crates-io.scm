@@ -88300,6 +88300,36 @@ with the Unicode character database.")
                        ("rust-mio" ,rust-mio-0.8)
                        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
+(define-public rust-udevrs-0.3
+  (package
+    (name "rust-udevrs")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "udevrs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "028s1sk1ym919z0w6p8mnvgh9d35c9zzrlaxlmvfrppi6fx5kjdx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Error: UdevHwdb("unable to find hwdb.bin database file")
+         "--skip=parse_hwdb")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-heapless" ,rust-heapless-0.7)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.27))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10))))
+    (home-page "https://github.com/cr8t/udev")
+    (synopsis "Pure Rust implementation of the user-land udev library")
+    (description
+     "This package provides Pure Rust implementation of the user-land udev library.")
+    (license license:lgpl2.0+)))
+
 (define-public rust-ufmt-0.2
   (package
     (name "rust-ufmt")
