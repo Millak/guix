@@ -71832,6 +71832,46 @@ for later processing.")
 Rust's serde.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-serde-with-2
+  (package
+    (inherit rust-serde-with-3)
+    (name "rust-serde-with")
+    (version "2.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde_with" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gmgl2raxxnpvjgcvkrimgv55kbjywi5xbffc9rvb9s7q7973zq7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; could not find `Deserializer` in `serde_test`
+       #:cargo-inputs (("rust-base64" ,rust-base64-0.13)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-doc-comment" ,rust-doc-comment-0.3)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-with-macros" ,rust-serde-with-macros-2)
+                       ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs
+       (("rust-expect-test" ,rust-expect-test-1)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-mime" ,rust-mime-0.3)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-rmp-serde" ,rust-rmp-serde-1)
+        ("rust-ron" ,rust-ron-0.8)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde-xml-rs" ,rust-serde-xml-rs-0.6)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-test" ,rust-serde-test-1)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+        ("rust-version-sync" ,rust-version-sync-0.9))))))
+
 (define-public rust-serde-with-1
   (package
     (inherit rust-serde-with-3)
