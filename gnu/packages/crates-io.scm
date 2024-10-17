@@ -66937,6 +66937,32 @@ based protocols (@code{EthernetII}, IPv4, IPv6, UDP, TCP ...).")
        #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1)
                                    ("rust-proptest" ,rust-proptest-0.9))))))
 
+(define-public rust-rusb-0.9
+  (package
+    (name "rust-rusb")
+    (version "0.9.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rusb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1905rijhabvylblh24379229hjmkfhxr80jc79aqd9v3bgq9z7xb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-libusb1-sys" ,rust-libusb1-sys-0.7)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-regex" ,rust-regex-1)
+                                   ("rust-usb-ids" ,rust-usb-ids-1))))
+    (inputs (list libusb))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/a1ien/rusb")
+    (synopsis "Library for accessing USB devices")
+    (description
+     "This package provides a Rust library for accessing USB devices.")
+    (license license:expat)))
+
 (define-public rust-rust-hawktracer-0.7
   (package
     (name "rust-rust-hawktracer")
