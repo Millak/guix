@@ -37,7 +37,7 @@
 (define-public notcurses
   (package
     (name "notcurses")
-    (version "3.0.9")
+    (version "3.0.11")
     (source
      (origin
        (method url-fetch)
@@ -50,7 +50,7 @@
                            "+dfsg.1.orig.tar.xz"))
        (file-name (string-append name "-" version ".tar.xz"))
        (sha256
-        (base32 "1sj2m7sil2i3yw73z15947kypsp0rnapwpwanwzam15lbicc8c3y"))))
+        (base32 "0v5ccfpgaz7qq3b46a0nn7njmcwz74q9ngrs4yp1i36xph1cn6r9"))))
     (build-system cmake-build-system)
     (arguments
      `(#:make-flags
