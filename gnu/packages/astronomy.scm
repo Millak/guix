@@ -3671,13 +3671,13 @@ Carlo.")
 (define-public python-ndcube
   (package
     (name "python-ndcube")
-    (version "2.2.2")
+    (version "2.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ndcube" version))
        (sha256
-        (base32 "0d82xldinvjw4csql4w3k44ibprbz0b0g5ixq9a5f6c7zbvfc24l"))))
+        (base32 "01sxmy5ki5bcgva5z3m20mg20dfx5n6dkb41kdfcdizqmsw96qmn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3715,8 +3715,10 @@ Carlo.")
            python-pytest-astropy
            python-pytest-mpl
            python-scipy
+           python-setuptools
            python-setuptools-scm
-           python-sunpy))
+           python-sunpy
+           python-wheel))
     (home-page "https://docs.sunpy.org/projects/ndcube/")
     (synopsis "Multi-dimensional contiguous and non-contiguous coordinate aware arrays")
     (description
