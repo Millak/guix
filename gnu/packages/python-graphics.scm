@@ -78,19 +78,18 @@
                      (string-append "'" mesa "/lib/libEGL.so'"))
                     (("find_library\\(\"X11\"\\)")
                      (string-append "'" libx11 "/lib/libX11.so'"))))))
-            (replace 'check
-              (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-                (when tests?
-                  (system "Xvfb :1 &")
-                  (setenv "DISPLAY" ":1")
-                  (add-installed-pythonpath inputs outputs)
-                  (invoke "pytest" "tests")))))))
+            (add-before 'check 'prepare-test-environment
+              (lambda _
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1"))))))
       (inputs
        (list libx11
              mesa))
       (native-inputs
        (list python-psutil
              python-pytest
+             python-setuptools
+             python-wheel
              xorg-server-for-tests))
       (home-page "https://github.com/moderngl/glcontext")
       (synopsis "Portable OpenGL Context for ModernGL")
