@@ -1518,7 +1518,7 @@ Astropy objects.")
 (define-public python-astroalign
   (package
     (name "python-astroalign")
-    (version "2.5.1")
+    (version "2.6.0")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -1528,19 +1528,20 @@ Astropy objects.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kr5cszcxvrdbksy7mvv3ps1h1jzrn4yamfr6x7whkbi6bpqf7xp"))))
+        (base32 "19dmdnp2hzhzd25601xrfflhxi3j2rgpwf3nl882173wb544cxyq"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-astropy
            python-ccdproc
            python-pillow
-           python-pytest))
+           python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-bottleneck
            python-numpy
            python-scikit-image
            python-scipy
-           python-sep))
+           python-sep-pjw))
     (home-page "https://astroalign.readthedocs.io/")
     (synopsis "Astrometric Alignment of Images")
     (description
