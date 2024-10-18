@@ -228,9 +228,10 @@
                ;; pages.  We link lualatex to luahbtex; see issue #51252 for
                ;; details.
                (with-directory-excursion (string-append out "/bin/")
-                 (for-each symlink
-                           '("pdftex" "pdftex"   "xetex"   "luahbtex")
-                           '("latex"  "pdflatex" "xelatex" "lualatex")))
+                 (for-each
+                  symlink
+                  '("pdftex" "pdftex"   "xetex"   "luahbtex" "luatex")
+                  '("latex"  "pdflatex" "xelatex" "lualatex" "dvilualatex")))
                (with-directory-excursion (string-append share "/man/man1/")
                  (symlink "luatex.1" "lualatex.1"))
 
