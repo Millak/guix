@@ -206,6 +206,19 @@ the 'SSL_CERT_FILE' and 'SSL_CERT_DIR' environment variables."
         (module-ref errors 'GITERR_HTTP)
         34)))
 
+(define (set-git-timeouts connection-timeout read-timeout)
+  "Instruct Guile-Git to honor the given CONNECTION-TIMEOUT and READ-TIMEOUT
+when talking to remote Git servers.
+
+If one of them is #f, the corresponding default setting is kept unchanged."
+  ;; 'set-server-timeout!' & co. were added in Guile-Git 0.9.0.
+  (when (and (defined? 'set-server-connection-timeout!)
+             connection-timeout)
+    (set-server-connection-timeout! connection-timeout))
+  (when (and (defined? 'set-server-timeout!)
+             read-timeout)
+    (set-server-timeout! read-timeout)))
+
 (define (clone* url directory)
   "Clone git repository at URL into DIRECTORY.  Upon failure,
 make sure no empty directory is left behind."
@@ -512,6 +525,8 @@ could not be fetched from Software Heritage~%")
 
 (define* (update-cached-checkout url
                                  #:key
+                                 (connection-timeout 30000)
+                                 (read-timeout 45000)
                                  (ref '())
                                  recursive?
                                  (check-out? #t)
@@ -533,7 +548,12 @@ If REF is the empty list, the remote HEAD is used.
 When RECURSIVE? is true, check out submodules as well, if any.
 
 When CHECK-OUT? is true, reset the cached working tree to REF; otherwise leave
-it unchanged."
+it unchanged.
+
+Wait for up to CONNECTION-TIMEOUT milliseconds when establishing connection to
+the remote server, and for up to READ-TIMEOUT milliseconds when reading from
+it.  When zero, use the system defaults for these timeouts; when false, leave
+current settings unchanged."
   (define (cache-entries directory)
     (filter-map (match-lambda
                   ((or "." "..")
@@ -555,6 +575,7 @@ it unchanged."
       (_ ref)))
 
   (with-libgit2
+   (set-git-timeouts connection-timeout read-timeout)
    (let* ((cache-exists? (openable-repository? cache-directory))
           (repository    (if cache-exists?
                              (repository-open cache-directory)
