@@ -578,7 +578,7 @@ To get @code{podman machine} working, install @code{qemu-minimal}, and
 (define-public podman-compose
   (package
     (name "podman-compose")
-    (version "1.0.6")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -587,18 +587,17 @@ To get @code{podman machine} working, install @code{qemu-minimal}, and
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11dwpifkm20vyi6r3fgmiiqc01mpm4r8l0p5gfh0bawi2gklrhsf"))))
+        (base32 "06vm088q1x7j929n93ylq3bav716bqh6l79agj8sgzsqxjsmli73"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags #~(list "pytests")))
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-dotenv python-pyyaml))
+    (native-inputs (list python-pytest python-parameterized))
+    (propagated-inputs (list python-dotenv python-pyyaml))
     (home-page "https://github.com/containers/podman-compose")
     (synopsis "Script to run docker-compose.yml using podman")
-    (description "This package provides an implementation of
+    (description
+     "This package provides an implementation of
 @url{https://compose-spec.io/, Compose Spec} for @code{podman} focused on
 being rootless and not requiring any daemon to be running.")
     (license license:gpl2)))
