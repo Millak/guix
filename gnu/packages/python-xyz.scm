@@ -25570,11 +25570,11 @@ library.")
 (define-public python-glcontext
   (let (;; Upstream is known for abusing mutable tag, hence pinpoint the
         ;; relevant commit.
-        (revision "1")
-        (commit "0af21b7c8a8cc0e76f4d9aff6a4f156f43d37333"))
+        (revision "2")
+        (commit "f2875abdb18b24e785c3958cc22845c81725d5cd"))
     (package
       (name "python-glcontext")
-      (version (git-version "2.4.0" revision commit))
+      (version (git-version "3.0.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -25583,7 +25583,7 @@ library.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "03xpw776pvv8c5n58049yczlkgcqdh9vfcpjlghh3p6cal3yiq8a"))))
+                  "15pngnc4agdvm8crq782vjlb5v1qrclln5xpqiyhz3jhmipsqb8q"))))
       (build-system pyproject-build-system)
       (arguments
        (list #:phases #~(modify-phases %standard-phases
