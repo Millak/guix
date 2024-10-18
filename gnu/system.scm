@@ -809,6 +809,11 @@ bookkeeping."
            %shepherd-root-service
 
            (pam-root-service (operating-system-pam-services os))
+           ;; Make sure that privileged-programs activation script
+           ;; runs after accounts are created
+           (service privileged-program-service-type
+                    (append (operating-system-privileged-programs os)
+                            (operating-system-setuid-programs os)))
            (account-service (append (operating-system-accounts os)
                                     (operating-system-groups os))
                             (operating-system-skeletons os))
@@ -826,9 +831,6 @@ bookkeeping."
             (operating-system-environment-variables os))
            (service host-name-service-type host-name)
            procs root-fs
-           (service privileged-program-service-type
-                    (append (operating-system-privileged-programs os)
-                            (operating-system-setuid-programs os)))
            (service profile-service-type
                     (operating-system-packages os))
            boot-fs non-boot-fs
@@ -850,6 +852,11 @@ bookkeeping."
           (service shepherd-root-service-type)
 
           (service user-processes-service-type)
+          ;; Make sure that privileged-programs activation script
+          ;; runs after accounts are created
+          (service privileged-program-service-type
+                   (append (operating-system-privileged-programs os)
+                           (operating-system-setuid-programs os)))
           (account-service (append (operating-system-accounts os)
                                    (operating-system-groups os))
                            (operating-system-skeletons os))
@@ -866,9 +873,6 @@ bookkeeping."
                               (list `("hosts" ,hosts-file)))
               (service hosts-service-type
                        (local-host-entries host-name)))
-          (service privileged-program-service-type
-                   (append (operating-system-privileged-programs os)
-                           (operating-system-setuid-programs os)))
           (service profile-service-type (operating-system-packages os)))))
 
 (define* (operating-system-services os)

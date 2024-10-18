@@ -3,6 +3,7 @@
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (gnu image)
   #:use-module (gnu system)
   #:autoload   (gnu system image) (system-image)
+  #:use-module (gnu system privilege)
   #:use-module (gnu system shadow)
   #:use-module (gnu system nss)
   #:use-module (gnu system vm)
@@ -60,7 +62,8 @@
             %test-root-unmount
             %test-cleanup
             %test-mcron
-            %test-nss-mdns))
+            %test-nss-mdns
+            %test-activation))
 
 (define %simple-os
   (simple-operating-system))
@@ -1105,3 +1108,119 @@ non-ASCII names from /tmp.")
     "Test Avahi's multicast-DNS implementation, and in particular, test its
 glibc name service switch (NSS) module.")
    (value (run-nss-mdns-test))))
+
+
+;;;
+;;; Activation: Order of activation scripts
+;;; Create accounts before running scripts using them
+
+(define %activation-os
+  ;; System with a new user/group, a setuid/setgid binary and an activation script
+  (let* ((%hello-accounts
+           (list (user-group (name "hello") (system? #t))
+                 (user-account
+                  (name "hello")
+                  (group "hello")
+                  (system? #t)
+                  (comment "")
+                  (home-directory "/var/empty"))))
+         (%hello-privileged
+          (list
+           (privileged-program
+            (program (file-append hello "/bin/hello"))
+            (setuid? #t)
+            (setgid? #t)
+            (user "hello")
+            (group "hello"))))
+         (%hello-activation
+          (with-imported-modules (source-module-closure
+                                  '((gnu build activation)))
+            #~(begin
+	        (use-modules (gnu build activation))
+
+	        (let ((user (getpwnam "hello")))
+	          (mkdir-p/perms "/run/hello" user #o755)))))
+
+         (hello-service-type
+          (service-type
+           (name 'hello)
+           (extensions
+            (list (service-extension account-service-type
+                                     (const %hello-accounts))
+                  (service-extension activation-service-type
+                                     (const %hello-activation))
+	          (service-extension privileged-program-service-type
+                                     (const %hello-privileged))))
+           (default-value #f)
+           (description ""))))
+
+    (operating-system
+      (inherit %simple-os)
+      (services
+       (cons* (service hello-service-type)
+              (operating-system-user-services
+               %simple-os))))))
+
+(define (run-activation-test name)
+  (define os
+    (marionette-operating-system
+     %activation-os))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (srfi srfi-64))
+
+          (define marionette
+            (make-marionette (list #$(virtual-machine os))))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "activation")
+
+          (test-assert "directory exists"
+            (marionette-eval
+             '(file-exists? "/run/hello")
+             marionette))
+
+          (test-assert "directory correct permissions and owner"
+            (marionette-eval
+             '(let ((dir (stat "/run/hello"))
+                    (user (getpwnam "hello")))
+                (and (eqv? (stat:uid dir)
+                           (passwd:uid user))
+                     (eqv? (stat:gid dir)
+                           (passwd:gid user))
+                     (=    (stat:perms dir)
+                           #o0755)))
+             marionette))
+
+          (test-assert "privileged-program exists"
+            (marionette-eval
+             '(file-exists? "/run/privileged/bin/hello")
+             marionette))
+
+          (test-assert "privileged-program correct permissions and owner"
+            (marionette-eval
+             '(let ((binary (stat "/run/privileged/bin/hello"))
+                    (user (getpwnam "hello"))
+                    (group (getgrnam "hello")))
+                (and (eqv? (stat:uid binary)
+                           (passwd:uid user))
+                     (eqv? (stat:gid binary)
+                           (group:gid group))
+                     (=    (stat:perms binary)
+                           (+ #o0555     ;; base
+                              #o4000     ;; setuid
+                              #o2000)))) ;; setgid
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation name test))
+
+(define %test-activation
+  (system-test
+   (name "activation")
+   (description "Test that activation scripts are run in the correct order")
+   (value (run-activation-test name))))
