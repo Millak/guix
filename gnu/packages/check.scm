@@ -47,7 +47,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
-;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
@@ -2729,6 +2729,61 @@ normally the case.")
 look and feel of py.test, using a progress bar and showing failures and errors
 instantly.")
     (license license:bsd-3)))
+
+(define-public python-crosshair
+  (package
+    (name "python-crosshair")
+    (version "0.0.76")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "crosshair-tool" version))
+       (sha256
+        (base32 "1yvbhzs7r85gn4d7drl7p7vi1f5cga1xyy3mzxy3fglyf8kxyakh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" "auto"
+              ;; check_examples_test.py contains failing tests that
+              ;; show what happens if a counterexample is found.
+              "--ignore=crosshair/examples/check_examples_test.py"
+              "--ignore=crosshair/lsp_server_test.py") ;requires pygls
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-dependencies
+            (lambda _
+              (substitute* "setup.py"
+                ;; pygls is only used by crosshair/lsp_server.py.
+                (("pygls>=1.0.0") "")
+                ;; Tests still pass with typing-inspect==0.6.0
+                ;; packaged by Guix.
+                (("typing-inspect>=0.7.1") "typing-inspect>=0.6.0")
+                ;; 'sanity-check fails for z3-solver, although it is
+                ;; included in 'propagated-inputs.
+                (("z3-solver==4.13.0.0") ""))))
+          (add-before 'check 'set-test-env
+            (lambda _
+              (setenv "PYTHONHASHSEED" "0")))))) ;tests rely on this value
+    (native-inputs
+     (list python-icontract ;optional
+           python-importlib-metadata
+           python-mypy
+           python-numpy
+           python-pytest
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-typeshed-client
+           python-typing-inspect
+           z3))
+    (home-page "https://crosshair.readthedocs.io")
+    (synopsis "Analysis tool for Python using symbolic execution")
+    (description
+     "@code{crosshair} is an analysis tool for Python that works by repeatedly
+calling your functions with symbolic inputs.  It uses an @acronym{SMT,
+Satisfiability modulo theories} solver explore viable execution paths and find
+counterexamples for you.")
+    (license (list license:asl2.0 license:expat license:psfl))))
 
 (define-public python-hypothesis
   (package
