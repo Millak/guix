@@ -5813,32 +5813,28 @@ mapping support, you can get looping just how you like!")
       (license license:gpl3+))))
 
 (define-public fabla
-  (let ((revision "1")
-        ;; The last release was in 2016.  Since then a number of commits have
-        ;; been added to fix build problems.
-        (commit "10acf03046d980f96ed192d5acb9deb812f5c639"))
-    (package
-      (name "fabla")
-      (version (git-version "1.3.2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/openAVproductions/openAV-Fabla")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0ybbzb86j1n5dfhzc6aa3cibkwi6q3x0c18b1w3anyibanmr1wmc"))))
-      (build-system cmake-build-system)
-      (arguments '(#:tests? #f)) ;there are none
-      (inputs (list ntk cairomm libsndfile))
-      (native-inputs (list pkg-config lv2 mesa))
-      (home-page "http://openavproductions.com/fabla/")
-      (synopsis "Sampler LV2 plugin")
-      (description
-       "Fabla is an LV2 drum sampler plugin instrument.  It is ideal for loading up
+  (package
+    (name "fabla")
+    (version "1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/openAVproductions/openAV-Fabla")
+                    (commit (string-append "release-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13675ljfcbmxw9jdjrpn9wpvl69qxxc1hg2y9sfjkf4khajpapg9"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #f)) ;there are none
+    (inputs (list ntk cairomm libsndfile))
+    (native-inputs (list pkg-config lv2 mesa))
+    (home-page "http://openavproductions.com/fabla/")
+    (synopsis "Sampler LV2 plugin")
+    (description
+     "Fabla is an LV2 drum sampler plugin instrument.  It is ideal for loading up
 your favorite sampled sounds and bashing away on a MIDI controller.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public sorcer
   (let ((revision "1")
