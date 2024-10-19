@@ -404,6 +404,30 @@ These aspects include CPU, network fabrics, etc.  In addition, it offers
 APIs to detect, query, and compare them.")
     (license license:expat)))
 
+(define-public python-asyncstdlib
+  (package
+    (name "python-asyncstdlib")
+    (version "3.12.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asyncstdlib" version))
+       (sha256
+        (base32 "1nr7rhfcqyzhv8lnj2rpgg60sw795xqp11a58dky8nfbd9gh5c3y"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core python-pytest))
+    (home-page "https://asyncstdlib.readthedocs.io")
+    (synopsis "Compatibility layer between the Python stdlib and @code{async}
+callables")
+    (description
+     "The @code{asyncstdlib} library re-implements functions and classes of
+the Python standard library to make them compatible with @code{async}
+callables, iterables and context managers.  It is fully agnostic to
+@code{async} event loops and seamlessly works with @code{asyncio}, third-party
+libraries such as @code{trio}, as well as any custom @code{async} event
+loop.")
+    (license license:expat)))
+
 (define-public python-awkward-cpp
   (package
     (name "python-awkward-cpp")
