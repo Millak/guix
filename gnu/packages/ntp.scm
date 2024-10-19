@@ -149,7 +149,7 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
                         "sntp/libevent/build-aux")))))
    (native-inputs (list which pkg-config))
    (inputs
-    (cons* openssl-1.1
+    (cons* openssl
            libevent
            ;; Build with POSIX capabilities support on GNU/Linux.  This allows
            ;; 'ntpd' to run as non-root (when invoked with '-u'.)
