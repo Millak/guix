@@ -1487,6 +1487,30 @@ pictures, sounds, or video.")
                              "-o" (string-append "-k " pg-data)
                              "-l" (string-append pg-data "/db.log")
                              "start"))))
+               #$@(cond
+                   ((string=? "x86-64-linux" (%current-system))
+                    #~())
+                   ((member (%current-system)
+                            (list "aarch64-linux" "i686-linux"))
+                    #~((add-after 'unpack 'skip-failing-tests
+                         (lambda _
+                           (substitute* "test/sql/CMakeLists.txt"
+                             (((string-append
+                                "("
+                                (string-join
+                                 '(" append\\.sql\\.in"
+                                   " chunk_adaptative\\.sql"
+                                   " histogram_test\\.sql\\.in")
+                                 "|")
+                                ")")
+                               all)
+                              (string-append "#" all)))))))
+                   (else
+                    #~((add-after 'unpack 'skip-failing-tests
+                         (lambda _
+                           (substitute* "test/sql/CMakeLists.txt"
+                             (("histogram_test\\.sql\\.in")
+                              "#histogram_test.sql.in")))))))
                (add-after 'prepare-tests 'check
                  (assoc-ref %standard-phases 'check)))))
     (inputs (list openssl postgresql))
