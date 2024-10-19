@@ -1063,7 +1063,7 @@ useful for C++.")
 (define-public python-pygobject
   (package
     (name "python-pygobject")
-    (version "3.47.0")
+    (version "3.50.0")
     (source
      (origin
        (method url-fetch)
@@ -1072,7 +1072,7 @@ useful for C++.")
                            "/pygobject-" version ".tar.xz"))
        (sha256
         (base32
-         "082dpm34a350bnhgmkdv8myxzjgnrflckkpn46vnvs36f7bbfdij"))
+         "04i28xrb9fxkmn9j2mmsl0lbmk9blgjcl8hnxrbx90d8nmsnx0wd"))
        (modules '((guix build utils)))
        (snippet
         ;; We disable these tests in a snippet so that they are inherited
@@ -1111,20 +1111,6 @@ useful for C++.")
     (properties
      '((upstream-name . "pygobject")))
     (license license:lgpl2.1+)))
-
-(define-public python-pygobject-3.48
-  (package
-    (inherit python-pygobject)
-    (version "3.48.2")
-    (source
-     (origin
-       (inherit (package-source python-pygobject))
-       (uri (string-append "mirror://gnome/sources/pygobject/"
-                           (version-major+minor version)
-                           "/pygobject-" version ".tar.xz"))
-       (sha256
-        (base32
-         "19yii8lydnjw225k4gclhn8hya7caiginqi0mj9a0cdym6sax507"))))))
 
 (define-public perl-glib
   (package

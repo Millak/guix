@@ -1130,7 +1130,7 @@ binary, but none of the actual plugins.")))
     (native-inputs
      (list pkg-config python))
     (propagated-inputs
-     (list gst-plugins-base python-pygobject-3.48))
+     (list gst-plugins-base python-pygobject))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "GStreamer GObject Introspection overrides for Python")
     (description
