@@ -3043,6 +3043,9 @@ orchestration.  Ansible facilitates complex changes like zero-downtime rolling
 updates with load balancers.  This package provides a curated set of
 community-maintained Ansible collections, which contain playbooks, roles,
 modules and plugins that extend Ansible.")
+    ;; Those actually concern the Jenkins Ansible plugin, rather than the
+    ;; Ansible Jenkins plugin.
+    (properties `((lint-hidden-cve . ("CVE-2023-32982" "CVE-2023-32983"))))
     (license license:gpl3+)))
 
 (define-public debops
