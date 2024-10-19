@@ -86,6 +86,7 @@
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
@@ -1275,7 +1276,7 @@ Gerbil code within Emacs.")))
 (define-public stklos
   (package
     (name "stklos")
-    (version "1.70")
+    (version "2.10")
     (source (origin
               (method url-fetch)
               ;; TODO: Unbundle pcre, libgc, and libffi.
@@ -1283,12 +1284,18 @@ Gerbil code within Emacs.")))
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1iw3pgycjz3kz3jd1855v2ngf8ib2almpf8v058n1mkj1qd2b88m"))))
+                "0hd05r5pr3yhgq44n5sqdmvkpgnhf5fybmis2g3gwj10z52h7gvd"))))
     (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list gmp libgc pcre2 libffi readline))
     (arguments
      (list
       #:modules `((ice-9 ftw)
                   ,@%default-gnu-modules)
+      #:configure-flags
+      #~(list (string-append "LDFLAGS=-L"
+                #$(this-package-input "readline")
+                "/lib -lreadline"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'patch-sh-references
