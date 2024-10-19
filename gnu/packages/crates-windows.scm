@@ -1782,6 +1782,26 @@ crate.")
     (description "This package provides Rust for Windows.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-core-0.57
+  (package
+    (inherit rust-windows-core-0.58)
+    (name "rust-windows-core")
+    (version "0.57.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bc3jxw2jw76xkk3ddvnp5b2m76qmbzv1qncgvb6qrlhl8wj9vfj"))))
+    (arguments
+     `(#:cargo-inputs (("rust-windows-implement" ,rust-windows-implement-0.57)
+                       ("rust-windows-interface" ,rust-windows-interface-0.57)
+                       ("rust-windows-result" ,rust-windows-result-0.1)
+                       ("rust-windows-targets" ,rust-windows-targets-0.52))
+       #:cargo-development-inputs
+       (("rust-windows-bindgen" ,rust-windows-bindgen-0.57))))))
+
 (define-public rust-windows-core-0.52
   (package
     (inherit rust-windows-core-0.58)
