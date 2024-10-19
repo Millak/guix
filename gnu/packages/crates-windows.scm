@@ -2213,6 +2213,23 @@ Windows crate.")
      "This package provides the interface macro for the Windows crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-interface-0.57
+  (package
+    (inherit rust-windows-interface-0.58)
+    (name "rust-windows-interface")
+    (version "0.57.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-interface" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19zwlzr0q1z9s692681yb5w2lhvwcyx4v95s25hfdkd3isry9gi9"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))))
+
 (define-public rust-windows-interface-0.52
   (package
     (inherit rust-windows-interface-0.58)
