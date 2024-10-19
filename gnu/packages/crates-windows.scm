@@ -1353,6 +1353,22 @@ describing the API and right into your Rust package where you can call them as
 if they were just another Rust module.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-0.57
+  (package
+    (inherit rust-windows-0.58)
+    (name "rust-windows")
+    (version "0.57.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hqid10bqvxa3pbpgvrh2cilf950lxsd9zqfv3rldc73v2s2qd0j"))))
+    (arguments
+     `(#:cargo-inputs (("rust-windows-core" ,rust-windows-core-0.57)
+                       ("rust-windows-targets" ,rust-windows-targets-0.52))))))
+
 (define-public rust-windows-0.52
   (package
     (inherit rust-windows-0.58)
