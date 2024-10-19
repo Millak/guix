@@ -17651,14 +17651,14 @@ criterion.")
 (define-public rust-critical-section-1
   (package
     (name "rust-critical-section")
-    (version "1.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "critical-section" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "05pj0pvkdyc9r30xxabam4n8zxdbzxcddr0gdypajcbqjgwgynbh"))))
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "critical-section" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hi289hs8kiyqmhwzsrlqrba559av3bzg71f4bs5mz28cf4hjh7n"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/rust-embedded/critical-section")
     (synopsis "Critical section abstraction")
