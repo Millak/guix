@@ -3970,18 +3970,24 @@ interest, and which require portability between platforms or ease of scripting."
 (define-public python-pyvo
   (package
     (name "python-pyvo")
-    (version "1.5.2")
+    (version "1.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyvo" version))
        (sha256
-        (base32 "0wcg3jhfwjd9gqs74mw63sgi1yhmgljx1bwk3mxn0p6fv924r8mq"))))
+        (base32 "0zlqn7qflv5ipmlqkq85qjgggz84zi67jm45w4ayfapmhh74sa7x"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-astropy python-requests-mock python-setuptools-scm))
+     (list python-pytest-astropy
+           python-requests-mock
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
-     (list python-astropy python-pillow python-requests))
+     (list python-astropy
+           python-pillow
+           python-requests))
     (home-page "https://github.com/astropy/pyvo")
     (synopsis "Access Virtual Observatory data and services")
     (description
