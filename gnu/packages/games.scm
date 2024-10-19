@@ -111,6 +111,7 @@
   #:use-module (guix svn-download)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
+  #:use-module (gnu packages acl)
   #:use-module (gnu packages adns)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
@@ -1782,7 +1783,7 @@ automata.  The following features are available:
              #:phases
              #~(modify-phases %standard-phases
                  (add-after 'unpack 'fix-bin-location
-                   (lambda _
+                   (lambda* (#:key inputs #:allow-other-keys)
                      (substitute* "CMakeLists.txt"
                        (("/lib/udev/rules.d")
                         (string-append #$output "/lib/udev/rules.d"))
@@ -1791,9 +1792,12 @@ automata.  The following features are available:
                        (("/etc/modules-load.d")
                         (string-append #$output "/etc/modules-load.d"))
                        (("/usr/bin")
-                        (string-append #$output "/bin"))))))))
+                        (string-append #$output "/bin")))
+                     (substitute* "udev/89-joycond.rules"
+                       (("/bin/setfacl")
+                        (search-input-file inputs "bin/setfacl"))))))))
       (native-inputs (list pkg-config))
-      (inputs (list eudev libevdev))
+      (inputs (list acl eudev libevdev))
       (home-page "https://github.com/DanielOgorchock/joycond")
       (synopsis "Joy-Con controller daemon")
       (description "This package provides a userspace daemon for the Nintendo
