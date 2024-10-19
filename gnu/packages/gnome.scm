@@ -4825,7 +4825,7 @@ configuration storage systems.")
 (define-public json-glib-minimal
   (package
     (name "json-glib-minimal")
-    (version "1.6.6")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/json-glib/"
@@ -4833,11 +4833,12 @@ configuration storage systems.")
                                   "/json-glib-" version ".tar.xz"))
               (sha256
                (base32
-                "03j9ba2sccbz954smk3n1swwnvpzl8yhwwin6vixvxligaz9iv4n"))))
+                "0yxg215gpa61sxnx05bgzbqq9dsvbawk6cfz8z0yq1k1v5k8vjhv"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t            ;to wrap binaries, compile schemas
-           #:configure-flags #~(list "-Dgtk_doc=disabled")))
+           #:configure-flags #~(list "-Dman=false"
+                                     "-Dgtk_doc=disabled")))
     (native-inputs
      (list
       gettext-minimal
@@ -4891,7 +4892,8 @@ GLib and GObject, and integrates JSON with GLib data types.")
          ;; No docs, no additional inputs.
          (package-native-inputs json-glib-minimal)
          (modify-inputs (package-native-inputs json-glib-minimal)
-                        (prepend gi-docgen gobject-introspection))))))
+           (prepend gi-docgen gobject-introspection
+                    python-docutils))))))
 
 (define-public libxklavier
   (package
