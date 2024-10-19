@@ -3048,7 +3048,7 @@ modules and plugins that extend Ansible.")
 (define-public debops
   (package
     (name "debops")
-    (version "1.1.0")
+    (version "3.2.2")
     (source
      (origin
        (method git-fetch)
@@ -3057,69 +3057,46 @@ modules and plugins that extend Ansible.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "052b2dykdn35pdpn9s4prawl6nl6yzih8nyf54hpvhpisvjrm1v5"))
+        (base32 "03d94bzljnw65f1ra7bxsl8q2l6g8gxcy8kqhm69ib08j50qa0h6"))
        (patches
-        (search-patches "debops-constants-for-external-program-names.patch"
-                        "debops-debops-defaults-fall-back-to-less.patch"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list git))
+        (search-patches "debops-setup-py-avoid-git.patch"))))
+    (build-system pyproject-build-system)
     (inputs
      (list ansible
            encfs
            fuse-2
            util-linux ;; for umount
            findutils
+           git
+           git-crypt
            gnupg
            which))
     (propagated-inputs
-     (list python-future python-distro))
+     (list python-distro
+           python-dotenv
+           python-future
+           python-gitpython
+           python-jinja2
+           python-pyyaml
+           python-pyxdg
+           python-toml))
     (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'nuke-debops-update
-           (lambda _
-             (chmod "bin/debops-update" #o755) ; FIXME work-around git-fetch issue
-             (with-output-to-file "bin/debops-update"
-               (lambda ()
-                 (format #t "#!/bin/sh
-echo 'debops is installed via guix. guix-update is useless in this case.
-Please use `guix package -u debops` instead.'")))
-             #t))
-         ;; patch shebangs only in actuall scripts, not in files included in
-         ;; roles (which are to be delivered to the targte systems)
-         (delete `patch-generated-file-shebangs)
-         (replace 'patch-source-shebangs
-           (lambda _
-             (for-each patch-shebang
-                       (find-files "bin"
-                                   (lambda (file stat)
-                                     ;; Filter out symlinks.
-                                     (eq? 'regular (stat:type stat)))
-                                   #:stat lstat))))
-         (add-after 'unpack 'fix-paths
-           (lambda _
-             (define (substitute-program-names file)
-               ;; e.g. ANSIBLE_PLAYBOOK = '/gnu/store/…/bin/ansible-playbook'
-               (for-each
-                (lambda (name)
-                  (let ((varname (string-upcase
-                                  (string-map
-                                   (lambda (c) (if (char=? c #\-) #\_ c))
-                                   name))))
-                    (substitute* file
-                      (((string-append "^(" varname " = )'.*'") line prefix)
-                       (string-append prefix "'" (which name) "'")))))
-                '("ansible-playbook" "encfs" "find" "fusermount"
-                  "umount" "gpg" "ansible" "which")))
-             (for-each substitute-program-names
-                       '("bin/debops"
-                         "bin/debops-padlock"
-                         "bin/debops-task"
-                         "debops/__init__.py"
-                         "debops/cmds/__init__.py"))
-             #t)))))
+     (list
+      #:modules '((guix build pyproject-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'sanity-check 'wrap-script
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (wrap-program (string-append #$output "/bin/debops")
+                         `("PATH" ":" prefix
+                           ,(map dirname
+                                 (map (cut search-input-file inputs <>)
+                                      (list "bin/ansible"
+                                            "bin/gpg"
+                                            "bin/git"
+                                            "bin/git-crypt"
+                                            "bin/umount"))))))))))
     (home-page "https://www.debops.org/")
     (synopsis "Collection of general-purpose Ansible roles")
     (description "The Ansible roles provided by that can be used to manage

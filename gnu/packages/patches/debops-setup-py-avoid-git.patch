@@ -1,0 +1,38 @@
+From a6219db1c473f862a2dddbdef9593d8a57dfc9ae Mon Sep 17 00:00:00 2001
+From: Nicolas Graves <ngraves@ngraves.fr>
+Date: Sat, 19 Oct 2024 19:49:30 +0200
+Subject: [PATCH] setup: Don't rely on git to set the version.
+
+---
+ setup.py | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 0fc4555a4..98e4bffac 100755
+--- a/setup.py
++++ b/setup.py
+@@ -48,20 +48,7 @@ except NameError:
+                 return s
+             return s and s.decode('utf-8') or None
+ 
+-# Retrieve the project version from 'git describe' command and store it in the
+-# __version__.py and VERSION files, needed for correct installation of the
+-# Python package
+-try:
+-    with open(os.devnull, 'w') as devnull:
+-        GIT_RELEASE = subprocess.check_output(
+-                      ['git', 'describe'], stderr=devnull
+-                      ).strip().lstrip(b'v').decode('utf-8').split('-')
+-        if len(GIT_RELEASE) > 1:
+-            RELEASE = (GIT_RELEASE[0] + '.dev' + GIT_RELEASE[1]
+-                       + '+' + GIT_RELEASE[2])
+-        else:
+-            RELEASE = GIT_RELEASE[0]
+-except subprocess.CalledProcessError:
++if True:
+     try:
+         RELEASE = open('VERSION').read().strip()
+     except Exception:
+-- 
+2.46.0
+
