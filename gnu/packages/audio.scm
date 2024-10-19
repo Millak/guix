@@ -2268,7 +2268,7 @@ also play midifiles using a Soundfont.")
 (define-public faust-2
   (package
     (inherit faust)
-    (version "2.41.1")
+    (version "2.75.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/grame-cncm/faust/"
@@ -2276,33 +2276,34 @@ also play midifiles using a Soundfont.")
                                   "/faust-" version ".tar.gz"))
               (sha256
                (base32
-                "0gk8ifxrbykq7ay0nvjns8fjryhp0wfhv5npgrl8xpgw9wfmw53j"))))
+                "11ww02zmj3vnva1w52hs9wkxvhwwf53agklyzm2c7gysw0jfvkw9"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         ;; The upstream package uses make to run cmake during the build stage.
-         ;; Here we ignore the Makefile and call cmake directly.
-         (replace 'configure
-           (lambda _
-             (chdir "build")
-             (invoke "cmake" "-C" "backends/all.cmake"
-                     (string-append "-DCMAKE_INSTALL_PREFIX="
-                      (assoc-ref %outputs "out")))))
-         ;; The sound2faust tool would be built in the Makefile's "world" target
-         (add-after 'install 'sound2faust
-           (lambda _
-             (chdir "../tools/sound2faust")
-             (setenv "PREFIX" (assoc-ref %outputs "out"))
-             (invoke "make")
-             (invoke "make" "install"))))))
+     (list
+      ;; There are tests, but they are unit/regression tests scattered in 17
+      ;; different test directories, and little information indicating whether
+      ;; they are worth running for Guix.  Ignore tests for now.
+      #:tests? #f
+      #:configure-flags
+      #~(list "-C" "backends/all.cmake"
+              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The upstream package uses make to run cmake during the build stage.
+          ;; Here we ignore the Makefile and call cmake directly.
+          (replace 'configure
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (chdir "build")
+              (apply invoke "cmake" configure-flags)))
+          ;; The sound2faust tool would be built in the Makefile's "world" target
+          (add-after 'install 'sound2faust
+            (lambda _
+              (chdir "../tools/sound2faust")
+              (setenv "PREFIX" #$output)
+              (invoke "make")
+              (invoke "make" "install"))))))
     (native-inputs
-     `(("llvm" ,llvm)
-       ("which" ,which)
-       ("xxd" ,xxd)
-       ("ctags" ,emacs-minimal)  ; for ctags
-       ("pkg-config" ,pkg-config)))
+     (list llvm-18 pkg-config which))
     (inputs
      (list libsndfile libmicrohttpd ncurses openssl zlib))))
 
