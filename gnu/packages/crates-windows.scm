@@ -2391,6 +2391,23 @@ Windows crate.")
     (description "This package provides Windows error handling.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-result-0.1
+  (package
+    (inherit rust-windows-result-0.2)
+    (name "rust-windows-result")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-result" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y274q1v0vy21lhkgslpxpq1m08hvr1mcs2l88h1b1gcx0136f2y"))))
+    (arguments
+     `(#:cargo-inputs (("rust-windows-targets" ,rust-windows-targets-0.52))
+       #:cargo-development-inputs
+       (("rust-windows-bindgen" ,rust-windows-bindgen-0.57))))))
+
 (define-public rust-windows-strings-0.1
   (package
     (name "rust-windows-strings")
