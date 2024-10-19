@@ -115,7 +115,7 @@
                                          (match types
                                            (() (list))
                                            (_ (list ",")))
-                                         (list path))))
+                                         (list path "\n"))))
                         media-directories)
                    (map (match-lambda
                           ((key . value)
