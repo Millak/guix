@@ -78437,6 +78437,27 @@ references")
     (description "This package provides a Rust XML XPath library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-swaybar-types-3
+  (package
+    (name "rust-swaybar-types")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "swaybar-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hz1ialgs4l0ki5s9gqhsdlfy0v3fph7mkw2z1rdi29bjlsv9h52"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/jaycefayne/swaybar-types")
+    (synopsis "Library for building swaybar status commands in rust")
+    (description
+     "This package provides a library for building swaybar status commands in rust.")
+    (license license:expat)))
+
 (define-public rust-swayipc-3
   (package
     (name "rust-swayipc")
