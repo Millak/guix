@@ -3736,22 +3736,25 @@ can be described by @acronym{WCS, World Coordinate System} translations.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    ;; PyPI version for source archive is missing minor 0, See
-    ;; <https://github.com/astropy/photutils/issues/1727>
-    (version "1.13.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "1lhpcxh2adknzlmrddqd712yzpwdlqlw9jn49ajj4kz5z7822dns"))))
+        (base32 "1mcsp5bsg3i6w3v9gf7vhkyhlxsn57hgbs0b94p5c4hcv9fa4y3g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto")
+      #~(list "--numprocesses" "auto")
       #:phases
       #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; numpy>=1.24
+               ((">=1.24") ">=1.23"))))
           ;; setup.py was removed in 36c3231ce5b80ad470fa78be2e96df859d2daf41
           ;; for some unknown reason, which caused the package to fail to
           ;; build. It is being recreated based on that commit.
@@ -3781,8 +3784,8 @@ setup(ext_modules=get_extensions())")))))
            python-matplotlib
            python-numpy
            python-rasterio
+           python-regions
            python-scikit-image
-           python-scikit-learn
            python-scipy
            python-shapely
            python-tqdm))
@@ -3791,6 +3794,7 @@ setup(ext_modules=get_extensions())")))))
            python-extension-helpers
            python-pytest-astropy
            python-pytest-xdist
+           python-setuptools
            python-setuptools-scm))
     (home-page "https://github.com/astropy/photutils")
     (synopsis "Source detection and photometry")
