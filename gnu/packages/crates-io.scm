@@ -64004,14 +64004,14 @@ size and compilation time.")
 (define-public rust-regex-syntax-0.8
   (package
     (name "rust-regex-syntax")
-    (version "0.8.4")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "regex-syntax" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16r0kjy20vx33dr4mhasj5l1f87czas714x2fz6zl0f8wwxa0rks"))))
+        (base32 "0p41p3hj9ww7blnbwbj9h7rwxzxg0c1hvrdycgys8rxyhqqw859b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1))))
