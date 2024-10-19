@@ -547,11 +547,13 @@ daemon is responsible for allocating IP addresses to its client.")))
   ;; Within Guix, Leo Famulari <leo@famulari.name> is the administrative contact
   ;; for this NTP pool "zone".
   ;; The full list of available URLs are 0.guix.pool.ntp.org,
-  ;; 1.guix.pool.ntp.org, 2.guix.pool.ntp.org, and 3.guix.pool.ntp.org.
+  ;; 1.guix.pool.ntp.org, 2.guix.pool.ntp.org, and 3.guix.pool.ntp.org.  We
+  ;; use 2.guix.pool.ntp.org as default as it supports IPv6, contrary to the
+  ;; others.
   (list
    (ntp-server
     (type 'pool)
-    (address "0.guix.pool.ntp.org")
+    (address "2.guix.pool.ntp.org")
     (options '("iburst")))))               ;as recommended in the ntpd manual
 
 (define-record-type* <ntp-configuration>
