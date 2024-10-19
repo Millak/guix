@@ -1412,7 +1412,7 @@ pictures, sounds, or video.")
 (define-public timescaledb
   (package
     (name "timescaledb")
-    (version "2.8.1")
+    (version "2.16.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1421,7 +1421,7 @@ pictures, sounds, or video.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gbadna0ilmqad7sbrixm12wd71h43njhsbp1kh5lispb6drdb6r"))
+                "1v17x00a15il4r3rbr0waqjv1nwzy6rcqxgfi2hdk1x235s5dg5h"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove files carrying the proprietary TIMESCALE license.
@@ -1476,22 +1476,7 @@ pictures, sounds, or video.")
                          (pg-union (string-append (getcwd) "/../pg-union")))
                      (match inputs
                        (((names . directories) ...)
-                        ;; PG will only load extensions from its own $libdir,
-                        ;; which it calculates based on argv[0].  As of
-                        ;; PostgreSQL 13.6, it calls 'canonicalize_path' on
-                        ;; argv[0] so a merge symlink is not enough to trick
-                        ;; it; thus, the code below makes a full copy of PG
-                        ;; and friends such that 'pg_config --libdir', for
-                        ;; instance, points to PG-UNION, allowing it to load
-                        ;; the timescaledb extension.
-                        ;; TODO: The above comment and the #:symlink trick can
-                        ;; be removed in the next rebuild cycle.
-                        (union-build pg-union (cons #$output directories)
-                                     #:symlink
-                                     (lambda (old new)
-                                       (if (file-is-directory? old)
-                                           (copy-recursively old new)
-                                           (copy-file old new))))))
+                        (union-build pg-union (cons #$output directories))))
                      (setenv "PATH" (string-append pg-union "/bin:"
                                                    (getenv "PATH")))
                      (invoke "initdb" "-D" pg-data)
