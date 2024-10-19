@@ -362,6 +362,51 @@ This package provides seamless integration with coverage.py (and thus pytest,
 nosetests, etc...) in Python projects.")
     (license license:expat)))
 
+(define-public python-icontract
+  (package
+    (name "python-icontract")
+    (version "2.7.1")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Parquery/icontract")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fix7wx899kn8vp9aa5m6q71la48gx3qqx4qd74535m61pb50r7f"))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-icontract-slow
+            (lambda _
+              ;; Setting ICONTRACT_SLOW, does not enable a slow test suite.
+              ;; It only causes a single test to run, that checks the value of
+              ;; icontract.SLOW is set correctly.
+              (setenv "ICONTRACT_SLOW" "1"))))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-astor
+           python-asyncstdlib
+           python-mypy
+           python-numpy
+           python-setuptools
+           python-typeguard-4))
+    (propagated-inputs
+     (list python-asttokens
+           python-typing-extensions))
+    (home-page "https://icontract.readthedocs.io")
+    (synopsis "Design-by-contract programming for Python")
+    (description
+     "@code{icontract} brings design-by-contract to Python with informative
+violation messages and inheritance.  @code{icontract} provides two function,
+@code{require} and @code{ensure} for preconditions and postconditions
+respectively.  Additionally, it provides a class decorator, @code{invariant},
+to establish class invariants.")
+    (license license:expat)))
+
 (define-public python-junit-xml
   ;; XXX: There are no tags or PyPI releases, so take the latest commit
   ;; and use the version defined in setup.py.
