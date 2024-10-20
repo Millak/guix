@@ -41801,7 +41801,7 @@ Consider the following configuration:
   (services
    (list (service readymedia-service-type
                   (readymedia-configuration
-                   (media-directoriess
+                   (media-directories
                     (list (readymedia-media-directory
                            (path "/media/audio")
                            (types '(A)))
