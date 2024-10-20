@@ -722,6 +722,57 @@ and stop increasing when a certain threshold is met.")
     (description "This package provides a CSS parser and inliner.")
     (license license:expat)))
 
+(define-public go-github-com-coder-websocket
+  (package
+    (name "go-github-com-coder-websocket")
+    (version "1.8.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/coder/websocket")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "172v9mqghswf50ga512qghb6ii0ivz5fi2iyjzdnbm42g0cr4fjj"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/coder/websocket"))
+    (home-page "https://github.com/coder/websocket")
+    (synopsis "WebSocket library for Go")
+    (description
+     "@code{websocket} is a minimal and idiomatic
+@url{https://websockets.spec.whatwg.org/, WebSocket} library for Go.
+
+Main features:
+@itemize
+@item Minimal and idiomatic API.
+@item First class @url{https://blog.golang.org/context, context.Context}
+support.
+@item Fully passes the WebSocket
+@url{https://github.com/crossbario/autobahn-testsuite, autobahn-testsuite}.
+@item @url{https://pkg.go.dev/github.com/coder/websocket?tab=imports,
+Zero dependencies}.
+@item JSON helpers in the @url{https://pkg.go.dev/github.com/coder/websocket/wsjson,
+wsjson} subpackage
+@item Zero alloc reads and writes.
+@item Concurrent writes.
+@item @url{https://pkg.go.dev/github.com/coder/websocket#Conn.Close,
+Close handshake}.
+@item @url{https://pkg.go.dev/github.com/coder/websocket#NetConn, net.Conn}
+wrapper
+@item @url{https://pkg.go.dev/github.com/coder/websocket#Conn.Ping, Ping pong}
+API.
+@item @url{https://tools.ietf.org/html/rfc7692, RFC 7692} permessage-deflate
+compression.
+@item @url{https://pkg.go.dev/github.com/coder/websocket#Conn.CloseRead,
+CloseRead} helper for write only connections
+@item Compile to @url{https://pkg.go.dev/github.com/coder/websocket#hdr-Wasm,
+Wasm}.
+@end itemize
+")
+    (license license:isc)))
+
 (define-public go-github-com-containerd-typeurl
   (package
     (name "go-github-com-containerd-typeurl")
