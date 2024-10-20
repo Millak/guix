@@ -33,6 +33,38 @@
 (channel-news
  (version 0)
 
+ (entry (commit "5966e0fdc78771c562e0f484a22f381a77908be0")
+        (title
+         (en "Daemon vulnerability allowing takeover of build users fixed"))
+        (body
+         (en "A vulnerability allowing a local user to execute arbitrary code
+as any of the build users has been identified and fixed.  Most notably, this
+allows any local user to alter the result of any local build, even if it
+happens inside a container.  The only requirements to exploit this
+vulnerability are the ability to start a derivation build and the ability to
+run arbitrary code with access to the store in the root PID namespace on the
+machine that build occurs on.  This largely limits the vulnerability to
+multi-user systems.
+
+This vulnerability is caused by the fact that @command{guix-daemon} does not
+change ownership and permissions on the outputs of failed builds when it moves
+them to the store, and is also caused by there being a window of time between
+when it moves outputs of successful builds to the store and when it changes
+their ownership and permissions.  Because of this, a build can create a binary
+with both setuid and setgid bits set and have it become visible to the outside
+world once the build ends.  At that point any process that can access the
+store can execute it and gain the build user's privileges.  From there any
+process owned by that build user can be manipulated via procfs and signals at
+will, allowing the attacker to control the output of its builds.
+
+You are advised to upgrade @command{guix-daemon}.  Run @command{info \"(guix)
+Upgrading Guix\"}, for info on how to do that.  Additionally, if there is any
+risk that a builder may have already created these setuid binaries (for
+example on accident), run @command{guix gc} to remove all failed build
+outputs.
+
+See @uref{https://issues.guix.gnu.org/73919} for more information on this
+vulnerability.")))
  (entry (commit "2fae63df2138b74d30e120364f0f272871595862")
         (title
          (en "Core packages updated")
