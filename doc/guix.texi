@@ -41810,7 +41810,7 @@ Consider the following configuration:
                            (types '(V)))
                           (readymedia-media-directory
                            (path "/media/misc"))))
-                   (extra-config '(("notify_interval" . 60)))))
+                   (extra-config '(("notify_interval" . "60")))))
          @dots{})))
 @end lisp
 
