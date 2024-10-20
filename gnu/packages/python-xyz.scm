@@ -2279,7 +2279,7 @@ Python library and command line interface.")
 (define-public python-glymur
   (package
     (name "python-glymur")
-    (version "0.13.5")
+    (version "0.13.6")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -2288,12 +2288,15 @@ Python library and command line interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n2n7bj5w29w5y2gcl4hxhqf85n0j2crkln9i0mprq3xw8finxpx"))))
+        (base32 "06v6g0fwzmy2imhrvy0q4zrhrlrp24yhs098vi13r92ga63c72xl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto")
+      #~(list "--numprocesses" "auto"
+              ;; Failing test due to inability of ctypes.util.find_library()
+              ;; to determine library path, which is patched above.
+              "--ignore=tests/test_config.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-library-locations
@@ -2311,17 +2314,13 @@ Python library and command line interface.")
                   (search-input-file inputs "/lib/libtiff.so") "\"\n"
                   "    elif libname == \"c\":\n"
                   "        path = \""
-                  (search-input-file inputs "/lib/libc.so.6") "\"\n")))))
-          (add-before 'check 'disable-failing-tests
-            (lambda _
-              ;; Failing test due to inability of
-              ;; ctypes.util.find_library() to determine library path,
-              ;; which is patched above.
-              (delete-file "tests/test_config.py"))))))
+                  (search-input-file inputs "/lib/libc.so.6") "\"\n"))))))))
     (native-inputs
      (list python-pytest
            python-pytest-xdist
-           python-scikit-image))
+           python-scikit-image
+           python-setuptools
+           python-wheel))
     (inputs
      (list openjpeg  ; glymur/lib/openjp2.py
            libtiff)) ; glymur/lib/tiff.py
