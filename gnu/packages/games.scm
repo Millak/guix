@@ -820,6 +820,69 @@ attacks you can use on opponents.")
 game.")
        (license license:gpl3+)))))      ;assumed same as Vdrift itself
 
+(define-public vdrift
+  ;; The latest release is from 2014, and lacks build system and other
+  ;; unreleased improvements; use the latest commit.
+  (let ((commit "120ae28d2a1b43a8589c5ce3c5e02d813890d090")
+        (revision "0"))
+    (package
+      (name "vdrift")
+      (version (git-version "2014-10-20" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/VDrift/vdrift")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "13id01rr6rjhmrh34p8n0ka3yfwzp62j6p8z6rc5aagnr5mn1qn0"))))
+      (build-system scons-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:scons-flags #~(list (string-append "prefix=" #$output)
+                              "release=1"
+                              "verbose=1")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'setup-vdrift-data
+              (lambda _
+                ;; The locale data must be made writable, as gettext
+                ;; translation files are generated and written there as part
+                ;; of the installation script.
+                (copy-recursively (search-input-directory
+                                   %build-inputs
+                                   "share/games/vdrift/data")
+                                  "data")
+                (for-each make-file-writable (find-files "data/locale")))))))
+      (native-inputs (list gettext-minimal pkg-config vdrift-data))
+      (inputs (list bullet curl libvorbis mesa sdl2 zlib))
+      (home-page "https://vdrift.net/")
+      (synopsis "Racing simulator")
+      (description "VDrift aims to provide an accurate driving physics
+emulation, based on real world data of the actual vehicles, employing a full
+rigid body simulation and a complex tire model.  VDrift features:
+@itemize
+@item Over 45 tracks based on famous real-world tracks
+@item Over 45 cars based on real-world vehicles
+@item Very realistic, simulation-grade driving physics
+@item Mouse/joystick/gamepad/wheel/keyboard support
+@item Fully modeled tracks, scenery and terrain
+@item Several different camera modes
+@item Basic replay system with Skip Forward/Skip Backward
+@item Fully customizable controls
+@item Joystick, mouse and keyboard input filtering
+@item Brake and reverse lights
+@item Driver aids: automatic shifting, traction control, anti-lock braking
+@item Experimental force feedback
+@item Race against up to 3 AI with variable difficultly
+@item Engine and road sounds
+@end itemize
+The recommended input method is a steering wheel with pedals and force
+feedback support.")
+      (license license:gpl3+))))
+
 (define-public vitetris
   (package
     (name "vitetris")
