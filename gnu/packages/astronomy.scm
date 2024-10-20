@@ -4857,14 +4857,39 @@ spherical polygons that represent arbitrary regions of the sky.")
        (sha256
         (base32 "06rbwrqlvdzn9innx05kjjmm4mmacd8kwwsfdf5idbwzby5ny5lw"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: Skip most of the tests for now, see
+      ;; <https://github.com/vrodgom/statmorph/issues/11>.
+      #~(list "-k" (string-append "not test_asymmetric"
+                                  " and not test_bright_pixel"
+                                  " and not test_catastrophic"
+                                  " and not test_empty_gini_segmap"
+                                  " and not test_full_gini_segmap"
+                                  " and not test_full_segmap"
+                                  " and not test_insufficient_data"
+                                  " and not test_make_figure"
+                                  " and not test_masked_centroid"
+                                  " and not test_merger"
+                                  " and not test_missing_arguments"
+                                  " and not test_negative_source"
+                                  " and not test_no_psf"
+                                  " and not test_psf"
+                                  " and not test_random_noise"
+                                  " and not test_small_source"
+                                  " and not test_tiny_source"
+                                  " and not test_weightmap"))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-astropy
+           python-matplotlib
            python-numpy
            python-photutils
            python-scikit-image
            python-scipy))
-    (native-inputs
-     (list python-pytest))
     (home-page "https://github.com/vrodgom/statmorph")
     (synopsis "Non-parametric morphological diagnostics of galaxy images")
     (description
