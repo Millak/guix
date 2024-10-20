@@ -79,7 +79,7 @@ you tailor the wrapping process to suit your application.")
   (package
     (inherit swig)
     (name "swig")
-    (version "4.2.1")
+    (version "4.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/" name "/" name "/"
@@ -87,5 +87,5 @@ you tailor the wrapping process to suit your application.")
                                  name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1n5pb77hwadjpbqgqn28i5v4cp94ar19wmv9vk6v4j6hw9a5617s"))))
+                "17ma0iwan81hnmd1wqx9g8dx7l6b6ri8218cqy3gj6pnjvvkw87p"))))
     (inputs (list pcre2))))
