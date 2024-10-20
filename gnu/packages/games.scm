@@ -1763,8 +1763,8 @@ automata.  The following features are available:
     (license license:gpl2+)))
 
 (define-public joycond
-  (let ((commit "9d1f5098b716681d087cca695ad714218a18d4e8")
-        (revision "2"))
+  (let ((commit "f9a66914622514c13997c2bf7ec20fa98e9dfc1d")
+        (revision "1"))
     (package
       (name "joycond")
       (version (git-version "0.1.0" revision commit))
@@ -1776,7 +1776,7 @@ automata.  The following features are available:
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "089qh20si3mwj945wjhg0nbain9cn49vwh2zqab6ws2cl0938gid"))))
+          (base32 "07z86yp27vxc0b44jgvf1vpa69rh3wdvd1xbzcsrj3f32743pv5a"))))
       (build-system cmake-build-system)
       (arguments
        (list #:tests? #f                ;no test suite
