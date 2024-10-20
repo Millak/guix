@@ -149,6 +149,28 @@
       (name (G_ "DHCP client (dynamic IP address assignment)"))
       (type 'network-management)
       (snippet '((service dhcp-client-service-type))))
+     (system-service
+      (name (G_ "Static networking service."))
+      (type 'network-management)
+      (snippet `((service
+                  static-networking-service-type
+                  (list %loopback-static-networking
+                        (static-networking
+                         (addresses
+                          (list
+                           (network-address
+                            (device "eth0")
+                            ,(comment (G_ ";; Fill-in your IP.\n"))
+                            (value "192.168.178.10/24"))))
+                         (routes
+                          (list (network-route
+                                 (destination "default")
+                                 ,(comment (G_ ";; Fill-in your gateway IP.\n"))
+                                 (gateway "192.168.178.1"))))
+                         (requirement '())
+                         (provision '(networking))
+                         ,(comment (G_ ";; Fill-in your nameservers.\n"))
+                         (name-servers '("192.168.178.1"))))))))
 
      ;; Dealing with documents.
      (system-service
