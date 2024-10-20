@@ -6120,7 +6120,7 @@ and audio capture, network stream playback, and many more.")
 (define-public dav1d
   (package
     (name "dav1d")
-    (version "1.3.0")
+    (version "1.5.0")
     (source
       (origin
         (method git-fetch)
@@ -6129,7 +6129,7 @@ and audio capture, network stream playback, and many more.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "17r6qdijdnqfciqa0ia2y4gyhaav6y5gc4d9xj4dg9h7xnpyxc3k"))))
+         (base32 "0rn8zvmqapjq4r9s9hlpz1866war4ap7hzp5h8qhm5igry7i1qvq"))))
     (build-system meson-build-system)
     (native-inputs
      (if (target-x86?)
