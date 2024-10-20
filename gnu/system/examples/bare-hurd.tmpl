@@ -1,7 +1,7 @@
 ;; -*-scheme-*-
 
 ;; This is an operating system configuration template
-;; for a "bare bones" setup, with no X11 display server.
+;; for a "bare bones" QEMU setup, with no X11 display server.
 
 ;; To build a disk image for a virtual machine, do
 ;;
@@ -54,6 +54,12 @@
                               (permit-root-login #t)
                               (allow-empty-passwords? #t)
                               (password-authentication? #t)))
-                    %base-services/hurd))))
+                    ;; For installing on a real (non-QEMU) machine, use:
+                    ;; (static-networking-service-type
+                    ;;   (list %loopback-static-networking
+                    ;;        (static-networking
+                    ;;         ...)))
+                    ;; %base-services/hurd
+                    %base-services+qemu-networking/hurd))))
 
 %hurd-os

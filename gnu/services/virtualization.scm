@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ryan Moe <ryan.moe@gmail.com>
 ;;; Copyright © 2018, 2020-2024 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2020, 2021, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2021, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
@@ -1643,7 +1643,7 @@ preventing password-based authentication as 'root'."
                ;; /etc/guix/acl file in the childhurd.  Thus, clear
                ;; 'authorize-key?' so that it's not overridden at activation
                ;; time.
-               (modify-services %base-services/hurd
+               (modify-services %base-services+qemu-networking/hurd
                  (guix-service-type config =>
                                     (guix-configuration
                                      (inherit config)

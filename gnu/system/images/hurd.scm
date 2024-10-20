@@ -60,7 +60,7 @@
                               (permit-root-login #t)
                               (allow-empty-passwords? #t)
                               (password-authentication? #t)))
-               %base-services/hurd))))
+                    %base-services+qemu-networking/hurd))))
 
 (define hurd-initialize-root-partition
   #~(lambda* (#:rest args)

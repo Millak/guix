@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020-2024 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,6 +47,7 @@
   #:use-module (gnu system vm)
   #:export (%base-packages/hurd
             %base-services/hurd
+            %base-services+qemu-networking/hurd
             %hurd-default-operating-system
             %hurd-default-operating-system-kernel
             %setuid-programs/hurd))
@@ -79,14 +80,6 @@
 (define %base-services/hurd
   (append (list (service hurd-console-service-type
                          (hurd-console-configuration (hurd hurd)))
-                (service static-networking-service-type
-                         (list %loopback-static-networking
-
-                               ;; QEMU user-mode networking.  To get "eth0", you need
-                               ;; QEMU to emulate a device for which Mach has an
-                               ;; in-kernel driver, for instance with:
-                               ;; --device rtl8139,netdev=net0 --netdev user,id=net0
-                               %qemu-static-networking))
                 (service guix-service-type
                          (guix-configuration
                           (extra-options '("--disable-chroot"
@@ -101,6 +94,18 @@
                           (hurd-getty-configuration
                            (tty (string-append "tty" (number->string n))))))
                (iota 6 1))))
+
+(define %base-services+qemu-networking/hurd
+  (cons
+   (service static-networking-service-type
+            (list %loopback-static-networking
+
+                  ;; QEMU user-mode networking.  To get "eth0", you need
+                  ;; QEMU to emulate a device for which Mach has an
+                  ;; in-kernel driver, for instance with:
+                  ;; --device rtl8139,netdev=net0 --netdev user,id=net0
+                  %qemu-static-networking))
+   %base-services/hurd))
 
 (define %setuid-programs/hurd
   ;; Default set of setuid-root programs.
