@@ -1301,6 +1301,34 @@ void replaceValidPath(const Path & storePath, const Path tmpPath)
 MakeError(NotDeterministic, BuildError)
 
 
+/* Recursively make the file permissions of a path safe for exposure to
+   arbitrary users, but without canonicalising its permissions, timestamp, and
+   user.  Throw an exception if a file type that isn't explicitly known to be
+   safe is found. */
+static void secureFilePerms(Path path)
+{
+  struct stat st;
+  if (lstat(path.c_str(), &st)) return;
+
+  switch(st.st_mode & S_IFMT) {
+  case S_IFLNK:
+    return;
+
+  case S_IFDIR:
+    for (auto & i : readDirectory(path)) {
+      secureFilePerms(path + "/" + i.name);
+    }
+    /* FALLTHROUGH */
+
+  case S_IFREG:
+    chmod(path.c_str(), (st.st_mode & ~S_IFMT) & ~(S_ISUID | S_ISGID | S_IWOTH));
+    break;
+
+  default:
+    throw Error(format("file `%1%' has an unsupported type") % path);
+  }
+}
+
 void DerivationGoal::buildDone()
 {
     trace("build done");
@@ -1372,8 +1400,14 @@ void DerivationGoal::buildDone()
                build failures. */
             if (useChroot && buildMode == bmNormal)
                 foreach (PathSet::iterator, i, missingPaths)
-                    if (pathExists(chrootRootDir + *i))
+                    if (pathExists(chrootRootDir + *i)) {
+                      try {
+                        secureFilePerms(chrootRootDir + *i);
                         rename((chrootRootDir + *i).c_str(), i->c_str());
+                      } catch(Error & e) {
+                        printMsg(lvlError, e.msg());
+                      }
+                    }
 
             if (diskFull)
                 printMsg(lvlError, "note: build failure may have been caused by lack of free disk space");
