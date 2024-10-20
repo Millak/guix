@@ -22623,7 +22623,7 @@ assembly (small or mammalian size) and single-cell assembly.")
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-rust-htslib" ,rust-rust-htslib-0.38))))
     (native-inputs
-     (list cmake pkg-config))
+     (list cmake-minimal pkg-config))
     (inputs
      (list zlib xz))
     (home-page "https://github.com/OceanGenomics/mudskipper")
