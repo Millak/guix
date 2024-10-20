@@ -90080,6 +90080,30 @@ conversion factors for even more numerous measurement units (meter, kilometer, f
 mile, ...).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-uom-0.30
+  (package
+    (inherit rust-uom-0.34)
+    (name "rust-uom")
+    (version "0.30.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uom" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vg59hnb7hh0p8kjjhgmrsnn3597722lkfdkp481wksq6vk06rg7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-num-bigint" ,rust-num-bigint-0.3)
+                       ("rust-num-rational" ,rust-num-rational-0.3)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-typenum" ,rust-typenum-1))
+       #:cargo-development-inputs
+       (("rust-approx" ,rust-approx-0.3)
+        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-static-assertions" ,rust-static-assertions-1))))))
+
 (define-public rust-ureq-2
   (package
     (name "rust-ureq")
