@@ -97,6 +97,11 @@ then
         GUIX_ALLOW_UNAUTHENTICATED_SUBSTITUTES			\
         GUIX_CONFIGURATION_DIRECTORY XDG_CACHE_HOME
 
+    # Create a fresh directory with restrictive permissions so that our test
+    # daemon's weak isolation can't be exploited by other users
+    rm -rf "$GUIX_STATE_DIRECTORY/daemon-socket"
+    mkdir -m 0700 "$GUIX_STATE_DIRECTORY/daemon-socket"
+
     # Launch the daemon without chroot support because is may be
     # unavailable, for instance if we're not running as root.
     "@abs_top_builddir@/pre-inst-env"				\
