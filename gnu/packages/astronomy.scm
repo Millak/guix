@@ -6511,7 +6511,10 @@ between image and reference catalogs. Currently only aligning images with
                     ;; Test requiring network access
                     "not test_monthly_trending_plot_auto_opdtable"
                     " and not test_monthly_trending_plot_opdtable_param"
-                    " and not test_delta_wfe_around_time"))
+                    " and not test_delta_wfe_around_time"
+                    ;; Newer NumPy is required
+                    " and not test_nircam_errors"
+                    " and not test_all_detectors"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-env
