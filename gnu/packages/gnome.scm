@@ -7853,6 +7853,8 @@ configuration program to choose applications starting on login.")
               (sha256
                (base32
                 "0knkbczic9874r2mnhc8yh9w63bmj574b7528ql0x3lf40nzcjx5"))
+              ;; TODO: Remove when updating to 1.82.0.
+              (patches (search-patches "gjs-fix-closure-annotations.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
