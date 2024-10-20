@@ -4650,7 +4650,7 @@ QUIC protocol.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.5.8")
+    (version "0.5.9")
     (source
      (origin
        (method git-fetch)
@@ -4661,7 +4661,7 @@ QUIC protocol.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qcly06bljlilihrqrylhq53w3l4bfzmqqjq4cbn55nvsz2gbify"))
+        (base32 "0flaix9la53gf496i6jxwi5gliszim25vlm2cc91ipgz7nzslasz"))
       (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
@@ -4696,6 +4696,7 @@ QUIC protocol.")
            go-github-com-arceliar-ironwood
            go-github-com-arceliar-phony
            go-github-com-cheggaaa-pb-v3
+           go-github-com-coder-websocket
            go-github-com-gologme-log
            go-github-com-hashicorp-go-syslog
            go-github-com-hjson-hjson-go-v4
@@ -4703,12 +4704,12 @@ QUIC protocol.")
            go-github-com-olekukonko-tablewriter
            go-github-com-quic-go-quic-go
            go-github-com-vishvananda-netlink
+           go-github-com-wlynxg-anet
            go-golang-org-x-crypto
            go-golang-org-x-net
            go-golang-org-x-sys
            go-golang-org-x-text
-           go-golang-zx2c4-com-wireguard
-           go-nhooyr-io-websocket))
+           go-golang-zx2c4-com-wireguard))
     (home-page "https://yggdrasil-network.github.io/blog.html")
     (synopsis
      "Experiment in scalable routing as an encrypted IPv6 overlay network")
