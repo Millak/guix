@@ -432,7 +432,7 @@ to install the efi-bootloader-profile into a disk image.  Otherwise the
 disk-image-installer of the FINAL-BOOTLOADER will be called."
   (bootloader
     (inherit final-bootloader)
-    (name "efi-bootloader-chain")
+    (name 'efi-bootloader-chain)
     (package
      (efi-bootloader-profile (cons (bootloader-package final-bootloader)
                                    packages)
