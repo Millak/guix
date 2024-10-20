@@ -4205,13 +4205,13 @@ orbits described in TLE files.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "6.0.2")
+    (version "6.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "0mzmq2ncqgq61c1maxwynrmzcyiafnlil5mx4vhy2cvdyacm8yc9"))))
+        (base32 "1v3bnl9dhs9ks7jhmwy10qq6a99v2xcpalmigb255fxi9pqcy8lj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4250,7 +4250,9 @@ python_files = test_*.py"))))))))
            python-pytest-mock
            python-pytest-mpl
            python-pytest-xdist
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list parfive
            python-asdf
