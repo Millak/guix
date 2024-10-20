@@ -296,7 +296,7 @@ files and generates build instructions for the Ninja build system.")
 (define-public meson
   (package
     (name "meson")
-    (version "1.2.1")
+    (version "1.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mesonbuild/meson/"
@@ -304,7 +304,7 @@ files and generates build instructions for the Ninja build system.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1x9rnrbwvzhnzmz4zqag44w06khks8wckcajxsbr8m4760akmnxi"))))
+                "02wi62k9w7716xxdgrrx68q89vaq3ncnbpw5ms0g27npn2df0mgr"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f                  ;disabled to avoid extra dependencies
@@ -331,19 +331,6 @@ Autoconf/Automake/make combo.  Build specifications, also known as @dfn{Meson
 files}, are written in a custom domain-specific language (@dfn{DSL}) that
 resembles Python.")
     (license license:asl2.0)))
-
-(define-public meson-1.5
-  (package
-    (inherit meson)
-    (version "1.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/mesonbuild/meson/"
-                                  "releases/download/" version  "/meson-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1vab706pw1q17vh9rbsmlirgiji3k6wljl735lxffp95vwx56zjn"))))))
 
 (define-public meson-python
   (package
