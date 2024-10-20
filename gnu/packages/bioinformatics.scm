@@ -3511,7 +3511,7 @@ compressed files.")
     (inputs
      (list bioparser biosoup))
     (native-inputs
-     (list cmake pkg-config googletest))
+     (list cmake-minimal pkg-config googletest))
     (home-page "https://github.com/Kevinzjy/circtools")
     (synopsis "Accelerating functions in CIRI toolkit")
     (description "This package provides accelerated functions for the CIRI
