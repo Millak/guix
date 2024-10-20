@@ -1888,7 +1888,14 @@ archive' public keys, with GUIX."
   (build-machines   guix-configuration-build-machines ;list of gexps | '()
                     (default '()))
   (environment      guix-configuration-environment  ;list of strings
-                    (default '())))
+                    (default '()))
+  (socket-directory-permissions
+   guix-configuration-socket-directory-permissions
+   (default #o755))
+  (socket-directory-group guix-configuration-socket-directory-group
+                          (default #f))
+  (socket-directory-user guix-configuration-socket-directory-user
+                         (default #f)))
 
 (define %default-guix-configuration
   (guix-configuration))
@@ -1952,7 +1959,9 @@ proxy of 'guix-daemon'...~%")
     (guix build-group build-accounts authorize-key? authorized-keys
           use-substitutes? substitute-urls max-silent-time timeout
           log-compression discover? extra-options log-file
-          http-proxy tmpdir chroot-directories environment)
+          http-proxy tmpdir chroot-directories environment
+          socket-directory-permissions socket-directory-group
+          socket-directory-user)
     (list (shepherd-service
            (documentation "Run the Guix daemon.")
            (provision '(guix-daemon))
@@ -1962,11 +1971,13 @@ proxy of 'guix-daemon'...~%")
                           shepherd-discover-action))
            (modules '((srfi srfi-1)
                       (ice-9 match)
-                      (gnu build shepherd)))
+                      (gnu build shepherd)
+                      (guix build utils)))
            (start
             (with-imported-modules `(((guix config) => ,(make-config.scm))
                                      ,@(source-module-closure
-                                        '((gnu build shepherd))
+                                        '((gnu build shepherd)
+                                          (guix build utils))
                                         #:select? not-config?))
               #~(lambda args
                   (define proxy
@@ -1976,6 +1987,25 @@ proxy of 'guix-daemon'...~%")
 
                   (define discover?
                     (or (getenv "discover") #$discover?))
+
+                  (mkdir-p "/var/guix")
+                  ;; Ensure that a fresh directory is used, in case the old
+                  ;; one was more permissive and processes have a file
+                  ;; descriptor referencing it hanging around, ready to use
+                  ;; with openat.
+                  (false-if-exception
+                   (delete-file-recursively "/var/guix/daemon-socket"))
+                  (let ((perms #$(logand socket-directory-permissions
+                                         (lognot #o022))))
+                    (mkdir "/var/guix/daemon-socket" perms)
+                    ;; Override umask
+                    (chmod "/var/guix/daemon-socket" perms))
+
+                  (let* ((user #$socket-directory-user)
+                         (uid (if user (passwd:uid (getpwnam user)) -1))
+                         (group #$socket-directory-group)
+                         (gid (if group (group:gid (getgrnam group)) -1)))
+                    (chown "/var/guix/daemon-socket" uid gid))
 
                   ;; Start the guix-daemon from a container, when supported,
                   ;; to solve an installation issue. See the comment below for

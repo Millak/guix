@@ -19822,6 +19822,18 @@ A directory path where the @command{guix-daemon} will perform builds.
 Environment variables to be set before starting the daemon, as a list of
 @code{key=value} strings.
 
+@item @code{socket-directory-permissions} (default: @code{#o755})
+Permissions to set for the directory @file{/var/guix/daemon-socket}.
+This, together with @code{socket-directory-group} and
+@code{socket-directory-user}, determines who can connect to the build
+daemon via its Unix socket.  TCP socket operation is unaffected by
+these.
+
+@item @code{socket-directory-user} (default: @code{#f})
+@itemx @code{socket-directory-group} (default: @code{#f})
+User and group owning the @file{/var/guix/daemon-socket} directory or
+@code{#f} to keep the user or group as root.
+
 @end table
 @end deftp
 
