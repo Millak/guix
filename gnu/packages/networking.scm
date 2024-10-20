@@ -2848,26 +2848,21 @@ gone wild and are suddenly taking up your bandwidth.")
 (define-public nzbget
   (package
     (name "nzbget")
-    (version "21.1")
+    (version "24.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/nzbget/nzbget/releases"
-                           "/download/v" version
-                           "/nzbget-" version "-src.tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nzbgetcom/nzbget")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "09900x1k0yf4yi2cc0k093advvadyhrkm8rnd8nszhhdp2zc33sf"))))
+        (base32 "13hakpkxqvqfjhk679l088209f54j7mqi3ifi820lyz6b1nvvj0r"))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list
-        (string-append "--with-libcurses-includes="
-                       (assoc-ref %build-inputs "ncurses") "/include")
-        (string-append "--with-libcurses-libraries="
-                       (assoc-ref %build-inputs "ncurses") "/lib")
-        (string-append "--with-tlslib=GnuTLS"))))
-    (build-system gnu-build-system)
-    (inputs (list gnutls libxml2 ncurses zlib))
-    (native-inputs (list pkg-config))
+     (list #:configure-flags '(list "-DENABLE_TESTS=1")))
+    (inputs (list boost gnutls libxml2 ncurses openssl zlib))
+    (native-inputs (list which))
     (home-page "https://github.com/nzbget/nzbget")
     (synopsis "Usenet binary file downloader")
     (description
