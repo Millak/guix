@@ -32890,6 +32890,34 @@ float literals.  Two functions @code{parse_hexf32} and @code{parse_hexf64} are
 provided for each type.")
     (license license:cc0)))
 
+(define-public rust-hidapi-2
+  (package
+    (name "rust-hidapi")
+    (version "2.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hidapi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12ra7lh6fgxs8bya114qd0msbsy3dcvch5iwaxcv71kyygn7df03"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-nix" ,rust-nix-0.27)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-udev" ,rust-udev-0.8)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (native-inputs (list pkg-config))
+    (inputs (list eudev hidapi))
+    (home-page "https://github.com/ruabmbua/hidapi-rs")
+    (synopsis "Rust-y wrapper around @code{hidapi}")
+    (description "This crate provides a Rust abstraction over the features of
+the C library @code{hidapi}.  Based off of @code{hidapi-rs} by Osspial.")
+    (license license:expat)))
+
 (define-public rust-hexf-parse-0.1
   (package
     (inherit rust-hexf-parse-0.2)
