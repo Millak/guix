@@ -1632,6 +1632,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/kiwix-desktop-newer-libkiwix.patch	\
   %D%/packages/patches/kmod-module-directory.patch		\
   %D%/packages/patches/kmscon-runtime-keymap-switch.patch	\
+  %D%/packages/patches/knot-remove-runtime-deps.patch		\
   %D%/packages/patches/kobodeluxe-paths.patch			\
   %D%/packages/patches/kobodeluxe-enemies-pipe-decl.patch	\
   %D%/packages/patches/kobodeluxe-const-charp-conversion.patch	\
