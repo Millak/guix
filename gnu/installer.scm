@@ -21,10 +21,14 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu installer)
+  #:use-module (guix build utils)
+  #:use-module (guix derivations)
   #:use-module (guix discovery)
-  #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix modules)
+  #:use-module (guix monads)
+  #:use-module (guix packages)
+  #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module (guix ui)
   #:use-module ((guix self) #:select (make-config.scm))
@@ -56,7 +60,9 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (web uri)
-  #:export (installer-program))
+  #:export (installer-program
+            installer-steps
+            run-installer))
 
 (define module-to-import?
   ;; Return true for modules that should be imported.  For (gnu system …) and
@@ -562,3 +568,78 @@ purposes."
        (execl #$(program-file "installer-real" installer-builder
                               #:guile guile-3.0-latest)
               "installer-real"))))
+
+(define* (installer-script #:key dry-run?
+                           (steps (installer-steps #:dry-run? dry-run?)))
+  (program-file
+   "installer-script"
+   #~(begin
+       (use-modules (gnu installer)
+                    (gnu installer record)
+                    (gnu installer keymap)
+                    (gnu installer steps)
+                    (gnu installer dump)
+                    (gnu installer final)
+                    (gnu installer hostname)
+                    (gnu installer kernel)
+                    (gnu installer locale)
+                    (gnu installer parted)
+                    (gnu installer services)
+                    (gnu installer timezone)
+                    (gnu installer user)
+                    (gnu installer utils)
+                    (gnu installer newt)
+                    ((gnu installer newt keymap)
+                     #:select (keyboard-layout->configuration))
+                    (gnu services herd)
+                    (guix i18n)
+                    (guix build utils)
+                    (guix utils)
+                    ((system repl debug)
+                     #:select (terminal-width))
+                    (ice-9 match)
+                    (ice-9 textual-ports))
+       (terminal-width 200)
+       (let* ((current-installer newt-installer)
+              (steps (#$steps current-installer)))
+         (catch #t
+           (lambda _
+             ((installer-init current-installer))
+             (parameterize ((%run-command-in-installer
+                             (if #$dry-run?
+                                 dry-run-command
+                                 (installer-run-command current-installer)))
+                            (%installer-configuration-file
+                             (if #$dry-run?
+                                 "config.scm"
+                                 (%installer-configuration-file))))
+               (let ((results (run-installer-steps
+                               #:rewind-strategy 'menu
+                               #:menu-proc
+                               (installer-menu-page current-installer)
+                               #:steps steps
+                               #:dry-run? #$dry-run?)))
+                 (result-step results 'final)
+                 ((installer-exit current-installer)))))
+           (const #f)
+           (lambda (key . args)
+             (sleep 10)
+             ((installer-exit current-installer))
+             (display-backtrace (make-stack #t) (current-error-port))
+             (apply throw key args)))))))
+
+(define* (run-installer #:key dry-run?)
+  "To run the installer from Guile without building it:
+    ./pre-inst-env guile -c '((@ (gnu installer) run-installer) #:dry-run? #t)'
+when using #:dry-run? #t, no root access is required and the LOCALE, KEYMAP,
+and PARTITION pages are skipped."
+  (let* ((script (installer-script #:dry-run? dry-run?))
+         (store (open-connection))
+         (drv (run-with-store store
+                (lower-object script)))
+         (program (match (derivation->output-paths drv)
+                    ((("out" . program)) program)))
+         (outputs (build-derivations store (list drv))))
+    (close-connection store)
+    (format #t "running installer: ~a\n" program)
+    (invoke "./pre-inst-env" "guile" program)))
