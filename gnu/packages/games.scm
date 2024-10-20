@@ -788,6 +788,38 @@ canyons and wait for the long I-shaped block to clear four rows at a time.")
 attacks you can use on opponents.")
     (license license:public-domain)))
 
+(define-public vdrift-data
+  ;; There are no tags or releases for the vdrift data; use the latest SVN
+  ;; revision available.
+  (let ((commit 1463)
+        (revision "0"))
+    ;; The package is hidden as the game data is *required* by the install
+    ;; target of vdrift itself, and there is no need for users to manually
+    ;; install it.
+    (hidden-package
+     (package
+       (name "vdrift-data")
+       ;; The date is the last modified time shown next to the 'vdrift-data'
+       ;; directory when visiting
+       ;; https://sourceforge.net/p/vdrift/code/HEAD/tree/.
+       (version (format #f "2024-10-23-~a.~a" revision commit))
+       (source (origin
+                 (method svn-fetch)
+                 (uri (svn-reference
+                       (url "https://svn.code.sf.net/p/vdrift/code/vdrift-data")
+                       (revision commit)))
+                 (file-name (string-append name "-" version "-checkout"))
+                 (sha256
+                  (base32
+                   "1zx08q4v3s4l5r0wxphd323h0rqp9pjb7kr08s3gb2qr85lw587h"))))
+       (build-system copy-build-system)
+       (arguments (list #:install-plan #~'(("." "share/games/vdrift/data"))))
+       (home-page "https://vdrift.net/")
+       (synopsis "Game data for Vdrift")
+       (description "This package contains the assets for the Vdrift racing
+game.")
+       (license license:gpl3+)))))      ;assumed same as Vdrift itself
+
 (define-public vitetris
   (package
     (name "vitetris")
