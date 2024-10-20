@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2023 Denys Nykula <vegan@libre.net.ua>
@@ -24,6 +24,7 @@
 (define-module (gnu installer services)
   #:use-module (guix records)
   #:use-module (guix read-print)
+  #:use-module (guix utils)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:export (system-service?
@@ -34,6 +35,7 @@
             system-service-packages
 
             desktop-system-service?
+            system-service-none
 
             %system-services
             system-services->configuration))
@@ -55,7 +57,13 @@
   (packages        system-service-packages        ;list of sexps
                    (default '())))
 
-(define %system-services
+(define system-service-none
+  (system-service
+   (name (G_ "None"))
+   (type 'network-management)
+   (snippet '())))
+
+(define (%system-services)
   (let-syntax ((desktop-environment (syntax-rules ()
                                       ((_ fields ...)
                                        (system-service
@@ -105,7 +113,11 @@
                    (G_ "\
 ;; To configure OpenSSH, pass an 'openssh-configuration'
 ;; record as a second argument to 'service' below.\n"))
-                 (service openssh-service-type))))
+                 ,(if (target-hurd?)
+                      '(service openssh-service-type
+                                (openssh-configuration
+                                 (openssh openssh-sans-x)))
+                      '(service openssh-service-type)))))
      (system-service
       (name (G_ "Tor anonymous network router"))
       (type 'networking)
@@ -115,7 +127,7 @@
      (system-service
        (name (G_ "Network time service (NTP), to set the clock automatically"))
        (type 'administration)
-       (recommended? #t)
+       (recommended? (not (target-hurd?)))
        (snippet '((service ntp-service-type))))
      (system-service
        (name (G_ "GPM mouse daemon, to use the mouse on the console"))
@@ -154,8 +166,12 @@
          (packages (append-map system-service-packages services))
          (desktop? (find desktop-system-service? services))
          (base     (if desktop?
-                       '%desktop-services
-                       '%base-services))
+                       (if (target-hurd?)
+                           '%desktop-services/hurd
+                           '%desktop-services)
+                       (if (target-hurd?)
+                           '%base-services/hurd
+                           '%base-services)))
          (native-console-font (match (getenv "LANGUAGE")
                                 ((or "be" "bg" "el" "eo" "kk" "ky"
                                      "mk" "mn" "ru" "sr" "tg" "uk")
@@ -181,18 +197,28 @@
 
     (if (null? snippets)
         `(,@(if (null? packages)
-                '()
+                (if (target-hurd?)
+                    `(,@package-heading
+                      (packages %base-packages/hurd))
+                    '())
                 `(,@package-heading
                   (packages (append (list ,@packages)
-                                    %base-packages))))
+                                    ,(if (target-hurd?)
+                                         '%base-packages/hurd
+                                         '%base-packages)))))
 
           ,@service-heading
           (services ,services))
         `(,@(if (null? packages)
-                '()
+                (if (target-hurd?)
+                    `(,@package-heading
+                      (packages %base-packages/hurd))
+                    '())
                 `(,@package-heading
                   (packages (append (list ,@packages)
-                                    %base-packages))))
+                                    ,(if (target-hurd?)
+                                         '%base-packages/hurd
+                                         '%base-packages)))))
 
           ,@service-heading
           (services (append (list ,@snippets

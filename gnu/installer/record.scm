@@ -30,6 +30,7 @@
             installer-exit
             installer-exit-error
             installer-final-page
+            installer-kernel-page
             installer-keymap-page
             installer-locale-page
             installer-menu-page
@@ -69,6 +70,8 @@
   (exit-error installer-exit-error)
   ;; procedure void -> void
   (final-page installer-final-page)
+  ;; procedure void -> void
+  (kernel-page installer-kernel-page)
   ;; procedure (layouts context) -> (list layout variant options)
   (keymap-page installer-keymap-page)
   ;; procedure: (#:key supported-locales iso639-languages iso3166-territories)

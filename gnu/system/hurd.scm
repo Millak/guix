@@ -48,6 +48,7 @@
   #:export (%base-packages/hurd
             %base-services/hurd
             %base-services+qemu-networking/hurd
+            %desktop-services/hurd
             %hurd-default-operating-system
             %hurd-default-operating-system-kernel
             %setuid-programs/hurd))
@@ -106,6 +107,8 @@
                   ;; --device rtl8139,netdev=net0 --netdev user,id=net0
                   %qemu-static-networking))
    %base-services/hurd))
+
+(define %desktop-services/hurd %base-services/hurd)
 
 (define %setuid-programs/hurd
   ;; Default set of setuid-root programs.

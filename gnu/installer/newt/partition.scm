@@ -26,6 +26,7 @@
   #:use-module (gnu installer newt page)
   #:use-module (gnu installer newt utils)
   #:use-module (guix i18n)
+  #:use-module (guix utils)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
@@ -115,6 +116,7 @@ all data on disk will be lost, are you sure you want to proceed?") item)
 Be careful, all data on the disk will be lost.")
        #:title (G_ "Partition table")
        #:listbox-items '("msdos" "gpt")
+       #:listbox-default-item (if (target-hurd?) "msdos" "gpt")
        #:listbox-item->text identity
        #:listbox-callback-procedure
        (run-label-confirmation-page button-callback)
@@ -147,6 +149,8 @@ Be careful, all data on the disk will be lost.")
    #:title (G_ "File-system type")
    #:listbox-items '(btrfs ext4 jfs xfs
                            swap
+                           ;; This is for the Hurd
+                           ext2
                            ;; These lack basic Unix features.  Their only use
                            ;; on GNU is for interoperation, e.g., with UEFI.
                            fat32 fat16 ntfs)
@@ -767,7 +771,11 @@ by pressing the Exit button.~%~%")))
   (define (run-page devices)
     (let* ((items
             `((entire . ,(G_ "Guided - using the entire disk"))
-              (entire-encrypted . ,(G_ "Guided - using the entire disk with encryption"))
+              ,@(if (target-hurd?)
+                    '()
+                    `((entire-encrypted
+                       .
+                       ,(G_ "Guided - using the entire disk with encryption"))))
               (manual . ,(G_ "Manual"))))
            (result (run-listbox-selection-page
                     #:info-text (G_ "Please select a partitioning method.")

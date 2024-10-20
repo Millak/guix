@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (gnu services herd)
   #:use-module (guix build syscalls)
   #:use-module (guix build utils)
+  #:use-module (guix utils)
   #:use-module (gnu build accounts)
   #:use-module (gnu build install)
   #:use-module (gnu build linux-container)
@@ -164,8 +166,11 @@ or #f.  Return #t on success and #f on failure."
                                   "/tmp/installer-system-init-options"
                                 read))
                             (const '())))
-         (install-command (append (list "guix" "system" "init"
-                                        "--fallback")
+         (install-command (append `( "guix" "system" "init"
+                                     "--fallback"
+                                     ,@(if (target-hurd?)
+                                           '("--target=i586-pc-gnu")
+                                           '()))
                                   options
                                   (list (%installer-configuration-file)
                                         (%installer-target-dir))))

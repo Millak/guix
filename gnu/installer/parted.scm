@@ -152,7 +152,7 @@
   (crypt-password       user-partition-crypt-password ; <secret>
                         (default #f))
   (fs-type              user-partition-fs-type
-                        (default 'ext4))
+                        (default (if (target-hurd?) 'ext2 'ext4)))
   (bootable?            user-partition-bootable?
                         (default #f))
   (esp?                 user-partition-esp?
@@ -223,11 +223,13 @@ inferior to MAX-SIZE, #f otherwise."
 
 (define (efi-installation?)
   "Return #t if an EFI installation should be performed, #f otherwise."
-  (file-exists? "/sys/firmware/efi"))
+  (and (file-exists? "/sys/firmware/efi")
+       (not (target-hurd?))))
 
 (define (user-fs-type-name fs-type)
   "Return the name of FS-TYPE as specified by libparted."
   (case fs-type
+    ((ext2)  "ext2")
     ((ext4)  "ext4")
     ((btrfs) "btrfs")
     ((fat16) "fat16")
@@ -240,6 +242,7 @@ inferior to MAX-SIZE, #f otherwise."
 (define (user-fs-type->mount-type fs-type)
   "Return the mount type of FS-TYPE."
   (case fs-type
+    ((ext2)  "ext2")
     ((ext4)  "ext4")
     ((btrfs) "btrfs")
     ((fat16) "vfat")
@@ -255,6 +258,7 @@ of <user-partition> record."
     (and fs-type
          (let ((name (filesystem-type-name fs-type)))
            (cond
+            ((string=? name "ext2") 'ext2)
             ((string=? name "ext4") 'ext4)
             ((string=? name "btrfs") 'btrfs)
             ((string=? name "fat16") 'fat16)
@@ -296,7 +300,7 @@ of <user-partition> record."
      (file-name (partition-get-path partition))
      (disk-file-name (device-path device))
      (fs-type (or (partition-filesystem-user-type partition)
-                  'ext4))
+                  (if (target-hurd?) 'ext2 'ext4)))
      (mount-point (and (esp-partition? partition)
                        (default-esp-mount-point)))
      (bootable? (boot-partition? partition))
@@ -1045,18 +1049,20 @@ exists."
      non-boot-partitions)
 
     (let* ((start-partition
-            (if (efi-installation?)
-                (and (not esp-partition)
-                     (user-partition
-                      (fs-type 'fat32)
-                      (esp? #t)
-                      (size new-esp-size)
-                      (mount-point (default-esp-mount-point))))
-                (user-partition
-                 (fs-type 'ext4)
-                 (bootable? #t)
-                 (bios-grub? #t)
-                 (size bios-grub-size))))
+            (cond ((target-hurd?) #f)
+                  ((efi-installation?)
+                   (and (not esp-partition)
+                        (user-partition
+                         (fs-type 'fat32)
+                         (esp? #t)
+                         (size new-esp-size)
+                         (mount-point (default-esp-mount-point)))))
+                  (else
+                   (user-partition
+                    (fs-type 'ext4)
+                    (bootable? #t)
+                    (bios-grub? #t)
+                    (size bios-grub-size)))))
            (new-partitions
             (cond
              ((or (eq? scheme 'entire-root)
@@ -1065,13 +1071,13 @@ exists."
                 `(,@(if start-partition
                         `(,start-partition)
                         '())
-                  ,@(if encrypted?
+                  ,@(if (or encrypted? (target-hurd?))
                         '()
                         `(,(user-partition
                             (fs-type 'swap)
                             (size swap-size))))
                   ,(user-partition
-                    (fs-type 'ext4)
+                    (fs-type (if (target-hurd?) 'ext2 'ext4))
                     (bootable? has-extended?)
                     (crypt-label (and encrypted? "cryptroot"))
                     (size "100%")
@@ -1083,7 +1089,7 @@ exists."
                         `(,start-partition)
                         '())
                   ,(user-partition
-                    (fs-type 'ext4)
+                    (fs-type (if (target-hurd?) 'ext2 'ext4))
                     (bootable? has-extended?)
                     (crypt-label (and encrypted? "cryptroot"))
                     (size "33%")
@@ -1105,7 +1111,7 @@ exists."
                     (type (if has-extended?
                               'logical
                               'normal))
-                    (fs-type 'ext4)
+                    (fs-type (if (target-hurd?) 'ext2 'ext4))
                     (crypt-label (and encrypted? "crypthome"))
                     (size "100%")
                     (mount-point "/home")))))))
@@ -1185,6 +1191,15 @@ list and return the updated list."
 (define (create-btrfs-file-system partition)
   "Create a btrfs file-system for PARTITION file-name."
    ((%run-command-in-installer) "mkfs.btrfs" "-f" partition))
+
+(define (create-ext2-file-system partition)
+  "Create an ext2 file-system for PARTITION file-name, when TARGET-HURD?,
+for the Hurd."
+  (apply (%run-command-in-installer)
+         `("mkfs.ext2" ,@(if (target-hurd?)
+                             '("-o" "hurd")
+                             '())
+           "-F" ,partition)))
 
 (define (create-ext4-file-system partition)
   "Create an ext4 file-system for PARTITION file-name."
@@ -1291,6 +1306,10 @@ NEED-FORMATTING? field set to #t."
           (and need-formatting?
                (not (eq? type 'extended))
                (create-btrfs-file-system file-name)))
+         ((ext2)
+          (and need-formatting?
+               (not (eq? type 'extended))
+               (create-ext2-file-system file-name)))
          ((ext4)
           (and need-formatting?
                (not (eq? type 'extended))
@@ -1463,7 +1482,11 @@ from (gnu system mapped-devices) and return it."
   "Return the bootloader configuration field for USER-PARTITIONS."
   (let ((root-partition (find root-user-partition? user-partitions)))
     (match user-partitions
-      (() '())
+      (() (if (target-hurd?)
+              '(bootloader-configuration
+                (bootloader grub-minimal-bootloader)
+                (targets "/dev/sdaX"))
+              '()))
       (_
        (let ((root-partition-disk (user-partition-disk-file-name
                                    root-partition)))
@@ -1471,7 +1494,9 @@ from (gnu system mapped-devices) and return it."
             ,@(if (efi-installation?)
                   `((bootloader grub-efi-bootloader)
                     (targets (list ,(default-esp-mount-point))))
-                  `((bootloader grub-bootloader)
+                  `((bootloader ,(if (target-hurd?)
+                                     'grub-minimal-bootloader
+                                     'grub-bootloader))
                     (targets (list ,root-partition-disk))))
 
             ;; XXX: Assume we defined the 'keyboard-layout' field of
@@ -1491,22 +1516,28 @@ modules to access USER-PARTITIONS."
                      (const '())))
                  (delete-duplicates
                   (map user-partition-file-name
-                       (cons root devices)))))))
+                       (filter identity
+                               (cons root devices))))))))
 
 (define (initrd-configuration user-partitions)
   "Return an 'initrd-modules' field with everything needed for
 USER-PARTITIONS, or return nothing."
-  (match (user-partition-missing-modules user-partitions)
-    (()
-     '())
-    ((modules ...)
-     `((initrd-modules (append ',modules
-                               %base-initrd-modules))))))
+  (if (target-hurd?)
+      '((initrd #f)
+        (initrd-modules '()))
+      (match (user-partition-missing-modules user-partitions)
+        (()
+         '())
+        ((modules ...)
+         `((initrd-modules (append ',modules
+                                   %base-initrd-modules)))))))
 
 (define (user-partitions->configuration user-partitions)
   "Return the configuration field for USER-PARTITIONS."
   (let* ((swap-user-partitions (find-swap-user-partitions user-partitions))
-         (swap-devices (map user-partition-file-name swap-user-partitions))
+         (swap-devices (if (target-hurd?)
+                           '()
+                           (map user-partition-file-name swap-user-partitions)))
          (encrypted-partitions
           (filter user-partition-crypt-label user-partitions)))
     `((bootloader ,@(bootloader-configuration user-partitions))

@@ -3,7 +3,7 @@
 ;;; Copyright © 2017, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1868,6 +1868,10 @@ build (current-guix) and then store a couple of full system images.")
                                                       ("bob" "pass2")))
                         #$marionette)
       (screenshot "installer-services.ppm")
+
+      (when #$(target-x86?)
+        (marionette-eval* '(choose-kernel installer-socket) #$marionette)
+        (screenshot "installer-kernel.ppm"))
 
       (marionette-eval* '(choose-services installer-socket
                                           #:choose-desktop-environment?

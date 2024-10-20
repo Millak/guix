@@ -308,6 +308,18 @@ selected keymap."
                      ((installer-user-page current-installer))))
           (configuration-formatter users->configuration))
 
+         ;; Ask the user to select the kernel for the system,
+         ;; for x86 systems only.
+         (installer-step
+          (id 'kernel)
+          (description (G_ "Kernel"))
+          (compute (lambda _
+                     (if (target-x86?)
+                         ((installer-kernel-page current-installer))
+                         '())))
+          (configuration-formatter (lambda (result)
+                                     (kernel->configuration result #$dry-run?))))
+
          ;; Ask the user to choose one or many desktop environment(s).
          (installer-step
           (id 'services)
@@ -419,6 +431,7 @@ purposes."
                          (gnu installer dump)
                          (gnu installer final)
                          (gnu installer hostname)
+                         (gnu installer kernel)
                          (gnu installer locale)
                          (gnu installer parted)
                          (gnu installer services)
@@ -431,6 +444,7 @@ purposes."
                          (gnu services herd)
                          (guix i18n)
                          (guix build utils)
+                         (guix utils)
                          ((system repl debug)
                           #:select (terminal-width))
                          (ice-9 match)

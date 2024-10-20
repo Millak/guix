@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;;
@@ -26,6 +26,7 @@
   #:use-module (gnu installer newt page)
   #:use-module (gnu installer newt utils)
   #:use-module (guix i18n)
+  #:use-module (guix utils)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:export (run-services-page))
@@ -33,11 +34,13 @@
 (define (run-desktop-environments-cbt-page)
   "Run a page allowing the user to choose between various desktop
 environments."
-  (let ((items (filter desktop-system-service? %system-services)))
+  (let ((items (filter desktop-system-service? (%system-services))))
     (run-checkbox-tree-page
-     #:info-text (G_ "Please select the desktop environment(s) you wish to \
+     #:info-text (if (target-hurd?)
+                     (G_ "Currently, none of these is available for the Hurd.")
+                     (G_ "Please select the desktop environment(s) you wish to \
 install.  If you select multiple desktop environments here, you will be able \
-to choose from them later when you log in.")
+to choose from them later when you log in."))
      #:title (G_ "Desktop environment")
      #:items items
      #:selection (map system-service-recommended? items)
@@ -51,7 +54,7 @@ to choose from them later when you log in.")
   "Run a page allowing the user to select networking services."
   (let ((items (filter (lambda (service)
                          (eq? 'networking (system-service-type service)))
-                       %system-services)))
+                       (%system-services))))
     (run-checkbox-tree-page
      #:info-text (G_ "You can now select networking services to run on your \
 system.")
@@ -69,7 +72,7 @@ system.")
   (let ((items (filter (lambda (service)
                          (eq? 'document
                               (system-service-type service)))
-                       %system-services)))
+                       (%system-services))))
     (run-checkbox-tree-page
      #:info-text (G_ "You can now select the CUPS printing service to run on your \
 system.")
@@ -88,7 +91,7 @@ systems."
   (let ((items (filter (lambda (service)
                          (eq? 'administration
                               (system-service-type service)))
-                       %system-services)))
+                       (%system-services))))
     (run-checkbox-tree-page
       #:title (G_ "Console services")
       #:info-text (G_ "Select miscellaneous services to run on your \
@@ -103,7 +106,11 @@ non-graphical system.")
 
 (define (run-network-management-page)
   "Run a page to select among several network management methods."
-  (let ((title (G_ "Network management")))
+  (let ((title (G_ "Network management"))
+        (items (filter (lambda (service)
+                         (eq? 'network-management
+                              (system-service-type service)))
+                       (%system-services))))
     (run-listbox-selection-page
      #:title title
      #:info-text (G_ "Choose the method to manage network connections.
@@ -112,10 +119,10 @@ We recommend NetworkManager or Connman for a WiFi-capable laptop; the DHCP \
 client may be enough for a server.")
      #:info-textbox-width 70
      #:listbox-height 7
-     #:listbox-items (filter (lambda (service)
-                               (eq? 'network-management
-                                    (system-service-type service)))
-                             %system-services)
+     #:listbox-items `(,@items
+                       ,@(if (target-hurd?)
+                             (list system-service-none)
+                             '()))
      #:listbox-item->text (compose G_ system-service-name)
      #:sort-listbox-items? #f
      #:button-text (G_ "Exit")

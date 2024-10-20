@@ -23,6 +23,7 @@
   #:use-module (guix build utils)
   #:use-module (guix i18n)
   #:use-module (guix read-print)
+  #:use-module (guix utils)
   #:use-module (gnu installer utils)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
@@ -240,17 +241,20 @@ found in RESULTS."
                    ,(comment (G_ "\
 ;; Indicate which modules to import to access the variables
 ;; used in this configuration.\n"))
-                   (use-modules (gnu))
+                   ,@(if (target-hurd?)
+                         '((use-modules (gnu) (gnu system hurd))
+                           (use-package-modules hurd ssh))
+                         '((use-modules (gnu))))
                    (use-service-modules cups desktop networking ssh xorg))))
     `(,@modules
       ,(vertical-space 1)
       (operating-system ,@configuration))))
 
 (define* (configuration->file configuration
-                              #:key (filename (%installer-configuration-file)))
-  "Write the given CONFIGURATION to FILENAME."
-  (mkdir-p (dirname filename))
-  (call-with-output-file filename
+                              #:key (file-name (%installer-configuration-file)))
+  "Write the given CONFIGURATION to FILE-NAME."
+  (mkdir-p (dirname file-name))
+  (call-with-output-file file-name
     (lambda (port)
       ;; TRANSLATORS: This is a comment within a Scheme file.  Each line must
       ;; start with ";; " (two semicolons and a space).  Please keep line

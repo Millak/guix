@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
 
             choose-locale+keyboard
             enter-host-name+passwords
+            choose-kernel
             choose-services
             choose-partitioning
             start-installation
@@ -210,6 +212,15 @@ ROOT-PASSWORD, and USERS."
                       (home-directory ,(string-append "/home/" name))
                       (password ,password)))
              names passwords))))))
+
+(define* (choose-kernel port #:key (kernel "Linux Libre"))
+  "Converse over PORT with the guided installer to choose the specified
+KERNEL."
+  (converse port
+    ((list-selection (title "Kernel")
+                     (multiple-choices? #f)
+                     (items _))
+     kernel)))
 
 (define* (choose-services port
                           #:key
