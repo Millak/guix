@@ -24,7 +24,6 @@
   #:use-module (gnu installer newt page)
   #:use-module (guix i18n)
   #:use-module (guix records)
-  #:use-module (newt)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)

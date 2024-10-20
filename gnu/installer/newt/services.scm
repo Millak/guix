@@ -28,7 +28,6 @@
   #:use-module (guix i18n)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
-  #:use-module (newt)
   #:export (run-services-page))
 
 (define (run-desktop-environments-cbt-page)

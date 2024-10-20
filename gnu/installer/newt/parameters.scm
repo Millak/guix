@@ -23,7 +23,6 @@
   #:use-module (guix build syscalls)
   #:use-module (guix i18n)
   #:use-module (ice-9 match)
-  #:use-module (newt)
   #:export (run-parameters-page))
 
 (define (run-proxy-page)

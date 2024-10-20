@@ -27,7 +27,6 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
-  #:use-module (newt)
   #:export (run-ethernet-page))
 
 (define (ethernet-services)
