@@ -3462,7 +3462,7 @@ applications.  The font and colors can be configured.")
 (define-public fyi
   (package
     (name "fyi")
-    (version "1.0.3")
+    (version "1.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3471,7 +3471,7 @@ applications.  The font and colors can be configured.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "112jczg0gfjgf7jkqlr97a9n5nv931dfdmwvnd5jivdh8ljajwfh"))))
+                "1hm0xr807fgv19dmb9204033hpnpsdanq985j49l8i72gj214sah"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list dbus))
