@@ -5321,7 +5321,7 @@ netmasks.")
 (define-public go-github-com-wlynxg-anet
   (package
     (name "go-github-com-wlynxg-anet")
-    (version "0.0.4")
+    (version "0.0.5")
     (source
      (origin
        (method git-fetch)
@@ -5330,7 +5330,7 @@ netmasks.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i8sqq9d2k19jxplqhb1phzv6qxgzchbpdazq8l26h7pihzsq1gg"))))
+        (base32 "09s3x28qb571xs92gnbqzkyiah4vhk56hqqb4cc4yfrzfv3430hp"))))
     (build-system go-build-system)
     (arguments
      (list
