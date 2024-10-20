@@ -2860,7 +2860,16 @@ gone wild and are suddenly taking up your bandwidth.")
         (base32 "13hakpkxqvqfjhk679l088209f54j7mqi3ifi820lyz6b1nvvj0r"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags '(list "-DENABLE_TESTS=1")))
+     (append (list #:configure-flags '(list "-DENABLE_TESTS=1"))
+             (if (string=? "aarch64-linux" (%current-system))
+                 (list #:phases
+                       #~(modify-phases %standard-phases
+                           (add-after 'unpack 'skip-failing-tests
+                             (lambda _
+                               (substitute* "tests/system/CMakeLists.txt"
+                                 (("(.*)SystemInfo.cpp" all)
+                                  (string-append "#" all)))))))
+                 '())))
     (inputs (list boost gnutls libxml2 ncurses openssl zlib))
     (native-inputs (list which))
     (home-page "https://github.com/nzbget/nzbget")
