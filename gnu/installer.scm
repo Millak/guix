@@ -355,22 +355,22 @@ purposes."
   (define set-installer-path
     ;; Add the specified binary to PATH for later use by the installer.
     #~(let* ((inputs
-              '#$(list bash ;start subshells
-                       connman ;call connmanctl
+              '#$(list bash             ;start subshells
+                       connman          ;call connmanctl
                        cryptsetup
-                       dosfstools ;mkfs.fat
-                       e2fsprogs ;mkfs.ext4
-                       lvm2-static ;dmsetup
+                       dosfstools       ;mkfs.fat
+                       e2fsprogs        ;mkfs.ext4
+                       lvm2-static      ;dmsetup
                        btrfs-progs
-                       jfsutils ;jfs_mkfs
-                       ntfs-3g ;mkfs.ntfs
-                       xfsprogs ;mkfs.xfs
-                       kbd ;chvt
-                       util-linux ;mkwap
+                       jfsutils         ;jfs_mkfs
+                       ntfs-3g          ;mkfs.ntfs
+                       xfsprogs         ;mkfs.xfs
+                       kbd              ;chvt
+                       util-linux       ;mkwap
                        nano
                        shadow
-                       tar ;dump
-                       gzip ;dump
+                       tar              ;dump
+                       gzip             ;dump
                        coreutils)))
         (with-output-to-port (%make-void-port "w")
           (lambda ()
