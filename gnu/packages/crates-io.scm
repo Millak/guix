@@ -7303,6 +7303,38 @@ use for syntax highlighting in other crates.")
     (inputs
      (list libgit2 zlib))))
 
+(define-public rust-battery-0.7
+  (package
+    (name "rust-battery")
+    (version "0.7.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "battery" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r1641dyks76p39i1iihswhc6iz5z51pihmpxniy1h1pi4k29dml"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;/sys/class/power_supply cannot be found
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-core-foundation" ,rust-core-foundation-0.7)
+                       ("rust-lazycell" ,rust-lazycell-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-mach" ,rust-mach-0.3)
+                       ("rust-nix" ,rust-nix-0.19)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-uom" ,rust-uom-0.30)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-approx" ,rust-approx-0.3)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/svartalf/rust-battery")
+    (synopsis "Cross-platform information about the notebook batteries")
+    (description
+     "This package provides Cross-platform information about the notebook batteries.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-beef-0.5
   (package
     (name "rust-beef")
