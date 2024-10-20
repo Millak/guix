@@ -3269,6 +3269,43 @@ JSON IPC interface.  The swayr client offers subcommands, and sends them to the
 daemon which executes them.")
    (license license:gpl3+)))
 
+(define-public swayrbar
+  (package
+    (name "swayrbar")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "swayrbar" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05jpa87i6q1cpikyqqliy3q2ksslj79kgin8jq9ls6073yk5q6z7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=config::test_load_swayrbar_config")
+       #:install-source? #f
+       #:cargo-inputs (("rust-battery" ,rust-battery-0.7)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-directories" ,rust-directories-5)
+                       ("rust-env-logger" ,rust-env-logger-0.11)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rt-format" ,rust-rt-format-0.3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-swaybar-types" ,rust-swaybar-types-3)
+                       ("rust-swayipc" ,rust-swayipc-3)
+                       ("rust-sysinfo" ,rust-sysinfo-0.31)
+                       ("rust-toml" ,rust-toml-0.8))))
+    (home-page "https://sr.ht/~tsdh/swayr/#swayrbar")
+    (synopsis "Swaybar-protocol implementation for sway/swaybar")
+    (description
+     "This package provides a swaybar-protocol implementation for sway/swaybar.")
+    (license license:gpl3+)))
+
 (define-public swaysome
   (package
     (name "swaysome")
