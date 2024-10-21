@@ -413,6 +413,7 @@ paging.")
     (build-system cargo-build-system)
     (arguments
      (list
+      #:install-source? #f
       #:cargo-inputs `(("rust-anyhow" ,rust-anyhow-1)
                        ("rust-bumpalo" ,rust-bumpalo-3)
                        ("rust-chic" ,rust-chic-1)
