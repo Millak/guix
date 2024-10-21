@@ -106,6 +106,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -504,6 +505,10 @@ types (revolute, prismatic, wheel, etc.).")
         (base32
          "1bp4spcjsmy6xv2j0ciaripfgd3pj5413hhhrj8v8mxcwhraw68p"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-pygame python-uniseg))
     (home-page "https://python-sge.github.io/")
