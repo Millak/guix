@@ -521,6 +521,7 @@ exec smbd $@")))
              bash-minimal
              dtc
              glib
+             gnutls                     ;for qcow2 disk encryption
              gtk+
              libaio
              libcacard                  ;smartcard support
