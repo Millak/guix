@@ -4143,7 +4143,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
 (define-public iwd
   (package
     (name "iwd")
-    (version "2.12")
+    (version "3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4152,7 +4152,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "199pcs20054xhp5c0dnxf9ny5cf5cynkqpx68dpn46nq8ly76n2y"))))
+                "0lwsh56r8pq5drfhjm1wpkxsmaz516rj46mrr8wiilw5r6gxwjm6"))))
     (build-system gnu-build-system)
     (inputs
      (list dbus ell (package-source ell) openresolv readline))
