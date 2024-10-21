@@ -35,7 +35,8 @@
 
  (entry (commit "5966e0fdc78771c562e0f484a22f381a77908be0")
         (title
-         (en "Daemon vulnerability allowing takeover of build users fixed"))
+         (en "Daemon vulnerability allowing takeover of build users fixed")
+         (de "Schwachstelle im Daemon behoben, durch die Übernahme von Erstellungsbenutzern möglich ist"))
         (body
          (en "A vulnerability allowing a local user to execute arbitrary code
 as any of the build users has been identified and fixed.  Most notably, this
@@ -64,7 +65,38 @@ example on accident), run @command{guix gc} to remove all failed build
 outputs.
 
 See @uref{https://issues.guix.gnu.org/73919} for more information on this
-vulnerability.")))
+vulnerability.")
+         (de "Eine Sicherheitslücke, durch die ein lokaler Benutzer beliebigen
+Code als jeder der Erstellungsbenutzer ausführen kann, wurde gefunden und
+behoben.  Diese hat zur Folge, dass jeder lokale Benutzer das Ergebnis jeder
+lokalen Erstellung verändern kann, selbst wenn sie in einem Container isoliert
+stattfindet.  Um die Lücke auszunutzen, wird nur vorausgesetzt, dass er
+Ableitungen erstellen lassen kann und beliebigen Code mit Store-Zugriff im
+Wurzel-PID-Namensraum auf der Maschine laufen lassen kann, wo die Erstellung
+abläuft.  Somit sind vor allem Mehrbenutzersysteme betroffen.
+
+Ursache der Lücke ist, dass @command{guix-daemon} Besitzer und Berechtigungen
+der Ausgaben einer fehlgeschlagenen Erstellung nicht ändert, wenn er sie in den
+Store verschiebt.  Auch bei erfolgreichen Erstellungen gibt es ein Zeitfenster
+nachdem Ausgaben in den Store gelangen und bevor ihr Besitzer und
+Berechtigungen angeglichen werden.  So kann eine Erstellung eine Binärdatei
+erzeugen, bei der die Bits für setuid und setgid gesetzt sind, die dann für die
+Außenwelt sichtbar wird, wenn die Erstellung fertig ist.  Ab dann kann jeder
+Prozess mit Zugriff auf den Store diese ausführen und die Berechtigungen des
+Erstellungsbenutzers erlangen, so dass jeder Prozess im Besitz des
+Erstellungsbenutzers über procfs und Signale beeinflussbar ist und der
+Angreifer Kontrolle darüber hat, welche Ausgabe Erstellungen haben.
+
+Wir raten Ihnen, @command{guix-daemon} zu aktualisieren.  Führen Sie
+@command{info \"(guix.de) Aktualisieren von Guix\"} aus für Erklärungen, wie
+Sie ihn aktualisieren können.  Wenn zudem Gefahr besteht, dass ein
+Erstellungsprogramm bereits setuid-gesetzte Binärdateien angelegt hat (etwa
+versehentlich), führen Sie @command{guix gc} aus, um alle fehlgeschlagenen
+Erstellungsausgaben zu entfernen.
+
+Siehe @uref{https://issues.guix.gnu.org/73919} für weitere Details zu dieser
+Sicherheitslücke.")))
+
  (entry (commit "2fae63df2138b74d30e120364f0f272871595862")
         (title
          (en "Core packages updated")
