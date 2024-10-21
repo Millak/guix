@@ -432,7 +432,7 @@ paging.")
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-ustr" ,rust-ustr-0.9))
       #:cargo-development-inputs `(("rust-proptest" ,rust-proptest-1))))
-    (native-inputs (list git))
+    (native-inputs (list git-minimal))
     (home-page "https://github.com/adaszko/complgen")
     (synopsis "Declarative bash/fish/zsh completions without writing shell
 scripts")
