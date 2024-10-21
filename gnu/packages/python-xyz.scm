@@ -37238,9 +37238,9 @@ and @code{bspatch4}.")
                    (setenv "PY_MPV_SKIP_TESTS"
                            "test_wait_for_property_event_overflow"))))))
     (native-inputs
-     ;; For tests.
      (list python-pytest
            python-pyvirtualdisplay
+           python-setuptools
            python-xvfbwrapper))
     (inputs (list mpv))
     (propagated-inputs (list python-pillow)) ;for raw screenshots
