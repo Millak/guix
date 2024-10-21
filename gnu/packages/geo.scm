@@ -24,6 +24,8 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2025 Mattia Bunel <mattia.bunel@ehess.fr>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3684,3 +3686,42 @@ Grosser Reiseplaner, Routeplaner Europa 2007, Map + Route.")
 @code{LAZ} files.  The @code{LAS} format is a file format designed for the
 interchange and archiving of lidar point cloud data.")
     (license license:asl2.0)))
+
+(define-public libe57format
+  (package
+    (name "libe57format")
+    (version "3.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/asmaloney/libE57Format")
+             (commit "v3.2.0")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00sj0splv4apv3kfjfwgsrizhimav3hxw51q1qz4g2fgncn092a9"))))
+    (inputs (list xerces-c))
+    (build-system cmake-build-system)
+    (arguments
+      (list
+       ;; Tests use external data from
+       ;; https://github.com/asmaloney/libE57Format-test-data
+       ;; Even after downloading it and copying it to the
+       ;; test/libE57Format-test-data subdirectory, the configure phase
+       ;; fails with the following message:
+       ;; [E57 Test] The GoogleTest submodule was not downloaded.
+       ;; E57_GIT_SUBMODULE_UPDATE was turned off or failed.  Please update
+       ;; submodules and try again.
+       ;; Adding googletest as a native-input does not solve the problem.
+       #:configure-flags #~(list "-DE57_BUILD_TEST=NO")
+       #:tests? #f
+       #:build-type "Release"))
+    (home-page "https://github.com/asmaloney/libE57Format")
+    (synopsis "Library for reading and writing E57 files")
+    (description
+     "The libE57Format package provides a C++ library for reading and
+writing files in the ASTM-standard E57 format. E57 files store 3D point
+cloud data (produced by 3D imaging systems such as laser scanners),
+attributes associated with 3D point data (color and intensity),
+and 2D images (photos taken using a 3D imaging system).")
+    (license license:boost1.0)))
