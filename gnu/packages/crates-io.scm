@@ -40605,6 +40605,8 @@ harness used by @code{rustc --test}.")
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
                        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list eudev))
     (home-page "https://github.com/dcuddeback/libudev-sys")
     (synopsis "FFI bindings to libudev")
     (description "This package provides FFI bindings to libudev.")
