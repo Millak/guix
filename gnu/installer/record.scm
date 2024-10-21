@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,7 +38,7 @@
             installer-timezone-page
             installer-hostname-page
             installer-user-page
-            installer-partition-page
+            installer-partitioning-page
             installer-services-page
             installer-welcome-page
             installer-parameters-menu
@@ -86,7 +87,7 @@
   ;; procedure void -> void
   (user-page installer-user-page)
   ;; procedure void -> void
-  (partition-page installer-partition-page)
+  (partitioning-page installer-partitioning-page)
   ;; procedure void -> void
   (services-page installer-services-page)
   ;; procedure (logo #:pci-database) -> void

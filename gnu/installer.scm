@@ -3,6 +3,7 @@
 ;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -312,7 +313,7 @@ selected keymap."
           (id 'partition)
           (description (G_ "Partitioning"))
           (compute (lambda _
-                     ((installer-partition-page current-installer))))
+                     ((installer-partitioning-page current-installer))))
           (configuration-formatter user-partitions->configuration))
 
          (installer-step

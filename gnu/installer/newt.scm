@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -193,7 +194,7 @@ report it by email to ~a.") uploaded-name %guix-bug-report-address)
 (define (user-page)
   (run-user-page))
 
-(define (partition-page)
+(define (partitioning-page)
   (run-partitioning-page))
 
 (define (services-page)
@@ -220,7 +221,7 @@ report it by email to ~a.") uploaded-name %guix-bug-report-address)
    (timezone-page timezone-page)
    (hostname-page hostname-page)
    (user-page user-page)
-   (partition-page partition-page)
+   (partitioning-page partitioning-page)
    (services-page services-page)
    (welcome-page welcome-page)
    (parameters-menu parameters-menu)
