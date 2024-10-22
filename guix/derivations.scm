@@ -401,8 +401,8 @@ of SUBSTITUTABLES."
                                  (substitution-oracle
                                   store inputs #:mode mode)))
   "Given INPUTS, a list of derivation-inputs, return two values: the list of
-derivations to build, and the list of substitutable items that, together,
-allow INPUTS to be realized.
+derivations to build, in topological order, and the list of substitutable
+items that, together, allow INPUTS to be realized.
 
 SUBSTITUTABLE-INFO must be a one-argument procedure similar to that returned
 by 'substitution-oracle'."
@@ -422,36 +422,48 @@ by 'substitution-oracle'."
            (and (= (length info) (length items))
                 info))))
 
-  (let loop ((inputs     inputs)                  ;list of <derivation-input>
-             (build      '())                     ;list of <derivation>
-             (substitute '())                     ;list of <substitutable>
-             (visited    (set)))                  ;set of <derivation-input>
-    (match inputs
-      (()
-       (values build substitute))
-      ((input rest ...)
-       (let ((key  (derivation-input-key input))
-             (deps (derivation-inputs
-                    (derivation-input-derivation input))))
-         (cond ((set-contains? visited key)
-                (loop rest build substitute visited))
-               ((input-built? input)
-                (loop rest build substitute
-                      (set-insert key visited)))
-               ((input-substitutable-info input)
-                =>
-                (lambda (substitutables)
-                  (loop (append (dependencies-of-substitutables substitutables
+  (define (traverse)
+    ;; Perform a depth-first traversal.
+    (let loop ((inputs     inputs)                ;list of <derivation-input>
+               (build      '())                   ;list of <derivation>
+               (substitute '())                   ;list of <substitutable>
+               (visited    (set)))                ;set of <derivation-input>
+      (match inputs
+        (()
+         (values visited build substitute))
+        ((input rest ...)
+         (let ((key  (derivation-input-key input))
+               (deps (derivation-inputs
+                      (derivation-input-derivation input))))
+           (cond ((set-contains? visited key)
+                  (loop rest build substitute visited))
+                 ((input-built? input)
+                  (loop rest build substitute (set-insert key visited)))
+                 ((input-substitutable-info input)
+                  =>
+                  (lambda (substitutables)
+                    (call-with-values
+                        (lambda ()
+                          (loop (dependencies-of-substitutables substitutables
                                                                 deps)
-                                rest)
-                        build
-                        (append substitutables substitute)
-                        (set-insert key visited))))
-               (else
-                (loop (append deps rest)
-                      (cons (derivation-input-derivation input) build)
-                      substitute
-                      (set-insert key visited)))))))))
+                                build
+                                (append substitutables substitute)
+                                (set-insert key visited)))
+                      (lambda (visited build substitute)
+                        (loop rest build substitute visited)))))
+                 (else
+                  (call-with-values
+                      (lambda ()
+                        (loop deps build substitute (set-insert key visited)))
+                    (lambda (visited build substitute)
+                      (loop rest
+                            (cons (derivation-input-derivation input) build)
+                            substitute
+                            visited))))))))))
+
+  (call-with-values traverse
+    (lambda (_ build substitute)
+      (values (reverse! build) substitute))))
 
 (define-deprecated (derivation-prerequisites-to-build store drv #:rest rest)
   derivation-build-plan

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,7 +29,8 @@
   #:use-module (guix tests git)
   #:use-module (guix tests http)
   #:use-module ((guix packages) #:select (package-derivation base32))
-  #:use-module ((guix build utils) #:select (executable-file?))
+  #:use-module ((guix build utils)
+                #:select (executable-file? strip-store-file-name))
   #:use-module ((guix hash) #:select (file-hash*))
   #:use-module ((git oid) #:select (oid->string))
   #:use-module ((git reference) #:select (reference-name->oid))
@@ -1156,6 +1157,32 @@
                                          (list (derivation-input drv))
                                          #:mode (build-mode check))
                   (list drv dep))))))
+
+(test-equal "derivation-build-plan, topological ordering"
+  (make-list 5 '("0.drv" "1.drv" "2.drv" "3.drv" "4.drv"))
+  (with-store store
+    (define (test _)
+      (let* ((simple-derivation
+              (lambda (name . deps)
+                (build-expression->derivation
+                 store name
+                 `(begin ,(random-text) (mkdir %output))
+                 #:inputs (map (lambda (n dep)
+                                 (list (number->string n) dep))
+                               (iota (length deps))
+                               deps))))
+             (drv0 (simple-derivation "0"))
+             (drv1 (simple-derivation "1" drv0))
+             (drv2 (simple-derivation "2" drv1))
+             (drv3 (simple-derivation "3" drv2 drv0))
+             (drv4 (simple-derivation "4" drv3 drv1)))
+        (map (compose strip-store-file-name derivation-file-name)
+             (derivation-build-plan store (list (derivation-input drv4))))))
+
+    ;; This is probabilistic: if the traversal is buggy, it may or may not
+    ;; produce the wrong ordering, depending on a variety of actors.  Thus,
+    ;; try multiple times.
+    (map test (iota 5))))
 
 (test-assert "derivation-input-fold"
   (let* ((builder (add-text-to-store %store "my-builder.sh"
