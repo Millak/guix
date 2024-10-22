@@ -8161,6 +8161,24 @@ not as a replacement for it.")
       #:configure-flags #~(list "-DINSTALL_KAUTH_HELPER=OFF"
                                 "-DQT6_BUILD=ON")
       #:qtbase qtbase
+      ;; The 'tst_models' and 'tst_callgraphgenerator' fail, with
+      ;; the later seemingly requiring sudo or access to the kernel
+      ;; trace points.
+      #:test-exclude
+       (string-append
+        "("
+        (string-join
+         ;; The 'tst_models' expected output doesn't exactly
+         ;; match.
+         '("tst_models"
+           ;; The 'tst_callgraphgenerator' perf invocation
+           ;; fails when run in the build container.
+           "tst_callgraphgenerator"
+           ;; The 'tst_perfparser' test requires sudo/access
+           ;; to the kernel scheduler trace points.
+           "tst_perfparser")
+         "|")
+        ")")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-perfparser
@@ -8196,28 +8214,7 @@ not as a replacement for it.")
               (substitute* "src/perfrecord.cpp"
                 (("\"perf( )?\"" _ space)
                  (string-append "\"" (search-input-file inputs "bin/perf")
-                                (or space "") "\"")))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; The 'tst_models' and 'tst_callgraphgenerator' fail, with
-                ;; the later seemingly requiring sudo or access to the kernel
-                ;; trace points.
-                (invoke "ctest" "-E"
-                        (string-append
-                         "("
-                         (string-join
-                          ;; The 'tst_models' expected output doesn't exactly
-                          ;; match.
-                          '("tst_models"
-                            ;; The 'tst_callgraphgenerator' perf invocation
-                            ;; fails when run in the build container.
-                            "tst_callgraphgenerator"
-                            ;; The 'tst_perfparser' test requires sudo/access
-                            ;; to the kernel scheduler trace points.
-                            "tst_perfparser")
-                          "|")
-                         ")"))))))))
+                                (or space "") "\""))))))))
     (native-inputs
      (list extra-cmake-modules
            vulkan-headers))
