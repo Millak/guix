@@ -84,6 +84,10 @@
                           `(("source" ,source))
                           '())
                     ,@`(("cmake" ,cmake))
+                    ,@`(("ninja" ,(module-ref
+                                   (resolve-interface
+                                    '(gnu packages ninja))
+                                   'ninja)))
                     ,@native-inputs
                     ,@(if target '() inputs)
                     ,@(if (and target implicit-cross-inputs?)
@@ -115,9 +119,10 @@
                       (search-paths '())
                       (make-flags ''())
                       (out-of-source? #t)
+                      (generator "Unix Makefiles")
                       (build-type "RelWithDebInfo")
                       (tests? #t)
-                      (test-target "test")
+                      (test-exclude "")
                       (parallel-build? #t) (parallel-tests? #t)
                       (validate-runpath? #t)
                       (patch-shebangs? #t)
@@ -155,9 +160,10 @@ provides a 'CMakeLists.txt' file as its build system."
                                                      configure-flags)
                              #:make-flags #$make-flags
                              #:out-of-source? #$out-of-source?
+                             #:generator #$generator
                              #:build-type #$build-type
                              #:tests? #$tests?
-                             #:test-target #$test-target
+                             #:test-exclude #$test-exclude
                              #:parallel-build? #$parallel-build?
                              #:parallel-tests? #$parallel-tests?
                              #:validate-runpath? #$validate-runpath?
@@ -193,9 +199,10 @@ provides a 'CMakeLists.txt' file as its build system."
                             (native-search-paths '())
                             (make-flags ''())
                             (out-of-source? #t)
+                            (generator "Unix Makefiles")
                             (build-type "RelWithDebInfo")
                             (tests? #f) ; nothing can be done
-                            (test-target "test")
+                            (test-exclude "")
                             (parallel-build? #t) (parallel-tests? #t)
                             (validate-runpath? #t)
                             (patch-shebangs? #t)
@@ -256,9 +263,10 @@ build system."
                                                    configure-flags))
                        #:make-flags #$make-flags
                        #:out-of-source? #$out-of-source?
+                       #:generator #$generator
                        #:build-type #$build-type
                        #:tests? #$tests?
-                       #:test-target #$test-target
+                       #:test-exclude #$test-exclude
                        #:parallel-build? #$parallel-build?
                        #:parallel-tests? #$parallel-tests?
                        #:validate-runpath? #$validate-runpath?

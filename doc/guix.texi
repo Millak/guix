@@ -135,6 +135,7 @@ Copyright @copyright{} 2024-2025 Nigko Yerden@*
 Copyright @copyright{} 2024 Troy Figiel@*
 Copyright @copyright{} 2024 Sharlatan Hellseher@*
 Copyright @copyright{} 2024 45mg@*
+Copyright @copyright{} 2024 Greg Hogan@*
 Copyright @copyright{} 2025 Sören Tempel@*
 Copyright @copyright{} 2025 Rostislav Svoboda@*
 Copyright @copyright{} 2025 Zacchaeus@*
@@ -9704,16 +9705,30 @@ This variable is exported by @code{(guix build-system cmake)}.  It
 implements the build procedure for packages using the
 @url{https://www.cmake.org, CMake build tool}.
 
-It automatically adds the @code{cmake} package to the set of inputs.
-Which package is used can be specified with the @code{#:cmake}
-parameter.
+This build system adds the following keyword parameters to the ones
+defined by @code{gnu-build-system}:
 
-The @code{#:configure-flags} parameter is taken as a list of flags
-passed to the @command{cmake} command.  The @code{#:build-type}
-parameter specifies in abstract terms the flags passed to the compiler;
-it defaults to @code{"RelWithDebInfo"} (short for ``release mode with
-debugging information''), which roughly means that code is compiled with
-@code{-O2 -g}, as is the case for Autoconf-based packages by default.
+@table @code
+@item #:cmake
+The @code{cmake} package is added to the set of inputs. Which package
+is used can be specified with the @code{#:cmake} parameter.
+
+@item #:build-type
+The @code{#:build-type} parameter specifies in abstract terms the flags
+passed to the compiler; it defaults to @code{"RelWithDebInfo"} (short
+for ``release mode with debugging information''), which roughly means
+that code is compiled with @code{-O2 -g}, as is the case for
+Autoconf-based packages by default.
+
+@item #:generator
+This parameter specifies the
+@url{https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html, CMake generator}
+responsible for writing the input files for the native build system.
+
+@item #:test-exclude
+Tests matching this regular expression are excluded from testing by
+@url{https://cmake.org/cmake/help/latest/manual/ctest.1.html, ctest}.
+@end table
 @end defvar
 
 @defvar composer-build-system

@@ -3,6 +3,7 @@
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,8 @@
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build utils)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 threads)
+  #:use-module (srfi srfi-34)
   #:export (%standard-phases
             cmake-build))
 
@@ -33,7 +36,7 @@
 ;; Code:
 
 (define* (configure #:key outputs (configure-flags '()) (out-of-source? #t)
-                    build-type target
+                    build-type target generator (tests? #t)
                     #:allow-other-keys)
   "Configure the given package."
   (let* ((out        (assoc-ref outputs "out"))
@@ -48,38 +51,96 @@
       (chdir "../build"))
     (format #t "build directory: ~s~%" (getcwd))
 
-    (let ((args `(,srcdir
-                  ,@(if build-type
-                        (list (string-append "-DCMAKE_BUILD_TYPE="
-                                             build-type))
-                        '())
-                  ,(string-append "-DCMAKE_INSTALL_PREFIX=" out)
-                  ;; ensure that the libraries are installed into /lib
-                  "-DCMAKE_INSTALL_LIBDIR=lib"
-                  ;; add input libraries to rpath
-                  "-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE"
-                  ;; add (other) libraries of the project itself to rpath
-                  ,(string-append "-DCMAKE_INSTALL_RPATH=" out "/lib")
-                  ;; enable verbose output from builds
-                  "-DCMAKE_VERBOSE_MAKEFILE=ON"
-                  ,@configure-flags)))
-      (format #t "running 'cmake' with arguments ~s~%" args)
-      (apply invoke "cmake" args))))
+    (call-with-temporary-output-file
+      (lambda (temp port)
+        (let ((args `(,srcdir
+                      ;; Load variables into the the cache to prevent
+                      ;; warnings about unused manually-specified variables.
+                      ,(string-append "-C " temp)
+                      ,@(if generator
+                            (list (string-append "-G" generator))
+                            '())
+                      ,@configure-flags)))
 
-(define* (check #:key (tests? #t) (parallel-tests? #t) (test-target "test")
+          (define save-to-cache
+            (lambda* (name value)
+              ;; <type> and <docstring> arguments are used only by CMake GUIs.
+              (format port "set(~a \"~a\" CACHE STRING \"\")~%" name value)))
+
+          (if build-type
+              (save-to-cache "CMAKE_BUILD_TYPE" build-type))
+          (save-to-cache "CMAKE_INSTALL_PREFIX" out)
+          ;; Ensure that the libraries are installed into /lib.
+          (save-to-cache "CMAKE_INSTALL_LIBDIR" "lib")
+          ;; Add input libraries to rpath.
+          (save-to-cache "CMAKE_INSTALL_RPATH_USE_LINK_PATH" "TRUE")
+          ;; Add (other) libraries of the project itself to rpath.
+          (save-to-cache "CMAKE_INSTALL_RPATH" (string-append out "/lib"))
+          ;; Enable verbose output from builds.
+          (save-to-cache "CMAKE_VERBOSE_MAKEFILE" "ON")
+          ;; Enable colored compiler diagnostics.
+          (save-to-cache "CMAKE_COLOR_DIAGNOSTICS" "ON")
+          ;; BUILD_TESTING in an option of CMake's CTest module.
+          (save-to-cache "BUILD_TESTING" (if tests? "ON" "OFF"))
+
+          (close-port port)
+          (format #t "running 'cmake' with arguments ~s~%" args)
+          (apply invoke "cmake" args))))))
+
+(define* (build #:key (make-flags '()) (parallel-build? #t)
                 #:allow-other-keys)
-  (let ((gnu-check (assoc-ref gnu:%standard-phases 'check)))
-    (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
-    (gnu-check #:tests? tests? #:test-target test-target
-              #:parallel-tests? parallel-tests?)))
+  (apply invoke "cmake"
+         `("--build"
+           "."
+           ,@(if parallel-build?
+                 `("-j" ,(number->string (parallel-job-count)))
+                 ;; When unset CMake defers to the build system.
+                 '("-j" "1"))
+           ;; Pass the following options to the native tool.
+           "--"
+           ,@(if parallel-build?
+                 ;; Set load average limit for Make and Ninja.
+                 `("-l" ,(number->string (total-processor-count)))
+                 '())
+           ,@make-flags)))
+
+(define %test-suite-log-regexp
+  ;; Name of test suite log files as commonly found in CMake.
+  "^LastTest\\.log$")
+
+(define* (check #:key (tests? #t) (test-exclude "")
+                (parallel-tests? #t)
+                (test-suite-log-regexp %test-suite-log-regexp)
+                #:allow-other-keys)
+  (if tests?
+      (guard (c ((invoke-error? c)
+                 ;; Dump the test suite log to facilitate debugging.
+                 (display "\nTest suite failed, dumping logs.\n"
+                          (current-error-port))
+                 (gnu:dump-file-contents "." test-suite-log-regexp)
+                 (raise c)))
+        (apply invoke "ctest" "--output-on-failure" "--no-tests=error"
+               `(,@(if (string-null? test-exclude)
+                       '()
+                       `("--exclude-regex" ,test-exclude))
+                 ,@(if parallel-tests?
+                       `("-j" ,(number->string (parallel-job-count))
+                         "--test-load"
+                         ,(number->string (total-processor-count)))
+                       ;; When unset CMake defers to the build system.
+                       '("-j" "1")))))
+      (format #t "test suite not run~%")))
+
+(define* (install #:rest args)
+  (invoke "cmake" "--install" "."))
 
 (define %standard-phases
-  ;; Everything is as with the GNU Build System except for the `configure'
-  ;; and 'check' phases.
   (modify-phases gnu:%standard-phases
     (delete 'bootstrap)
+    (replace 'build build)
     (replace 'check check)
-    (replace 'configure configure)))
+    (replace 'configure configure)
+    (replace 'install install)))
 
 (define* (cmake-build #:key inputs (phases %standard-phases)
                       #:allow-other-keys #:rest args)
