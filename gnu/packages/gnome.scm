@@ -6758,36 +6758,63 @@ discovery protocols.")
            gettext-minimal
            gobject-introspection
            `(,glib "bin")               ;for 'glib-mkenums'
+           intltool
            itstool
            libxml2
            xorg-server-for-tests))
     (propagated-inputs
      (list dconf))
     (inputs
+     ;; Try to follow the enabled features of the official upstream
+     ;; distribution of Totem to avoid surprising users (see:
+     ;; https://raw.githubusercontent.com/flathub/org.gnome.Totem/refs/heads/master/org.gnome.Totem.json).
      (list (librsvg-for-system)
            adwaita-icon-theme
            at-spi2-core
+           avahi
            bash-minimal
            cairo
            dbus-glib
+           ;;dleyna ;; FIXME: package me!  (see:
+           ;; https://raw.githubusercontent.com/flathub/org.gnome.Totem/refs/heads/master/dleyna/dleyna.json)
+           ffmpeg
            gdk-pixbuf
+           gom
            gnome-desktop
+           gnome-online-accounts
            grilo
            grilo-plugins
            gsettings-desktop-schemas
+           gssdp
            gst-plugins-base
            gst-plugins-good
            gstreamer
            gtk+
+           gupnp
+           gupnp-av
+           gupnp-dlna
+           liba52
+           libass
+           libdvdcss
+           libdvdnav
+           libdvdread
+           libgdata
+           libmediaart
+           libmpeg2
            libhandy
+           liboauth
            libpeas
            libsoup
            libxml2
            libxrandr
            libxtst
            libxxf86vm
+           pipewire
            python
            python-pygobject
+           rest-next
+           tracker
+           tracker-miners
            totem-pl-parser
            vala
            xorgproto))
