@@ -1273,14 +1273,8 @@ programming language.  It also provides the @command{dbusxx-xml2cpp} and
                                      "-DENABLE_TOOLS=ON"
                                      "-DENABLE_GLIB_SUPPORT=ON"
                                      "-DTOOLS_BUNDLED_CPPGENERATE=OFF")
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     ;; There is no /etc/machine-id file in the build
-                     ;; environment.
-                     (invoke "ctest" "-E" "test-machine-uuid-method")))))))
+           ;; There is no /etc/machine-id file in the build environment.
+           #:test-exclude "test-machine-uuid-method"))
     ;; These are propagated due to being referenced in headers and pkg-config
     ;; .pc files.
     (propagated-inputs (list glib libsigc++))
