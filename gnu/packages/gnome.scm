@@ -2887,6 +2887,7 @@ and how they are displayed (View).")
            (librsvg-for-system)
            gsettings-desktop-schemas
            gtk+
+           gtksourceview-4
            pango
            python
            python-dbus
