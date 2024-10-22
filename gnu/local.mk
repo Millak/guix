@@ -1148,7 +1148,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/clog-fix-shared-build.patch		\
   %D%/packages/patches/clucene-gcc-14.patch			\
   %D%/packages/patches/clucene-pkgconfig.patch			\
-  %D%/packages/patches/cmake-curl-certificates-3.24.patch	\
   %D%/packages/patches/coda-use-system-libs.patch		\
   %D%/packages/patches/cogl-fix-double-free.patch		\
   %D%/packages/patches/collectd-5.11.0-noinstallvar.patch		\
