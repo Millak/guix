@@ -164,7 +164,6 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages networking)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
@@ -7900,9 +7899,8 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
 
        ;; Upstream uses the "ninja" build system and encourage distros
        ;; to do the same for consistency.
-       #:configure-flags (list "-GNinja"
-
-                               ,@(if (%current-target-system)
+       #:generator "Ninja"
+       #:configure-flags (list ,@(if (%current-target-system)
                                      `((string-append
                                         "-DPKG_CONFIG_EXECUTABLE="
                                         (search-input-file
@@ -7912,18 +7910,9 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
                                      '())
                                (string-append "-DRST2MAN_EXECUTABLE="
                                               (search-input-file
-                                               %build-inputs "/bin/rst2man.py")))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda _
-             (invoke "ninja"
-                     "-j" (number->string (parallel-job-count)))))
-         (replace 'install
-           (lambda _
-             (invoke "ninja" "install"))))))
+                                               %build-inputs "/bin/rst2man.py")))))
     (native-inputs
-     (list ninja pkg-config python-wrapper python-docutils)) ;for 'rst2man'
+     (list pkg-config python-wrapper python-docutils)) ;for 'rst2man'
     (inputs
      (list libnl eudev))
     (home-page "https://github.com/linux-rdma/rdma-core")
