@@ -89,6 +89,13 @@
                  ;; sometimes fail non-deterministically.
                  bash))
 
+   (search-paths
+    (list (search-path-specification
+           (variable "AWKPATH")
+           (files (list "share/awk")))
+          (search-path-specification
+           (variable "AWKLIBPATH")
+           (files (list "lib/gawk")))))
    (home-page "https://www.gnu.org/software/gawk/")
    (synopsis "Text scanning and processing language")
    (description
