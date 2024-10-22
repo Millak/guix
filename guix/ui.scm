@@ -1077,7 +1077,7 @@ summary, and level 0 shows nothing."
                                          #:hook ,hook
                                          #:build ,(cons file build))))))))
                               '(#:graft () #:hook () #:build ())
-                              build/full)
+                              (reverse! build/full)) ;preserve ordering
                    ((#:graft graft #:hook hook #:build build)
                     (values graft hook build)))))
     (define installed-size
