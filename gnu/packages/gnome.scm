@@ -6764,14 +6764,14 @@ discovery protocols.")
            "1qyv5s1bmaxqi82361g18mnqwji74ck8x0vcl00lidxi4d1xqw6n"))))
       (build-system meson-build-system)
       (native-inputs
-       (list pkg-config
+       (list `(,glib "bin")             ;for 'glib-mkenums'
              desktop-file-utils
              gettext-minimal
              gobject-introspection
-             `(,glib "bin")             ;for 'glib-mkenums'
              intltool
              itstool
              libxml2
+             pkg-config
              xorg-server-for-tests))
       (propagated-inputs
        (list dconf))
