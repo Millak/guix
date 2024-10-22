@@ -830,15 +830,15 @@ propagate their changes to their respective configuration files.")
      (list qtdeclarative-5))
     (propagated-inputs '())
     (arguments
-     (list #:phases
+     (list #:test-exclude "(kconfigcore-kconfigtest|\
+kconfiggui-kstandardshortcutwatchertest)"
+           #:phases
            #~(modify-phases %standard-phases
-               (replace 'check
+               (add-before 'check 'pre-check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests? ;; kconfigcore-kconfigtest fails inconsistently!!
                      (setenv "HOME" (getcwd))
-                     (setenv "QT_QPA_PLATFORM" "offscreen")
-                     (invoke "ctest" "-E" "(kconfigcore-kconfigtest|\
-kconfiggui-kstandardshortcutwatchertest)")))))))))
+                     (setenv "QT_QPA_PLATFORM" "offscreen")))))))))
 
 (define-public kcoreaddons
   (package
