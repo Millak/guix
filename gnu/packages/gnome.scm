@@ -6793,6 +6793,7 @@ discovery protocols.")
              gtk+
              libhandy
              libpeas
+             libportal
              libsoup
              libxml2
              libxrandr
