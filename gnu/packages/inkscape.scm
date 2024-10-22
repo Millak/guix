@@ -260,7 +260,7 @@ endif()~%~%"
                                  '()))))
                    (invoke "make" "-j" job-count "tests")
                    (invoke "ctest" "-j" job-count
-                           "--output-on-error"
+                           "--output-on-failure"
                            "-E" (string-append
                                  "(" (string-join skipped-tests "|") ")"))))))
            (add-after 'install 'glib-or-gtk-compile-schemas
