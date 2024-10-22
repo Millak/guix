@@ -3577,7 +3577,7 @@ for dealing with different structured file formats.")
 (define-public librsvg
   (package
     (name "librsvg")
-    (version "2.58.4")
+    (version "2.58.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/librsvg/"
@@ -3585,7 +3585,7 @@ for dealing with different structured file formats.")
                                   "librsvg-" version ".tar.xz"))
               (sha256
                (base32
-                "0yvwjqgp62hmx339hj2wsbnbldmbcb4xx4g2qdkhfz9ls9h3fvi9"))))
+                "0ym2yg94sc7ralh1kwqqrhz3wcc51079z90mbx0qrls7wfh36hi2"))))
     (build-system cargo-build-system)
     (outputs '("out" "doc" "debug"))
     (arguments
