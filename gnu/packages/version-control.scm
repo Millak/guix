@@ -112,6 +112,7 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -128,6 +129,7 @@
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages less)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
@@ -150,6 +152,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
@@ -4271,6 +4274,81 @@ Git project instead of @command{git filter-branch}.")
     (description
      "Gitlint is a Git commit message linter written in Python: it checks your
 commit messages for style.")
+    (license license:expat)))
+
+(define-public git-extras
+  (package
+    (name "git-extras")
+    (version "7.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tj/git-extras")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lig1sbk83qqvbvpmpcjaf23nk0r7snny5lix75ym1z320970xni"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require additional setup with Pytest, see
+      ;; <.github/workflows/ci.yml>.
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; No configure script, build process, or tests.
+          (delete 'bootstrap)
+          (delete 'configure)
+          (delete 'build)
+          (delete 'check)
+          (add-after 'unpack 'hardcode-dependency-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Write to and copy from temporary file to prevent
+              ;; "make: bash: Argument list too long" errors.
+              (let* ((temp-file (mkstemp! "temp-file.XXXXXX"))
+                     (temp-filename (port-filename temp-file)))
+                (map (lambda (name)
+                       (format temp-file "export PATH=$PATH:~a/bin~%"
+                               (assoc-ref inputs name)))
+                     (list "coreutils-minimal"
+                           "curl"
+                           "findutils"
+                           "gawk"
+                           "less"
+                           "ncurses"
+                           "procps"
+                           "rsync"
+                           "sed"
+                           "util-linux"))
+                ;; The Makefile injects helper scripts and functions into each
+                ;; script. This substitution injects a PATH appending the bin
+                ;; directory of each non-propagated input in order to minimize
+                ;; the number of packages propagated to the profile.
+                (substitute* "Makefile"
+                  (("head -1 bin/\\$\\(COMMAND\\) > \\$\\(TEMPFILE\\); \\\\" line)
+                   (string-append
+                    line "\n"
+                    "cat " temp-filename " >> $(TEMPFILE); \\")))))))))
+    (propagated-inputs (list git))
+    (inputs
+     (list coreutils-minimal
+           curl
+           findutils
+           gawk
+           less
+           ncurses
+           procps
+           rsync
+           sed
+           util-linux))
+    (home-page "https://github.com/tj/git-extras")
+    (synopsis "Additional Git utilities")
+    (description "The git-extras package provides a collection of additional
+git commands for repository metrics and summarization, commit and log editing,
+developer workflow, and project and release management.")
     (license license:expat)))
 
 (define-public hut
