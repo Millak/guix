@@ -414,17 +414,12 @@ conferencing.")
     (arguments
      `(#:configure-flags (list "-DBUILD_EXAMPLES=false"
                                "-DWITH_GSTREAMER=true")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "ctest" "-E"
-                       (string-join ;; These tests use the network.
-                        (list "tst_qxmppiceconnection"
-                              "tst_qxmppcallmanager"
-                              "tst_qxmpptransfermanager")
-                        "|"))))))))
+       #:test-exclude
+        (string-join ;; These tests use the network.
+         (list "tst_qxmppiceconnection"
+               "tst_qxmppcallmanager"
+               "tst_qxmpptransfermanager")
+         "|")))
     (native-inputs
      (list pkg-config))
     (inputs
