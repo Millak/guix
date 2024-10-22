@@ -22991,18 +22991,15 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
 (define-public wfmash
   (package
     (name "wfmash")
-    (version "0.12.5")
+    (version "0.21.0")
     (source
      (origin
-       ;; There are no release tarballs after version 0.10.5.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/waveygang/wfmash")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://github.com/waveygang/wfmash/releases/download/v"
+                           version "/wfmash-v" version ".tar.gz"))
        (sha256
         (base32
-         "1qh2chnwp7nqgp88afc4xzdkd21vh6cfqq73siqw7vc0qinqadm6"))
+         "0v9giqrqxl9kkcrs6zrfj1y07j6p9r8d82kkwigvndlg1708457w"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -23017,116 +23014,36 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
     (build-system cmake-build-system)
     (arguments
      (list
-       #:configure-flags
-       #~(list "-DWFA_PNG_AND_TSV=ON")
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             ;; Adapted from .github/workflows/test_on_push.yml
-             (lambda* (#:key tests? inputs #:allow-other-keys)
-               (when tests?
-                 (let ((samtools (search-input-file inputs "/bin/samtools")))
-                   ;; This is the easiest way to access the data
-                   ;; needed for the test suite.
-                   (symlink "../source/data" "data")
-                   (and
-                     ;; This test takes 60 minutes on riscv64-linux.
-                     #$@(if (not (target-riscv64?))
-                          #~((begin
-                               ;; Test with a subset of the LPA dataset (PAF output)
-                               (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
-                               (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
-                               (with-output-to-file "LPA.subset.paf"
-                                 (lambda _
-                                   (invoke "bin/wfmash"
-                                           "data/LPA.subset.fa.gz"
-                                           "data/LPA.subset.fa.gz"
-                                           "-X" "-n" "10" "-T" "wflign_info."
-                                           "-u" "./")))
-                               (invoke "head" "LPA.subset.paf")))
-                          #~())
-                     ;; This test takes about 5 hours on riscv64-linux.
-                     #$@(if (not (target-riscv64?))
-                          #~((begin
-                               ;; Test with a subset of the LPA dataset (SAM output)
-                               (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
-                               (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
-                               (with-output-to-file "LPA.subset.sam"
-                                 (lambda _
-                                   (invoke "bin/wfmash"
-                                           "data/LPA.subset.fa.gz"
-                                           "data/LPA.subset.fa.gz"
-                                           "-X" "-N" "-a" "-T" "wflign_info.")))
-                               (with-output-to-file "LPA.subset.sam-view"
-                                 (lambda _
-                                   (invoke samtools "view" "LPA.subset.sam" "-bS")))
-                               (with-output-to-file "LPA.subset.bam"
-                                 (lambda _
-                                   (invoke samtools "sort" "LPA.subset.sam-view")))
-                               (invoke samtools "index" "LPA.subset.bam")
-                               ;; samtools view LPA.subset.bam | head | cut -f 1-9
-                               ;(invoke samtools "view" "LPA.subset.bam")
-                               ;; There should be an easier way to do this with pipes.
-                               (with-output-to-file "LPA.subset.bam-incr1"
-                                 (lambda _
-                                   (invoke samtools "view" "LPA.subset.bam")))
-                               (with-output-to-file "LPA.subset.bam-incr2"
-                                 (lambda _
-                                   (invoke "head" "LPA.subset.bam-incr1")))
-                               (invoke "cut" "-f" "1-9" "LPA.subset.bam-incr2")))
-                          #~())
-                     ;; This test takes 60 minutes on riscv64-linux.
-                     #$@(if (not (target-riscv64?))
-                          #~((begin
-                               ;; Test with a subset of the LPA dataset,
-                               ;; setting a lower identity threshold (PAF output)
-                               (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
-                               (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
-                               (with-output-to-file "LPA.subset.p90.paf"
-                                 (lambda _
-                                   (invoke "bin/wfmash"
-                                           "data/LPA.subset.fa.gz"
-                                           "data/LPA.subset.fa.gz"
-                                           "-X" "-p" "90" "-n" "10"
-                                           "-T" "wflign_info.")))
-                               (invoke "head" "LPA.subset.p90.paf")))
-                          #~())
-                     (begin
-                       ;; Test aligning short reads (500 bps) to a reference (SAM output)
-                       (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
-                       (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
-                       (with-output-to-file "reads.500bps.sam"
-                         (lambda _
-                           (invoke "bin/wfmash"
-                                   "data/reference.fa.gz"
-                                   "data/reads.500bps.fa.gz"
-                                   "-s" "0.5k" "-N" "-a")))
-                       (with-output-to-file "reads.500bps.sam-view"
-                         (lambda _
-                           (invoke samtools "view" "reads.500bps.sam" "-bS")))
-                       (with-output-to-file "reads.500bps.bam"
-                         (lambda _
-                           (invoke samtools "sort" "reads.500bps.sam-view")))
-                       (invoke samtools "index" "reads.500bps.bam")
-                       (with-output-to-file "reads.500bps.bam-view"
-                         (lambda _
-                           (invoke samtools "view" "reads.500bps.bam")))
-                       (invoke "head" "reads.500bps.bam-view"))
-                     (begin
-                       ;; Test with few very short reads (255bps) (PAF output)
-                       (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
-                       (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
-                       (with-output-to-file "reads.255bps.paf"
-                         (lambda _
-                           (invoke "bin/wfmash"
-                                   "data/reads.255bps.fa.gz"
-                                   "-w" "16" "-s" "100" "-L")))
-                       (invoke "head" "reads.255bps.paf"))))))))))
+      #:configure-flags
+      #~(list "-DWFA_PNG_AND_TSV=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmakelists
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                ;; Remove broken configure of CTestCustom.cmake.
+                (("^configure_file[^\n]*") "")
+                ;; Do not hard-code wfmash executable.
+                (("\\./build/bin/wfmash") "wfmash"))))
+          (add-before 'check 'build-check-prerequisites
+            (lambda _
+              (let ((wfa2-lib #$(string-append "../wfmash-v"
+                                               version
+                                               "/src/common/wflign/deps/WFA2-lib")))
+                (substitute* (string-append wfa2-lib "/Makefile")
+                  ;; Remove architecture-specific flags.
+                  (("-march=x86-64-v3") ""))
+                (substitute* (string-append wfa2-lib "/tests/wfa.utest.sh")
+                  ;; Fix time command.
+                  (("\\\\time -v") "time"))
+                ;; Build wfa2-lib.
+                (invoke "make" "-C" wfa2-lib
+                        #$(string-append "CC=" (cc-for-target)))))))))
     (inputs
      (list atomic-queue
            gsl
            htslib
-           jemalloc
+           libdeflate
            zlib))
     (native-inputs
      (list pkg-config
