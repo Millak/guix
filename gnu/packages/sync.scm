@@ -143,6 +143,7 @@
        (((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
         (guix build qt-build-system)
         (guix build utils))
+       #:test-exclude "SyncXAttrTest"
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-cmake
@@ -159,13 +160,9 @@
                (("@kwidgetsaddons@")
                 (search-input-directory inputs
                                         "/include/KF5/KWidgetsAddons/")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "QT_QPA_PLATFORM" "offscreen")
-               (invoke "ctest" "-E" "SyncXAttrTest"))))
          (add-before 'check 'pre-check
            (lambda _
+             (setenv "QT_QPA_PLATFORM" "offscreen")
              ;; Tests write to $HOME.
              (setenv "HOME" (getcwd))
              #t))
