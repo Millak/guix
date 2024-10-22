@@ -5454,7 +5454,8 @@ implemented in ANSI C, and MPI for communications.")
      (list flex bison gfortran))
     (outputs '("out" "metis"))
     (arguments
-     (list #:configure-flags #~'("-DBUILD_SHARED_LIBS=YES" "-DINTSIZE=64"
+     (list #:parallel-tests? #f
+           #:configure-flags #~'("-DBUILD_SHARED_LIBS=YES" "-DINTSIZE=64"
                                  "-DBUILD_PTSCOTCH=OFF")
            #:phases
            #~(modify-phases %standard-phases

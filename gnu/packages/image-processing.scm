@@ -541,7 +541,8 @@ different data arrays similar to those available in the numdiff software.")
                 "1ha0230yw9ihybmg2b3mkk9vbnlgzlwx597v2hm14y403047zvgb"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:parallel-tests? #f
+       #:configure-flags
        (list "-DWITH_ADE=OFF"           ;we don't have a package for ade yet
              "-DWITH_IPP=OFF"
              "-DWITH_ITT=OFF"

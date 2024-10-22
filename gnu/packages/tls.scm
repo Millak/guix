@@ -978,7 +978,8 @@ number generator")
         (base32 "0ldqhvmj9wl0yp3hz675zbnq69lw533s0ahy9bbdxxnj5gjb86gw"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags
+     (list #:parallel-tests? #f
+           #:configure-flags
            #~(list "-DCMAKE_C_FLAGS=-Wno-error=calloc-transposed-args"
                    "-DUSE_SHARED_MBEDTLS_LIBRARY=ON"
                    "-DUSE_STATIC_MBEDTLS_LIBRARY=OFF")

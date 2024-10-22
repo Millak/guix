@@ -1991,7 +1991,8 @@ features.")
        (patches (search-patches "websocketpp-fix-for-cmake-3.15.patch"))))
     (build-system cmake-build-system)
     (inputs (list boost openssl))
-    (arguments '(#:configure-flags '("-DBUILD_TESTS=ON")
+    (arguments '(#:parallel-tests? #f
+                 #:configure-flags '("-DBUILD_TESTS=ON")
                  #:phases
                  (modify-phases %standard-phases
                    (add-after 'install 'remove-tests

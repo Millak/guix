@@ -3727,7 +3727,8 @@ extension and customization.")
     (build-system cmake-build-system)
     (inputs (list hdf5-1.10))
     (arguments
-     `(#:phases
+     `(#:parallel-tests? #f
+       #:phases
        (modify-phases %standard-phases
          (add-after 'install 'remove-test-output
            (lambda* (#:key outputs #:allow-other-keys)

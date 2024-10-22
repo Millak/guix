@@ -371,6 +371,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
       ;; Limit the tests to those architectures tested upstream.
       #:tests? (and (not (%current-target-system))
                     (target-x86?))
+      #:parallel-tests? #f
       #:configure-flags
       #~(list (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
                              (dirname (dirname

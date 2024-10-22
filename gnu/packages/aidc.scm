@@ -68,6 +68,7 @@
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
+           #:parallel-tests? #f
            #:configure-flags
            #~(list "-DZINT_QT6=ON"
                    "-DZINT_TEST=ON"

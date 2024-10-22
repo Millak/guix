@@ -1649,7 +1649,8 @@ tools:
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:parallel-tests? #f
+       #:configure-flags
        '("-DBUILD_SHARED_LIBS=ON"
          "-DHTTPLIB_TEST=ON"
          "-DHTTPLIB_COMPILE=ON"
