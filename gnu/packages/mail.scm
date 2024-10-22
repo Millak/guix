@@ -149,7 +149,6 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages pcre)
@@ -1012,49 +1011,30 @@ mailpack.  What can alterMIME do?
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17m99llggkg7xg72k8xaf7iipax7sgfhqa2a1qnlylndwa42f57b"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; https://github.com/astroidmail/astroid/pull/685
-           (substitute* "tests/test_composed_message.cc"
-             (("\\\\n\\.\\.\\.") "\\n...\\n"))))))
+        (base32 "17m99llggkg7xg72k8xaf7iipax7sgfhqa2a1qnlylndwa42f57b"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:modules ((guix build cmake-build-system)
+     `(#:parallel-tests? #f
+       ;; This test relies on the plugins and the test suite
+       ;; cannot find the Astroid module.
+       ;;  gi.require_version ('Astroid', '0.2')
+       ;; ValueError: Namespace Astroid not available
+       #:test-exclude "markdown"
+       #:modules ((guix build cmake-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build utils)
                   (ice-9 match))
        #:imported-modules ((guix build glib-or-gtk-build-system)
                            ,@%cmake-build-system-modules)
-       #:configure-flags (list "-GNinja")
+       #:generator "Ninja"
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'skip-markdown-test
-           ;; This test relies on the plugins and the test suite
-           ;; cannot find the Astroid module.
-           ;;  gi.require_version ('Astroid', '0.2')
-           ;; ValueError: Namespace Astroid not available
-           (lambda _
-             (substitute* "tests/CMakeLists.txt"
-               ((".*markdown.*") ""))))
-         (replace 'build
-           (lambda _
-             (invoke "ninja" "-j" (number->string (parallel-job-count)))))
          (add-before 'check 'start-xserver
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((xorg-server (assoc-ref inputs "xorg-server")))
                (setenv "HOME" (getcwd))
                (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
                (setenv "DISPLAY" ":1"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
-               (invoke "ctest" "."))))
-         (replace 'install
-           (lambda _
-             (invoke "ninja" "install")))
          (add-after 'install 'wrap-with-GI_TYPELIB_PATH
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -1077,7 +1057,6 @@ mailpack.  What can alterMIME do?
      (list glib-networking
            gsettings-desktop-schemas
            gnupg
-           ninja
            pkg-config
            ronn-ng
            w3m
