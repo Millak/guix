@@ -1305,6 +1305,29 @@ out of the box.")
 is based off of Slim mode.")
     (license license:gpl3+)))
 
+(define-public emacs-show-font
+  (package
+    (name "emacs-show-font")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/protesilaos/show-font")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kbkbvqhdqpsmci0756w2j7igxdj0qfzy823mvc5lb6yj8gwq9dl"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/protesilaos/show-font")
+    (synopsis "Show font features in a buffer")
+    (description
+     "Show Font lets you preview a font inside of Emacs.  It does so in three
+ways: prompt for a font on the system and display it in a buffer, list all
+known fonts in a buffer with a short preview for each, and provide a major
+mode to preview a font whose file is among the installed ones.")
+    (license license:gpl3+)))
+
 (define-public emacs-sed-mode
   (package
     (name "emacs-sed-mode")
