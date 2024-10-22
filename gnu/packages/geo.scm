@@ -1446,14 +1446,8 @@ development.")
     (arguments
      (list
       #:configure-flags #~(list "-DUSE_EXTERNAL_GTEST=ON")
-      #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "ctest" "-E"
-                             ;; This tests needs network .
-                             "pdal_io_(stac|copc)_reader_test")))))))
+      #:parallel-tests? #f
+      #:test-exclude "pdal_io_(stac|copc)_reader_test"))
     (native-inputs (list python googletest))
     (inputs (list gdal
                   h3
