@@ -6771,6 +6771,7 @@ discovery protocols.")
              intltool
              itstool
              libxml2
+             perl                       ;for pod2man
              pkg-config
              xorg-server-for-tests))
       (propagated-inputs
