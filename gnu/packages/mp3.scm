@@ -827,7 +827,7 @@ simple to use yet fully featured.")
                  (,(string-append (assoc-ref inputs "gtk+")
                                   "/share/glib-2.0/schemas"))))))))))
     (native-inputs
-     (list pkg-config cmake))
+     (list pkg-config cmake-minimal))
     (inputs
      (list glib
            gtk+

@@ -601,7 +601,7 @@ to create RSS feeds for websites that don't provide any.")
                  (base32 "1fl362920n6nz4x9wihyzbr82d9cy60sknhmajj62whd5gs49sbw"))))
       (build-system meson-build-system)
       (inputs (list fmt tidy-html pybind11 python pugixml))
-      (native-inputs (list cmake pkg-config)) ; need cmake to find pybind11
+      (native-inputs (list cmake-minimal pkg-config)) ; need cmake to find pybind11
       (home-page "https://gitlab.com/gabmus/syndication-domination")
       (synopsis "RSS/Atom feed parser")
       (description "This package provides an experimental RSS/Atom feed

@@ -372,7 +372,7 @@ used to connect to VNC servers such as the tigervnc-server package.")
                libtool
                gettext-minimal
                font-util
-               cmake
+               cmake-minimal
                perl)))
     (inputs
      (modify-inputs (append (package-inputs xorg-server)

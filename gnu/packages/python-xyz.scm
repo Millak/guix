@@ -459,7 +459,7 @@ compare against a vast section of other version formats.")
                (("^minimum-version =.*") "")))))))
     (propagated-inputs (list python-numpy))
     (native-inputs
-     (list cmake pybind11 python-pytest python-scikit-build-core))
+     (list cmake-minimal pybind11 python-pytest python-scikit-build-core))
     (home-page "https://github.com/scikit-hep/awkward-1.0")
     (synopsis "CPU kernels and compiled extensions for Awkward Array")
     (description "Awkward CPP provides precompiled routines for the awkward

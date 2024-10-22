@@ -5807,7 +5807,7 @@ configurable also via HTTP.")
   (build-system cmake-build-system)
   (arguments '(#:tests? #f)) ; There are no tests
   (native-inputs
-   (list pkg-config cmake))
+   (list pkg-config cmake-minimal))
   (inputs
    (list qtbase-5 coin3d))
   (home-page "https://github.com/coin3d/soqt")

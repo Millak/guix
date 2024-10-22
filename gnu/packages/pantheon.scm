@@ -127,7 +127,7 @@ in apps built for the Pantheon desktop.")
             libgee
             libhandy))
     (native-inputs
-      (list cmake
+      (list cmake-minimal
             `(,glib "bin") ; for glib-compile-schemas
             gettext-minimal
             pkg-config
@@ -186,7 +186,7 @@ desktop.")
            libical
            libportal))
     (native-inputs
-     (list cmake
+     (list cmake-minimal
            `(,glib "bin") ; for glib-compile-schemas
            gettext-minimal
            pkg-config

@@ -4136,7 +4136,7 @@ graphic filters.  Some of its features include:
                     (("include\\(cmake/")
                      "include(")))))
     (build-system pyproject-build-system)
-    (native-inputs (list cmake pkg-config python-setuptools python-wheel))
+    (native-inputs (list cmake-minimal pkg-config python-setuptools python-wheel))
     (home-page "https://www.unicorn-engine.org")
     (synopsis "Generic CPU emulator framework")
     (description
@@ -4585,7 +4585,7 @@ stack-machine, written in ANSI C.  Graphical output is implemented using SDL2.")
         (base32 "1xahdr6bh3dw5swrc2r8kqa8ljhqlb7k2kxv5mrw5rhcmcnzcyig"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list cmake
+     (list cmake-minimal
            python-setuptools
            python-wheel))
     (home-page "https://www.keystone-engine.org")

@@ -3678,7 +3678,7 @@ supporting behavior like @samp{ssh -X}.")
               (base32
                "05rxchwzhnkm91kcr30mavizkp25wgjlhb6lcraa456pw7vgb04q"))))
     (build-system meson-build-system)
-    (native-inputs (list cmake pkg-config))
+    (native-inputs (list cmake-minimal pkg-config))
     (inputs (list cairo
                   dbus
                   egl-wayland
