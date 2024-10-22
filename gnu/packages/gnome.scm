@@ -6764,33 +6764,33 @@ discovery protocols.")
     (propagated-inputs
      (list dconf))
     (inputs
-     (list bash-minimal
-           gtk+
-           gdk-pixbuf
+     (list (librsvg-for-system)
+           adwaita-icon-theme
            at-spi2-core
+           bash-minimal
            cairo
            dbus-glib
-           xorgproto
-           libxxf86vm
-           libxtst
-           libxrandr
-           libxml2
-           libsoup
-           libpeas
-           (librsvg-for-system)
-           libhandy
+           gdk-pixbuf
            gnome-desktop
-           gstreamer
+           grilo
+           grilo-plugins
+           gsettings-desktop-schemas
            gst-plugins-base
            gst-plugins-good
-           gsettings-desktop-schemas
-           adwaita-icon-theme
+           gstreamer
+           gtk+
+           libhandy
+           libpeas
+           libsoup
+           libxml2
+           libxrandr
+           libxtst
+           libxxf86vm
            python
            python-pygobject
            totem-pl-parser
-           grilo
-           grilo-plugins
-           vala))
+           vala
+           xorgproto))
     (arguments
      (list
       #:glib-or-gtk? #t
