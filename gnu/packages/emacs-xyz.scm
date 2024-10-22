@@ -7583,6 +7583,44 @@ generally filled correctly with no fuss.")
 column by drawing a thin line down the length of the editing window.")
     (license license:gpl3+)))
 
+(define-public emacs-greader
+  (let ((commit "d82a7405bb9720fff8f264b408303bc882db7839")
+        (revision "1"))
+    (package
+      (name "emacs-greader")
+      (version (git-version "0.11.18" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+               (url "https://gitlab.com/michelangelo-rodriguez/greader")
+               (commit commit)))
+         (method git-fetch)
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0yv29ac1xczwbb90xznlay4p657a1ajj03l7k9f57fgq54y0raiy"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'add-requires
+                       (lambda _
+                         (substitute* "greader-dict.el"
+                           ((";;; Code:")
+                            ";;; Code:\n(require 'greader)\n")))))))
+      (inputs (list espeak-ng))
+      (home-page "https://gitlab.com/michelangelo-rodriguez/greader")
+      (synopsis
+       "Gnamù Reader, or Greader, sends buffer contents to a speech engine")
+      (description
+       "Greader is a module that sends any Emacs buffer to a @acronym{TTS,
+Text To Speech} engine, such as Espeak-NG or Speech Dispatcher.
+
+The mode supports timer reading, automatic scrolling of buffers in modes like
+Info mode, and repeating reading of regions or the whole buffer. It also
+includes a feature to facilitate the compilation of Espeak-NG
+pronunciations.")
+      (license license:gpl3+))))
+
 (define-public emacs-grep-a-lot
   (package
     (name "emacs-grep-a-lot")
