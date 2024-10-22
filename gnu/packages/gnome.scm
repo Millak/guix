@@ -6787,6 +6787,7 @@ discovery protocols.")
              grilo
              grilo-plugins
              gsettings-desktop-schemas
+             gst-libav
              gst-plugins-base
              gst-plugins-good
              gstreamer
