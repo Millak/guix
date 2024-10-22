@@ -6768,7 +6768,7 @@ discovery protocols.")
              desktop-file-utils
              gettext-minimal
              gobject-introspection
-             `(,glib "bin")               ;for 'glib-mkenums'
+             `(,glib "bin")             ;for 'glib-mkenums'
              intltool
              itstool
              libxml2
@@ -6776,58 +6776,30 @@ discovery protocols.")
       (propagated-inputs
        (list dconf))
       (inputs
-       ;; Try to follow the enabled features of the official upstream
-       ;; distribution of Totem to avoid surprising users (see:
-       ;; https://raw.githubusercontent.com/flathub/org.gnome.Totem/\
-       ;; refs/heads/master/org.gnome.Totem.json).
        (list (librsvg-for-system)
              adwaita-icon-theme
              at-spi2-core
-             avahi
              bash-minimal
              cairo
              dbus-glib
-             ;;dleyna ;; FIXME: package me!  (see:
-             ;; https://raw.githubusercontent.com/flathub/org.gnome.Totem/\
-             ;; refs/heads/master/dleyna/dleyna.json).
-             ffmpeg
              gdk-pixbuf
-             gom
              gnome-desktop
-             gnome-online-accounts
              grilo
              grilo-plugins
              gsettings-desktop-schemas
-             gssdp
              gst-plugins-base
              gst-plugins-good
              gstreamer
              gtk+
-             gupnp
-             gupnp-av
-             gupnp-dlna
-             liba52
-             libass
-             libdvdcss
-             libdvdnav
-             libdvdread
-             libgdata
-             libmediaart
-             libmpeg2
              libhandy
-             liboauth
              libpeas
              libsoup
              libxml2
              libxrandr
              libxtst
              libxxf86vm
-             pipewire
              python
              python-pygobject
-             rest-next
-             tracker
-             tracker-miners
              totem-pl-parser
              vala
              xorgproto))
@@ -6837,7 +6809,7 @@ discovery protocols.")
         ;; Disable automatic GStreamer plugin installation via PackageKit and
         ;; all that.
         #:configure-flags
-         ;; Do not build .a files for the plugins, it's completely useless.
+        ;; Do not build .a files for the plugins, it's completely useless.
         ;; This saves 2 MiB.
         #~(list "--default-library" "shared")
         #:phases
