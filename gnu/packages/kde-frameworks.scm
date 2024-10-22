@@ -1320,6 +1320,9 @@ of applications that follow the Kirigami Human Interface Guidelines.")
               (sha256
                (base32
                 "1q69b1qd2qs9hpwgw0y0ig93ag41l50dghribsnqhi0c9aklsn4b"))))
+    (arguments
+     ;; Tests require an OpenGL context
+     (list #:tests? #f))
     (native-inputs
      (list extra-cmake-modules qttools-5))
     (inputs
