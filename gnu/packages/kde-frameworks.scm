@@ -311,11 +311,12 @@ Phonon-GStreamer is a backend based on the GStreamer multimedia library.")
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "-DPHONON_BUILD_QT6=OFF")))
+           #~(list "-DPHONON_BUILD_QT5=OFF"
+                   "-DPHONON_BUILD_QT6=ON")))
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools))
     (inputs
-     (list phonon qtbase-5 vlc))
+     (list phonon qtbase vlc))
     (home-page "https://community.kde.org/Phonon")
     (synopsis "Phonon backend which uses VLC")
     (description "Phonon makes use of backend libraries to provide sound.
