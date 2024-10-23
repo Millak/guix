@@ -1921,7 +1921,7 @@ event loops it also provides lenses and cursors.")
 (define-public atomic-queue
   (package
     (name "atomic-queue")
-    (version "1.0")
+    (version "1.6.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1930,7 +1930,7 @@ event loops it also provides lenses and cursors.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ssff73wlvrsk2nma99dmvm0ijyzfr54jk37kxgpb694r7ajc90l"))))
+                "1qr9wi017pb62cfga91prxgqjsz4y2jr8fyp4dvfccwr2pynwrnh"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dbenchmarks=false")
