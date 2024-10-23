@@ -131,6 +131,7 @@ Copyright @copyright{} 2024 Dariqq@*
 Copyright @copyright{} 2024 Denis 'GNUtoo' Carikli@*
 Copyright @copyright{} 2024 Fabio Natali@*
 Copyright @copyright{} 2024 Arnaud Daby-Seesaram@*
+Copyright @copyright{} 2024 Wilko Meyer@*
 Copyright @copyright{} 2024-2025 Nigko Yerden@*
 Copyright @copyright{} 2024 Troy Figiel@*
 Copyright @copyright{} 2024 Sharlatan Hellseher@*
@@ -431,6 +432,7 @@ Services
 * DNS Services::                DNS daemons.
 * VNC Services::                VNC daemons.
 * VPN Services::                VPN daemons.
+* DAV Services::                DAV daemons.
 * Network File System::         NFS related services.
 * Samba Services::              Samba services.
 * Continuous Integration::      Cuirass and Laminar services.
@@ -19882,6 +19884,7 @@ declaration.
 * DNS Services::                DNS daemons.
 * VNC Services::                VNC daemons.
 * VPN Services::                VPN daemons.
+* DAV Services::                DAV daemons.
 * Network File System::         NFS related services.
 * Samba Services::              Samba services.
 * Continuous Integration::      Cuirass and Laminar services.
@@ -37735,6 +37738,60 @@ a firewall.
 
 @end table
 @end deftp
+
+@node DAV Services
+@subsection DAV Services
+@cindex CalDAV
+
+@defvar xandikos-service-type
+This service starts @code{xandikos}, a lightweight CardDAV/CalDAV
+server backed by a Git repository.
+
+The service's value is a @code{xandikos-configuration} record.
+@end defvar
+
+@deftp {Data Type} xandikos-configuration
+This is the data type representing the configuration for the
+@code{xandikos-shepherd-service}.
+
+It has the following parameters:
+
+@table @asis
+@item @code{package} (default: @code{xandikos})
+The @code{xandikos} package to use.
+
+@item @code{directory} (default: @code{"/var/xandikos/dav"})
+The directory to serve from.
+
+@item @code{listen-address} (default: @code{127.0.0.1})
+The address @command{xandikos} listens on.
+
+@item @code{port} (default: @code{8080})
+The port to run @command{xandikos} on.
+
+@item @code{current-user-principal} (default: @code{"/user/"})
+Path to current user principal.
+
+@item @code{route-prefix} (default: @code{"/"})
+Path to @command{xandikos} (useful when Xandikos is behind a reverse proxy).
+
+@item @code{defaults?} (default: @code{#t})
+Create initial calendar and address book.  Implies @option{--autocreate}.
+
+@item @code{dump?} (default: @code{#f})
+Print DAV XML request/responses.
+
+@item @code{avahi?} (default: @code{#f})
+Announce services with avahi.
+
+@item @code{autocreate?} (default: @code{#f})
+Automatically create necessary directories.
+
+@item @code{no-strict?} (default: @code{#f})
+Enable workarounds for buggy CalDAV/CardDAV client implementations.
+@end table
+@end deftp
+
 
 @node Network File System
 @subsection Network File System

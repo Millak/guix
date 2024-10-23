@@ -67,6 +67,7 @@
 # Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 # Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 # Copyright © 2024 Fabio Natali <me@fabionatali.com>
+# Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 # Copyright © 2024 Noé Lopez <noelopez@free.fr>
 # Copyright © 2024 Runciter <runciter@whispers-vpn.org>
 # Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
@@ -735,6 +736,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/cuirass.scm			\
   %D%/services/cups.scm				\
   %D%/services/databases.scm			\
+  %D%/services/dav.scm				\
   %D%/services/dbus.scm				\
   %D%/services/desktop.scm			\
   %D%/services/dict.scm				\
