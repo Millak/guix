@@ -2664,7 +2664,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "7.17.3")
+    (version "7.22.2")
     (source
      (origin
        (method git-fetch)
@@ -2673,7 +2673,7 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cvs9nqwx3cqsazxwk9jxlq2bys00zpljhrsbp0sdsnc64ya2din"))))
+        (base32 "02m9kqkk9alnib51b67zssm8126c6ljsy4zfy1sz3zz5z3w10l0w"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen graphviz pkg-config))
@@ -2690,7 +2690,10 @@ voice formats.")
            faad2
            ffmpeg
            fftwf
+           flac
+           ggmorse
            hackrf
+           hamlib
            hidapi
            libdab
            libusb
@@ -2702,11 +2705,13 @@ voice formats.")
            qtcharts
            qtdeclarative-5
            qtgamepad
+           qtgraphicaleffects
            qtlocation-5
            qtmultimedia-5
            qtquickcontrols2-5
            qtserialport-5
            qtspeech-5
+           qtsvg-5
            qtwebchannel-5
            qtwebengine-5
            qtwebsockets-5
@@ -2742,6 +2747,9 @@ voice formats.")
          (add-after 'unpack 'fix-CPU-extension-detection
            ;; ‘Fix’ in the static sense.  TODO: Make this -tune'able.
            (lambda _
+             (substitute* "CMakeLists.txt"
+               (("set\\(ARCH_OPT \"native\"")
+                "set(ARCH_OPT \"\""))
              (let ((file "cmake/Modules/DetectArchitecture.cmake"))
                ;; Disable all build-time CPU extension detection…
                (substitute* file
