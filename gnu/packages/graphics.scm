@@ -37,6 +37,7 @@
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1642,7 +1643,9 @@ in Julia).")
               (setenv "HOME" (getcwd))
               (with-directory-excursion "unix"
                 (substitute* "prebuild.sh"
-                  (("/bin/sh") (which "sh")))
+                  (("/bin/sh") (which "sh"))
+                  ;; Make test run non-interactive.
+                  (("biscuit.pov -f \\+d \\+p \\+v") "biscuit.pov -f +v"))
                 (invoke "sh" "prebuild.sh"))))
           ;; The bootstrap script is run by the prebuild script in the
           ;; "run-prebuild" phase.
