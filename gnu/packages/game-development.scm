@@ -2554,10 +2554,12 @@ joystick support.")))
               (patches (search-patches "plib-CVE-2011-4620.patch"
                                        "plib-CVE-2012-4552.patch"))))
     (build-system gnu-build-system)
-    (inputs
-     (list mesa libxi libxmu))
-    (native-inputs
-     (list pkg-config))
+    ;; plib exists only as a static library, per the author's choice (see:
+    ;; https://sourceforge.net/p/plib/mailman/message/10289018/).  Build it
+    ;; with PIC, so that shared programs can at least "link" to it.
+    (arguments (list #:configure-flags #~(list "CXXFLAGS=-fPIC")))
+    (native-inputs (list autoconf automake pkg-config))
+    (inputs (list mesa libxi libxmu))
     (home-page "https://plib.sourceforge.net/")
     (synopsis "Suite of portable game libraries")
     (description "PLIB is a set of libraries that will permit programmers to
