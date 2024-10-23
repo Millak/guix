@@ -7797,6 +7797,129 @@ challenging battles, and developing characters with your own tailored mix of
 abilities and powers.")
     (license license:gpl3+)))
 
+(define-public torcs
+  (package
+    (name "torcs")
+    (version "1.3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://sourceforge.net/projects/" name
+                           "/files/all-in-one/" version "/"
+                           name "-" version ".tar.bz2/download"))
+       (sha256
+        (base32
+         "0kdq0sc7dsfzlr0ggbxggcbkivc6yp30nqwjwcaxg9295s3b06wa"))
+       (patches (search-patches "torcs-isnan.patch"
+                                "torcs-nullptr.patch"
+                                "torcs-glibc-default-source.patch"))
+       (snippet
+        '(begin
+           (use-modules (guix build utils)
+                        (ice-9 ftw)
+                        (ice-9 regex)
+                        (srfi srfi-26))
+           ;; Delete Windows-specific sources and pre-built binaries.
+           (delete-file-recursively "src/windows")
+           ;; The license of the kw-* and pw-* car models includes a
+           ;; non-commercial clause, hence does not comply with the GNU FSDG.
+           (with-directory-excursion "data/cars/models"
+             (for-each delete-file-recursively
+                       (scandir "." (cut string-match "^(kc|pw)-" <>))))
+           ;; Delete extraneous CVS directories.
+           (for-each delete-file-recursively
+                     (find-files "." (lambda (file stat)
+                                       (and (eq? 'directory (stat:type stat))
+                                            (string=? "CVS" (basename file))))
+                                 #:directories? #t))))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; Building in parallel fails due to a race where include files have not
+     ;; yet been generated, with errors such as "controlconfig.cpp:30:10:
+     ;; fatal error: tgfclient.h: No such file or directory".  The issue was
+     ;; reported to the 'torcs-devel' mailing list (see:
+     ;; https://sourceforge.net/p/torcs/mailman/torcs-devel/).
+     (list #:modules `(,@%default-gnu-modules (srfi srfi-26))
+           #:parallel-build? #f
+           #:tests? #f                  ;no test suite
+           ;; Ensure the binaries find libraries provided by this very package
+           ;; (see: https://issues.guix.gnu.org/73979).
+           #:configure-flags
+           #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output
+                                  "/lib/torcs/lib"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-commands
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/linux/torcs.in"
+                     (("/bin/bash")
+                      (search-input-file inputs "bin/bash")))))
+               (add-after 'install 'install-data
+                 (lambda _
+                   (invoke "make" "datainstall")))
+               (add-after 'install-data 'install-doc
+                 (lambda _
+                   (let ((docdir (string-append #$output "/share/doc/torcs/"))
+                         (man6 (string-append #$output "/share/man/man6")))
+                     (for-each (cut install-file <> man6)
+                               (find-files "doc/man" "\\.6$"))
+                     (install-file "doc/userman/how_to_drive.html" docdir)
+                     (install-file "doc/faq/faq.html" docdir)
+                     (copy-recursively "doc/userman/images"
+                                       (string-append docdir "/images")))))
+               (add-after 'install 'install-freedesktop-entry
+                 (lambda _
+                   (let ((iconsdir (string-append #$output "/share/icons/hicolor/"
+                                                  "48x48/apps")))
+                     (mkdir-p iconsdir)
+                     (copy-file "Ticon.png" (string-append iconsdir "/torcs.png")))
+                   (install-file "torcs.desktop"
+                                 (string-append #$output
+                                                "/share/applications/"))))
+               (add-after 'install 'fix-permissions
+                 ;; XXX: Otherwise, the guix daemon reports: "suspicious
+                 ;; ownership or permission on /gnu/store/xxx-torcs-1.3.7',
+                 ;; rejecting this build output".
+                 (lambda _
+                   (chmod #$output #o744))))))
+    (inputs
+     (list bash-minimal
+           freealut
+           freeglut
+           libice
+           libpng
+           libsm
+           libvorbis
+           libxi
+           libxmu
+           libxrandr
+           libxrender
+           libxt
+           mesa
+           openal
+           plib
+           zlib))
+    (home-page "https://sourceforge.net/projects/torcs/")
+    (synopsis "Car racing simulator")
+    (description "TORCS stands for The Open Racing Car Simulator.  It can be
+used as an ordinary car racing game, as an artificial intelligence (AI) racing
+game, or as a research platform.  The game has features such as:
+@itemize
+@item Input support for a driving wheel, joystick, keyboard or mouse
+@item More than 30 car models
+@item 30 tracks
+@item 50 opponents to race against
+@item Lighting, smoke, skidmarks and glowing brake disks graphics
+@item Simple damage model and collisions
+@item Tire and wheel properties (springs, dampers, stiffness, etc.)
+@item Aerodynamics (ground effect, spoilers, etc.)
+@end itemize
+The difficulty level can be configured, impacting how much damage is caused by
+collisions and the level of traction the car has on the track, which makes the
+game fun for both novice and experts.")
+    (license (list license:gpl2+        ;source and most assets
+                   license:fdl1.2+))))  ;how_to_drive.html, faq.html
+
 (define-public quakespasm
   (package
     (name "quakespasm")

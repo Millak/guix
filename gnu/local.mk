@@ -2236,6 +2236,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/tla2tools-build-xml.patch		\
   %D%/packages/patches/tlf-support-hamlib-4.2+.patch		\
   %D%/packages/patches/tofi-32bit-compat.patch			\
+  %D%/packages/patches/torcs-glibc-default-source.patch		\
+  %D%/packages/patches/torcs-isnan.patch			\
+  %D%/packages/patches/torcs-nullptr.patch			\
   %D%/packages/patches/tpetra-remove-duplicate-using.patch	\
   %D%/packages/patches/transcode-ffmpeg.patch	\
   %D%/packages/patches/transmission-4.0.6-fix-build.patch	\
