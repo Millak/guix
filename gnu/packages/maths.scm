@@ -1466,33 +1466,6 @@ plotting engine by third-party applications like Octave.")
 C++ with a C API.  It contains a LU and LLt solver, and a few other things.")
     (license license:gpl2+)))
 
-(define-public primesieve
-  (package
-    (name "primesieve")
-    (version "12.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/kimwalisch/primesieve")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1lxvs1jgch0zgpa5axx6zlvgab4rmm3lqpbah75072xpj8ndhhld"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:configure-flags #~(list "-DBUILD_STATIC_LIBS=off"
-                                     "-DBUILD_TESTS=ON")))
-    (home-page "https://github.com/kimwalisch/primesieve")
-    (synopsis "Prime number generator")
-    (description "@code{primesieve} is a command-line program and C/C++
- library for quickly generating prime numbers.  It is very cache efficient,
- it detects your CPU's L1 & L2 cache sizes and allocates its main data
- structures accordingly.  It is also multi-threaded by default, it uses all
- available CPU cores whenever possible i.e. if sequential ordering is not
- required. primesieve can generate primes and prime k-tuplets up to 264.")
-    (license license:bsd-2)))
-
 (define-public cminpack
   (package
     (name "cminpack")
@@ -2349,37 +2322,6 @@ software library that provides an implementation of the interface.  The netCDF
 library defines a machine-independent format for representing scientific data.
 Together, the interface, library, and format support the creation, access, and
 sharing of scientific data.")
-    (license (license:x11-style "file://COPYRIGHT"))))
-
-(define-public pnetcdf
-  (package
-    (name "pnetcdf")
-    (version "1.13.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://parallel-netcdf.github.io/Release/pnetcdf-"
-             version ".tar.gz"))
-       (sha256
-        (base32
-         "14f4nbcnw80y59cl0kjpxqqfaxzzd62kixnhb6ihp6aigb3z385b"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags
-           #~(list "--enable-shared"
-                   (string-append "--with-mpi=" #$(this-package-input "openmpi")))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'build 'mpi-setup
-                 #$%openmpi-setup))))
-    (inputs (list openmpi))
-    (native-inputs (list m4))
-    (home-page "https://parallel-netcdf.github.io/")
-    (synopsis "Parallel I/O Library for NetCDF File Access")
-    (description "PnetCDF is a high-performance parallel I/O library for accessing
-Unidata's NetCDF, files in classic formats, specifically the formats of CDF-1, 2, and
-5.")
     (license (license:x11-style "file://COPYRIGHT"))))
 
 (define-public netcdf-parallel-openmpi
@@ -3340,54 +3282,6 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
 supports the propositional fragment of PDDL2.2.")
     (license license:gpl3+)))
 
-(define-public popf
-  (package
-    (name "popf")
-    (version "0.0.15")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/fmrico/popf")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1i1am3h6japn8fgapi5s5mnyrm31a05jkjhzgk48cd2n42c5060v"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ; no tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-cmake
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* (find-files "." "CMakeLists\\.txt")
-                (("/usr/local/opt/flex/include")
-                 (dirname (search-input-file inputs "include/FlexLexer.h"))))
-              (substitute* "CMakeLists.txt"
-                (("find_package\\(ament_cmake REQUIRED\\)") "")
-                (("ament_.*") "")
-                (("(RUNTIME DESTINATION) .*" all dst)
-                 (string-append dst " libexec/${PROJECT_NAME}")))))
-          (add-after 'install 'symlink
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out")))
-                (mkdir-p (string-append out "/bin"))
-                (for-each (lambda (link)
-                            (symlink
-                             (string-append out "/libexec/popf/" (cdr link))
-                             (string-append out "/bin/" (car link))))
-                          '(("popf" . "popf") ("VAL" . "validate")))))))))
-    (inputs (list cbc flex))
-    (native-inputs (list flex bison perl))
-    (home-page "https://github.com/fmrico/popf")
-    (synopsis "Forward-chaining temporal planner")
-    (description "This package contains an implementation of the @acronym{POPF,
-Partial Order Planning Forwards} planner described in @cite{Forward-Chaining
-Partial Order Planning}, that has been updated to compile with newer C++
-compilers.")
-    (license license:gpl2+)))
-
 (define-public gmsh
   (package
     (name "gmsh")
@@ -3768,6 +3662,150 @@ scientific applications modeled by partial differential equations.")
             (add-before 'configure 'mpi-setup
               #$%openmpi-setup)))))
     (synopsis "Library to solve PDEs (with complex scalars and MPI support)")))
+
+(define-public pnetcdf
+  (package
+    (name "pnetcdf")
+    (version "1.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://parallel-netcdf.github.io/Release/pnetcdf-"
+             version ".tar.gz"))
+       (sha256
+        (base32
+         "14f4nbcnw80y59cl0kjpxqqfaxzzd62kixnhb6ihp6aigb3z385b"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-shared"
+                   (string-append "--with-mpi=" #$(this-package-input "openmpi")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'mpi-setup
+                 #$%openmpi-setup))))
+    (inputs (list openmpi))
+    (native-inputs (list m4))
+    (home-page "https://parallel-netcdf.github.io/")
+    (synopsis "Parallel I/O Library for NetCDF File Access")
+    (description "PnetCDF is a high-performance parallel I/O library for accessing
+Unidata's NetCDF, files in classic formats, specifically the formats of CDF-1, 2, and
+5.")
+    (license (license:x11-style "file://COPYRIGHT"))))
+
+(define-public popf
+  (package
+    (name "popf")
+    (version "0.0.15")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fmrico/popf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i1am3h6japn8fgapi5s5mnyrm31a05jkjhzgk48cd2n42c5060v"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "." "CMakeLists\\.txt")
+                (("/usr/local/opt/flex/include")
+                 (dirname (search-input-file inputs "include/FlexLexer.h"))))
+              (substitute* "CMakeLists.txt"
+                (("find_package\\(ament_cmake REQUIRED\\)") "")
+                (("ament_.*") "")
+                (("(RUNTIME DESTINATION) .*" all dst)
+                 (string-append dst " libexec/${PROJECT_NAME}")))))
+          (add-after 'install 'symlink
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (mkdir-p (string-append out "/bin"))
+                (for-each (lambda (link)
+                            (symlink
+                             (string-append out "/libexec/popf/" (cdr link))
+                             (string-append out "/bin/" (car link))))
+                          '(("popf" . "popf") ("VAL" . "validate")))))))))
+    (inputs (list cbc flex))
+    (native-inputs (list flex bison perl))
+    (home-page "https://github.com/fmrico/popf")
+    (synopsis "Forward-chaining temporal planner")
+    (description "This package contains an implementation of the @acronym{POPF,
+Partial Order Planning Forwards} planner described in @cite{Forward-Chaining
+Partial Order Planning}, that has been updated to compile with newer C++
+compilers.")
+    (license license:gpl2+)))
+
+(define-public ppl
+  (package
+    (name "ppl")
+    (version "1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.bugseng.com/products/ppl/download/"
+                           "ftp/releases/" version
+                           "/ppl-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1j5aji1g2vmdvc0gqz45n2ll2l2f6czca04wiyfl5g3sm3a6vhvb"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list m4))
+    (inputs
+     (list glpk gmp))
+    (home-page "https://www.bugseng.com/parma-polyhedra-library")
+    (synopsis
+     "Parma Polyhedra Library for computations with polyhedra")
+    (description
+     "The Parma Polyhedra Library (PPL) provides numerical abstractions
+especially targeted at applications in the field of analysis and
+verification of complex systems.  These abstractions include convex
+polyhedra, defined as the intersection of a finite number of (open or
+closed) halfspaces, each described by a linear inequality (strict or
+non-strict) with rational coefficients; some special classes of polyhedra
+shapes that offer interesting complexity/precision tradeoffs; and grids
+which represent regularly spaced points that satisfy a set of linear
+congruence relations.  The library also supports finite powersets and
+products of (any kind of) polyhedra and grids, a mixed integer linear
+programming problem solver using an exact-arithmetic version of the simplex
+algorithm, a parametric integer programming solver, and primitives for
+termination analysis via the automatic synthesis of linear ranking
+functions.")
+    (license license:gpl3+)))
+
+(define-public primesieve
+  (package
+    (name "primesieve")
+    (version "12.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kimwalisch/primesieve")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lxvs1jgch0zgpa5axx6zlvgab4rmm3lqpbah75072xpj8ndhhld"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_STATIC_LIBS=off"
+                                     "-DBUILD_TESTS=ON")))
+    (home-page "https://github.com/kimwalisch/primesieve")
+    (synopsis "Prime number generator")
+    (description "@code{primesieve} is a command-line program and C/C++
+ library for quickly generating prime numbers.  It is very cache efficient,
+ it detects your CPU's L1 & L2 cache sizes and allocates its main data
+ structures accordingly.  It is also multi-threaded by default, it uses all
+ available CPU cores whenever possible i.e. if sequential ordering is not
+ required. primesieve can generate primes and prime k-tuplets up to 264.")
+    (license license:bsd-2)))
 
 (define-public python-petsc4py
   (package
@@ -8945,44 +8983,6 @@ command-line tools, and an Application Programming Interface (API).
 This package provides the static libraries required to run programs
 compiled against the nauty library.")
     (license license:asl2.0)))
-
-(define-public ppl
-  (package
-    (name "ppl")
-    (version "1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.bugseng.com/products/ppl/download/"
-                           "ftp/releases/" version
-                           "/ppl-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1j5aji1g2vmdvc0gqz45n2ll2l2f6czca04wiyfl5g3sm3a6vhvb"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list m4))
-    (inputs
-     (list glpk gmp))
-    (home-page "https://www.bugseng.com/parma-polyhedra-library")
-    (synopsis
-     "Parma Polyhedra Library for computations with polyhedra")
-    (description
-     "The Parma Polyhedra Library (PPL) provides numerical abstractions
-especially targeted at applications in the field of analysis and
-verification of complex systems.  These abstractions include convex
-polyhedra, defined as the intersection of a finite number of (open or
-closed) halfspaces, each described by a linear inequality (strict or
-non-strict) with rational coefficients; some special classes of polyhedra
-shapes that offer interesting complexity/precision tradeoffs; and grids
-which represent regularly spaced points that satisfy a set of linear
-congruence relations.  The library also supports finite powersets and
-products of (any kind of) polyhedra and grids, a mixed integer linear
-programming problem solver using an exact-arithmetic version of the simplex
-algorithm, a parametric integer programming solver, and primitives for
-termination analysis via the automatic synthesis of linear ranking
-functions.")
-    (license license:gpl3+)))
 
 (define-public speedcrunch
   (package
