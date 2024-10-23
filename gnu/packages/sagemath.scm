@@ -106,6 +106,56 @@ function for every found clique.")
     (license license:gpl2+)
     (home-page "https://users.aalto.fi/~pat/cliquer.html")))
 
+(define-public libbraiding
+  (package
+    (name "libbraiding")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://github.com/miguelmarco/"
+                                  name))
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0l68rikfr7k2l547gb3pp3g8cj5zzxwipm79xrb5r8ffj466ydxg"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool))
+    (synopsis "Computations with braid groups")
+    (description "libbraiding performs computations with braid groups,
+in particular it computes normal forms of group elements.")
+    (license license:gpl2+)
+    (home-page "https://github.com/miguelmarco/libbraiding")))
+
+(define-public libhomfly
+  (package
+    (name "libhomfly")
+    (version "1.02r6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://github.com/miguelmarco/"
+                                  name))
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0sv3cwrf9v9sb5a8wbhjmarxvya13ma3j8y8592f9ymxlk5y0ldk"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool))
+    (inputs
+     (list libgc))
+    (synopsis "Computation of homfly polynomials of links")
+    (description "libhomfly computes homfly polynomials of links,
+represented as strings.")
+    (license license:public-domain)
+    (home-page "https://github.com/miguelmarco/libhomfly")))
+
 (define-public python-cypari2
   (package
     (name "python-cypari2")
@@ -186,56 +236,6 @@ libraries GMO, MPFR and MPC.")
 @item @code{aligned_calloc}
 @item @code{aligned_allocarray}")
     (license license:gpl3+)))
-
-(define-public libbraiding
-  (package
-    (name "libbraiding")
-    (version "1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url (string-append "https://github.com/miguelmarco/"
-                                  name))
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0l68rikfr7k2l547gb3pp3g8cj5zzxwipm79xrb5r8ffj466ydxg"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool))
-    (synopsis "Computations with braid groups")
-    (description "libbraiding performs computations with braid groups,
-in particular it computes normal forms of group elements.")
-    (license license:gpl2+)
-    (home-page "https://github.com/miguelmarco/libbraiding")))
-
-(define-public libhomfly
-  (package
-    (name "libhomfly")
-    (version "1.02r6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url (string-append "https://github.com/miguelmarco/"
-                                  name))
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0sv3cwrf9v9sb5a8wbhjmarxvya13ma3j8y8592f9ymxlk5y0ldk"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool))
-    (inputs
-     (list libgc))
-    (synopsis "Computation of homfly polynomials of links")
-    (description "libhomfly computes homfly polynomials of links,
-represented as strings.")
-    (license license:public-domain)
-    (home-page "https://github.com/miguelmarco/libhomfly")))
 
 (define-public python-pplpy
   (package
