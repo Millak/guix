@@ -419,47 +419,6 @@ triangulations.")
     (license (license:non-copyleft "file://COPYING.txt"
                                    "See COPYING in the distribution."))))
 
-(define-public python-cvxopt
-  (package
-    (name "python-cvxopt")
-    (version "1.2.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/cvxopt/cvxopt")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "114z34wwx1bsv4q6xj9p5q99dffgnj9s4i4arx10g191xq9q8i5y"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'find-libraries
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CVXOPT_BLAS_LIB" "openblas")
-             (setenv "CVXOPT_LAPACK_LIB" "openblas")
-             (setenv "CVXOPT_BUILD_FFTW" "1")
-             (setenv "CVXOPT_BUILD_GLPK" "1")
-             (setenv "CVXOPT_BUILD_GSL" "1")
-             #t)))))
-    (inputs
-     (list fftw
-           glpk
-           gsl
-           openblas
-           suitesparse))
-    (home-page "https://www.cvxopt.org")
-    (synopsis "Python library for convex optimization")
-    (description
-     "CVXOPT is a package for convex optimization based on the Python
-programming language.  Its main purpose is to make the development of software
-for convex optimization applications straightforward by building on Python’s
-extensive standard library and on the strengths of Python as a high-level
-programming language.")
-    (license license:gpl3+)))
-
 (define-public units
   (package
    (name "units")
@@ -880,63 +839,6 @@ LP/MIP solver is included in the package.")
       (sha256
        (base32
         "040sfaa9jclg2nqdh83w71sv9rc1sznpnfiripjdyr48cady50a2"))))))
-
-(define-public python-libensemble
-  (package
-    (name "python-libensemble")
-    (version "1.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "libensemble" version))
-       (sha256
-        (base32 "0qxb0sn624jaxjxg2ayd65zaiq1p043w3kk55w8r6drkjiar70yj"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list ncurses
-                         python-mock
-                         python-mpi4py
-                         python-pytest
-                         python-pytest-cov
-                         python-pytest-timeout))
-    (propagated-inputs (list python-mpmath
-                             python-numpy
-                             python-psutil
-                             python-pydantic-2
-                             python-pyyaml
-                             python-tomli))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-psutil
-            (lambda _
-              (substitute* "setup.py"
-                (("psutil>=5.9.4") "psutil>=5.9.2"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; These files require MPI and call subprocesses.
-                (delete-file
-                 "libensemble/tests/unit_tests/test_executor.py")
-                (delete-file
-                 "libensemble/tests/unit_tests/test_executor_gpus.py")
-                ;; This file has one failing MPI test but since tests run from
-                ;; a shell script, they can't be disabled individually.
-                ;; Failing test: 'test_ensemble_prevent_comms_overwrite'
-                (delete-file "libensemble/tests/unit_tests/test_ensemble.py")
-                (setenv "TERM" "xterm")
-                ;; A very bad way to skip another MPI test.
-                (substitute* "libensemble/tests/run-tests.sh"
-                  (("export UNIT_TEST_MPI_SUBDIR=.*")
-                   "export UNIT_TEST_MPI_SUBDIR=''"))
-                ;; Run only unit tests, regression tests require MPI.
-                (invoke "bash" "libensemble/tests/run-tests.sh" "-u")))))))
-    (home-page "https://github.com/Libensemble/libensemble")
-    (synopsis "Toolkit for dynamic ensembles of calculations")
-    (description "@code{libensemble} is a complete toolkit for dynamic
-ensembles of calculations.  It connects @code{deciders} to experiments or
-simulations.")
-    (license license:bsd-3)))
 
 (define-public linasm
   (package
@@ -3807,67 +3709,6 @@ functions.")
  required. primesieve can generate primes and prime k-tuplets up to 264.")
     (license license:bsd-2)))
 
-(define-public python-petsc4py
-  (package
-    (name "python-petsc4py")
-    (version "3.21.4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "petsc4py" version))
-        (sha256
-          (base32
-           "1kffxhcwkx6283n2p83ymanz6m8j2xmz5kpa5s8qc4f9iiah59sb"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'set-PETSC_DIR
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Define path to PETSc installation.
-                   (setenv "PETSC_DIR"
-                           (assoc-ref inputs "petsc-openmpi"))))
-               (add-before 'check 'mpi-setup
-                 #$%openmpi-setup)
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python" "test/runtests.py")))))))
-    (native-inputs (list python-cython-3))
-    (inputs (list petsc-openmpi python-numpy))
-    (home-page "https://bitbucket.org/petsc/petsc4py/")
-    (synopsis "Python bindings for PETSc")
-    (description "PETSc, the Portable, Extensible Toolkit for
-Scientific Computation, is a suite of data structures and routines for
-the scalable (parallel) solution of scientific applications modeled by
-partial differential equations.  It employs the MPI standard for all
-message-passing communication.  @code{petsc4py} provides Python
-bindings to almost all functions of PETSc.")
-    (license license:bsd-3)))
-
-(define-public python-kiwisolver
-  (package
-    (name "python-kiwisolver")
-    (version "1.4.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "kiwisolver" version))
-              (sha256
-               (base32
-                "1v6nc0z9dg4am0bibji9pijci9f15z68mwrlv91a28pvawx5czp5"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-typing-extensions))
-    (native-inputs (list python-cppy python-pytest python-setuptools-scm))
-    (home-page "https://github.com/nucleic/kiwi")
-    (synopsis "Fast implementation of the Cassowary constraint solver")
-    (description
-     "Kiwi is an efficient C++ implementation of the Cassowary constraint
-solving algorithm.  Kiwi has been designed from the ground up to be
-lightweight and fast.  Kiwi ranges from 10x to 500x faster than the original
-Cassowary solver with typical use cases gaining a 40x improvement.  Memory
-savings are consistently > 5x.")
-    (license license:bsd-3)))
-
 (define-public python-accupy
   (package
     (name "python-accupy")
@@ -3908,6 +3749,168 @@ savings are consistently > 5x.")
 and (dot) products.  It implements Kahan summation, Shewchuck's
 algorithm and summation in K-fold precision.")
     (license license:gpl3+)))
+
+;; It is unfortunate that we cannot just link with the existing blis package.
+(define-public python-blis
+  (package
+    (name "python-blis")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "blis" version))
+              (sha256
+               (base32
+                "0vrnzk9jx7fcl56q6zpa4w4mxkr4iknxs42fngn9g78zh1kc9skw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'build 'build-ext
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace"
+                     "-j" (number->string (parallel-job-count))))))))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-cython python-pytest))
+    (home-page "https://github.com/explosion/cython-blis")
+    (synopsis "Blis as a self-contained C-extension for Python")
+    (description
+     "This package provides the Blis BLAS-like linear algebra library, as a
+self-contained C-extension for Python.")
+    (license license:bsd-3)))
+
+(define-public python-blis-for-thinc
+  (package
+    (inherit python-blis)
+    (name "python-blis")
+    (version "0.7.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "blis" version))
+              (sha256
+               (base32
+                "0mvcif9g69424bk8xiflacxzpvz802ns791v2r8a6fij0sxl3mgp"))))))
+
+(define-public python-cvxopt
+  (package
+    (name "python-cvxopt")
+    (version "1.2.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cvxopt/cvxopt")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "114z34wwx1bsv4q6xj9p5q99dffgnj9s4i4arx10g191xq9q8i5y"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'find-libraries
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CVXOPT_BLAS_LIB" "openblas")
+             (setenv "CVXOPT_LAPACK_LIB" "openblas")
+             (setenv "CVXOPT_BUILD_FFTW" "1")
+             (setenv "CVXOPT_BUILD_GLPK" "1")
+             (setenv "CVXOPT_BUILD_GSL" "1")
+             #t)))))
+    (inputs
+     (list fftw
+           glpk
+           gsl
+           openblas
+           suitesparse))
+    (home-page "https://www.cvxopt.org")
+    (synopsis "Python library for convex optimization")
+    (description
+     "CVXOPT is a package for convex optimization based on the Python
+programming language.  Its main purpose is to make the development of software
+for convex optimization applications straightforward by building on Python’s
+extensive standard library and on the strengths of Python as a high-level
+programming language.")
+    (license license:gpl3+)))
+
+(define-public python-kiwisolver
+  (package
+    (name "python-kiwisolver")
+    (version "1.4.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "kiwisolver" version))
+              (sha256
+               (base32
+                "1v6nc0z9dg4am0bibji9pijci9f15z68mwrlv91a28pvawx5czp5"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-typing-extensions))
+    (native-inputs (list python-cppy python-pytest python-setuptools-scm))
+    (home-page "https://github.com/nucleic/kiwi")
+    (synopsis "Fast implementation of the Cassowary constraint solver")
+    (description
+     "Kiwi is an efficient C++ implementation of the Cassowary constraint
+solving algorithm.  Kiwi has been designed from the ground up to be
+lightweight and fast.  Kiwi ranges from 10x to 500x faster than the original
+Cassowary solver with typical use cases gaining a 40x improvement.  Memory
+savings are consistently > 5x.")
+    (license license:bsd-3)))
+
+(define-public python-libensemble
+  (package
+    (name "python-libensemble")
+    (version "1.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "libensemble" version))
+       (sha256
+        (base32 "0qxb0sn624jaxjxg2ayd65zaiq1p043w3kk55w8r6drkjiar70yj"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list ncurses
+                         python-mock
+                         python-mpi4py
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-timeout))
+    (propagated-inputs (list python-mpmath
+                             python-numpy
+                             python-psutil
+                             python-pydantic-2
+                             python-pyyaml
+                             python-tomli))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-psutil
+            (lambda _
+              (substitute* "setup.py"
+                (("psutil>=5.9.4") "psutil>=5.9.2"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; These files require MPI and call subprocesses.
+                (delete-file
+                 "libensemble/tests/unit_tests/test_executor.py")
+                (delete-file
+                 "libensemble/tests/unit_tests/test_executor_gpus.py")
+                ;; This file has one failing MPI test but since tests run from
+                ;; a shell script, they can't be disabled individually.
+                ;; Failing test: 'test_ensemble_prevent_comms_overwrite'
+                (delete-file "libensemble/tests/unit_tests/test_ensemble.py")
+                (setenv "TERM" "xterm")
+                ;; A very bad way to skip another MPI test.
+                (substitute* "libensemble/tests/run-tests.sh"
+                  (("export UNIT_TEST_MPI_SUBDIR=.*")
+                   "export UNIT_TEST_MPI_SUBDIR=''"))
+                ;; Run only unit tests, regression tests require MPI.
+                (invoke "bash" "libensemble/tests/run-tests.sh" "-u")))))))
+    (home-page "https://github.com/Libensemble/libensemble")
+    (synopsis "Toolkit for dynamic ensembles of calculations")
+    (description "@code{libensemble} is a complete toolkit for dynamic
+ensembles of calculations.  It connects @code{deciders} to experiments or
+simulations.")
+    (license license:bsd-3)))
 
 (define-public python-ndim
   (package
@@ -3973,6 +3976,44 @@ and n-cubes.  All computations are done using numerically stable
 recurrence schemes.  Furthermore, all functions are fully vectorized and
 can return results in exact arithmetic.")
     (license license:gpl3+)))
+
+(define-public python-petsc4py
+  (package
+    (name "python-petsc4py")
+    (version "3.21.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "petsc4py" version))
+        (sha256
+          (base32
+           "1kffxhcwkx6283n2p83ymanz6m8j2xmz5kpa5s8qc4f9iiah59sb"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'set-PETSC_DIR
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Define path to PETSc installation.
+                   (setenv "PETSC_DIR"
+                           (assoc-ref inputs "petsc-openmpi"))))
+               (add-before 'check 'mpi-setup
+                 #$%openmpi-setup)
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python" "test/runtests.py")))))))
+    (native-inputs (list python-cython-3))
+    (inputs (list petsc-openmpi python-numpy))
+    (home-page "https://bitbucket.org/petsc/petsc4py/")
+    (synopsis "Python bindings for PETSc")
+    (description "PETSc, the Portable, Extensible Toolkit for
+Scientific Computation, is a suite of data structures and routines for
+the scalable (parallel) solution of scientific applications modeled by
+partial differential equations.  It employs the MPI standard for all
+message-passing communication.  @code{petsc4py} provides Python
+bindings to almost all functions of PETSc.")
+    (license license:bsd-3)))
 
 (define-public python-quadpy
   (package
@@ -5441,47 +5482,6 @@ access to BLIS implementations via traditional BLAS routine calls.")
     (license license:bsd-3)))
 
 (define ignorance blis)
-
-;; It is unfortunate that we cannot just link with the existing blis package.
-(define-public python-blis
-  (package
-    (name "python-blis")
-    (version "0.9.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "blis" version))
-              (sha256
-               (base32
-                "0vrnzk9jx7fcl56q6zpa4w4mxkr4iknxs42fngn9g78zh1kc9skw"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'build 'build-ext
-           (lambda _
-             (invoke "python" "setup.py" "build_ext" "--inplace"
-                     "-j" (number->string (parallel-job-count))))))))
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list python-cython python-pytest))
-    (home-page "https://github.com/explosion/cython-blis")
-    (synopsis "Blis as a self-contained C-extension for Python")
-    (description
-     "This package provides the Blis BLAS-like linear algebra library, as a
-self-contained C-extension for Python.")
-    (license license:bsd-3)))
-
-(define-public python-blis-for-thinc
-  (package
-    (inherit python-blis)
-    (name "python-blis")
-    (version "0.7.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "blis" version))
-              (sha256
-               (base32
-                "0mvcif9g69424bk8xiflacxzpvz802ns791v2r8a6fij0sxl3mgp"))))))
 
 (define-public openlibm
   (package
