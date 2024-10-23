@@ -80,18 +80,19 @@
          "0alhcdbb83bsqnvy50p9cjnmslxfmxsyk1b66whd62p5a2rp0fx8"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-systemd")
-       #:tests? #f ; XXX: needs /sys/fs/cgroup mounted
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* (find-files "tests" "\\.(c|py)")
-               (("/bin/true") (which "true"))
-               (("/bin/false") (which "false"))
-                                        ; relies on sd_notify which requires systemd?
-               (("\"sd-notify\" : test_sd_notify,") "")
-               (("\"sd-notify-file\" : test_sd_notify_file,") "")))))))
+     (list
+      #:configure-flags #~(list "--disable-systemd")
+      #:tests? #f ; XXX: needs /sys/fs/cgroup mounted
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* (find-files "tests" "\\.(c|py)")
+                (("/bin/true") (which "true"))
+                (("/bin/false") (which "false"))
+                ;; relies on sd_notify which requires systemd?
+                (("\"sd-notify\" : test_sd_notify,") "")
+                (("\"sd-notify-file\" : test_sd_notify_file,") "")))))))
     (inputs
      (list libcap
            libseccomp
