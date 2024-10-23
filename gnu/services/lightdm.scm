@@ -364,7 +364,7 @@ When unspecified, listen on for any hosts/IP addresses.")
    (boolean #f)
    "Whether a VNC server is started.")
   (vnc-server-command
-   (file-like (file-append tigervnc-server "bin/Xvnc"))
+   (file-like (file-append tigervnc-server "/bin/Xvnc"))
    "The Xvnc command to use for the VNC server, it's possible to provide extra
 options not otherwise exposed along the command, for example to disable
 security:
@@ -524,8 +524,7 @@ port=" (number->string vnc-server-port) "\n"
                            (not (= gid (stat:gid st)))))
               (for-each (lambda (file)
                           (chown file uid gid))
-                        (find-files "directory"
-                                    #:directories? #t)))))
+                        (find-files directory #:directories? #t)))))
 
         (when (not (stat "/var/lib/lightdm-data" #f))
           (mkdir-p "/var/lib/lightdm-data"))
