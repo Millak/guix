@@ -3685,7 +3685,7 @@ functions.")
 (define-public primecount
   (package
     (name "primecount")
-    (version "7.13")
+    (version "7.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3694,12 +3694,18 @@ functions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0v3zm6mw4fb6a33zi542x94w1nd54rvn7r8dav670jm9dn60jfsn"))))
+                "097p3wfq6ds56275cra678hzg8cp2vd1ccllsi8wczrf0qvq91rp"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+     (list #:configure-flags #~(list "-DBUILD_LIBPRIMESIEVE=OFF"
+                                     "-DBUILD_MANPAGE=ON"
+                                     "-DBUILD_SHARED_LIBS=ON"
                                      "-DBUILD_STATIC_LIBS=OFF"
                                      "-DBUILD_TESTS=ON")))
+    (native-inputs
+     (list asciidoc))
+    (inputs
+     (list primesieve))
     (home-page "https://github.com/kimwalisch/primecount")
     (synopsis "Fast prime counting function implementations")
     (description "@code{primecount} is a command-line program and C/C++
