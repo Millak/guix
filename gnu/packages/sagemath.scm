@@ -48,6 +48,64 @@
   #:use-module (gnu packages python-xyz))
 
 
+(define-public brial
+  (package
+    (name "brial")
+    (version "1.2.8")
+    (source
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://github.com/BRiAl/BRiAl/")
+             (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "0qhgckd4fvbs40jw14mvw89rccv94d3df27kipd27hxd4cx7y80y"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (inputs
+     (list boost libpng m4ri))
+    (arguments
+    ;; We are missing the boost unit test framework.
+     `(#:tests? #f
+       #:configure-flags (list "--without-boost-unit-test-framework")))
+    (synopsis "Arithmetic of polynomials over boolean rings")
+    (description "BRiAl is the successor to  PolyBoRi maintained by the
+Sage community.  Its core is a C++ library, which provides high-level data
+types for Boolean polynomials and monomials, exponent vectors, as well as
+for the underlying polynomial rings and subsets of the powerset of the
+Boolean variables.  As a unique approach, binary decision diagrams are
+used as internal storage type for polynomial structures.")
+    (license license:gpl2+)
+    (home-page "https://github.com/BRiAl/BRiAl/")))
+
+(define-public cliquer
+  (package
+    (name "cliquer")
+    (version "1.21")
+    ;; The original source package is available from the home page and
+    ;; has not seen any release since 2010; it comes with only a Makefile
+    ;; without an "install" target. Instead, there is an autotoolized
+    ;; tarball available from the Sage project.
+    (source
+     (origin
+       (method url-fetch)
+       (uri "http://users.ox.ac.uk/~coml0531/sage/cliquer-1.21.tar.gz")
+       (sha256
+        (base32
+         "1hdzrmrx0nvvj8kbwxrs8swqgkd284khzl623jizixcv28xb77aq"))))
+    (build-system gnu-build-system)
+    (synopsis "C routines for finding cliques in weighted graphs")
+    (description "Cliquer is a set of reentrant C routines for finding
+cliques in a weighted or unweighted graph.  It uses an exact
+branch-and-bound algorithm.  It can search for maximum or maximum-weight
+cliques or cliques with size or weight within a given range, restrict the
+search to maximal cliques, store cliques in memory and call a user-defined
+function for every found clique.")
+    (license license:gpl2+)
+    (home-page "https://users.aalto.fi/~pat/cliquer.html")))
+
 (define-public python-cypari2
   (package
     (name "python-cypari2")
@@ -129,32 +187,6 @@ libraries GMO, MPFR and MPC.")
 @item @code{aligned_allocarray}")
     (license license:gpl3+)))
 
-(define-public cliquer
-  (package
-    (name "cliquer")
-    (version "1.21")
-    ;; The original source package is available from the home page and
-    ;; has not seen any release since 2010; it comes with only a Makefile
-    ;; without an "install" target. Instead, there is an autotoolized
-    ;; tarball available from the Sage project.
-    (source
-     (origin
-       (method url-fetch)
-       (uri "http://users.ox.ac.uk/~coml0531/sage/cliquer-1.21.tar.gz")
-       (sha256
-        (base32
-         "1hdzrmrx0nvvj8kbwxrs8swqgkd284khzl623jizixcv28xb77aq"))))
-    (build-system gnu-build-system)
-    (synopsis "C routines for finding cliques in weighted graphs")
-    (description "Cliquer is a set of reentrant C routines for finding
-cliques in a weighted or unweighted graph.  It uses an exact
-branch-and-bound algorithm.  It can search for maximum or maximum-weight
-cliques or cliques with size or weight within a given range, restrict the
-search to maximal cliques, store cliques in memory and call a user-defined
-function for every found clique.")
-    (license license:gpl2+)
-    (home-page "https://users.aalto.fi/~pat/cliquer.html")))
-
 (define-public libbraiding
   (package
     (name "libbraiding")
@@ -204,6 +236,68 @@ in particular it computes normal forms of group elements.")
 represented as strings.")
     (license license:public-domain)
     (home-page "https://github.com/miguelmarco/libhomfly")))
+
+(define-public python-pplpy
+  (package
+    (name "python-pplpy")
+    (version "0.8.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pplpy" version))
+       (sha256
+        (base32 "1zggfj09zkfcabcsasq27vwbhdmkig4yn380gi6wykcih9n22anl"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-cython-3 python-pytest))
+    (inputs (list gmp mpc mpfr pari-gp ppl))
+    (propagated-inputs (list python-cysignals python-gmpy2))
+    (home-page "https://github.com/sagemath/pplpy")
+    (synopsis "Python PPL wrapper")
+    (description "This Python package provides a wrapper to the C++ Parma
+Polyhedra Library (PPL).")
+    (license license:gpl3+)))
+
+(define-public ratpoints
+  (package
+    (name "ratpoints")
+    (version "2.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://www.mathe2.uni-bayreuth.de/stoll/programs/"
+                    "ratpoints-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0zhad84sfds7izyksbqjmwpfw4rvyqk63yzdjd3ysd32zss5bgf4"))
+              (patches
+               ;; Taken from
+               ;; <https://git.sagemath.org/sage.git/plain/build/pkgs/ratpoints/patches/>
+               (search-patches "ratpoints-sturm_and_rp_private.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "test"
+       #:make-flags
+       (list (string-append "INSTALL_DIR=" (assoc-ref %outputs "out"))
+             "CCFLAGS=-fPIC")
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)            ;no configure script
+         (add-before 'install 'create-install-directories
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (mkdir-p out)
+               (with-directory-excursion out
+                 (for-each (lambda (d) (mkdir-p d))
+                           '("bin" "include" "lib"))))
+             #t)))))
+    (inputs
+     (list gmp))
+    (home-page "http://www.mathe2.uni-bayreuth.de/stoll/programs/")
+    (synopsis "Find rational points on hyperelliptic curves")
+    (description "Ratpoints tries to find all rational points within
+a given height bound on a hyperelliptic curve in a very efficient way,
+by using an optimized quadratic sieve algorithm.")
+    (license license:gpl2+)))
 
 ;; Sage has become upstream of the following package.
 (define-public zn-poly
@@ -261,123 +355,3 @@ represented as strings.")
 coefficients of which are modular integers.")
     (license (list license:gpl2 license:gpl3)) ; dual licensed
     (home-page "https://gitlab.com/sagemath/zn_poly")))
-
-(define-public python-pplpy
-  (package
-    (name "python-pplpy")
-    (version "0.8.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pplpy" version))
-       (sha256
-        (base32 "1zggfj09zkfcabcsasq27vwbhdmkig4yn380gi6wykcih9n22anl"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-cython-3 python-pytest))
-    (inputs (list gmp mpc mpfr pari-gp ppl))
-    (propagated-inputs (list python-cysignals python-gmpy2))
-    (home-page "https://github.com/sagemath/pplpy")
-    (synopsis "Python PPL wrapper")
-    (description "This Python package provides a wrapper to the C++ Parma
-Polyhedra Library (PPL).")
-    (license license:gpl3+)))
-
-(define-public brial
-  (package
-    (name "brial")
-    (version "1.2.8")
-    (source
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-             (url "https://github.com/BRiAl/BRiAl/")
-             (commit version)))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "0qhgckd4fvbs40jw14mvw89rccv94d3df27kipd27hxd4cx7y80y"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (inputs
-     (list boost libpng m4ri))
-    (arguments
-    ;; We are missing the boost unit test framework.
-     `(#:tests? #f
-       #:configure-flags (list "--without-boost-unit-test-framework")))
-    (synopsis "Arithmetic of polynomials over boolean rings")
-    (description "BRiAl is the successor to  PolyBoRi maintained by the
-Sage community.  Its core is a C++ library, which provides high-level data
-types for Boolean polynomials and monomials, exponent vectors, as well as
-for the underlying polynomial rings and subsets of the powerset of the
-Boolean variables.  As a unique approach, binary decision diagrams are
-used as internal storage type for polynomial structures.")
-    (license license:gpl2+)
-    (home-page "https://github.com/BRiAl/BRiAl/")))
-
-(define-public lcalc
-  (package
-    (name "lcalc")
-    (version "2.0.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.com/sagemath/lcalc")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1rwyx292y3jbsp88wagn9nhl9z7wsnl2yrs5imxkbxq87pnrj5a7"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags '(list "--with-pari")))
-    (inputs (list pari-gp))
-    (native-inputs (list autoconf automake libtool pkg-config gengetopt))
-    (home-page "https://gitlab.com/sagemath/lcalc")
-    (synopsis "C++ library for computing with L-functions")
-    (description
-     "Lcalc computes L-functions, in particular the Riemann zeta function,
-Dirichlet L-functions and L-functions attached to elliptic curves and
-modular forms.")
-    (license license:gpl2+)))
-
-(define-public ratpoints
-  (package
-    (name "ratpoints")
-    (version "2.1.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://www.mathe2.uni-bayreuth.de/stoll/programs/"
-                    "ratpoints-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0zhad84sfds7izyksbqjmwpfw4rvyqk63yzdjd3ysd32zss5bgf4"))
-              (patches
-               ;; Taken from
-               ;; <https://git.sagemath.org/sage.git/plain/build/pkgs/ratpoints/patches/>
-               (search-patches "ratpoints-sturm_and_rp_private.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:test-target "test"
-       #:make-flags
-       (list (string-append "INSTALL_DIR=" (assoc-ref %outputs "out"))
-             "CCFLAGS=-fPIC")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ;no configure script
-         (add-before 'install 'create-install-directories
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir-p out)
-               (with-directory-excursion out
-                 (for-each (lambda (d) (mkdir-p d))
-                           '("bin" "include" "lib"))))
-             #t)))))
-    (inputs
-     (list gmp))
-    (home-page "http://www.mathe2.uni-bayreuth.de/stoll/programs/")
-    (synopsis "Find rational points on hyperelliptic curves")
-    (description "Ratpoints tries to find all rational points within
-a given height bound on a hyperelliptic curve in a very efficient way,
-by using an optimized quadratic sieve algorithm.")
-    (license license:gpl2+)))
