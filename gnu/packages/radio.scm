@@ -109,6 +109,7 @@
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
@@ -2208,6 +2209,36 @@ intended for people who want to learn receiving and sending morse code.")
     (description
      "KochMorse is a simple morse-code tutor using the Koch method.")
     (license license:gpl2+)))
+
+(define-public ggmorse
+  (let ((commit "8fb433d6cd6a71940f51b5724663ec0c75bf0b62")
+        (revision "1"))
+    (package
+      (name "ggmorse")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ggerganov/ggmorse")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1lhsmyhljqa6apzbysqar56wpfcdvs3pq9ia1mshqd6d3hz74s78"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:configure-flags #~(list "-DGGMORSE_SUPPORT_SDL2=OFF")
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'disable-imgui-build
+                            (lambda _
+                              (substitute* "examples/CMakeLists.txt"
+                                (("add_subdirectory\\(third-party\\)")
+                                 "")))))))
+      (synopsis "Morse code decoder")
+      (description "GGMorse is a library that decodes Morse code in real-time
+from raw audio.")
+      (home-page "https://ggmorse.ggerganov.com/")
+      (license license:expat))))
 
 (define-public gnuais
   (package
