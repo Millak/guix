@@ -23014,6 +23014,9 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
     (build-system cmake-build-system)
     (arguments
      (list
+      ;; Tests time out on riscv64-linux.
+      #:tests? (and (%current-system)
+                    (not (target-riscv64?)))
       #:configure-flags
       #~(list "-DWFA_PNG_AND_TSV=ON")
       #:phases
