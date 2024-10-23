@@ -18931,6 +18931,9 @@ the Emacs Tempo library.  You may also write your templates in Lisp.")
                  (base32
                   "0ifmzn5d9mpsjwvg2ir0sy3r4czxa7d6j97l8rrp8ai7jqvydadm"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include #~(cons "^templates\\/" %default-include)))
       (propagated-inputs (list emacs-tempel))
       (home-page "https://github.com/Crandel/tempel-collection")
       (synopsis "Collection of TempEl templates")
