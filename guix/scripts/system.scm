@@ -5,7 +5,7 @@
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -63,6 +63,7 @@
   #:autoload   (guix progress) (progress-reporter/bar
                                 call-with-progress-reporter)
   #:use-module ((guix docker) #:select (%docker-image-max-layers))
+  #:use-module (gnu build hurd-boot)
   #:use-module (gnu build image)
   #:use-module (gnu build install)
   #:autoload   (gnu build file-systems)
@@ -243,6 +244,9 @@ the ownership of '~a' may be incorrect!~%")
       (delete-file-recursively state)))
 
   (chmod target #o755)
+  ;; For the Hurd to boot, it needs some essential device nodes.
+  (when (target-hurd?)
+    (make-hurd-device-nodes target))
   (let ((os-dir   (derivation->output-path os-drv))
         (format   (lift format %store-monad))
         (populate (lift2 populate-root-file-system %store-monad)))
