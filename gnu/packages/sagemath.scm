@@ -80,6 +80,32 @@ used as internal storage type for polynomial structures.")
     (license license:gpl2+)
     (home-page "https://github.com/BRiAl/BRiAl/")))
 
+(define-public lcalc
+  (package
+    (name "lcalc")
+    (version "2.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/sagemath/lcalc")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rwyx292y3jbsp88wagn9nhl9z7wsnl2yrs5imxkbxq87pnrj5a7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags '(list "--with-pari")))
+    (inputs (list pari-gp))
+    (native-inputs (list autoconf automake libtool pkg-config gengetopt))
+    (home-page "https://gitlab.com/sagemath/lcalc")
+    (synopsis "C++ library for computing with L-functions")
+    (description
+     "Lcalc computes L-functions, in particular the Riemann zeta function,
+Dirichlet L-functions and L-functions attached to elliptic curves and
+modular forms.")
+    (license license:gpl2+)))
+
 (define-public cliquer
   (package
     (name "cliquer")
