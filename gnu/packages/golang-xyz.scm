@@ -1394,6 +1394,30 @@ marshalling and unmarshalling library in Go.  It uses code generation and not
 reflection.")
     (license license:expat)))
 
+(define-public go-github-com-caarlos0-env
+  (package
+    (name "go-github-com-caarlos0-env")
+    (version "11.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/caarlos0/env")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "074bagdfvsq65i0cak5l7ipci0b1j2m0j8rd54g7rznhqmxwha97"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/caarlos0/env"))
+    (home-page "https://github.com/caarlos0/env")
+    (synopsis "Library to parse environment variables into structs")
+    (description
+     "@code{env} is a simple, zero-dependencies library to parse environment
+variables into structs.")
+    (license license:expat)))
+
 (define-public go-github-com-charlievieth-fastwalk
   (package
     (name "go-github-com-charlievieth-fastwalk")
