@@ -28,6 +28,7 @@
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2023 Benjamin Slade <slade@lambda-y.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1171,39 +1172,37 @@ vector formats.")
 (define-public impressive
   (package
     (name "impressive")
-    (version "0.13.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/impressive/Impressive/"
-                    version "/Impressive-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0d1d2jxfl9vmy4swcdz660xd4wx91w1i3n07k522pccapwxig294"))))
+    ;; (version "0.13.1")
+    (version "0.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/impressive/Impressive/"
+                           version "/Impressive-" version ".tar.gz"))
+       (sha256
+        (base32
+         ;; "0d1d2jxfl9vmy4swcdz660xd4wx91w1i3n07k522pccapwxig294"))))
+         "0g15q67f992prkjndrk75hhd601iypfmkafhdx7hijs2byr26c83"))))
     (build-system python-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build)
-          (delete 'configure)
-          (delete 'check)
-          (replace 'install
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; There's no 'setup.py' so install things manually.
-              (let* ((bin  (string-append #$output "/bin"))
-                     (impressive (string-append bin "/impressive"))
-                     (man1 (string-append #$output "/share/man/man1")))
-                (mkdir-p bin)
-                (copy-file "impressive.py" impressive)
-                (chmod impressive #o755)
-                (wrap-program (string-append bin "/impressive")
-                  `("LIBRARY_PATH" ":" prefix ;for ctypes
-                    (,(string-append #$(this-package-input "sdl")
-                                     "/lib")))
-                  `("PATH" ":" prefix   ;for pdftoppm
-                    (,(search-input-file inputs "bin/xpdf"))))
-                (install-file "impressive.1" man1)))))))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'build)
+                   (delete 'configure)
+                   (delete 'check)
+                   (replace 'install
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       ;; There's no 'setup.py' so install things manually.
+                       (let* ((bin (string-append #$output "/bin"))
+                              (impressive (string-append bin "/impressive"))
+                              (man1 (string-append #$output "/share/man/man1")))
+                         (mkdir-p bin)
+                         (copy-file "impressive.py" impressive)
+                         (chmod impressive #o755)
+                         (wrap-program (string-append bin "/impressive")
+                           `("PATH" ":" prefix ;for pdftoppm
+                             (,(search-input-file inputs "bin/xpdf"))))
+                         (install-file "impressive.1" man1)))))))
     ;; TODO: Add dependency on pdftk.
     (inputs (list bash-minimal python-pygame python-pillow sdl xpdf))
     (home-page "https://impressive.sourceforge.net")
