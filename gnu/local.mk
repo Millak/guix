@@ -399,6 +399,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/kde-games.scm			\
   %D%/packages/kde-internet.scm			\
   %D%/packages/kde-multimedia.scm		\
+  %D%/packages/kde-office.scm			\
   %D%/packages/kde-pim.scm			\
   %D%/packages/kde-plasma.scm			\
   %D%/packages/kde-systemtools.scm		\
