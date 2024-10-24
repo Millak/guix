@@ -603,25 +603,29 @@ hardware designs in Verilog.")
 (define-public openfpgaloader
   (package
     (name "openfpgaloader")
-    (version "0.9.0")
+    (version "0.12.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/trabucayre/openFPGALoader.git")
-                     (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
+                    (url "https://github.com/trabucayre/openfpgaloader")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v3bwzhsrnsn304cqhd5azn68cl847qv8w8cb8bl7372jiqz5wqq"))))
+                "0r4dxryhfa1brhyh4z5ixmr7bvcqf3p8b339k6vrmmqnwy497548"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
-    (inputs
-     (list libftdi libusb hidapi zlib))
+    (inputs (list eudev
+                  hidapi
+                  libftdi
+                  libgpiod
+                  libusb
+                  zlib))
     (arguments
      `(#:tests? #f)) ; No tests exist
     (synopsis "Utility for programming FPGA")
     (description "This package provides a program to transfer a bitstream
 to an FPGA.")
-    (home-page "https://f4pga.org/")
+    (home-page "https://trabucayre.github.io/openFPGALoader")
     (license license:asl2.0)))
