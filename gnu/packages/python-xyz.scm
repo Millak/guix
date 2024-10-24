@@ -155,6 +155,7 @@
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Rick Huijzer <ikbenrickhuyzer@gmail.com>
 ;;; Copyright © 2024 Peter Kannewitz <petre-vps@posteo.net>
+;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32638,33 +32639,34 @@ By default it uses the open Python vulnerability database Safety DB.")
 (define-public python-pypandoc
   (package
     (name "python-pypandoc")
-    (version "1.7.5")
+    (version "1.14")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pypandoc" version))
        (sha256
-        (base32
-         "0l6a8ngzpx363q2jskxxkx6psfhqrvc4js80dmn16r3vw6m2cb40"))))
+        (base32 "15x161bxr7hky7rvq0jlgf1kxg6vdf069487casmpyxry7slak3b"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'disable-tests
-            (lambda _
-              ;; Disable test requiring network access
-              (substitute* "tests.py"
-                (("test_basic_conversion_from_http_url")
-                 "skip_test_basic_conversion_from_http_url")))))))
-    (native-inputs
-     (list python-poetry-core
-           (texlive-updmap.cfg
-            (list texlive-etoolbox texlive-lm texlive-xcolor))))
-    (inputs
-     (list pandoc python-pandocfilters))
-    (propagated-inputs
-     (list python-wheel))
+     `(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'disable-tests
+                    (lambda _
+                      (substitute* "tests.py"
+                        ;; Disable test requiring network access
+                        (("test_basic_conversion_from_http_url")
+                         "skip_test_basic_conversion_from_http_url")
+                        ;; Disable tests with missing files
+                        (("test_basic_conversion_from_file_pattern")
+                         "skip_test_basic_conversion_from_file_pattern")
+                        (("test_conversion_with_data_files")
+                         "skip_test_conversion_with_data_files")) #t)))))
+    ;; Ideally, we would supersede texlive-xpatch with texlive-regexpatch once
+    ;; the missing etoolbox.sty file is added
+    (native-inputs (list python-poetry-core
+                         (texlive-updmap.cfg (list texlive-xpatch texlive-lm
+                                                   texlive-xcolor))))
+    (inputs (list pandoc python-pandocfilters))
+    (propagated-inputs (list python-wheel))
     (home-page "https://github.com/bebraw/pypandoc")
     (synopsis "Python wrapper for pandoc")
     (description "pypandoc is a thin Python wrapper around pandoc
