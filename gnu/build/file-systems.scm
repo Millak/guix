@@ -9,6 +9,7 @@
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,6 +53,11 @@
             find-partition-by-uuid
             find-partition-by-luks-uuid
             canonicalize-device-spec
+
+            device-name->hurd-device-name
+            device-spec->device
+            device-spec->device-name
+            hurd-device-name->device-name
 
             read-partition-label
             read-partition-uuid
@@ -1430,5 +1436,57 @@ corresponds to the symbols listed in FLAGS."
       (lambda args
         (or (file-system-mount-may-fail? fs)
             (apply throw args))))))
+
+(define %device-name-regexp "/dev/[hsvw]d([abcd])([0-9]*)")
+(define %hurd-device-name-regexp "part:([0-9]*):device:[hw]d([0-9]*)")
+
+(define (device-spec->device-name device-spec)
+  "Return DEVICE-SPEC as a Linux /dev/XdYZ device name, also catering for uuid
+or label."
+  (cond ((string-match %device-name-regexp device-spec)
+         device-spec)
+        ((string-match %hurd-device-name-regexp device-spec)
+         (hurd-device-name->device-name device-spec))
+        ((string->uuid device-spec)
+         =>
+         (lambda (uuid) (false-if-exception (find-partition-by-uuid uuid))))
+        (else
+         (false-if-exception (find-partition-by-label device-spec)))))
+
+(define* (device-name->hurd-device-name device-name #:key (disk "w"))
+  "Return DEVICE-NAME as a Hurd device name:
+     part:PART-NUMBER:device:DISKdDISK-INDEX
+Default to part:1:device:DISKd0 if partition cannot be found."
+  (let* ((m (and=> device-name (cute string-match %device-name-regexp <>)))
+         (disk-char (and m (and=> (match:substring m 1)
+                                  (compose car string->list))))
+         (disk-index (or (and disk-char
+                              (- (char->integer disk-char) (char->integer #\a)))
+                         0))
+         (partition-number (or (and m (and=> (match:substring m 2)
+                                             string->number))
+                               1)))
+    (format #f "part:~a:device:~ad~a" partition-number disk disk-index)))
+
+(define* (hurd-device-name->device-name device-name #:key (disk "s"))
+  (let* ((m (and=> device-name (cute string-match %hurd-device-name-regexp <>)))
+         (disk-index-string (and=> m (cute match:substring <> 2)))
+         (disk-index (or (and=> disk-index-string string->number)
+                         0))
+         (disk-index-char (integer->char (+ disk-index (char->integer #\a))))
+         (partition-string (and=> m (cute match:substring <> 1)))
+         (partition-number (or (and=> partition-string string->number)
+                               1)))
+    (format #f "/dev/~ad~a~a" disk disk-index-char partition-number)))
+
+(define (device-spec->device device-spec)
+  "Return DEVICE-SPEC as UUID, FILE-SYSTEM-LABEL, or DEVICE-SPEC."
+  (cond ((and=> (string->uuid device-spec)
+                find-partition-by-uuid)
+         (string->uuid device-spec))
+        ((find-partition-by-label device-spec)
+         (file-system-label device-spec))
+        (else
+         device-spec)))
 
 ;;; file-systems.scm ends here

@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2019, 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Stefan <stefan-guix@vodafonemail.de>
@@ -34,6 +34,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu artwork)
   #:use-module (gnu bootloader)
+  #:use-module (gnu build file-systems)
   #:use-module (gnu system uuid)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system keyboard)
@@ -45,6 +46,7 @@
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
+  #:use-module (srfi srfi-26)
   #:export (grub-theme
             grub-theme?
             grub-theme-image
@@ -355,6 +357,11 @@ code."
         ((or #f (? string?))
          #~(format #f "search --file --set ~a" #$file)))))
 
+(define* (device->hurd-device-name device-spec #:key (disk "w"))
+  "Return DEVICE as a Hurd name spec: part:PART-NUMBER:device:DISKdDISK-INDEX."
+  (let ((device-name (canonicalize-device-spec device-spec)))
+    (device-name->hurd-device-name device-name #:disk disk)))
+
 (define* (make-grub-configuration grub config entries
                                   #:key
                                   (locale #f)
@@ -413,16 +420,16 @@ when booting a root file system on a Btrfs subvolume."
                ;; IDE driver ("hdX") and those understood by rumpdisk ("wdX"
                ;; in the "noide" case).
                (disk (if (member "noide" arguments) "w" "h"))
-               (modules (menu-entry-multiboot-modules entry))
-               (root-index 1))          ; XXX EFI will need root-index 2
+               (device-spec (and=> device file-system-device->string))
+               (device-name (and=> device-spec device-spec->device-name))
+               (modules (menu-entry-multiboot-modules entry)))
           #~(format port "
 menuentry ~s {
-  multiboot ~a root=part:~a:device:~ad0~a~a
+  multiboot ~a root=~a~a~a
 }~%"
                     #$label
                     #$kernel
-                    #$root-index
-                    #$disk
+                    #$(device-name->hurd-device-name device-name #:disk disk)
                     (string-join (list #$@arguments) " " 'prefix)
                     (string-join (map string-join '#$modules)
                                  "\n  module " 'prefix))))
