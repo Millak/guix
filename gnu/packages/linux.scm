@@ -10341,7 +10341,7 @@ modification of BPF objects on the system.")
 (define-public bpftrace
   (package
     (name "bpftrace")
-    (version "0.21.0")
+    (version "0.21.2")
     (source
      (origin
        (method git-fetch)
@@ -10350,25 +10350,37 @@ modification of BPF objects on the system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06yg3w80kdq0i003w2gvn0czbh8z9d3rfgmglp37dkir7g3dc6iz"))))
+        (base32 "0icbhf1wk523a7lcmwqa67zc6hl6h02p5mfg26cizva447kbwsgz"))))
     (build-system cmake-build-system)
-    (arguments (list #:configure-flags #~(list "-DBUILD_TESTING=ON")
-                     ;; Only run the unit tests suite, as the other ones
-                     ;; (runtime_tests, tools-parsing-test) require to run as
-                     ;; 'root'.
-                     #:test-target "bpftrace_test"
-                     #:phases #~(modify-phases %standard-phases
-                                  (add-after 'unpack 'patch-paths
-                                    (lambda _
-                                      (with-directory-excursion "tests"
-                                        (substitute* (find-files ".")
-                                          (("/bin/sh")
-                                           (which "sh")))
-                                        (substitute* '("child.cpp"
-                                                       "runtime/call"
-                                                       "procmon.cpp")
-                                          (("/bin/ls")
-                                           (which "ls")))))))))
+    (arguments
+     (list
+      #:configure-flags #~(list "-DBUILD_TESTING=ON")
+      ;; Only run the unit tests suite, as the other ones
+      ;; (runtime_tests, tools-parsing-test) require to run as
+      ;; 'root'.
+      #:test-target "bpftrace_test"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This patch also fixes broken compilation due to improper detection
+          ;; of bfd features. This is taken from following upstream PR:
+          ;; https://github.com/bpftrace/bpftrace/pull/3332
+          (add-after 'unpack 'patch-paths-and-bfd-defs
+            (lambda _
+              (substitute* '("cmake/FindLibBfd.cmake"
+                             "src/CMakeLists.txt")
+                (("LIBSFRAME_FOUND")
+                 "LIBSFRAME_LIBRARIES")
+                (("LIBZSTD_FOUND")
+                 "LIBZSTD_LIBRARIES"))
+              (with-directory-excursion "tests"
+                (substitute* (find-files ".")
+                  (("/bin/sh")
+                   (which "sh")))
+                (substitute* '("child.cpp"
+                               "runtime/call"
+                               "procmon.cpp")
+                  (("/bin/ls")
+                   (which "ls")))))))))
     (native-inputs (list bison dwarves flex googletest xxd))
     (inputs (list bcc clang-15 elfutils libbpf libiberty cereal))
     (home-page "https://github.com/bpftrace/bpftrace")
