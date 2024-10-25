@@ -240,7 +240,10 @@ the @code{zlib} source.")
             (sha256
              (base32
               "02cihzl77ia0dcz7z2cga2412vyhhs5pa2355q4wpwbyga2lrwjh"))
-            (patches (search-patches "libtar-CVE-2013-4420.patch"))))
+            (patches
+             (search-patches "libtar-CVE-2013-4420.patch"
+                             "libtar-CVE-2021-33643-CVE-2021-33644.patch"
+                             "libtar-CVE-2021-33645-CVE-2021-33646.patch"))))
    (build-system gnu-build-system)
    (arguments `(#:tests? #f)) ; no "check" target
    (native-inputs

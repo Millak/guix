@@ -1699,6 +1699,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/libquicktime-ffmpeg.patch 		\
   %D%/packages/patches/libsepol-versioned-docbook.patch		\
   %D%/packages/patches/libtar-CVE-2013-4420.patch 		\
+  %D%/packages/patches/libtar-CVE-2021-33643-CVE-2021-33644.patch	\
+  %D%/packages/patches/libtar-CVE-2021-33645-CVE-2021-33646.patch	\
   %D%/packages/patches/libtgvoip-disable-sse2.patch 		\
   %D%/packages/patches/libtgvoip-disable-webrtc.patch 		\
   %D%/packages/patches/libtheora-config-guess.patch		\
