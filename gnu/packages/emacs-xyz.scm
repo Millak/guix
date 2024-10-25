@@ -35065,7 +35065,7 @@ it forcibly
 (define-public emacs-elpher
   (package
     (name "emacs-elpher")
-    (version "3.6.0")
+    (version "3.6.4")
     (source
      (origin
        (method git-fetch)
@@ -35074,7 +35074,7 @@ it forcibly
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00z41vw63vm71i5szmvrxspvnzkpzflpip56jnmkjc94qfla2l8s"))))
+        (base32 "0pkgk7608w31kvdjid54xfrc5zrbrzwi98wrglwl07s429xlbai2"))))
     (build-system emacs-build-system)
     (arguments
      (list
