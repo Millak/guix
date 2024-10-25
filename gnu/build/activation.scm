@@ -113,7 +113,9 @@ and bits are set according to the default behaviour of 'mkdir'."
             ;; If not, create it.
             (catch 'system-error
               (lambda _
-                (mkdirat root head))
+                (if (null? tail)
+                    (mkdirat root head bits)
+                    (mkdirat root head)))
               (lambda args
                 ;; Someone else created the directory.  Unexpected but fine.
                 (unless (= EEXIST (system-error-errno args))
