@@ -27,7 +27,7 @@
 ;;; Copyright © 2019, 2020, 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <lars@6xq.net>
-;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020, 2022, 2023 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -3461,7 +3461,9 @@ capabilities, custom envelopes, effects, etc.")
      (list
       #:tests? #f                       ; there are no tests
       #:configure-flags
-      #~(list (string-append "-DCMAKE_INSTALL_DATAROOTDIR="
+      #~(list (string-append "-DLV2_INSTALL_DIR="
+                             #$output "/lib/lv2")
+              (string-append "-DCMAKE_INSTALL_DATAROOTDIR="
                              #$output "/share"))
       #:phases
       #~(modify-phases %standard-phases
