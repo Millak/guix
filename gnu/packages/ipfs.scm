@@ -246,37 +246,6 @@ used in @code{go-ipfs} and related packages to refer to a typed hunk of data.")
 with @url{https://github.com/ipld/cid, CIDs}.")
     (license license:expat)))
 
-(define-public go-github-com-ipfs-go-ipfs-cmdkit-files
-  (let ((commit
-          "386fcf8f18a185ec121676665fe2d9574496048d")
-        (revision "0"))
-    (package
-      (name "go-github-com-ipfs-go-ipfs-cmdkit-files")
-      (version (git-version "1.1.3" revision commit))
-      (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/ipfs/go-ipfs-cmdkit")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-            (base32
-              "0qk6fshgdmhp8dip2ksm13j6nywi41m9mn0czkvmw6b697z85l2r"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:go ,@(if (supported-package? go-1.16)
-                    `(,go-1.16)
-                    `(,gccgo-11))
-         #:unpack-path "github.com/ipfs/go-ipfs-cmdkit"
-         #:import-path "github.com/ipfs/go-ipfs-cmdkit/files"))
-      (home-page "https://github.com/ipfs/go-ipfs-cmdkit")
-      (synopsis "Shared types, functions and values for go-ipfs")
-      (description "@command{cmdkit} offers some types, functions and values
-that are shared between @command{go-ipfs/commands} and its rewrite
-@command{go-ipfs-cmds}.")
-      (license license:expat))))
-
 (define-public go-github-com-ipfs-go-ipfs-delay
   (package
     (name "go-github-com-ipfs-go-ipfs-delay")
