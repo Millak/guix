@@ -727,7 +727,15 @@ commonly needed services in distributed and parallel computing systems.")
                     (("_ABSOLUTE")
                      "")
                     (("PRTE_CONFIGURE_CLI")
-                     "\"[elided to reduce closure]\"")))))
+                     "\"[elided to reduce closure]\""))))
+              (add-after 'unpack 'patch-prted-reference
+                (lambda _
+                  ;; Record the absolute file name of 'prted' instead of
+                  ;; assuming it will be found in $PATH at run time.
+                  (substitute* "src/runtime/prte_mca_params.c"
+                    (("prte_launch_agent =.*")
+                     (string-append "prte_launch_agent = \""
+                                    #$output "/bin/prted\";\n"))))))
 
           #:disallowed-references (list (canonical-package gcc))))
    (inputs (list libevent
