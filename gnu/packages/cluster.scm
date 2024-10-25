@@ -157,42 +157,43 @@ connection.  This package contains the userland utilities.")
 (define-public keepalived
   (package
     (name "keepalived")
-    (version "2.0.19")
+    (version "2.3.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://www.keepalived.org/software/keepalived-"
-                    version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/acassen/keepalived")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "19scrrjsxw5g914d5ka352445blaq77dk2vm4vxabijvfra88bqf"))))
+                "0mxpx5azx0m2zp757yqcavvvzg3p9nj93bczfhv6wich3wpvbwzx"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-info
-           (lambda _
-             (invoke "make" "-C" "doc" "texinfo")
-             ;; Put images in a subdirectory as recommended by 'texinfo'.
-             (install-file "doc/source/images/software_design.png"
-                           "doc/build/texinfo/keepalived-figures")
-             (substitute* "doc/build/texinfo/keepalived.texi"
-               (("@image\\{software_design,")
-                "@image{keepalived-figures/software_design,"))
-             (invoke "make" "-C" "doc/build/texinfo")))
-         (add-after 'install 'install-info
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (infodir (string-append out "/share/info")))
-               (install-file "doc/build/texinfo/keepalived.info" infodir)
-               (install-file "doc/source/images/software_design.png"
-                             (string-append infodir "/keepalived-figures"))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-info
+            (lambda _
+              (invoke "make" "-C" "doc" "texinfo")
+              ;; Put images in a subdirectory as recommended by 'texinfo'.
+              (install-file "doc/source/images/software_design.png"
+                            "doc/build/texinfo/keepalived-figures")
+              (substitute* "doc/build/texinfo/keepalived.texi"
+                (("@image\\{software_design,")
+                 "@image{keepalived-figures/software_design,"))
+              (invoke "make" "-C" "doc/build/texinfo")))
+          (add-after 'install 'install-info
+            (lambda _
+              (let ((infodir (string-append #$output "/share/info")))
+                (install-file "doc/build/texinfo/keepalived.info" infodir)
+                (install-file "doc/source/images/software_design.png"
+                              (string-append
+                               infodir "/keepalived-figures"))))))))
     (native-inputs
-     (list pkg-config python-sphinx texinfo))
+     (list autoconf automake pkg-config python-sphinx texinfo))
     (inputs
      (list openssl libnfnetlink libnl))
-    (home-page "https://www.keepalived.org/")
+    (home-page "https://www.keepalived.org")
     (synopsis "Load balancing and high-availability frameworks")
     (description
      "Keepalived provides frameworks for both load balancing and high
