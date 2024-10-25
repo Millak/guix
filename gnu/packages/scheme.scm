@@ -21,7 +21,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2023 Andrew Whatson <whatson@tailcall.au>
-;;; Copyright © 2023 Juliana Sims <juli@incana.org>
+;;; Copyright © 2023, 2024 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -71,6 +71,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libevent)
@@ -1273,6 +1274,43 @@ time compilation and compiled macros.")
      "Gerbil mode provides font-lock, indentation, navigation, and REPL for
 Gerbil code within Emacs.")))
 
+(define-public owl
+  (package
+    (name "owl")
+    (version "0.2.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/owl-lisp/owl.git")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32 "0jlmpw14rg63m1q7pjmhjicaqbqgc6gnp53bph0giwg8ha8wxyqr"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~`(,(string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (add-after 'patch-source-shebangs 'patch-ol-shebangs
+                     (lambda _
+                       (map (lambda (f)
+                              (substitute* f
+                                (("/usr") #$output)))
+                            (list "bin/feather"
+                                  "tests/hashbang.scm"
+                                  "tests/theorem-rand.scm")))))
+      #:test-target "test"))
+    (native-inputs (list pandoc which))
+    (home-page "https://haltp.org/owl")
+    (synopsis "Functional Scheme dialect")
+    (description
+     "Owl Lisp is a simple programming language.  It is intended to provide a
+portable system for writing standalone programs in a subjectively pleasant
+dialect of Lisp.  It has a minimal core and runtime, purely functional
+operation, and suppport for asynchronous evaluation.")
+    (license expat)))
+
 (define-public stklos
   (package
     (name "stklos")
@@ -1294,8 +1332,8 @@ Gerbil code within Emacs.")))
                   ,@%default-gnu-modules)
       #:configure-flags
       #~(list (string-append "LDFLAGS=-L"
-                #$(this-package-input "readline")
-                "/lib -lreadline"))
+                             #$(this-package-input "readline")
+                             "/lib -lreadline"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'patch-sh-references
