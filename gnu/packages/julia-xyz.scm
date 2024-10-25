@@ -6490,6 +6490,30 @@ product preserves all dimensions}, and @acronym{boxdot, contracts neighboring
 dimensions}.")
     (license license:expat)))
 
+(define-public julia-terminterface
+  (package
+    (name "julia-terminterface")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaSymbolics/TermInterface.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ish9can05b3pv0kyf035yk1mf1pnkg9l66xb2a8xg9rvcrv5rkb"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaSymbolics/TermInterface.jl")
+    (synopsis "Common interface for symbolic terms in Julia")
+    (description
+     "This package provides definitions for common functions
+that are useful for symbolic expression manipulation in Julia.  Its purpose
+is to provide a shared interface between various symbolic programming
+packages, for example @code{SymbolicUtils.jl}, @code{Symbolics.jl},
+and @code{Metatheory.jl}.")
+    (license license:expat)))
+
 (define-public julia-testimages
   (package
     (name "julia-testimages")
