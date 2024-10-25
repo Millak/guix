@@ -158,7 +158,7 @@
    (service dhcp-client-service-type)
    (service postgresql-service-type
             (postgresql-configuration
-             (postgresql postgresql-10)
+             (postgresql postgresql)
              (config-file
               (postgresql-config-file
                (hba-file

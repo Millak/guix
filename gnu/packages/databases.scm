@@ -170,6 +170,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -1375,7 +1376,7 @@ pictures, sounds, or video.")
                (base32
                 "09f99rp5q1xp769r71if9ckb4cbm0nnx2xmy8b1bhcvd8hax9va2"))))))
 
-(define-public postgresql-11
+(define-deprecated/public postgresql-11 #f
   (package
     (inherit postgresql-13)
     (name "postgresql")
@@ -1391,7 +1392,7 @@ pictures, sounds, or video.")
      (modify-inputs (package-native-inputs postgresql-13)
        (replace "docbook-xml" docbook-xml-4.2)))))
 
-(define-public postgresql-10
+(define-deprecated/public postgresql-10 #f
   (package
     (inherit postgresql-11)
     (version "10.23")

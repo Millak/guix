@@ -168,7 +168,7 @@ host	all	all	::1/128 	md5"))
   postgresql-configuration make-postgresql-configuration
   postgresql-configuration?
   (postgresql         postgresql-configuration-postgresql ;file-like
-                      (default postgresql-10))
+                      (default postgresql))
   (port               postgresql-configuration-port
                       (default 5432))
   (locale             postgresql-configuration-locale

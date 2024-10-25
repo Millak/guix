@@ -26192,7 +26192,7 @@ configuration.
 @lisp
 (service postgresql-service-type
          (postgresql-configuration
-          (postgresql postgresql-10)))
+          (postgresql postgresql)))
 @end lisp
 
 If the services fails to start, it may be due to an incompatible
@@ -26219,7 +26219,7 @@ Data type representing the configuration for the
 @code{postgresql-service-type}.
 
 @table @asis
-@item @code{postgresql} (default: @code{postgresql-10})
+@item @code{postgresql} (default: @code{postgresql})
 PostgreSQL package to use for the service.
 
 @item @code{port} (default: @code{5432})
@@ -26261,7 +26261,7 @@ configure the postgresql-service as in this example:
     (cons*
       (service postgresql-service-type
                (postgresql-configuration
-                (postgresql postgresql-10)
+                (postgresql postgresql)
                 (extension-packages (list postgis))))
       %base-services)))
 @end lisp
