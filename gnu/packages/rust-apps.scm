@@ -3269,6 +3269,38 @@ JSON IPC interface.  The swayr client offers subcommands, and sends them to the
 daemon which executes them.")
    (license license:gpl3+)))
 
+(define-public swaysome
+  (package
+    (name "swaysome")
+    (version "2.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "swaysome" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12rqvjj9d12nm9zppgp4hvfw5l308gn9ljbbgbhi0cglpg11rnjk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-more
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out  (assoc-ref outputs "out"))
+                    (man1 (string-append out "/share/man/man1")))
+               (install-file "swaysome.1" man1)))))))
+    (home-page "https://gitlab.com/hyask/swaysome")
+    (synopsis "Manage your multiple outputs with the sway window manager")
+    (description
+     "This package provides a way to manage your multiple outputs with the sway
+window manager.")
+    (license license:expat)))
+
 (define-public tealdeer
   (package
     (name "tealdeer")
