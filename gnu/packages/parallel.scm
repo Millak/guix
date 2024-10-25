@@ -15,6 +15,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Romain Garbage <romain.garbage@inria.fr>
+;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,14 +51,17 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freeipmi)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -65,6 +69,7 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web))
@@ -191,9 +196,9 @@ parallel.  It limits the number of parallel executing jobs and starts new jobs
 when jobs finish.")
     (license license:gpl2+)))
 
-(define-public slurm
+(define-public slurm-minimal
   (package
-    (name "slurm")
+    (name "slurm-minimal")
     (version "23.11.10")
     (source (origin
               (method url-fetch)
@@ -224,8 +229,6 @@ when jobs finish.")
                   (mkdir "contribs")
                   (rename-file "tmp-pmi" "contribs/pmi")
                   (rename-file "tmp-pmi2" "contribs/pmi2")))))
-    ;; FIXME: More optional inputs could be added,
-    ;; in particular mysql and gtk+.
     (inputs (list freeipmi
                   `(,hwloc-2 "lib")
                   json-c
@@ -292,6 +295,36 @@ by managing a queue of pending work.")
                     "https://github.com/SchedMD/slurm/blob/master/contribs/pmi2/COPYRIGHT")
                    license:gpl2+))))   ; the rest, often with OpenSSL exception
 
+(define (make-slurm base-slurm)
+  "Make a slurm package with all optional features enabled. Base it off of the
+minimal slurm package BASE-SLURM."
+  (package
+    (inherit base-slurm)
+    (name "slurm")
+    (arguments
+     (substitute-keyword-arguments (package-arguments base-slurm)
+       ((#:configure-flags flags #~'())
+        #~(cons* "--enable-slurmrestd"
+                 (string-append "--with-bpf="
+                                (dirname
+                                 (dirname (search-input-directory
+                                           %build-inputs "include/linux"))))
+                 (string-append "--with-http-parser="
+                                #$(this-package-input "http-parser"))
+                 (string-append "--with-rdkafka="
+                                #$(this-package-input "librdkafka"))
+                 (string-append "--with-yaml="
+                                #$(this-package-input "libyaml"))
+                 #$flags))))
+    ;; FIXME: More optional inputs could be added.
+    (inputs
+     (modify-inputs (package-inputs base-slurm)
+       ;; Add dependencies required by the slurm REST API.
+       (prepend dbus freeipmi http-parser
+                libjwt librdkafka libyaml (list mariadb "dev"))))))
+
+(define-public slurm (make-slurm slurm-minimal))
+
 ;; The SLURM client/daemon protocol and file format changes from time to time
 ;; in incompatible ways, as noted in
 ;; <https://slurm.schedmd.com/troubleshoot.html#network>.  Thus, keep older
@@ -299,9 +332,9 @@ by managing a queue of pending work.")
 ;; As noted in the link, YY.MM is the release scheme, and the 'maintenance'
 ;; digit does not introduce incompatibilities.
 
-(define-public slurm-23.02
+(define-public slurm-minimal-23.02
   (package
-   (inherit slurm)
+   (inherit slurm-minimal)
    (version "23.02.6")
     (source (origin
              (inherit (package-source slurm))
@@ -315,12 +348,14 @@ by managing a queue of pending work.")
               (base32
                "08rz3r1rlnb3pmfdnbh542gm44ja0fdy8rkj4vm4lclc48cvqp2a"))))))
 
-(define-public slurm-22.05
+(define-public slurm-23.02 (make-slurm slurm-minimal-23.02))
+
+(define-public slurm-minimal-22.05
   (package
-    (inherit slurm-23.02)
+    (inherit slurm-minimal-23.02)
     (version "22.05.1")
     (source (origin
-              (inherit (package-source slurm-23.02))
+              (inherit (package-source slurm-minimal-23.02))
               (method url-fetch)
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
@@ -330,12 +365,14 @@ by managing a queue of pending work.")
                (base32
                 "0f3hhlki8g7slllsnyj1qikbsvr62i0hig85lcdcfnmsagzlhbyi"))))))
 
-(define-public slurm-21.08
+(define-public slurm-22.05 (make-slurm slurm-minimal-22.05))
+
+(define-public slurm-minimal-21.08
   (package
-    (inherit slurm-22.05)
+    (inherit slurm-minimal-22.05)
     (version "21.08.8")
     (source (origin
-              (inherit (package-source slurm-22.05))
+              (inherit (package-source slurm-minimal-22.05))
               (method url-fetch)
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
@@ -347,15 +384,17 @@ by managing a queue of pending work.")
 
     ;; This and older versions of slurm have PMIx support but they seem to
     ;; require an older version of openpmix.  Disable PMIx support.
-    (inputs (modify-inputs (package-inputs slurm-22.05)
+    (inputs (modify-inputs (package-inputs slurm-minimal-22.05)
               (delete "openpmix")))))
 
-(define-public slurm-20.11
+(define-public slurm-21.08 (make-slurm slurm-minimal-21.08))
+
+(define-public slurm-minimal-20.11
   (package
-    (inherit slurm-21.08)
+    (inherit slurm-minimal-21.08)
     (version "20.11.9")
     (source (origin
-              (inherit (package-source slurm-21.08))
+              (inherit (package-source slurm-minimal-21.08))
               (method url-fetch)
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
@@ -365,12 +404,14 @@ by managing a queue of pending work.")
                (base32
                 "0xq2d6dm285y541dyg1h66z7svsisrq8c81ag0f601xz1cn3mq9m"))))))
 
-(define-public slurm-20.02
+(define-public slurm-20.11 (make-slurm slurm-minimal-20.11))
+
+(define-public slurm-minimal-20.02
   (package
-    (inherit slurm-20.11)
+    (inherit slurm-minimal-20.11)
     (version "20.02.6-1")
     (source (origin
-              (inherit (package-source slurm-20.11))
+              (inherit (package-source slurm-minimal-20.11))
               (method url-fetch)
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
@@ -380,17 +421,19 @@ by managing a queue of pending work.")
                (base32
                 "0qj4blfymrd2ry2qmb58l3jbr4jwygc3adcfw7my27rippcijlyc"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments slurm-20.11)
+     (substitute-keyword-arguments (package-arguments slurm-minimal-20.11)
        ((#:configure-flags flags ''())
         #~(append '("CFLAGS=-O2 -g -fcommon" "LDFLAGS=-fcommon")
                   #$flags))))))
 
-(define-public slurm-19.05
+(define-public slurm-20.02 (make-slurm slurm-minimal-20.02))
+
+(define-public slurm-minimal-19.05
   (package
-    (inherit slurm-20.02)
+    (inherit slurm-minimal-20.02)
     (version "19.05.8")
     (source (origin
-              (inherit (package-source slurm-20.02))
+              (inherit (package-source slurm-minimal-20.02))
               (method url-fetch)
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
@@ -400,14 +443,16 @@ by managing a queue of pending work.")
                (base32
                 "10c9j4a9a6d4ibpf75006mn03p8xgpaprc247x2idakysjf2fw43"))))))
 
+(define-public slurm-19.05 (make-slurm slurm-minimal-19.05))
+
 ;; Same as Debian 10
-(define-public slurm-18.08
+(define-public slurm-minimal-18.08
   (package
-    (inherit slurm-19.05)
+    (inherit slurm-minimal-19.05)
     (version "18.08.9")
     (source
       (origin
-        (inherit (package-source slurm-20.02))
+        (inherit (package-source slurm-minimal-20.02))
         (uri (string-append
                "https://download.schedmd.com/slurm/slurm-"
                version ".tar.bz2"))
@@ -415,6 +460,8 @@ by managing a queue of pending work.")
         (sha256
          (base32
           "1bgrpz75m7l4xhirsd0fvnkzlkrl8v2qpmjcz60barc5qm2kn457"))))))
+
+(define-public slurm-18.08 (make-slurm slurm-minimal-18.08))
 
 (define-public slurm-drmaa
   (package
