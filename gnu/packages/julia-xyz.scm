@@ -1028,7 +1028,7 @@ dependencies, while keeping @code{ChainRulesCore.jl} as light-weight as possible
 (define-public julia-changesofvariables
   (package
     (name "julia-changesofvariables")
-    (version "0.1.4")
+    (version "0.1.9")
     (source
      (origin
        (method git-fetch)
@@ -1037,17 +1037,23 @@ dependencies, while keeping @code{ChainRulesCore.jl} as light-weight as possible
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1migyhiqr1rq496302wlkb0s5l8zwqs97ajfkip0jzpvrk2s2xxy"))))
+        (base32 "0szkmz7r41hi4zbxli5m9g5r3gyg87y0vc0rd1s1rp28p34a3grw"))))
     (build-system julia-build-system)
     (arguments
      ;; Pulls in ForwardDiff, would have a cyclical
      ;; dependency with LogExpFunctions.
-     (list #:tests? #f))
-    (propagated-inputs
-     (list julia-chainrulescore))
+     (list
+      #:tests? #f
+      #:julia-package-name "ChangesOfVariables"
+      #:julia-package-uuid "9e997f8a-9a97-42d5-a9f1-ce6bfc15e2c0"
+      #:julia-package-dependencies
+      #~(list '("LinearAlgebra" . "37e2e46d-f89d-539d-b4ee-838fcccc9c8e")
+              '("Test" . "8dfed614-e22c-5e08-85e1-65c5234f0b40"))))
+    (propagated-inputs (list julia-chainrulescore julia-inversefunctions))
     (home-page "https://github.com/JuliaMath/ChangesOfVariables.jl")
     (synopsis "Interface for transformation functions in Julia")
-    (description "This package defines functionality to calculate volume element
+    (description
+     "This package defines functionality to calculate volume element
 changes for functions that perform a change of variables (like coordinate
 transformations).")
     (license license:expat)))
