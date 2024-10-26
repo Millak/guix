@@ -407,13 +407,13 @@ APIs to detect, query, and compare them.")
 (define-public python-asyncstdlib
   (package
     (name "python-asyncstdlib")
-    (version "3.12.5")
+    (version "3.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asyncstdlib" version))
        (sha256
-        (base32 "1nr7rhfcqyzhv8lnj2rpgg60sw795xqp11a58dky8nfbd9gh5c3y"))))
+        (base32 "0cxms50gygrvp4n4rk5xxhnl6k7nsrhhixdyk6xk70hi9ysgz9pj"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-flit-core python-pytest))
     (home-page "https://asyncstdlib.readthedocs.io")
