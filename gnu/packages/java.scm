@@ -5648,7 +5648,7 @@ The jMock library
     (version "5.0.3")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://repo1.maven.org/maven2/"
+              (uri (string-append "https://repo1.maven.org/maven2/"
                                   "net/sf/jopt-simple/jopt-simple/"
                                   version "/jopt-simple-"
                                   version "-sources.jar"))
@@ -5665,7 +5665,7 @@ The jMock library
            (generate-pom.xml "pom.xml" "net.sf.jopt-simple" "jopt-simple" ,version))
          (replace 'install
            (install-from-pom "pom.xml")))))
-    (home-page "https://pholser.github.io/jopt-simple/")
+    (home-page "https://jopt-simple.github.io/jopt-simple/")
     (synopsis "Java library for parsing command line options")
     (description "JOpt Simple is a Java library for parsing command line
 options, such as those you might pass to an invocation of @code{javac}.  In
