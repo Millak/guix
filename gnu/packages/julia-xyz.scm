@@ -5842,6 +5842,26 @@ whether it is beneficial to do so, and rearranging the code to synthesize
 vector instructions.")
     (license license:expat)))
 
+(define-public julia-simdtypes
+  (package
+    (name "julia-simdtypes")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaSIMD/SIMDTypes.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qkg0rwfq0q746j2k5wg3dvrcmxm3lfxw0mxqrqdxccnjnmgcbkr"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaSIMD/SIMDTypes.jl")
+    (synopsis "SIMD type declarations")
+    (description "This minimalistic package serves as the foundation for
+other SIMD packages in Julia.")
+    (license license:expat)))
+
 (define-public julia-simpletraits
   (package
     (name "julia-simpletraits")
