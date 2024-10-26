@@ -1289,18 +1289,19 @@ and high-availability (HA).")
     (license license:gpl2)))                  ;'COPYING' says "version 2" only
 
 ;; Don't forget to update the other postgresql packages when upgrading this one.
-(define-public postgresql-15
+(define-public postgresql-16
   (package
     (name "postgresql")
-    (version "15.7")
+    (version "16.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1xwq1592k1r64ki9bmkcyw39416kymabdfxbkpiqaqxbhnaf8vx4"))
-              (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))
+                "0vvd73rzj0sl294v15bh8yslakqv412bxqzlkqxyjwxa8pb6c5wp"))
+              (patches (search-patches
+                        "postgresql-disable-normalize_exec_path.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1338,8 +1339,10 @@ and high-availability (HA).")
                 (invoke "make" "postgres.info")
                 (install-file "postgres.info"
                               (string-append #$output "/share/info"))))))))
-    (native-inputs (list docbook-xml-4.5 docbook2x libxml2 perl texinfo))
-    (inputs (list readline `(,util-linux "lib") openssl zlib))
+    (native-inputs
+     (list docbook-xml-4.5 docbook2x libxml2 perl pkg-config texinfo))
+    (inputs
+     (list icu4c readline `(,util-linux "lib") openssl zlib))
     (home-page "https://www.postgresql.org/")
     (synopsis "Powerful object-relational database system")
     (description
@@ -1350,6 +1353,25 @@ types, including INTEGER, NUMERIC, BOOLEAN, CHAR, VARCHAR, DATE, INTERVAL, and
 TIMESTAMP.  It also supports storage of binary large objects, including
 pictures, sounds, or video.")
     (license (license:x11-style "file://COPYRIGHT"))))
+
+(define-public postgresql-15
+  (package
+    (inherit postgresql-16)
+    (name "postgresql")
+    (version "15.8")
+    (source (origin
+              (inherit (package-source postgresql-16))
+              (uri (string-append "https://ftp.postgresql.org/pub/source/v"
+                                  version "/postgresql-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0snbxmlygf7m4cxjpscmz3yjn4lnqsw313y9xgpv7vk9k9gm20s4"))
+              (patches (search-patches
+                        "postgresql-disable-resolve_symlinks.patch"))))
+    (native-inputs (modify-inputs (package-native-inputs postgresql-16)
+                     (delete "pkg-config")))
+    (inputs (modify-inputs (package-inputs postgresql-16)
+              (delete "icu4c")))))
 
 (define-public postgresql-14
   (package
