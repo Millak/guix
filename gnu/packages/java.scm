@@ -6575,7 +6575,7 @@ used with any logging implementation at runtime.")
     (version "1.10.19")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://repo1.maven.org/maven2/"
+              (uri (string-append "https://repo1.maven.org/maven2/"
                                   "org/mockito/mockito-core/" version
                                   "/mockito-core-" version "-sources.jar"))
               (sha256
