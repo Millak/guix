@@ -688,20 +688,6 @@ vertices, sorting by primitive type, merging of redundant materials and many
 more.")
     (license license:bsd-3)))
 
-(define-public assimp-5.0
-  (package
-    (inherit assimp)
-    (version "5.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/assimp/assimp")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "assimp" version))
-              (sha256
-               (base32
-                "1w2484lg823bql7lpfq84vnsfsnag5v65qrbphslj866z9ia68l7"))))))
-
 (define-public mikktspace
   ;; The latest commit is used as there is no release.
   (let ((commit   "3e895b49d05ea07e4c2133156cfa94369e19e409")
