@@ -10857,8 +10857,8 @@ during initialization or reinitialization of its subcomponents.")
   (sbcl-package->ecl-package sbcl-class-options))
 
 (define-public sbcl-classimp
-  (let ((commit "d82a14c59bc733f89a1ea0b3447ebedddce5756e")
-        (revision "0"))
+  (let ((commit "6c74f3808e00781a2662f37ddc26ccbbf2687b6b")
+        (revision "1"))
     (package
       (name "sbcl-classimp")
       (version (git-version "0.0.0" revision commit))
@@ -10870,7 +10870,7 @@ during initialization or reinitialization of its subcomponents.")
                (commit commit)))
          (file-name (git-file-name "cl-classimp" version))
          (sha256
-          (base32 "0pbnz6cf1zb2ayk4kbw0gphjb8nflnjns2rwhv86jz0kf0z1hqha"))))
+          (base32 "1sq34s5yrljh7fffllsscay7xi11lg03alrkyrh6xfwa2w7cnqmx"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        (list
@@ -10880,9 +10880,9 @@ during initialization or reinitialization of its subcomponents.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "library.lisp"
                   (("libassimp.so.5" _)
-                   (search-input-file inputs "/lib/libassimp.so.5.0.0"))))))))
+                   (search-input-file inputs "/lib/libassimp.so.5"))))))))
       (inputs
-       (list assimp-5.0
+       (list assimp
              sbcl-cffi
              sbcl-split-sequence))
       (home-page "https://github.com/3b/classimp")
@@ -10892,26 +10892,11 @@ during initialization or reinitialization of its subcomponents.")
 Import} library for Common Lisp.")
       (license license:expat))))
 
-;; FIXME: The cl and ecl packages get the latest version of assimp as
-;; dependency instead of the one specified in the sbcl package. Specifying
-;; the dependencies explicitly works around the issue.
 (define-public cl-classimp
-  (let ((pkg (sbcl-package->cl-source-package sbcl-classimp)))
-    (package
-      (inherit pkg)
-      (inputs
-       (list assimp-5.0
-             cl-cffi
-             cl-split-sequence)))))
+  (sbcl-package->cl-source-package sbcl-classimp))
 
 (define-public ecl-classimp
-  (let ((pkg (sbcl-package->ecl-package sbcl-classimp)))
-    (package
-      (inherit pkg)
-      (inputs
-       (list assimp-5.0
-             ecl-cffi
-             ecl-split-sequence)))))
+  (sbcl-package->ecl-package sbcl-classimp))
 
 (define-public sbcl-clavier
   (let ((commit "9b1424eaad131e114a45b400784079124b5e2321")
