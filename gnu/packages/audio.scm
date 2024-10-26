@@ -2315,40 +2315,6 @@ also play midifiles using a Soundfont.")
      "Faust is a programming language for realtime audio signal processing.")
     (license license:gpl2+)))
 
-;; This version is needed to build older synths that require the lv2synth.cpp
-;; architecture file, such as sorcer.
-(define-public faust-0.9.67
-  (package
-    (inherit faust)
-    (name "faust")
-    (version "0.9.67")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/grame-cncm/faust")
-                    (commit (string-append "v"
-                                           (string-map (lambda (c)
-                                                         (if (char=? c #\.) #\- c))
-                                                       version)))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0856x666s6ymzk8v15f9gy402dbr8c9v2s40hyfadhraqljmqrm0"))
-              (snippet
-               ;; Remove prebuilt library
-               '(delete-file "architecture/android/libs/armeabi-v7a/libfaust_dsp.so"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:make-flags
-      #~(list (string-append "prefix=" #$output))
-      #:tests? #f
-      #:phases
-      '(modify-phases %standard-phases
-         ;; no "configure" script
-         (delete 'configure))))
-    (native-inputs (list unzip))))
-
 (define-public faust-2
   (package
     (inherit faust)
