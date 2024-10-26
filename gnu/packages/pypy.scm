@@ -42,14 +42,14 @@
 (define-public pypy
   (package
     (name "pypy")
-    (version "7.3.13")
+    (version "7.3.17")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.python.org/pypy/"
                                   "pypy3.10-v" version "-src.tar.bz2"))
               (sha256
                (base32
-                "0v9s6pwrnaxqi5h1pvmaphj6kgyczx07ykl07hcx656h34y77haa"))))
+                "1xsbn9mbxi2kai4gg1nz6n6cbqsq60qh65f5l6ld7ip9g32lpmva"))))
     (build-system gnu-build-system)
     (arguments
      (list
