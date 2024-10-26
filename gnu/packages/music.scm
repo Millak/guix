@@ -5839,11 +5839,11 @@ your favorite sampled sounds and bashing away on a MIDI controller.")
     (license license:gpl2+)))
 
 (define-public sorcer
-  (let ((revision "1")
+  (let ((revision "2")
         ;; The last release was in 2016.  Since then a couple of commits have
         ;; been added to fix build problems, so we take this arbitrary recent
         ;; commit.
-        (commit "cc7f6f58af3188a8620b90fdad6e8ca5d026f543"))
+        (commit "94107b26e3e00e32504c8fb3fbf7572514d3b6bc"))
     (package
       (name "sorcer")
       (version (git-version "1.1.3" revision commit))
@@ -5855,7 +5855,7 @@ your favorite sampled sounds and bashing away on a MIDI controller.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0ryaglp2pzln2bm0pwc5p9lb2nk0x4wmrs4c4cp6d2m2hhk82yk7"))
+                  "0md3d9h63ngrlh53mj1fmwhmnlxr7bqzpfb3wk9427v5n0y6yn48"))
                 (snippet
                  '(delete-file "faust/main.cpp"))))
       (build-system cmake-build-system)
@@ -5863,18 +5863,14 @@ your favorite sampled sounds and bashing away on a MIDI controller.")
        `(#:tests? #f                    ;no tests included
          #:phases
          (modify-phases %standard-phases
-           (add-after 'unpack 'remove-architecture-specific-flags
-             (lambda _
-               (substitute* "CMakeLists.txt"
-                 (("-msse2 -mfpmath=sse") ""))))
            (add-after 'unpack 'build-faust-sources
              (lambda* (#:key inputs #:allow-other-keys)
                (with-directory-excursion "faust"
                  (invoke "faust" "-i"
-                         "-a" "lv2synth.cpp"
+                         "-a" "lv2.cpp"
                          "-o" "main.cpp" "main.dsp")))))))
       (inputs (list boost lv2 ntk))
-      (native-inputs (list faust-0.9.67 pkg-config))
+      (native-inputs (list faust-2 pkg-config which))
       (home-page "http://openavproductions.com/sorcer/")
       (synopsis "Wavetable LV2 plugin synth")
       (description "Sorcer is a wavetable LV2 plugin synthesizer, targeted at
