@@ -2882,7 +2882,7 @@ procedure calls (RPCs).")
 (define-public openvswitch
   (package
     (name "openvswitch")
-    (version "3.2.0")
+    (version "3.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2890,7 +2890,7 @@ procedure calls (RPCs).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1i0lb40lwbakmmqklmfcgr01l1ymsawgdi7k9a1zzp8ariw7x4ff"))))
+                "10g84h6lis6fafyjhvmdrs8r539xcar04cc3rsk448gs6848hsqr"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -2966,7 +2966,9 @@ massive network automation through programmatic extension, while still
 supporting standard management interfaces and protocols (e.g. NetFlow, sFlow,
 IPFIX, RSPAN, CLI, LACP, 802.1ag).")
     (properties
-     '((release-monitoring-url . "https://www.openvswitch.org/download/")))
+     '((release-monitoring-url . "https://www.openvswitch.org/download/")
+       ;; This CVE is fixed since 3.2.0.
+       (lint-hidden-cve . ("CVE-2023-5366"))))
     (license                            ; see debian/copyright for detail
      (list license:lgpl2.1              ; xenserver and utilities/bugtool
            license:gpl2                 ; datapath
