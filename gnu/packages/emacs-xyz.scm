@@ -11302,6 +11302,40 @@ containers and Vagrant virtual machines.  To use Pythonic with Docker you need
 to install Docker Tramp Emacs package.")
       (license license:gpl3+))))
 
+(define-public emacs-anaconda-mode
+  (let ((commit "f900bd7656a03aa24ef3295251f266736f7756eb")
+        (revision "0"))
+    (package
+      (name "emacs-anaconda-mode")
+      (version (git-version "0.1.16" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pythonic-emacs/anaconda-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1gricygbs9f210z7bnzdhcmqpwnpzs4mwbw8rvabfplcbiw7sg6r"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:include #~(cons "^anaconda-mode\\.py$" %default-include)))
+      (propagated-inputs (list emacs-dash
+                               emacs-f
+                               emacs-pythonic
+                               emacs-s
+                               emacs-tramp
+                               emacs-xref))
+      (home-page "https://github.com/pythonic-emacs/anaconda-mode")
+      (synopsis
+       "Python code navigation, documentation lookup and completion in Emacs")
+      (description
+       "This package provides Python code navigation, documentation lookup,
+and code completion for Emacs.  It uses a lightweight Python backend to offer
+features like jumping to definitions, finding references, and viewing
+documentation, enhancing the Python development experience within Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-jedi
   (package
     (name "emacs-jedi")
