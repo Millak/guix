@@ -26418,11 +26418,11 @@ their meaning for the current Emacs major-mode.")
     (license license:gpl3+)))
 
 (define-public emacs-org-ref
-  (let ((commit "bb375f366f883e5b60e3bb625f2acd026811fb55")
+  (let ((commit "732a20bd236fd02db4a651da29f87f87f458a54a")
         (revision "0"))
     (package
       (name "emacs-org-ref")
-      (version (git-version "3.0" revision commit))
+      (version (git-version "3.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -26432,14 +26432,12 @@ their meaning for the current Emacs major-mode.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "01wxcyzdrx6ysv9rjd64fr7kkvm4fjr03ib4mmpchraxxm8g8z43"))))
+           "1kbjxz56fvln6drd2wqdxrpgwjshzpdbyaq7dz0gn285z93y1knk"))))
       (build-system emacs-build-system)
       (arguments
        (list
         #:include #~(cons* "org-ref.org" "org-ref.bib" %default-include)
         #:exclude #~(list
-                     ;; github.com/jkitchin/org-ref/issues/1085
-                     "openalex.el"
                      ;; author doesn't recommend using it
                      "org-ref-pdf.el")))
       (propagated-inputs
@@ -26447,13 +26445,12 @@ their meaning for the current Emacs major-mode.")
              emacs-citeproc-el
              emacs-dash
              emacs-f
-             emacs-helm
              emacs-helm-bibtex
              emacs-htmlize
              emacs-hydra
-             emacs-ivy
              emacs-ox-pandoc
              emacs-parsebib
+             emacs-request
              emacs-s))
       (home-page "https://github.com/jkitchin/org-ref")
       (synopsis "Citations, cross-references and bibliographies in Org mode")
