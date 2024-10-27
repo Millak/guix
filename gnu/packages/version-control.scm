@@ -1171,7 +1171,7 @@ write native speed custom Git applications in any language with bindings.")
 (define-public libgit2-1.8
   (package
     (inherit libgit2-1.7)
-    (version "1.8.1")
+    (version "1.8.3")
     (source (origin
               (inherit (package-source libgit2-1.7))
               (uri (git-reference
@@ -1180,7 +1180,7 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "1mh55804cvxl2cyl4clinajzgfn3zmlhacnv1pdvdj4w6z2w4si7"))
+                "11jyxy6ckl19ayqpq5s3nlbcd0s1q4sdy8884m4pjrbzgxg6y1ds"))
               (patches
                (search-patches "libgit2-uninitialized-proxy-settings.patch"))
 	      (snippet
