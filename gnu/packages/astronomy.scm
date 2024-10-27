@@ -2816,6 +2816,26 @@ much of the core functionality and some common tools needed for performing
 astronomy and astrophysics.")
     (license license:bsd-3)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-astropy-minimal
+  (package/inherit python-astropy
+    (name "python-astropy-minimal")
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-astropy)
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list nss-certs-for-test
+           pkg-config
+           python-cython-3
+           python-extension-helpers
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-astropy)
+       (delete python-matplotlib
+               python-scipy)))))
+
 (define-public python-astropy-healpix
   (package
     (name "python-astropy-healpix")
