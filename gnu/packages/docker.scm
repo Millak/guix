@@ -730,7 +730,7 @@ Tini is integrated with Docker.")
 (define-public docker-registry
   (package
     (name "docker-registry")
-    (version "2.8.1")
+    (version "2.8.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -739,7 +739,7 @@ Tini is integrated with Docker.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w8zr97p2c62gm1lrdwqa704ivjsy25ylznrddbbpv63idwdbi9k"))))
+                "0dbaxmkhg53anhkzngyzlxm2bd4dwv0sv75zip1rkm0874wjbxzb"))))
     (build-system go-build-system)
     (arguments
      (list
