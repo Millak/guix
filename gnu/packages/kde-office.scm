@@ -30,6 +30,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages hunspell)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libreoffice)
@@ -142,3 +143,42 @@ Advanced plugins:
 @item KFormula: Mathematical formulas
 @end itemize")
     (license (list license:lgpl2.0+ license:gpl2+))))
+
+(define-public ghostwriter
+  (package
+    (name "ghostwriter")
+    (version "24.05.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/" version
+                                  "/src/ghostwriter-" version ".tar.xz"))
+              (sha256
+               (base32 "181izld9wnbwlknw7h876ysranqqvbvb0h2p4ky54jfb82f9h513"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DQT_MAJOR_VERSION=6"
+                   "-DBUILD_TESTING=ON")))
+    (native-inputs
+     (list extra-cmake-modules kdoctools pkg-config qttools))
+    (inputs
+     (list hunspell
+           kconfigwidgets
+           kcoreaddons
+           kwidgetsaddons
+           kxmlgui
+           qt5compat
+           qtsvg
+           qtwebchannel
+           qtwebengine
+           sonnet))
+    (home-page "https://ghostwriter.kde.org/")
+    (synopsis "Text editor for Markdown")
+    (description "@code{ghostwriter} is a text editor for Markdown, which is a plain
+text markup format.  It features a live HTML preview as you type, theme
+creation, focus mode, fullscreen mode, live word count, and document navigation
+in an aesthetic writing environment.  It comes with the cmark-gfm Markdown
+processor built in, and can integrate with Pandoc, MultiMarkdown, Discount, and
+cmark processors if they are installed.")
+    (license license:gpl3+)))
