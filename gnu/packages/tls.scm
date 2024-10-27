@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -668,14 +669,14 @@ kilobytes of RAM.")
 (define-public libressl
   (package
     (name "libressl")
-    (version "3.7.3")
+    (version "4.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://openbsd/LibreSSL/"
                                   "libressl-" version ".tar.gz"))
               (sha256
                (base32
-                "1csx6gfgiqr43dw23qj2mr5jbkcd99kqavwb4vbmp0hcm5bchj3r"))))
+                "1r518q11qwx9zr1niqjh4ci63x1s51gx6g8f3p3xzhxcy1aik12d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -690,19 +691,7 @@ kilobytes of RAM.")
                        "/share/libressl-"
                        ,(package-version this-package))
         ;; Provide a TLS-enabled netcat.
-        "--enable-nc")
-
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        ;; 'tests/tlstest.sh' started failing in 2024 due to
-                        ;; an expired test certificate.
-                        (invoke "datefudge" "2020-01-01"
-                                "make" "check"
-                                "-j" (number->string
-                                      (parallel-job-count)))))))))
-    (native-inputs (list datefudge))
+        "--enable-nc")))
     (properties
      `((release-monitoring-url . "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/")))
     (home-page "https://www.libressl.org/")
