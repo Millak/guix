@@ -3,6 +3,7 @@
 ;;; Copyright © 2016-2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 LuHui <luhux76@gmail.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +45,9 @@
                     version ".tar.bz2"))
               (sha256
                (base32
-                "1923f21rnlbv1qjvk2qhgqnki5mkgr6z0p8dvzs9jr3l5vrxy49k"))))
+                "1923f21rnlbv1qjvk2qhgqnki5mkgr6z0p8dvzs9jr3l5vrxy49k"))
+              (patches
+               (search-patches "busybox-add-missing-sha-NI-guard.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
