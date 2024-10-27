@@ -3143,7 +3143,7 @@ does not use SSH and requires a pre-shared symmetric key.")
                         (delete-file "vtysh/extract.pl")))))
     (build-system gnu-build-system)
     (native-inputs (list gawk gcc-9 pkg-config perl dejagnu))
-    (inputs (list readline c-ares))
+    (inputs (list c-ares libxcrypt readline))
     (synopsis "Routing Software Suite")
     (description "Quagga is a routing software suite, providing implementations
 of OSPFv2, OSPFv3, RIP v1 and v2, RIPng and BGP-4 for Unix platforms.
@@ -3154,6 +3154,10 @@ Zserv API over a Unix or TCP stream to Quagga clients.  It is these Zserv
 clients which typically implement a routing protocol and communicate routing
 updates to the zebra daemon.")
     (home-page "https://www.nongnu.org/quagga/")
+    ;; This CVE concerns systemd services files that we currently don't use.
+    ;; If we were to use them, a fixing patch can be found here:
+    ;; https://build.opensuse.org/request/show/1035188
+    (properties '((lint-hidden-cve . ("CVE-2021-44038"))))
     (license license:gpl2+)))
 
 (define-public bgpq3
