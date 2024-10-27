@@ -38520,7 +38520,7 @@ personal wiki.")
 (define-public emacs-org-node
   (package
     (name "emacs-org-node")
-    (version "1.5.2")
+    (version "1.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -38529,7 +38529,7 @@ personal wiki.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ma5cn57dng5i1jmq9q7nh9a9sdnm5jlihyd4xgn465q4dqsch2p"))))
+                "09khsqw0k0d9fwwwlkrqcizv017s251pvnjyply30xvg2jpx9psp"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash
