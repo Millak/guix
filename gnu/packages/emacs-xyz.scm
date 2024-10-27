@@ -11276,6 +11276,32 @@ using @code{python-isort}.")
      "This package permits automated installation of tools written in Python.")
     (license license:gpl3+)))
 
+(define-public emacs-pythonic
+  (let ((commit "c1e5643e044f1faaf6ecfadc719b981c048aeb79")
+        (revision "0"))
+    (package
+      (name "emacs-pythonic")
+      (version (git-version "0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pythonic-emacs/pythonic")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1bl2ds73g59v8q90kmjpchvzqrjdli3hmigzw5gv2yl548p7yppb"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-f emacs-s emacs-tramp))
+      (home-page "https://github.com/pythonic-emacs/pythonic")
+      (synopsis "Utility functions for writing Pythonic in Emacs")
+      (description
+       "The Pythonic Emacs package provides function for convenient running
+Python on different platforms on local and remote hosts including Docker
+containers and Vagrant virtual machines.  To use Pythonic with Docker you need
+to install Docker Tramp Emacs package.")
+      (license license:gpl3+))))
+
 (define-public emacs-jedi
   (package
     (name "emacs-jedi")
