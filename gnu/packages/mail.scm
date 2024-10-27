@@ -58,6 +58,7 @@
 ;;; Copyright © 2024 Benjamin Slade <slade@lambda-y.net>
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3287,14 +3288,14 @@ from the Cyrus IMAP project.")
 (define-public opensmtpd
   (package
     (name "opensmtpd")
-    (version "7.5.0p0")
+    (version "7.6.0p1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.opensmtpd.org/archives/"
                            "opensmtpd-" version ".tar.gz"))
        (sha256
-        (base32 "1763w26zvvc3kf8giqg4lwn5n1ypmgh73agf5k3yq6qc7hww3xc4"))))
+        (base32 "15sa1vzh6rbl0c8fwl4kz5zrlarp8mxaw47q6wk3lrd6h9lq0z5j"))))
     (build-system gnu-build-system)
     (inputs
      ;; OpenSMTPd bundled (a subset of) libasr and libtls, which we use.  See
