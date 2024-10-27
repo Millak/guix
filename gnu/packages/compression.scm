@@ -2438,15 +2438,14 @@ decompression is a little bit slower.")
 (define-public upx
   (package
     (name "upx")
-    (version "4.1.0")
+    (version "4.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/upx/upx/releases/download/v"
                            version "/upx-" version "-src.tar.xz"))
        (sha256
-        (base32
-         "1l273pwa573x9l3izw75cz8ysn2g8w8w3s56rahppa3ya65zg0h5"))))
+        (base32 "1i71p03861hlf5x1w217l67zm5inm449zhbg6kpv8zyj0wb5dmjy"))))
     (build-system cmake-build-system)
     (home-page "https://upx.github.io/")
     (synopsis "Compression tool for executables")
@@ -2455,6 +2454,8 @@ decompression is a little bit slower.")
 compressor.  UPX typically reduces the file size of programs and shared
 libraries by around 50%--70%, thus reducing disk space, network load times,
 download times, and other distribution and storage costs.")
+    ;; These CVEs have been fixed since 4.0.2 but are still linted.
+    (properties `((lint-hidden-cve . ("CVE-2023-23456" "CVE-2023-23457"))))
     (license license:gpl2+)))
 
 (define-public quazip-0
