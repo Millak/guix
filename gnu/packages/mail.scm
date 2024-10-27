@@ -4561,6 +4561,8 @@ IMAP, Atom feeds or HTML archives.")
      "Sylpheed is a simple, lightweight but featureful, and easy-to-use e-mail
 client.  Sylpheed provides intuitive user-interface.  Sylpheed is also
 designed for keyboard-oriented operation.")
+    (properties '((release-monitoring-url
+                   . "https://sylpheed.sraoss.jp/en/download.html")))
     (license license:gpl2+)))
 
 (define-public python-authres
