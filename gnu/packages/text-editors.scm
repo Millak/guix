@@ -89,7 +89,6 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)
-  #:use-module (gnu packages hunspell)
   #:use-module (gnu packages image)
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libbsd)
@@ -868,61 +867,6 @@ and all charsets): 200KB big.  Basic version (without bidir/unicode
 scripts/input/X11/C/Shell/HTML/Dired): 49KB.
 @end itemize")
     (license license:lgpl2.1+)))
-
-(define-public ghostwriter
-  (package
-    (name "ghostwriter")
-    (version "2.1.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/wereturtle/ghostwriter")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1w8a6vkhmdbp4kzb7aprvfni9ny47dj0vigbcnsh539dn3sp1gan"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config qttools-5))       ; for lrelease
-    (inputs
-     (list bash-minimal
-           hunspell
-           qtbase-5
-           qtdeclarative-5
-           qtmultimedia-5
-           qtquickcontrols-5
-           qtsvg-5
-           qtwebchannel-5))
-    (propagated-inputs                  ; To get native-search-path
-     (list qtwebengine-5))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'configure
-            (lambda* (#:key outputs #:allow-other-keys)
-              (invoke "qmake" (string-append "PREFIX=" #$output))))
-          (add-after 'configure 'create-translations
-            (lambda _
-              ;; `lrelease` will not overwrite, so delete existing .qm files
-              (for-each delete-file (find-files "translations" ".*\\.qm"))
-              (apply invoke "lrelease" (find-files "translations" ".*\\.ts"))))
-          ;; Ensure that icons are found at runtime.
-          (add-after 'install 'wrap-executable
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (wrap-program (string-append #$output "/bin/ghostwriter")
-                `("QT_PLUGIN_PATH" ":" prefix
-                  #$(map (lambda (label)
-                           (file-append (this-package-input label)
-                                        "/lib/qt5/plugins"))
-                         '("qtsvg" "qtmultimedia")))))))))
-    (home-page "https://wereturtle.github.io/ghostwriter/")
-    (synopsis "Write without distractions")
-    (description
-     "@code{ghostwriter} provides a relaxing, distraction-free writing
-environment with Markdown markup.")
-    (license license:gpl3+)))           ; icons/* under CC-BY-SA3
 
 (define-public manuskript
   (package
