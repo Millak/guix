@@ -1047,6 +1047,7 @@ decoders, muxers, and demuxers provided by FFmpeg.")
               (uri (string-append
                     "https://gstreamer.freedesktop.org/src/" name "/"
                     "gst-editing-services-" version ".tar.xz"))
+              (patches (search-patches "gst-editing-services-fix-api.patch"))
               (sha256
                (base32
                 "0rm2w7g1rgbzh3i659lw61hgzfhqk8cmx9y0zkjzwnwxmdfa53qk"))))
