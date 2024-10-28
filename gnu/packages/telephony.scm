@@ -13,7 +13,7 @@
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
-;;; Copyright © 2019 Ivan Vilata i Balaguer <ivan@selidor.net>
+;;; Copyright © 2019, 2024 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -557,7 +557,7 @@ address of one of the participants.")
 (define-public mumble
   (package
     (name "mumble")
-    (version "1.4.287")
+    (version "1.5.634")
     (source (origin
               (method url-fetch)
               (uri
@@ -566,7 +566,7 @@ address of one of the participants.")
                 version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0iq54011jgrc5ipk16x05n3sj54j8mzhcidnzcdsb2x5pzan33ip"))
+                "0aar5if80w8ay9i03lpnznz6ln1gh1jjrzxfbj9fdc4as8rkckwh"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
@@ -574,14 +574,16 @@ address of one of the participants.")
                `(begin
                   (let ((keep
                          '("arc4random"
-                           "celt-0.7.0-build"
-                           "celt-0.7.0-src"
-                           "celt-0.11.0-build"
-                           "celt-0.11.0-src"
+                           "cmake-compiler-flags"
+                           "flag-icons"
+                           "minhook" ; unused, reqd for licenses
                            "qqbonjour"
-                           "rnnoise-build"
-                           "rnnoise-src"
-                           "smallft")))
+                           "renamenoise"
+                           "smallft"
+                           "speexdsp" ; unbundled, reqd for licenses
+                           "tracy" ; disabled below, reqd by cmake
+                           "xinputcheck-src" ; reqd for licenses
+                           )))
 	            (with-directory-excursion "3rdparty"
 	              (for-each delete-file-recursively
 			        (lset-difference string=?
@@ -592,9 +594,10 @@ address of one of the participants.")
     (arguments
      (list
       #:configure-flags
-      #~(list "-Dbundled-speex=off"
+      #~(list "-Dbundled-gsl=off"
+              "-Dbundled-json=off"
+              "-Dbundled-speex=off"
               "-Dbundled-opus=off"
-              ;; "-Dbundled-rnnoise=off" ; XXX: not yet in release
               "-Dalsa=off" ; use pulse
               "-Dcoreaudio=off" ; use pulse
               "-Dice=off" ; not packaged
@@ -606,6 +609,7 @@ address of one of the participants.")
               "-Doverlay-xcompile=off"
               "-Dupdate=off" ; don't phone home
               "-Dtests=on"
+              "-Dtracy=off" ; no profiling
               "-Dbundle-qt-translations=off")
       #:phases
       #~(modify-phases %standard-phases
@@ -615,7 +619,7 @@ address of one of the participants.")
                                 "3rdparty/FindPythonInterpreter")))
           (add-after 'unpack 'disable-murmur-ice
             (lambda _
-              (substitute* "scripts/murmur.ini"
+              (substitute* "auxiliary_files/mumble-server.ini"
                 (("^ice=") ";ice="))))
           ;; disable statistic gathering by default. see <https://bugs.gnu.org/25201>
           (add-after 'unpack 'fix-statistic-gathering-default
@@ -638,11 +642,13 @@ address of one of the participants.")
     (inputs
      (list avahi
            boost
+           c++-gsl ; avoid bundled
            glib ; for speech-dispatcher
            libsndfile
            libxi
            mesa ; avoid bundled
-           openssl-1.1 ; 1.5.x works with openssl-3.x
+           nlohmann-json ; avoid bundled
+           openssl
            opus ; avoid bundled
            poco
            protobuf
@@ -652,7 +658,6 @@ address of one of the participants.")
            speech-dispatcher
            speex ; avoid bundled
            speexdsp ; avoid bundled
-           ;; rnnoise ; TODO: unbundle rnnoise
            ))
     (native-inputs
      (list pkg-config python qttools-5))
@@ -663,8 +668,8 @@ software primarily intended for use while gaming.
 Mumble consists of two applications for separate usage:
 @code{mumble} for the client, and @code{murmur} for the server.")
     (home-page "https://wiki.mumble.info/wiki/Main_Page")
-    (license (list license:bsd-3 ; mumble celt-0.7.0 qqbonjour rnnoise smallft
-                   license:bsd-2 ; celt-0.11.0
+    (license (list license:bsd-3 ; mumble cmake-compiler-flags qqbonjour smallft
+                   license:expat ; flag-icons
                    license:isc)))) ; arc4random
 
 (define-public twinkle
