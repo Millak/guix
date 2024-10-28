@@ -1189,46 +1189,47 @@ frames per second (FPS), temperatures, CPU/GPU load and more.")
         (base32 "157vpfzivg2wf349glyd0cpbyaw1j3fm4nggban70pghql3x48kb"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'unpack-imgui
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "imgui-source")
-                               "../imgui-source")))
-         (add-before 'configure 'pre-configure
-           ;; CMakeLists.txt forces a CMAKE_INSTALL_RPATH value.  As
-           ;; a consequence, we cannot suggest ours in configure flags.  Fix
-           ;; it.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("set\\(CMAKE_INSTALL_RPATH .*") "")))))
-       #:configure-flags
-       (let* ((out (assoc-ref %outputs "out"))
-              (runpath
-               (string-join (list (string-append out "/lib")
-                                  (string-append out "/lib/OGRE"))
-                            ";")))
-         (list (string-append "-DCMAKE_INSTALL_RPATH=" runpath)
-               "-DIMGUI_DIR=../imgui-source"
-               "-DOGRE_BUILD_DEPENDENCIES=OFF"
-               "-DOGRE_BUILD_TESTS=TRUE"
-               "-DOGRE_INSTALL_DOCS=TRUE"
-               "-DOGRE_INSTALL_SAMPLES=TRUE"
-               "-DOGRE_INSTALL_SAMPLES_SOURCE=TRUE"))))
-    (native-inputs `(("doxygen" ,doxygen)
-                     ("imgui-source" ,(package-source imgui-1.86))
-                     ("googletest" ,googletest)
-                     ("pkg-config" ,pkg-config)
-                     ("python" ,python)))
-    (inputs (list freeimage
-                  freetype
-                  libxaw
-                  libxrandr
-                  libxt
-                  mesa
-                  pugixml
-                  sdl2
-                  zlib))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'unpack-imgui
+            (lambda _
+              (copy-recursively #$(this-package-native-input "imgui-source")
+                                "../imgui-source")))
+          (add-before 'configure 'pre-configure
+            ;; CMakeLists.txt forces a CMAKE_INSTALL_RPATH value.  As
+            ;; a consequence, we cannot suggest ours in configure flags.  Fix
+            ;; it.
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set\\(CMAKE_INSTALL_RPATH .*") "")))))
+      #:configure-flags
+      #~(let ((runpath (string-join (list (string-append #$output "/lib")
+                                          (string-append #$output "/lib/OGRE"))
+                                    ";")))
+          (list (string-append "-DCMAKE_INSTALL_RPATH=" runpath)
+                "-DIMGUI_DIR=../imgui-source"
+                "-DOGRE_BUILD_DEPENDENCIES=OFF"
+                "-DOGRE_BUILD_TESTS=TRUE"
+                "-DOGRE_INSTALL_DOCS=TRUE"
+                "-DOGRE_INSTALL_SAMPLES=TRUE"
+                "-DOGRE_INSTALL_SAMPLES_SOURCE=TRUE"))))
+    (native-inputs
+     `(("doxygen" ,doxygen)
+       ("imgui-source" ,(package-source imgui-1.86))
+       ("googletest" ,googletest)
+       ("pkg-config" ,pkg-config)
+       ("python" ,python)))
+    (inputs
+     (list freeimage
+           freetype
+           libxaw
+           libxrandr
+           libxt
+           mesa
+           pugixml
+           sdl2
+           zlib))
     (synopsis "Scene-oriented, flexible 3D engine written in C++")
     (description
      "OGRE (Object-Oriented Graphics Rendering Engine) is a scene-oriented,
