@@ -8386,6 +8386,58 @@ package locks across supported Common Lisp implementations.")
 (define-public ecl-cl-package-locks
   (sbcl-package->ecl-package sbcl-cl-package-locks))
 
+(define-public sbcl-cl-pango
+  (let ((commit "ee4904d19ce22d00eb2fe17a4fe42e5df8ac8701")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-pango")
+      (version (git-version "0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/BradWBeer/cl-pango")
+               (commit commit)))
+         (file-name (git-file-name "cl-pango" version))
+         (sha256
+          (base32 "0zkn4yn8nkkjr0x1vcy856cvbmnyhdidqz0in8xvd2i93jvw5w0i"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "library.lisp"
+                  (("libpango-1.0.so")
+                   (search-input-file inputs "/lib/libpango-1.0.so"))
+                  (("libpangocairo-1.0.so")
+                   (search-input-file inputs "/lib/libpangocairo-1.0.so"))))))))
+      (inputs
+       (list pango
+             sbcl-cffi
+             sbcl-cl-cairo2
+             sbcl-xmls))
+      (home-page "https://github.com/BradWBeer/cl-pango")
+      (synopsis "Pango bindings for Common Lisp")
+      (description
+       "This package provides Common Lisp bindings to the pango text layout
+library.")
+      (license license:expat))))
+
+(define-public cl-pango
+  (sbcl-package->cl-source-package sbcl-cl-pango))
+
+(define-public ecl-cl-pango
+  (let ((pkg (sbcl-package->ecl-package sbcl-cl-pango)))
+    (package
+      (inherit pkg)
+      (inputs
+       (list pango
+             ecl-cffi
+             ecl-cl-cairo2
+             ecl-xmls)))))
+
 (define-public sbcl-cl-pass
   (let ((commit "e58e97c0c0588dc742c061208afb9bc31e4dbd34")
         (revision "1"))
