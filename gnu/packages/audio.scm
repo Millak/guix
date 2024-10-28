@@ -139,6 +139,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages telephony)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
@@ -1383,6 +1384,89 @@ tools (analyzer, mono/stereo tools, crossovers).")
 guitar amplification and a small range of classic effects, signal processors and
 generators of mostly elementary and occasionally exotic nature.")
     (license license:gpl3+)))
+
+(define-public chow-tape-model
+  (package
+    (name "chow-tape-model")
+    (version "2.11.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jatinchowdhury18/AnalogTapeModel")
+             (commit (string-append "v" version))
+             (recursive? #true)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0qrqhlfzc2m5iwrkfzb53x8hll2ndn1fygh1mwn11shqmy5qgf2s"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      (let ((libs "-lX11 -lXext -lXcursor -lXinerama -lXrandr"))
+        `(list "-DBUILD_HEADLESS=ON"
+               ,(string-append "-DCMAKE_SHARED_LINKER_FLAGS=" libs)
+               ,(string-append "-DCMAKE_EXE_LINKER_FLAGS=" libs)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-manual
+            (lambda _
+              (with-directory-excursion "Manual"
+                (invoke "make" "all"))))
+          (add-after 'build-manual 'install-manual
+            (lambda _
+              (with-directory-excursion "Manual"
+                (install-file "ChowTapeManual.pdf"
+                              (string-append #$output:doc "/share/doc/")))))
+          (add-after 'install-manual 'chdir
+            (lambda _ (chdir "Plugin")))
+          (replace 'check
+            (lambda* (#:key tests? build-type #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion
+                    (string-append "Source/Headless/ChowTapeModel_Headless_artefacts/" build-type)
+                  (invoke "./ChowTapeModel_Headless" "--unit-tests" "--all")))))
+          (replace 'install
+            (lambda* (#:key build-type #:allow-other-keys)
+              (with-directory-excursion
+                  (string-append "CHOWTapeModel_artefacts/" build-type)
+                (mkdir-p (string-append #$output:lv2 "/lib/lv2/"))
+                (mkdir-p (string-append #$output "/bin/"))
+                (install-file "Standalone/CHOWTapeModel"
+                              (string-append #$output "/bin/"))
+                (install-file "CLAP/CHOWTapeModel.clap"
+                              (string-append #$output:clap "/lib/clap/"))
+                (copy-recursively "LV2/CHOWTapeModel.lv2"
+                                  (string-append #$output:lv2
+                                                 "/lib/lv2/CHOWTapeModel.lv2"))
+                (copy-recursively "VST3/CHOWTapeModel.vst3"
+                                  (string-append #$output:vst3
+                                                 "/lib/vst3/CHOWTapeModel.vst3"))))))))
+    (outputs '("out" "doc" "clap" "lv2" "vst3"))
+    (inputs
+     (list alsa-lib
+           freeglut
+           freetype
+           jack-2
+           libxcursor
+           libxext
+           libxinerama
+           libxrandr
+           lv2))
+    (native-inputs
+     (list pkg-config
+           (texlive-updmap.cfg
+            (list texlive-geometry
+                  texlive-xetex
+                  texlive-collection-pictures))))
+    (home-page "https://chowdsp.com/products.html")
+    (synopsis "Physical modeling for analog tape machines")
+    (description
+     "CHOW Tape is an analog tape machine physical model, originally based on
+the Sony TC-260.  The current version can be used to emulate a wide variety of
+reel-to-reel tape machines.")
+    (license license:gpl3)))
 
 (define-public iir
   (package
