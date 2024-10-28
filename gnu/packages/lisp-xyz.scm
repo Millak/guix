@@ -10546,6 +10546,62 @@ as good or bad as the next one.")
 (define-public ecl-cl-who
   (sbcl-package->ecl-package sbcl-cl-who))
 
+(define-public sbcl-cl-xkb
+  (let ((commit "3807a264d04ac242ea65991b19b5fb3f894c6e46")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-xkb")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/malcolmstill/cl-xkb")
+               (commit commit)))
+         (file-name (git-file-name "cl-xkb" version))
+         (sha256
+          (base32 "002bskv0dvq2hahz7dah2zwwkp2zrkf98w7lm96jmqfn8vyp4k75"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'add-xkbcommon
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "cl-xkb.lisp"
+                  (("/usr/lib64/libxkbcommon.so.0")
+                   (search-input-file inputs "/lib/libxkbcommon.so"))))))))
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list libxkbcommon
+             sbcl-cffi))
+      (home-page "https://github.com/malcolmstill/cl-xkb")
+      (synopsis "Common Lisp wrapper for @code{libxkbcommon}")
+      (description
+       "@code{cl-xkb} is a Common Lisp wrapper for the libxkbcommon keyboard
+handling library.
+
+The library currently supports these xkb modules:
+
+@itemize
+@item Keysyms
+@item Library Context
+@item Include Paths
+@item Logging Handling
+@item Keymap Creation
+@item Keymap Components
+@item Keyboard State
+@item Compose and dead-keys support
+@end itemize")
+      (license license:bsd-3))))
+
+(define-public cl-xkb
+  (sbcl-package->cl-source-package sbcl-cl-xkb))
+
+(define-public ecl-cl-xkb
+  (sbcl-package->ecl-package sbcl-cl-xkb))
+
 (define-public sbcl-cl-xmlspam
   (let ((commit "ea06abcca2a73a9779bcfb09081e56665f94e22a"))
     (package
