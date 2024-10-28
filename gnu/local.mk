@@ -957,7 +957,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/akonadi-paths.patch		\
   %D%/packages/patches/akonadi-not-relocatable.patch		\
   %D%/packages/patches/akonadi-timestamps.patch		\
-  %D%/packages/patches/allegro-mesa-18.2.5-and-later.patch	\
   %D%/packages/patches/alure-dumb-2.patch			\
   %D%/packages/patches/ibus-anthy-fix-tests.patch		\
   %D%/packages/patches/ibus-table-paths.patch			\

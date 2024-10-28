@@ -1132,24 +1132,6 @@ etc.")
     (home-page "https://liballeg.org")
     (license license:bsd-3)))
 
-(define-public allegro-5.0
-  (package (inherit allegro)
-    (name "allegro")
-    (version "5.0.11")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/liballeg/allegro5/releases"
-                                  "/download/" version "/allegro-"
-                                  (if (equal? "0" (string-take-right version 1))
-                                    (string-drop-right version 2)
-                                    version)
-                                  ".tar.gz"))
-              (patches (search-patches
-                        "allegro-mesa-18.2.5-and-later.patch"))
-              (sha256
-               (base32
-                "0cd51qrh97jrr0xdmnivqgwljpmizg8pixsgvc4blqqlaz4i9zj9"))))))
-
 (define-public aseprite
   (package
     (name "aseprite")
