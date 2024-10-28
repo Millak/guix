@@ -83,6 +83,8 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-pim)
   #:use-module (gnu packages kde-plasma)
+  ;; Including this module breaks the build.
+  ;#:use-module ((gnu packages kde-systemtools) #:select (dolphin))
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -1065,7 +1067,10 @@ cards.")
                 "09ahnizl5mqdrg583lxkwwnsq8ci95fk49wx9733ah4c39gync5c"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DQT_MAJOR_VERSION=6")
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
@@ -1076,18 +1081,23 @@ cards.")
 branchestest|configtest|stashtest|filetest|overlaytest|remotetest|clonetest|\
 submoduletest)")))))))
     (native-inputs
-     (list extra-cmake-modules kdoctools-5 pkg-config))
+     (list extra-cmake-modules kdoctools pkg-config))
     (inputs
-     (list kconfigwidgets-5
-           kcoreaddons-5
-           kcrash-5
-           kdbusaddons-5
-           ki18n-5
-           kxmlgui-5
-           kio-5
-           ktextwidgets-5
-           ktexteditor-5
-           ksyntaxhighlighting-5
+     (list ;; module cyclic referencing
+            (module-ref
+             (resolve-interface
+              '(gnu packages kde-systemtools))
+             'dolphin)         ;for dolphin plugin
+           kconfigwidgets
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           ki18n
+           kxmlgui
+           kio
+           ktextwidgets
+           ktexteditor
+           ksyntaxhighlighting
            libgit2-1.8))
     (home-page "https://apps.kde.org/kommit/")
     (synopsis "Git client for KDE")
