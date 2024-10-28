@@ -819,7 +819,10 @@ model to base your own plug-in on, here it is.")
                          '())
 
                   ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
-                  ((".*elements/dtls\\.c.*") ""))
+                  ((".*elements/dtls\\.c.*") "")
+
+                  ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3921
+                  ((".*elements/mxfdemux\\.c.*") ""))
                 (substitute* "tests/check/elements/zxing.c"
                   ;; zxing 1.2.0 seemingly changed the type representation of
                   ;; the EAN_13 structure; disable it.
