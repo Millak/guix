@@ -1289,24 +1289,21 @@ Gerbil code within Emacs.")))
     (build-system gnu-build-system)
     (arguments
      (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
       #:make-flags #~`(,(string-append "PREFIX=" #$output))
       #:phases #~(modify-phases %standard-phases
-                   (delete 'configure)
+                   (delete 'configure) ; no configure script
                    (add-after 'patch-source-shebangs 'patch-ol-shebangs
                      (lambda _
-                       (map (lambda (f)
-                              (substitute* f
-                                (("/usr") #$output)))
-                            (list "bin/feather"
-                                  "tests/hashbang.scm"
-                                  "tests/theorem-rand.scm")))))
+                     (lambda _
+                       (substitute* (list "bin/feather"
+                                          "tests/hashbang.scm"
+                                          "tests/theorem-rand.scm")
+                         (("/usr") #$output))))))
       #:test-target "test"))
-    (native-inputs
-     (append (if (supported-package? pandoc)
-                 (list pandoc)
-                 '())
-             (list which)))
-    (home-page "https://haltp.org/owl")
+    (native-inputs (list which))
+    (home-page "https://haltp.org/posts/owl.html")
     (synopsis "Functional Scheme dialect")
     (description
      "Owl Lisp is a simple programming language.  It is intended to provide a
