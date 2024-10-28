@@ -31720,6 +31720,59 @@ has a small codebase that's easy to understand and use.")
 (define-public ecl-vom
   (sbcl-package->ecl-package sbcl-vom))
 
+(define-public sbcl-wayflan
+  (package
+    (name "sbcl-wayflan")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~shunter/wayflan")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-wayflan" version))
+       (sha256
+        (base32 "0y6hzskp1vgaigzj5b3i695sc6dn5mk7nlxs21nh5ybzmf4chhyy"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-babel
+           sbcl-cffi
+           sbcl-closer-mop
+           sbcl-plump))
+    (home-page "https://git.sr.ht/~shunter/wayflan")
+    (synopsis "Wayland communication library for Common Lisp")
+    (description
+     "Wayflan is a from-scratch Wayland communication library for Common Lisp.
+It makes a good-faith effort to mimic @code{libwayland} behavior not defined
+in the Wayland spec, to keep compatibility between the two libraries.
+
+Wayflan is not a compositor nor a GUI toolkit.  Its purpose is to parse Wayland
+protocol XML documents and exchange Wayland messages between other processes.
+
+Features:
+@itemize
+@item Client support
+@item All implementation done in Common Lisp from the socket up
+@item Enum values are translated into keywords
+@item Wayland protocol introspection
+@item ASDF component @code{:wayflan-client-impl} generates code from
+XML.  ASDF's extensible components make it possible to teach your program new
+protocols for Wayland without the need of a special build system.
+@end itemize")
+    (license license:bsd-3)))
+
+(define-public cl-wayflan
+  (sbcl-package->cl-source-package sbcl-wayflan))
+
+;; XXX: Error detected: The function CMSG-ALIGN is undefined.An error
+;; occurred during initialization: COMPILE-FILE-ERROR while compiling
+;; #<cl-source-file "wayflan/common" "wire">.
+;; (define-public ecl-wayflan
+;;   (sbcl-package->ecl-package sbcl-wayflan))
+
 (define-public sbcl-websocket-driver
   (let ((commit "17ba5535fb1c4fe43e7e8ac786e8b61a174fcba3")
         (revision "1"))
