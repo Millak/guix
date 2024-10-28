@@ -1301,7 +1301,11 @@ Gerbil code within Emacs.")))
                                   "tests/hashbang.scm"
                                   "tests/theorem-rand.scm")))))
       #:test-target "test"))
-    (native-inputs (list pandoc which))
+    (native-inputs
+     (append (if (supported-package? pandoc)
+                 (list pandoc)
+                 '())
+             (list which)))
     (home-page "https://haltp.org/owl")
     (synopsis "Functional Scheme dialect")
     (description
