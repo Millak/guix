@@ -24,7 +24,7 @@
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
-;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2022, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022, 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
@@ -2183,7 +2183,8 @@ Machine Protocol.")
      (list #:tests? #f ;No tests are available.
            ;; Package uses "-march=native" by default. We disable that to build with the
            ;; lowest supported architecture for reproducibility and CPU compatibility.
-           #:configure-flags #~'("-DOPTIMIZE_FOR_NATIVE=OFF")
+           #:configure-flags #~'("-DOPTIMIZE_FOR_NATIVE=OFF"
+                                 "-DENABLE_BACKTRACE=no")
            #:make-flags #~'("CC=gcc")
            #:phases #~(modify-phases %standard-phases
                         (add-before 'configure 'chdir-to-client
