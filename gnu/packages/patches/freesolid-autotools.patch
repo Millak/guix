@@ -1,0 +1,73 @@
+Upstream-status: https://sourceforge.net/p/freesolid/patches/1/
+
+Resolve Autoconf warnings.
+
+diff --git a/Makefile.am b/Makefile.am
+index 4914f44..77b157a 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,4 +1,5 @@
++ACLOCAL_AMFLAGS = -I m4
+ SUBDIRS = libmoto libbroad libsolid sample doc
+ 
+ EXTRA_DIST = include
+-bin_SCRIPTS = freesolid-config
+\ No newline at end of file
++bin_SCRIPTS = freesolid-config
+diff --git a/configure.in b/configure.in
+index 7d61ba5..41a761c 100644
+--- a/configure.in
++++ b/configure.in
+@@ -1,5 +1,6 @@
+ dnl Process this file with autoconf to produce a configure script.
+ AC_INIT(sample/sample.cpp)
++AC_CONFIG_MACRO_DIR([m4])
+ 
+ AC_CANONICAL_SYSTEM
+ PACKAGE=FreeSOLID
+@@ -22,17 +23,14 @@ AC_PROG_CXX
+ AC_PROG_CC
+ AC_PROG_CPP
+ AC_PROG_INSTALL
+-AC_PROG_RANLIB
+ AC_PROG_LIBTOOL
+ 
+ CPPFLAGS="$CPPFLAGS -I../include -I./include -I. -I../libbroad -I../libmoto"
+ AC_SUBST(CPPFLAGS)
+ 
+ dnl Checks for libraries.
+-dnl Replace `main' with a function in -lm:
+-AC_CHECK_LIB(m, main)
+-dnl Replace `main' with a function in -lqhull:
+-AC_CHECK_LIB(qhull, main, s_have_qhull=yes)
++AC_CHECK_LIB(m, ceil)
++AC_CHECK_LIB(qhull, qh_initbuild, s_have_qhull=yes)
+ 
+ if test "X${s_have_qhull}" = Xyes; then
+   QHULL_LIBS="-lqhull"
+diff --git a/libsolid/Makefile.am b/libsolid/Makefile.am
+index cc295c7..f722be3 100644
+--- a/libsolid/Makefile.am
++++ b/libsolid/Makefile.am
+@@ -23,7 +23,7 @@ libFreeSOLID_la_SOURCES = \
+ 
+ libFreeSOLID_la_LDFLAGS = -no-undefined -version-info @FREESOLID_CURRENT@:@FREESOLID_REVISION@:@FREESOLID_AGE@ -release @VERSION@
+ 
+-CPPFLAGS = @CPPFLAGS@
++AM_CPPFLAGS = @CPPFLAGS@
+ LIBS = @QHULL_LIBS@ -lm
+ 
+ pkginclude_HEADERS = \
+diff --git a/sample/Makefile.am b/sample/Makefile.am
+index 5559fb0..eaa705f 100644
+--- a/sample/Makefile.am
++++ b/sample/Makefile.am
+@@ -4,7 +4,7 @@ sample_SOURCES = sample.cpp
+ x_wing_SOURCES = x_wing.cpp
+ teapot_SOURCES = teapot.cpp
+ 
+-CPPFLAGS = @CPPFLAGS@
++AM_CPPFLAGS = @CPPFLAGS@
+ 
+ LDADD = ../libsolid/libFreeSOLID.la
+ 

@@ -1,0 +1,46 @@
+Upstream-status: https://sourceforge.net/p/freesolid/patches/5/
+
+diff --git a/FreeSOLID.pc.in b/FreeSOLID.pc.in
+new file mode 100644
+index 0000000..c354f05
+--- /dev/null
++++ b/FreeSOLID.pc.in
+@@ -0,0 +1,12 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: FreeSolid
++Description: 3D collision detection C++ library
++Version: @VERSION@
++
++Libs: -L${libdir} -lFreeSOLID @QHULL_LIBS@
++Cflags: -I${includedir} -I${includedir}/FreeSOLID
++
+diff --git a/configure.in b/configure.in
+index 41a761c..a4bc7d4 100644
+--- a/configure.in
++++ b/configure.in
+@@ -52,4 +52,11 @@ dnl Checks for library functions.
+ AC_CHECK_FUNCS(sqrt)
+ AC_CHECK_FUNCS(fabs)
+ 
+-AC_OUTPUT(doc/Makefile sample/Makefile Makefile libbroad/Makefile libmoto/Makefile libsolid/Makefile freesolid-config)
++AC_OUTPUT([ doc/Makefile 
++            sample/Makefile 
++            Makefile 
++            libbroad/Makefile 
++            libmoto/Makefile 
++            libsolid/Makefile 
++            freesolid-config
++            FreeSOLID.pc])
+--- a/Makefile.am	2024-10-28 10:49:24.006849578 +0900
++++ b/Makefile.am	2024-10-28 10:50:13.378839511 +0900
+@@ -3,3 +3,6 @@
+ 
+ EXTRA_DIST = include
+ bin_SCRIPTS = freesolid-config
++
++pkgconfigdir         = $(libdir)/pkgconfig
++dist_pkgconfig_DATA  = FreeSOLID.pc

@@ -1,0 +1,60 @@
+FreeSOLID-2.1.1-Makefile.am-update.patch
+
+From: Alec Leamas <alec@tests.notat.diaspora.com>
+
+This patch causes a few extra header files to be installed; they are used by
+Speed-Dreams for example.
+
+Source: https://src.fedoraproject.org/rpms/FreeSOLID/raw/rawhide/f/FreeSOLID-2.1.1-Makefile.am-update.patch
+Rebased on top of 2.1.2 by Maxim Cournoyer
+Upstream-status: https://sourceforge.net/p/freesolid/patches/11/
+
+---
+
+ Makefile.am          |   20 ++++++++++++++++++--
+ libsolid/Makefile.am |    2 +-
+ 2 files changed, 19 insertions(+), 3 deletions(-)
+
+--- a/Makefile.am	2024-10-28 15:17:22.787773430 +0900
++++ b/Makefile.am	2024-10-28 15:19:02.367752961 +0900
+@@ -1,8 +1,24 @@
+ ACLOCAL_AMFLAGS = -I m4
+ SUBDIRS = libmoto libbroad libsolid sample doc
+ 
+-EXTRA_DIST = include
++EXTRA_DIST = FreeSOLID.pc.in
+ bin_SCRIPTS = freesolid-config
+ 
+ pkgconfigdir         = $(libdir)/pkgconfig
+-dist_pkgconfig_DATA  = FreeSOLID.pc
++nodist_pkgconfig_DATA  = FreeSOLID.pc
++
++FreeSOLID_3Ddir = $(includedir)/FreeSOLID/3D
++FreeSOLID_3D_HEADERS =
++FreeSOLID_3D_HEADERS += include/3D/Basic.h
++FreeSOLID_3D_HEADERS += include/3D/Matrix.h
++FreeSOLID_3D_HEADERS += include/3D/Point.h
++FreeSOLID_3D_HEADERS += include/3D/Quaternion.h
++FreeSOLID_3D_HEADERS += include/3D/Tuple3.h
++FreeSOLID_3D_HEADERS += include/3D/Tuple4.h
++FreeSOLID_3D_HEADERS += include/3D/Vector.h
++
++FreeSOLID_SOLIDdir = $(includedir)/FreeSOLID/SOLID
++FreeSOLID_SOLID_HEADERS =
++FreeSOLID_SOLID_HEADERS += include/SOLID/solid.h
++FreeSOLID_SOLID_HEADERS += include/SOLID/broad.h
++FreeSOLID_SOLID_HEADERS += include/SOLID/types.h
+
+diff --git a/libsolid/Makefile.am b/libsolid/Makefile.am
+index f722be3..623b2e8 100644
+--- a/libsolid/Makefile.am
++++ b/libsolid/Makefile.am
+@@ -21,7 +21,7 @@ libFreeSOLID_la_SOURCES = \
+ 	../libmoto/MT_Vector4.cpp
+ 
+ 
+-libFreeSOLID_la_LDFLAGS = -no-undefined -version-info @FREESOLID_CURRENT@:@FREESOLID_REVISION@:@FREESOLID_AGE@ -release @VERSION@
++libFreeSOLID_la_LDFLAGS = -no-undefined -version-info @FREESOLID_CURRENT@:@FREESOLID_REVISION@:@FREESOLID_AGE@ 
+ 
+ AM_CPPFLAGS = @CPPFLAGS@
+ LIBS = @QHULL_LIBS@ -lm

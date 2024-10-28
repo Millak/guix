@@ -30,6 +30,7 @@
 ;;; Copyright © 2022 dan <i@dan.games>
 ;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2779,6 +2780,35 @@ specific knowledge of the hardware they are targeting.")
      "Flatzebra is a simple, generic C++ game engine library supporting 2D
 double-buffering.")
     (license license:gpl2+)))
+
+(define-public freesolid
+  (package
+    (name "freesolid")
+    (version "2.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/" name "/FreeSOLID-"
+                                  version ".zip"))
+              (sha256
+               (base32
+                "0wxqiv1ba227kwxpgwf6in9ai1lcamhmp1ib1c1chq4xvnpwdvc9"))
+              (patches (search-patches "freesolid-autotools.patch"
+                                       "freesolid-pkgconfig.patch"
+                                       "freesolid-configure.patch"
+                                       "freesolid-automake.patch"))))
+    (build-system gnu-build-system)
+    (arguments (list #:phases #~(modify-phases %standard-phases
+                                  (add-after 'unpack 'force-reboostrap
+                                    (lambda _
+                                      (delete-file "bootstrap.sh")
+                                      (delete-file "configure"))))))
+    (native-inputs (list autoconf automake libtool unzip))
+    (home-page "https://sourceforge.net/projects/freesolid/")
+    (synopsis "3D collision detection C++ library")
+    (description "FreeSOLID is a library for collision detection of
+three-dimensional objects undergoing rigid motion and deformation.  FreeSOLID
+is designed to be used in interactive 3D graphics applications.")
+    (license license:lgpl2.0+)))
 
 (define-public libccd
   (package

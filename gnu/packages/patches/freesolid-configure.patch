@@ -1,0 +1,58 @@
+Fixes an incompatibility with Libtool 2+.
+
+Rebased on FreeSOLID-2.1.2.
+
+Originally retrieved from Fedora (see:
+https://src.fedoraproject.org/rpms/FreeSOLID/raw/rawhide/f/FreeSOLID-2.1.1-configure.patch).
+
+Upstream-status: https://sourceforge.net/p/freesolid/patches/10/
+
+--- FreeSOLID-2.1.1/configure.in.orig	2012-05-24 20:58:30.000000000 +0200
++++ FreeSOLID-2.1.1/configure.in	2012-05-24 21:08:00.932445488 +0200
+@@ -1,8 +1,11 @@
+ dnl Process this file with autoconf to produce a configure script.
+-AC_INIT(sample/sample.cpp)
++AC_INIT
+ AC_CONFIG_MACRO_DIR([m4])
++AC_CONFIG_SRCDIR([sample/sample.cpp])
+ 
+-AC_CANONICAL_SYSTEM
++AC_CONFIG_MACRO_DIR([m4])
++
++AC_CANONICAL_TARGET
+ PACKAGE=FreeSOLID
+ VERSION=2.1.1
+ FREESOLID_CURRENT=2
+@@ -15,15 +18,14 @@
+ 
+ AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
+ 
+-AM_CONFIG_HEADER(include/config.h)
++AC_CONFIG_HEADERS([include/config.h])
+ 
+ dnl Checks for programs.
+-AC_LIBTOOL_WIN32_DLL
+ AC_PROG_CXX
+ AC_PROG_CC
+ AC_PROG_CPP
+ AC_PROG_INSTALL
+-AC_PROG_LIBTOOL
++LT_INIT([win32-dll])
+ 
+ CPPFLAGS="$CPPFLAGS -I../include -I./include -I. -I../libbroad -I../libmoto"
+ AC_SUBST(CPPFLAGS)
+@@ -52,11 +54,6 @@
+ AC_CHECK_FUNCS(sqrt)
+ AC_CHECK_FUNCS(fabs)
+ 
+-AC_OUTPUT([ doc/Makefile 
+-            sample/Makefile 
+-            Makefile 
+-            libbroad/Makefile 
+-            libmoto/Makefile 
+-            libsolid/Makefile 
+-            freesolid-config
+-            FreeSOLID.pc])
++AC_CONFIG_FILES([doc/Makefile sample/Makefile Makefile libbroad/Makefile libmoto/Makefile libsolid/Makefile freesolid-config])
++AC_CONFIG_FILES([FreeSOLID.pc])
++AC_OUTPUT
