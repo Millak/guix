@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
@@ -1177,7 +1177,7 @@ frames per second (FPS), temperatures, CPU/GPU load and more.")
 (define-public ogre
   (package
     (name "ogre")
-    (version "13.3.1")
+    (version "14.3.2")
     (source
      (origin
        (method git-fetch)
@@ -1186,12 +1186,17 @@ frames per second (FPS), temperatures, CPU/GPU load and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "157vpfzivg2wf349glyd0cpbyaw1j3fm4nggban70pghql3x48kb"))))
+        (base32 "0acpwj0kj48jn2vv195cn6951gynz68zwji5sj3m06dj8ciw9r1h"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-attempt-building-gtest
+            (lambda _
+              (substitute* "Tests/CMakeLists.txt"
+                (("NOT EXISTS \\$\\{PROJECT_BINARY_DIR}/googletest-1.11.0")
+                 "FALSE"))))
           (add-before 'configure 'unpack-imgui
             (lambda _
               (copy-recursively #$(this-package-native-input "imgui-source")
@@ -1202,7 +1207,11 @@ frames per second (FPS), temperatures, CPU/GPU load and more.")
             ;; it.
             (lambda _
               (substitute* "CMakeLists.txt"
-                (("set\\(CMAKE_INSTALL_RPATH .*") "")))))
+                (("set\\(CMAKE_INSTALL_RPATH .*") ""))))
+          (add-before 'check 'run-x-server
+            (lambda _
+              (system "Xvfb &")
+              (setenv "DISPLAY" ":0"))))
       #:configure-flags
       #~(let ((runpath (string-join (list (string-append #$output "/lib")
                                           (string-append #$output "/lib/OGRE"))
@@ -1216,10 +1225,11 @@ frames per second (FPS), temperatures, CPU/GPU load and more.")
                 "-DOGRE_INSTALL_SAMPLES_SOURCE=TRUE"))))
     (native-inputs
      `(("doxygen" ,doxygen)
-       ("imgui-source" ,(package-source imgui-1.86))
+       ("imgui-source" ,(package-source imgui))
        ("googletest" ,googletest)
        ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+       ("python" ,python)
+       ("xorg-server-for-tests" ,xorg-server-for-tests)))
     (inputs
      (list freeimage
            freetype
