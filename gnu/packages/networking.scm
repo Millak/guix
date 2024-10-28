@@ -276,7 +276,7 @@ protocols.")
 (define-public lcrq
   (package
     (name "lcrq")
-    (version "0.2.1")
+    (version "0.2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -285,7 +285,7 @@ protocols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a6bvlib00na0rhz4lz80kc6v5kqfp8k26ydprwnf8h29nnza6y6"))))
+                "13nnx8izfzcy2k6y5njc8p9b196hpn2v90pmiysbiwp8qwnzczih"))))
     (build-system gnu-build-system)
     (arguments
      (list
