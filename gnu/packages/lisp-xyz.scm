@@ -20,7 +20,7 @@
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Adam Kandur <rndd@tuta.io>
-;;; Copyright © 2020-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2020-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021-2024 André A. Gomes <andremegafone@gmail.com>
@@ -44,6 +44,7 @@
 ;;; Copyright © 2024 Michal Atlas <michal_atlas+git@posteo.net>
 ;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2024 Nik Gaffney <nik@fo.am>
+;;; Copyright © 2024 Grigory Shepelev <shegeley@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24365,6 +24366,72 @@ are provided.")
 
 (define-public ecl-cl-positional-lambda
   (sbcl-package->ecl-package sbcl-positional-lambda))
+
+(define-public sbcl-posix-shm
+  (package
+    (name "sbcl-posix-shm")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~shunter/posix-shm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-posix-shm" version))
+       (sha256
+        (base32 "1lk8sach64zgj81988q3z8i153gi3dkda3fkb11cxgsmymawddk9"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "ffi/ffi.lisp"
+                (("libc.so.6")
+                 (search-input-file inputs "/lib/libc.so.6"))
+                (("librt.so.1")
+                 (search-input-file inputs "/lib/librt.so.1"))))))))
+    (native-inputs
+     (list sbcl-osicat
+           sbcl-parachute))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-cffi
+           sbcl-trivial-features))
+    (home-page "https://git.sr.ht/~shunter/posix-shm")
+    (synopsis "Common Lisp bindings and wrapper for POSIX shared memory API")
+    (description
+     "This library provides two strata to access the POSIX shm API:
+
+@itemize
+@item the package @code{posix-shm/ffi}, a collection of slim bindings to the
+POSIX API
+
+@item the package @code{posix-shm}, a lispy wrapper around the FFI that
+integrates more closely to the features of Common Lisp, and provides a handful
+of utilities and macros
+@end itemize
+
+Features include:
+
+@itemize
+@item open, close, create, resize, change ownership of, change permissions of,
+and memory map to shared memory objects
+@item @code{open-shm} appears more like @code{open} from the standard library
+@item @code{open-shm*}, for creating anonymous shm objects
+@item @code{with-open-shm}, @code{with-mmap} and similar @code{with-} macros
+for safely accessing resources with dynamic extent
+@end itemize")
+    (license license:bsd-3)))
+
+(define-public cl-posix-shm
+  (sbcl-package->cl-source-package sbcl-posix-shm))
+
+;; XXX: An error occurred during initialization: Attempt to redefine
+;; function FTRUNCATE in locked package.
+;; (define-public ecl-posix-shm
+;;   (sbcl-package->ecl-package sbcl-posix-shm))
 
 (define-public sbcl-postmodern
   (package
