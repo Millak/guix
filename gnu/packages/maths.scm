@@ -10106,7 +10106,7 @@ computation is supported via MPI.")
 (define-public scilab
   (package
     (name "scilab")
-    (version "2024.1.0")
+    (version "2025.0.0")
     (source
      (origin
        (method git-fetch)
@@ -10116,7 +10116,7 @@ computation is supported via MPI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1qk0pf1cwcvdqjza9xqkynd90ywq0yh421bz59w5zjzbs40ijnrx"))
+         "1zn31mby7rwxsnkg91rp92ixhj785hw459krw9k2prs2cxqpn6j5"))
        (patches (search-patches "scilab-better-compiler-detection.patch"
                                 "scilab-tbx_build_help.patch"))
        (modules '((guix build utils)
@@ -10196,7 +10196,7 @@ computation is supported via MPI.")
                   curl
                   fftw
                   gettext-minimal
-                  hdf5-1.10
+                  hdf5-1.14
                   libarchive
                   libx11
                   libxml2
