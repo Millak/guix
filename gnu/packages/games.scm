@@ -9183,6 +9183,128 @@ civilized than your own.")
                    license:cc-by-sa4.0
                    license:public-domain))))
 
+(define speed-dreams-version "2.3.0")
+(define speed-dreams-svn-revision "8786")
+(define (speed-dreams-source-tarball name sha256sum)
+  (origin
+    (method url-fetch)
+    (uri (string-append "mirror://sourceforge/speed-dreams/"
+                        speed-dreams-version "/"
+                        "speed-dreams-src-" name "-" speed-dreams-version "-r"
+                        speed-dreams-svn-revision ".tar.xz"))
+    (sha256 (base32 sha256sum))))
+
+;;; We use the release tarballs instead of the SVN repository for their
+;;; reduced weight (the tarballs do not provide the sources of the 3D models
+;;; used, which are heavy, for example).
+(define speed-dreams-base-tarball       ;about 240 MiB
+  (speed-dreams-source-tarball
+   "base" "190480qzkllykl07s6bxd5wdbjgavs7haw6mk0hgdm7bs6rqqk0d"))
+
+(define speed-dreams-hq-cars-and-tracks-tarball ;about 670 MiB
+  (speed-dreams-source-tarball
+   "hq-cars-and-tracks" "16zcgwax3n0gf79hw1dg42lzsyxbnxfw6hjxdi919q5hxgm9cgsr"))
+
+(define speed-dreams-more-hq-cars-and-tracks-tarball ;about 760 MiB
+  (speed-dreams-source-tarball
+   "more-hq-cars-and-tracks"
+   "1acwiacf77qk5azyg3bbxsydk3wsp5fvgwwnhxpk273mwszjkh56"))
+
+;;; Although these are marked as 'WIP', the game throws (non-fatal) errors
+;;; when it fails finding some "drivers" included within this pack.
+(define speed-dreams-wip-cars-and-tracks-tarball ;about 400 MiB
+  (speed-dreams-source-tarball
+   "wip-cars-and-tracks"
+   "0wqd9bpis9bg87rsqk0dyvljax4zrp9h57mz7z3zrn6fayl1nh1q"))
+
+;;; This is to allow selecting the legacy Simu V2 engine (configurable in the
+;;; game options).
+(define speed-dreams-unmaintained-tarball ;about 60 KiB
+  (speed-dreams-source-tarball
+   "unmaintained" "1cxcrjm2508najpz2b65i8gxgvgiq7fcp13xvicpiqp6xhq3hsyi"))
+
+(define-public speed-dreams
+  (package
+    (name "speed-dreams")
+    (version speed-dreams-version)
+    (source speed-dreams-base-tarball)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DOPTION_OFFICIAL_ONLY=ON"                    ;build with content
+         (string-append "-DSD_BINDIR=" #$output "/bin") ;instead of 'games'
+         (string-append "-DSD_DATADIR=" #$output "/share/speed-dreams-2")
+         ;; Libdir defaults to a 'lib64/games' prefix.
+         (string-append "-DSD_LIBDIR=" #$output "/lib/speed-dreams-2")
+         ;; Use system-provided Expat and FreeSOLID
+         ;; libraries instead of the bundled ones.
+         "-DOPTION_3RDPARTY_EXPAT=ON"
+         "-DOPTION_3RDPARTY_SOLID=ON"
+         ;; Drivers and other shared objects are linked to private/internal
+         ;; shared libraries; have their location on the RUNPATH to satisfy
+         ;; the validate-runpath phase.
+         (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath="
+                        #$output "/lib/speed-dreams-2/lib")
+         ;; The following flag is to avoid bogus RUNPATH warnings from the
+         ;; validate-runpath phase; without it, -rpath links referring to the
+         ;; build directory would be baked in driver modules.
+         "-DCMAKE_BUILD_RPATH_USE_ORIGIN=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'extract-cars-and-tracks-data
+            (lambda _
+              ;; XXX: The current working directory is inside the cmake/
+              ;; sudbirectory following the unpack phase, for some reason.
+              (chdir "..")
+              (invoke "tar" "-xvf" #$speed-dreams-hq-cars-and-tracks-tarball)
+              (invoke "tar" "-xvf" #$speed-dreams-more-hq-cars-and-tracks-tarball)
+              (invoke "tar" "-xvf" #$speed-dreams-wip-cars-and-tracks-tarball)
+              (invoke "tar" "-xvf" #$speed-dreams-unmaintained-tarball)))
+          (add-after 'install 'install-desktop-entry
+            (lambda* (#:key outputs #:allow-other-keys)
+              (make-desktop-entry-file
+               (string-append #$output
+                              "/share/applications/speed-dreams.desktop")
+               #:name "Speed Dreams 2"
+               #:comment "3D racing cars simulator"
+               #:exec (search-input-file outputs "bin/speed-dreams-2")
+               #:icon (search-input-file
+                       outputs "share/speed-dreams-2/data/icons/icon.png")
+               #:categories '("Game" "Simulation")))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list curl
+           enet
+           expat
+           freeglut
+           freesolid
+           freetype
+           libjpeg-turbo
+           libogg
+           libpng
+           libvorbis
+           openal
+           openscenegraph
+           plib
+           sdl2
+           sdl2-mixer
+           zlib))
+    (home-page "https://sourceforge.net/projects/speed-dreams/")
+    (synopsis "Car racing simulator")
+    (description "Speed Dreams is a car racing simulator featuring
+high-quality 3D graphics and an accurate physics engine, aiming for maximum
+realism.  Initially forked from TORCS, it features improvements to the
+graphics and physics simulation, and supports modern input methods such as
+gamepads by use of the SDL library.  It features more than 20 tracks and more
+than 80 cars to race with.")
+    (license (list license:gpl2+        ;game code
+                   license:lal1.3))))   ;assets
+
 (define-public stepmania
   (package
     (name "stepmania")
