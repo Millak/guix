@@ -1219,6 +1219,7 @@ frames per second (FPS), temperatures, CPU/GPU load and more.")
           (list (string-append "-DCMAKE_INSTALL_RPATH=" runpath)
                 "-DIMGUI_DIR=../imgui-source"
                 "-DOGRE_BUILD_DEPENDENCIES=OFF"
+                "-DOGRE_BUILD_RENDERSYSTEM_VULKAN=ON"
                 "-DOGRE_BUILD_TESTS=TRUE"
                 "-DOGRE_INSTALL_DOCS=TRUE"
                 "-DOGRE_INSTALL_SAMPLES=TRUE"
@@ -1229,16 +1230,21 @@ frames per second (FPS), temperatures, CPU/GPU load and more.")
        ("googletest" ,googletest)
        ("pkg-config" ,pkg-config)
        ("python" ,python)
+       ("vulkan-headers" ,vulkan-headers)
        ("xorg-server-for-tests" ,xorg-server-for-tests)))
     (inputs
-     (list freeimage
+     (list bullet
+           freeimage
            freetype
+           glslang
            libxaw
            libxrandr
            libxt
            mesa
            pugixml
            sdl2
+           spirv-tools
+           wayland
            zlib))
     (synopsis "Scene-oriented, flexible 3D engine written in C++")
     (description
