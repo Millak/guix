@@ -18260,6 +18260,38 @@ transcribing mathematical formulas into Lisp.")
 (define-public ecl-inheriting-readers
   (sbcl-package->ecl-package sbcl-inheriting-readers))
 
+(define-public sbcl-input-event-codes
+  (package
+    (name "sbcl-input-event-codes")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~shunter/input-event-codes")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-input-event-codes" version))
+       (sha256
+        (base32 "0bygspj84jzyiy06z4q64z1nzsmvvrviqxw73wzqaq2wk2p56vs6"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list pkg-config
+           sbcl-parachute))
+    (inputs
+     (list sbcl-trivial-features))
+    (home-page "https://git.sr.ht/~shunter/input-event-codes")
+    (synopsis "Event codes for Common Lisp")
+    (description
+     "This library is a Common Lisp port of all the constants from the event
+codes header file found on Linux and FreeBSD.")
+    (license license:expat)))
+
+(define-public cl-input-event-codes
+  (sbcl-package->cl-source-package sbcl-input-event-codes))
+
+(define-public ecl-input-event-codes
+  (sbcl-package->ecl-package sbcl-input-event-codes))
+
 (define-public sbcl-inquisitor
   (let ((commit "423fa9bdd4a68a6ae517b18406d81491409ccae8")
         (revision "0"))
