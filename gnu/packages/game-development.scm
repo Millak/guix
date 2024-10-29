@@ -1808,7 +1808,7 @@ robust and compatible with many systems and operating systems.")
 (define-public mygui
   (package
     (name "mygui")
-    (version "3.4.2")
+    (version "3.4.3")
     (source
      (origin
        (method git-fetch)
@@ -1817,7 +1817,7 @@ robust and compatible with many systems and operating systems.")
              (commit (string-append "MyGUI" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gkfahz118gpqa2906cjb3d4w8g13rv8v3ma7s0ml9l5cci785f8"))))
+        (base32 "0nayw5shm5nly9bjp0g372kg5ia64dvn6mrmi1c6mdg0n6vgs9xa"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; No test target
