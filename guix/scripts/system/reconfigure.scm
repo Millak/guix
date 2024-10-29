@@ -7,6 +7,7 @@
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -299,7 +300,7 @@ additional configurations specified by MENU-ENTRIES can be selected."
     (eval #~(parameterize ((current-warning-port (%make-void-port "w")))
               (primitive-load #$(install-bootloader-program installer
                                                             disk-installer
-                                                            package
+                                                            #~#+package
                                                             bootcfg
                                                             bootcfg-file
                                                             devices
