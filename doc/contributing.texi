@@ -242,12 +242,13 @@ Then, run:
 @end example
 
 @noindent
-... where @file{/var} is the normal @code{localstatedir} value
-(@pxref{The Store}, for information about this) and @file{/etc} is the
-normal @code{sysconfdir} value.  Note that you will probably not run
-@command{make install} at the end (you don't have to) but it's still
-important to pass the right @code{localstatedir} and @code{sysconfdir}
-values, which get recorded in the @code{(guix config)} Guile module.
+Optionally, @code{--localstatedir} and @code{--sysconfdir} can also be
+provided as arguments.  By default, @code{localstatedir} is @file{/var}
+(@pxref{The Store}, for information about this) and @code{sysconfdir} is
+@file{/etc}.  Note that you will probably not run @command{make install}
+at the end (you don't have to) but it's still important to pass the
+right @code{localstatedir} and @code{sysconfdir} values, which get
+recorded in the @code{(guix config)} Guile module.
 
 Finally, you can build Guix and, if you feel so inclined, run the tests
 (@pxref{Running the Test Suite}):
