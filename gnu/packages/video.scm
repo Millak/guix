@@ -1318,9 +1318,9 @@ on the Invidious instances only as a fallback method.")
     (build-system cmake-build-system)
     (native-inputs
      ;; XXX: ASM optimization fails on i686-linux, see <https://bugs.gnu.org/41768>.
-     (if (string-prefix? "i686" (%current-system))
-         '()
-         `(("nasm" ,nasm))))
+     (if (target-x86-64?)
+         (list nasm)
+         '()))
     (arguments
      `(#:tests? #f ; tests are skipped if ENABLE_ASSEMBLY is TRUE.
        #:configure-flags
