@@ -127,6 +127,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -1254,6 +1255,29 @@ for developers to produce applications utilising hardware-accelerated 3D
 graphics.")
     (home-page "https://www.ogre3d.org/")
     (license license:expat)))
+
+(define-public ogre-next
+  (package
+    (inherit ogre)
+    (name "ogre-next")
+    (version "3.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/OGRECave/ogre-next")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yrlg3s654xbp95208h9a2b8jcwdk69r6sjvll0aiyvxm4c056cw"))))
+    (arguments (substitute-keyword-arguments (package-arguments ogre)
+                 ((#:tests? _ #f)
+                  ;; The test suite is currently disabled by the build system
+                  ;; (see: https://github.com/OGRECave/ogre-next/issues/466).
+                  #f)))
+    (inputs
+     (modify-inputs (package-inputs ogre)
+       (append rapidjson)))))
 
 (define-public openexr
   (package
