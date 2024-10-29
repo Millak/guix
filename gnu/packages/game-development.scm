@@ -139,8 +139,8 @@
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/bulletphysics/bullet3/")
-                     (commit version)))
+                    (url "https://github.com/bulletphysics/bullet3/")
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
@@ -158,41 +158,38 @@
                   ;; Tests fail on linking, cannot find -lBussIK.
                   (substitute* "test/CMakeLists.txt"
                     ((" InverseDynamics")
-                     "../examples/ThirdPartyLibs/BussIK InverseDynamics"))
-                  ;  (("SharedMemory") ""))
-                  #t))))
+                     "../examples/ThirdPartyLibs/BussIK InverseDynamics"))))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
-                               "-DBUILD_CPU_DEMOS=OFF"
-                               "-DBUILD_OPENGL3_DEMOS=OFF"
-                               "-DBUILD_BULLET2_DEMOS=OFF"
-                               ;; openmw 0.47.0 requires bullet to be built with
-                               ;; double precision.
-                               ;; See <https://issues.guix.gnu.org/52953> for
-                               ;; more information.
-                               "-DUSE_DOUBLE_PRECISION=ON"
-                               ;; Extras/BulletRoboticsGUI needs files from
-                               ;; ThirdPartyLibs
-                               "-DBUILD_BULLET_ROBOTICS_GUI_EXTRA=OFF"
-                               ;; Extras/BulletRobotics needs files from
-                               ;; ThirdPartyLibs
-                               "-DBUILD_BULLET_ROBOTICS_EXTRA=OFF"
-                               (string-append  "-DCMAKE_CXX_FLAGS=-fPIC "
-                                               (or (getenv "CXXFLAGS") "")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-failing-tests
-           ;; These tests fail specifically after removing 3rd party code.
-           (lambda _
-             (substitute* "test/SharedMemory/CMakeLists.txt"
-               (("ADD_TEST") "# ADD_TEST"))
-             (substitute* "test/InverseDynamics/CMakeLists.txt"
-               (("ADD_TEST\\(Test_BulletInverseForward")
-                "# ADD_TEST(Test_BulletInverseForward"))
-             #t)))))
-    (inputs
-     (list glu libx11 mesa))
+     (list #:configure-flags
+           #~(list "-DBUILD_SHARED_LIBS=ON"
+                   "-DBUILD_CPU_DEMOS=OFF"
+                   "-DBUILD_OPENGL3_DEMOS=OFF"
+                   "-DBUILD_BULLET2_DEMOS=OFF"
+                   ;; openmw 0.47.0 requires bullet to be built with
+                   ;; double precision.
+                   ;; See <https://issues.guix.gnu.org/52953> for
+                   ;; more information.
+                   "-DUSE_DOUBLE_PRECISION=ON"
+                   ;; Extras/BulletRoboticsGUI needs files from
+                   ;; ThirdPartyLibs
+                   "-DBUILD_BULLET_ROBOTICS_GUI_EXTRA=OFF"
+                   ;; Extras/BulletRobotics needs files from
+                   ;; ThirdPartyLibs
+                   "-DBUILD_BULLET_ROBOTICS_EXTRA=OFF"
+                   (string-append  "-DCMAKE_CXX_FLAGS=-fPIC "
+                                   (or (getenv "CXXFLAGS") "")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-failing-tests
+                 ;; These tests fail specifically after removing 3rd party code.
+                 (lambda _
+                   (substitute* "test/SharedMemory/CMakeLists.txt"
+                     (("ADD_TEST") "# ADD_TEST"))
+                   (substitute* "test/InverseDynamics/CMakeLists.txt"
+                     (("ADD_TEST\\(Test_BulletInverseForward")
+                      "# ADD_TEST(Test_BulletInverseForward")))))))
+    (inputs (list glu libx11 mesa))
     (home-page "https://pybullet.org/wordpress/")
     (synopsis "3D physics engine library")
     (description
