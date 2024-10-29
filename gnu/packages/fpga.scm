@@ -239,6 +239,26 @@ For synthesis, the compiler generates netlists in the desired format.")
     (description "Yosys synthesizes Verilog-2005.")
     (license license:isc)))
 
+(define-public yosys-clang
+  (package
+    (inherit yosys)
+    (name "yosys-clang")
+    (arguments
+     (substitute-keyword-arguments (package-arguments yosys)
+       ((#:make-flags _ #f)
+        #~(list "CC=clang"
+                "CXX=clang++"
+                (string-append "PREFIX=" #$output)))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'configure
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "config-clang" make-flags)))))))
+    (inputs
+     (modify-inputs (package-inputs yosys)
+       (append clang)))
+    (synopsis "FPGA Verilog RTL synthesizer (Clang variant)")))
+
 (define-public icestorm
   (let ((commit "2bc541743ada3542c6da36a50e66303b9cbd2059")
         (revision "4"))
