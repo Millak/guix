@@ -3089,7 +3089,15 @@ support.")
          "0gggrgkcq839mamx7a8jbnp2h7x2ykfn34ixwskwb0lzx2ak17g9"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:tests? #f))                    ; no included tests
+     (list
+      #:tests? #f  ; no included tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'libcurl-use-absolute-reference
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "lib/ethon/curls/settings.rb"
+                (("libcurl', 'libcurl\\.so\\.4")
+                 (search-input-file inputs "/lib/libcurl.so"))))))))
     (inputs
      (list curl))
     (propagated-inputs
