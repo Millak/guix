@@ -88,6 +88,7 @@
     (list (shepherd-service
            (provision '(batsignal))
            (documentation "Run the batsignal battery-watching daemon.")
+           (modules '((shepherd support)))      ;for '%user-log-dir'
            (start #~(make-forkexec-constructor
                      (append (list #$(file-append batsignal "/bin/batsignal")
                                    "-w" (number->string #$warning-level)
@@ -127,11 +128,8 @@
                              (if #$ignore-missing?
                                  (list "-i")
                                  (list)))
-                     #:log-file (string-append
-                                 (or (getenv "XDG_STATE_HOME")
-                                     (format #f "~a/.local/state"
-                                             (getenv "HOME")))
-                                 "/log/batsignal.log")))
+                     #:log-file
+                     (string-append %user-log-dir "/batsignal.log")))
            (stop #~(make-kill-destructor))))))
 
 (define home-batsignal-service-type

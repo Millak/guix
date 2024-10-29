@@ -120,19 +120,11 @@ as shepherd package."
                       (or (getenv "XDG_RUNTIME_DIR")
                           (format #f "/run/user/~a" (getuid)))
                       "/shepherd/socket"))
-              (let* ((state-dir (or (getenv "XDG_STATE_HOME")
-                                    (format #f "~a/.local/state"
-                                            (getenv "HOME"))))
-                     (log-dir (string-append state-dir "/log")))
-                ;; TODO: Remove it, 0.9.2 creates it automatically?
-                ((@ (guix build utils) mkdir-p) log-dir)
-                (system*
-                 #$(file-append shepherd "/bin/shepherd")
-                 "--logfile"
-                 (string-append log-dir "/shepherd.log")
-                 #$@(if silent? '("--silent") '())
-                 "--config"
-                 #$(home-shepherd-configuration-file config)))))
+              (system*
+               #$(file-append shepherd "/bin/shepherd")
+               #$@(if silent? '("--silent") '())
+               "--config"
+               #$(home-shepherd-configuration-file config))))
         #~"")))
 
 (define (reload-configuration-gexp config)

@@ -298,6 +298,7 @@ according to time of day.")))
   (list (shepherd-service
          (documentation "Run the D-Bus daemon in session-specific mode.")
          (provision '(dbus))
+         (modules '((shepherd support)))      ;for '%user-log-dir'
          (start #~(make-forkexec-constructor
                    (list #$(file-append (home-dbus-dbus config)
                                         "/bin/dbus-daemon")
@@ -310,10 +311,7 @@ according to time of day.")))
                    (cons "DBUS_VERBOSE=1"
                          (default-environment-variables))
                    #:log-file
-                   (format #f "~a/log/dbus.log"
-                           (or (getenv "XDG_STATE_HOME")
-                               (format #f "~a/.local/state"
-                                       (getenv "HOME"))))))
+                   (string-append %user-log-dir "/dbus.log")))
          (stop #~(make-kill-destructor)))))
 
 (define (home-dbus-environment-variables config)
@@ -352,7 +350,8 @@ according to time of day.")))
     ;; Depend on 'x11-display', which sets 'DISPLAY' if an X11 server is
     ;; available, and fails to start otherwise.
     (requirement '(x11-display))
-    (modules '((srfi srfi-1)
+    (modules '((shepherd support) ;for %user-log-dir
+               (srfi srfi-1)
                (srfi srfi-26)))
     (one-shot? #t)
     (start #~(lambda _
@@ -369,11 +368,8 @@ according to time of day.")))
                 (cons (string-append "DISPLAY=" (getenv "DISPLAY"))
                       (remove (cut string-prefix? "DISPLAY=" <>)
                               (default-environment-variables)))
-                #:log-file (string-append
-                            (or (getenv "XDG_STATE_HOME")
-                                (format #f "~a/.local/state"
-                                        (getenv "HOME")))
-                            "/log/unclutter.log")))))))
+                #:log-file
+                (string-append %user-log-dir "/unclutter.log")))))))
 
 (define home-unclutter-service-type
   (service-type
