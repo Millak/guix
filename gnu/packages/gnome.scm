@@ -14463,3 +14463,39 @@ you to mark favorite talks and highlights conflicts between favorited talks.")
 real or virtual machines, using @acronym{VNC, Virtual Network Computing}
 or @acronym{RDP, Remote Desktop Protocol}.")
     (license license:gpl3+)))
+
+(define-public lock
+  (package
+    (name "lock")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/konstantintutsch/Lock")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1sq7mk4j3jzs1gzzql938d58gvrz6cp0ingzaxilffdpbpvj4fn3"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("(gtk_update_icon_cache|update_desktop_database): true" _ key)
+                 (string-append key ": false"))))))))
+    (inputs (list gpgme
+                  glib
+                  libadwaita))
+    (native-inputs (list blueprint-compiler
+                         gettext-minimal
+                         gobject-introspection
+                         `(,glib "bin")
+                         pkg-config))
+    (home-page "https://konstantintutsch.com/Lock")
+    (synopsis "Graphical front-end for GNU Privacy Guard")
+    (description "This package provides a graphical frontend for
+GNU Privacy Guard built with libadwaita.")
+    (license license:expat)))
