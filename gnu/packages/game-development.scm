@@ -135,7 +135,7 @@
 (define-public bullet
   (package
     (name "bullet")
-    (version "3.17")
+    (version "3.25")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -144,7 +144,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x1ghxbkvqr910sp01sjf4hlfy4sdgn2jx2qf0dsi697bzq1f3mr"))
+                "08xq225zw6z4ic0whaf8xn697vv5lkrdzfkmjvm32biidbjg8qq0"))
               (modules '((guix build utils)))
               (snippet
                '(begin
