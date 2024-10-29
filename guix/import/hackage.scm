@@ -9,6 +9,7 @@
 ;;; Copyright © 2019 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2023-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -136,7 +137,7 @@ format as two values."
     (values (read-cabal (canonical-newline-port port))
             (bytevector->nix-base32-string (get-hash)))))
 
-(define (hackage-fetch-and-hash name-version)
+(define (hackage-fetch-and-hash name version)
   "Fetch the latest Cabal revision for the package NAME-VERSION, and return
 two values: the parsed Cabal file and its hash in nix-base32 format.  If the
 version part is omitted from the package name, then fetch the latest
@@ -144,18 +145,19 @@ version.  On failure, both return values will be #f."
   (guard (c ((and (http-get-error? c)
                   (= 404 (http-get-error-code c)))
              (values #f #f)))           ;"expected" if package is unknown
-    (let* ((name version (package-name->name+version name-version))
-           (url          (hackage-cabal-url name version))
-           (port _       (http-fetch url))
-           (cabal hash   (read-cabal-and-hash port)))
+    (let* ((name new-version (package-name->name+version name))
+           (version          (or version new-version))
+           (url              (hackage-cabal-url name version))
+           (port _           (http-fetch url))
+           (cabal hash       (read-cabal-and-hash port)))
       (close-port port)
       (values cabal hash))))
 
-(define (hackage-fetch name-version)
+(define (hackage-fetch name version)
   "Return the Cabal file for the package NAME-VERSION, or #f on failure.  If
 the version part is omitted from the package name, then return the latest
 version."
-  (let ((cabal hash (hackage-fetch-and-hash name-version)))
+  (let ((cabal hash (hackage-fetch-and-hash name version)))
     cabal))
 
 (define string->license
@@ -355,7 +357,7 @@ respectively."
   (let ((cabal-meta cabal-hash
                     (if port
                         (read-cabal-and-hash port)
-                        (hackage-fetch-and-hash package-name))))
+                        (hackage-fetch-and-hash package-name #f))))
     (if cabal-meta
         (hackage-module->sexp (eval-cabal cabal-meta cabal-environment)
                               cabal-hash
@@ -377,15 +379,10 @@ respectively."
   (let ((hackage-rx (make-regexp "(https?://hackage.haskell.org|mirror://hackage/)")))
     (url-predicate (cut regexp-exec hackage-rx <>))))
 
-(define* (latest-release package #:key (version #f))
+(define* (import-release package #:key (version #f))
   "Return an <upstream-source> for the latest release of PACKAGE."
-  (when version
-    (raise
-     (formatted-message
-      (G_ "~a updater doesn't support updating to a specific version, sorry.")
-      "hackage")))
   (let* ((hackage-name (package-upstream-name* package))
-         (cabal-meta (hackage-fetch hackage-name)))
+         (cabal-meta (hackage-fetch hackage-name version)))
     (match cabal-meta
       (#f
        (format (current-error-port)
@@ -407,6 +404,6 @@ respectively."
    (name 'hackage)
    (description "Updater for Hackage packages")
    (pred hackage-package?)
-   (import latest-release)))
+   (import import-release)))
 
 ;;; cabal.scm ends here
