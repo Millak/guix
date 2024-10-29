@@ -74,21 +74,9 @@
        "ftp://gcc.gnu.org/pub/gcc/"
        ,@(map (cut string-append <> "/gcc") gnu-mirrors))
       (gnupg
-       "http://artfiles.org/gnupg.org"
-       "http://www.crysys.hu/"
        "https://gnupg.org/ftp/gcrypt/"
        "ftp://mirrors.dotsrc.org/gcrypt/"
-       "ftp://mirror.cict.fr/gnupg/"
-       "ftp://ftp.franken.de/pub/crypt/mirror/ftp.gnupg.org/gcrypt/"
-       "ftp://ftp.freenet.de/pub/ftp.gnupg.org/gcrypt/"
-       "ftp://ftp.hi.is/pub/mirrors/gnupg/"
        "ftp://ftp.heanet.ie/mirrors/ftp.gnupg.org/gcrypt/"
-       "ftp://ftp.bit.nl/mirror/gnupg/"
-       "ftp://ftp.surfnet.nl/pub/security/gnupg/"
-       "ftp://ftp.iasi.roedu.net/pub/mirrors/ftp.gnupg.org/"
-       "ftp://ftp.sunet.se/pub/security/gnupg/"
-       "ftp://mirror.switch.ch/mirror/gnupg/"
-       "ftp://mirror.tje.me.uk/pub/mirrors/ftp.gnupg.org/"
        "ftp://ftp.mirrorservice.org/sites/ftp.gnupg.org/gcrypt/"
        "ftp://ftp.ring.gr.jp/pub/net/gnupg/"
        "ftp://ftp.gnupg.org/gcrypt/")
