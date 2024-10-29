@@ -3369,6 +3369,16 @@ the GNOME desktop environment.")
       #~(modify-phases %standard-phases
           (add-after 'glib-or-gtk-wrap 'wrap-python
             (assoc-ref python:%standard-phases 'wrap))
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (with-atomic-file-replacement
+                  "tests/sample_errors/deprecations.err"
+                (lambda (in out)
+                  (dump-port in out)
+                  (newline out)
+                  (display
+                   "9,3,12,signal Gtk.Window::keys-changed () is deprecated\n"
+                   out)))))
           (add-before 'check 'pre-check
             (lambda _
               (system "Xvfb :1 &")
