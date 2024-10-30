@@ -20789,6 +20789,9 @@ The file name of the processed log file.
 The following optional settings may be provided:
 
 @table @code
+@item debug?
+Print debug messages when @code{#true}.
+
 @item skip-private?
 When @code{#true} do not mask addresses in private ranges.
 

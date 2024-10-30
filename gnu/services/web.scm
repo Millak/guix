@@ -220,6 +220,7 @@
             anonip-configuration-anonip
             anonip-configuration-input
             anonip-configuration-output
+            anonip-configuration-debug?
             anonip-configuration-skip-private?
             anonip-configuration-column
             anonip-configuration-replacement
@@ -1448,6 +1449,8 @@ files.")
                      (default anonip))
   (input             anonip-configuration-input)       ;string
   (output            anonip-configuration-output)      ;string
+  (debug?            anonip-configuration-debug?       ;boolean
+                     (default #f))
   (skip-private?     anonip-configuration-skip-private? ;boolean
                      (default #f))
   (column            anonip-configuration-column       ;number
