@@ -1629,6 +1629,28 @@ matrix decomposition, sparse principal components analysis, and sparse
 canonical correlation analysis.")
     (license license:gpl2+)))
 
+(define-public r-robustrankaggreg
+  (package
+    (name "r-robustrankaggreg")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RobustRankAggreg" version))
+       (sha256
+        (base32 "0p2nbgxv2132gcyx7zq2gzl6ipsxndx64i7y8v9nh5awcdy8v44p"))))
+    (properties `((upstream-name . "RobustRankAggreg")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=RobustRankAggreg")
+    (synopsis "Methods for robust rank aggregation")
+    (description
+     "This tool provides methods for aggregating ranked lists, especially
+lists of genes.  It implements the Robust Rank Aggregation and other simple
+algorithms for the task.  RRA method uses a probabilistic model for
+aggregation that is robust to noise and also facilitates the calculation of
+significance probabilities for all the elements in the final ranking.")
+    (license license:gpl2)))
+
 (define-public r-rpresto
   (package
     (name "r-rpresto")
