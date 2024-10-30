@@ -10384,6 +10384,32 @@ experiments\" (2011), Annals of Applied Statistics, Vol. 5, No. 3, 1752-1779,
 by Li, Brown, Huang, and Bickel")
     (license license:gpl2+)))
 
+(define-public r-imola
+  (package
+    (name "r-imola")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "imola" version))
+       (sha256
+        (base32 "087zdzn1vkyvqrdlwnackr6jyacrhg69q4b77s8z477kplickw8x"))))
+    (properties `((upstream-name . "imola")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-glue
+                             r-htmltools
+                             r-magrittr
+                             r-shiny
+                             r-stringi
+                             r-yaml))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/pedrocoutinhosilva/imola")
+    (synopsis "CSS layouts (grid and flexbox) for R/Shiny")
+    (description
+     "This package allows users to create CSS grid and flexbox layouts for
+R/Shiny without needing to write custom CSS.")
+    (license license:expat)))
+
 (define-public r-inext
   (package
     (name "r-inext")
