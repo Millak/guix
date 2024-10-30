@@ -39,28 +39,26 @@ if test "x$guix_build_daemon" = "xyes"; then
 
   case "$LIBGCRYPT_PREFIX" in
     no)
-      LIBGCRYPT_CFLAGS=""
+      LIBGCRYPT_CXXFLAGS=""
       ;;
     *)
-      LIBGCRYPT_CFLAGS="-I$LIBGCRYPT_PREFIX/include"
+      LIBGCRYPT_CXXFLAGS="-I$LIBGCRYPT_PREFIX/include"
       ;;
   esac
 
   case "$LIBGCRYPT_LIBDIR" in
     no | "")
-      LIBGCRYPT_LIBS="-lgcrypt"
+      LIBGCRYPT_LDFLAGS="-lgcrypt"
       ;;
     *)
-      LIBGCRYPT_LIBS="-L$LIBGCRYPT_LIBDIR -lgcrypt"
+      LIBGCRYPT_LDFLAGS="-L$LIBGCRYPT_LIBDIR -lgcrypt"
       ;;
   esac
 
-  AC_SUBST([LIBGCRYPT_CFLAGS])
-  AC_SUBST([LIBGCRYPT_LIBS])
+  AC_SUBST([LIBGCRYPT_CXXFLAGS])
+  AC_SUBST([LIBGCRYPT_LDFLAGS])
 
-  save_CFLAGS="$CFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  CFLAGS="$CFLAGS $LIBGCRYPT_CFLAGS"
+  CXXFLAGS="$CXXFLAGS $LIBGCRYPT_CXXFLAGS"
   LDFLAGS="$LDFLAGS $LIBGCRYPT_LDFLAGS"
 
   have_gcrypt=yes
@@ -69,9 +67,6 @@ if test "x$guix_build_daemon" = "xyes"; then
   if test "x$have_gcrypt" != "xyes"; then
     AC_MSG_ERROR([GNU libgcrypt not found; please install it.])
   fi
-
-  CFLAGS="$save_CFLAGS"
-  LDFLAGS="$save_LDFLAGS"
 
   dnl Chroot support.
   AC_CHECK_FUNCS([chroot unshare])
