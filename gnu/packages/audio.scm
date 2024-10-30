@@ -49,6 +49,7 @@
 ;;; Copyright © 2024 hapster <o.rojon@posteo.net>
 ;;; Copyright © 2024 mio <stigma@disroot.org>
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
+;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,6 +81,7 @@
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
@@ -153,6 +155,7 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
@@ -1311,6 +1314,34 @@ sections, two polyphonic sections with nine drawbars each and one monophonic
 bass section with five drawbars.  A standalone JACK application and LV2
 plugins are provided.")
       (license license:gpl2))))
+
+(define-public bankstown-lv2
+  (package
+    (name "bankstown-lv2")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bankstown-lv2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bcrn0b4b9v1mksaldhrdb6ncqlwldfwqxjlfp4gcpvl661qdmcb"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:cargo-inputs `(("rust-biquad" ,rust-biquad-0.4)
+                       ("rust-lv2" ,rust-lv2-0.6))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (setenv "LIBDIR" (string-append (assoc-ref outputs "out") "/lib"))
+              (invoke "make" "install"))))))
+    (home-page "https://github.com/chadmed/bankstown")
+    (synopsis "Barebones, fast LV2 bass enhancement plugin.")
+    (description
+     "This package provides a barebones, fast LV2 bass enhancement plugin.")
+    (license license:expat)))
 
 (define-public calf
   (package
