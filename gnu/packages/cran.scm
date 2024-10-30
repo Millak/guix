@@ -1689,6 +1689,29 @@ interactive analytic queries against data sources of all sizes ranging from
 gigabytes to petabytes.")
     (license license:bsd-3)))
 
+(define-public r-runner
+  (package
+    (name "r-runner")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "runner" version))
+       (sha256
+        (base32 "0vhqjnwcx3z3i74p26divx6palx1rwvk4jpqn64jrqlzaw9qich4"))))
+    (properties `((upstream-name . "runner")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=runner")
+    (synopsis "Running operations for vectors")
+    (description
+     "This package provides a library for rolling windows operations.
+The package enables full control over the window length, window lag, and time
+indices.  With a runner one can apply any R function on rolling windows.  The
+package eases work with equally and unequally spaced time series.")
+    (license license:gpl2+)))
+
 (define-public r-prettydoc
   (package
     (name "r-prettydoc")
