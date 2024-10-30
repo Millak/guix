@@ -11337,6 +11337,39 @@ features like jumping to definitions, finding references, and viewing
 documentation, enhancing the Python development experience within Emacs.")
       (license license:gpl3+))))
 
+(define-public emacs-jack
+  (let ((commit "3b4ea97fcc107d0ffd201ea695129af52f390113")
+        (revision "0"))
+    (package
+      (name "emacs-jack")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tonyaldon/jack")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1cizszj62ic41zc97glf2mdvm1kd95vdfg2dip3n2p2g0nlk2hjf"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs"
+                               "--batch"
+                               "-l"
+                               "jack-tests.el"
+                               "-f"
+                               "ert-run-tests-batch-and-exit")))
+      (home-page "https://jack.tonyaldon.com")
+      (synopsis "HTML generator library")
+      (description
+       "@code{jack} provides the function @code{jack-html} that takes a data
+structure as input representing the HTML tree you want to generate and
+generates it as a string.  Please see the homepage for usage examples.")
+      (license license:gpl3+))))
+
 (define-public emacs-jedi
   (package
     (name "emacs-jedi")
