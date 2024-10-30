@@ -43558,6 +43558,27 @@ Server Protocol.")
         ("rust-serde-repr" ,rust-serde-repr-0.1)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-lv2-core-derive-2
+  (package
+    (name "rust-lv2-core-derive")
+    (version "2.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lv2-core-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12w3l41jzargrcywz13hbmaazfw4ix2sljl3601h6jfbdrw8zybv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/RustAudio/rust-lv2")
+    (synopsis "Procedural macros for lv2-core")
+    (description "This package provides Procedural macros for lv2-core.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lz4-1
   (package
     (name "rust-lz4")
