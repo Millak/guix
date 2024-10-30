@@ -13127,6 +13127,53 @@ files.")
 environment within Shiny.")
     (license license:expat)))
 
+(define-public r-raceid
+  (package
+    (name "r-raceid")
+    (version "0.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RaceID" version))
+       (sha256
+        (base32 "0zqas0dfsvcbjzv2b83zy13pxyzfhh81xrfbzxq8a7ykk0nyrx26"))))
+    (properties `((upstream-name . "RaceID")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cluster
+                             r-coop
+                             r-fateid
+                             r-fnn
+                             r-fpc
+                             r-ggplot2
+                             r-harmony
+                             r-ica
+                             r-igraph
+                             r-irlba
+                             r-leiden
+                             r-locfit
+                             r-mass
+                             r-matrix
+                             r-matrixstats
+                             r-pheatmap
+                             r-princurve
+                             r-quadprog
+                             r-randomforest
+                             r-rcolorbrewer
+                             r-rcpp
+                             r-rtsne
+                             r-runner
+                             r-umap
+                             r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=RaceID")
+    (synopsis
+     "Algorithm for inferring cell types from single-cell RNA-seq data")
+    (description
+     "This tool provides an algorithm to identify rare cell types in
+single-cell data.  It also identifies abundant cell types.  The method is
+based on transcript counts obtained with unique molecular identifies.")
+    (license license:gpl3)))
+
 (define-public r-rafalib
   (package
     (name "r-rafalib")
