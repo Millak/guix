@@ -7167,6 +7167,28 @@ the end user.")
 supports interactive trees, to enable rich, editable trees in Shiny.")
     (license license:expat)))
 
+(define-public r-shinyvalidate
+  (package
+    (name "r-shinyvalidate")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "shinyvalidate" version))
+       (sha256
+        (base32 "01qlqzp0g6782maj73yygmwlchhv4xcnlc7j0w3lp6dcj7qkzz68"))))
+    (properties `((upstream-name . "shinyvalidate")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-glue r-htmltools r-rlang r-shiny))
+    (native-inputs (list r-testthat))
+    (home-page "https://rstudio.github.io/shinyvalidate/")
+    (synopsis "Input validation for Shiny apps")
+    (description
+     "This package improves the user experience of Shiny apps by helping to
+provide feedback when required inputs are missing, or input values are not
+valid.")
+    (license license:expat)))
+
 (define-public r-shinydashboard
   (package
     (name "r-shinydashboard")
