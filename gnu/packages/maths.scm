@@ -66,6 +66,7 @@
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9548,12 +9549,17 @@ true in all models.")
                  (add-after 'unpack 'encode-git-hash
                    (lambda _
                      (substitute* "CMakeLists.txt"
-                       (("GIT-hash-notfound") #$commit)))))))
+                       (("GIT-hash-notfound") #$commit))))
+                 (add-after 'unpack 'no-tune-native
+                   (lambda _
+                     (substitute* "CMakeLists.txt"
+                       (("-mtune=native") "")))))))
       (native-inputs (list python))
       (home-page "https://github.com/meelgroup/louvain-communities")
       (synopsis "Multi-criteria community detection")
       (description "This package provides a C++ implementation of the Louvain
 community detection algorithm.")
+      (properties '((tunable? . #t)))
       (license license:lgpl3+))))
 
 (define-public cryptominisat
