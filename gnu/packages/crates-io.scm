@@ -43558,6 +43558,29 @@ Server Protocol.")
         ("rust-serde-repr" ,rust-serde-repr-0.1)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-lv2-atom-2
+  (package
+    (name "rust-lv2-atom")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lv2-atom" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wd9rgsn8sag8wyhjccmnn82gx4w1yyiav52nyvk579l21xlw6wm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lv2-core" ,rust-lv2-core-3)
+                       ("rust-lv2-sys" ,rust-lv2-sys-2)
+                       ("rust-lv2-units" ,rust-lv2-units-0.1)
+                       ("rust-urid" ,rust-urid-0.1))
+       #:cargo-development-inputs (("rust-lv2-urid" ,rust-lv2-urid-2))))
+    (home-page "https://github.com/RustAudio/rust-lv2")
+    (synopsis "Rust LV2 Atom handling library")
+    (description "This package provides a Rust LV2 Atom handling library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lv2-core-3
   (package
     (name "rust-lv2-core")
