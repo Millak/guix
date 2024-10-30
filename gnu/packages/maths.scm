@@ -9555,7 +9555,7 @@ true in all models.")
                      (substitute* "CMakeLists.txt"
                        (("-mtune=native") "")))))))
       (native-inputs (list python))
-      (home-page "https://github.com/meelgroup/louvain-communities")
+      (home-page "https://github.com/meelgroup/louvain-community")
       (synopsis "Multi-criteria community detection")
       (description "This package provides a C++ implementation of the Louvain
 community detection algorithm.")
