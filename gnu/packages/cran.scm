@@ -40881,6 +40881,29 @@ importance.")
       "Various utilities for evaluating continued fractions.")
     (license license:gpl2)))
 
+(define-public r-coop
+  (package
+    (name "r-coop")
+    (version "0.6-3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "coop" version))
+       (sha256
+        (base32 "0ww99ssgawsgn6rqy838wbx6iirzdrzyxirvz084ih8j50blx420"))))
+    (properties `((upstream-name . "coop")))
+    (build-system r-build-system)
+    (home-page "https://github.com/wrathematics/coop")
+    (synopsis
+     "Fast covariance, correlation, and cosine similarity computations")
+    (description
+     "R-coop offers implementations of covariance, correlation and cosine
+similarity.  The implementations are fast and memory-efficient and their use
+is resolved automatically based on the input data, handled by R's S3 methods.
+Full descriptions of the algorithms and benchmarks are available in the
+package vignettes.")
+    (license license:bsd-2)))
+
 (define-public r-elliptic
   (package
     (name "r-elliptic")
