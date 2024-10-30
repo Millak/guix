@@ -24757,16 +24757,16 @@ according to a parsing expression grammar.")
 (define-public emacs-eldev
   (package
     (name "emacs-eldev")
-    (version "1.10.1")
+    (version "1.10.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/doublep/eldev")
+             (url "https://github.com/emacs-eldev/eldev")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qir0wagqb8yhmkb12zzadl146w952p3q92bpffd0hq0y6gcp2n5"))))
+        (base32 "0ha2ppxqp36m26nv6lyspq6m6xvvr03cf82rygq45w729gakdw9r"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -24799,7 +24799,7 @@ according to a parsing expression grammar.")
                    (string-append "export ELDEV_LOCAL=" site-lisp "\n" all)))))))))
     (native-inputs
      (list texinfo))                    ;for tests
-    (home-page "https://github.com/doublep/eldev/")
+    (home-page "https://github.com/emacs-eldev/eldev/")
     (synopsis "Emacs-based build tool for Elisp")
     (description "Eldev (Elisp Development Tool) is an Emacs-based build tool,
 targeted solely at Elisp projects.  It is an alternative to Cask.  Unlike
