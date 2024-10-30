@@ -4,6 +4,7 @@
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,6 +34,7 @@
   #:use-module (gnu services networking)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services mail)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages patchutils)
@@ -52,6 +54,7 @@
             %test-php-fpm
             %test-hpcguix-web
             %test-tailon
+            %test-anonip
             %test-patchwork
             %test-agate))
 
@@ -508,6 +511,125 @@ HTTP-PORT."
    (name "tailon")
    (description "Connect to a running Tailon server.")
    (value (run-tailon-test))))
+
+
+;;;
+;;; Anonip
+;;;
+(define %anonip-os
+  ;; Operating system under test.
+  (simple-operating-system
+   (service anonip-service-type
+            (anonip-configuration
+             (input "/var/run/anonip/access.log")
+             (output "/var/log/anonip/access.log")
+             (debug? #t)))))
+
+(define (run-anonip-test)
+  (define os
+    (marionette-operating-system
+     %anonip-os
+     #:imported-modules '((gnu services herd)
+                          (guix combinators))))
+
+  (define vm
+    (virtual-machine
+     (operating-system os)
+     ;; We are interested in verifying if anonip still launches following a
+     ;; reboot; thus make the base image writable.
+     (volatile? #f)))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (ice-9 match)
+                       (srfi srfi-64)
+                       (gnu build marionette))
+
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "anonip")
+
+          (test-assert "service is running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (wait-for-service 'anonip-/var/log/anonip/access.log))
+             marionette))
+
+          (test-assert "service can be restarted"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (restart-service 'anonip-/var/log/anonip/access.log)
+                (wait-for-service 'anonip-/var/log/anonip/access.log))
+             marionette))
+
+          (test-assert "ip addresses are anonymized"
+            (marionette-eval
+             '(begin
+                (use-modules (ice-9 textual-ports))
+                (call-with-output-file "/var/run/anonip/access.log"
+                  (lambda (port)
+                    (display "192.168.100.200 - - \
+[30/Oct/2024:14:57:44 +0100] GET /xxx.narinfo HTTP/1.1\" 200 1065 \
+\"-\" \"GNU Guile\"\n" port)
+                    (display "2001:0db8:85a3:0000:0000:8a2e:0370:7334 - - \
+[30/Oct/2024:14:57:44 +0100] \"GET /xxx.narinfo HTTP/1.1\" 200 1065 \
+\"-\" \"GNU Guile\"\n" port)))
+                (#$retry-on-error
+                 (lambda ()
+                   (call-with-input-file "/var/log/anonip/access.log"
+                     (lambda (port)
+                       (let ((content (get-string-all port)))
+                         ;; The expected values are taken from anonip's test
+                         ;; suite (see its test_module.py file).
+                         (or (and (string-contains content "192.168.96.0")
+                                  (string-contains content "2001:db8:85a0::"))
+                             (error "could not find expected anonymized IPs"
+                                    content))))))
+                 #:times 20
+                 #:delay 1))
+             marionette))
+
+          (test-assert "service is running after reboot"
+            (begin
+              (marionette-eval
+               '(begin
+                  (use-modules (gnu services herd))
+                  (eval-there '(begin
+                                 (use-modules (shepherd system))
+                                 (sync) ;ensure the log is fully written
+                                 (reboot))))
+               marionette)
+              ;; Note: a distinct marionette-eval call is needed here; if
+              ;; included in the previous one issuing the reboot,
+              ;; 'wait-for-service' would apparently run before the system had
+              ;; rebooted (and succeed), which would defeat the test.
+              (marionette-eval
+               '(begin
+                  (use-modules (gnu services herd))
+                  (wait-for-service 'anonip-/var/log/anonip/access.log))
+               marionette)))
+
+          (test-assert "service can be stopped"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (stop-service 'anonip-/var/log/anonip/access.log))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "anonip-test" test))
+
+(define %test-anonip
+  (system-test
+   (name "anonip")
+   (description "Anonymize logs via Anonip")
+   (value (run-anonip-test))))
 
 
 ;;;
