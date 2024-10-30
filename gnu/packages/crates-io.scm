@@ -43623,6 +43623,31 @@ Server Protocol.")
     (description "This package provides Procedural macros for lv2-core.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lv2-midi-1
+  (package
+    (name "rust-lv2-midi")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lv2-midi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0x0glbrfri1glgcrmvc6i1jfv6azhpqvp4ibk5cihsq3s2yfc8xd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `wmidi`
+       #:cargo-inputs (("rust-lv2-atom" ,rust-lv2-atom-2)
+                       ("rust-lv2-sys" ,rust-lv2-sys-2)
+                       ("rust-urid" ,rust-urid-0.1)
+                       ("rust-wmidi" ,rust-wmidi-3))
+       #:cargo-development-inputs (("rust-lv2-core" ,rust-lv2-core-3)
+                                   ("rust-lv2-units" ,rust-lv2-units-0.1))))
+    (home-page "https://github.com/RustAudio/rust-lv2")
+    (synopsis "Rust LV2 MIDI processing library")
+    (description "This package provides a Rust LV2 MIDI processing library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lv2-state-2
   (package
     (name "rust-lv2-state")
