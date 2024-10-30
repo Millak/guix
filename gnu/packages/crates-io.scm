@@ -9022,6 +9022,26 @@ streams in big-endian and little-endian formats.")
         ("rust-serde-test" ,rust-serde-test-1)
         ("rust-static-assertions" ,rust-static-assertions-1))))))
 
+(define-public rust-biquad-0.4
+  (package
+    (name "rust-biquad")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "biquad" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gpc13lag439nmq077wfwz055qbjaxbpk7znvnbddbg3wgsj81c2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libm" ,rust-libm-0.1))))
+    (home-page "https://github.com/korken89/biquad-rs")
+    (synopsis "Rust library for digital second order IIR filters")
+    (description "This package provides a Rust library for digital second
+order IIR filters, also known as biquads.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-blas-sys-0.7
   (package
     (name "rust-blas-sys")
