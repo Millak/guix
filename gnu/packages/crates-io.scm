@@ -43579,6 +43579,23 @@ Server Protocol.")
     (description "This package provides Procedural macros for lv2-core.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lv2-sys-2
+  (package
+    (name "rust-lv2-sys")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lv2-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0c4f59mrjyy0z0wf033wp648df0sc6zirrcd6kndqj9nvvkzkl4x"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/RustAudio/rust-lv2")
+    (synopsis "Rust LV2 C header bindings")
+    (description "This package provides Rust LV2 C header bindings.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lz4-1
   (package
     (name "rust-lz4")
