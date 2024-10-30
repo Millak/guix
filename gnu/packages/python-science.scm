@@ -69,8 +69,9 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
-  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-graphics)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust-apps)
@@ -685,7 +686,10 @@ of regular expressions from text data and automatic test generation.")
 (define-public python-trimesh
   (package
     (name "python-trimesh")
-    (version "4.0.10")
+    ;; XXX: The latest version fails on sanity check, requiring newer
+    ;; setuptools which is not yet available on master. Update when
+    ;; python-team is merged.
+    (version "4.1.8")
     (source
      (origin
        (method git-fetch) ; no tests in PyPI
@@ -694,7 +698,7 @@ of regular expressions from text data and automatic test generation.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ry04qaw0pb3hkxv4gmna87jwk97aqangd21wbr2dr4xshmkbyyb"))))
+        (base32 "1vkp7znrlsqaiyg16py3jcqspi6yq4wh48lzng4sg248hqzhzspa"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -704,55 +708,67 @@ of regular expressions from text data and automatic test generation.")
                     ;; disabled tests once again.
                     ;;
                     ;; Disable tests requiring optional, not packed modules.
-                    "not test_material_round"
-                    " and not test_bezier_example"
+                    "not test_bezier_example"
                     " and not test_discrete"
                     " and not test_dxf"
-                    " and not test_layer"
-                    " and not test_multi_nodupe"
-                    " and not test_obj_roundtrip"
-                    " and not test_roundtrip"
-                    " and not test_scene"
+                    " and not test_ply_path_bezier"
+                    " and not test_ply_path_line"
+                    " and not test_ply_path_multi"
+                    " and not test_revolve"
+                    " and not test_screw"
+                    " and not test_simple_closed"
+                    " and not test_simple_extrude"
+                    " and not test_simple_open"
                     " and not test_slice_onplane"
-                    " and not test_svg"
+                    " and not test_spline_3D"
                     " and not test_svg"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-build
             (lambda _
+              ;; Reported upstream, see
+              ;; <https://github.com/mikedh/trimesh/pull/2314>.
               (substitute* "trimesh/resources/templates/blender_boolean.py.tmpl"
                 (("\\$MESH_PRE")
                  "'$MESH_PRE'")))))))
     (native-inputs
      (list python-coveralls
            python-pyinstrument
-           python-pytest
-           python-pytest-cov))
+           python-pytest))
     (propagated-inputs
-     (list python-chardet
+     (list ;; python-cascadio       ; not packed yet, optional
+           python-chardet
            python-colorlog
            python-httpx
            python-jsonschema
            python-lxml
+           ;; python-mapbox-earcut  ; not packed yet, optional
+           ;; python-manifold3d     ; not packed yet, optional
+           python-meshio
            python-networkx
            python-numpy
+           ;; python-openctm        ; not packed yet, optional
            python-pillow
-           ;; python-pycollada   ; not packed yet, optional
-           ;; python-pyglet      ; not packed yet, optional
+           python-psutil
+           python-pycollada
+           python-pyglet
            python-requests
            python-rtree
+           python-scikit-image
            python-scipy
            python-setuptools
            python-shapely
-           ;; python-svg-path   ; not packed yet, optional
+           ;; python-svg-path       ; not packed yet, optional
            python-sympy
+           ;; python-vhacdx         ; not packed yet, optional
+           ;; python-xatlas         ; not packed yet, optional
            python-xxhash))
     (home-page "https://github.com/mikedh/trimesh")
     (synopsis "Python library for loading and using triangular meshes")
     (description
      "Trimesh is a pure Python library for loading and using triangular meshes
-with an emphasis on watertight surfaces.  The goal of the library is to provide
-a full featured and well tested Trimesh object which allows for easy
+with an emphasis on watertight surfaces.  The goal of the library is to
+provide a full featured and well tested Trimesh object which allows for easy
 manipulation and analysis, in the style of the Polygon object in the Shapely
 library.")
     (license license:expat)))
