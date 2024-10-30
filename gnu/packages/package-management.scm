@@ -199,7 +199,9 @@
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:configure-flags (list
+       `(;; For reproducibility, see <https://issues.guix.gnu.org/74204>.
+         #:parallel-build? #false
+         #:configure-flags (list
 
                             ;; Provide channel metadata for 'guix describe'.
                             ;; Don't pass '--with-channel-url' and
