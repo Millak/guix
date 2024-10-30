@@ -7672,7 +7672,8 @@ find_package(louvain_communities)")
                   (substitute* (find-files "." "\\.c$")
                     (("\"btor2parser/btor2parser\\.h\"") "<btor2parser.h>")))))))
    (inputs (list btor2tools
-                 boost cryptominisat louvain-community sqlite))
+                 boost cryptominisat louvain-community sqlite
+                 gmp))
    (native-inputs (list googletest pkg-config python-wrapper))
    (home-page "https://boolector.github.io")
    (synopsis "Bitvector-based theory solver")
