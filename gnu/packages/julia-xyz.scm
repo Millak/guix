@@ -4423,7 +4423,7 @@ additions is not changed.")
 (define-public julia-multivariatepolynomials
   (package
     (name "julia-multivariatepolynomials")
-    (version "0.5.6")
+    (version "0.5.7")
     (source
      (origin
        (method git-fetch)
@@ -4432,7 +4432,7 @@ additions is not changed.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dz5ap8jg3sgk67diak9xxzgzgx98kv7b0yrc4yzsnlpkiknw64q"))))
+        (base32 "1brz4s1if813840crr0bl6wl7lw983vg43cm8vqhx6xjby1v7788"))))
     (build-system julia-build-system)
     (arguments
      (list
