@@ -43657,6 +43657,28 @@ Server Protocol.")
     (description "This package provides a Rust LV2 wrapper of LV2 unit types.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lv2-worker-0.1
+  (package
+    (name "rust-lv2-worker")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lv2-worker" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14crsrnjyarra9ipma6lhaj4gpfadvippzr134nkn0z3y30ip4fj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests panic
+       #:cargo-inputs (("rust-lv2-core" ,rust-lv2-core-3)
+                       ("rust-lv2-sys" ,rust-lv2-sys-2)
+                       ("rust-urid" ,rust-urid-0.1))))
+    (home-page "https://github.com/RustAudio/rust-lv2")
+    (synopsis "Rust LV2 work offloading library")
+    (description "This package provides a Rust LV2 work offloading library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lz4-1
   (package
     (name "rust-lz4")
