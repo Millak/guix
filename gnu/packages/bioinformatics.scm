@@ -1062,6 +1062,50 @@ simultaneously considered.")
 with DNA methylation micro-array data.")
       (license license:unlicense))))
 
+(define-public r-netid
+  (let ((commit "6ad1ffdd64a6584cc1d392524dad8e248d4590a8")
+        (revision "1"))
+    (package
+      (name "r-netid")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/WWXkenmo/NetID_package")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1blm5ljql91xmbyxxwm3vw8iz8d4ir9gm7wfnapqhfdbjvg4l21q"))))
+      (properties `((upstream-name . "NetID")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-doparallel
+                               r-dorng
+                               r-glmnet
+                               r-hmisc
+                               r-igraph
+                               r-irlba
+                               r-lmtest
+                               r-matrix
+                               r-mclust
+                               r-pracma
+                               r-raceid
+                               r-rarpack
+                               r-reticulate
+                               r-robustrankaggreg
+                               r-rsvd
+                               r-seurat))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/WWXkenmo/NetID_package")
+      (synopsis
+       "Scalable method to infer fate-specific networks from single-cell data")
+      (description
+       "This package provides a method to sample cells from single-cell data.
+It also generates an aggregate profile on a pruned K-Nearest Neighbor graph.
+This approach leads to an improved gene expression profile for quantifying
+gene regulations.")
+      (license license:expat))))
+
 (define-public r-numbat
   (let ((commit "4ab7752e7d267a3f443756675728521a9b0a7295")
         (revision "1"))
