@@ -7117,6 +7117,28 @@ console).  It also provides tools for bundling both the code and results to
 the end user.")
     (license license:gpl3)))
 
+(define-public r-shiny-router
+  (package
+    (name "r-shiny-router")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "shiny.router" version))
+       (sha256
+        (base32 "1zg8cdxmw620i1iv7jrghd768gw7iv52hi6lx79xvnfjz8w4si3x"))))
+    (properties `((upstream-name . "shiny.router")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-glue r-htmltools r-rlang r-shiny))
+    (native-inputs (list r-testthat))
+    (home-page "https://appsilon.github.io/shiny.router/")
+    (synopsis "Basic Routing for Shiny Web Applications")
+    (description
+     "This package provides a simple router for your Shiny apps.  The router
+allows you to create dynamic web applications with a real-time User Interface
+and easily share url to pages within your Shiny apps.")
+    (license license:expat)))
+
 ;; This package includes minified JavaScript files.  When upgrading please
 ;; check that there are no new minified JavaScript files.
 (define-public r-shinytree
