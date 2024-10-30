@@ -44,6 +44,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
@@ -142,6 +143,45 @@ files.
 This package is part of the KDE multimedia module.")
     (license ;; GPL for programs, FDL for documentation
      (list license:gpl2+ license:fdl1.2+))))
+
+(define-public haruna
+  (package
+    (name "haruna")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/haruna/" version
+                                  "/haruna-" version ".tar.xz"))
+              (sha256
+               (base32 "1yv2qcjb2q17r416y055ib6kisvslg76qkh651ff5ilq6hd2c0gb"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list breeze ;default theme
+           breeze-icons ;default icon set
+           ffmpeg
+           kcolorscheme
+           kconfig
+           kcoreaddons
+           kcrash
+           kfilemetadata
+           ki18n
+           kiconthemes
+           kio
+           kirigami
+           kwindowsystem
+           mpvqt
+           qqc2-desktop-style
+           sonnet
+           qt5compat
+           yt-dlp))
+    (home-page "https://haruna.kde.org/")
+    (synopsis "Video player built with Qt/QML and libmpv")
+    (description "Haruna is a video player build with Qt/QML and libmpv.")
+    (license license:gpl3+)))
 
 (define-public elisa
   (package
