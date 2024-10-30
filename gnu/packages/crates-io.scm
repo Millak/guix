@@ -43558,6 +43558,35 @@ Server Protocol.")
         ("rust-serde-repr" ,rust-serde-repr-0.1)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-lv2-0.6
+  (package
+    (name "rust-lv2")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lv2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xh4hjfh2w5rhzbk0g9845k25f6fxrv7xqpkr09p0x57b200qc41"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lv2-atom" ,rust-lv2-atom-2)
+                       ("rust-lv2-core" ,rust-lv2-core-3)
+                       ("rust-lv2-midi" ,rust-lv2-midi-1)
+                       ("rust-lv2-state" ,rust-lv2-state-2)
+                       ("rust-lv2-sys" ,rust-lv2-sys-2)
+                       ("rust-lv2-time" ,rust-lv2-time-0.1)
+                       ("rust-lv2-units" ,rust-lv2-units-0.1)
+                       ("rust-lv2-urid" ,rust-lv2-urid-2)
+                       ("rust-lv2-worker" ,rust-lv2-worker-0.1)
+                       ("rust-urid" ,rust-urid-0.1))))
+    (home-page "https://github.com/RustAudio/rust-lv2")
+    (synopsis "Safe, fast, and ergonomic framework to create LV2 plugins in Rust")
+    (description "This package provides a safe, fast, and ergonomic framework
+to create LV2 plugins in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lv2-atom-2
   (package
     (name "rust-lv2-atom")
