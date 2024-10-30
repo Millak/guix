@@ -43637,6 +43637,27 @@ Server Protocol.")
     (description "This package provides a Rust LV2 wrapper for LV2 time types.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lv2-urid-2
+  (package
+    (name "rust-lv2-urid")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lv2-urid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s2fcb0nyn54ml6azkbhnnxghy898x1q5vs5qgdznrhy9m20624c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lv2-core" ,rust-lv2-core-3)
+                       ("rust-lv2-sys" ,rust-lv2-sys-2)
+                       ("rust-urid" ,rust-urid-0.1))))
+    (home-page "https://github.com/RustAudio/rust-lv2")
+    (synopsis "Rust LV2 URID handling library")
+    (description "This package provides a LV2 URID handling library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lv2-units-0.1
   (package
     (name "rust-lv2-units")
