@@ -43558,6 +43558,27 @@ Server Protocol.")
         ("rust-serde-repr" ,rust-serde-repr-0.1)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-lv2-core-3
+  (package
+    (name "rust-lv2-core")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lv2-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pj9l15zwqwj2h83f3xfpwxsj70vvhkw52gyzkljafvrbx1h00fm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lv2-core-derive" ,rust-lv2-core-derive-2)
+                       ("rust-lv2-sys" ,rust-lv2-sys-2)
+                       ("rust-urid" ,rust-urid-0.1))))
+    (home-page "https://github.com/RustAudio/rust-lv2")
+    (synopsis "Rust LV2 core library")
+    (description "This package provides the Rust LV2 core library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lv2-core-derive-2
   (package
     (name "rust-lv2-core-derive")
