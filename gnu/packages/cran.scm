@@ -1038,6 +1038,35 @@ work with FlowSOM and flow-cytometry use-cases.")
 Distance (EMD).")
     (license license:expat)))
 
+(define-public r-fateid
+  (package
+    (name "r-fateid")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "FateID" version))
+       (sha256
+        (base32 "0sgvaqhqkmmkcsl53bm1jlfpzrvzfb5cz8k513nizfsi638vydlm"))))
+    (properties `((upstream-name . "FateID")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-locfit
+                             r-matrixstats
+                             r-pheatmap
+                             r-princurve
+                             r-randomforest
+                             r-rcolorbrewer
+                             r-rtsne
+                             r-som
+                             r-umap))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=FateID")
+    (synopsis "Quantification of fate bias in multipotent progenitors")
+    (description
+     "This package computes cell fate bias for multi-lineage single-cell data.
+It also provides visualization tools for analyzing these biases.")
+    (license license:gpl3)))
+
 (define-public r-fuzzyjoin
   (package
     (name "r-fuzzyjoin")
