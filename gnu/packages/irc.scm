@@ -368,14 +368,14 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "4.4.2")
+    (version "4.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1v2d8fbk33skkjavwvxd7gq4w1ip43jhdq7ssjk07jjvkjd2ipyl"))))
+                "1ypbiyyh7wxd7sd3spkx0xfjld2kxca30z95334jibr4vkw14mi9"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
