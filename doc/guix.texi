@@ -20788,30 +20788,30 @@ The file name of the processed log file.
 
 The following optional settings may be provided:
 
-@table @asis
-@item @code{skip-private?}
+@table @code
+@item skip-private?
 When @code{#true} do not mask addresses in private ranges.
 
-@item @code{column}
+@item column
 A 1-based indexed column number.  Assume IP address is in the specified
 column (default is 1).
 
-@item @code{replacement}
+@item replacement
 Replacement string in case address parsing fails, e.g. @code{"0.0.0.0"}.
 
-@item @code{ipv4mask}
+@item ipv4mask
 Number of bits to mask in IPv4 addresses.
 
-@item @code{ipv6mask}
+@item ipv6mask
 Number of bits to mask in IPv6 addresses.
 
-@item @code{increment}
+@item increment
 Increment the IP address by the given number.  By default this is zero.
 
-@item @code{delimiter}
+@item delimiter
 Log delimiter string.
 
-@item @code{regex}
+@item regex
 Regular expression for detecting IP addresses.  Use this instead of @code{column}.
 @end table
 @end deftp
