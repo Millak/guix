@@ -24361,7 +24361,7 @@ that should happen depending on compiler policy.")
 (define-public sbcl-polymorphic-functions
   (package
     (name "sbcl-polymorphic-functions")
-    (version "0.2.1")
+    (version "0.5.2")
     (source
      (origin
        (method git-fetch)
@@ -24370,20 +24370,29 @@ that should happen depending on compiler policy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-polymorphic-functions" version))
        (sha256
-        (base32 "161ylp3avmkylgfddp7i1kscv3bqx734jk1i97xhsbl7x83nin0h"))))
+        (base32 "1bawhbj5rh1q6qrcjnx48n78841mgri5n63pmicxxyhif2il0zq3"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria
+           sbcl-cl-form-types
            sbcl-closer-mop
            sbcl-compiler-macro-notes
            sbcl-ctype
            sbcl-fiveam
-           sbcl-cl-form-types
            sbcl-introspect-environment
            sbcl-slime-swank))
     (arguments
      ;; Tests fail: https://github.com/digikar99/polymorphic-functions/issues/8
-     '(#:tests? #f))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-build
+                 (lambda _
+                   ;; SBCL 2.4.10 doesn't allow user code to
+                   ;; rebind *IN-COMPILATION-UNIT*.
+                   (substitute* "src/nonlite/dispatch.lisp"
+                     (("#\\+sbcl \\(sb-c::\\*in-compilation-unit\\* nil\\)")
+                      "")))))))
     (home-page "https://github.com/digikar99/polymorphic-functions/")
     (synopsis "Function type to dispatch on types instead of classes")
     (description
