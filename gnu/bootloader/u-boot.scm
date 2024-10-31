@@ -5,7 +5,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2023 Herman Rimm <herman_rimm@protonmail.com>
+;;; Copyright © 2023-2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -28,6 +28,7 @@
   #:use-module (gnu bootloader)
   #:use-module (gnu packages bootloaders)
   #:use-module (guix gexp)
+  #:use-module (ice-9 match)
   #:export (u-boot-bootloader
             u-boot-a20-olinuxino-lime-bootloader
             u-boot-a20-olinuxino-lime2-bootloader
@@ -52,6 +53,18 @@
             u-boot-starfive-visionfive2-bootloader
             u-boot-ts7970-q-2g-1000mhz-c-bootloader
             u-boot-wandboard-bootloader))
+
+(define (make-u-boot-installer file)
+  (let ((file
+          (match file
+            ((? string?)
+             (list #~(install-file (string-append bootloader #$file)
+                                   install-dir)))
+            ((? file-like?) (list #~(install-file #$file install-dir)))
+            (#f '()))))
+    #~(lambda (bootloader device mount-point)
+        (let ((install-dir (string-append mount-point "/boot")))
+          #$@file))))
 
 (define install-u-boot
   #~(lambda (bootloader root-index image)
@@ -145,12 +158,6 @@
 
 (define install-pinebook-pro-rk3399-u-boot install-rockpro64-rk3399-u-boot)
 
-(define install-u-boot-ts7970-q-2g-1000mhz-c-u-boot
-  #~(lambda (bootloader device mount-point)
-      (let ((u-boot.imx (string-append bootloader "/libexec/u-boot.imx"))
-            (install-dir (string-append mount-point "/boot")))
-        (install-file u-boot.imx install-dir))))
-
 (define install-sifive-unmatched-u-boot
   #~(lambda (bootloader root-index image)
       (let ((spl (string-append bootloader "/libexec/spl/u-boot-spl.bin"))
@@ -171,24 +178,14 @@
                               image (* 2082 512)))))
 
 (define install-starfive-visionfive2-uEnv.txt
-  #~(lambda (bootloader device mount-point)
-      (mkdir-p (string-append mount-point "/boot"))
-      (call-with-output-file (string-append mount-point "/boot/uEnv.txt")
-        (lambda (port)
-          (format port
-                  ;; if board SPI use vender's u-boot, will find
-                  ;; ""starfive/starfive_visionfive2.dtb"", We cannot guarantee
-                  ;; that users will update this u-boot, so set it.
-                  "fdtfile=starfive/jh7110-starfive-visionfive-2-v1.3b.dtb~%")))))
-
-(define install-qemu-riscv64-u-boot
-  #~(lambda (bootloader device mount-point)
-      (let ((u-boot.bin (string-append bootloader "/libexec/u-boot.bin"))
-            (install-dir (string-append mount-point "/boot")))
-        (install-file u-boot.bin install-dir))))
+  (make-u-boot-installer
+    ;; If the board SPI uses the vendor's U-Boot, it will find starfive/
+    ;; starfive_visionfive2.dtb.  We cannot guarantee that users will
+    ;; update this U-Boot, so set the FDT explicitly.
+    (plain-file "uEnv.txt"
+      "fdtfile=starfive/jh7110-starfive-visionfive-2-v1.3b.dtb~%")))
 
 
-
 ;;;
 ;;; Bootloader definitions.
 ;;;
@@ -329,7 +326,7 @@
   (bootloader
    (inherit u-boot-bootloader)
    (package u-boot-ts7970-q-2g-1000mhz-c)
-   (installer install-u-boot-ts7970-q-2g-1000mhz-c-u-boot)
+   (installer (make-u-boot-installer "libexec/u-boot.imx"))
    (disk-image-installer #f)))
 
 (define u-boot-sifive-unmatched-bootloader
@@ -349,5 +346,5 @@
   (bootloader
    (inherit u-boot-bootloader)
    (package u-boot-qemu-riscv64)
-   (installer install-qemu-riscv64-u-boot)
+   (installer (make-u-boot-installer "libexec/u-boot.bin"))
    (disk-image-installer #f)))
