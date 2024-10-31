@@ -5309,7 +5309,7 @@ can receive input from a MIDI keyboard.")
            python-numpy
            python-psutil
            python-pymarshal
-           python-pyqt
+           python-pyqt-6
            python-pyyaml
            python-wavefile
            python-yq
