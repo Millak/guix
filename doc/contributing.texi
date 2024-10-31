@@ -865,7 +865,7 @@ example, the @code{(guix scripts shell)} module exports the
 This contains supporting code for the importers and updaters
 (@pxref{Invoking guix import}, and @pxref{Invoking guix refresh}).  For
 example, @code{(guix import pypi)} defines the interface to PyPI, which
-is used by the @code{guix import pypi} command.
+is used by the @command{guix import pypi} command.
 @end table
 
 The directories we have seen so far all live under @file{guix/}.  The
@@ -1901,16 +1901,16 @@ Take some time to provide an adequate synopsis and description for the
 package.  @xref{Synopses and Descriptions}, for some guidelines.
 
 @item
-Run @code{guix lint @var{package}}, where @var{package} is the
+Run @command{guix lint @var{package}}, where @var{package} is the
 name of the new or modified package, and fix any errors it reports
 (@pxref{Invoking guix lint}).
 
 @item
-Run @code{guix style @var{package}} to format the new package definition
+Run @command{guix style @var{package}} to format the new package definition
 according to the project's conventions (@pxref{Invoking guix style}).
 
 @item
-Make sure the package builds on your platform, using @code{guix build
+Make sure the package builds on your platform, using @command{guix build
 @var{package}}.
 
 @item
@@ -1963,7 +1963,7 @@ adding @code{texlive} as a dependency: because of its extreme size, use
 
 @item
 Check that dependent packages (if applicable) are not affected by the
-change; @code{guix refresh --list-dependent @var{package}} will help you
+change; @command{guix refresh --list-dependent @var{package}} will help you
 do that (@pxref{Invoking guix refresh}).
 
 @item
@@ -2015,7 +2015,7 @@ Please follow our code formatting rules, possibly running
 When possible, use mirrors in the source URL (@pxref{Invoking guix download}).
 Use reliable URLs, not generated ones.  For instance, GitHub archives are not
 necessarily identical from one generation to the next, so in this case it's
-often better to clone the repository.  Don't use the @command{name} field in
+often better to clone the repository.  Don't use the @code{name} field in
 the URL: it is not very useful and if the name changes, the URL will probably
 be wrong.
 
@@ -2024,7 +2024,8 @@ Check if Guix builds (@pxref{Building from Git}) and address the
 warnings, especially those about use of undefined symbols.
 
 @item
-Make sure your changes do not break Guix and simulate a @code{guix pull} with:
+Make sure your changes do not break Guix and simulate a @command{guix pull}
+with:
 @example
 guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master
 @end example
@@ -3334,7 +3335,7 @@ Some of the software packaged in Guix also contain translations.  We do not
 host a translation platform for them.  If you want to translate a package
 provided by Guix, you should contact their developers or find the information
 on their website.  As an example, you can find the homepage of the
-@code{hello} package by typing @code{guix show hello}.  On the ``homepage''
+@code{hello} package by typing @command{guix show hello}.  On the ``homepage''
 line, you will see @url{https://www.gnu.org/software/hello/} as the homepage.
 
 Many GNU and non-GNU packages can be translated on the

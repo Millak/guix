@@ -749,7 +749,7 @@ my-hello	2.10	out
 
 We've gone as far as we could without any knowledge of Scheme.  Before moving
 on to more complex packages, now is the right time to brush up on your Scheme
-knowledge.  @pxref{A Scheme Crash Course} to get up to speed.
+knowledge.  @xref{A Scheme Crash Course} to get up to speed.
 
 @node Setup
 @subsection Setup
@@ -1608,8 +1608,8 @@ reference.
 @node Auto-Login to a Specific TTY
 @section Auto-Login to a Specific TTY
 
-While the Guix manual explains auto-login one user to @emph{all} TTYs (
-@pxref{auto-login to TTY,,, guix, GNU Guix Reference Manual}), some
+While the Guix manual explains auto-login one user to @emph{all} TTYs
+(@pxref{auto-login to TTY,,, guix, GNU Guix Reference Manual}), some
 might prefer a situation, in which one user is logged into one TTY with
 the other TTYs either configured to login different users or no one at
 all.  Note that one can auto-login one user to any TTY, but it is
@@ -4159,7 +4159,7 @@ It contains the same variables you would get if you ran:
 guix package --search-paths=prefix --profile=$my_profile"
 @end example
 
-Once again, see (@pxref{Invoking guix package,,, guix, GNU Guix Reference Manual})
+Once again, see @ref{Invoking guix package,,, guix, GNU Guix Reference Manual}
 for the command line options.
 
 To upgrade a profile, simply install the manifest again:
