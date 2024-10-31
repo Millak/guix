@@ -148,6 +148,27 @@ ANSI escape codes to another format.")
 provides functions to run a few automatable checks for Julia packages.")
     (license license:expat)))
 
+(define-public julia-argcheck
+  (package
+    (name "julia-argcheck")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jw3126/ArgCheck.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13mkcq4ln1vm9hxk3rxs6gcrddbs01bapvp3wb39xqvpb6q3fv6h"))))
+    (build-system julia-build-system)
+    (native-inputs (list julia-benchmarktools))
+    (home-page "https://github.com/jw3126/ArgCheck.jl")
+    (synopsis "Package for checking function arguments")
+    (description "This package provides a method to ensure that arguments
+to a function conform to a specification.")
+    (license license:expat)))
+
 (define-public julia-arnoldimethod
   (package
     (name "julia-arnoldimethod")
