@@ -67,7 +67,7 @@
 (define-public crun
   (package
     (name "crun")
-    (version "1.18")
+    (version "1.18.1")
     (source
      (origin
        (method url-fetch)
@@ -77,7 +77,7 @@
              "/crun-" version ".tar.gz"))
        (sha256
         (base32
-         "0alhcdbb83bsqnvy50p9cjnmslxfmxsyk1b66whd62p5a2rp0fx8"))))
+         "1g66f1bk5l5yx1f3cmrd35i8bkmalnlppb82r02sfyj54aqbn31r"))))
     (build-system gnu-build-system)
     (arguments
      (list
