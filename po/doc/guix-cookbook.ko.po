@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-09-10 03:18+0000\n"
-"PO-Revision-Date: 2024-09-27 04:01+0000\n"
-"Last-Translator: 김인수 <simmon@nplob.com>\n"
+"PO-Revision-Date: 2024-10-23 20:03+0000\n"
+"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Korean <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/ko/>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
@@ -2321,7 +2321,7 @@ msgstr ""
 #: guix-git/doc/guix-cookbook.texi:1128
 #, no-wrap
 msgid "native-inputs"
-msgstr "기본-입력"
+msgstr "native-inputs"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1131
@@ -2332,7 +2332,7 @@ msgstr ""
 #: guix-git/doc/guix-cookbook.texi:1131
 #, no-wrap
 msgid "inputs"
-msgstr "입력"
+msgstr "inputs"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1134
@@ -2343,7 +2343,7 @@ msgstr ""
 #: guix-git/doc/guix-cookbook.texi:1134
 #, no-wrap
 msgid "propagated-inputs"
-msgstr "지연된-입력"
+msgstr "propagated-inputs"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1137

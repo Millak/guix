@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.0.1.4876-09145-dirty\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2024-08-23 03:18+0000\n"
-"PO-Revision-Date: 2024-08-30 16:38+0000\n"
+"POT-Creation-Date: 2024-09-10 03:18+0000\n"
+"PO-Revision-Date: 2024-10-23 23:55+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: German <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/de/>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7\n"
+"X-Generator: Weblate 5.7.2\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -85,8 +85,8 @@ msgstr "Dieses Dokument stellt Anleitungen und detaillierte Beispiele vor, wie m
 #.  You can replace the following paragraph with information on
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:78
-msgid "This manual is also available in French (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), German (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), Korean (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR, Livro de Receitas do GNU Guix}), Slovak (@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}), and Swedish (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}).  If you would like to translate this document in your native language, consider joining @uref{https://translate.fedoraproject.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix reference manual})."
-msgstr "Dieses Handbuch ist auch auf Englisch (siehe @ref{Top,,, guix-cookbook, GNU Guix Cookbook}), auf Französisch (siehe @ref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), auf Koreanisch (siehe @ref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), auf Brasilianischem Portugiesisch (siehe @ref{Top,,, guix-cookbook.pt_BR, Livro de Receitas do GNU Guix}), auf Slowakisch (siehe @ref{Top,,, guix-cookbook.sk, Receptár GNU Guix}) und auf Schwedisch (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}) verfügbar. Wenn Sie dieses Dokument in Ihre eigene Sprache übersetzen möchten, dann sind Sie bei @uref{https://translate.fedoraproject.org/projects/guix/documentation-cookbook, Weblate} herzlich willkommen."
+msgid "This manual is also available in French (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), German (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), Korean (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), Slovak (@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}), and Swedish (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}).  If you would like to translate this document in your native language, consider joining @uref{https://translate.fedoraproject.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix reference manual})."
+msgstr "Dieses Handbuch ist auch auf Englisch (siehe @ref{Top,,, guix-cookbook, GNU Guix Cookbook}), auf Französisch (siehe @ref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), auf Koreanisch (siehe @ref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), auf Brasilianischem Portugiesisch (siehe @ref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), auf Slowakisch (siehe @ref{Top,,, guix-cookbook.sk, Receptár GNU Guix}) und auf Schwedisch (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}) verfügbar. Wenn Sie dieses Dokument in Ihre eigene Sprache übersetzen möchten, dann sind Sie bei @uref{https://translate.fedoraproject.org/projects/guix/documentation-cookbook, Weblate} herzlich willkommen."
 
 #. type: chapter
 #: guix-git/doc/guix-cookbook.texi:89 guix-git/doc/guix-cookbook.texi:98
@@ -1725,7 +1725,7 @@ msgstr ""
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:753
-msgid "We've gone as far as we could without any knowledge of Scheme.  Before moving on to more complex packages, now is the right time to brush up on your Scheme knowledge.  @pxref{A Scheme Crash Course} to get up to speed."
+msgid "We've gone as far as we could without any knowledge of Scheme.  Before moving on to more complex packages, now is the right time to brush up on your Scheme knowledge.  @xref{A Scheme Crash Course} to get up to speed."
 msgstr "Wir sind so weit gekommen, wie es ohne Scheme-Kenntnisse möglich ist. Bevor wir mit komplexeren Paketen weitermachen, ist jetzt der Zeitpunkt gekommen, Ihr Wissen über Scheme zu entstauben. Siehe @ref{Ein Schnellkurs in Scheme} für eine Auffrischung."
 
 #. type: Plain text
@@ -3130,7 +3130,7 @@ msgstr "Siehe @ref{Systemkonfiguration,,, guix.de, Referenzhandbuch zu GNU Guix}
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1618
-msgid "While the Guix manual explains auto-login one user to @emph{all} TTYs ( @pxref{auto-login to TTY,,, guix, GNU Guix Reference Manual}), some might prefer a situation, in which one user is logged into one TTY with the other TTYs either configured to login different users or no one at all.  Note that one can auto-login one user to any TTY, but it is usually advisable to avoid @code{tty1}, which, by default, is used to log warnings and errors."
+msgid "While the Guix manual explains auto-login one user to @emph{all} TTYs (@pxref{auto-login to TTY,,, guix, GNU Guix Reference Manual}), some might prefer a situation, in which one user is logged into one TTY with the other TTYs either configured to login different users or no one at all.  Note that one can auto-login one user to any TTY, but it is usually advisable to avoid @code{tty1}, which, by default, is used to log warnings and errors."
 msgstr "Im Guix-Handbuch wird erklärt, wie man ein Benutzerkonto automatisch auf @emph{allen} TTYs anmelden lassen kann (@pxref{auto-login to TTY,,, guix.de, Referenzhandbuch zu GNU Guix}), aber vielleicht wäre es Ihnen lieber, ein Benutzerkonto an genau einem TTY anzumelden und die anderen TTYs so zu konfigurieren, dass entweder andere Benutzer oder gar niemand angemeldet wird. Beachten Sie, dass man auf jedem TTY automatisch jemanden anmelden kann, aber meistens will man @code{tty1} in Ruhe lassen, weil dorthin nach Voreinstellung Warnungs- und Fehlerprotokolle ausgegeben werden."
 
 #. type: Plain text
@@ -4520,12 +4520,12 @@ msgstr "Damit slock aber überhaupt die Berechtigung dafür erteilt bekommt, Bil
 #: guix-git/doc/guix-cookbook.texi:2460
 #, no-wrap
 msgid ""
-"(service screen-locker-services-type\n"
+"(service screen-locker-service-type\n"
 "         (screen-locker-configuration\n"
 "          (name \"slock\")\n"
 "          (program (file-append slock \"/bin/slock\"))))\n"
 msgstr ""
-"(service screen-locker-services-type\n"
+"(service screen-locker-service-type\n"
 "         (screen-locker-configuration\n"
 "          (name \"slock\")\n"
 "          (program (file-append slock \"/bin/slock\"))))\n"
@@ -6050,7 +6050,7 @@ msgid ""
 "Pairing successful\n"
 "\n"
 msgstr ""
-"[My Bluetooth Speaker]# [CHG] Device AA:BB:CC:A4:AA:CD UUIDs: 0000110b-0000-1000-8000-00xxxxxxxxxx\n"
+"[Mein Bluetooth-Lautsprecher]# [CHG] Device AA:BB:CC:A4:AA:CD UUIDs: 0000110b-0000-1000-8000-00xxxxxxxxxx\n"
 "[CHG] Device AA:BB:CC:A4:AA:CD UUIDs: 0000110c-0000-1000-8000-00xxxxxxxxxx\n"
 "[CHG] Device AA:BB:CC:A4:AA:CD UUIDs: 0000110e-0000-1000-8000-00xxxxxxxxxx\n"
 "[CHG] Device AA:BB:CC:A4:AA:CD Paired: yes\n"
@@ -7588,7 +7588,7 @@ msgstr "guix package --search-paths=prefix --profile=$my_profile\"\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4164
-msgid "Once again, see (@pxref{Invoking guix package,,, guix, GNU Guix Reference Manual})  for the command line options."
+msgid "Once again, see @ref{Invoking guix package,,, guix, GNU Guix Reference Manual} for the command line options."
 msgstr "Siehe auch hier das @ref{Aufruf von guix package,,, guix.de, Referenzhandbuch zu GNU Guix} für die Befehlszeilenoptionen."
 
 #. type: Plain text
@@ -8678,7 +8678,7 @@ msgstr "So klappt es gut und der Vorteil ist, dass Sie den Befehl leicht Ihrer b
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4829
 msgid "That said, you'll really get the most of it by using @uref{https://guix.gnu.org/en/cuirass,Cuirass}, a CI tool designed for and tightly integrated with Guix. Using it is more work than using a hosted CI tool because you first need to set it up, but that setup phase is greatly simplified if you use its Guix System service (@pxref{Continuous Integration,,, guix, GNU Guix Reference Manual}).  Going back to our example, we give Cuirass a spec file that goes like this:"
-msgstr "Aber trotzdem können Sie Guix am besten ausnutzen, wenn Sie @uref{https://guix.gnu.org/en/cuirass,Cuirass} verwenden, ein CI-Werkzeug speziell für Guix und eng damit integriert. Cuirass zu benutzen statt einem CI-Werkzeug, das jemand für Sie hostet, macht mehr Aufwand, aber die Einrichtung hält sich in Grenzen, wenn Sie Cuirass’ Dienst auf Guix System benutzen (siehe @ref{Kontinuierliche Integration,,, guix.de, Referenzhandbuch zu GNU Guix}). Kehren wir zu unserem Beispiel zurück, statten wir Cuirass mit so einer Spezifikationsdatei aus:"
+msgstr "Aber trotzdem können Sie Guix am besten ausnutzen, wenn Sie @uref{https://guix.gnu.org/de/cuirass,Cuirass} verwenden, ein CI-Werkzeug speziell für Guix und eng damit integriert. Cuirass zu benutzen statt einem CI-Werkzeug, das jemand für Sie hostet, macht mehr Aufwand, aber die Einrichtung hält sich in Grenzen, wenn Sie Cuirass’ Dienst auf Guix System benutzen (siehe @ref{Kontinuierliche Integration,,, guix.de, Referenzhandbuch zu GNU Guix}). Kehren wir zu unserem Beispiel zurück, statten wir Cuirass mit so einer Spezifikationsdatei aus:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:4841
