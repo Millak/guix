@@ -10,6 +10,7 @@
 ;;; Copyright © 2022 Karl Hallsby <karl@hallsby.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,7 @@
 
 (define-module (gnu bootloader grub)
   #:use-module (guix build union)
+  #:use-module (guix deprecation)
   #:use-module (guix records)
   #:use-module (guix store)
   #:use-module (guix utils)
@@ -56,6 +58,7 @@
             grub-theme-gfxmode
 
             install-grub-efi-removable
+            make-grub-efi-installer
             make-grub-efi-netboot-installer
 
             grub-bootloader
@@ -628,7 +631,16 @@ fi~%"))))
                 "-d" "."
                 image))))
 
-(define install-grub-efi
+(define* (make-grub-efi-installer #:key efi32? removable?)
+  "Return a G-expression of a procedure for installing GRUB on a UEFI
+system.  If EFI32? is #t, then a 32-bit target will be used.  If
+REMOVABLE? is #t, GRUB will be installed for Removable Media Boot."
+  (define extra-args
+    (list (and efi32?
+               #~(cond ((target-x86?) "--target=i386-efi")
+                       ((target-arm?) "--target=arm-efi")))
+          ;; This does not update UEFI boot entries, like --no-nvram.
+          (and removable? "--removable")))
   #~(lambda (bootloader efi-dir mount-point)
       ;; There is nothing useful to do when called in the context of a disk
       ;; image generation.
@@ -645,57 +657,10 @@ fi~%"))))
           ;; Tell 'grub-install' that there might be a LUKS-encrypted /boot or
           ;; root partition.
           (setenv "GRUB_ENABLE_CRYPTODISK" "y")
-          (invoke/quiet grub-install "--boot-directory" install-dir
-                        "--bootloader-id=Guix"
-                        "--efi-directory" target-esp)))))
-
-(define install-grub-efi-removable
-  #~(lambda (bootloader efi-dir mount-point)
-      ;; NOTE: mount-point is /mnt in guix system init /etc/config.scm /mnt/point
-      ;; NOTE: efi-dir comes from target list of booloader configuration
-      ;; There is nothing useful to do when called in the context of a disk
-      ;; image generation.
-      (when efi-dir
-        ;; Install GRUB onto the EFI partition mounted at EFI-DIR, for the
-        ;; system whose root is mounted at MOUNT-POINT.
-        (let ((grub-install (string-append bootloader "/sbin/grub-install"))
-              (install-dir (string-append mount-point "/boot"))
-              ;; When installing Guix, it's common to mount EFI-DIR below
-              ;; MOUNT-POINT rather than /boot/efi on the live image.
-              (target-esp (if (file-exists? (string-append mount-point efi-dir))
-                              (string-append mount-point efi-dir)
-                              efi-dir)))
-          ;; Tell 'grub-install' that there might be a LUKS-encrypted /boot or
-          ;; root partition.
-          (setenv "GRUB_ENABLE_CRYPTODISK" "y")
-          (invoke/quiet grub-install "--boot-directory" install-dir
-                        "--removable"
-                        ;; "--no-nvram"
-                        "--bootloader-id=Guix"
-                        "--efi-directory" target-esp)))))
-
-(define install-grub-efi32
-  #~(lambda (bootloader efi-dir mount-point)
-      ;; There is nothing useful to do when called in the context of a disk
-      ;; image generation.
-      (when efi-dir
-        ;; Install GRUB onto the EFI partition mounted at EFI-DIR, for the
-        ;; system whose root is mounted at MOUNT-POINT.
-        (let ((grub-install (string-append bootloader "/sbin/grub-install"))
-              (install-dir (string-append mount-point "/boot"))
-              ;; When installing Guix, it's common to mount EFI-DIR below
-              ;; MOUNT-POINT rather than /boot/efi on the live image.
-              (target-esp (if (file-exists? (string-append mount-point efi-dir))
-                              (string-append mount-point efi-dir)
-                              efi-dir)))
-          ;; Tell 'grub-install' that there might be a LUKS-encrypted /boot or
-          ;; root partition.
-          (setenv "GRUB_ENABLE_CRYPTODISK" "y")
-          (invoke/quiet grub-install "--boot-directory" install-dir
-                        "--bootloader-id=Guix"
-			(cond ((target-x86?) "--target=i386-efi")
-                              ((target-arm?) "--target=arm-efi"))
-                        "--efi-directory" target-esp)))))
+          (invoke/quiet grub-install "--bootloader-id=Guix"
+                        "--boot-directory" install-dir
+                        "--efi-directory" target-esp
+                        #$@(filter identity extra-args))))))
 
 (define* (make-grub-efi-netboot-installer grub-efi grub-cfg subdir)
   "Make a bootloader-installer for a grub-efi-netboot bootloader, which expects
@@ -856,7 +821,7 @@ symlink to the store is not needed in this case."
   (bootloader
    (name 'grub-efi)
    (package grub-efi)
-   (installer install-grub-efi)
+   (installer (make-grub-efi-installer))
    (disk-image-installer #f)
    (configuration-file grub-cfg)
    (configuration-file-generator grub-configuration-file)))
@@ -865,12 +830,12 @@ symlink to the store is not needed in this case."
   (bootloader
    (inherit grub-efi-bootloader)
    (name 'grub-efi-removable-bootloader)
-   (installer install-grub-efi-removable)))
+   (installer (make-grub-efi-installer #:removable? #t))))
 
 (define grub-efi32-bootloader
   (bootloader
    (inherit grub-efi-bootloader)
-   (installer install-grub-efi32)
+   (installer (make-grub-efi-installer #:efi32? #t))
    (name 'grub-efi32)
    (package grub-efi32)))
 
@@ -915,5 +880,13 @@ symlink to the store is not needed in this case."
                  (bootloader-configuration
                   (bootloader grub-bootloader)
                   fields ...))))
+
+
+;;;
+;;; Deprecated bootloader and installer variables.
+;;;
+
+(define-deprecated/alias install-grub-efi-removable
+  (make-grub-efi-installer #:removable? #t))
 
 ;;; grub.scm ends here
