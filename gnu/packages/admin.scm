@@ -4905,14 +4905,14 @@ tcpdump and snoop.")
 (define-public pam-mount
   (package
     (name "pam-mount")
-    (version "2.18")
+    (version "2.20")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://sourceforge/pam-mount/pam_mount/"
-                           "pam_mount-" version ".tar.xz"))
+       (uri (string-append "https://inai.de/files/pam_mount/pam_mount-"
+                           version ".tar.xz"))
        (sha256
-        (base32 "0832nh2qf9pisgwnbgx6hkylx5d7i416l19y3ly4ifv7k1p7mxqa"))))
+        (base32 "1vbc6fd826qgj5qq5g06hc64x6n372xhb92bfvhzi02n91x209jl"))))
     (build-system gnu-build-system)
     (arguments
      (list
