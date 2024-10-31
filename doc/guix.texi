@@ -47615,7 +47615,7 @@ Specify the position of the bar.  Accepted values are @code{'top} or
 @code{'bottom}.
 
 @item @code{hidden-state} (optional)
-Specify the apparence of the bar when it is hidden.  Accepted values are
+Specify the appearance of the bar when it is hidden.  Accepted values are
 @code{'hide} or @code{'show}.
 
 @item @code{binding-mode-indicator} (optional)

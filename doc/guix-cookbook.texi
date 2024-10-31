@@ -68,7 +68,7 @@ This manual is also available in French (@pxref{Top,,, guix-cookbook.fr,
 Livre de recettes de GNU Guix}), German (@pxref{Top,,, guix-cookbook.de,
 GNU-Guix-Kochbuch}), Korean (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}),
 Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR,
-Livro de Receitas do GNU Guix}), Slovak (@pxref{Top,,, guix-cookbook.sk,
+Livro de receitas do GNU Guix}), Slovak (@pxref{Top,,, guix-cookbook.sk,
 Receptár GNU Guix}), and Swedish (@pxref{Top,,, guix-cookbook.sv,
 Kokbok för GNU Guix}).  If you would like to translate
 this document in your native language, consider joining
