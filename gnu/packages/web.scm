@@ -1694,7 +1694,7 @@ for efficient socket-like bidirectional reliable communication channels.")
 (define-public wabt
   (package
     (name "wabt")
-    (version "1.0.34")
+    (version "1.0.36")
     (source
      (origin
        (method git-fetch)
@@ -1704,7 +1704,7 @@ for efficient socket-like bidirectional reliable communication channels.")
              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vxvc34b7a7lkrmzdb5cjv0b54vhiyr33sy0i2ps5jrmg5rqqmia"))
+        (base32 "1gypy9bn2nvmfa469fi6kwsyw11j0vqkxm7givs3gidjpsy1bk0a"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "third_party/gtest/"))))
