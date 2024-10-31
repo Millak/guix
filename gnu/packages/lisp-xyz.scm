@@ -12582,7 +12582,7 @@ to support this, especially for reasoning on types, are also included.")
 (define-public sbcl-compiler-macro-notes
   (package
     (name "sbcl-compiler-macro-notes")
-    (version "0.2.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -12591,7 +12591,7 @@ to support this, especially for reasoning on types, are also included.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-compiler-macro-notes" version))
        (sha256
-        (base32 "1jv8snj2wvim3k9qhl1vsx82n56nzdmwa3ms9c4ml2d58fwpfjzs"))))
+        (base32 "0pchhvk14fx54p7qq92dnf0g4jnapqr6p2a4za6bhzd8im1d9gad"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria
