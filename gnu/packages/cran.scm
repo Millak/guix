@@ -8566,13 +8566,13 @@ multi-part to single-part geometries.")
 (define-public r-rmdfiltr
   (package
     (name "r-rmdfiltr")
-    (version "0.1.3")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rmdfiltr" version))
        (sha256
-        (base32 "0llnn4pdfznidalm4f7fpyxbhzsqv1096fkbsl1pgf4f7ll6w7a7"))))
+        (base32 "05czq9nvs66zd8wgmy5bvk0k1qfspf3imwxs25gn4d3w188klhnv"))))
     (properties `((upstream-name . "rmdfiltr")))
     (build-system r-build-system)
     (inputs (list pandoc))
