@@ -13491,13 +13491,13 @@ the application.")
 (define-public r-algdesign
   (package
     (name "r-algdesign")
-    (version "1.2.1")
+    (version "1.2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "AlgDesign" version))
        (sha256
-        (base32 "01cx63wqr6yvgl5ml1lj6gh9p1sn42b6qcnsppcw7mvba9n652ar"))))
+        (base32 "0m6c09pwr536wr3qlq7x15f49hj5y750lh60c3m8xf7yhrpfzjpn"))))
     (properties `((upstream-name . "AlgDesign")))
     (build-system r-build-system)
     (home-page "https://github.com/jvbraun/AlgDesign")
