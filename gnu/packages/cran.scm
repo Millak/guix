@@ -18636,14 +18636,14 @@ models.")
 (define-public r-glmmtmb
   (package
     (name "r-glmmtmb")
-    (version "1.1.9")
+    (version "1.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "glmmTMB" version))
        (sha256
         (base32
-         "0qw9ww3l506vivs6k8v5cdiv6lf9a32f0d1iq6bizxxh0ywsdmck"))))
+         "189awpihhy6k677swwss7zcnz6rprmiwmyicc2679p5n8f3ccr7n"))))
     (properties `((upstream-name . "glmmTMB")))
     (build-system r-build-system)
     (propagated-inputs
@@ -18653,6 +18653,7 @@ models.")
            r-nlme
            r-numderiv
            r-rcppeigen
+           r-reformulas
            r-tmb))
     (native-inputs
      (list r-knitr r-rmarkdown)) ; for vignettes
