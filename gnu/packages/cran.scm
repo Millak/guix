@@ -32953,13 +32953,13 @@ space models and automatic ARIMA modelling.")
 (define-public r-forestplot
   (package
     (name "r-forestplot")
-    (version "3.1.3")
+    (version "3.1.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "forestplot" version))
               (sha256
                (base32
-                "0jbmhgbf167xi0lxqinf6m4gmh10r582bify1i731k9ywcc7psqk"))))
+                "1k1d42am2mqz9s6knqqyrgp5ph8md77bxxjfv1q1bdqmn1k44sbz"))))
     (properties `((upstream-name . "forestplot")))
     (build-system r-build-system)
     (propagated-inputs
