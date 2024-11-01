@@ -18671,14 +18671,14 @@ differentiation.")
 (define-public r-bayestestr
   (package
     (name "r-bayestestr")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bayestestR" version))
        (sha256
         (base32
-         "10280l86a2wrlqjj8zh55pznvgjzpdzv6h3krxgg0ka19ch983zs"))))
+         "1x3r6vf414lar6z4hshf9lpindiynz2d4kb0bwr1phz5db3x77l3"))))
     (properties `((upstream-name . "bayestestR")))
     (build-system r-build-system)
     (propagated-inputs
