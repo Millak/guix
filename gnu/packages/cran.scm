@@ -142,13 +142,13 @@ characters, such that the strings remain unique (if they originally were).")
 (define-public r-aer
   (package
     (name "r-aer")
-    (version "1.2-13")
+    (version "1.2-14")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "AER" version))
               (sha256
                (base32
-                "03pa1rqlcn0r7hqijy8kjrkwg38rzyg5la9p71pbfyr5nr3p7jqd"))))
+                "06l7h1gdyc007hx5xavkb879mgqnskcq2zrbr0xbm88rv1b63a26"))))
     (properties `((upstream-name . "AER")))
     (build-system r-build-system)
     (propagated-inputs
