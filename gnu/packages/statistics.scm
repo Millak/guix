@@ -7638,13 +7638,13 @@ Calculates confidence intervals for the difference in proportion.")
 (define-public r-desctools
   (package
     (name "r-desctools")
-    (version "0.99.56")
+    (version "0.99.57")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "DescTools" version))
         (sha256
-          (base32 "1lvh19q3f4yidcxilba6bw2l2lllm6zc0aiqjgh8bvz01rq19f09"))))
+          (base32 "01yx5j6p90rlh6cca6rxhn726xy12rlpjl4mq5pa81cakizxv0iy"))))
     (properties `((upstream-name . "DescTools")))
     (build-system r-build-system)
     (arguments
