@@ -15998,14 +15998,14 @@ documents.")
 (define-public r-writexl
   (package
     (name "r-writexl")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "writexl" version))
        (sha256
         (base32
-         "1kkd17xw7giy1k2azw1xnagka7ihicp17bi7nzlm3gqay1cdqlz2"))))
+         "14wv9l927bh57jbdxcf8wb429mz85x5bnsm31i2j3m0db0ikf4ax"))))
     (build-system r-build-system)
     (inputs (list zlib))
     (home-page "https://github.com/ropensci/writexl")
