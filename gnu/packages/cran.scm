@@ -14925,29 +14925,33 @@ file.")
 (define-public r-billboarder
   (package
     (name "r-billboarder")
-    (version "0.4.1")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "billboarder" version))
        (sha256
-        (base32 "0byj1ilwnmq9n9gswsnj17r8pzhm4fp6567nbz1xfmlvl3402qkn"))
+        (base32 "07piczkr5chsxrpkmqx533nxjaw0sgrqzd7xs2779jk8184vr36a"))
        (snippet
         '(delete-file "inst/htmlwidgets/lib/billboard/billboard.pkgd.min.js"))))
     (properties `((upstream-name . "billboarder")))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:modules '((guix build r-build-system)
+                  (guix build minify-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules `(,@%r-build-system-modules
+                           (guix build minify-build-system))
+      #:phases
+      '(modify-phases (@ (guix build r-build-system) %standard-phases)
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst/htmlwidgets/lib/billboard/"
                (let ((source (assoc-ref inputs "js-billboard"))
                      (target "billboard.pkgd.min.js"))
-                 (format #true "Processing ~a --> ~a~%"
-                         source target)
-                 (invoke "esbuild" source "--minify"
-                         (string-append "--outfile=" target)))))))))
+                 (minify source #:target target))))))))
     (propagated-inputs
      (list r-ggplot2
            r-htmltools
@@ -14967,10 +14971,10 @@ file.")
        ("js-billboard"
         ,(origin
            (method url-fetch)
-           (uri "https://unpkg.com/billboard.js@3.6.3/dist/billboard.js")
+           (uri "https://unpkg.com/billboard.js@3.13.0/dist/billboard.js")
            (sha256
             (base32
-             "1lyj4yl95qgh06iygb2y2mdg1zxijzxi5h85z7kp8ngm825z6rpi"))))))
+             "0s1lcmsgcb6yjzz1k03rz2ga3hz9i3i442q30bv4p6z8dagd1akx"))))))
     (home-page "https://github.com/dreamRs/billboarder")
     (synopsis "Create interactive charts with the JavaScript Billboard library")
     (description
