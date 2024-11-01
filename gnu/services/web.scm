@@ -1496,40 +1496,35 @@ files.")
        "Anonimyze the given log file location with anonip.")
       (start
        #~(lambda ()
-           (define (spawn)
-             (fork+exec-command
-              (append
-               (list #$(file-append (anonip-configuration-anonip config)
-                                    "/bin/anonip")
-                     (string-append "--input=" #$input)
-                     (string-append "--output=" #$output))
-               (if #$(anonip-configuration-skip-private? config)
-                   '("--skip-private") (list))
-               '#$(optional anonip-configuration-column "--column")
-               '#$(optional anonip-configuration-ipv4mask "--ipv4mask")
-               '#$(optional anonip-configuration-ipv6mask "--ipv6mask")
-               '#$(optional anonip-configuration-increment "--increment")
-               '#$(optional anonip-configuration-replacement
-                            "--replacement")
-               '#$(optional anonip-configuration-delimiter "--delimiter")
-               '#$(optional anonip-configuration-regex "--regex"))
-              ;; Run in a UTF-8 locale
-              #:environment-variables
-              (list (string-append "GUIX_LOCPATH="
-                                   #$(libc-utf8-locales-for-target)
-                                   "/lib/locale")
-                    "LC_ALL=en_US.utf8")))
+           ;; Always attempt to recreate the named pipe, as activation scripts
+           ;; such as that of nginx may have created plain files in its place
+           ;; (see: https://issues.guix.gnu.org/59181).
+           (false-if-exception (delete-file #$input))
+           (mknod #$input 'fifo #o600 0)
 
-           (let ((stat (stat #$input #f)))
-             (cond ((not stat)
-                    (mknod #$input 'fifo #o600 0)
-                    (spawn))
-                   ((eq? 'fifo (stat:type stat))
-                    (spawn))
-                   (else
-                    (format #t "'~a' is not a FIFO; bailing out~%"
-                            #$input)
-                    #f)))))
+           (fork+exec-command
+            (append
+             (list #$(file-append (anonip-configuration-anonip config)
+                                  "/bin/anonip")
+                   (string-append "--input=" #$input)
+                   (string-append "--output=" #$output))
+             (if #$(anonip-configuration-debug? config)
+                 '("--debug") (list))
+             (if #$(anonip-configuration-skip-private? config)
+                 '("--skip-private") (list))
+             '#$(optional anonip-configuration-column "--column")
+             '#$(optional anonip-configuration-ipv4mask "--ipv4mask")
+             '#$(optional anonip-configuration-ipv6mask "--ipv6mask")
+             '#$(optional anonip-configuration-increment "--increment")
+             '#$(optional anonip-configuration-replacement "--replacement")
+             '#$(optional anonip-configuration-delimiter "--delimiter")
+             '#$(optional anonip-configuration-regex "--regex"))
+            ;; Run in a UTF-8 locale
+            #:environment-variables
+            (list (string-append "GUIX_LOCPATH="
+                                 #$(libc-utf8-locales-for-target)
+                                 "/lib/locale")
+                  "LC_ALL=en_US.utf8"))))
       (stop #~(make-kill-destructor))))))
 
 (define anonip-service-type
