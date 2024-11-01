@@ -705,13 +705,13 @@ region descriptors.")
 (define-public r-cplm
   (package
     (name "r-cplm")
-    (version "0.7-12")
+    (version "0.7-12.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cplm" version))
        (sha256
-        (base32 "1m0b0jksl1y90q4sdhjspby4hafxxdgra8sbicd5rsrwq4hzwyxc"))))
+        (base32 "0z99fnmadjpx7d41p575dypy3pgsxxzani9npyishv5719hw35cf"))))
     (properties `((upstream-name . "cplm")))
     (build-system r-build-system)
     (arguments
