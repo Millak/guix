@@ -30083,11 +30083,11 @@ for YAML and JSON.")
               (substitute* "setup.cfg"
                 (("(ninja|patchelf)") "")))))))
     (native-inputs
-     (list meson
-           pkg-config
+     (list pkg-config
+           python-meson-python
+           meson
            ninja
            patchelf
-           python-meson-python
            python-sphinx
            python-sphinx-rtd-theme
            python-tappy
