@@ -35344,19 +35344,24 @@ vignette for more information and examples.")
 (define-public r-distributional
   (package
     (name "r-distributional")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "distributional" version))
        (sha256
         (base32
-         "00p6427lw65py24qr9rlhj1wg4z5wgszgmbmbxbpjk7dkckz7d89"))))
+         "1b3i5vgljpjcr8v2xrz20cd900q36rmijizfgcx7id3raj5dwp1l"))))
     (properties
      `((upstream-name . "distributional")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-generics r-lifecycle r-numderiv r-rlang r-vctrs))
+     (list r-generics
+           r-lifecycle
+           r-numderiv
+           r-pillar
+           r-rlang
+           r-vctrs))
     (home-page "https://pkg.mitchelloharawild.com/distributional/")
     (synopsis "Vectorized probability distributions")
     (description
