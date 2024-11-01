@@ -21849,14 +21849,14 @@ S4Vectors package itself.")
 (define-public r-wgcna
   (package
     (name "r-wgcna")
-    (version "1.72-5")
+    (version "1.73")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "WGCNA" version))
        (sha256
         (base32
-         "17g7lan1rpy6y4nmqksrf9ddp3gs58vdczfavgq1fp13zx1r2hq3"))))
+         "1kk3a2ll83zdwisjfvg4km5h0vl564nshy45ffgxv41im5ks7878"))))
     (properties `((upstream-name . "WGCNA")))
     (build-system r-build-system)
     (propagated-inputs
