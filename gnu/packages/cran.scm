@@ -17542,14 +17542,14 @@ hemoglobin to reticulocytes (OFF-score), as well as example data.")
 (define-public r-parmigene
   (package
     (name "r-parmigene")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parmigene" version))
        (sha256
         (base32
-         "067rqxqyzy1fsjj0s1g7af4527whwdhzjzc5b8a8n7683na59ns4"))))
+         "03n93x8qsc4cl5a3d2z3q56rm2zs7xnpn9iqli25g3plv69hp0kk"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/parmigene/")
     (synopsis "Mutual information estimation for gene network reconstruction")
