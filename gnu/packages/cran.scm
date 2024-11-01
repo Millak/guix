@@ -32458,14 +32458,14 @@ used with custom themes and facets.")
 (define-public r-ggplot-multistats
   (package
     (name "r-ggplot-multistats")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplot.multistats" version))
        (sha256
         (base32
-         "1afzfa86vc484bcwpg7m1ky03jpax584rigzgai8w06pifkmz0il"))))
+         "0pffgv7ddwswmiw9nbq907sx2bnwaq88bfiq0gjl2rnqywmh8jpw"))))
     (properties
      `((upstream-name . "ggplot.multistats")))
     (build-system r-build-system)
