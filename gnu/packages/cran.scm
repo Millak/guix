@@ -42170,14 +42170,14 @@ Simple Notification Service (SNS) publish/subscribe messaging, and more.")
 (define-public r-paws-security-identity
   (package
     (name "r-paws-security-identity")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.security.identity" version))
        (sha256
         (base32
-         "14zcvd2cf2015r7b4y69176czznz69nzjp344ys262a8r31nliz5"))))
+         "0mv44m42k8nx3vfl26w3b9xrwrcw8x0zrjgirb4p4fmi7swbv3s0"))))
     (properties
      `((upstream-name . "paws.security.identity")))
     (build-system r-build-system)
