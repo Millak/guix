@@ -227,7 +227,6 @@ with '-virtfs' options for the host file systems listed in SHARED-FS."
             '("-enable-kvm")
             '())
 
-     "-no-reboot"
      "-object" "rng-random,filename=/dev/urandom,id=guix-vm-rng"
      "-device" "virtio-rng-pci,rng=guix-vm-rng"
 
