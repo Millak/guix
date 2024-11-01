@@ -2033,12 +2033,15 @@ automated with the minimum of fuss and the least effort.")
        (sha256
         (base32 "06wd8m3ri0gaddl7qq6243g25zjlnh3da915b73jnrfh7sg1nqsj"))))
     (build-system pyproject-build-system)
-    (inputs (list meson-python openblas))
-    (propagated-inputs (list python-numpy python-scipy))
     (native-inputs
      (list pkg-config
-           python-meson-python
-           python-pytest))
+           python-pytest
+           meson-python))
+    (inputs
+     (list openblas))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy))
     (home-page "https://github.com/bodono/scs-python")
     (synopsis "Splitting conic solver")
     (description "This package provides a Python interface for the
