@@ -737,7 +737,8 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
          (name       (assoc-ref meta "Package"))
          (synopsis   (assoc-ref meta "Title"))
          (version    (assoc-ref meta "Version"))
-         (license    (string->licenses (assoc-ref meta "License") license-prefix))
+         (license    (and=> (assoc-ref meta "License")
+                            (cut string->licenses <> license-prefix)))
          ;; Some packages have multiple home pages.  Some have none.
          (home-page  (case repository
                        ((git) (assoc-ref meta 'git))
