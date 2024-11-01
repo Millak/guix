@@ -5302,13 +5302,13 @@ are supported.")
 (define-public r-servr
   (package
     (name "r-servr")
-    (version "0.31")
+    (version "0.32")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "servr" version))
               (sha256
                (base32
-                "0srpjz2bgq54ijslc2s1gs5n9fsi4xmip6gci16rnxhzd81jckpb"))))
+                "19ixy27b87z99s1crqnmxm7vqzz4zsxpjgpy4101dic7628wlak7"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-httpuv r-jsonlite r-mime r-xfun))
