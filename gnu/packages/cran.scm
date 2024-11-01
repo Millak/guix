@@ -13407,14 +13407,14 @@ local smoothers and many more.")
 (define-public r-radiant-data
   (package
     (name "r-radiant-data")
-    (version "1.6.6")
+    (version "1.6.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "radiant.data" version))
        (sha256
         (base32
-         "09cbd21bvj4a3n5r1ch638y5dgi7xmmg1y62i6ixcjhbr8wypjmn"))
+         "0p55nppclr5dzlslwrhzrg8cc4i0k3ck3076sh2fiay0qi2fh9cm"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file "inst/assets/html2canvas/html2canvas.min.js"))))
@@ -13437,8 +13437,7 @@ local smoothers and many more.")
                 (minify (assoc-ref inputs "_")
                         #:target "html2canvas.min.js")))))))
     (propagated-inputs
-     (list r-arrow
-           r-base64enc
+     (list r-base64enc
            r-broom
            r-bslib
            r-car
