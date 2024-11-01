@@ -42102,13 +42102,13 @@ more.")
 (define-public r-paws-developer-tools
   (package
     (name "r-paws-developer-tools")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.developer.tools" version))
        (sha256
-        (base32 "1cj9k005267wpd9pblvhk0sdy2ll2n0wcq4ch5wjwkz9kgl02jjr"))))
+        (base32 "0p8ds2ks5pd54x891ha3y57rnjh9da3x0nbwqdhl0f2c2l6bqf74"))))
     (properties `((upstream-name . "paws.developer.tools")))
     (build-system r-build-system)
     (propagated-inputs
