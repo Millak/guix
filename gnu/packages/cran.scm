@@ -1268,22 +1268,20 @@ samples) are easily visualized.")
 (define-public r-ggstats
   (package
     (name "r-ggstats")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggstats" version))
        (sha256
-        (base32 "103d1d4azdiaf5i2dgr23wrx6svc0aq85axrfj0v2b2lkwial2pq"))))
+        (base32 "107rv410scf1nk1gaz6gwwbciv7ni6jlid004wxg3r60j8lcak78"))))
     (properties `((upstream-name . "ggstats")))
     (build-system r-build-system)
-    (propagated-inputs (list r-broom-helpers
-                             r-cli
+    (propagated-inputs (list r-cli
                              r-dplyr
                              r-forcats
                              r-ggplot2
                              r-lifecycle
-                             r-magrittr
                              r-patchwork
                              r-purrr
                              r-rlang
