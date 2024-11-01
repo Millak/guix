@@ -24,16 +24,20 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
-  #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages avahi)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages kerberos)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages popt)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages wxwidgets)
@@ -83,3 +87,39 @@ resources).  It supports virtualized, parallel, and GPU-based applications.")
     (home-page "https://boinc.berkeley.edu/")
     ;; BOINC is distributed as LGPL3+, with some individual modules under GPL3+.
     (license (list license:lgpl3+ license:gpl3+))))
+
+(define-public distcc
+  (package
+    (name "distcc")
+    (version "3.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/distcc/distcc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nn0wzrmm88268vay855hr8bw9im5f8kzjp7k20qav9yrckhfwab"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ; TODO: Tests use a hardcoded PATH called RESTRICTED_PATH
+           #:configure-flags #~(list "--enable-rfc2553"
+                                     "--with-gtk"
+                                     "--with-auth")))
+    (native-inputs
+     (list pkg-config autoconf automake which))
+    (inputs
+     (list avahi
+           gtk+
+           libiberty
+           mit-krb5 ; for gss
+           popt
+           python-minimal))
+    (home-page "https://www.distcc.org/")
+    (synopsis "Distributed builds for C, C++ and Objective C")
+    (description "distcc is a program to distribute compilation of C or C++ code across
+several machines on a network. distcc should always generate the same
+results as a local compile, is simple to install and use, and is often
+two or more times faster than a local compile.")
+    (license license:gpl2+)))
