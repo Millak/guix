@@ -20447,13 +20447,13 @@ components).")
 (define-public r-som
   (package
     (name "r-som")
-    (version "0.3-5.1")
+    (version "0.3-5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "som" version))
        (sha256
-        (base32 "1fbza1jxvwrkf5x3inkj36vshhkn7mz0ajqlxalbfmk6ngjw1x56"))))
+        (base32 "0ibhcadjfgi93p5jvs8hni7a92k3x1k74m93w6h2xl6c2q2vpavn"))))
     (properties `((upstream-name . "som")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=som")
