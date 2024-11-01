@@ -140,7 +140,7 @@
 (define-public qcoro-qt5
   (package
     (name "qcoro-qt5")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -149,7 +149,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0inhjc9zknc64q6gajkljfpm2287arg1j0848ia3rhqcbc53k28b"))))
+        (base32 "0g9laaw1mkp5ynpp3c7aingndcmgncbacslq3p6bzwjisdd6xr5m"))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags
