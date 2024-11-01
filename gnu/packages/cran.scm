@@ -13206,18 +13206,18 @@ files.")
 (define-public r-shinyace
   (package
     (name "r-shinyace")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinyAce" version))
        (sha256
         (base32
-         "12mqvdh6rxsr61pc3pzla95r5f4l7xagjs2rcdr7c2lbqyxpx6aa"))))
+         "07xb4mjz9fm5zpysh6133ps0qlakbq74rcsz05kzv9mwxz8bm5sh"))))
     (properties `((upstream-name . "shinyAce")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-shiny r-jsonlite))
+     (list r-jsonlite r-shiny))
     (home-page "https://cran.r-project.org/web/packages/shinyAce/")
     (synopsis "Ace editor bindings for Shiny")
     (description
