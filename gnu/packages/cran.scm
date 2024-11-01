@@ -18582,14 +18582,14 @@ Bayesian modeling.")
 (define-public r-tmb
   (package
     (name "r-tmb")
-    (version "1.9.14")
+    (version "1.9.15")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "TMB" version))
        (sha256
         (base32
-         "1lvbjz9w8m6awww1vkzaw1qc4mmhlmdlk9s4qd5i0568zb15m72d"))))
+         "11ip3cpp2mzwpja0rs62zjh3nfjv1fc21641k5h1hya7lpywmam3"))))
     (properties `((upstream-name . "TMB")))
     (build-system r-build-system)
     (propagated-inputs
