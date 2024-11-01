@@ -41561,14 +41561,14 @@ the @code{raster} package that is suitable for extracting raster values using
 (define-public r-rapiserialize
   (package
     (name "r-rapiserialize")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RApiSerialize" version))
        (sha256
         (base32
-         "0azl8qykls635qxd4lcqmznvpqb5ldy6hqx3p7icqamvx9ckfhcz"))))
+         "1jb31laigm6zbjr5l10xdfriblsz3yv0n09y4lbs34qglyn79f96"))))
     (properties `((upstream-name . "RApiSerialize")))
     (build-system r-build-system)
     (home-page
