@@ -20297,19 +20297,18 @@ Anderson-Darling Distribution\".")
 (define-public r-adimpro
   (package
     (name "r-adimpro")
-    (version "0.9.7")
+    (version "0.9.7.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "adimpro" version))
               (sha256
                (base32
-                "1p34q78w1ib5xjvxg4c1bal680a55l5dqhiry367x9nzwq8a352c"))))
+                "0b7dncf1w4yvm9i67q19fj95p3sc57lqv9wb2n9kvjddqk0vk4iv"))))
     (properties `((upstream-name . "adimpro")
                   (updater-extra-propagated-inputs . ("imagemagick"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-awsmethods
-           imagemagick))
+     (list imagemagick r-awsmethods))
     (native-inputs (list gfortran))
     (home-page "https://www.wias-berlin.de/software/imaging/")
     (synopsis "Adaptive smoothing of digital images")
