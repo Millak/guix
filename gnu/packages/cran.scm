@@ -5152,13 +5152,13 @@ particularly easy to create complete web applications using httpuv alone.")
 (define-public r-httr2
   (package
     (name "r-httr2")
-    (version "1.0.3")
+    (version "1.0.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httr2" version))
               (sha256
                (base32
-                "1hjc5rymkh9gz0gqf0b337wgyhnpzpi80sljfalpmpwfhyzk9vsb"))))
+                "1lcq369rafb7c1arn1rnapdy09fy0bbp1bv7gjrx3j0p844kyjhg"))))
     (properties `((upstream-name . "httr2")))
     (build-system r-build-system)
     (propagated-inputs
