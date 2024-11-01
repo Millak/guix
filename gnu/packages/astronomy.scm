@@ -1678,6 +1678,31 @@ implementation of the ASDF Standard.")
 Astropy objects.")
     (license license:bsd-3)))
 
+(define-public python-asdf-zarr
+  (package
+    (name "python-asdf-zarr")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf_zarr" version))
+       (sha256
+        (base32 "0xddz4hnsypyvqxhi43alaqh2vl1ripcl4p63qn6dk2v90lra8c0"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-asdf python-fsspec python-zarr))
+    (native-inputs
+     (list python-pytest python-setuptools-scm))
+    (home-page "https://github.com/asdf-format/asdf-zarr")
+    (synopsis "Asdf extension to support Zarr arrays")
+    (description
+     "This package includes an extension for the Python library asdf to add
+support for reading and writing chunked
+@url{https://zarr.readthedocs.io/en/stable/,Zarr} arrays, a file storage
+format for chunked, compressed, N-dimensional arrays based on an open-source
+specification.")
+    (license license:bsd-3)))
+
 (define-public python-astroalign
   (package
     (name "python-astroalign")
@@ -1850,6 +1875,37 @@ encompassing software system for the operations and analysis of the ESA satelite
 Herschel.")
     (license license:gpl3+)))
 
+(define-public python-casa-formats-io
+  (package
+    (name "python-casa-formats-io")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "casa-formats-io" version))
+              (sha256
+               (base32
+                "16qwr6yq86qgdb0lvnmfm5mn6g2d29b1vrmfv26v77kxm6szxr8h"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest python-pytest-cov python-pytest-openfiles))
+    (propagated-inputs
+     (list python-astropy python-click python-dask python-numpy))
+    (home-page "https://casa-formats-io.readthedocs.io/")
+    (synopsis "Dask-based reader for CASA data")
+    (description
+     "The @code{casa-formats-io} package is a small package which implements
+functionality to read data stored in @acronym{CASA, Common Astronomy Software
+Applications} formats (such as @file{.image} datasets).  This implementation
+is independent of and does not use @code{casacore}.")
+    (license license:lgpl2.0)))
+
 (define-public python-coolest
   (package
     (name "python-coolest")
@@ -1890,6 +1946,55 @@ project provides tools to manipulate lens models as a single, human-readable
 JSON template file alongside Python routines for visualizing and comparing
 lens models possibly obtained from different modeling codes.")
     (license  license:gpl3)))
+
+(define-public python-czml3
+  (package
+    (name "python-czml3")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/poliastro/czml3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gsdffn5w7j1aridvmx4xh6axvmbmqjwawacc8fnshpcyh4md5pn"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-attrs python-dateutil python-w3lib))
+    (native-inputs
+     (list python-astropy python-pytest python-pytest-mypy))
+    (home-page "https://github.com/poliastro/czml3")
+    (synopsis "Python library to write CZML")
+    (description
+     "CZML3 is a Python library to write CZML, a JSON format for describing
+a time-dynamic graphical scene, primarily for display in a web browser running
+Cesium.")
+    (license license:expat)))
+
+(define-public python-ephem
+  (package
+    (name "python-ephem")
+    (version "4.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ephem" version))
+       (sha256
+        (base32 "0ps2lr6aa477262yw13w3hh0h5rzmywdlji0wbnkxnzrfvmf9lhf"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list tzdata))
+    (home-page "https://rhodesmill.org/pyephem/")
+    (synopsis "Compute positions of the planets and stars")
+    (description
+     "PyEphem provides an @code{ephem} Python package for performing
+high-precision astronomy computations.
+
+The name ephem is short for the word ephemeris, which is the traditional term
+for a table giving the position of a planet, asteroid, or comet for a series
+of dates.")
+    (license license:expat)))
 
 (define-public python-extinction
   (package
@@ -2763,91 +2868,6 @@ large scale galaxy-survey data, it can perform reasonably well on moderately
 crowded star fields.")
     (license license:gpl3+)))
 
-(define-public siril
-  (package
-    (name "siril")
-    (version "1.3.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/free-astro/siril")
-             (commit version)))
-       (sha256
-        (base32 "1fxjfr9kak9vb899xpgr1vmiv3cc2l4apyp0mn0ghg7mqlyl9qmw"))
-       (file-name (git-file-name name version))))
-    (build-system meson-build-system)
-    (arguments
-     (list
-      #:glib-or-gtk? #t
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build glib-or-gtk-build-system))
-      #:modules '((guix build meson-build-system)
-                  ((guix build glib-or-gtk-build-system)
-                   #:prefix glib-or-gtk:)
-                  (guix build utils))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
-            (assoc-ref glib-or-gtk:%standard-phases
-                       'generate-gdk-pixbuf-loaders-cache-file))
-          (add-after 'install 'wrap-program
-            (lambda* _
-              (wrap-program (string-append #$output "/bin/siril")
-                ;; Wrapping GDK_PIXBUF_MODULE_FILE to load icons in pure
-                ;; environments.
-                `("GDK_PIXBUF_MODULE_FILE" =
-                  (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
-    (native-inputs
-     (list cmake-minimal
-           git
-           (list glib "bin") ; for glib-compile-resources
-           libconfig
-           pkg-config))
-    (inputs
-     (list bash-minimal ;for wrap-program
-           cfitsio
-           curl
-           exiv2
-           ffmpeg
-           ffms2
-           fftwf
-           gdk-pixbuf
-           gsl
-           gtk+
-           json-glib
-           lcms-next
-
-           ;; XXX: It downloads script and data during start up, check if they
-           ;; may be presented as packages with wrapped environment variables
-           ;; src/io/siril_git.c
-           ;; <https://gitlab.com/free-astro/siril-scripts>
-           ;; <https://gitlab.com/free-astro/siril-spcc-database>.
-           libgit2
-
-           libheif
-           libjxl
-           libraw
-           (librsvg-for-system)
-           librtprocess
-           libxisf
-           lz4
-           opencv
-           pugixml
-           wcslib))
-    (home-page "https://siril.org/")
-    (synopsis "Image processing software for amateur astronomy")
-    (description
-     "This package provides an astronomical image processing tool - SIRIL.  It
-is specially tailored for noise reduction and improving the signal/noise ratio
-of an image from multiple captures, as required in astronomy.  SIRIL can align
-automatically or manually, stack and enhance pictures from various file
-formats, even image sequence files (films and SER files).  It works well with
-limited system resources, like in embedded platforms, but is also very fast
-when run on more powerful computers and provides conversion to FITS from a
-large number of image formats.")
-    (license license:gpl3+)))
-
 (define-public splash
   (package
     (name "splash")
@@ -2891,42 +2911,6 @@ simulations in one, two and three dimensions, developed mainly for
 astrophysics.  It uses a command-line menu but data can be manipulated
 interactively in the plotting window.")
     (license license:gpl2+)))
-
-(define-public skymaker
-  (package
-    (name "skymaker")
-    (version "3.10.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/astromatic/skymaker")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0kcy0lfm25gihahpr41ghhw3b8znzczzg9rrlkfih043h2pfsm5l"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list
-         "CPPFLAGS=-fcommon"
-         (string-append
-          "--with-fftw-libdir=" #$(this-package-input "fftwf") "/lib")
-         (string-append
-          "--with-fftw-incdir=" #$(this-package-input "fftwf") "/include"))))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (inputs
-     (list fftwf))
-    (home-page "https://www.astromatic.net/software/skymaker")
-    (synopsis "Astronomical image simulator")
-    (description
-     "SkyMaker is a program that simulates astronomical images.  It accepts
-object lists in ASCII generated by the Stuff program to produce realistic
-astronomical fields.  SkyMaker is part of the
-@uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
-    (license license:gpl3+)))
 
 (define-public stackistry
   (package
@@ -3363,37 +3347,6 @@ be as fast as possible so some of the readability has been sacrificed,
 specifically in the C code.")
     (license license:bsd-3)))
 
-(define-public python-casa-formats-io
-  (package
-    (name "python-casa-formats-io")
-    (version "0.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "casa-formats-io" version))
-              (sha256
-               (base32
-                "16qwr6yq86qgdb0lvnmfm5mn6g2d29b1vrmfv26v77kxm6szxr8h"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-openfiles))
-    (propagated-inputs
-     (list python-astropy python-click python-dask python-numpy))
-    (home-page "https://casa-formats-io.readthedocs.io/")
-    (synopsis "Dask-based reader for CASA data")
-    (description
-     "The @code{casa-formats-io} package is a small package which implements
-functionality to read data stored in @acronym{CASA, Common Astronomy Software
-Applications} formats (such as @file{.image} datasets).  This implementation
-is independent of and does not use @code{casacore}.")
-    (license license:lgpl2.0)))
-
 (define-public python-ccdproc
   (package
     (name "python-ccdproc")
@@ -3576,32 +3529,6 @@ has web sites corresponding to each project @url{http://hst-crds.stsci.edu} or
 files and provide related services.")
     (license license:bsd-3)))
 
-(define-public python-czml3
-  (package
-    (name "python-czml3")
-    (version "1.0.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/poliastro/czml3")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0gsdffn5w7j1aridvmx4xh6axvmbmqjwawacc8fnshpcyh4md5pn"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-attrs python-dateutil python-w3lib))
-    (native-inputs
-     (list python-astropy python-pytest python-pytest-mypy))
-    (home-page "https://github.com/poliastro/czml3")
-    (synopsis "Python library to write CZML")
-    (description
-     "CZML3 is a Python library to write CZML, a JSON format for describing
-a time-dynamic graphical scene, primarily for display in a web browser running
-Cesium.")
-    (license license:expat)))
-
 (define-public python-drms
   (package
     (name "python-drms")
@@ -3689,29 +3616,6 @@ code to be greatly simplified.")
      "This package provides astronomical interstellar dust extinction curves
 implemented using the astropy.modeling framework.")
     (license license:bsd-3)))
-
-(define-public python-ephem
-  (package
-    (name "python-ephem")
-    (version "4.1.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ephem" version))
-       (sha256
-        (base32 "0ps2lr6aa477262yw13w3hh0h5rzmywdlji0wbnkxnzrfvmf9lhf"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list tzdata))
-    (home-page "https://rhodesmill.org/pyephem/")
-    (synopsis "Compute positions of the planets and stars")
-    (description
-     "PyEphem provides an @code{ephem} Python package for performing
-high-precision astronomy computations.
-
-The name ephem is short for the word ephemeris, which is the traditional term
-for a table giving the position of a planet, asteroid, or comet for a series
-of dates.")
-    (license license:expat)))
 
 (define-public python-hvpy
   (package
@@ -5948,31 +5852,6 @@ install an implementation package such as asdf-astropy.")
     (description "This package provides ASDF schemas for validating unit tags.")
     (license license:bsd-3)))
 
-(define-public python-asdf-zarr
-  (package
-    (name "python-asdf-zarr")
-    (version "0.0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf_zarr" version))
-       (sha256
-        (base32 "0xddz4hnsypyvqxhi43alaqh2vl1ripcl4p63qn6dk2v90lra8c0"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-asdf python-fsspec python-zarr))
-    (native-inputs
-     (list python-pytest python-setuptools-scm))
-    (home-page "https://github.com/asdf-format/asdf-zarr")
-    (synopsis "Asdf extension to support Zarr arrays")
-    (description
-     "This package includes an extension for the Python library asdf to add
-support for reading and writing chunked
-@url{https://zarr.readthedocs.io/en/stable/,Zarr} arrays, a file storage
-format for chunked, compressed, N-dimensional arrays based on an open-source
-specification.")
-    (license license:bsd-3)))
-
 (define python-asdf-wcs-schemas
   (package
     (name "python-asdf-wcs-schemas")
@@ -6692,6 +6571,127 @@ convenient access to metadata from a regular web browser
        "This is a library implementing the simplified perturbations model.
 It can be used to calculate the trajectory of satellites.")
       (license license:asl2.0))))
+
+(define-public siril
+  (package
+    (name "siril")
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/free-astro/siril")
+             (commit version)))
+       (sha256
+        (base32 "1fxjfr9kak9vb899xpgr1vmiv3cc2l4apyp0mn0ghg7mqlyl9qmw"))
+       (file-name (git-file-name name version))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules `(,@%meson-build-system-modules
+                           (guix build glib-or-gtk-build-system))
+      #:modules '((guix build meson-build-system)
+                  ((guix build glib-or-gtk-build-system)
+                   #:prefix glib-or-gtk:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'generate-gdk-pixbuf-loaders-cache-file))
+          (add-after 'install 'wrap-program
+            (lambda* _
+              (wrap-program (string-append #$output "/bin/siril")
+                ;; Wrapping GDK_PIXBUF_MODULE_FILE to load icons in pure
+                ;; environments.
+                `("GDK_PIXBUF_MODULE_FILE" =
+                  (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
+    (native-inputs
+     (list cmake-minimal
+           git
+           (list glib "bin") ; for glib-compile-resources
+           libconfig
+           pkg-config))
+    (inputs
+     (list bash-minimal ;for wrap-program
+           cfitsio
+           curl
+           exiv2
+           ffmpeg
+           ffms2
+           fftwf
+           gdk-pixbuf
+           gsl
+           gtk+
+           json-glib
+           lcms-next
+
+           ;; XXX: It downloads script and data during start up, check if they
+           ;; may be presented as packages with wrapped environment variables
+           ;; src/io/siril_git.c
+           ;; <https://gitlab.com/free-astro/siril-scripts>
+           ;; <https://gitlab.com/free-astro/siril-spcc-database>.
+           libgit2
+
+           libheif
+           libjxl
+           libraw
+           (librsvg-for-system)
+           librtprocess
+           libxisf
+           lz4
+           opencv
+           pugixml
+           wcslib))
+    (home-page "https://siril.org/")
+    (synopsis "Image processing software for amateur astronomy")
+    (description
+     "This package provides an astronomical image processing tool - SIRIL.  It
+is specially tailored for noise reduction and improving the signal/noise ratio
+of an image from multiple captures, as required in astronomy.  SIRIL can align
+automatically or manually, stack and enhance pictures from various file
+formats, even image sequence files (films and SER files).  It works well with
+limited system resources, like in embedded platforms, but is also very fast
+when run on more powerful computers and provides conversion to FITS from a
+large number of image formats.")
+    (license license:gpl3+)))
+
+(define-public skymaker
+  (package
+    (name "skymaker")
+    (version "3.10.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/skymaker")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kcy0lfm25gihahpr41ghhw3b8znzczzg9rrlkfih043h2pfsm5l"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "CPPFLAGS=-fcommon"
+         (string-append
+          "--with-fftw-libdir=" #$(this-package-input "fftwf") "/lib")
+         (string-append
+          "--with-fftw-incdir=" #$(this-package-input "fftwf") "/include"))))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (inputs
+     (list fftwf))
+    (home-page "https://www.astromatic.net/software/skymaker")
+    (synopsis "Astronomical image simulator")
+    (description
+     "SkyMaker is a program that simulates astronomical images.  It accepts
+object lists in ASCII generated by the Stuff program to produce realistic
+astronomical fields.  SkyMaker is part of the
+@uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
+    (license license:gpl3+)))
 
 (define-public stellarium
   (package
