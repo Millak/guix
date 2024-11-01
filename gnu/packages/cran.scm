@@ -14140,14 +14140,14 @@ custom infix operators.")
 (define-public r-openxlsx
   (package
     (name "r-openxlsx")
-    (version "4.2.7")
+    (version "4.2.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "openxlsx" version))
        (sha256
         (base32
-         "1kmg6rwf5cgjpa0ra1h8926x3ips5llvlwjqyczng3pb5w5w1gjz"))))
+         "1wgv8144lbnfa6a2a6vj0dq3l2xv960xr7vdbkghadcnps9n4bzi"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-stringi r-zip))
