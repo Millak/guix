@@ -39257,13 +39257,13 @@ supported.  Partial scoring of multivariate filter methods is supported.")
 (define-public r-mlr3fselect
   (package
     (name "r-mlr3fselect")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3fselect" version))
        (sha256
-        (base32 "0bw5gxcxydvh14j6zy9q1k32b84v76lm6ksa4dh1l6pck14a76pj"))))
+        (base32 "1xsq3f0ll5v1d99qck41vhl2w5csk0811kwvy3xmwfkalzpsvyka"))))
     (properties `((upstream-name . "mlr3fselect")))
     (build-system r-build-system)
     (propagated-inputs (list r-bbotk
