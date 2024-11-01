@@ -30102,14 +30102,14 @@ facilitates insertion into pipelines, and content inspection.")
 (define-public r-rngwell
   (package
     (name "r-rngwell")
-    (version "0.10-9")
+    (version "0.10-10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rngWELL" version))
        (sha256
         (base32
-         "1jyanz789ylbz9a2agqv5c674zrfqn0k7s9d5dfia63dpq8cqscr"))))
+         "0vspzmic0d1zjfywaa59a4hvp4p1mdifz818sjhmaab27379ji44"))))
     (properties `((upstream-name . "rngWELL")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/rngWELL/")
