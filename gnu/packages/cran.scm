@@ -6697,14 +6697,14 @@ contained in the navigation bar.")
 (define-public r-spelling
   (package
     (name "r-spelling")
-    (version "2.3.0")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spelling" version))
        (sha256
         (base32
-         "0fxa0wpmmx7bal7xb4yy3134s2bskj98kwhqn25bqga3inzqdm6d"))))
+         "1mww2czkfrb1xvjbks7g1xhr8nx1v9mikb2lc3ynn6j2rp9zgwgp"))))
     (properties `((upstream-name . "spelling")))
     (build-system r-build-system)
     (propagated-inputs
