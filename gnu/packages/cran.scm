@@ -5514,14 +5514,14 @@ objects in HTML format.")
 (define-public r-rjson
   (package
     (name "r-rjson")
-    (version "0.2.22")
+    (version "0.2.23")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rjson" version))
        (sha256
         (base32
-         "09qxkvrv569bdbadnz95lmgsg9gq6imigj4rsdm6l5mnf9xzdk86"))))
+         "0j0gbwd4cn1f7fb6ml14jr3m38ny1y62gnh1cxz6bvalr1sla0sm"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/rjson")
     (synopsis "JSON library for R")
