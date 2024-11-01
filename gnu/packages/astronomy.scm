@@ -1961,6 +1961,34 @@ JSON template file alongside Python routines for visualizing and comparing
 lens models possibly obtained from different modeling codes.")
     (license  license:gpl3)))
 
+(define-public python-cosmopy
+  (package
+    (name "python-cosmopy")
+    (version "3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cosmopy" version))
+       (sha256
+        (base32 "16xlg0vyzdx1h5h28y8az48nhiqvx43yd9s30g3rk9ywl4r1j6h8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-click
+           python-future
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/lzkelley/cosmopy")
+    (synopsis "Cosmological calculator in Python")
+    (description
+     "This package provides a CLI and Python module to quickly calculate
+cosmological parameters e.g. redshift or luminosity-distance.")
+    (license license:expat)))
+
 (define-public python-czml3
   (package
     (name "python-czml3")
