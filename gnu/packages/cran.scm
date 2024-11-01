@@ -387,13 +387,13 @@ evaluation.")
 (define-public r-cards
   (package
     (name "r-cards")
-    (version "0.2.2")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cards" version))
        (sha256
-        (base32 "1sw4qic8p539lxx0rz3wy87k3jr06izdlwnvli41s8ij8yl4s124"))))
+        (base32 "1rwa0xh5inyyk1j21d69nasjzyx6rrck9zc194j1xm77zj6z77v7"))))
     (properties `((upstream-name . "cards")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
