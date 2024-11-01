@@ -13071,20 +13071,20 @@ includes software to
       (license license:cc0))))
 
 (define-public r-demultiplex2
-  (let ((commit "e42bc8310c0ea035af100e6ccea59b46ad6385f5")
+  (let ((commit "92130a626249194ef7f6c0b1aecad6ac210e258b")
         (revision "1"))
     (package
       (name "r-demultiplex2")
-      (version (git-version "1.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Gartner-Lab/deMULTIplex2")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "15f3kshsdvm97w24ql9b1wjlfbabimdsam0482hg7jivlvpl8j9w"))))
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Gartner-Lab/deMULTIplex2")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1jfjmg7vlbpc90ljg2bwn9hfd67fiicr6a2pg4820hgm9876m3v7"))))
       (properties `((upstream-name . "deMULTIplex2")))
       (build-system r-build-system)
       (propagated-inputs (list r-data-table
