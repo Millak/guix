@@ -28768,19 +28768,18 @@ be used further by e.g. graphic devices.")
 (define-public r-graphlayouts
   (package
     (name "r-graphlayouts")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "graphlayouts" version))
        (sha256
         (base32
-         "009q5y46lbizdabbb6a61xlfa3g5lf3nd9w42709lcxi0ad4bhkv"))))
+         "1pr6jnrvbhhpxk9zkfhnh2kx557vpv0fs82jfj5cy8na0h8c83bp"))))
     (properties `((upstream-name . "graphlayouts")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-igraph r-rcpp r-rcpparmadillo))
-    (native-inputs (list r-knitr))
     (home-page "https://github.com/schochastics/graphlayouts")
     (synopsis "Additional layout algorithms for network visualizations")
     (description
