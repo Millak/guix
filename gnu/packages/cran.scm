@@ -7128,13 +7128,13 @@ plot functionality is provided in a single ggplot2 layer by calling the
 (define-public r-amap
   (package
     (name "r-amap")
-    (version "0.8-19")
+    (version "0.8-20")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "amap" version))
               (sha256
                (base32
-                "000r5705lq2mc15skin07dfxjf5816nbfy4gqkya1sv99dlfljbk"))))
+                "0w65z1jqg6c9fp6knv9ps5f22f4jk94hbihr6l0hbmijiznbffwq"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
