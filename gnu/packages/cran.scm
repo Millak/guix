@@ -39319,13 +39319,13 @@ black-box optimization in bbotk.")
 (define-public r-mlr3mbo
   (package
     (name "r-mlr3mbo")
-    (version "0.2.4")
+    (version "0.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3mbo" version))
        (sha256
-        (base32 "1i97mqsxgdipl2gklp2h7d7s3jm977jzm6arxn6hvshw6a2ikzgm"))))
+        (base32 "16z7nxick17kgxv0jif5rdhz28y9713viyjl9hdk29dh13jaljwq"))))
     (properties `((upstream-name . "mlr3mbo")))
     (build-system r-build-system)
     (propagated-inputs (list r-bbotk
@@ -39338,7 +39338,6 @@ black-box optimization in bbotk.")
                              r-paradox
                              r-r6
                              r-spacefillr))
-    (native-inputs (list r-knitr))
     (home-page "https://mlr3mbo.mlr-org.com")
     (synopsis "Flexible Bayesian optimization")
     (description
