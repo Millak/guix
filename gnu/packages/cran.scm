@@ -36001,13 +36001,13 @@ doi.org/10.1007/s10115-013-0679-x} for details.")
 (define-public r-memisc
   (package
     (name "r-memisc")
-    (version "0.99.31.7")
+    (version "0.99.31.8.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "memisc" version))
               (sha256
                (base32
-                "0drn923y8bwwwk2csa7l9b3fd06zfrfgi3b0pn7b23aja1c1h0xl"))))
+                "03qk4393xsvsa6mw67nx2y906sn704j448q8y82am33pwggmg7aj"))))
     (properties `((upstream-name . "memisc")))
     (build-system r-build-system)
     (propagated-inputs (list r-data-table r-jsonlite r-lattice r-mass r-yaml))
