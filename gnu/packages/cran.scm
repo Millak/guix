@@ -22663,47 +22663,50 @@ library.")
 (define-public r-profvis
   (package
     (name "r-profvis")
-    (version "0.3.8")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "profvis" version))
               (sha256
                (base32
-                "1cmlcp91q8v0550iay9vsw5wllb6w2ldy6k99rb76ylhr5dwf0pc"))
+                "1x2cpykcmq5a30c0mf22h2pnnanqij0yqjv3q33xzx11c07fpzfj"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "inst/htmlwidgets/lib"
                   (for-each delete-file
-                            (list "highlight/highlight.js" ;from rmarkdown
-                                  "jquery/jquery.min.js"   ;version 1.12.4
-                                  "d3/d3.min.js"))))))     ;version 3.5.6
+                            (list "highlight/highlight.min.js" ;version 11.10.0
+                                  "jquery/jquery.min.js"       ;version 3.7.1
+                                  "d3/d3.min.js"))))))         ;version 3.5.6
     (properties `((upstream-name . "profvis")))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:modules '((guix build r-build-system)
+                  (guix build minify-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules `(,@%r-build-system-modules
+                           (guix build minify-build-system))
+      #:phases
+      '(modify-phases (@ (guix build r-build-system) %standard-phases)
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst/htmlwidgets/lib/"
                (copy-file
                 (search-input-file
                  inputs "/site-library/rmarkdown/rmd/h/highlightjs/highlight.js")
-                "highlight/highlight.js")
-               (let ((mapping
-                      `((,(assoc-ref inputs "js-jquery")
-                         . "jquery/jquery.min.js")
-                        (,(assoc-ref inputs "js-d3")
-                         . "d3/d3.min.js"))))
-                 (for-each (lambda (source target)
-                             (format #true "Processing ~a --> ~a~%"
-                                     source target)
-                             (invoke "esbuild" source "--minify"
-                                     (string-append "--outfile=" target)))
-                           (map car mapping)
-                           (map cdr mapping)))))))))
+                "highlight/highlight.min.js")
+               (for-each (match-lambda
+                           ((source . target)
+                            (minify source #:target target)))
+                         `((,(assoc-ref inputs "js-jquery")
+                            . "jquery/jquery.min.js")
+                           (,(assoc-ref inputs "js-d3")
+                            . "d3/d3.min.js")))))))))
     (native-inputs
      `(("esbuild" ,esbuild)
        ("r-rmarkdown" ,r-rmarkdown)
+       ("r-knitr" ,r-knitr)
        ("js-d3"
         ,(origin
            (method url-fetch)
@@ -22714,12 +22717,12 @@ library.")
        ("js-jquery"
         ,(origin
            (method url-fetch)
-           (uri "https://code.jquery.com/jquery-1.12.4.js")
+           (uri "https://code.jquery.com/jquery-3.7.1.js")
            (sha256
             (base32
-             "0x9mrc1668icvhpwzvgafm8xm11x9lfai9nwr66aw6pjnpwkc3s3"))))))
+             "1zicjv44sx6n83vrkd2lwnlbf7qakzh3gcfjw0lhq48b5z55ma3q"))))))
     (propagated-inputs
-     (list r-htmlwidgets r-purrr r-rlang r-stringr r-vctrs))
+     (list r-htmlwidgets r-rlang r-vctrs))
     (home-page "https://rstudio.github.io/profvis/")
     (synopsis "Interactive visualizations for profiling R code")
     (description "This package provides interactive visualizations for
