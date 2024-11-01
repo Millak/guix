@@ -10066,14 +10066,14 @@ by base R methods related to model fitting.")
 (define-public r-broom
   (package
     (name "r-broom")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "broom" version))
        (sha256
         (base32
-         "1kxwkyhm4m586v2kp15r4q2zsarnkrkzmgl17n6y7ggzilj3dkr4"))))
+         "089cl8j7ammwmxc49hv2khfv3vzs6j7m5klsczws74cvlr28py6x"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports
