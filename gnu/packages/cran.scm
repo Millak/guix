@@ -41426,13 +41426,13 @@ reading and writing arbitrary protocol-buffer data in R.")
 (define-public r-opencpu
   (package
     (name "r-opencpu")
-    (version "2.2.13")
+    (version "2.2.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "opencpu" version))
        (sha256
-        (base32 "1gyfgv5w9bi1lng8xzkpnqr50x90qshb1q4927jxzl5l4vdzlahn"))
+        (base32 "0gq97fcjwycnxkn73fiwp2qs6pnbs81qsjk93vq3s9mj22rk7l04"))
        (snippet
         '(for-each delete-file
                    '("inst/test/jquery-1.10.2.min.js"
