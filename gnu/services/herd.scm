@@ -54,6 +54,7 @@
             with-shepherd-action
             current-service
             current-services
+            eval-there
             unload-services
             unload-service
             load-services
