@@ -3003,3 +3003,50 @@ dynamic nature, static code analyzers like Vulture are likely to miss some
 dead code.  Also, code that is only called implicitly may be reported as
 unused.")
     (license license:expat)))
+
+(define-public python-green
+  (package
+    (name "python-green")
+    (version "4.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "green" version))
+       (sha256
+        (base32 "1cd62nbn5dvlpnsyplp6cb24wd230san8dpm6pnl99n2kwzpq1m4"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-black
+           python-django
+           python-mypy
+           python-testtools))
+    ;; The python-coverage dependency appears both in requirements.txt and
+    ;; requirements-dev.txt.
+    (propagated-inputs
+     (list python-colorama
+           python-coverage
+           python-lxml
+           python-unidecode))
+    (home-page "https://github.com/CleanCut/green")
+    (synopsis "Clean, colorful, fast Python test runner")
+    (description
+     "@code{green} is a Python test runner that describes itself as:
+@table @emph
+@item Clean
+Low redundancy in output.  Result statistics for each test is vertically aligned.
+@item Colorful
+Terminal output makes good use of color when the terminal supports it.
+@item Fast
+Tests run in independent processes (one per processor by default).
+@item Powerful
+Multi-target and auto-discovery support.
+@item Traditional
+It uses the normal @code{unittest} classes and methods.
+@item Descriptive
+Multiple verbosity levels, from just dots to full docstring output.
+@item Convenient
+Bash-completion and ZSH-completion of options and test targets.
+@item Thorough
+Built-in integration with @url{http://nedbatchelder.com/code/coverage/, coverage}.
+@end table")
+    (license license:expat)))
