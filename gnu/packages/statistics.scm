@@ -5784,14 +5784,14 @@ and resampling-based inference.")
 (define-public r-prabclus
   (package
     (name "r-prabclus")
-    (version "2.3-3")
+    (version "2.3-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "prabclus" version))
        (sha256
         (base32
-         "1haq8dvvi21fdnzl7ykm28sif5nv9pybir96vrqfcmy3k8500p80"))))
+         "0wmcw0iz0a4q0x83v36ldv8b67czcpw3g18v68i3v9284rbj6xnd"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-mclust))
