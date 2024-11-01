@@ -41369,13 +41369,13 @@ with well defined variance functions).")
 (define-public r-webutils
   (package
     (name "r-webutils")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "webutils" version))
        (sha256
-        (base32 "1qki96b4fahhcs8akchp1g2y06lhxn9bs5x5c1cdh4xk5xbf1x5n"))))
+        (base32 "07k6d37pscnbsqxg4rpxr0zxrylpv9z1f3s8c6nwd3fhpwjs4d55"))))
     (properties `((upstream-name . "webutils")))
     (build-system r-build-system)
     (propagated-inputs
