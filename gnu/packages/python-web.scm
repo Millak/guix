@@ -7029,7 +7029,7 @@ files.")
 (define-public python-websockets
   (package
     (name "python-websockets")
-    (version "12.0")
+    (version "13.0")
     (source
      (origin
        (method git-fetch)
@@ -7039,7 +7039,7 @@ files.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1a587a1knjsy9zmgab9v2yncx0803pg2hfcvf7kz6vs8ixaggqmh"))))
+         "1brnaf1c4r9377p2npxpkik9ggqzmymvnnazdhw6s2wzfhlln8vv"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
