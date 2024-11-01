@@ -39354,16 +39354,16 @@ is straightforward via mlr3tuning.")
 (define-public r-mlr3measures
   (package
     (name "r-mlr3measures")
-    (version "0.6.0")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3measures" version))
               (sha256
                (base32
-                "0vhqcfn3fijj2lwjrly2lyb9bs5msqvlwdv1asfkr9shkw61piik"))))
+                "02jsg40bpzgic34jidv20yspnl12c9bmjmim22d307nzrpkqp4gh"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-checkmate r-prroc))
+     (list r-checkmate r-mlr3misc r-prroc))
     (home-page "https://mlr3measures.mlr-org.com/")
     (synopsis "Performance measures for mlr3")
     (description "This package implements multiple performance measures for
