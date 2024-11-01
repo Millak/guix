@@ -2395,6 +2395,43 @@ universes of galaxies starting from a catalog of dark matter halos obtained
 from a cosmological simulation.")
     (license license:bsd-3)))
 
+(define-public python-hasasia
+  (package
+    (name "python-hasasia")
+    (version "1.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hasasia" version))
+       (sha256
+        (base32 "0vs3935c9cqwp44dycxfsv4p9q4zbw8i5z3946928yy0nqmj1aw7"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/Hazboun6/hasasia")
+    (synopsis "Pulsar timing array sensitivity curves calculation in Python")
+    (description
+     "This package provides a Python package to calculate gravitational-wave
+sensitivity curves for pulsar timing arrays.
+
+Features:
+@itemize
+@item pulsar transmission functions
+@item inverse-noise-weighted transmission functions
+@item individual pulsar sensitivity curves
+@item pulsar timing array sensitivity curves as characteristic strain, strain
+sensitivity or energy density
+@item power-law integrated sensitivity curves
+@item sensitivity sky maps for pulsar timing arrays
+@end itemize")
+    (license license:expat)))
+
 (define-public python-healpy
   (package
     (name "python-healpy")
