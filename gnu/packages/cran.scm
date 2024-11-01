@@ -14641,13 +14641,13 @@ the source data frame.")
 (define-public r-rapiclient
   (package
     (name "r-rapiclient")
-    (version "0.1.6")
+    (version "0.1.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rapiclient" version))
               (sha256
                (base32
-                "0kw09zgqz25xkiyl74qsi4l3shci6a0jpvqb6qr1fgzm6h97zdxj"))))
+                "1alzkcvzaj3vr2qd8v4yw1pfg3vfvn3lvjcivsdxkwljvrv67v8w"))))
     (properties `((upstream-name . "rapiclient")))
     (build-system r-build-system)
     (propagated-inputs
