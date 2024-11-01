@@ -16288,6 +16288,27 @@ California, Santa Cruz) and annotation routines for genomic positions and
 splice site positions.")
     (license license:gpl2)))
 
+(define-public r-reformulas
+  (package
+    (name "r-reformulas")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "reformulas" version))
+       (sha256
+        (base32 "0p8v8j0xw4np84vvkbd41r4n1rvj5awlrnpbvqccgjasspl07smh"))))
+    (properties `((upstream-name . "reformulas")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-rdpack))
+    (home-page "https://github.com/bbolker/reformulas")
+    (synopsis "Machinery for processing random effect formulas")
+    (description
+     "This package lets you take formulas including random-effects
+components (formatted as in @code{lme4}, @code{glmmTMB}, etc.) and process
+them.  It includes various helper functions.")
+    (license license:gpl3)))
+
 (define-public r-basix
   (package
     (name "r-basix")
