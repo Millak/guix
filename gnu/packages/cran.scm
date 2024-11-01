@@ -10952,14 +10952,14 @@ training models for classification or ranking.")
 (define-public r-xts
   (package
     (name "r-xts")
-    (version "0.14.0")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xts" version))
        (sha256
         (base32
-         "1nfgbwzibzjni2p8ssvrsyhf75y1g53j1z6kp8ashxlqzbp1d2yj"))
+         "0kvz75dygr1riyijxsz8vx86fk6yyghilgc9l74lqx405yrnpaax"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "inst/doc"
