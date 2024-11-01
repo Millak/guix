@@ -42054,14 +42054,14 @@ Service (S3).")
 (define-public r-paws-customer-engagement
   (package
     (name "r-paws-customer-engagement")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.customer.engagement" version))
        (sha256
         (base32
-         "1akwx39xmkms9zpsb7i5wx2hzvhhkmi0xlxag13cf9gjpg822361"))))
+         "06lqmfzw2d60y9jg6lkznxbx6si2mwmq2qzdpq76jy1nzvwsp8d8"))))
     (properties
      `((upstream-name . "paws.customer.engagement")))
     (build-system r-build-system)
