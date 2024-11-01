@@ -3450,13 +3450,13 @@ variety of formats.")
 (define-public r-gtable
   (package
     (name "r-gtable")
-    (version "0.3.5")
+    (version "0.3.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gtable" version))
               (sha256
                (base32
-                "0wpavsypw2yp0pklmqw0qcwsh8smx5gr2kkxmgdmm52r0fiw37xi"))))
+                "1vz0kpj1hh3iz27yaax4i3l9n018py455p4f5nfn92r727xaa1fk"))))
     (properties `((upstream-name . "gtable")))
     (build-system r-build-system)
     (propagated-inputs
