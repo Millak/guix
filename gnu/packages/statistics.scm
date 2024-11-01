@@ -5243,14 +5243,14 @@ tests for whether a value is missing, empty or contains only @code{NA} and
 (define-public r-gdata
   (package
     (name "r-gdata")
-    (version "3.0.0")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdata" version))
        (sha256
         (base32
-         "0zxi0634dkgczw7gicj8r6mhb83cpkxhsy2iivz0b9v52y9bjmm4"))))
+         "0qiqfrk0qi8k1f6kvfkgp43algjdgfx6w5xmqrpyzh535gfrcfnv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-gtools))
