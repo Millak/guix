@@ -42291,14 +42291,14 @@ CloudFront content delivery, load balancing, and more.")
 (define-public r-paws-database
   (package
     (name "r-paws-database")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.database" version))
        (sha256
         (base32
-         "0jm3cwl2scfc4jgxzlwnax195xlii2b3p9kjmid48p8zx6h68hb9"))))
+         "0sndg7s3z8w9lp826i752jlggl90x4ghm8ws68g7kkvjcd86l6rs"))))
     (properties `((upstream-name . "paws.database")))
     (build-system r-build-system)
     (propagated-inputs
