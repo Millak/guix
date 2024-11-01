@@ -5254,13 +5254,13 @@ Notation (JSON) using the rapidjsonr library.")
 (define-public r-jsonlite
   (package
     (name "r-jsonlite")
-    (version "1.8.8")
+    (version "1.8.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "jsonlite" version))
               (sha256
                (base32
-                "196an37f118qw43vyfaygh01dirh3hyz84ix8bbs6fsck0b17qkx"))))
+                "1c4hdsdcn8iphd901nk7lv8g7sxm29vlxmgc3p02hcqnw7h31wc9"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr r-r-rsp))
