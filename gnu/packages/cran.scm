@@ -10323,17 +10323,18 @@ functions for:
 (define-public r-statsexpressions
   (package
     (name "r-statsexpressions")
-    (version "1.5.5")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "statsExpressions" version))
               (sha256
                (base32
-                "0ba594rvqgczb10ldkmc637z9v6c0j3qixa1pw7jzd2bmhqfmaxh"))))
+                "0l76jrq8x7b89kbxxgswnz5qcwwnkpc0mdm12pbya0ljdf84j1dr"))))
     (properties `((upstream-name . "statsExpressions")))
     (build-system r-build-system)
     (propagated-inputs (list r-afex
                              r-bayesfactor
+                             r-bayestestr
                              r-correlation
                              r-datawizard
                              r-dplyr
