@@ -42243,14 +42243,14 @@ natural language processing, speech recognition, translation, and more.")
 (define-public r-paws-management
   (package
     (name "r-paws-management")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.management" version))
        (sha256
         (base32
-         "0yxh3lr5b9cgsq9gmbjwfikiv38wa4d82mrq0fdqidhcsqfbz62g"))))
+         "0y3xn7v9ikzm7d4gxhcwps4kqhpxvp3hmcd434d4sdbh6j382b03"))))
     (properties
      `((upstream-name . "paws.management")))
     (build-system r-build-system)
