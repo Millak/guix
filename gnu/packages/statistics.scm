@@ -3351,13 +3351,13 @@ the header files from the templated Armadillo library.")
 (define-public r-bitops
   (package
     (name "r-bitops")
-    (version "1.0-8")
+    (version "1.0-9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bitops" version))
               (sha256
                (base32
-                "0f1744pi3qb1av41man6xp2xalwcjslz3qbk35gccpb4d6glp8bq"))))
+                "020dfk0pmiz739rnpb9yi8hnsih3z3891dljvs7kpfvjgfvsbwyg"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/bitops")
     (synopsis "Bitwise operations")
