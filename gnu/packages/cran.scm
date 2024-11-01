@@ -34987,14 +34987,14 @@ is also implemented here.")
 (define-public r-aws
   (package
     (name "r-aws")
-    (version "2.5-5")
+    (version "2.5-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "aws" version))
        (sha256
         (base32
-         "0nsc7fakwcppav2h2kys0j28ga2p2si4kbygfka955dmbiwv4z5j"))))
+         "0b1rixkk4fn34hig39ayfiiidk4jdx035p2y1vhdn9dyj21cbcls"))))
     (properties
      `((upstream-name . "aws")))
     (build-system r-build-system)
