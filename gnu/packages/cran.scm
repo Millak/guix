@@ -18001,13 +18001,13 @@ were influenced by the drake R package by Will Landau (2018)
 (define-public r-targets
   (package
     (name "r-targets")
-    (version "1.7.1")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "targets" version))
               (sha256
                (base32
-                "1r4pg990nhmyg4i15qgqafvqas4vh5rvcki3iaff2hyrfdcmy6vy"))))
+                "0cx70ibq38772vpx1c6dkj68np1dki94yv66hihjp4wwn18w519y"))))
     (properties `((upstream-name . "targets")))
     (build-system r-build-system)
     (propagated-inputs (list r-base64url
