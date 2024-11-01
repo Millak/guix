@@ -22,6 +22,7 @@
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2384,6 +2385,37 @@ building design matrices.")
     ;; patsy.compat contains code derived from the Python standard library,
     ;; and is covered by the PSFL.
     (license (list license:bsd-2 license:psfl))))
+
+(define-public python-kalepy
+  (package
+    (name "python-kalepy")
+    (version "1.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "kalepy" version))
+       (sha256
+        (base32 "1a1d98vjkjs8zwx4hdss3gv67jyf25mmsrdc5qi8hpxminkizb6w"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-matplotlib
+           python-numba
+           python-numpy
+           python-scipy
+           python-six))
+    (home-page "https://github.com/lzkelley/kalepy")
+    (synopsis "Kernel Density Estimation (KDE) and sampling")
+    (description
+     "This package performs KDE operations on multidimensional data to
+calculate estimated PDFs (probability distribution functions), and resample
+new data from those PDFs.")
+    ;; MIT   - setup.py
+    ;; GPL3+ - LICENSE
+    (license (list license:gpl3+ license:expat))))
 
 (define-public python-lifelines
   (package
