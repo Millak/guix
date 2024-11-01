@@ -4252,14 +4252,14 @@ These functions draw text grob with background shadow.")
 (define-public r-sys
   (package
     (name "r-sys")
-    (version "3.4.2")
+    (version "3.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sys" version))
        (sha256
         (base32
-         "1cz57jkc159zfgffvcdb40wv9avb5id7pdvgx8q1hs7vy1kcxgdp"))))
+         "0flihfpfawismsy5piddf2flz1i1fw35k47gxwkbhk87wcr767h5"))))
     (build-system r-build-system)
     (home-page "https://github.com/jeroen/sys")
     (synopsis "Powerful and reliable tools for running system commands in R")
