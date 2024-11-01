@@ -413,6 +413,48 @@ it is not reserved to specialists and can be used for small personal
 projects.")
     (license license:gpl2+)))
 
+(define-public kapptemplate
+  (package
+    (name "kapptemplate")
+    (version "24.05.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kapptemplate-" version ".tar.xz"))
+       (sha256
+        (base32 "0mgpk6879dprhpxmbdgbb6sz3ik9ycav4sihh20qmsgj09h8qp3g"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DBUILD_TESTING=ON")))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list karchive
+           kcompletion
+           kconfigwidgets
+           kcoreaddons
+           ki18n
+           kio))
+    (home-page "https://apps.kde.org/kapptemplate/")
+    (synopsis "Factory for easy creation of KDE/Qt components and programs")
+    (description "KAppTemplate is an application to start development quickly
+using existing templates providing basic repeatedly written code and a proper
+structure.  It features:
+
+@itemize
+@item Templates for C++, Ruby, Python and PHP
+@item Categories
+@item Templates for different build-systems and frameworks
+@item Templates especially for KDE-development (plugins for Plasma, QtQuick
+ KTextEditor, KRunner, Akonadi)
+@item New templates using space holders and a simple CMake-command
+@item Integration into KDevelop
+@end itemize")
+    (license license:gpl2+)))
+
 (define-public kdevelop
   (package
     (name "kdevelop")
