@@ -38778,14 +38778,15 @@ distributed as independent packages.")
 (define-public r-phangorn
   (package
     (name "r-phangorn")
-    (version "2.11.1")
+    (version "2.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "phangorn" version))
        (sha256
         (base32
-         "086lxqzqx1n3237h9q28r54libaz2xk9h3f6vfj8l49yw356w28h"))))
+         "1rwyzvqs5hwjmwa70b7g4jm7h1x1spyh81cd2qnmvfml0rw9ricx"))))
+    (properties '((updater-ignored-native-inputs . ("r-utils"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape
