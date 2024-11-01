@@ -7223,14 +7223,14 @@ colors are provided.")
 (define-public r-glue
   (package
     (name "r-glue")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "glue" version))
        (sha256
         (base32
-         "1p4699p68k9f8d76bmgx5xabay6xjrcgajckzqxyn6icym8ipx8s"))))
+         "183j9gpffmi30lfifl8d9sq1l25f8dgsgqd3blpndf4rm15kcvy8"))))
     (build-system r-build-system)
     (properties
      ;; knitr depends on glue, so we can't add knitr here to build the
