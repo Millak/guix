@@ -18339,14 +18339,14 @@ observation.")
 (define-public r-sandwich
   (package
     (name "r-sandwich")
-    (version "3.1-0")
+    (version "3.1-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sandwich" version))
        (sha256
         (base32
-         "1yi3l2q63j0vlaqqh1x3bxb0i7v6lrmmbsc6s8gilfahxq2y3c4n"))
+         "06cikmpgv0dla92dhp8i89wj52wjwky1g4sb9cxqpac38bx1xrgc"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "inst/doc"
