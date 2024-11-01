@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -71,6 +71,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages parallel)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
@@ -2518,6 +2519,57 @@ sensitivity or energy density
 is based on the Hierarchical Equal Area isoLatitude Pixelization (HEALPix)
 scheme and builds with the HEALPix C++ library.")
     (license license:gpl2+)))
+
+(define-public python-holodeck
+  (package
+    (name "python-holodeck")
+    (version "1.5.2")
+    (source
+     (origin
+       (method git-fetch) ; no tests in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/nanograv/holodeck")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jz54fb6yyling2a756qqahixpn1wgxmhhqmv6pf0iqds019v9k7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-cosmopy
+           python-emcee
+           python-george
+           python-h5py
+           python-hasasia
+           python-healpy
+           python-ipywidgets
+           python-kalepy
+           python-matplotlib
+           python-numpy
+           python-psutil
+           python-schwimmbad
+           python-scipy
+           python-sympy
+           python-tqdm))
+    (home-page "https://github.com/byu-pccl/holodeck")
+    (synopsis "MBH Binary Population Synthesis for Gravitational Wave Calculations")
+    (description
+     "This package provides a comprehensive framework for @acronym{Massive
+Black Hole,MBH} binary population synthesis.  The framework includes modules
+to perform population synthesis using a variety of methodologies from
+semi-analytic models, to cosmological hydrodynamic simulations, and even
+observationally-derived galaxy merger catalogs.")
+    (license license:expat)))
 
 (define-public python-pvextractor
   (package
