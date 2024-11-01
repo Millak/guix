@@ -6632,49 +6632,43 @@ unavailable to the standard ggplot2 release.")
 (define-public r-tablerdash
   (package
     (name "r-tablerdash")
-    (version "0.1.0")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tablerDash" version))
        (sha256
         (base32
-         "1mnp6lxa7d669r325aynq1n3f35r9sy4v1fvdh4cymbf33s8mkmm"))
+         "0cjidfkxwc56xj9rka0ba80hnwvm05wfvpw65wwmr3l56smnfcbz"))
+       ;; Delete minified JavaScript
        (snippet
-        '(begin
-           ;; Delete minified JavaScript
-           (for-each delete-file
-                     '("inst/tablerDash-0.1.0/require.min.js"
-                       "inst/bootstrap-4.0.0/bootstrap.bundle.min.js"))
-           #true))))
+        '(for-each delete-file
+                   '("inst/tablerDash-0.1.0/require.min.js"
+                     "inst/bootstrap-4.0.0/bootstrap.bundle.min.js")))))
     (properties `((upstream-name . "tablerDash")))
     (build-system r-build-system)
     (arguments
-     `(#:modules ((guix build utils)
-                  (guix build r-build-system)
-                  (srfi srfi-1))
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:modules '((guix build r-build-system)
+                  (guix build minify-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules `(,@%r-build-system-modules
+                           (guix build minify-build-system))
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst"
-               (call-with-values
-                   (lambda ()
-                     (unzip2
-                      `((,(assoc-ref inputs "js-requirejs")
-                         "tablerDash-0.1.0/require.min.js")
-                        (,(assoc-ref inputs "js-bootstrap")
-                         "bootstrap-4.0.0/bootstrap.bundle.min.js"))))
-                 (lambda (sources targets)
-                   (for-each (lambda (source target)
-                               (format #t "Processing ~a --> ~a~%"
-                                       source target)
-                               (invoke "esbuild" source "--minify"
-                                       (string-append "--outfile=" target)))
-                             sources targets))))
-             #t)))))
+               (for-each (match-lambda
+                           ((source . target)
+                            (minify source #:target target)))
+                         `((,(assoc-ref inputs "js-requirejs")
+                            . "tablerDash-0.1.0/require.min.js")
+                           (,(assoc-ref inputs "js-bootstrap")
+                            . "bootstrap-4.0.0/bootstrap.bundle.min.js")))))))))
     (propagated-inputs
-     (list r-htmltools r-knitr r-shiny))
+     (list r-htmltools r-shiny))
     (native-inputs
      `(("esbuild" ,esbuild)
        ("js-requirejs"
