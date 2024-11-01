@@ -19694,13 +19694,13 @@ address a bug.")
 (define-public r-rcppalgos
   (package
     (name "r-rcppalgos")
-    (version "2.8.3")
+    (version "2.8.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppAlgos" version))
               (sha256
                (base32
-                "0ppix426yg8rnh07z2clv634ynvvwmjlsjnsxh3srss6xa8yfrb0"))))
+                "0ww5p6gwhk8bsmk8fqmnypvgmfkgwf0jjasifzz3appwkiql2kyf"))))
     (properties `((upstream-name . "RcppAlgos")))
     (build-system r-build-system)
     (inputs (list gmp))
