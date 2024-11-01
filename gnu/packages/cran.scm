@@ -11486,13 +11486,13 @@ timeout.  It can also poll several processes at once.")
 (define-public r-timeseries
   (package
     (name "r-timeseries")
-    (version "4032.109")
+    (version "4041.111")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "timeSeries" version))
               (sha256
                (base32
-                "07vkppp9azbrn0lv1xhi4s3vpy4mglhysp7d250fl08b9rc4f32y"))))
+                "0hwazbv91lcxcddas7hwyc86rzl5fbyw6mrpksbyb6025ivj8g85"))))
     (properties `((upstream-name . "timeSeries")))
     (build-system r-build-system)
     (propagated-inputs (list r-timedate))
