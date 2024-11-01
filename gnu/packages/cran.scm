@@ -36333,14 +36333,14 @@ package.")
 (define-public r-spatstat-geom
   (package
     (name "r-spatstat-geom")
-    (version "3.3-2")
+    (version "3.3-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat.geom" version))
        (sha256
         (base32
-         "03spxazgjspmsialvjy2sv5yxjh049dns4q4l4g0zgzd4ilqmh6b"))))
+         "10s65646g1c7ys83ald3jm41g8kga18ah7sl4lrrhw1i3yxxgsm4"))))
     (properties `((upstream-name . "spatstat.geom")))
     (build-system r-build-system)
     (propagated-inputs
