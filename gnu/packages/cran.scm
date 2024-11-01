@@ -34083,14 +34083,14 @@ and reproducible way.")
 (define-public r-rsconnect
   (package
     (name "r-rsconnect")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsconnect" version))
        (sha256
         (base32
-         "0msmrdw7933xics464asyy9v2gm5b4jb8gr4nfhy54x45n1qmpj7"))))
+         "0m857m9r1scv20cb0qmyl6gr86vpvmka85k0mfj9l4p1c5aa1qf6"))))
     (properties `((upstream-name . "rsconnect")))
     (build-system r-build-system)
     (propagated-inputs
