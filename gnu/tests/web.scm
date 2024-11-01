@@ -50,6 +50,7 @@
   #:use-module (ice-9 match)
   #:export (%test-httpd
             %test-nginx
+            %test-nginx+anonip
             %test-varnish
             %test-php-fpm
             %test-hpcguix-web
@@ -91,9 +92,11 @@
                  (sleep delay)
                  (loop (+ 1 attempt)))))))))
 
-(define* (run-webserver-test name test-os #:key (log-file #f) (http-port 8080))
-  "Run tests in %NGINX-OS, which has nginx running and listening on
-HTTP-PORT."
+(define* (run-webserver-test name test-os #:key (log-file #f) (http-port 8080)
+                             extra-tests)
+  "Run tests in %NGINX-OS, which has nginx running and listening on HTTP-PORT.
+EXTRA-TESTS should be a sexp of gexp containing extra code to run as part of
+the tests."
   (define os
     (marionette-operating-system
      test-os
@@ -154,6 +157,8 @@ HTTP-PORT."
                       marionette)))
                  '())
 
+          #$extra-tests
+
           (test-end))))
 
   (gexp->derivation (string-append name "-test") test))
@@ -208,6 +213,38 @@ HTTP-PORT."
    (description "Connect to a running NGINX server.")
    (value (run-webserver-test name %nginx-os
                               #:log-file "/var/log/nginx/access.log"))))
+
+(define %nginx+anonip-os
+  (simple-operating-system
+   (service dhcp-client-service-type)
+   (service anonip-service-type
+            (anonip-configuration
+             (input "/var/run/anonip/access.log")
+             (output "/var/log/anonip/access.log")
+             (debug? #t)))
+   (service nginx-service-type
+            (nginx-configuration
+             (log-directory "/var/run/anonip/")
+             (server-blocks %nginx-servers)
+             (shepherd-requirement '(anonip-/var/log/anonip/access.log))))
+   (simple-service 'make-http-root activation-service-type
+                   %make-http-root)))
+
+(define nginx-anonip-tests
+  #~(test-assert "anonip service is running"
+      (marionette-eval
+       '(begin
+          (use-modules (gnu services herd))
+          (wait-for-service 'anonip-/var/log/anonip/access.log))
+       marionette)))
+
+(define %test-nginx+anonip
+  (system-test
+   (name "nginx+anonip")
+   (description "Run a NGINX server with logs anonymized by Anonip")
+   (value (run-webserver-test "nginx" %nginx+anonip-os
+                              #:log-file "/var/log/anonip/access.log"
+                              #:extra-tests nginx-anonip-tests))))
 
 
 ;;;
