@@ -12570,14 +12570,14 @@ financial trading strategies.")
 (define-public r-tseries
   (package
     (name "r-tseries")
-    (version "0.10-57")
+    (version "0.10-58")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tseries" version))
        (sha256
         (base32
-         "1vlvz009y683k3xz2bhzkfdnk5m2c9abfz7661p92a17cjvlnx8q"))))
+         "0957pi65myp6qnrk710kcbw83401v226lsxdxkas73mv84cygphf"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-jsonlite r-quadprog r-quantmod r-zoo))
