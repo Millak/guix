@@ -33294,18 +33294,18 @@ errors; tetrachoric and biserial correlations are special cases.")
 (define-public r-msm
   (package
     (name "r-msm")
-    (version "1.7.1")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "msm" version))
        (sha256
         (base32
-         "0nvqgx74rwx061vgmhvc872bwq8smccm2n8r51s37vbfjqmphd6i"))))
+         "1il1vd5hksgi2z2qqb5hldzk7vqjm5k2p6dwk0v0w2dz3llnii9r"))))
     (properties `((upstream-name . "msm")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-expm r-mvtnorm r-survival))
+     (list r-expm r-generics r-mvtnorm r-survival r-tibble))
     (home-page "https://github.com/chjackson/msm")
     (synopsis "Multi-state Markov and hidden Markov models in continuous time")
     (description
