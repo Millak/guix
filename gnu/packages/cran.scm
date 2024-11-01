@@ -2778,13 +2778,13 @@ BSI.  Further information can be found in Brock, G et al. (2008) <doi:
 (define-public r-dlm
   (package
     (name "r-dlm")
-    (version "1.1-6")
+    (version "1.1-6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dlm" version))
        (sha256
-        (base32 "0mxfakryagyg2idjhw1ydp4xqk57s3z17cv69hj16lisx8q43pc9"))))
+        (base32 "0hsz1xavzbylqb33c0qzalcqmq4g4i1c38wd351zjj88dvg73qvk"))))
     (properties `((upstream-name . "dlm")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=dlm")
