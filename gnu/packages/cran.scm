@@ -31749,13 +31749,13 @@ classification and regression models.")
 (define-public r-caretensemble
   (package
     (name "r-caretensemble")
-    (version "4.0.0")
+    (version "4.0.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "caretEnsemble" version))
               (sha256
                (base32
-                "0hwgr7n2sahs3zlvrnhnk6yfmqpmphkl4xii8aa2x1yjgx3ssxwi"))))
+                "1iszidm3g24yi5g10wyx3vw03ka1ij4z3q4ng01v7ic863wp08gb"))))
     (properties `((upstream-name . "caretEnsemble")))
     (build-system r-build-system)
     (propagated-inputs (list r-caret
