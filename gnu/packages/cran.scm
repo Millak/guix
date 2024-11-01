@@ -36390,14 +36390,14 @@ user-level code from spatstat, except for the code for linear networks.")
 (define-public r-spatstat-linnet
   (package
     (name "r-spatstat-linnet")
-    (version "3.2-1")
+    (version "3.2-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat.linnet" version))
        (sha256
         (base32
-         "1gqivj8lsqn67068ygjqjjbnl2wywq3zp6mpqqbhyrbj7h3diw0s"))))
+         "0c33dzp0mwi17hpwb55s99s01wg6vbmiipfhskx90vkvp1rq6jam"))))
     (properties
      `((upstream-name . "spatstat.linnet")))
     (build-system r-build-system)
