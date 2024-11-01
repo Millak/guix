@@ -1359,6 +1359,70 @@ R. Seaman's protocol}
 @end itemize\n")
     (license license:gpl3+)))
 
+(define-public phd2
+  (package
+    (name "phd2")
+    (version "2.6.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OpenPHDGuiding/phd2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0shr50ngi7dliijy8fxrd1c4hzkm4vp4m0a4m0d9gvrx56vzyx0s"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "thirdparty" "thirdparty.cmake")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DOPENSOURCE_ONLY=yes"
+                                     "-DUSE_SYSTEM_CFITSIO=yes"
+                                     "-DUSE_SYSTEM_EIGEN3=yes"
+                                     "-DUSE_SYSTEM_GTEST=yes"
+                                     "-DUSE_SYSTEM_LIBINDI=yes"
+                                     "-DUSE_SYSTEM_LIBUSB=yes")))
+    (native-inputs
+     (list gettext-minimal
+           googletest
+           perl
+           pkg-config
+           python))
+    (inputs
+     (list cfitsio
+           curl
+           eigen
+           gtk+
+           indi
+           libnova
+           libusb
+           wxwidgets
+           zlib))
+    (home-page "https://openphdguiding.org")
+    (synopsis "Teleskope guiding software")
+    (description
+     "PHD2 is the enhanced, second generation version of the PHD guiding software
+from Stark Labs.")
+    (license license:bsd-3)))
+
 (define-public psfex
   (package
     (name "psfex")
@@ -1745,6 +1809,46 @@ simulated Astronomical data in Python.")
     (description "This package provides tools for machine learning and data
 mining in astronomy.")
     (license license:bsd-2)))
+
+(define-public python-bayesicfitting
+  (package
+    (name "python-bayesicfitting")
+    (version "3.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dokester/BayesicFitting")
+             ;; Tag style has been changed, see
+             ;; <https://github.com/dokester/BayesicFitting/issues/23>.
+             (commit (string-append "v." version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0brqvy4r75vh93lj4jwv8wcrc96ka1v44f5ckjvr65y30plnfwg2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-m" "unittest" "discover" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "python" test-flags)))))))
+    (propagated-inputs
+     (list python-astropy
+           python-future
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (home-page "https://www.bayesicfitting.nl")
+    (synopsis "Python Toolbox for Astronimical Bayesian fitting")
+    (description
+     "The BayesicFitting package is a python version of the the fitter classes
+in @acronym{HCSS, Herschel Common Science System}.  HCSS was the all
+encompassing software system for the operations and analysis of the ESA satelite
+Herschel.")
+    (license license:gpl3+)))
 
 (define-public python-coolest
   (package
@@ -2611,70 +2715,6 @@ instruments.")
      "This package provides an image processing toolbox for Solar Physics.")
     (license license:bsd-2)))
 
-(define-public phd2
-  (package
-    (name "phd2")
-    (version "2.6.13")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/OpenPHDGuiding/phd2")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0shr50ngi7dliijy8fxrd1c4hzkm4vp4m0a4m0d9gvrx56vzyx0s"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
-       (snippet
-        #~(begin
-            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            (define (delete-all-but directory . preserve)
-              (define (directory? x)
-                (and=> (stat x #f)
-                       (compose (cut eq? 'directory <>) stat:type)))
-              (with-directory-excursion directory
-                (let* ((pred
-                        (negate (cut member <> (append '("." "..") preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (lambda (item)
-                              (if (directory? item)
-                                  (delete-file-recursively item)
-                                  (delete-file item)))
-                            items))))
-            (delete-all-but "thirdparty" "thirdparty.cmake")))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:configure-flags #~(list "-DOPENSOURCE_ONLY=yes"
-                                     "-DUSE_SYSTEM_CFITSIO=yes"
-                                     "-DUSE_SYSTEM_EIGEN3=yes"
-                                     "-DUSE_SYSTEM_GTEST=yes"
-                                     "-DUSE_SYSTEM_LIBINDI=yes"
-                                     "-DUSE_SYSTEM_LIBUSB=yes")))
-    (native-inputs
-     (list gettext-minimal
-           googletest
-           perl
-           pkg-config
-           python))
-    (inputs
-     (list cfitsio
-           curl
-           eigen
-           gtk+
-           indi
-           libnova
-           libusb
-           wxwidgets
-           zlib))
-    (home-page "https://openphdguiding.org")
-    (synopsis "Teleskope guiding software")
-    (description
-     "PHD2 is the enhanced, second generation version of the PHD guiding software
-from Stark Labs.")
-    (license license:bsd-3)))
-
 (define-public sextractor
   (package
     (name "sextractor")
@@ -2948,74 +2988,6 @@ thousands) low quality ones (blurred, deformed, noisy).  The resulting image
 stack typically requires post-processing, including sharpening (e.g. via
 deconvolution).  Such post-processing is not performed by Stackistry.")
     (license license:gpl3+)))
-
-(define-public stellarium
-  (package
-    (name "stellarium")
-    (version "24.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Stellarium/stellarium")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0wwaddbqcia6jaz3lc1cf63pvi9bqj2cglp428i77jlfs3dfj45j"))))
-    (build-system cmake-build-system)
-    ;; TODO: Complete documentation build and split into dedicated outputs.
-    (arguments
-     (list
-      ;; FIXME: Tests keep failing on 100% when preparing test-suit for INDI.
-      #:tests? #f
-      #:test-target "test"
-      #:configure-flags
-      #~(list "-DENABLE_GPS=1"
-              ;; TODO: Enable when all of the dependencies are availalbe for Qt6.
-              "-DENABLE_QT6=0"
-              "-DENABLE_TESTING=0"
-              (string-append "-DCMAKE_CXX_FLAGS=-isystem "
-                             #$(this-package-input "qtserialport") "/include/qt5"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-offscreen-display
-            (lambda _
-              (setenv "QT_QPA_PLATFORM" "offscreen")
-              (setenv "HOME" "/tmp"))))))
-    (inputs
-     (list calcmysky-qt5
-           gpsd
-           indi
-           libnova
-           nlopt
-           openssl
-           qtbase-5
-           qtcharts
-           qtlocation-5
-           qtmultimedia-5
-           qtpositioning
-           qtscript ; the last v5 left to rename
-           qtserialport-5
-           qttranslations
-           qtwebengine-5
-           qxlsx-qt5
-           zlib))
-    (native-inputs
-     (list doxygen
-           gettext-minimal
-           graphviz
-           mesa
-           perl
-           python-wrapper
-           qttools-5))
-    (home-page "https://stellarium.org/")
-    (synopsis "3D sky viewer")
-    (description
-     "Stellarium is a planetarium.  It shows a realistic sky in
-3D, just like what you see with the naked eye, binoculars, or a telescope.  It
-can be used to control telescopes over a serial port for tracking celestial
-objects.")
-    (license license:gpl2+)))
 
 (define-public python-astropy
   (package
@@ -3390,46 +3362,6 @@ originally adapted from cosmics.py written by Malte Tewes.  This is designed to
 be as fast as possible so some of the readability has been sacrificed,
 specifically in the C code.")
     (license license:bsd-3)))
-
-(define-public python-bayesicfitting
-  (package
-    (name "python-bayesicfitting")
-    (version "3.2.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dokester/BayesicFitting")
-             ;; Tag style has been changed, see
-             ;; <https://github.com/dokester/BayesicFitting/issues/23>.
-             (commit (string-append "v." version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0brqvy4r75vh93lj4jwv8wcrc96ka1v44f5ckjvr65y30plnfwg2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "-m" "unittest" "discover" "test")
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (apply invoke "python" test-flags)))))))
-    (propagated-inputs
-     (list python-astropy
-           python-future
-           python-matplotlib
-           python-numpy
-           python-scipy))
-    (home-page "https://www.bayesicfitting.nl")
-    (synopsis "Python Toolbox for Astronimical Bayesian fitting")
-    (description
-     "The BayesicFitting package is a python version of the the fitter classes
-in @acronym{HCSS, Herschel Common Science System}.  HCSS was the all
-encompassing software system for the operations and analysis of the ESA satelite
-Herschel.")
-    (license license:gpl3+)))
 
 (define-public python-casa-formats-io
   (package
@@ -5184,121 +5116,6 @@ PYSYNPHOT, utilizing Astropy covering instrument specific portions of the old
 packages for HST.")
     (license license:bsd-3)))
 
-(define-public scamp
-  (package
-    (name "scamp")
-    (version "2.10.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/astromatic/scamp")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0qic52mzw9avf1a1fsr85mlh63b7hq6d4wj2d00zgdllmclj5l9q"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list "CPPFLAGS=-fcommon"
-              "--enable-openblas"
-              "--enable-plplot"
-              (string-append "--with-curl-incdir="
-                             #$(this-package-input "curl") "/include")
-              (string-append "--with-curl-libdir="
-                             #$(this-package-input "curl") "/lib")
-              (string-append "--with-fftw-incdir="
-                             #$(this-package-input "fftwf") "/include")
-              (string-append "--with-fftw-libdir="
-                             #$(this-package-input "fftwf") "/lib")
-              (string-append "--with-openblas-incdir="
-                             #$(this-package-input "openblas") "/include")
-              (string-append "--with-openblas-libdir="
-                             #$(this-package-input "openblas") "/lib")
-              (string-append "--with-plplot-incdir="
-                             #$(this-package-input "plplot") "/include")
-              (string-append "--with-plplot-libdir="
-                             #$(this-package-input "plplot") "/lib"))))
-    (native-inputs
-     (list autoconf
-           automake
-           libtool
-           pkg-config
-           python-astropy
-           python-numpy
-           python-wrapper))
-    (inputs
-     (list curl fftwf openblas plplot))
-    (home-page "https://www.astromatic.net/software/scamp/")
-    (synopsis "Compute astrometric solutions")
-    (description
-     "@acronym{Software for Calibrating AstroMetry and Photometry,SCAMP} is a
-software that computes astrometric projection parameters from source catalogues
-derived from @url{http://fits.gsfc.nasa.gov/,FITS} images.  The computed solution
-is expressed according to the
-@url{http://www.atnf.csiro.au/people/mcalabre/WCS/index.html,WCS} standard.  The
-main features of SCAMP are:
-
-@itemize
-@item compatibility with @code{SExtractor} FITS or Multi-Extension FITS
-catalogue format in input
-@item generation of WCS-compliant and @code{SWarp}-compatible FITS image headers
-in output
-@item automatic grouping of catalogues on the sky
-@item selectable on-line astrometric reference catalogue
-@item automatic determination of scale, position angle, flipping and coordinate
-shift using fast pattern-matching
-@item various astrometric calibration modes for single detectors and detector
-arrays
-@item combined astrometric solutions for multi-channel/instrument surveys
-@item highly configurable astrometric distortion polynomials
-@item correction for differential chromatic refraction
-@item proper motion measurements
-@item multi-threaded code that takes advantage of multiple processors
-@item @url{http://www.ivoa.net/documents/VOTable,VOTable}-compliant XML output
-of meta-data
-@item @url{http://en.wikipedia.org/wiki/XSLT,XSLT} filter sheet provided for
-convenient access to metadata from a regular web browser
-@end itemize")
-    (license license:gpl3+)))
-
-(define-public sgp4
-  ;; Version tag v1.0 is dated to <2021-01-11>, use the lates commit instead.
-  (let ((commit "6a448b4850e5fbf8c1ca03bb5f6013a9fdc1fd91")
-        (revision "2"))
-    (package
-      (name "sgp4")
-      (version (git-version "1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/dnwrnr/sgp4")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "15q8sain87cbppmzq66y6gp6bvm3kdd1bcchrl59rcvjp0w51wl1"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        ;; FIXME: Tests evaluated via runtest binary, but it's failing even
-        ;; when SGP4-VER.TLE file was copied next to it during install phase.
-        ;;
-        ;; There are 2 more binaries are created after build phase -
-        ;; passpredict and sattrack which are failing to execute after
-        ;; install, strace output:
-        ;;
-        ;; strace: exec: Exec format error
-        ;;
-        #:tests? #f))
-      (home-page "https://github.com/dnwrnr/sgp4")
-      (synopsis "Simplified perturbations models library")
-      (description
-       "This is a library implementing the simplified perturbations model.
-It can be used to calculate the trajectory of satellites.")
-      (license license:asl2.0))))
-
 (define-public python-jplephem
   (package
     (name "python-jplephem")
@@ -6759,6 +6576,189 @@ arbitrary solar system observers.")
     (description
      "@code{qfits} is a C library giving access to FITS file internals, both
 for reading and writing.")
+    (license license:gpl2+)))
+
+(define-public scamp
+  (package
+    (name "scamp")
+    (version "2.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/scamp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qic52mzw9avf1a1fsr85mlh63b7hq6d4wj2d00zgdllmclj5l9q"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CPPFLAGS=-fcommon"
+              "--enable-openblas"
+              "--enable-plplot"
+              (string-append "--with-curl-incdir="
+                             #$(this-package-input "curl") "/include")
+              (string-append "--with-curl-libdir="
+                             #$(this-package-input "curl") "/lib")
+              (string-append "--with-fftw-incdir="
+                             #$(this-package-input "fftwf") "/include")
+              (string-append "--with-fftw-libdir="
+                             #$(this-package-input "fftwf") "/lib")
+              (string-append "--with-openblas-incdir="
+                             #$(this-package-input "openblas") "/include")
+              (string-append "--with-openblas-libdir="
+                             #$(this-package-input "openblas") "/lib")
+              (string-append "--with-plplot-incdir="
+                             #$(this-package-input "plplot") "/include")
+              (string-append "--with-plplot-libdir="
+                             #$(this-package-input "plplot") "/lib"))))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           pkg-config
+           python-astropy
+           python-numpy
+           python-wrapper))
+    (inputs
+     (list curl fftwf openblas plplot))
+    (home-page "https://www.astromatic.net/software/scamp/")
+    (synopsis "Compute astrometric solutions")
+    (description
+     "@acronym{Software for Calibrating AstroMetry and Photometry,SCAMP} is a
+software that computes astrometric projection parameters from source catalogues
+derived from @url{http://fits.gsfc.nasa.gov/,FITS} images.  The computed solution
+is expressed according to the
+@url{http://www.atnf.csiro.au/people/mcalabre/WCS/index.html,WCS} standard.  The
+main features of SCAMP are:
+
+@itemize
+@item compatibility with @code{SExtractor} FITS or Multi-Extension FITS
+catalogue format in input
+@item generation of WCS-compliant and @code{SWarp}-compatible FITS image headers
+in output
+@item automatic grouping of catalogues on the sky
+@item selectable on-line astrometric reference catalogue
+@item automatic determination of scale, position angle, flipping and coordinate
+shift using fast pattern-matching
+@item various astrometric calibration modes for single detectors and detector
+arrays
+@item combined astrometric solutions for multi-channel/instrument surveys
+@item highly configurable astrometric distortion polynomials
+@item correction for differential chromatic refraction
+@item proper motion measurements
+@item multi-threaded code that takes advantage of multiple processors
+@item @url{http://www.ivoa.net/documents/VOTable,VOTable}-compliant XML output
+of meta-data
+@item @url{http://en.wikipedia.org/wiki/XSLT,XSLT} filter sheet provided for
+convenient access to metadata from a regular web browser
+@end itemize")
+    (license license:gpl3+)))
+
+(define-public sgp4
+  ;; Version tag v1.0 is dated to <2021-01-11>, use the lates commit instead.
+  (let ((commit "6a448b4850e5fbf8c1ca03bb5f6013a9fdc1fd91")
+        (revision "2"))
+    (package
+      (name "sgp4")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dnwrnr/sgp4")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "15q8sain87cbppmzq66y6gp6bvm3kdd1bcchrl59rcvjp0w51wl1"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        ;; FIXME: Tests evaluated via runtest binary, but it's failing even
+        ;; when SGP4-VER.TLE file was copied next to it during install phase.
+        ;;
+        ;; There are 2 more binaries are created after build phase -
+        ;; passpredict and sattrack which are failing to execute after
+        ;; install, strace output:
+        ;;
+        ;; strace: exec: Exec format error
+        ;;
+        #:tests? #f))
+      (home-page "https://github.com/dnwrnr/sgp4")
+      (synopsis "Simplified perturbations models library")
+      (description
+       "This is a library implementing the simplified perturbations model.
+It can be used to calculate the trajectory of satellites.")
+      (license license:asl2.0))))
+
+(define-public stellarium
+  (package
+    (name "stellarium")
+    (version "24.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Stellarium/stellarium")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wwaddbqcia6jaz3lc1cf63pvi9bqj2cglp428i77jlfs3dfj45j"))))
+    (build-system cmake-build-system)
+    ;; TODO: Complete documentation build and split into dedicated outputs.
+    (arguments
+     (list
+      ;; FIXME: Tests keep failing on 100% when preparing test-suit for INDI.
+      #:tests? #f
+      #:test-target "test"
+      #:configure-flags
+      #~(list "-DENABLE_GPS=1"
+              ;; TODO: Enable when all of the dependencies are availalbe for Qt6.
+              "-DENABLE_QT6=0"
+              "-DENABLE_TESTING=0"
+              (string-append "-DCMAKE_CXX_FLAGS=-isystem "
+                             #$(this-package-input "qtserialport") "/include/qt5"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-offscreen-display
+            (lambda _
+              (setenv "QT_QPA_PLATFORM" "offscreen")
+              (setenv "HOME" "/tmp"))))))
+    (inputs
+     (list calcmysky-qt5
+           gpsd
+           indi
+           libnova
+           nlopt
+           openssl
+           qtbase-5
+           qtcharts
+           qtlocation-5
+           qtmultimedia-5
+           qtpositioning
+           qtscript ; the last v5 left to rename
+           qtserialport-5
+           qttranslations
+           qtwebengine-5
+           qxlsx-qt5
+           zlib))
+    (native-inputs
+     (list doxygen
+           gettext-minimal
+           graphviz
+           mesa
+           perl
+           python-wrapper
+           qttools-5))
+    (home-page "https://stellarium.org/")
+    (synopsis "3D sky viewer")
+    (description
+     "Stellarium is a planetarium.  It shows a realistic sky in
+3D, just like what you see with the naked eye, binoculars, or a telescope.  It
+can be used to control telescopes over a serial port for tracking celestial
+objects.")
     (license license:gpl2+)))
 
 (define-public stuff
