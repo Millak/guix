@@ -28464,13 +28464,13 @@ guaranteeing well-connected communities.\" <arXiv:1810.08473>.")
 (define-public r-leidenalg
   (package
     (name "r-leidenalg")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leidenAlg" version))
        (sha256
-        (base32 "0g4gs6rrz3wn97ag7wsfr6qa4zgb75i0k9jc1siii4pf6h689d1x"))))
+        (base32 "1mn78hmav0082s7ic018w2ilr0mb5z7crx7mmllv9wpr3xb1xsid"))))
     (properties
      `((upstream-name . "leidenAlg")
        (updater-extra-inputs . ("gmp"))))
