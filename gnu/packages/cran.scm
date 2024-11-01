@@ -38300,13 +38300,13 @@ phylogenetic relatedness) can also be conducted.")
 (define-public r-metaskat
   (package
     (name "r-metaskat")
-    (version "0.82")
+    (version "0.90")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MetaSKAT" version))
        (sha256
-        (base32 "0cbj3xfsnwn4ibqqs12sqyhhaj24ydjpyl1p1gy1dl5405j58ncl"))))
+        (base32 "1inibg2p1n7ij2zw39ckjh5kw4nmfq7w8rcwkzrqgbbjv0rv8b71"))))
     (properties `((upstream-name . "MetaSKAT")))
     (build-system r-build-system)
     (propagated-inputs (list r-skat))
