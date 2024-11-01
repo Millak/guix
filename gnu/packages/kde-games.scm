@@ -1594,6 +1594,66 @@ control of the board by capturing or adding to one square.
 This package is part of the KDE games module.")
     (license (list license:gpl2+ license:fdl1.2+))))
 
+(define-public knights
+  (package
+    (name "knights")
+    (version "24.05.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/knights-" version ".tar.xz"))
+       (sha256
+        (base32 "19xsa79p0ad3cgm1zz2ykbm4487fyizshn7ir8f5azhkr1bi6l8k"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kconfigwidgets
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           ki18n
+           kio
+           kplotting
+           ksvg
+           ktextwidgets
+           kwallet
+           kxmlgui
+           libkdegames
+           libplasma
+           qtspeech
+           qtsvg))
+    (home-page "https://apps.kde.org/knights/")
+    (synopsis "Chess game")
+    (description "KNights is a chess game, featuring:
+
+@itemize
+@item local play between two players on the same computer
+@item play against any computer program that supports the XBoard protocol
+@item play on the Free Internet Chess Server (FICS)
+@item watching two computer engines play against each other
+@item support for legal move checking
+@item markers for possible moves, opponent’s last move and sources of check
+@item board borders and site notations
+@item complete time control, with Plasma-styled clocks
+@item several themes, with the possibility of downloading new ones from within
+ the program
+@item animated moves (configurable)
+@item views for playing on a chess server, including a seek graph, text
+ console, and chat widget
+@item option to undo and redo moves
+@item graphic interface for making and receiving offers from remote players
+@item support for the UCI protocol (used by Stockfish, Chessbase, and many
+ others)
+@item support for saving and loading Portable game notation (PGN) files
+@item use of Jovie, the KDE text-to-speak program, to speak opponent’s moves
+@item ability to control the program via a D-Bus interface
+@end itemize")
+    (license license:gpl2+)))
+
 (define-public kde-games
   (package
     (name "kde-games")
