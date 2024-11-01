@@ -13670,14 +13670,14 @@ R itself can handle.")
 (define-public r-abind
   (package
     (name "r-abind")
-    (version "1.4-5")
+    (version "1.4-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abind" version))
        (sha256
         (base32
-         "0b1zd8jbnl6l292cr9rb50m09fy3ylxvzkpgi5lfb1nbzddcwfis"))))
+         "1q934vfyvszmy6nv13dchv2mbsj9i5vffy88b9wy3siwa8dhaji6"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/abind/")
     (synopsis "Combine multidimensional arrays")
