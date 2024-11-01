@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
+;;; Copyright © 2020, 2024 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
@@ -31,11 +31,9 @@
   #:use-module (gnu bootloader u-boot)
   #:use-module (guix gexp)
   #:use-module (guix store)
-  #:use-module (guix monads)
   #:use-module (guix modules)
   #:use-module ((guix packages) #:select (package-version supported-package?))
   #:use-module (guix platform)
-  #:use-module ((guix store) #:select (%store-prefix))
   #:use-module (guix utils)
   #:use-module (gnu installer)
   #:use-module (gnu system locale)
@@ -47,7 +45,6 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bootloaders)
-  #:use-module (gnu packages certs)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages disk)
@@ -60,7 +57,6 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match)
-  #:use-module (srfi srfi-26)
   #:export (installation-os
             a20-olinuxino-lime-installation-os
             a20-olinuxino-lime2-emmc-installation-os
@@ -100,7 +96,9 @@
     ("en" . "System Installation")
     ("es" . "Instalación del sistema")
     ("fr" . "Installation du système")
-    ("ru" . "Установка системы")))
+    ("pt_BR" . "Instalação do sistema")
+    ("ru" . "Установка системы")
+    ("zh_CN" . "系统安装")))
 
 (define (log-to-info tty user)
   "Return a script that spawns the Info reader on the right section of the
@@ -111,13 +109,22 @@ manual."
                          (locale   (cadr (command-line)))
                          (language (string-take locale
                                                 (string-index locale #\_)))
+                         (with-region (string-take locale
+                                                   (string-index
+                                                    locale
+                                                    (char-set #\. #\/ #\@))))
                          (infodir  "/run/current-system/profile/share/info")
-                         (per-lang (string-append infodir "/guix." language
-                                                  ".info.gz"))
-                         (file     (if (file-exists? per-lang)
-                                       per-lang
-                                       (string-append infodir "/guix.info")))
+                         (per-lang (lambda (code)
+                                     (string-append infodir "/guix." code
+                                                    ".info.gz")))
+                         (file ((@ (srfi srfi-1) find) file-exists?
+                                (list (per-lang with-region)
+                                      (per-lang language)
+                                      (string-append infodir
+                                                     "/guix.info.gz"))))
                          (node     (or (assoc-ref '#$%installation-node-names
+                                                  with-region)
+                                       (assoc-ref '#$%installation-node-names
                                                   language)
                                        "System Installation")))
                     (redirect-port tty (current-output-port))
