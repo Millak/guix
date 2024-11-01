@@ -26677,14 +26677,14 @@ function for computing a matrix of correlation p-values.")
 (define-public r-ggfun
   (package
     (name "r-ggfun")
-    (version "0.1.6")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggfun" version))
        (sha256
         (base32
-         "190s8zgcgmfyr3mifnk00zpl1cdp7z80fi88zf0jbm80sk6psykb"))))
+         "1sl5kbhs39rpmzlcx796xs9np9s66h7vi0rsz1nbl6km86wfz4my"))))
     (properties `((upstream-name . "ggfun")))
     (build-system r-build-system)
     (propagated-inputs
