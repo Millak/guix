@@ -42124,13 +42124,13 @@ deployment, and more.")
 (define-public r-paws-end-user-computing
   (package
     (name "r-paws-end-user-computing")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.end.user.computing" version))
        (sha256
-        (base32 "17550n93d0lndhfk9r8zdh2yif4hw3m4wn7wzgj53akgqy1jg10y"))))
+        (base32 "1chmqzmc9c70582lj9dy9hxcgnmia2qnl33c8ggmkscqay9hfprs"))))
     (properties `((upstream-name . "paws.end.user.computing")))
     (build-system r-build-system)
     (propagated-inputs
