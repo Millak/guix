@@ -33,6 +33,18 @@
 (channel-news
  (version 0)
 
+ (entry (commit "cfc85eb0c67a5cf10a3fbe2531b926cbb8c62489")
+        (title
+         (en "Linux-libre 6.10 removed due to end of upstream support")
+         (de "Linux-libre 6.10 wurde entfernt"))
+        (body
+         (en "The linux-libre 6.10 kernel series has reached the end of
+             its life, and is no longer supported upstream.  For this
+             reason, it has been removed from GNU Guix.")
+         (de "Die @code{linux-libre} 6.10-Versionsreihe hat ihr
+Supportende erreicht und wird nicht mehr unterstützt („end of life“). Daher ist die
+Versionsreihe aus GNU Guix entfernt worden.")))
+
  (entry (commit "5966e0fdc78771c562e0f484a22f381a77908be0")
         (title
          (en "Daemon vulnerability allowing takeover of build users fixed")
