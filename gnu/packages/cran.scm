@@ -4968,16 +4968,16 @@ the personalised models.")
 (define-public r-modelenv
   (package
     (name "r-modelenv")
-    (version "0.1.1")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "modelenv" version))
               (sha256
                (base32
-                "1pnc3bs2fzanqzjv2y8a7yy6s8hmwwsccjc8pvifff5kp557a6di"))))
+                "1h8vksmvdj5nv6cswr0c21fh1jcryw1lvpq9pn0n771pxybhxqbl"))))
     (properties `((upstream-name . "modelenv")))
     (build-system r-build-system)
-    (propagated-inputs (list r-glue r-rlang r-tibble r-vctrs))
+    (propagated-inputs (list r-cli r-glue r-rlang r-tibble r-vctrs))
     (home-page "https://github.com/tidymodels/modelenv")
     (synopsis "Tools for registering models for use in tidymodels")
     (description
