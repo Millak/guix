@@ -3573,13 +3573,13 @@ palettes, color maps, and tools to evaluate them.")
 (define-public r-papaja
   (package
     (name "r-papaja")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "papaja" version))
        (sha256
-        (base32 "08ydk9fws5x37q120cdjdx1dsib0y2g9bp826vxzxcaymlwx3dl7"))))
+        (base32 "0lknj3r4kd8i4jlfi8q7p7fi2s009q8rryf0r44zxfxvr9nkmyxv"))))
     (properties `((upstream-name . "papaja")))
     (build-system r-build-system)
     (propagated-inputs
