@@ -83,7 +83,7 @@
            return-value)
           ((#f . error-args)
            (if (>= attempt times)
-               error-args
+               (apply throw error-args)
                (begin
                  (sleep delay)
                  (loop (+ 1 attempt)))))))))
