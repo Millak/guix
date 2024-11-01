@@ -28501,17 +28501,17 @@ on graphs of millions of nodes (as long as they can fit in memory).")
 (define-public r-patchwork
   (package
     (name "r-patchwork")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "patchwork" version))
        (sha256
         (base32
-         "18b83gsv8idi5d062m9dvb46r7kxda97sa72pzllshhcaq9ylcfc"))))
+         "05ifwnrvlxk95nafvba09i7gq35i5xyxja51bfdvvkmalk26xbvp"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cli r-ggplot2 r-gtable r-rlang))
+     (list r-cli r-farver r-ggplot2 r-gtable r-rlang))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/thomasp85/patchwork")
