@@ -5073,14 +5073,14 @@ following problems:
 (define-public r-base64
   (package
     (name "r-base64")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "base64" version))
        (sha256
         (base32
-         "1w9m4n29xmj7px8fbmha04vq146bxfqi7ipj1ag09hlm05y6h8jd"))))
+         "030f8ynlga2qych88d45hk491cfi25hrjwl2gj4gsphljvi7ps5i"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-openssl))
