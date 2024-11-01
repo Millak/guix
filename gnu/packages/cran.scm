@@ -43088,13 +43088,13 @@ Monte Carlo approach implemented in JAGS.")
 (define-public r-logger
   (package
     (name "r-logger")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "logger" version))
        (sha256
-        (base32 "0ivhrmq408pb7gx7yhmrn6mjkx15dvkb4bpk4z5y642l3j2vv9vd"))))
+        (base32 "1ph4al2ish2c3zpznr2zn7wg4hjn1bslywc1vv6smrxfcch3n90g"))))
     (properties `((upstream-name . "logger")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
