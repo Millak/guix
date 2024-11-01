@@ -21522,14 +21522,14 @@ inventor of the SOM.")
 (define-public r-nnls
   (package
     (name "r-nnls")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nnls" version))
        (sha256
         (base32
-         "0lilga63p7k5mkkfcf5p3swx76vwysl979jxszm6svzqhsrgww6d"))))
+         "1nkz25rld4ia9l5zwf4dn9imd15mdi8lmi3ydx449dxsrxs62br7"))))
     (build-system r-build-system)
     (native-inputs (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/nnls")
