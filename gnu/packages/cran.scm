@@ -13758,14 +13758,14 @@ multivariate plot methods.")
 (define-public r-fnn
   (package
     (name "r-fnn")
-    (version "1.1.4")
+    (version "1.1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "FNN" version))
        (sha256
         (base32
-         "09zwlblkb7wkyk6azq2iizv3kj2wdqmjhg0r8zjiy1f692ivakfv"))))
+         "0m5q1jkyxynjgzakzn48aqxr5cc92sgl7z9j1zlqmb1yzn3p9nbk"))))
     (properties `((upstream-name . "FNN")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/FNN")
