@@ -63,6 +63,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages curl)
@@ -2156,6 +2157,34 @@ and Vega-Lite examples.")
     (synopsis "Declarative statistical visualization library for Python")
     (description
      "Vega-Altair is a declarative statistical visualization library for Python.")
+    (license license:expat)))
+
+(define-public python-george
+  (package
+    (name "python-george")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "george" version))
+       (sha256
+        (base32 "1zvbdq50ds820aj06lr2nrzwg121bkd9bg0aq83gvk7lf8yqgp4v"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list cmake-minimal
+           pybind11
+           python-pytest
+           python-scikit-build-core
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy))
+    (home-page "https://george.readthedocs.io")
+    (synopsis "Fast Gaussian Processes for regression")
+    (description
+     "George is a fast and flexible Python library for Gaussian Process (GP)
+Regression, focused on efficiently evaluating the marginalized likelihood of a
+dataset under a GP prior, even as this dataset gets Big.")
     (license license:expat)))
 
 (define-public python-getdist
