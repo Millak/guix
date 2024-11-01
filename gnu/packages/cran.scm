@@ -1679,6 +1679,32 @@ matrix decomposition, sparse principal components analysis, and sparse
 canonical correlation analysis.")
     (license license:gpl2+)))
 
+(define-public r-robslopes
+  (package
+    (name "r-robslopes")
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "robslopes" version))
+       (sha256
+        (base32 "0hhdpp03ybf71x6wz766glqlq4ywc4v65mj0ca3idv69p488mvb5"))))
+    (properties `((upstream-name . "robslopes")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcpparmadillo))
+    (home-page "https://cran.r-project.org/package=robslopes")
+    (synopsis "Fast algorithms for robust slopes")
+    (description
+     "This package provides fast algorithms for the Theil-Sen estimator,
+Siegel's repeated median slope estimator, and Passing-Bablok regression.  The
+implementation is based on algorithms by Dillencourt et al. (1992)
+<doi:10.1142/S0218195992000020> and Matousek et al. (1998)
+<doi:10.1007/PL00009190>.  The implementations are detailed in
+Raymaekers (2023) <doi:10.32614/RJ-2023-012> and Raymaekers J., Dufey
+F. (2022) <@code{arXiv:2202.08060>}.  All algorithms run in quasilinear
+time.")
+    (license license:gpl2+)))
+
 (define-public r-robustrankaggreg
   (package
     (name "r-robustrankaggreg")
