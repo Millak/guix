@@ -41341,13 +41341,13 @@ utility operations.")
 (define-public r-rsq
   (package
     (name "r-rsq")
-    (version "2.6")
+    (version "2.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rsq" version))
               (sha256
                (base32
-                "01b9rl2ng1sq0ibpfsf50agkwh01pfpw354vvgdjd0lzh9dxmsgp"))))
+                "1dnx7cn533wg5gqvggfpq3hfid924ccywxnw5sw0l50m4p0p1p5g"))))
     (properties `((upstream-name . "rsq")))
     (build-system r-build-system)
     (propagated-inputs
@@ -41356,6 +41356,7 @@ utility operations.")
            r-lme4
            r-mass
            r-matrix
+           r-mcr
            r-nlme))
     (home-page "https://cran.r-project.org/package=rsq")
     (synopsis "R-squared and related measures")
