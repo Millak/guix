@@ -382,9 +382,10 @@ experience for your users, your family and yourself")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:parallel-tests? #f             ; fails when run in parallel
+      #:parallel-tests? #f              ; fails when run in parallel
       #:configure-flags
       #~(list "--localstatedir=/var"
+              "--sysconfdir=/etc"
               "--enable-gtk-doc"
               ;; Otherwise the test suite fails on such a warning.
               "CFLAGS=-Wno-error=missing-prototypes")
@@ -412,7 +413,17 @@ experience for your users, your family and yourself")
                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))
               ;; Avoid printing locale warnings, which trip up the text
               ;; matching tests.
-              (unsetenv "LC_ALL"))))))
+              (unsetenv "LC_ALL")))
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys #:rest args)
+              ;; Override the sysconfdir flag only for the installation phase,
+              ;; as it attempts to write the sample config files to /etc and
+              ;; fail otherwise.
+              (define make-flags*
+                (append make-flags (list (string-append "sysconfdir="
+                                                        #$output "/etc"))))
+              (apply (assoc-ref %standard-phases 'install)
+                     (append args (list #:make-flags make-flags*))))))))
     (inputs
      (list audit
            bash-minimal                 ;for cross-compilation
@@ -432,7 +443,7 @@ experience for your users, your family and yourself")
            itstool
            intltool
            libtool
-           vala                         ;for Vala bindings
+           vala             ;for Vala bindings
            ;; For tests
            ;; All tests fail with dbus >= 1.15.2, see
            ;; https://github.com/canonical/lightdm/issues/346
