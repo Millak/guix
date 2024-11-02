@@ -558,7 +558,8 @@ $out/bin/guile --version~%"
     (name name)
     (system system)
     (build-inputs inputs)
-    (build (cond ((target-riscv64?)
+    (build (cond ((or (target-riscv64?)
+                      (target-hurd64?))
                   raw-build-guile3)
                  (else raw-build)))))
 

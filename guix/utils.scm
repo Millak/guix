@@ -17,7 +17,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Philip McGrath <philip@philipmcgrath.com>
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
@@ -94,6 +94,8 @@
             target-linux?
             target-hurd?
             system-hurd?
+            target-hurd64?
+            system-hurd64?
             target-mingw?
             target-x86-32?
             target-x86-64?
@@ -715,6 +717,17 @@ a character other than '@'."
 (define* (system-hurd?)
   "Is the current system the GNU(/Hurd) system?"
   (and=> (%current-system) target-hurd?))
+
+(define* (target-hurd64? #:optional (target (or (%current-target-system)
+                                                (%current-system))))
+  "Does TARGET represent the 64bit GNU(/Hurd) system?"
+  (and (target-hurd?)
+       (target-64bit? target)))
+
+(define* (system-hurd64?)
+  "Is the current system the 64bit GNU(/Hurd) system?"
+  (and (system-hurd?)
+       (target-64bit? (%current-system))))
 
 (define* (target-mingw? #:optional (target (%current-target-system)))
   "Is the operating system of TARGET Windows?"

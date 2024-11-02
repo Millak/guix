@@ -145,7 +145,10 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                       target
                       #:xbinutils (cross-binutils target)
                       #:libc (cross-bootstrap-libc target))))
-          `(("cross-gcc" ,(package
+          `(,@(%final-inputs)
+            ;; As versions for gcc and cross-gcc can differ, make sure to have
+            ;; cross-gcc behind gcc in CPLUS_INCLUDE_PATH.
+            ("cross-gcc" ,(package
                             (inherit xgcc)
                             (search-paths
                              ;; Ensure the cross libc headers appears on the
@@ -154,8 +157,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                                     (variable "CROSS_CPLUS_INCLUDE_PATH")
                                     (files '("include")))
                                    (package-search-paths gcc)))))
-            ("cross-binutils" ,(cross-binutils target))
-            ,@(%final-inputs)))
+            ("cross-binutils" ,(cross-binutils target))))
         `(("libc" ,(glibc-for-bootstrap glibc))
           ("libc:static" ,(glibc-for-bootstrap glibc) "static")
           ("gcc" ,(gcc-for-bootstrap glibc))
@@ -395,10 +397,15 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                        ((#:configure-flags flags _ ...)
                         flags)))
            #:make-flags
-           (match (memq #:make-flags (package-arguments binutils))
-             ((#:make-flags flags _ ...)
-              flags)
-             (_ #~'()))
+           #~(append
+              #$(if (target-hurd64?)
+                    #~'("lt_cv_prog_compiler_static_works=yes"
+                        "lt_cv_prog_compiler_static_works_CXX=yes")
+                    #~'())
+              #$(match (memq #:make-flags (package-arguments binutils))
+                  ((#:make-flags flags _ ...)
+                   flags)
+                  (_ #~'())))
            #:strip-flags #~'("--strip-all")
            #:phases
            #~(modify-phases %standard-phases
@@ -642,6 +649,9 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 
                   #$@(if (target-hurd?)
                          #~("--disable-jit")
+                         #~())
+                  #$@(if (target-hurd64?)
+                         #~("lt_cv_prog_compiler_static_works=yes")
                          #~())))
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases

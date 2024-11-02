@@ -641,9 +641,9 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
                 ("hurd-headers" ,xhurd-headers)
                 ("hurd-minimal" ,xhurd-minimal)))))
 
-  (match target
-    ((or "i586-pc-gnu" "i586-gnu") xhurd-core-headers)
-    (_ xlinux-headers)))
+  (if (target-hurd? target)
+      xhurd-core-headers
+      xlinux-headers))
 
 (define* (cross-libc . args)
   (if (or (= (length args) 1) (contains-keyword? args))
