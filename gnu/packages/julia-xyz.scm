@@ -266,6 +266,30 @@ appropriate BLAS or optimised Julia linear algebra routines.  This supports a
 much wider class of matrix types than Julia's in-built @code{StridedArray}.")
     (license license:expat)))
 
+(define-public julia-astroangles
+  (package
+    (name "julia-astroangles")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAstro/AstroAngles.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hd03kv1dppdzz7i9jv11f4rby5c21sdyhbcf3yvba9vnkkd1gz5"))))
+    (build-system julia-build-system)
+    (native-inputs
+     (list julia-formatting
+           julia-stablerngs))
+    (home-page "https://github.com/JuliaAstro/AstroAngles.jl")
+    (synopsis "Lightweight string parsing and representation of angles")
+    (description
+     "This package provides a lightweight string parsing and representation of
+angles.")
+    (license license:expat)))
+
 (define-public julia-astrolib
   (package
     (name "julia-astrolib")
