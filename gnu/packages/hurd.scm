@@ -57,21 +57,20 @@
                  version ".tar.gz"))
 
 (define-public gnumach-headers
-  (let ((revision "0")
-        (commit "2556fdece900d67529d5eda01f1bdaae4ffe96b0"))
+  (let ((commit "v1.8+git20240714"))
     (package
       (name "gnumach-headers")
-      (version (git-version "1.8" revision commit))
+      (version (string-drop commit 1))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://git.savannah.gnu.org/git/hurd/gnumach.git")
                (commit commit)))
+         (patches (search-patches "gnumach-version.patch"))
          (file-name (git-file-name "gnumach" version))
          (sha256
-          (base32
-           "1lzsbix0l4jhab38pvwnmk7ip1lsn7m5smhnrciqajsqnadsnlzs"))))
+          (base32 "0ykav1kx0bgxcxw04bpcsh5s4531fzdkahjgrlsfs2h3w3vfkga0"))))
       (build-system gnu-build-system)
       (arguments
        `(#:phases

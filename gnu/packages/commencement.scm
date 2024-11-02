@@ -2639,6 +2639,7 @@ memoized as a function of '%current-system'."
      (source
       (origin
         (inherit (package-source gnumach-headers))
+        (patches '())
         (method
          (git-fetch-from-tarball
           (origin

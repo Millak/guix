@@ -1,0 +1,23 @@
+Upstream-status: Taken from Debian upstream:
+    <https://salsa.debian.org/hurd-team/gnumach/-/raw/master/debian/patches/12_version_suffix.patch>
+
+Index: gnumach/configure.ac
+===================================================================
+--- gnumach.orig/configure.ac
++++ gnumach/configure.ac
+@@ -19,6 +19,7 @@ AC_PREREQ([2.57])
+ m4_include([version.m4])
+ AC_INIT([AC_PACKAGE_NAME], [AC_PACKAGE_VERSION], [AC_PACKAGE_BUGREPORT],
+   [AC_PACKAGE_TARNAME])
++AC_SUBST([PACKAGE_VERSION_SUFFIX])
+ AC_CONFIG_SRCDIR([kern/ipc_kobject.c])
+ 
+ if test -z "${CFLAGS+set}"; then
+Index: gnumach/version.c.in
+===================================================================
+--- gnumach.orig/version.c.in
++++ gnumach/version.c.in
+@@ -1,2 +1,2 @@
+ /* @configure_input@ */
+-const char version[] = "@PACKAGE_NAME@ @PACKAGE_VERSION@";
++const char version[] = "@PACKAGE_NAME@ @PACKAGE_VERSION@@PACKAGE_VERSION_SUFFIX@";
