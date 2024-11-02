@@ -229,14 +229,15 @@ protocol.")
     (name "mpd-mpc")
     (version "0.35")
     (source (origin
-              (method url-fetch)
+              (method git-fetch)
               (uri
-               (string-append "https://www.musicpd.org/download/mpc/"
-                              (car (string-split version #\.))
-                              "/mpc-" version ".tar.xz"))
+               (git-reference
+                (url "https://github.com/MusicPlayerDaemon/mpc")
+                (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m3q71p3i8ca2ycmdzq7cshj5f4i0ijkh9138r9mnxm2pz1mja9q"))))
+                "1fv9v5jmcw8ba4bfg5mxdfwy4skaifls3843f23z6qpcg67nfmx1"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases
