@@ -397,15 +397,6 @@ When unspecified, listen for any hosts/IP addresses.")
    (list-of-strings '())
    "Extra configuration values to append to the LightDM configuration file."))
 
-(define (lightdm-configuration->greeters-config-dir config)
-  "Return a directory containing all the serialized greeter configurations
-from CONFIG, a <lightdm-configuration> object."
-  (file-union "etc-lightdm"
-              (append-map (lambda (g)
-                            `((,(greeter-configuration->conf-name g)
-                               ,(greeter-configuration->file g))))
-                          (lightdm-configuration-greeters config))))
-
 (define (lightdm-configuration->packages config)
   "Return all the greeter packages and their assets defined in CONFIG, a
 <lightdm-configuration> object, as well as the lightdm package itself."
@@ -495,6 +486,16 @@ port=" (number->string vnc-server-port) "\n"
               (serialize-configuration seat*
                                        lightdm-seat-configuration-fields)))
           seats))))
+
+(define (lightdm-configuration-directory config)
+  "Return a directory containing the serialized lightdm configuration
+and all the serialized greeter configurations from CONFIG."
+  (file-union "etc-lightdm"
+              (cons `("lightdm.conf" ,(lightdm-configuration-file config))
+                    (map (lambda (g)
+                           `(,(greeter-configuration->conf-name g)
+                             ,(greeter-configuration->file g)))
+                         (lightdm-configuration-greeters config)))))
 
 (define %lightdm-accounts
   (list (user-group (name "lightdm") (system? #t))
@@ -589,9 +590,7 @@ port=" (number->string vnc-server-port) "\n"
                            "/sbin/lightdm")
             #$@(if (lightdm-configuration-debug? config)
                    #~("--debug")
-                   #~())
-            "--config"
-            #$(lightdm-configuration-file config)))
+                   #~())))
 
   (define lightdm-paths
     (let ((lightdm (lightdm-configuration-lightdm config)))
@@ -600,9 +599,6 @@ port=" (number->string vnc-server-port) "\n"
                    (file-append lightdm dir))
                  '("/bin" "/sbin" "/libexec"))
          ":")))
-
-  (define greeters-config-dir
-    (lightdm-configuration->greeters-config-dir config))
 
   (define data-dirs
     ;; LightDM itself needs to be in XDG_DATA_DIRS for the accountsservice
@@ -626,17 +622,18 @@ port=" (number->string vnc-server-port) "\n"
                                   ;; Lightdm needs itself in its PATH.
                                   #:environment-variables
                                   (list
-                                   ;; It knows to look for greeter
-                                   ;; configurations in XDG_CONFIG_DIRS...
-                                   (string-append "XDG_CONFIG_DIRS="
-                                                  #$greeters-config-dir)
-                                   ;; ... and for greeter .desktop files as
+                                   ;; It looks for greeter .desktop files as
                                    ;; well as lightdm accountsservice
                                    ;; interface in XDG_DATA_DIRS.
                                    (string-append "XDG_DATA_DIRS="
                                                   #$data-dirs)
                                    (string-append "PATH=" #$lightdm-paths))))
     (stop #~(make-kill-destructor)))))
+
+(define (lightdm-etc-service config)
+  "Return a list of FILES for @var{etc-service-type} to build the
+/etc/lightdm directory using CONFIG"
+  (list `("lightdm" ,(lightdm-configuration-directory config))))
 
 (define lightdm-service-type
   (handle-xorg-configuration
@@ -666,13 +663,10 @@ port=" (number->string vnc-server-port) "\n"
            ;; https://github.com/NixOS/nixpkgs/issues/45059.
            (service-extension profile-service-type
                               lightdm-configuration->packages)
-           ;; This is needed for the greeter itself to find its configuration,
-           ;; because XDG_CONF_DIRS gets overridden by /etc/profile.
-           (service-extension
-            etc-service-type
-            (lambda (config)
-              `(("lightdm"
-                 ,(lightdm-configuration->greeters-config-dir config)))))))
+           ;; This is needed for lightdm and greeter
+           ;; to find their configuration
+           (service-extension etc-service-type
+                              lightdm-etc-service)))
     (description "Run @code{lightdm}, the LightDM graphical login manager."))))
 
 
