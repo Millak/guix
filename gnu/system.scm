@@ -1539,7 +1539,6 @@ a list of <menu-entry>, to populate the \"old entries\" menu."
                 "--multiboot-command-line='${kernel-command-line}'"
                 "--exec-server-task='${exec-task}'"
                 "--store-type=typed"
-                "--x-xattr-translator-records"
                 "'${root}'"
                 "'$(fs-task=task-create)'"))
          (target (%current-target-system))

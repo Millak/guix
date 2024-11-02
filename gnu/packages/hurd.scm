@@ -132,7 +132,7 @@ communication.")
 
 (define-public hurd-headers
   (let ((revision "3")
-        (commit "v0.9.git20231217"))
+        (commit "v0.9.git20240714"))
     (package
       (name "hurd-headers")
       (version (string-drop commit 1))
@@ -143,7 +143,7 @@ communication.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1d138kzhil6s5gf9di8grpz1iziakyfv037wkc8s7qyd61imm31d"))
+                  "0wvzil3llmrjg7ymwqs86d11bm5fl771jwncv7kk679lsvqca0ll"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (native-inputs
@@ -336,7 +336,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
              ;; Makefile. libdde_linux26 is built later in its own phase.
              (substitute* "Makefile"
                (("libbpf ")
-                "libbpf libmachdevdde libddekit rumpdisk"))))
+                "libbpf libmachdevdde libddekit "))))
          (add-after 'unpack 'find-tirpc
            (lambda* (#:key inputs #:allow-other-keys)
              (for-each (lambda (var)
@@ -362,6 +362,12 @@ Hurd-minimal package which are needed for both glibc and GCC.")
                (("#include <rpc/pmap_prot.h>" m)
                 (string-append "#include <rpc/types.h>\n#include <rpc/xdr.h>\n" m)))
              #t))
+         ,@(if (%current-target-system)
+               '((add-after 'configure 'fixup-cross-configure
+                   (lambda _
+                     (substitute* "config.make"
+                       (("HAVE_LIBRUMP = no") "HAVE_LIBRUMP = yes")))))
+               '())
          (add-before 'build 'pre-build
            (lambda _
              ;; Don't change the ownership of any file at this time.
