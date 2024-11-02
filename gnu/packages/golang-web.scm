@@ -167,7 +167,7 @@ API service accounts for Go.")
     (synopsis "JSON meta application protocol in Golang")
     (description
      "Package jmap implements JMAP Core protocol as defined in
-@@url{https://rfc-editor.org/rfc/rfc8620.html,RFC 8620} published on July
+@url{https://rfc-editor.org/rfc/rfc8620.html,RFC 8620} published on July
 2019.")
     (license license:expat)))
 
