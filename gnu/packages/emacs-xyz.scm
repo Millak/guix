@@ -254,6 +254,7 @@
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages racket)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages scheme)
   #:use-module (gnu packages serialization)
@@ -29666,6 +29667,40 @@ In addition to its predecessor, it offers the following features:
 @end itemize")
     (license (list license:expat
                    license:asl2.0))))
+
+(define-public emacs-cargo-el
+  ;; No tags since 2017, use latest commit.
+  (let ((commit "7f8466063381eed05d4e222ce822b1dd44e3bf17")
+        (revision "0"))
+    (package
+      (name "emacs-cargo-el")
+      (version (git-version "0.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kwrooijen/cargo.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hvxdmyppvx04jyn07dnynlgbwyasv22k8dd4qa68mrj8i9mz484"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "cargo-process.el"
+                       (("/usr/local/(bin/(cargo|rustc))" _ path)
+                        (search-input-file inputs path))))))))
+      (propagated-inputs (list emacs-markdown-mode))
+      (inputs (list rust `(,rust "cargo")))
+      (home-page "https://github.com/kwrooijen/cargo.el")
+      (synopsis "Emacs minor mode for Cargo, Rust's package manager")
+      (description
+       "This package defines @code{cargo-minor-mode}, which gives a set of key
+combinations to perform Cargo tasks within Rust projects.")
+      (license license:gpl3+))))
 
 (define-public emacs-ztree
   ;; Upstream provides no tag, but the commit below matches latest release.
