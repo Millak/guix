@@ -1817,18 +1817,18 @@ robust and compatible with many systems and operating systems.")
         (base32 "0nayw5shm5nly9bjp0g372kg5ia64dvn6mrmi1c6mdg0n6vgs9xa"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f                      ; No test target
-       #:configure-flags
-       (list "-DMYGUI_INSTALL_DOCS=TRUE"
-             (string-append "-DOGRE_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "ogre")
-                            "/include/OGRE")
-             ;; Demos and tools are Windows-specific:
-             ;; https://github.com/MyGUI/mygui/issues/24.
-             "-DMYGUI_BUILD_DEMOS=FALSE"
-             "-DMYGUI_BUILD_TOOLS=FALSE")))
+     (list
+      #:tests? #f                       ;no test target
+      #:configure-flags
+      #~(list "-DMYGUI_INSTALL_DOCS=TRUE"
+              ;; Demos and tools are Windows-specific:
+              ;; https://github.com/MyGUI/mygui/issues/24.
+              "-DMYGUI_BUILD_DEMOS=FALSE"
+              "-DMYGUI_BUILD_TOOLS=FALSE")))
     (native-inputs
-     (list boost doxygen pkg-config))
+     (list boost
+           doxygen
+           pkg-config))
     (inputs
      (list font-dejavu
            freetype
@@ -1839,7 +1839,7 @@ robust and compatible with many systems and operating systems.")
     (synopsis "Fast, flexible and simple GUI")
     (description
      "MyGUI is a library for creating Graphical User Interfaces (GUIs) for games
-and 3D applications.  The main goals of mygui are: speed, flexibility and ease
+and 3D applications.  The main goals of MyGUI are: speed, flexibility and ease
 of use.")
     (home-page "http://mygui.info/")
     (license license:expat)))
