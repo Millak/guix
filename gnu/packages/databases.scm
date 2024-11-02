@@ -2600,14 +2600,14 @@ similar to BerkeleyDB, LevelDB, etc.")
 (define-public redis
   (package
     (name "redis")
-    (version "7.0.12")
+    (version "7.2.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.redis.io/releases/redis-"
                                   version".tar.gz"))
               (sha256
                (base32
-                "1dwayif99cipf0xs26zipbnj800px31pbsxz747bzclb4xdkvn4x"))
+                "03ixkzdc43lr4q3my0yax1f1gqz6sr6hch5qdipmbd725xxdc47v"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled jemalloc, as the package will use the libc one
@@ -2638,15 +2638,13 @@ similar to BerkeleyDB, LevelDB, etc.")
                 ;; "background AOF rewrite to finish", perhaps because dead
                 ;; processes persist as zombies in the build environment.
                 (("unit/aofrw") "")
+                (("integration/aof([^-]|-multi-part)") "")
                 ;; The OOM score tests try to raise the current OOM score, but
                 ;; our build environment already sets it for all children to
                 ;; the highest possible one (1000).  We can't lower it because
                 ;; we don't have CAP_SYS_RESOURCE.
                 (("unit/oom-score-adj") "")
-                (("integration/aof(-multi-part)?") "")
                 (("integration/failover") "")
-                (("integration/replication-4") "")
-                (("integration/replication-psync") "")
                 (("integration/replication[^-]") "")))))))
     (native-inputs (list pkg-config procps tcl which))
     (synopsis "Key-value cache and store")
