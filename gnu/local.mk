@@ -1496,6 +1496,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-3.0-linux-syscalls.patch		\
   %D%/packages/patches/guile-ac-d-bus-fix-tests.patch		\
   %D%/packages/patches/guile-lib-fix-tests-for-guile2.2.patch		\
+  %D%/packages/patches/guile-fibers-cross-build-fix.patch 	\
   %D%/packages/patches/guile-fibers-destroy-peer-schedulers.patch \
   %D%/packages/patches/guile-fibers-epoll-instance-is-dead.patch \
   %D%/packages/patches/guile-fibers-fd-finalizer-leak.patch	\
