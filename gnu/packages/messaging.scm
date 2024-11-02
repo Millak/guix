@@ -3722,7 +3722,7 @@ a text snippet), using @code{libphonenumber}.")
 (define-public senpai
   (package
     (name "senpai")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -3732,7 +3732,7 @@ a text snippet), using @code{libphonenumber}.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qw955i5f3jr42h4afr23v7wq616bcsyq68if75qdw8j1yibnpmb"))))
+        (base32 "0l43qfjr0ggpv1hkyyfxp3j6acrbbrl8n6qxlh91gyb2jan03683"))))
     (build-system go-build-system)
     (arguments
       (list #:import-path "git.sr.ht/~taiite/senpai/cmd/senpai"
@@ -3742,7 +3742,7 @@ a text snippet), using @code{libphonenumber}.")
             #~(modify-phases %standard-phases
                 (add-after 'build 'build-doc
                   (lambda* (#:key unpack-path #:allow-other-keys)
-                    (invoke "make" "doc/senpai.1" "doc/senpai.5"
+                    (invoke "make" "doc"
                             "-C" (string-append "src/" unpack-path))))
                 (add-after 'install 'install-doc
                   (lambda* (#:key unpack-path #:allow-other-keys)
@@ -3759,12 +3759,13 @@ a text snippet), using @code{libphonenumber}.")
     (native-inputs (list go-git-sr-ht-emersion-go-scfg
                          go-github-com-delthas-go-libnp
                          go-github-com-delthas-go-localeinfo
-                         go-github-com-gdamore-tcell-v2
+                         go-github-com-delthas-tcell-v2
                          go-github-com-mattn-go-runewidth
                          go-golang-org-x-net
                          go-golang-org-x-term
                          go-golang-org-x-time
                          go-mvdan-cc-xurls-v2
+                         which
                          scdoc))
     (home-page "https://sr.ht/~delthas/senpai")
     (synopsis "Modern terminal IRC client")
