@@ -2,6 +2,7 @@
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,9 +25,6 @@
   #:use-module (gnu installer newt page)
   #:use-module (guix i18n)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-34)
-  #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
   #:export (run-locale-page))
 
@@ -52,16 +50,22 @@ installation process and for the installed system.")
   result)
 
 (define (run-territory-page territories territory->text)
-  (let ((title (G_ "Locale location")))
+  (define result
     (run-listbox-selection-page
-     #:title title
+     #:title (G_ "Locale location")
      #:info-text (G_ "Choose a territory for this language.")
      #:listbox-items territories
      #:listbox-item->text territory->text
      #:button-text (G_ "Back")
      #:button-callback-procedure
      (lambda _
-       (abort-to-prompt 'installer-step 'abort)))))
+       (abort-to-prompt 'installer-step 'abort))))
+
+  ;; Some languages, such as pt, cannot be installed early in the
+  ;; run-language-page step.  Install them now, when we know the territory.
+  (setenv "LANGUAGE" (string-append (getenv "LANGUAGE") "_" result))
+
+  result)
 
 (define (run-codeset-page codesets)
   (let ((title (G_ "Locale codeset")))
