@@ -16,15 +16,17 @@
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gl)
-  #:use-module (gnu packages base)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages simulation)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xorg))
 
@@ -233,6 +235,76 @@ ModernGL on multiple platforms.")
 applications.  It supports windowing, user interface event handling,
 Joysticks, OpenGL graphics, loading images and videos, playing sounds and
 music." )
+    (license license:bsd-3)))
+
+(define-public python-vispy
+  (package
+    (name "python-vispy")
+    (version "0.14.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vispy" version))
+       (sha256
+        (base32 "07fkk4bdffn0iq5cprk7ydj978rqc4lvzfcs2vkzgfh8m53vifzg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Test requiring network access to download test data from
+      ;; <https://raw.githubusercontent.com/vispy/demo-data/main/CONTRIBUTING.txt>.
+      #~(list "-k" (string-append "not test_read_write_image"
+                                  " and not test_wavefront"
+                                  " and not test_config"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-library-path
+            (lambda _
+              (substitute* (list "vispy/ext/egl.py"
+                                 "vispy/ext/fontconfig.py"
+                                 "vispy/gloo/gl/es2.py"
+                                 "vispy/gloo/gl/gl2.py")
+                (("ctypes\\.util\\.find_library\\('EGL'\\)")
+                 (format #f "'~a/~a'" #$(this-package-input "mesa")
+                         "lib/libEGL.so"))
+                (("ctypes\\.util\\.find_library\\('GL'\\)")
+                 (format #f "'~a/~a'" #$(this-package-input "mesa")
+                         "lib/libGL.so"))
+                (("ctypes\\.util\\.find_library\\('GLESv2'\\)")
+                 (format #f "'~a/~a'" #$(this-package-input "mesa")
+                         "lib/libGLESv2.so"))
+                (("util\\.find_library\\('fontconfig'\\)")
+                 (format #f "'~a/~a'" #$(this-package-input "fontconfig-minimal")
+                         "lib/libfontconfig.so")))))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              ;; XXX: Check how to set DPI to run headless tests, fails when
+              ;; DISPLAY is set.
+              ;; E RuntimeError: could not determine DPI
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-cython-3
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (inputs
+     (list fontconfig
+           mesa))
+    (propagated-inputs
+     (list python-freetype-py
+           python-hsluv
+           python-kiwisolver
+           python-meshio
+           python-numpy
+           python-packaging
+           python-pillow))
+    (home-page "http://vispy.org")
+    (synopsis "Interactive scientific visualization in Python")
+    (description
+     "VisPy is a high-performance interactive 2D/3D data visualization library
+leveraging the computational power of modern Graphics Processing Units (GPUs)
+through the OpenGL library to display very large datasets.")
     (license license:bsd-3)))
 
 ;;;
