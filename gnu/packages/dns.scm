@@ -1192,35 +1192,35 @@ known public suffixes.")
         (base32 "1sw267jxxxngjcar8cj3jpxnpiz0szgkhlz5l46c67qs690w9kdi"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; need to be root to run tests
-       #:make-flags
-       (list
-        ,(string-append "CC=" (cc-for-target))
-        (string-append "PREFIX=" %output)
-        (string-append "RPM_BUILD_ROOT=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key native-inputs target #:allow-other-keys)
-             ;; make_32bit_tables generates a header file that is used during
-             ;; compilation. Hence, during cross compilation, it should be
-             ;; built for the host system.
-             (when target
-               (substitute* "rng/Makefile"
-                 (("\\$\\(CC\\) -o make_32bit_tables")
-                  (string-append (assoc-ref native-inputs "gcc")
-                                 "/bin/gcc -o make_32bit_tables"))))
-             (invoke "./configure")))
-         (add-before 'install 'create-install-directories
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (dir)
-                           (mkdir-p (string-append out dir)))
-                         (list "/bin" "/sbin" "/etc"
-                               "/share/man/man1"
-                               "/share/man/man5"
-                               "/share/man/man8"))
-               #t))))))
+     (list
+      #:tests? #f                      ; need to be root to run tests
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target))
+         (string-append "PREFIX=" #$output)
+         (string-append "RPM_BUILD_ROOT=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key native-inputs target #:allow-other-keys)
+              ;; make_32bit_tables generates a header file that is used during
+              ;; compilation. Hence, during cross compilation, it should be
+              ;; built for the host system.
+              (when target
+                (substitute* "rng/Makefile"
+                  (("\\$\\(CC\\) -o make_32bit_tables")
+                   (string-append (search-input-file native-inputs "/bin/gcc")
+                                  " -o make_32bit_tables"))))
+              ;; ./configure doesn't support default flags
+              (invoke "./configure")))
+          (add-before 'install 'create-install-directories
+            (lambda _
+              (for-each (lambda (dir)
+                          (mkdir-p (string-append #$output dir)))
+                        (list "/bin" "/sbin" "/etc"
+                              "/share/man/man1"
+                              "/share/man/man5"
+                              "/share/man/man8")))))))
     (home-page "https://maradns.samiam.org")
     (synopsis "Small lightweight DNS server")
     (description "MaraDNS is a small and lightweight DNS server.  MaraDNS
