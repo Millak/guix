@@ -2128,12 +2128,6 @@ directions.")
           (add-after 'build 'build-platform
             (lambda* (#:key unpack-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" unpack-path)
-                ;; We're using Node 10, which doesn't have this method.
-                (substitute* "scripts/esbuild.js"
-                  (("exports.buildNativeLib" m)
-                   (string-append
-                    "Object.fromEntries = entries => entries.reduce((result, entry) => (result[entry[0]] = entry[1], result), {});\n"
-                    m)))
                 ;; Must be writable.
                 (for-each make-file-writable (find-files "." "."))
                 (invoke "node" "scripts/esbuild.js"
@@ -2156,7 +2150,7 @@ directions.")
                   (invoke "make" "test-go"))))))))
     (native-inputs
      (modify-inputs (package-native-inputs esbuild)
-       (append node)))))
+       (append node-lts)))))
 
 (define-public wwwoffle
   (package
@@ -9584,7 +9578,7 @@ the Fediring.")
     (build-system python-build-system)
     (propagated-inputs
      (list curl
-           node))
+           node-lts))
     (inputs
      (list python
            youtube-dl
