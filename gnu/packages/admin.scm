@@ -161,6 +161,7 @@
   #:use-module (gnu packages m4)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages mcrypt)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
@@ -776,6 +777,7 @@ console.")
                (base32
                 "0vgw6hwqh6zbzrvrn3i0xwi9ykm1qdvhqcyz3mjakd7w303lx603"))))
     (build-system gnu-build-system)
+    (native-inputs (list lowdown))
     (arguments
      (list #:tests? #f ;no test suite
            #:make-flags #~(list (string-append "PREFIX=" #$output)
