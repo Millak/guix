@@ -4241,7 +4241,7 @@ and signal strength.")
 (define-public libyang
   (package
     (name "libyang")
-    (version "1.0.215")
+    (version "3.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4250,12 +4250,12 @@ and signal strength.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mrs2ppmq77z8sbqgm2w0rl9bfgybd6bcxanakfww4chih6cy0dw"))))
+                "07skjr3r4na12kadca2dyk45clpcpnp4zkkwfaa8sqyslx7vhj56"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
        (list "-DENABLE_BUILD_TESTS=ON" "-DENABLE_LYD_PRIV=ON")))
-    (propagated-inputs (list pcre))
+    (propagated-inputs (list pcre2))
     (native-inputs (list cmocka pkg-config))
     (home-page "https://github.com/CESNET/libyang")
     (synopsis "YANG data modelling language library")
