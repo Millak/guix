@@ -194,7 +194,9 @@ is on expressing the content semantically, avoiding physical markup commands.")
 (define-public info-reader
   ;; The idea of this package is to have the standalone Info reader without
   ;; the dependency on Perl that 'makeinfo' drags.
-  (package/inherit texinfo
+  ;; Texinfo version must be at least 7.0, which fixed crashes in a pt_BR
+  ;; locale; see <https://git.savannah.gnu.org/cgit/texinfo.git/plain/NEWS>.
+  (package/inherit texinfo-7
     (name "info-reader")
     (arguments
      `(,@(substitute-keyword-arguments (package-arguments texinfo)
