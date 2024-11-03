@@ -3132,7 +3132,7 @@ support.")
            ;; PASSED: test:node
            ;; SKIPPED: test:duktape, ;; test:javascriptcore, test:jscript,
            ;; test:miniracer, test:rubyracer, ;; test:rubyrhino, test:v8
-           node))
+           node-lts))
     (synopsis "Run JavaScript code from Ruby")
     (description
      "ExecJS lets you run JavaScript code from Ruby.  It automatically picks a
