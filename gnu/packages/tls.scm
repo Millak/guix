@@ -1162,7 +1162,7 @@ derived from Mozilla's collection.")
      '(#:configure-flags
        '("-DBUILD_SHARED_LIBS=ON")))
     (propagated-inputs (list aws-lc))
-    (supported-systems '("aarch64-linux" "x86_64-linux"))
+    (supported-systems %64bit-supported-systems)
     (synopsis "SSL/TLS implementation in C99")
     (description
      "This library provides a C99 implementation of SSL/TLS.  It is designed to
