@@ -423,6 +423,46 @@ interface and is based on GNU Guile.")
     (native-inputs (list pkg-config guile-2.2))
     (inputs (list guile-2.2 guile2.2-fibers))))
 
+(define-public shepherd-run
+  (package
+    (name "shepherd-run")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~efraim/shepherd-run")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "033l8ignsrr6p2wgwcyqlswpbf58kyl8cf7zwkz028gqfq4arkr8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+       #:make-flags #~(list (string-append "PREFIX=" #$output))
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'configure)          ; No configure script.
+           ;; First 'check checks the shell script which loads the gawk code.
+           ;; This 'check checks the installed gawk script.
+           (add-after 'patch-shebangs 'check-again
+             (lambda args
+               (apply (assoc-ref %standard-phases 'check)
+                      (append args
+                              (list #:make-flags
+                                    (list (string-append "BINARY=" %output
+                                                         "/bin/shepherd-run"))))))))))
+    (native-inputs (list diffutils help2man))
+    (inputs (list gawk))
+    (synopsis "Create GNU Shepherd services from the command line")
+    (description
+     "Shepherd-run is a script which assists in creating one-off shepherd
+services from the command line.  It is meant to partially fill the void left
+by @command{systemd-run}, since GNU Guix uses GNU Shepherd as its system service
+manager.")
+    (home-page "https://git.sr.ht/~efraim/shepherd-run")
+    (license license:gpl3+)))
+
 (define-public swineherd
   (package
     (name "swineherd")
