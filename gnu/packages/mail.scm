@@ -57,6 +57,7 @@
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Benjamin Slade <slade@lambda-y.net>
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1275,14 +1276,16 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.12.6")
+    (version "1.12.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/djcb/mu/releases/download/v"
-                           version "/mu-" version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/djcb/mu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qdpag5skcwml4mrhz8205wfirayn55cqdydsy7ng6f9hyv3k9gq"))))
+        (base32 "0qncxr76m0yl1c9yv546d1hxv3v9744dx40jamd0vwq3w8bv268n"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
