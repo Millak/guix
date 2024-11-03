@@ -1547,7 +1547,7 @@ project derived from the original Calm Window Manager.")
 (define-public dunst
   (package
     (name "dunst")
-    (version "1.10.0")
+    (version "1.11.0")
     (source
      (origin
        (method git-fetch)
@@ -1556,7 +1556,7 @@ project derived from the original Calm Window Manager.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d6mc3ac4z16iwgq9934g1yc3412xl0hwv5vs40ycfmasm8qbjga"))))
+        (base32 "1ajpylwwh5c96hq9649gv4sqa6n5rdac41kicq3xf66pmfyny8bs"))))
     (build-system gnu-build-system)
     (arguments
      (list
