@@ -133,7 +133,7 @@
       ("git" ,git-minimal)
       ;; For the tests.
       ("libx11" ,libx11)
-      ("node" ,node)
+      ("node" ,node-lts)
       ("openssl" ,openssl)
       ("sqlite" ,sqlite)))
    (home-page "https://vlang.io/")
