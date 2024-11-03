@@ -1567,7 +1567,7 @@ synthesis.")
 (define-public snapcast
   (package
     (name "snapcast")
-    (version "0.27.0")
+    (version "0.29.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1576,7 +1576,7 @@ synthesis.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10l5hvmaqr9ykipsnzl95wqg19ff36rhpa1q88axxcia0k2valkn"))))
+                "1960xp54vsndj9vvc03kx9kg9phdchdgrfghhvcp2b0nfq2qcqqm"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no included tests
