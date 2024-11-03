@@ -10591,28 +10591,34 @@ library.")
     (license license:lgpl2.1+)))
 
 (define-public libzapojit
-  (package
-    (name "libzapojit")
-    (version "0.0.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0zn3s7ryjc3k1abj4k55dr2na844l451nrg9s6cvnnhh569zj99x"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list gobject-introspection intltool pkg-config))
-    (inputs
-     (list gnome-online-accounts json-glib rest))
-    (home-page "https://wiki.gnome.org/Projects/Zapojit")
-    (synopsis "Library for accessing SkyDrive and Hotmail")
-    (description
-     "Libzapojit is a GLib-based library for accessing online service APIs of
+  (let ((revision "1")
+        (commit "99d49bac5edc4afdcac742a0a142908e405597b0"))
+    (package
+      (name "libzapojit")
+      (version (git-version "0.0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.gnome.org/Archive/libzapojit")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12frqg925rmic3rf37h5vs48xdy3mfi4ip24v0bl73h5sxy8n828"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf autoconf-archive automake
+             `(,glib "bin")
+             gtk-doc gobject-introspection
+             intltool libtool pkg-config))
+      (inputs
+       (list gnome-online-accounts json-glib rest))
+      (home-page "https://wiki.gnome.org/Projects/Zapojit")
+      (synopsis "Library for accessing SkyDrive and Hotmail")
+      (description
+       "Libzapojit is a GLib-based library for accessing online service APIs of
 Microsoft SkyDrive and Hotmail, using their REST protocols.")
-    (license license:lgpl2.1+)))
+      (license license:lgpl2.1+))))
 
 (define-public gnome-clocks
   (package
