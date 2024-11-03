@@ -1023,7 +1023,7 @@ time for compression ratio.")
 (define-public squashfs-tools
   (package
     (name "squashfs-tools")
-    (version "4.5")
+    (version "4.6.1")
     (source
      (origin
        (method git-fetch)
@@ -1032,34 +1032,34 @@ time for compression ratio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18d4nwa22vgb8j2badngjngw63f0lj501cvlh3920wqy2mqxwav6"))))
+        (base32 "14nisidxx2d2qivyv7xfcg59qkj4fjiniir7nvymazdsng63gcr1"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             "XZ_SUPPORT=1"
-             "LZO_SUPPORT=1"
-             "LZ4_SUPPORT=1"
-             "ZSTD_SUPPORT=1"
-             (string-append "INSTALL_DIR=" (assoc-ref %outputs "out") "/bin"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             (chdir "squashfs-tools")))
-         (add-after 'install 'install-documentation
-           ;; Install what very little usage documentation is provided.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name)))
-               (install-file "../USAGE" doc)))))))
+     (list
+      #:tests? #f                      ; no check target
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target))
+         "XZ_SUPPORT=1"
+         "LZO_SUPPORT=1"
+         "LZ4_SUPPORT=1"
+         "ZSTD_SUPPORT=1"
+         (string-append "INSTALL_DIR=" #$output "/bin")
+         (string-append "INSTALL_MANPAGES_DIR=" #$output "/share/man/man1"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (chdir "squashfs-tools")))
+          (add-after 'patch-source-shebangs 'patch-generated-source-shebangs
+            (lambda _
+              (substitute* (find-files "generate-manpages" "\\.sh")
+                (("print \"#!/bin/sh")
+                 (string-append "print \"#!" (which "sh")))))))))
+    (native-inputs
+     (list coreutils-minimal help2man which))
     (inputs
-     `(("lz4" ,lz4)
-       ("lzo" ,lzo)
-       ("xz" ,xz)
-       ("zlib" ,zlib)
-       ("zstd:lib" ,zstd "lib")))
+     (list lz4 lzo xz zlib `(,zstd "lib")))
     (home-page "https://github.com/plougher/squashfs-tools")
     (synopsis "Tools to create and extract squashfs file systems")
     (description
