@@ -8619,35 +8619,6 @@ compressed JSON header blocks.
 @end itemize\n")
     (license license:expat)))
 
-;; Older variant for Node versions < 17 (upstream commit 43291b98edaa682
-;; add support for newer nghttp2, but is difficult to backport).
-(define-public nghttp2-for-node
-  (hidden-package
-   (package
-     (inherit nghttp2)
-     (version "1.44.0")
-     (source (origin
-               (method url-fetch)
-               (uri (string-append "https://github.com/nghttp2/nghttp2/"
-                                   "releases/download/v" version "/"
-                                   "nghttp2-" version ".tar.xz"))
-               (sha256
-                (base32
-                 "0p9wvva4g8hwj55x19rbyvnq2dbsnf65rphhxnpqs7ll54xlg6an"))))
-     (arguments
-      (substitute-keyword-arguments (package-arguments nghttp2)
-        ((#:phases phases #~%standard-phases)
-         #~(modify-phases #$phases
-             (add-after 'unpack 'workaround-broken-python-version-check
-               (lambda _
-                 (substitute* "configure"
-                   ;; The configure script uses a string comparison to
-                   ;; determine whether the Python interpreter is recent
-                   ;; enough, which fails when comparing 3.8 to 3.10.
-                   ;; Convert to tuples for a more reliable check.
-                   (("print \\(ver >= '3\\.8'\\)")
-                    "print (tuple(map(int, ver.split('.'))) >= (3,8))")))))))))))
-
 (define-public nghttp3
   (package
     (name "nghttp3")
