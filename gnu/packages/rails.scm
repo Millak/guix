@@ -273,7 +273,7 @@ API.")
            ruby-sprockets
            ruby-standard
            ;; This is used at runtime by ruby-execjs.
-           node))
+           node-lts))
     (propagated-inputs
      (list ruby-execjs))
     (synopsis "Parse CSS and add vendor prefixes to CSS rules")
