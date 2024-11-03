@@ -7766,7 +7766,7 @@ appropriate console.")
       (build-system emacs-build-system)
       (home-page "https://github.com/plexus/chruby.el")
       (synopsis "Emacs support for the Chruby version switcher for Ruby")
-      (description "This packages lets you switch Ruby versions using chruby.")
+      (description "This package lets you switch Ruby versions using chruby.")
       (license license:gpl3+))))
 
 ;; Package has no release.  Version is extracted from "Version:" keyword in
@@ -32031,7 +32031,7 @@ constant expressions.")
                 "1nfrdlz0n6kajlzb8vncnhj1z6lxnvpf01x95hjnxyvmps97hs0w"))))
     (build-system emacs-build-system)
     (synopsis "Kubernetes control")
-    (description "This packages provides a Kubernetes control interface
+    (description "This package provides a Kubernetes control interface
 within emacs.")
     (home-page "https://eshelyaron.com/man/kubed/")
     (license license:gpl3+)))
