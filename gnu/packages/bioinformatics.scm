@@ -6169,7 +6169,7 @@ and v1.1 to v1.2.")
                              " and not test_remote_packing_github_soft_links"
                              " and not test_value_from_two_concatenated_expressions"))))
     (inputs
-     (list node))
+     (list node-lts))
     (native-inputs
      (list python-mypy-extensions
            python-pytest
