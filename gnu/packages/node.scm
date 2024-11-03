@@ -48,6 +48,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages node-xyz)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -154,6 +155,11 @@
                          "test/parallel/test-cluster-master-kill.js"
                          ;; See also <https://github.com/nodejs/node/issues/25903>.
                          "test/sequential/test-performance.js"))
+
+             ;; These tests fail on recent versions of nghttp2
+             (for-each delete-file
+                       '("test/parallel/test-http2-methods.js"
+                         "test/parallel/test-http2-multiplex.js"))
 
              ;; This requires a DNS resolver.
              (delete-file "test/parallel/test-dns.js")
@@ -297,7 +303,7 @@
            http-parser
            icu4c
            libuv-for-node
-           `(,nghttp2-for-node "lib")
+           `(,nghttp2 "lib")
            openssl-1.1
            zlib
            ;; Regular build-time dependencies.
@@ -317,7 +323,7 @@
            http-parser
            icu4c
            libuv-for-node
-           `(,nghttp2-for-node "lib")
+           `(,nghttp2 "lib")
            openssl
            python-wrapper               ;for node-gyp (supports python3)
            zlib))
