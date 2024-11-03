@@ -158,6 +158,30 @@ resolution, asynchronous file system operations, and threading primitives.")
                 "0wpb9pz3r8nksnrf4zbixj2kk9whr7abi45ydrwyv2js2ljrc4j3"))))
     (properties '((hidden? . #t)))))
 
+(define-public libuv-for-node-lts
+  ;; When upgrading Node, also upgrade this. Get the version from
+  ;; https://github.com/nodejs/node/blob/main/deps/uv/include/uv/version.h
+  (package
+    (inherit libuv)
+    (name "libuv")
+    (version "1.46.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://dist.libuv.org/dist/v" version
+                                  "/libuv-v" version ".tar.gz"))
+              (sha256
+               (base32
+                "1knxvp6bl3y0c87cch1id0z7m7rb6igx55ci93qnbp4zifaq67qi"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Disable io_uring by default due to CVE-2024-22017. Can be removed once
+           ;; https://github.com/libuv/libuv/issues/4468 is released and compatible
+           ;; with Node.js
+           (substitute* "src/unix/linux.c"
+             (("val == NULL \\|\\|") "val != NULL &&"))))))
+    (properties '((hidden? . #t)))))
+
 (define-public libuv-for-r-httpuv
   ;; When upgrading r-httpuv, also upgrade this.
   (package
