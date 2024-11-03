@@ -57,13 +57,13 @@
 (define-public python-django-4.2
   (package
     (name "python-django")
-    (version "4.2.5")
+    (version "4.2.16")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "1ha6c5j3pizbsfzw37r52lvdz8z5lblq4iwa99mpkdzz92aiqp2y"))))
+                "1b8xgwg3gjr974j60x3vgcpp85cg5dwhzqdpdbl8qh3cg311c5kg"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
@@ -140,7 +140,9 @@ development and clean, pragmatic design.  It provides many tools for building
 any Web site.  Django focuses on automating as much as possible and adhering
 to the @dfn{don't repeat yourself} (DRY) principle.")
     (license license:bsd-3)
-    (properties `((cpe-name . "django")))))
+    (properties `((cpe-name . "django")
+                  ;; This CVE seems fixed since 4.2.1.
+                  (lint-hidden-cve . ("CVE-2023-31047"))))))
 
 (define-public python-django-3.2
   (package
