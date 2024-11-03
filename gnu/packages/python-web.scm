@@ -7950,7 +7950,7 @@ bare-metal installations.")
                (invoke "pytest" "-vv"
                        "-k" "not test_getCookieString_challenge_js_challenge1_16_05_2020")))))))
     (inputs
-     (list node))
+     (list node-lts))
     (propagated-inputs
      (list python-js2py
            python-polling2
