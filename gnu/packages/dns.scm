@@ -1181,7 +1181,7 @@ known public suffixes.")
 (define-public maradns
   (package
     (name "maradns")
-    (version "3.5.0022")
+    (version "3.5.0036")
     (source
      (origin
        (method url-fetch)
@@ -1189,7 +1189,7 @@ known public suffixes.")
                            (version-major+minor version) "/"
                            version "/maradns-" version ".tar.xz"))
        (sha256
-        (base32 "1sw267jxxxngjcar8cj3jpxnpiz0szgkhlz5l46c67qs690w9kdi"))))
+        (base32 "185kl7zfvnwzfpyxbzpwck13m468av74kbqijp0s4v33iicfpnvc"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1226,6 +1226,8 @@ known public suffixes.")
     (description "MaraDNS is a small and lightweight DNS server.  MaraDNS
 consists of a UDP-only authoritative DNS server for hosting domains, and a UDP
 and TCP-capable recursive DNS server for finding domains on the internet.")
+    (properties '((release-monitoring-url
+                   . "https://maradns.samiam.org/download.html")))
     (license license:bsd-2)))
 
 (define-public openresolv
