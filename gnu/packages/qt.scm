@@ -3328,7 +3328,7 @@ linux/libcurl_wrapper.h")
            flex
            gperf
            ninja
-           node
+           node-lts
            perl
            pkg-config
            python2-six
