@@ -2031,7 +2031,7 @@ standards.")
 (define-public cli11
   (package
     (name "cli11")
-    (version "2.3.2")
+    (version "2.4.2")
     (source
       (origin
         (method git-fetch)
@@ -2040,7 +2040,7 @@ standards.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1iif7kzp3yyjqg4yfar89rqmz44xkbi603gf9kjdqbgraw3f8zy7"))))
+         (base32 "1kxggvgbdjx73rx9d91dm9imzcacf5jjfnjn2vaq6h6lvwlcdf04"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
