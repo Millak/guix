@@ -183,6 +183,36 @@ and the r-build-system."
         "Everything related to the Sugar Desktop and learning environment."
         #:scope (list "gnu/packages/sugar.scm")))
 
+(define-team sysadmin
+  (team 'sugar
+        #:name "Sysadmin team"
+        #:description
+        "Networking, server clustering, high availability."
+        #:scope (list "gnu/packages/admin.scm"
+                      "gnu/packages/acl.scm"
+                      "gnu/packages/adns.scm"
+                      "gnu/packages/antivirus.scm"
+                      "gnu/packages/apparmor.scm"
+                      "gnu/packages/authentication.scm"
+                      "gnu/packages/cluster.scm"
+                      "gnu/packages/configuration-management"
+                      "gnu/packages/databases.scm"
+                      "gnu/packages/distributed.scm"
+                      "gnu/packages/dns.scm"
+                      "gnu/packages/high-availability.scm"
+                      "gnu/packages/kerberos.scm"
+                      "gnu/packages/logging.scm"
+                      "gnu/packages/monitoring.scm"
+                      "gnu/packages/nfs.scm"
+                      "gnu/packages/openldap.scm"
+                      "gnu/packages/openstack.scm"
+                      "gnu/packages/prometheus.scm"
+                      "gnu/packages/selinux.scm"
+                      "gnu/packages/storage.scm"
+                      "gnu/packages/task-runners.scm"
+                      "gnu/packages/terraform.scm"
+                      "gnu/packages/virtualization.scm")))
+
 (define-team telephony
   (team 'telephony
         #:name "Telephony team"
@@ -720,7 +750,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Sharlatan Hellseher"
                        "sharlatanus@gmail.com")
-  go lisp python science)
+  go lisp python science sysadmin)
 
 (define-member (person "Vivien Kraus"
                        "vivien@planete-kraus.eu")
