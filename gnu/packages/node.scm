@@ -750,14 +750,14 @@ source files.")
 (define-public node-lts
   (package
     (inherit node)
-    (version "18.19.0")
+    (version "20.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.gz"))
               (sha256
                (base32
-                "05qc1dgmrms73073n4l36jrcxf6ygqj959d3cngy5qclrg0isk6x"))
+                "1f180vgr6lrg4gs48q5c414j5sdwaqqp1vnswwr3pvryhznqrbav"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -768,9 +768,12 @@ source files.")
                                           (not (string-contains file "nodejs-openssl.cnf")))))
                   ;; Remove bundled software, where possible
                   (for-each delete-file-recursively
-                            '("deps/cares"
+                            '("deps/brotli"
+                              "deps/cares"
                               "deps/icu-small"
                               "deps/nghttp2"
+                              "deps/ngtcp2"
+                              "deps/uv"
                               "deps/zlib"))
                   (substitute* "Makefile"
                     ;; Remove references to bundled software.
@@ -786,6 +789,8 @@ source files.")
            "--shared-zlib"
            "--shared-brotli"
            "--with-intl=system-icu"
+           "--shared-ngtcp2"
+           "--shared-nghttp3"
            ;;Needed for correct snapshot checksums
            "--v8-enable-snapshot-compression"))
        ((#:phases phases)
@@ -868,13 +873,27 @@ source files.")
                                    "test/parallel/test-zlib-write-after-flush.js")))
                      '())
 
+               ;; https://github.com/nodejs/node/issues/45906
+               ;; This test depends on 64-bit time_t so skipping on 32-bit systems.
+               ,@(if (not (target-64bit?))
+                     '((delete-file "test/parallel/test-fs-utimes-y2K38.js"))
+                     '())
+
                ;; These tests have an expiry date: they depend on the validity of
                ;; TLS certificates that are bundled with the source.  We want this
                ;; package to be reproducible forever, so remove those.
                ;; TODO: Regenerate certs instead.
                (for-each delete-file
                          '("test/parallel/test-tls-passphrase.js"
-                           "test/parallel/test-tls-server-verify.js"))))
+                           "test/parallel/test-tls-server-verify.js"))
+
+               ;; These tests fail when linking to upstream libuv.
+               ;; https://github.com/nodejs/node/commit/3f6addd590
+               (for-each delete-file
+                         '("test/parallel/test-process-euid-egid.js"
+                           "test/parallel/test-process-initgroups.js"
+                           "test/parallel/test-process-setgroups.js"
+                           "test/parallel/test-process-uid-gid.js"))))
            (add-after 'delete-problematic-tests 'replace-llhttp-sources
              (lambda* (#:key inputs #:allow-other-keys)
                ;; Replace pre-generated llhttp sources
@@ -940,10 +959,11 @@ fi"
            c-ares
            brotli
            icu4c
-           libuv
+           libuv-for-node-lts
            `(,nghttp2 "lib")
            openssl
            zlib
+           ; ngtcp2? nghttp3?
            ;; Regular build-time dependencies.
            perl
            pkg-config
@@ -955,9 +975,11 @@ fi"
            coreutils
            c-ares
            icu4c
-           libuv
+           libuv-for-node-lts
            llhttp-bootstrap
            brotli
+           ngtcp2
+           nghttp3
            `(,nghttp2 "lib")
            openssl
            zlib))))
