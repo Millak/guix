@@ -936,7 +936,7 @@ fi"
                  (chmod file #o555))))))))
     (native-inputs
      (list ;; Runtime dependencies for binaries used as a bootstrap.
-           c-ares-for-node
+           c-ares
            brotli
            icu4c
            libuv
@@ -952,7 +952,7 @@ fi"
     (inputs
      (list bash-minimal
            coreutils
-           c-ares-for-node
+           c-ares
            icu4c
            libuv
            llhttp-bootstrap
