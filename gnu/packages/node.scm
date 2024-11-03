@@ -680,7 +680,7 @@ parser definition into a C output.")
 (define-public llhttp-bootstrap
   (package
     (name "llhttp")
-    (version "6.0.11")
+    (version "8.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -689,7 +689,7 @@ parser definition into a C output.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16gaylka6nx9bsff9xga3s8xihxm3k7svrb88lr4dj2s4pzlfga9"))
+                "1808y8mpdcmsi8rxndilngg4nn2fbqfgb29f47kk9mmdpqg5s17r"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -715,6 +715,7 @@ parser definition into a C output.")
                                                "/bin/esbuild")))
                (invoke esbuild
                        "--platform=node"
+                       "--target=node10"
                        "--outfile=bin/generate.js"
                        "--bundle" "bin/generate.ts"))))
          (add-before 'install 'create-install-directories
