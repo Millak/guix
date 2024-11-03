@@ -775,7 +775,9 @@ console.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vgw6hwqh6zbzrvrn3i0xwi9ykm1qdvhqcyz3mjakd7w303lx603"))))
+                "0vgw6hwqh6zbzrvrn3i0xwi9ykm1qdvhqcyz3mjakd7w303lx603"))
+              (patches
+               (search-patches "btop-fix-segfault-on-intel-gpus.patch"))))
     (build-system gnu-build-system)
     (native-inputs (list lowdown))
     (arguments
