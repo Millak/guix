@@ -2189,7 +2189,7 @@ sandboxed desktop applications on GNU/Linux.")
     (native-inputs
      (list dpkg
            libarchive
-           node
+           node-lts
            perl-app-cpanminus
            python
            ruby-rspec
