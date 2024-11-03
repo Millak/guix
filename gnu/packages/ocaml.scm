@@ -9081,7 +9081,7 @@ libraries.")
            ocaml-yojson))
     (native-inputs
      ;; for tests
-     (list node ocaml-ppx-expect ocaml-num))
+     (list node-lts ocaml-ppx-expect ocaml-num))
     (properties `((upstream-name . "js_of_ocaml")))
     (home-page "https://ocsigen.org/js_of_ocaml/")
     (synopsis "Compiler from OCaml bytecode to Javascript")
