@@ -2611,6 +2611,7 @@ and build scripts for the OpenXR loader.")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-our-packages
@@ -2623,10 +2624,6 @@ and build scripts for the OpenXR loader.")
                        "stb_image_write.h")
               (symlink (search-input-file inputs "include/catch.hpp")
                        "catch.hpp")))
-          (add-after 'install 'delete-static-lib
-            (lambda _
-              (delete-file (string-append #$output
-                                          "/lib/libtinygltf.a"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (if tests?
