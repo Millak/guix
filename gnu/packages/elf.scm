@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -85,6 +85,10 @@
                                ;; for more information.
                                "--disable-libdebuginfod"
                                "--disable-debuginfod")
+
+       ,@(if (target-hurd64?)
+             '(#:make-flags '("core-file_no_Werror=yes"))
+             '())
 
        ;; Disable tests on MIPS and PowerPC (without changing
        ;; the arguments list on other systems).
