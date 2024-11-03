@@ -879,7 +879,9 @@ the C, C++, C++/CLI, Objective‑C, C#, and Java programming languages.")
             (uri (string-append "mirror://gnu/indent/indent-" version
                                 ".tar.gz"))
             (sha256
-             (base32 "15c0ayp9rib7hzvrcxm5ijs0mpagw5y8kf5w0jr9fryfqi7n6r4y"))))
+             (base32 "15c0ayp9rib7hzvrcxm5ijs0mpagw5y8kf5w0jr9fryfqi7n6r4y"))
+            ;; Remove patch when updating.
+            (patches (search-patches "indent-CVE-2024-0911.patch"))))
    (build-system gnu-build-system)
    (native-inputs
     (list texinfo))
