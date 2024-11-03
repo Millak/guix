@@ -10,6 +10,7 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Charles <charles@charje.net>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -338,7 +339,7 @@ method, one of the most popular choices for Traditional Chinese users.")
 (define-public liblouis
   (package
     (name "liblouis")
-    (version "3.15.0")
+    (version "3.31.0")
     (source
      (origin
        (method git-fetch)
@@ -348,34 +349,30 @@ method, one of the most popular choices for Traditional Chinese users.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ljy5xsy7vf2r0ix0d7bqcr6qvr6897f8madsx9zlm1mrj31n5px"))))
+        (base32 "02bga2l4jiyrgfqdl27wszz5yd6h80n2dmq3p6nb2br83jywisfh"))))
     (build-system gnu-build-system)
     (outputs '("out" "bin" "doc" "python"))
     (arguments
-     `(#:configure-flags
-       (list
-        "--disable-static"
-        "--enable-ucs4")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-python-extension
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion "python"
-               (invoke "python" "setup.py" "install"
-                       (string-append "--prefix="
-                                      (assoc-ref outputs "python"))
-                       "--root=/")))))))
+     (list
+      #:configure-flags #~(list "--disable-static" "--enable-ucs4")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-python-extension
+            (lambda _
+              (with-directory-excursion "python"
+                (invoke "python3" "setup.py" "install" "--root=/"
+                        (string-append "--prefix=" #$output:python))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("clang-format" ,clang)
-       ("help2man" ,help2man)
-       ("libtool" ,libtool)
-       ("libyaml" ,libyaml)
-       ("makeinfo" ,texinfo)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list autoconf
+           automake
+           clang
+           help2man
+           libtool
+           libyaml
+           texinfo
+           perl
+           pkg-config
+           python-minimal))
     (synopsis "Braille translator and back-translator")
     (description "Liblouis is a braille translator and back-translator named in
 honor of Louis Braille.  It features support for computer and literary braille,
