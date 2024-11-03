@@ -2574,7 +2574,7 @@ input file (in @code{.osm} or @code{.osm.pbf} format).")
 (define-public shapelib
   (package
     (name "shapelib")
-    (version "1.5.0")
+    (version "1.6.1")
     (source
      (origin
        (method git-fetch)
@@ -2583,7 +2583,7 @@ input file (in @code{.osm} or @code{.osm.pbf} format).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lzch0jf6yqhw391phhafzw4ghmiz98zkf698h4fmq109fa2vhqd"))))
+        (base32 "0l67gp1618lcw7fg2iclbh016cqyw85s3cmd3qzx6aw0jq19hj8n"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
@@ -2591,8 +2591,8 @@ input file (in @code{.osm} or @code{.osm.pbf} format).")
     (synopsis "Provides C library to write and update ESRI Shapefiles")
     (description
      "The Shapefile C Library provides the ability to write simple C programs
-for reading, writing and updating (to a limited extent) ESRI Shapefiles, and the
-associated attribute file (@file{.dbf}).")
+for reading, writing and updating (to a limited extent) ESRI Shapefiles, and
+the associated attribute file (@file{.dbf}).")
     (license license:gpl2+)))
 
 (define-public spatialite-tools
