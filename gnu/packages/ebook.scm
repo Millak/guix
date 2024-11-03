@@ -648,7 +648,7 @@ the CHM library CHMLIB.")
 (define-public libmobi
   (package
     (name "libmobi")
-    (version "0.6")
+    (version "0.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -657,7 +657,7 @@ the CHM library CHMLIB.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yps72cm609xn2k7alflkdhp9kgr1w7zzyxjygz0n1kqrdcplihh"))))
+                "0cwya9n0rd97ai0fcqjwq7b3sjzigf3ywp7bnkbbw541f3knpds9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
