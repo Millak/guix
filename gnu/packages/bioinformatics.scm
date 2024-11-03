@@ -6260,7 +6260,7 @@ documents.")
            python-spython
            python-typing-extensions
            ;; Not listed as needed but still necessary:
-           node))
+           node-lts))
     (native-inputs
      (list python-arcp
            python-humanfriendly
