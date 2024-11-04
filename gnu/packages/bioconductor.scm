@@ -21123,14 +21123,14 @@ symbols).")
 (define-public r-reactomepa
   (package
     (name "r-reactomepa")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ReactomePA" version))
        (sha256
         (base32
-         "0i5jrdzg6zcs1jx0lryq8d467lxi1hvd1x6p74ywwxga88p46zk6"))))
+         "15l2j7jhwr3f024h3px18z9kgva3g0kghgwm8gy9dp5ljdz68d4w"))))
     (properties `((upstream-name . "ReactomePA")))
     (build-system r-build-system)
     (propagated-inputs
@@ -21142,7 +21142,8 @@ symbols).")
            r-graphite
            r-gson
            r-igraph
-           r-reactome-db))
+           r-reactome-db
+           r-yulab-utils))
     (native-inputs
      (list r-knitr))
     (home-page "https://guangchuangyu.github.io/software/ReactomePA")
