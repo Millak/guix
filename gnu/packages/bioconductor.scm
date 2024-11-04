@@ -16336,13 +16336,13 @@ the data set is suitable for such analysis.")
 (define-public r-anota2seq
   (package
     (name "r-anota2seq")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "anota2seq" version))
        (sha256
-        (base32 "140k37wswl4w2136pz9y0z82sphzxmgzgk3cr400kkm39wjn7vxm"))))
+        (base32 "0lzpp2pxbpza1wijmj9cz9ia94pyc5b5fknw2njy0qv8rcwxjwhh"))))
     (properties `((upstream-name . "anota2seq")))
     (build-system r-build-system)
     (propagated-inputs
