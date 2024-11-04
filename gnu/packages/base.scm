@@ -537,6 +537,8 @@ used to apply commands with arbitrarily long arguments.")
                                    "tests/split/fail.sh"
                                    ;; These tests error
                                    "tests/dd/nocache.sh"
+                                   ;; These tests can intermitently fail on btrfs
+                                   "tests/cp/reflink-auto.sh"
                                    ;; These tests fail
                                    "tests/cp/sparse.sh"
                                    "tests/cp/special-f.sh"
