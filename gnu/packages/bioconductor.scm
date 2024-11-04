@@ -2287,13 +2287,13 @@ methylation arrays.")
 (define-public r-msdata
   (package
     (name "r-msdata")
-    (version "0.44.0")
+    (version "0.45.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "msdata" version 'experiment))
        (sha256
-        (base32 "0g7mlgks3nfnfipnybs7pvsnmrvmq8888g39badca8pi73q1cm25"))))
+        (base32 "09f4q6741kf4i2vaf9wkcs510s7n3nnyfz3llyxps2yk5f7jjp53"))))
     (properties `((upstream-name . "msdata")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/msdata")
