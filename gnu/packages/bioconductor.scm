@@ -3971,13 +3971,13 @@ data.")
 (define-public r-alpsnmr
   (package
     (name "r-alpsnmr")
-    (version "4.6.0")
+    (version "4.8.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AlpsNMR" version))
               (sha256
                (base32
-                "1c8ynw9424ygc4wj4drbm9gdkdqwgb5z7p72zk3x5zh3zqai0d1d"))))
+                "0aqf87i96fgbjkwkpa86k6kika0xz5f1jw6zs1sjq56q63xnd4bx"))))
     (properties `((upstream-name . "AlpsNMR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3986,7 +3986,6 @@ data.")
            r-cli
            r-dplyr
            r-fs
-           r-future
            r-generics
            r-ggplot2
            r-glue
