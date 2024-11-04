@@ -11709,20 +11709,19 @@ methods for semantic similarity analysis.")
 (define-public r-simplifyenrichment
   (package
     (name "r-simplifyenrichment")
-    (version "1.14.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "simplifyEnrichment" version))
        (sha256
         (base32
-         "1031rkl2gcgx4k1biz4bc38hfq7r6diqk48769jhii0r06ablrhi"))))
+         "04ww535snhd6j6syqfabhi5yrphzlv9ydmvvvxpx5f8x2cai1cp9"))))
     (properties
      `((upstream-name . "simplifyEnrichment")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
-           r-biocgenerics
            r-circlize
            r-clue
            r-cluster
@@ -11732,10 +11731,7 @@ methods for semantic similarity analysis.")
            r-getoptlong
            r-globaloptions
            r-go-db
-           r-gosemsim
-           r-matrix
-           r-org-hs-eg-db
-           r-proxyc
+           r-simona
            r-slam
            r-tm))
     (native-inputs (list r-knitr))
