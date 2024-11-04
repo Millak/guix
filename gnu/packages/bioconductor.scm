@@ -1470,6 +1470,31 @@ annotations.")
      "This is a manifest package for Illumina's EPIC methylation arrays.")
     (license license:artistic2.0)))
 
+(define-public r-illuminahumanmethylationepicv2manifest
+  (package
+    (name "r-illuminahumanmethylationepicv2manifest")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "IlluminaHumanMethylationEPICv2manifest"
+                              version 'annotation))
+       (sha256
+        (base32 "1z4b15x8cai27cqhl2lhl02nx0lv8q5c1774vdvvdajx2hivn77l"))))
+    (properties `((upstream-name . "IlluminaHumanMethylationEPICv2manifest")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-minfi))
+    (native-inputs (list r-knitr))
+    (home-page
+     "https://www.illumina.com/products/by-type/microarray-kits/infinium-methylation-epic.html")
+    (synopsis "Manifest for Illumina's EPIC v2.0 methylation arrays")
+    (description
+     "This package provides a manifest package for Illumina's EPIC v2.0
+methylation arrays.  The version 2 covers more than 935K CpG sites in the
+human genome hg38.  It is an update of the original EPIC v1.0 array (i.e., the
+850K methylation array).")
+    (license license:artistic2.0)))
+
 (define-public r-do-db
   (package
     (name "r-do-db")
