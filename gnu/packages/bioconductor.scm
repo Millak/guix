@@ -21830,14 +21830,14 @@ user's input and automatically retrieving results from GREAT web server.")
 (define-public r-m3c
   (package
     (name "r-m3c")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "M3C" version))
        (sha256
         (base32
-         "1h3zxb3m68lq37g25zqxpmk2c9yrdhydyhh7ad2d30hif73qiacm"))))
+         "11ll6ry20qmiciw2ma5rqbmggd9ahxddk24sh7mqxkrw1c1im760"))))
     (properties `((upstream-name . "M3C")))
     (build-system r-build-system)
     (propagated-inputs
