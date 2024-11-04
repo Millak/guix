@@ -15579,6 +15579,38 @@ utilities and supports all bibliography formats and character encodings
 implemented in bibutils.")
     (license license:gpl2)))
 
+(define-public r-rbiom
+  (package
+    (name "r-rbiom")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rbiom" version))
+       (sha256
+        (base32 "13nma1s3p4bzh8mvikrnmkqyyrx9axvxavq6fyk2w0j804w1qzcg"))))
+    (properties `((upstream-name . "rbiom")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-magrittr
+                             r-openxlsx
+                             r-plyr
+                             r-r-utils
+                             r-rcpp
+                             r-rcppparallel
+                             r-rjson
+                             r-rlang
+                             r-slam))
+    (home-page "https://cmmr.github.io/rbiom/index.html")
+    (synopsis "Read/write, transform, and summarize BIOM data")
+    (description
+     "This package provides a toolkit for working with @dfn{Biological
+Observation Matrix} (BIOM) files.  Features include reading/writing all BIOM
+formats, rarefaction, alpha diversity, beta diversity (including UniFrac),
+summarizing counts by taxonomic level, and sample subsetting.  Standalone
+functions for reading, writing, and subsetting phylogenetic trees are also
+provided.")
+    (license license:agpl3)))
+
 (define-public r-rdpack
   (package
     (name "r-rdpack")
