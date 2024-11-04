@@ -2074,14 +2074,14 @@ includes channel names, protein marker names, and protein marker classes.")
 (define-public r-illumina450probevariants-db
   (package
     (name "r-illumina450probevariants-db")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Illumina450ProbeVariants.db"
                                      version 'experiment))
               (sha256
                (base32
-                "1jpknhp624753rhalf81kvl02k4wj19xpncagzf85c878953vph0"))))
+                "0sp9znznmqhf0h4g5gbz34hn3frki6nfqvfs7v1w6kin3y9k2gr5"))))
     (properties `((upstream-name . "Illumina450ProbeVariants.db")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/Illumina450ProbeVariants.db")
