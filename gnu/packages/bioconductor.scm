@@ -13331,13 +13331,13 @@ large datasets, including support for on-disk data representation.")
 (define-public r-multibac
   (package
     (name "r-multibac")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MultiBaC" version))
        (sha256
-        (base32 "0m08620sii9181y0vlcrw9nbcnp4vnjjxvp96iqlgg5fsb23wbl7"))))
+        (base32 "0bg9jgkrb16g6xxvw1acqc0ydwljwk1zvx3zh597893jifsx0b45"))))
     (properties `((upstream-name . "MultiBaC")))
     (build-system r-build-system)
     (propagated-inputs
