@@ -24849,14 +24849,14 @@ network and metabolic pathways view.")
 (define-public r-bioqc
   (package
     (name "r-bioqc")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioQC" version))
        (sha256
         (base32
-         "14yrqf5wl9r596zvlpf4y48nykg0gwzlxfgi3kdx0i5pfgvi43vk"))))
+         "10m1ch170d1frq6qcryiqbhb0m1nk921frw04qrxf3b4xfmgiq8c"))))
     (properties `((upstream-name . "BioQC")))
     (build-system r-build-system)
     (propagated-inputs
