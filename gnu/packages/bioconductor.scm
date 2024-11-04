@@ -2733,13 +2733,13 @@ storing data.")
 (define-public r-adam
   (package
     (name "r-adam")
-    (version "1.20.0")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ADAM" version))
               (sha256
                (base32
-                "0z0rmpwfhd8p6c4zscviwsningsm740r3pb95cl8brasfdg1kl3v"))))
+                "044r6ykd3kv1zswmnw82q961mxywcmxxyj9x55z6qbykww5868lz"))))
     (properties `((upstream-name . "ADAM")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr
