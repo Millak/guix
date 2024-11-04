@@ -3462,13 +3462,13 @@ in multi-layer WGCN using a continuous optimization approach.")
 (define-public r-amplican
   (package
     (name "r-amplican")
-    (version "1.26.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "amplican" version))
               (sha256
                (base32
-                "1nbyivd5020kqkmk5ngpaixhdxgmqpifaxnfgq6yc2njqizgbhxy"))))
+                "1xv392kxhzal2b8dp0kdjnny75311qm6vvbajx9hlb3k6v34dpqc"))))
     (properties `((upstream-name . "amplican")))
     (build-system r-build-system)
     (propagated-inputs
