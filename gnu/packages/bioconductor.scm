@@ -25095,13 +25095,13 @@ interest on transformed methylation proportions.")
 (define-public r-omnipathr
   (package
     (name "r-omnipathr")
-    (version "3.12.3")
+    (version "3.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "OmnipathR" version))
        (sha256
-        (base32 "17a8zyvqn3avr7dwy0gr3yb8zghplyjxm1yyp5plbw91yhk8f287"))))
+        (base32 "14fwdckmsilq7jj1y9rg0qj0z2xrryajwhib8k8wss0ys6sk7fzz"))))
     (properties `((upstream-name . "OmnipathR")))
     (build-system r-build-system)
     (arguments
@@ -25124,20 +25124,25 @@ interest on transformed methylation proportions.")
            r-magrittr
            r-progress
            r-purrr
+           r-r-utils
            r-rappdirs
            r-readr
            r-readxl
            r-rlang
            r-rmarkdown
+           r-rsqlite
            r-rvest
            r-stringi
            r-stringr
            r-tibble
            r-tidyr
            r-tidyselect
+           r-vctrs
            r-withr
+           r-xml
            r-xml2
-           r-yaml))
+           r-yaml
+           r-zip))
     (native-inputs (list r-knitr))
     (home-page "https://saezlab.github.io/OmnipathR/")
     (synopsis "OmniPath web service client and more")
