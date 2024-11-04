@@ -1728,14 +1728,14 @@ dataset for the examples in package viper.")
 (define-public r-bodymaprat
   (package
     (name "r-bodymaprat")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bodymapRat" version
                               'experiment))
        (sha256
-        (base32 "15kjgqq7lq94pjqg380swqrkv684kgbpkaikfxxdx4cpgx8sjzn7"))))
+        (base32 "06rqhnri8nwy1p8srzmhi0z81q9nwdk1q413if7n3760gp0qfgbn"))))
     (properties `((upstream-name . "bodymapRat")))
     (build-system r-build-system)
     (arguments
