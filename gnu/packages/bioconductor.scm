@@ -22381,13 +22381,13 @@ matrices.")
 (define-public r-beadarray
   (package
     (name "r-beadarray")
-    (version "2.54.0")
+    (version "2.56.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "beadarray" version))
               (sha256
                (base32
-                "0yda6maj985k374bh6zkrs8qffw1jrz9gc3mja07ibyn4pvzkclq"))))
+                "1khlljv6q32y2jg17g3lf6hvjs36ld27nasv03vlq7mb61pgda7d"))))
     (properties `((upstream-name . "beadarray")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationdbi
