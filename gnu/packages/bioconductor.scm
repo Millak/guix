@@ -20296,13 +20296,13 @@ directly interact with SingleCellExperiment and Seurat objects.")
 (define-public r-ucsc-utils
   (package
     (name "r-ucsc-utils")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "UCSC.utils" version))
        (sha256
-        (base32 "0w9f5xd6ryniapbpcrpczn8wimph2154w45cvdgqfa3dv5qy379l"))))
+        (base32 "14nyaqwz1mvaab5kj63j8h56f2n14v6dz5l1nl9zpp4icgx9hp64"))))
     (properties `((upstream-name . "UCSC.utils")))
     (build-system r-build-system)
     (propagated-inputs (list r-httr r-jsonlite r-s4vectors))
