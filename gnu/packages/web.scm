@@ -6431,13 +6431,14 @@ and similar services.")
     (arguments
      (list
       #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
-      #:tests? #f ; No test suite
+      #:test-target "test"
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)            ; no configure script
           (replace 'install
             (lambda _
               (install-file "darkhttpd" (string-append #$output "/bin")))))))
+    (native-inputs (list which python-minimal))
     (synopsis "Simple static web server")
     (description "darkhttpd is a simple static web server.  It is
 standalone and does not need inetd or ucspi-tcp.  It does not need any
