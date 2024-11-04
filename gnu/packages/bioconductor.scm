@@ -7794,14 +7794,14 @@ adapted from transcriptomics.")
 (define-public r-dirichletmultinomial
   (package
     (name "r-dirichletmultinomial")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DirichletMultinomial" version))
        (sha256
         (base32
-         "0djd84vnf4skjr6m25ykqrvwa37lgs5r5aw9md81ykaqmi40szqb"))))
+         "1chwd1zidc0abjl4kc5j58f4dwbghwnzlqx47ymln35b2gggj61w"))))
     (properties
      `((upstream-name . "DirichletMultinomial")))
     (build-system r-build-system)
@@ -7809,6 +7809,7 @@ adapted from transcriptomics.")
      (list gsl))
     (propagated-inputs
      (list r-biocgenerics r-iranges r-s4vectors))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/DirichletMultinomial")
     (synopsis "Dirichlet-Multinomial mixture models for microbiome data")
     (description
