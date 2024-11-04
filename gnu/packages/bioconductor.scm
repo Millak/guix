@@ -6131,13 +6131,13 @@ in Python.")
 (define-public r-dss
   (package
     (name "r-dss")
-    (version "2.52.0")
+    (version "2.54.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DSS" version))
               (sha256
                (base32
-                "1y9xg6ic3a03xswyfvyxdhnd7ngkljc96bm5fry4ni6kpa77bkv8"))))
+                "03dzxxlyqymp827w2sdrpwn51q8n5xggx06m8gh7p1aigk5c50ah"))))
     (properties `((upstream-name . "DSS")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-biocparallel r-bsseq))
