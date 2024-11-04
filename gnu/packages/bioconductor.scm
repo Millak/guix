@@ -22807,14 +22807,14 @@ quality control.")
 (define-public r-scran
   (package
     (name "r-scran")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scran" version))
        (sha256
         (base32
-         "0s1y2q4v596wxh8p5sr43mk9cnsc4kg36ld7vx71hbn3hwscqaa1"))))
+         "1gi5sv5bb7y8r95sr7cc01cy01j1ymc9piyjmriz0ybyh8flwyrv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-beachmat
@@ -22824,14 +22824,15 @@ quality control.")
            r-biocsingular
            r-bluster
            r-delayedarray
-           r-delayedmatrixstats
            r-dqrng
            r-edger
            r-igraph
            r-limma
            r-matrix
+           r-matrixgenerics
            r-metapod
            r-rcpp
+           r-s4arrays
            r-s4vectors
            r-scuttle
            r-singlecellexperiment
