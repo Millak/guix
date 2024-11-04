@@ -24026,28 +24026,32 @@ all RNA-Seq libraries of each species integrated in Bgee.")
 (define-public r-bgeedb
   (package
     (name "r-bgeedb")
-    (version "2.30.1")
+    (version "2.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BgeeDB" version))
        (sha256
         (base32
-         "16fghmms2yb7i9rj6p3jypx6m7c3flgm8dmnkng7fvxcckaa4lry"))))
+         "15hnn6rk9hv623zzjsg1axydvlj3vjpwyhvhw0xpmk9q7zm6g79h"))))
     (properties `((upstream-name . "BgeeDB")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biobase
+     (list r-anndata
+           r-biobase
+           r-bread
            r-curl
            r-data-table
            r-digest
            r-dplyr
            r-graph
+           r-hdf5array
            r-r-utils
            r-rcurl
            r-rsqlite
            r-tidyr
-           r-topgo))
+           r-topgo
+           r-zellkonverter))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/BgeeDB/BgeeDB_R")
     (synopsis "Annotation and gene expression data retrieval from Bgee database")
