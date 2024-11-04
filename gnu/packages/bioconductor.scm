@@ -23888,14 +23888,14 @@ visualizations for publication-quality multi-panel figures.")
 (define-public r-ballgown
   (package
     (name "r-ballgown")
-    (version "2.36.0")
+    (version "2.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ballgown" version))
        (sha256
         (base32
-         "0x3avbqf0ipmb70szf2chhbdg14ba2hwhyyz0wd66c1qwfk6aj9v"))))
+         "1b49hxr5glxzpcy3ykk62fcn9kqyadlhwyl01rhz70wcnryhzzd8"))))
     (properties `((upstream-name . "ballgown")))
     (build-system r-build-system)
     (propagated-inputs
