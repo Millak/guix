@@ -15520,14 +15520,14 @@ Bayes Analyses of Microarrays} (EBAM).")
 (define-public r-bumphunter
   (package
     (name "r-bumphunter")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bumphunter" version))
        (sha256
         (base32
-         "08b5d0grmpk5pryffdh6gdafhp1brana353q2kmwhz7x55aq3w68"))))
+         "185kxkx7lcnylfwp6c9hnnxarwa3rrwb1q45c5z6hl3wj7d74154"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
