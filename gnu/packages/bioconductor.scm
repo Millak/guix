@@ -7511,14 +7511,14 @@ experiments.")
 (define-public r-complexheatmap
   (package
     (name "r-complexheatmap")
-    (version "2.20.0")
+    (version "2.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ComplexHeatmap" version))
        (sha256
         (base32
-         "1ppzx850nvvdhz2xiggr43c79w0nr0vmsmmnszasd4flf3jm7v8v"))))
+         "1hab197h1d01p8960zqmb0vnhgw9bk68ibmappryhv1jb4ibmx60"))))
     (properties
      `((upstream-name . "ComplexHeatmap")))
     (build-system r-build-system)
