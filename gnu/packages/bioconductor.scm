@@ -4813,13 +4813,13 @@ you will have to normalize your data beforehand.")
 (define-public r-bader
   (package
     (name "r-bader")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BADER" version))
               (sha256
                (base32
-                "15lsvfmp4qsrv12bcrz5q8yz8xyg9rckrcflr3k6si03z2vw812p"))))
+                "1bksx6a0xg7hd3nd32d5pjfwb9iy64asvdp6drwlkyxv9fys976y"))))
     (properties `((upstream-name . "BADER")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/BADER")
