@@ -22725,14 +22725,14 @@ cell types to infer the cell of origin of each single cell independently.")
 (define-public r-scuttle
   (package
     (name "r-scuttle")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scuttle" version))
        (sha256
         (base32
-         "1cja56k5y5vi1x0jdxaxvh13fc2lzh8g30gp294pz6p61prrf3ws"))))
+         "0h13a9pgsm3w324622qlp9nqpvq6gsjwcyd44d6w5yzrl9jcsliv"))))
     (properties `((upstream-name . "scuttle")))
     (build-system r-build-system)
     (propagated-inputs
@@ -22740,12 +22740,14 @@ cell types to infer the cell of origin of each single cell independently.")
            r-biocgenerics
            r-biocparallel
            r-delayedarray
-           r-delayedmatrixstats
            r-genomicranges
            r-matrix
+           r-matrixgenerics
            r-rcpp
+           r-s4arrays
            r-s4vectors
            r-singlecellexperiment
+           r-sparsearray
            r-summarizedexperiment))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/scuttle")
