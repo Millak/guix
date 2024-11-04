@@ -514,13 +514,13 @@ multi-dimensional data, considering its structure.")
 (define-public r-changepoint
   (package
     (name "r-changepoint")
-    (version "2.2.4")
+    (version "2.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "changepoint" version))
               (sha256
                (base32
-                "16v4p2c9zi2w3anwf5y9snl5dy1g5aidiqz1vn2p64qhfvg6yqxc"))))
+                "0bb8pcfwb8vjmg7n7giad1vi1s6ix486lcsb28zvxih7v04v1a0r"))))
     (properties `((upstream-name . "changepoint")))
     (build-system r-build-system)
     (propagated-inputs (list r-zoo))
