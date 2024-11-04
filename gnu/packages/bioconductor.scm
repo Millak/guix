@@ -8600,16 +8600,16 @@ manner.")
 (define-public r-gypsum
   (package
     (name "r-gypsum")
-    (version "1.0.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "gypsum" version))
        (sha256
-        (base32 "1zrmxmlnbiifc2p5mn10y3vpmyzqjimd2hvc3s9c0j0iv6ryxjv0"))))
+        (base32 "1qyb90r5qji9r0hy986891dyjqmryyszjp2v27q054mimwbgwskk"))))
     (properties `((upstream-name . "gypsum")))
     (build-system r-build-system)
-    (propagated-inputs (list r-filelock r-httr2 r-jsonlite))
+    (propagated-inputs (list r-filelock r-httr2 r-jsonlite r-rappdirs))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/ArtifactDB/gypsum-R")
     (synopsis "Interface to the gypsum REST API")
