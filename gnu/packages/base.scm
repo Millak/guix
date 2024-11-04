@@ -154,6 +154,13 @@ command-line arguments, multiple languages, and so on.")
                                        (string-append bin "/fgrep"))
                       (("^exec grep")
                        (string-append "exec " bin "/grep"))))))
+              #$@(if (target-hurd64?)
+                     #~((add-after 'unpack 'patch-sigsegv
+                          (lambda _
+                            ;; Stack overflow recovery does not compile
+                            (substitute* "lib/sigsegv.in.h"
+                              (("__GNU__") "__XGNU__")))))
+                     #~())
               #$@(if (system-hurd?)
                      #~((add-before 'check 'skip-test
                           (lambda _
