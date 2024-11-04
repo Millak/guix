@@ -16835,14 +16835,14 @@ provides reporting features.")
 (define-public r-a4base
   (package
     (name "r-a4base")
-    (version "1.52.0")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "a4Base" version))
        (sha256
         (base32
-         "19vapjmyd3ly3s2gqa2xfg99gyc6n6lv3c6rpi0ch4hzb7wiinvm"))))
+         "1x62125rinav1g3s549f4s59z3ddcmzznnghlh8w54sabnz3i45d"))))
     (properties `((upstream-name . "a4Base")))
     (build-system r-build-system)
     (propagated-inputs
