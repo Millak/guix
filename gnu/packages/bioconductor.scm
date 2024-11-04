@@ -8823,13 +8823,13 @@ microarray data, using nearest neighbor averaging.")
 (define-public r-interactivedisplay
   (package
     (name "r-interactivedisplay")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "interactiveDisplay" version))
               (sha256
                (base32
-                "14k1j8bmpbrldx61fbvn20f7l2lc50bj9iy01a5jf0ddcbi27x5g"))
+                "1gqn93j7ysa34qgwv1166a51n817zm1pcghx7i7wjaiazbs9rlv9"))
               (snippet
                '(for-each delete-file
                           '("inst/www/js/d3.v2.js"
@@ -8888,6 +8888,7 @@ microarray data, using nearest neighbor averaging.")
     (native-inputs
      `(("esbuild" ,esbuild)
        ("r-knitr" ,r-knitr)
+       ;; D3 version 2.10.3
        ("js-d3-v2"
         ,(origin
            (method url-fetch)
@@ -8895,7 +8896,9 @@ microarray data, using nearest neighbor averaging.")
            (sha256
             (base32
              "1m57mxhcynfaz6gz3v0aph5i6hx5jf455jdygyl8yzs9r2dpp5vr"))))
+       ;; Version 1.9.4 is bundled
        ("js-datatables-1.9" ,js-datatables-1.9)
+       ;; Version 1.10.0 is bundled
        ("js-datatables-1.10" ,js-datatables)
        ("js-jquery-1.8.2"
         ,(origin
