@@ -4705,13 +4705,13 @@ artifacts.")
 (define-public r-baalchip
   (package
     (name "r-baalchip")
-    (version "1.30.0")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BaalChIP" version))
               (sha256
                (base32
-                "1xm6czgbfz2rjrz5996d0n7xmlh9pd1mw9i8ac66pmn5fi44pbz2"))))
+                "0zhxsw1sbk6kmxm9ypw211ybdn29lid5r2cjz7j855822afgg0l4"))))
     (properties `((upstream-name . "BaalChIP")))
     (build-system r-build-system)
     (inputs (list)) ; extra/get.overlaps.v2_chrXY.perl
