@@ -15907,22 +15907,28 @@ and Infinium HD arrays are also included.")
 (define-public r-lefser
   (package
     (name "r-lefser")
-    (version "1.14.0")
+    (version "1.16.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "lefser" version))
               (sha256
                (base32
-                "1qi4q3vijys4q1gfnflvvz8ws3j6f65rpprpgmrkqgiwfn7dvi6g"))))
+                "1kq64150kjcqfqrnj1vpn83345xpvnxw3kddg5c36hwww3bh2mpj"))))
     (properties `((upstream-name . "lefser")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-coin
            r-dplyr
+           r-forcats
            r-ggplot2
+           r-ggtree
            r-mass
            r-s4vectors
-           r-summarizedexperiment))
+           r-stringr
+           r-summarizedexperiment
+           r-testthat
+           r-tibble
+           r-tidyr))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/waldronlab/lefser")
     (synopsis "LEfSE method for microbiome biomarker discovery")
