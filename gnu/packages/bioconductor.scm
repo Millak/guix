@@ -14513,18 +14513,19 @@ missing values and weighting where appropriate.")
 (define-public r-biocsingular
   (package
     (name "r-biocsingular")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocSingular" version))
        (sha256
         (base32
-         "1xl9wn3slj3ywjglb8zq2p0ifx4xwxbqsm99fjlf6hanfhmnxyay"))))
+         "17flxapf8jw44rsbfz0iifhn6kdb2248lppbq0iz9c021wxlk28h"))))
     (properties `((upstream-name . "BiocSingular")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-beachmat
+     (list r-assorthead
+           r-beachmat
            r-biocgenerics
            r-biocparallel
            r-delayedarray
