@@ -11078,13 +11078,13 @@ differential expression analysis, RNAseq data and related problems.")
 (define-public r-saturn
   (package
     (name "r-saturn")
-    (version "1.12.0")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "satuRn" version))
               (sha256
                (base32
-                "03mlb4j219w8760zm5hnryjwxns3qz9y3wl6zaqdfnl94bwyl9r8"))))
+                "0rfh0zprl1gibcanjwp4sncjv5k660lhylbiaqwgri7n62jz7k9m"))))
     (properties `((upstream-name . "satuRn")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocparallel
