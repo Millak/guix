@@ -15061,14 +15061,14 @@ the numbers of cells across batches.")
 (define-public r-mast
   (package
     (name "r-mast")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MAST" version))
        (sha256
         (base32
-         "1k8an0ifcgx54lqzpim3q37y4rhv57i94i46dlpmdyfghqqw0fny"))
+         "0fn50b4yxsslgvw8l6zfbxr4bl8hd9rb7p3dggw040hfm8gadgl9"))
        (snippet
         '(delete-file "docs/jquery.sticky-kit.min.js"))))
     (properties `((upstream-name . "MAST")))
