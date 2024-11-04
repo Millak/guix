@@ -8251,13 +8251,13 @@ names in their natural, rather than lexicographic, order.")
 (define-public r-genomicalignments
   (package
     (name "r-genomicalignments")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicAlignments" version))
               (sha256
                (base32
-                "15jzdjna0r9n6ybvyw52v1d9f05vdsdxff0g8q0pa584a1sd2s7s"))))
+                "1ycawwp0b8gk9sccqdwklq4yh3rns9iw34qdx5ysw4nxksi4vf6y"))))
     (properties
      `((upstream-name . "GenomicAlignments")))
     (build-system r-build-system)
@@ -8271,6 +8271,7 @@ names in their natural, rather than lexicographic, order.")
            r-rsamtools
            r-s4vectors
            r-summarizedexperiment))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/GenomicAlignments")
     (synopsis "Representation and manipulation of short genomic alignments")
     (description
