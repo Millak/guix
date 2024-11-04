@@ -5055,13 +5055,13 @@ packages.")
 (define-public r-breakpointr
   (package
     (name "r-breakpointr")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "breakpointR" version))
               (sha256
                (base32
-                "0imbsqrslclvfyvc00sv6ngvl5hqlr6ian07v521m63ffpx6ll78"))))
+                "0x95r30dvkkpsbang8vj0xg4mc48ljc5ci318m55n92lk0lfzpa0"))))
     (properties `((upstream-name . "breakpointR")))
     (build-system r-build-system)
     (propagated-inputs
