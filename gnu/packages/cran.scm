@@ -13373,13 +13373,13 @@ environment within Shiny.")
 (define-public r-raceid
   (package
     (name "r-raceid")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RaceID" version))
        (sha256
-        (base32 "0zqas0dfsvcbjzv2b83zy13pxyzfhh81xrfbzxq8a7ykk0nyrx26"))))
+        (base32 "1rqasncf3jfk0pfxb8ymw3hnfz644y3zi4gjgcwhs0185i4l03aj"))))
     (properties `((upstream-name . "RaceID")))
     (build-system r-build-system)
     (propagated-inputs (list r-cluster
