@@ -22944,14 +22944,14 @@ Visium platform.")
 (define-public r-delayedmatrixstats
   (package
     (name "r-delayedmatrixstats")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DelayedMatrixStats" version))
        (sha256
         (base32
-         "1cqf6y0f18469v1jgfvdjnskkc89i3sfg79axxqcwa33mfjj736s"))))
+         "01yrbmdj38r6h4n0nvg5njz8v6qmqcfdq3mgg07z1cslvad958d3"))))
     (properties
      `((upstream-name . "DelayedMatrixStats")))
     (build-system r-build-system)
@@ -22961,6 +22961,7 @@ Visium platform.")
            r-matrix
            r-matrixgenerics
            r-s4vectors
+           r-sparsearray
            r-sparsematrixstats))
     (native-inputs
      (list r-knitr))
