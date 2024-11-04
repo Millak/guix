@@ -9142,6 +9142,36 @@ functions from LINPACK.")
     ;; Any GPL version.
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-litedown
+  (package
+    (name "r-litedown")
+    (version "0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "litedown" version))
+       (sha256
+        (base32 "1324iw339img4nacpp79n1md6argxzcxhlr5kccscldwzx6q9a6a"))))
+    (properties `((upstream-name . "litedown")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-commonmark r-xfun))
+    (home-page "https://github.com/yihui/litedown")
+    (synopsis "Lightweight version of R Markdown")
+    (description
+     "Render R Markdown to Markdown (without using @code{knitr}), and Markdown
+to lightweight HTML or @code{LaTeX} documents with the @code{commonmark}
+package (instead of Pandoc).  Some missing Markdown features in
+@code{commonmark} are also supported, such as raw HTML or @code{LaTeX} blocks,
+@code{LaTeX} math, superscripts, subscripts, footnotes, element attributes,
+and appendices, but not all Pandoc Markdown features are (or will be)
+supported.  With additional @code{JavaScript} and CSS, you can also create
+HTML slides and articles.  This package can be viewed as a trimmed-down
+version of R Markdown and @code{knitr}.  It does not aim at rich Markdown
+features or a large variety of output formats (the primary formats are HTML
+and @code{LaTeX}).  Book and website projects of multiple input documents are
+also supported.")
+    (license license:expat)))
+
 (define-public r-littler
   (package
     (name "r-littler")
