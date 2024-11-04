@@ -17441,14 +17441,14 @@ investigation using RNA-seq data.")
 (define-public r-aucell
   (package
     (name "r-aucell")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AUCell" version))
        (sha256
         (base32
-         "009ha82393giapvmfw2mi8pmi88f61mr69qj64y5vphcr1smvcl0"))))
+         "1n5xb6qymfywglnnh1klxlqzhry78kwn8zlpvz7z06w6ixfc9q80"))))
     (properties `((upstream-name . "AUCell")))
     (build-system r-build-system)
     (propagated-inputs
