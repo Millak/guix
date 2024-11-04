@@ -1424,6 +1424,30 @@ Google.  @code{googleVis} makes use of the internal R HTTP server to display
 the output locally.")
     (license license:gpl2+)))
 
+(define-public r-gsignal
+  (package
+    (name "r-gsignal")
+    (version "0.3-7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gsignal" version))
+       (sha256
+        (base32 "1chkzv3bx1nas1yc6l5i3hgc8m40n1lm1y3c8577l8sqi89hnhs3"))))
+    (properties `((upstream-name . "gsignal")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-pracma r-rcpp))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/gjmvanboxtel/gsignal")
+    (synopsis "Signal processing")
+    (description
+     "This package provides an R implementation of the Octave package
+@code{signal}, containing a variety of signal processing tools, such as signal
+generation and measurement, correlation and convolution, filtering, filter
+design, filter analysis and conversion, power spectrum analysis, system
+identification, decimation and sample rate change, and windowing.")
+    (license license:gpl3)))
+
 (define-public r-gson
   (package
     (name "r-gson")
