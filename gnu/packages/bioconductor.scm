@@ -3813,13 +3813,13 @@ for interacting with other cloud providers.")
 (define-public r-aldex2
   (package
     (name "r-aldex2")
-    (version "1.36.0")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ALDEx2" version))
               (sha256
                (base32
-                "1bqpk93bbyajw2dm54d68f3dkc0jgcny109asfm6kcz7dg7szi3y"))))
+                "1c22h27w852b5mbniw6266r8pxf28ii5czi8iki6ik9k3l4n6xzd"))))
     (properties `((upstream-name . "ALDEx2")))
     (build-system r-build-system)
     (propagated-inputs
