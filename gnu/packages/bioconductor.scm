@@ -3360,13 +3360,13 @@ context-specific properties.")
 (define-public r-alabaster-sce
   (package
     (name "r-alabaster-sce")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "alabaster.sce" version))
        (sha256
-        (base32 "1i9nmivsfrd7fbb8njmwihfx4xpj4p3h5bnlj9fvk5308bbj3qcg"))))
+        (base32 "0ddi6y2c8csxrzqv5h0lmxvhvhiz285f0hd01q8mpn9rs4n5cljs"))))
     (properties `((upstream-name . "alabaster.sce")))
     (build-system r-build-system)
     (propagated-inputs (list r-alabaster-base r-alabaster-se r-jsonlite
