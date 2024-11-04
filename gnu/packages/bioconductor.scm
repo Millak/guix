@@ -9703,14 +9703,14 @@ platform that mimics both single and multi-sample scRNA-seq data.")
 (define-public r-mutationalpatterns
   (package
     (name "r-mutationalpatterns")
-    (version "3.14.0")
+    (version "3.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MutationalPatterns" version))
        (sha256
         (base32
-         "0smf4l023ckwsm5ckrqqw7kjyi1awp378mzhab7v8nk9n5smsj61"))))
+         "16a5g9l025pj7xrl3g78nkqyrcnldj8y2025ibvsfg0921zyqiyp"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -9718,9 +9718,6 @@ platform that mimics both single and multi-sample scRNA-seq data.")
      (list r-biocgenerics
            r-biostrings
            r-bsgenome
-           ;; These two packages are suggested packages
-           r-bsgenome-hsapiens-1000genomes-hs37d5
-           r-bsgenome-hsapiens-ucsc-hg19
            r-cowplot
            r-dplyr
            r-genomeinfodb
@@ -9738,7 +9735,11 @@ platform that mimics both single and multi-sample scRNA-seq data.")
            r-stringr
            r-tibble
            r-tidyr
-           r-variantannotation))
+           r-variantannotation
+
+           ;; These two packages are suggested packages
+           r-bsgenome-hsapiens-ucsc-hg19
+           r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "https://bioconductor.org/packages/MutationalPatterns/")
     (synopsis "Extract and visualize mutational patterns in genomic data")
     (description "This package provides an extensive toolset for the
