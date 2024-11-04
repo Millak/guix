@@ -23226,14 +23226,14 @@ by Ernst and Kellis.")
 (define-public r-ggbio
   (package
     (name "r-ggbio")
-    (version "1.52.0")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ggbio" version))
        (sha256
         (base32
-         "0g6h1h8azy79pzm0g8967f58gp33nl8866b285ybq6501nj8pb1p"))))
+         "1p9ja262rnvdf5gmbspkrkwvbdv4la0321m92c0l78wj3mc9y1zh"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
