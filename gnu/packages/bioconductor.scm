@@ -3011,13 +3011,13 @@ also provided.")
 (define-public r-affyrnadegradation
   (package
     (name "r-affyrnadegradation")
-    (version "1.50.0")
+    (version "1.52.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AffyRNADegradation" version))
               (sha256
                (base32
-                "19lcs76jsdy5dz57rkdb8qqankpasrw2r5z4cy98q94az6582ix4"))))
+                "1k7d2w377w9ab7f9j71mc92lx3w851mxbm7lrrbzv63zbv7cynbk"))))
     (properties `((upstream-name . "AffyRNADegradation")))
     (build-system r-build-system)
     (propagated-inputs (list r-affy))
