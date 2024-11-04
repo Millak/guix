@@ -1808,11 +1808,13 @@ of the same name.")
     (version "4.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
-                           version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/wireshark/wireshark")
+             (commit (string-append "wireshark-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1v2nflm8rdifc6pwlzn1ciz22wl15zwkqs3r7gjw60kh59brd7ib"))))
+        (base32 "0cc1dqmlc2jqgd6gg407qk0qkg3cjbiafzw8pf2pxhnh7n94fyki"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -1821,7 +1823,8 @@ of the same name.")
       ;; fail.
       #:qtbase qtbase
       #:configure-flags
-      #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath=" #$output "/lib"))
+      #~(list (string-append "-DVCSVERSION_OVERRIDE=" #$version)
+              (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath=" #$output "/lib"))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
