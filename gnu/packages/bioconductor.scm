@@ -20322,19 +20322,19 @@ txdbmaker.")
 (define-public r-unifiedwmwqpcr
   (package
     (name "r-unifiedwmwqpcr")
-    (version "1.38.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "unifiedWMWqPCR" version))
        (sha256
         (base32
-         "0v3jpnm3nq66xvckmc8447xl7wngfhhiwq6vjx54wgc6f586vmgd"))))
+         "174dj0vkccabi89jf3ld39ksl6gds9q5kadyrqvvmnp5ic9h59wj"))))
     (properties
      `((upstream-name . "unifiedWMWqPCR")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biocgenerics r-htqpcr))
+     (list r-biocgenerics r-limma))
     (home-page "https://bioconductor.org/packages/unifiedWMWqPCR")
     (synopsis "Unified Wilcoxon-Mann Whitney Test for differential expression in qPCR data")
     (description
