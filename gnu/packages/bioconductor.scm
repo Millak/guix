@@ -18138,14 +18138,14 @@ the data.")
 (define-public r-zfpkm
   (package
     (name "r-zfpkm")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "zFPKM" version))
        (sha256
         (base32
-         "1pgmw41xdq9gd2shc6kawgxz9sw1ydlgs0p35k99k2v50f86r2wy"))))
+         "1hhlx7xqjlnm90j8hk5qypk225n4w38qsn2v4vdaar96z6lm2rnq"))))
     (properties `((upstream-name . "zFPKM")))
     (build-system r-build-system)
     (propagated-inputs
