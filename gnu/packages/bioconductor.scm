@@ -18510,14 +18510,14 @@ graphics.")
 (define-public r-birewire
   (package
     (name "r-birewire")
-    (version "3.36.0")
+    (version "3.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiRewire" version))
        (sha256
         (base32
-         "1l3hkq6n7i9j82aym4ngwablj8jqb70a7y6skx0rjkflya6wbim7"))))
+         "0503vd2alhpda2brqgg0cqw6w9bad3yz92gsm4fbmyf1lklwlhg8"))))
     (properties `((upstream-name . "BiRewire")))
     (build-system r-build-system)
     (propagated-inputs
