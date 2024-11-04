@@ -339,27 +339,34 @@ differences.")
                   "1bk38169c0xh01b0q0zmnrjqz8k9byz3arp4q7q66sn6xwf94nvz"))
                 (patches (search-patches "patch-hurd-path-max.patch"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases '%standard-phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'copy-gnulib-sources
-                (lambda _
-                  ;; XXX: We copy the source instead of using 'gnulib' as a
-                  ;; native input to avoid introducing a dependency cycle.
-                  (copy-recursively #+gnulib "gnulib")
-                  (setenv "GNULIB_SRCDIR"
-                          (string-append (getcwd) "/gnulib/src/gnulib"))))
-              (add-after 'copy-gnulib-sources 'update-bootstrap-script
-                (lambda _
-                  (copy-file "gnulib/src/gnulib/build-aux/bootstrap"
-                             "bootstrap")))
-              (add-after 'unpack 'patch-configure.ac
-                (lambda _
-                  (substitute* "configure.ac"
-                    ;; The gnulib-provided git-version-gen script has a plain
-                    ;; shebang of #!/bin/sh; avoid using it.
-                    (("build-aux/git-version-gen" all)
-                     (string-append "sh " all)))))))))
+       (let ((arguments
+         (substitute-keyword-arguments (package-arguments base)
+           ((#:phases phases '%standard-phases)
+            #~(modify-phases #$phases
+                (add-after 'unpack 'copy-gnulib-sources
+                  (lambda _
+                    ;; XXX: We copy the source instead of using 'gnulib' as a
+                    ;; native input to avoid introducing a dependency cycle.
+                    (copy-recursively #+gnulib "gnulib")
+                    (setenv "GNULIB_SRCDIR"
+                            (string-append (getcwd) "/gnulib/src/gnulib"))))
+                (add-after 'copy-gnulib-sources 'update-bootstrap-script
+                  (lambda _
+                    (copy-file "gnulib/src/gnulib/build-aux/bootstrap"
+                               "bootstrap")))
+                (add-after 'unpack 'patch-configure.ac
+                  (lambda _
+                    (substitute* "configure.ac"
+                      ;; The gnulib-provided git-version-gen script has a plain
+                      ;; shebang of #!/bin/sh; avoid using it.
+                      (("build-aux/git-version-gen" all)
+                       (string-append "sh " all))))))))))
+         (if (target-hurd64?)
+             (substitute-keyword-arguments arguments
+               ((#:configure-flags flags '())
+                #~(list "--disable-threads"
+                        "gl_cv_func_working_mktime=yes")))
+             arguments)))
       (native-inputs (list autoconf automake bison ed))
       (properties '()))))
 
