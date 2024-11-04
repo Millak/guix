@@ -6057,13 +6057,13 @@ results.")
 (define-public r-dropletutils
   (package
     (name "r-dropletutils")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DropletUtils" version))
        (sha256
-        (base32 "01y88cnii02sn1jgyvvmbx8j60qbzqyznqfxzv06yi4y0xj37klg"))))
+        (base32 "0659hpzjcch68dwi73a9rnkbxxfvivd09208z60q2fd22w2qgdjx"))))
     (properties `((upstream-name . "DropletUtils")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6086,6 +6086,7 @@ results.")
            r-s4vectors
            r-scuttle
            r-singlecellexperiment
+           r-sparsearray
            r-summarizedexperiment))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/DropletUtils")
