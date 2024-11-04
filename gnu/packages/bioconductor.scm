@@ -15017,14 +15017,14 @@ multiplication and calculation of row/column sums or means.")
 (define-public r-batchelor
   (package
     (name "r-batchelor")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "batchelor" version))
        (sha256
         (base32
-         "1h70rm0h711ndj9kz3q10yd9f6npjiwvk9wmkg6w3pdgjni1nrl0"))))
+         "0l63w2c2jl27rj47604lx80wlppsp7h1panbm0n89fvf4vbzgm22"))))
     (properties `((upstream-name . "batchelor")))
     (build-system r-build-system)
     (propagated-inputs
@@ -15043,6 +15043,7 @@ multiplication and calculation of row/column sums or means.")
            r-scaledmatrix
            r-scuttle
            r-singlecellexperiment
+           r-sparsearray
            r-summarizedexperiment))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/batchelor")
