@@ -121,6 +121,7 @@
   #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
@@ -4092,20 +4093,25 @@ for interacting with an OpenDHT distributed network.")
 (define-public frrouting
   (package
     (name "frrouting")
-    (version "7.5.1")
+    (version "10.1.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/FRRouting/frr/releases/"
-                                  "download/frr-" version "/frr-" version
-                                  ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/FRRouting/frr")
+                    (commit (string-append "frr-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r7gh5h27ii7d1d0z0x48wx7hs8vvympv3gqvy3cwzg05q5vk9xs"))))
+                "06gn2wgnd97fgzf7yd9v5fv8fanjw02cy0rx7kgq7x7gnzbg1yhn"))))
     (build-system gnu-build-system)
     (inputs
-     (list c-ares json-c libcap libxcrypt libyang readline))
+     (list c-ares json-c libcap libxcrypt libyang libelf protobuf-c readline))
     (native-inputs
-     (list perl pkg-config python-wrapper python-pytest))
+     (list autoconf automake
+           libtool perl pkg-config python-wrapper python-pytest
+           flex
+           bison))
+    (arguments (list #:configure-flags #~(list "--sysconfdir=/etc")))
     (home-page "https://frrouting.org/")
     (synopsis "IP routing protocol suite")
     (description "FRRouting (FRR) is an IP routing protocol suite which includes
