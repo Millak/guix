@@ -8787,13 +8787,13 @@ fraction} are included.")
 (define-public r-raggedexperiment
   (package
     (name "r-raggedexperiment")
-    (version "1.28.1")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "RaggedExperiment" version))
               (sha256
                (base32
-                "0xfg88r5nh0qswsfc3mm595jmf2w8s2dr032apd15b3kc40hjlr9"))))
+                "0np94bh1qxwwmllxsf2hf4vv7lnjmghrjfg1g07kcwfhnmm5n56l"))))
     (properties `((upstream-name . "RaggedExperiment")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocbaseutils
