@@ -35998,6 +35998,39 @@ theory; see @url{Strumbel and Kononenko (2014),
 doi.org/10.1007/s10115-013-0679-x} for details.")
     (license license:gpl2+)))
 
+(define-public r-mediation
+  (package
+    (name "r-mediation")
+    (version "4.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mediation" version))
+       (sha256
+        (base32 "0i88wvqqw8cmxmh9i78rqzp4s16zhf12dgl9fsk9bhw7hxhhc0i1"))))
+    (properties `((upstream-name . "mediation")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-boot
+                             r-hmisc
+                             r-lme4
+                             r-lpsolve
+                             r-mass
+                             r-matrix
+                             r-mvtnorm
+                             r-sandwich))
+    (home-page "https://imai.princeton.edu/projects/mechanisms.html")
+    (synopsis "Causal mediation analysis")
+    (description
+     "This package implements parametric and non-parametric mediation
+analysis.  This package performs the methods and suggestions in Imai, Keele
+and Yamamoto (2010) <DOI:10.1214/10-STS321>, Imai, Keele and Tingley (2010)
+<DOI:10.1037/a0020761>, Imai, Tingley and Yamamoto (2013)
+<DOI:10.1111/j.1467-985X.2012.01032.x>, Imai and Yamamoto (2013)
+<DOI:10.1093/pan/mps040> and Yamamoto (2013).  In addition to the estimation
+of causal mediation effects, the software also allows researchers to conduct
+sensitivity analysis for certain parametric models.")
+    (license license:gpl2+)))
+
 (define-public r-memisc
   (package
     (name "r-memisc")
