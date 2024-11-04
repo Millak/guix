@@ -9583,6 +9583,46 @@ are implemenented.  In addition the conversion from sequences to list like
 location information (and the reverse operation) is implemented as well.")
     (license license:artistic2.0)))
 
+(define-public r-mosdef
+  (package
+    (name "r-mosdef")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "mosdef" version))
+       (sha256
+        (base32 "0y2hniyb1y5hxlsm339059kb4n3l21fzb3xx112igsbk7zd0r258"))))
+    (properties `((upstream-name . "mosdef")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-clusterprofiler
+                             r-deseq2
+                             r-dt
+                             r-ggforce
+                             r-ggplot2
+                             r-ggrepel
+                             r-go-db
+                             r-goseq
+                             r-htmltools
+                             r-rcolorbrewer
+                             r-rlang
+                             r-s4vectors
+                             r-scales
+                             r-summarizedexperiment
+                             r-topgo))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/imbeimainz/mosdef")
+    (synopsis "Frequently used and useful differential expression functions")
+    (description
+     "This package provides functionality to run a number of tasks in the
+differential expression analysis workflow.  This encompasses the most widely
+used steps, from running various enrichment analysis tools with a unified
+interface to creating plots and beautifying table components linking to
+external websites and databases.  This streamlines the generation of
+comprehensive analysis reports.")
+    (license license:expat)))
+
 (define-public r-motifrg
   (package
     (name "r-motifrg")
