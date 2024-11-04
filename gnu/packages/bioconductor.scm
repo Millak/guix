@@ -12874,14 +12874,14 @@ saving AnnData objects to disk.")
 (define-public r-geneplotter
   (package
     (name "r-geneplotter")
-    (version "1.82.0")
+    (version "1.84.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "geneplotter" version))
        (sha256
         (base32
-         "19znr3vwp20x84jiwy0im7s6vd8a71yng8w2ji88ffzq0xdkyyjm"))))
+         "1yvq6wa27q6r6m5zi9m9qqzqgxrndwybgz056yc5gpbngp1c2va7"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotate
