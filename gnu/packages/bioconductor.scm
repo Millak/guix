@@ -6176,17 +6176,18 @@ dynamic documents and vignettes.")
 (define-public r-bluster
   (package
    (name "r-bluster")
-   (version "1.14.0")
+   (version "1.16.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "bluster" version))
             (sha256
              (base32
-              "1bj7wx2dnwbrv2gxcmqmq815vawfiqj2xy3624fjli11r8c1hywa"))))
+              "1k8aj5zj297l5yf15f3xak9adcrxr79ax7ifwhz2jq23ifd4dmfs"))))
    (properties `((upstream-name . "bluster")))
    (build-system r-build-system)
    (propagated-inputs
-    (list r-biocneighbors
+    (list r-assorthead
+          r-biocneighbors
           r-biocparallel
           r-cluster
           r-igraph
