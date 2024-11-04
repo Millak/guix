@@ -10528,14 +10528,14 @@ batch correction and normalization.")
 (define-public r-protgenerics
   (package
     (name "r-protgenerics")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ProtGenerics" version))
        (sha256
         (base32
-         "0h0i4dgsgvyhma5pfvycv6wyxv27vp0b2i8b6l8hj55z8cvmvfln"))))
+         "0pg7rqz0ixaiihqybynm94qvdc5y953xzxzxvwv5gbmxdk9s3lmk"))))
     (properties `((upstream-name . "ProtGenerics")))
     (build-system r-build-system)
     (home-page "https://github.com/lgatto/ProtGenerics")
