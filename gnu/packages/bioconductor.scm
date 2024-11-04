@@ -4472,6 +4472,30 @@ searching for the best combination of disease subtypes associated with each
 variant.")
     (license license:gpl2)))
 
+(define-public r-assorthead
+  (package
+    (name "r-assorthead")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "assorthead" version))
+       (sha256
+        (base32 "120x9xz373zm8p1m1bky0gn82qw3pm8dff3sp2farjr7p5phi7b6"))))
+    (properties `((upstream-name . "assorthead")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/LTLA/assorthead")
+    (synopsis "Assorted header-only C++ libraries")
+    (description
+     "This package vendors an assortment of useful header-only C++ libraries.
+Bioconductor packages can use these libraries in their own C++ code by
+@code{LinkingTo} this package without introducing any additional dependencies.
+The use of a central repository avoids duplicate vendoring of libraries across
+multiple R packages, and enables better coordination of version updates across
+cohorts of interdependent C++ libraries.")
+    (license license:expat)))
+
 (define-public r-atena
   (package
     (name "r-atena")
