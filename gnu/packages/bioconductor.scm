@@ -25264,13 +25264,13 @@ starburst plots) in order to easily develop complete analysis pipelines.")
 (define-public r-tricycle
   (package
     (name "r-tricycle")
-    (version "1.12.0")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "tricycle" version))
               (sha256
                (base32
-                "11928pcd8xzmll28m0ihi3rasc4w1i0fshn4bh9n2lyigkr5ayi4"))))
+                "1q9vn0gq67kkg6f4jyq05cg56qmwzl3xhiyhkgpvi1flrj9f8cpd"))))
     (properties `((upstream-name . "tricycle")))
     (build-system r-build-system)
     (propagated-inputs
