@@ -3329,13 +3329,13 @@ can enrich this metadata with context-specific properties.")
 (define-public r-alabaster-ranges
   (package
     (name "r-alabaster-ranges")
-    (version "1.4.2")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "alabaster.ranges" version))
        (sha256
-        (base32 "16r5wdlw2g9qnbvzpx5c5c04xa5dkwrmqlyc81iixkx6j98gsz2w"))))
+        (base32 "06xky6gdwhvz09v6yafwr65lq3bj4s8qz5iqpp120m9nncfzf1f4"))))
     (properties `((upstream-name . "alabaster.ranges")))
     (build-system r-build-system)
     (propagated-inputs (list r-alabaster-base
