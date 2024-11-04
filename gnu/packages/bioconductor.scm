@@ -23533,14 +23533,14 @@ functionalities including parsing, graph operation, visualization and etc.")
 (define-public r-ldblock
   (package
     (name "r-ldblock")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ldblock" version))
        (sha256
         (base32
-         "1l4l35bpz4j1iliy9dj09qq8r4nimd9pcm0gm4g3sb4325z6cd5h"))))
+         "016ly2iz42a2shfj5vm270np77cgbl92jnkjrrswk1sgghyxxi9y"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics
