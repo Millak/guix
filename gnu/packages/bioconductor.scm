@@ -6870,14 +6870,14 @@ structure.")
 (define-public r-annotate
   (package
     (name "r-annotate")
-    (version "1.82.0")
+    (version "1.84.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "annotate" version))
        (sha256
         (base32
-         "1v4sq22lwrhl50whag0jil788wwvi4rpdaij03iwak93q998ls0f"))))
+         "1m7cc5hawzdvm0b1il4fcilipnsv1n94zqvwhkbr3041rklf7l7y"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
@@ -6887,6 +6887,7 @@ structure.")
            r-httr
            r-xml
            r-xtable))
+    (native-inputs (list r-knitr))
     (home-page
      "https://bioconductor.org/packages/annotate")
     (synopsis "Annotation for microarrays")
