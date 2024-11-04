@@ -5849,6 +5849,27 @@ data that borrows information across genes and cells to provide accurate
 expression estimates for all genes.")
     (license license:gpl2)))
 
+(define-public r-bsicons
+  (package
+    (name "r-bsicons")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bsicons" version))
+       (sha256
+        (base32 "1ifxb6qvm5m824n924pwa3f2ck33mzzbjq77jzdl36ikx4z0x47a"))))
+    (properties `((upstream-name . "bsicons")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli r-htmltools r-rlang))
+    (home-page "https://github.com/rstudio/bsicons")
+    (synopsis "Easily work with Bootstrap icons")
+    (description
+     "This package lets you easily use Bootstrap icons inside Shiny apps and R
+Markdown documents.  More generally, icons can be inserted in any
+@code{htmltools} document through inline SVG.")
+    (license license:expat)))
+
 ;; This package includes minified JavaScript files.  When upgrading please
 ;; check that there are no new minified JavaScript files.
 (define-public r-bslib
