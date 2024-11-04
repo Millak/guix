@@ -241,6 +241,10 @@ with XPath too.")
   (package
     (inherit java-jaxen-bootstrap)
     (name "java-jaxen")
+    (arguments
+     (strip-keyword-arguments
+      '(#:phases)  ;; remove any phases added by java-jaxen-bootstrap
+      (package-arguments java-jaxen-bootstrap)))
     (inputs
      (list java-jdom java-xom java-dom4j))))
 
