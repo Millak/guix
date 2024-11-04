@@ -2233,14 +2233,14 @@ with different methylation clocks.")
 (define-public r-mousegastrulationdata
   (package
     (name "r-mousegastrulationdata")
-    (version "1.18.0")
+    (version "1.19.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "MouseGastrulationData" version
                                      'experiment))
               (sha256
                (base32
-                "0adw98vym1jir1jrzaws7zrlfvls6rfl8bvkpq5sjy4crb33lxy2"))))
+                "1c7qp1kg5miks73qydmriskjsi3k0c70g00pa071514lz910g5bs"))))
     (properties `((upstream-name . "MouseGastrulationData")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
