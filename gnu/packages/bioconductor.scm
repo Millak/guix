@@ -15942,14 +15942,14 @@ to find biomarkers of groups and sub-groups.")
 (define-public r-lumi
   (package
     (name "r-lumi")
-    (version "2.56.0")
+    (version "2.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "lumi" version))
        (sha256
         (base32
-         "04r7dw00yvjrxs0h6mwh79lwp55f5v8s4pgmzcy2fnpb2cdslpzy"))))
+         "14bmwkbv9zppwql085g01m1q2wncmnb4q8gid5mwgdpr2gnkfwib"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-affy
