@@ -8285,13 +8285,13 @@ alignments.")
 (define-public r-genomicdatacommons
   (package
     (name "r-genomicdatacommons")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicDataCommons" version))
               (sha256
                (base32
-                "0jg4sa1lqn028y2ympb3x4s8yr7qa8ajrwqj2hhcl8zss3sx8gr2"))))
+                "1vw4lsh3bkmghk4f5rqds0awvl0f5dkafz51iw3s6lqaviq5wkx3"))))
     (properties `((upstream-name . "GenomicDataCommons")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr
@@ -8299,7 +8299,6 @@ alignments.")
                              r-httr
                              r-iranges
                              r-jsonlite
-                             r-magrittr
                              r-rappdirs
                              r-readr
                              r-rlang
