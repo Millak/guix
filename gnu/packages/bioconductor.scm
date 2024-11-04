@@ -7309,13 +7309,13 @@ effort and encourages consistency.")
 (define-public r-bsgenome
   (package
     (name "r-bsgenome")
-    (version "1.72.0")
+    (version "1.74.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BSgenome" version))
               (sha256
                (base32
-                "1pjbkakrycvaifl7xrmri2h94zc1ap8a9d1q4c83qji3xa21cm4q"))))
+                "0abcz2rpw9af2cfyssz6adbx36issjlwzf7ipj1vkcmia6j5f1ji"))))
     (properties
      `((upstream-name . "BSgenome")))
     (build-system r-build-system)
