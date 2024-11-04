@@ -5377,13 +5377,13 @@ set analyses, and can deal with repeated or longitudinal data.")
 (define-public r-debcam
   (package
     (name "r-debcam")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "debCAM" version))
               (sha256
                (base32
-                "1lbgwv7009fpwqw6kl94gmm44xypn60r8kcm3fjzgbjbwijriwgq"))
+                "0wx6dvi5rihxlzm6wn67r5wni3dmk12fih2s0dw9qnwm56zk96a5"))
               (snippet
                '(for-each delete-file
                           '("inst/java/CornerDetect.jar"
