@@ -1024,7 +1024,15 @@ using compilers other than GCC."
                   (("/lib64") "/lib")))))
           (add-before 'configure 'chdir
             (lambda _
-              (chdir "libstdc++-v3"))))
+              (chdir "libstdc++-v3")))
+          #$@(let ((version (package-version gcc)))
+               (if (target-hurd64?)
+                   #~((add-after 'unpack 'patch-hurd64
+                        (lambda _
+                          (substitute* "libstdc++-v3/src/c++20/tzdb.cc"
+                            (("#if ! defined _GLIBCXX_ZONEINFO_DIR")
+                             "#if __GNU__ || ! defined _GLIBCXX_ZONEINFO_DIR")))))
+                   '())))
 
       #:configure-flags '`("--disable-libstdcxx-pch"
                            ,(string-append "--with-gxx-include-dir="
