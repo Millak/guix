@@ -2557,14 +2557,14 @@ cultures from 4 patients at 2 time points over 3 conditions (DPN, OHT and contro
 (define-public r-sesamedata
   (package
     (name "r-sesamedata")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "sesameData" version
                                      'experiment))
               (sha256
                (base32
-                "05k67isysszzfkkbi811dkab0cmxnwz81p2ldcqz3gsq5qin3p1g"))))
+                "1dgf9qi27rc98mwlyax0v86h7fmwbnp0xna1c0ppsj0fpwbmj50y"))))
     (properties `((upstream-name . "sesameData")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationhub
