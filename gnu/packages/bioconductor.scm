@@ -4383,13 +4383,13 @@ model as latent variables.")
 (define-public r-asics
   (package
     (name "r-asics")
-    (version "2.20.1")
+    (version "2.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ASICS" version))
               (sha256
                (base32
-                "0halznbl3bflnn38rh9h5a5f0dsc88n6x6kwdffbpnin9i192q1k"))))
+                "1ab8j2rmqig1c25z70ys5ip9818idy0md2a755lz0jcy0srk425j"))))
     (properties `((upstream-name . "ASICS")))
     (build-system r-build-system)
     (propagated-inputs
