@@ -23738,13 +23738,13 @@ segmented data for individual and multiple arrays.")
 (define-public r-snprelate
   (package
     (name "r-snprelate")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SNPRelate" version))
               (sha256
                (base32
-                "0znk9vvnahkypmkrx82r1ryp41xr675b4ddpgx0nl3708xhncz5f"))))
+                "00zspm09zxp52kkivhv1pixndz7gfzb6p7rp5xvkq89qx7a9hsnn"))))
     (properties `((upstream-name . "SNPRelate")))
     (build-system r-build-system)
     (propagated-inputs (list r-gdsfmt))
