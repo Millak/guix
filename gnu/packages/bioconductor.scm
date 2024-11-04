@@ -14413,13 +14413,13 @@ platform for merging tree with associated data and converting file formats.")
 (define-public r-treesummarizedexperiment
   (package
     (name "r-treesummarizedexperiment")
-    (version "2.12.0")
+    (version "2.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "TreeSummarizedExperiment" version))
               (sha256
                (base32
-                "0ygzw9nba5pxgrbib8sm7qwhzzm8m038banb0z7n42vkb1cb3d5i"))))
+                "187dbjb1w45v2gx510yk28hxvhc1bdjz5l853kmxdpr4wxs7nh4z"))))
     (properties `((upstream-name . "TreeSummarizedExperiment")))
     (build-system r-build-system)
     (propagated-inputs
