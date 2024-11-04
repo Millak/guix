@@ -16438,14 +16438,14 @@ to multiple hypothesis correction.")
 (define-public r-dose
   (package
     (name "r-dose")
-    (version "3.30.4")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DOSE" version))
        (sha256
         (base32
-         "07pljijlyp4labxg4q3kf6wq4acw6axyyw57k1bws3hcf4m1d92x"))))
+         "1x0dnlbgx2wsiki7l7c8np7v8kh4m5f30yjnavfzg9pjy3j98myq"))))
     (properties `((upstream-name . "DOSE")))
     (build-system r-build-system)
     (propagated-inputs
@@ -16455,7 +16455,8 @@ to multiple hypothesis correction.")
            r-ggplot2
            r-gosemsim
            r-qvalue
-           r-reshape2))
+           r-reshape2
+           r-yulab-utils))
     (native-inputs
      (list r-knitr))
     (home-page "https://guangchuangyu.github.io/software/DOSE/")
