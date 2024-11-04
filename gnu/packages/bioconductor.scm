@@ -4360,13 +4360,13 @@ RNAs.")
 (define-public r-asgsca
   (package
     (name "r-asgsca")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ASGSCA" version))
               (sha256
                (base32
-                "0gvpb1pspm7zlllg77fbi3g6csa3cpp2lbljna2m0xfi0c5zdqvw"))))
+                "1c004m9n7z7xg15pd212gjxsawir68xvqrhsxgsm5vz7viwmyqqr"))))
     (properties `((upstream-name . "ASGSCA")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass r-matrix))
