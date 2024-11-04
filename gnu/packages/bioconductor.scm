@@ -22913,13 +22913,13 @@ data in the column sparse format.")
 (define-public r-spatialexperiment
   (package
     (name "r-spatialexperiment")
-    (version "1.14.0")
+    (version "1.16.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SpatialExperiment" version))
               (sha256
                (base32
-                "0f04azs6wscibcpbmc1m21wjswmgr2b8gvd1n2yavya1li0xxm4r"))))
+                "02lsz2yag9h94ylwsdbqwvlsdgx6ijz9702hg5prz122jqv7x9l3"))))
     (properties `((upstream-name . "SpatialExperiment")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocfilecache
