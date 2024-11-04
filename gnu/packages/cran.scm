@@ -36483,14 +36483,14 @@ integration.")
 (define-public r-spatstat-utils
   (package
     (name "r-spatstat-utils")
-    (version "3.1-0")
+    (version "3.1-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat.utils" version))
        (sha256
         (base32
-         "0g9djqpn4yl9wcv3x1qb2pvjhq8491194a5lx6xg8180f1a32363"))))
+         "13h7avpzmzcizx70j53ls36f2hwkf57vfcb7ygan9zzrd7h3q085"))))
     (properties
      `((upstream-name . "spatstat.utils")))
     (build-system r-build-system)
