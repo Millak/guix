@@ -16733,14 +16733,14 @@ It allows searching of biological metadata using various criteria.")
 (define-public r-a4core
   (package
     (name "r-a4core")
-    (version "1.52.0")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "a4Core" version))
        (sha256
         (base32
-         "1jn2ikzijd282jl96i9hcvahkc6l2vsd79dxqiz7kwaqcp7hs5z9"))))
+         "0rc3aragscizy067qx46sc5w2d5cimdizkmcy41y771aj1kbpygh"))))
     (properties `((upstream-name . "a4Core")))
     (build-system r-build-system)
     (propagated-inputs
