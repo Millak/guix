@@ -6536,13 +6536,13 @@ mapping.")
 (define-public r-nebulosa
   (package
     (name "r-nebulosa")
-    (version "1.14.0")
+    (version "1.16.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Nebulosa" version))
               (sha256
                (base32
-                "0m5z6rribsrk9mzcksjh0nmpf4d0x0hn8jd80h0hj0hj8sj1ifgv"))))
+                "15bdddc34y6i1j06fpi82p8xz07p4q07p2js657gssh4lwxkz5n1"))))
     (properties `((upstream-name . "Nebulosa")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2
