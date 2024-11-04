@@ -1977,9 +1977,9 @@ built-in level editor.")
            license:public-domain
            license:silofl1.1))))
 
-(define-public knights
+(define-public knightsgame
   (package
-    (name "knights")
+    (name "knightsgame")
     (version "025")
     (source (origin
               (method url-fetch)
