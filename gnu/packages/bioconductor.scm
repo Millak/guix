@@ -24349,24 +24349,29 @@ targets.  It can also be used for differential expression/2-class data.")
 (define-public r-bayesspace
   (package
     (name "r-bayesspace")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BayesSpace" version))
        (sha256
-        (base32 "0q1haqsyc61yxz1n197sv3s6csjpns4fi288kf58nnf5jgdwnyx5"))))
+        (base32 "08q2k2l90rjw95khlvnyz1jjlq1qyn3y5qc635nsvdlkf75fc7rz"))))
     (properties `((upstream-name . "BayesSpace")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-assertthat
+     (list r-arrow
+           r-assertthat
            r-biocfilecache
+           r-biocparallel
            r-biocsingular
            r-coda
            r-dirichletreg
+           r-dplyr
            r-ggplot2
+           r-magrittr
            r-matrix
            r-mclust
+           r-microbenchmark
            r-purrr
            r-rcpp
            r-rcpparmadillo
@@ -24374,12 +24379,16 @@ targets.  It can also be used for differential expression/2-class data.")
            r-rcppprogress
            r-rcurl
            r-rhdf5
+           r-rjson
+           r-rlang
            r-s4vectors
            r-scales
            r-scater
            r-scran
            r-singlecellexperiment
            r-summarizedexperiment
+           r-tibble
+           r-tidyr
            r-xgboost))
     (native-inputs (list r-knitr))
     (home-page "https://www.ezstatconsulting.com/BayesSpace/")
