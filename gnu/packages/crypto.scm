@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1661,6 +1662,18 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
     (build-system gnu-build-system)
     (native-inputs
      (list perl))
+    (arguments
+     (if (target-hurd64?)
+         (list
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'apply-hurd64-patch
+                (lambda _
+                  (let ((patch
+                         #$(local-file
+                            (search-patch "libxcrypt-hurd64.patch"))))
+                    (invoke "patch" "--force" "-p1" "-i" patch))))))
+              '()))
     (synopsis
      "Extended crypt library for descrypt, md5crypt, bcrypt, and others")
     (description

@@ -1,0 +1,38 @@
+Upstream-status: Taken from upstream:
+    <https://github.com/besser82/libxcrypt/commit/b2c1da2e1ce2d3e72f511f5bc94a6ffa68b70917>
+
+From b2c1da2e1ce2d3e72f511f5bc94a6ffa68b70917 Mon Sep 17 00:00:00 2001
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date: Sun, 14 Jul 2024 13:13:07 +0200
+Subject: [PATCH] Add binary compatibility for x86_64 GNU/Hurd
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+
+diff --git a/lib/libcrypt.map.in b/lib/libcrypt.map.in
+index 88ea911..a56b7bf 100644
+--- a/lib/libcrypt.map.in
++++ b/lib/libcrypt.map.in
+@@ -43,5 +43,5 @@ fcrypt			-		GLIBC_2.0
+ %chain GLIBC_2.0 GLIBC_2.2 GLIBC_2.2.1 GLIBC_2.2.2 GLIBC_2.2.5 GLIBC_2.2.6
+ %chain GLIBC_2.3 GLIBC_2.4 GLIBC_2.12 GLIBC_2.16 GLIBC_2.17 GLIBC_2.18
+ %chain GLIBC_2.21 GLIBC_2.27 GLIBC_2.29 GLIBC_2.32 GLIBC_2.33 GLIBC_2.35
+-%chain GLIBC_2.36
++%chain GLIBC_2.36 GLIBC_2.38
+ %chain OW_CRYPT_1.0 XCRYPT_2.0 XCRYPT_4.3 XCRYPT_4.4
+diff --git a/lib/libcrypt.minver b/lib/libcrypt.minver
+index 8478077..c5a5bf2 100644
+--- a/lib/libcrypt.minver
++++ b/lib/libcrypt.minver
+@@ -51,6 +51,7 @@
+ #VERSION     SYSTEM          CPU_FAMILY    PREPROCESSOR_CHECK
+ 
+ # GNU Hurd
++GLIBC_2.38   gnu             x86_64
+ GLIBC_2.2.6  gnu             i[3-9]86
+ ERROR        gnu             .
+ 
+-- 
+Janneke Nieuwenhuizen <janneke@gnu.org>  | GNU LilyPond https://LilyPond.org
+Freelance IT https://www.JoyOfSource.com | Avatar® https://AvatarAcademy.com
+
