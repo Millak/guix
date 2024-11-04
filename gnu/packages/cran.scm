@@ -77,6 +77,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fribidi)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages ghostscript)
@@ -258,6 +259,55 @@ M. Kohlhoff, and released under the Boost Software License', Version 1.0.")
 hierarchical, composable, reusable modules, and use it effortlessly across
 projects via a flexible, declarative dependency loading syntax.")
     (license license:expat)))
+
+(define-public r-bread
+  (package
+    (name "r-bread")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bread" version))
+       (sha256
+        (base32 "0vsxmqpgi2yjcpdpgdz6gzqkpjsq5ax4qkpys60bwmxyp1ahv90r"))))
+    (properties `((upstream-name . "bread")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-locations
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((gawk (search-input-file inputs "bin/gawk"))
+                   (grep (search-input-file inputs "bin/grep"))
+                   (head (search-input-file inputs "bin/head"))
+                   (sed  (search-input-file inputs "bin/sed"))
+                   (tail (search-input-file inputs "bin/tail"))
+                   (wc   (search-input-file inputs "bin/wc")))
+               (substitute* "R/helper_functions.R"
+                 (("'grep ")
+                  (string-append "'" grep " "))
+                 (("'sed ")
+                  (string-append "'" sed " "))
+                 (("'tail ")
+                  (string-append "'" tail " "))
+                 (("'awk ")
+                  (string-append "'" gawk " ")))
+               (substitute* "R/bnrow.R"
+                 (("'wc ")
+                  (string-append "'" wc " ")))
+               (substitute* "R/bsep.R"
+                 (("'head ")
+                  (string-append "'" head " ")))))))))
+    (inputs (list coreutils gawk grep sed))
+    (propagated-inputs (list r-data-table))
+    (home-page "https://github.com/MagicHead99/bread/")
+    (synopsis "Analyze big files without loading them in memory")
+    (description
+     "This package provides a simple set of wrapper functions for
+@code{data.table::fread()} that allows subsetting or filtering rows and
+selecting columns of table-formatted files too large for the available RAM.")
+    (license license:gpl3+)))
 
 (define-public r-brio
   (package
