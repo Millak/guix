@@ -2187,17 +2187,18 @@ stdout.")
                           (("2.72") "2.69"))))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'patch-tests
-           (lambda _
-             (substitute* "test/testie"
-               (("/usr/bin/perl")
-                (which "perl"))
-               (("/bin/sh")
-                (which "sh"))
-               (("/bin/rm")
-                (which "rm"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'patch-tests
+            (lambda _
+              (substitute* "test/testie"
+                (("/usr/bin/perl")
+                 (which "perl"))
+                (("/bin/sh")
+                 (which "sh"))
+                (("/bin/rm")
+                 (which "rm"))))))))
     (native-inputs
      (list
       autoconf automake
