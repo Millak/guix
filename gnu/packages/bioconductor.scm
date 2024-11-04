@@ -20395,13 +20395,13 @@ motifs, and others.")
 (define-public r-ace
   (package
     (name "r-ace")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ACE" version))
               (sha256
                (base32
-                "1gpn9z09cfcy2mj7m32xfb2bjjwl01g9qn9nqaivmqbi4k6icrr8"))))
+                "0ky6l0x5wbwil0lqnclgfpdhn94954k62xpv0z3mhy4lvqf07h4j"))))
     (properties `((upstream-name . "ACE")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-genomicranges r-ggplot2 r-qdnaseq))
