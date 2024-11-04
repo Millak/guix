@@ -12558,13 +12558,13 @@ convenient formats.")
 (define-public r-tximport
   (package
     (name "r-tximport")
-    (version "1.32.0")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "tximport" version))
               (sha256
                (base32
-                "0wayib05k976wivf9xgbfz5mfvi5hmxj3wm6zw031bj4w8dkc1v6"))))
+                "1rrnldicisjf2cjkvnynlsr91illi6v6wfyqn20xb10p947cyckl"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
