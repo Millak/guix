@@ -12822,13 +12822,13 @@ describing each of the graphs.")
 (define-public r-zlibbioc
   (package
     (name "r-zlibbioc")
-    (version "1.50.0")
+    (version "1.52.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "zlibbioc" version))
               (sha256
                (base32
-                "155q6983xjdjpq445lpg5n9gzf8gr18nll6dmjk7jwdq7fdxb602"))))
+                "0nz17g5dvj57c72csnpnfvylsq3z3c0qxvgsp7l2lcns9xc9rdnz"))))
     (properties
      `((upstream-name . "zlibbioc")))
     (build-system r-build-system)
