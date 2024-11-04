@@ -19365,24 +19365,37 @@ This software is unmaintained, and new projects should use @code{boto3} instead.
   ;; are compatible.
   (package
     (name "python-botocore")
-    (version "1.24.35")
+    (version "1.35.54")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "botocore" version))
        (sha256
-        (base32
-         "0rv8mvhq5s373zdjs2yb45hzvqcqdh2lp2rbb21jjc8ciwnl5d9n"))))
-    (build-system python-build-system)
+        (base32 "0xhsi4gfmzh1r96zlaa55p9i3kvh5lj4grp866dr72lwwnfba6qk"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: Many tests are failing.
-     '(#:tests? #f))
+     (list
+      #:test-flags
+      #~(list "--numprocesses" "auto"
+              ;; It strugles to find 'botocore'.
+              "--ignore" "tests/functional/leak/test_resource_leaks.py"
+              ;; Tests require networking.
+              "--ignore" "tests/integration")))
+    (native-inputs
+     (list python-jsonschema
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-dateutil python-jmespath python-urllib3))
+     (list python-dateutil
+           python-jmespath
+           python-urllib3))
     (home-page "https://github.com/boto/botocore")
     (synopsis "Low-level interface to AWS")
-    (description "Botocore is a Python library that provides a low-level
-interface to the Amazon Web Services (AWS) API.")
+    (description
+     "Botocore is a Python library that provides a low-level interface to the
+Amazon Web Services (AWS) API.")
     (license license:asl2.0)))
 
 (define-public python-boto3
