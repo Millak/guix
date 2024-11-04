@@ -11612,6 +11612,40 @@ count (A,T,G,C) in a given position and read counts for indels that span no
 less than 2bp on both sides of indel region.")
     (license license:gpl2+)))
 
+(define-public r-simona
+  (package
+    (name "r-simona")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "simona" version))
+       (sha256
+        (base32 "13qkca6ch7ppdf1clgzgnygh9zb05163bm5a402pya7wbq2vkdzx"))))
+    (properties `((upstream-name . "simona")))
+    (build-system r-build-system)
+    (inputs (list openjdk perl))
+    (propagated-inputs (list r-circlize
+                             r-complexheatmap
+                             r-getoptlong
+                             r-globaloptions
+                             r-igraph
+                             r-matrixstats
+                             r-polychrome
+                             r-rcpp
+                             r-s4vectors
+                             r-shiny
+                             r-xml2))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/jokergoo/simona")
+    (synopsis "Semantic similarity on bio-ontologies")
+    (description
+     "This package implements infrastructures for ontology analysis by
+offering efficient data structures, fast ontology traversal methods, and
+elegant visualizations.  It provides a robust toolbox supporting over 70
+methods for semantic similarity analysis.")
+    (license license:expat)))
+
 (define-public r-simplifyenrichment
   (package
     (name "r-simplifyenrichment")
