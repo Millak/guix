@@ -14110,13 +14110,13 @@ information.")
 (define-public r-glmgampoi
   (package
     (name "r-glmgampoi")
-    (version "1.16.0")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "glmGamPoi" version))
               (sha256
                (base32
-                "1my8v0zx5xsxjf8dj2yw92b8zp725hxhb2vrl5ccgz2w9xkn0dkj"))))
+                "141drlbgld05npk1bay7pcng7xmm43y26559qs8mxy9432cpzx9n"))))
     (properties `((upstream-name . "glmGamPoi")))
     (build-system r-build-system)
     (propagated-inputs
@@ -14131,6 +14131,7 @@ information.")
            r-rcpparmadillo
            r-rlang
            r-singlecellexperiment
+           r-sparsearray
            r-summarizedexperiment
            r-vctrs))
     (native-inputs (list r-knitr))
