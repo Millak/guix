@@ -292,13 +292,13 @@ even help to identify disease associations that are not obvious.")
 (define-public r-org-eck12-eg-db
   (package
     (name "r-org-eck12-eg-db")
-    (version "3.19.1")
+    (version "3.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "org.EcK12.eg.db" version 'annotation))
        (sha256
-        (base32 "1af2yrbpn58z34jq39qmmwprzsffgxbrs84dsxny4rksa8k6j70s"))))
+        (base32 "0qd6ppvcpsprbw8c9rp3fx5i8cs6gv0n4mqwxwjs1421p19m1bqd"))))
     (properties
      `((upstream-name . "org.EcK12.eg.db")))
     (build-system r-build-system)
