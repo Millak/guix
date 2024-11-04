@@ -4211,13 +4211,13 @@ structures: @code{ExpressionSet}, @code{AffyBatch}, @code{NChannelSet}.")
 (define-public r-arrayqualitymetrics
   (package
     (name "r-arrayqualitymetrics")
-    (version "3.60.0")
+    (version "3.62.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "arrayQualityMetrics" version))
               (sha256
                (base32
-                "04y1vbpxqhqn1vsyqmscikaxn6wshsk4krcqzf2baf9x4azbdjk1"))))
+                "04xc1kqz26l74hsrk6p5bj6c3i5pc19v7y1rwz46wszk40p1rln5"))))
     (properties `((upstream-name . "arrayQualityMetrics")))
     (build-system r-build-system)
     (propagated-inputs (list r-affy
