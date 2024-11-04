@@ -2171,33 +2171,41 @@ stdout.")
 
 (define-public gifsicle
   (package
-   (name "gifsicle")
-   (version "1.95")
-   (source
+    (name "gifsicle")
+    (version "1.95")
+    (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.lcdf.org/gifsicle/gifsicle-"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kohler/gifsicle")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0l69gn562l7a1l10zz1bfs756ipd682idgpk60qs3llz013icwdj"))))
-   (build-system gnu-build-system)
-   (arguments
-    '(#:phases
-      (modify-phases %standard-phases
-        (add-before 'check 'patch-tests
-          (lambda _
-            (substitute* "test/testie"
-              (("/usr/bin/perl")
-               (which "perl"))
-              (("/bin/sh")
-               (which "sh"))
-              (("/bin/rm")
-               (which "rm"))))))))
-   (native-inputs (list perl))    ; only for tests
-   (inputs (list libx11))
-   (home-page "https://www.lcdf.org/gifsicle/")
-   (synopsis "Edit GIF images and animations")
-   (description "Gifsicle is a command-line GIF image manipulation tool that:
+        (base32 "1wvsf2kv90bqpyxcjilir4zgmaga0xjg96vnn7rzq4fkjx8pb3yg"))
+       (modules '((guix build utils)))
+       (snippet '(begin (substitute* "configure.ac"
+                          (("2.72") "2.69"))))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'patch-tests
+           (lambda _
+             (substitute* "test/testie"
+               (("/usr/bin/perl")
+                (which "perl"))
+               (("/bin/sh")
+                (which "sh"))
+               (("/bin/rm")
+                (which "rm"))))))))
+    (native-inputs
+     (list
+      autoconf automake
+      perl))    ; only for tests
+    (inputs (list libx11))
+    (home-page "https://www.lcdf.org/gifsicle/")
+    (synopsis "Edit GIF images and animations")
+    (description "Gifsicle is a command-line GIF image manipulation tool that:
 
 @itemize
 @item Provides a batch mode for changing GIFs in place.
@@ -2212,7 +2220,7 @@ tables, etc.
 Two other programs are included with Gifsicle: @command{gifview} is a
 lightweight animated-GIF viewer, and @command{gifdiff} compares two GIFs for
 identical visual appearance.")
-   (license license:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public jp2a
   (package
