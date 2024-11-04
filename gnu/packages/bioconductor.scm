@@ -16272,14 +16272,14 @@ information about samples and features can be added to the plot.")
 (define-public r-gosemsim
   (package
     (name "r-gosemsim")
-    (version "2.30.2")
+    (version "2.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GOSemSim" version))
        (sha256
         (base32
-         "009rh51mndpkqw9vmr836ll2zsmsb4wlrjhvda5qiggznlhixrcv"))))
+         "0ql5mxaks11dpkykggylnpi2jymh467w1zqi6s6bp1gb4h399jly"))))
     (properties `((upstream-name . "GOSemSim")))
     (build-system r-build-system)
     (propagated-inputs
@@ -16287,7 +16287,6 @@ information about samples and features can be added to the plot.")
            r-dbi
            r-digest
            r-go-db
-           r-httr2
            r-r-utils
            r-rcpp
            r-rlang
