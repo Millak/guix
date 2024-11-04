@@ -17041,19 +17041,24 @@ frequency matrices from nine public sources, for multiple organisms.")
 (define-public r-motifbreakr
   (package
    (name "r-motifbreakr")
-   (version "2.18.0")
+   (version "2.20.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "motifbreakR" version))
             (sha256
-             (base32 "1mxs83l8yrbcx353h0wpc0lczn1jc0y5vg59y9g9dabk41csib47"))))
+             (base32 "0308wqrcjzdfm38p9lqphz5h82k2zdzknvhviqzrvcqinzqjqy26"))))
    (properties `((upstream-name . "motifbreakR")))
    (build-system r-build-system)
    (propagated-inputs
-    (list r-biocgenerics
+    (list r-biocfilecache
+          r-biocgenerics
           r-biocparallel
+          r-biomart
           r-biostrings
           r-bsgenome
+          r-bsicons
+          r-bslib
+          r-dt
           r-genomeinfodb
           r-genomicranges
           r-gviz
@@ -17064,10 +17069,12 @@ frequency matrices from nine public sources, for multiple organisms.")
           r-pwalign
           r-rtracklayer
           r-s4vectors
+          r-shiny
           r-stringr
           r-summarizedexperiment
           r-tfmpvalue
-          r-variantannotation))
+          r-variantannotation
+          r-vroom))
    (native-inputs
      (list r-knitr))
    (home-page "https://www.bioconductor.org/packages/motifbreakR/")
