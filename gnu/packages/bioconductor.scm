@@ -19791,14 +19791,14 @@ cisTopics and explore the nature and regulatory proteins driving them.")
 (define-public r-genie3
   (package
     (name "r-genie3")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GENIE3" version))
        (sha256
         (base32
-         "0ijwyx42saqas52273c63c3yi948bh4pd4lifyqi3zjjs17bj1cg"))))
+         "0hc6vhlgd0p4f2cf2v2wbjfs068ag3ix1rrk91a25lj1mjnhh5ic"))))
     (properties `((upstream-name . "GENIE3")))
     (build-system r-build-system)
     (propagated-inputs
