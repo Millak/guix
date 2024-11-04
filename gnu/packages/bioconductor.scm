@@ -233,14 +233,14 @@ It retrieves this data from the Genome Aggregation Database
 (define-public r-mpo-db
   (package
     (name "r-mpo-db")
-    (version "0.99.7")
+    (version "0.99.8")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MPO.db" version
                               'annotation))
        (sha256
-        (base32 "0x1rcikg189akbd71yh0p02482km9hry6i69s2srdf5mlgqficvl"))))
+        (base32 "1aaz4s8ydcqxx5qwfqxxs7fc20bjbdjxzg700gwd59kjgk6ijm92"))))
     (properties `((upstream-name . "MPO.db")))
     (build-system r-build-system)
     (arguments
@@ -257,7 +257,7 @@ It retrieves this data from the Genome Aggregation Database
                   (("ah <- suppressMessages\\(AnnotationHub\\(\\)\\)" m)
                    (string-append
                     "if (Sys.getenv(\"NIX_BUILD_TOP\") == \"\") { " m " };"))
-                  (("dbfile <- ah.*" m)
+                  (("dbfile <- ah\\[\\[\"AH117057\".*" m)
                    (string-append
                     "if (Sys.getenv(\"NIX_BUILD_TOP\") != \"\") { dbfile <- \""
                     file "\";} else { " m " }\n")))))))))
@@ -273,7 +273,7 @@ It retrieves this data from the Genome Aggregation Database
            (sha256
             (base32 "12rf5dpnjrpw55bgnbn68dni2g0p87nvs9c7mamqk0ayafs61zl0"))))))
     (home-page "https://github.com/YuLab-SMU/MPO.db")
-    (synopsis "set of annotation maps describing the Mouse Phenotype Ontology")
+    (synopsis "Set of annotation maps describing the Mouse Phenotype Ontology")
     (description
      "This is the human disease ontology R package HDO.db, which provides the
 semantic relationship between human diseases.  Relying on the DOSE and
