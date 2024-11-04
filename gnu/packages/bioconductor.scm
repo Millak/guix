@@ -4249,13 +4249,13 @@ supported.")
 (define-public r-arraymvout
   (package
     (name "r-arraymvout")
-    (version "1.62.0")
+    (version "1.64.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "arrayMvout" version))
        (sha256
-        (base32 "11v3s972nyahdswqdcab0fj9jb73vd5dnd5kfb09572y4z0hn5xw"))))
+        (base32 "0hfal4q9l8g0nfmp2835qagym4hx7xnbic0xh8653lxsy7sbimf0"))))
     (properties `((upstream-name . "arrayMvout")))
     (build-system r-build-system)
     (arguments
