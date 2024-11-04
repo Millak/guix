@@ -2007,13 +2007,13 @@ genomes and gene ID formats, largely based on the UCSC table browser.")
 (define-public r-genomationdata
   (package
     (name "r-genomationdata")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "genomationData" version 'experiment))
        (sha256
-        (base32 "16mghhik2xzin14d7mqlwfy2dah3ccnga947z9id44vyz906wws7"))))
+        (base32 "1ml8p99y4lba2gzphf0hsy840yqvfsanqscjh7sww5gk06yx9c4p"))))
     (properties
      `((upstream-name . "genomationData")))
     (build-system r-build-system)
