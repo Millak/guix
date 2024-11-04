@@ -231,7 +231,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
 (define r-with-tests
   (package
     (name "r-with-tests")
-    (version "4.4.1")
+    (version "4.4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cran/src/base/R-"
@@ -239,7 +239,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0kfrn8v8l555n5xrpf753jar5wa3vs622p967ffjkdxfx9fngjxl"))))
+                "1v0pp3zdyyyz7krhr9mng48fhsf5k6zxhj9yfic6p1ld7rhcsy0m"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -428,6 +428,7 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
            gfortran
            grep
            icu4c
+           libdeflate
            libjpeg-turbo
            libpng
            libtiff
