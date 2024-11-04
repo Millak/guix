@@ -3695,13 +3695,13 @@ to understand their data better and discover new insights.")
 (define-public r-annotationhubdata
   (package
     (name "r-annotationhubdata")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationHubData" version))
        (sha256
-        (base32 "0wcbghjvgr8sx1qg9kyjxb7znkxhihy7jvzycrv4pyq746154xbi"))))
+        (base32 "0b279vpqyq4a88w543yj9hwlifl0c1qxjvz1msrxxxibz21fk3r8"))))
     (properties `((upstream-name . "AnnotationHubData")))
     (build-system r-build-system)
     (arguments
