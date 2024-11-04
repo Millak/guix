@@ -18744,13 +18744,13 @@ and to both short and long sequence reads.")
 (define-public r-flames
   (package
     (name "r-flames")
-    (version "1.10.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "FLAMES" version))
        (sha256
-        (base32 "1fcz0v1vy0q5zmdpawlk4a7fbqd01954p0jby9nbzgbk85hl16mi"))))
+        (base32 "12463i5kdbbl1wbkia82ma33va8pmplh9jj1hijx394hf504xh2i"))))
     (properties `((upstream-name . "FLAMES")))
     (build-system r-build-system)
     (arguments
@@ -18763,10 +18763,13 @@ and to both short and long sequence reads.")
              ;; being run despite the check failing.
              (substitute* "src/Makevars"
                ((" & ") " && ")))))))
+    (inputs
+     (list minimap2 samtools zlib))
     (propagated-inputs
      (list r-bambu
            r-basilisk
            r-biocgenerics
+           r-biocparallel
            r-biostrings
            r-circlize
            r-complexheatmap
@@ -18786,18 +18789,21 @@ and to both short and long sequence reads.")
            r-jsonlite
            r-magrittr
            r-matrix
-           r-multiassayexperiment
+           r-matrixgenerics
            r-rcolorbrewer
            r-rcpp
+           r-readr
            r-reticulate
            r-rhtslib
            r-rsamtools
            r-rtracklayer
            r-s4vectors
            r-scater
+           r-scatterpie
            r-scran
            r-scuttle
            r-singlecellexperiment
+           r-spatialexperiment
            r-stringr
            r-summarizedexperiment
            r-testthat
@@ -18805,8 +18811,7 @@ and to both short and long sequence reads.")
            r-tidyr
            r-tidyselect
            r-txdbmaker
-           r-withr
-           r-zlibbioc))
+           r-withr))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/OliverVoogd/FLAMES")
     (synopsis
