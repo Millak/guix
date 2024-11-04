@@ -2533,14 +2533,14 @@ across the entire multi-'omics experiment.")
 (define-public r-parathyroidse
   (package
     (name "r-parathyroidse")
-    (version "1.42.0")
+    (version "1.43.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "parathyroidSE" version
                                      'experiment))
               (sha256
                (base32
-                "183cyn1i0i2p8npajwmbwzr2ncrrzwgpvh8adhjxzrdqkn3qdnr5"))))
+                "1kd947b58qvshrzwcxb6gvad5a4xhby68jmwlkfba8h3gpx7vnla"))))
     (properties `((upstream-name . "parathyroidSE")))
     (build-system r-build-system)
     (propagated-inputs (list r-summarizedexperiment))
