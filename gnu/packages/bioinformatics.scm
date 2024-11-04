@@ -2421,6 +2421,58 @@ from single-cell RNA-sequencing.")
 to produce high quality figures that can be used in publications.")
     (license license:expat)))
 
+(define-public python-hotspotsc
+  (package
+    (name "python-hotspotsc")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hotspotsc" version))
+       (sha256
+        (base32 "1phbd49nb0ivfcgfi6yxd2masgd0v6133mki9vd5pkrhx0a7wb5d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api")
+                 "poetry.core.masonry.api")
+                ;; Fix syntax error
+                (("sphinx>") "sphinx")))))))
+    (propagated-inputs (list python-anndata
+                             python-importlib-metadata
+                             python-ipython
+                             python-matplotlib
+                             python-nbsphinx
+                             python-numba
+                             python-numpy
+                             python-pandas
+                             python-pynndescent
+                             python-scanpy
+                             python-scikit-learn
+                             python-scipy
+                             python-seaborn
+                             python-statsmodels
+                             python-tqdm))
+    (native-inputs
+     (list python-poetry-core python-pytest python-sphinx))
+    (home-page "https://github.com/yoseflab/hotspot")
+    (synopsis
+     "Identifying informative genes in a single-cell dataset")
+    (description
+     "Hotspot is a tool for identifying informative genes (and gene modules)
+in a single-cell dataset.  Importantly, \"informative\" is decided based on
+how well a gene's variation agrees with some cell metric---some similarity
+mapping between cells.  Genes which are informative are those whose expression
+varies in similar way among cells which are nearby in the given metric.")
+    (license license:expat)))
+
 (define-public python-htsget
   (package
    (name "python-htsget")
