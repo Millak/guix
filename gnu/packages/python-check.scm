@@ -91,6 +91,8 @@
               (lambda* (#:key tests? test-flags #:allow-other-keys)
                 (when tests?
                   (apply invoke "python" test-flags)))))))
+      (native-inputs
+       (list python-setuptools python-wheel))
       (home-page "https://github.com/brandon-rhodes/assay")
       (synopsis "Python testing framework")
       (description
