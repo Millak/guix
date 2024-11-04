@@ -13684,12 +13684,12 @@ incompatibilities.")
 (define-public r-marray
   (package
     (name "r-marray")
-    (version "1.82.0")
+    (version "1.84.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "marray" version))
               (sha256
-               (base32 "1h96aq92bad69ycrmrvxwdz8dg9rk44925gj83gxzqypw88j2x0y"))))
+               (base32 "0j4hib9x4zr40k6gs911vvj766b7f46n15jpq8p2lv89jrh8wa99"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-limma))
