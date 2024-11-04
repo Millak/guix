@@ -2768,13 +2768,13 @@ functionally associated genes} (GFAG).")
 (define-public r-adamgui
   (package
     (name "r-adamgui")
-    (version "1.20.0")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ADAMgui" version))
               (sha256
                (base32
-                "08kxkb6hgbw7l9dv1wn3jfdkc0sizqdgmjkrzpq73q7rf0p4248g"))))
+                "1gpc5gzrwlji7a0vlr1jidn1c2nkzdv8qb82jhrg5yfglaxf1ddd"))))
     (properties `((upstream-name . "ADAMgui")))
     (build-system r-build-system)
     (propagated-inputs
