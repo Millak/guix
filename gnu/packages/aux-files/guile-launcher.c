@@ -1,7 +1,8 @@
 /* GNU Guix --- Functional package management for GNU
    Copyright 1996-1997,2000-2001,2006,2008,2011,2013,2018,2020,2021
       Free Software Foundation, Inc.
-   Copyright (C) 2020 Ludovic Courtès <ludo@gnu.org>
+   Copyright (C) 2020, 2024 Ludovic Courtès <ludo@gnu.org>
+   Copyright (C) 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 
    This file is part of GNU Guix.
 
@@ -27,6 +28,14 @@
 #include <string.h>
 #include <locale.h>
 #include <libguile.h>
+
+#if defined __GNU__
+#include <gc.h>
+static void
+no_warnings (char *message, GC_word arg)
+{
+}
+#endif
 
 /* Saved values of GUILE_LOAD_PATH and GUILE_LOAD_COMPILED_PATH.  */
 static const char *load_path, *load_compiled_path;
@@ -72,6 +81,14 @@ main (int argc, char **argv)
        that.  That gives us UTF-8 support for 'scm_to_locale_string', etc.,
        which is always preferable over the C locale.  */
     setlocale (LC_ALL, "en_US.utf8");
+
+#if defined __GNU__
+  /* XXX: On 32-bit GNU/Hurd (i586-gnu), libgc emits "Repeated allocation"
+     warnings that are annoying and interfere with communications between
+     'guix-daemon' and 'guix authenticate':
+     <https://issues.guix.gnu.org/73181>.  Silence them.  */
+  GC_set_warn_proc (no_warnings);
+#endif
 
   const char *str;
   str = getenv ("GUILE_LOAD_PATH");
