@@ -9433,13 +9433,13 @@ profiles than cells of different types.")
 (define-public r-methylaid
   (package
     (name "r-methylaid")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
     (origin
       (method url-fetch)
       (uri (bioconductor-uri "MethylAid" version))
       (sha256
-        (base32 "084mnllaj6qp5ai5bmj6wgc90bs270qbzl60sch1f863x8fv9lzr"))))
+        (base32 "0iq4ba4hsf7zwb063gqf00al031lydpg0yhlxwx8aczmyly00a9q"))))
     (properties `((upstream-name . "MethylAid")))
     (build-system r-build-system)
     (propagated-inputs
