@@ -4546,13 +4546,13 @@ cohorts of interdependent C++ libraries.")
 (define-public r-atena
   (package
     (name "r-atena")
-    (version "1.10.0")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "atena" version))
               (sha256
                (base32
-                "1y2v8mi9awgfbcawpcir01qglxn0bdgj6v2dsdqp6if25cizl3sr"))))
+                "15dvcymd9svp0mw6s0qrfnsc8zlnvxz1lmkzns0rm8ivflf36q1r"))))
     (properties `((upstream-name . "atena")))
     (build-system r-build-system)
     (propagated-inputs
