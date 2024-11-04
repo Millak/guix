@@ -3895,16 +3895,22 @@ programming language.")
 (define-public python-kiwisolver
   (package
     (name "python-kiwisolver")
-    (version "1.4.5")
+    (version "1.4.6")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "kiwisolver" version))
               (sha256
                (base32
-                "1v6nc0z9dg4am0bibji9pijci9f15z68mwrlv91a28pvawx5czp5"))))
+                "1q77r6cl9m4vh8lsvmsm1ijh3r9aijdhmnc03yhnlpj407b2kniw"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-typing-extensions))
-    (native-inputs (list python-cppy python-pytest python-setuptools-scm))
+    (native-inputs
+     (list python-cppy
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-typing-extensions))
     (home-page "https://github.com/nucleic/kiwi")
     (synopsis "Fast implementation of the Cassowary constraint solver")
     (description
