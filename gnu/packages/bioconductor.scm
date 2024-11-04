@@ -11409,13 +11409,13 @@ with cell- and gene-level metadata.")
 (define-public r-scry
   (package
     (name "r-scry")
-    (version "1.16.0")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "scry" version))
               (sha256
                (base32
-                "16489ff1nc798nfcmqvqaczm7hqffkhpad1dfgr7dxlahd8sbnw9"))))
+                "09l8w1b2n8kwhmn8373hfddj38gdddar0jfq0cz80kqb98xh3d37"))))
     (properties `((upstream-name . "scry")))
     (build-system r-build-system)
     (propagated-inputs
