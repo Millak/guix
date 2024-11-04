@@ -3746,17 +3746,18 @@ for use in Bioconductor’s AnnotationHub.")
 (define-public r-anvil
   (package
     (name "r-anvil")
-    (version "1.16.1")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AnVIL" version))
               (sha256
                (base32
-                "0i4skg2bpj0rbb3fbaprfs4d4nxg9aj8d6pni4a3k0wip3dw1cf9"))))
+                "101d8xc8ifyxgnwp0a60r55pqfpmp8cfbbnmy0z8r95r2nylzxsg"))))
     (properties `((upstream-name . "AnVIL")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biocbaseutils
+     (list r-anvilbase
+           r-biocbaseutils
            r-biocmanager
            r-dplyr
            r-dt
