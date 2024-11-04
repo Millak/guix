@@ -3406,13 +3406,13 @@ handled by @code{alabaster.base}.")
 (define-public r-alabaster-se
   (package
     (name "r-alabaster-se")
-    (version "1.4.1")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "alabaster.se" version))
        (sha256
-        (base32 "134r4pwaa4nsmdgqxs16w3adn482zl70lgyd4s96pmx7hqm9i1vx"))))
+        (base32 "01963yn5iyc0ksxr1nlwkddfll9259x2w3y1b82db36kjj3bac2y"))))
     (properties `((upstream-name . "alabaster.se")))
     (build-system r-build-system)
     (propagated-inputs (list r-alabaster-base
