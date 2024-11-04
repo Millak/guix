@@ -25076,13 +25076,13 @@ interest on transformed methylation proportions.")
 (define-public r-omicade4
   (package
     (name "r-omicade4")
-    (version "1.44.0")
+    (version "1.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "omicade4" version))
               (sha256
                (base32
-                "18gp8qpmnbc5yjqyvvwvmrdybvm6zddc0r8bfglxz5wg4a91h4wk"))))
+                "0c9ga5pg521w15zakwa0pw52yahj80x59lq5ziq294mj05fjmx32"))))
     (properties `((upstream-name . "omicade4")))
     (build-system r-build-system)
     (propagated-inputs (list r-ade4 r-biobase r-made4))
