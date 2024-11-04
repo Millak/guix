@@ -8441,13 +8441,13 @@ regions identified.")
 (define-public r-globalancova
   (package
     (name "r-globalancova")
-    (version "4.22.0")
+    (version "4.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GlobalAncova" version))
               (sha256
                (base32
-                "0z71a5h4y740k0hx84aavfxl1kpshm4gqs7mh6zf895i2r761bqh"))))
+                "1hxggdicpqhwyai53sa20y63dmn48rlys56iyk1rwnxwd8dsmjn0"))))
     (properties `((upstream-name . "GlobalAncova")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotate
