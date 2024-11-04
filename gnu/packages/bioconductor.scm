@@ -3119,13 +3119,13 @@ but which also provides utilities which may be useful for other platforms.")
 (define-public r-adductomicsr
   (package
     (name "r-adductomicsr")
-    (version "1.20.0")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "adductomicsR" version))
               (sha256
                (base32
-                "0800jbfm488i6ccz48k49gpxr9sf9104cxcghgy9c4lzm5d3wfbm"))))
+                "0946x9a2y7yrbgbcn7fmwhkm0caraahl9wcz09aj02gnm5zvlxxs"))))
     (properties `((upstream-name . "adductomicsR")))
     (build-system r-build-system)
     (propagated-inputs
