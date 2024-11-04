@@ -953,6 +953,32 @@ data.")
      "This is an annotation package for Illumina's EPIC methylation arrays.")
     (license license:artistic2.0)))
 
+(define-public r-illuminahumanmethylationepicv2anno-20a1-hg38
+  (package
+    (name "r-illuminahumanmethylationepicv2anno-20a1-hg38")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "IlluminaHumanMethylationEPICv2anno.20a1.hg38"
+                              version
+                              'annotation))
+       (sha256
+        (base32 "0vp4m3a7qal4d8qc9xaj7z3x484i33ix4c67qlbw0kskdir7rq5a"))))
+    (properties `((upstream-name . "IlluminaHumanMethylationEPICv2anno.20a1.hg38")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-minfi))
+    (native-inputs (list r-knitr))
+    (home-page
+     "https://www.illumina.com/products/by-type/microarray-kits/infinium-methylation-epic.html")
+    (synopsis "Annotation for Illumina's EPIC v2.0 methylation arrays")
+    (description
+     "This is an annotation package for Illumina's EPIC v2.0 methylation
+arrays.  The version 2 covers more than 935K CpG sites in the human genome
+hg38.  It is an update of the original EPIC v1.0 array (i.e., the 850K
+methylation array).")
+    (license license:artistic2.0)))
+
 (define-public r-org-ce-eg-db
   (package
     (name "r-org-ce-eg-db")
