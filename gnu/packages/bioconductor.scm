@@ -14194,13 +14194,13 @@ genes or proteins in these datasets.")
 (define-public r-plyranges
   (package
     (name "r-plyranges")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "plyranges" version))
               (sha256
                (base32
-                "0rh5l6bd80nhffqpnnc2c00mvp8p32ykld05h94c3y8c9mvmsl58"))))
+                "0ai6p7q4iva420wnm0008p1vivd72gc1anwhzzsmy14bxr52rwbx"))))
     (properties `((upstream-name . "plyranges")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
