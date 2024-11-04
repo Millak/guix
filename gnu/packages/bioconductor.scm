@@ -9838,14 +9838,14 @@ package TeXshade.")
 (define-public r-msnbase
   (package
     (name "r-msnbase")
-    (version "2.30.1")
+    (version "2.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MSnbase" version))
        (sha256
         (base32
-         "0cdvi2mjvhj0h8x2rh3kkzrdnmzhr7d9a41m21r6b843a0q7hp6f"))))
+         "0cykb5kk524i3ssps798c7wfpa3f8svdgxa8sfvc1pxm0fxypfgb"))))
     (properties `((upstream-name . "MSnbase")))
     (build-system r-build-system)
     (propagated-inputs
