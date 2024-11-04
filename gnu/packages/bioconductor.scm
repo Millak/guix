@@ -8417,13 +8417,13 @@ manipulating genomic intervals and variables defined along a genome.")
 (define-public r-glad
   (package
     (name "r-glad")
-    (version "2.68.0")
+    (version "2.70.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GLAD" version))
               (sha256
                (base32
-                "01qn4v7b7b633dz01njzmg48lga861pfqnys9f0fbk9damxc6rr1"))))
+                "05vn4zmazkkf0m3shm08dkwlb8whwqqw0vr5h27vlxlz3bcjnqcf"))))
     (properties `((upstream-name . "GLAD")))
     (build-system r-build-system)
     (inputs (list gsl))
