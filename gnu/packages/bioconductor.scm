@@ -3739,6 +3739,29 @@ Dockstore, and Gen3 RESTful programming interface, including helper functions
 to transform JSON responses to formats more amenable to manipulation in R.")
     (license license:artistic2.0)))
 
+(define-public r-anvilbase
+  (package
+    (name "r-anvilbase")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "AnVILBase" version))
+       (sha256
+        (base32 "0cjik5yvbbpryyawkqb6y38h92in0jkkm46a4kisbsif42hwa2i5"))))
+    (properties `((upstream-name . "AnVILBase")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr r-httr r-httr2 r-jsonlite r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/Bioconductor/AnVILBase")
+    (synopsis "Generic functions for interacting with the AnVIL system")
+    (description
+     "This package provides generic functions for interacting with the
+@code{AnVIL} system.  Packages that use either GCP or Azure in @code{AnVIL}
+are built on top of @code{AnVILBase}.  Extension packages will provide methods
+for interacting with other cloud providers.")
+    (license license:artistic2.0)))
+
 (define-public r-aldex2
   (package
     (name "r-aldex2")
