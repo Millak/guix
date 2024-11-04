@@ -1707,14 +1707,14 @@ dataset for the examples in package viper.")
 (define-public r-bladderbatch
   (package
     (name "r-bladderbatch")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "bladderbatch" version
                                      'experiment))
               (sha256
                (base32
-                "00cgkpa6mb32q3xl5clkpdh5rkwx7c81rxmyh2qr0jpwpmd3gjwc"))))
+                "14lik0n2b3fnvggrcash3kcd03vgzqimzhv9w3vagz0cbvdr0s01"))))
     (properties `((upstream-name . "bladderbatch")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase))
