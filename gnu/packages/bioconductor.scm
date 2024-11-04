@@ -15388,14 +15388,14 @@ distributions.")
 (define-public r-scone
   (package
     (name "r-scone")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scone" version))
        (sha256
         (base32
-         "1qvnc6cds3avxh1k4z47vb2fih7q8a5b9hccnyrpfks5c0sd6yi0"))))
+         "0cmjyxkszidsjzhs6rqw5m7afmy4gw2rvajrm5wagnisk73bvz6i"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-aroma-light
@@ -15404,6 +15404,7 @@ distributions.")
            r-class
            r-cluster
            r-compositions
+           r-delayedmatrixstats
            r-diptest
            r-edger
            r-fpc
@@ -15418,6 +15419,7 @@ distributions.")
            r-rhdf5
            r-ruvseq
            r-singlecellexperiment
+           r-sparsematrixstats
            r-summarizedexperiment))
     (native-inputs
      (list r-knitr))
