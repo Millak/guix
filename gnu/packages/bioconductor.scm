@@ -13996,22 +13996,25 @@ trees and clusters to other programs.")
 (define-public r-goseq
   (package
     (name "r-goseq")
-    (version "1.56.0")
+    (version "1.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "goseq" version))
        (sha256
         (base32
-         "0bc7dcpz0agbc42f8agf05amyhpavz55fdp622if5af5dn1ww6pr"))))
+         "1paya44vvzvbv0mr0vky4sjvmaqx8y4n5p457vxy2b8b3l086p45"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
            r-biasedurn
            r-biocgenerics
            r-genelendatabase
+           r-genomeinfodb
+           r-genomicfeatures
            r-go-db
-           r-mgcv))
+           r-mgcv
+           r-rtracklayer))
     (home-page "https://bioconductor.org/packages/goseq/")
     (synopsis "Gene Ontology analyser for RNA-seq and other length biased data")
     (description
