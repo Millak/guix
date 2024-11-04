@@ -3776,7 +3776,7 @@ which sends emails to HyperKitty, the official Mailman3 web archiver.")
            python-django-rest-framework
            python-flufl-lock
            python-mailmanclient
-           python-mistune-next
+           python-mistune
            python-networkx
            python-pytz
            python-robot-detection))

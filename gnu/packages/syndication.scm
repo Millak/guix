@@ -215,7 +215,7 @@ cards.")
            python
            python-beautifulsoup4
            python-dateutil
-           python-mistune-next
+           python-mistune
            python-pillow
            python-praw
            python-pygobject

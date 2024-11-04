@@ -15449,28 +15449,6 @@ It also removes useless @code{pass} statements.")
 Python.")
     (license license:bsd-3)))
 
-;; 2.0 is not released yet, but some packages have started using it.
-(define-public python-mistune-next
-  (package
-    (inherit python-mistune)
-    (name "python-mistune-next")
-    (version "2.0.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "mistune" version))
-              (sha256
-               (base32
-                "024q9l6mgd37wa25w7dhskv1m3zsj5lf0w9cfyx7l9p2adhadq4y"))))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest))))
-
 (define-public python-markdown
   (package
     (name "python-markdown")
