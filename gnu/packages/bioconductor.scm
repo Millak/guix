@@ -766,13 +766,13 @@ in Biostrings objects.")
 (define-public r-genomeinfodbdata
   (package
     (name "r-genomeinfodbdata")
-    (version "1.2.12")
+    (version "1.2.13")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomeInfoDbData" version 'annotation))
               (sha256
                (base32
-                "0md3jl5bz4d2wkvf4yra7rydf5dgykrijrdqwwxc7f77l30nsmgp"))))
+                "0kh7yxk8aqadv9xdnvrp2ysa1xxxgjqkj83w3bw1w9k55r1kr8si"))))
     (properties
      `((upstream-name . "GenomeInfoDbData")))
     (build-system r-build-system)
