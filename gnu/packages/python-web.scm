@@ -4718,31 +4718,35 @@ Betamax that may possibly end up in the main package.")
 (define-public python-s3transfer
   (package
     (name "python-s3transfer")
-    (version "0.5.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "s3transfer" version))
-              (sha256
-               (base32
-                "0k6sc956yrrv9b4laa0r79jhxajpyxr21jcd1ka8m1n53lz85vah"))))
-    (build-system python-build-system)
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "s3transfer" version))
+       (sha256
+        (base32 "032bjky1q8r5x80mvb0ah60g0zq4snwf0xa4c7779m44mdsfsl2g"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Some of the 'integration' tests require network access or
-               ;; login credentials.
-               (invoke "nosetests" "--exclude=integration")))))))
+     (list
+      #:test-flags
+      #~(list "--numprocesses" "auto"
+              ;; Tests require networking.
+              "--ignore" "tests/integration")))
     (native-inputs
-     (list python-docutils python-mock python-nose))
+     (list python-docutils
+           python-mock
+           python-nose
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-botocore python-urllib3))
-    (synopsis "Amazon S3 Transfer Manager")
-    (description "S3transfer is a Python library for managing Amazon S3
-transfers.")
+     (list python-botocore
+           python-urllib3))
     (home-page "https://github.com/boto/s3transfer")
+    (synopsis "Amazon S3 Transfer Manager")
+    (description
+     "S3transfer is a Python library for managing Amazon S3 transfers.")
     (license license:asl2.0)))
 
 (define-public python-flask-jwt
