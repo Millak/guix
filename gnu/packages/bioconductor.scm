@@ -11316,13 +11316,13 @@ different experiment.")
 (define-public r-screpertoire
   (package
     (name "r-screpertoire")
-    (version "2.0.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scRepertoire" version))
        (sha256
-        (base32 "1ifnyfzswisacvxxf041l1snfv1b8x30pjg2pwampg804c56f1wj"))))
+        (base32 "0x383v4ykc8v3r34vdi286d99prvj00z29gp4kc9hx38fmh70vcc"))))
     (properties `((upstream-name . "scRepertoire")))
     (build-system r-build-system)
     (propagated-inputs
