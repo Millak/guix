@@ -18870,17 +18870,17 @@ of the analyses while minimizing technical noise.")
 (define-public r-cytolib
   (package
     (name "r-cytolib")
-    (version "2.16.0")
+    (version "2.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "cytolib" version))
        (sha256
         (base32
-         "0nrj892jihi4fv58si3il42s0vyz3gm4gmb65kidkky63gmsy6iq"))))
+         "1fbsdpm2v9mzb4n5r5lf9z6v3gzmxd0x5dqs863p0ll1b8a6w7qv"))))
     (properties `((upstream-name . "cytolib")))
     (build-system r-build-system)
-    (inputs (list openblas protobuf zlib))
+    (inputs (list openblas zlib))
     (native-inputs
      (list r-knitr))
     (propagated-inputs
