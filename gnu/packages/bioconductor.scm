@@ -3562,13 +3562,13 @@ canonical cancer pathways.")
 (define-public r-anaquin
   (package
     (name "r-anaquin")
-    (version "2.28.0")
+    (version "2.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Anaquin" version))
               (sha256
                (base32
-                "0hfvwzkfy6bm2ffghax5b228k2l6wf8zq82q13h6bxfps4wz0jgb"))))
+                "0krfyb0bcc4vpna7ygyd9rqsdpnqmizlmf8sgpcyfk722dbavvdn"))))
     (properties `((upstream-name . "Anaquin")))
     (build-system r-build-system)
     (propagated-inputs
