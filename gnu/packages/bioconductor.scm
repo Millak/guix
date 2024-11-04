@@ -24675,14 +24675,14 @@ design.")
 (define-public r-biomvrcns
   (package
     (name "r-biomvrcns")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biomvRCNS" version))
        (sha256
         (base32
-         "1wk0qagx9s2lxykc1fp7l35kl6q17lqy6x4fl2c57v3wa11f47mi"))))
+         "14cvhm3r43g1b2wmjj63cfgafjbaf3zzxy0jlkp1bix4bs9fvgns"))))
     (properties `((upstream-name . "biomvRCNS")))
     (build-system r-build-system)
     (arguments
