@@ -807,17 +807,17 @@ information about the latest version of the Gene Ontologies.")
 (define-public r-hdo-db
   (package
     (name "r-hdo-db")
-    (version "0.99.1")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "HDO.db" version 'annotation))
               (sha256
                (base32
-                "14ngyxailmxrbxqqi9m7mchqcvchmbg7zm34i8a927b20s6z4z61"))))
+                "0h026xkncm8nc1q8z7qk3nlw445rf3dncaf20b80x7xfl2nm3f84"))))
     (properties `((upstream-name . "HDO.db")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-annotationdbi))
+     (list r-annotationdbi r-dbi))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/HDO.db")
