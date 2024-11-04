@@ -5297,13 +5297,13 @@ factorial microarray data.")
 (define-public r-damefinder
   (package
     (name "r-damefinder")
-    (version "1.16.0")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DAMEfinder" version))
               (sha256
                (base32
-                "1ffqa7a3a0f3m58j6al2hd7aa8bamv4z170y4yn1vr1f8jrb7kq5"))))
+                "03lk5i1sc0jfzw4qkhbkzjl86xqnv9v1398z5ykiajw8cama0lkq"))))
     (properties `((upstream-name . "DAMEfinder")))
     (build-system r-build-system)
     (propagated-inputs
