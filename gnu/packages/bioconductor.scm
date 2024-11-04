@@ -20010,14 +20010,14 @@ format.")
 (define-public r-wavcluster
   (package
     (name "r-wavcluster")
-    (version "2.38.0")
+    (version "2.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "wavClusteR" version))
        (sha256
         (base32
-         "0yr4jfaxs253xg5q0kds8fm97kqacx67pw1c80yx2w79v7nqskgv"))))
+         "0sgnp5s5lgvkpypcbypls6lnav81d10r3kzyw61bva5xn236vwyx"))))
     (properties `((upstream-name . "wavClusteR")))
     (build-system r-build-system)
     (propagated-inputs
