@@ -7434,13 +7434,13 @@ regions and to highlight copy number alterations.")
 (define-public r-chipseeker
   (package
     (name "r-chipseeker")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ChIPseeker" version))
               (sha256
                (base32
-                "00iknjk7vgj48vj1pp7l98g7nvc3x495z3jcq5nbvdiff02faj1f"))))
+                "0l15apga9c0pcclvdx4zdyl9zd3v4isc5rb95d7h7s2wa3mskaxh"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -7460,8 +7460,11 @@ regions and to highlight copy number alterations.")
            r-iranges
            r-magrittr
            r-plotrix
+           r-rcolorbrewer
+           r-rlang
            r-rtracklayer
            r-s4vectors
+           r-scales
            r-tibble
            r-txdb-hsapiens-ucsc-hg19-knowngene
            r-yulab-utils))
