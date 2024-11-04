@@ -16247,14 +16247,14 @@ gmapR.")
 (define-public r-heatplus
   (package
     (name "r-heatplus")
-    (version "3.12.0")
+    (version "3.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Heatplus" version))
        (sha256
         (base32
-         "1pc63hk0smcflq4903hvs4pp8r0kzlx08j0m1kxlh14cxwppamyb"))))
+         "1kfm07dcs4gvkr1ry57q8r564v2b73vd67ysy83riz9qvan5r63b"))))
     (properties `((upstream-name . "Heatplus")))
     (build-system r-build-system)
     (propagated-inputs
