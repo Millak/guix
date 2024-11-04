@@ -24190,13 +24190,13 @@ approach and a multi-scale contact profile.")
 (define-public r-basics
   (package
     (name "r-basics")
-    (version "2.16.0")
+    (version "2.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BASiCS" version))
        (sha256
-        (base32 "0rcc8na0nravf2687bcvbaklwa0z8b43lvdy0nf9xvfrfpr1zjnw"))))
+        (base32 "1pdbkxamzcpgiqycp3dzmakj3laclgj3r9q9garz3q86m59fkrzb"))))
     (properties `((upstream-name . "BASiCS")))
     (build-system r-build-system)
     (propagated-inputs
