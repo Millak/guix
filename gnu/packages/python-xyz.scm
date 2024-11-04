@@ -19401,31 +19401,35 @@ Amazon Web Services (AWS) API.")
 (define-public python-boto3
   (package
     (name "python-boto3")
-    (version "1.21.35")
-    (home-page "https://github.com/boto/boto3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1kdyf238rpfldnpzs0rdh3nhjn6hwfym4faskyhzlgzkf1smmbg1"))))
+    (version "1.35.54")
+    (source
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/boto/boto3")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w0k719i8pyzkvd2snv6z91r57k6cxkq1i3phygdpwzk0k6acvj2"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-network-tests
-           ;; Deleting integration tests because they are trying to connect to AWS.
-           (lambda _
-             (delete-file-recursively "tests/integration")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-v")))))))
-    (build-system python-build-system)
+     (list
+      #:test-flags
+      #~(list "--numprocesses" "auto"
+              ;; Tests require networking.
+              "--ignore" "tests/integration")))
     (native-inputs
-     (list python-nose python-mock python-pytest))
+     (list python-mock
+           python-nose
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-botocore python-jmespath python-s3transfer))
+     (list python-botocore
+           python-jmespath
+           python-s3transfer))
+    (home-page "https://github.com/boto/boto3")
     (synopsis "AWS SDK for Python")
     (description
      "Boto3 is a Python library for writing programs that interact with
