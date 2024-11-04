@@ -2115,13 +2115,13 @@ package.")
 (define-public r-jaspar2016
   (package
     (name "r-jaspar2016")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "JASPAR2016" version 'experiment))
        (sha256
-        (base32 "09q5m71drbp64n26plr0a9bz71akcs4g7pqqyjmsmjrzi40kx7hr"))))
+        (base32 "0vg47zvpb20vhk177d1hj959cj1srfql10ywakzkhw7h4hmc8jnl"))))
     (properties `((upstream-name . "JASPAR2016")))
     (build-system r-build-system)
     (home-page "https://jaspar.elixir.no/")
