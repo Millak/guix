@@ -23095,14 +23095,14 @@ experiments, and visualize de influence of the involved factors.")
 (define-public r-msmstests
   (package
     (name "r-msmstests")
-    (version "1.42.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "msmsTests" version))
        (sha256
         (base32
-         "0fadwss9z4bfgkhrrqv322j8x40l5cl4ib85057h4fn03qdijqhq"))))
+         "0pwz1hzrniqdgcxbd361w4rf5brjgb4wwz5jlny2vfnigb6v1mmd"))))
     (properties `((upstream-name . "msmsTests")))
     (build-system r-build-system)
     (propagated-inputs
