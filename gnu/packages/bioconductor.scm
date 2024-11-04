@@ -1665,12 +1665,12 @@ demonstration purposes in the @code{AneuFinder} package.")
 (define-public r-arrmdata
   (package
     (name "r-arrmdata")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ARRmData" version 'experiment))
               (sha256
-               (base32 "02y44d0dappc3srl2d7lgipm6a62gvd8vivzaq4594dnmy8rvkw3"))))
+               (base32 "0hic3rm9z1z98dqg6g7nvs4mdq7xn0xvkpraqv95zw1izs0zvndi"))))
     (properties
      `((upstream-name . "ARRmData")))
     (build-system r-build-system)
