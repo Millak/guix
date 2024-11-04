@@ -35839,7 +35839,7 @@ doi.org/10.1007/s10115-013-0679-x} for details.")
      "This package provides infrastructure for the management of survey data
 including value labels, definable missing values, recoding of variables,
 production of code books, and import of (subsets of) SPSS and Stata files is
-provided.  Further, the package allows to produce tables and data frames of
+provided.  Further, the package produces tables and data frames of
 arbitrary descriptive statistics and (almost) publication-ready tables of
 regression model estimates, which can be exported to LaTeX and HTML.")
     ;; Either of these two version.

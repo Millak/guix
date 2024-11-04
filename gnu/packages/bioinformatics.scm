@@ -19841,7 +19841,7 @@ repeated areas between contigs.")
      (list poetry python-pytest))
     (home-page "https://github.com/vembrane/vembrane")
     (synopsis "Filter VCF/BCF files with Python expressions.")
-    (description "Vembrane allows to simultaneously filter variants based on
+    (description "Vembrane simultaneously filters variants based on
 any INFO or FORMAT field, CHROM, POS, ID, REF, ALT, QUAL, FILTER, and the
 annotation field ANN.  When filtering based on ANN, annotation entries are
 filtered first.  If no annotation entry remains, the entire variant is

@@ -16446,7 +16446,7 @@ included.  Alternatively, a system-wide Lua installation can be linked instead."
     (synopsis "Bindings to Lua, an embeddable scripting language")
     (description
      "Wrappers and helpers to bridge Haskell and <https://www.lua.org/ Lua>. .  It
-builds upon the /lua/ package, which allows to bundle a Lua interpreter with a
+builds upon the /lua/ package, which allows bundling a Lua interpreter with a
 Haskell program.")
     (license license:expat)))
 

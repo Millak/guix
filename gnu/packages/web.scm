@@ -2201,7 +2201,7 @@ changes, and much more.")
     (arguments (list #:tests? #f))      ; requires internet access
     (home-page "https://github.com/paullouisageneau/libjuice")
     (synopsis "UDP Interactive Connectivity Establishment library")
-    (description "@code{libjuice} allows to open bidirectionnal User Datagram
+    (description "@code{libjuice} opens bidirectionnal User Datagram
 Protocol (UDP) streams with Network Address Translator (NAT) traversal.  It's a
 simplified implementation of the Interactive Connectivity Establishment (ICE)
 protocol, client-side and server-side, written in C without dependencies for

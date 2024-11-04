@@ -13141,7 +13141,7 @@ library with Eglot instead of Yasnippet.")
       (description
        "This package provides the ability to include files used by other
 programs in the candidate lists of commands like @code{consult-recent-file}
-and @code{consult-buffer}.  This allows to use the same interface for file
+and @code{consult-buffer}.  This allows using the same interface for file
 opening.
 
 On systems that comply with the XDG specification, these files are listed in
@@ -40663,7 +40663,7 @@ source blocks.")
       (license license:gpl3+)
       (home-page "https://github.com/rougier/org-margin")
       (synopsis "Outdent headlines in emacs org-mode")
-      (description "@code{org-margin} mode allows to outdent org headlines by
+      (description "@code{org-margin} mode outdents org headlines by
 moving leading stars into the margin and transform them into markers depending
 on the chosen style."))))
 
