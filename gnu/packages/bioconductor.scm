@@ -2692,13 +2692,13 @@ ranking by fold-change and visualization.")
 (define-public r-adacgh2
   (package
     (name "r-adacgh2")
-    (version "2.44.0")
+    (version "2.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ADaCGH2" version))
        (sha256
-        (base32 "1j9dn0xw8mdfvi2ccm1d5j9q740wb89wqi6715n6jy3dljlc8irz"))))
+        (base32 "1pzzbqh5wflhn9zqpdggx80y6zhdzg6i4xwgzjrh89bq90ibck04"))))
     (properties `((upstream-name . "ADaCGH2")))
     (build-system r-build-system)
     (arguments
