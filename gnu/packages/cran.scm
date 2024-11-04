@@ -6593,6 +6593,33 @@ their latest (at the time of submission) version and functions to fetch latest
 annotation data to keep updated.")
     (license license:expat)))
 
+(define-public r-ggtangle
+  (package
+    (name "r-ggtangle")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggtangle" version))
+       (sha256
+        (base32 "0drw2m6marf7msnghxpxbi6y3zzns0x8ybr5x34q53q25bbkr4m2"))))
+    (properties `((upstream-name . "ggtangle")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggfun
+                             r-ggplot2
+                             r-ggrepel
+                             r-igraph
+                             r-rlang
+                             r-yulab-utils))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=ggtangle")
+    (synopsis "Draw network with data")
+    (description
+     "This package extends the ggplot2 plotting system to support network
+visualization.  Inspired by ggtree, ggtangle is designed to work with network
+associated data.")
+    (license license:artistic2.0)))
+
 (define-public r-ggtern
   (package
     (name "r-ggtern")
