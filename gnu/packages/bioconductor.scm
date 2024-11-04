@@ -10646,13 +10646,13 @@ library implementing most of the pipeline's features.")
 (define-public r-rcy3
   (package
     (name "r-rcy3")
-    (version "2.24.0")
+    (version "2.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RCy3" version))
        (sha256
-        (base32 "03zmskcb8n87x6m5jlhsh2b0b2qjk91y16fdcj3kz5c1j7zfs18i"))))
+        (base32 "17bclz2bv7xzzx2rgpd89d19vlkkv0i67vcrva0v0gxm1cf4zvs1"))))
     (properties `((upstream-name . "RCy3")))
     (build-system r-build-system)
     (propagated-inputs (list r-base64enc
