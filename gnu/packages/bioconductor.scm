@@ -14326,18 +14326,18 @@ samples.")
 (define-public r-biocneighbors
   (package
     (name "r-biocneighbors")
-    (version "1.22.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocNeighbors" version))
        (sha256
         (base32
-         "1krg4cs406ymk27qcj3j1jsl8vl4j9k5zvwf4vzxgbw3x6lpywid"))))
+         "1k8jiypfv8gqrkgp51kjb3h0n0ddd8y84rg9jijyxzldqslgcak3"))))
     (properties `((upstream-name . "BiocNeighbors")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biocparallel r-matrix r-rcpp r-rcpphnsw r-s4vectors))
+     (list r-assorthead r-rcpp))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/BiocNeighbors")
