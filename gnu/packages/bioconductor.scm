@@ -344,14 +344,14 @@ based on mapping using Entrez Gene identifiers.")
 (define-public r-org-sc-sgd-db
   (package
     (name "r-org-sc-sgd-db")
-    (version "3.19.1")
+    (version "3.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "org.Sc.sgd.db" version
                               'annotation))
        (sha256
-        (base32 "1sbjwyf0ibivdhhxsaljgqa4lqp3hcf8gcrlcm2vd78bfm5cm7bg"))))
+        (base32 "0p7mvra93l21pb14qbvqjg7pwl6n572d8a3k15v9fsafikd07v8a"))))
     (properties `((upstream-name . "org.Sc.sgd.db")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationdbi))
