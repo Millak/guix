@@ -10434,13 +10434,13 @@ chromosome.  Both tumor-normal paired and tumor-only analyses are supported.")
 (define-public r-psmatch
   (package
     (name "r-psmatch")
-    (version "1.8.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "PSMatch" version))
        (sha256
-        (base32 "13w145is3d95392qqdq6qh3mrlcixbj0jzz4r590xas1qjp5d03h"))))
+        (base32 "1aq6kdvw5n0d9c8pg7clfbpm5v52svx438sk5wphj4x0l3qvbdhh"))))
     (properties `((upstream-name . "PSMatch")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
