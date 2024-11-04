@@ -23509,13 +23509,13 @@ annotation, and functions for GWAS data cleaning and analysis.")
 (define-public r-kegggraph
   (package
     (name "r-kegggraph")
-    (version "1.64.0")
+    (version "1.66.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "KEGGgraph" version))
        (sha256
-        (base32 "0lffqbvwmfjbw5ymxr969znvb53hbqfgq1zwffsc768rv3h4c6p7"))))
+        (base32 "08xk85p76dbywsxw5w0ckw31m0raar5frkz14qwz4x88ilwhrw25"))))
     (properties `((upstream-name . "KEGGgraph")))
     (build-system r-build-system)
     (propagated-inputs
