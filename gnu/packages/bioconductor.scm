@@ -9471,13 +9471,13 @@ be explored.")
 (define-public r-methylkit
   (package
     (name "r-methylkit")
-    (version "1.30.0")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "methylKit" version))
               (sha256
                (base32
-                "000dvi63cjikjbq3q83hlspd7y62rpswzg6hs5z1z1pj6a8rifdj"))))
+                "1niblg067819p8mldnlkf7xd8g3k89q6wcj095idlkcna06xj3d1"))))
     (properties `((upstream-name . "methylKit")))
     (build-system r-build-system)
     (propagated-inputs
