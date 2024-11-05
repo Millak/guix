@@ -48800,6 +48800,36 @@ contents.")
 safe unsynchronized access.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-onenote-parser-0.3
+  (package
+    (name "rust-onenote-parser")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "onenote_parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12rj3ixhnxvl2mpkad3ng4b8fx4ynxhdlwzxba36c8i98ls57zzf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.5)
+        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+        ("rust-enum-primitive-derive" ,rust-enum-primitive-derive-0.2)
+        ("rust-itertools" ,rust-itertools-0.9)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-uuid" ,rust-uuid-0.8)
+        ("rust-widestring" ,rust-widestring-0.4))
+       #:cargo-development-inputs (("rust-insta" ,rust-insta-1))))
+    (home-page "https://github.com/msiemens/onenote.rs")
+    (synopsis "Parser for Microsoft OneNote files")
+    (description
+     "This package provides a parser for Microsoft OneNote files.")
+    (license license:mpl2.0)))
+
 (define-public rust-onig-6
   (package
     (name "rust-onig")
