@@ -16360,13 +16360,13 @@ distribution.  It is not intended as an end-user tool.")
 (define-public python-immutables
   (package
     (name "python-immutables")
-    (version "0.18")
+    (version "0.21")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "immutables" version))
        (sha256
-        (base32 "1x4cinh0xbl6p6p2yfm2s07mxxy3lf0zzai9gqpydk4482bwfdjk"))))
+        (base32 "0jpw9nr2mbzqykigjhqa3a095bx7krwsnmjcxcpj944p8kqglpxm"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-mypy python-pytest python-setuptools python-wheel))
