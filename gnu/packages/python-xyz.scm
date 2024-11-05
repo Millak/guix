@@ -5192,8 +5192,11 @@ Cython for speed.")
                " and not test_thick_lines[png]"
                " and not test_weaklensing[png]"
                " and not test_wordy[png]"))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs (list python-matplotlib python-numpy))
-    (native-inputs (list python-pytest))
     (home-page "https://docs.daft-pgm.org/")
     (synopsis "PGM rendering library")
     (description "Daft is a Python package that uses matplotlib to
