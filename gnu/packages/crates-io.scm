@@ -56049,6 +56049,27 @@ replacements, adding colorful diffs.")
 formatted tables in terminal.")
     (license license:bsd-3)))
 
+(define-public rust-primal-bit-0.3
+  (package
+    (name "rust-primal-bit")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "primal-bit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mb0cdxhlm6phhl2f4d7nf7g4yrnd8xdq07m7liw7b5fp3djj915"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-hamming" ,rust-hamming-0.1))))
+    (home-page "https://github.com/huonw/primal")
+    (synopsis "Bit-vector specialised for rust-primal")
+    (description
+     "This package provides a bit-vector specialised to the
+prime-number-related needs of @code{rust-primal}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-print-bytes-1
   (package
     (name "rust-print-bytes")
