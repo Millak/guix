@@ -56049,6 +56049,34 @@ replacements, adding colorful diffs.")
 formatted tables in terminal.")
     (license license:bsd-3)))
 
+(define-public rust-primal-0.3
+  (package
+    (name "rust-primal")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "primal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1s6n396cssbr86f9w31sppdf06xsymgrl7y9gw0yccl5jiag7rdi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-primal-check" ,rust-primal-check-0.3)
+                       ("rust-primal-estimate" ,rust-primal-estimate-0.3)
+                       ("rust-primal-sieve" ,rust-primal-sieve-0.3))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-primal-slowsieve" ,rust-primal-slowsieve-0.3))))
+    (home-page "https://github.com/huonw/primal")
+    (synopsis "Various tools for prime numbers")
+    (description
+     "This package provides various tools to work with prime numbers.  It
+includes: optimised prime sieves, checking for primality, enumerating primes,
+factorising numbers, and state-of-the-art estimation of upper and lower bounds
+for the number of primes below n and the k-th prime.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-primal-bit-0.3
   (package
     (name "rust-primal-bit")
