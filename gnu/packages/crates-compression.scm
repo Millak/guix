@@ -488,6 +488,32 @@ written in rust.")
     (description "Deflate64 implementation based on .NET's implementation.")
     (license license:expat)))
 
+(define-public rust-delharc-0.6
+  (package
+    (name "rust-delharc")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "delharc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18g5haj6bj92azif4jifhdy9vrv6blg3wyvpmxslh2gm2wkbm4qw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Test files are missing.
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-memchr" ,rust-memchr-2))
+       #:cargo-development-inputs (("rust-crc-any" ,rust-crc-any-2)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/royaltm/rust-delharc")
+    (synopsis "Parse and extract files from LHA/LZH archives")
+    (description
+     "This package provides a Rust library for parsing and extracting files
+from LHA/LZH archives, which are often suffixed @code{.lha} or @code{.lzh}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fdeflate-0.3
   (package
     (name "rust-fdeflate")
