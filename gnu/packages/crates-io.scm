@@ -66661,6 +66661,28 @@ rustc compiler.")
      `(#:cargo-inputs
        (("rust-semver" ,rust-semver-0.1))))))
 
+(define-public rust-rustdct-0.7
+  (package
+    (name "rust-rustdct")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustdct" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lcm1191xx8wizima5j3n25fs90x58v3q1kwg6cbzafn0m8maqcb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rustfft" ,rust-rustfft-6))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/ejmahler/rust_dct")
+    (synopsis "Compute Discrete Cosine Transforms (DCT) in pure Rust")
+    (description
+     "This package provides a Rust library to compute the main Discrete Cosine
+Transforms (DCT) of any size in O(nlogn) time.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustdoc-json-0.8
   (package
     (name "rust-rustdoc-json")
