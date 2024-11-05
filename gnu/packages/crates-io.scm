@@ -85408,6 +85408,28 @@ be used directly.  See @code{rust-trackable} for more information.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-transpose-0.2
+  (package
+    (name "rust-transpose")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "transpose" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zp74v7jrjg4jr654dncdj6hqvacicsywyhc62jawgxwhvnimmhs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-num-integer" ,rust-num-integer-0.1)
+                       ("rust-strength-reduce" ,rust-strength-reduce-0.2))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://github.com/ejmahler/transpose")
+    (synopsis "Utility for transposing multi-dimensional data")
+    (description
+     "This package provides utilities for transposing multi-dimensional data.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-trash-5
   (package
     (name "rust-trash")
