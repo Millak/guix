@@ -115,20 +115,19 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
-;; TODO: this is not reproducible.
 (define-public bart
   (package
     (name "bart")
-    (version "0.8.00")
+    (version "0.9.00")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/mrirecon/bart")
-             (commit "eacc67b95cf128487ecc48f0e6541ea4dca08818")))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05lcf7c3g7ms5h82bw1mi4kzkdv5wpqi1zrfhqfkgbcpd3irj6aq"))))
+        (base32 "0mj6jmw31rsnvqmpfqahhj4cy9iv5xgrhzmcsrikdz5dgd45lmjz"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -140,6 +139,7 @@
                       "OPENBLAS=1"
                       "SCALAPACK=1"
                       (string-append "BLAS_BASE=" #$(this-package-input "openblas"))
+                      (string-append "CC=" #$(cc-for-target))
                       (string-append "FFTW_BASE=" #$(this-package-input "fftw")))
       #:parallel-build? #false ;leads to non-deterministic output
       #:phases
