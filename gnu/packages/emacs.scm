@@ -546,7 +546,7 @@ toolkit)")
   (package/inherit emacs-no-x
     (name "emacs-no-x-toolkit")
     (synopsis "The extensible, customizable, self-documenting text
-editor (without an X toolkit)" )
+editor (without X toolkit)" )
     ;; Using emacs' inputs as base, since it has all the graphical stuff
     (inputs (modify-inputs (package-inputs emacs)
               (delete "gtk+")
