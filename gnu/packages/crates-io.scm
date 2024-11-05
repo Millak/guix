@@ -23197,16 +23197,15 @@ instances for enum.")
 (define-public rust-enum-primitive-derive-0.2
   (package
     (name "rust-enum-primitive-derive")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "enum-primitive-derive" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0h1k2izdl5lf2na8xnj7rgwjm8gawxc2p1w8j6ahifvyka7jhljz"))))
+         "03ibjjx8dc4akpq8ck24qda5ix4jybz9jagfxykd0s6vxb2vjxf3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
