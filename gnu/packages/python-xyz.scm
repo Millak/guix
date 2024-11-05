@@ -22361,7 +22361,9 @@ inspection of types defined in the Python standard typing module.")
     (native-inputs
      (list python-numpy python-pytest python-setuptools))
     (propagated-inputs
-     (list python-flit-core))
+     (list python-flit-core
+           python-setuptools
+           python-wheel))
     (home-page "https://scientific-python.org/specs/spec-0001/")
     (synopsis "Load subpackages and functions on demand")
     (description "@code{python-lazy-loader} makes it easy to load subpackages
