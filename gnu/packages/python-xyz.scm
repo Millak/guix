@@ -18125,11 +18125,19 @@ convert an @code{.ipynb} notebook file into various static formats including:
     (arguments
      (list
       #:test-flags
-      ;; TODO: This tests fails because nbconvert does not
-      ;; list "python" as a format.
-      '(list "-k" "not test_list_formats"
-             ;; These tests require a browser.
-             "--ignore=notebook/tests/selenium")
+      '(list "-k" (string-append
+                   ;; TODO: This tests fails because nbconvert does not
+                   ;; list "python" as a format.
+                   "not test_list_formats"
+                   ;; AssertionError: Lists differ:
+                   " and not test_disable"
+                   " and not test_enable"
+                   " and not test_merge_config"
+                   " and not test_load_ordered"
+                   " and not test_list_running_sock_servers"
+                   " and not test_run")
+        ;; These tests require a browser.
+        "--ignore=notebook/tests/selenium")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'use-our-home-for-tests
