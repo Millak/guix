@@ -4136,47 +4136,64 @@ supports url redirection and retries, and also gzip and deflate decoding.")
   (package
     ;; Note: updating awscli typically requires updating botocore as well.
     (name "awscli")
-    (version "1.22.90")
+    (version "1.35.20")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri name version))
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/aws/aws-cli")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0ky4ax4xh7s8w1l0hwc7w9ii8afvh9nib3kz09qhiqdinxzrlv54"))))
-    (build-system python-build-system)
+        (base32 "1hj1hj374hdwb8wq2xw20ywjyrv37s65nfsjzs6k9wa0f629alkf"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: The 'pypi' release does not contain tests.
-     '(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-recent-pyyaml
-           (lambda _
-             (substitute* '("awscli.egg-info/requires.txt"
-                            "setup.cfg"
-                            "setup.py")
-               (("<5.5") "<=6"))))
-         (add-after 'unpack 'fix-reference-to-groff
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "awscli/help.py"
-               (("if not self._exists_on_path\\('groff'\\):") "")
-               (("raise ExecutableNotFoundError\\('groff'\\)") "")
-               (("cmdline = \\['groff'")
-                (string-append "cmdline = ['"
-                               (search-input-file inputs "bin/groff")
-                               "'"))))))))
+     (list
+      #:test-flags
+      #~(list "--numprocesses" "auto"
+              ;; Tests require networking.
+              "--ignore" "tests/integration"
+              ;; It strugles to set PYTHONPATH.
+              ;;
+              ;; AssertionError: 'argument operation: Invalid choice, valid
+              ;; choices are:' not found in '
+              "-k" (string-append "not test_subscribe_to_shard_removed"
+                                  " and not test_start_conversation_removed"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-reference-to-groff
+            (lambda _
+              ;; XXX: Consider to use wrap-program instead, it tries to parse
+              ;; the PATH.
+              (substitute* "awscli/help.py"
+                (("if self._exists_on_path\\('groff'\\):") "if 'groff':")
+                (("raise ExecutableNotFoundError\\('groff'\\)") "")
+                (("cmdline = \\['groff'")
+                 (format #f "cmdline = ['~a/bin/groff'"
+                         #$(this-package-input "groff-minimal"))))))
+          (add-before 'check 'set-environment
+            (lambda _
+              ;; PermissionError: [Errno 13] Permission denied:
+              ;; '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
     (inputs
-     (list groff
-           python-colorama-for-awscli
+     (list groff-minimal
            python-botocore
-           python-s3transfer
+           python-colorama
            python-docutils-0.15
-           python-pyyaml-5
-           python-rsa))
+           python-pyyaml
+           python-rsa
+           python-s3transfer))
     (home-page "https://aws.amazon.com/cli/")
     (synopsis "Command line client for AWS")
-    (description "AWS CLI provides a unified command line interface to the
-Amazon Web Services (AWS) API.")
+    (description
+     "AWS CLI provides a unified command line interface to the Amazon Web
+Services (AWS) API.")
     (license license:asl2.0)))
 
 (define-public awscli-2
