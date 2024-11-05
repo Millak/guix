@@ -24678,35 +24678,6 @@ manipulation and interaction with formal grammars.")
                                                        transducers).")
     (license license:expat)))
 
-(define-public python-m2r
-  (package
-    (name "python-m2r")
-    (version "0.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "m2r" version))
-              (sha256
-               (base32
-                "1asnwazfznbs0r7x03pj5ns4npz18z3kli538sgdicfg97y6gyxa"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Adjust test regex for Python 3.10 compatibility.
-               ;; Taken from upstream pull request:
-               ;; https://github.com/miyakogi/m2r/pull/62
-               '(substitute* "tests/test_cli.py"
-                  (("self.assertIn\\('optional arguments:', message\\)")
-                   "self.assertRegex(message, r'option(s|al arguments):')")))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-docutils python-mistune))
-    (native-inputs
-     (list python-pygments python-mock))
-    (home-page "https://github.com/miyakogi/m2r")
-    (synopsis "Markdown to reStructuredText converter")
-    (description "M2R converts a markdown file including reST markups to valid
-     reST format.")
-    (license license:expat)))
-
 (define-public python-constantly
   (package
     (name "python-constantly")
