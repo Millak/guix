@@ -12648,8 +12648,8 @@ without using the configuration machinery.")
     (propagated-inputs (list python-typing-extensions))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
-           python-pytest-xdist
+           python-setuptools
+           python-wheel
            cmake
            pybind11))
     (home-page "https://github.com/metaopt/optree")
