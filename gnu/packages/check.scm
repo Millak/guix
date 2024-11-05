@@ -1402,7 +1402,10 @@ for every Python test framework.  It supports nose, py.test, and unittest.")
                (substitute* "parameterized/test.py"
                  (("import mock") "from unittest import mock"))
                (invoke "python3" "-m" "unittest")))))))
-    (native-inputs (list python-jinja2))))
+    (native-inputs
+     (list python-jinja2
+           python-setuptools
+           python-wheel))))
 
 (define-public python-minimock
   (package
