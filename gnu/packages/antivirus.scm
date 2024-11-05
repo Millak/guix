@@ -48,8 +48,13 @@
     (version "0.103.11")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://www.clamav.net/downloads/production/"
-                                  "clamav-" version ".tar.gz"))
+              (uri
+               (list
+                (string-append "https://www.clamav.net/downloads/production/"
+                               "clamav-" version ".tar.gz")
+                (string-append "https://github.com/Cisco-Talos/clamav/"
+                               "releases/download/clamav-" version
+                               "/clamav-" version ".tar.gz")))
               (sha256
                (base32
                 "04by1g3p6awhi3j1y6zpwzmasdnvjgi6lwm34l2gadlwgkdfpmv1"))
@@ -144,6 +149,8 @@ scanning on mail gateways.  It provides a number of utilities including a
 flexible and scalable multi-threaded daemon, a command line scanner, and
 advanced tool for automatic database updates.  The core of the package is an
 anti-virus engine available in the form of a shared library.")
+    (properties `((release-monitoring-url
+                   . "https://github.com/Cisco-Talos/clamav/releases")))
     (license (list license:gpl2+        ;ClamAV itself
                    license:lgpl2.1      ;libclamav/mspack.[ch]
                    license:public-domain ;libclamav/7z/*, libclamav/rijndael.[ch], etc...
