@@ -2242,7 +2242,6 @@ and Vega-Lite examples.")
     (native-inputs (list python-black
                          python-hatchling
                          python-ipython
-                         python-m2r
                          python-pytest
                          python-vega-datasets))
     (home-page "https://altair-viz.github.io/")
