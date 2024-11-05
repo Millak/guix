@@ -3122,7 +3122,7 @@ powerful user customization features.")
 (define-public sendmail
   (package
     (name "sendmail")
-    (version "8.15.2")
+    (version "8.18.1")
     (source
      (origin
        (method url-fetch)
@@ -3130,8 +3130,7 @@ powerful user customization features.")
              "ftp://ftp.sendmail.org/pub/sendmail/sendmail."
              version ".tar.gz"))
        (sha256
-        (base32
-         "0fdl9ndmspqspdlmghzxlaqk56j3yajk52d7jxcg21b7sxglpy94"))))
+        (base32 "0w07iw4imp9wvczd2mijns7zxl8p1wk29b9yrzvhcj4fqc4z7wfb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
