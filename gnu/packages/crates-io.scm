@@ -75424,17 +75424,21 @@ iterated over only by reference rather than by value.")
 (define-public rust-strength-reduce-0.2
   (package
     (name "rust-strength-reduce")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "strength_reduce" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0m12phq654mfxpmh2h5akqkag5ha6nlhjc2bp9jwarr5r1qjzzx3"))))
+        (base32 "10jdq9dijjdkb20wg1dmwg447rnj37jbq0mwvbadvqi2gys5x2gy"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "http://github.com/ejmahler/strength_reduce")
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/ejmahler/strength_reduce")
     (synopsis "Faster integer division and modulus operations")
     (description "Strength_reduce implements integer division and modulo via
 @dfn{arithmetic strength reduction}.  Modern processors can do multiplication
