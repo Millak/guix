@@ -2849,7 +2849,7 @@ yaml for OCaml types.")
                              ocaml-ppx-sexp-conv))
     (native-inputs (list ocaml-ounit ocaml-sexplib0))
     (properties `((upstream-name . "ppx_import")))
-    (synopsis "Extension for importing declarations from interface files.")
+    (synopsis "Extension for importing declarations from interface files")
     (description
      "Ppx-import is a syntax extension for importing declarations from
 interface files.")

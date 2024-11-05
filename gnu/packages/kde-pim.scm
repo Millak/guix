@@ -435,7 +435,7 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
                   sonnet
                   zlib))
     (home-page "https://invent.kde.org/pim/itinerary")
-    (synopsis "Itinerary and boarding pass management")
+    (synopsis "Boarding pass and itinerary management")
     (description
      "This package provides a tool for managing itinerary and boarding pass
 information.")

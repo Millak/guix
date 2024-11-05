@@ -214,7 +214,7 @@ properly.")
            (lambda _
              (substitute* "src/manifest.json"
                (("_VERSIONHOLDER_") ,version)))))))
-    (synopsis "zx2c4 pass management extension for Mozilla Firefox")
+    (synopsis "Pass management extension for Mozilla Firefox")
     (description "This extension will allow you to access your zx2c4 pass
 repository directly from your web browser.  You can choose to automatically
 fill and submit login forms if a matching password entry is found.")
@@ -270,7 +270,7 @@ with the @uref{https://keepassxc.org, KeePassXC} password manager.")
     (arguments
      `(#:install-plan '(("." ,(assq-ref properties 'addon-id)))))
     (home-page "https://noscript.net")
-    (synopsis "Software providing extra protection for various browsers.")
+    (synopsis "Software providing extra protection for various browsers")
     (description "The NoScript Security Suite is a software providing extra
 protection for web browsers.")
     (license license:gpl3+)))

@@ -1001,7 +1001,7 @@ SyncTeX support, and rudimentary support for annotations and forms.")
      (list discount ffmpeg))
     (build-system meson-build-system)
     (home-page "https://www.flameeyes.com/projects/unpaper")
-    (synopsis "post-processing tool for scanned pages")
+    (synopsis "Post-processing tool for scanned pages")
     (description "@command{unpaper} is a post-processing tool for
 scanned sheets of paper, especially for book pages that have been
 scanned from previously created photocopies.

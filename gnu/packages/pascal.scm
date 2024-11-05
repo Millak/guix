@@ -312,7 +312,7 @@ many useful extensions to the Pascal programming language.")
             (lambda _ (chdir "src"))))))
     (native-inputs
      (list perl unzip which))
-    (synopsis "p2c converts Pascal programs to C programs")
+    (synopsis "Convert Pascal programs to C programs")
     (description "This package provides @command{p2c}, a program to convert
 Pascal source code to C source code, and @command{p2cc}, a compiler for
 Pascal programs.")

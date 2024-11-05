@@ -796,7 +796,7 @@ other enhancements and bug fixes.")
     (native-inputs
      (list pkg-config))
     (home-page "http://epicsol.org")
-    (synopsis "Epic5 IRC Client")
+    (synopsis "IRC Client")
     (description
      "EPIC is a IRC client that has been under active development for
 over 20 years.  It is stable and mature, and offers an excellent ircII

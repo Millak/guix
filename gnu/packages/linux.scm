@@ -7545,7 +7545,7 @@ graphically visualizing a @file{perf.data} file.")
            util-linux
            which))
     (home-page "https://ecryptfs.org/")
-    (synopsis "eCryptfs cryptographic file system utilities")
+    (synopsis "Cryptographic file system utilities")
     (description
      "eCryptfs is a POSIX-compliant stacked cryptographic file system for Linux.
 Each file's cryptographic meta-data is stored inside the file itself, along
@@ -10001,7 +10001,7 @@ set as @code{LD_PRELOAD} to override the C library file system functions.")
            re2
            tbb))
     (home-page "https://github.com/falcosecurity/libs/")
-    (synopsis "libscap and lisbinsp Falco security libraries")
+    (synopsis "Falco security libraries")
     (description "The Falco security libraries include @code{libsinsp} and
 @code{libscap}.  @code{libscap} manages the data capture process, while
 @code{libsinsp} is a system inspection library that enriches events from

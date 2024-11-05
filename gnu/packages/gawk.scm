@@ -261,4 +261,4 @@ programs can be captured and transferred to systems that have Awk but not
      (modify-inputs (package-inputs cppawk)
        (delete "gawk-mpfr")
        (prepend egawk-next)))
-    (synopsis "cppawk that calls Enhanced GNU Awk by default")))
+    (synopsis "Wrapper script that adds C preprocessing to Enhanced GNU Awk")))

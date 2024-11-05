@@ -1185,7 +1185,7 @@ mp3, you can use gst123 to play all your music files.")
       (native-inputs
        (list autoconf automake libtool pkg-config))
       (home-page "http://wiki.sugarlabs.org/go/Activity_Team/gst-plugins-espeak")
-      (synopsis "Use espeak ")
+      (synopsis "Use espeak")
       (description "This is a Gstreamer @code{src} plugin to use the espeak
 speech synthesizer as a sound source.")
       (license license:lgpl2.0+))))

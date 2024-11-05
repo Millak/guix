@@ -1831,7 +1831,7 @@ KF5/Qt5 to KF6/Qt6")
     (arguments
      (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/libraries/mpvqt")
-    (synopsis "A libmpv wrapper for QtQuick2 and QML")
+    (synopsis "libmpv wrapper for QtQuick2 and QML")
     (description "This package provides a libmpv wrapper for QtQuick2 and QML.")
     (license license:lgpl2.1+)))
 

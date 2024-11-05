@@ -4122,7 +4122,7 @@ killed threads.")
      (list gettext-minimal itstool pkg-config))
     (build-system gnu-build-system)
     (home-page "http://pan.rebelbase.com/")
-    (synopsis "Pan newsreader")
+    (synopsis "Usenet newsreader")
     (description "@code{pan} is a Usenet newsreader that's good at both text
 and binaries. It supports offline reading, scoring and killfiles, yEnc, NZB,
 PGP handling, multiple servers, and secure connections.")

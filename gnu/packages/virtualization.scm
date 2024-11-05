@@ -2769,7 +2769,7 @@ DOS or Microsoft Windows.")
        (cross-libc "i686-linux-gnu") ; header files
        `(,(cross-libc "i686-linux-gnu") "static")))
     (home-page "https://xenproject.org/")
-    (synopsis "Xen Virtual Machine Monitor")
+    (synopsis "Hypervisor")
     (description "This package provides the Xen Virtual Machine Monitor
 which is a hypervisor.")
     ;; TODO: Some files are licensed differently.  List those.

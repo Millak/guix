@@ -5466,7 +5466,7 @@ logging, so games can be viewed again.")
               (symlink "README.md" "README")
               (invoke "autoreconf" "-vif"))))))
     (home-page "https://pinball.sourceforge.net")
-    (synopsis "Pinball simulator")
+    (synopsis "Pinball machine simulator")
     (description "The Emilia Pinball Project is a pinball simulator.  There
 are only two levels to play with, but they are very addictive.")
     (license license:gpl2)))
@@ -11298,7 +11298,7 @@ well as for converting engines between UCI and UGI.")
 		 gnu-gettext libtool glib gtk+-2 boost))
     (arguments `(#:tests? #f))
     (home-page "http://nine-mens-morris.net/downloads.html")
-    (synopsis "Morris is an implementation of the board game Nine Men's Morris")
+    (synopsis "Implementation of the board game Nine Men's Morris")
     (description "Morris is an implementation of the board game Nine Men's Morris.
 It supports not only the standard game, but also several rule-variants and different
 board layouts. You can play against the computer, or simply use the program to

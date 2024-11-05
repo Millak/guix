@@ -115,7 +115,7 @@
                  (("@LIBC_SO_DIR@")  (string-append libc "/lib"))))
              #t)))))
     (home-page "https://smalltalk.gnu.org/")
-    (synopsis "Smalltalk environment")
+    (synopsis "Programming language environment")
     (description
      "GNU Smalltalk is a free implementation of the Smalltalk language.  It
 implements the ANSI standard for the language and also includes extra classes

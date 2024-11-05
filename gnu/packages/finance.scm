@@ -1959,7 +1959,7 @@ Supported crypto-currencies:
     (native-inputs
      (list pkg-config qttools-5 util-linux))       ; provides the hexdump command for tests
     (home-page "https://flowee.org")
-    (synopsis "Flowee infrastructure tools and services")
+    (synopsis "Infrastructure tools and services")
     (description
      "Flowee packages all tier-1 applications and services from the Flowee group.
 This includes components like The Hub and Indexer which and various others

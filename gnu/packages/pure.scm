@@ -58,7 +58,7 @@
     (inputs
      (list gmp llvm-3.5 mpfr))
     (home-page "https://agraef.github.io/pure-lang/")
-    (synopsis "Pure programming Language")
+    (synopsis "Programming Language")
     (description "@code{pure} is a programming language based on term
 rewriting.  It offers equational definitions with pattern matching,
 full symbolic rewriting capabilities, dynamic typing, eager and lazy

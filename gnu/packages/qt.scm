@@ -1443,7 +1443,7 @@ XLSX document format.")
     (name "qxlsx-qt5")
     (inputs
      (list qtbase-5))
-    (synopsis "Qt5 build for the qxlsx library.")))
+    (synopsis "Qt5 build for the qxlsx library")))
 
 (define-public qtxmlpatterns
   (package (inherit qtsvg-5)

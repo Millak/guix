@@ -108,7 +108,7 @@
                (base32
                 "086vqwk2wl8zfs47sq2xpjc9k066ilmb8z6dn0q6ymwjzlm196cd"))))
     (build-system gnu-build-system)
-    (synopsis "Hello, GNU world: An example GNU package")
+    (synopsis "Example GNU package")
     (description
      "GNU Hello prints the message \"Hello, world!\" and then exits.  It
 serves as an example of standard GNU coding practices.  As such, it supports

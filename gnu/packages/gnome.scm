@@ -1381,8 +1381,7 @@ It has miners for Facebook, Flickr, Google, ownCloud and SkyDrive.")
     (propagated-inputs
      ;; The .pc file "Requires" libsoup.
      (list libsoup))
-    (synopsis "GObject-based API over @acronym{SSDP, Simple Service Discovery
-Protocol} for GNOME")
+    (synopsis "GNOME GObject-based API over @acronym{SSDP, Simple Service Discovery Protocol}")
     (description "This package provides a library to handle resource discovery
 and announcement over @acronym{SSDP, Simple Service Discovery Protocol} and
 a debugging tool, @command{gssdp-device-sniffer}.")

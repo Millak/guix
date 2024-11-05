@@ -1087,7 +1087,7 @@ DNS domain name queries.")
     (native-inputs
      (list python-pytest python-pytest-mock))
     (home-page "https://github.com/albertodonato/sshoot")
-    (synopsis "sshuttle VPN session manager")
+    (synopsis "VPN session manager (sshuttle)")
     (description "sshoot provides a command-line interface to manage multiple
 @command{sshuttle} virtual private networks.  It supports flexible profiles
 with configuration options for most of @command{sshuttle}’s features.")

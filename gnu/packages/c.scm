@@ -1376,7 +1376,7 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
                                  " "))))
                           (delete 'configure))))
       (home-page "https://github.com/orangeduck/mpc")
-      (synopsis "Parser Combinator library for C ")
+      (synopsis "Parser Combinator library for C")
       (description "@code{mpc} is a lightweight Parser Combinator library for C.
 @code{mpc} can help with tasks such as:
 @itemize

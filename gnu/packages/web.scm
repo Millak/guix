@@ -8890,7 +8890,7 @@ bookmarks directly.  It can also present them in a web interface with
                       (string-append #$output path))))))))
     (inputs (list buku rofi))
     (home-page "https://github.com/carnager/buku_run")
-    (synopsis "rofi frontend for buku bookmarks manager")
+    (synopsis "@command{rofi} frontend for buku bookmarks manager")
     (description
      "This package provides a rofi frontend for the buku bookmark manager.")
     (license license:gpl3+)))

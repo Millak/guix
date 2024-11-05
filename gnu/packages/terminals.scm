@@ -1769,7 +1769,7 @@ and the ability to read and write via stdin and stdout.")
            pkg-config))
     (inputs
      (list dbus dbus-glib gtk+ pcre vte))
-    (synopsis "ROXTerm terminal emulator")
+    (synopsis "Terminal emulator")
     (description "This package provides a terminal emulator with hyperlink
 support.  It's based on VTE and aimed at power users.")
     (home-page "https://realh.github.io/roxterm/en/index.html")

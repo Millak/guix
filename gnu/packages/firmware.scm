@@ -657,7 +657,7 @@ executing in M-mode.")
               (install-file "out/bios.bin"
                             (string-append #$output "/share/firmware")))))))
     (home-page "https://www.seabios.org/SeaBIOS")
-    (synopsis "x86 BIOS implementation")
+    (synopsis "BIOS implementation")
     (description "SeaBIOS is an implementation of a 16bit x86 BIOS.  SeaBIOS
 can run in an emulator or it can run natively on X86 hardware with the use of
 coreboot.")

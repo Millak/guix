@@ -334,7 +334,7 @@ downloading from @var{source}, where @var{version} is a string and
      (list docbook-xml-4.1.2))
     (home-page
      "https://www.oasis-open.org/docbook/xml/mathml/1.0/index.1.shtml")
-    (synopsis "MathML support for DocBook XML V4.1.2.")
+    (synopsis "MathML support for DocBook XML V4.1.2")
     (description "The DocBook MathML Module is an extension to DocBook XML
 V4.1.2 that adds support for MathML in equation markup.")
     (license (license:non-copyleft "" "See file headers."))))

@@ -79,7 +79,7 @@
       (native-inputs
        (list autoconf automake byacc flex libtool pkg-config))
       (home-page "https://motif.ics.com/motif")
-      (synopsis "Motif toolkit for the X window system")
+      (synopsis "Toolkit for the X window system")
       (description "Motif is a standard graphical user interface, (as defined
 by the IEEE 1295 specification), used on more than 200 hardware and software
 platforms.  It provides application developers, end users, and system vendors

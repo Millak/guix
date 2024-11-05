@@ -7429,7 +7429,7 @@ Bootstrap themes, which are packaged for use with Shiny applications.")
              "1m4i3kqzkz7w06sp9zqcy9f88xpdhi7cqih3phdrf4yjmfk1pfjg"))))
        ("r-testthat" ,r-testthat)))
     (home-page "https://github.com/timelyportfolio/d3r")
-    (synopsis "d3.js utilities for R")
+    (synopsis "Data visualization utilities for R")
     (description
      "This package provides a suite of functions to help ease the use of the
 d3.js visualization library in R.  These helpers include

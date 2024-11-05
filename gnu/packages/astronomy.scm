@@ -349,7 +349,7 @@ rendering of the atmosphere model and examine its properties.
     (inputs
      (modify-inputs (package-inputs calcmysky)
        (replace "qtbase" qtbase-5)))
-    (synopsis "Qt5 build for the CalcMySky library.")))
+    (synopsis "Qt5 build for the CalcMySky library")))
 
 (define-public casacore
   (package
