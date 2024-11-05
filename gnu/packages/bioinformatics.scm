@@ -20317,6 +20317,28 @@ of statistics & QC, interaction with the Seurat object.  Some functionalities
 require functions from CodeAndRoll and MarkdownReports libraries.")
       (license license:gpl3))))
 
+(define-public r-seuratextenddata
+  (let ((commit "e7f17d4bacca436705b06b2cd0c879f83add9271")
+        (revision "1"))
+    (package
+      (name "r-seuratextenddata")
+      (version (git-version "0.2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/huayc09/SeuratExtendData")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vl2wvpbv5q04mzc6z3f1jw2jc5i8pw5vm8y1rg5b1cihkwppvq5"))))
+      (properties `((upstream-name . "SeuratExtendData")))
+      (build-system r-build-system)
+      (home-page "https://github.com/huayc09/SeuratExtendData")
+      (synopsis "Data attached to SeuratExtend package")
+      (description "This package provides data for the SeuratExtend tool.")
+      (license license:gpl3+))))
+
 (define-public r-seuratwrappers
   ;; There are no releases or tags.
   (let ((commit "d28512f804d5fe05e6d68900ca9221020d52cf1d")
