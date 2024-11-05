@@ -66734,6 +66734,38 @@ rustc compiler.")
     (description "Types for rustdoc's json output.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustfft-6
+  (package
+    (name "rust-rustfft")
+    (version "6.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustfft" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11hx83yr2h2jszkba9qhq2d08q9i5rsashq62rfhqvahpihnb023"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-num-complex" ,rust-num-complex-0.4)
+                       ("rust-num-integer" ,rust-num-integer-0.1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-primal-check" ,rust-primal-check-0.3)
+                       ("rust-strength-reduce" ,rust-strength-reduce-0.2)
+                       ("rust-transpose" ,rust-transpose-0.2)
+                       ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs
+       (("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/ejmahler/RustFFT")
+    (synopsis "Rust FFT library")
+    (description
+     "This package provides a high-performance FFT (Fast Fourier Transform)
+library written in pure Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustfix-0.8
   (package
     (name "rust-rustfix")
