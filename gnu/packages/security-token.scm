@@ -682,7 +682,7 @@ verifying the cryptographic operations.")
 (define-public pam-u2f
   (package
     (name "pam-u2f")
-    (version "1.0.8")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri
@@ -691,17 +691,16 @@ verifying the cryptographic operations.")
                 (commit (string-append "pam_u2f-" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "04d9davyi33gqbvga1rvh9fijp6f16mx2xmnn4n61rnhcn2jac98"))))
+               (base32 "1swvys98mw7ailllgqicvhj315qajhvqrmm314cp3bj0l76s9qpv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        (list (string-append "--with-pam-dir="
                             (assoc-ref %outputs "out") "/lib/security"))))
     (inputs
-     (list libu2f-host libu2f-server linux-pam))
+     (list libfido2 linux-pam openssl))
     (native-inputs
-     (list autoconf automake libtool asciidoc pkg-config))
+     (list asciidoc autoconf automake libtool pkg-config))
     (home-page "https://developers.yubico.com/pam-u2f/")
     (synopsis "PAM module for U2F authentication")
     (description
