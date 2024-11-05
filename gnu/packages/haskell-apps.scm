@@ -920,7 +920,7 @@ is programmed in Haskell.")
            ghc-random
            ghc-vector))
     (home-page "https://joeyh.name/code/scroll/")
-    (synopsis "scroll(6), a roguelike game")
+    (synopsis "Roguelike game")
     (description
      "You're a bookworm that's stuck on a scroll.  You have to dodge between
 words and use spells to make your way down the page as the scroll is read.  Go

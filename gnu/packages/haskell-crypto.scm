@@ -312,7 +312,7 @@ generators, and more.")
    (list ghc-crypto-api))
   (properties '((upstream-name . "curve25519")))
   (home-page "https://github.com/acw/curve25519")
-  (synopsis "Fast implementations of the curve25519 elliptic curve primitives.")
+  (synopsis "Fast implementations of the curve25519 elliptic curve primitives")
   (description
    "This module provides Haskell bindings and extensions to the curve25519-donna
 codebase.  It's a pretty straightforward implementation of the basic
