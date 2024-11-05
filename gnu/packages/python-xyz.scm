@@ -5353,7 +5353,7 @@ server.")
                              python-six))
     (native-inputs (list python-matplotlib))
     (home-page "https://github.com/craffel/mir_eval")
-    (synopsis "Common metrics for common audio/music processing tasks.")
+    (synopsis "Common metrics for common audio/music processing tasks")
     (description "This is a Python library for computing common heuristic
 accuracy scores for various music/audio information retrieval/signal
 processing tasks.")
@@ -7128,7 +7128,7 @@ Microsoft Word (.docx) documents.")
     (native-inputs
      (list python-nose))
     (home-page "https://github.com/twolfson/restructuredtext-lint")
-    (synopsis "reStructuredText linter")
+    (synopsis "Linter")
     (description "This package provides a linter for the reStructuredText
 format.")
     (license license:unlicense)))
@@ -10504,7 +10504,7 @@ parallelism.")))
     (build-system python-build-system)
     (native-inputs (list python-pillow))
     (home-page "https://github.com/whtsky/pixelmatch-py")
-    (synopsis "A pixel-level image comparison library")
+    (synopsis "Pixel-level image comparison library")
     (description "This package provides a pixel-level image comparison library
 for Python, originally created to compare screenshots in tests.  Its features
 include accurate anti-aliased pixels detection and perceptual color difference
@@ -15770,7 +15770,7 @@ should be stored on various operating systems.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-six))
     (home-page "https://github.com/google/pasta")
-    (synopsis "pasta is an AST-based Python refactoring library")
+    (synopsis "AST-based Python refactoring library")
     (description "This package provides \"pasta\", an AST-based Python
 refactoring library.")
     (license license:asl2.0)))
@@ -38268,7 +38268,7 @@ write text fast, and for various text generation, statistics, and modeling tasks
     (propagated-inputs (list python-pytz))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/python-xmp-toolkit/python-xmp-toolkit")
-    (synopsis "Python XMP Toolkit for working with metadata.")
+    (synopsis "Python XMP Toolkit for working with metadata")
     (description "Python XMP Toolkit is a library for working with XMP
 metadata, as well as reading/writing XMP metadata stored in many different
 file formats.

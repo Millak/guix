@@ -192,7 +192,7 @@ browsers to backend services.")
     (build-system python-build-system)
     (propagated-inputs (list python-grpcio python-typing-extensions))
     (home-page "https://github.com/shabbyrobe/grpc-stubs")
-    (synopsis "gRPC typing stubs for Python")
+    (synopsis "Typing stubs for Python")
     (description "This is a PEP-561-compliant stub-only package which provides
 type information of gRPC.")
     (license license:expat)))

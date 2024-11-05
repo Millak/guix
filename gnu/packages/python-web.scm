@@ -9718,8 +9718,7 @@ hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
     (native-inputs (list python-pytest))
     (home-page "https://github.com/jsvine/waybackpack")
     (synopsis
-     "Command-line tool that lets you download the entire Wayback Machine
-archive for a given URL.")
+     "Download the entire Wayback Machine archive for a given URL")
     (description
      "This package provides a library and a command-line tool that lets
 you download the entire Wayback Machine archive for a given URL.")

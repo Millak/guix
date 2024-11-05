@@ -334,7 +334,7 @@ library.")
            python-pytest
            python-setuptools-scm))
     (home-page "https://pypi.org/project/inflate64/")
-    (synopsis "deflate64 compression/decompression library")
+    (synopsis "Compression/decompression library")
     (description "The @code{inflate64} package provides @code{Deflater} and
 @code{Inflater} classes to compress and decompress with the Enhanced Deflate
 compression algorithm.")

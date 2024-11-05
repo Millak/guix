@@ -16502,7 +16502,7 @@ API services.")
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/caleblareau/mgatk")
-    (synopsis "Mitochondrial genome analysis toolkit.")
+    (synopsis "Mitochondrial genome analysis toolkit")
     (description "This package is a Python-based command line interface for
 processing .bam files with mitochondrial reads and generating high-quality
 heteroplasmy estimation from sequencing data.  The mgatk package places a

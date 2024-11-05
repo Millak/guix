@@ -1332,7 +1332,7 @@ track models to multi-body models.")
                              python-tqdm))
     (native-inputs (list python-lxml python-pytest))
     (home-page "https://commonroad.in.tum.de/")
-    (synopsis "Read, write, and visualize CommonRoad scenarios.")
+    (synopsis "Read, write, and visualize CommonRoad scenarios")
     (description "This package provides methods to read, write, and visualize
 CommonRoad scenarios and planning problems.  It can be used as a framework for
 implementing motion planning algorithms to solve CommonRoad Benchmarks

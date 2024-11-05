@@ -1885,7 +1885,7 @@ and visualization with these data structures.")
                              python-xarray))
     (native-inputs (list python-pytest python-poetry-core))
     (home-page "https://github.com/astropenguin/xarray-dataclasses/")
-    (synopsis "xarray data creation made easy by dataclass")
+    (synopsis "Data creation made easy by dataclass")
     (description "@code{xarray-dataclasses} is a Python package that makes it
 easy to create @code{xarray}'s @code{DataArray} and @code{Datase} objects that
 are \"typed\" (i.e. fixed dimensions, data type, coordinates, attributes, and
