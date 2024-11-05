@@ -321,7 +321,9 @@ Browser.")
          "--disable-debug"
          "--disable-debug-symbols"
 
-         "--enable-rust-simd"
+         ;; TODO: Re-enable after updating to the 128 ESR.
+         ;"--enable-rust-simd"
+         "--disable-rust-simd"
          "--enable-release"
          "--enable-optimize"
          "--enable-strip"
