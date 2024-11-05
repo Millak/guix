@@ -3876,25 +3876,33 @@ portions of your testing code.")
 (define-public python-requests-toolbelt
   (package
     (name "python-requests-toolbelt")
-    (version "0.9.1")
-    (source (origin
-             (method url-fetch)
-             (uri (pypi-uri "requests-toolbelt" version))
-             (sha256
-              (base32
-               "1h3gm88dcjbd7gm229a7x5qkkhnsqsjz0m0l2xyavm2ab3a8k04n"))))
-    (build-system python-build-system)
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "requests-toolbelt" version))
+       (sha256
+        (base32 "1ijvip427ki177ycrblcn1mfgsq7ixzpvqqfvidjn0a7s2is10bn"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'delete-problematic-tests
-                    (lambda _
-                      ;; Fails because of expired certificate.
-                      (delete-file "tests/test_x509_adapter.py")
-                      ;; Fails due to networking (socket.gaierror: [Errno -2]
-                      ;; Name or service not known).
-                      (delete-file "tests/test_multipart_encoder.py"))))))
+     (list
+      #:test-flags
+      ;; Requiring networking or fail due not valid certs: AttributeError:
+      ;; 'MockHTTPResponse' object has no attribute 'close'
+      #~(list "-k" (string-append "not test_dump_all"
+                                  " and not test_dump_response"
+                                  " and not test_prepared_request_override_base"
+                                  " and not test_prepared_request_with_base"
+                                  " and not test_request_override_base"
+                                  " and not test_request_with_base"))))
     (native-inputs
-     (list python-betamax python-mock python-pytest))
+     (list python-betamax
+           python-mock
+           python-pyopenssl
+           python-pytest
+           python-setuptools
+           python-trustme
+           python-wheel))
     (propagated-inputs
      (list python-requests))
     (synopsis "Extensions to python-requests")
