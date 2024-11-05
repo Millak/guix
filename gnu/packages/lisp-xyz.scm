@@ -6779,7 +6779,7 @@ Lisp.")
       (native-inputs (list sbcl-ptester))
       (inputs (list libiconv sbcl-cffi))
       (home-page "https://github.com/quek/cl-iconv")
-      (synopsis "iconv library for Common Lisp")
+      (synopsis "@command{iconv} library for Common Lisp")
       (description
        "This package provides CFFI bindings to convert between different
 character encodings using iconv.")
@@ -22418,7 +22418,7 @@ desktop files to the right directories.
     (native-inputs
      (list sbcl-lisp-unit2))
     (home-page "https://github.com/atlas-engineer/nclasses")
-    (synopsis "Simplify class, condition, and generic function definitions.")
+    (synopsis "Simplify class, condition, and generic function definitions")
     (description
      "NClasses provides helper macros to help write classes, conditions,
 generic functions, and CLOS code in general with less boilerplate.
@@ -27814,7 +27814,7 @@ processes that doesn't run under Emacs.  Lisp processes created by
              sbcl-parachute
              sbcl-lisp-unit2))
       (home-page "https://github.com/tdrhq/slite")
-      (synopsis "Common Lisp system for Slite ")
+      (synopsis "Common Lisp system for Slite")
       (description
        "This package provides the Common Lisp part of the emacs-slite test runner.")
       (license license:asl2.0))))
