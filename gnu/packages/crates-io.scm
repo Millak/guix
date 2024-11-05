@@ -16323,20 +16323,19 @@ to the @code{is_x86_feature_detected!} macro.")
 (define-public rust-crc-any-2
   (package
     (name "rust-crc-any")
-    (version "2.3.12")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crc-any" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fq85y5akcadahnj5nqbs47qhgp5cpfn2z19zc3gp4wpxr3989kr"))))
+        (base32 "0wzs26q5cf29fhfnrkrjsr8dpai0rlm4im8b53by8rbrbzzwjbm6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-debug-helper" ,rust-debug-helper-0.3)
-        ("rust-heapless" ,rust-heapless-0.5))
+        ("rust-heapless" ,rust-heapless-0.8))
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1))))
     (home-page "https://magiclen.org/crc-any")
