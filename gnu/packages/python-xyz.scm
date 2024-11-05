@@ -1477,26 +1477,6 @@ that best match text queries.")
      "This package implements a Python port of the JavaScript @code{mdurl}.")
     (license license:expat)))
 
-(define-public python-mrkd
-  (package
-    (name "python-mrkd")
-    (version "0.2.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "mrkd" version))
-        (sha256
-          (base32 "1bvaqbna1ihb4y2mv9pmvqcq3r9j6lwbbii99dani8lxx4dqqvs5"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-jinja2 python-mistune python-pygments))
-    (home-page "https://pypi.org/project/mrkd/")
-    (synopsis "Python Markdown implementation")
-    (description
-     "@code{mrkd} writes man pages using Markdown, and convert them to Roff or
-HTML")
-    (license license:bsd-3)))
-
 (define-public python-mkdocs
   (package
     (name "python-mkdocs")
