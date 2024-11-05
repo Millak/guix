@@ -20317,6 +20317,52 @@ of statistics & QC, interaction with the Seurat object.  Some functionalities
 require functions from CodeAndRoll and MarkdownReports libraries.")
       (license license:gpl3))))
 
+(define-public r-seuratextend
+  (let ((commit "5382e921f7b365c7b75b20d07cb455e4390fe36f")
+        (revision "1"))
+    (package
+      (name "r-seuratextend")
+      (version (git-version "1.0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/huayc09/SeuratExtend")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1rlx20jyfdrymxn8b9dsf9n9jk9rwjjx1wy2f00layvd57g9ch2q"))))
+      (properties `((upstream-name . "SeuratExtend")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-biocmanager
+                               r-dplyr
+                               r-ggplot2
+                               r-ggpubr
+                               r-glue
+                               r-hdf5r
+                               r-magrittr
+                               r-mosaic
+                               r-purrr
+                               r-remotes
+                               r-reshape2
+                               r-reticulate
+                               r-rlist
+                               r-scales
+                               r-seurat
+                               r-seuratextenddata
+                               r-seuratobject
+                               r-tidyr))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/huayc09/SeuratExtend")
+      (synopsis "Enhanced toolkit for scRNA-seq analysis")
+      (description
+       "This package is designed to improve and simplify the analysis of
+scRNA-seq data.  It uses the Seurat object for this purpose.  It provides an
+array of enhanced visualization tools, an integrated functional and pathway
+analysis pipeline, seamless integration with popular Python tools, and a suite
+of utility functions to aid in data manipulation and presentation.")
+      (license license:gpl3+))))
+
 (define-public r-seuratextenddata
   (let ((commit "e7f17d4bacca436705b06b2cd0c879f83add9271")
         (revision "1"))
