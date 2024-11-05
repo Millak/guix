@@ -56091,6 +56091,27 @@ prime-number-related needs of @code{rust-primal}.")
      "This package provides a standalone primality testing tool.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-primal-estimate-0.3
+  (package
+    (name "rust-primal-estimate")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "primal-estimate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08nq0n0r35rni65h79fynync0wyy8agrxy5mfmg0hq9s1c510cm4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-primal" ,rust-primal-0.3))))
+    (home-page "https://github.com/huonw/primal")
+    (synopsis "Estimate upper and lower bounds for the k-th prime")
+    (description
+     "This package provides a state-of-the-art estimation of upper and lower
+bounds for the number of primes below n and the k-th prime.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-print-bytes-1
   (package
     (name "rust-print-bytes")
