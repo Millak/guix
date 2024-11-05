@@ -6454,7 +6454,7 @@ the platform-specific getters provided by winit, or another library.")
                (system (string-append xvfb " " display " &"))))))))
     (native-inputs (list xorg-server-for-tests))
     (home-page "https://github.com/quininer/x11-clipboard")
-    (synopsis "x11 clipboard support for Rust")
+    (synopsis "X11 clipboard support for Rust")
     (description "This package provides x11 clipboard support for Rust.")
     (license license:expat)))
 

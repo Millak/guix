@@ -1924,7 +1924,7 @@ on ristretto255 and Curve25519.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))))
     (home-page "https://doc.dalek.rs/curve25519_dalek")
-    (synopsis "curve25519-dalek Derives")
+    (synopsis "Derives of curve25519-dalek")
     (description "This package provides curve25519-dalek Derives.")
     (license (list license:expat license:asl2.0))))
 
