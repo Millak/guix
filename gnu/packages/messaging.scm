@@ -29,7 +29,7 @@
 ;;; Copyright © 2020, 2021 Robert Karszniewicz <avoidr@posteo.de>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2021, 2023-2024 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
@@ -96,6 +96,9 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
@@ -3296,19 +3299,143 @@ designed for experienced users.")
   (package
     (name "matterbridge")
     (version "1.26.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/42wim/matterbridge")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0939fiy7z53izznfhlr7c6vaskbmkbj3ncb09fzx5dmz9cjngy80"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/42wim/matterbridge")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet '(for-each delete-file-recursively
+                  ;; TODO: unbundle the rest as well
+                  '("vendor/filippo.io"
+                    "vendor/github.com/blang"
+                    "vendor/github.com/d5"
+                    "vendor/github.com/davecgh"
+                    "vendor/github.com/dustin"
+                    "vendor/github.com/francoispqt"
+                    "vendor/github.com/fsnotify"
+                    "vendor/github.com/go-asn1-ber"
+                    "vendor/github.com/golang"
+                    "vendor/github.com/golang-jwt"
+                    "vendor/github.com/google/uuid"
+                    "vendor/github.com/gorilla/websocket"
+                    "vendor/github.com/hashicorp"
+                    "vendor/github.com/jpillora"
+                    "vendor/github.com/json-iterator"
+                    "vendor/github.com/kballard"
+                    "vendor/github.com/klauspost"
+                    "vendor/github.com/magiconair"
+                    "vendor/github.com/mattn/go-colorable"
+                    "vendor/github.com/mattn/go-isatty"
+                    "vendor/github.com/mattn/go-runewidth"
+                    "vendor/github.com/mgutz/ansi"
+                    "vendor/github.com/minio/sha256-simd"
+                    "vendor/github.com/mitchellh"
+                    "vendor/github.com/modern-go"
+                    "vendor/github.com/opentracing"
+                    "vendor/github.com/pelletier"
+                    "vendor/github.com/pkg"
+                    "vendor/github.com/pmezard"
+                    "vendor/github.com/rivo"
+                    "vendor/github.com/russross"
+                    "vendor/github.com/sirupsen"
+                    "vendor/github.com/skip2"
+                    "vendor/github.com/spf13"
+                    "vendor/github.com/stretchr"
+                    "vendor/github.com/subosito"
+                    "vendor/github.com/valyala/bytebufferpool"
+                    "vendor/github.com/vmihailenco/tagparser"
+                    "vendor/go.uber.org"
+                    "vendor/golang.org"
+                    "vendor/google.golang.org/protobuf/"
+                    "vendor/gopkg.in/ini.v1"
+                    "vendor/gopkg.in/natefinch"
+                    "vendor/gopkg.in/yaml.v2"
+                    "vendor/gopkg.in/yaml.v3")))
+       (sha256
+        (base32 "0939fiy7z53izznfhlr7c6vaskbmkbj3ncb09fzx5dmz9cjngy80"))))
     (build-system go-build-system)
     (arguments
      (list
+      ;; It helps to resolve <golang.org/x/net/publicsuffix/table.go:63:12>:
+      ;; pattern data/children: cannot embed irregular file data/children
+      #:embed-files #~(list "children" "nodes" "text")
       #:import-path "github.com/42wim/matterbridge"))
+    (inputs (list
+             ;; golang.org
+             go-golang-org-x-crypto
+             go-golang-org-x-image
+             go-golang-org-x-mod
+             go-golang-org-x-oauth2
+             go-golang-org-x-sys
+             go-golang-org-x-term
+             go-golang-org-x-text
+             go-golang-org-x-time
+             go-golang-org-x-tools
+             ;; google.golang.org
+             go-google-golang-org-protobuf
+             ;; gopkg.in
+             go-gopkg-in-ini-v1
+             go-gopkg-in-yaml-v2
+             go-gopkg-in-yaml-v3
+             go-gopkg-in-natefinch-lumberjack-v2
+             ;; filippo.io
+             go-filippo-io-edwards25519
+             ;; uber.org
+             go-go-uber-org-atomic
+             go-go-uber-org-multierr
+             go-go-uber-org-zap
+             ;; github.com
+             go-github-com-blang-semver
+             go-github-com-d5-tengo-v2
+             go-github-com-davecgh-go-spew
+             go-github-com-dustin-go-humanize
+             go-github-com-francoispqt-gojay
+             go-github-com-fsnotify-fsnotify
+             go-github-com-go-asn1-ber-asn1-ber
+             go-github-com-golang-jwt-jwt
+             go-github-com-golang-protobuf
+             go-github-com-google-uuid
+             go-github-com-gorilla-websocket
+             go-github-com-hashicorp-errwrap
+             go-github-com-hashicorp-go-multierror
+             go-github-com-hashicorp-golang-lru
+             go-github-com-hashicorp-hcl
+             go-github-com-jpillora-backoff
+             go-github-com-json-iterator-go
+             go-github-com-kballard-go-shellquote
+             go-github-com-klauspost-compress
+             go-github-com-klauspost-cpuid-v2
+             go-github-com-magiconair-properties
+             go-github-com-mattn-go-colorable
+             go-github-com-mattn-go-isatty
+             go-github-com-mattn-go-runewidth
+             go-github-com-mgutz-ansi
+             go-github-com-minio-sha256-simd
+             go-github-com-mitchellh-go-homedir
+             go-github-com-mitchellh-mapstructure
+             go-github-com-modern-go-concurrent
+             go-github-com-modern-go-reflect2
+             go-github-com-opentracing-opentracing-go
+             go-github-com-pelletier-go-toml
+             go-github-com-pelletier-go-toml-v2
+             go-github-com-pkg-errors
+             go-github-com-pmezard-go-difflib
+             go-github-com-rivo-uniseg
+             go-github-com-russross-blackfriday
+             go-github-com-sirupsen-logrus
+             go-github-com-skip2-go-qrcode
+             go-github-com-spf13-afero
+             go-github-com-spf13-cast
+             go-github-com-spf13-jwalterweatherman
+             go-github-com-spf13-pflag
+             go-github-com-spf13-viper
+             go-github-com-stretchr-testify
+             go-github-com-subosito-gotenv
+             go-github-com-valyala-bytebufferpool
+             go-github-com-vmihailenco-tagparser))
     (synopsis "Bridge together various messaging networks and protocols")
     (description
      "Relays messages between different channels from various
