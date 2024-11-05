@@ -26,7 +26,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2021, 2022, 2023 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2021, 2022, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2021-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
@@ -1420,6 +1420,20 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
      '((release-monitoring-url
         . "https://wayland.freedesktop.org/releases.html")))
     (license license:expat)))
+
+(define-public wayland-protocols-next
+  (package
+    (inherit wayland-protocols)
+    (name "wayland-protocols-next")
+    (version "1.38")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://gitlab.freedesktop.org/wayland/"
+                                  "wayland-protocols/-/releases/" version "/downloads/"
+                                  "wayland-protocols-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1ghxb0w7rbq3kdv9lhm1iwcjh6p3sx1gxb3crqh2p78m0ln2j5zz"))))))
 
 (define-public wayland-utils
   (package
