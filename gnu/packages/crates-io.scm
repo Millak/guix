@@ -56137,6 +56137,30 @@ bounds for the number of primes below n and the k-th prime.")
     (description "This package provides a high performance prime sieve.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-primal-slowsieve-0.3
+  (package
+    (name "rust-primal-slowsieve")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "primal-slowsieve" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02pixp7xprkmj0fvjgg6n4dn5f8syr6xj2m2dxn0nyg06b8lipy9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-primal-bit" ,rust-primal-bit-0.3)
+                       ("rust-primal-estimate" ,rust-primal-estimate-0.3))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://github.com/huonw/primal")
+    (synopsis "Simple sieve of Eratosthenes")
+    (description
+     "This package provides a simple sieve of Eratosthenes designed for
+testing faster sieves.  For use in Rust crates, use @code{rust-primal-sieve}
+or @code{rust-primal} instead.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-print-bytes-1
   (package
     (name "rust-print-bytes")
