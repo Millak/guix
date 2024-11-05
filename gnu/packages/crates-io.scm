@@ -30743,6 +30743,30 @@ IEEE 754-2008 binary16 type.")
 higher performance on different key space sizes.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-hamming-0.1
+  (package
+    (name "rust-hamming")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hamming" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1q9hri1l1x1y7vv153kvdw9lkqslmbwgia5r3qj6i39pfji3s135"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-0.2)
+        ("rust-rand" ,rust-rand-0.3))))
+    (home-page "https://github.com/huonw/hamming")
+    (synopsis "Count ones fast")
+    (description
+     "This package provides a tool to count ones, using rapid popcount
+(hamming weight) techniques.  This provides a performant popcount and bitwise
+hamming distance for a slice of bytes.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-handlebars-5
   (package
     (name "rust-handlebars")
