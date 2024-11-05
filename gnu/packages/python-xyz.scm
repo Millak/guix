@@ -36562,7 +36562,14 @@ these linters: @code{pycodestlye}, @code{pyflakes}")
         (uri (pypi-uri "Nikola" version))
         (sha256
           (base32 "1h96y4sfypp2fbqxa8xrqch5f7r3srm2ly222k9w2n143h2spx4m"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+      (list nss-certs-for-test
+            python-freezegun
+            python-pytest
+            python-pytest-cov
+            python-setuptools
+            python-wheel))
     (propagated-inputs
       (list python-babel
             python-blinker
@@ -36585,21 +36592,6 @@ these linters: @code{pycodestlye}, @code{pyflakes}")
             python-toml
             python-unidecode
             python-yapsy))
-    (native-inputs
-      (list python-coverage
-            python-flake8
-            python-freezegun
-            python-pytest
-            python-pytest-cov))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "tests" "--no-cov"
-                        "-k" "not test_compiling_markdown[hilite]")))))))
     (home-page "https://getnikola.com/")
     (synopsis "Modular, fast and simple static website and blog generator")
     (description "Nikola generates static websites and blogs.  Out of the box,
