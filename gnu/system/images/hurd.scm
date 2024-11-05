@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,11 +36,42 @@
             hurd-image-type
             hurd-qcow2-image-type
             hurd-barebones-disk-image
-            hurd-barebones-qcow2-image))
+            hurd-barebones-qcow2-image
+
+            hurd64-barebones-os
+            hurd64-disk-image
+            hurd6-image-type
+            hurd64-qcow2-image-type
+            hurd64-barebones-disk-image
+            hurd64-barebones-qcow2-image))
 
 (define hurd-barebones-os
   (operating-system
     (inherit %hurd-default-operating-system)
+    (bootloader (bootloader-configuration
+                 (bootloader grub-minimal-bootloader)
+                 (targets '("/dev/sdX"))))
+    (file-systems (cons (file-system
+                          (device (file-system-label "my-root"))
+                          (mount-point "/")
+                          (type "ext2"))
+                        %base-file-systems))
+    (host-name "guixygnu")
+    (timezone "Europe/Amsterdam")
+    (packages (cons openssh-sans-x %base-packages/hurd))
+    (services (cons (service openssh-service-type
+                             (openssh-configuration
+                              (openssh openssh-sans-x)
+                              (use-pam? #f)
+                              (port-number 2222)
+                              (permit-root-login #t)
+                              (allow-empty-passwords? #t)
+                              (password-authentication? #t)))
+                    %base-services+qemu-networking/hurd))))
+
+(define hurd64-barebones-os
+  (operating-system
+    (inherit %hurd64-default-operating-system)
     (bootloader (bootloader-configuration
                  (bootloader grub-minimal-bootloader)
                  (targets '("/dev/sdX"))))
@@ -114,6 +145,43 @@
     (os+platform->image hurd-barebones-os i586-gnu
                         #:type hurd-qcow2-image-type))
    (name 'hurd-barebones.qcow2)))
+
+
+;;;
+;;; 64bit Hurd
+;;;
+(define hurd64-disk-image
+  (image
+   (inherit hurd-disk-image)
+   (platform x86_64-gnu)))
+
+(define hurd64-image-type
+  (image-type
+   (name 'hurd64-raw)
+   (constructor (cut image-with-os hurd64-disk-image <>))))
+
+(define hurd64-qcow2-image-type
+  (image-type
+   (name 'hurd64-qcow2)
+   (constructor (lambda (os)
+                  (image
+                   (inherit hurd64-disk-image)
+                   (format 'compressed-qcow2)
+                   (operating-system os))))))
+
+(define hurd64-barebones-disk-image
+  (image
+   (inherit
+    (os+platform->image hurd64-barebones-os x86_64-gnu
+                        #:type hurd64-image-type))
+   (name 'hurd64-barebones-disk-image)))
+
+(define hurd64-barebones-qcow2-image
+  (image
+   (inherit
+    (os+platform->image hurd64-barebones-os x86_64-gnu
+                        #:type hurd64-qcow2-image-type))
+   (name 'hurd64-barebones.qcow2)))
 
 ;; Return the default image.
 hurd-barebones-qcow2-image
