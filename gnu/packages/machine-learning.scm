@@ -5076,9 +5076,14 @@ AI services.")
                (base32
                 "016zikn39apig3y6xyipw34w0w02c73z483radddbf68ivpjgz3r"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-importlib-metadata python-packaging
-                             python-typing-extensions))
-    (native-inputs (list python-coverage))
+    (native-inputs
+     (list python-coverage
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-importlib-metadata
+           python-packaging
+           python-typing-extensions))
     (home-page "https://github.com/Lightning-AI/utilities")
     (synopsis "PyTorch Lightning sample project")
     (description "This package provides common Python utilities and GitHub
