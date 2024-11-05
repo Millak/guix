@@ -56112,6 +56112,31 @@ prime-number-related needs of @code{rust-primal}.")
 bounds for the number of primes below n and the k-th prime.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-primal-sieve-0.3
+  (package
+    (name "rust-primal-sieve")
+    (version "0.3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "primal-sieve" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lzdllk78jqdp93h15l69s4xglbjcf6jlq6khccka0r2v2b2g64f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-primal-bit" ,rust-primal-bit-0.3)
+                       ("rust-primal-estimate" ,rust-primal-estimate-0.3)
+                       ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-primal" ,rust-primal-0.3)
+        ("rust-primal-slowsieve" ,rust-primal-slowsieve-0.3))))
+    (home-page "https://github.com/huonw/primal")
+    (synopsis "Prime sieve")
+    (description "This package provides a high performance prime sieve.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-print-bytes-1
   (package
     (name "rust-print-bytes")
