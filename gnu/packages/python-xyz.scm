@@ -24643,14 +24643,14 @@ manipulation and interaction with formal grammars.")
 (define-public python-automat
   (package
     (name "python-automat")
-    (version "20.2.0")
+    (version "22.10.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Automat" version))
               (sha256
                (base32
-                "0cyzrcqiibwdsp4y0djkllnzab8m5faa4s0d1kpi23k1fhy80ybr"))))
-    (build-system python-build-system)
+                "0kmh9fwb6rkh8r5bi5jyxysywpgpjnwdks1h3p0xq6ddxn2fnsz5"))))
+    (build-system pyproject-build-system)
     ;; We disable the tests because they require python-twisted, while
     ;; python-twisted depends on python-automat.  Twisted is optional, but the
     ;; tests fail if it is not available.  Also see
@@ -24665,7 +24665,10 @@ manipulation and interaction with formal grammars.")
              (substitute* "setup.py"
                (("\"automat-visualize = automat._visualize:tool\"") "")))))))
     (native-inputs
-     (list python-m2r python-setuptools-scm python-graphviz))
+     (list python-graphviz
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-six python-attrs))
     (home-page "https://github.com/glyph/Automat")
