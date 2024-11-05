@@ -116,8 +116,10 @@
            python-numpy
            python-pillow
            python-pyyaml
+           python-setuptools
            ;; optional for tests: python-selenium
-           python-tblib))
+           python-tblib
+           python-wheel))
     (propagated-inputs
      (list python-asgiref
            python-sqlparse
