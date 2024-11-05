@@ -1520,8 +1520,7 @@ QUIC.  For Go 1.20.")
            go-golang-org-x-net
            go-golang-org-x-sys))
     (home-page "https://github.com/refraction-networking/utls")
-    (synopsis "Fork of the Go standard TLS library, providing low-level access
-to the ClientHello for mimicry purposes")
+    (synopsis "Fork of the Go standard TLS library")
     (description "uTLS is a fork of “crypto/tls”, which provides ClientHello
 fingerprinting resistance, low-level access to handshake, fake session tickets
 and some other features.  Handshake is still performed by “crypto/tls”, this
@@ -1690,7 +1689,7 @@ ssh-agent process using the sample server.")
       (propagated-inputs (list go-golang-org-x-crypto
                                go-filippo-io-edwards25519))
       (home-page "https://gitlab.com/yawning/edwards25519-extra")
-      (synopsis "edwards25519-extra")
+      (synopsis "Extensions to Go standard library' Ed25519 and curve25519 implementation")
       (description "This package provides extensions to the Go standard
 library's Ed25519 and curve25519 implementations, primarily extracted from
 @@url{https://github.com/oasisprotocol/curve25519-voi,curve25519-voi}.  This

@@ -2056,7 +2056,7 @@ parsing and encoding support for STUN and TURN protocols.")
     (arguments
      '(#:import-path "github.com/flopp/go-findfont"))
     (home-page "https://github.com/flopp/go-findfont")
-    (synopsis "go-findfont")
+    (synopsis "Go font finder library")
     (description
      "This package provides a platform-agnostic Go library to locate
 TrueType font files in your system's user and system font directories.")

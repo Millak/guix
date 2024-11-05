@@ -522,7 +522,8 @@ parsing.")
            go-github-com-polydawn-refmt
            go-github-com-whyrusleeping-cbor-gen))
     (home-page "https://github.com/ipfs/go-ipld-cbor")
-    (synopsis "A cbor implementation of the @code{go-ipld-format}")
+    (synopsis "@acronym{Concise Binary Object Representation, CBOR}
+implementation of @code{go-ipld-format}")
     (description
      "An implementation of a @url{https://cbor.io/, CBOR} encoded merkledag object.")
     (license license:expat)))

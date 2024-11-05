@@ -8785,7 +8785,7 @@ correctly.")))
       #:install-source? #f
       #:import-path "github.com/libp2p/go-msgio/msgio"
       #:unpack-path "github.com/libp2p/go-msgio"))
-    (synopsis "CLI tool to wrap messages with msgio header.")))
+    (synopsis "CLI tool to wrap messages with msgio header")))
 
 (define-public go-msgp
   (package

@@ -380,7 +380,7 @@ tests.")
     (propagated-inputs
      (list go-github-com-google-go-cmp go-github-com-kr-pretty))
     (home-page "https://github.com/go-quicktest/qt")
-    (synopsis "qt: quicker Go tests")
+    (synopsis "Qt: quicker Go tests")
     (description
      "Package qt implements assertions and other helpers wrapped around the
 standard library's testing types.")
