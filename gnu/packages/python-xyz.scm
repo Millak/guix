@@ -19975,11 +19975,16 @@ templates into Python modules.")
     (arguments
      ;; https://github.com/Pylons/waitress/issues/443
      (list #:test-flags #~(list "-k" "not test_service_port")))
-    (native-inputs (list python-pytest python-pytest-cov))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/Pylons/waitress")
     (synopsis "Waitress WSGI server")
-    (description "Waitress is meant to be a production-quality pure-Python WSGI
-server with very acceptable performance.")
+    (description
+     "Waitress is meant to be a production-quality pure-Python WSGI server
+with very acceptable performance.")
     (license license:zpl2.1)))
 
 (define-public python-whatthepatch
