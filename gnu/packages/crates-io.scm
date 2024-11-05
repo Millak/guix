@@ -48830,6 +48830,33 @@ safe unsynchronized access.")
      "This package provides a parser for Microsoft OneNote files.")
     (license license:mpl2.0)))
 
+(define-public rust-onenote-parser-for-clamav
+  (package
+    (inherit rust-onenote-parser-0.3)
+    (name "rust-onenote-parser-for-clamav")
+    (source (origin
+              (inherit (package-source rust-onenote-parser-0.3))
+              (patches
+               (search-patches
+                "rust-onenote-parser-for-clamav-deps.patch"
+                "rust-onenote-parser-for-clamav-parse-in-memory-buffer.patch"
+                "rust-onenote-parser-for-clamav-property-type.patch"))
+              (snippet #~(begin
+                           (delete-file "Cargo.toml")
+                           (rename-file "Cargo.toml.orig" "Cargo.toml")))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+        ("rust-enum-primitive-derive" ,rust-enum-primitive-derive-0.2)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-uuid" ,rust-uuid-1)
+        ("rust-widestring" ,rust-widestring-1))
+       #:cargo-development-inputs (("rust-insta" ,rust-insta-1))))))
+
 (define-public rust-onig-6
   (package
     (name "rust-onig")

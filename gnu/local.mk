@@ -2193,6 +2193,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-ndarray-0.13-remove-blas-src.patch	\
   %D%/packages/patches/rust-ndarray-0.14-remove-blas-src.patch	\
   %D%/packages/patches/rust-nettle-disable-vendor.patch		 \
+  %D%/packages/patches/rust-onenote-parser-for-clamav-deps.patch	\
+  %D%/packages/patches/rust-onenote-parser-for-clamav-parse-in-memory-buffer.patch	\
+  %D%/packages/patches/rust-onenote-parser-for-clamav-property-type.patch	\
   %D%/packages/patches/rust-poem-1-fewer-deps.patch		\
   %D%/packages/patches/rust-rspec-1-remove-clippy.patch	\
   %D%/packages/patches/rust-trash-2-update-windows.patch	\
