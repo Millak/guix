@@ -49,6 +49,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freeipmi)
@@ -684,7 +685,7 @@ single-instruction multiple-data (SIMD) intrinsics.")
                   (substitute* "src/include/pmix_config.h"
                     (("#define PMIX_CONFIGURE_CLI .*")
                      "#define PMIX_CONFIGURE_CLI \"[scrubbed]\"\n")))))))
-   (inputs (list libevent `(,hwloc "lib")))
+   (inputs (list libevent `(,hwloc "lib") zlib))
    (native-inputs (list perl python))
    (synopsis "PMIx library")
    (description
