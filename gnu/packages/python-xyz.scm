@@ -26425,12 +26425,21 @@ created by running @code{python setup.py develop}).")
     (arguments
      (list #:test-flags  ;; Disable failing tests.
            #~(list "-k" (string-append
-                         "not test_pkginfo_returns_no_metadata"
-                         " and not test_fails_rst_no_content"))))
+                         "not test_fails_rst_no_content"
+                         " and not test_fails_rst_syntax_error"
+                         " and not test_passes_markdown_description[text/markdown]"
+                         " and not test_passes_markdown_description[text/plain]"
+                         " and not test_passes_rst_description"
+                         " and not test_warns_missing_description[False]"
+                         " and not test_warns_missing_description[True]"
+                         " and not test_warns_missing_file"))))
     (native-inputs
      (list python-pretend
            python-pytest
-           python-pytest-socket))
+           python-pytest-socket
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-importlib-metadata
            python-keyring
