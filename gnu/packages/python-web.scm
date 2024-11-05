@@ -4659,30 +4659,25 @@ Python.")
 (define-public python-responses
   (package
     (name "python-responses")
-    (version "0.22.0")
+    (version "0.25.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "responses" version))
               (sha256
                (base32
-                "0bhhffwl0zqin4xc89nc97ynzr7l3j4b8rjqk9w9flnj2cmcnsir"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-v")))))))
+                "1fld6lsa143md4lxccwxq9iyqm9d8a05i9sp7lqjibnrmd3r4yv1"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
-           python-pytest-httpserver))
+           python-pytest-httpserver
+           python-setuptools
+           python-tomli
+           python-tomli-w
+           python-wheel))
     (propagated-inputs
      (list python-requests
-           python-toml
-           python-types-toml
-           python-typing-extensions
+           python-pyyaml
            python-urllib3))
     (home-page "https://github.com/getsentry/responses")
     (synopsis "Utility for mocking out the `requests` Python library")
