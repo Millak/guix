@@ -56070,6 +56070,27 @@ formatted tables in terminal.")
 prime-number-related needs of @code{rust-primal}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-primal-check-0.3
+  (package
+    (name "rust-primal-check")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "primal-check" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "025xnak4rhkwa4h970bjb3cvp2k853wviyr84n8gjfhy65dqj3fw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-num-integer" ,rust-num-integer-0.1))
+       #:cargo-development-inputs (("rust-primal" ,rust-primal-0.3))))
+    (home-page "https://github.com/huonw/primal")
+    (synopsis "Test primality")
+    (description
+     "This package provides a standalone primality testing tool.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-print-bytes-1
   (package
     (name "rust-print-bytes")
