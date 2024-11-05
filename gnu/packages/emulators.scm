@@ -3508,13 +3508,18 @@ graphic filters.  Some of its features include:
 (define-public unicorn
   (package
     (name "unicorn")
-    (version "2.0.1.post1")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri name version))
        (sha256
-        (base32 "0mlfs8qfi0clyncfkbxp6in0cpl747510i6bqymwid43xcirbikz"))))
+        (base32 "18sbrycr62wcs3a68a9q76ihpahfsd4bn3mryvyhimwwn1342kwh"))
+       (modules '((guix build utils)))
+       ;; cmake files are not in the cmake dir in pypi
+       (snippet #~(substitute* "src/CMakeLists.txt"
+                    (("include\\(cmake/")
+                     "include(")))))
     (build-system pyproject-build-system)
     (native-inputs (list cmake pkg-config))
     (home-page "https://www.unicorn-engine.org")
