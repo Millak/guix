@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -157,3 +158,26 @@ of GnuPG.")
         license:asl2.0
         ;; Nominet UK's BSD 3-Clause License (netpgp).
         license:bsd-3)))))
+
+(define-public sexpp
+  (package
+    (name "sexpp")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rnpgp/sexpp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16y9f42w6ay3w0s23xmigqm0qi1swdfvc93g2xn3xkg1r4kpmnwq"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags '(list "-DDOWNLOAD_GTEST=off")))
+    (native-inputs (list googletest pkg-config))
+    (home-page "https://github.com/rnpgp/sexpp")
+    (synopsis "C++ library for S-expressions")
+    (description
+     "This package provides a C++ library for working with S-Expressions.")
+    (license license:expat)))
