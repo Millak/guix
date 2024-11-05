@@ -1577,7 +1577,9 @@ variables into the markdown template")
     (native-inputs
      (list python-pytest
            python-pytest-cov
-           python-pytest-flake8))
+           python-pytest-flake8
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/python-lsp/docstring-to-markdown")
     (synopsis "On the fly conversion of Python docstrings to markdown")
     (description
