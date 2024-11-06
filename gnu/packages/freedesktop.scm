@@ -83,6 +83,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages cups)
@@ -141,6 +142,7 @@
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages w3m)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages wm)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -3254,6 +3256,56 @@ which uses GTK+ and various pieces of GNOME infrastructure, such as the
 @code{org.gnome.Shell.Screenshot} or @code{org.gnome.SessionManager} D-Bus
 interfaces.")
     (license license:lgpl2.1+)))
+
+(define-public xdg-desktop-portal-hyprland
+  (package
+    (name "xdg-desktop-portal-hyprland")
+    (version "1.3.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hyprwm/xdg-desktop-portal-hyprland")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17ba9jkccyp8gv79ds70khgm5wm6x8zs5m9nkilq4n2j7fsa8cfl"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f                  ;No tests.
+           #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* (find-files "." "\\.cp?*$")
+                     (("/bin/sh") "sh")
+                     (("\\<(sh|grim|hyprctl|slurp)\\>" _ cmd)
+                      (search-input-file inputs (string-append "bin/" cmd))))
+                   (substitute* "src/shared/ScreencopyShared.cpp"
+                     (("\\<(hyprland-share-picker)\\>" _ cmd)
+                      (string-append #$output "/bin/" cmd))))))))
+    (native-inputs
+     (list gcc-13 hyprwayland-scanner pkg-config))
+    (inputs
+     (list bash-minimal
+           grim
+           hyprland
+           hyprland-protocols
+           hyprlang
+           hyprutils
+           mesa
+           pipewire
+           qtwayland
+           sdbus-c++
+           slurp
+           wayland
+           wayland-protocols))
+    (home-page "https://github.com/hyprwm/xdg-desktop-portal-hyprland")
+    (synopsis "Hyprland implementation of @code{xdg-desktop-portal} backend")
+    (description
+     "This package provides an @code{xdg-desktop-portal} backend for Hyprland.")
+    (license license:bsd-3)))
 
 (define-public xdg-desktop-portal-kde
   (package
