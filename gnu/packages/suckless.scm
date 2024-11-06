@@ -917,8 +917,7 @@ colormap to stdout.")
         (base32 "099i2jm9c25nkbg5420wr12z0gd189gcw5j1ssjmpmbbwzfvv2x6"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:tests? #true
-           #:test-target "test"
+     (list #:test-target "test"
            #:phases #~(modify-phases %standard-phases
                         (add-after 'configure 'post-configure
                           (lambda _
