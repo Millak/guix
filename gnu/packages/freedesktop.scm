@@ -1340,6 +1340,26 @@ For information about libevdev, see:
 Python.")
     (license license:lgpl2.0)))
 
+(define-public hyprland-protocols
+  (package
+    (name "hyprland-protocols")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/hyprland-protocols")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0x86w7z3415qvixfhk9a8v5fnbnxdydzx366qz0mpmfg5h86qyha"))))
+    (build-system meson-build-system)
+    (home-page "https://github.com/hyprwm/hyprland-protocols")
+    (synopsis "Wayland protocol extensions for Hyprland")
+    (description
+     "This package provides Wayland protocol extensions for Hyprland.")
+    (license license:bsd-3)))
+
 (define-public hyprwayland-scanner
   (package
     (name "hyprwayland-scanner")
