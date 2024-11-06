@@ -36,7 +36,7 @@ Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Efraim Flashner@*
 Copyright @copyright{} 2016 John Darrington@*
 Copyright @copyright{} 2016, 2017 Nikita Gillmann@*
-Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Jan Nieuwenhuizen@*
+Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024 Janneke Nieuwenhuizen@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Julien Lepiller@*
 Copyright @copyright{} 2016 Alex ter Weele@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*
@@ -638,6 +638,13 @@ way for you to give it a try is by setting up an instance of
 @code{hurd-vm-service-type} on your GNU/Linux machine
 (@pxref{transparent-emulation-qemu, @code{hurd-vm-service-type}}).
 @xref{Contributing}, on how to help!
+
+@item x86_64-gnu
+@uref{https://hurd.gnu.org, GNU/Hurd} on the @code{x86_64} Intel/AMD
+64-bit architecture.
+
+This configuration is even more experimental and under heavy upstream
+development.
 
 @item mips64el-linux (unsupported)
 little-endian 64-bit MIPS processors, specifically the Loongson series,

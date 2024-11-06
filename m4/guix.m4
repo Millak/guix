@@ -3,6 +3,7 @@ dnl Copyright © 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020, 2021 Ludovic Co
 dnl Copyright © 2014 Mark H Weaver <mhw@netris.org>
 dnl Copyright © 2017, 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 dnl Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
+dnl Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 dnl
 dnl This file is part of GNU Guix.
 dnl
@@ -61,8 +62,13 @@ AC_DEFUN([GUIX_SYSTEM_TYPE], [
        linux-musl*)
 	  guix_system="$machine_name-linux";;
        gnu*)
-          # Always use i586 for GNU/Hurd.
-          guix_system="i586-gnu";;
+          case "$machine_name" in
+            i386|i486|i586|i686)
+              # Always use i586 for 32bit GNU/Hurd.
+              guix_system="i586-gnu";;
+            *)
+	      guix_system="$machine_name-gnu";;
+          esac;;
        *)
 	  # Strip the version number from names such as `gnu0.3',
 	  # `darwin10.2.0', etc.
@@ -91,7 +97,7 @@ courageous and port the GNU System distribution to it (see
   # Currently only Linux-based systems are supported, and only on some
   # platforms.
   case "$guix_system" in
-    x86_64-linux|i686-linux|armhf-linux|aarch64-linux|powerpc64le-linux|riscv64-linux|i586-gnu)
+    x86_64-linux|i686-linux|armhf-linux|aarch64-linux|powerpc64le-linux|riscv64-linux|i586-gnu|x86_64-gnu)
       ;;
     mips64el-linux|powerpc-linux)
       AC_MSG_WARN([building Guix on `$guix_system', which is not supported])
