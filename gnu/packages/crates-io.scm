@@ -95443,8 +95443,50 @@ compression library.")
 in Pure Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-zvariant-4
+  (package
+    (name "rust-zvariant")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zvariant" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zl1ika7zd9bxkd0bqc78h9bykvk6xc98965iz1p3i51p452k110"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; overflow evaluating the requirement `PhantomData<Vec<u8>>:
+       #:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-endi" ,rust-endi-1)
+                       ("rust-enumflags2" ,rust-enumflags2-0.7)
+                       ("rust-heapless" ,rust-heapless-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+                       ("rust-static-assertions" ,rust-static-assertions-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-uuid" ,rust-uuid-1)
+                       ("rust-zvariant-derive" ,rust-zvariant-derive-4))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-glib" ,rust-glib-0.20)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-repr" ,rust-serde-repr-0.1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glib))
+    (home-page "https://github.com/dbus2/zbus/")
+    (synopsis "D-Bus & GVariant encoding & decoding")
+    (description "D-Bus & GVariant encoding & decoding")
+    (license license:expat)))
+
 (define-public rust-zvariant-3
   (package
+    (inherit rust-zvariant-4)
     (name "rust-zvariant")
     (version "3.15.0")
     (source (origin
@@ -95454,7 +95496,6 @@ in Pure Rust.")
               (sha256
                (base32
                 "131kaczf10psc8clzlndcc52dym5vi4g22kqf0qwaq6rw2z93cj4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; overflow evaluating the requirement `PhantomData<Vec<u8>>:
        #:cargo-inputs
@@ -95475,15 +95516,7 @@ in Pure Rust.")
         ("rust-glib" ,rust-glib-0.17)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-repr" ,rust-serde-repr-0.1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list glib))
-    (home-page "https://github.com/dbus2/zbus/")
-    (synopsis "D-Bus & GVariant encoding & decoding")
-    (description "D-Bus & GVariant encoding & decoding")
-    (license license:expat)))
+        ("rust-serde-repr" ,rust-serde-repr-0.1))))))
 
 (define-public rust-zvariant-2
   (package
