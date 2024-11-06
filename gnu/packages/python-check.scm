@@ -302,17 +302,36 @@ are useful when writing automated tests in Python.")
 (define-public python-cucumber-tag-expressions
   (package
     (name "python-cucumber-tag-expressions")
-    (version "4.1.0")
+    (version "6.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cucumber-tag-expressions" version))
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/cucumber/tag-expressions")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0q7rn4l4ppjd1zsglr37ccc5xccg4iigaw827282zfzfsvzda573"))))
+        (base32
+         "1hanh7hzxmx0f6fp2ykabsg32snmp8y9pd7s5xix15r1gnn7lvp9"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Project's repository contains go, java, javascript, perl, python
+          ;; and ruby implementations.
+          (add-after 'unpack 'chdir-python
+            (lambda _
+              (chdir "python"))))))
     (native-inputs
-     (list python-invoke python-pathpy python-pytest))
-    (home-page "https://github.com/cucumber/tag-expressions-python")
+     (list python-pathpy
+           python-pytest
+           python-pytest-html
+           python-pyyaml
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/cucumber/tag-expressions")
     (synopsis "Tag-expression parser for cucumber/behave")
     (description
      "This package provides a tag-expression parser for Cucumber and
