@@ -3408,15 +3408,15 @@ tests written in a natural language style, backed up by Python code.")
 (define-public python-behave-web-api
   (package
     (name "python-behave-web-api")
-    (version "1.0.6")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "behave-web-api" version))
        (sha256
         (base32
-         "03kpq2xsy1gab3jy0dccbxlsg7vwfy4lagss0qldwmx3xz6b3i19"))))
-    (build-system python-build-system)
+         "04p5sp6wck3mafj634w1fpvfhxm170l5q3hfb9d06pi71ql606n6"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -3426,6 +3426,10 @@ tests written in a natural language style, backed up by Python code.")
                (("'wheel'") "")                ; We don't use it.
                (("'ordereddict==1.1'") ""))    ; Python >= 2.7 has it built-in.
              #t)))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list behave python-requests))
     (home-page "https://github.com/jefersondaniel/behave-web-api")
