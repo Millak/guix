@@ -74785,8 +74785,37 @@ control on the fields.")
 monotone matrix.")
     (license license:expat)))
 
+(define-public rust-smol-2
+  (package
+    (name "rust-smol")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "smol" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17srgkyzswns43cnqcfb1846a8nsna47qj7wrk1rj8c9c3id6fx3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-async-channel" ,rust-async-channel-2)
+                       ("rust-async-executor" ,rust-async-executor-1)
+                       ("rust-async-fs" ,rust-async-fs-2)
+                       ("rust-async-io" ,rust-async-io-2)
+                       ("rust-async-lock" ,rust-async-lock-3)
+                       ("rust-async-net" ,rust-async-net-2)
+                       ("rust-async-process" ,rust-async-process-2)
+                       ("rust-blocking" ,rust-blocking-1)
+                       ("rust-futures-lite" ,rust-futures-lite-2))))
+    (home-page "https://github.com/stjepang/smol")
+    (synopsis "Small and fast async runtime")
+    (description "This package provides a small and fast async runtime.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-smol-1
   (package
+    (inherit rust-smol-2)
     (name "rust-smol")
     (version "1.2.5")
     (source
@@ -74796,7 +74825,6 @@ monotone matrix.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1r45zng0hymqx1kb2dmxkapbin7f9rhgrdcssz0q7rzka59kpkw5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -74809,11 +74837,7 @@ monotone matrix.")
         ("rust-async-process" ,rust-async-process-1)
         ("rust-blocking" ,rust-blocking-1)
         ("rust-futures-lite" ,rust-futures-lite-1)
-        ("rust-once-cell" ,rust-once-cell-1))))
-    (home-page "https://github.com/stjepang/smol")
-    (synopsis "Small and fast async runtime")
-    (description "This package provides a small and fast async runtime.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-once-cell" ,rust-once-cell-1))))))
 
 (define-public rust-smol-0.1
   (package
