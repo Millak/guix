@@ -1457,6 +1457,10 @@ password, provided REF's URI is HTTP or HTTPS."
     (match delta
       (`(replace 'check ,expression)
        (check-check-procedure expression))
+      (`(add-after ,_ 'check ,expression)
+       (check-check-procedure expression))
+      (`(add-before ,_ 'check ,expression)
+       (check-check-procedure expression))
       (_ '())))
   (define (check-phases-deltas deltas)
     (append-map check-phases-delta deltas))
