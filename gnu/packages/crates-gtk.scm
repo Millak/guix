@@ -1948,8 +1948,36 @@
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-glib-sys-0.20
+  (package
+    (name "rust-glib-sys")
+    (version "0.20.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glib-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0avm6dr3q2xvlad7fcbq7an7qasaqf3k480dn19s99ngi1fwm7jz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; XXX: Tests are sensitive to the version of glib, even though
+       ;; the library supports a wide range.  Skip for now.
+       #:tests? #f
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-7))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "FFI bindings to libglib-2.0")
+    (description "This package provides FFI bindings to libglib-2.0.")
+    (license license:expat)))
+
 (define-public rust-glib-sys-0.19
   (package
+    (inherit rust-glib-sys-0.20)
     (name "rust-glib-sys")
     (version "0.19.8")
     (source
@@ -1959,7 +1987,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "19f4q8x77vd7c1d9ikw492yskq5kpd7k04qb8xnh1c427a6w2baw"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; XXX: Tests are sensitive to the version of glib, even though
        ;; the library supports a wide range.  Skip for now.
@@ -1967,13 +1994,7 @@
        #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
                        ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs (list pkg-config))
-    (inputs (list glib))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "FFI bindings to libglib-2.0")
-    (description "This package provides FFI bindings to libglib-2.0.")
-    (license license:expat)))
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-glib-sys-0.18
   (package
