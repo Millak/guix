@@ -23301,7 +23301,7 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
     (arguments
      (list
       ;; Tests time out on riscv64-linux.
-      #:tests? (and (%current-system)
+      #:tests? (and (not (%current-target-system))
                     (not (target-riscv64?)))
       #:configure-flags
       #~(list "-DWFA_PNG_AND_TSV=ON")
