@@ -1800,7 +1800,6 @@ submodules:
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #t ; Tests require network interface access
       #:import-path "github.com/cskr/pubsub"))
     (home-page "https://github.com/cskr/pubsub")
     (synopsis "Simple pubsub package for go")
