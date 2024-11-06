@@ -2689,6 +2689,59 @@ are parsed concurrently using a thread pool to utilize all cpu cores.  A goal
 of the project is to be runnable on untrusted networks without crashing.")
     (license license:gpl3)))
 
+(define-public speakersafetyd
+  (package
+    (name "speakersafetyd")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "speakersafetyd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dvyj194niz5i4rldsqvjmz8j7df9w9qpvf9rwg3vsnzc2mjh0zg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-inputs `(("rust-alsa" ,rust-alsa-0.8)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-verbosity-flag" ,rust-clap-verbosity-flag-2)
+                       ("rust-configparser" ,rust-configparser-3)
+                       ("rust-json" ,rust-json-0.12)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-simple-logger" ,rust-simple-logger-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda _
+              (substitute* "src/main.rs"
+                (("/usr/local") #$output))))
+          (add-after 'unpack 'remove-systemd-udev-rules
+            (lambda _
+              (substitute* "95-speakersafetyd.rules"
+                ((".*SYSTEMD_WANTS.*") ""))))
+          (add-after 'install 'install-data
+            (lambda _
+              (setenv "BINDIR" (string-append #$output "/bin"))
+              (setenv "UNITDIR" (string-append #$output "/lib/systemd/system"))
+              (setenv "UDEVDIR" (string-append #$output "/lib/udev/rules.d"))
+              (setenv "TMPFILESDIR" (string-append #$output "/usr/lib/tmpfiles.d"))
+              (setenv "SHAREDIR" (string-append #$output "/usr/share"))
+              (setenv "VARDIR" (string-append #$output "/var"))
+              (invoke "make" "install-data"))))))
+    (inputs (list alsa-lib))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/AsahiLinux/speakersafetyd/")
+    (synopsis "Speaker protection daemon")
+    (description "Speakersafetyd is a userspace daemon written in Rust that
+implements an analogue of the Texas Instruments Smart Amp speaker protection
+model.")
+    (license license:expat)))
+
 (define-public tectonic
   (package
     (name "tectonic")
