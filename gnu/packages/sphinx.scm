@@ -1144,7 +1144,7 @@ enabled web server.")
 (define-public python-sphinx-autodoc-typehints
   (package
     (name "python-sphinx-autodoc-typehints")
-    (version "1.18.3")
+    (version "1.23.0")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi archive
@@ -1154,7 +1154,7 @@ enabled web server.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "049dlay21f4bccig31fkbzq2m8v0h6g63p1cn3dxay9q3h0mzgs0"))))
+         "0z5na9cxqq4xc9ikig1s2fwbwl5pjwm04z9zwidbp2lm6k53xs8b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1169,15 +1169,17 @@ enabled web server.")
             ;; '0.0.0'.
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
-    (propagated-inputs (list python-sphinx))
     (native-inputs
-     (list python-nptyping
+     (list nss-certs-for-test
+           python-hatch-vcs
+           python-hatchling
+           python-nptyping
            python-pytest
-           python-setuptools
            python-setuptools-scm
            python-sphobjinv
-           python-typing-extensions
-           python-wheel))
+           python-typing-extensions))
+    (propagated-inputs
+     (list python-sphinx))
     (home-page "https://pypi.org/project/sphinx-autodoc-typehints/")
     (synopsis "Type hints for the Sphinx autodoc extension")
     (description "This extension allows you to use Python 3 annotations for
