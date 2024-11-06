@@ -3422,15 +3422,38 @@ library.")
                        ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
+
+(define-public rust-libadwaita-0.6
+  (package
+    (name "rust-libadwaita")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libadwaita" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nf5hxmk1bzjj8hxavwgz04kiv3hxb52qjh9f9gfrqdr9019kd4i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gdk-pixbuf" ,rust-gdk-pixbuf-0.20)
+                       ("rust-gdk4" ,rust-gdk4-0.8)
+                       ("rust-gio" ,rust-gio-0.20)
+                       ("rust-glib" ,rust-glib-0.20)
+                       ("rust-gtk4" ,rust-gtk4-0.8)
+                       ("rust-libadwaita-sys" ,rust-libadwaita-sys-0.6)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango" ,rust-pango-0.20))))
     (native-inputs (list pkg-config))
-    (inputs (list cairo gdk-pixbuf graphene gtk pango))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "FFI bindings of GTK 4")
-    (description "This package provides FFI bindings of GTK 4.")
+    (inputs (list libadwaita))
+    (home-page "https://world.pages.gitlab.gnome.org/Rust/libadwaita-rs")
+    (synopsis "Rust bindings for libadwaita")
+    (description "Rust bindings for libadwaita.")
     (license license:expat)))
 
 (define-public rust-libadwaita-0.5
   (package
+    (inherit rust-libadwaita-0.6)
     (name "rust-libadwaita")
     (version "0.5.3")
     (source
@@ -3440,7 +3463,6 @@ library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "174pzn9dwsk8ikvrhx13vkh0zrpvb3rhg9yd2q5d2zjh0q6fgrrg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gdk-pixbuf" ,rust-gdk-pixbuf-0.18)
                        ("rust-gdk4" ,rust-gdk4-0.7)
@@ -3449,13 +3471,7 @@ library.")
                        ("rust-gtk4" ,rust-gtk4-0.7)
                        ("rust-libadwaita-sys" ,rust-libadwaita-sys-0.5)
                        ("rust-libc" ,rust-libc-0.2)
-                       ("rust-pango" ,rust-pango-0.18))))
-    (native-inputs (list pkg-config))
-    (inputs (list libadwaita))
-    (home-page "https://world.pages.gitlab.gnome.org/Rust/libadwaita-rs")
-    (synopsis "Rust bindings for libadwaita")
-    (description "Rust bindings for libadwaita.")
-    (license license:expat)))
+                       ("rust-pango" ,rust-pango-0.18))))))
 
 (define-public rust-libadwaita-sys-0.6
   (package
