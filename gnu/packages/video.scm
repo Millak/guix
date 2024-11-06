@@ -3361,20 +3361,38 @@ Both command-line and GTK2 interface are available.")
     (version "2.6.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ytcc" version))
+       (method git-fetch)        ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/woefe/ytcc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0laaj7m9mkn421hsljaqyhj2az641lg4y7ym6l8jl1xgs1vl9b4b"))))
+        (base32 "03rypw9sycardmrxc7hb0iak8zdxz1snv55fbpzyp79yi2iawbd4"))))
     (build-system pyproject-build-system)
-    (inputs (list python-click
-                  python-wcwidth
-                  python-websockets
-                  python-urllib3-next
-                  python-requests-next
-                  python-pycryptodomex
-                  python-mutagen
-                  python-brotli
-                  yt-dlp))
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append "not test_subscribe"
+                                  " and not test_bug_report_command"
+                                  " and not test_download"
+                                  " and not test_import"
+                                  " and not test_import_duplicate"
+                                  " and not test_play_video"
+                                  " and not test_update"))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list python-click
+           python-wcwidth
+           python-websockets
+           python-urllib3
+           python-requests-next
+           python-pycryptodomex
+           python-mutagen
+           python-brotli
+           yt-dlp))
     (home-page "https://github.com/woefe/ytcc")
     (synopsis "Command line tool to keep track of your favorite playlists")
     (description "ytcc is a command line tool to keep track of your favorite
