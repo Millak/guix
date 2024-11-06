@@ -28510,17 +28510,17 @@ values to other threads.")
         ("rust-freetype-sys" ,rust-freetype-sys-0.13)
         ("rust-libc" ,rust-libc-0.2))))))
 
-(define-public rust-freetype-sys-0.20
+(define-public rust-freetype-sys-0.21
   (package
     (name "rust-freetype-sys")
-    (version "0.20.1")
+    (version "0.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "freetype-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0d5iiv95ap3lwy7b0hxbc8caa9ng1fg3wlwrvb7rld39jrdxqzhf"))
+        (base32 "1bsmjhjb26hzpzhj82c9196m0ls5m43zkgmqp67ambwjk6ylmf6x"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -28544,6 +28544,34 @@ values to other threads.")
     (description
      "This package provides low level binding for FreeType font library.")
     (license license:expat)))
+
+(define-public rust-freetype-sys-0.20
+  (package
+    (inherit rust-freetype-sys-0.21)
+    (name "rust-freetype-sys")
+    (version "0.20.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "freetype-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d5iiv95ap3lwy7b0hxbc8caa9ng1fg3wlwrvb7rld39jrdxqzhf"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "freetype2")
+            ;; Inspired by Debian's patch for bzip2-sys.
+            (delete-file "build.rs")
+            (with-output-to-file "build.rs"
+              (lambda _
+                (format #t "fn main() {~@
+                        println!(\"cargo:rustc-link-lib=freetype\");~@
+                        }~%")))))))
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 (define-public rust-freetype-sys-0.17
   (package
