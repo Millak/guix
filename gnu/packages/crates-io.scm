@@ -28446,21 +28446,21 @@ values to other threads.")
     (description "This package provides bindings for Freetype used by Servo.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-freetype-rs-0.35
+(define-public rust-freetype-rs-0.37
   (package
     (name "rust-freetype-rs")
-    (version "0.35.0")
+    (version "0.37.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "freetype-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gzfb9fax3d3s691ys99nfihpzwl7hacvxnwvlxg4sph1fzd5ymi"))))
+        (base32 "05albg00302i1w4fxijb5wil7bdnn4gcknw20q2df2azj8dzilfi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
-                       ("rust-freetype-sys" ,rust-freetype-sys-0.20)
+                       ("rust-freetype-sys" ,rust-freetype-sys-0.21)
                        ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
        (("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))
@@ -28470,6 +28470,25 @@ values to other threads.")
     (synopsis "Bindings for FreeType font library")
     (description "This package provides bindings for FreeType font library.")
     (license license:expat)))
+
+(define-public rust-freetype-rs-0.35
+  (package
+    (inherit rust-freetype-rs-0.37)
+    (name "rust-freetype-rs")
+    (version "0.35.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "freetype-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gzfb9fax3d3s691ys99nfihpzwl7hacvxnwvlxg4sph1fzd5ymi"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-freetype-sys" ,rust-freetype-sys-0.20)
+                       ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))))
 
 (define-public rust-freetype-rs-0.32
   (package
