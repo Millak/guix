@@ -2092,8 +2092,10 @@ an embedded event driven algorithm.")
     (inherit libngspice)
     (name "ngspice")
     (arguments
-     (substitute-keyword-arguments (package-arguments libngspice)
-       ((#:tests? _ #f) #t)
+     (substitute-keyword-arguments
+       (strip-keyword-arguments
+         (list #:tests?)
+         (package-arguments libngspice))
        ((#:configure-flags flags)
         #~(cons "--with-readline=yes"
                 (delete "--with-ngshared"
