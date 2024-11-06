@@ -1088,11 +1088,12 @@ the store.")
                                                  " libmachuser.so libhurduser.so"))))))
                          (add-after 'install 'create-machine-symlink
                            (lambda* (#:key outputs #:allow-other-keys)
-                             (let ((out (assoc-ref outputs "out"))
-                                   (cpu "i386"))
-                               (symlink cpu
-                                        (string-append out
-                                                       "/include/mach/machine"))))))
+                             (let* ((out (assoc-ref outputs "out"))
+                                    (cpu "i386")
+                                    (machine (string-append
+                                              out "/include/mach/machine")))
+                               (unless (file-exists? machine)
+                                 (symlink cpu machine))))))
                        '()))))
 
    (inputs `(("static-bash" ,static-bash)))
