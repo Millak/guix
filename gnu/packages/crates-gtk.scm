@@ -634,22 +634,22 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
-(define-public rust-gdk-pixbuf-0.19
+(define-public rust-gdk-pixbuf-0.20
   (package
     (name "rust-gdk-pixbuf")
-    (version "0.19.8")
+    (version "0.20.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gdk-pixbuf" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16c6kznkh3vi82843ays8awdm37fwjd1fblv6g3h64824shsnkk2"))))
+        (base32 "068vj60x1hbw0anhjvg2id3sr96d202wp18a4zc3f8z9m5qr1hn4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.19)
-                       ("rust-gio" ,rust-gio-0.19)
-                       ("rust-glib" ,rust-glib-0.19)
+     `(#:cargo-inputs (("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.20)
+                       ("rust-gio" ,rust-gio-0.20)
+                       ("rust-glib" ,rust-glib-0.20)
                        ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
@@ -660,6 +660,26 @@
     (description
      "This package provides Rust bindings for the @code{GdkPixbuf} library.")
     (license license:expat)))
+
+(define-public rust-gdk-pixbuf-0.19
+  (package
+    (inherit rust-gdk-pixbuf-0.20)
+    (name "rust-gdk-pixbuf")
+    (version "0.19.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk-pixbuf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16c6kznkh3vi82843ays8awdm37fwjd1fblv6g3h64824shsnkk2"))))
+    (arguments
+     `(#:cargo-inputs (("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.19)
+                       ("rust-gio" ,rust-gio-0.19)
+                       ("rust-glib" ,rust-glib-0.19)
+                       ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-gdk-pixbuf-0.18
   (package
