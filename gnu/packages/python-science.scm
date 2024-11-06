@@ -1392,8 +1392,10 @@ idea of the remaining amount of computation to be done.")
                          python-pyarrow ;needed to run fastapi tests
                          python-pytest
                          python-pytest-asyncio
+                         python-setuptools
                          python-sphinx
-                         python-uvicorn)) ;needed to run fastapi tests
+                         python-uvicorn ;needed to run fastapi tests
+                         python-wheel))
     (home-page "https://github.com/unionai-oss/pandera")
     (synopsis "Perform data validation on dataframe-like objects")
     (description
