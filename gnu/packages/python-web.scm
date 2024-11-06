@@ -5340,26 +5340,45 @@ CSS tidy.  Also supports URL rewriting in CSS files.")
 (define-public python-elasticsearch
   (package
     (name "python-elasticsearch")
-    (version "7.13.4")
+    (version "7.17.12")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "elasticsearch" version))
-        (sha256
-         (base32
-          "1q38w9nh2j2yi82d8rhzb57597l4lq5zx7xzfg45xf7ffrgsipaj"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-certifi python-urllib3))
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/elastic/elasticsearch-py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v3azgxh1nd0jyqhnb1w28ky3nfx8sjq5vlx2gp33v6vxmvqy1qr"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; tests require the test_elasticsearch module but it is not distributed.
-     `(#:tests? #f))
+     (list
+      #:test-flags
+      ;; Requiring network config.
+      #~(list "--ignore=test_elasticsearch/test_connection.py"
+              ;; All tests failed.
+              "--ignore=test_elasticsearch/test_async")))
+    (native-inputs
+     (list python-aiohttp
+           python-dateutil
+           python-mock
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pyyaml
+           python-requests
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-certifi
+           python-urllib3-next))
     (home-page "https://github.com/elastic/elasticsearch-py")
     (synopsis "Low-level client for Elasticsearch")
     (description "Official low-level client for Elasticsearch.  Its goal is to
 provide common ground for all Elasticsearch-related code in Python; because of
 this it tries to be opinion-free and very extendable.")
-    (license license:expat)))
+    ;; Apache-2.0 in setup.py and LICENSE file for 11 years.
+    (license license:asl2.0)))
 
 (define-public python-engineio
   (package
