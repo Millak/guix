@@ -4292,6 +4292,34 @@ larger project called Cura.")
 compiled translations.  Prebuilt Firmware files are removed.")
     (license license:agpl3)))
 
+(define-public udis86
+  (let ((commit "5336633af70f3917760a6d441ff02d93477b0c86")
+        (revision "0"))
+    (package
+      (name "udis86")
+      (version (git-version "1.7.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/canihavesomecoffee/udis86")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0y5z1169wff578jylpafsww4px4y6gickhcs885a9c660d8xs9qy"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake libtool python-minimal-wrapper))
+      ;; Fork of <https://github.com/vmt/udis86>.
+      (home-page "https://github.com/canihavesomecoffee/udis86")
+      (synopsis "Disassembler library for x86 and x86-64")
+      (description
+       "Udis86 is a disassembler for the x86 and x86-64 class of instruction
+set architectures.  It consists of a C library called @code{libudis86} which
+provides a clean and simple interface to decode and inspect a stream of raw
+binary data as disassembled instructions in a structured manner, and a command
+line tool called @command{udcli} that incorporates the library.")
+      (license license:bsd-2))))
+
 (define-public uranium
   (package
     (name "uranium")
