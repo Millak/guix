@@ -3705,6 +3705,46 @@ This package is the fork of hsetroot by Hyriand.")
      "This package provides Hyprland cursor format, library and utilities.")
     (license license:bsd-3)))
 
+(define-public hyprpicker
+  (package
+    (name "hyprpicker")
+    (version "0.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/hyprpicker")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11r06c62dqj81r27qhf36f3smnjyk3vz8naa655m8khv4qqvmvc2"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f                  ;No tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/clipboard/Clipboard.cpp"
+                     (("wl-copy" cmd)
+                      (search-input-file
+                       inputs (string-append "bin/" cmd)))))))))
+    (native-inputs (list gcc-13 hyprwayland-scanner pkg-config))
+    (inputs
+     (list cairo
+           hyprutils
+           libjpeg-turbo
+           libxkbcommon
+           pango
+           wayland
+           wayland-protocols
+           wl-clipboard))
+    (home-page "https://github.com/hyprwm/hyprpicker")
+    (synopsis "Wayland color picker compatible with @code{wlroots}")
+    (description
+     "This package provides a @code{wlroots}-compatible Wayland color picker.")
+    (license license:bsd-3)))
+
 (define-public jumpapp
   (package
     (name "jumpapp")
