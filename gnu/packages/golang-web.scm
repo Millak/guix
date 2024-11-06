@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 raingloom <raingloom@riseup.net>
-;;; Copyright © 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
@@ -2808,7 +2808,8 @@ router.")
       ;; src/github.com/libp2p/go-cidranger/trie_test.go:557:8: cannot use
       ;; 4294967295 (untyped int constant) as int value in assignment
       ;; (overflows).
-      #:tests? (target-64bit?)
+      #:tests? (and (target-64bit?)
+                    (not (%current-target-system)))
       #:import-path "github.com/libp2p/go-cidranger"))
     (native-inputs
      (list go-github-com-stretchr-testify))
