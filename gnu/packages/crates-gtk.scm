@@ -1155,8 +1155,48 @@
     (description "This package provides FFI bindings of GDK 4.")
     (license license:expat)))
 
+(define-public rust-gio-0.20
+  (package
+    (name "rust-gio")
+    (version "0.20.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g6l7a1n63a8myjpcv10mn214w0ypijf6rq812b3wn09zgl9kndq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=settings::test::bool_set_get"
+         "--skip=settings::test::string_get")
+       #:cargo-inputs (("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-gio-sys" ,rust-gio-sys-0.20)
+                       ("rust-glib" ,rust-glib-0.20)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-gir-format-check" ,rust-gir-format-check-0.1)
+        ("rust-serial-test" ,rust-serial-test-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the Gio library")
+    (description "This package provides Rust bindings for the Gio library.")
+    (license license:expat)))
+
 (define-public rust-gio-0.19
   (package
+    (inherit rust-gio-0.20)
     (name "rust-gio")
     (version "0.19.8")
     (source
@@ -1166,7 +1206,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1znz5ngfvv3gbndf6lzz3hs27hlb8ysls4axlfccrzvkscbz2jac"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -1186,13 +1225,7 @@
        (("rust-futures" ,rust-futures-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-gir-format-check" ,rust-gir-format-check-0.1)
-        ("rust-serial-test" ,rust-serial-test-3))))
-    (native-inputs (list pkg-config))
-    (inputs (list glib))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the Gio library")
-    (description "This package provides Rust bindings for the Gio library.")
-    (license license:expat)))
+        ("rust-serial-test" ,rust-serial-test-3))))))
 
 (define-public rust-gio-0.18
   (package
