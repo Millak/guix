@@ -2586,20 +2586,20 @@
     (description "Rust bindings for the Graphene library.")
     (license license:expat)))
 
-(define-public rust-graphene-sys-0.18
+(define-public rust-graphene-sys-0.19
   (package
     (name "rust-graphene-sys")
-    (version "0.18.1")
+    (version "0.19.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "graphene-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0n8zlg7z26lwpnvlqp1hjlgrs671skqwagdpm7r8i1zwx3748hfc"))))
+        (base32 "01dg4wgqxaqkdv0vl7hr14b6kbbm96gwdsb5a2ss9jxw8h4hwlrg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
+     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.19)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-pkg-config" ,rust-pkg-config-0.3)
                        ("rust-system-deps" ,rust-system-deps-6))
@@ -2611,6 +2611,26 @@
     (synopsis "FFI bindings to libgraphene-1.0")
     (description "FFI bindings to libgraphene-1.0.")
     (license license:expat)))
+
+(define-public rust-graphene-sys-0.18
+  (package
+    (inherit rust-graphene-sys-0.19)
+    (name "rust-graphene-sys")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "graphene-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0n8zlg7z26lwpnvlqp1hjlgrs671skqwagdpm7r8i1zwx3748hfc"))))
+    (arguments
+     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gsk4-0.7
   (package
