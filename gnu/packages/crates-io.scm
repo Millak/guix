@@ -5581,8 +5581,53 @@ asynchronously (via the AsyncPidFd type).")
 delivered in order of priority.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-async-process-2
+  (package
+    (name "rust-async-process")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-process" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fr6cpqdw7hrmzns1983lgx86cg8vyz7nlrn0h0125iqq8fmy9b3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=set_current_dir_works" ; assertion failed: p.is_ok()
+         ;; No such file or directory
+         "--skip=signal_reported_right"
+         "--skip=stdin_works"
+         "--skip=test_spawn_multiple_with_stdio")
+       #:cargo-inputs (("rust-async-channel" ,rust-async-channel-2)
+                       ("rust-async-io" ,rust-async-io-2)
+                       ("rust-async-lock" ,rust-async-lock-3)
+                       ("rust-async-signal" ,rust-async-signal-0.2)
+                       ("rust-async-task" ,rust-async-task-4)
+                       ("rust-blocking" ,rust-blocking-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-event-listener" ,rust-event-listener-5)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs (("rust-async-io" ,rust-async-io-1))))
+    (home-page "https://github.com/smol-rs/async-process")
+    (synopsis "Async interface for working with processes")
+    (description
+     "This crate is an async version of @code{std::process}.  A background
+thread named @code{async-process} is lazily created on first use, which waits
+for spawned child processes to exit and then calls the @code{wait()} syscall
+to clean up the ``zombie'' processes.
+
+This is unlike the process API in the standard library, where dropping
+a running Child leaks its resources.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-async-process-1
   (package
+    (inherit rust-async-process-2)
     (name "rust-async-process")
     (version "1.8.1")
     (source
@@ -5592,7 +5637,6 @@ delivered in order of priority.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "126s968lvhg9rlwsnxp7wfzkfn7rl87p0dlvqqlibn081ax3hr7a"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -5610,18 +5654,7 @@ delivered in order of priority.")
                        ("rust-futures-lite" ,rust-futures-lite-1)
                        ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-windows-sys" ,rust-windows-sys-0.48))
-       #:cargo-development-inputs (("rust-async-io" ,rust-async-io-1))))
-    (home-page "https://github.com/smol-rs/async-process")
-    (synopsis "Async interface for working with processes")
-    (description
-     "This crate is an async version of @code{std::process}.  A background
-thread named @code{async-process} is lazily created on first use, which waits
-for spawned child processes to exit and then calls the @code{wait()} syscall
-to clean up the ``zombie'' processes.
-
-This is unlike the process API in the standard library, where dropping
-a running Child leaks its resources.")
-    (license (list license:asl2.0 license:expat))))
+       #:cargo-development-inputs (("rust-async-io" ,rust-async-io-1))))))
 
 (define-public rust-async-ready-3
   (package
