@@ -6,7 +6,7 @@
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019, 2021 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019-2021 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
@@ -2097,7 +2097,8 @@ supports concurrent serializable transactions.")
       ;;
       ;; cannot use 4340958203495 (untyped int constant) as int value in
       ;; argument to z.KeyToHash (overflows)
-      #:tests? (target-64bit?)
+      #:tests? (and (target-64bit?)
+                    (not (%current-target-system)))
       #:import-path "github.com/dgraph-io/ristretto"
       #:phases
       #~(modify-phases %standard-phases
