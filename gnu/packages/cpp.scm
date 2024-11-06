@@ -664,6 +664,29 @@ operating on batches.")
 library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
     (license license:asl2.0)))
 
+(define-public hyprlang
+  (package
+    (name "hyprlang")
+    (version "0.5.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/hyprlang")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yvfrz3hdyxzhngzhr0bgc5279ra5fv01hbfi6pdj84pz0lpaw02"))))
+    (build-system cmake-build-system)
+    (native-inputs (list gcc-13 pkg-config))
+    (inputs (list hyprutils))
+    (home-page "https://wiki.hyprland.org/Hypr-Ecosystem/hyprlang/")
+    (synopsis "Official implementation library for hypr config language")
+    (description
+     "This package provides the official implementation for hypr configuration
+language used in Hyprland.")
+    (license license:lgpl3)))
+
 (define-public hyprutils
   (package
     (name "hyprutils")
