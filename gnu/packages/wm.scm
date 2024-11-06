@@ -2066,16 +2066,16 @@ display a clock or apply image manipulation techniques to the background image."
 (define-public swaybg
   (package
     (name "swaybg")
-    (version "1.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/swaywm/swaybg")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lmqz5bmig90gq2m7lwf02d2g7z4hzf8fhqz78c8vk92c6p4xwbc"))))
+        (base32 "164jzs3sw08x92890bcs0sbfa3vs7l3n08fnrc1zzba42940z5r0"))))
     (build-system meson-build-system)
     (inputs
      (cons* cairo gdk-pixbuf wayland
