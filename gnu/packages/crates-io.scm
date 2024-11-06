@@ -5102,8 +5102,32 @@ AsyncSeek if the inner type does.")
     (description "This library provides async executors.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-async-fs-2
+  (package
+    (name "rust-async-fs")
+    (version "2.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-fs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jp0p7lg9zqy2djgdmivbzx0yqmfn9sm2s9dkhaws3zlharhkkgb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-lock" ,rust-async-lock-3)
+                       ("rust-blocking" ,rust-blocking-1)
+                       ("rust-futures-lite" ,rust-futures-lite-2))
+       #:cargo-development-inputs (("rust-libc" ,rust-libc-0.2)
+                                   ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/smol-rs/async-fs")
+    (synopsis "Async filesystem primitives")
+    (description "This package provides async filesystem primitives.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-async-fs-1
   (package
+    (inherit rust-async-fs-2)
     (name "rust-async-fs")
     (version "1.6.0")
     (source
@@ -5113,18 +5137,13 @@ AsyncSeek if the inner type does.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "01if2h77mry9cnm91ql2md595108i2c1bfy9gaivzvjfcl2gk717"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-lock" ,rust-async-lock-2)
                        ("rust-autocfg" ,rust-autocfg-1)
                        ("rust-blocking" ,rust-blocking-1)
                        ("rust-futures-lite" ,rust-futures-lite-1))
        #:cargo-development-inputs (("rust-libc" ,rust-libc-0.2)
-                                   ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/smol-rs/async-fs")
-    (synopsis "Async filesystem primitives")
-    (description "This package provides async filesystem primitives.")
-    (license (list license:asl2.0 license:expat))))
+                                   ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-async-generic-1
   (package
