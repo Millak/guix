@@ -1283,7 +1283,9 @@ UTF-8 and UTF-16 encoding.")
                      "tinyxmlparser.cpp" "tinystr.cpp"
                      "-o" "libtinyxml.so")))
          (replace 'check
-           (lambda _ (invoke "./xmltest")))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "./xmltest"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
