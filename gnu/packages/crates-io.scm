@@ -91300,8 +91300,33 @@ updated when the crate version changes.")
      "The uninhabited void type for use in statically impossible cases.")
     (license license:expat)))
 
+(define-public rust-vsock-0.5
+  (package
+    (name "rust-vsock")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vsock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1276xvg0jadqvxw26m2018fbsi8lvgx3i5x0hvy4gwbjwq04v2sf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests not runnable from the build environment.
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-nix" ,rust-nix-0.29))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.8)
+        ("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://github.com/rust-vsock/vsock-rs")
+    (synopsis "Virtio socket support for Rust")
+    (description "This package provdies virtio socket support for Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-vsock-0.3
   (package
+    (inherit rust-vsock-0.5)
     (name "rust-vsock")
     (version "0.3.0")
     (source (origin
@@ -91311,7 +91336,6 @@ updated when the crate version changes.")
               (sha256
                (base32
                 "0mwwcjk2yd3fi5ryv5xhd7569bmcj0dlsmi4bh4jh6qypzq1v3jc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests not runnable from the build environment.
        #:cargo-inputs
@@ -91319,11 +91343,7 @@ updated when the crate version changes.")
         ("rust-nix" ,rust-nix-0.24))
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.8)
-        ("rust-sha2" ,rust-sha2-0.10))))
-    (home-page "https://github.com/rust-vsock/vsock-rs")
-    (synopsis "Virtio socket support for Rust")
-    (description "This package provdies virtio socket support for Rust.")
-    (license license:asl2.0)))
+        ("rust-sha2" ,rust-sha2-0.10))))))
 
 (define-public rust-vsock-0.2
   (package
