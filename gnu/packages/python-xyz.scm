@@ -6033,6 +6033,8 @@ and convert DDL to BigQuery JSON schema.")
      "Jsonschema is an implementation of JSON Schema for Python.")
     (license license:expat)))
 
+;; For docker-compose 1.29.2, remove when its updated to the latest 2.x
+;; version.
 (define-public python-jsonschema-3
   (package
     (inherit python-jsonschema)
@@ -6045,11 +6047,7 @@ and convert DDL to BigQuery JSON schema.")
                 "0ykr61yiiizgvm3bzipa3l73rvj49wmrybbfwhvpgk3pscl5pa68"))))
     (arguments
      (substitute-keyword-arguments (package-arguments python-jsonschema)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (replace 'pretend-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))
+       ((#:tests? _ #t) #f)))
     (propagated-inputs
      (list python-attrs
            python-importlib-metadata
