@@ -28261,10 +28261,13 @@ inferring type information using compile-time introspection.")
               " and not test_retrieve_fname"
               " and not test_stream_download")
              "--ignore=pooch/tests/test_downloaders.py")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-scm
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-packaging python-platformdirs python-requests))
-    (native-inputs
-     (list python-pytest python-setuptools-scm))
     (home-page "https://github.com/fatiando/pooch")
     (synopsis "Manage your Python library's sample data files")
     (description
