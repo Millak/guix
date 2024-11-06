@@ -25400,25 +25400,25 @@ erroneous ioctls, etc.")
 bindings are available in the @code{evdev} crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-event-listener-4
+(define-public rust-event-listener-5
   (package
     (name "rust-event-listener")
-    (version "4.0.3")
+    (version "5.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "event-listener" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vk4smw1vf871vi76af1zn7w69jg3zmpjddpby2qq91bkg21bck7"))))
+        (base32 "1fkm6q4hjn61wl52xyqyyxai0x9w0ngrzi0wf1qsf8vhsadvwck0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-concurrent-queue" ,rust-concurrent-queue-2)
-        ("rust-parking" ,rust-parking-2)
-        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
-        ("rust-portable-atomic" ,rust-portable-atomic-1)
-        ("rust-portable-atomic-util" ,rust-portable-atomic-util-0.1))
+     `(#:cargo-inputs (("rust-concurrent-queue" ,rust-concurrent-queue-2)
+                       ("rust-loom" ,rust-loom-0.7)
+                       ("rust-parking" ,rust-parking-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-portable-atomic" ,rust-portable-atomic-1)
+                       ("rust-portable-atomic-util" ,rust-portable-atomic-util-0.2))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.5)
         ("rust-futures-lite" ,rust-futures-lite-2)
@@ -25431,6 +25431,31 @@ bindings are available in the @code{evdev} crate.")
 You can use this crate to turn non-blocking data structures into async or
 blocking data structures.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-event-listener-4
+  (package
+    (inherit rust-event-listener-5)
+    (name "rust-event-listener")
+    (version "4.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "event-listener" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vk4smw1vf871vi76af1zn7w69jg3zmpjddpby2qq91bkg21bck7"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-concurrent-queue" ,rust-concurrent-queue-2)
+        ("rust-parking" ,rust-parking-2)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-portable-atomic" ,rust-portable-atomic-1)
+        ("rust-portable-atomic-util" ,rust-portable-atomic-util-0.1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-futures-lite" ,rust-futures-lite-2)
+        ("rust-waker-fn" ,rust-waker-fn-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
 
 (define-public rust-event-listener-3
   (package
