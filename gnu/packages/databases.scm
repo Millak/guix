@@ -1690,6 +1690,8 @@ CSV, DB3, iXF, SQLite, MS-SQL or MySQL to PostgreSQL.")
        (sha256
         (base32 "1l2cj0ps96g3bblvhdszgyjv9bi405bxrx0bqq1p8h9bmwd629z1"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools python-wheel))
     (propagated-inputs
      (list python-cryptography python-pynacl))
     (arguments
