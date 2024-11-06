@@ -94495,8 +94495,71 @@ for locating fonts.")
     (description "This package provides an implementation of zbase32.")
     (license license:lgpl3+)))
 
+(define-public rust-zbus-4
+  (package
+    (name "rust-zbus")
+    (version "4.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zbus" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09f7916lp7haxv1y5zgcg99ny15whi6dn3waf1afcafxx8mh35xv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ; Not all files included.
+       #:cargo-inputs (("rust-async-broadcast" ,rust-async-broadcast-0.7)
+                       ("rust-async-executor" ,rust-async-executor-1)
+                       ("rust-async-fs" ,rust-async-fs-2)
+                       ("rust-async-io" ,rust-async-io-2)
+                       ("rust-async-lock" ,rust-async-lock-3)
+                       ("rust-async-process" ,rust-async-process-2)
+                       ("rust-async-recursion" ,rust-async-recursion-1)
+                       ("rust-async-task" ,rust-async-task-4)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-blocking" ,rust-blocking-1)
+                       ("rust-enumflags2" ,rust-enumflags2-0.7)
+                       ("rust-event-listener" ,rust-event-listener-5)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-sink" ,rust-futures-sink-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-nix" ,rust-nix-0.29)
+                       ("rust-ordered-stream" ,rust-ordered-stream-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-repr" ,rust-serde-repr-0.1)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-static-assertions" ,rust-static-assertions-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-vsock" ,rust-tokio-vsock-0.4)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-uds-windows" ,rust-uds-windows-1)
+                       ("rust-vsock" ,rust-vsock-0.5)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52)
+                       ("rust-xdg-home" ,rust-xdg-home-1)
+                       ("rust-zbus-macros" ,rust-zbus-macros-4)
+                       ("rust-zbus-names" ,rust-zbus-names-3)
+                       ("rust-zbus-xml" ,rust-zbus-xml-4)
+                       ("rust-zvariant" ,rust-zvariant-4))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-ntest" ,rust-ntest-0.9)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-test-log" ,rust-test-log-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+     (home-page "https://github.com/dbus2/zbus/")
+     (synopsis "API for D-Bus communication")
+     (description "This package provides an API for D-Bus communication.")
+     (license license:expat)))
+
 (define-public rust-zbus-3
   (package
+    (inherit rust-zbus-4)
     (name "rust-zbus")
     (version "3.14.1")
     (source
@@ -94506,7 +94569,6 @@ for locating fonts.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0j5rxgszrmkk5pbpwccrvj3gflwqw8jv8wfx9v84qbl75l53kpii"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
@@ -94556,11 +94618,7 @@ for locating fonts.")
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-test-log" ,rust-test-log-0.2)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
-    (home-page "https://github.com/dbus2/zbus/")
-    (synopsis "API for D-Bus communication")
-    (description "This package provides an API for D-Bus communication.")
-    (license license:expat)))
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
 
 (define-public rust-zbus-1
   (package
