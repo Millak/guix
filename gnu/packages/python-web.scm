@@ -8966,11 +8966,6 @@ regular expressions.")
                                  " and not ")))
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'relax-requirements
-                 (lambda _
-                   (substitute* "setup.py"
-                     ;; "defusedxml>=0.7.1"
-                     (("0.7.1") "0.6.0"))))
                (add-before 'check 'prepare-test-environment
                  (lambda _
                    (setenv "HOME" "/tmp"))))))
@@ -9001,7 +8996,8 @@ regular expressions.")
            python-pytest-xdist
            python-sybil
            python-testfixtures
-           python-uvloop))
+           python-uvloop
+           python-wheel))
     (home-page "https://scrapy.org")
     (synopsis "High-level Web crawling and Web scraping framework")
     (description "Scrapy is a fast high-level web crawling and web
