@@ -2662,8 +2662,39 @@
     (description "Rust bindings of the GSK 4 library.")
     (license license:expat)))
 
+(define-public rust-gsk4-sys-0.8
+  (package
+    (name "rust-gsk4-sys")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gsk4-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p5kf912s8qs38lhzzwnm26v498wkp68mx92z38vnf3ccgr4n0i3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.19)
+                       ("rust-gdk4-sys" ,rust-gdk4-sys-0.8)
+                       ("rust-glib-sys" ,rust-glib-sys-0.19)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.19)
+                       ("rust-graphene-sys" ,rust-graphene-sys-0.19)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango-sys" ,rust-pango-sys-0.19)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list cairo gdk-pixbuf graphene gtk pango))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "FFI bindings of GSK 4")
+    (description "This package provides FFI bindings of GSK 4.")
+    (license license:expat)))
+
 (define-public rust-gsk4-sys-0.7
   (package
+    (inherit rust-gsk4-sys-0.8)
     (name "rust-gsk4-sys")
     (version "0.7.3")
     (source
@@ -2673,7 +2704,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0mbdlm9qi1hql48rr29vsj9vlqwc7gxg67wg1q19z67azwz9xg8j"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; `GskFillRule` undeclared
        #:cargo-inputs (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.18)
@@ -2685,13 +2715,7 @@
                        ("rust-pango-sys" ,rust-pango-sys-0.18)
                        ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs (list pkg-config))
-    (inputs (list cairo gdk-pixbuf graphene gtk pango))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "FFI bindings of GSK 4")
-    (description "This package provides FFI bindings of GSK 4.")
-    (license license:expat)))
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gstreamer-0.18
   (package
