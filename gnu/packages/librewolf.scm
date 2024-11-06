@@ -111,9 +111,20 @@
           (commit version)
           (recursive? #t)))
     (file-name (git-file-name "librewolf-source" version))
+    (patches (search-patches "librewolf-neuter-locale-download.patch"))
     (sha256 (base32 hash))))
 
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
+
+(define firefox-l10n
+  (let ((commit "bdfd4e10606204450a3e88d219ecf2b252349c2b"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/mozilla-l10n/firefox-l10n.git")
+            (commit commit)))
+      (file-name (git-file-name "firefox-l10n" commit))
+      (sha256 (base32 "0i31b1024jck6467j9phcqvac32psl4nkyb0nm4h9zzyj8zw31xp")))))
 
 (define* (make-librewolf-source #:key version firefox-hash librewolf-hash)
   (let* ((ff-src (firefox-source-origin
@@ -168,34 +179,10 @@
 
                ;; Stage locales.
                (begin
-                 (format #t "Staging locales...~%")
-                 (force-output)
-                 (mkdir "l10n-staging")
-                 (with-directory-excursion "l10n-staging"
-                   (for-each
-                    (lambda (locale-dir)
-                      (let ((locale
-                             (string-drop
-                              (basename locale-dir)
-                              (+ 32     ; length of hash
-                                 (string-length "-mozilla-locale-")))))
-                        (format #t "  ~a~%" locale)
-                        (force-output)
-                        (copy-recursively locale-dir locale
-                                          #:log (%make-void-port "w"))
-                        (for-each make-file-writable (find-files locale))
-                        (with-directory-excursion locale
-                          (when (file-exists? ".hgtags")
-                            (delete-file ".hgtags")))))
-                    '#+all-mozilla-locales)))
-
-               ;; Patch build script to use staged locales.
-               (begin
-                 (substitute* '("scripts/generate-locales.sh")
-                   (("wget") "# wget")
-                   (("unzip") "# unzip")
-                   (("mv browser/locales/l10n/\\$1-\\*/")
-                    "mv ../l10n-staging/$1/")))
+                 (substitute* "scripts/librewolf-patches.py"
+                   (("l10n_dir = Path(\"..\", \"l10n\")")
+                    (string-append
+                     "l10n_dir = \"" #+firefox-l10n "\""))))
 
                ;; Run the build script
                (invoke "make" "all")
@@ -212,18 +199,17 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20241010143544")
+(define %librewolf-build-id "20241105185710")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "131.0.2-1")
+    (version "132.0-1")
     (source
-     (origin
-      (inherit (make-librewolf-source
-                #:version version
-                #:firefox-hash "05knnwfxqd3mb6a5y2yh73sn4g648dxnz9kpkmpj9madr55863h4"
-                #:librewolf-hash "1knx485kdjv8d0rn5ai1x1jp0403dvxz9m7lpim1y2d2ilyi26x7"))))
+     (make-librewolf-source
+      #:version version
+      #:firefox-hash "0zjwqn13rbzyxa3f63mvz5xv0158bsvr2llpqrh48davi52b2249"
+      #:librewolf-hash "1kfpcv89kh2521f3c296asjizb1swb15mfkkkrlis9ncm1gp6fw6"))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -325,14 +311,7 @@
                        ;; Lock the preferences so they can't be enabled.
                        (substitute* "lw/librewolf.cfg"
                          (("defaultPref\\(\"browser\\.ml\\.")
-                          "lockPref(\"browser.ml."))
-                       ;; Correct a preference typo
-                       ;; see https://codeberg.org/librewolf/issues/issues/1919#issuecomment-2325954
-                       ;; Remove this in the next update.
-                       (substitute* "lw/librewolf.cfg"
-                                    (("browser\\.ml\\.enabled")
-                                     "browser.ml.enable"))
-                       ))
+                          "lockPref(\"browser.ml."))))
                    (add-after 'patch-source-shebangs 'patch-cargo-checksums
                      (lambda _
                        (use-modules (guix build cargo-utils))
@@ -417,6 +396,7 @@
                                (which "bash"))
                        (setenv "MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE"
                                "system")
+                       (setenv "LANG" "en_US.utf8")
                        ;; This should use the host info probably (does it
                        ;; build on non-x86_64 though?)
                        (setenv "GUIX_PYTHONPATH"
@@ -625,7 +605,7 @@
                          (substitute* desktop-file
                            (("^Exec=@MOZ_APP_NAME@")
                             (string-append "Exec="
-                                           #$output "/bin/librewolf %u"))
+                                           #$output "/bin/librewolf"))
                            (("@MOZ_APP_DISPLAYNAME@")
                             "LibreWolf")
                            (("@MOZ_APP_REMOTINGNAME@")
