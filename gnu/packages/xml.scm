@@ -1278,7 +1278,7 @@ UTF-8 and UTF-16 encoding.")
          (delete 'configure)
          (add-after 'build 'build-shared-library
            (lambda _
-             (invoke "g++" "-Wall" "-O2" "-shared" "-fpic"
+             (invoke ,(cxx-for-target) "-Wall" "-O2" "-shared" "-fpic"
                      "tinyxml.cpp" "tinyxmlerror.cpp"
                      "tinyxmlparser.cpp" "tinystr.cpp"
                      "-o" "libtinyxml.so")))
