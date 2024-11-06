@@ -95,6 +95,7 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
@@ -1338,6 +1339,30 @@ For information about libevdev, see:
      "PyXDG is a collection of implementations of freedesktop.org standards in
 Python.")
     (license license:lgpl2.0)))
+
+(define-public hyprwayland-scanner
+  (package
+    (name "hyprwayland-scanner")
+    (version "0.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/hyprwayland-scanner")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0r7ay4zjkfyr0xd73wz99qhnqjq7nma98gm51wm9lmai4igw90qw"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ;No tests.
+    (inputs (list pugixml))
+    (native-inputs (list gcc-13 pkg-config))
+    (home-page "https://github.com/hyprwm/hyprwayland-scanner")
+    (synopsis "Hyprland implementation of @code{wayland-scanner}")
+    (description
+     "This package provides a Hyprland implementation of @code{wayland-scanner},
+in and for C++.")
+    (license license:bsd-3)))
 
 (define-public wayland
   (package
