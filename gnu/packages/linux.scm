@@ -4062,8 +4062,7 @@ user-space processes.")
     (native-inputs
      (list autoconf automake gettext-minimal libtool))
     (arguments
-     '(#:tests? #t
-       #:configure-flags (list (string-append "MOUNT_FUSE_PATH="
+     '(#:configure-flags (list (string-append "MOUNT_FUSE_PATH="
                                               (assoc-ref %outputs "out")
                                               "/sbin")
                                (string-append "INIT_D_PATH="
