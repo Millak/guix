@@ -94488,8 +94488,39 @@ for locating fonts.")
         ("rust-ntest" ,rust-ntest-0.7)
         ("rust-zbus-polkit" ,rust-zbus-polkit-1))))))
 
+(define-public rust-zbus-macros-4
+  (package
+    (name "rust-zbus-macros")
+    (version "4.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zbus_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0glqn6ddgv4ra734p343a41rrxb0phy1v13dljzhpsc1f10bjz96"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests need a running dbus instance.
+       #:cargo-inputs (("rust-proc-macro-crate" ,rust-proc-macro-crate-3)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-zvariant-utils" ,rust-zvariant-utils-2))
+       #:cargo-development-inputs
+       (("rust-async-io" ,rust-async-io-2)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/dbus2/zbus/")
+    (synopsis "Proc-macros for zbus")
+    (description "This package provides proc-macros for zbus.")
+    (license license:expat)))
+
 (define-public rust-zbus-macros-3
   (package
+    (inherit rust-zbus-macros-4)
     (name "rust-zbus-macros")
     (version "3.14.1")
     (source
@@ -94499,7 +94530,6 @@ for locating fonts.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "17dwc1vvvwxlgn78cpds72hcf7y1hxqkjnpm0zlc0y38ji57kla1"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests need a running dbus instance.
        #:cargo-inputs (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
@@ -94513,11 +94543,7 @@ for locating fonts.")
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/dbus2/zbus/")
-    (synopsis "proc-macros for zbus")
-    (description "This package provides proc-macros for zbus.")
-    (license license:expat)))
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-zbus-macros-1
   (package
