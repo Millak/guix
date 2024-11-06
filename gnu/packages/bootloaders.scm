@@ -926,19 +926,22 @@ CONFIG_TOOLS_LIBCRYPTO=n")
                            "tools/sunxi-spl-image-builder")))))
          (delete 'check)
          (add-after 'install 'check
-           (lambda* (#:key make-flags test-target #:allow-other-keys)
-             (invoke "test/image/test-imagetools.sh")))
+           (lambda* (#:key make-flags test-target tests? #:allow-other-keys)
+             (when tests?
+               (invoke "test/image/test-imagetools.sh"))))
          ;; Only run full test suite on x86_64 systems, as many tests
          ;; assume x86_64.
          ,@(if (string-match "^x86_64-linux"
                              (or (%current-target-system)
                                  (%current-system)))
                '((add-after 'check 'check-x86
-                   (lambda* (#:key make-flags test-target #:allow-other-keys)
-                     (apply invoke "make" "mrproper" make-flags)
-                     (setenv "SDL_VIDEODRIVER" "dummy")
-                     (setenv "PAGER" "cat")
-                     (apply invoke "make" test-target make-flags))))
+                   (lambda* (#:key make-flags test-target tests? #:allow-other-keys)
+                     (when tests?
+                       (begin
+                         (apply invoke "make" "mrproper" make-flags)
+                         (setenv "SDL_VIDEODRIVER" "dummy")
+                         (setenv "PAGER" "cat")
+                         (apply invoke "make" test-target make-flags))))))
                '()))))
     (description (string-append
                   (package-description u-boot)
