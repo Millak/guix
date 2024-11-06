@@ -5017,8 +5017,12 @@ matplotlib plots or supply colors for a web application.")
         (base32
          "07smqnzc9km7sbvxfyx4gdm9njrx58x8grdw6gs4gva81rk3rd10"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-html
+           python-setuptools
+           python-wheel))
     (propagated-inputs (list python-six python-parse))
-    (native-inputs (list python-pytest))
     (home-page "https://github.com/jenisys/parse_type")
     (synopsis "Extended parse module")
     (description "Parse_type extends the python parse module.")
