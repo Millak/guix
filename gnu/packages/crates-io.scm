@@ -2,7 +2,7 @@
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
 ;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2019, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -56784,8 +56784,29 @@ overloading without macros in Rust.")
 128-bit atomics, atomic float, etc.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-portable-atomic-util-0.2
+  (package
+    (name "rust-portable-atomic-util")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "portable-atomic-util" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0v105n6yyvzwvfgsvfm5cqb818avlk3hbpfnahdljan5xjzdb9wh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-build-context" ,rust-build-context-0.1)
+                       ("rust-portable-atomic" ,rust-portable-atomic-1))))
+    (home-page "https://github.com/taiki-e/portable-atomic")
+    (synopsis "Synchronization primitives built with portable-atomic")
+    (description "Synchronization primitives built with portable-atomic.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-portable-atomic-util-0.1
   (package
+    (inherit rust-portable-atomic-util-0.2)
     (name "rust-portable-atomic-util")
     (version "0.1.5")
     (source
@@ -56795,13 +56816,8 @@ overloading without macros in Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "16s4ag42sjkkas49fnlj99kx9zxdfqwk7ii12js533dk4lb439x1"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-portable-atomic" ,rust-portable-atomic-1))))
-    (home-page "https://github.com/taiki-e/portable-atomic")
-    (synopsis "Synchronization primitives built with portable-atomic")
-    (description "Synchronization primitives built with portable-atomic.")
-    (license (list license:asl2.0 license:expat))))
+     `(#:cargo-inputs (("rust-portable-atomic" ,rust-portable-atomic-1))))))
 
 (define-public rust-portaudio-rs-0.3
   (package
