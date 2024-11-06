@@ -311,7 +311,7 @@ or false to signal an error."
                                         gnu-triplet->nix-system)
                                  (%current-system))))
   "Return the name of Glibc's dynamic linker for SYSTEM."
-  ;; See the 'SYSDEP_KNOWN_INTERPRETER_NAMES' cpp macro in libc.
+  ;; See the appropriate 'shlib-versions' file in libc.
   (let ((platform (false-if-platform-not-found
                    (lookup-platform-by-system system))))
     (cond

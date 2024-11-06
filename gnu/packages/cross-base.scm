@@ -738,7 +738,7 @@ returned."
                (delete 'install-utf8-c-locale)
 
                ,@(if (target-hurd? target)
-                     '((add-after 'install 'augment-libc.so
+                     `((add-after 'install 'augment-libc.so
                          (lambda* (#:key outputs #:allow-other-keys)
                            (let ((out (assoc-ref outputs "out")))
                              (substitute* (string-append out "/lib/libc.so")
@@ -748,7 +748,11 @@ returned."
                        (add-after 'install 'create-machine-symlink
                          (lambda* (#:key outputs #:allow-other-keys)
                            (let* ((out (assoc-ref outputs "out"))
-                                  (cpu "i386")
+                                  (cpu ,(match target
+                                          ((? target-x86-32?)
+                                           "i386")
+                                          ((? target-x86-64?)
+                                           "x86_64")))
                                   (machine (string-append
                                             out "/include/mach/machine")))
                              (unless (file-exists? machine)
