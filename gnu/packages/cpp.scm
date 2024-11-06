@@ -113,6 +113,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   ;; Using autoload to avoid a cycle.
@@ -662,6 +663,29 @@ operating on batches.")
     (description "Highway is a performance-portable, length-agnostic C++
 library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
     (license license:asl2.0)))
+
+(define-public hyprutils
+  (package
+    (name "hyprutils")
+    (version "0.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/hyprutils")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01dh24rf62gb6xm32f7mfv6wx0dxprr1q9y73hvv7xanrjyia2zn"))))
+    (build-system cmake-build-system)
+    (native-inputs (list gcc-13 pkg-config))
+    (inputs (list pixman))
+    (home-page "https://github.com/hyprwm/hyprutils")
+    (synopsis "C++ library for utilities used across Hyprland ecosystem")
+    (description
+     "This package provides a C++ library for utilities used across Hyprland
+ecosystem.")
+    (license license:bsd-3)))
 
 (define-public xsimd-benchmark
   (package
