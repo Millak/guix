@@ -115,6 +115,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gl)
@@ -3637,6 +3638,29 @@ and execute @file{.desktop} files of the Application type.")
      "The @command{hsetroot} command composes wallpapers for X.
 This package is the fork of hsetroot by Hyriand.")
     (license license:gpl2+)))
+
+(define-public hyprcursor
+  (package
+    (name "hyprcursor")
+    (version "0.1.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/hyprcursor")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rdn03ln7pqcwp8h4nmi7nc489q8y25dd3v4paq8ykvwzhvs3a1n"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ;TODO: No themes currently packaged.
+    (native-inputs (list gcc-13 pkg-config))
+    (inputs (list cairo hyprlang (librsvg-for-system) libzip tomlplusplus))
+    (home-page "https://standards.hyprland.org/hyprcursor/")
+    (synopsis "Cursor theme format")
+    (description
+     "This package provides Hyprland cursor format, library and utilities.")
+    (license license:bsd-3)))
 
 (define-public jumpapp
   (package
