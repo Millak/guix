@@ -24182,6 +24182,23 @@ Standard.")
      "Streaming transcoding for encoding_rs.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-endi-1
+  (package
+    (name "rust-endi")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "endi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gxp388g2zzbncp3rdn60wxkr49xbhhx94nl9p4a6c41w4ma7n53"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/zeenix/endi")
+    (synopsis "Simple endian-handling library")
+    (description "This package provides a simple endian-handling library.")
+    (license license:expat)))
+
 (define-public rust-endian-type-0.1
   (package
     (name "rust-endian-type")
