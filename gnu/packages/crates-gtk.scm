@@ -2560,22 +2560,21 @@
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-graphene-rs-0.18
+(define-public rust-graphene-rs-0.19
   (package
     (name "rust-graphene-rs")
-    (version "0.18.1")
+    (version "0.19.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "graphene-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00f4q1ra4haap5i7lazwhkdgnb49fs8adk2nm6ki6mjhl76jh8iv"))))
+        (base32 "1krblj6kbnixgkmz2b3494jmlm2xlv3qz5qm585frn943l1qdyzm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
-       #:cargo-inputs (("rust-glib" ,rust-glib-0.18)
-                       ("rust-graphene-sys" ,rust-graphene-sys-0.18)
+     `(#:cargo-inputs (("rust-glib" ,rust-glib-0.19)
+                       ("rust-graphene-sys" ,rust-graphene-sys-0.19)
                        ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
@@ -2585,6 +2584,26 @@
     (synopsis "Rust bindings for the Graphene library")
     (description "Rust bindings for the Graphene library.")
     (license license:expat)))
+
+(define-public rust-graphene-rs-0.18
+  (package
+    (inherit rust-graphene-rs-0.19)
+    (name "rust-graphene-rs")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "graphene-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00f4q1ra4haap5i7lazwhkdgnb49fs8adk2nm6ki6mjhl76jh8iv"))))
+    (arguments
+     `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
+       #:cargo-inputs (("rust-glib" ,rust-glib-0.18)
+                       ("rust-graphene-sys" ,rust-graphene-sys-0.18)
+                       ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-graphene-sys-0.19
   (package
