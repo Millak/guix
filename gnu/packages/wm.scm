@@ -3767,6 +3767,66 @@ Type=Application~%"
 used for multimedia keys.")
     (license license:gpl3+)))
 
+(define-public grimblast
+  (let ((commit "9d67858b437d4a1299be496d371b66fc0d3e01f6")
+        (revision "1"))
+    (package
+      (name "grimblast")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/hyprwm/contrib")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1v0v5j7ingx80b5zpyz8ilfhz0kh9dcssnx6iwwl45zzgp915cpv"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f                ;No tests.
+             #:make-flags
+             #~(list (string-append "PREFIX=" #$output))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)
+                 (add-after 'unpack 'chdir
+                   (lambda _
+                     (chdir "grimblast")))
+                 (add-after 'chdir 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "grimblast"
+                       (((string-append "\\<(" (string-join
+                                                '("date"
+                                                  "grim"
+                                                  "slurp"
+                                                  "hyprctl"
+                                                  "hyprpicker"
+                                                  "wl-copy"
+                                                  "jq"
+                                                  "notify-send")
+                                                "|")
+                                        ")\\>")
+                         cmd)
+                        (search-input-file
+                         inputs (string-append "bin/" cmd)))))))))
+      (native-inputs (list scdoc))
+      (inputs
+       (list coreutils-minimal
+             grim
+             jq
+             libnotify
+             slurp
+             hyprland
+             hyprpicker
+             wl-clipboard))
+      (home-page "https://github.com/hyprwm/contrib")
+      (synopsis "Screenshot utility for Hyprland")
+      (description
+       "This package provides a Hyprland version of @code{grimshot} for
+screenshoting.")
+      (license license:expat))))
+
 (define-public grimshot
   (package
     (name "grimshot")
