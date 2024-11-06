@@ -888,6 +888,38 @@ namespace which can be used to register helper functions without requiring
 someone to import them in their actual tests to use them.")
     (license license:asl2.0)))
 
+(define-public python-pytest-html
+  (package
+    (name "python-pytest-html")
+    (version "4.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_html" version))
+       (sha256
+        (base32 "01vgd2bbk3n9wcqzx9dv72qgkx684l8cp92n9c3ll3w0wn51x83h"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; It requires running browser for selenium.
+      #~(list "--ignore=testing/test_integration.py"
+              "--ignore=testing/test_e2e.py")))
+    (native-inputs
+     (list python-hatchling
+           python-hatch-vcs
+           python-assertpy
+           python-beautifulsoup4
+           python-pytest))
+    (propagated-inputs
+     (list python-jinja2
+           python-pytest-metadata))
+    (home-page "https://github.com/pytest-dev/pytest-html")
+    (synopsis "Pytest plugin for generating HTML reports")
+    (description
+     "This packages provides a pytest plugin for generating HTML reports.")
+    (license license:mpl2.0)))
+
 (define-public python-pytest-metadata
   (package
     (name "python-pytest-metadata")
