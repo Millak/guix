@@ -27470,8 +27470,31 @@ custom fixed-size hash types.")
 enumeration-based bit flags in rust.")
     (license license:asl2.0)))
 
+(define-public rust-flaky-test-0.2
+  (package
+    (name "rust-flaky-test")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "flaky_test" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1nn8hddhl2vaxgfn0j87yrngr9bzlxlncgdd9vy53xyp4cgslv04"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-flaky-test-impl" ,rust-flaky-test-impl-0.2)
+        ("rust-future-utils" ,rust-futures-util-0.3))))
+    (home-page "https://github.com/denoland/flaky_test")
+    (synopsis "Atttribute macro for running a flaky test multiple times")
+    (description "This package provides an atttribute macro for running a flaky
+test multiple times.")
+    (license license:expat)))
+
 (define-public rust-flaky-test-0.1
   (package
+    (inherit rust-flaky-test-0.2)
     (name "rust-flaky-test")
     (version "0.1.0")
     (source (origin
@@ -27481,16 +27504,39 @@ enumeration-based bit flags in rust.")
               (sha256
                (base32
                 "14yvm0knhcx0xfwlykir2v198x5bpwf333yrdl2mmkv8n5gdx727"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-flaky-test-impl-0.2
+  (package
+    (name "rust-flaky-test-impl")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "flaky_test_impl" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1glshs6wa5n229d4abqzijssy4nslyaiw3xlwpd2ymghq84mkqw5"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Tests fail with
+     ;; 3 | use flaky_test::flaky_test;
+     ;;   |     ^^^^^^^^^^ use of undeclared crate or module `flaky_test`
+     `(#:tests? #f
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-flaky-test" ,rust-flaky-test-0.2))))
     (home-page "https://github.com/denoland/flaky_test")
-    (synopsis "Atttribute macro for running a flaky test multiple times")
-    (description "This package provides an atttribute macro for running a flaky
-test multiple times.")
+    (synopsis "Implementation details of the @code{flaky_test} macro")
+    (description "This package provides mplementation details of the
+@code{flaky_test} macro.")
     (license license:expat)))
 
 (define-public rust-flame-0.2
