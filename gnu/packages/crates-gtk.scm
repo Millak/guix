@@ -172,23 +172,23 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
-(define-public rust-cairo-rs-0.19
+(define-public rust-cairo-rs-0.20
   (package
     (name "rust-cairo-rs")
-    (version "0.19.4")
+    (version "0.20.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cairo-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0qp5rixgipdj9d8yd5458hzfxam1rgpzcxi90vq6q0v91r6jmb5j"))))
+        (base32 "0s9yafifi3pwf7jck0bhgwr4rlg483sqhlr32fb8q44lghafm878"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
-                       ("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.19)
-                       ("rust-freetype-rs" ,rust-freetype-rs-0.35)
-                       ("rust-glib" ,rust-glib-0.19)
+                       ("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.20)
+                       ("rust-freetype-rs" ,rust-freetype-rs-0.37)
+                       ("rust-glib" ,rust-glib-0.20)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-float-eq" ,rust-float-eq-1)
@@ -199,6 +199,28 @@
     (synopsis "Rust bindings for the Cairo library")
     (description "This package provides Rust bindings for the Cairo library.")
     (license license:expat)))
+
+(define-public rust-cairo-rs-0.19
+  (package
+    (inherit rust-cairo-rs-0.20)
+    (name "rust-cairo-rs")
+    (version "0.19.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cairo-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qp5rixgipdj9d8yd5458hzfxam1rgpzcxi90vq6q0v91r6jmb5j"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.19)
+                       ("rust-freetype-rs" ,rust-freetype-rs-0.35)
+                       ("rust-glib" ,rust-glib-0.19)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-float-eq" ,rust-float-eq-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-cairo-rs-0.18
   (package
