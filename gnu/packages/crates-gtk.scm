@@ -1143,8 +1143,40 @@
     (description "This package provides rust bindings of the GDK 4 library.")
     (license license:expat)))
 
+(define-public rust-gdk4-sys-0.8
+  (package
+    (name "rust-gdk4-sys")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk4-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pb6vklx9ik7jx9cmrw2vywlx9ssqhll8q77ky8p8w56x2s8yhf9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.19)
+                       ("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.19)
+                       ("rust-gio-sys" ,rust-gio-sys-0.19)
+                       ("rust-glib-sys" ,rust-glib-sys-0.19)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.19)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango-sys" ,rust-pango-sys-0.19)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list cairo gdk-pixbuf glib gtk pango))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "FFI bindings of GDK 4")
+    (description "This package provides FFI bindings of GDK 4.")
+    (license license:expat)))
+
 (define-public rust-gdk4-sys-0.7
   (package
+    (inherit rust-gdk4-sys-0.8)
     (name "rust-gdk4-sys")
     (version "0.7.2")
     (source
@@ -1154,7 +1186,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1w7yvir565sjrrw828lss07749hfpfsr19jdjzwivkx36brl7ayv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ; ‘GDK_MEMORY_A16’ undeclared
        #:cargo-inputs (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.18)
@@ -1167,13 +1198,7 @@
                        ("rust-pkg-config" ,rust-pkg-config-0.3)
                        ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs (list pkg-config))
-    (inputs (list cairo gdk-pixbuf glib gtk pango))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "FFI bindings of GDK 4")
-    (description "This package provides FFI bindings of GDK 4.")
-    (license license:expat)))
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gio-0.20
   (package
