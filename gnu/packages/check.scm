@@ -3369,7 +3369,7 @@ backported from Python 2.7 for Python 2.4+.")
     (name "behave")
     ;; The 1.2.6 release from 2018 has several problems with newer Python
     ;; versions, so we package a recent snapshot.
-    (version "1.2.7.dev2")
+    (version "1.2.7.dev5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3378,11 +3378,18 @@ backported from Python 2.7 for Python 2.4+.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sv94wagi214h0l91zn8m04f78x5wn83vqxib81hnl1qahvx9hq7"))))
+                "14162pclfvy4wy2az4v9gkgb3v0b338zxrb2ikqcqifckrmk8nhv"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-mock python-nose python-pathpy python-pyhamcrest
-           python-pytest))
+     (list python-mock
+           python-nose
+           python-assertpy
+           python-pathpy
+           python-pyhamcrest
+           python-pytest
+           python-pytest-html
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-colorama
            python-cucumber-tag-expressions
