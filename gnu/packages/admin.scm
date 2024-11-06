@@ -9,7 +9,7 @@
 ;;; Copyright © 2016, 2017, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016, 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Peter Feigl <peter.feigl@nexoid.at>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -2622,7 +2622,8 @@ system is under heavy load.")
      ;; XXX The test suite seems to cause instability on the VisionFive 2
      ;; build machines, maybe it's stressing them as intended but this is
      ;; unhelpful.
-     (list #:tests? (not (target-riscv64?))
+     (list #:tests? (and (not (%current-target-system))
+                         (not (target-riscv64?)))
            #:make-flags
            #~(list (string-append "CC=" #$(cc-for-target))
                    (string-append "BINDIR=" #$output "/bin")
