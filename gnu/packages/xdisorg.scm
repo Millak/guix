@@ -105,6 +105,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
@@ -138,6 +139,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
@@ -231,6 +233,47 @@ A limited number of keyboard layouts are available, as is dictionary completion.
 You can also use xvkbd to send a series of predetermined keystrokes from the
 command line, without displaying a keyboard at all.")
     (license license:gpl2+)))
+
+(define-public aquamarine
+  (package
+    (name "aquamarine")
+    (version "0.4.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/aquamarine")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0x1zz1ywchs0awkjkvdgskgqnp6pz5lqwmgr8g0zc0i7inhyg1p3"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:cmake cmake-3.30
+           ;; TODO: Figure out what's expected in the test environment.
+           #:tests? #f))
+    (native-inputs
+     (list gcc-13 hyprwayland-scanner pkg-config))
+    (inputs
+     (list eudev
+           hwdata
+           hyprutils
+           libdisplay-info
+           libglvnd
+           libinput-minimal
+           libseat
+           mesa
+           pixman
+           wayland
+           wayland-protocols))
+    (home-page "https://github.com/hyprwm/aquamarine")
+    (synopsis "Linux rendering backend library")
+    (description
+     "Aquamarine is a C++-only Linux rendering backend library.  It provides
+basic abstractions for an application to render on a Wayland session (in a
+window) or a native DRM session.  It is agnostic of the rendering API (Vulkan
+/ OpenGL).")
+    (license license:bsd-3)))
 
 (define-public arandr
   (package
