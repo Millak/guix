@@ -1458,12 +1458,13 @@ elements to their parents
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
+           (lambda* (#:key tests? #:allow-other-keys)
              (substitute* "test/run"
                ;; Run tests with `python' only.
                (("^(PYTHON_VERSIONS = ).*" all m)
                 (string-append m "['']")))
-             (invoke "test/run"))))))
+             (when tests?
+               (invoke "test/run")))))))
     (home-page "https://github.com/dilshod/xlsx2csv")
     (synopsis "XLSX to CSV converter")
     (description
