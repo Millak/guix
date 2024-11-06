@@ -807,24 +807,24 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
-(define-public rust-gdk-pixbuf-sys-0.19
+(define-public rust-gdk-pixbuf-sys-0.20
   (package
     (name "rust-gdk-pixbuf-sys")
-    (version "0.19.8")
+    (version "0.20.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gdk-pixbuf-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0y93g24mdgskvyhva46xv3qyb1cvj5xpi0yqnh7cb31wz2j0byjf"))))
+        (base32 "0gdz43p4zsck7w6isin0zi3ydacg0c3l6yyqzgrza7drb6q46wv8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-gio-sys" ,rust-gio-sys-0.19)
-                       ("rust-glib-sys" ,rust-glib-sys-0.19)
-                       ("rust-gobject-sys" ,rust-gobject-sys-0.19)
+     `(#:cargo-inputs (("rust-gio-sys" ,rust-gio-sys-0.20)
+                       ("rust-glib-sys" ,rust-glib-sys-0.20)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.20)
                        ("rust-libc" ,rust-libc-0.2)
-                       ("rust-system-deps" ,rust-system-deps-6))
+                       ("rust-system-deps" ,rust-system-deps-7))
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
                                    ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs (list pkg-config))
@@ -834,6 +834,27 @@
     (description
      "This package provides FFI bindings to @code{libgdk_pixbuf-2.0}.")
     (license license:expat)))
+
+(define-public rust-gdk-pixbuf-sys-0.19
+  (package
+    (inherit rust-gdk-pixbuf-sys-0.20)
+    (name "rust-gdk-pixbuf-sys")
+    (version "0.19.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk-pixbuf-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0y93g24mdgskvyhva46xv3qyb1cvj5xpi0yqnh7cb31wz2j0byjf"))))
+    (arguments
+     `(#:cargo-inputs (("rust-gio-sys" ,rust-gio-sys-0.19)
+                       ("rust-glib-sys" ,rust-glib-sys-0.19)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.19)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gdk-pixbuf-sys-0.18
   (package
