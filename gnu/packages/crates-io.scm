@@ -94744,6 +94744,31 @@ for locating fonts.")
     (description "@code{PolicyKit} binding.")
     (license license:expat)))
 
+(define-public rust-zbus-xml-4
+  (package
+    (name "rust-zbus-xml")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zbus_xml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cx2yg4p0vkrgn5ccz6ds2wqzcy9wrwyjv5xnjmzcm5ra92kfgxb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-quick-xml" ,rust-quick-xml-0.30)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-static-assertions" ,rust-static-assertions-1)
+                       ("rust-zbus-names" ,rust-zbus-names-3)
+                       ("rust-zvariant" ,rust-zvariant-4))
+       #:cargo-development-inputs (("rust-doc-comment" ,rust-doc-comment-0.3))))
+    (home-page "https://github.com/dbus2/zbus/")
+    (synopsis "API to handle D-Bus introspection XML")
+    (description
+     "This package provides API to handle D-Bus introspection XML.")
+    (license license:expat)))
+
 (define-public rust-zerocopy-0.8
   (package
     (name "rust-zerocopy")
