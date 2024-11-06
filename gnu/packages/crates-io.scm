@@ -86020,8 +86020,39 @@ stream-based WebSocket implementation.")
         ("rust-tokio" ,rust-tokio-0.2)
         ("rust-tokio-test" ,rust-tokio-test-0.2))))))
 
+(define-public rust-tokio-vsock-0.4
+  (package
+    (name "rust-tokio-vsock")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-vsock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p88jaypkjicj5rfkj7hmx1jcs2v7cbgyzil084zk4dwn4amr8aj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=test_vsock_server")
+       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tonic" ,rust-tonic-0.8)
+                       ("rust-vsock" ,rust-vsock-0.3))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8)
+                                   ("rust-sha2" ,rust-sha2-0.9)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rust-vsock/tokio-vsock")
+    (synopsis "Asynchronous Virtio socket support for Rust")
+    (description
+     "This package provides asynchronous Virtio socket support for Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-tokio-vsock-0.3
   (package
+    (inherit rust-tokio-vsock-0.4)
     (name "rust-tokio-vsock")
     (version "0.3.4")
     (source (origin
@@ -86031,7 +86062,6 @@ stream-based WebSocket implementation.")
               (sha256
                (base32
                 "1g1fhsibfdgsqayjr9gxkd5npgxh8rj36pcb9pi1c7ci51l5acwv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--" "--skip=test_vsock_server")
@@ -86045,12 +86075,7 @@ stream-based WebSocket implementation.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.8)
         ("rust-sha2" ,rust-sha2-0.9)
-        ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/rust-vsock/tokio-vsock")
-    (synopsis "Asynchronous Virtio socket support for Rust")
-    (description
-     "This package provides asynchronous Virtio socket support for Rust.")
-    (license license:asl2.0)))
+        ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-toml-0.8
   (package
