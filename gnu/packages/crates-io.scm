@@ -80271,8 +80271,43 @@ UNIX sockets, UDP and TCP exporters.")
         ("rust-log" ,rust-log-0.3)
         ("rust-unix-socket" ,rust-unix-socket-0.5))))))
 
+(define-public rust-system-deps-7
+  (package
+    (name "rust-system-deps")
+    (version "7.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "system-deps" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01d0fllzpkfybzadyaq1vlx70imzj56dxs4rk9w2f4ikkypkmlk6"))
+       (snippet
+        #~(begin (delete-file "src/tests/lib/libteststatic.a")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ;source is missing some test files
+       #:cargo-inputs
+       (("rust-cfg-expr" ,rust-cfg-expr-0.17)
+        ("rust-heck" ,rust-heck-0.5)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-toml" ,rust-toml-0.8)
+        ("rust-version-compare" ,rust-version-compare-0.2))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-itertools" ,rust-itertools-0.13)
+        ("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page "https://github.com/gdesmott/system-deps")
+    (synopsis "Define system dependencies in @file{Cargo.toml}")
+    (description "This crate lets you write system dependencies in
+@file{Cargo.toml} metadata, rather than programmatically in @file{build.rs}.
+This makes those dependencies declarative, so other tools can read them as
+well.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-system-deps-6
   (package
+    (inherit rust-system-deps-7)
     (name "rust-system-deps")
     (version "6.2.2")
     (source
@@ -80284,7 +80319,6 @@ UNIX sockets, UDP and TCP exporters.")
         (base32 "0j93ryw031n3h8b0nfpj5xwh3ify636xmv8kxianvlyyipmkbrd3"))
        (snippet
         #~(begin (delete-file "src/tests/lib/libteststatic.a")))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;source is missing some test files
        #:cargo-inputs
@@ -80296,14 +80330,7 @@ UNIX sockets, UDP and TCP exporters.")
        #:cargo-development-inputs
        (("rust-assert-matches" ,rust-assert-matches-1)
         ("rust-itertools" ,rust-itertools-0.12)
-        ("rust-lazy-static" ,rust-lazy-static-1))))
-    (home-page "https://github.com/gdesmott/system-deps")
-    (synopsis "Define system dependencies in @file{Cargo.toml}")
-    (description "This crate lets you write system dependencies in
-@file{Cargo.toml} metadata, rather than programmatically in @file{build.rs}.
-This makes those dependencies declarative, so other tools can read them as
-well.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-lazy-static" ,rust-lazy-static-1))))))
 
 (define-public rust-system-deps-3
   (package
