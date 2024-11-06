@@ -1479,16 +1479,18 @@ files.  It is designed to be fast and to handle large input files.")
 (define-public python-defusedxml
   (package
     (name "python-defusedxml")
-    (version "0.6.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "defusedxml" version))
        (sha256
-        (base32
-         "1xbp8fivl3wlbyg2jrvs4lalaqv1xp9a9f29p75wdx2s2d6h717n"))))
-    (build-system python-build-system)
-    (home-page "https://bitbucket.org/tiran/defusedxml")
+        (base32 "0s9ym98jrd819v4arv9gmcr6mgljhxd9q866sxi5p4c5n4nh7cqv"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/tiran/defusedxml")
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (synopsis "XML bomb protection for Python stdlib modules")
     (description
      "Defusedxml provides XML bomb protection for Python stdlib modules.")
