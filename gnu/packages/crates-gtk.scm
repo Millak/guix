@@ -1829,8 +1829,37 @@
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-glib-macros-0.20
+  (package
+    (name "rust-glib-macros")
+    (version "0.20.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glib-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mqwhk5qnd9vbvsb335n1j6m5pbqnfycm7b3jxhhlwnm1kvqigx6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.5)
+                       ("rust-proc-macro-crate" ,rust-proc-macro-crate-3)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-glib" ,rust-glib-0.20)
+                                   ("rust-trybuild2" ,rust-trybuild2-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the GLib library, proc macros crate")
+    (description
+     "This package provides Rust bindings for the GLib library, proc macros crate.")
+    (license license:expat)))
+
 (define-public rust-glib-macros-0.19
   (package
+    (inherit rust-glib-macros-0.20)
     (name "rust-glib-macros")
     (version "0.19.9")
     (source
@@ -1840,7 +1869,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mzsh8jkg8vldvgvr9gsaidvn2myn5cbdn8a6m8rgbhlg8kv0aa4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-heck" ,rust-heck-0.5)
                        ("rust-proc-macro-crate" ,rust-proc-macro-crate-3)
@@ -1848,14 +1876,7 @@
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs (("rust-glib" ,rust-glib-0.19)
-                                   ("rust-trybuild2" ,rust-trybuild2-1))))
-    (native-inputs (list pkg-config))
-    (inputs (list glib))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the GLib library, proc macros crate")
-    (description
-     "This package provides Rust bindings for the GLib library, proc macros crate.")
-    (license license:expat)))
+                                   ("rust-trybuild2" ,rust-trybuild2-1))))))
 
 (define-public rust-glib-macros-0.18
   (package
