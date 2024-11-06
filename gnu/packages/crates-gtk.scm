@@ -1112,8 +1112,39 @@
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gdk4-0.8
+  (package
+    (name "rust-gdk4")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk4" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01qak43mrlszsy9cfsmqk1ql4228m2rylbg514g3fsidsjfmq9nv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cairo-rs" ,rust-cairo-rs-0.19)
+                       ("rust-gdk-pixbuf" ,rust-gdk-pixbuf-0.19)
+                       ("rust-gdk4-sys" ,rust-gdk4-sys-0.8)
+                       ("rust-gio" ,rust-gio-0.19)
+                       ("rust-gl" ,rust-gl-0.14)
+                       ("rust-glib" ,rust-glib-0.19)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango" ,rust-pango-0.19))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list cairo gdk-pixbuf gtk))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings of the GDK 4 library")
+    (description "This package provides rust bindings of the GDK 4 library.")
+    (license license:expat)))
+
 (define-public rust-gdk4-0.7
   (package
+    (inherit rust-gdk4-0.8)
     (name "rust-gdk4")
     (version "0.7.3")
     (source
@@ -1123,7 +1154,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1xiacc63p73apr033gjrb9dsk0y4yxnsljwfxbwfry41snd03nvy"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
        #:cargo-inputs (("rust-cairo-rs" ,rust-cairo-rs-0.18)
@@ -1135,13 +1165,7 @@
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-pango" ,rust-pango-0.18))
        #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
-    (native-inputs (list pkg-config))
-    (inputs (list cairo gdk-pixbuf gtk))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings of the GDK 4 library")
-    (description "This package provides rust bindings of the GDK 4 library.")
-    (license license:expat)))
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-gdk4-sys-0.8
   (package
