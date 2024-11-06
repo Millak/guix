@@ -3235,8 +3235,45 @@
 library.")
     (license license:expat)))
 
+(define-public rust-gtk4-0.8
+  (package
+    (name "rust-gtk4")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gtk4" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1avinslgnsz3wywf4dfaza8w9c29krd10hxmi8si3bq8kcqi2kmh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Failed to initialize GTK
+       #:cargo-inputs (("rust-cairo-rs" ,rust-cairo-rs-0.19)
+                       ("rust-field-offset" ,rust-field-offset-0.3)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-gdk-pixbuf" ,rust-gdk-pixbuf-0.19)
+                       ("rust-gdk4" ,rust-gdk4-0.8)
+                       ("rust-gio" ,rust-gio-0.19)
+                       ("rust-glib" ,rust-glib-0.19)
+                       ("rust-graphene-rs" ,rust-graphene-rs-0.19)
+                       ("rust-gsk4" ,rust-gsk4-0.8)
+                       ("rust-gtk4-macros" ,rust-gtk4-macros-0.8)
+                       ("rust-gtk4-sys" ,rust-gtk4-sys-0.8)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango" ,rust-pango-0.19))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list cairo glib gtk))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings of the GTK 4 library")
+    (description "Rust bindings of the GTK 4 library.")
+    (license license:expat)))
+
 (define-public rust-gtk4-0.7
   (package
+    (inherit rust-gtk4-0.8)
     (name "rust-gtk4")
     (version "0.7.3")
     (source
@@ -3246,7 +3283,6 @@ library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hh8nzglmz94v1m1h6vy8z12m6fr7ia467ry0md5fa4p7sm53sss"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
        #:cargo-inputs (("rust-cairo-rs" ,rust-cairo-rs-0.18)
@@ -3263,16 +3299,44 @@ library.")
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-pango" ,rust-pango-0.18))
        #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
+
+(define-public rust-gtk4-macros-0.8
+  (package
+    (name "rust-gtk4-macros")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gtk4-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0214a8y68kknxcnihsfxwsqvll7ss2rbiplr51cyk34dz1z5lrgc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Failed to initialize GTK
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-proc-macro-crate" ,rust-proc-macro-crate-3)
+                       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quick-xml" ,rust-quick-xml-0.31)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-gtk4" ,rust-gtk4-0.8)
+                       ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs (("rust-futures-channel" ,rust-futures-channel-0.3)
+                                   ("rust-futures-util" ,rust-futures-util-0.3)
+                                   ("rust-gtk4" ,rust-gtk4-0.7)
+                                   ("rust-trybuild2" ,rust-trybuild2-1))))
     (native-inputs (list pkg-config))
-    (inputs (list cairo glib gtk))
+    (inputs (list gdk-pixbuf gtk))
     (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings of the GTK 4 library")
-    (description "Rust bindings of the GTK 4 library.")
+    (synopsis "Macros helpers for GTK 4 bindings")
+    (description "Macros helpers for GTK 4 bindings.")
     (license license:expat)))
 
 (define-public rust-gtk4-macros-0.7
   (package
+    (inherit rust-gtk4-macros-0.8)
     (name "rust-gtk4-macros")
     (version "0.7.2")
     (source
@@ -3282,7 +3346,6 @@ library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0bw3cchiycf7dw1bw4p8946gv38azxy05a5w0ndgcmxnz6fc8znm"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Failed to initialize GTK
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
@@ -3296,13 +3359,7 @@ library.")
        #:cargo-development-inputs (("rust-futures-channel" ,rust-futures-channel-0.3)
                                    ("rust-futures-util" ,rust-futures-util-0.3)
                                    ("rust-gtk4" ,rust-gtk4-0.7)
-                                   ("rust-trybuild2" ,rust-trybuild2-1))))
-    (native-inputs (list pkg-config))
-    (inputs (list gdk-pixbuf gtk))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Macros helpers for GTK 4 bindings")
-    (description "Macros helpers for GTK 4 bindings.")
-    (license license:expat)))
+                                   ("rust-trybuild2" ,rust-trybuild2-1))))))
 
 (define-public rust-gtk4-sys-0.8
   (package
