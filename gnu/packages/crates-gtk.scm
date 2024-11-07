@@ -3116,6 +3116,38 @@
            #:cargo-development-inputs `(("rust-shell-words" ,rust-shell-words-1)
                                         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gstreamer-video-sys-0.21
+  (package
+    (name "rust-gstreamer-video-sys")
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-video-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vhn7fiibwc2q5h8cjlg44imh8i0xss6nns83r859c76k26k20h3"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Some symbols are missing, i.e. ?GST_VIDEO_FORMAT_A420_12BE?,
+     ;; ?GST_VIDEO_FORMAT_A420_12LE?, ?GST_VIDEO_FORMAT_A420_16BE?
+     ;; and more.
+     `(#:tests? #f
+       #:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+                       ("rust-gstreamer-base-sys" ,rust-gstreamer-base-sys-0.21)
+                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.21)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "FFI bindings to libgstvideo-1.0")
+    (description "This package provides FFI bindings to libgstvideo-1.0.")
+    (license license:expat)))
+
 (define-public rust-gtk-0.14
   (package
     (name "rust-gtk")
