@@ -74,6 +74,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
@@ -100991,6 +100992,34 @@ along with the backing data it borrows from.")
     (synopsis "Human-oriented base-32 encoding")
     (description "This package provides human-oriented base-32 encoding.")
     (license license:expat)))
+
+(define-public rust-zbar-rust-0.0.23
+  (package
+    (name "rust-zbar-rust")
+    (version "0.0.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zbar-rust" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m6c9393bvw2sngp36m0db1gzqxyqa9ms5biibz659md68di7k59"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-enum-ordinalize" ,rust-enum-ordinalize-4)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))
+       #:cargo-development-inputs
+       (("rust-image" ,rust-image-0.24)
+        ("rust-qrcode-generator" ,rust-qrcode-generator-4))))
+    (native-inputs (list pkg-config))
+    (inputs (list zbar))
+    (home-page "https://magiclen.org/zbar-rust")
+    (synopsis "High-level and low-level ZBar bindings")
+    (description
+     "This package provides High-level and low-level ZBar bindings for the Rust
+language.")
+    (license license:lgpl2.1)))
 
 (define-public rust-zbase32-0.1
   (package
