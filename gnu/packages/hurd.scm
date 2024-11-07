@@ -294,7 +294,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
 
 (define dde-sources
   ;; This is the current tip of the dde branch
-  (let ((commit "066797b576ebf8364ad157f50bef2a655597deeb"))
+  (let ((commit "b6c8526c703f3ba76294d9002f195c63897ec661"))
     (origin
       (method git-fetch)
       (uri (git-reference
@@ -302,7 +302,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
             (commit commit)))
       (sha256
        (base32
-        "19f2awlfnar5gyhi0w5zawla5brzck2s88iv0f20022pd1l5v9hl"))
+        "0k1ilj8ghli8x43xaksbc4y419pqh0w16k374914c07svq419bbr"))
       (file-name (git-file-name "dde" (string-take commit 7))))))
 
 (define %import-from-dde
@@ -567,8 +567,8 @@ implementing them.")
     (license gpl2+)))
 
 (define-public netdde
-  (let ((commit "e67c284ac113d939b10b4578334f27dab29d5b08")
-        (revision "2"))
+  (let ((commit "c0ef248dc7c5ccc1273e2a796f3ece30c5b645df")
+        (revision "3"))
     (package
       (name "netdde")
       ;; The version prefix corresponds to the version of Linux from which the
@@ -582,7 +582,7 @@ implementing them.")
                 (patches (list (search-patch "netdde-build-fix.patch")))
                 (sha256
                  (base32
-                  "0vnkls7sr7srzib5mnw6gybzl5qa8c5a4zf3h08w6gdr7zqbndh0"))
+                  "070fpmd4nvn3mp8dj9w4if63iwz7j2m0h6ywq888znw70wlrc6sh"))
                 (file-name (git-file-name name commit))))
       (build-system gnu-build-system)
       (arguments
