@@ -45685,6 +45685,32 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-manifest-dir-macros-0.1
+  (package
+    (name "rust-manifest-dir-macros")
+    (version "0.1.18")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "manifest-dir-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14zm557gcm1ldr19ry53ngvni8vqaicm01xa5vg8pgyd3kg40vcw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-mime-guess" ,rust-mime-guess-2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://magiclen.org/manifest-dir-macros")
+    (synopsis
+     "Check or operate paths relative to CARGO_MANIFEST_DIR at compile time")
+    (description
+     "This crate provides function-like macros to check or operate paths
+relative to CARGO_MANIFEST_DIR at compile time.")
+    (license license:expat)))
+
 (define-public rust-maplit-1
   (package
     (name "rust-maplit")
