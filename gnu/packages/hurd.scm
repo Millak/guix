@@ -676,8 +676,8 @@ in userland processes thanks to the DDE layer.")
       (license gpl2))))
 
 (define-public rumpkernel
-  (let ((commit "81043d42fabda9baed7ac9ca36e3f3f5ed11ba81")
-        (revision "3"))
+  (let ((commit "f1ffd6405f225336e595a0f99f01095ed7438337")
+        (revision "0"))
     (package
       (name "rumpkernel")
       (version (git-version "0-20211031" revision commit))
@@ -691,7 +691,7 @@ in userland processes thanks to the DDE layer.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0fv0k52qqcg3nq9012hibgsamvsd7mnvn2ikdasmzjhsp8qh5q3r"))
+                  "1ygn3ysji06ik3k44sf906fjpdmabznkspw70llldbk2zkrcdw7i"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
@@ -811,7 +811,8 @@ in userland processes thanks to the DDE layer.")
                            " -Wno-error=stack-protector"
                            " -Wno-error=array-parameter"
                            " -Wno-error=array-bounds"
-                           " -Wno-error=stringop-overflow")
+                           " -Wno-error=stringop-overflow"
+                           " -Wno-error=sign-compare")
                      "-V" "LIBCRTBEGIN="
                      "-V" "LIBCRTEND="
                      "-V" "LIBCRT0="
