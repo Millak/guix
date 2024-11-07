@@ -36,7 +36,7 @@
 ;;; Copyright © 2021 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023, 2024 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
@@ -1169,16 +1169,17 @@ themselves.")
             "12glp4w1kgvmqn89lk19cgr6jccd3awxra4dxisp7pagi06rsk11"))))
     (build-system gnu-build-system)
     (arguments
-     '(;; Make sure libpciaccess can read compressed 'pci.ids' files as
-       ;; provided by pciutils.
-       #:configure-flags
-       (list "--with-zlib"
+     (list
+      ;; Make sure libpciaccess can read compressed 'pci.ids' files as
+      ;; provided by pciutils.
+      #:configure-flags
+      #~(list "--with-zlib"
              (string-append "--with-pciids-path="
                             (assoc-ref %build-inputs "pciutils")
                             "/share/hwdata"))
 
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (add-after 'install 'add-L-zlib
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Provide '-LZLIB/lib' next to '-lz' in the .la file.
@@ -1187,7 +1188,15 @@ themselves.")
                (substitute* (string-append out "/lib/libpciaccess.la")
                  (("-lz")
                   (string-append "-L" zlib "/lib -lz")))
-               #t))))))
+               #t)))
+         #$@(if (target-hurd64?)
+                #~((add-after 'unpack 'apply-hurd64-patch
+                     (lambda _
+                       (let ((patch-file
+                              #$(local-file
+                                 (search-patch "libpciaccess-hurd64.patch"))))
+                         (invoke "patch" "--force" "-p1" "-i" patch-file)))))
+                #~()))))
     (inputs
      (list zlib pciutils))                   ;for 'pci.ids.gz'
     (native-inputs
