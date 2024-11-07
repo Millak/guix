@@ -7698,34 +7698,48 @@ process automation (RPA).")
 (define-public python-robotframework-datadriver
   (package
     (name "python-robotframework-datadriver")
-    (version "1.6.1")
+    (version "1.11.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "robotframework-datadriver" version))
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/Snooz82/robotframework-datadriver")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0mcyr3v98nvfnvffy096qp3jqslas7l8hh0j00lpi0mp12cd0qk9"))))
-    (build-system python-build-system)
+        (base32 "0fq6ykbnypirw1wrgigsfzg8lv8g7j9gs46v0n814ycw8906n43x"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'skip-problematic-tests
-           (lambda _
-             ;; The test file 'tab-csv-file-name.tsv' contains special
-             ;; characters for which there is no locale in the build
-             ;; environment, causing one test to fail.
-             (delete-file-recursively "atest/TestCases/csv_reader_config")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "atest"
-                 (invoke "sh" "run_atest.sh"))))))))
-    (native-inputs (list python-docutils
-                         python-robotframework-stacktrace))
-    (propagated-inputs (list python-openpyxl
-                             python-pandas
-                             python-pygments
-                             python-robotframework))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'skip-problematic-tests
+            (lambda _
+              (for-each delete-file-recursively
+                        (list
+                            ;; The test file 'tab-csv-file-name.tsv' contains
+                            ;; special characters for which there is no locale
+                            ;; in the build environment, causing one test to
+                            ;; fail.
+                            "atest/TestCases/csv_reader_config"
+                            ;; Error in file on line 6: Non-existing setting
+                            ;; 'Test Tags'.
+                            "atest/TestCases/DataTypes/Types_in_dicts.robot"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "atest"
+                  (invoke "sh" "run_atest.sh"))))))))
+    (native-inputs
+     (list python-docutils
+           python-robotframework-stacktrace
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-openpyxl
+           python-pandas
+           python-pygments
+           python-robotframework))
     (home-page "https://github.com/Snooz82/robotframework-datadriver")
     (synopsis "Data-driven test extension for Robot Framework")
     (description "DataDriver is a data-driven extension for Robot Framework.
