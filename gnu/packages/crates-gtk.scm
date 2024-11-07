@@ -3066,6 +3066,33 @@
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gstreamer-check-0.21
+  (package
+    (name "rust-gstreamer-check")
+    (version "0.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-check" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sf4jiykz4mc45ydlszggfn2ly9liqgvam1cmiiyxz9l58pascj2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+      (("rust-glib" ,rust-glib-0.18)
+       ("rust-gstreamer" ,rust-gstreamer-0.21)
+       ("rust-gstreamer-check-sys" ,rust-gstreamer-check-sys-0.21))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "Rust bindings for GStreamer Check library")
+    (description
+     "This package provides Rust bindings for GStreamer Check library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gstreamer-check-sys-0.21
   (package
     (name "rust-gstreamer-check-sys")
