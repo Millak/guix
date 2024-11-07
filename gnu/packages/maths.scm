@@ -4135,13 +4135,19 @@ bindings to almost all functions of PETSc.")
           (base32
             "1f989dipv7lqxvalfrvvlmhlxyl67a87lavyyqrr1mh88glhl592"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-accupy
+           python-pytest
+           python-setuptools
+           python-wheel
+           unzip
+           vtk))
     (propagated-inputs
       (list python-importlib-metadata
             python-numpy
             python-orthopy
             python-scipy
             python-sympy))
-    (native-inputs (list python-accupy python-pytest unzip vtk))
     (home-page "https://github.com/diego-hayashi/quadpy")
     (synopsis "Numerical integration, quadrature for various domains")
     (description
