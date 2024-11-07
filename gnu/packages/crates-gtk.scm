@@ -2995,22 +2995,22 @@
     (description "Rust bindings for GStreamer Base library.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-gstreamer-base-sys-0.18
+(define-public rust-gstreamer-base-sys-0.21
   (package
     (name "rust-gstreamer-base-sys")
-    (version "0.18.0")
+    (version "0.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gstreamer-base-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13h79fcn3b9bkg7h8j0vxc1zryp92shbvvk6gkx723il7hy4k0x0"))))
+        (base32 "0r2bb4rmkpxs1l2jy61rn2srqzsp1f8q0k5j55di3zkqj0gp1jpl"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.15)
-                       ("rust-gobject-sys" ,rust-gobject-sys-0.15)
-                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.18)
+     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.21)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
@@ -3021,6 +3021,27 @@
     (synopsis "FFI bindings to libgstbase-1.0")
     (description "FFI bindings to libgstbase-1.0, part of GStreamer.")
     (license license:expat)))
+
+(define-public rust-gstreamer-base-sys-0.18
+  (package
+    (inherit rust-gstreamer-base-sys-0.21)
+    (name "rust-gstreamer-base-sys")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-base-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13h79fcn3b9bkg7h8j0vxc1zryp92shbvvk6gkx723il7hy4k0x0"))))
+    (arguments
+     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.15)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.18)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gstreamer-sys-0.21
   (package
