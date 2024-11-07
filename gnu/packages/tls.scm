@@ -593,11 +593,22 @@ OpenSSL for TARGET."
                                            "/bin/perl"))))
             #$@(if (target-hurd?)
                    #~((delete 'patch-configure))
+                   #~())
+            #$@(if (target-hurd64?)
+                   #~((add-after 'unpack 'apply-hurd-patch
+                        (lambda _
+                          (let ((patch-file
+                                 #$(local-file
+                                    (search-patch "openssl-hurd64.patch"))))
+                            (invoke "patch" "--force" "-p1" "-i"
+                                    patch-file)))))
                    #~())))
        ((#:configure-flags flags #~'())
-        (if (system-hurd?)
-            #~(append #$flags '("hurd-x86")) ;must not be used when
-                                             ;cross-compiling!
+        (if (system-hurd?)              ;must not be used when
+            #~(append #$flags           ;cross-compiling!
+                      #$(if (target-hurd64?)
+                            #~'("hurd-x86_64")
+                            #~'("hurd-x86")))
             flags))))
     (license license:asl2.0)))
 
