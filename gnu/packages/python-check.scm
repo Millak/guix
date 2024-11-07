@@ -1516,37 +1516,42 @@ testing framework.")
 (define-public python-pytest-virtualenv
   (package
     (name "python-pytest-virtualenv")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-virtualenv" version))
        (sha256
         (base32
-         "03w2zz3crblj1p6i8nq17946hbn3zqp9z7cfnifw47hi4a4fww12"))))
-    (build-system python-build-system)
+         "1ig1jwgs89r9vxdr12fgxvv9r05bnf5d18lxyn13xciivwwi16al"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Reference the virtualenv executable directly, to avoid the need
-         ;; for PYTHONPATH, which gets cleared when instantiating a new
-         ;; virtualenv with pytest-virtualenv.
-         (add-after 'unpack 'patch-virtualenv-executable
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((virtualenv (assoc-ref inputs "python-virtualenv"))
-                    (virtualenv-bin (string-append virtualenv
-                                                   "/bin/virtualenv")))
-               (substitute* "pytest_virtualenv.py"
-                 (("^DEFAULT_VIRTUALENV_FIXTURE_EXECUTABLE.*$")
-                  (format #f "DEFAULT_VIRTUALENV_FIXTURE_EXECUTABLE = '~a'"
-                          virtualenv-bin)))
-               #t))))))
-    (propagated-inputs
-     (list python-pytest-shutil python-pytest-fixture-config))
-    (inputs
-     (list python-virtualenv))
+     (list
+      #:test-flags #~(list "--ignore=tests/integration/")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Reference the virtualenv executable directly, to avoid the need
+          ;; for PYTHONPATH, which gets cleared when instantiating a new
+          ;; virtualenv with pytest-virtualenv.
+          (add-after 'unpack 'patch-virtualenv-executable
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((virtualenv #$(this-package-input "python-virtualenv"))
+                     (virtualenv-bin (string-append virtualenv
+                                                    "/bin/virtualenv")))
+                (substitute* "pytest_virtualenv.py"
+                  (("^DEFAULT_VIRTUALENV_FIXTURE_EXECUTABLE.*$")
+                   (format #f "DEFAULT_VIRTUALENV_FIXTURE_EXECUTABLE = '~a'"
+                           virtualenv-bin)))))))))
     (native-inputs
-     (list python-mock python-pytest python-setuptools-git))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-git
+           python-wheel))
+    (propagated-inputs
+     (list python-importlib-metadata
+           python-pytest-shutil
+           python-pytest-fixture-config
+           python-virtualenv))
     (home-page "https://github.com/manahl/pytest-plugins")
     (synopsis "Virtualenv fixture for py.test")
     (description "This package provides a virtualenv fixture for the py.test
