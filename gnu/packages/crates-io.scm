@@ -47102,37 +47102,55 @@ migration mechanism.")
        #:cargo-development-inputs
        (("rust-tempdir" ,rust-tempdir-0.3))))))
 
+(define-public rust-migrations-macros-2
+  (package
+    (name "rust-migrations-macros")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "migrations_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "027gd4s58fmh7jil9rz0ckdsdw81mqfa6dyqbfmvnrqfqxd35qyc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--" "--skip=src/lib.rs - embed_migrations (line 44)")
+       #:cargo-inputs
+       (("rust-migrations-internals" ,rust-migrations-internals-2)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1))
+       #:cargo-development-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                                   ("rust-diesel" ,rust-diesel-2)
+                                   ("rust-dotenvy" ,rust-dotenvy-0.15)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://diesel.rs")
+    (synopsis "Code generation macros for Diesel's embedded migrations")
+    (description "This package provides code generation macros for Diesel's
+embedded migrations.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-migrations-macros-1
   (package
+    (inherit rust-migrations-macros-2)
     (name "rust-migrations-macros")
     (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "migrations_macros" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "173qgwans6n2jf6b7qajq273rvg1r9c34p5fflzr53gx14lz2lwp"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-migrations-internals"
-         ,rust-migrations-internals-1)
+       (("rust-migrations-internals" ,rust-migrations-internals-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
-       (("rust-tempdir" ,rust-tempdir-0.3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list sqlite))
-    (home-page "https://diesel.rs")
-    (synopsis "Code generation macros for Diesel's embedded migrations")
-    (description "This package provides code generation macros for Diesel's
-embedded migrations.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-tempdir" ,rust-tempdir-0.3))))))
 
 (define-public rust-mimalloc-0.1
   (package
