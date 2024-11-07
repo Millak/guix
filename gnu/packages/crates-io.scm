@@ -51253,17 +51253,17 @@ framework.")
     (description "Extends `Option` with additional operations")
     (license license:mpl2.0)))
 
-(define-public rust-option-operations-0.4
+(define-public rust-option-operations-0.5
   (package
     (name "rust-option-operations")
-    (version "0.4.1")
+    (version "0.5.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "option-operations" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "18jhy5sc56gwdvqc3asr6az685zc9zkgv8p8n69s94bcj6bibc22"))))
+                "1l13n9487gk6063zzjdwzqbig78n8mh6dxsbiq9nbaxfn5xx49kw"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs `(("rust-paste" ,rust-paste-1))))
@@ -51273,6 +51273,21 @@ framework.")
      "Traits and auto-implementations to improve arithmetic operations
 usability when dealing with Rust Options.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-option-operations-0.4
+  (package
+    (inherit rust-option-operations-0.5)
+    (name "rust-option-operations")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "option-operations" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "18jhy5sc56gwdvqc3asr6az685zc9zkgv8p8n69s94bcj6bibc22"))))
+    (arguments
+     (list #:cargo-inputs `(("rust-paste" ,rust-paste-1))))))
 
 (define-public rust-option-set-0.2
   (package
