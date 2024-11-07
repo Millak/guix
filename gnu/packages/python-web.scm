@@ -7665,10 +7665,13 @@ Agent is a web crawler.  It uses the list of registered robots from
        (sha256
         (base32 "077j8p5k41v53slyv8h32fcmqfi7m6z3r4gmyqqaawm5szfmy61m"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-requests python-robotframework))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-requests
+           python-robotframework))
     (home-page "https://github.com/MarketSquare/robotframework-requests")
     (synopsis "Robot Framework keyword library wrapper around requests")
     (description
