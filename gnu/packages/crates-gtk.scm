@@ -1332,6 +1332,36 @@
     (description "This package provides FFI bindings of GDK4 Wayland.")
     (license license:expat)))
 
+(define-public rust-gdk4-win32-0.7
+  (package
+    (name "rust-gdk4-win32")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk4-win32" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mv04mipl57v1lj94j2rkrk9qm75jvdlnp7qm6nl2kpn8466arpy"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; The system library `gtk4-win32` required by gtk4-win32-sys` was not found.
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-gdk4" ,rust-gdk4-0.7)
+                       ("rust-gdk4-win32-sys" ,rust-gdk4-win32-sys-0.7)
+                       ("rust-gio" ,rust-gio-0.18)
+                       ("rust-glib" ,rust-glib-0.18)
+                       ("rust-khronos-egl" ,rust-khronos-egl-5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-windows" ,rust-windows-0.52))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (home-page "https://gtk-rs.org/gtk4-rs")
+    (synopsis "Rust bindings of the GDK4 Win32 library")
+    (description
+     "This package provides Rust bindings of the GDK4 Win32 library.")
+    (license license:expat)))
+
 (define-public rust-gdk4-win32-sys-0.7
   (package
     (name "rust-gdk4-win32-sys")
