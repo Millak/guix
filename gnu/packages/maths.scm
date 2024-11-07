@@ -3795,19 +3795,25 @@ optimized implementations of the combinatorial prime counting algorithms.")
                 (("include_dirs=\\[\"\\/usr\\/include\\/eigen3\\/\"\\]," _)
                  (string-append "include_dirs=[\""
                                 #$(file-append (this-package-input "eigen")
-                                             "/include/eigen3/")
+                                               "/include/eigen3/")
                                 "\"],"))))))))
-    (propagated-inputs (list eigen python-mpmath python-pyfma))
-    (native-inputs (list pybind11
-                         python-matplotx
-                         python-perfplot
-                         python-pytest))
+    (native-inputs
+     (list pybind11
+           python-matplotx
+           python-perfplot
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list eigen
+           python-mpmath
+           python-pyfma))
     (home-page "https://github.com/diego-hayashi/accupy")
     (synopsis "Accurate calculation of sums and dot products")
     (description
-      "@code{accupy} is a Python library for accurately computing sums
-and (dot) products.  It implements Kahan summation, Shewchuck's
-algorithm and summation in K-fold precision.")
+     "@code{accupy} is a Python library for accurately computing sums
+and (dot) products.  It implements Kahan summation, Shewchuck's algorithm and
+summation in K-fold precision.")
     (license license:gpl3+)))
 
 ;; It is unfortunate that we cannot just link with the existing blis package.
