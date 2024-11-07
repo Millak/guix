@@ -2981,21 +2981,24 @@
     (description "FFI bindings to libgstbase-1.0, part of GStreamer.")
     (license license:expat)))
 
-(define-public rust-gstreamer-sys-0.18
+(define-public rust-gstreamer-sys-0.21
   (package
     (name "rust-gstreamer-sys")
-    (version "0.18.0")
+    (version "0.21.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "gstreamer-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1qikgp5m3xj41fbfyfl6ckb5i8dxadfvlvj5bf8girn2sdjpllg3"))))
+                "1i1vrqs9ys5y0ljl4nxh1x25dnwlcyh9hiybh4dysviy5dwdlk2n"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:cargo-inputs `(("rust-glib-sys" ,rust-glib-sys-0.15)
-                            ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+     (list #:tests? #f ;; tests/constant.c:193:20: error:
+                       ;; ?GST_ELEMENT_FACTORY_TYPE_TIMESTAMPER? undeclared (first use in this function);
+                       ;; did you mean ?GST_ELEMENT_FACTORY_TYPE_MUXER??
+           #:cargo-inputs `(("rust-glib-sys" ,rust-glib-sys-0.18)
+                            ("rust-gobject-sys" ,rust-gobject-sys-0.18)
                             ("rust-libc" ,rust-libc-0.2)
                             ("rust-system-deps" ,rust-system-deps-6))
            #:cargo-development-inputs `(("rust-shell-words" ,rust-shell-words-1)
@@ -3007,6 +3010,26 @@
     (description
      "Foreign Function Interface (FFI) bindings to libgstreamer-1.0.")
     (license license:expat)))
+
+(define-public rust-gstreamer-sys-0.18
+  (package
+    (inherit rust-gstreamer-sys-0.21)
+    (name "rust-gstreamer-sys")
+    (version "0.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "gstreamer-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qikgp5m3xj41fbfyfl6ckb5i8dxadfvlvj5bf8girn2sdjpllg3"))))
+    (arguments
+     (list #:cargo-inputs `(("rust-glib-sys" ,rust-glib-sys-0.15)
+                            ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-system-deps" ,rust-system-deps-6))
+           #:cargo-development-inputs `(("rust-shell-words" ,rust-shell-words-1)
+                                        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gtk-0.14
   (package
