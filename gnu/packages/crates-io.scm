@@ -65467,6 +65467,27 @@ extension to python.")
         ("rust-zip" ,rust-zip-0.6))
        #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-qrencode-0.14
+  (package
+    (name "rust-qrencode")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "qrencode" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hgp0lchnp3zx79j3799nm445rvqg7x62x2x7926ky22lqhv23d6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-checked-int-cast" ,rust-checked-int-cast-1)
+                       ("rust-image" ,rust-image-0.24))
+       #:cargo-development-inputs (("rust-image" ,rust-image-0.24))))
+    (home-page "https://github.com/sayanarijit/qrencode")
+    (synopsis "QR code encoder in Rust")
+    (description "This package provides QR code encoder in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-quad-rand-0.2
   (package
     (name "rust-quad-rand")
