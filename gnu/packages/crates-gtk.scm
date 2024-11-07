@@ -3173,6 +3173,35 @@
     (description "This package provides FFI bindings to libgstcheck-1.0.")
     (license license:expat)))
 
+(define-public rust-gstreamer-pbutils-sys-0.21
+  (package
+    (name "rust-gstreamer-pbutils-sys")
+    (version "0.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-pbutils-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0scx3w02wkyvmq76ia2jr6zhkf24zivn9vyphrcwmj2b8piydakg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+                       ("rust-gstreamer-audio-sys" ,rust-gstreamer-audio-sys-0.21)
+                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.21)
+                       ("rust-gstreamer-video-sys" ,rust-gstreamer-video-sys-0.21)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "FFI bindings to libgstpbutils-1.0")
+    (description "This package provides FFI bindings to libgstpbutils-1.0.")
+    (license license:expat)))
+
 (define-public rust-gstreamer-sys-0.21
   (package
     (name "rust-gstreamer-sys")
