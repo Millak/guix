@@ -26,6 +26,7 @@
 ;; Copyright © 2024 Guillaume Le Vaillant <glv@posteo.net>
 ;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;; Copyright © 2024 Sebastian Dümcke <code@sam-d.com>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -33,6 +34,43 @@
 
 (channel-news
  (version 0)
+ (entry (commit "ccf72d5074b0c5ba793e686cbb1d6eaad39824bf")
+        (title
+         (de "Neues Format @samp{appimage} für den Befehl @command{guix pack}")
+         (en "New @samp{AppImage} format for the @command{guix pack} command")
+         (fr "Nouveau format @samp{AppImage} pour la commande @command{guix pack}"))
+        (body
+         (de "@command{guix pack} kann nun AppImage-Dateien erstellen. Das
+AppImage-Dateiformat erlaubt es, in einer einzelnen Datei Software zu verteilen. Die
+AppImage-Datei lässt sich ohne besondere Benutzerrechte ausführen. Hier ist
+ein Beispiel:
+
+@example
+guix pack --format=appimage --entry-point=bin/hello hello
+@end example
+
+Siehe @command{info \"(guix.de) Aufruf von guix pack\"} für mehr
+Informationen.")
+         (en "@command{guix pack} can now produce AppImage a single file,
+self-contained software archive. AppImage files are easily distributed and can
+be run with user privileges.  Here is an example for the @code{hello} package:
+
+@example
+guix pack --format=appimage --entry-point=bin/hello hello
+@end example
+
+See @command{info \"(guix) Invoking guix pack\"} for more information.")
+         (fr "@command{guix pack} peut désormais produire un fichier
+AppImage. AppImage est une manière de distribuer les logiciels en un seul
+fichier, qui peut être executé avec des droits d’utilisateur. Voici un
+exemple pour le paquet @code{hello} :
+
+@example
+guix pack --format=appimage --entry-point=bin/hello hello
+@end example
+
+Consultez @command{info \"(guix.fr) Invoquer guix pack\"} pour plus
+d’informations.")))
 
  (entry (commit "b93434e656eba4260df82158a96c295000d3ff44")
         (title (en "PostgreSQL service upgrade")
