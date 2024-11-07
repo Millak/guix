@@ -9924,11 +9924,15 @@ clean plots with a minimalistic style.")
        (sha256
         (base32 "0zk7hpq358sbympmkms7w2wjs7nw8mdfvkvdasblg2nhqayv42qz"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-matplotlib
-                             python-matplotx
-                             python-npx
-                             python-numpy))
-    (native-inputs (list python-pytest))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-matplotlib
+           python-matplotx
+           python-npx
+           python-numpy))
     (home-page "https://github.com/nschloe/cplot")
     (synopsis "Plot complex-valued functions")
     (description "@code{cplot} is a Python library for plotting
