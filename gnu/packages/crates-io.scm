@@ -57924,8 +57924,28 @@ replacements, adding colorful diffs.")
        #:cargo-development-inputs
        (("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-pretty-hex-0.4
+  (package
+    (name "rust-pretty-hex")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pretty-hex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m0j8pqmh6gq1mq7yzp12z0ix159fw0di5lhiwv2y1j0m3j3xj5v"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-development-inputs `(("rust-heapless" ,rust-heapless-0.8))))
+    (home-page "https://github.com/wolandr/pretty-hex")
+    (synopsis "Prettified output of hexadecimal byte slices")
+    (description "Pretty hex dump of byte slices in the common style.")
+    (license license:expat)))
+
 (define-public rust-pretty-hex-0.3
   (package
+    (inherit rust-pretty-hex-0.4)
     (name "rust-pretty-hex")
     (version "0.3.0")
     (source
@@ -57935,13 +57955,8 @@ replacements, adding colorful diffs.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mf8xvlfri4impj2paj4azx7hxh7l0i38cjyib1hiikwvlqhiyn6"))))
-    (build-system cargo-build-system)
     (arguments
-     (list #:cargo-development-inputs `(("rust-heapless" ,rust-heapless-0.5))))
-    (home-page "https://github.com/wolandr/pretty-hex")
-    (synopsis "Prettified output of hexadecimal byte slices")
-    (description "Pretty hex dump of byte slices in the common style.")
-    (license license:expat)))
+     (list #:cargo-development-inputs `(("rust-heapless" ,rust-heapless-0.5))))))
 
 (define-public rust-prettytable-rs-0.8
   (package
