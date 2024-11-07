@@ -2904,8 +2904,41 @@
     (description "FFI bindings to libgstapp-1.0, part of Gstreamer.")
     (license license:expat)))
 
+(define-public rust-gstreamer-audio-0.21
+  (package
+    (name "rust-gstreamer-audio")
+    (version "0.21.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-audio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b91wjhhq0harwl7kyfv5l0kwp6w1vklpnpynakv92f8x6jci5vs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; https://github.com/gtk-rs/gtk3-rs/issues/768
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-glib" ,rust-glib-0.18)
+                       ("rust-gstreamer" ,rust-gstreamer-0.21)
+                       ("rust-gstreamer-audio-sys" ,rust-gstreamer-audio-sys-0.21)
+                       ("rust-gstreamer-base" ,rust-gstreamer-base-0.21)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1)
+        ("rust-itertools" ,rust-itertools-0.12)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "Rust bindings for the GStreamer Audio library")
+    (description "Rust bindings for the GStreamer Audio library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gstreamer-audio-0.18
   (package
+    (inherit rust-gstreamer-audio-0.21)
     (name "rust-gstreamer-audio")
     (version "0.18.7")
     (source
@@ -2915,7 +2948,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0zl0bj03rz19qlrm50w7i5sagh0i0p5d8gr7ig1k6k5yd7k47sww"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; https://github.com/gtk-rs/gtk3-rs/issues/768
        #:cargo-inputs (("rust-array-init" ,rust-array-init-2)
@@ -2928,13 +2960,7 @@
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-once-cell" ,rust-once-cell-1))
        #:cargo-development-inputs (("rust-gir-format-check" ,rust-gir-format-check-0.1)
-                                   ("rust-itertools" ,rust-itertools-0.10))))
-    (native-inputs (list pkg-config))
-    (inputs (list glib gstreamer gst-plugins-base))
-    (home-page "https://gstreamer.freedesktop.org")
-    (synopsis "Rust bindings for the GStreamer Audio library")
-    (description "Rust bindings for the GStreamer Audio library.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-itertools" ,rust-itertools-0.10))))))
 
 (define-public rust-gstreamer-audio-sys-0.21
   (package
