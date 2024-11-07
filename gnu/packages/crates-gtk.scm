@@ -31,6 +31,7 @@
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-windows)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gstreamer)
@@ -3490,6 +3491,33 @@
     (home-page "https://gstreamer.freedesktop.org")
     (synopsis "FFI bindings to libgstgl-1.0")
     (description "This package provides FFI bindings to libgstgl-1.0.")
+    (license license:expat)))
+
+(define-public rust-gstreamer-gl-egl-sys-0.21
+  (package
+    (name "rust-gstreamer-gl-egl-sys")
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-gl-egl-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m79m0lbk2s89cm4vc6ckwkgs9khmh2ri7x3gfgmz2hwy2v8hg7f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-gstreamer-gl-sys" ,rust-gstreamer-gl-sys-0.21)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base mesa))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "FFI bindings to libgstgl-1.0 (EGL support)")
+    (description
+     "This package provides FFI bindings to libgstgl-1.0 (EGL support).")
     (license license:expat)))
 
 (define-public rust-gstreamer-pbutils-0.21
