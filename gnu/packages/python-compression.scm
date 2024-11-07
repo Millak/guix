@@ -204,13 +204,13 @@ following algorithms are available:
 (define-public python-ewah-bool-utils
   (package
     (name "python-ewah-bool-utils")
-    (version "1.2.0")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ewah_bool_utils" version))
        (sha256
-        (base32 "1bff3cv5m4n5pwqz0q90dy42vpyrrhylnrkcd49g1dlf3fs6r0pp"))))
+        (base32 "1hvs1fvf3g7kq6hnzxyxfrwvmykw503cmxf1l3irs67gr931z47b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -220,7 +220,10 @@ following algorithms are available:
             (lambda _
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
-     (list python-cython python-pytest))
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/yt-project/ewah_bool_utils")
