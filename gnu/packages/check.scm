@@ -3491,6 +3491,9 @@ JSON APIs with Behave.")
                             "test_dirs/test_not_me/test.py")
                 (("def test_i_should_never_run")
                  "def off_i_should_never_run")))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-nose))
     (home-page "https://github.com/kgrandis/nose-exclude")
