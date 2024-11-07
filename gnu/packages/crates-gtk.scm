@@ -2936,8 +2936,42 @@
     (description "Rust bindings for the GStreamer Audio library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gstreamer-audio-sys-0.21
+  (package
+    (name "rust-gstreamer-audio-sys")
+    (version "0.21.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-audio-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lamp4s9cl0hhpbfcwdprn36fll6qq4xihrqbf2pfwqpifp99gbq"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Some symbols are missing, i.e. ?GstDsdFormat? and more.
+     `(#:tests? #f
+       #:cargo-test-flags
+       (list "--release" "--"
+             "--skip=cross_validate_constants_with_c")
+       #:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+                       ("rust-gstreamer-base-sys" ,rust-gstreamer-base-sys-0.21)
+                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.21)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "FFI bindings to libgstaudio-1.0")
+    (description "FFI bindings to libgstaudio, part of Gstreamer.")
+    (license license:expat)))
+
 (define-public rust-gstreamer-audio-sys-0.18
   (package
+    (inherit rust-gstreamer-audio-sys-0.21)
     (name "rust-gstreamer-audio-sys")
     (version "0.18.3")
     (source
@@ -2947,7 +2981,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0z3xryblh75xp08xyw3m6jfz9azarcvl06dd3psc0n65agxmhhm3"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        (list "--release" "--"
@@ -2959,13 +2992,7 @@
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs (list pkg-config))
-    (inputs (list glib gstreamer gst-plugins-base))
-    (home-page "https://gstreamer.freedesktop.org")
-    (synopsis "FFI bindings to libgstaudio-1.0")
-    (description "FFI bindings to libgstaudio, part of Gstreamer.")
-    (license license:expat)))
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gstreamer-base-0.21
   (package
