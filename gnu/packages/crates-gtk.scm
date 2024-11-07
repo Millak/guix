@@ -5194,6 +5194,26 @@ library.")
 provider API.")
     (license license:gpl3+)))
 
+(define-public rust-search-provider-0.6
+  (package
+    (inherit rust-search-provider-0.8)
+    (name "rust-search-provider")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "search-provider" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01jby7xq0dd9rafw5kgskpbxgppn4imzm71w1sdj8iy9ci4ghh9z"))))
+    (arguments
+     `(#:cargo-inputs (("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-gdk-pixbuf" ,rust-gdk-pixbuf-0.18)
+                       ("rust-gdk4" ,rust-gdk4-0.7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-zbus" ,rust-zbus-3))))))
+
 (define-public rust-soup-sys-0.10
   (package
     (name "rust-soup-sys")
