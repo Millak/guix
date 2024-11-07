@@ -1453,39 +1453,38 @@ isort.")
 (define-public python-pytest-shutil
   (package
     (name "python-pytest-shutil")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-shutil" version))
        (sha256
         (base32
-         "0q8j0ayzmnvlraml6i977ybdq4xi096djhf30n2m1rvnvrhm45nq"))))
+         "18283zgs3z61paymzf0pp5x3di3hg3m91pvb3v7bmz3fggphdl5a"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; This test is sensitive to generated terminal escape codes.
-      '(list "-k" "not test_pretty_formatter")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'use-path-instead-of-path.py
-           ;; path.py is obsolete.
-           (lambda _
-             (substitute* "setup.py"
-               (("'path.py'") "'path'"))))
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             (mkdir "/tmp/bin")
-             (substitute* "tests/integration/test_cmdline_integration.py"
-               (("dirname = '/bin'")
-                "dirname = '/tmp/bin'")
-               (("bindir = os.path.realpath\\('/bin'\\)")
-                "bindir = os.path.realpath('/tmp/bin')")))))))
-    (propagated-inputs
-     (list python-contextlib2 python-execnet python-path python-termcolor))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (mkdir "/tmp/bin")
+              (substitute* "tests/integration/test_cmdline_integration.py"
+                (("dirname = '/bin'")
+                 "dirname = '/tmp/bin'")
+                (("bindir = os.path.realpath\\('/bin'\\)")
+                 "bindir = os.path.realpath('/tmp/bin')")))))))
     (native-inputs
-     (list python-mock python-pytest python-setuptools-git))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-git
+           python-wheel))
+    (propagated-inputs
+     (list python-execnet
+           python-mock
+           python-path
+           python-six
+           python-termcolor))
     (home-page "https://github.com/manahl/pytest-plugins")
     (synopsis "Assorted shell and environment tools for py.test")
     (description
