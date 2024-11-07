@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
@@ -81,25 +81,34 @@ Each database is contained in a specific package output, such as the
                 "01aglgw9ds9qiswcbi2lx90lswncikrlyv8mmp4haix8542bvvci"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
          (add-after 'unpack 'unbundle-pci.ids
            (lambda* (#:key native-inputs inputs #:allow-other-keys)
              (copy-file (search-input-file (or native-inputs inputs)
                                            "share/hwdata/pci.ids")
                         "pci.ids")))
+         #$@(if (target-hurd64?)
+               #~((add-after 'unpack 'apply-hurd64-patch
+                    (lambda _
+                      (let ((patch-file
+                             #$(local-file
+                                (search-patch "pciutils-hurd64.patch"))))
+                        (invoke "patch" "--force" "-p1" "-i" patch-file)))))
+               #~())
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              ;; There's no 'configure' script, just a raw makefile.
              (substitute* "Makefile"
-               ,@(if (%current-target-system)
-                     `((("^CROSS_COMPILE=.*$")
+               #$@(if (%current-target-system)
+                     #~((("^CROSS_COMPILE=.*$")
                         (string-append "CROSS_COMPILE="
-                                       ,(%current-target-system) "-"
+                                       #$(%current-target-system) "-"
                                        "\n"))
                        (("^HOST=.*$")
                         (string-append "HOST="
-                                       ,(gnu-triplet->nix-system
+                                       #$(gnu-triplet->nix-system
                                          (%current-target-system)) "\n"))
                        ;; Disable 'install' strip option, that would fail when
                        ;; we are cross-compiling.
@@ -139,7 +148,7 @@ Each database is contained in a specific package output, such as the
              (invoke "make" "install" "install-lib"))))
 
        ;; Make sure programs have an RPATH so they can find libpciutils.so.
-       #:make-flags (list ,(string-append "CC="
+       #:make-flags #~(list #$(string-append "CC="
                                           (if (%current-target-system)
                                               (cc-for-target)
                                               "gcc"))
