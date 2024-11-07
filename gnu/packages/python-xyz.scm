@@ -13297,31 +13297,38 @@ adherence to RFC 6570, but adds a few extensions.")
 (define-public python-urwid
   (package
     (name "python-urwid")
-    (version "2.6.15")
+    (version "2.6.16")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "urwid" version))
        (sha256
         (base32
-         "06v7m5xayyglzv630qsbg7zh6k37h6k94w7x7xkdkj481lrmgk4y"))))
+         "18ijvgf1l7jvmg45x1cysn3c9rdrg1w0405acig3hk7476cj7bck"))))
     (build-system pyproject-build-system)
     (arguments
-      (list
-        ;; XXX The test suite requires python-tornado but fails to find it
-        ;; whether or not it is available in the build environment.
-        #:tests? #f
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'remove-vterm-tests
+     (list
+      #:test-flags
+      #~(list "tests"
               ;; According to Debian these tests are cursed.
               ;; https://salsa.debian.org/python-team/packages/urwid/-/blob/debian/2.1.2-2/debian/changelog#L141
-              (lambda _
-                (delete-file "tests/test_vterm.py"))))))
-    (propagated-inputs
-      (list python-typing-extensions python-wcwidth))
+               "--ignore=tests/test_vterm.py")))
     (native-inputs
-      (list python-setuptools-scm))
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-typing-extensions
+           python-wcwidth
+
+           ;; Optional, but tests need them.
+           python-pygobject
+           python-tornado
+           python-trio
+           python-pyzmq
+           python-twisted))
     (home-page "https://urwid.org")
     (synopsis "Console user interface library for Python")
     (description
