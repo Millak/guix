@@ -6572,6 +6572,32 @@ for @code{libxkbcommon}.")
      "Dynamically loaded xkbcommon and xkbcommon-x11 Rust bindings.")
     (license license:expat)))
 
+(define-public rust-xkb-0.3
+  (package
+    (name "rust-xkb")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xkb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03rfx8n3pajc95riksnshh3aqm8dqij2iis5icl88pa6ylk9x0gj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-xcb" ,rust-xcb-1)
+                       ("rust-xkbcommon-sys" ,rust-xkbcommon-sys-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list clang libxkbcommon-1.5 mesa))
+    (home-page "https://github.com/meh/rust-xkb")
+    (synopsis "Rusty wrapper around libxkbcommon")
+    (description "This package provides Rusty wrapper around libxkbcommon.")
+    (license license:wtfpl2)))
+
 (define-public rust-xkeysym-0.2
   (package
     (name "rust-xkeysym")
