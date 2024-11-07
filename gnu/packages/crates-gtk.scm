@@ -3493,6 +3493,35 @@
     (description "This package provides FFI bindings to libgstgl-1.0.")
     (license license:expat)))
 
+(define-public rust-gstreamer-gl-egl-0.21
+  (package
+    (name "rust-gstreamer-gl-egl")
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-gl-egl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10nwlmyw1z4jccyrbqijx6iny2c64164jaz05dgnvi5378ianwx1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-glib" ,rust-glib-0.18)
+        ("rust-gstreamer" ,rust-gstreamer-0.21)
+        ("rust-gstreamer-gl" ,rust-gstreamer-gl-0.21)
+        ("rust-gstreamer-gl-egl-sys" ,rust-gstreamer-gl-egl-sys-0.21)
+        ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base mesa))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "Rust bindings for GStreamer GL library (EGL support)")
+    (description
+     "This package provides Rust bindings for GStreamer GL library (EGL support).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gstreamer-gl-egl-sys-0.21
   (package
     (name "rust-gstreamer-gl-egl-sys")
