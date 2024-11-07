@@ -2979,6 +2979,44 @@
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gst-plugin-gtk4-0.11
+  (package
+    (name "rust-gst-plugin-gtk4")
+    (version "0.11.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gst-plugin-gtk4" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hmky9p16hnhrwm5i63ynlwfl1bpc9fp3as5ibrni1qlfq0vhwdj"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:cargo-inputs (list rust-async-channel-2
+                            rust-gdk4-wayland-0.7
+                            rust-gdk4-win32-0.7
+                            rust-gdk4-x11-0.7
+                            rust-gst-plugin-version-helper-0.8
+                            rust-gstreamer-0.21
+                            rust-gstreamer-allocators-0.21
+                            rust-gstreamer-base-0.21
+                            rust-gstreamer-gl-0.21
+                            rust-gstreamer-gl-egl-0.21
+                            rust-gstreamer-gl-wayland-0.21
+                            rust-gstreamer-gl-x11-0.21
+                            rust-gstreamer-video-0.21
+                            rust-gtk4-0.7
+                            rust-once-cell-1
+                            rust-windows-sys-0.52)))
+    (native-inputs (list pkg-config))
+    (inputs (list gdk-pixbuf glib graphene gstreamer gst-plugins-base
+                  gtk pango))
+    (home-page "https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs")
+    (synopsis "GStreamer GTK 4 sink element")
+    (description "This package provides GStreamer GTK 4 sink element.")
+    (license license:mpl2.0)))
+
 (define-public rust-gst-plugin-version-helper-0.8
   (package
     (name "rust-gst-plugin-version-helper")
