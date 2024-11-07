@@ -26319,6 +26319,28 @@ convert enum to u8 slice ref.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-enum-ordinalize-4
+  (package
+    (name "rust-enum-ordinalize")
+    (version "4.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "enum-ordinalize" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1max64z9giii61qcwl56rndd7pakaylkaij5zqbbbvjl9vxdr87y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-enum-ordinalize-derive" ,rust-enum-ordinalize-derive-4))))
+    (home-page "https://magiclen.org/enum-ordinalize")
+    (synopsis "Construction of enums from an ordinal value")
+    (description
+     "This library enables enums to not only obtain the ordinal values of their
+variants but also allows for the construction of enums from an ordinal value.")
+    (license license:expat)))
+
 (define-public rust-enum-ordinalize-derive-4
   (package
     (name "rust-enum-ordinalize-derive")
