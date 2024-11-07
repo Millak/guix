@@ -2759,8 +2759,56 @@
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gstreamer-0.21
+  (package
+    (name "rust-gstreamer")
+    (version "0.21.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "gstreamer" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0mchpvvll5i4ck8zr7aarrz6p975n0dcyy92wksg8ycf9hzp15fy"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           `(list "--release" "--"
+                  "--skip=typefind::tests::test_typefind_call_function")
+           #:cargo-inputs `(("rust-cfg-if" ,rust-cfg-if-1)
+                            ("rust-futures-channel" ,rust-futures-channel-0.3)
+                            ("rust-futures-core" ,rust-futures-core-0.3)
+                            ("rust-futures-util" ,rust-futures-util-0.3)
+                            ("rust-glib" ,rust-glib-0.18)
+                            ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.21)
+                            ("rust-itertools" ,rust-itertools-0.12)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-muldiv" ,rust-muldiv-1)
+                            ("rust-num-integer" ,rust-num-integer-0.1)
+                            ("rust-num-rational" ,rust-num-rational-0.4)
+                            ("rust-option-operations" ,rust-option-operations-0.5)
+                            ("rust-paste" ,rust-paste-1)
+                            ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                            ("rust-pretty-hex" ,rust-pretty-hex-0.4)
+                            ("rust-serde" ,rust-serde-1)
+                            ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+                            ("rust-smallvec" ,rust-smallvec-1)
+                            ("rust-thiserror" ,rust-thiserror-1))
+           #:cargo-development-inputs
+            `(("rust-futures-executor" ,rust-futures-executor-0.3)
+              ("rust-gir-format-check" ,rust-gir-format-check-0.1)
+              ("rust-ron" ,rust-ron-0.8)
+              ("rust-serde-json" ,rust-serde-json-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "Rust bindings for GStreamer")
+    (description "Rust bindings for GStreamer.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gstreamer-0.18
   (package
+    (inherit rust-gstreamer-0.21)
     (name "rust-gstreamer")
     (version "0.18.8")
     (source (origin
@@ -2770,7 +2818,6 @@
               (sha256
                (base32
                 "0mjlnw9917j3wwij8225bjp54k7408lxqjjnh6r6wksyryx66qyn"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:tests? #f  ; https://github.com/gtk-rs/gtk3-rs/issues/768
            #:cargo-inputs `(("rust-bitflags" ,rust-bitflags-1)
@@ -2795,13 +2842,7 @@
             `(("rust-futures-executor" ,rust-futures-executor-0.3)
               ("rust-gir-format-check" ,rust-gir-format-check-0.1)
               ("rust-ron" ,rust-ron-0.7)
-              ("rust-serde-json" ,rust-serde-json-1))))
-    (native-inputs (list pkg-config))
-    (inputs (list glib gstreamer))
-    (home-page "https://gstreamer.freedesktop.org")
-    (synopsis "Rust bindings for GStreamer")
-    (description "Rust bindings for GStreamer.")
-    (license (list license:expat license:asl2.0))))
+              ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-gstreamer-app-0.18
   (package
