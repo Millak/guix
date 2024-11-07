@@ -3069,6 +3069,36 @@
               ("rust-ron" ,rust-ron-0.7)
               ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-gstreamer-allocators-sys-0.21
+  (package
+    (name "rust-gstreamer-allocators-sys")
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-allocators-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1brps4xpzigavifcwr6hs6368nilc4l03ivnv13fxb2svdw885f1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=cross_validate_constants_with_c"
+                            "--skip=cross_validate_layout_with_c")
+       #:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.21)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "FFI bindings to libgstallocators-1.0")
+    (description "This package provides FFI bindings to libgstallocators-1.0.")
+    (license license:expat)))
+
 (define-public rust-gstreamer-app-0.18
   (package
     (name "rust-gstreamer-app")
