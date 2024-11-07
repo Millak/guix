@@ -579,7 +579,8 @@ implementing them.")
                 (uri (git-reference
                       (url "https://git.savannah.gnu.org/git/hurd/incubator.git")
                       (commit commit)))
-                (patches (list (search-patch "netdde-build-fix.patch")))
+                (patches (search-patches "netdde-build-fix.patch"
+                                         "netdde-csum.patch"))
                 (sha256
                  (base32
                   "070fpmd4nvn3mp8dj9w4if63iwz7j2m0h6ywq888znw70wlrc6sh"))
@@ -599,6 +600,13 @@ implementing them.")
                               " -Wno-int-conversion"
                               " -Wno-strict-prototypes")
                "ARCH=x86")
+               (let ((arch ,(match (or (%current-target-system)
+                                       (%current-system))
+                              ((? target-x86-32?)
+                               "x86")
+                              ((? target-x86-64?)
+                               "amd64"))))
+                 (string-append "ARCH=" arch)))
          #:configure-flags
          ,#~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
          #:phases
@@ -616,6 +624,15 @@ implementing them.")
                  (("/bin/bash") (which "bash")))))
            (add-after 'patch-generated-file-shebangs 'build-libdde-linux26
              (lambda* (#:key make-flags #:allow-other-keys)
+               (when ,(target-hurd64?)
+                 (let ((dir "libdde_linux26/build/include"))
+                   (mkdir-p (string-append dir "/x86"))
+                   (format #t "symlink ~a -> ~a\n"
+                           (string-append dir "/x86/amd64") "x86")
+                   (symlink "x86" (string-append dir "/amd64"))
+                   (format #t "symlink ~a -> ~a\n"
+                           (string-append dir "/amd64/asm-x86_64") "asm-x86")
+                   (symlink "asm-x86" (string-append dir "/amd64/asm-x86_64"))))
                (with-directory-excursion "libdde_linux26"
                  (apply invoke "make"
                         (delete "PKGDIR=libdde_linux26" make-flags)))))

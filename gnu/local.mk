@@ -1826,6 +1826,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ncftp-reproducible.patch			\
   %D%/packages/patches/netcdf-date-time.patch			\
   %D%/packages/patches/netdde-build-fix.patch			\
+  %D%/packages/patches/netdde-csum.patch			\
   %D%/packages/patches/netpbm-CVE-2017-2586.patch		\
   %D%/packages/patches/netpbm-CVE-2017-2587.patch		\
   %D%/packages/patches/netsurf-message-timestamp.patch		\
