@@ -23610,34 +23610,53 @@ Diesel.")
         ("rust-diesel" ,rust-diesel-1)
         ("rust-dotenv" ,rust-dotenv-0.10))))))
 
+(define-public rust-diesel-migrations-2
+  (package
+    (name "rust-diesel-migrations")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diesel_migrations" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b0ld4azk73rg2axwq7a4wnpwba3085f43jp3cw62n8c2bqb6dk0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-diesel" ,rust-diesel-2)
+        ("rust-migrations-internals" ,rust-migrations-internals-2)
+        ("rust-migrations-macros" ,rust-migrations-macros-2))
+       #:cargo-development-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-dotenvy" ,rust-dotenvy-0.15)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://diesel.rs")
+    (synopsis "Migration management for diesel")
+    (description "This package provides migration management for Diesel.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-diesel-migrations-1
   (package
+    (inherit rust-diesel-migrations-2)
     (name "rust-diesel-migrations")
     (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "diesel_migrations" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0k4g03ciqwya2xc1xvy5s9cs6q55k45wxa1gszswfg9m2f2dwg5z"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ;doctest_setup.rs: No such file or directory
        #:cargo-inputs
-       (("rust-migrations-internals"
-         ,rust-migrations-internals-1)
-        ("rust-migrations-macros"
-         ,rust-migrations-macros-1))
+       (("rust-migrations-internals" ,rust-migrations-internals-1)
+        ("rust-migrations-macros" ,rust-migrations-macros-1))
        #:cargo-development-inputs
        (("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-diesel" ,rust-diesel-1)
-        ("rust-dotenv" ,rust-dotenv-0.10))))
-    (home-page "https://diesel.rs")
-    (synopsis "Migration management for diesel")
-    (description "This package provides migration management for Diesel.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-dotenv" ,rust-dotenv-0.10))))))
 
 (define-public rust-diesel-table-macro-syntax-0.1
   (package
