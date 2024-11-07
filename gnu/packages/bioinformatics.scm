@@ -13071,11 +13071,11 @@ includes software to
       (license license:cc0))))
 
 (define-public r-demultiplex2
-  (let ((commit "92130a626249194ef7f6c0b1aecad6ac210e258b")
-        (revision "1"))
+  (let ((commit "c1ce09e8b5784b485680cf96b90bbc12eed96907")
+        (revision "2"))
     (package
       (name "r-demultiplex2")
-      (version (git-version "1.0.1" revision commit))
+      (version (git-version "1.0.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -13084,7 +13084,7 @@ includes software to
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1jfjmg7vlbpc90ljg2bwn9hfd67fiicr6a2pg4820hgm9876m3v7"))))
+          (base32 "0fid5yh0hqg477h5xxq6c8yh8zs5jawjskzns05rndxhbzm51lpr"))))
       (properties `((upstream-name . "deMULTIplex2")))
       (build-system r-build-system)
       (propagated-inputs (list r-data-table
