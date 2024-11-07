@@ -3170,6 +3170,40 @@
            #:cargo-development-inputs `(("rust-shell-words" ,rust-shell-words-1)
                                         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gstreamer-video-0.21
+  (package
+    (name "rust-gstreamer-video")
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-video" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r8mhzb1bq4dnj08f4szgarxd2fvqbakwv400fp9hyiv3m6jlnz8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-glib" ,rust-glib-0.18)
+                       ("rust-gstreamer" ,rust-gstreamer-0.21)
+                       ("rust-gstreamer-base" ,rust-gstreamer-base-0.21)
+                       ("rust-gstreamer-video-sys" ,rust-gstreamer-video-sys-0.21)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1)
+        ("rust-itertools" ,rust-itertools-0.11)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "Rust bindings for GStreamer Video library")
+    (description
+     "This package provides Rust bindings for GStreamer Video library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gstreamer-video-sys-0.21
   (package
     (name "rust-gstreamer-video-sys")
