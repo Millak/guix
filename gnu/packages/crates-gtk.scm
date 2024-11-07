@@ -1281,6 +1281,34 @@
     (description "This package provides FFI bindings of GDK4 Wayland.")
     (license license:expat)))
 
+(define-public rust-gdk4-x11-sys-0.7
+  (package
+    (name "rust-gdk4-x11-sys")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk4-x11-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09gill32x6qy4s55xjckqvqrfxw4jfjrlcpmd4iijn076w4igpm3"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; tests/manual.h:3:10: fatal error: gdk/gdkx.h: No such file or directory
+     `(#:tests? #f
+       #:cargo-inputs (("rust-gdk4-sys" ,rust-gdk4-sys-0.7)
+                       ("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gtk))
+    (home-page "https://gtk-rs.org/gtk4-rs")
+    (synopsis "FFI bindings of GDK4 X11")
+    (description "This package provides FFI bindings of GDK4 X11.")
+    (license license:expat)))
+
 (define-public rust-gio-0.20
   (package
     (name "rust-gio")
