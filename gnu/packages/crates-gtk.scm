@@ -4093,6 +4093,32 @@ library.")
        (("rust-shell-words" ,rust-shell-words-1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-search-provider-0.8
+  (package
+    (name "rust-search-provider")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "search-provider" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a683ndxh99sin4lr919wc8aakzgjiqlic1xglf4qs6gfpvs2prq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-gdk-pixbuf" ,rust-gdk-pixbuf-0.19)
+                       ("rust-gdk4" ,rust-gdk4-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-zbus" ,rust-zbus-4))))
+    (home-page "https://gitlab.gnome.org/World/Rust/search-provider")
+    (synopsis "Rust wrapper around the GNOME Shell search provider API")
+    (description
+     "This package provides a Rust wrapper around the GNOME Shell search
+provider API.")
+    (license license:gpl3+)))
+
 (define-public rust-soup-sys-0.10
   (package
     (name "rust-soup-sys")
