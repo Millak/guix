@@ -3301,6 +3301,57 @@ cryptographic library.")
     (license ;; licensed under either of these, at your option
      (list license:lgpl3 license:gpl2 license:gpl3))))
 
+(define-public rust-oo7-0.2
+  (package
+    (name "rust-oo7")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "oo7" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13cpaq7f51gqcspd4097vjr7r2cjpxpn6c02x67dsdizk0xaiv5c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--"
+         "--skip=dbus::collection::tests::create_encrypted_item"
+         "--skip=dbus::collection::tests::create_plain_item"
+         "--skip=dbus::service::tests::create_collection")
+       #:cargo-inputs (("rust-aes" ,rust-aes-0.8)
+                       ("rust-async-fs" ,rust-async-fs-2)
+                       ("rust-async-io" ,rust-async-io-2)
+                       ("rust-async-lock" ,rust-async-lock-3)
+                       ("rust-blocking" ,rust-blocking-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-cbc" ,rust-cbc-0.1)
+                       ("rust-cipher" ,rust-cipher-0.4)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hkdf" ,rust-hkdf-0.12)
+                       ("rust-hmac" ,rust-hmac-0.12)
+                       ("rust-num" ,rust-num-0.4)
+                       ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-pbkdf2" ,rust-pbkdf2-0.12)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-zbus" ,rust-zbus-3)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/bilelmoussaoui/oo7")
+    (synopsis "Secret Service provider")
+    (description
+     "This package provides oo7, a Rust Secret Service provider.")
+    (license license:expat)))
+
 (define-public rust-orion-0.17
   (package
     (name "rust-orion")
