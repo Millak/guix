@@ -4067,6 +4067,23 @@ user-space processes.")
                (("-DFUSERMOUNT_DIR=[[:graph:]]+")
                 "-DFUSERMOUNT_DIR=\\\"/var/empty\\\"")))))))))
 
+(define-public fuse-for-appimage
+  (package
+    (inherit fuse)
+    (name "fuse")
+    (version "3.16.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/libfuse/libfuse/releases/"
+                           "download/fuse-" version "/fuse-" version ".tar.gz"))
+       (sha256
+        (base32 "11yfl2w2a445hllyzlakq97n32g06972vxpmh7lpbclnj9fhb5zp"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments fuse)
+       ((#:configure-flags original-flags #~(list))
+        #~(append #$original-flags '("--default-library=static")))))))
+
 (define-public unionfs-fuse
   (package
     (name "unionfs-fuse")

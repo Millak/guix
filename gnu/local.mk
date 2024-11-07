@@ -67,6 +67,7 @@
 # Copyright © 2024 David Elsing <david.elsing@posteo.net>
 # Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 # Copyright © 2024 Fabio Natali <me@fabionatali.com>
+# Copyright © 2024 Noé Lopez <noelopez@free.fr>
 #
 # This file is part of GNU Guix.
 #
@@ -139,6 +140,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/apl.scm				\
   %D%/packages/apple.scm			\
   %D%/packages/apparmor.scm			\
+  %D%/packages/appimage.scm			\
   %D%/packages/apr.scm				\
   %D%/packages/arcan.scm			\
   %D%/packages/aspell.scm			\
