@@ -3173,6 +3173,38 @@
     (description "This package provides FFI bindings to libgstcheck-1.0.")
     (license license:expat)))
 
+(define-public rust-gstreamer-pbutils-0.21
+  (package
+    (name "rust-gstreamer-pbutils")
+    (version "0.21.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-pbutils" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0idr354x9j77q8qrb99r6m6hrpa0z8j97jncqim5m08vhgbij9sb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+      (("rust-glib" ,rust-glib-0.18)
+       ("rust-gstreamer" ,rust-gstreamer-0.21)
+       ("rust-gstreamer-audio" ,rust-gstreamer-audio-0.21)
+       ("rust-gstreamer-pbutils-sys" ,rust-gstreamer-pbutils-sys-0.21)
+       ("rust-gstreamer-video" ,rust-gstreamer-video-0.21)
+       ("rust-libc" ,rust-libc-0.2)
+       ("rust-serde" ,rust-serde-1)
+       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-gir-format-check" ,rust-gir-format-check-0.1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "Rust bindings for GStreamer Base Utils library")
+    (description
+     "This package provides Rust bindings for GStreamer Base Utils library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gstreamer-pbutils-sys-0.21
   (package
     (name "rust-gstreamer-pbutils-sys")
