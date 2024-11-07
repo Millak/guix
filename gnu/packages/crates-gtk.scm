@@ -3398,6 +3398,38 @@
     (description "This package provides FFI bindings to libgstcheck-1.0.")
     (license license:expat)))
 
+(define-public rust-gstreamer-gl-0.21
+  (package
+    (name "rust-gstreamer-gl")
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-gl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "140vnlxnkq12c8qqgc5i2y9wdz8c8dga25d99021cg16508vkkry"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-glib" ,rust-glib-0.18)
+                       ("rust-gstreamer" ,rust-gstreamer-0.21)
+                       ("rust-gstreamer-base" ,rust-gstreamer-base-0.21)
+                       ("rust-gstreamer-gl-sys" ,rust-gstreamer-gl-sys-0.21)
+                       ("rust-gstreamer-video" ,rust-gstreamer-video-0.21)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base mesa))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "Rust bindings for GStreamer GL library")
+    (description
+     "This package provides Rust bindings for GStreamer GL library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gstreamer-gl-sys-0.21
   (package
     (name "rust-gstreamer-gl-sys")
