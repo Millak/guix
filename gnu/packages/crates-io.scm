@@ -6219,6 +6219,26 @@ they're not available.")
 they're not available.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-atomic-refcell-0.1
+  (package
+    (name "rust-atomic-refcell")
+    (version "0.1.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "atomic_refcell" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z04ng59y22mwf315wamx78ybhjag0x6k7isc36hdgcv63c7rrj1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/bholley/atomic_refcell")
+    (synopsis "Threadsafe RefCell")
+    (description "This package provides Threadsafe @code{RefCell}.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-atomic-take-1
   (package
     (name "rust-atomic-take")
