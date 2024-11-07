@@ -7683,21 +7683,22 @@ wrapping the @code{requests} Python library.")
 (define-public python-pysolr
   (package
     (name "python-pysolr")
-    (version "3.9.0")
+    (version "3.10.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pysolr" version))
-        (sha256
-         (base32
-          "1rj5jmscvxjwcmlfi6hmkj44l4x6n3ln5p7d8d18j566hzmmzw3f"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pysolr" version))
+       (sha256
+        (base32 "02gl1sma5cnpd7srpri1g68lpsg3s5n3lr462p5ll8v9s4nllyqj"))))
+    (build-system pyproject-build-system)
     (arguments
      '(#:tests? #f)) ; Tests require network access.
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-requests))
-    (native-inputs
-     (list python-setuptools-scm))
     (home-page "https://github.com/django-haystack/pysolr/")
     (synopsis "Lightweight python wrapper for Apache Solr")
     (description
