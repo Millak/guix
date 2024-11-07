@@ -1,0 +1,56 @@
+Upstream-status: Taken from upstream:
+    <https://git.savannah.gnu.org/cgit/hurd/hurd.git/commit/?id=d494333e7607ea03819adcfb69d89f8248ec2044>.
+
+From d494333e7607ea03819adcfb69d89f8248ec2044 Mon Sep 17 00:00:00 2001
+From: Flavio Cruz <flaviocruz@gmail.com>
+Date: Sun, 21 Jul 2024 17:20:55 -0400
+Subject: [PATCH] nfsd: fix -Werror=incompatible-pointer-types issues for
+ x86_64
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+Message-ID: <3pmgbk2myx4phdb6wcso54solmybulrvbytols5md3nri2p2qp@xjmfmpvwjp6t>
+---
+ nfsd/cache.c | 2 +-
+ nfsd/ops.c   | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/nfsd/cache.c b/nfsd/cache.c
+index cd5524af..864739c0 100644
+--- a/nfsd/cache.c
++++ b/nfsd/cache.c
+@@ -387,7 +387,7 @@ create_cached_handle (int fs, struct cache_handle *credc, file_t userport)
+   struct cache_handle *c;
+   int hash;
+   char *bp = fhandle.array + sizeof (int);
+-  size_t handlelen = NFS2_FHSIZE - sizeof (int);
++  mach_msg_type_number_t handlelen = NFS2_FHSIZE - sizeof (int);
+   mach_port_t newport, ref;
+ 
+   /* Authenticate USERPORT so that we can call file_getfh on it.  */
+diff --git a/nfsd/ops.c b/nfsd/ops.c
+index 463a9c87..64e94b93 100644
+--- a/nfsd/ops.c
++++ b/nfsd/ops.c
+@@ -292,7 +292,7 @@ op_write (struct cache_handle *c,
+   off_t offset;
+   size_t count;
+   error_t err;
+-  mach_msg_type_number_t amt;
++  vm_size_t amt;
+   char *bp;
+   struct stat st;
+ 
+@@ -583,7 +583,7 @@ op_readdir (struct cache_handle *c,
+   error_t err;
+   char *buf;
+   struct dirent *dp;
+-  size_t bufsize;
++  mach_msg_type_number_t bufsize;
+   int nentries;
+   int i;
+   int *replystart;
+-- 
+Janneke Nieuwenhuizen <janneke@gnu.org>  | GNU LilyPond https://LilyPond.org
+Freelance IT https://www.JoyOfSource.com | Avatar® https://AvatarAcademy.com
+

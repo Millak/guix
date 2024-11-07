@@ -317,7 +317,8 @@ Hurd-minimal package which are needed for both glibc and GCC.")
     (source (origin
               (inherit (package-source hurd-headers))
               (patches (search-patches "hurd-rumpdisk-no-hd.patch"
-                                       "hurd-startup.patch"))))
+                                       "hurd-startup.patch"
+                                       "hurd-64bit.patch"))))
     (version (package-version hurd-headers))
     (arguments
      `(#:tests? #f                      ;no "check" target
@@ -467,54 +468,84 @@ exec ${system}/rc \"$@\"
                          (find-files (string-append out "/libexec")))
                #t)))
          (add-after 'build 'build-libdde-linux
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             (invoke (string-append (assoc-ref (or native-inputs inputs) "make")
-                                    "/bin/make")
-                     ;; XXX There can be a race condition because subdirs
-                     ;; aren't interdependent targets in the Makefile.
-                     "-j1" "-C" "libdde_linux26"
-                     (string-append "SHELL="
-                                    (assoc-ref (or native-inputs inputs) "bash")
-                                    "/bin/bash")
-                     (string-append "CC="
-                                    ,(cc-for-target))
-                     (string-append "WARNINGS="
-                                    " -Wno-declaration-missing-parameter-type"
-                                    " -Wno-implicit-function-declaration"
-                                    " -Wno-implicit-int"
-                                    " -Wno-int-conversion"
-                                    " -Wno-strict-prototypes")
-                     "ARCH=x86")))
+          (lambda* (#:key inputs native-inputs #:allow-other-keys)
+            (let ((arch ,(match (or (%current-target-system)
+                                    (%current-system))
+                           ((? target-x86-32?)
+                            "x86")
+                           ((? target-x86-64?)
+                            "amd64"))))
+              (when ,(target-hurd64?)
+                (let ((dir "libdde_linux26/build/include"))
+                  (mkdir-p (string-append dir "/x86"))
+                  (format #t "symlink ~a -> ~a\n"
+                          (string-append dir "/x86/amd64") "x86")
+                  (symlink "x86" (string-append dir "/amd64"))
+                  (format #t "symlink ~a -> ~a\n"
+                          (string-append dir "/amd64/asm-x86_64") "asm-x86")
+                  (symlink "asm-x86" (string-append dir "/amd64/asm-x86_64"))))
+              (invoke (string-append (assoc-ref (or native-inputs inputs) "make")
+                                     "/bin/make")
+                      ;; XXX There can be a race condition because subdirs
+                      ;; aren't interdependent targets in the Makefile.
+                      "-j1" "-C" "libdde_linux26"
+                      (string-append "SHELL="
+                                     (assoc-ref (or native-inputs inputs) "bash")
+                                     "/bin/bash")
+                      (string-append "CC="
+                                     ,(cc-for-target))
+                      (string-append "WARNINGS="
+                                     " -Wno-declaration-missing-parameter-type"
+                                     " -Wno-implicit-function-declaration"
+                                     " -Wno-implicit-int"
+                                     " -Wno-int-conversion"
+                                     " -Wno-strict-prototypes")
+                      (string-append "ARCH=" arch)))))
          (add-after 'install 'install-goodies
-           (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
-             ;; Install additional goodies.
-             ;; TODO: Build & install *.msgids for rpctrace.
-             (let* ((out (assoc-ref outputs "out"))
-                    (datadir (string-append out "/share/hurd")))
-               ;; Install libdde_linux26.
-               (invoke (string-append (assoc-ref (or native-inputs inputs) "make")
-                                      "/bin/make")
-                       "-C" "libdde_linux26" "install"
-                       (string-append "SHELL="
-                                      (assoc-ref (or native-inputs inputs) "bash")
-                                      "/bin/bash")
-                       (string-append "INSTALLDIR="
-                                      out
-                                      "/share/libdde_linux26/build/include")
-                       "ARCH=x86")
-               ;; Install the fancy UTF-8 motd.
-               (mkdir-p (string-append out "/etc"))
-               (copy-file "console/motd.UTF8"
-                          (string-append out "/etc/motd"))
+          (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
+            ;; Install additional goodies.
+            ;; TODO: Build & install *.msgids for rpctrace.
+            (let* ((out (assoc-ref outputs "out"))
+                   (datadir (string-append out "/share/hurd"))
+                   (arch ,(match (or (%current-target-system)
+                                     (%current-system))
+                            ((? target-x86-32?)
+                             "x86")
+                            ((? target-x86-64?)
+                             "amd64")))
+                   (dir (string-append out "/share/libdde_linux26/build/include")))
+              (mkdir-p dir)
+              (when ,(target-hurd64?)
+                (mkdir-p (string-append dir "/amd64"))
+                (format #t "symlink ~a -> ~a\n"
+                        (string-append dir "/amd64/asm-x86_64")
+                        "x86")
+                (symlink "x86" (string-append dir "/amd46")))
+              (invoke (string-append (assoc-ref (or native-inputs inputs) "make")
+                                     "/bin/make")
+                      "-C" "libdde_linux26" "install"
+                      (string-append "SHELL="
+                                     (assoc-ref (or native-inputs inputs) "bash")
+                                     "/bin/bash")
+                      (string-append "INSTALLDIR=" dir)
+                      (string-append "ARCH=" arch))
+              (when ,(target-hurd64?)
+                (format #t "symlink ~a -> ~a\n"
+                        (string-append dir "/amd64/asm-x86_64")
+                        "asm-x86")
+                (symlink "asm-x86" (string-append dir "/amd64/asm-x86_64")))
+              ;; Install the fancy UTF-8 motd.
+              (mkdir-p (string-append out "/etc"))
+              (copy-file "console/motd.UTF8"
+                         (string-append out "/etc/motd"))
 
-               ;; Install the BDF font for use by the console client.
-               (copy-file (assoc-ref inputs "unifont")
-                          "unifont.gz")
-               (invoke "gunzip" "unifont.gz")
-               (mkdir-p datadir)
-               (copy-file "unifont"
-                          (string-append datadir "/vga-system.bdf"))
-               #t))))
+              ;; Install the BDF font for use by the console client.
+              (copy-file (assoc-ref inputs "unifont")
+                         "unifont.gz")
+              (invoke "gunzip" "unifont.gz")
+              (mkdir-p datadir)
+              (copy-file "unifont"
+                         (string-append datadir "/vga-system.bdf"))))))
        #:configure-flags
        ,#~(list (string-append "LDFLAGS=-Wl,-rpath="
                                #$output "/lib")
@@ -599,7 +630,6 @@ implementing them.")
                               " -Wno-implicit-int"
                               " -Wno-int-conversion"
                               " -Wno-strict-prototypes")
-               "ARCH=x86")
                (let ((arch ,(match (or (%current-target-system)
                                        (%current-system))
                               ((? target-x86-32?)
