@@ -3070,6 +3070,35 @@
               ("rust-ron" ,rust-ron-0.7)
               ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-gstreamer-allocators-0.21
+  (package
+    (name "rust-gstreamer-allocators")
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-allocators" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14s244qk5dznd1pvswps7k61s6ksjd3pv0fzvpgybm1k9c5v57vc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-glib" ,rust-glib-0.18)
+        ("rust-gstreamer" ,rust-gstreamer-0.21)
+        ("rust-gstreamer-allocators-sys" ,rust-gstreamer-allocators-sys-0.21)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "Rust bindings for GStreamer Allocators library")
+    (description
+     "This package provides Rust bindings for GStreamer Allocators library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gstreamer-allocators-sys-0.21
   (package
     (name "rust-gstreamer-allocators-sys")
