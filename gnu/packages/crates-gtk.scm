@@ -2967,8 +2967,38 @@
     (description "FFI bindings to libgstaudio, part of Gstreamer.")
     (license license:expat)))
 
+(define-public rust-gstreamer-base-0.21
+  (package
+    (name "rust-gstreamer-base")
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-base" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zqnld0w2jqkz1m5xna3a3nnrpvrchpcrrzdgwim54540ilhn5fb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; https://github.com/gtk-rs/gtk3-rs/issues/768
+       #:cargo-inputs (("rust-atomic-refcell" ,rust-atomic-refcell-0.1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-glib" ,rust-glib-0.18)
+                       ("rust-gstreamer" ,rust-gstreamer-0.21)
+                       ("rust-gstreamer-base-sys" ,rust-gstreamer-base-sys-0.21)
+                       ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "Rust bindings for GStreamer Base library")
+    (description "Rust bindings for GStreamer Base library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gstreamer-base-0.18
   (package
+    (inherit rust-gstreamer-base-0.21)
     (name "rust-gstreamer-base")
     (version "0.18.0")
     (source
@@ -2978,7 +3008,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0gw6sr75h01y3j6lpxhc7p1frvkba9a4imyyb2ppqh42cprkakr2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; https://github.com/gtk-rs/gtk3-rs/issues/768
        #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
@@ -2987,13 +3016,7 @@
                        ("rust-gstreamer" ,rust-gstreamer-0.18)
                        ("rust-gstreamer-base-sys" ,rust-gstreamer-base-sys-0.18)
                        ("rust-libc" ,rust-libc-0.2))
-       #:cargo-development-inputs (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
-    (native-inputs (list pkg-config))
-    (inputs (list glib gstreamer))
-    (home-page "https://gstreamer.freedesktop.org")
-    (synopsis "Rust bindings for GStreamer Base library")
-    (description "Rust bindings for GStreamer Base library.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-gstreamer-base-sys-0.21
   (package
