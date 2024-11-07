@@ -39,6 +39,7 @@ choice.
 * Deprecation Policy::          Commitments and tools for deprecation.
 * Writing Documentation::       Improving documentation in GNU Guix.
 * Translating Guix::            Make Guix speak your native language.
+* Contributing to Guix's Infrastructure::  Make Guix ecosystem work better.
 @end menu
 
 @node Requirements
@@ -3607,3 +3608,204 @@ differs for the various components.
       be updated accordingly (see @file{website/i18n-howto.txt} for more
       information on the process).
 @end itemize
+
+
+@cindex infrastructure
+@node Contributing to Guix's Infrastructure
+@section Contributing to Guix's Infrastructure
+
+Since its inception, the Guix project has always valued its autonomy, and that
+reflects in its infrastructure: our servers run Guix System and exclusively
+free software, and are administered by volunteers.
+
+Of course this comes at a cost and this is why we need contributions.  Our hope
+is to make infrastructure-related activity more legible so that maybe you can
+picture yourself helping in one of these areas.
+
+
+@menu
+* Coding::
+* System Administration::
+* Day-to-Day System Administration::
+* On-Site Intervention::
+* Hosting::
+* Administrative Tasks::
+@end menu
+
+@node Coding
+@subsection Coding
+
+The project runs many Guix-specific services; this is all lovely Scheme code
+but it tends to receive less attention than Guix itself:
+
+@itemize
+@item
+Build Farm Front-End: @url{https://git.cbaines.net/guix/bffe, bffe}
+@item
+Cuirass: @url{https://guix.gnu.org/cuirass/, Cuirass}
+@item
+Goggles (IRC logger):
+@url{https://git.savannah.gnu.org/cgit/guix/maintenance.git/tree/hydra/goggles.scm,
+Goggles}
+@item
+Guix Build Coordinator:
+@url{https://git.savannah.gnu.org/cgit/guix/build-coordinator.git/,
+Build-Coordinator}
+@item
+Guix Data Service:
+@url{https://git.savannah.gnu.org/git/guix/data-service.git/, Data-Service}
+@item
+Guix Packages Website:
+@url{https://codeberg.org/luis-felipe/guix-packages-website.git,
+Guix-Packages-Website}
+@item
+mumi: @url{https://git.savannah.gnu.org/cgit/guix/mumi.git/, Mumi}
+@item
+nar-herder: @url{https://git.savannah.gnu.org/cgit/guix/nar-herder.git/,
+Nar-Herder}
+@item
+QA Frontpage:
+@url{https://git.savannah.gnu.org/git/guix/qa-frontpage.git, QA-Frontpage}
+@end itemize
+
+There is no time constraint on this coding activity: any improvement is
+welcome, whenever it comes.  Most of these code bases are relatively small,
+which should make it easier to get started.
+
+Prerequisites: Familiarity with Guile, HTTP, and databases.
+
+If you wish to get started, check out the README of the project of your choice
+and get in touch with guix-devel and the primary developer(s) of the tool as
+per @code{git shortlog -s | sort -k1 -n}.
+
+@node System Administration
+@subsection System Administration
+
+Guix System configuration for all our systems is held in this repository:
+
+@url{https://git.savannah.gnu.org/cgit/guix/maintenance.git/tree/hydra/}
+
+The two front-ends are @file{berlin.scm} (the machine behind ci.guix.gnu.org)
+and @file{bayfront.scm} (the machine behind bordeaux.guix.gnu.org,
+guix.gnu.org, hpc.guix.info, qa.guix.gnu.org, and more).  Both connect to a
+number of build machines and helpers.
+
+Without even having SSH access to the machine, you can help by posting patches
+to improve the configuration (you can test it with @code{guix system vm}).
+Here are ways you can help:
+
+@itemize
+@item
+Improve infra monitoring: set up a dashboard to monitor all the infrastructure,
+and an out-of-band channel to communicate about downtime.
+
+@item
+Implement web site redundancy: guix.gnu.org should be backed by several
+machines on different sites.  Get in touch with us and/or send a patch!
+
+@item
+Implement substitute redundancy: likewise, bordeaux.guix.gnu.org and
+ci.guix.gnu.org should be backed by several head nodes.
+
+@item
+Improve backup: there's currently ad-hoc backup of selected pieces over rsync
+between the two head nodes; we can improve on that, for example with a
+dedicated backup site and proper testing of recoverability.
+
+@item
+Support mirroring: We'd like to make it easy for others to mirror substitutes
+from ci.guix and bordeaux.guix, perhaps by offering public rsync access.
+
+@item
+Optimize our web services: Monitor the performance of our services and tweak
+nginx config or whatever it takes to improve it.
+
+There is no time constraint on this activity: any improvement is welcome,
+whenever you can work on it.
+
+Prerequisite: Familiarity with Guix System administration and ideally with the
+infrastructure handbook:
+
+@url{https://git.savannah.gnu.org/cgit/guix/maintenance.git/tree/doc/infra-handbook.org,
+Infra-Handbook}
+
+@end itemize
+
+@node Day-to-Day System Administration
+@subsection Day-to-Day System Administration
+
+We're also looking for people who'd be willing to have SSH access to some of
+the infrastructure to help with day-to-day maintenance: restarting a build,
+restarting the occasional service that has gone wild (that can happen),
+reconfiguring/upgrading a machine, rebooting, etc.
+
+This day-to-day activity requires you to be available some of the time (during
+office hours or not, during the week-end or not), whenever is convenient for
+you, so you can react to issues reported on IRC, on the mailing list, or
+elsewhere, and synchronize with other sysadmins.
+
+Prerequisite: Being a ``known'' member of the community, familiarity with Guix
+System administration, with some of the services/web sites being run, and with
+the infrastructure handbook:
+
+@url{https://git.savannah.gnu.org/cgit/guix/maintenance.git/tree/doc/infra-handbook.org,
+Infra-Handbook}
+
+@node On-Site Intervention
+@subsection On-Site Intervention
+
+The first front-end is currently generously hosted by the Max Delbrück Center
+(MDC), a research institute in Berlin, Germany. Only authorized personnel can
+physically access it.
+
+The second one, bordeaux.guix.gnu.org, is hosted in Bordeaux, France, in a
+professional data center shared with non-profit ISP Aquilenet.  If you live in
+the region of Bordeaux and would like to help out when we need to go on-site,
+please make yourself known by emailing @email{guix-sysadmin@@gnu.org}.
+
+On-site interventions are rare, but they're usually in response to an
+emergency.
+
+@node Hosting
+@subsection Hosting
+
+We're looking for people who can host machines and help out whenever
+physical access is needed.  More specifically:
+
+@itemize
+@item
+We need hosting of ``small'' machines such as single-board computers (AArch64,
+RISC-V) for use as build machines.
+
+@item
+We need hosting for front-ends and x86_64 build machines in a data center where
+they can be racked and where, ideally, several local Guix sysadmins can
+physically access them.
+@end itemize
+
+The machines should be accessible over Wireguard VPN most of the
+time, so longer power or network interruptions should be the
+exception.
+
+Prerequisites: Familiarity with installing and remotely administering Guix
+System.
+
+@node Administrative Tasks
+@subsection Administrative Tasks
+
+The infra remains up and running thanks to crucial administrative tasks, which
+includes:
+
+@itemize
+@item
+Selecting and purchasing hardware, for example build machines.
+@item
+Renewing domain names.
+
+@item
+Securing funding, in particular via the Guix Foundation:
+@url{https://foundation.guix.info, Guix Foundation}
+@end itemize
+
+Prerequisites: Familiarity with hardware, and/or DNS registrars,
+and/or sponsorship, and/or crowdfunding.
