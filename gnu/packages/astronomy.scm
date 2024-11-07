@@ -6520,14 +6520,6 @@ using (multivariate) polynomials.")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               ;; XXX: Updating ipywidgets requires long chain of rebuilds,
-               ;; maybe for python-team.
-               ;;
-               ;; ipywidgets>=8.0.0
-               ((">=8.0.0") ">=7.6.3"))))
           (add-before 'check 'prepare-test-environment
             (lambda _
               (setenv "HOME" "/tmp")
