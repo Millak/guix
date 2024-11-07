@@ -977,7 +977,10 @@ access to test session metadata.")
         (base32 "14x9f1l9a5ghf527i5qfcfa003mkrky1dhx2hfwq5nma9v1n0lgz"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-scm python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-psutil))
     (home-page "https://github.com/astropy/pytest-openfiles")
