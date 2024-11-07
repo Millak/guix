@@ -3,6 +3,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2024 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,7 +33,8 @@
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:select (%store-directory))
   #:use-module (gnu packages)
-  #:use-module ((gnu packages base) #:select (libc-utf8-locales-for-target))
+  #:use-module ((gnu packages base) #:select (libc-utf8-locales-for-target
+                                              hello))
   #:use-module (gnu packages bootstrap)
   #:use-module ((gnu packages package-management) #:select (rpm))
   #:use-module ((gnu packages compression) #:select (squashfs-tools))
@@ -338,6 +340,42 @@
                                                  1)
                                                 (pk 'guilelink (readlink "bin"))))
                              (mkdir #$output))))))))
+      (built-derivations (list check))))
+
+  (unless store (test-skip 1))
+  (test-assertm "appimage"
+    (mlet* %store-monad
+        ((guile   (set-guile-for-build (default-guile)))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile hello)))
+                      (hooks '())
+                      (locales? #f)))
+         (image   (self-contained-appimage "hello-appimage" profile
+                                           #:entry-point "bin/hello"
+                                           #:extra-options
+                                           (list #:relocatable? #t)))
+         (check   (gexp->derivation
+                   "check-appimage"
+                   #~(invoke #$image))))
+      (built-derivations (list check))))
+
+  (unless store (test-skip 1))
+  (test-assertm "appimage + localstatedir"
+    (mlet* %store-monad
+        ((guile   (set-guile-for-build (default-guile)))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile hello)))
+                      (hooks '())
+                      (locales? #f)))
+         (image   (self-contained-appimage "hello-appimage" profile
+                                           #:entry-point "bin/hello"
+                                           #:localstatedir? #t
+                                           #:extra-options
+                                           (list #:relocatable? #t)))
+         (check   (gexp->derivation
+                   "check-appimage"
+                   #~(begin
+                       (invoke #$image)))))
       (built-derivations (list check))))
 
   (unless store (test-skip 1))

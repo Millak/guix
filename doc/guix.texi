@@ -6955,6 +6955,16 @@ directly be used as a file system container image with the
 environment}, using commands like @command{singularity shell} or
 @command{singularity exec}.
 
+@cindex AppImage, create an AppImage file with @command{guix pack}
+Another format internally based on SquashFS is
+@uref{https://appimage.org/, AppImage}. An AppImage file can be created
+and executed without any special privileges:
+
+@example
+file=$(guix pack -f appimage --entry-point=bin/guile guile)
+$file --help
+@end example
+
 Several command-line options allow you to customize your pack:
 
 @table @code
@@ -7071,6 +7081,48 @@ to install Guix-produced @samp{.rpm} packages on a system where
 installation or other, non-rpm packs.
 @end quotation
 
+@item appimage
+@cindex AppImage, create an AppImage file with @command{guix pack}
+This produces an @uref{https://appimage.org/, AppImage file} with the
+@samp{.AppImage} extension.  AppImage is a SquashFS volume prefixed with
+a runtime that mounts the SquashFS file system and executes the binary
+provided with @option{--entry-point}.  This results in a self-contained
+archive that bundles the software and all its requirements into a single
+file.  When the file is made executable it runs the packaged software.
+
+@example
+guix pack -f appimage --entry-point=bin/vlc vlc
+@end example
+
+The runtime used by AppImages invokes the @command{fusermount3} command
+to mount the image quickly.  If that command is unavailable, the
+AppImage fails to run, but it can still be started by passing the
+@option{--appimage-extract-and-run} flag.
+
+@quotation Warning
+When building an AppImage, always @emph{pass} the @option{--relocatable}
+option (or @option{-R}, or @option{-RR}) to make sure the image can be
+used on systems where Guix is not installed.  A warning is printed when
+this option is not used.
+@end quotation
+
+@example
+guix pack -f appimage --entry-point=bin/hello --relocatable hello
+@end example
+
+@quotation Note
+The resulting AppImage does not conform to the complete standard as it
+currently does not contain a @file{.DirIcon} file.  This does not impact
+functionality of the AppImage itself, but possibly that of software used
+to manage AppImages.
+@end quotation
+
+@quotation Note
+As the generated AppImage packages the complete dependency graph, it
+will be larger than comparable AppImage files found online, which depend
+on host system libraries.
+@end quotation
+
 @end table
 
 @cindex relocatable binaries
@@ -7160,10 +7212,10 @@ execution engines listed above by setting the
 
 @cindex entry point, for Docker and Singularity images
 @item --entry-point=@var{command}
-Use @var{command} as the @dfn{entry point} of the resulting pack, if the pack
-format supports it---currently @code{docker} and @code{squashfs} (Singularity)
-support it.  @var{command} must be relative to the profile contained in the
-pack.
+Use @var{command} as the @dfn{entry point} of the resulting pack, if the
+pack format supports it---currently @code{docker}, @code{appimage}, and
+@code{squashfs} (Singularity) support it.  @var{command} must be
+relative to the profile contained in the pack.
 
 The entry point specifies the command that tools like @code{docker run} or
 @code{singularity run} automatically start by default.  For example, you can

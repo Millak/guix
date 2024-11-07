@@ -10,6 +10,8 @@
 ;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2023 Graham James Addis <graham@addis.org.uk>
 ;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2024 Sebastian Dümcke <code@sam-d.com>
+;;; Copyright © 2024 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,6 +58,7 @@
   #:use-module ((gnu packages compression) #:hide (zip))
   #:use-module (gnu packages guile)
   #:use-module (gnu packages base)
+  #:autoload   (gnu packages appimage) (appimage-type2-runtime)
   #:autoload   (gnu packages gnupg) (guile-gcrypt)
   #:autoload   (gnu packages guile) (guile2.0-json guile-json)
   #:use-module (srfi srfi-1)
@@ -64,6 +67,7 @@
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-37)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 optargs)
   #:export (symlink-spec-option-parser
 
             self-contained-tarball
@@ -71,6 +75,7 @@
             rpm-archive
             docker-image
             squashfs-image
+            self-contained-appimage
 
             %formats
             guix-pack))
@@ -974,8 +979,100 @@ PREUN-FILE and POSTUN-FILE can be provided via EXTRA-OPTIONS."
   (gexp->derivation (string-append name ".rpm") build
                     #:target target
                     #:references-graphs `(("profile" ,profile))))
+
+;;;
+;;; AppImage format
+;;;
+(define* (self-contained-appimage name profile
+                                  #:key target
+                                  (profile-name "guix-profile")
+                                  entry-point
+                                  (compressor (lookup-compressor "zstd"))
+                                  localstatedir?
+                                  (symlinks '())
+                                  (archiver tar)
+                                  (extra-options '()))
+  "Return a self-contained AppImage containing a store initialized with the
+closure of PROFILE, a derivation.  The AppImage contains /gnu/store unless
+RELOCATABLE option is used; if LOCALSTATEDIR? is true, it also contains
+/var/guix, including /var/guix/db with a properly initialized store database.
 
-  
+SYMLINKS must be a list of (SOURCE -> TARGET) tuples denoting symlinks to be
+added to the pack."
+  (unless entry-point
+    (leave (G_ "entry-point must be provided in the '~a' format~%")
+           'appimage))
+  (let-keywords extra-options #f ((relocatable? #f))
+    (unless relocatable?
+      (warning (G_ "AppImages should be built with the --relocatable flag~%"))))
+
+  (define runtime-package appimage-type2-runtime)
+  (define runtime-path "bin/runtime-fuse3")
+  (define %valid-compressors '("gzip" "zstd"))
+
+  (let ((compressor-name (compressor-name compressor)))
+    (unless (member compressor-name %valid-compressors)
+      (leave (G_ "~a is not a valid squashfs archive compressor used in
+generating the AppImage.  Valid compressors are: ~a~%")
+             compressor-name
+             %valid-compressors)))
+
+  (define builder
+    (with-extensions (list guile-gcrypt)
+      (with-imported-modules (source-module-closure
+                              '((guix build store-copy)
+                                (guix build utils))
+                              #:select? not-config?)
+        #~(begin
+            (use-modules (guix build utils)
+                         (guix build store-copy)
+                         (rnrs io ports)
+                         (srfi srfi-1)
+                         (srfi srfi-26))
+
+            (define (concatenate-files result file1 file2)
+              "Creates a new file RESULT containing FILE1 followed by FILE2."
+              (call-with-output-file result
+                (lambda (output)
+                  (call-with-input-file file1
+                    (lambda (input)
+                      (dump-port input output)))
+                  (call-with-input-file file2
+                    (lambda (input)
+                      (dump-port input output))))))
+
+            (let* ((appdir "AppDir")
+                   (squashfs "squashfs")
+                   (profile-items (map store-info-item
+                                       (call-with-input-file "profile" read-reference-graph)))
+                   (profile (find (lambda (item)
+                                      (string-suffix? "-profile" item))
+                                  profile-items)))
+              (mkdir-p appdir)
+              ;; Copy all store items from the profile to the AppDir.
+              (populate-store '("profile") appdir)
+              ;; Symlink the provided entry-point to AppDir/AppRun.
+              (symlink (string-append "." profile "/" #$entry-point)
+                       (string-append appdir "/AppRun"))
+              ;; Create .desktop file as required by the spec.
+              (make-desktop-entry-file
+               (string-append appdir "/" #$name ".desktop")
+               #:name #$name
+               #:exec #$entry-point)
+              ;; Compress the AppDir.
+              (invoke #+(file-append squashfs-tools "/bin/mksquashfs") appdir
+                      squashfs "-root-owned" "-noappend"
+                      "-comp" #+(compressor-name compressor))
+              ;; Append runtime and squashFS into file AppImage.
+              (concatenate-files #$output
+                                 #$(file-append runtime-package "/" runtime-path)
+                                 squashfs)
+              ;; Add execution permission.
+              (chmod #$output #o555))))))
+  (gexp->derivation (string-append name ".AppImage") builder
+		    #:target target
+		    #:references-graphs `(("profile" ,profile))))
+
 ;;;
 ;;; Compiling C programs.
 ;;;
@@ -1311,6 +1408,7 @@ libfakechroot.so and related ld.so machinery as a fallback."
     (squashfs . ,squashfs-image)
     (docker  . ,docker-image)
     (deb . ,debian-archive)
+    (appimage . ,self-contained-appimage)
     (rpm . ,rpm-archive)))
 
 (define (show-formats)
@@ -1327,6 +1425,8 @@ libfakechroot.so and related ld.so machinery as a fallback."
   deb           Debian archive installable via dpkg/apt"))
   (display (G_ "
   rpm           RPM archive installable via rpm/yum"))
+  (display (G_ "
+  appimage      AppImage self-contained and executable format"))
   (newline))
 
 (define (required-option symbol)
@@ -1694,6 +1794,8 @@ Create a bundle of PACKAGE.\n"))
                                            (process-file-arg opts 'preun-file)
                                            #:postun-file
                                            (process-file-arg opts 'postun-file)))
+                                    ('appimage
+                                     (list #:relocatable? relocatable?))
                                     (_ '())))
                    (target      (assoc-ref opts 'target))
                    (bootstrap?  (assoc-ref opts 'bootstrap?))
