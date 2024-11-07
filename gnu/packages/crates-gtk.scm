@@ -2759,6 +2759,27 @@
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gst-plugin-version-helper-0.8
+  (package
+    (name "rust-gst-plugin-version-helper")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gst-plugin-version-helper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0alv0v7jfg7ryybb3qnbdwx3nqzkdl305il1xk92y9b02r7qfpjf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-toml-edit" ,rust-toml-edit-0.22))))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "build.rs helper function for GStreamer plugin metadata")
+    (description
+     "This package provides build.rs helper function for GStreamer plugin metadata.")
+    (license license:expat)))
+
 (define-public rust-gstreamer-0.21
   (package
     (name "rust-gstreamer")
