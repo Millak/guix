@@ -4016,17 +4016,6 @@ recurrence relations.")
        (sha256
         (base32 "00s2rwjdlq38zkf7wl1gvm2aw057r30266lkzfxkrfzr4i705xnq"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-      (list python-importlib-metadata
-            python-ndim
-            python-numpy
-            python-sympy))
-    (native-inputs (list ;python-cplot  ;only used in deselected tests
-                         python-matplotx
-                         python-meshio
-                         python-meshzoo
-                         python-pytest
-                         python-scipy))
     (arguments
      (list
       #:test-flags
@@ -4034,6 +4023,19 @@ recurrence relations.")
       ;; in calls to cplot.
       #~(list "--deselect" "tests/test_u3.py::test_write_single"
               "--deselect" "tests/test_u3.py::test_write_tree")))
+    (native-inputs
+     (list python-matplotx
+           python-meshio
+           python-meshzoo
+           python-pytest
+           python-scipy
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-importlib-metadata
+           python-ndim
+           python-numpy
+           python-sympy))
     (home-page "https://github.com/diego-hayashi/orthopy")
     (synopsis "Tools for orthogonal polynomials, Gaussian quadrature")
     (description "@code{orthopy} provides various orthogonal polynomial
