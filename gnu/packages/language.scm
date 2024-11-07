@@ -11,6 +11,7 @@
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Charles <charles@charje.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -386,45 +387,48 @@ Marburg.")
                    license:gpl3+))))    ; tools
 
 (define-public liblouisutdml
-  (package
-    (name "liblouisutdml")
-    (version "2.9.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/liblouis/liblouisutdml")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0c32cfcfp0lyfd655c9ihhh3p7lhrb9q3xbll7q5dw4km86gaq6w"))))
-    (build-system gnu-build-system)
-    (outputs '("out" "bin" "doc"))
-    (arguments
-     `(#:configure-flags
-       (list "--disable-static")))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("help2man" ,help2man)
-       ("jdk" ,icedtea "jdk")
-       ("libtool" ,libtool)
-       ("makeinfo" ,texinfo)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     (list libxml2))
-    (propagated-inputs
-     `(("liblouis" ,liblouis)
-       ("liblouis:bin" ,liblouis "bin")))
-    (synopsis "Braille transcription services")
-    (description "Liblouisutdml is a library providing complete braille
+  ;; Use the latest commit, which includes test suite fixes not yet released.
+  (let ((commit "00ca7838e30ebd5ed6f635236aa235e2c8f089c1")
+        (revision "0"))
+    (package
+      (name "liblouisutdml")
+      (version (git-version "2.12.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/liblouis/liblouisutdml")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1pr3wys48bzblr6kav24gr8slsp409f81iqxw19922k24y5y31l7"))))
+      (build-system gnu-build-system)
+      (outputs '("out" "bin" "doc"))
+      (arguments
+       (list #:configure-flags
+             #~(list "--disable-static")))
+      (native-inputs
+       (list autoconf
+             automake
+             help2man
+             `(,icedtea "jdk")
+             libtool
+             texinfo
+             pkg-config))
+      (inputs
+       (list libxml2))
+      (propagated-inputs
+       (list liblouis
+             `(,liblouis "bin")))
+      (synopsis "Braille transcription services")
+      (description "Liblouisutdml is a library providing complete braille
 transcription services for xml, html and text documents.  It translates into
 appropriate braille codes and formats according to its style sheet and the
 specifications in the document.")
-    (home-page "http://liblouis.org/")
-    (license (list license:lgpl3+       ; library
-                   license:gpl3+))))    ; tools
+      (home-page "http://liblouis.org/")
+      (license (list license:lgpl3+       ; library
+                     license:gpl3+)))))    ; tools
 
 (define-public libstemmer
   (package
