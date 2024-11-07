@@ -248,14 +248,16 @@
     (native-inputs
      (if (%current-target-system)
          `(("perl-cross"
-            ,(origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/arsv/perl-cross")
-                     (commit "1.4")))
-               (file-name (git-file-name "perl-cross" "1.4"))
-               (sha256
-                (base32 "1ydjvlhrk06ccyj4bm8by7xk90krsll2k380mc3x1mhfrc7r9gzy")))))
+            ,(let ((version "1.6"))
+               (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                       (url "https://github.com/arsv/perl-cross")
+                       (commit version)))
+                 (file-name (git-file-name "perl-cross" version))
+                 (sha256
+                  (base32
+                   "0s06lkx5b79r9cn6pm5p6d4jbdjq7wg7rjr75nw5xdhw1z3wnl2d"))))))
          '()))
     (native-search-paths (list (search-path-specification
                                 (variable "PERL5LIB")
