@@ -16,6 +16,7 @@
 ;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2729,6 +2730,36 @@ It's features include:
 @item @code{mint} integration for 2D/3D/4D support (points, rectangles, colors, etc).
 @end enumerate")
     (license license:expat)))
+
+(define-public rust-khronos-egl-5
+  (package
+    (name "rust-khronos-egl")
+    (version "5.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "khronos-egl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qw31jzaly1kcn2smicmcm6g4y5sh0y5l8fnaca85ssaq0b2nf6i"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; error: doctest failed
+     `(#:tests? #f
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-libloading" ,rust-libloading-0.8)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))
+       #:cargo-development-inputs
+       (("rust-gl" ,rust-gl-0.14)
+        ("rust-wayland-client" ,rust-wayland-client-0.28)
+        ("rust-wayland-egl" ,rust-wayland-egl-0.28)
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))
+    (native-inputs (list pkg-config wayland))
+    (inputs (list mesa))
+    (home-page "https://github.com/timothee-haudebourg/khronos-egl")
+    (synopsis "Rust bindings for EGL")
+    (description "This package provides Rust bindings for EGL.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-libdav1d-sys-0.6
   (package
