@@ -1224,6 +1224,38 @@
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gdk4-wayland-0.7
+  (package
+    (name "rust-gdk4-wayland")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk4-wayland" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04zkspjs1r6l4gj241p9xm2zmp91phm1khakw5jvsm8yy4pi1f8d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gdk4" ,rust-gdk4-0.7)
+                       ("rust-gdk4-wayland-sys" ,rust-gdk4-wayland-sys-0.7)
+                       ("rust-gio" ,rust-gio-0.18)
+                       ("rust-glib" ,rust-glib-0.18)
+                       ("rust-khronos-egl" ,rust-khronos-egl-5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-wayland-backend" ,rust-wayland-backend-0.1)
+                       ("rust-wayland-client" ,rust-wayland-client-0.30)
+                       ("rust-xkb" ,rust-xkb-0.3))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gtk))
+    (home-page "https://gtk-rs.org/gtk4-rs")
+    (synopsis "Rust bindings of the GDK 4 Wayland library")
+    (description
+     "This package provides Rust bindings of the GDK 4 Wayland library.")
+    (license license:expat)))
+
 (define-public rust-gdk4-wayland-sys-0.7
   (package
     (name "rust-gdk4-wayland-sys")
