@@ -296,7 +296,10 @@ Python 3.3 and later, rather than on Python 2.")
               ;; By default 'make install' creates hard links for
               ;; things in 'libexec/git-core', which leads to huge
               ;; nars; see <https://bugs.gnu.org/21949>.
-              "NO_INSTALL_HARDLINKS=indeed")
+              "NO_INSTALL_HARDLINKS=indeed"
+              #$@(if (or (target-hurd64?) (%current-target-system))
+                     #~("-Wno-implicit-function-declaration")
+                     #~()))
       #:phases
       #~(modify-phases %standard-phases
           #$@(if (%current-target-system)
@@ -305,7 +308,7 @@ Python 3.3 and later, rather than on Python 2.")
                       (lambda _
                         (substitute* "config.mak.uname"
                           (("uname_S := .*" all)
-                           (if (equal? #$(%current-target-system) "i586-pc-gnu")
+                           (if #$(target-hurd?)
                                "uname_S := GNU\n"
                                all))))))
                  ;; We do not have a full bash when cross-compiling.
