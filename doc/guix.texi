@@ -10522,7 +10522,7 @@ argument interactively, at the REPL (@pxref{Using Guix Interactively}).
 Keep in mind that build phases are code evaluated at the time the
 package is actually built.  This explains why the whole
 @code{modify-phases} expression above is quoted (it comes after the
-@code{'} or apostrophe): it is @dfn{staged} for later execution.
+@code{#~} or hash-tilde): it is @dfn{staged} for later execution.
 @xref{G-Expressions}, for an explanation of code staging and the
 @dfn{code strata} involved.
 
