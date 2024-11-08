@@ -589,7 +589,7 @@ API key.")
 (define-public emacs-chatgpt-shell
   (package
     (name "emacs-chatgpt-shell")
-    (version "1.8.1")
+    (version "1.20.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -598,7 +598,7 @@ API key.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04byw3zz06fr1g185p55pdaf5bqxj3mssldbh089pmx10qdmaxqi"))))
+                "161q8d2b4sq481jh4zwagvh88wg51dsnf76n2l2b7wv3nh7cjh2m"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases
