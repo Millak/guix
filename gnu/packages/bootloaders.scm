@@ -192,6 +192,14 @@
                        (setenv "BUILD_FREETYPE_CFLAGS"
                                (string-append "-I" freetype
                                               "/include/freetype2"))))))
+               #$@(if (target-hurd64?)
+                      #~((add-after 'unpack 'apply-hurd64-patch
+                           (lambda _
+                             (let ((patch
+                                    #$(local-file
+                                       (search-patch "grub-hurd64.patch"))))
+                               (invoke "patch" "--force" "-p1" "-i" patch)))))
+                      #~())
                (add-before 'check 'disable-flaky-test
                  (lambda _
                    ;; This test is unreliable. For more information, see:

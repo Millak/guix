@@ -1,0 +1,32 @@
+Upstream-status: Not presented upstream.
+
+From a4eb7d1f2cbd02132a9f5512f1294182576d4653 Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Fri, 8 Nov 2024 11:47:49 +0100
+Subject: [PATCH] osdep/hurd: Support the 64bit Hurd.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+* grub-core/osdep/hurd/getroot.c (grub_util_find_hurd_root_device):
+Use mach_msg_type_number_t instead of size_t.
+---
+ grub-core/osdep/hurd/getroot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/osdep/hurd/getroot.c b/grub-core/osdep/hurd/getroot.c
+index 0efefdab4..b849700e6 100644
+--- a/grub-core/osdep/hurd/getroot.c
++++ b/grub-core/osdep/hurd/getroot.c
+@@ -58,7 +58,7 @@ grub_util_find_hurd_root_device (const char *path)
+   file_t file;
+   error_t err;
+   char *argz = NULL, *name = NULL, *ret;
+-  size_t argz_len = 0;
++  mach_msg_type_number_t argz_len = 0;
+   int i;
+ 
+   file = file_name_lookup (path, 0, 0);
+-- 
+Janneke Nieuwenhuizen <janneke@gnu.org>  | GNU LilyPond https://LilyPond.org
+Freelance IT https://www.JoyOfSource.com | Avatar® https://AvatarAcademy.com
+
