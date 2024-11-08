@@ -2397,6 +2397,32 @@ demultiplexing step.")
 from single-cell RNA-sequencing.")
     (license license:expat)))
 
+(define-public python-harmonypy
+  (package
+    (name "python-harmonypy")
+    (version "0.0.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/slowkow/harmonypy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15lxgncrnsx1hapfx78pvx4rjx5d48hqixdnacdy55d84myfmrym"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy
+                             python-pandas
+                             python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-hatchling python-pytest))
+    (home-page "https://github.com/slowkow/harmonypy")
+    (synopsis "Data integration algorithm")
+    (description
+     "Harmony is an algorithm for integrating multiple high-dimensional
+datasets with fuzzy k-means and locally linear adjustments.")
+    (license license:gpl2)))
+
 (define-public python-hclust2
   (package
     (name "python-hclust2")
