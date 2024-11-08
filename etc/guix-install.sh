@@ -576,7 +576,7 @@ sys_delete_guix_daemon()
             _msg "${INF}removing guix-daemon"
             rm -f /etc/systemd/system/guix-daemon.service
 
-            if [ -x /etc/systemd/system/gnu-store.mount ]; then
+            if [ -f /etc/systemd/system/gnu-store.mount ]; then
                 _msg "${INF}disabling gnu-store.mount"
                 systemctl disable gnu-store.mount
                 _msg "${INF}stopping gnu-store.mount"
