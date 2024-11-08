@@ -1990,10 +1990,10 @@ leveraging built-in functionality.")
                    license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
 (define-public emacs-meyvn
-  (let ((commit "62802ab42ee021f89f980bd3de3e1336ad760944")) ;version bump
+  (let ((commit "8d00ada6daa5617fa60f76e0be2cf2f5d1babcf9")) ;version bump
     (package
       (name "emacs-meyvn")
-      (version "1.4")
+      (version "1.7")
       (source
        (origin
          (method git-fetch)
@@ -2002,7 +2002,7 @@ leveraging built-in functionality.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0821sk0mq1602mk3hp7igcafp8fpfg586nk41iz9syc06xbh0if7"))))
+          (base32 "0ncilsn0ih01w6hjdn529jkapiv4nnkway07j2b5fndkrlgk2ry4"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-cider
                                emacs-dash
