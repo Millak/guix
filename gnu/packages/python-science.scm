@@ -26,6 +26,7 @@
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Marco Baggio <marco.baggio@mdc-berlin.de>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2024 Rick Huijzer <ikbenrickhuyzer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -894,6 +895,32 @@ density maps, both for interactive and non-interactive use.")
 @item Compatible Relaxation (CR)
 @item Krylov methods such as CG, GMRES, FGMRES, BiCGStab, MINRES, etc.
 @end itemize")
+    (license license:expat)))
+
+(define-public python-pyet
+  (package
+    (name "python-pyet")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyet" version))
+       (sha256
+        (base32 "1dblsx0bv1g453hcx5vwij1zgankwgwvhwllqkn47k578h038xvy"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-pandas
+           python-xarray))
+    (home-page "https://github.com/pyet-org/pyet")
+    (synopsis "Python package for evapotranspiration calculation")
+    (description
+     "This package provides a Python library for calculating
+Evapotranspiration using various standard methods.")
     (license license:expat)))
 
 (define-public python-tspex
