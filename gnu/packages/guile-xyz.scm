@@ -856,7 +856,7 @@ tables.")
      (list #:make-flags
            #~(list "GUILE_AUTO_COMPILE=0")
            #:phases
-           (if (target-x86-64?)
+           (if (and (target-x86-64?) (not (target-hurd?)))
                #~%standard-phases
                #~(modify-phases %standard-phases
                    (add-before 'check 'disable-some-tests
