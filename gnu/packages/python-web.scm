@@ -7145,6 +7145,28 @@ than 326,000 known user-agents.  Users can pick a random one, or select one
 based on filters.")
     (license license:expat)))
 
+(define-public python-rangehttpserver
+  (package
+    (name "python-rangehttpserver")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danvk/RangeHTTPServer")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dx533fsbq1mbz3by7qkm5bh2c253nwvm8214pqbwbfq07kqkwf2"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-coverage python-coveralls python-pytest))
+    (home-page "https://github.com/danvk/RangeHTTPServer")
+    (synopsis "SimpleHTTPServer with support for range requests")
+    (description
+     "This tool provides a simple HTTP server with support for Range
+requests.")
+    (license license:asl2.0)))
+
 (define-public python-flask-restx
   (package
     (name "python-flask-restx")
