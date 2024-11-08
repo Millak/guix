@@ -37,37 +37,38 @@
   (package
     (name "entr")
     (version "5.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://eradman.com/entrproject/code/entr-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0kniklgnqv4j9carm78d3423wlwqw1ykxmlla4xmlfwdjbgvh8h2"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://eradman.com/entrproject/code/entr-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0kniklgnqv4j9carm78d3423wlwqw1ykxmlla4xmlfwdjbgvh8h2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (setenv "CONFIG_SHELL" (which "bash"))
-               (setenv "CC" ,(cc-for-target))
-               (setenv "PREFIX" out)
-               (setenv "MANPREFIX" (string-append out "/man"))
-               (invoke "./configure"))))
-         (add-before 'build 'remove-fhs-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "entr.c"
-               (("/bin/sh" command)
-                (search-input-file inputs command))
-               (("/bin/cat" command)
-                (search-input-file inputs command))
-               (("/usr(/bin/clear)" _ command)
-                (search-input-file inputs command))))))))
-    (inputs
-     (list bash coreutils ncurses))
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (setenv "CONFIG_SHELL"
+                                (which "bash"))
+                        (setenv "CC"
+                                ,(cc-for-target))
+                        (setenv "PREFIX" out)
+                        (setenv "MANPREFIX"
+                                (string-append out "/man"))
+                        (invoke "./configure"))))
+                  (add-before 'build 'remove-fhs-file-names
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* "entr.c"
+                        (("/bin/sh" command)
+                         (search-input-file inputs command))
+                        (("/bin/cat" command)
+                         (search-input-file inputs command))
+                        (("/usr(/bin/clear)" _ command)
+                         (search-input-file inputs command))))))))
+    (inputs (list bash coreutils ncurses))
     (home-page "https://eradman.com/entrproject/")
     (synopsis "Run arbitrary commands when files change")
     (description
