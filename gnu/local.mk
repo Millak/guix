@@ -1579,6 +1579,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/indent-CVE-2024-0911.patch	\
   %D%/packages/patches/instead-use-games-path.patch		\
   %D%/packages/patches/intltool-perl-compatibility.patch	\
+  %D%/packages/patches/inetutils-hurd64.patch			\
   %D%/packages/patches/irrlicht-use-system-libs.patch		\
   %D%/packages/patches/irrlicht-link-against-needed-libs.patch	\
   %D%/packages/patches/isl-0.11.1-aarch64-support.patch	\

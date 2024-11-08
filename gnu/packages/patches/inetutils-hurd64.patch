@@ -1,0 +1,65 @@
+Upstream-status: Not presented upstream.
+
+From 0804e655a7abfd22dc3a053f03fab8f811405f84 Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Fri, 8 Nov 2024 11:07:56 +0100
+Subject: [PATCH] ifconfig hurd: Build fix for the 64bit HUrd.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+* ifconfig/system/hurd.c (check_driving): Use mach_msg_type_number_t
+instead of size_t for file_get_fs_options.
+---
+ ifconfig/system/hurd.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/ifconfig/system/hurd.c b/ifconfig/system/hurd.c
+index 70b2ed27..86fe6375 100644
+--- a/ifconfig/system/hurd.c
++++ b/ifconfig/system/hurd.c
+@@ -47,7 +47,7 @@ check_driving (const char *name)
+   error_t err;
+ 
+   char *argz = 0, *new_argz = 0;
+-  size_t argz_len = 0;
++  mach_msg_type_number_t argz_len = 0;
+   char *entry = 0;
+   const char *socket = _SERVERS_SOCKET "/2";
+ 
+@@ -106,7 +106,9 @@ check_driving (const char *name)
+   new_argz = malloc (argz_len);
+   memcpy (new_argz, argz, argz_len);
+ 
+-  err = argz_insert (&new_argz, &argz_len, new_argz, name);
++  size_t new_argz_len = 0;
++
++  err = argz_insert (&new_argz, &new_argz_len, new_argz, name);
+   if (err)
+     {
+       error (0, err, "Could not prepend name %s to '%s' for %s", name,
+@@ -114,7 +116,7 @@ check_driving (const char *name)
+       goto out;
+     }
+ 
+-  err = argz_insert (&new_argz, &argz_len, new_argz, "-i");
++  err = argz_insert (&new_argz, &new_argz_len, new_argz, "-i");
+   if (err)
+     {
+       argz_stringify (new_argz, argz_len, ' ');
+@@ -122,10 +124,10 @@ check_driving (const char *name)
+       goto out;
+     }
+ 
+-  err = fsys_set_options (fsys, new_argz, argz_len, 1);
++  err = fsys_set_options (fsys, new_argz, new_argz_len, 1);
+   if (err)
+     {
+-      argz_stringify (new_argz, argz_len, ' ');
++      argz_stringify (new_argz, new_argz_len, ' ');
+       error (0, err, "Could not make pfinet %s drive %s with '%s'", socket,
+ 	     name, new_argz);
+       goto out;
+-- 
+Janneke Nieuwenhuizen <janneke@gnu.org>  | GNU LilyPond https://LilyPond.org
+Freelance IT https://www.JoyOfSource.com | Avatar® https://AvatarAcademy.com
+
