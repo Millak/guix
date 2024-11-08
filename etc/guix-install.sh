@@ -451,11 +451,15 @@ sys_create_build_user()
 sys_delete_build_user()
 {
     for i in $(seq -w 1 10); do
-        userdel -f guixbuilder${i}
+        if id -u "guixbuilder${i}" &>/dev/null; then
+            userdel -f guixbuilder${i}
+        fi
     done
 
     _msg "${INF}delete group guixbuild"
-    groupdel -f guixbuild
+    if getent group guixbuild &>/dev/null; then
+        groupdel -f guixbuild
+    fi
 }
 
 sys_enable_guix_daemon()
@@ -569,12 +573,14 @@ sys_delete_guix_daemon()
             ;;
 
         systemd)
-            _msg "${INF}disabling guix-daemon"
-            systemctl disable guix-daemon
-            _msg "${INF}stopping guix-daemon"
-            systemctl stop guix-daemon
-            _msg "${INF}removing guix-daemon"
-            rm -f /etc/systemd/system/guix-daemon.service
+            if [ -f /etc/systemd/system/guix-daemon.service ]; then
+                _msg "${INF}disabling guix-daemon"
+                systemctl disable guix-daemon
+                _msg "${INF}stopping guix-daemon"
+                systemctl stop guix-daemon
+                _msg "${INF}removing guix-daemon"
+                rm -f /etc/systemd/system/guix-daemon.service
+            fi
 
             if [ -f /etc/systemd/system/gnu-store.mount ]; then
                 _msg "${INF}disabling gnu-store.mount"
