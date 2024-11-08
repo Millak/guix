@@ -22,6 +22,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1301,9 +1302,48 @@ Some codes examples can be find at:
     (license (list license:lgpl3+ license:bsd-3)))) ;dual licensed
 
 (define-public sdbus-c++
-  ;; Use the latest commit, which includes unreleased fixes to the pkg-config
-  ;; file.
   (package
+    (name "sdbus-c++")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Kistler-Group/sdbus-cpp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1s6vhzln0rvac2r3v8nq08hsjhyz3y46fsy18i23ppjm30apkiav"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; Avoid the integration test, which requires a system bus.
+      #:test-target "sdbus-c++-unit-tests"
+      #:configure-flags #~(list "-DSDBUSCPP_BUILD_CODEGEN=ON"
+                                "-DSDBUSCPP_BUILD_TESTS=ON"
+                                ;; Do not install tests.
+                                "-DSDBUSCPP_TESTS_INSTALL_PATH=/tmp"
+                                "-DCMAKE_VERBOSE_MAKEFILE=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-install-tests
+            (lambda _
+              (substitute* "tests/CMakeLists.txt"
+                (("/etc/dbus-1/system.d") "/tmp")))))))
+    (native-inputs (list googletest pkg-config))
+    (inputs (list expat))
+    (propagated-inputs (list elogind)) ;required by sdbus-c++.pc
+    (home-page "https://github.com/Kistler-Group/sdbus-cpp")
+    (synopsis "High-level C++ D-Bus library")
+    (description "@code{sdbus-c++} is a high-level C++ D-Bus library designed
+to provide easy-to-use yet powerful API in modern C++.  It adds another layer
+of abstraction on top of @code{sd-bus}, the C D-Bus implementation by systemd.")
+    (license license:lgpl2.1+)))
+
+;; TODO: Remove once libjami can use newer sdbus-c++.
+(define-public sdbus-c++-1.4.0
+  (package
+    (inherit sdbus-c++)
     (name "sdbus-c++")
     (version "1.4.0")
     (source (origin
@@ -1315,39 +1355,24 @@ Some codes examples can be find at:
               (sha256
                (base32
                 "111l2rl0pg9r5cdrhqpac4v22cnq41skxxfk3cng81l0n05v1sh0"))))
-    (build-system cmake-build-system)
     (arguments
-     (list
-      ;; Avoid the integration test, which requires a system bus.
-      #:test-target "sdbus-c++-unit-tests"
-      #:configure-flags #~(list "-DBUILD_CODE_GEN=ON"
-                                "-DBUILD_TESTS=ON"
-                                ;; Do not install tests.
-                                "-DTESTS_INSTALL_PATH=/tmp"
-                                "-DCMAKE_VERBOSE_MAKEFILE=ON")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'do-not-install-tests
-            (lambda _
-              (substitute* "tests/CMakeLists.txt"
-                (("/etc/dbus-1/system.d") "/tmp"))))
-          (add-after 'unpack 'fix-elogind-requirement
-            (lambda _
-              ;; sdbus-c++.pc requires 'elogind', but it should
-              ;; require 'libelogind'. Fixed after 1.4.0 with
-              ;; fb9e4ae37152648a67814458d3ff673b1d3ca089
-              (substitute* "pkgconfig/sdbus-c++.pc.in"
-                (("@LIBSYSTEMD@")
-                 "libelogind")))))))
-    (native-inputs (list googletest pkg-config))
-    (inputs (list expat))
-    (propagated-inputs (list elogind)) ;required by sdbus-c++.pc
-    (home-page "https://github.com/Kistler-Group/sdbus-cpp")
-    (synopsis "High-level C++ D-Bus library")
-    (description "@code{sdbus-c++} is a high-level C++ D-Bus library designed
-to provide easy-to-use yet powerful API in modern C++.  It adds another layer
-of abstraction on top of @code{sd-bus}, the C D-Bus implementation by systemd.")
-    (license license:lgpl2.1+)))
+     (substitute-keyword-arguments (package-arguments sdbus-c++)
+       ((#:configure-flags flags ''())
+        #~(list "-DBUILD_CODE_GEN=ON"
+                "-DBUILD_TESTS=ON"
+                ;; Do not install tests.
+                "-DTESTS_INSTALL_PATH=/tmp"
+                "-DCMAKE_VERBOSE_MAKEFILE=ON"))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'fix-elogind-requirement
+              (lambda _
+                ;; sdbus-c++.pc requires 'elogind', but it should
+                ;; require 'libelogind'. Fixed after 1.4.0 with
+                ;; fb9e4ae37152648a67814458d3ff673b1d3ca089
+                (substitute* "pkgconfig/sdbus-c++.pc.in"
+                  (("@LIBSYSTEMD@")
+                   "libelogind"))))))))))
 
 (define-public appstream-glib
   (package

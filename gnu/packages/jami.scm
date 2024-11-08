@@ -215,7 +215,7 @@
            openssl
            pjproject-jami
            pulseaudio
-           sdbus-c++
+           sdbus-c++-1.4.0
            speex
            speexdsp
            webrtc-audio-processing/jami
