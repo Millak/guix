@@ -521,6 +521,34 @@ constructed by a Python program.")
 a hardware description and verification language.")
     (license license:lgpl2.1+)))
 
+(define-public python-vunit
+  (package
+    (name "python-vunit")
+    (version "4.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/VUnit/vunit")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s7j5bykbv34wgnxy5cl4zp6g0caidvzs8pd9yxjq341543xkjwm"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:tests? #f))                ;XXX: requires setuptools_scm >= 2.0.0, <3
+    (propagated-inputs (list python python-colorama))
+    (home-page "https://vunit.github.io")
+    (synopsis "Unit testing framework for VHDL/SystemVerilog")
+    (description
+     "VUnit features the functionality needed to realize continuous and
+automated testing of HDL code.")
+
+    ;; According to 'LICENSE.rst', VUnit itself is under MPL but two
+    ;; subdirectories are under ASL.
+    (license (list license:mpl2.0 license:asl2.0))))
+
 (define-public nvc
   (package
     (name "nvc")
