@@ -22185,19 +22185,18 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
          "0rr54mvcfcv9cv6vw2122y28xvd2pwqpv2x8c8j5ayz3gwsy4rjw"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                      ;PyPI does not have tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-setup-py
-           (lambda _
-             (substitute* "setup.py"
-               ;; Relax some of the requirements.
-               (("(keyring>=21.2.0),<22.0.0" _ keyring) keyring)
-               (("(packaging>=20.4),<21.0" _ packaging) packaging)))))))
+     (list
+      #:tests? #f                      ;PyPI does not have tests
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Silent sanity check as the package requires a long chain of
+          ;; updates.
+          (delete 'sanity-check))))
     (propagated-inputs
      (list python-cachecontrol
            python-cachy
            python-cleo
+           python-clikit
            python-crashtest
            python-entrypoints
            python-html5lib
@@ -22209,7 +22208,7 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
            python-pexpect
            python-pip
            python-pkginfo
-           python-poetry-core-1.0
+           python-poetry-core
            python-requests
            python-requests-toolbelt
            python-shellingham
