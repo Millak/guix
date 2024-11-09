@@ -262,6 +262,7 @@ backups (called chunks) to allow easy burning to CD/DVD.")
 (define-public libarchive
   (package
     (name "libarchive")
+    (replacement libarchive/fixed)
     (version "3.6.1")
     (source
      (origin
@@ -350,6 +351,22 @@ archive.  In particular, note that there is currently no built-in support for
 random access nor for in-place modification.  This package provides the
 @command{bsdcat}, @command{bsdcpio} and @command{bsdtar} commands.")
     (license license:bsd-2)))
+
+(define-public libarchive/fixed
+  (package
+    (inherit libarchive)
+    (version "3.7.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://libarchive.org/downloads/libarchive-"
+                                 version ".tar.xz")
+                  (string-append "https://github.com/libarchive/libarchive"
+                                 "/releases/download/v" version "/libarchive-"
+                                 version ".tar.xz")))
+       (sha256
+        (base32
+         "1vps57mrpqmrk4zayh5g5amqfq7031s5zzkkxsm7r71rqf1wv6l7"))))))
 
 (define-public rdup
   (package
