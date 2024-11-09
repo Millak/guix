@@ -68,7 +68,7 @@
                          (search-input-file inputs command))
                         (("/usr(/bin/clear)" _ command)
                          (search-input-file inputs command))))))))
-    (inputs (list bash coreutils ncurses))
+    (inputs (list bash-minimal coreutils ncurses))
     (home-page "https://eradman.com/entrproject/")
     (synopsis "Run arbitrary commands when files change")
     (description
