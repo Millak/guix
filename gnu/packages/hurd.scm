@@ -92,7 +92,7 @@
 (define-public mig
   (package
     (name "mig")
-    (version "1.8+git20230520")
+    (version "1.8+git20231217")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -101,7 +101,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10r0fdjqjzqsy6ajb21rifvhw0wpjvrw6a1zdyliqlzqny5k0qlz"))))
+                "1mx7w5vzw5ws0zplm1y6s679jb1g2hjkiwl3dlk5lxys0dxs5g4g"))))
     (build-system gnu-build-system)
     ;; Flex is needed both at build and run time.
     (inputs (list gnumach-headers flex))
