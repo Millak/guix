@@ -4450,6 +4450,38 @@ programs such as @code{vi}, @code{top}, @code{htop} or even @code{emacs
 -nw}.")
     (license license:gpl3+)))
 
+(define-public emacs-mistty
+  (let ((revision "0")
+        (commit "6284c0f6529bcce57d183e20765052c603846115"))
+    (package
+      (name "emacs-mistty")
+      (version (git-version "1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/szermatt/mistty")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1159dy63dq7kyh06q9kfvq6x4bx59w9g1slq2m3xvx2ngaiydf97"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-before 'patch-el-files 'replace-bash-path
+                       (lambda* (#:key inputs #:allow-other-keys)
+                         (substitute* "mistty-term.el"
+                           (("/bin/bash")
+                            (search-input-file inputs "bin/bash"))))))))
+      (inputs (list bash))
+      (home-page "https://github.com/szermatt/mistty")
+      (synopsis "Emacs terminal major mode based on Term")
+      (description
+       "This package defines a major mode that runs a shell inside of
+a buffer, similarly to Comint mode.  It is built on top of Term.")
+      (license license:gpl3+))))
+
 (define-public emacs-counsel-bbdb
   (package
     (name "emacs-counsel-bbdb")
